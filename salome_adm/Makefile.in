@@ -1,0 +1,60 @@
+# source path
+top_srcdir=@top_srcdir@
+top_builddir=..
+srcdir=@srcdir@
+VPATH=.:$(srcdir)/salome_adm
+
+@COMMENCE@
+
+all: resources
+
+INST_ADM_DIR=${prefix}/salome_adm
+
+install: $(INST_ADM_DIR)
+	@cp -rf @top_srcdir@/salome_adm/unix $(INST_ADM_DIR)
+	@find $(INST_ADM_DIR) -name "CVS" -prune -exec rm -rf {} \; >/dev/null
+
+$(INST_ADM_DIR):
+	$(INSTALL) -d  $@ >/dev/null
+
+bin:
+
+ADM_DIR=$(top_builddir)/salome_adm
+
+resources : $(ADM_DIR)
+	@cp -rf @top_srcdir@/salome_adm/unix $(ADM_DIR)
+	@find $(ADM_DIR) -name "CVS" -prune -exec rm -rf {} \; >/dev/null
+
+$(ADM_DIR):
+	$(INSTALL) -d  $@ >/dev/null
+
+inc:
+
+lib:
+
+include/salome/SALOMEconfig.h:
+
+include/salome/config.h:
+
+include/salome/sstream:
+
+depend:
+
+depend_idl:
+
+install-end:
+
+install-include:
+
+install-bin:
+
+uninstall:
+
+uninstall-idl:
+
+distclean:
+
+clean:
+
+distclean-other:
+
