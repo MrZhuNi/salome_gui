@@ -436,7 +436,7 @@ SVTK_RenderWindowInteractor
 				      (event->state() & ShiftButton), 
 				      event->x(), event->y() ) ;
 
-  if(myInteractorStyle->GetState() == VTK_INTERACTOR_STYLE_CAMERA_NONE && !( event->state() & KeyButtonMask )){
+  if(myInteractorStyle->GetState() == VTK_INTERACTOR_STYLE_CAMERA_NONE){
     QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
                               event->pos(), event->globalPos(),
                               event->state() );

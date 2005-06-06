@@ -186,14 +186,6 @@ SVTK_InteractorStyle
 }
 
 //----------------------------------------------------------------------------
-int
-SVTK_InteractorStyle
-::GetState()
-{
-  return State | ForcedState;
-}
-
-//----------------------------------------------------------------------------
 void 
 SVTK_InteractorStyle
 ::setViewWindow(SVTK_ViewWindow* theViewWindow)
