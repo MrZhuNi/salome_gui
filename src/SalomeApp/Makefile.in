@@ -40,7 +40,9 @@ EXPORT_HEADERS= SalomeApp.h \
 		SalomeApp_TypeFilter.h \
 		SalomeApp_OBFilter.h \
 		SalomeApp_StudyPropertiesDlg.h \
-		SalomeApp_CheckFileDlg.h
+		SalomeApp_CheckFileDlg.h \
+		SalomeApp_Operation.h \
+		SalomeApp_Dialog.h
 
 # .po files to transform in .qm
 PO_FILES = SalomeApp_images.po \
@@ -78,7 +80,9 @@ LIB_SRC= SalomeApp_AboutDlg.cxx \
 	 SalomeApp_OBFilter.cxx \
 	 SalomeApp_StudyPropertiesDlg.cxx \
 	 SalomeApp_ListView.cxx \
-	 SalomeApp_CheckFileDlg.cxx
+	 SalomeApp_CheckFileDlg.cxx \
+	 SalomeApp_Operation.cxx \
+	 SalomeApp_Dialog.cxx 
 
 LIB_MOC = SalomeApp_AboutDlg.h \
           SalomeApp_Application.h \
@@ -97,7 +101,9 @@ LIB_MOC = SalomeApp_AboutDlg.h \
 	  SalomeApp_ModuleDlg.h \
 	  SalomeApp_StudyPropertiesDlg.h \
 	  SalomeApp_ListView.h \
-	  SalomeApp_CheckFileDlg.h
+	  SalomeApp_CheckFileDlg.h \
+	  SalomeApp_Operation.h \
+	  SalomeApp_Dialog.h
 
 LIB_CLIENT_IDL = SALOMEDS.idl \
 		 SALOME_Exception.idl \
@@ -108,6 +114,7 @@ RESOURCES_FILES = icon_about.png \
                   icon_default.png \
                   icon_module.png \
 		  icon_module_big.png \
+		  icon_select.png \
 		  SalomeApp.ini \
 		  SalomeApp.xml
 
