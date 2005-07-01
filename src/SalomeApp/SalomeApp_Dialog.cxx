@@ -14,6 +14,7 @@ SalomeApp_Dialog::SalomeApp_Dialog( QWidget* parent, const char* name, bool moda
   myIsExclusive( true )
 {
   setObjectPixmap( "SalomeApp", tr( "ICON_SELECT" ) );
+  setNameIndication( OneNameOrCount );
 }
 
 SalomeApp_Dialog::~SalomeApp_Dialog()
@@ -41,7 +42,7 @@ void SalomeApp_Dialog::updateButtons( const int _id )
                             aLast = myObjects.end();
   for( ; anIt!=aLast; anIt++ )
   {
-    QPushButton* but = anIt.data().btn;
+    QPushButton* but = anIt.data().myBtn;
     if( but && but->isOn() )
     {
       if( id==-1 )
@@ -74,64 +75,74 @@ void SalomeApp_Dialog::setObjectShown( const int id, const bool shown )
   if( myObjects.contains( id ) && isObjectShown( id )!=shown )
   {
     Object& obj = myObjects[ id ];
-    obj.edit->setShown( shown );
-    obj.btn->setShown( shown );
-    obj.label->setShown( shown );
+    obj.myEdit->setShown( shown );
+    obj.myBtn->setShown( shown );
+    obj.myLabel->setShown( shown );
     if( !shown )
-      obj.btn->setOn( false );
+      obj.myBtn->setOn( false );
   }
 }
 
 bool SalomeApp_Dialog::isObjectShown( const int id ) const
 {
-  return myObjects.contains( id ) && myObjects[ id ].edit->isShown();
+  return myObjects.contains( id ) && myObjects[ id ].myEdit->isShown();
 }
 
 void SalomeApp_Dialog::selectObject( const QString& name, const int type, const QString& entry )
 {
+  QStringList names;   names.append( name );
+  TypesList types;     types.append( type );
+  QStringList entries; entries.append( entry );
+  selectObject( names, types, entries );
+}
+
+void SalomeApp_Dialog::selectObject( const QStringList& _names,
+                                     const TypesList& _types,
+                                     const QStringList& _entries )
+{
   ObjectMap::iterator anIt = myObjects.begin(),
                       aLast = myObjects.end();
   for( ; anIt!=aLast; anIt++ )
-    if( anIt.data().btn->isOn() )
+    if( anIt.data().myBtn->isOn() )
     {
-      if( isCorrectType( anIt.key(), type ) )
-      {
-        anIt.data().edit->setText( name );
-        anIt.data().type = type;
-        anIt.data().entry = entry;
-      }
-      else
-      {
-        anIt.data().edit->setText( QString::null );
-        anIt.data().type = -1;        
-        anIt.data().entry = QString::null;
-      }
+      QStringList names, entries;
+      TypesList types;
+      
+      filterTypes( anIt.key(), names, types, entries );
+
+      anIt.data().myEdit->setText( selectionDescription( names, types ) );
+      anIt.data().myTypes = types;
+      anIt.data().myEntries = entries;
+      anIt.data().myNames = names;
+      
       emit selectionChanged( anIt.key() ); 
     }
 }
 
 bool SalomeApp_Dialog::hasSelection( const int id ) const
 {
-  return myObjects.contains( id ) && !myObjects[ id ].entry.isEmpty();
+  return myObjects.contains( id ) && !myObjects[ id ].myEntries.isEmpty();
 }
 
 void SalomeApp_Dialog::clearSelection( const int id )
 {
   if( myObjects.contains( id ) )
   {
-    myObjects[ id ].entry = QString::null;
-    myObjects[ id ].type = -1;
-    myObjects[ id ].edit->setText( QString::null );
+    myObjects[ id ].myEntries.clear();
+    myObjects[ id ].myTypes.clear();
+    myObjects[ id ].myNames.clear();
+    
+    myObjects[ id ].myEdit->setText( QString::null );
     emit selectionChanged( id );
   }
 }
 
-QString SalomeApp_Dialog::selectedObject( const int id ) const
+void SalomeApp_Dialog::selectedObject( const int id, QStringList& list ) const
 {
   if( myObjects.contains( id ) )
-    return myObjects[ id ].entry;
-  else
-    return QString::null;
+    list = myObjects[ id ].myEntries;
+  //else
+  //  list.clear();
 }
 
 void SalomeApp_Dialog::objectSelection( SelectedObjects& objs ) const
@@ -141,9 +152,10 @@ void SalomeApp_Dialog::objectSelection( SelectedObjects& objs ) const
                             aLast = myObjects.end();
   for( ; anIt!=aLast; anIt++ )
   {
-    QString entry = selectedObject( anIt.key() );
-    if( !entry.isEmpty() )
-      objs.insert( anIt.key(), entry );
+    QStringList entries;
+    selectedObject( anIt.key(), entries );
+    if( !entries.isEmpty() )
+      objs.insert( anIt.key(), entries );
   }
 }
 
@@ -155,17 +167,17 @@ int SalomeApp_Dialog::createObject( const QString& label, QWidget* parent, const
   if( !myObjects.contains( nid ) )
   {
     QLabel* lab = new QLabel( label, parent );
-    myObjects[ nid ].label = lab;
+    myObjects[ nid ].myLabel = lab;
     
     QPushButton* but = new QPushButton( parent );
     but->setIconSet( QIconSet( myPixmap ) );
     but->setToggleButton( true );
     connect( but, SIGNAL( toggled( bool ) ), this, SLOT( onToggled( bool ) ) );
-    myObjects[ nid ].btn = but;
+    myObjects[ nid ].myBtn = but;
 
     QLineEdit* ne = new QLineEdit( parent );
     ne->setReadOnly( true );
-    myObjects[ nid ].edit = ne;
+    myObjects[ nid ].myEdit = ne;
   }
   return nid;
 }
@@ -173,7 +185,7 @@ int SalomeApp_Dialog::createObject( const QString& label, QWidget* parent, const
 void SalomeApp_Dialog::renameObject( const int id, const QString& label )
 {
   if( myObjects.contains( id ) )
-    myObjects[ id ].label->setText( label );
+    myObjects[ id ].myLabel->setText( label );
 }
 
 void SalomeApp_Dialog::setObjectType( const int id, const int type1, ... )
@@ -195,7 +207,7 @@ void SalomeApp_Dialog::setObjectType( const int id, const TypesList& list )
   if( !myObjects.contains( id ) )
     return;
 
-  TypesList& internal = myObjects[ id ].types;
+  TypesList& internal = myObjects[ id ].myPossibleTypes;
     
   QMap<int,int> types;
   TypesList::const_iterator anIt = list.begin(),
@@ -251,7 +263,7 @@ void SalomeApp_Dialog::removeObjectType( const int id, const TypesList& list )
   if( !myObjects.contains( id ) )
     return;
 
-  TypesList& internal = myObjects[ id ].types;
+  TypesList& internal = myObjects[ id ].myPossibleTypes;
 
   QMap<int,int> types;
   TypesList::const_iterator anIt = internal.begin(),
@@ -281,7 +293,7 @@ void SalomeApp_Dialog::removeObjectType( const int id, const int type )
 bool SalomeApp_Dialog::hasObjectType( const int id, const int type ) const
 {
   if( myObjects.contains( id ) )
-    return myObjects[ id ].types.contains( type );
+    return myObjects[ id ].myPossibleTypes.contains( type );
   else
     return false;
 }
@@ -290,8 +302,8 @@ void SalomeApp_Dialog::objectTypes( const int id, TypesList& list ) const
 {
   if( myObjects.contains( id ) )
   {
-    TypesList::const_iterator anIt = myObjects[ id ].types.begin(),
-                              aLast = myObjects[ id ].types.end();
+    TypesList::const_iterator anIt = myObjects[ id ].myPossibleTypes.begin(),
+                              aLast = myObjects[ id ].myPossibleTypes.end();
     for( ; anIt!=aLast; anIt++ )
       list.append( *anIt );
   }  
@@ -308,7 +320,7 @@ void SalomeApp_Dialog::onToggled( bool on )
   ObjectMap::const_iterator anIt = myObjects.begin(),
                             aLast = myObjects.end();
   for( ; anIt!=aLast && id==-1; anIt++ )
-    if( anIt.data().btn==but )
+    if( anIt.data().myBtn==but )
       id = anIt.key();
 
   if( id!=-1 )
@@ -321,18 +333,47 @@ void SalomeApp_Dialog::onToggled( bool on )
       emit objectDeactivated( id );
 }
 
-void SalomeApp_Dialog::updateObject( const int id )
+void SalomeApp_Dialog::updateObject( const int id, bool emit_signal )
 {
-  if( hasSelection( id ) && !isCorrectType( id, myObjects[ id ].type ) )
-    clearSelection( id );
+  if( hasSelection( id ) )
+  {
+    Object& obj = myObjects[ id ];
+    filterTypes( id, obj.myNames, obj.myTypes, obj.myEntries );
+    obj.myEdit->setText( selectionDescription( obj.myNames, obj.myTypes ) );
+    if( emit_signal )
+      emit selectionChanged( id );
+  }
 }
 
-bool SalomeApp_Dialog::isCorrectType( const int id, const int type ) const
+void SalomeApp_Dialog::filterTypes( const int id, QStringList& names, TypesList& types, QStringList& entries ) const
 {
-  if( myObjects.contains( id ) )
-    return hasObjectType( id, type ) || myObjects[ id ].types.isEmpty();
-  else
-    return false;
+  if( !myObjects.contains( id ) )
+    return;
+
+  const Object& obj = myObjects[ id ];
+  if( obj.myPossibleTypes.isEmpty() )
+    return;
+
+  QStringList new_names, new_entries;
+  TypesList new_types;
+  
+  TypesList::const_iterator anIt1 = types.begin(),
+                            aLast = types.end();
+  QStringList::const_iterator anIt2 = names.begin(),
+                              anIt3 = entries.begin();
+  for( ; anIt1!=aLast; anIt1++, anIt2++, anIt3++ )
+    if( obj.myPossibleTypes.contains( *anIt1 ) )
+    {
+      if( new_types.count()==1 && !multipleSelection() )
+        break;
+        
+      new_names.append( *anIt2 );
+      new_types.append( *anIt1 );
+      new_entries.append( *anIt3 );       
+    }
+  names = new_names;
+  types = new_types;
+  entries = new_entries;
 }
 
 SUIT_ResourceMgr* SalomeApp_Dialog::resMgr() const
@@ -346,7 +387,7 @@ void SalomeApp_Dialog::setObjectPixmap( const QPixmap& p )
   ObjectMap::const_iterator anIt = myObjects.begin(),
                             aLast = myObjects.end();
   for( ; anIt!=aLast; anIt++ )
-    anIt.data().btn->setIconSet( p );
+    anIt.data().myBtn->setIconSet( p );
 }
 
 void SalomeApp_Dialog::setObjectPixmap( const QString& section, const QString& file )
@@ -354,4 +395,87 @@ void SalomeApp_Dialog::setObjectPixmap( const QString& section, const QString& f
   SUIT_ResourceMgr* mgr = resMgr();
   if( mgr )
     setObjectPixmap( mgr->loadPixmap( section, file ) );
+}
+
+bool SalomeApp_Dialog::multipleSelection() const
+{
+  return nameIndication()==OneName;  
+}
+
+SalomeApp_Dialog::NameIndication SalomeApp_Dialog::nameIndication() const
+{
+  return myNI;
+}
+
+void SalomeApp_Dialog::setNameIndication( const NameIndication ni )
+{
+  myNI = ni;
+  ObjectMap::const_iterator anIt = myObjects.begin(),
+                            aNext,
+                            aLast = myObjects.end();
+  for( ; anIt!=aLast; anIt++ )
+  {
+    aNext = anIt; aNext++;
+    updateObject( anIt.key(), aNext==aLast );
+  }
+}
+
+QString SalomeApp_Dialog::selectionDescription( const QStringList& names, const TypesList& types ) const
+{
+  if( names.count()!=types.count() )
+    return "SalomeApp_Dialog::selectionDescription: Error!!!";
+    
+  switch( nameIndication() )
+  {
+    case OneName:
+      return names.first();
+      break;
+      
+    case OneNameOrCount:
+      if( names.count()==1 )
+        return names.first();
+      else
+        return countOfTypes( types );
+      break;
+      
+    case ListOfNames:
+      return names.join( ", " );
+      break;
+      
+    case Count:
+      return countOfTypes( types );
+      break;
+  };
+  return QString::null;
+}
+
+QString SalomeApp_Dialog::countOfTypes( const TypesList& types ) const
+{
+  QMap<int, int> typesCount;
+  QStringList typeCount;
+  
+  TypesList::const_iterator anIt = types.begin(),
+                            aLast = types.end();
+  for( ; anIt!=aLast; anIt++ )
+    if( typesCount.contains( *anIt ) )
+      typesCount[ *anIt ]++;
+    else
+      typesCount[ *anIt ] = 1;
+
+  QMap<int,int>::const_iterator aMIt = typesCount.begin(),
+                                aMLast = typesCount.end();
+  for( ; aMIt!=aMLast; aMIt++ )
+    typeCount.append( QString( "%1 %2" ).arg( aMIt.data() ).arg( typeName( aMIt.key() ) ) );
+
+  return typeCount.join( ", " );
+}
+
+QString& SalomeApp_Dialog::typeName( const int type )
+{
+  return myTypeNames[ type ];
+}
+
+const QString& SalomeApp_Dialog::typeName( const int type ) const
+{
+  return myTypeNames[ type ];
 }

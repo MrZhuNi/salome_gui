@@ -22,8 +22,16 @@ class SalomeApp_Dialog : public QtxDialog
   Q_OBJECT
   
 public:
-  typedef QValueList<int>    TypesList;
-  typedef QMap<int,QString>  SelectedObjects;
+  typedef QValueList<int>        TypesList;
+  typedef QMap<int,QStringList>  SelectedObjects;
+  typedef enum
+  {
+    OneName,
+    OneNameOrCount,
+    ListOfNames,
+    Count
+    
+  } NameIndication;
 
 public:
   SalomeApp_Dialog( QWidget* = 0, const char* = 0, bool = false,
@@ -31,19 +39,21 @@ public:
   virtual ~SalomeApp_Dialog();
   
   virtual void    show();
-          bool    isExclusive() const;
-          void    setExclusive( const bool );
+  
+  bool isExclusive() const;
+  void setExclusive( const bool );
 
-          void    showObject( const int );
-          void    hideObject( const int );
-          void    setObjectShown( const int, const bool );
-          bool    isObjectShown( const int ) const;
+  void showObject( const int );
+  void hideObject( const int );
+  void setObjectShown( const int, const bool );
+  bool isObjectShown( const int ) const;
           
-          void    selectObject( const QString&, const int, const QString& );
-          bool    hasSelection( const int ) const;
-          void    clearSelection( const int = -1 );
-          QString selectedObject( const int ) const;
-          void    objectSelection( SelectedObjects& ) const;
+  void selectObject( const QString&, const int, const QString& );
+  void selectObject( const QStringList&, const TypesList&, const QStringList& );
+  bool hasSelection( const int ) const;
+  void clearSelection( const int = -1 );
+  void selectedObject( const int, QStringList& ) const;
+  void objectSelection( SelectedObjects& ) const;
 
 signals:
   void selectionChanged ( int );
@@ -68,32 +78,43 @@ protected:
   bool hasObjectType   ( const int, const int ) const;
   void objectTypes     ( const int, TypesList& ) const;
 
+        QString& typeName( const int );
+  const QString& typeName( const int ) const;
+
+  virtual QString selectionDescription( const QStringList&, const TypesList& ) const;
+  virtual QString countOfTypes( const TypesList& ) const;
+
+  NameIndication nameIndication() const;
+  void           setNameIndication( const NameIndication );
+  bool           multipleSelection() const;
+
 private slots:
   void onToggled( bool );
 
 private:
-  void updateButtons( const int = -1 );
-  void updateObject( const int );
-  bool isCorrectType( const int id, const int type ) const;
+  void    updateButtons( const int = -1 );
+  void    updateObject( const int, bool = true );
+  void    filterTypes( const int, QStringList&, TypesList&, QStringList& ) const;
   
 private:
   typedef struct
   {
-    QLineEdit*   edit;
-    QPushButton* btn;
-    QLabel*      label;
-    QString      entry;
-    int          type;
-    TypesList    types;
+    QLineEdit*   myEdit;
+    QPushButton* myBtn;
+    QLabel*      myLabel;
+    QStringList  myNames, myEntries;
+    TypesList    myTypes, myPossibleTypes;
     
   } Object;
   
   typedef QMap<int, Object> ObjectMap;
 
 private:
-  ObjectMap  myObjects;
-  bool       myIsExclusive;
-  QPixmap    myPixmap;
+  ObjectMap           myObjects;
+  QMap<int,QString>   myTypeNames;
+  bool                myIsExclusive;
+  QPixmap             myPixmap;
+  NameIndication      myNI;
 };
 
 #endif
