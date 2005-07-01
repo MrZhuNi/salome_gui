@@ -8,15 +8,14 @@
 //  Author : Sergey LITONIN
 //  Module : SALOME
 
-#include "SalomeApp_Operation.h"
-
-#include "SalomeApp_Module.h"
-#include "SalomeApp_Application.h"
-#include "SalomeApp_Operation.h"
-
-#include <SalomeApp_Dialog.h>
-#include <SUIT_Desktop.h>
+#include <SalomeApp_Operation.h>
+#include <SalomeApp_Module.h>
+#include <SalomeApp_Application.h>
+#include <SalomeApp_Operation.h>
+#include <SalomeApp_DataOwner.h>
 #include <SalomeApp_SelectionMgr.h>
+
+#include <SUIT_Desktop.h>
 
 
 /*
@@ -209,6 +208,36 @@ bool SalomeApp_Operation::eventFilter( QObject* obj, QEvent* e )
 }
 
 //=======================================================================
+// name    : type
+// Purpose : Find type by entry
+//=======================================================================
+int SalomeApp_Operation::type( const QString& ) const
+{
+  return -1;
+}
+
+//=======================================================================
+// name    : selected
+// Purpose : Get names, types and entries of selected objects
+//=======================================================================
+void SalomeApp_Operation::selected( QStringList& names, SalomeApp_Dialog::TypesList& types, QStringList& entries ) const
+{
+  SUIT_DataOwnerPtrList list; selectionMgr()->selected( list );
+  SUIT_DataOwnerPtrList::const_iterator anIt = list.begin(),
+                                        aLast = list.end();
+  for( ; anIt!=aLast; anIt++ )
+  {
+    SalomeApp_DataOwner* owner = dynamic_cast<SalomeApp_DataOwner*>( (*anIt).operator->() );
+    if( owner )
+    {
+      QString entry = owner->entry();
+      entries.append( entry );
+      types.append( type( entry ) );
+      names.append( owner->IO()->getName() );
+    }
+  }
+}
+//=======================================================================
 // name    : eventFilter
 // Purpose : Block mouse and key events if operator is not active one
 //=======================================================================
@@ -217,20 +246,3 @@ void SalomeApp_Operation::update( const int flags )
   if ( myModule != 0 )
     myModule->update( flags );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

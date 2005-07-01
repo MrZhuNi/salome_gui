@@ -12,13 +12,13 @@
 #ifndef SalomeApp_Operation_H
 #define SalomeApp_Operation_H
 
-#include "SUIT_Operation.h"
+#include <SUIT_Operation.h>
+#include <SalomeApp_Dialog.h>
 
 class SalomeApp_Module;
 class SalomeApp_Application;
 class SalomeApp_Operation;
 class SalomeApp_SelectionMgr;
-class SalomeApp_Dialog;
 class SUIT_Desktop;
 
 /*
@@ -91,7 +91,17 @@ protected:
 
   void                      update( const int );
   // Call update() method of module ( see SalomeApp_Module for description )
+  
 
+  
+ 
+  virtual void              selected( QStringList&, SalomeApp_Dialog::TypesList&, QStringList& ) const;
+  // Get names, types and entries of selected objects
+
+  virtual int               type( const QString& ) const;
+  // Find type by entry: default implementation is to return -1
+  // Please redefine it if you want function "selected" to work correctly
+    
 private slots:
 
   virtual void              onSelectionDone();
@@ -101,7 +111,7 @@ private:
 
   bool                      eventFilter( QObject*, QEvent* );
   // Block mouse and key events if operator is not active one
-  
+ 
 private:
 
   SalomeApp_Module*         myModule;
