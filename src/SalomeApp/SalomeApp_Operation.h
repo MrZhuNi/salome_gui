@@ -89,6 +89,9 @@ protected:
   SalomeApp_SelectionMgr*   selectionMgr() const;
   // Get selection manager
 
+  void                      update( const int );
+  // Call update() method of module ( see SalomeApp_Module for description )
+
 private slots:
 
   virtual void              onSelectionDone();

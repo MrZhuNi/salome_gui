@@ -208,8 +208,15 @@ bool SalomeApp_Operation::eventFilter( QObject* obj, QEvent* e )
   return SUIT_Operation::eventFilter( obj, e );
 }
 
-
-
+//=======================================================================
+// name    : eventFilter
+// Purpose : Block mouse and key events if operator is not active one
+//=======================================================================
+void SalomeApp_Operation::update( const int flags )
+{
+  if ( myModule != 0 )
+    myModule->update( flags );
+}
 
 
 

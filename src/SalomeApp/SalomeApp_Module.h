@@ -58,12 +58,19 @@ public:
   virtual void                        contextMenuPopup( const QString&, QPopupMenu*, QString& );
 
   virtual void                        createPreferences();
-
+  
   // Convenient shortcuts
   SalomeApp_Application*              getApp() const;
-  
-  void                                updateObjBrowser( bool = true, SUIT_DataObject* = 0 );
 
+  virtual void                        update( const int );
+  // Update viewer or/and object browser etc. in accordance with update flags
+  // ( see SalomeApp_UpdateFlags enumeration ). Derived modules can redefine this method
+  // for their own purposes
+    
+  void                                updateObjBrowser( bool = true, SUIT_DataObject* = 0 );
+  // Update object bropwser ( for updating model or whole object browser use update() method
+  // can be used )
+  
   virtual void                        selectionChanged();
   virtual void                        preferencesChanged( const QString&, const QString& );
 
@@ -86,11 +93,12 @@ protected:
 
   virtual CAM_DataModel*              createDataModel();
   virtual SalomeApp_Selection*        createSelection() const;
+  virtual void                        updateControls();
 
   int                                 addPreference( const QString& label );
   int                                 addPreference( const QString& label, const int pId, const int = -1,
-				                     const QString& section = QString::null,
-				                     const QString& param = QString::null );
+                                                     const QString& section = QString::null,
+                                                     const QString& param = QString::null );
   QVariant                            preferenceProperty( const int, const QString& ) const;
   void                                setPreferenceProperty( const int, const QString&, const QVariant& );
 

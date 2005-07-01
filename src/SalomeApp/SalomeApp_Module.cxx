@@ -9,6 +9,7 @@
 #include "SalomeApp_DataModel.h"
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Preferences.h"
+#include "SalomeApp_UpdateFlags.h"
 
 #include <OB_Browser.h>
 
@@ -18,6 +19,13 @@
 #include <SUIT_ResourceMgr.h>
 
 #include <QtxPopupMgr.h>
+
+#include <SVTK_ViewWindow.h>
+#include <OCCViewer_ViewWindow.h>
+#include <OCCViewer_ViewPort3d.h>
+#include <GLViewer_ViewFrame.h>
+#include <GLViewer_ViewPort.h>
+#include <Plot2d_ViewWindow.h>
 
 SalomeApp_Module::SalomeApp_Module( const QString& name )
 : CAM_Module( name ),
@@ -174,3 +182,54 @@ void SalomeApp_Module::setPreferenceProperty( const int id, const QString& prop,
   if ( pref )
     pref->setProperty( id, prop, var );
 }
+
+void SalomeApp_Module::update( const int flags )
+{
+  if ( flags & UF_Model )
+  {
+    if( CAM_DataModel* aDataModel = dataModel() )
+      if( SalomeApp_DataModel* aModel = dynamic_cast<SalomeApp_DataModel*>( aDataModel ) )
+        aModel->update( 0, dynamic_cast<SalomeApp_Study*>( getApp()->activeStudy() ) );
+  }
+  else if ( flags & UF_ObjBrowser )
+    getApp()->objectBrowser()->updateTree( 0 );
+  else if ( flags & UF_Controls )
+    updateControls();
+  else if ( flags & UF_Viewer )
+  {
+    if ( SUIT_ViewManager* viewMgr = getApp()->activeViewManager() )
+      if ( SUIT_ViewWindow* viewWnd = viewMgr->getActiveView() )
+      {
+        if ( viewWnd->inherits( "SVTK_ViewWindow" ) )
+          ( (SVTK_ViewWindow*)viewWnd )->Repaint();
+        else if ( viewWnd->inherits( "OCCViewer_ViewWindow" ) )
+          ( (OCCViewer_ViewWindow*)viewWnd )->getViewPort()->onUpdate();
+        else if ( viewWnd->inherits( "Plot2d_ViewWindow" ) )
+          ( (Plot2d_ViewWindow*)viewWnd )->getViewFrame()->Repaint();
+        else if ( viewWnd->inherits( "GLViewer_ViewFrame" ) )
+          ( (GLViewer_ViewFrame*)viewWnd )->getViewPort()->onUpdate();
+      }
+  }
+  
+}
+
+void SalomeApp_Module::updateControls()
+{
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

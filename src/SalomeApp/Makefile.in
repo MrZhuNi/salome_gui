@@ -42,7 +42,8 @@ EXPORT_HEADERS= SalomeApp.h \
 		SalomeApp_StudyPropertiesDlg.h \
 		SalomeApp_CheckFileDlg.h \
 		SalomeApp_Operation.h \
-		SalomeApp_Dialog.h
+		SalomeApp_Dialog.h \
+		SalomeApp_UpdateFlags.h
 
 # .po files to transform in .qm
 PO_FILES = SalomeApp_images.po \
@@ -51,7 +52,8 @@ PO_FILES = SalomeApp_images.po \
 # Libraries targets
 LIB = libSalomeApp.la
 
-LIB_SRC= SalomeApp_AboutDlg.cxx \
+LIB_SRC= SalomeApp_Module.cxx \
+	 SalomeApp_AboutDlg.cxx \
          SalomeApp_Application.cxx \
 	 SalomeApp_DataModel.cxx \
 	 SalomeApp_DataObject.cxx \
@@ -60,7 +62,6 @@ LIB_SRC= SalomeApp_AboutDlg.cxx \
 	 SalomeApp_VTKSelector.cxx \
 	 SalomeApp_OBSelector.cxx \
 	 SalomeApp_GLSelector.cxx \
-	 SalomeApp_Module.cxx \
 	 SalomeApp_Study.cxx \
 	 SalomeApp_WidgetContainer.cxx \
 	 SalomeApp_ExceptionHandler.cxx \
