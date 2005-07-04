@@ -91,17 +91,7 @@ protected:
 
   void                      update( const int );
   // Call update() method of module ( see SalomeApp_Module for description )
-  
-
-  
- 
-  virtual void              selected( QStringList&, SalomeApp_Dialog::TypesList&, QStringList& ) const;
-  // Get names, types and entries of selected objects
-
-  virtual int               type( const QString& ) const;
-  // Find type by entry: default implementation is to return -1
-  // Please redefine it if you want function "selected" to work correctly
-    
+      
 private slots:
 
   virtual void              onSelectionDone();
