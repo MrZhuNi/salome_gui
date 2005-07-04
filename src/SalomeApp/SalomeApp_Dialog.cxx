@@ -14,7 +14,6 @@ SalomeApp_Dialog::SalomeApp_Dialog( QWidget* parent, const char* name, bool moda
   myIsExclusive( true )
 {
   setObjectPixmap( "SalomeApp", tr( "ICON_SELECT" ) );
-  setNameIndication( OneNameOrCount );
 }
 
 SalomeApp_Dialog::~SalomeApp_Dialog()
@@ -88,31 +87,31 @@ bool SalomeApp_Dialog::isObjectShown( const int id ) const
   return myObjects.contains( id ) && myObjects[ id ].myEdit->isShown();
 }
 
-void SalomeApp_Dialog::selectObject( const QString& name, const int type, const QString& entry )
+void SalomeApp_Dialog::selectObject( const QString& name, const int type, const QString& id )
 {
   QStringList names;   names.append( name );
   TypesList types;     types.append( type );
-  QStringList entries; entries.append( entry );
-  selectObject( names, types, entries );
+  QStringList ids;     ids.append( id );
+  selectObject( names, types, ids );
 }
 
 void SalomeApp_Dialog::selectObject( const QStringList& _names,
                                      const TypesList& _types,
-                                     const QStringList& _entries )
+                                     const QStringList& _ids )
 {
   ObjectMap::iterator anIt = myObjects.begin(),
                       aLast = myObjects.end();
   for( ; anIt!=aLast; anIt++ )
     if( anIt.data().myBtn->isOn() )
     {
-      QStringList names, entries;
-      TypesList types;
+      QStringList names = _names, ids = _ids;
+      TypesList types = _types;
       
-      filterTypes( anIt.key(), names, types, entries );
+      filterTypes( anIt.key(), names, types, ids );
 
-      anIt.data().myEdit->setText( selectionDescription( names, types ) );
+      anIt.data().myEdit->setText( selectionDescription( names, types, anIt.data().myNI ) );
       anIt.data().myTypes = types;
-      anIt.data().myEntries = entries;
+      anIt.data().myIds = ids;
       anIt.data().myNames = names;
       
       emit selectionChanged( anIt.key() ); 
@@ -121,14 +120,14 @@ void SalomeApp_Dialog::selectObject( const QStringList& _names,
 
 bool SalomeApp_Dialog::hasSelection( const int id ) const
 {
-  return myObjects.contains( id ) && !myObjects[ id ].myEntries.isEmpty();
+  return myObjects.contains( id ) && !myObjects[ id ].myIds.isEmpty();
 }
 
 void SalomeApp_Dialog::clearSelection( const int id )
 {
   if( myObjects.contains( id ) )
   {
-    myObjects[ id ].myEntries.clear();
+    myObjects[ id ].myIds.clear();
     myObjects[ id ].myTypes.clear();
     myObjects[ id ].myNames.clear();
     
@@ -140,7 +139,7 @@ void SalomeApp_Dialog::clearSelection( const int id )
 void SalomeApp_Dialog::selectedObject( const int id, QStringList& list ) const
 {
   if( myObjects.contains( id ) )
-    list = myObjects[ id ].myEntries;
+    list = myObjects[ id ].myIds;
   //else
   //  list.clear();
 }
@@ -152,10 +151,10 @@ void SalomeApp_Dialog::objectSelection( SelectedObjects& objs ) const
                             aLast = myObjects.end();
   for( ; anIt!=aLast; anIt++ )
   {
-    QStringList entries;
-    selectedObject( anIt.key(), entries );
-    if( !entries.isEmpty() )
-      objs.insert( anIt.key(), entries );
+    QStringList ids;
+    selectedObject( anIt.key(), ids );
+    if( !ids.isEmpty() )
+      objs.insert( anIt.key(), ids );
   }
 }
 
@@ -178,6 +177,8 @@ int SalomeApp_Dialog::createObject( const QString& label, QWidget* parent, const
     QLineEdit* ne = new QLineEdit( parent );
     ne->setReadOnly( true );
     myObjects[ nid ].myEdit = ne;
+
+    myObjects[ nid ].myNI = OneNameOrCount;
   }
   return nid;
 }
@@ -338,14 +339,14 @@ void SalomeApp_Dialog::updateObject( const int id, bool emit_signal )
   if( hasSelection( id ) )
   {
     Object& obj = myObjects[ id ];
-    filterTypes( id, obj.myNames, obj.myTypes, obj.myEntries );
-    obj.myEdit->setText( selectionDescription( obj.myNames, obj.myTypes ) );
+    filterTypes( id, obj.myNames, obj.myTypes, obj.myIds );
+    obj.myEdit->setText( selectionDescription( obj.myNames, obj.myTypes, obj.myNI ) );
     if( emit_signal )
       emit selectionChanged( id );
   }
 }
 
-void SalomeApp_Dialog::filterTypes( const int id, QStringList& names, TypesList& types, QStringList& entries ) const
+void SalomeApp_Dialog::filterTypes( const int id, QStringList& names, TypesList& types, QStringList& ids ) const
 {
   if( !myObjects.contains( id ) )
     return;
@@ -354,26 +355,26 @@ void SalomeApp_Dialog::filterTypes( const int id, QStringList& names, TypesList&
   if( obj.myPossibleTypes.isEmpty() )
     return;
 
-  QStringList new_names, new_entries;
+  QStringList new_names, new_ids;
   TypesList new_types;
   
   TypesList::const_iterator anIt1 = types.begin(),
                             aLast = types.end();
   QStringList::const_iterator anIt2 = names.begin(),
-                              anIt3 = entries.begin();
+                              anIt3 = ids.begin();
   for( ; anIt1!=aLast; anIt1++, anIt2++, anIt3++ )
     if( obj.myPossibleTypes.contains( *anIt1 ) )
     {
-      if( new_types.count()==1 && !multipleSelection() )
+      if( new_types.count()==1 && !multipleSelection( id ) )
         break;
         
       new_names.append( *anIt2 );
       new_types.append( *anIt1 );
-      new_entries.append( *anIt3 );       
+      new_ids.append( *anIt3 );       
     }
   names = new_names;
   types = new_types;
-  entries = new_entries;
+  ids = new_ids;
 }
 
 SUIT_ResourceMgr* SalomeApp_Dialog::resMgr() const
@@ -388,7 +389,7 @@ void SalomeApp_Dialog::setObjectPixmap( const QPixmap& p )
                             aLast = myObjects.end();
   for( ; anIt!=aLast; anIt++ )
     anIt.data().myBtn->setIconSet( p );
-}
+}                        
 
 void SalomeApp_Dialog::setObjectPixmap( const QString& section, const QString& file )
 {
@@ -397,35 +398,46 @@ void SalomeApp_Dialog::setObjectPixmap( const QString& section, const QString& f
     setObjectPixmap( mgr->loadPixmap( section, file ) );
 }
 
-bool SalomeApp_Dialog::multipleSelection() const
+bool SalomeApp_Dialog::multipleSelection( const int id ) const
 {
-  return nameIndication()==OneName;  
+  return nameIndication( id )==OneName;  
 }
 
-SalomeApp_Dialog::NameIndication SalomeApp_Dialog::nameIndication() const
+SalomeApp_Dialog::NameIndication SalomeApp_Dialog::nameIndication( const int id ) const
 {
-  return myNI;
+  if( myObjects.contains( id ) )
+    return myObjects[ id ].myNI;
+  else
+    return OneNameOrCount;
 }
 
-void SalomeApp_Dialog::setNameIndication( const NameIndication ni )
+void SalomeApp_Dialog::setNameIndication( const int id, const NameIndication ni )
 {
-  myNI = ni;
-  ObjectMap::const_iterator anIt = myObjects.begin(),
-                            aNext,
-                            aLast = myObjects.end();
-  for( ; anIt!=aLast; anIt++ )
+  if( id==-1 )
   {
-    aNext = anIt; aNext++;
-    updateObject( anIt.key(), aNext==aLast );
+    ObjectMap::iterator anIt = myObjects.begin(),
+                        aNext,
+                        aLast = myObjects.end();
+    for( ; anIt!=aLast; anIt++ )
+    {
+      anIt.data().myNI = ni;
+      aNext = anIt; aNext++;
+      updateObject( anIt.key(), aNext==aLast );
+    }
+  }
+  else if( myObjects.contains( id ) )
+  {
+    myObjects[ id ].myNI = ni;
+    updateObject( id, true );
   }
 }
 
-QString SalomeApp_Dialog::selectionDescription( const QStringList& names, const TypesList& types ) const
+QString SalomeApp_Dialog::selectionDescription( const QStringList& names, const TypesList& types, const NameIndication ni ) const
 {
   if( names.count()!=types.count() )
     return "SalomeApp_Dialog::selectionDescription: Error!!!";
     
-  switch( nameIndication() )
+  switch( ni )
   {
     case OneName:
       return names.first();

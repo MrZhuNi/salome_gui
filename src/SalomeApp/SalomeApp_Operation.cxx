@@ -13,6 +13,7 @@
 #include <SalomeApp_Application.h>
 #include <SalomeApp_Operation.h>
 #include <SalomeApp_DataOwner.h>
+#include <SalomeApp_DataSubOwner.h>
 #include <SalomeApp_SelectionMgr.h>
 
 #include <SUIT_Desktop.h>
@@ -228,6 +229,16 @@ void SalomeApp_Operation::selected( QStringList& names, SalomeApp_Dialog::TypesL
   for( ; anIt!=aLast; anIt++ )
   {
     SalomeApp_DataOwner* owner = dynamic_cast<SalomeApp_DataOwner*>( (*anIt).operator->() );
+    SalomeApp_DataSubOwner* subowner = dynamic_cast<SalomeApp_DataSubOwner*>( (*anIt).operator->() );
+    
+    if( subowner )
+    {
+      QString entry = QString( "%1#%2" ).arg( subowner->entry() ).arg( subowner->index() );
+      entries.append( entry );
+      types.append( type( entry ) );
+      names.append( QString( "%1" ).arg( subowner->index() ) );
+    }
+    
     if( owner )
     {
       QString entry = owner->entry();
