@@ -10,6 +10,7 @@
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Preferences.h"
 #include "SalomeApp_UpdateFlags.h"
+#include "SalomeApp_Operation.h"
 
 #include <OB_Browser.h>
 
@@ -217,19 +218,49 @@ void SalomeApp_Module::updateControls()
 {
 }
 
+void SalomeApp_Module::startOperation( const int id )
+{
+  SalomeApp_Operation* op = 0;
+  if( myOperations.contains( id ) )
+    op = myOperations[ id ];
+  else
+  {
+    op = createOperation( id );
+    if( op )
+    {
+      myOperations.insert( id, op );
+      op->setModule( this );
+      connect( op, SIGNAL( stopped( SUIT_Operation* ) ), this, SLOT( onOperationStopped( SUIT_Operation* ) ) );
+      connect( op, SIGNAL( destroyed() ), this, SLOT( onOperationDestroyed() ) );
+    }
+  }
 
+  if( op )
+    op->start();
+}
 
+SalomeApp_Operation* SalomeApp_Module::createOperation( const int ) const
+{
+  return 0;
+}
 
+void SalomeApp_Module::onOperationStopped( SUIT_Operation* )
+{
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+void SalomeApp_Module::onOperationDestroyed()
+{
+  const QObject* s = sender();
+  if( s && s->inherits( "SalomeApp_Operation" ) )
+  {
+    const SalomeApp_Operation* op = ( SalomeApp_Operation* )s;
+    MapOfOperation::const_iterator anIt = myOperations.begin(),
+                                   aLast = myOperations.end();
+    for( ; anIt!=aLast; anIt++ )
+      if( anIt.data()==op )
+      {
+        myOperations.remove( anIt.key() );
+        break;
+      }
+  }
+}
