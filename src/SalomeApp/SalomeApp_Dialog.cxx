@@ -125,7 +125,15 @@ bool SalomeApp_Dialog::hasSelection( const int id ) const
 
 void SalomeApp_Dialog::clearSelection( const int id )
 {
-  if( myObjects.contains( id ) )
+  if( id==-1 )
+  {
+    ObjectMap::const_iterator anIt = myObjects.begin(),
+                              aLast = myObjects.end();
+    for( ; anIt!=aLast; anIt++ )
+      clearSelection( anIt.key() );
+  }
+  
+  else if( myObjects.contains( id ) )
   {
     myObjects[ id ].myIds.clear();
     myObjects[ id ].myTypes.clear();
@@ -400,7 +408,7 @@ void SalomeApp_Dialog::setObjectPixmap( const QString& section, const QString& f
 
 bool SalomeApp_Dialog::multipleSelection( const int id ) const
 {
-  return nameIndication( id )==OneName;  
+  return nameIndication( id )!=OneName;  
 }
 
 SalomeApp_Dialog::NameIndication SalomeApp_Dialog::nameIndication( const int id ) const
