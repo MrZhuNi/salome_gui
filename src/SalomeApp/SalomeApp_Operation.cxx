@@ -13,6 +13,7 @@
 #include <SalomeApp_Application.h>
 #include <SalomeApp_Operation.h>
 #include <SalomeApp_SelectionMgr.h>
+#include <SalomeApp_Dialog.h>
 
 #include <SUIT_Desktop.h>
 
@@ -25,9 +26,10 @@
 // name    : SalomeApp_Operation
 // Purpose : Constructor
 //=======================================================================
-SalomeApp_Operation::SalomeApp_Operation( SalomeApp_Application* theApp )
-: SUIT_Operation( theApp ),
-  myModule( 0 )
+SalomeApp_Operation::SalomeApp_Operation()
+: SUIT_Operation( 0 ),
+  myModule( 0 ),
+  myIsAutoResumed( false )
 {
   
 }
@@ -46,9 +48,14 @@ SalomeApp_Module* SalomeApp_Operation::module() const
   return myModule;
 }
 
+//=======================================================================
+// name    : setModule
+// Purpose : 
+//=======================================================================
 void SalomeApp_Operation::setModule( SalomeApp_Module* theModule )
 {
   myModule = theModule;
+  setApplication( myModule ? myModule->application() : 0 );
 }
 
 //=======================================================================
@@ -67,9 +74,7 @@ SUIT_Desktop* SalomeApp_Operation::desktop() const
 //=======================================================================
 void SalomeApp_Operation::resumeOperation()
 {
-  if ( dlg() )
-    dlg()->removeEventFilter( this );
-  activateSelection();
+  setDialogActive( true );
 }
 
 //=======================================================================
@@ -88,8 +93,7 @@ void SalomeApp_Operation::startOperation()
 //=======================================================================
 void SalomeApp_Operation::suspendOperation()
 {
-  if ( dlg() )
-    dlg()->installEventFilter( this );
+  setDialogActive( false );
 }
 
 //=======================================================================
@@ -98,11 +102,9 @@ void SalomeApp_Operation::suspendOperation()
 //=======================================================================
 void SalomeApp_Operation::abortOperation()
 {
+  setDialogActive( true );
   if ( dlg() )
-  {
-    dlg()->removeEventFilter( this );
     dlg()->hide();
-  }
 
   if( selectionMgr() )
     disconnect( selectionMgr(), SIGNAL( selectionChanged() ), this, SLOT( onSelectionDone() ) );
@@ -114,11 +116,9 @@ void SalomeApp_Operation::abortOperation()
 //=======================================================================
 void SalomeApp_Operation::commitOperation()
 {
+  setDialogActive( true );
   if ( dlg() )
-  {
-    dlg()->removeEventFilter( this );
     dlg()->hide();
-  }
 
   if( selectionMgr() )
     disconnect( selectionMgr(), SIGNAL( selectionChanged() ), this, SLOT( onSelectionDone() ) );
@@ -153,15 +153,6 @@ void SalomeApp_Operation::activateSelection()
 //=======================================================================
 void SalomeApp_Operation::selectionDone()
 {
-}
-
-//=======================================================================
-// name    : isActive
-// Purpose : Verify whether operator is active one
-//=======================================================================
-bool SalomeApp_Operation::isActive() const
-{
-  return activeOperation() == this;
 }
 
 //=======================================================================
@@ -201,13 +192,29 @@ void SalomeApp_Operation::onSelectionDone()
 //=======================================================================
 bool SalomeApp_Operation::eventFilter( QObject* obj, QEvent* e )
 {
-  // to do
+  if( e )
+  {
+    if( isAutoResumed() &&
+        ( e->type()==QEvent::Enter  ||
+          e->type()==QEvent::WindowActivate ||
+          e->type()==QEvent::MouseButtonPress ||
+          e->type()==QEvent::MouseButtonDblClick ) )
+      resume();
+      
+    else if( e->type()==QEvent::MouseButtonRelease ||
+             e->type()==QEvent::MouseButtonDblClick ||
+             e->type()==QEvent::MouseMove ||
+             e->type()==QEvent::KeyPress ||
+             e->type()==QEvent::KeyRelease  )
+      return true;
+  }
+      
   return SUIT_Operation::eventFilter( obj, e );
 }
 
 //=======================================================================
-// name    : eventFilter
-// Purpose : Block mouse and key events if operator is not active one
+// name    : update
+// Purpose : 
 //=======================================================================
 void SalomeApp_Operation::update( const int flags )
 {
@@ -215,3 +222,38 @@ void SalomeApp_Operation::update( const int flags )
     myModule->update( flags );
 }
 
+//=======================================================================
+// name    : update
+// Purpose :
+//=======================================================================
+void SalomeApp_Operation::setDialogActive( const bool active )
+{
+  if( dlg() )
+    if( active )
+    {
+      dlg()->removeEventFilter( this );
+      activateSelection();
+    }
+    else
+      dlg()->installEventFilter( this );
+}
+
+//=======================================================================
+// name    : update
+// Purpose :
+//=======================================================================
+bool SalomeApp_Operation::isAutoResumed() const
+{
+  return myIsAutoResumed;
+}
+
+//=======================================================================
+// name    : update
+// Purpose :
+//=======================================================================
+void SalomeApp_Operation::setAutoResumed( const bool on )
+{
+  myIsAutoResumed = on;
+}
+
+  
