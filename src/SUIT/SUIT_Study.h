@@ -46,8 +46,7 @@ public:
   // Operation management
   SUIT_Operation*   activeOperation() const;
   virtual void      abortAllOperations();
-  virtual bool      canActivate( SUIT_Operation*, SUIT_Operation** = 0 ) const;
-  virtual void      connectOperation( SUIT_Operation*, const bool ) const;
+  virtual bool      canActivate( SUIT_Operation* );
 
   void              start( SUIT_Operation*, const bool check = true );
   //!< Starts operation.
@@ -69,11 +68,6 @@ protected:
   virtual void      setRoot( SUIT_DataObject* );
   virtual void      setStudyName( const QString& );
 
-private slots:
-  void onAddOperation( SUIT_Operation* );
-  void onRemoveOperation( SUIT_Operation* );
-  void onOperationResume( SUIT_Operation* );
-  
 private:
   typedef QPtrList<SUIT_Operation> Operations;
   void              stop( SUIT_Operation* );

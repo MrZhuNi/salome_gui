@@ -6,6 +6,8 @@
 #include "SUIT_MessageBox.h"
 #include "SUIT_Application.h"
 
+#include <qvaluevector.h>
+
 SUIT_Study::SUIT_Study( SUIT_Application* app )
 : QObject(),
 myApp( app ),
@@ -59,7 +61,7 @@ SUIT_Operation* SUIT_Study::activeOperation() const
   for( ; anIt!=aLast; anIt++ )
     if( (*anIt)->isActive() )
       return *anIt;
-  
+
   return 0;
 }
 
@@ -148,67 +150,41 @@ void SUIT_Study::setStudyName( const QString& name )
   myName = name;
 }
 
-bool SUIT_Study::canActivate( SUIT_Operation* op, SUIT_Operation** refusingOp ) const
+//=======================================================================
+// name    : canActivate
+// Purpose : Verify whether operation can be activated (abort other operations
+//           if necessary)
+//=======================================================================
+bool SUIT_Study::canActivate( SUIT_Operation* op )
 {
-  if( !op )
-  {
-    if( refusingOp )
-      *refusingOp = 0;      
+  if( !op || myOperations.find( op ) >= 0 )
     return false;
-  }
 
   if( op->isGranted() )
     return true;
 
-  Operations::const_iterator anIt = myOperations.begin(),
-                             aLast = myOperations.end();
-  for( ; anIt!=aLast; anIt++ )
-    if( !(*anIt)->isValid( op ) )
+  QValueVector<SUIT_Operation*> anOps( myOperations.count() );
+  SUIT_Operation* anOp = 0;
+  int i = 0, n;
+  for ( anOp = myOperations.last(); anOp; anOp = myOperations.prev() )
+    anOps[ i++ ] = anOp;
+
+  for ( i = 0, n = anOps.count(); i < n; i++ )
+  {
+    SUIT_Operation* currOp = anOps[ i ];
+    if( currOp != 0 && !currOp->isValid( op ) )
     {
-      if( refusingOp )
-        *refusingOp = *anIt;
-      return false;
+       int anAnsw = SUIT_MessageBox::warn2( application()->desktop(), tr( "Operation launch" ),
+                                            tr( "Previous operation is not finished and will be aborted." ),
+                                            tr( "Continue" ), tr( "Cancel" ), 0, 1, 1 );
+      if( anAnsw == 1 )
+        return false;
+      else
+        currOp->abort();
     }
-    
+  }
+
   return true;
-}
-
-void SUIT_Study::connectOperation( SUIT_Operation* op, const bool conn ) const
-{
-  if( !op )
-    return;
-    
-  if( conn )
-  {
-    connect( op, SIGNAL( started( SUIT_Operation* ) ), this, SLOT( onAddOperation( SUIT_Operation* ) ) );
-    connect( op, SIGNAL( stoped( SUIT_Operation* ) ), this, SLOT( onRemoveOperation( SUIT_Operation* ) ) );
-    connect( op, SIGNAL( resumed( SUIT_Operation* ) ), this, SLOT( onOperationResume( SUIT_Operation* ) ) );
-  }
-  else
-  {
-    disconnect( op, SIGNAL( started( SUIT_Operation* ) ), this, SLOT( onAddOperation( SUIT_Operation* ) ) );
-    disconnect( op, SIGNAL( stoped( SUIT_Operation* ) ), this, SLOT( onRemoveOperation( SUIT_Operation* ) ) );
-    disconnect( op, SIGNAL( resumed( SUIT_Operation* ) ), this, SLOT( onOperationResume( SUIT_Operation* ) ) );
-  }
-}
-
-void SUIT_Study::onAddOperation( SUIT_Operation* op )
-{
-  myOperations.append( op );
-}
-
-void SUIT_Study::onRemoveOperation( SUIT_Operation* op )
-{
-  myOperations.remove( op );
-}
-
-void SUIT_Study::onOperationResume( SUIT_Operation* op )
-{
-  Operations::const_iterator anIt = myOperations.begin(),
-                             aLast = myOperations.end();
-  for( ; anIt!=aLast; anIt++ )
-    if( *anIt!=op )
-      (*anIt)->suspend();
 }
 
 //=======================================================================
@@ -226,20 +202,8 @@ void SUIT_Study::start( SUIT_Operation* op, const bool check )
   if ( !op->isReadyToStart() )
     return;
 
-  if ( check )
-  {
-    SUIT_Operation* refusingOperation = 0;
-    while( canActivate( op, &refusingOperation ) && refusingOperation )
-    {
-      int anAnsw = SUIT_MessageBox::warn2( application()->desktop(), tr( "Operation launch" ),
-                                           tr( "Previous operation is not finished and will be aborted." ),
-                                           tr( "Continue" ), tr( "Cancel" ), 0, 1, 1 );
-      if( anAnsw == 1 )
-        return;  // user refuse to start this operation
-      else
-        refusingOperation->abort();
-    }
-  }
+  if ( check && !canActivate( op ) )
+    return;
 
   if ( activeOperation() )
     activeOperation()->suspendOperation();
@@ -305,6 +269,13 @@ void SUIT_Study::resume( SUIT_Operation* op )
 
   op->setState( SUIT_Operation::Running );
   op->resumeOperation();
+  
+  // Move operation at the end of list in order to sort it in the order of activation.
+  // As result active operation is a last operation of list operation which was active
+  // before currently active operation is located before it and so on
+  myOperations.remove( op );
+  myOperations.append( op );
+  
   emit op->resumed( op );
 }
 
