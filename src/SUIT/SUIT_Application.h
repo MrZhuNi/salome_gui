@@ -12,6 +12,8 @@ class SUIT_Desktop;
 class SUIT_Convertor;
 class SUIT_ViewModel;
 class SUIT_ResourceMgr;
+class QString;
+class QIconSet;
 
 /*!
   An <b>Application</b> is a class which defines application configuration and behaviour.
