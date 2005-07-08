@@ -155,33 +155,20 @@ void SUIT_Study::setStudyName( const QString& name )
 // Purpose : Verify whether operation can be activated (abort other operations
 //           if necessary)
 //=======================================================================
-bool SUIT_Study::canActivate( SUIT_Operation* op )
+bool SUIT_Study::canActivate( SUIT_Operation* op ) const
 {
-  if( !op || myOperations.find( op ) >= 0 )
+  if( !op || myOperations.contains( op ) )
     return false;
 
   if( op->isGranted() )
     return true;
 
-  QValueVector<SUIT_Operation*> anOps( myOperations.count() );
+  Operations tmpOps( myOperations );
   SUIT_Operation* anOp = 0;
-  int i = 0, n;
-  for ( anOp = myOperations.last(); anOp; anOp = myOperations.prev() )
-    anOps[ i++ ] = anOp;
-
-  for ( i = 0, n = anOps.count(); i < n; i++ )
+  for ( anOp = tmpOps.last(); anOp; anOp = tmpOps.prev() )
   {
-    SUIT_Operation* currOp = anOps[ i ];
-    if( currOp != 0 && !currOp->isValid( op ) )
-    {
-       int anAnsw = SUIT_MessageBox::warn2( application()->desktop(), tr( "Operation launch" ),
-                                            tr( "Previous operation is not finished and will be aborted." ),
-                                            tr( "Continue" ), tr( "Cancel" ), 0, 1, 1 );
-      if( anAnsw == 1 )
-        return false;
-      else
-        currOp->abort();
-    }
+    if ( anOp != 0 && !anOp->isValid( op ) )
+      return false;
   }
 
   return true;
@@ -203,6 +190,19 @@ void SUIT_Study::start( SUIT_Operation* op, const bool check )
     return;
 
   if ( check && !canActivate( op ) )
+  {
+    while( activeOperation() )
+    {
+      int anAnsw = SUIT_MessageBox::warn2( application()->desktop(),
+         tr( "OPERATION_LAUNCH" ), tr( "PREVIOUS_NOT_FINISHED" ),
+         tr( "CONTINUE" ), tr( "CANCEL" ), 0, 1, 1 );
+
+      if( anAnsw == 1 )
+        return;
+      else
+        activeOperation()->abort();
+    }
+  }
     return;
 
   if ( activeOperation() )
@@ -264,7 +264,9 @@ void SUIT_Study::suspend( SUIT_Operation* op )
 //=======================================================================  
 void SUIT_Study::resume( SUIT_Operation* op )
 {
-  if ( !op || myOperations.find( op ) == -1 || op->state() == SUIT_Operation::Running )
+  if ( !op || myOperations.find( op ) == -1 ||
+       op->state() == SUIT_Operation::Running ||
+       !canActivate( op ) )
     return;
 
   op->setState( SUIT_Operation::Running );
@@ -302,5 +304,3 @@ void SUIT_Study::stop( SUIT_Operation* op )
 
 
 
-
-  
