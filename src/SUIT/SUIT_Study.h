@@ -6,7 +6,7 @@
 #include "SUIT_Operation.h"
 
 #include <qobject.h>
-#include <qptrstack.h>
+#include <qptrlist.h>
 
 class SUIT_DataObject;
 class SUIT_Application;
@@ -18,6 +18,7 @@ class SUIT_Application;
 class SUIT_EXPORT SUIT_Study : public QObject
 {
   Q_OBJECT
+  
 public:
   SUIT_Study( SUIT_Application* );
   virtual ~SUIT_Study();
@@ -27,7 +28,6 @@ public:
   SUIT_DataObject*  root() const;
   QString           studyName() const;
   SUIT_Application* application() const;
-  SUIT_Operation*   activeOperation() const;
 
   virtual bool      isSaved()  const;
   virtual bool      isModified() const;
@@ -39,11 +39,26 @@ public:
   bool              saveDocument();
   virtual bool      saveDocumentAs( const QString& );
 
-  virtual void      abortAllOperations();
-
   virtual void      update();
 
   virtual void      sendChangesNotification();
+
+  // Operation management
+  SUIT_Operation*   activeOperation() const;
+  virtual void      abortAllOperations();
+  virtual bool      canActivate( SUIT_Operation*, SUIT_Operation** = 0 ) const;
+  virtual void      connectOperation( SUIT_Operation*, const bool ) const;
+
+  void              start( SUIT_Operation*, const bool check = true );
+  //!< Starts operation.
+  void              abort( SUIT_Operation* );
+  //!< Aborts operation.
+  void              commit( SUIT_Operation* );
+  //!< Commits operation.
+  void              suspend( SUIT_Operation* );
+  //!< Suspend operation.
+  void              resume( SUIT_Operation* );
+  //!< Resume operation.
 
 signals:
   void              studyModified( SUIT_Study* );
@@ -54,14 +69,14 @@ protected:
   virtual void      setRoot( SUIT_DataObject* );
   virtual void      setStudyName( const QString& );
 
-  void              stopOperation();
-  bool              canStartOperation( SUIT_Operation* );
-
-protected:
-  typedef QPtrStack<SUIT_Operation> OperationsStack;
-
-protected:
-  OperationsStack   myOperations;
+private slots:
+  void onAddOperation( SUIT_Operation* );
+  void onRemoveOperation( SUIT_Operation* );
+  void onOperationResume( SUIT_Operation* );
+  
+private:
+  typedef QPtrList<SUIT_Operation> Operations;
+  void              stop( SUIT_Operation* );
 
 private:
   int               myId;
@@ -70,8 +85,8 @@ private:
   QString           myName;
   bool              myIsSaved;
   bool              myIsModified;
-
-  friend class SUIT_Operation;
+  Operations        myOperations;
+  bool              myBlockChangeState;
 };
 
 #ifdef WIN32
