@@ -185,7 +185,7 @@ void SUIT_Operation::suspend()
 // Purpose : Verify whether operator is ready to start. Default implementation
 //           returns true. Redefine this method to add own verifications 
 //=======================================================================
-bool SUIT_Operation::isReadyToStart()
+bool SUIT_Operation::isReadyToStart() const
 {
   return true;
 }
@@ -310,7 +310,7 @@ void SUIT_Operation::setExecStatus( const int theVal )
 // name    : execStatus
 // Purpose : Gets execution status
 //=======================================================================
-int SUIT_Operation::execStatus()
+int SUIT_Operation::execStatus() const
 {
   return myExecStatus;
 }

@@ -151,7 +151,7 @@ signals:
 
 protected:
 
-  virtual bool      isReadyToStart();
+  virtual bool      isReadyToStart() const;
   //!< Verify whether operator is ready to start.
   /*!< Default implementation returns true. Redefine this method to add own verifications */
   
@@ -168,7 +168,7 @@ protected:
   
   void              setExecStatus( const int );
   //!< Sets myExecStatus to the given value
-  int               execStatus();
+  int               execStatus() const;
   //!< Gets execution status
 
   void              start( SUIT_Operation* );
