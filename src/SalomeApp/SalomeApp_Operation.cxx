@@ -56,6 +56,7 @@ void SalomeApp_Operation::setModule( SalomeApp_Module* theModule )
 {
   myModule = theModule;
   setApplication( myModule ? myModule->application() : 0 );
+  setStudy( application() ? application()->activeStudy() : 0 );
 }
 
 //=======================================================================
@@ -255,5 +256,3 @@ void SalomeApp_Operation::setAutoResumed( const bool on )
 {
   myIsAutoResumed = on;
 }
-
-  
