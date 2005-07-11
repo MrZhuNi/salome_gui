@@ -10,13 +10,16 @@
 #include <qmap.h>
 #include <qpixmap.h>
 
-
 class QLineEdit;
-class QPushButton;
+class QButton;
 class QLabel;
+
 class SUIT_ResourceMgr;
 
-
+/*
+  Class       : SalomeApp_Dialog
+  Description : Base class for all SALOME dialogs
+*/
 class SalomeApp_Dialog : public QtxDialog
 {
   Q_OBJECT
@@ -32,6 +35,8 @@ public:
     Count              //! In every case "<count> <type>" is shown
     
   } NameIndication;
+  //! The enumeration describing how names of selected objects will be shown in line edit
+  //! For more details see above
 
 public:
   SalomeApp_Dialog( QWidget* = 0, const char* = 0, bool = false,
@@ -62,23 +67,26 @@ public:
   void selectObject( const QString&, const int, const QString& );
 
   /*!
-      Pass to all active widgets list of names, types and ids of selected object
+      Pass to all active widgets list of names, types and ids of selected objects
       Every active widget filters list and accept only objects with possible types
   */
   void selectObject( const QStringList&, const TypesList&, const QStringList& );
 
-  //! Check if widgets has selection  
+  //! Check if certain widget has selection  
   bool hasSelection( const int ) const;
 
-  //! Clear selection in widgets  
+  //! Clear selection in widgets. If parameter is -1, then selection in all widgets will be cleared
   void clearSelection( const int = -1 );
 
-  //! Get ids list of object selected in widgets
+  //! Get ids list of object selected in certain widget
   void selectedObject( const int, QStringList& ) const;
 
   //! Get map "widget id -> ids list"
   void objectSelection( SelectedObjects& ) const;
 
+  //! Set all object selection buttons to inactive state
+  void deactivateAll();
+  
 signals:
   //! selection in certain widget is changed
   void selectionChanged ( int );
@@ -90,9 +98,13 @@ signals:
   void objectDeactivated( int );
                                                    
 protected:
+  //! Finds and returns resource manager
   SUIT_ResourceMgr* resMgr() const;
 
-  //! Create label, button and line edit for object selection
+  /*! Create label, button and line edit for object selection
+   *  If passed id is negative, then id will be calculated automatically (first free id)
+   *  Returns the same id (if id>=0) or calculated
+  */
   int  createObject    ( const QString&, QWidget*, const int = -1 );
 
   //! Set pixmap as icon for all selection buttons
@@ -144,10 +156,10 @@ protected:
   //! Create string contains selection list by list of names, list of types and current name indication state
   virtual QString selectionDescription( const QStringList&, const TypesList&, const NameIndication ) const;
   
-  //! Create string with pattern "<count> <type>" for current list of types
+  //! Create string by pattern "<count> <type>" for current list of types
   virtual QString countOfTypes( const TypesList& ) const;
 
-  //! Get and set name indication
+  //! Get and set name indication for certain widget
   NameIndication nameIndication( const int ) const;
   void           setNameIndication( const int, const NameIndication );
 
@@ -178,7 +190,7 @@ private:
   typedef struct
   {
     QLineEdit*      myEdit;
-    QPushButton*    myBtn;
+    QButton*        myBtn;
     QLabel*         myLabel;
     QStringList     myNames, myIds;
     TypesList       myTypes, myPossibleTypes;
