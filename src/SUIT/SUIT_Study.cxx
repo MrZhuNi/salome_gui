@@ -157,7 +157,7 @@ void SUIT_Study::setStudyName( const QString& name )
 //=======================================================================
 bool SUIT_Study::canActivate( SUIT_Operation* op ) const
 {
-  if( !op || myOperations.contains( op ) )
+  if( !op )
     return false;
 
   if( op->isGranted() )
@@ -167,7 +167,7 @@ bool SUIT_Study::canActivate( SUIT_Operation* op ) const
   SUIT_Operation* anOp = 0;
   for ( anOp = tmpOps.last(); anOp; anOp = tmpOps.prev() )
   {
-    if ( anOp != 0 && !anOp->isValid( op ) )
+    if ( anOp != 0 && anOp!= op && !anOp->isValid( op ) )
       return false;
   }
 
@@ -203,10 +203,13 @@ void SUIT_Study::start( SUIT_Operation* op, const bool check )
         activeOperation()->abort();
     }
   }
-    return;
-
-  if ( activeOperation() )
+  
+  SUIT_Operation* anOp = activeOperation();
+  if ( anOp )
+  {
     activeOperation()->suspendOperation();
+    anOp->setState( SUIT_Operation::Suspended );
+  }
 
   op->startOperation();
   myOperations.append( op );
@@ -238,7 +241,7 @@ void SUIT_Study::commit( SUIT_Operation* op )
     return;
 
   op->commitOperation();
-  emit op->commited( op );
+  emit op->committed( op );
   stop( op );
   emit studyModified( this );
 }
@@ -269,11 +272,14 @@ void SUIT_Study::resume( SUIT_Operation* op )
        !canActivate( op ) )
     return;
 
+  if ( myOperations.count() > 0 )
+    suspend( myOperations.last() );
+
   op->setState( SUIT_Operation::Running );
   op->resumeOperation();
   
   // Move operation at the end of list in order to sort it in the order of activation.
-  // As result active operation is a last operation of list operation which was active
+  // As result active operation is a last operation of list, operation which was active
   // before currently active operation is located before it and so on
   myOperations.remove( op );
   myOperations.append( op );
@@ -290,11 +296,30 @@ void SUIT_Study::stop( SUIT_Operation* op )
 {
   op->setState( SUIT_Operation::Waiting );
   myOperations.remove( op );
-  if ( myOperations.count() > 0 && myOperations.getLast() )
-    myOperations.getLast()->resumeOperation();
-    
+
+  // get last operation which can be resumed
+  SUIT_Operation* anOp, *aResultOp = 0;
+  for( anOp = myOperations.last(); anOp; anOp = myOperations.prev() )
+    if ( anOp && anOp != op && canActivate( anOp ) )
+    {
+      aResultOp = anOp;
+      break;
+    }
+
   emit op->stopped( op );
+  if ( aResultOp )
+    resume( aResultOp );
 }
+
+/*!
+ * \brief Get all started operations
+  * \return List of all started operations
+*/
+const QPtrList<SUIT_Operation>& SUIT_Study::operations() const
+{
+  return myOperations;
+}
+
 
 
 

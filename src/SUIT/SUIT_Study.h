@@ -47,6 +47,7 @@ public:
   SUIT_Operation*   activeOperation() const;
   virtual void      abortAllOperations();
   virtual bool      canActivate( SUIT_Operation* ) const;
+  const QPtrList<SUIT_Operation>& operations() const;
 
   void              start( SUIT_Operation*, const bool check = true );
   //!< Starts operation.

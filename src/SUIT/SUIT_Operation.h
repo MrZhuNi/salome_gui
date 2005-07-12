@@ -20,24 +20,23 @@
 class SUIT_Study;
 class SUIT_Application;
 
-//==============================================================================
-//! Base class for all operations
 /*!
-*  Base class for all operations. If you perform an action it is reasonable to create
-*  operation intended for this. This is a base class for all operations which provides
-*  mechanism for correct starting operations, starting operations above alredy strated
-*  ones, commiting operations and so on. To create own operation it is reasonable to
-*  inherit it from this class and reddefines virtual methods to provide own behaviour
-*  Main virtual methods are
-*  - virtual bool      isReadyToStart();
-*  - virtual void      startOperation();
-*  - virtual void      abortOperation();
-*  - virtual void      commitOperation();
-*  - virtual void      resumeOperation();
-*  - virtual void      suspendOperation();
+ * \brief Base class for all operations
+ *
+ *  Base class for all operations. If you perform an action it is reasonable to create
+ *  operation intended for this. This is a base class for all operations which provides
+ *  mechanism for correct starting operations, starting operations above already started
+ *  ones, committing operations and so on. To create own operation it is reasonable to
+ *  inherit it from this class and redefines virtual methods to provide own behavior
+ *  Main virtual methods are
+ *  - virtual bool      isReadyToStart();
+ *  - virtual void      startOperation();
+ *  - virtual void      abortOperation();
+ *  - virtual void      commitOperation();
+ *  - virtual void      resumeOperation();
+ *  - virtual void      suspendOperation();
 */
-//==============================================================================
-class SUIT_EXPORT SUIT_Operation : public QObject  
+class SUIT_EXPORT SUIT_Operation : public QObject
 {
   Q_OBJECT
 
@@ -46,140 +45,293 @@ public:
   /*! Enum describes state of operation */
   enum OperationState
   {
-    Waiting,  /*!< Operation is not used (it is not runned or suspended) */
-    Running,  /*!< Operation is started */
-    Suspended /*!< Operation is started but suspended (other operation is performed above it) */
+    Waiting,  //!< Operation is not used (it is not run or suspended)
+    Running,  //!< Operation is started
+    Suspended //!< Operation is started but suspended (other operation is performed above it)
   };
 
-  /*! Enum describes execution status of operation */
+  /*!
+  * Enum describes execution status of operation. Execution status often used after
+  * ending work of operation which was started from this one. In this case this
+  * operation can ask previously started operation whether it finished successfully.
+  */
   enum ExecStatus
   {
-    Rejected, /*! Operation has not parformed any action (modificetion of data model for example) */
-    Accepted  /*! Operation has performed an actions and must be stopped */
+    Rejected, //!< Operation has not performed any action (modification of data model for example)
+    Accepted  //!< Operation has performed an actions and must be stopped
   };
 
 public:
 
+  /*!
+   * \brief Constructor
+    * \param SUIT_Application - application for this operation
+  *
+  * Constructs an empty operation. Constructor should work very fast because many
+  * operators may be created after starting application but only several from them
+  * may be used. As result this constructor stores given application in myApp field
+  * and set Waiting status.
+  */
   SUIT_Operation( SUIT_Application* );
-  //!< Constructor
-  
+
+  /*!
+   * \brief Destructor
+  */
   virtual ~SUIT_Operation();
-  //!< Destructor
 
+  /*!
+   * \brief Verifies whether operation is an active one (state()==Running)
+   * \return TRUE if operation is active, FALSE otherwise
+  *
+  * Verifies whether operation is an active on. Returns TRUE if state of operator
+  * is Running
+  */
   bool              isActive() const;
-  //!< Verifies whether operation is an active one (state()==Running)
-  
+
+  /*!
+   * \brief Gets state of operation
+   * \return Value from OperationState enumeration
+  *
+  * Gets state of operation (see OperationState enumeration)
+  */
   OperationState    state() const;
-  //!< Returns state of operation (see OperationState enumeration)
-  void              setState( const OperationState );
-  //!< Sets state of operation (see OperationState enumeration)
-  
+
+  /*!
+   * \brief Sets state of operation
+    * \param theState - state of operation to be set
+  *
+  *  Sets state of operation (see OperationState enumeration)
+  */
+  void              setState( const OperationState theState );
+
+  /*!
+   * \brief Returns operation study
+  *  \return Pointer to study
+  * Get study corresponding to this operation i.e. study which starts this operation.
+  */
   SUIT_Study*       study() const;
-  //!< Returns operation study (i.e. study which starts this operation )
-  virtual void      setStudy( SUIT_Study* );
+
+  /*!
+   * \brief Sets operation study
+    * \param theStudy - study corresponding to this operation
+  *
+  * Sets study corresponding to this operation i.e. study which starts this operation.
+  */
+  virtual void      setStudy( SUIT_Study* theStudy );
   //!< Sets operation study (i.e. study which starts this operation )
-  
+
+  /*!
+   * \brief Gets application
+   *  \return Pointer to application
+  *
+  * Gets application for this operation
+  */
   SUIT_Application* application() const;
-  //!< Returns application
-  virtual void      setApplication( SUIT_Application* );
-  //!< Sets application
-  
+
+  /*!
+   * \brief Sets application
+    * \param theApp - application for this operation
+  *
+  * Gets application for this operation
+  */
+  virtual void      setApplication( SUIT_Application* theApp );
+
+  /*!
+   * \brief Sets slot which is called when operation is started
+    * \param theReceiver - object containing slot
+    * \param theSlot - slot of theReceiver object
+    * \return TR if slot was connected successfully, FALSE otherwise
+  *
+  * Sets slot which is called when operation is started. There is no point in
+  * using this method. It would be better to inherit own operator from base
+  * one and redefine startOperation method
+  */
   bool              setSlot( const QObject* theReceiver, const char* theSlot );
-  //!< Sets slot which is called when operation is started
-  /*! Sets slot which is called when operation is started. There is no point in
-      using this method. It would be better to inherit own operator from base
-      one and redefine startOperation method. */
 
-  virtual bool      isValid( SUIT_Operation* ) const;
-  //! Returns TRUE if the given operator is valid for (can be started "above") the current one
+  /*!
+   * \brief Verifies whether given operator is valid for this one
+    * \param theOtherOp - other operation
+    * \return Returns TRUE if the given operator is valid for this one
+  *
+  * Verifies whether given operator is valid for this one (i.e. can be started "above"
+  * this operator)
+  */
+  virtual bool      isValid( SUIT_Operation* theOtherOp ) const;
 
+  /*!
+   * \brief Verifies whether this operator can be always started above any already runnig one
+   * \return Returns TRUE if current operation must not be checked for ActiveOperation->IsValid( this )
+  *
+  * This method must be redefined in derived operation if operation of derived class
+  * must be always can start above any launched one. Default implementation returns FALSE,
+  * so it is being checked for IsValid, but some operations may overload IsGranted()
+  * In this case they will always start, no matter what operation is running.
+  */
   virtual bool      isGranted() const;
-  //!< Returns TRUE if current operation must not be checked for ActiveOperation->IsValid(this)
-  /*!< Returns TRUE if current operation must not be checked for
-    ActiveOperation->IsValid(this).  Default implementation returns FALSE,
-    so it is being checked for IsValid, but some operations may overload IsGranted()
-    In this case they will always start, no matter what operation is running. */
 
 public slots:
 
+  /*!
+   * \brief Starts operation
+  *
+  * Public slot. Verifies whether operation can be started and starts operation.
+  * This slot is not virtual and cannot be redefined. Redefine startOperation method
+  * to change behavior of operation. There is no point in using this method. It would
+  * be better to inherit own operator from base one and redefine startOperation method
+  * instead.
+  */
   void              start();
-  //!< Starts operation.
-  /*!< Verifies whether operation can be started and starts operation. This slot
-       is not virtual and cannot be redefined. Redefine startOperation method
-       to change behaviour of operation instead */
-       
+
+  /*!
+   * \brief Aborts operation
+  *
+  * Public slot. Aborts operation. This slot is not virtual and cannot be redefined.
+  * Redefine abortOperation method to change behavior of operation instead
+  */
   void              abort();
-  //!< Aborts operation.
-  /*!< This slot is not virtual and cannot be redefined. Redefine abortOperation
-       method to change behaviour of operation instead */
-  
+
+  /*!
+   * \brief Commits operation
+  *
+  * Public slot. Commits operation. This slot is not virtual and cannot be redefined.
+  * Redefine commitOperation method to change behavior of operation instead
+  */
   void              commit();
-  //!< Commits operation.
-  /*!< This slot is not virtual and cannot be redefined. Redefine commitOperation
-       method to change behaviour of operation instead */
 
+  /*!
+   * \brief Suspend operation.
+  *
+  * Public slot. Suspend operation. This slot is called when operation is suspended
+  * (for starting other one, for example) This slot is not virtual and cannot be
+  * redefined. Redefine suspendOperation method to change behavior of operation instead
+  */
   void              suspend();
-  //!< Suspend operation.
-  /*!< This slot is called when operation is suspended (for starting other one, for example)
-       This slot is not virtual and cannot be redefined. Redefine suspendOperation
-       method to change behaviour of operation instead */
 
+  /*!
+   * \brief Resumes operation
+  *
+  * Public slot. Resumes operation. This slot is called when operation is resumed after
+  * previous suspending. This slot is not virtual and cannot be redefined. Redefine
+  * resumeOperation method to change behavior of operation instead
+  */
   void              resume();
-  //!< Resume operation.
-  /*!< This slot is called when operation is resumed after previous suspending.
-       This slot is not virtual and cannot be redefined. Redefine resumeOperation
-       method to change behaviour of operation instead */
-  
+
 signals:
 
+  /*!
+   * \brief Signal emitted from start method when operation started
+  */
   void              started( SUIT_Operation* );
-  //!< Signal emited from start method when operation started
+
+  /*!
+   * \brief Signal emitted from start method when operation aborted
+  */
   void              aborted( SUIT_Operation* );
-  //!< Signal emited from abort method when operation aborted
+
+  /*!
+   * \brief Signal emitted from start method when operation resumed
+  */
   void              resumed( SUIT_Operation* );
-  //!< Signal emited from resume method when operation resumed
-  void              commited( SUIT_Operation* );
-  //!< Signal emited from commite method when operation commited
+
+  /*!
+   * \brief Signal emitted from committed method when operation committed
+  */
+  void              committed( SUIT_Operation* );
+
+  /*!
+   * \brief Signal emited from suspend method when operation suspended
+  */
   void              suspended( SUIT_Operation* );
-  //!< Signal emited from suspend method when operation suspended
+
+  /*!
+   * \brief Signal emited from stop method when operation stopped
+  */
   void              stopped( SUIT_Operation* );
-  //!< Signal emited from stop method when operation stopped
-  
+
+  /*!
+   * \brief Signal emited from default implementation of startOperation method
+  *
+  * See setSlot for more description
+  */
   void              callSlot();
-  //!< Signal emited from default implementation of startOperation method
-  /*!< See setSlot for more description */
 
 protected:
 
+  /*!
+   * \brief Verifies whether operator is ready to start.
+   * \return TRUE if operation is ready to start
+  *
+  * Default implementation returns TRUE. Redefine this method to add own verifications
+  */
   virtual bool      isReadyToStart() const;
-  //!< Verify whether operator is ready to start.
-  /*!< Default implementation returns true. Redefine this method to add own verifications */
-  
-  virtual void      startOperation();
-  //!< Virtual method called when operation started (see start() method for more description)
-  virtual void      abortOperation();
-  //!< Virtual method called when operation aborted (see abort() method for more description)
-  virtual void      commitOperation();
-  //!< Virtual method called when operation commited (see commit() method for more description)
-  virtual void      suspendOperation();
-  //!< Virtual method called when operation suspended (see suspend() method for more description)
-  virtual void      resumeOperation();
-  //!< Virtual method called when operation resumed (see resume() method for more description)
-  
-  void              setExecStatus( const int );
-  //!< Sets myExecStatus to the given value
-  int               execStatus() const;
-  //!< Gets execution status
 
-  void              start( SUIT_Operation* );
-  //!< Start operator above this one
+  /*!
+   * \brief Virtual method called when operation is started
+  *
+  * Virtual method called when operation started (see start() method for more description)
+  */
+  virtual void      startOperation();
+
+  /*!
+   * \brief Virtual method called when operation aborted
+  *
+  * Virtual method called when operation aborted (see abort() method for more description)
+  */
+  virtual void      abortOperation();
+
+  /*!
+   * \brief Virtual method called when operation committed
+  *
+  * Virtual method called when operation committed (see commit() method for more description)
+  */
+  virtual void      commitOperation();
+
+  /*!
+   * \brief Virtual method called when operation suspended
+  *
+  * Virtual method called when operation suspended (see suspend() method for more description)
+  */
+
+  virtual void      suspendOperation();
+
+  /*!
+   * \brief Virtual method called when operation resumed
+  *
+  * Virtual method called when operation resumed (see resume() method for more description)
+  */
+  virtual void      resumeOperation();
+
+  /*!
+   * \brief Sets execution status
+    * \param theStatus - execution status
+  *
+  * Sets myExecStatus to the given value
+  */
+  void              setExecStatus( const int theStatus );
+
+  /*!
+   * \brief Gets execution status
+   * \return Execution status
+  *
+  * Gets execution status
+  */
+  int               execStatus() const;
+
+  /*!
+   * \brief Starts operator above this one
+    * \param theOp - operation to be started
+  *
+  * Start operator above this one. Use this method if you want to call other operator
+  * from this one
+  */
+  void              start( SUIT_Operation* theOp );
 
 private:
 
-  SUIT_Application* myApp;
-  SUIT_Study*       myStudy;
-  OperationState    myState;
-  ExecStatus        myExecStatus;
+  SUIT_Application* myApp;        //!< application for this operation
+  SUIT_Study*       myStudy;      //!< study for this operation
+  OperationState    myState;      //!< Operation state
+  ExecStatus        myExecStatus; //!< Execution status
 
   friend class SUIT_Study;
 };

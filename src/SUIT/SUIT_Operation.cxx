@@ -137,7 +137,7 @@ void SUIT_Operation::commit()
   {
     commitOperation();
     myState = Waiting;
-    emit commited( this );
+    emit committed( this );
     emit stopped( this );
   }
 }
@@ -230,7 +230,7 @@ void SUIT_Operation::suspendOperation()
 
 //=======================================================================
 // name    : commitOperation
-// Purpose : Virtual method called when operation commited (see commit()
+// Purpose : Virtual method called when operation committed (see commit()
 //           method for more description)
 //=======================================================================
 void SUIT_Operation::commitOperation()
