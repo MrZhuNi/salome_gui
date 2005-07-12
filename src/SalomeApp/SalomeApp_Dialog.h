@@ -51,6 +51,12 @@ public:
   //! Set exclusive state  
   void setExclusive( const bool );
 
+  //! Check if operation according to dialog will be resumed automatically when mouse enter the dialog
+  bool isAutoResumed() const;
+
+  //! Set auto resumed state
+  void setAutoResumed( const bool );
+
   //! Show widgets corresponding to id
   void showObject( const int );
 
@@ -203,7 +209,7 @@ private:
 private:
   ObjectMap           myObjects;
   QMap<int,QString>   myTypeNames;
-  bool                myIsExclusive;
+  bool                myIsExclusive, myIsAutoResumed;
   QPixmap             myPixmap;
 };
 

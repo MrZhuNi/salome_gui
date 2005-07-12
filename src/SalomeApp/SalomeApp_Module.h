@@ -29,6 +29,7 @@ class SalomeApp_Application;
 class SalomeApp_Preferences;
 class SalomeApp_SelectionManager;
 class SalomeApp_Operation;
+class SalomeApp_SwitchOp;
 
 /*
   Class : SalomeApp_Module
@@ -122,6 +123,7 @@ private:
 private:
   QtxPopupMgr*          myPopupMgr;
   MapOfOperation        myOperations;
+  SalomeApp_SwitchOp*   mySwitchOp;
 };
 
 #endif

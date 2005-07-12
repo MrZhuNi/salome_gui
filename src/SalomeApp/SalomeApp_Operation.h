@@ -42,13 +42,6 @@ public:
 
   //! Check if operation will be resumed automatically when mouse enter the dialog
   bool isAutoResumed() const;
-  
-protected:
-
-  //! Set auto resumed state
-  void setAutoResumed( const bool );
-
-  // Important virtual methods (should be redefined in the derived classes)
 
   virtual SalomeApp_Dialog* dlg() const;
   // Get dialog. This method should be redefined in derived classes
@@ -57,6 +50,13 @@ protected:
   //  1. deactivated in suspendOperation method
   //  2. activated in resumeOperation method
   //  3. hidden in abortOperation and commitOperation methods
+
+protected:
+
+  //! Set auto resumed state
+  void setAutoResumed( const bool );
+
+  // Important virtual methods (should be redefined in the derived classes)
 
   virtual void              setDialogActive( const bool );
   // Change the active state of dialog (given by dlg())

@@ -20,7 +20,8 @@
 SalomeApp_Dialog::SalomeApp_Dialog( QWidget* parent, const char* name, bool modal,
                                     bool allowResize, const int f, WFlags wf )
 : QtxDialog( parent, name, modal, allowResize, f, wf ),
-  myIsExclusive( true )
+  myIsExclusive( true ),
+  myIsAutoResumed( false )
 {
   setObjectPixmap( "SalomeApp", tr( "ICON_SELECT" ) );
 }

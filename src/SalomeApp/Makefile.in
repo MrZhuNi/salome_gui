@@ -43,7 +43,8 @@ EXPORT_HEADERS= SalomeApp.h \
 		SalomeApp_CheckFileDlg.h \
 		SalomeApp_Operation.h \
 		SalomeApp_Dialog.h \
-		SalomeApp_UpdateFlags.h
+		SalomeApp_UpdateFlags.h \
+		SalomeApp_SwitchOp.cxx
 
 # .po files to transform in .qm
 PO_FILES = SalomeApp_images.po \
@@ -83,7 +84,8 @@ LIB_SRC= SalomeApp_Module.cxx \
 	 SalomeApp_ListView.cxx \
 	 SalomeApp_CheckFileDlg.cxx \
 	 SalomeApp_Operation.cxx \
-	 SalomeApp_Dialog.cxx 
+	 SalomeApp_Dialog.cxx \
+	 SalomeApp_SwitchOp.cxx
 
 LIB_MOC = SalomeApp_AboutDlg.h \
           SalomeApp_Application.h \
@@ -104,7 +106,8 @@ LIB_MOC = SalomeApp_AboutDlg.h \
 	  SalomeApp_ListView.h \
 	  SalomeApp_CheckFileDlg.h \
 	  SalomeApp_Operation.h \
-	  SalomeApp_Dialog.h
+	  SalomeApp_Dialog.h \
+	  SalomeApp_SwitchOp.h
 
 LIB_CLIENT_IDL = SALOMEDS.idl \
 		 SALOME_Exception.idl \

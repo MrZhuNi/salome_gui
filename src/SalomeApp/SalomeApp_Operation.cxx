@@ -17,6 +17,8 @@
 
 #include <SUIT_Desktop.h>
 
+#include <qapplication.h>
+
 /*
   Class       : SalomeApp_Operation
   Description : Base class for all operations
@@ -195,18 +197,18 @@ bool SalomeApp_Operation::eventFilter( QObject* obj, QEvent* e )
 {
   if( e )
   {
-    if( isAutoResumed() &&
-        ( e->type()==QEvent::Enter  ||
-          e->type()==QEvent::WindowActivate ||
-          e->type()==QEvent::MouseButtonPress ||
-          e->type()==QEvent::MouseButtonDblClick ) )
-      resume();
+//    if( isAutoResumed() &&
+//        ( e->type()==QEvent::Enter  ||
+//          e->type()==QEvent::WindowActivate ||
+//          e->type()==QEvent::MouseButtonPress ||
+//          e->type()==QEvent::MouseButtonDblClick ) )
+//      resume();
       
-    else if( e->type()==QEvent::MouseButtonRelease ||
-             e->type()==QEvent::MouseButtonDblClick ||
-             e->type()==QEvent::MouseMove ||
-             e->type()==QEvent::KeyPress ||
-             e->type()==QEvent::KeyRelease  )
+    if( e->type()==QEvent::MouseButtonRelease ||
+        e->type()==QEvent::MouseButtonDblClick ||
+        e->type()==QEvent::MouseMove ||
+        e->type()==QEvent::KeyPress ||
+        e->type()==QEvent::KeyRelease  )
       return true;
   }
       
@@ -230,13 +232,16 @@ void SalomeApp_Operation::update( const int flags )
 void SalomeApp_Operation::setDialogActive( const bool active )
 {
   if( dlg() )
+  {
     if( active )
     {
       dlg()->removeEventFilter( this );
       activateSelection();
+      dlg()->setActiveWindow();
     }
     else
       dlg()->installEventFilter( this );
+  }
 }
 
 //=======================================================================

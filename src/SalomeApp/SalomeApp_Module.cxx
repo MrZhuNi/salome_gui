@@ -11,6 +11,7 @@
 #include "SalomeApp_Preferences.h"
 #include "SalomeApp_UpdateFlags.h"
 #include "SalomeApp_Operation.h"
+#include "SalomeApp_SwitchOp.h"
 
 #include <OB_Browser.h>
 
@@ -30,7 +31,8 @@
 
 SalomeApp_Module::SalomeApp_Module( const QString& name )
 : CAM_Module( name ),
-myPopupMgr( 0 )
+myPopupMgr( 0 ),
+mySwitchOp( 0 )
 {
 }
 
@@ -232,6 +234,12 @@ void SalomeApp_Module::startOperation( const int id )
       op->setModule( this );
       connect( op, SIGNAL( stopped( SUIT_Operation* ) ), this, SLOT( onOperationStopped( SUIT_Operation* ) ) );
       connect( op, SIGNAL( destroyed() ), this, SLOT( onOperationDestroyed() ) );
+      if ( mySwitchOp == 0 )
+      {
+        mySwitchOp = new SalomeApp_SwitchOp( this );
+        printf( "sln: new SalomeApp_SwitchOp\n" );
+      }
+      mySwitchOp->connect( op );
     }
   }
 
