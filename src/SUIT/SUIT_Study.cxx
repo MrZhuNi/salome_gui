@@ -56,13 +56,7 @@ QString SUIT_Study::studyName() const
 
 SUIT_Operation* SUIT_Study::activeOperation() const
 {
-  Operations::const_iterator anIt = myOperations.begin(),
-                             aLast = myOperations.end();
-  for( ; anIt!=aLast; anIt++ )
-    if( (*anIt)->isActive() )
-      return *anIt;
-
-  return 0;
+  return myOperations.count() > 0 ? myOperations.getLast() : 0;
 }
 
 bool SUIT_Study::isSaved() const
@@ -150,60 +144,68 @@ void SUIT_Study::setStudyName( const QString& name )
   myName = name;
 }
 
-//=======================================================================
-// name    : canActivate
-// Purpose : Verify whether operation can be activated (abort other operations
-//           if necessary)
-//=======================================================================
-bool SUIT_Study::canActivate( SUIT_Operation* op ) const
+/*!
+ * \brief Verifies whether operation can be activated above already started ones
+  * \param theOp - operation to be checked
+  * \return NULL if operation can be activated, pointer to operation which denies
+  * starting tested operation
+*
+* Verifies whether operation can be activated above already started ones. This method
+* is called from SUIT_Study::start() and SUIT_Study::resume() methods.
+*/
+SUIT_Operation* SUIT_Study::blockingOperation( SUIT_Operation* theOp ) const
 {
-  if( !op )
-    return false;
-
-  if( op->isGranted() )
-    return true;
+  if( theOp->isGranted() )
+    return 0;
 
   Operations tmpOps( myOperations );
   SUIT_Operation* anOp = 0;
   for ( anOp = tmpOps.last(); anOp; anOp = tmpOps.prev() )
   {
-    if ( anOp != 0 && anOp!= op && !anOp->isValid( op ) )
-      return false;
+    if ( anOp != 0 && anOp!= theOp && !anOp->isValid( theOp ) )
+      return anOp;
   }
 
-  return true;
+  return 0;
 }
 
-//=======================================================================
-// name    : start
-// Purpose : Starts operation.
-//=======================================================================
-void SUIT_Study::start( SUIT_Operation* op, const bool check )
+/*!
+ * \brief Starts operation
+  * \param theOp - operation to be started
+  * \param toCheck - if parameters is equal TRUE then checking performed whether
+  * all already started operations allow to start this operation above them (default
+  * value is TRUE
+  * \return TRUE if operation is started, FALSE otherwise
+*
+* Verifies whether theOp operation can be started above already started ones (if toCheck
+* parameter is equal TRUE) and starts it
+*/
+bool SUIT_Study::start( SUIT_Operation* theOp, const bool toCheck )
 {
-  if ( !op || myOperations.find( op ) >= 0 )
-    return;
-    
-  op->setExecStatus( SUIT_Operation::Rejected );
-  op->setStudy( this );
+  if ( !theOp || myOperations.find( theOp ) >= 0 )
+    return false;
 
-  if ( !op->isReadyToStart() )
-    return;
+  theOp->setExecStatus( SUIT_Operation::Rejected );
+  theOp->setStudy( this );
 
-  if ( check && !canActivate( op ) )
+  if ( !theOp->isReadyToStart() )
+    return false;
+
+  if ( toCheck )
   {
-    while( activeOperation() )
+    while( SUIT_Operation* anOp = blockingOperation( theOp ) )
     {
       int anAnsw = SUIT_MessageBox::warn2( application()->desktop(),
          tr( "OPERATION_LAUNCH" ), tr( "PREVIOUS_NOT_FINISHED" ),
          tr( "CONTINUE" ), tr( "CANCEL" ), 0, 1, 1 );
 
       if( anAnsw == 1 )
-        return;
+        return false;
       else
-        activeOperation()->abort();
+        anOp->abort();
     }
   }
-  
+
   SUIT_Operation* anOp = activeOperation();
   if ( anOp )
   {
@@ -211,102 +213,126 @@ void SUIT_Study::start( SUIT_Operation* op, const bool check )
     anOp->setState( SUIT_Operation::Suspended );
   }
 
-  op->startOperation();
-  myOperations.append( op );
-  op->setState( SUIT_Operation::Running );
-  emit op->started( op );
+  theOp->startOperation();
+  myOperations.append( theOp );
+  theOp->setState( SUIT_Operation::Running );
+  emit theOp->started( theOp );
+  return true;
 }
 
-//=======================================================================
-// name    : abort
-// Purpose : Aborts operation.
-//=======================================================================  
-void SUIT_Study::abort( SUIT_Operation* op )
+/*!
+ * \brief Aborts operation
+  * \param theOp - operation to be aborted
+  * \return TRUE if operation is aborted successfully
+*
+* Verifies whether operation already started and aborts it in this case (sets execution
+* status to Rejected and stops operation)
+*/
+bool SUIT_Study::abort( SUIT_Operation* theOp )
 {
-  if ( !op || myOperations.find( op ) == -1 )
-    return;
-    
-  op->abortOperation();
-  emit op->aborted( op );
-  stop( op );
+  if ( !theOp || myOperations.find( theOp ) == -1 )
+    return false;
+
+  theOp->abortOperation();
+  theOp->setExecStatus( SUIT_Operation::Rejected );
+  emit theOp->aborted( theOp );
+  stop( theOp );
+  return true;
 }
 
-//=======================================================================
-// name    : commit
-// Purpose : Commits operation
-//=======================================================================
-void SUIT_Study::commit( SUIT_Operation* op )
+/*!
+ * \brief Commits operation
+  * \param theOp - operation to be committed
+  * \return TRUE if operation is committed successfully
+*
+* Verifies whether operation already started and commits it in this case (sets execution
+* status to Accepted and stops operation)
+*/
+bool SUIT_Study::commit( SUIT_Operation* theOp )
 {
-  if ( !op || myOperations.find( op ) == -1 )
-    return;
+  if ( !theOp || myOperations.find( theOp ) == -1 )
+    return false;
 
-  op->commitOperation();
-  emit op->committed( op );
-  stop( op );
+  theOp->commitOperation();
+  theOp->setExecStatus( SUIT_Operation::Accepted );
+  emit theOp->committed( theOp );
+  stop( theOp );
   emit studyModified( this );
+  return true;
 }
 
-//=======================================================================
-// name    : suspend
-// Purpose : Suspends operation
-//=======================================================================  
-void SUIT_Study::suspend( SUIT_Operation* op )
+/*!
+ * \brief Commits operation
+  * \param theOp - operation to be committed
+  * \return TRUE if operation is suspended successfully
+*
+* Verifies whether operation already started and suspends it in this case. Operations
+* ususlly are suspended to start other one above them.
+*/
+bool SUIT_Study::suspend( SUIT_Operation* theOp )
 {
-  if ( !op || myOperations.find( op ) == -1 || op->state() == SUIT_Operation::Suspended )
-    return;
+  if ( !theOp || myOperations.find( theOp ) == -1 || theOp->state() == SUIT_Operation::Suspended )
+    return false;
 
-  op->setState( SUIT_Operation::Suspended );
-  op->suspendOperation();
-  emit op->suspended( op );
+  theOp->setState( SUIT_Operation::Suspended );
+  theOp->suspendOperation();
+  emit theOp->suspended( theOp );
+  return true;
 }
 
 
-//=======================================================================
-// name    : resume
-// Purpose : Resume operation
-//=======================================================================  
-void SUIT_Study::resume( SUIT_Operation* op )
+/*!
+ * \brief Resumes operation
+  * \param theOp - operation to be resumed
+  * \return TRUE if operation is aborted successfully
+*
+* Verifies whether operation already started but suspended and resumesit in this case.
+*/
+bool SUIT_Study::resume( SUIT_Operation* theOp )
 {
-  if ( !op || myOperations.find( op ) == -1 ||
-       op->state() == SUIT_Operation::Running ||
-       !canActivate( op ) )
-    return;
+  if ( !theOp || myOperations.find( theOp ) == -1 ||
+       theOp->state() == SUIT_Operation::Running ||
+       blockingOperation( theOp ) != 0 )
+    return false;
 
   if ( myOperations.count() > 0 )
     suspend( myOperations.last() );
 
-  op->setState( SUIT_Operation::Running );
-  op->resumeOperation();
-  
+  theOp->setState( SUIT_Operation::Running );
+  theOp->resumeOperation();
+
   // Move operation at the end of list in order to sort it in the order of activation.
   // As result active operation is a last operation of list, operation which was active
   // before currently active operation is located before it and so on
-  myOperations.remove( op );
-  myOperations.append( op );
-  
-  emit op->resumed( op );
+  myOperations.remove( theOp );
+  myOperations.append( theOp );
+
+  emit theOp->resumed( theOp );
+  return true;
 }
 
-//=======================================================================
-// name    : stop
-// Purpose : Stop operation. This method is called when operation is
-//           aborted or commited
-//=======================================================================  
-void SUIT_Study::stop( SUIT_Operation* op )
+/*!
+ * \brief Stops operation
+  * \param theOp - operation to be stopped
+*
+* Stops operation. This private method is called from abort() and commit() ones to perform
+* common actions when operation is stopped
+*/
+void SUIT_Study::stop( SUIT_Operation* theOp )
 {
-  op->setState( SUIT_Operation::Waiting );
-  myOperations.remove( op );
+  theOp->setState( SUIT_Operation::Waiting );
+  myOperations.remove( theOp );
 
   // get last operation which can be resumed
   SUIT_Operation* anOp, *aResultOp = 0;
   for( anOp = myOperations.last(); anOp; anOp = myOperations.prev() )
-    if ( anOp && anOp != op && canActivate( anOp ) )
+    if ( anOp && anOp != theOp && blockingOperation( anOp ) == 0 )
     {
       aResultOp = anOp;
       break;
     }
 
-  emit op->stopped( op );
+  emit theOp->stopped( theOp );
   if ( aResultOp )
     resume( aResultOp );
 }

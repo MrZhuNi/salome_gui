@@ -10,6 +10,7 @@
 
 class SUIT_DataObject;
 class SUIT_Application;
+class QDialog;
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -46,19 +47,15 @@ public:
   // Operation management
   SUIT_Operation*   activeOperation() const;
   virtual void      abortAllOperations();
-  virtual bool      canActivate( SUIT_Operation* ) const;
   const QPtrList<SUIT_Operation>& operations() const;
+  
+  virtual SUIT_Operation* blockingOperation( SUIT_Operation* ) const;
 
-  void              start( SUIT_Operation*, const bool check = true );
-  //!< Starts operation.
-  void              abort( SUIT_Operation* );
-  //!< Aborts operation.
-  void              commit( SUIT_Operation* );
-  //!< Commits operation.
-  void              suspend( SUIT_Operation* );
-  //!< Suspend operation.
-  void              resume( SUIT_Operation* );
-  //!< Resume operation.
+  bool              start( SUIT_Operation*, const bool check = true );
+  bool              abort( SUIT_Operation* );
+  bool              commit( SUIT_Operation* );
+  bool              suspend( SUIT_Operation* );
+  bool              resume( SUIT_Operation* );
 
 signals:
   void              studyModified( SUIT_Study* );
