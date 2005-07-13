@@ -17,10 +17,15 @@
 #include "SUIT_MessageBox.h"
 #include "SUIT_Desktop.h"
 
-//=======================================================================
-// name    : SUIT_Operation
-// Purpose : Constructor
-//=======================================================================
+/*!
+ * \brief Constructor
+  * \param SUIT_Application - application for this operation
+*
+* Constructs an empty operation. Constructor should work very fast because many
+* operators may be created after starting application but only several from them
+* may be used. As result this constructor stores given application in myApp field
+* and set Waiting status.
+*/
 SUIT_Operation::SUIT_Operation( SUIT_Application* app )
 : QObject(),
 myApp( app ),
@@ -29,70 +34,88 @@ myState( Waiting )
 {
 }
 
+/*!
+   * \brief Destructor
+*/
 SUIT_Operation::~SUIT_Operation()
 {
 }
 
-//=======================================================================
-// name    : study
-// Purpose : Gets operation study (i.e. study which starts this operation )
-//=======================================================================
+/*!
+ * \brief Returns operation study
+  * \return Pointer to study
+*
+* Get study corresponding to this operation i.e. study which starts this operation.
+*/
 SUIT_Study* SUIT_Operation::study() const
 {
   return myStudy;
 }
 
-//=======================================================================
-// name    : setStudy
-// Purpose : Sets operation study (i.e. study which starts this operation )
-//=======================================================================
+/*!
+ * \brief Sets operation study
+  * \param theStudy - study corresponding to this operation
+*
+* Sets study corresponding to this operation i.e. study which starts this operation.
+*/
 void SUIT_Operation::setStudy( SUIT_Study* theStudy )
 {
   myStudy = theStudy;
 }
 
-//=======================================================================
-// name    : application
-// Purpose : Returns application
-//=======================================================================
+/*!
+ * \brief Gets application
+  * \return Pointer to application
+*
+* Gets application for this operation
+*/
 SUIT_Application* SUIT_Operation::application() const
 {
   return myApp;
 }
 
-//=======================================================================
-// name    : setApplication
-// Purpose : Sets application
-//=======================================================================
+/*!
+ * \brief Sets application
+  * \param theApp - application for this operation
+*
+* Gets application for this operation
+*/
 void SUIT_Operation::setApplication( SUIT_Application* theApp )
 {
   myApp = theApp;
 }
 
-//=======================================================================
-// name    : state
-// Purpose : Returns state of operation (see OperationState enumeration)
-//=======================================================================
+/*!
+ * \brief Gets state of operation
+  * \return Value from OperationState enumeration
+*
+* Gets state of operation (see OperationState enumeration)
+*/
 SUIT_Operation::OperationState SUIT_Operation::state() const
 {
   return myState;
 }
 
-//=======================================================================
-// name    : setState
-// Purpose : Sets state of operation (see OperationState enumeration)
-//=======================================================================
+/*!
+ * \brief Sets state of operation
+  * \param theState - state of operation to be set
+*
+*  Sets state of operation (see OperationState enumeration)
+*/
 void SUIT_Operation::setState( const SUIT_Operation::OperationState theState )
 {
   myState = theState;
 }
 
-//=======================================================================
-// name    : start
-// Purpose : Verifies whether operation can be started and starts operation. This slot
-//           is not virtual and cannot be redefined. Redefine startOperation method
-//           to change behaviour of operation instead
-//=======================================================================
+/*!
+ * \brief Starts operation
+*
+* Public slot. Verifies whether operation can be started and starts operation.
+* This slot is not virtual and cannot be redefined. Redefine startOperation method
+* to change behavior of operation. There is no point in using this method. It would
+* be better to inherit own operator from base one and redefine startOperation method
+* instead.
+*/
 void SUIT_Operation::start()
 {
   if ( study() )
@@ -104,12 +127,12 @@ void SUIT_Operation::start()
   }
 }
 
-//=======================================================================
-// name    : abort
-// Purpose : Aborts operation. This slot is not virtual and cannot be
-//           redefined. Redefine abortOperation method to change behaviour
-//           of operation instead
-//=======================================================================
+/*!
+ * \brief Aborts operation
+*
+* Public slot. Aborts operation. This slot is not virtual and cannot be redefined.
+* Redefine abortOperation method to change behavior of operation instead
+*/
 void SUIT_Operation::abort()
 {
   if ( study() )
@@ -123,12 +146,12 @@ void SUIT_Operation::abort()
   }
 }
 
-//=======================================================================
-// name    : commit
-// Purpose : Commits operation. This slot is not virtual and cannot be
-//           redefined. Redefine commitOperation method to change behaviour
-//           of operation instead
-//=======================================================================
+/*!
+ * \brief Commits operation
+*
+* Public slot. Commits operation. This slot is not virtual and cannot be redefined.
+* Redefine commitOperation method to change behavior of operation instead
+*/
 void SUIT_Operation::commit()
 {
   if ( study() )
@@ -142,13 +165,13 @@ void SUIT_Operation::commit()
   }
 }
 
-//=======================================================================
-// name    : resume
-// Purpose : Resume operation. This slot is called when operation is
-//           resumed after previous suspending. This slot is not virtual
-//           and cannot be redefined. Redefine resumeOperation method
-//           to change behaviour of operation instead 
-//=======================================================================
+/*!
+ * \brief Resumes operation
+*
+* Public slot. Resumes operation. This slot is called when operation is resumed after
+* previous suspending. This slot is not virtual and cannot be redefined. Redefine
+* resumeOperation method to change behavior of operation instead
+*/
 void SUIT_Operation::resume()
 {
   if ( study() )
@@ -161,13 +184,13 @@ void SUIT_Operation::resume()
   }
 }
 
-//=======================================================================
-// name    : suspend
-// Purpose : Suspend operation. This slot is called when operation is
-//           suspended (for starting other one, for example). This slot is not
-//           virtual and cannot be redefined. Redefine suspendOperation
-//           method to change behaviour of operation instead
-//=======================================================================
+/*!
+ * \brief Suspend operation.
+*
+* Public slot. Suspend operation. This slot is called when operation is suspended
+* (for starting other one, for example) This slot is not virtual and cannot be
+* redefined. Redefine suspendOperation method to change behavior of operation instead
+*/
 void SUIT_Operation::suspend()
 {
   if ( study() )
@@ -180,109 +203,125 @@ void SUIT_Operation::suspend()
   }
 }
 
-//=======================================================================
-// name    : isReadyToStart
-// Purpose : Verify whether operator is ready to start. Default implementation
-//           returns true. Redefine this method to add own verifications 
-//=======================================================================
+/*!
+ * \brief Verifies whether operator is ready to start.
+ * \return TRUE if operation is ready to start
+*
+* Default implementation returns TRUE. Redefine this method to add own verifications
+*/
 bool SUIT_Operation::isReadyToStart() const
 {
   return true;
 }
 
-//=======================================================================
-// name    : startOperation
-// Purpose : Virtual method called when operation started (see start()
-//           method for more description)
-//=======================================================================
+/*!
+ * \brief Virtual method called when operation is started
+*
+* Virtual method called when operation started (see start() method for more description)
+*/
 void SUIT_Operation::startOperation()
 {
   emit callSlot();
   commit();
 }
 
-//=======================================================================
-// name    : abortOperation
-// Purpose : Virtual method called when operation aborted (see abort()
-//           method for more description)
-//=======================================================================
+/*!
+ * \brief Virtual method called when operation aborted
+*
+* Virtual method called when operation aborted (see abort() method for more description)
+*/
 void SUIT_Operation::abortOperation()
 {
 }
 
-//=======================================================================
-// name    : resumeOperation
-// Purpose : Virtual method called when operation resumed (see resume()
-//           method for more description)
-//=======================================================================
+/*!
+ * \brief Virtual method called when operation resumed
+*
+* Virtual method called when operation resumed (see resume() method for more description)
+*/
 void SUIT_Operation::resumeOperation()
 {
 }
 
-//=======================================================================
-// name    : suspendOperation
-// Purpose : Virtual method called when operation suspended (see suspend()
-//           method for more description)
-//=======================================================================
+/*!
+ * \brief Virtual method called when operation suspended
+*
+* Virtual method called when operation suspended (see suspend() method for more description)
+*/
 void SUIT_Operation::suspendOperation()
 {
 }
 
-//=======================================================================
-// name    : commitOperation
-// Purpose : Virtual method called when operation committed (see commit()
-//           method for more description)
-//=======================================================================
+/*!
+ * \brief Virtual method called when operation committed
+*
+* Virtual method called when operation committed (see commit() method for more description)
+*/
 void SUIT_Operation::commitOperation()
 {
 }
 
-//=======================================================================
-// name    : setSlot
-// Purpose : Sets slot which is called when operation is started. There is no point in
-//           using this method. It would be better to inherit own operator from base
-//           one and redefine startOperation method.
-//=======================================================================
+/*!
+ * \brief Sets slot which is called when operation is started
+  * \param theReceiver - object containing slot
+  * \param theSlot - slot of theReceiver object
+  * \return TR if slot was connected successfully, FALSE otherwise
+*
+* Sets slot which is called when operation is started. There is no point in
+* using this method. It would be better to inherit own operator from base
+* one and redefine startOperation method
+*/
 bool SUIT_Operation::setSlot( const QObject* theReceiver, const char* theSlot )
 {
   return connect( this, SIGNAL( callSlot() ), theReceiver, theSlot );
 }
 
-//=======================================================================
-// name    : isValid
-// Purpose : Returns TRUE if the given operator is valid for the current one
-//           (can be started "above")
-//=======================================================================
+/*!
+ * \brief Verifies whether given operator is valid for this one
+  * \param theOtherOp - other operation
+  * \return Returns TRUE if the given operator is valid for this one
+*
+* Verifies whether given operator is valid for this one (i.e. can be started "above"
+* this operator)
+*/
 bool SUIT_Operation::isValid( SUIT_Operation* ) const
 {
   return false;
 }
 
-//=======================================================================
-// name    : isGranted
-// Purpose : Returns TRUE if current operation must not be checked for
-//           ActiveOperation->IsValid(this).  Default implementation returns FALSE,
-//           so it is being checked for IsValid, but some operations may overload IsGranted()
-//           In this case they will always start, no matter what operation is running
-//=======================================================================
+/*!
+ * \brief Verifies whether this operator can be always started above any already runnig one
+  * \return Returns TRUE if current operation must not be checked for ActiveOperation->IsValid( this )
+*
+* This method must be redefined in derived operation if operation of derived class
+* must be always can start above any launched one. Default implementation returns FALSE,
+* so it is being checked for IsValid, but some operations may overload IsGranted()
+* In this case they will always start, no matter what operation is running.
+*/
 bool SUIT_Operation::isGranted() const
 {
   return false;
 }
 
-//=======================================================================
-// name    : isActive
-// Purpose : Verify whether operation is an active one
-//=======================================================================
+/*!
+ * \brief Verifies whether operation is an active one (state()==Running)
+  * \return TRUE if operation is active, FALSE otherwise
+*
+* Verifies whether operation is an active on. Returns TRUE if state of operator
+* is Running
+*/
 bool SUIT_Operation::isActive() const
 {
   return state()==Running;
 }
 
-//=======================================================================
-// name    : start
-// Purpose : Start operator above this one
-//=======================================================================
+/*!
+ * \brief Starts operator above this one
+  * \param theOp - operation to be started
+*
+* Start operator above this one. Use this method if you want to call other operator
+* from this one
+*/
 void SUIT_Operation::start( SUIT_Operation* op )
 {
   if ( !op )
@@ -297,19 +336,23 @@ void SUIT_Operation::start( SUIT_Operation* op )
   }
 }
 
-//=======================================================================
-// name    : setExecStatus
-// Purpose : Sets myExecStatus to the given value
-//=======================================================================
+/*!
+ * \brief Sets execution status
+  * \param theStatus - execution status
+*
+* Sets myExecStatus to the given value
+*/
 void SUIT_Operation::setExecStatus( const int theVal )
 {
   myExecStatus = (ExecStatus)theVal;
 }
 
-//=======================================================================
-// name    : execStatus
-// Purpose : Gets execution status
-//=======================================================================
+/*!
+ * \brief Gets execution status
+ * \return Execution status
+*
+* Gets execution status
+*/
 int SUIT_Operation::execStatus() const
 {
   return myExecStatus;

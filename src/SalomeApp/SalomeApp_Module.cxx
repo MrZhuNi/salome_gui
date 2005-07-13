@@ -55,12 +55,18 @@ bool SalomeApp_Module::activateModule( SUIT_Study* study )
 
   if ( res && application() && application()->resourceMgr() )
     application()->resourceMgr()->raiseTranslators( name() );
+
+  if ( mySwitchOp == 0 )
+    mySwitchOp = new SalomeApp_SwitchOp( this );
     
   return res;
 }
 
 bool SalomeApp_Module::deactivateModule( SUIT_Study* )
 {
+  delete mySwitchOp;
+  mySwitchOp = 0;
+  
   return true;
 }
 
@@ -156,7 +162,8 @@ int SalomeApp_Module::addPreference( const QString& label )
   int catId = pref->addPreference( moduleName(), -1 );
   if ( catId == -1 )
     return -1;
-
+                             * Updates (i.e. disable/enable) controls states (menus, tool bars etc.). This method is
+* called from update( UF_Controls ). You may redefine it in concrete module.
   return pref->addPreference( label, catId );
 }
 
@@ -186,19 +193,27 @@ void SalomeApp_Module::setPreferenceProperty( const int id, const QString& prop,
     pref->setProperty( id, prop, var );
 }
 
-void SalomeApp_Module::update( const int flags )
+/*!
+ * \brief Update something in accordance with update flags
+  * \param theFlags - update flags
+*
+* Update viewer or/and object browser etc. in accordance with update flags ( see
+* SalomeApp_UpdateFlags enumeration ). Derived modules can redefine this method for their
+* own purposes
+*/
+void SalomeApp_Module::update( const int theFlags )
 {
-  if ( flags & UF_Model )
+  if ( theFlags & UF_Model )
   {
     if( CAM_DataModel* aDataModel = dataModel() )
       if( SalomeApp_DataModel* aModel = dynamic_cast<SalomeApp_DataModel*>( aDataModel ) )
         aModel->update( 0, dynamic_cast<SalomeApp_Study*>( getApp()->activeStudy() ) );
   }
-  else if ( flags & UF_ObjBrowser )
+  else if ( theFlags & UF_ObjBrowser )
     getApp()->objectBrowser()->updateTree( 0 );
-  else if ( flags & UF_Controls )
+  else if ( theFlags & UF_Controls )
     updateControls();
-  else if ( flags & UF_Viewer )
+  else if ( theFlags & UF_Viewer )
   {
     if ( SUIT_ViewManager* viewMgr = getApp()->activeViewManager() )
       if ( SUIT_ViewWindow* viewWnd = viewMgr->getActiveView() )
@@ -216,10 +231,24 @@ void SalomeApp_Module::update( const int flags )
   
 }
 
+/*!
+ * \brief Updates controls
+*
+* Updates (i.e. disable/enable) controls states (menus, tool bars etc.). This method is
+* called from update( UF_Controls ). You may redefine it in concrete module.
+*/
 void SalomeApp_Module::updateControls()
 {
 }
 
+/*!
+ * \brief Starts operation with given identifier
+  * \param id - identifier of operation to be started
+*
+* Module stores operations in map. This method starts operation by id.
+* If operation isn't in map, then it will be created by createOperation method
+* and will be inserted to map
+*/
 void SalomeApp_Module::startOperation( const int id )
 {
   SalomeApp_Operation* op = 0;
@@ -234,12 +263,6 @@ void SalomeApp_Module::startOperation( const int id )
       op->setModule( this );
       connect( op, SIGNAL( stopped( SUIT_Operation* ) ), this, SLOT( onOperationStopped( SUIT_Operation* ) ) );
       connect( op, SIGNAL( destroyed() ), this, SLOT( onOperationDestroyed() ) );
-      if ( mySwitchOp == 0 )
-      {
-        mySwitchOp = new SalomeApp_SwitchOp( this );
-        printf( "sln: new SalomeApp_SwitchOp\n" );
-      }
-      mySwitchOp->connect( op );
     }
   }
 
@@ -247,15 +270,39 @@ void SalomeApp_Module::startOperation( const int id )
     op->start();
 }
 
-SalomeApp_Operation* SalomeApp_Module::createOperation( const int ) const
+/*!
+ * \brief Creates operation with given identifier
+  * \param id - identifier of operation to be started
+  * \return Pointer on created operation or NULL if operation is not created
+*
+* Creates operation with given id. You should not call this method, it will be called
+* automatically from startOperation. You may redefine this method in concrete module to
+* create operations. 
+*/
+SalomeApp_Operation* SalomeApp_Module::createOperation( const int /*id*/ ) const
 {
   return 0;
 }
 
-void SalomeApp_Module::onOperationStopped( SUIT_Operation* )
+/*!
+ * \brief Virtual protected slot called when operation stopped
+  * \param theOp - stopped operation
+*
+* Virtual protected slot called when operation stopped. Redefine this slot if you want to
+* perform actions after stopping operation
+*/
+void SalomeApp_Module::onOperationStopped( SUIT_Operation* /*theOp*/ )
 {
 }
 
+/*!
+ * \brief Virtual protected slot called when operation destroyed
+  * \param theOp - destroyed operation
+*
+* Virtual protected slot called when operation destroyed. Redefine this slot if you want to
+* perform actions after destroying operation. Base implementation removes pointer on
+* destroyed operation from the map of operations
+*/
 void SalomeApp_Module::onOperationDestroyed()
 {
   const QObject* s = sender();

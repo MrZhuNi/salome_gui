@@ -31,11 +31,9 @@ class SalomeApp_SelectionManager;
 class SalomeApp_Operation;
 class SalomeApp_SwitchOp;
 
-/*
-  Class : SalomeApp_Module
-  Description : Base class for all salome modules
+/*!
+ * \brief Base class for all salome modules
 */
-
 class SALOMEAPP_EXPORT SalomeApp_Module : public CAM_Module
 {
   Q_OBJECT
