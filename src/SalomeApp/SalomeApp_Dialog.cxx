@@ -215,7 +215,8 @@ void SalomeApp_Dialog::clearSelection( const int id )
     myObjects[ id ].myTypes.clear();
     myObjects[ id ].myNames.clear();
     
-    myObjects[ id ].myEdit->setText( QString::null );
+    if( !myIsBusy )
+      myObjects[ id ].myEdit->setText( QString::null );
     emit selectionChanged( id );
   }
 }
@@ -493,7 +494,8 @@ void SalomeApp_Dialog::updateObject( const int id, bool emit_signal )
   {
     Object& obj = myObjects[ id ];
     filterTypes( id, obj.myNames, obj.myTypes, obj.myIds );
-    obj.myEdit->setText( selectionDescription( obj.myNames, obj.myTypes, obj.myNI ) );
+    if( !myIsBusy )
+      obj.myEdit->setText( selectionDescription( obj.myNames, obj.myTypes, obj.myNI ) );
     if( emit_signal )
       emit selectionChanged( id );
   }
@@ -737,7 +739,8 @@ void SalomeApp_Dialog::selectObject( const int id, const QStringList& _names, co
   filterTypes( id, names, types, ids );
 
   Object& obj = myObjects[ id ];
-  obj.myEdit->setText( selectionDescription( names, types, obj.myNI ) );
+  if( !myIsBusy )
+    obj.myEdit->setText( selectionDescription( names, types, obj.myNI ) );
   obj.myTypes = types;
   obj.myIds = ids;
   obj.myNames = names;

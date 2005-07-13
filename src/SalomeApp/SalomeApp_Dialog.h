@@ -232,10 +232,13 @@ private:
   
   typedef QMap<int, Object> ObjectMap;
 
+protected:
+  bool myIsBusy;
+  
 private:
   ObjectMap           myObjects;
   QMap<int,QString>   myTypeNames;
-  bool                myIsExclusive, myIsBusy;
+  bool                myIsExclusive;
   QPixmap             myPixmap;
 };
 
