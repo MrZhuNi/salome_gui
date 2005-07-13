@@ -44,15 +44,6 @@ SalomeApp_SwitchOp::~SalomeApp_SwitchOp()
 }
 
 /*!
- * \brief SLOT. Called when number of operations changed
-*
-*
-*/
-void SalomeApp_SwitchOp::onOperation()
-{
-}
-
-/*!
  * \brief Get module
 *
 * Get module. Module is a parent of this class
@@ -108,24 +99,6 @@ SalomeApp_Operation* SalomeApp_SwitchOp::operation( QWidget* theWg ) const
 }
 
 /*!
- * \brief Connect signals of operation on the slots of object
-  * \param theOp - operation for connection
-*
-* Connect signals of operation on the slots of object. This method is called by module
-* when it creates operation
-*/
-void SalomeApp_SwitchOp::connect( SalomeApp_Operation* theOp )
-{
-// to do: ???
-//  void              started( SUIT_Operation* );
-//  void              aborted( SUIT_Operation* );
-//  void              resumed( SUIT_Operation* );
-//  void              committed( SUIT_Operation* );
-//  void              suspended( SUIT_Operation* );
-//  void              stopped( SUIT_Operation* );
-}
-
-/*!
  * \brief Event filter
   * \param theObj - object
   * \param theEv - event
@@ -137,13 +110,32 @@ bool SalomeApp_SwitchOp::eventFilter( QObject* theObj, QEvent* theEv )
 {
   if ( theObj->inherits( "QWidget" ) && ( theEv->type() == QEvent::Enter ) )
   {
+    QEvent::Type aType = theEv->type();
     SalomeApp_Operation* anOp = operation( (QWidget*)theObj );
-    if ( anOp && !anOp->isActive() && anOp->isAutoResumed() )
+    if ( anOp )
     {
-      if ( study() )
+      switch ( aType )
       {
-        if ( study()->canActivate( anOp ) )
-          study()->resume( anOp );
+        case QEvent::Enter:
+        {
+          if ( !anOp->isActive() && anOp->isAutoResumed() &&
+               study() && !study()->blockingOperation( anOp ) )
+            study()->resume( anOp );
+        }
+        break;
+        
+        case QEvent::MouseButtonRelease:
+        case QEvent::MouseButtonPress:
+        case QEvent::MouseButtonDblClick:
+        case QEvent::MouseMove:
+        case QEvent::KeyPress:
+        case QEvent::KeyRelease:
+        {
+          if ( !anOp->isActive() )
+            return true;
+        }
+        break;
+        
       }
     }
   }
