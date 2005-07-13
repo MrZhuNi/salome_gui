@@ -69,6 +69,12 @@ public:
   //! Check the shown state
   bool isObjectShown( const int ) const;
 
+  //! Change the enabled state of widgets corresponding to id
+  void setObjectEnabled( const int, const bool );
+
+  //! Check the enabled state
+  bool isObjectEnabled( const int ) const;
+  
   //! Pass to all active widgets name, type and id of selected object          
   void selectObject( const QString&, const int, const QString& );
 
@@ -78,6 +84,10 @@ public:
   */
   void selectObject( const QStringList&, const TypesList&, const QStringList& );
 
+  //! Select in certain widget avoiding check if there is active widget
+  void selectObject( const int, const QString&, const int, const QString& );
+  void selectObject( const int, const QStringList&, const TypesList&, const QStringList& );
+  
   //! Check if certain widget has selection  
   bool hasSelection( const int ) const;
 
@@ -102,11 +112,17 @@ signals:
 
   //! selection in certain widget is off  
   void objectDeactivated( int );
+
+  /*
+     text representation of selection is changed
+     it is emitted only if "read only" state of line edit is false
+  */
+  void objectChanged( int, const QStringList& );
                                                    
 protected:
   //! Finds and returns resource manager
   SUIT_ResourceMgr* resMgr() const;
-
+  
   /*! Create label, button and line edit for object selection
    *  If passed id is negative, then id will be calculated automatically (first free id)
    *  Returns the same id (if id>=0) or calculated
@@ -172,9 +188,19 @@ protected:
   //! Check using name indication if multiple selection in possible
   bool           multipleSelection( const int ) const;
 
+  //! Set the "read only" state of object selection line edit
+  //! The "read only" will be false only if name indication is ListOfNames
+  void           setReadOnly( const int, const bool );
+
+  //! Check the "read only" state of object selection line edit
+  bool           isReadOnly( const int ) const;
+  
 private slots:
   //! emits if the object selection button changes state
   void onToggled( bool );
+
+  //! text in some line edit is changed
+  void onTextChanged( const QString& );
 
 private:
   /*!
@@ -209,7 +235,7 @@ private:
 private:
   ObjectMap           myObjects;
   QMap<int,QString>   myTypeNames;
-  bool                myIsExclusive, myIsAutoResumed;
+  bool                myIsExclusive, myIsBusy;
   QPixmap             myPixmap;
 };
 

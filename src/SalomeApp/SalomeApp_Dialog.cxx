@@ -21,7 +21,7 @@ SalomeApp_Dialog::SalomeApp_Dialog( QWidget* parent, const char* name, bool moda
                                     bool allowResize, const int f, WFlags wf )
 : QtxDialog( parent, name, modal, allowResize, f, wf ),
   myIsExclusive( true ),
-  myIsAutoResumed( false )
+  myIsBusy( false )
 {
   setObjectPixmap( "SalomeApp", tr( "ICON_SELECT" ) );
 }
@@ -134,6 +134,32 @@ bool SalomeApp_Dialog::isObjectShown( const int id ) const
 }
 
 //=======================================================================
+// name    : setObjectEnabled
+// Purpose :
+//=======================================================================
+void SalomeApp_Dialog::setObjectEnabled( const int id, const bool en )
+{
+  if( myObjects.contains( id ) && isObjectEnabled( id )!=en )
+  {
+    Object& obj = myObjects[ id ];
+    obj.myEdit->setEnabled( en );
+    obj.myBtn->setEnabled( en );
+    obj.myLabel->setEnabled( en );
+    if( !en )
+      ( ( QToolButton* )obj.myBtn )->setOn( false );
+  } 
+}
+
+//=======================================================================
+// name    : isObjectEnabled
+// Purpose :
+//=======================================================================
+bool SalomeApp_Dialog::isObjectEnabled( const int id ) const
+{
+  return myObjects.contains( id ) && myObjects[ id ].myEdit->isEnabled();
+}
+
+//=======================================================================
 // name    : selectObject
 // Purpose :
 //=======================================================================
@@ -157,19 +183,7 @@ void SalomeApp_Dialog::selectObject( const QStringList& _names,
                       aLast = myObjects.end();
   for( ; anIt!=aLast; anIt++ )
     if( anIt.data().myBtn->isOn() )
-    {
-      QStringList names = _names, ids = _ids;
-      TypesList types = _types;
-      
-      filterTypes( anIt.key(), names, types, ids );
-
-      anIt.data().myEdit->setText( selectionDescription( names, types, anIt.data().myNI ) );
-      anIt.data().myTypes = types;
-      anIt.data().myIds = ids;
-      anIt.data().myNames = names;
-      
-      emit selectionChanged( anIt.key() ); 
-    }
+      selectObject( anIt.key(), _names, _types, _ids );
 }
 
 //=======================================================================
@@ -262,6 +276,7 @@ int SalomeApp_Dialog::createObject( const QString& label, QWidget* parent, const
     QLineEdit* ne = new QLineEdit( parent );
     ne->setReadOnly( true );
     ne->setMinimumWidth( 150 );
+    connect( ne, SIGNAL( textChanged( const QString& ) ), this, SLOT( onTextChanged( const QString& ) ) );
     myObjects[ nid ].myEdit = ne;
 
     myObjects[ nid ].myNI = OneNameOrCount;
@@ -587,6 +602,7 @@ void SalomeApp_Dialog::setNameIndication( const int id, const NameIndication ni 
     for( ; anIt!=aLast; anIt++ )
     {
       anIt.data().myNI = ni;
+      setReadOnly( anIt.key(), isReadOnly( anIt.key() ) );
       aNext = anIt; aNext++;
       updateObject( anIt.key(), aNext==aLast );
     }
@@ -594,6 +610,7 @@ void SalomeApp_Dialog::setNameIndication( const int id, const NameIndication ni 
   else if( myObjects.contains( id ) )
   {
     myObjects[ id ].myNI = ni;
+    setReadOnly( id, isReadOnly( id ) );
     updateObject( id, true );
   }
 }
@@ -606,6 +623,9 @@ QString SalomeApp_Dialog::selectionDescription( const QStringList& names, const 
 {
   if( names.count()!=types.count() )
     return "SalomeApp_Dialog::selectionDescription(): Error!!!";
+    
+  if( names.isEmpty() )
+    return QString::null;
     
   switch( ni )
   {
@@ -621,7 +641,7 @@ QString SalomeApp_Dialog::selectionDescription( const QStringList& names, const 
       break;
       
     case ListOfNames:
-      return names.join( ", " );
+      return names.join( " " );
       break;
       
     case Count:
@@ -687,4 +707,93 @@ void SalomeApp_Dialog::deactivateAll()
     QToolButton* btn = ( QToolButton* )anIt.data().myBtn;
     btn->setOn( false );
   }
+}
+
+//=======================================================================
+// name    : selectObject
+// Purpose :
+//=======================================================================
+void SalomeApp_Dialog::selectObject( const int id, const QString& name, const int type, const QString& selid )
+{
+  QStringList names;   names.append( name );
+  TypesList types;     types.append( type );
+  QStringList ids;     ids.append( selid );
+  selectObject( id, names, types, ids );
+}
+
+//=======================================================================
+// name    : selectObject
+// Purpose :
+//=======================================================================
+void SalomeApp_Dialog::selectObject( const int id, const QStringList& _names, const TypesList& _types,
+                                     const QStringList& _ids )
+{
+  if( !myObjects.contains( id ) )
+    return;
+    
+  QStringList names = _names, ids = _ids;
+  TypesList types = _types;
+
+  filterTypes( id, names, types, ids );
+
+  Object& obj = myObjects[ id ];
+  obj.myEdit->setText( selectionDescription( names, types, obj.myNI ) );
+  obj.myTypes = types;
+  obj.myIds = ids;
+  obj.myNames = names;
+
+  emit selectionChanged( id );
+}
+
+//=======================================================================
+// name    : setReadOnly
+// Purpose :
+//=======================================================================
+void SalomeApp_Dialog::setReadOnly( const int id, const bool ro )
+{
+  if( myObjects.contains( id ) )
+    myObjects[ id ].myEdit->setReadOnly( nameIndication( id )==ListOfNames || nameIndication( id )==OneName ? ro : true );
+}
+
+//=======================================================================
+// name    : isReadOnly
+// Purpose :
+//=======================================================================
+bool SalomeApp_Dialog::isReadOnly( const int id ) const
+{
+  if( myObjects.contains( id ) )
+    return myObjects[ id ].myEdit->isReadOnly();
+  else
+    return true;
+}
+  
+//=======================================================================
+// name    : onTextChanged
+// Purpose :
+//=======================================================================
+void SalomeApp_Dialog::onTextChanged( const QString& text )
+{
+  if( myIsBusy )
+    return;
+
+  myIsBusy = true;
+
+  if( sender() && sender()->inherits( "QLineEdit" ) )
+  {
+    QLineEdit* edit = ( QLineEdit* )sender();
+    int id = -1;
+    ObjectMap::const_iterator anIt = myObjects.begin(),
+                              aLast = myObjects.end();
+    for( ; anIt!=aLast; anIt++ )
+      if( anIt.data().myEdit == edit )
+        id = anIt.key();
+
+    if( id>=0 && !isReadOnly( id ) )
+    {
+      QStringList list = QStringList::split( " ", text );
+      emit objectChanged( id, list );
+    }
+  }
+
+  myIsBusy = false;
 }
