@@ -162,8 +162,7 @@ int SalomeApp_Module::addPreference( const QString& label )
   int catId = pref->addPreference( moduleName(), -1 );
   if ( catId == -1 )
     return -1;
-                             * Updates (i.e. disable/enable) controls states (menus, tool bars etc.). This method is
-* called from update( UF_Controls ). You may redefine it in concrete module.
+                             
   return pref->addPreference( label, catId );
 }
 

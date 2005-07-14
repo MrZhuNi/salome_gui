@@ -19,41 +19,49 @@
 
 #include <qapplication.h>
 
-/*
-  Class       : SalomeApp_Operation
-  Description : Base class for all operations
-*/
 
-//=======================================================================
-// name    : SalomeApp_Operation
-// Purpose : Constructor
-//=======================================================================
+/*!
+ * \brief Constructor
+*
+* Constructor sets myModule in NULL and myIsAutoResumed in TRUE
+*/
 SalomeApp_Operation::SalomeApp_Operation()
 : SUIT_Operation( 0 ),
   myModule( 0 ),
-  myIsAutoResumed( false )
+  myIsAutoResumed( true )
 {
-  
 }
 
+/*!
+ * \brief Destructor
+*
+* Destructor does nothing
+*/
 SalomeApp_Operation::~SalomeApp_Operation()
 {
   
 }
 
-//=======================================================================
-// name    : module
-// Purpose : Get module
-//=======================================================================
+/*!
+ * \brief Gets module of operation
+  * \return Pointer to the module 
+*
+* Gets pointer to the module or NULL if module was not set. It is strongly recomended to
+* set valid pointer on the module before start of operation
+*/
 SalomeApp_Module* SalomeApp_Operation::module() const
 {
   return myModule;
 }
 
-//=======================================================================
-// name    : setModule
-// Purpose : 
-//=======================================================================
+
+/*!
+ * \brief Sets module of operation
+ * \param theModule - module to be set
+*
+* Sets pointer to the module. It is strongly recomended to set valid pointer on the
+* module before start of operation
+*/
 void SalomeApp_Operation::setModule( SalomeApp_Module* theModule )
 {
   myModule = theModule;
@@ -61,41 +69,52 @@ void SalomeApp_Operation::setModule( SalomeApp_Module* theModule )
   setStudy( application() ? application()->activeStudy() : 0 );
 }
 
-//=======================================================================
-// name    : desktop
-// Purpose : Get desktop
-//=======================================================================
+/*!
+ * \brief Gets desktop of operation
+  * \return Pointer to the desktop
+*
+* Gets pointer to the desktop or NULL if application was not set. It is strongly recomended
+* to set valid pointer on the application before start of operation
+*/
 SUIT_Desktop* SalomeApp_Operation::desktop() const
 {
   return application() != 0 ? application()->desktop() : 0;
 }
 
-//=======================================================================
-// name    : resumeOperation
-// Purpose : Enable dialog if it was desabled (in suspend method)
-//           and activate selection
-//=======================================================================
+/*!
+ * \brief Enable dialog of operation
+*
+* Virtual method redefined from the base class. Enable dialog if it was desabled (in
+* suspend method) and activate selection
+*/
 void SalomeApp_Operation::resumeOperation()
 {
+  SUIT_Operation::resumeOperation();
   setDialogActive( true );
 }
 
-//=======================================================================
-// name    : startOperation
-// Purpose : Connect signal of selection manager to onSelectionDone() slot
-//=======================================================================
+/*!
+ * \brief Performs actions needed for starting operation
+*
+* Virtual method redefined from the base class. Connect signal of selection manager to
+* onSelectionDone() slot
+*/
 void SalomeApp_Operation::startOperation()
 {
+  SUIT_Operation::startOperation();
   if( selectionMgr() )
     connect( selectionMgr(), SIGNAL( selectionChanged() ), SLOT( onSelectionDone() ) );
 }
 
-//=======================================================================
-// name    : suspendOperation
-// Purpose : Disable dialog for mouse and key events
-//=======================================================================
+/*!
+ * \brief Performs actions needed for suspending operation
+*
+* Virtual method redefined from the base class. This implementation calls corresponding
+* method of base class and cals setDialogActive( false )
+*/
 void SalomeApp_Operation::suspendOperation()
 {
+  SUIT_Operation::suspendOperation();
   setDialogActive( false );
 }
 
@@ -103,8 +122,15 @@ void SalomeApp_Operation::suspendOperation()
 // name    : abortOperation
 // Purpose : Hide dialog box (if it is exists)
 //=======================================================================
+/*!
+ * \brief Performs actions needed for aborting operation
+*
+* Virtual method redefined from the base class calls corresponding method of base class
+* and hides dialog box (if it is exists), disconnect slots from selection manager
+*/
 void SalomeApp_Operation::abortOperation()
 {
+  SUIT_Operation::abortOperation();
   setDialogActive( true );
   if ( dlg() )
     dlg()->hide();
@@ -113,12 +139,15 @@ void SalomeApp_Operation::abortOperation()
     disconnect( selectionMgr(), SIGNAL( selectionChanged() ), this, SLOT( onSelectionDone() ) );
 }
 
-//=======================================================================
-// name    : commitOperation
-// Purpose : Hide dialog box (if it is exists)
-//=======================================================================
+/*!
+ * \brief Performs actions needed for committing operation
+*
+* Virtual method redefined from the base class calls corresponding method of base class
+* and hides dialog box (if it is exists), disconnect slots from selection manager
+*/
 void SalomeApp_Operation::commitOperation()
 {
+  SUIT_Operation::commitOperation();
   setDialogActive( true );
   if ( dlg() )
     dlg()->hide();
@@ -127,49 +156,56 @@ void SalomeApp_Operation::commitOperation()
     disconnect( selectionMgr(), SIGNAL( selectionChanged() ), this, SLOT( onSelectionDone() ) );
 }
 
-//=======================================================================
-// name    : dlg
-// Purpose : Get dialog. This method should be redefined in derived classes
-//           if they use dialogs. If this function returns pointer to dialog
-//           then dialog will be correctly
-//           1. deactivated in suspendOperation method
-//           2. activated in resumeOperation method
-//           3. hidden in abortOperation and commitOperation methods
-//=======================================================================
+/*!
+ * \brief Gets dialog
+  * \return Pointer to the dialog of this operation or NULL if it does not exist
+*
+* This method should be redefined in derived classes if they use dialogs. If this
+* function returns pointer to dialog then dialog will be correctly
+* -# deactivated in suspendOperation method
+* -# activated in resumeOperation method
+* -# hidden in abortOperation and commitOperation methods
+*/
 SalomeApp_Dialog* SalomeApp_Operation::dlg() const
 {
   return 0;
 }
 
-//=======================================================================
-// name    : activateSelection
-// Purpose : Activate selection. This method should be redefined in derived
-//           classes if they use own selection modes (different from default)
-//=======================================================================
+/*!
+ * \brief Activates selection
+*
+* Virtual method should be redefined in derived classes if they use own selection modes
+* (different from default)
+*/
 void SalomeApp_Operation::activateSelection()
 {
 }
 
-//=======================================================================
-// name    : selectionDone
-// Purpose : This method called when selection is changed
-//=======================================================================
+/*!
+ * \brief Virtual method called when selection is changed
+*
+* Virtual method should be redefined in derived classes if they works with selection
+* to provide reaction on the change of selection
+*/
 void SalomeApp_Operation::selectionDone()
 {
 }
 
-//=======================================================================
-// name    : activeOperation
-// Purpose : Get active operation
-//=======================================================================
+/*!
+ * \brief Gets active operation
+*
+* This method provided for convinience calls SUIT_Study::activeOperation() one
+*/
 SUIT_Operation* SalomeApp_Operation::activeOperation() const
 {
   return study() != 0 ? study()->activeOperation() : 0;
 }
-//=======================================================================
-// name    : selectionMgr
-// Purpose : Get selection manager
-//=======================================================================
+
+/*!
+ * \brief Gets selection manager
+*
+* This method provided for convinience calls SalomeApp_Application::selectionMgr() one
+*/
 SalomeApp_SelectionMgr* SalomeApp_Operation::selectionMgr() const
 {
   SUIT_Application* app = application();
@@ -179,84 +215,72 @@ SalomeApp_SelectionMgr* SalomeApp_Operation::selectionMgr() const
     return 0;
 }
 
-//=======================================================================
-// name    : onSelectionDone
-// Purpose : Call selectionDone() method if operator is an active one
-//=======================================================================
+/*!
+ * \brief Call selectionDone() method 
+*
+* Call selectionDone() method if operator is an active one (see selectionDone() for more
+* description )
+*/
 void SalomeApp_Operation::onSelectionDone()
 {
   if ( isActive() )
     selectionDone();
 }
 
-//=======================================================================
-// name    : eventFilter
-// Purpose : Block mouse and key events if operator is not active one
-//=======================================================================
-bool SalomeApp_Operation::eventFilter( QObject* obj, QEvent* e )
-{
-  if( e )
-  {
-//    if( isAutoResumed() &&
-//        ( e->type()==QEvent::Enter  ||
-//          e->type()==QEvent::WindowActivate ||
-//          e->type()==QEvent::MouseButtonPress ||
-//          e->type()==QEvent::MouseButtonDblClick ) )
-//      resume();
-      
-    if( e->type()==QEvent::MouseButtonRelease ||
-        e->type()==QEvent::MouseButtonDblClick ||
-        e->type()==QEvent::MouseMove ||
-        e->type()==QEvent::KeyPress ||
-        e->type()==QEvent::KeyRelease  )
-      return true;
-  }
-      
-  return SUIT_Operation::eventFilter( obj, e );
-}
-
-//=======================================================================
-// name    : update
-// Purpose : 
-//=======================================================================
+/*!
+ * \brief Update object browser or/and viewer etc.
+ * \param flags - update flags
+*
+* This method provided for convinience calls SalomeApp_Module::update() one (see
+* SalomeApp_Module::update() for more description)
+*/
 void SalomeApp_Operation::update( const int flags )
 {
   if ( myModule != 0 )
     myModule->update( flags );
 }
 
-//=======================================================================
-// name    : update
-// Purpose :
-//=======================================================================
+/*!
+ * \brief Activate/Deactivate dialog of operation
+ * \param active - State of the dialog to be set
+*
+* Activate/Deactivate dialog of operation. This method called from startOperation(),
+* suspendOperation() ones and so on
+*/
 void SalomeApp_Operation::setDialogActive( const bool active )
 {
   if( dlg() )
   {
     if( active )
     {
-      dlg()->removeEventFilter( this );
       activateSelection();
       dlg()->setActiveWindow();
     }
-    else
-      dlg()->installEventFilter( this );
   }
 }
 
-//=======================================================================
-// name    : update
-// Purpose :
-//=======================================================================
+/*!
+ * \brief Gets autoresume property
+ * \return Autoresume property.
+*
+* Autoresume property is used during automatic resuming operation. If operation is
+* suspended and cursor is moved above dialog of the operation then operation is resumed
+* automatically (if possible). It can be resumed only program call otherwise (see
+* SalomeApp_SwitchOp for more description). This property is TRUE by default and may be
+* changed with setAutoResumed() method call.
+*/
 bool SalomeApp_Operation::isAutoResumed() const
 {
   return myIsAutoResumed;
 }
 
-//=======================================================================
-// name    : update
-// Purpose :
-//=======================================================================
+/*!
+ * \brief Sets autoresume property
+ * \param on - Value to be set
+ * \return Autoresume property.
+*
+* Sets autoresume property (see isAutoResumed() for more description)
+*/
 void SalomeApp_Operation::setAutoResumed( const bool on )
 {
   myIsAutoResumed = on;
