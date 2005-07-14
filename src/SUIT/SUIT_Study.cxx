@@ -213,10 +213,11 @@ bool SUIT_Study::start( SUIT_Operation* theOp, const bool toCheck )
     anOp->setState( SUIT_Operation::Suspended );
   }
 
-  theOp->startOperation();
-  myOperations.append( theOp );
   theOp->setState( SUIT_Operation::Running );
+  myOperations.append( theOp );
   emit theOp->started( theOp );
+  theOp->startOperation();
+  
   return true;
 }
 
