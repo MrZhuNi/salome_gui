@@ -163,12 +163,12 @@ bool SalomeApp_Dialog::isObjectEnabled( const int id ) const
 // name    : selectObject
 // Purpose :
 //=======================================================================
-void SalomeApp_Dialog::selectObject( const QString& name, const int type, const QString& id )
+void SalomeApp_Dialog::selectObject( const QString& name, const int type, const QString& id, const bool update )
 {
   QStringList names;   names.append( name );
   TypesList types;     types.append( type );
   QStringList ids;     ids.append( id );
-  selectObject( names, types, ids );
+  selectObject( names, types, ids, update );
 }
 
 //=======================================================================
@@ -177,13 +177,14 @@ void SalomeApp_Dialog::selectObject( const QString& name, const int type, const 
 //=======================================================================
 void SalomeApp_Dialog::selectObject( const QStringList& _names,
                                      const TypesList& _types,
-                                     const QStringList& _ids )
+                                     const QStringList& _ids,
+				     const bool update )
 {
   ObjectMap::iterator anIt = myObjects.begin(),
                       aLast = myObjects.end();
   for( ; anIt!=aLast; anIt++ )
     if( anIt.data().myBtn->isOn() )
-      selectObject( anIt.key(), _names, _types, _ids );
+      selectObject( anIt.key(), _names, _types, _ids, update );
 }
 
 //=======================================================================
@@ -215,8 +216,7 @@ void SalomeApp_Dialog::clearSelection( const int id )
     myObjects[ id ].myTypes.clear();
     myObjects[ id ].myNames.clear();
     
-    if( !myIsBusy )
-      myObjects[ id ].myEdit->setText( QString::null );
+    myObjects[ id ].myEdit->setText( QString::null );
     emit selectionChanged( id );
   }
 }
@@ -494,8 +494,7 @@ void SalomeApp_Dialog::updateObject( const int id, bool emit_signal )
   {
     Object& obj = myObjects[ id ];
     filterTypes( id, obj.myNames, obj.myTypes, obj.myIds );
-    if( !myIsBusy )
-      obj.myEdit->setText( selectionDescription( obj.myNames, obj.myTypes, obj.myNI ) );
+    obj.myEdit->setText( selectionDescription( obj.myNames, obj.myTypes, obj.myNI ) );
     if( emit_signal )
       emit selectionChanged( id );
   }
@@ -715,12 +714,12 @@ void SalomeApp_Dialog::deactivateAll()
 // name    : selectObject
 // Purpose :
 //=======================================================================
-void SalomeApp_Dialog::selectObject( const int id, const QString& name, const int type, const QString& selid )
+void SalomeApp_Dialog::selectObject( const int id, const QString& name, const int type, const QString& selid, const bool update )
 {
   QStringList names;   names.append( name );
   TypesList types;     types.append( type );
   QStringList ids;     ids.append( selid );
-  selectObject( id, names, types, ids );
+  selectObject( id, names, types, ids, update );
 }
 
 //=======================================================================
@@ -728,7 +727,7 @@ void SalomeApp_Dialog::selectObject( const int id, const QString& name, const in
 // Purpose :
 //=======================================================================
 void SalomeApp_Dialog::selectObject( const int id, const QStringList& _names, const TypesList& _types,
-                                     const QStringList& _ids )
+                                     const QStringList& _ids, const bool update )
 {
   if( !myObjects.contains( id ) )
     return;
@@ -739,7 +738,7 @@ void SalomeApp_Dialog::selectObject( const int id, const QStringList& _names, co
   filterTypes( id, names, types, ids );
 
   Object& obj = myObjects[ id ];
-  if( !myIsBusy )
+  if( update )
     obj.myEdit->setText( selectionDescription( names, types, obj.myNI ) );
   obj.myTypes = types;
   obj.myIds = ids;

@@ -76,17 +76,17 @@ public:
   bool isObjectEnabled( const int ) const;
   
   //! Pass to all active widgets name, type and id of selected object          
-  void selectObject( const QString&, const int, const QString& );
+  void selectObject( const QString&, const int, const QString&, const bool = true );
 
   /*!
       Pass to all active widgets list of names, types and ids of selected objects
       Every active widget filters list and accept only objects with possible types
   */
-  void selectObject( const QStringList&, const TypesList&, const QStringList& );
+  void selectObject( const QStringList&, const TypesList&, const QStringList&, const bool = true );
 
   //! Select in certain widget avoiding check if there is active widget
-  void selectObject( const int, const QString&, const int, const QString& );
-  void selectObject( const int, const QStringList&, const TypesList&, const QStringList& );
+  void selectObject( const int, const QString&, const int, const QString&, const bool = true );
+  void selectObject( const int, const QStringList&, const TypesList&, const QStringList&, const bool = true );
   
   //! Check if certain widget has selection  
   bool hasSelection( const int ) const;
@@ -231,14 +231,11 @@ private:
   } Object;
   
   typedef QMap<int, Object> ObjectMap;
-
-protected:
-  bool myIsBusy;
   
 private:
   ObjectMap           myObjects;
   QMap<int,QString>   myTypeNames;
-  bool                myIsExclusive;
+  bool                myIsExclusive, myIsBusy;
   QPixmap             myPixmap;
 };
 
