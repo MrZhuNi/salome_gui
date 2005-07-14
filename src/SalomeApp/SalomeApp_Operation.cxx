@@ -104,6 +104,10 @@ void SalomeApp_Operation::startOperation()
   SUIT_Operation::startOperation();
   if( selectionMgr() )
     connect( selectionMgr(), SIGNAL( selectionChanged() ), SLOT( onSelectionDone() ) );
+    
+  //If suspended operation was stopped during starting other operation,
+  //the dialog is inactive now, We must activate it
+  setDialogActive( true );
 }
 
 /*!
