@@ -101,7 +101,6 @@ void SalomeApp_Operation::resumeOperation()
 */
 void SalomeApp_Operation::startOperation()
 {
-  SUIT_Operation::startOperation();
   if( selectionMgr() )
     connect( selectionMgr(), SIGNAL( selectionChanged() ), SLOT( onSelectionDone() ) );
     
