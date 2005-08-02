@@ -30,14 +30,14 @@ class vtkUnstructuredGrid;
 #include "SVTK.h"
 #include "SALOME_Actor.h"
 
-class SVTK_EXPORT SVTK_Actor : public SALOME_Actor
+class SVTK_EXPORT SVTK_Actor : public VTKViewer_Actor
 {
 public:
   virtual ~SVTK_Actor();
 
   static SVTK_Actor* New();
 
-  vtkTypeMacro(SVTK_Actor,SALOME_Actor);
+  vtkTypeMacro(SVTK_Actor,VTKViewer_Actor);
 
   void  SetShrinkFactor(float value);
   virtual void SetShrink(); 

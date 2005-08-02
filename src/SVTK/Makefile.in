@@ -15,6 +15,7 @@ VPATH=.:@srcdir@
 EXPORT_HEADERS= SVTK.h \
 		SVTK_Prs.h \
 		SVTK_Actor.h \
+		SALOME_Actor.h \
 		SVTK_CubeAxesActor2D.h \
 		SVTK_Functor.h \
 		SVTK_ViewManager.h \
@@ -31,6 +32,7 @@ LIB = libSVTK.la
 
 LIB_SRC= 	SVTK_Prs.cxx \
 		SVTK_Actor.cxx \
+		SALOME_Actor.cxx \
 		SVTK_CubeAxesActor2D.cxx \
 		SVTK_Trihedron.cxx \
 		SVTK_ViewManager.cxx \

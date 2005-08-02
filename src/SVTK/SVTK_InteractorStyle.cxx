@@ -38,6 +38,7 @@
 #include "SVTK_RenderWindowInteractor.h"
 #include "SVTK_RenderWindow.h"
 #include "SVTK_ViewWindow.h"
+#include "SVTK_Selection.h"
 
 #include "SALOME_Actor.h"
 #include "SVTK_Actor.h"
@@ -888,6 +889,7 @@ SVTK_InteractorStyle
         fitRect(x1, y1, x2, y2);
       }
       else {
+	myViewWindow->unHighlightAll();
         if (myPoint == myOtherPoint) {
 	  // process point selection
           int w, h, x, y;
@@ -903,94 +905,17 @@ SVTK_InteractorStyle
     
 	  SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aPicker->GetActor());
 
-          if (vtkCellPicker* picker = vtkCellPicker::SafeDownCast(aPicker)) {
-	    int aVtkId = picker->GetCellId();
-	    if ( aVtkId >= 0 && aSActor && aSActor->hasIO() && IsValid( aSActor, aVtkId ) ) {
-	      int anObjId = aSActor->GetElemObjId(aVtkId);
-	      if(anObjId >= 0){
-		Handle(SALOME_InteractiveObject) anIO = aSActor->getIO();
-		if(aSelectionMode != EdgeOfCellSelection) {
-		  if(CheckDimensionId(aSelectionMode,aSActor,anObjId)){
-		    if(MYDEBUG) INFOS(" CellId : "<<anObjId);
-		    if (GetSelector()->IsSelected(anIO)) {
-		      // This IO is already in the selection
-		      GetSelector()->AddOrRemoveIndex(anIO,anObjId,myShiftState);
-		    } else {
-		      if (!myShiftState) {
-			this->HighlightProp( NULL );
-			GetSelector()->ClearIObjects();
-		      }
-		      GetSelector()->AddOrRemoveIndex(anIO,anObjId,myShiftState);
-		      GetSelector()->AddIObject(aSActor);
-		    }
-		  }
-		}else{
-		  if (!myShiftState) {
-		    this->HighlightProp( NULL );
-		    GetSelector()->ClearIObjects();
-		  }
-		  int anEdgeId = GetEdgeId(picker,aSActor,anObjId);
-		  if (anEdgeId >= 0) {
-		    if(MYDEBUG) INFOS(" CellId : "<<anObjId<<"; EdgeId : "<<anEdgeId);
-		    GetSelector()->AddOrRemoveIndex(anIO,anObjId,false);
-		    GetSelector()->AddOrRemoveIndex(anIO,-anEdgeId-1,true);
-		    GetSelector()->AddIObject(aSActor);
-		  } 
-		}
-	      }
-	    } else {
-	      this->HighlightProp( NULL );
-	      GetSelector()->ClearIObjects();
-	    }
-          } else if ( vtkPointPicker* picker = vtkPointPicker::SafeDownCast(aPicker) ) {
-	    int aVtkId = picker->GetPointId();
-	    if ( aVtkId >= 0 && IsValid( aSActor, aVtkId, true ) ) {
-	      if ( aSActor && aSActor->hasIO() ) {
-		int anObjId = aSActor->GetNodeObjId(aVtkId);
-		if(anObjId >= 0){
-		  Handle(SALOME_InteractiveObject) anIO = aSActor->getIO();
-		  if(GetSelector()->IsSelected(anIO)) {
-		    // This IO is already in the selection
-		    GetSelector()->AddOrRemoveIndex(anIO,anObjId,myShiftState);
-		  } else {
-		    if(!myShiftState) {
-		      this->HighlightProp( NULL );
-		      GetSelector()->ClearIObjects();
-		    }
-		    if(MYDEBUG) INFOS(" PointId : "<<anObjId);
-		    GetSelector()->AddOrRemoveIndex(anIO,anObjId,myShiftState);
-		    GetSelector()->AddIObject(aSActor);
-		  }
-		}
-	      }
-	    } else {
-	      this->HighlightProp( NULL );
-	      GetSelector()->ClearIObjects();
-	    } 
-	  } else {
-	    if ( aSActor && aSActor->hasIO() ) {
-	      this->PropPicked++;
-	      Handle(SALOME_InteractiveObject) anIO = aSActor->getIO();
-	      if(GetSelector()->IsSelected(anIO)) {
-		// This IO is already in the selection
-		if(myShiftState) {
-		  GetSelector()->RemoveIObject(aSActor);
-		}
-	      }
-	      else {
-		if(!myShiftState) {
-		  this->HighlightProp( NULL );
-		  GetSelector()->ClearIObjects();
-		}
-		GetSelector()->AddIObject(aSActor);
-	      }
-	    }else{
-	      // No selection clear all
-	      this->PropPicked = 0;
-	      this->HighlightProp( NULL );
-	      GetSelector()->ClearIObjects();
-	    }
+	  SVTK_SelectionEvent aSelectionEvent = myInteractor->GetSelectionEvent();
+	  aSelectionEvent.SelectionMode = aSelectionMode;
+
+	  if( aSActor )
+	    aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true, true );
+	  else
+	  {
+	    this->HighlightProp( NULL );
+	    GetSelector()->ClearIObjects();
 	  }
+
 	  myInteractor->EndPickCallback();
         } else {
           //processing rectangle selection
@@ -1132,7 +1057,7 @@ SVTK_InteractorStyle
 	  } //end switch
 	  myInteractor->EndPickCallback();
 	}
-	myViewWindow->onSelectionChanged();
+	//myViewWindow->onSelectionChanged();
       } 
     } 
     break;
@@ -1250,15 +1175,16 @@ SVTK_InteractorStyle
   myPreSelectionActor->SetVisibility(false);
 
   vtkPicker* aPicker = vtkPicker::SafeDownCast(myInteractor->GetPicker());
-  aPicker->Pick(x, y, 0.0, this->CurrentRenderer);
 
   SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aPicker->GetActor());
+  if( aSActor )
+    aSActor->PreHighlight( this, -1 );
+  //cout << "onCursorMove : " << ( aSActor ? "1" : "0" ) << " ";
 
-  if (aSActor && myPreSelectionActor){
-    float aPos[3];
-    aSActor->GetPosition(aPos);
-    myPreSelectionActor->SetPosition(aPos);
-  }
+  aPicker->Pick(x, y, 0.0, this->CurrentRenderer);
+
+  aSActor = SALOME_Actor::SafeDownCast(aPicker->GetActor());
+  //cout << ( aSActor ? "1" : "0" ) << endl;
 
   if (vtkCellPicker* picker = vtkCellPicker::SafeDownCast(aPicker)) {
     int aVtkId = picker->GetCellId();
@@ -1274,7 +1200,7 @@ SVTK_InteractorStyle
 	      mySelectedActor = aSActor;
 	      myElemId = anObjId;
 	      if(MYDEBUG) INFOS(" CellId : "<<anObjId);
-	      myInteractor->setCellData(anObjId,aSActor,myPreSelectionActor);
+	      //myInteractor->setCellData(anObjId,aSActor,myPreSelectionActor);
 	    }
 	  }
 	}
@@ -1289,7 +1215,7 @@ SVTK_InteractorStyle
 	      myEdgeId = anEdgeId;
 	      myElemId = anObjId;
 	      if(MYDEBUG) INFOS(" CellId : "<<anObjId<<"; EdgeId : "<<anEdgeId);
-	      myInteractor->setEdgeData(anObjId,aSActor,-anEdgeId-1,myPreSelectionActor);
+	      //myInteractor->setEdgeData(anObjId,aSActor,-anEdgeId-1,myPreSelectionActor);
 	    } 
 	  }
 	}
@@ -1302,18 +1228,25 @@ SVTK_InteractorStyle
   }
   else if (vtkPointPicker* picker = vtkPointPicker::SafeDownCast(aPicker)) {
     int aVtkId = picker->GetPointId();
+    //cout << "vtkPointPicker" << endl;
+    //cout << aSActor << endl;
+    //cout << aVtkId << endl;
     if ( aVtkId >= 0 && IsValid( aSActor, aVtkId, true ) ) {
       if ( aSActor && aSActor->hasIO() ) {
 	int anObjId = aSActor->GetNodeObjId(aVtkId);
+	aSActor->PreHighlight( this, anObjId );
+	/*
 	bool anIsSameObjId = (mySelectedActor == aSActor && myNodeId == anObjId);
 	if(!anIsSameObjId) {
 	  mySelectedActor = aSActor;
 	  myNodeId = anObjId;
 	  if(MYDEBUG) INFOS(" PointId : "<<anObjId);
 	  myInteractor->setPointData(anObjId,aSActor,myPreSelectionActor);
+	  aSActor->PreHighlight( this, anObjId );
 	}
 	myPreSelectionActor->GetProperty()->SetRepresentationToSurface();
 	myPreSelectionActor->SetVisibility(true);
+	*/
       }
     }
   }

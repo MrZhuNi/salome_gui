@@ -30,11 +30,11 @@
 
 #include "SVTK_InteractorStyle.h"
 #include "SVTK_RenderWindow.h"
-#include "SVTK_ViewWindow.h"
+#include "SVTK_Selection.h"
 
 #include "VTKViewer_Algorithm.h"
 #include "SVTK_Functor.h"
-#include "SVTK_Actor.h"
+#include "SALOME_Actor.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,30 +82,10 @@ SVTK_RenderWindowInteractor
   this->Enabled = 0 ;
   this->mTimer = new QTimer( this ) ;
   myDisplayMode = 0;
-  myGUIWindow = 0;
 
   myBasicPicker = vtkPicker::New();
   myCellPicker = vtkCellPicker::New();
   myPointPicker = vtkPointPicker::New();
-
-  myCellActor = SVTK_Actor::New(); 
-  myCellActor->PickableOff();
-  myCellActor->GetProperty()->SetColor(1,1,0);
-  myCellActor->GetProperty()->SetLineWidth(5);
-  myCellActor->GetProperty()->SetRepresentationToSurface();
-
-  myEdgeActor = SVTK_Actor::New(); 
-  myEdgeActor->PickableOff();
-  myEdgeActor->GetProperty()->SetColor(1,0,0);
-  myEdgeActor->GetProperty()->SetLineWidth(5);
-  myEdgeActor->GetProperty()->SetRepresentationToWireframe();
-
-  myPointActor = SVTK_Actor::New(); 
-  myPointActor->PickableOff();
-  myPointActor->GetProperty()->SetColor(1,1,0);
-  myPointActor->GetProperty()->SetPointSize(5);
-  myPointActor->GetProperty()->SetRepresentationToPoints();
-
   connect(mTimer, SIGNAL(timeout()), this, SLOT(TimerFunc())) ;
 }
 
@@ -116,14 +96,6 @@ SVTK_RenderWindowInteractor
   if(MYDEBUG) INFOS("SVTK_RenderWindowInteractor::~SVTK_RenderWindowInteractor()");
 
   delete mTimer ;
-
-  myViewWindow->RemoveActor(myCellActor);
-  myViewWindow->RemoveActor(myEdgeActor);
-  myViewWindow->RemoveActor(myPointActor);
-
-  myCellActor->Delete();
-  myEdgeActor->Delete();
-  myPointActor->Delete();
 
   myBasicPicker->Delete();
   myCellPicker->Delete();
@@ -168,8 +140,9 @@ SVTK_RenderWindowInteractor
   this->Size[1] = ((aSize[1] > 0) ? aSize[1] : 300);
 
   this->SetPicker(myBasicPicker);
+  //this->SetPicker(vtkPicker::New());
 
-  SetSelectionTolerance();
+  //SetSelectionTolerance();
 
   //
   // Enable the interactor. 
@@ -189,37 +162,6 @@ SVTK_RenderWindowInteractor
   return ;
 }
 
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::setGUIWindow(QWidget* theWindow)
-{
-  myGUIWindow = theWindow;
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::setViewWindow(SVTK_ViewWindow* theViewWindow)
-{
-  myViewWindow = theViewWindow;
-
-  myViewWindow->InsertActor(myCellActor);
-  myViewWindow->InsertActor(myEdgeActor);
-  myViewWindow->InsertActor(myPointActor);
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::MoveInternalActors()
-{
-  myViewWindow->MoveActor(myCellActor);
-  myViewWindow->MoveActor(myEdgeActor);
-  myViewWindow->MoveActor(myPointActor);
-}
-
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
@@ -234,10 +176,6 @@ void
 SVTK_RenderWindowInteractor
 ::SetSelectionMode(Selection_Mode theMode)
 {
-  myCellActor->SetVisibility(false);
-  myEdgeActor->SetVisibility(false);
-  myPointActor->SetVisibility(false);
-
   switch(theMode){
   case ActorSelection:
     this->SetPicker(myBasicPicker);
@@ -256,7 +194,7 @@ SVTK_RenderWindowInteractor
 
   myInteractorStyle->OnSelectionModeChanged();
 }
-
+/*
 void
 SVTK_RenderWindowInteractor
 ::SetSelectionProp(const double& theRed, 
@@ -284,7 +222,7 @@ SVTK_RenderWindowInteractor
   myPointPicker->SetTolerance(myTolNodes);
 
 }
-
+*/
 // ================================== 
 void
 SVTK_RenderWindowInteractor
@@ -384,6 +322,10 @@ SVTK_RenderWindowInteractor
   if( ! this->Enabled ) {
     return ;
   }
+  this->SetEventInformationFlipY( event->x(), event->y(),
+				  ( event->state() & ControlButton ),
+				  ( event->state() & ShiftButton ) );
+
   myInteractorStyle->OnLeftButtonUp( (event->state() & ControlButton), 
 				     (event->state() & ShiftButton), 
 				     event->x(), event->y() ) ;
@@ -720,47 +662,6 @@ SVTK_RenderWindowInteractor
 ::KeyPressed(QKeyEvent *event)
 {}
 
-
-struct THighlightAction{
-  bool myIsHighlight;
-  SVTK_InteractorStyle* myInteractorStyle;
-  THighlightAction(SVTK_InteractorStyle* theInteractorStyle,
-		   bool theIsHighlight): 
-    myInteractorStyle(theInteractorStyle),
-    myIsHighlight(theIsHighlight)
-  {}
-  void operator()(SALOME_Actor* theActor){
-    if(theActor->GetMapper()){
-      if(theActor->hasHighlight())
-	theActor->highlight(myIsHighlight);
-      else{
-	if(theActor->GetVisibility() && myIsHighlight)
-	  myInteractorStyle->HighlightProp(theActor);
-	else if(!myIsHighlight)
-	  myInteractorStyle->HighlightProp(NULL);
-      }
-    }
-  }
-};
-
-bool
-SVTK_RenderWindowInteractor
-::highlight( const Handle(SALOME_InteractiveObject)& theIObject, 
-	     bool hilight, 
-	     bool update)
-{
-  using namespace VTK;
-  ForEachIf<SALOME_Actor>(GetRenderer()->GetActors(),
-			  TIsSameIObject<SALOME_Actor>(theIObject),
-			  THighlightAction(myInteractorStyle,hilight));
-
-  if(update)
-    emit RenderWindowModified();
-
-  return false;
-}
-
-
 struct TUpdateAction{
   void operator()(vtkActor* theActor){
     theActor->ApplyProperties();
@@ -779,32 +680,6 @@ SVTK_RenderWindowInteractor
   aRen->ResetCamera();
 
   emit RenderWindowModified();  
-}
-
-
-void
-SVTK_RenderWindowInteractor
-::unHighlightSubSelection()
-{
-  myPointActor->SetVisibility(false);
-  myEdgeActor->SetVisibility(false);
-  myCellActor->SetVisibility(false);
-}
-
-
-bool
-SVTK_RenderWindowInteractor
-::unHighlightAll()
-{
-  unHighlightSubSelection();
-
-  using namespace VTK;
-  ForEach<SALOME_Actor>(GetRenderer()->GetActors(),
-			THighlightAction(myInteractorStyle,false));
-
-  emit RenderWindowModified() ;
-
-  return false;
 }
 
 //-----------------
@@ -876,136 +751,19 @@ SVTK_RenderWindowInteractor
 			  (&SALOME_Actor::setName,theName.latin1()));
 }
 
-
-//----------------------------------------------------------------------------
-bool
+SVTK_SelectionEvent
 SVTK_RenderWindowInteractor
-::highlight(const TColStd_IndexedMapOfInteger& theMapIndex,
-	    SALOME_Actor* theMapActor, 
-	    SVTK_Actor* theActor,
-	    TUpdateActor theFun, 
-	    bool hilight, 
-	    bool update)
+::GetSelectionEvent()
 {
-  if(theMapIndex.Extent() == 0) return false;
-  
-  if (hilight) {
-    setActorData(theMapIndex,theMapActor,theActor,theFun);
-    theActor->SetVisibility(true);
-  }
-  else {
-    theActor->SetVisibility(false);
-  }
+  SVTK_SelectionEvent aSelectionEvent;
 
-  if(update){
-    this->RenderWindow->Render();  
-    emit RenderWindowModified() ;
-  }
+  int x, y;
+  this->GetEventPosition( x, y );
 
-  return false;
-}
-  
-void
-SVTK_RenderWindowInteractor
-::setActorData(const TColStd_IndexedMapOfInteger& theMapIndex,
-	       SALOME_Actor* theMapActor,
-	       SVTK_Actor *theActor,
-	       TUpdateActor theFun)
-{
-  (*theFun)(theMapIndex,theMapActor,theActor);
-  float aPos[3];
-  theMapActor->GetPosition(aPos);
-  theActor->SetPosition(aPos);
-}
+  aSelectionEvent.X = x;
+  aSelectionEvent.Y = y;
+  aSelectionEvent.IsCtrl = this->GetControlKey();
+  aSelectionEvent.IsShift = this->GetShiftKey();
 
-
-//----------------------------------------------------------------------------
-static void CellsUpdateActor(const TColStd_IndexedMapOfInteger& theMapIndex,
-			     SALOME_Actor* theMapActor, 
-			     SVTK_Actor* theActor)
-{
-  theActor->MapCells(theMapActor,theMapIndex);
-}
-  
-bool
-SVTK_RenderWindowInteractor
-::highlightCell(const TColStd_IndexedMapOfInteger& theMapIndex,
-		SALOME_Actor* theMapActor, 
-		bool hilight, 
-		bool update)
-{
-  return highlight(theMapIndex,theMapActor,myCellActor,&CellsUpdateActor,hilight,update);
-}
-  
-void 
-SVTK_RenderWindowInteractor
-::setCellData(const int& theIndex, 
-	      SALOME_Actor* theMapActor,
-	      SVTK_Actor* theActor)
-{
-  TColStd_IndexedMapOfInteger MapIndex; 
-  MapIndex.Add(theIndex);
-  theActor->MapCells(theMapActor,MapIndex);
-}
-
-
-//----------------------------------------------------------------------------
-static void PointsUpdateActor(const TColStd_IndexedMapOfInteger& theMapIndex,
-			      SALOME_Actor* theMapActor, 
-			      SVTK_Actor* theActor)
-{
-  theActor->MapPoints(theMapActor,theMapIndex);
-}
-  
-bool
-SVTK_RenderWindowInteractor
-::highlightPoint(const TColStd_IndexedMapOfInteger& theMapIndex,
-		 SALOME_Actor* theMapActor, 
-		 bool hilight, 
-		 bool update)
-{
-  return highlight(theMapIndex,theMapActor,myPointActor,&PointsUpdateActor,hilight,update);
-}
-  
-void
-SVTK_RenderWindowInteractor
-::setPointData(const int& theIndex, 
-	       SALOME_Actor* theMapActor,
-	       SVTK_Actor* theActor)
-{
-  TColStd_IndexedMapOfInteger MapIndex; 
-  MapIndex.Add(theIndex);
-  theActor->MapPoints(theMapActor,MapIndex);
-}
-
-  
-//----------------------------------------------------------------------------
-static void EdgesUpdateActor(const TColStd_IndexedMapOfInteger& theMapIndex,
-			     SALOME_Actor* theMapActor, 
-			     SVTK_Actor* theActor)
-{
-  theActor->MapEdge(theMapActor,theMapIndex);
-}
-  
-bool
-SVTK_RenderWindowInteractor
-::highlightEdge(const TColStd_IndexedMapOfInteger& theMapIndex,
-		SALOME_Actor* theMapActor, 
-		bool hilight, 
-		bool update)
-{
-  return highlight(theMapIndex,theMapActor,myEdgeActor,&EdgesUpdateActor,hilight,update);
-}
-  
-void 
-SVTK_RenderWindowInteractor
-::setEdgeData(const int& theCellIndex, 
-	      SALOME_Actor* theMapActor,
-	      const int& theEdgeIndex, 
-	      SVTK_Actor* theActor )
-{
-  TColStd_IndexedMapOfInteger MapIndex; 
-  MapIndex.Add(theCellIndex); 
-  MapIndex.Add(theEdgeIndex);
-  theActor->MapEdge(theMapActor,MapIndex);
+  return aSelectionEvent;
 }

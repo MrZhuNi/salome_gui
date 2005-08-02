@@ -78,7 +78,7 @@ SVTK_ViewWindow
   // Create an interactor.
   myRWInteractor = SVTK_RenderWindowInteractor::New();
   myRWInteractor->SetRenderWindow( myRenderWindow->getRenderWindow() );
-  myRWInteractor->setViewWindow( this );
+  //myRWInteractor->setViewWindow( this );
 
   SVTK_InteractorStyle* RWS = SVTK_InteractorStyle::New();
   RWS->setGUIWindow( myRenderWindow );
@@ -489,6 +489,17 @@ SVTK_ViewWindow
 }
 
 //----------------------------------------------------------------
+struct THighlightAction{
+  bool myIsHighlight;
+  THighlightAction( bool theIsHighlight ): myIsHighlight(theIsHighlight) {}
+  void operator()( SALOME_Actor* theActor) {
+    if(theActor->GetMapper()){
+      theActor->highlight( myIsHighlight );
+    }
+  }
+};
+
+//----------------------------------------------------------------
 void
 SVTK_ViewWindow
 ::onSelectionChanged()
@@ -510,6 +521,7 @@ SVTK_ViewWindow
 ::SetSelectionMode(Selection_Mode theMode)
 {
   mySelector->SetSelectionMode(theMode);
+
   myRWInteractor->SetSelectionMode(theMode);
 }
 
@@ -526,7 +538,14 @@ void
 SVTK_ViewWindow
 ::unHighlightAll() 
 {
-  myRWInteractor->unHighlightAll();
+  //cout << "--------------------------------------------------" << endl;
+  //cout << "SVTK_ViewWindow::unHighlightAll" << endl;
+
+  using namespace VTK;
+  ForEach<SALOME_Actor>( myRenderer->GetActors(),
+			 THighlightAction( false ) );
+
+  //myRenderWindow->update();
 }
 
 //----------------------------------------------------------------
@@ -536,33 +555,12 @@ SVTK_ViewWindow
 	     bool theIsHighlight, 
 	     bool theIsUpdate ) 
 {
-  myRWInteractor->highlight(theIO, theIsHighlight, theIsUpdate);
+  using namespace VTK;
+  ForEachIf<SALOME_Actor>(myRenderer->GetActors(),
+			  TIsSameIObject<SALOME_Actor>(theIO),
+			  THighlightAction(theIsHighlight));
 
-  if(mySelector->HasIndex(theIO) && theIO->hasEntry()){
-    TColStd_IndexedMapOfInteger aMapIndex;
-    mySelector->GetIndex(theIO,aMapIndex);
-    using namespace VTK;
-    const char* anEntry = theIO->getEntry();
-    vtkActorCollection* aCollection = myRenderer->GetActors();
-    if(SALOME_Actor* anActor = Find<SALOME_Actor>(aCollection,TIsSameEntry<SALOME_Actor>(anEntry))){
-      switch (mySelector->SelectionMode()) {
-      case NodeSelection:
-	myRWInteractor->highlightPoint(aMapIndex,anActor,theIsHighlight,theIsUpdate);
-	break;
-      case EdgeOfCellSelection:
-	myRWInteractor->highlightEdge(aMapIndex,anActor,theIsHighlight,theIsUpdate);
-	break;
-      case CellSelection:
-      case EdgeSelection:
-      case FaceSelection:
-      case VolumeSelection:
-	myRWInteractor->highlightCell(aMapIndex,anActor,theIsHighlight,theIsUpdate);
-	break;
-      }
-    }
-  }else{
-    myRWInteractor->unHighlightSubSelection();
-  }
+  //myRenderWindow->update();
 }
 
 //----------------------------------------------------------------
@@ -758,7 +756,7 @@ SVTK_ViewWindow
     if(aCDisplayed) myCubeAxes->VisibilityOff();
 
     SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
-    QString aSetting = aResMgr->stringValue("Viewer", "TrihedronSize", "105");
+    QString aSetting = aResMgr->stringValue("Viewer:TrihedronSize", "105");
     static float aSizeInPercents = aSetting.toFloat();
 
     //bool isComputeTrihedronSize =
@@ -985,18 +983,20 @@ SVTK_ViewWindow
 //----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
-::InsertActor( SALOME_Actor* theActor, bool theMoveInternalActors )
+::InsertActor( VTKViewer_Actor* theActor, bool theMoveInternalActors )
 {
+  //cout << "SVTK_ViewWindow::InsertActor" << endl;
   theActor->AddToRender(myRenderer);
+
   theActor->SetTransform(myTransform);
-  if(theMoveInternalActors) 
-    myRWInteractor->MoveInternalActors();
+  //if(theMoveInternalActors) 
+  //  myRWInteractor->MoveInternalActors();
 }
 
 //----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
-::AddActor( SALOME_Actor* theActor, bool theUpdate /*=false*/ )
+::AddActor( VTKViewer_Actor* theActor, bool theUpdate /*=false*/ )
 {
   InsertActor(theActor);
   if(theUpdate) 
@@ -1006,8 +1006,11 @@ SVTK_ViewWindow
 //----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
-::RemoveActor( SALOME_Actor* theActor, bool theUpdate /*=false*/ )
+::RemoveActor( VTKViewer_Actor* theActor, bool theUpdate /*=false*/ )
 {
+  //cout << "SVTK_ViewWindow::RemoveActor" << endl;
+  theActor->RemoveFromRender(myRenderer);
+
   theActor->RemoveFromRender(myRenderer);
   if(theUpdate) 
     Repaint();
@@ -1016,7 +1019,7 @@ SVTK_ViewWindow
 //----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
-::MoveActor( SALOME_Actor* theActor)
+::MoveActor( VTKViewer_Actor* theActor)
 {
   RemoveActor(theActor);
   InsertActor(theActor,true);

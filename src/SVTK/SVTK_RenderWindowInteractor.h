@@ -30,8 +30,8 @@
 #define SVTK_RenderWindowInteractor_h
 
 #include "SVTK.h"
+#include "SVTK_SelectionEvent.h"
 
-#include "SVTK_Selection.h"
 #include "SALOME_InteractiveObject.hxx"
 
 // QT Includes
@@ -53,7 +53,6 @@ class vtkPointPicker;
 class vtkActorCollection;
 
 class SALOME_Actor;
-class SVTK_Actor;
 
 class SVTK_ViewWindow;
 class SVTK_RenderWindow;
@@ -106,36 +105,19 @@ public:
   virtual int DestroyTimer() ; 
   
   /* Selection Management */
-  bool highlightCell(const TColStd_IndexedMapOfInteger& MapIndex, 
-		     SALOME_Actor* theMapActor, 
-		     bool hilight, 
-		     bool update = true );
-  bool highlightEdge(const TColStd_IndexedMapOfInteger& MapIndex, 
-		     SALOME_Actor* theMapActor, 
-		     bool hilight, 
-		     bool update = true );
-  bool highlightPoint(const TColStd_IndexedMapOfInteger& MapIndex, 
-		      SALOME_Actor* theMapActor, 
-		      bool hilight, 
-		      bool update = true );
-  bool highlight(const Handle(SALOME_InteractiveObject)& IObject, 
-		 bool hiligth, 
-		 bool immediatly = true );
-  void unHighlightSubSelection();
-  bool unHighlightAll();
-
   bool isInViewer( const Handle(SALOME_InteractiveObject)& IObject);
   bool isVisible( const Handle(SALOME_InteractiveObject)& IObject);
   void rename(const Handle(SALOME_InteractiveObject)& IObject, QString newName);
 
   void SetSelectionMode(Selection_Mode mode);
+  /*
   void SetSelectionProp(const double& theRed = 1, 
 			const double& theGreen = 1,
 			const double& theBlue = 0, 
 			const int& theWidth = 5);
   void SetSelectionTolerance(const double& theTolNodes = 0.025, 
 			     const double& theTolCell = 0.001);
-
+  */
   // Displaymode management
   int GetDisplayMode();
   void SetDisplayMode(int);
@@ -183,54 +165,20 @@ public:
 
   vtkRenderer* GetRenderer();
 
-  void setGUIWindow(QWidget* theWindow);
+  SVTK_SelectionEvent GetSelectionEvent();
 
-  void setViewWindow(SVTK_ViewWindow* theViewWindow);
-  
-  void setCellData(const int& theIndex, 
-		   SALOME_Actor* theMapActor,
-		   SVTK_Actor* theActor);
-  void setEdgeData(const int& theCellIndex, 
-		   SALOME_Actor* theMapActor,
-		   const int& theEdgeIndex, 
-		   SVTK_Actor* theActor ); //NB
-  void setPointData(const int& theIndex, 
-		    SALOME_Actor* theMapActor,
-		    SVTK_Actor* theActor);
-
-  typedef void (*TUpdateActor)(const TColStd_IndexedMapOfInteger& theMapIndex,
-			       SALOME_Actor* theMapActor, 
-			       SVTK_Actor* theActor);
  protected:
 
   SVTK_RenderWindowInteractor();
   ~SVTK_RenderWindowInteractor();
 
   SVTK_InteractorStyle* myInteractorStyle;
-
-  bool highlight(const TColStd_IndexedMapOfInteger& theMapIndex, 
-		 SALOME_Actor* theMapActor, 
-		 SVTK_Actor* theActor,
-		 TUpdateActor theFun, 
-		 bool hilight, 
-		 bool update);
-  void setActorData(const TColStd_IndexedMapOfInteger& theMapIndex,
-		    SALOME_Actor* theMapActor,
-		    SVTK_Actor *theActor,
-		    TUpdateActor theFun);
   
   // Timer used during various mouse events to figure 
   // out mouse movements. 
   QTimer *mTimer ;
 
   int myDisplayMode;
-
-  //NRI: Selection mode
-  SVTK_Actor* myPointActor;
-  SVTK_Actor* myEdgeActor;
-  SVTK_Actor* myCellActor;
-  void MoveInternalActors();
-
   vtkPicker* myBasicPicker;
   vtkCellPicker* myCellPicker;
   vtkPointPicker* myPointPicker;
@@ -262,8 +210,6 @@ public:
   void contextMenuRequested( QContextMenuEvent *e );
 
  private:
-  SVTK_ViewWindow* myViewWindow;  
-  QWidget* myGUIWindow;  
   double myTolNodes;
   double myTolItems;
 };

@@ -19,7 +19,7 @@ class SUIT_Desktop;
 class VTKViewer_Trihedron;
 class VTKViewer_Transform;
 
-class SALOME_Actor;
+class VTKViewer_Actor;
 
 class SVTK_Viewer;
 class SVTK_Selector;
@@ -76,8 +76,8 @@ public:
   //apply existing transformation on adding SALOME_Actor
   void SetScale( double theScale[3] );
   void GetScale( double theScale[3] );
-  void AddActor( SALOME_Actor*, bool update = false );
-  void RemoveActor(SALOME_Actor*, bool update = false);
+  void AddActor( VTKViewer_Actor*, bool update = false );
+  void RemoveActor(VTKViewer_Actor*, bool update = false);
 
   void AdjustTrihedrons( const bool forced );
   //merge with V2_2_0_VISU_improvements:bool ComputeTrihedronSize( double& theNewSize,
@@ -142,9 +142,9 @@ protected slots:
 
 private:
   void InitialSetup();
-  void InsertActor( SALOME_Actor* theActor,
+  void InsertActor( VTKViewer_Actor* theActor,
                     bool theMoveInternalActors = false );
-  void MoveActor( SALOME_Actor* theActor );
+  void MoveActor( VTKViewer_Actor* theActor );
 
 private:  
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, RotationId,
