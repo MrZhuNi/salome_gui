@@ -25,7 +25,8 @@ EXPORT_HEADERS= SVTK.h \
 		SVTK_InteractorStyle.h \
 		SVTK_RenderWindowInteractor.h \
 		SVTK_Selector.h \
-		SVTK_Selection.h
+		SVTK_Selection.h \
+		SVTK_SelectionEvent.h
 
 # Libraries targets
 LIB = libSVTK.la
