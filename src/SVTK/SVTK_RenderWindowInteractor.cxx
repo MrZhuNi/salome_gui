@@ -194,7 +194,7 @@ SVTK_RenderWindowInteractor
 
   myInteractorStyle->OnSelectionModeChanged();
 }
-/*
+
 void
 SVTK_RenderWindowInteractor
 ::SetSelectionProp(const double& theRed, 
@@ -202,11 +202,13 @@ SVTK_RenderWindowInteractor
 		   const double& theBlue, 
 		   const int& theWidth) 
 {
+  /*
   myCellActor->GetProperty()->SetColor(theRed, theGreen, theBlue);
   myCellActor->GetProperty()->SetLineWidth(theWidth);
 
   myPointActor->GetProperty()->SetColor(theRed, theGreen, theBlue);
   myPointActor->GetProperty()->SetPointSize(theWidth);
+  */
 }
 
 void
@@ -222,7 +224,7 @@ SVTK_RenderWindowInteractor
   myPointPicker->SetTolerance(myTolNodes);
 
 }
-*/
+
 // ================================== 
 void
 SVTK_RenderWindowInteractor

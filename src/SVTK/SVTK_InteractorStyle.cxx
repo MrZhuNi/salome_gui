@@ -907,6 +907,7 @@ SVTK_InteractorStyle
 
 	  SVTK_SelectionEvent aSelectionEvent = myInteractor->GetSelectionEvent();
 	  aSelectionEvent.SelectionMode = aSelectionMode;
+	  aSelectionEvent.IsRectangle = false;
 
 	  if( aSActor )
 	    aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true, true );
@@ -940,6 +941,12 @@ SVTK_InteractorStyle
 	  x2 = rect.right(); 
 	  y2 = h - rect.bottom() - 1;
 
+	  SVTK_SelectionEvent aSelectionEvent = myInteractor->GetSelectionEvent();
+	  aSelectionEvent.SelectionMode = aSelectionMode;
+	  aSelectionEvent.IsRectangle = true;
+	  aSelectionEvent.LastX = x1;
+	  aSelectionEvent.LastY = y1;
+	  
 	  switch (aSelectionMode) {
 	  case NodeSelection: {
 	    if ( vtkPointPicker* aPointPicker = vtkPointPicker::SafeDownCast(myInteractor->GetPicker()) ) {
@@ -948,46 +955,8 @@ SVTK_InteractorStyle
 	      while (vtkActor* aActor = aListActors->GetNextActor()) {
 		if (!aActor->GetVisibility()) 
 		  continue;
-		if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)) {
-		  if (aSActor->hasIO()) {
-		    Handle(SALOME_InteractiveObject) anIO = aSActor->getIO();
-		    if (anIO.IsNull()) 
-		      continue;
-		    if (aSelActiveCompOnly && aComponentDataType != anIO->getComponentDataType())
-		      continue;
-		    if (vtkDataSet* aDataSet = aSActor->GetInput()) {
-		      TColStd_MapOfInteger anIndices;
-		      for(int i = 0; i < aDataSet->GetNumberOfPoints(); i++) {
-			float aPoint[3];
-			aDataSet->GetPoint(i,aPoint);
-			if (IsInRect(aPoint,x1,y1,x2,y2)){
-			  float aDisp[3];
-			  ComputeWorldToDisplay(aPoint[0],aPoint[1],aPoint[2],aDisp);
-			  if(aPointPicker->Pick(aDisp[0],aDisp[1],0.0,CurrentRenderer)){
-			    if(vtkActorCollection *anActorCollection = aPointPicker->GetActors()){
-			      if(anActorCollection->IsItemPresent(aSActor)){
-				float aPickedPoint[3];
-				aPointPicker->GetMapperPosition(aPickedPoint);
-				vtkIdType aVtkId = aDataSet->FindPoint(aPickedPoint);
-				if ( aVtkId >= 0 && IsValid( aSActor, aVtkId, true ) ){
-				  int anObjId = aSActor->GetNodeObjId(aVtkId);
-				  anIndices.Add(anObjId);
-				}
-			      }
-			    }
-			  }
-			}
-		      }
-		      if (!anIndices.IsEmpty()) {
-			GetSelector()->AddOrRemoveIndex(anIO,anIndices,false);
-			GetSelector()->AddIObject(aSActor);
-			anIndices.Clear();
-		      }else{
-			GetSelector()->RemoveIObject(aSActor);
-		      }
-		    }
-		  }
-		}
+		if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor))
+		  aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true, true );
 	      }
 	    }
 	    break;
@@ -1004,36 +973,9 @@ SVTK_InteractorStyle
 	      
 	      vtkActorCollection* aListActors = picker->GetActors();
 	      aListActors->InitTraversal();
-	      while(vtkActor* aActor = aListActors->GetNextActor()) {
-		if (SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)) {
-		  if (aSActor->hasIO()) {
-		    Handle(SALOME_InteractiveObject) anIO = aSActor->getIO();
-		    if (aSelActiveCompOnly && aComponentDataType != anIO->getComponentDataType())
-		      continue;
-		    VTKViewer_CellDataSet cellList = picker->GetCellData(aActor);
-		    if ( !cellList.empty() ) {
-		      if(MYDEBUG) INFOS ( " NAME Actor : " << aSActor->getName() );
-		      TColStd_MapOfInteger anIndexes;
-		      VTKViewer_CellDataSet::iterator it;
-		      for ( it = cellList.begin(); it != cellList.end(); ++it ) {
-			int aCellId = (*it).cellId;
-			
-			if ( !IsValid( aSActor, aCellId ) )
-			  continue;
-			
-			int anObjId = aSActor->GetElemObjId(aCellId);
-			if (anObjId != -1){
-			  if ( CheckDimensionId(aSelectionMode,aSActor,anObjId) ) {
-			    anIndexes.Add(anObjId);
-			  }
-			}
-		      }
-		      GetSelector()->AddOrRemoveIndex(anIO,anIndexes,true);
-		      GetSelector()->AddIObject(aSActor);
-		    }
-		  }
-		}
-	      }
+	      while(vtkActor* aActor = aListActors->GetNextActor())
+		if (SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor))
+		  aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true, true );
 	    }
 	    break;	    
 	  case ActorSelection: // objects selection
@@ -1044,15 +986,9 @@ SVTK_InteractorStyle
 
 	      vtkActorCollection* aListActors = picker->GetActors();
 	      aListActors->InitTraversal();
-	      while(vtkActor* aActor = aListActors->GetNextActor()) {
-		if (SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)) {
-		  if (aSActor->hasIO()) {
-		    Handle(SALOME_InteractiveObject) anIO = aSActor->getIO();
-		    GetSelector()->AddIObject(aSActor);
-		    this->PropPicked++;
-		  }
-		}
-	      }
+	      while(vtkActor* aActor = aListActors->GetNextActor())
+		if (SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor))
+		  aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true, true );
 	    } // end case 4
 	  } //end switch
 	  myInteractor->EndPickCallback();
@@ -1355,71 +1291,6 @@ SVTK_InteractorStyle
   cam->SetPosition(motionVector[0] + viewPoint[0],
 		   motionVector[1] + viewPoint[1],
 		   motionVector[2] + viewPoint[2]);
-}
-
-
-/// Checks: is the given Actor within display coordinates?
-bool
-SVTK_InteractorStyle
-::IsInRect(vtkActor* theActor, 
-	   const int left, const int top, 
-	   const int right, const int bottom)
-{
-  float* aBounds = theActor->GetBounds();
-  float aMin[3], aMax[3];
-  ComputeWorldToDisplay(aBounds[0], aBounds[2], aBounds[4], aMin);
-  ComputeWorldToDisplay(aBounds[1], aBounds[3], aBounds[5], aMax);
-  if (aMin[0] > aMax[0]) {
-    float aBuf = aMin[0];
-    aMin[0] = aMax[0];
-    aMax[0] = aBuf;
-  }
-  if (aMin[1] > aMax[1]) {
-    float aBuf = aMin[1];
-    aMin[1] = aMax[1];
-    aMax[1] = aBuf;    
-  }
-
-  return ((aMin[0]>left) && (aMax[0]<right) && (aMin[1]>bottom) && (aMax[1]<top));
-}
-
-
-/// Checks: is the given Cell within display coordinates?
-bool
-SVTK_InteractorStyle
-::IsInRect(vtkCell* theCell, 
-	   const int left, const int top, 
-	   const int right, const int bottom)
-{
-  float* aBounds = theCell->GetBounds();
-  float aMin[3], aMax[3];
-  ComputeWorldToDisplay(aBounds[0], aBounds[2], aBounds[4], aMin);
-  ComputeWorldToDisplay(aBounds[1], aBounds[3], aBounds[5], aMax);
-  if (aMin[0] > aMax[0]) {
-    float aBuf = aMin[0];
-    aMin[0] = aMax[0];
-    aMax[0] = aBuf;
-  }
-  if (aMin[1] > aMax[1]) {
-    float aBuf = aMin[1];
-    aMin[1] = aMax[1];
-    aMax[1] = aBuf;    
-  }
-
-  return ((aMin[0]>left) && (aMax[0]<right) && (aMin[1]>bottom) && (aMax[1]<top));
-}
-
-
-bool
-SVTK_InteractorStyle
-::IsInRect(float* thePoint, 
-	   const int left, const int top, 
-	   const int right, const int bottom)
-{
-  float aPnt[3];
-  ComputeWorldToDisplay(thePoint[0], thePoint[1], thePoint[2], aPnt);
-
-  return ((aPnt[0]>left) && (aPnt[0]<right) && (aPnt[1]>bottom) && (aPnt[1]<top));
 }
 
 void

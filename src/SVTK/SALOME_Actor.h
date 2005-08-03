@@ -67,8 +67,6 @@ extern int SALOME_POINT_SIZE;
 #include "SVTK_Selector.h"
 #include "SVTK_SelectionEvent.h"
 
-#include <TColStd_IndexedMapOfInteger.hxx>
-
 #include <string>
 
 class vtkRenderer;
@@ -205,7 +203,18 @@ class SALOME_OBJECT_EXPORT SALOME_Actor : public VTKViewer_Actor {
 
   virtual bool Highlight( SVTK_InteractorStyle*, SVTK_Selector*, vtkRenderer*, SVTK_SelectionEvent, bool, bool );
   virtual bool Unhighlight( SVTK_InteractorStyle*, SVTK_Selector*, bool );
-
+  /*
+ protected:
+  bool IsInRect(vtkActor* theActor, 
+		const int left, const int top, 
+		const int right, const int bottom);
+  bool IsInRect(vtkCell* theCell, 
+		const int left, const int top, 
+		const int right, const int bottom);
+  bool IsInRect(float* thePoint, 
+		const int left, const int top, 
+		const int right, const int bottom);
+  */
  protected:
   vtkProperty* myPointProperty;
   vtkProperty* myCellProperty;

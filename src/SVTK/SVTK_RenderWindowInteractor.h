@@ -110,14 +110,13 @@ public:
   void rename(const Handle(SALOME_InteractiveObject)& IObject, QString newName);
 
   void SetSelectionMode(Selection_Mode mode);
-  /*
   void SetSelectionProp(const double& theRed = 1, 
 			const double& theGreen = 1,
 			const double& theBlue = 0, 
 			const int& theWidth = 5);
   void SetSelectionTolerance(const double& theTolNodes = 0.025, 
 			     const double& theTolCell = 0.001);
-  */
+
   // Displaymode management
   int GetDisplayMode();
   void SetDisplayMode(int);

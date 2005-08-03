@@ -126,15 +126,6 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   void fitRect(const int left, const int top, const int right, const int bottom);
   void Place(const int theX, const int theY);
   void TranslateView(int toX, int toY, int fromX, int fromY);
-  bool IsInRect(vtkActor* theActor, 
-		const int left, const int top, 
-		const int right, const int bottom);
-  bool IsInRect(vtkCell* theCell, 
-		const int left, const int top, 
-		const int right, const int bottom);
-  bool IsInRect(float* thePoint, 
-		const int left, const int top, 
-		const int right, const int bottom);
 
   float MotionFactor;
   float RadianToDegree;                 // constant: for conv from deg to rad

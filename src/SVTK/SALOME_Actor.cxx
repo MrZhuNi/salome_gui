@@ -38,7 +38,8 @@
 #include "VTKViewer_TransformFilter.h"
 #include "VTKViewer_PassThroughFilter.h"
 #include "VTKViewer_GeometryFilter.h"
- 
+#include "VTKViewer_CellRectPicker.h"
+
 #include "SVTK_Actor.h"
 #include "SVTK_InteractorStyle.h"
 
@@ -57,8 +58,10 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 
-//using namespace std;
+#include <TColStd_MapOfInteger.hxx>
+#include <TColStd_IndexedMapOfInteger.hxx>
 
+//using namespace std;
 
 #if defined __GNUC__
   #if __GNUC__ == 2
@@ -398,62 +401,35 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
 			      bool theIsUpdate )
 {
   Selection_Mode aSelectionMode = theSelectionEvent.SelectionMode;
-  float x = theSelectionEvent.X;
-  float y = theSelectionEvent.Y;
-  float z = 0.0;
+  float x1 = theSelectionEvent.X;
+  float y1 = theSelectionEvent.Y;
+  float z1 = 0.0;
+  float x2 = theSelectionEvent.LastX;
+  float y2 = theSelectionEvent.LastY;
+  float z2 = 0.0;
   bool isShift = theSelectionEvent.IsShift;
-
-  if( aSelectionMode == NodeSelection )
+  bool isRectangle = theSelectionEvent.IsRectangle;
+  /*
+  cout << x1 << " " << y1;
+  if( isRectangle )
+    cout << " " << x2 << " " << y2;
+  cout << endl;
+  */
+  if( !isRectangle )
   {
-    //vtkSmartPointer<VTKViewer_CellRectPicker> picker = VTKViewer_CellRectPicker::New();
-    vtkPointPicker* aPicker = vtkPointPicker::New();
-
-    aPicker->Pick( x, y, z, theRenderer );
-
-    int aVtkId = aPicker->GetPointId();
-    if( aVtkId >= 0 && hasIO() && theInteractorStyle->IsValid( this, aVtkId, true ) )
+    if( aSelectionMode == NodeSelection )
     {
-      int anObjId = GetNodeObjId( aVtkId );
-      if( anObjId >= 0 )
-      {
-	if( theSelector->IsSelected( myIO ) )
-	{
-	  // This IO is already in the selection
-	  theSelector->AddOrRemoveIndex( myIO, anObjId, isShift );
-	}
-	else
-	{
-	  if( !isShift )
-	  {
-	    theInteractorStyle->HighlightProp( NULL );
-	    theSelector->ClearIObjects();
-	  }
-	  theSelector->AddOrRemoveIndex( myIO, anObjId, isShift );
-	  theSelector->AddIObject( this );
-	}
-      }
-    }
-    aPicker->Delete();
-  }
-  else if( aSelectionMode == CellSelection )
-  {
-    vtkCellPicker* aPicker = vtkCellPicker::New();
+      vtkPointPicker* aPicker = vtkPointPicker::New();
+      aPicker->Pick( x1, y1, z1, theRenderer );
 
-    aPicker->Pick( x, y, z, theRenderer );
-    
-    int aVtkId = aPicker->GetCellId();
-    if( aVtkId >= 0 && hasIO() && theInteractorStyle->IsValid( this, aVtkId ) )
-    {
-      int anObjId = GetElemObjId( aVtkId );
-      if( anObjId >= 0 )
+      int aVtkId = aPicker->GetPointId();
+      if( aVtkId >= 0 && hasIO() && theInteractorStyle->IsValid( this, aVtkId, true ) )
       {
-	//if( theInteractorStyle->CheckDimensionId( aSelectionMode, this, anObjId ) )
+	int anObjId = GetNodeObjId( aVtkId );
+	if( anObjId >= 0 )
 	{
 	  if( theSelector->IsSelected( myIO ) )
-	  {
-	    // This IO is already in the selection
 	    theSelector->AddOrRemoveIndex( myIO, anObjId, isShift );
-	  }
 	  else
 	  {
 	    if( !isShift )
@@ -466,57 +442,174 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
 	  }
 	}
       }
+      aPicker->Delete();
     }
-    aPicker->Delete();
-  }
-  else if( aSelectionMode == EdgeOfCellSelection )
-  {
-    vtkCellPicker* aPicker = vtkCellPicker::New();
-
-    aPicker->Pick( x, y, z, theRenderer );
-    
-    int aVtkId = aPicker->GetCellId();
-    if( aVtkId >= 0 && hasIO() && theInteractorStyle->IsValid( this, aVtkId ) )
+    else if( aSelectionMode == CellSelection )
     {
-      int anObjId = GetElemObjId( aVtkId );
-      if( anObjId >= 0 )
+      vtkCellPicker* aPicker = vtkCellPicker::New();
+      aPicker->Pick( x1, y1, z1, theRenderer );
+    
+      int aVtkId = aPicker->GetCellId();
+      if( aVtkId >= 0 && hasIO() && theInteractorStyle->IsValid( this, aVtkId ) )
       {
-	if( !isShift )
+	int anObjId = GetElemObjId( aVtkId );
+	if( anObjId >= 0 )
 	{
-	  theInteractorStyle->HighlightProp( NULL );
-	  theSelector->ClearIObjects();
+	  //if( theInteractorStyle->CheckDimensionId( aSelectionMode, this, anObjId ) )
+	  {
+	    if( theSelector->IsSelected( myIO ) )
+	      theSelector->AddOrRemoveIndex( myIO, anObjId, isShift );
+	    else
+	    {
+	      if( !isShift )
+	      {
+		theInteractorStyle->HighlightProp( NULL );
+		theSelector->ClearIObjects();
+	      }
+	      theSelector->AddOrRemoveIndex( myIO, anObjId, isShift );
+	      theSelector->AddIObject( this );
+	    }
+	  }
 	}
-	int anEdgeId = 0;//theInteractorStyle->GetEdgeId( aPicker, this, anObjId );
-	if( anEdgeId >= 0 )
+      }
+      aPicker->Delete();
+    }
+    else if( aSelectionMode == EdgeOfCellSelection )
+    {
+      vtkCellPicker* aPicker = vtkCellPicker::New();
+      aPicker->Pick( x1, y1, z1, theRenderer );
+    
+      int aVtkId = aPicker->GetCellId();
+      if( aVtkId >= 0 && hasIO() && theInteractorStyle->IsValid( this, aVtkId ) )
+      {
+	int anObjId = GetElemObjId( aVtkId );
+	if( anObjId >= 0 )
+        {
+	  if( !isShift )
+	  {
+	    theInteractorStyle->HighlightProp( NULL );
+	    theSelector->ClearIObjects();
+	  }
+	  int anEdgeId = 0;//theInteractorStyle->GetEdgeId( aPicker, this, anObjId );
+	  if( anEdgeId >= 0 )
+	  {
+	    theSelector->AddOrRemoveIndex( myIO, anObjId, false );
+	    theSelector->AddOrRemoveIndex( myIO, -anEdgeId-1, true );
+	    theSelector->AddIObject( this );
+	  } 
+	}
+      }
+      aPicker->Delete();
+    }
+    else if( aSelectionMode == ActorSelection )
+    {
+      if ( hasIO() )
+      {
+	//theInteractorStyle->PropPicked++;
+	if( theSelector->IsSelected( myIO ) && isShift )
+	  theSelector->RemoveIObject( this );
+	else
 	{
-	  theSelector->AddOrRemoveIndex( myIO, anObjId, false );
-	  theSelector->AddOrRemoveIndex( myIO, -anEdgeId-1, true );
+	  if( !isShift )
+	  {
+	    theInteractorStyle->HighlightProp( NULL );
+	    theSelector->ClearIObjects();
+	  }
 	  theSelector->AddIObject( this );
-	} 
+	}
       }
     }
-    aPicker->Delete();
   }
-  else if( aSelectionMode == ActorSelection )
+  else if( isRectangle )
   {
-    if ( hasIO() )
+    if( aSelectionMode == NodeSelection && hasIO() && !myIO.IsNull() )
     {
-      //theInteractorStyle->PropPicked++;
-      if( theSelector->IsSelected( myIO ) )
+      vtkPointPicker* aPicker = vtkPointPicker::New();
+      if( vtkDataSet* aDataSet = GetInput() )
       {
-	// This IO is already in the selection
-	if( isShift )
+	TColStd_MapOfInteger anIndices;
+	for( int i = 0; i < aDataSet->GetNumberOfPoints(); i++)
+	{
+	  float aPoint[3];
+	  aDataSet->GetPoint( i, aPoint );
+
+	  float aPnt[3];
+	  theRenderer->SetWorldPoint( aPoint[0], aPoint[1], aPoint[2], 1.0 );
+	  theRenderer->WorldToDisplay();
+	  theRenderer->GetDisplayPoint( aPnt );
+
+	  if( aPnt[0] > x2 && aPnt[0] < x1 && aPnt[1] > y1 && aPnt[1] < y2 )
+	  //if( theInteractorStyle->IsInRect( aPoint, x2, y2, x1, y1 ) )
+	  {
+	    float aDisp[3];
+	    //theInteractorStyle->ComputeWorldToDisplay( aPoint[0], aPoint[1] ,aPoint[2], aDisp );
+	    theRenderer->SetWorldPoint( aPoint[0], aPoint[1], aPoint[2], 1.0 );
+	    theRenderer->WorldToDisplay();
+	    theRenderer->GetDisplayPoint( aDisp );
+
+	    if( aPicker->Pick( aDisp[0], aDisp[1], 0.0, theRenderer ) )
+	    {
+	      if( vtkActorCollection* anActorCollection = aPicker->GetActors() )
+	      {
+		if( anActorCollection->IsItemPresent( this ) ) 
+		{
+		  float aPickedPoint[3];
+		  aPicker->GetMapperPosition( aPickedPoint );
+		  vtkIdType aVtkId = aDataSet->FindPoint( aPickedPoint );
+		  if( aVtkId >= 0 && theInteractorStyle->IsValid( this, aVtkId, true ) )
+		  {
+		    int anObjId = GetNodeObjId( aVtkId );
+		    anIndices.Add( anObjId );
+		  }
+		}
+	      }
+	    }
+	  }
+	}
+	if( !anIndices.IsEmpty() )
+	{
+	  theSelector->AddOrRemoveIndex( myIO, anIndices, false );
+	  theSelector->AddIObject( this );
+	  anIndices.Clear();
+	}
+	else
 	  theSelector->RemoveIObject( this );
       }
-      else
+      aPicker->Delete();
+    }
+    else if( aSelectionMode != ActorSelection && hasIO() )
+    {
+      VTKViewer_CellRectPicker* aPicker = VTKViewer_CellRectPicker::New();
+      aPicker->SetTolerance( 0.001 );
+      aPicker->Pick( x2, y2, z2, x1, y1, z1, theRenderer );
+
+      VTKViewer_CellDataSet cellList = aPicker->GetCellData( this );
+      TColStd_MapOfInteger anIndexes;
+      if( !cellList.empty() )
       {
-	if( !isShift )
+	VTKViewer_CellDataSet::iterator it;
+	for( it = cellList.begin(); it != cellList.end(); ++it )
 	{
-	  theInteractorStyle->HighlightProp( NULL );
-	  theSelector->ClearIObjects();
+	  int aCellId = (*it).cellId;
+	  if ( !theInteractorStyle->IsValid( this, aCellId ) )
+	    continue;
+
+	  int anObjId = GetElemObjId( aCellId );
+	  if( anObjId != -1 )
+	  {
+	    //if( CheckDimensionId( aSelectionMode, this ,anObjId ) )
+	    anIndexes.Add( anObjId );
+	  }
 	}
-	theSelector->AddIObject( this );
       }
+      theSelector->AddOrRemoveIndex( myIO, anIndexes, true );
+      theSelector->AddIObject( this );
+
+      aPicker->Delete();
+    }
+    else if( aSelectionMode == ActorSelection && hasIO() )
+    {
+      theSelector->AddIObject( this );
     }
   }
 
@@ -535,10 +628,10 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
     case ActorSelection: cout << "Actor" << endl; break;
     default: cout << "Other" << endl; break;
   }
+  cout << "IsRectangle : " << ( isRectangle ? "true" : "false" ) << endl;
   cout << "IsHighlight : " << ( theIsHighlight ? "true" : "false" ) << endl;
   cout << "IsUpdate : " << ( theIsUpdate ? "true" : "false" ) << endl;
   */
-
   if( GetVisibility() && theIsHighlight )
     theInteractorStyle->HighlightProp( this );
   else if( !theIsHighlight )
@@ -584,3 +677,69 @@ bool SALOME_Actor::Unhighlight( SVTK_InteractorStyle* theInteractorStyle,
   theInteractorStyle->HighlightProp( NULL );
   theSelector->ClearIObjects();
 }
+
+/*
+/// Checks: is the given Actor within display coordinates?
+bool
+SVTK_InteractorStyle
+::IsInRect(vtkActor* theActor, 
+	   const int left, const int top, 
+	   const int right, const int bottom)
+{
+  float* aBounds = theActor->GetBounds();
+  float aMin[3], aMax[3];
+  ComputeWorldToDisplay(aBounds[0], aBounds[2], aBounds[4], aMin);
+  ComputeWorldToDisplay(aBounds[1], aBounds[3], aBounds[5], aMax);
+  if (aMin[0] > aMax[0]) {
+    float aBuf = aMin[0];
+    aMin[0] = aMax[0];
+    aMax[0] = aBuf;
+  }
+  if (aMin[1] > aMax[1]) {
+    float aBuf = aMin[1];
+    aMin[1] = aMax[1];
+    aMax[1] = aBuf;    
+  }
+
+  return ((aMin[0]>left) && (aMax[0]<right) && (aMin[1]>bottom) && (aMax[1]<top));
+}
+
+
+/// Checks: is the given Cell within display coordinates?
+bool
+SVTK_InteractorStyle
+::IsInRect(vtkCell* theCell, 
+	   const int left, const int top, 
+	   const int right, const int bottom)
+{
+  float* aBounds = theCell->GetBounds();
+  float aMin[3], aMax[3];
+  ComputeWorldToDisplay(aBounds[0], aBounds[2], aBounds[4], aMin);
+  ComputeWorldToDisplay(aBounds[1], aBounds[3], aBounds[5], aMax);
+  if (aMin[0] > aMax[0]) {
+    float aBuf = aMin[0];
+    aMin[0] = aMax[0];
+    aMax[0] = aBuf;
+  }
+  if (aMin[1] > aMax[1]) {
+    float aBuf = aMin[1];
+    aMin[1] = aMax[1];
+    aMax[1] = aBuf;    
+  }
+
+  return ((aMin[0]>left) && (aMax[0]<right) && (aMin[1]>bottom) && (aMax[1]<top));
+}
+
+
+bool
+SVTK_InteractorStyle
+::IsInRect(float* thePoint, 
+	   const int left, const int top, 
+	   const int right, const int bottom)
+{
+  float aPnt[3];
+  ComputeWorldToDisplay(thePoint[0], thePoint[1], thePoint[2], aPnt);
+
+  return ((aPnt[0]>left) && (aPnt[0]<right) && (aPnt[1]>bottom) && (aPnt[1]<top));
+}
+*/
