@@ -38,19 +38,20 @@ class vtkRenderWindowInteractor;
 
 #include <qobject.h>
 #include <qcursor.h>
+#include <qevent.h>
 
 #include <map>
 
 #include "VTKViewer_Filter.h"
 
+#include "SVTK_SelectionEvent.h"
+
 class VTKViewer_Trihedron;
 
 class SALOME_Actor;
-class SVTK_Actor;
 class SVTK_Viewer;
 class SVTK_Selector;
 class SVTK_ViewWindow;
-class SVTK_RenderWindowInteractor;
 
 #define VTK_INTERACTOR_STYLE_CAMERA_NONE    0
 #define VTK_INTERACTOR_STYLE_CAMERA_ROTATE  1
@@ -74,17 +75,27 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   static SVTK_InteractorStyle *New();
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
-  virtual void SetInteractor(vtkRenderWindowInteractor *theInteractor);
   void setViewWindow(SVTK_ViewWindow* theViewWindow);
   void setGUIWindow(QWidget* theWindow);
 
   virtual int GetState();
+
+  SVTK_SelectionEvent GetSelectionEvent();
 
   //merge with V2_2_0_VISU_improvements:void setTriedron(VTKViewer_Trihedron* theTrihedron);
   void setPreselectionProp(const double& theRed = 0, 
 			   const double& theGreen = 1,
 			   const double& theBlue = 1, 
 			   const int& theWidth = 5);
+
+  // VTK events
+  virtual void OnMouseMove();
+  virtual void OnLeftButtonDown();
+  virtual void OnLeftButtonUp();
+  virtual void OnMiddleButtonDown();
+  virtual void OnMiddleButtonUp();
+  virtual void OnRightButtonDown();
+  virtual void OnRightButtonUp();
 
   // Generic event bindings must be overridden in subclasses
   void OnMouseMove  (int ctrl, int shift, int x, int y);
@@ -133,7 +144,6 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
 
   SALOME_Actor* myPreViewActor;
 
-  SVTK_Actor* myPreSelectionActor;
   SALOME_Actor* mySelectedActor;
   int myElemId;
   int myEdgeId;
@@ -158,6 +168,10 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   void onCursorMove(QPoint mousePos);
   void setCursor(const int operation);
 
+ signals:
+  void RenderWindowModified() ;
+  void contextMenuRequested( QContextMenuEvent *e );
+
  protected:
   QCursor                   myDefCursor;
   QCursor                   myPanCursor;
@@ -172,7 +186,6 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   bool                      myShiftState;
   int                       ForcedState;
   
-  SVTK_RenderWindowInteractor* myInteractor;
   SVTK_ViewWindow*          myViewWindow;
   //merge with V2_2_0_VISU_improvements:VTKViewer_Trihedron*      myTrihedron;
   QWidget*                  myGUIWindow;

@@ -28,6 +28,7 @@ class SVTK_CubeAxesActor2D;
 class SVTK_RenderWindow;
 class SVTK_InteractorStyle;
 class SVTK_RenderWindowInteractor;
+class SVTK_InteractorStyle;
 
 class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 {
@@ -46,6 +47,7 @@ public:
   SVTK_Selector* GetSelector() {return mySelector;}
   SVTK_RenderWindow* getRenderWindow() {return myRenderWindow;}
   SVTK_RenderWindowInteractor* getRWInteractor() {return myRWInteractor;}
+  SVTK_InteractorStyle* getInteractorStyle(){ return myInteractorStyle;}
   Selection_Mode SelectionMode() const;
   void SetSelectionMode(Selection_Mode theMode);
 
@@ -88,6 +90,13 @@ public:
 
   VTKViewer_Trihedron*  GetTrihedron() {return this->myTrihedron;};
   SVTK_CubeAxesActor2D* GetCubeAxes() {return this->myCubeAxes;};
+
+  void SetSelectionProp(const double& theRed = 1, 
+			const double& theGreen = 1,
+			const double& theBlue = 0, 
+			const int& theWidth = 5);
+  void SetSelectionTolerance(const double& theTolNodes = 0.025, 
+			     const double& theTolCell = 0.001);
 
 public slots:
   void onSelectionChanged();
@@ -161,6 +170,7 @@ private:
 
   SVTK_RenderWindow* myRenderWindow;
   SVTK_RenderWindowInteractor* myRWInteractor;
+  SVTK_InteractorStyle* myInteractorStyle;
 
   VTKViewer_Transform*  myTransform;
   VTKViewer_Trihedron*  myTrihedron;  

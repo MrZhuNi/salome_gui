@@ -28,7 +28,6 @@
 
 #include "SVTK_RenderWindowInteractor.h"
 
-#include "SVTK_InteractorStyle.h"
 #include "SVTK_RenderWindow.h"
 #include "SVTK_Selection.h"
 
@@ -46,8 +45,10 @@
 #include <vtkPicker.h>
 #include <vtkCellPicker.h>
 #include <vtkPointPicker.h>
+#include <vtkInteractorStyle.h>
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
+#include <vtkCommand.h>
 
 // QT Includes
 #include <qkeycode.h>
@@ -162,69 +163,6 @@ SVTK_RenderWindowInteractor
   return ;
 }
 
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::SetInteractorStyle(vtkInteractorObserver *theInteractor)
-{
-  myInteractorStyle = dynamic_cast<SVTK_InteractorStyle*>(theInteractor);
-  vtkRenderWindowInteractor::SetInteractorStyle(theInteractor);
-}
-
-
-void
-SVTK_RenderWindowInteractor
-::SetSelectionMode(Selection_Mode theMode)
-{
-  switch(theMode){
-  case ActorSelection:
-    this->SetPicker(myBasicPicker);
-    break;
-  case NodeSelection:
-    this->SetPicker(myPointPicker);
-    break;
-  case CellSelection:
-  case EdgeSelection:
-  case FaceSelection:
-  case VolumeSelection:
-  case EdgeOfCellSelection:
-    this->SetPicker(myCellPicker);
-    break;
-  }
-
-  myInteractorStyle->OnSelectionModeChanged();
-}
-
-void
-SVTK_RenderWindowInteractor
-::SetSelectionProp(const double& theRed, 
-		   const double& theGreen, 
-		   const double& theBlue, 
-		   const int& theWidth) 
-{
-  /*
-  myCellActor->GetProperty()->SetColor(theRed, theGreen, theBlue);
-  myCellActor->GetProperty()->SetLineWidth(theWidth);
-
-  myPointActor->GetProperty()->SetColor(theRed, theGreen, theBlue);
-  myPointActor->GetProperty()->SetPointSize(theWidth);
-  */
-}
-
-void
-SVTK_RenderWindowInteractor
-::SetSelectionTolerance(const double& theTolNodes, 
-			const double& theTolItems)
-{
-  myTolNodes = theTolNodes;
-  myTolItems = theTolItems;
-
-  myBasicPicker->SetTolerance(myTolItems);
-  myCellPicker->SetTolerance(myTolItems);
-  myPointPicker->SetTolerance(myTolNodes);
-
-}
-
 // ================================== 
 void
 SVTK_RenderWindowInteractor
@@ -289,7 +227,8 @@ SVTK_RenderWindowInteractor
     return ;
   }
 
-  myInteractorStyle->OnTimer();
+  vtkInteractorStyle* aStyle = vtkInteractorStyle::SafeDownCast( InteractorStyle );
+  aStyle->OnTimer();
 
   emit RenderWindowModified();
 }
@@ -301,9 +240,13 @@ SVTK_RenderWindowInteractor
   if( ! this->Enabled ) {
     return ;
   }
-  myInteractorStyle->OnMouseMove(0, 0, event->x(), event->y()/*this->Size[1] - event->y() - 1*/) ;
-  if (myInteractorStyle->needsRedrawing() )
-    emit RenderWindowModified() ; 
+
+  this->SetEventInformation( event->x(), event->y(),
+			     ( event->state() & ControlButton ),
+			     ( event->state() & ShiftButton ) );
+
+  if( this->HasObserver( vtkCommand::MouseMoveEvent ) )
+    this->InvokeEvent( vtkCommand::MouseMoveEvent, NULL );
 }
 
 void
@@ -313,9 +256,13 @@ SVTK_RenderWindowInteractor
   if( ! this->Enabled ) {
     return ;
   }
-  myInteractorStyle->OnLeftButtonDown((event->state() & ControlButton), 
-				      (event->state() & ShiftButton), 
-				      event->x(), event->y());
+
+  this->SetEventInformation( event->x(), event->y(),
+			     ( event->state() & ControlButton ),
+			     ( event->state() & ShiftButton ) );
+
+  if( this->HasObserver( vtkCommand::LeftButtonPressEvent ) )
+    this->InvokeEvent( vtkCommand::LeftButtonPressEvent, NULL );
 }
 
 void
@@ -324,13 +271,13 @@ SVTK_RenderWindowInteractor
   if( ! this->Enabled ) {
     return ;
   }
-  this->SetEventInformationFlipY( event->x(), event->y(),
-				  ( event->state() & ControlButton ),
-				  ( event->state() & ShiftButton ) );
 
-  myInteractorStyle->OnLeftButtonUp( (event->state() & ControlButton), 
-				     (event->state() & ShiftButton), 
-				     event->x(), event->y() ) ;
+  this->SetEventInformation( event->x(), event->y(),
+			     ( event->state() & ControlButton ),
+			     ( event->state() & ShiftButton ) );
+
+  if( this->HasObserver( vtkCommand::LeftButtonReleaseEvent ) )
+    this->InvokeEvent( vtkCommand::LeftButtonReleaseEvent, NULL );
 }
 
 void 
@@ -340,9 +287,13 @@ SVTK_RenderWindowInteractor
   if( ! this->Enabled ) {
     return ;
   }
-  myInteractorStyle->OnMiddleButtonDown((event->state() & ControlButton), 
-					(event->state() & ShiftButton), 
-					event->x(), event->y() ) ;
+
+  this->SetEventInformation( event->x(), event->y(),
+			     ( event->state() & ControlButton ),
+			     ( event->state() & ShiftButton ) );
+
+  if( this->HasObserver( vtkCommand::MiddleButtonPressEvent ) )
+    this->InvokeEvent( vtkCommand::MiddleButtonPressEvent, NULL );
 }
 
 void
@@ -352,9 +303,13 @@ SVTK_RenderWindowInteractor
   if( ! this->Enabled ) {
     return ;
   }
-  myInteractorStyle->OnMiddleButtonUp( (event->state() & ControlButton), 
-				       (event->state() & ShiftButton), 
-				       event->x(), event->y() ) ;
+
+  this->SetEventInformation( event->x(), event->y(),
+			     ( event->state() & ControlButton ),
+			     ( event->state() & ShiftButton ) );
+
+  if( this->HasObserver( vtkCommand::MiddleButtonReleaseEvent ) )
+    this->InvokeEvent( vtkCommand::MiddleButtonReleaseEvent, NULL );
 }
 
 void
@@ -364,9 +319,13 @@ SVTK_RenderWindowInteractor
   if( ! this->Enabled ) {
     return ;
   }
-  myInteractorStyle->OnRightButtonDown( (event->state() & ControlButton), 
-					(event->state() & ShiftButton), 
-					event->x(), event->y() ) ;
+
+  this->SetEventInformation( event->x(), event->y(),
+			     ( event->state() & ControlButton ),
+			     ( event->state() & ShiftButton ) );
+
+  if( this->HasObserver( vtkCommand::RightButtonPressEvent ) )
+    this->InvokeEvent( vtkCommand::RightButtonPressEvent, NULL );
 }
 
 void
@@ -376,11 +335,15 @@ SVTK_RenderWindowInteractor
   if( ! this->Enabled ) {
     return ;
   }
-  myInteractorStyle->OnRightButtonUp( (event->state() & ControlButton), 
-				      (event->state() & ShiftButton), 
-				      event->x(), event->y() ) ;
 
-  if(myInteractorStyle->GetState() == VTK_INTERACTOR_STYLE_CAMERA_NONE && !( event->state() & KeyButtonMask )){
+  this->SetEventInformation( event->x(), event->y(),
+			     ( event->state() & ControlButton ),
+			     ( event->state() & ShiftButton ) );
+
+  if( this->HasObserver( vtkCommand::RightButtonReleaseEvent ) )
+    this->InvokeEvent( vtkCommand::RightButtonReleaseEvent, NULL );
+
+  if(/*myInteractorStyle->GetState() == VTK_INTERACTOR_STYLE_CAMERA_NONE && */!( event->state() & KeyButtonMask )){
     QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
                               event->pos(), event->globalPos(),
                               event->state() );
@@ -751,21 +714,4 @@ SVTK_RenderWindowInteractor
 			  TIsSameIObject<SALOME_Actor>(theIObject),
 			  TSetFunction<SALOME_Actor,const char*,QString>
 			  (&SALOME_Actor::setName,theName.latin1()));
-}
-
-SVTK_SelectionEvent
-SVTK_RenderWindowInteractor
-::GetSelectionEvent()
-{
-  SVTK_SelectionEvent aSelectionEvent;
-
-  int x, y;
-  this->GetEventPosition( x, y );
-
-  aSelectionEvent.X = x;
-  aSelectionEvent.Y = y;
-  aSelectionEvent.IsCtrl = this->GetControlKey();
-  aSelectionEvent.IsShift = this->GetShiftKey();
-
-  return aSelectionEvent;
 }

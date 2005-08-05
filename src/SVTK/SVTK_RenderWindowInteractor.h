@@ -30,7 +30,7 @@
 #define SVTK_RenderWindowInteractor_h
 
 #include "SVTK.h"
-#include "SVTK_SelectionEvent.h"
+#include "SVTK_Selection.h"
 
 #include "SALOME_InteractiveObject.hxx"
 
@@ -56,7 +56,6 @@ class SALOME_Actor;
 
 class SVTK_ViewWindow;
 class SVTK_RenderWindow;
-class SVTK_InteractorStyle;
 
 // ------------------------------------------------------------
 // :TRICKY: Fri Apr 21 22:19:27 2000 Pagey
@@ -82,9 +81,6 @@ public:
   // want to have mouse interaction.
   virtual void Initialize();
 
-  virtual void SetInteractorStyle(vtkInteractorObserver *);
-  SVTK_InteractorStyle* GetSInteractorStyle(){ return myInteractorStyle;}
-
   // Description:
   // This will start up the X event loop and never return. If you
   // call this method it will loop processing X events until the
@@ -108,7 +104,7 @@ public:
   bool isInViewer( const Handle(SALOME_InteractiveObject)& IObject);
   bool isVisible( const Handle(SALOME_InteractiveObject)& IObject);
   void rename(const Handle(SALOME_InteractiveObject)& IObject, QString newName);
-
+  /*
   void SetSelectionMode(Selection_Mode mode);
   void SetSelectionProp(const double& theRed = 1, 
 			const double& theGreen = 1,
@@ -116,7 +112,7 @@ public:
 			const int& theWidth = 5);
   void SetSelectionTolerance(const double& theTolNodes = 0.025, 
 			     const double& theTolCell = 0.001);
-
+  */
   // Displaymode management
   int GetDisplayMode();
   void SetDisplayMode(int);
@@ -164,15 +160,11 @@ public:
 
   vtkRenderer* GetRenderer();
 
-  SVTK_SelectionEvent GetSelectionEvent();
-
  protected:
 
   SVTK_RenderWindowInteractor();
   ~SVTK_RenderWindowInteractor();
 
-  SVTK_InteractorStyle* myInteractorStyle;
-  
   // Timer used during various mouse events to figure 
   // out mouse movements. 
   QTimer *mTimer ;

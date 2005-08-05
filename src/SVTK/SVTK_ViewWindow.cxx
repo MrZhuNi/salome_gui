@@ -7,6 +7,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkCamera.h>
+#include <vtkPointPicker.h>
+#include <vtkCellPicker.h>
 
 #include "QtxAction.h"
 
@@ -19,6 +21,7 @@
 
 #include "VTKViewer_Transform.h"
 #include "VTKViewer_Utilities.h"
+#include "VTKViewer_CellRectPicker.h"
 
 #include "SVTK_Trihedron.h"
 #include "SVTK_CubeAxesActor2D.h"
@@ -80,15 +83,15 @@ SVTK_ViewWindow
   myRWInteractor->SetRenderWindow( myRenderWindow->getRenderWindow() );
   //myRWInteractor->setViewWindow( this );
 
-  SVTK_InteractorStyle* RWS = SVTK_InteractorStyle::New();
-  RWS->setGUIWindow( myRenderWindow );
-  RWS->setViewWindow( this );
+  myInteractorStyle = SVTK_InteractorStyle::New();
+  myInteractorStyle->setGUIWindow( myRenderWindow );
+  myInteractorStyle->setViewWindow( this );
 
-  myRWInteractor->SetInteractorStyle( RWS ); 
+  myRWInteractor->SetInteractorStyle( myInteractorStyle ); 
   myRWInteractor->Initialize();
 
-  //merge with V2_2_0_VISU_improvements:RWS->setTriedron( myTrihedron );
-  RWS->FindPokedRenderer( 0, 0 );
+  //merge with V2_2_0_VISU_improvements:myInteractorStyle->setTriedron( myTrihedron );
+  myInteractorStyle->FindPokedRenderer( 0, 0 );
 
   SetSelectionMode(ActorSelection);
 
@@ -135,6 +138,8 @@ SVTK_ViewWindow
   connect( myRenderWindow, SIGNAL(MouseMove( QMouseEvent* )),
            this,           SLOT(onMouseMoving( QMouseEvent* )) );
 
+  connect( myInteractorStyle, SIGNAL(RenderWindowModified()),
+           myRenderWindow, SLOT(update()) );
   connect( myRWInteractor, SIGNAL(RenderWindowModified()),
            myRenderWindow, SLOT(update()) );
   connect( myRWInteractor, SIGNAL(contextMenuRequested( QContextMenuEvent * )),
@@ -166,7 +171,7 @@ void
 SVTK_ViewWindow
 ::activateZoom()
 {
-  myRWInteractor->GetSInteractorStyle()->startZoom();
+  myInteractorStyle->startZoom();
 }
 
 //----------------------------------------------------------------------------
@@ -174,7 +179,7 @@ void
 SVTK_ViewWindow
 ::activatePanning()
 {
-  myRWInteractor->GetSInteractorStyle()->startPan();
+  myInteractorStyle->startPan();
 }
 
 //----------------------------------------------------------------------------
@@ -182,7 +187,7 @@ void
 SVTK_ViewWindow
 ::activateRotation()
 {
-  myRWInteractor->GetSInteractorStyle()->startRotate();
+  myInteractorStyle->startRotate();
 }
 
 //----------------------------------------------------------------------------
@@ -191,7 +196,7 @@ SVTK_ViewWindow
 ::activateGlobalPanning()
 {
   if(myTrihedron->GetVisibleActorCount(myRenderer))
-    myRWInteractor->GetSInteractorStyle()->startGlobalPan();
+    myInteractorStyle->startGlobalPan();
 }
 
 //----------------------------------------------------------------------------
@@ -199,7 +204,7 @@ void
 SVTK_ViewWindow
 ::activateWindowFit()
 {
-  myRWInteractor->GetSInteractorStyle()->startFitArea();
+  myInteractorStyle->startFitArea();
 }
 
 //----------------------------------------------------------------------------
@@ -522,7 +527,7 @@ SVTK_ViewWindow
 {
   mySelector->SetSelectionMode(theMode);
 
-  myRWInteractor->SetSelectionMode(theMode);
+  //myRWInteractor->SetSelectionMode(theMode);
 }
 
 //----------------------------------------------------------------
@@ -830,7 +835,7 @@ void
 SVTK_ViewWindow
 ::onPanLeft()
 {
-  myRWInteractor->GetSInteractorStyle()->IncrementalPan( -INCREMENT_FOR_OP, 0 );
+  myInteractorStyle->IncrementalPan( -INCREMENT_FOR_OP, 0 );
 }
 
 //=======================================================================
@@ -841,7 +846,7 @@ void
 SVTK_ViewWindow
 ::onPanRight()
 {
-  myRWInteractor->GetSInteractorStyle()->IncrementalPan( INCREMENT_FOR_OP, 0 );
+  myInteractorStyle->IncrementalPan( INCREMENT_FOR_OP, 0 );
 }
 
 //=======================================================================
@@ -852,7 +857,7 @@ void
 SVTK_ViewWindow
 ::onPanUp()
 {
-  myRWInteractor->GetSInteractorStyle()->IncrementalPan( 0, INCREMENT_FOR_OP );
+  myInteractorStyle->IncrementalPan( 0, INCREMENT_FOR_OP );
 }
 
 //=======================================================================
@@ -863,7 +868,7 @@ void
 SVTK_ViewWindow
 ::onPanDown()
 {
-  myRWInteractor->GetSInteractorStyle()->IncrementalPan( 0, -INCREMENT_FOR_OP );
+  myInteractorStyle->IncrementalPan( 0, -INCREMENT_FOR_OP );
 }
 
 //=======================================================================
@@ -874,7 +879,7 @@ void
 SVTK_ViewWindow
 ::onZoomIn()
 {
-  myRWInteractor->GetSInteractorStyle()->IncrementalZoom( INCREMENT_FOR_OP );
+  myInteractorStyle->IncrementalZoom( INCREMENT_FOR_OP );
 }
 
 //=======================================================================
@@ -885,7 +890,7 @@ void
 SVTK_ViewWindow
 ::onZoomOut()
 {
-  myRWInteractor->GetSInteractorStyle()->IncrementalZoom( -INCREMENT_FOR_OP );
+  myInteractorStyle->IncrementalZoom( -INCREMENT_FOR_OP );
 }
 
 //=======================================================================
@@ -896,7 +901,7 @@ void
 SVTK_ViewWindow
 ::onRotateLeft()
 {
-  myRWInteractor->GetSInteractorStyle()->IncrementalRotate( -INCREMENT_FOR_OP, 0 );
+  myInteractorStyle->IncrementalRotate( -INCREMENT_FOR_OP, 0 );
 }
 
 //=======================================================================
@@ -907,7 +912,7 @@ void
 SVTK_ViewWindow
 ::onRotateRight()
 {
-  myRWInteractor->GetSInteractorStyle()->IncrementalRotate( INCREMENT_FOR_OP, 0 );
+  myInteractorStyle->IncrementalRotate( INCREMENT_FOR_OP, 0 );
 }
 
 //=======================================================================
@@ -918,7 +923,7 @@ void
 SVTK_ViewWindow
 ::onRotateUp()
 {
-  myRWInteractor->GetSInteractorStyle()->IncrementalRotate( 0, -INCREMENT_FOR_OP );
+  myInteractorStyle->IncrementalRotate( 0, -INCREMENT_FOR_OP );
 }
 
 //=======================================================================
@@ -977,7 +982,7 @@ void
 SVTK_ViewWindow
 ::onRotateDown()
 {
-  myRWInteractor->GetSInteractorStyle()->IncrementalRotate( 0, INCREMENT_FOR_OP );
+  myInteractorStyle->IncrementalRotate( 0, INCREMENT_FOR_OP );
 }
 
 //----------------------------------------------------------------------------
@@ -1032,4 +1037,47 @@ SVTK_ViewWindow
 {
   QPixmap px = QPixmap::grabWindow( myRenderWindow->winId() );
   return px.convertToImage();
+}
+
+void
+SVTK_ViewWindow
+::SetSelectionProp(const double& theRed, 
+		   const double& theGreen, 
+		   const double& theBlue, 
+		   const int& theWidth) 
+{
+  vtkActorCollection* anActors = getRenderer()->GetActors();
+  anActors->InitTraversal();
+  while( vtkActor* anActor = anActors->GetNextActor() )
+  {
+    if( SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast( anActor ) )
+    {
+      aSActor->getPointProperty()->SetColor( theRed, theGreen, theBlue );
+      aSActor->getPointProperty()->SetLineWidth( theWidth );
+
+      aSActor->getCellProperty()->SetColor( theRed, theGreen, theBlue );
+      aSActor->getCellProperty()->SetLineWidth( theWidth );
+
+      aSActor->getEdgeProperty()->SetColor( theRed, theGreen, theBlue );
+      aSActor->getEdgeProperty()->SetLineWidth( theWidth );
+    }
+  }
+}
+
+void
+SVTK_ViewWindow
+::SetSelectionTolerance(const double& theTolNodes, 
+			const double& theTolItems)
+{
+  vtkActorCollection* anActors = getRenderer()->GetActors();
+  anActors->InitTraversal();
+  while( vtkActor* anActor = anActors->GetNextActor() )
+  {
+    if( SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast( anActor ) )
+    {
+      aSActor->getPointPicker()->SetTolerance( theTolNodes );
+      aSActor->getCellPicker()->SetTolerance( theTolItems );
+      aSActor->getCellRectPicker()->SetTolerance( theTolItems );
+    }
+  }
 }

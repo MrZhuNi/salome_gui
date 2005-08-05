@@ -44,6 +44,9 @@
 #include <vector>
 
 class vtkCell;
+class vtkPicker;
+class vtkPointPicker;
+class vtkCellPicker;
 class vtkDataSet;
 class vtkPolyData;
 class vtkCamera;
@@ -53,6 +56,7 @@ class VTKViewer_Transform;
 class VTKViewer_GeometryFilter;
 class VTKViewer_TransformFilter;
 class VTKViewer_PassThroughFilter;
+class VTKViewer_CellRectPicker;
 
 extern int SALOME_POINT_SIZE;
 
@@ -199,12 +203,21 @@ class SALOME_OBJECT_EXPORT SALOME_Actor : public VTKViewer_Actor {
   virtual void AddToRender( vtkRenderer* ); 
   virtual void RemoveFromRender( vtkRenderer* );
 
-  virtual bool PreHighlight( SVTK_InteractorStyle*, const int& );
+  virtual bool PreHighlight( SVTK_InteractorStyle*, SVTK_Selector*, vtkRenderer*, SVTK_SelectionEvent, bool );
+  virtual bool    Highlight( SVTK_InteractorStyle*, SVTK_Selector*, vtkRenderer*, SVTK_SelectionEvent, bool );
 
-  virtual bool Highlight( SVTK_InteractorStyle*, SVTK_Selector*, vtkRenderer*, SVTK_SelectionEvent, bool, bool );
-  virtual bool Unhighlight( SVTK_InteractorStyle*, SVTK_Selector*, bool );
-  /*
+  vtkProperty* getPointProperty() const { return myPointProperty; }
+  vtkProperty* getCellProperty() const { return myCellProperty; }
+  vtkProperty* getEdgeProperty() const { return myEdgeProperty; }
+
+  vtkPointPicker* getPointPicker() const { return myPointPicker; }
+  vtkCellPicker* getCellPicker() const { return myCellPicker; }
+  VTKViewer_CellRectPicker* getCellRectPicker() const { return myCellRectPicker; }
+
  protected:
+  int GetEdgeId( vtkPicker*, int );
+
+  /*
   bool IsInRect(vtkActor* theActor, 
 		const int left, const int top, 
 		const int right, const int bottom);
@@ -220,10 +233,12 @@ class SALOME_OBJECT_EXPORT SALOME_Actor : public VTKViewer_Actor {
   vtkProperty* myCellProperty;
   vtkProperty* myEdgeProperty;
 
+  vtkPointPicker* myPointPicker;
+  vtkCellPicker* myCellPicker;
+  VTKViewer_CellRectPicker* myCellRectPicker;
+
   SVTK_Actor* myPreHighlightActor;
   SVTK_Actor* myHighlightActor;
 };
 
-
 #endif // SALOME_ACTOR_H
-
