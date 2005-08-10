@@ -31,31 +31,20 @@
 
 #include "SVTK.h"
 #include "SVTK_Selection.h"
+#include "SVTK_RenderWindow.h"
 
 #include "SALOME_InteractiveObject.hxx"
 
 // QT Includes
-#include <qobject.h>
 #include <qtimer.h>
 
 // VTK Includes
 #include <vtkVersion.h>
-#include <vtkRenderWindowInteractor.h>
 
-// Open CASCADE Includes
-#include <TColStd_MapOfInteger.hxx>
-#include <TColStd_IndexedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfMapOfInteger.hxx>
-
-class vtkPicker;
-class vtkCellPicker;
-class vtkPointPicker;
 class vtkActorCollection;
+class vtkGenericRenderWindowInteractor;
 
 class SALOME_Actor;
-
-class SVTK_ViewWindow;
-class SVTK_RenderWindow;
 
 // ------------------------------------------------------------
 // :TRICKY: Fri Apr 21 22:19:27 2000 Pagey
@@ -64,16 +53,15 @@ class SVTK_RenderWindow;
 // Hence the order of the two classes QObject and vtkRenderWindowInteractor
 // matters here. Be careful not to change it by accident. 
 // ------------------------------------------------------------
-class SVTK_EXPORT SVTK_RenderWindowInteractor: public QObject, 
-  public vtkRenderWindowInteractor
+class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow//, public vtkRenderWindowInteractor
 {
-  Q_OBJECT ;   
-  friend class SVTK_ViewWindow;
+  Q_OBJECT
+
 public:
+  SVTK_RenderWindowInteractor( QWidget*, const char* );
+  ~SVTK_RenderWindowInteractor();
 
-  static SVTK_RenderWindowInteractor *New() ; 
-
-  vtkTypeMacro(SVTK_RenderWindowInteractor,vtkRenderWindowInteractor);
+  vtkGenericRenderWindowInteractor* getInteractor() { return myInteractor; }
 
   // Description:
   // Initializes the event handlers without an XtAppContext.  This is
@@ -104,15 +92,7 @@ public:
   bool isInViewer( const Handle(SALOME_InteractiveObject)& IObject);
   bool isVisible( const Handle(SALOME_InteractiveObject)& IObject);
   void rename(const Handle(SALOME_InteractiveObject)& IObject, QString newName);
-  /*
-  void SetSelectionMode(Selection_Mode mode);
-  void SetSelectionProp(const double& theRed = 1, 
-			const double& theGreen = 1,
-			const double& theBlue = 0, 
-			const int& theWidth = 5);
-  void SetSelectionTolerance(const double& theTolNodes = 0.025, 
-			     const double& theTolCell = 0.001);
-  */
+
   // Displaymode management
   int GetDisplayMode();
   void SetDisplayMode(int);
@@ -161,33 +141,30 @@ public:
   vtkRenderer* GetRenderer();
 
  protected:
-
-  SVTK_RenderWindowInteractor();
-  ~SVTK_RenderWindowInteractor();
+  vtkGenericRenderWindowInteractor* myInteractor;
 
   // Timer used during various mouse events to figure 
   // out mouse movements. 
   QTimer *mTimer ;
 
   int myDisplayMode;
-  vtkPicker* myBasicPicker;
-  vtkCellPicker* myCellPicker;
-  vtkPointPicker* myPointPicker;
   
   // User for switching to stereo mode.
   int PositionBeforeStereo[2];
 
- public slots:
-  void MouseMove(const QMouseEvent *event) ;
-  void LeftButtonPressed(const QMouseEvent *event) ;
-  void LeftButtonReleased(const QMouseEvent *event) ;
-  void MiddleButtonPressed(const QMouseEvent *event) ;
-  void MiddleButtonReleased(const QMouseEvent *event) ;
-  void RightButtonPressed(const QMouseEvent *event) ;
-  void RightButtonReleased(const QMouseEvent *event) ;
-  void ButtonPressed(const QMouseEvent *event) ;
-  void ButtonReleased(const QMouseEvent *event) ;
-  void KeyPressed(QKeyEvent *event) ;
+ protected:
+  virtual void mouseMoveEvent( QMouseEvent* );
+  virtual void mousePressEvent( QMouseEvent* );
+  virtual void mouseReleaseEvent( QMouseEvent* );
+  virtual void mouseDoubleClickEvent( QMouseEvent* );
+  virtual void wheelEvent( QWheelEvent* );
+  virtual void keyPressEvent( QKeyEvent* );
+  virtual void keyReleaseEvent( QKeyEvent* );
+  virtual void contextMenuEvent( QContextMenuEvent * e );
+
+  virtual void paintEvent( QPaintEvent* );
+  virtual void resizeEvent( QResizeEvent* );
+  virtual void onChangeBackgroundColor();
 
  private slots:
   // Not all of these slots are needed in VTK_MAJOR_VERSION=3,
@@ -197,12 +174,8 @@ public:
   void TimerFunc() ;
 
  signals:
-  void RenderWindowModified() ;
   void contextMenuRequested( QContextMenuEvent *e );
 
- private:
-  double myTolNodes;
-  double myTolItems;
 };
 
 

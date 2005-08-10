@@ -58,12 +58,10 @@ public:
   void Repaint() { Repaint(true); }
 
   //apply existing transformation on adding SALOME_Actor
-  //void AddActor( VTKViewer_Actor*, bool update = false );
-  //void RemoveActor(VTKViewer_Actor*, bool update = false);
+  void AddActor( VTKViewer_Actor*, bool update = false );
+  void RemoveActor(VTKViewer_Actor*, bool update = false);
 
   void AdjustTrihedrons( const bool forced );
-  //merge with V2_2_0_VISU_improvements:bool ComputeTrihedronSize( double& theNewSize,
-  //merge with V2_2_0_VISU_improvements:                          double& theOldSize );
 
   void SetSelectionProp(const double& theRed = 1, 
 			const double& theGreen = 1,

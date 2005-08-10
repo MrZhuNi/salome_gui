@@ -29,55 +29,94 @@
 #ifndef SVTK_RenderWindow_h
 #define SVTK_RenderWindow_h
 
-#include <qwidget.h>
+#include <qmainwindow.h>
 
 #include "SVTK.h"
 
+class VTKViewer_Trihedron;
+class VTKViewer_Transform;
+class SVTK_CubeAxesActor2D;
+
+class QtxAction;
+
+class vtkRenderer;
 class vtkRenderWindow;
 
-class SVTK_EXPORT SVTK_RenderWindow : public QWidget
+class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
 {
-  Q_OBJECT;
+  Q_OBJECT
 
-public:
-  SVTK_RenderWindow(QWidget *parent, const char *name);
+ public:
+  SVTK_RenderWindow( QWidget*, const char* );
   virtual ~SVTK_RenderWindow() ;
 
-  vtkRenderWindow* getRenderWindow() { return myRW; }
+  QToolBar* getToolBar() { return myToolBar; }
+
+  vtkRenderer* getRenderer() { return myRenderer;}
+  vtkRenderWindow* getRenderWindow() { return myRenderWindow; }
+
+  VTKViewer_Trihedron*  GetTrihedron() { return myTrihedron; }
+  SVTK_CubeAxesActor2D* GetCubeAxes() { return myCubeAxes; }
+
+  int  GetTrihedronSize() const;
+  void SetTrihedronSize( const int );
+  void AdjustTrihedrons( const bool forced );
+
+  bool isTrihedronDisplayed();
+  bool isCubeAxesDisplayed();
+
+  void Repaint( bool theUpdateTrihedron = true );
+
+  void setBackgroundColor( const QColor& );
+  QColor backgroundColor() const;
+
+  //apply existing transformation on adding SALOME_Actor
+  void SetScale( double theScale[3] );
+  void GetScale( double theScale[3] );
+  //void AddActor( VTKViewer_Actor*, bool update = false );
+  //void RemoveActor(VTKViewer_Actor*, bool update = false);
+
+ public slots:
+  virtual void activateZoom();
+  virtual void activateWindowFit();
+  virtual void activateRotation();
+  virtual void activatePanning(); 
+  virtual void activateGlobalPanning(); 
+
+  void onFrontView(); 
+  void onBackView(); 
+  void onTopView();
+  void onBottomView();
+  void onRightView(); 
+  void onLeftView();     
+
+  void onResetView();     
+  void onFitAll();
+
+  void onViewTrihedron(); 
+  void onViewCubeAxes();
+
+  void onAdjustTrihedron();
+  void onAdjustCubeAxes();
 
  protected:
-  virtual void mouseMoveEvent( QMouseEvent* );
-  virtual void mousePressEvent( QMouseEvent* );
-  virtual void mouseReleaseEvent( QMouseEvent* );
-  virtual void mouseDoubleClickEvent( QMouseEvent* );
-  virtual void wheelEvent( QWheelEvent* );
-  virtual void keyPressEvent( QKeyEvent* );
-  virtual void keyReleaseEvent( QKeyEvent* );
-  virtual void paintEvent( QPaintEvent* );
-  virtual void resizeEvent( QResizeEvent* );
-  virtual void onChangeBackgroundColor();
-  virtual void contextMenuEvent( QContextMenuEvent * e );
+  enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, RotationId,
+         FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, ViewTrihedronId };
+  typedef QMap<int, QtxAction*> ActionsMap;
+  
+  void createActions();
+  void createToolBar();
 
- signals:
-  void MouseMove( QMouseEvent* );
-  void MouseButtonPressed( QMouseEvent* );
-  void MouseButtonReleased( QMouseEvent* );
-  void MouseDoubleClicked( QMouseEvent* );
-  void WheelMoved( QWheelEvent* );
-  void LeftButtonPressed(const QMouseEvent *event) ;
-  void LeftButtonReleased(const QMouseEvent *event) ;
-  void MiddleButtonPressed(const QMouseEvent *event) ;
-  void MiddleButtonReleased(const QMouseEvent *event) ;
-  void RightButtonPressed(const QMouseEvent *event) ;
-  void RightButtonReleased(const QMouseEvent *event) ;
-  void ButtonPressed(const QMouseEvent *event);
-  void ButtonReleased(const QMouseEvent *event);
-  void KeyPressed( QKeyEvent* );
-  void KeyReleased( QKeyEvent* );
-  void contextMenuRequested( QContextMenuEvent *e );
+  vtkRenderer* myRenderer;
+  vtkRenderWindow* myRenderWindow;
 
- protected:
-  vtkRenderWindow* myRW;
+  VTKViewer_Transform*  myTransform;
+  VTKViewer_Trihedron*  myTrihedron;  
+  int                   myTrihedronSize;
+  SVTK_CubeAxesActor2D* myCubeAxes;
+
+  QToolBar* myToolBar;
+  ActionsMap myActionsMap;  
 };
 
 #endif

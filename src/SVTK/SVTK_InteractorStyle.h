@@ -65,7 +65,7 @@ class SVTK_ViewWindow;
 class SVTK_EXPORT SVTK_InteractorStyle : public QObject, 
   public vtkInteractorStyle
 {
-  Q_OBJECT;
+  Q_OBJECT
 
  public:
   // Description:

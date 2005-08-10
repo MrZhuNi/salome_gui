@@ -288,7 +288,7 @@ void
 SVTK_InteractorStyle
 ::OnMouseMove() 
 {
-  //cout << "void SVTK_InteractorStyle::OnMouseMove()" << endl;
+  //cout << "SVTK_InteractorStyle::OnMouseMove" << endl;
 
   int x, y;
   this->Interactor->GetEventPosition( x, y );
@@ -303,7 +303,7 @@ void
 SVTK_InteractorStyle
 ::OnLeftButtonDown()
 {
-  //cout << "void SVTK_InteractorStyle::OnLeftButtonDown()" << endl;
+  //cout << "SVTK_InteractorStyle::OnLeftButtonDown" << endl;
 
   int x, y;
   this->Interactor->GetEventPosition( x, y );
@@ -318,7 +318,7 @@ void
 SVTK_InteractorStyle
 ::OnLeftButtonUp()
 {
-  //cout << "void SVTK_InteractorStyle::OnLeftButtonUp()" << endl;
+  //cout << "SVTK_InteractorStyle::OnLeftButtonUp" << endl;
 
   int x, y;
   this->Interactor->GetEventPosition( x, y );
@@ -333,7 +333,7 @@ void
 SVTK_InteractorStyle
 ::OnMiddleButtonDown() 
 {
-  //cout << "void SVTK_InteractorStyle::OnMiddleButtonDown()" << endl;
+  //cout << "SVTK_InteractorStyle::OnMiddleButtonDown" << endl;
 
   int x, y;
   this->Interactor->GetEventPosition( x, y );
@@ -348,7 +348,7 @@ void
 SVTK_InteractorStyle
 ::OnMiddleButtonUp()
 {
-  //cout << "void SVTK_InteractorStyle::OnMiddleButtonUp()" << endl;
+  //cout << "SVTK_InteractorStyle::OnMiddleButtonUp" << endl;
 
   int x, y;
   this->Interactor->GetEventPosition( x, y );
@@ -363,7 +363,7 @@ void
 SVTK_InteractorStyle
 ::OnRightButtonDown() 
 {
-  //cout << "void SVTK_InteractorStyle::OnRightButtonDown()" << endl;
+  //cout << "SVTK_InteractorStyle::OnRightButtonDown" << endl;
 
   int x, y;
   this->Interactor->GetEventPosition( x, y );
@@ -377,22 +377,13 @@ void
 SVTK_InteractorStyle
 ::OnRightButtonUp()
 {
-  //cout << "void SVTK_InteractorStyle::OnRightButtonUp()" << endl;
+  //cout << "SVTK_InteractorStyle::OnRightButtonUp" << endl;
 
   int x, y;
   this->Interactor->GetEventPosition( x, y );
   this->OnRightButtonUp( this->Interactor->GetControlKey(),
 			 this->Interactor->GetShiftKey(),
 			 x, y );
-  /*
-  if( State == VTK_INTERACTOR_STYLE_CAMERA_NONE )
-  {
-    QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
-                              event->pos(), event->globalPos(),
-                              event->state() );
-    emit contextMenuRequested( &aEvent );
-  }
-  */
 }
 
 

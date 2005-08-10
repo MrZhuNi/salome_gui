@@ -281,13 +281,12 @@ SVTK_View
 {
   myInteractorStyle->IncrementalRotate( 0, INCREMENT_FOR_OP );
 }
-/*
+
 //----------------------------------------------------------------------------
 void
 SVTK_View
 ::InsertActor( VTKViewer_Actor* theActor, bool theMoveInternalActors )
 {
-  //cout << "SVTK_View::InsertActor" << endl;
   theActor->AddToRender( getRenderer() );
 
   //theActor->SetTransform(myTransform);
@@ -310,7 +309,6 @@ void
 SVTK_View
 ::RemoveActor( VTKViewer_Actor* theActor, bool theUpdate )
 {
-  //cout << "SVTK_View::RemoveActor" << endl;
   theActor->RemoveFromRender( getRenderer() );
 
   if(theUpdate) 
@@ -325,7 +323,7 @@ SVTK_View
   RemoveActor(theActor);
   InsertActor(theActor,true);
 }
-*/
+
 /*
 //----------------------------------------------------------------------------
 QImage

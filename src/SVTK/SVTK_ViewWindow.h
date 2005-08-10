@@ -6,48 +6,47 @@
 #endif
 
 #include "SVTK.h"
+#include "SVTK_View.h"
+#include "SVTK_Selection.h"
+
 #include "SUIT_ViewWindow.h"
 
-#include "SVTK_Selection.h"
 #include "SALOME_InteractiveObject.hxx"
 
-class vtkRenderer;
-
-class QtxAction;
 class SUIT_Desktop;
 
-class VTKViewer_Trihedron;
-class VTKViewer_Transform;
-
 class VTKViewer_Actor;
+class VTKViewer_Trihedron;
 
 class SVTK_Viewer;
 class SVTK_Selector;
+
+//class SVTK_View;
+//class SVTK_RenderWindowInteractor;
+class SVTK_InteractorStyle;
 class SVTK_CubeAxesActor2D;
 
-class SVTK_RenderWindow;
-class SVTK_InteractorStyle;
-class SVTK_RenderWindowInteractor;
-class SVTK_InteractorStyle;
+class vtkRenderer;
 
 class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 {
-  Q_OBJECT;
+  Q_OBJECT
 
 public:
   SVTK_ViewWindow( SUIT_Desktop*, SVTK_Viewer* );
   virtual ~SVTK_ViewWindow();
   
-  QToolBar* getToolBar() { return myToolBar; }
-  
   void setBackgroundColor( const QColor& );
   QColor backgroundColor() const;
 
-  vtkRenderer* getRenderer() {return myRenderer;}
+  vtkRenderer* getRenderer();
   SVTK_Selector* GetSelector() {return mySelector;}
-  SVTK_RenderWindow* getRenderWindow() {return myRenderWindow;}
-  SVTK_RenderWindowInteractor* getRWInteractor() {return myRWInteractor;}
+
+  SVTK_View* getView() { return myView; }
+  SVTK_View* getRenderWindow() { return myView; }
+  SVTK_View* getRWInteractor() { return myView; }
   SVTK_InteractorStyle* getInteractorStyle(){ return myInteractorStyle;}
+
   Selection_Mode SelectionMode() const;
   void SetSelectionMode(Selection_Mode theMode);
 
@@ -85,11 +84,11 @@ public:
   //merge with V2_2_0_VISU_improvements:bool ComputeTrihedronSize( double& theNewSize,
   //merge with V2_2_0_VISU_improvements:                          double& theOldSize );
 
+  VTKViewer_Trihedron*  GetTrihedron();
+  SVTK_CubeAxesActor2D* GetCubeAxes();
+
   int  GetTrihedronSize() const;
   void SetTrihedronSize( const int );
-
-  VTKViewer_Trihedron*  GetTrihedron() {return this->myTrihedron;};
-  SVTK_CubeAxesActor2D* GetCubeAxes() {return this->myCubeAxes;};
 
   void SetSelectionProp(const double& theRed = 1, 
 			const double& theGreen = 1,
@@ -111,7 +110,6 @@ public slots:
   void onBottomView();
   void onRightView(); 
   void onLeftView();     
-
   void onResetView();     
   void onFitAll();
 
@@ -132,12 +130,6 @@ public slots:
   void onRotateUp();
   void onRotateDown();
 
-  void activateZoom();
-  void activateWindowFit();
-  void activateRotation();
-  void activatePanning(); 
-  void activateGlobalPanning(); 
-
 protected:
   QImage dumpView();
 
@@ -156,30 +148,12 @@ private:
   void MoveActor( VTKViewer_Actor* theActor );
 
 private:  
-  enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, RotationId,
-         FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, ViewTrihedronId };
-  typedef QMap<int, QtxAction*> ActionsMap;
-  
-  void createActions();
-  void createToolBar();
-  
-  vtkRenderer* myRenderer;
-
   SVTK_Viewer* myModel;
   SVTK_Selector* mySelector;
 
-  SVTK_RenderWindow* myRenderWindow;
-  SVTK_RenderWindowInteractor* myRWInteractor;
+  SVTK_View* myView;
   SVTK_InteractorStyle* myInteractorStyle;
 
-  VTKViewer_Transform*  myTransform;
-  VTKViewer_Trihedron*  myTrihedron;  
-  int                   myTrihedronSize;
-  SVTK_CubeAxesActor2D* myCubeAxes;
-  
-  QToolBar* myToolBar;
-  ActionsMap myActionsMap;  
-  
   double myCurScale;
 
   friend class SVTK_RenderWindowInteractor;

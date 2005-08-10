@@ -1,6 +1,8 @@
 #include "SALOME_Actor.h"
 
 #include <qapplication.h>
+#include <qsplitter.h>
+#include <qlayout.h>
 
 #include <vtkTextProperty.h>
 #include <vtkActorCollection.h>
@@ -19,15 +21,12 @@
 #include "SUIT_Tools.h"
 #include "SUIT_ResourceMgr.h"
 
-#include "VTKViewer_Transform.h"
 #include "VTKViewer_Utilities.h"
 #include "VTKViewer_CellRectPicker.h"
 
-#include "SVTK_Trihedron.h"
-#include "SVTK_CubeAxesActor2D.h"
+//#include "SVTK_View.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_ViewModel.h"
-#include "SVTK_RenderWindow.h"
 #include "SVTK_RenderWindowInteractor.h"
 #include "SVTK_InteractorStyle.h"
 
@@ -42,89 +41,42 @@
 SVTK_ViewWindow
 ::SVTK_ViewWindow( SUIT_Desktop* theDesktop, 
 		   SVTK_Viewer* theModel)
-  : SUIT_ViewWindow( theDesktop ),
-    myTrihedronSize( 100 )
+  : SUIT_ViewWindow( theDesktop )
 {
   myModel = theModel;
   mySelector = new SVTK_SelectorDef();
   connect(this,SIGNAL(selectionChanged()),theModel,SLOT(onSelectionChanged()));
 
-  myTransform = VTKViewer_Transform::New();
-  myTrihedron = SVTK_Trihedron::New();
-  myCubeAxes  = SVTK_CubeAxesActor2D::New();
-  myRenderer  = vtkRenderer::New() ;
+  QWidget* aCentralWidget = new QWidget( this );
+  setCentralWidget( aCentralWidget );
+  QBoxLayout* aLayout = new QVBoxLayout( aCentralWidget );
+  aLayout->setAutoAdd( true );
+  QSplitter* aSplitter = new QSplitter( Qt::Vertical, aCentralWidget );
 
-  myTrihedron->AddToRender( myRenderer );
-  myRenderer->AddProp(myCubeAxes);
-
-  myRenderWindow = new SVTK_RenderWindow( this, "RenderWindow" );
-  setCentralWidget(myRenderWindow);
-  myRenderWindow->setFocusPolicy( StrongFocus );
-  myRenderWindow->setFocus();
-
-  myRenderWindow->getRenderWindow()->AddRenderer( myRenderer );
-
-  myRenderer->GetActiveCamera()->ParallelProjectionOn();
-  myRenderer->LightFollowCameraOn();
-  myRenderer->TwoSidedLightingOn();
-
-  // Set BackgroundColor
-  QString BgrColorRed   = "0";//SUIT_CONFIG->getSetting("VTKViewer:BackgroundColorRed");
-  QString BgrColorGreen = "0";//SUIT_CONFIG->getSetting("VTKViewer:BackgroundColorGreen");
-  QString BgrColorBlue  = "0";//SUIT_CONFIG->getSetting("VTKViewer:BackgroundColorBlue");
-
-  if( !BgrColorRed.isEmpty() && !BgrColorGreen.isEmpty() && !BgrColorBlue.isEmpty() ) 
-    myRenderer->SetBackground( BgrColorRed.toInt()/255., BgrColorGreen.toInt()/255., BgrColorBlue.toInt()/255. );
-  else
-    myRenderer->SetBackground( 0, 0, 0 );
-  
   // Create an interactor.
-  myRWInteractor = SVTK_RenderWindowInteractor::New();
-  myRWInteractor->SetRenderWindow( myRenderWindow->getRenderWindow() );
-  //myRWInteractor->setViewWindow( this );
-
+  myView = new SVTK_View( aSplitter, "TopView" );
+  /*
+  SVTK_View* bottomView = new SVTK_View( aSplitter, "BottomView" );
+  bottomView->getInteractor()->SetInteractorStyle( myInteractorStyle ); 
+  bottomView->Initialize();
+  */
   myInteractorStyle = SVTK_InteractorStyle::New();
-  myInteractorStyle->setGUIWindow( myRenderWindow );
+  myInteractorStyle->setGUIWindow( myView );
   myInteractorStyle->setViewWindow( this );
 
-  myRWInteractor->SetInteractorStyle( myInteractorStyle ); 
-  myRWInteractor->Initialize();
+  myView->SetInteractorStyle( myInteractorStyle );
+  myView->SetSelector( mySelector );
+  myView->Initialize();
 
   //merge with V2_2_0_VISU_improvements:myInteractorStyle->setTriedron( myTrihedron );
   myInteractorStyle->FindPokedRenderer( 0, 0 );
 
-  SetSelectionMode(ActorSelection);
+  SetSelectionMode( ActorSelection );
 
-  vtkTextProperty* tprop = vtkTextProperty::New();
-  tprop->SetColor(1, 1, 1);
-  tprop->ShadowOn();
-  
-  float bnd[6];
-  bnd[0] = bnd[2] = bnd[4] = 0;
-  bnd[1] = bnd[3] = bnd[5] = myTrihedron->GetSize();
-  myCubeAxes->SetLabelFormat("%6.4g");
-  myCubeAxes->SetBounds(bnd);
-  myCubeAxes->SetCamera(myRenderer->GetActiveCamera());
-  myCubeAxes->SetFlyModeToOuterEdges(); // ENK remarks: it must bee
-  myCubeAxes->SetFontFactor(0.8);
-  myCubeAxes->SetAxisTitleTextProperty(tprop);
-  myCubeAxes->SetAxisLabelTextProperty(tprop);
-  myCubeAxes->SetCornerOffset(0);
-  myCubeAxes->SetScaling(0);
-  myCubeAxes->SetNumberOfLabels(5);
-  myCubeAxes->VisibilityOff();
-  myCubeAxes->SetTransform(myTransform);
-  tprop->Delete();
-  
-  setCentralWidget( myRenderWindow );
+  myView->setFocusPolicy( StrongFocus );
+  myView->setFocus();
 
-  myToolBar = new QToolBar(this);
-  myToolBar->setCloseMode(QDockWindow::Undocked);
-  myToolBar->setLabel(tr("LBL_TOOLBAR_LABEL"));
-
-  createActions();
-  createToolBar();
-
+  /*
   connect( myRenderWindow, SIGNAL(KeyPressed( QKeyEvent* )),
            this,           SLOT(onKeyPressed( QKeyEvent* )) );
   connect( myRenderWindow, SIGNAL(KeyReleased( QKeyEvent* )),
@@ -137,13 +89,12 @@ SVTK_ViewWindow
            this,           SLOT(onMouseDoubleClicked( QMouseEvent* )) );
   connect( myRenderWindow, SIGNAL(MouseMove( QMouseEvent* )),
            this,           SLOT(onMouseMoving( QMouseEvent* )) );
+  */
 
   connect( myInteractorStyle, SIGNAL(RenderWindowModified()),
-           myRenderWindow, SLOT(update()) );
-  connect( myRWInteractor, SIGNAL(RenderWindowModified()),
-           myRenderWindow, SLOT(update()) );
-  connect( myRWInteractor, SIGNAL(contextMenuRequested( QContextMenuEvent * )),
-           this,           SIGNAL(contextMenuRequested( QContextMenuEvent * )) );
+           myView, SLOT(update()) );
+  connect( myView, SIGNAL(contextMenuRequested( QContextMenuEvent * )),
+           this, SIGNAL(contextMenuRequested( QContextMenuEvent * )) );
 
   onResetView();
 }
@@ -152,201 +103,19 @@ SVTK_ViewWindow
 SVTK_ViewWindow
 ::~SVTK_ViewWindow()
 {
-  myTransform->Delete();
   // In order to ensure that the interactor unregisters
   // this RenderWindow, we assign a NULL RenderWindow to 
   // it before deleting it.
-  myRWInteractor->SetRenderWindow( NULL );
-  myRWInteractor->Delete();
-  
-  //m_RW->Delete() ;
-  myRenderer->RemoveAllProps();
-  //m_Renderer->Delete();
-  myTrihedron->Delete();
-  myCubeAxes->Delete();
+  //myView->SetRenderWindow( NULL );
+  //delete myView;
 }
 
 //----------------------------------------------------------------------------
-void
+vtkRenderer*
 SVTK_ViewWindow
-::activateZoom()
+::getRenderer()
 {
-  myInteractorStyle->startZoom();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_ViewWindow
-::activatePanning()
-{
-  myInteractorStyle->startPan();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_ViewWindow
-::activateRotation()
-{
-  myInteractorStyle->startRotate();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_ViewWindow
-::activateGlobalPanning()
-{
-  if(myTrihedron->GetVisibleActorCount(myRenderer))
-    myInteractorStyle->startGlobalPan();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_ViewWindow
-::activateWindowFit()
-{
-  myInteractorStyle->startFitArea();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_ViewWindow
-::createActions()
-{
-  if (!myActionsMap.isEmpty()) return;
-  
-  SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
-  
-  QtxAction* aAction;
-
-  // Dump view
-  aAction = new QtxAction(tr("MNU_DUMP_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_DUMP" ) ),
-                           tr( "MNU_DUMP_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_DUMP_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(onDumpView()));
-  myActionsMap[ DumpId ] = aAction;
-
-  // FitAll
-  aAction = new QtxAction(tr("MNU_FITALL"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_FITALL" ) ),
-                           tr( "MNU_FITALL" ), 0, this);
-  aAction->setStatusTip(tr("DSC_FITALL"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(onFitAll()));
-  myActionsMap[ FitAllId ] = aAction;
-
-  // FitRect
-  aAction = new QtxAction(tr("MNU_FITRECT"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_FITAREA" ) ),
-                           tr( "MNU_FITRECT" ), 0, this);
-  aAction->setStatusTip(tr("DSC_FITRECT"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(activateWindowFit()));
-  myActionsMap[ FitRectId ] = aAction;
-
-  // Zoom
-  aAction = new QtxAction(tr("MNU_ZOOM_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_ZOOM" ) ),
-                           tr( "MNU_ZOOM_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_ZOOM_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(activateZoom()));
-  myActionsMap[ ZoomId ] = aAction;
-
-  // Panning
-  aAction = new QtxAction(tr("MNU_PAN_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_PAN" ) ),
-                           tr( "MNU_PAN_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_PAN_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(activatePanning()));
-  myActionsMap[ PanId ] = aAction;
-
-  // Global Panning
-  aAction = new QtxAction(tr("MNU_GLOBALPAN_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_GLOBALPAN" ) ),
-                           tr( "MNU_GLOBALPAN_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_GLOBALPAN_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(activateGlobalPanning()));
-  myActionsMap[ GlobalPanId ] = aAction;
-
-  // Rotation
-  aAction = new QtxAction(tr("MNU_ROTATE_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_ROTATE" ) ),
-                           tr( "MNU_ROTATE_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_ROTATE_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(activateRotation()));
-  myActionsMap[ RotationId ] = aAction;
-
-  // Projections
-  aAction = new QtxAction(tr("MNU_FRONT_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_FRONT" ) ),
-                           tr( "MNU_FRONT_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_FRONT_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(onFrontView()));
-  myActionsMap[ FrontId ] = aAction;
-
-  aAction = new QtxAction(tr("MNU_BACK_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_BACK" ) ),
-                           tr( "MNU_BACK_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_BACK_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(onBackView()));
-  myActionsMap[ BackId ] = aAction;
-
-  aAction = new QtxAction(tr("MNU_TOP_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_TOP" ) ),
-                           tr( "MNU_TOP_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_TOP_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(onTopView()));
-  myActionsMap[ TopId ] = aAction;
-
-  aAction = new QtxAction(tr("MNU_BOTTOM_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_BOTTOM" ) ),
-                           tr( "MNU_BOTTOM_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_BOTTOM_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(onBottomView()));
-  myActionsMap[ BottomId ] = aAction;
-
-  aAction = new QtxAction(tr("MNU_LEFT_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_LEFT" ) ),
-                           tr( "MNU_LEFT_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_LEFT_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(onLeftView()));
-  myActionsMap[ LeftId ] = aAction;
-
-  aAction = new QtxAction(tr("MNU_RIGHT_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_RIGHT" ) ),
-                           tr( "MNU_RIGHT_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_RIGHT_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(onRightView()));
-  myActionsMap[ RightId ] = aAction;
-
-  // Reset
-  aAction = new QtxAction(tr("MNU_RESET_VIEW"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_RESET" ) ),
-                           tr( "MNU_RESET_VIEW" ), 0, this);
-  aAction->setStatusTip(tr("DSC_RESET_VIEW"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(onResetView()));
-  myActionsMap[ ResetId ] = aAction;
-
-  // onViewTrihedron: Shows - Hides Trihedron
-  aAction = new QtxAction(tr("MNU_SHOW_TRIHEDRON"), aResMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_TRIHEDRON" ) ),
-                           tr( "MNU_SHOW_TRIHEDRON" ), 0, this);
-  aAction->setStatusTip(tr("DSC_SHOW_TRIHEDRON"));
-  connect(aAction, SIGNAL(activated()), this, SLOT(onViewTrihedron()));
-  myActionsMap[ ViewTrihedronId ] = aAction;
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_ViewWindow
-::createToolBar()
-{
-  myActionsMap[DumpId]->addTo(myToolBar);
-  myActionsMap[ViewTrihedronId]->addTo(myToolBar);
-
-  SUIT_ToolButton* aScaleBtn = new SUIT_ToolButton(myToolBar);
-  aScaleBtn->AddAction(myActionsMap[FitAllId]);
-  aScaleBtn->AddAction(myActionsMap[FitRectId]);
-  aScaleBtn->AddAction(myActionsMap[ZoomId]);
-
-  SUIT_ToolButton* aPanningBtn = new SUIT_ToolButton(myToolBar);
-  aPanningBtn->AddAction(myActionsMap[PanId]);
-  aPanningBtn->AddAction(myActionsMap[GlobalPanId]);
-
-  myActionsMap[RotationId]->addTo(myToolBar);
-
-  SUIT_ToolButton* aViewsBtn = new SUIT_ToolButton(myToolBar);
-  aViewsBtn->AddAction(myActionsMap[FrontId]);
-  aViewsBtn->AddAction(myActionsMap[BackId]);
-  aViewsBtn->AddAction(myActionsMap[TopId]);
-  aViewsBtn->AddAction(myActionsMap[BottomId]);
-  aViewsBtn->AddAction(myActionsMap[LeftId]);
-  aViewsBtn->AddAction(myActionsMap[RightId]);
-
-  myActionsMap[ResetId]->addTo(myToolBar);
+  return myView->getRenderer();
 }
 
 //----------------------------------------------------------------------------
@@ -354,11 +123,7 @@ void
 SVTK_ViewWindow
 ::onFrontView()
 {
-  vtkCamera* camera = myRenderer->GetActiveCamera();
-  camera->SetPosition(1,0,0);
-  camera->SetViewUp(0,0,1);
-  camera->SetFocalPoint(0,0,0);
-  onFitAll();
+  myView->onFrontView();
 }
 
 //----------------------------------------------------------------------------
@@ -366,11 +131,7 @@ void
 SVTK_ViewWindow
 ::onBackView()
 {
-  vtkCamera* camera = myRenderer->GetActiveCamera();
-  camera->SetPosition(-1,0,0);
-  camera->SetViewUp(0,0,1);
-  camera->SetFocalPoint(0,0,0);
-  onFitAll();
+  myView->onBackView();
 }
 
 //----------------------------------------------------------------------------
@@ -378,11 +139,7 @@ void
 SVTK_ViewWindow
 ::onTopView()
 {
-  vtkCamera* camera = myRenderer->GetActiveCamera();
-  camera->SetPosition(0,0,1);
-  camera->SetViewUp(0,1,0);
-  camera->SetFocalPoint(0,0,0);
-  onFitAll();
+  myView->onTopView();
 }
 
 //----------------------------------------------------------------------------
@@ -390,11 +147,7 @@ void
 SVTK_ViewWindow
 ::onBottomView()
 {
-  vtkCamera* camera = myRenderer->GetActiveCamera();
-  camera->SetPosition(0,0,-1);
-  camera->SetViewUp(0,1,0);
-  camera->SetFocalPoint(0,0,0);
-  onFitAll();
+  myView->onBottomView();
 }
 
 //----------------------------------------------------------------------------
@@ -402,11 +155,7 @@ void
 SVTK_ViewWindow
 ::onLeftView()
 {
-  vtkCamera* camera = myRenderer->GetActiveCamera(); 
-  camera->SetPosition(0,-1,0);
-  camera->SetViewUp(0,0,1);
-  camera->SetFocalPoint(0,0,0);
-  onFitAll();
+  myView->onLeftView();
 }
 
 //----------------------------------------------------------------------------
@@ -414,11 +163,7 @@ void
 SVTK_ViewWindow
 ::onRightView()
 {
-  vtkCamera* camera = myRenderer->GetActiveCamera();
-  camera->SetPosition(0,1,0);
-  camera->SetViewUp(0,0,1);
-  camera->SetFocalPoint(0,0,0);
-  onFitAll();
+  myView->onRightView();
 }
 
 //----------------------------------------------------------------------------
@@ -426,27 +171,7 @@ void
 SVTK_ViewWindow
 ::onResetView()
 {
-  int aTrihedronIsVisible = isTrihedronDisplayed();
-  int aCubeAxesIsVisible  = isCubeAxesDisplayed();
-
-  myTrihedron->SetVisibility( VTKViewer_Trihedron::eOnlyLineOn );
-  myCubeAxes->SetVisibility(0);
-
-  ::ResetCamera(myRenderer,true);  
-  vtkCamera* aCamera = myRenderer->GetActiveCamera();
-  aCamera->SetPosition(1,-1,1);
-  aCamera->SetViewUp(0,0,1);
-  ::ResetCamera(myRenderer,true);  
-
-  if (aTrihedronIsVisible) myTrihedron->VisibilityOn();
-  else myTrihedron->VisibilityOff();
-
-  if (aCubeAxesIsVisible) myCubeAxes->VisibilityOn();
-  else myCubeAxes->VisibilityOff();
-
-  static float aCoeff = 3.0;
-  aCamera->SetParallelScale(aCoeff*aCamera->GetParallelScale());
-  Repaint();
+  myView->onResetView();
 }
 
 //----------------------------------------------------------------------------
@@ -454,70 +179,15 @@ void
 SVTK_ViewWindow
 ::onFitAll()
 {
-  int aTrihedronWasVisible = false;
-  int aCubeAxesWasVisible = false;
-  if (myTrihedron) {
-    aTrihedronWasVisible = isTrihedronDisplayed();
-    if (aTrihedronWasVisible)
-      myTrihedron->VisibilityOff();
-  }
-
-  if (myCubeAxes) {
-    aCubeAxesWasVisible = isCubeAxesDisplayed();
-    if (aCubeAxesWasVisible)
-      myCubeAxes->VisibilityOff();
-  }
-
-  if (myTrihedron->GetVisibleActorCount(myRenderer)) {
-    myTrihedron->VisibilityOff();
-    myCubeAxes->VisibilityOff();
-    ::ResetCamera(myRenderer);
-  } else {
-    myTrihedron->SetVisibility(VTKViewer_Trihedron::eOnlyLineOn);
-    myCubeAxes->SetVisibility(2);
-    ::ResetCamera(myRenderer,true);
-  }
-
-  if (aTrihedronWasVisible)
-    myTrihedron->VisibilityOn();
-  else
-    myTrihedron->VisibilityOff();
-
-  if (aCubeAxesWasVisible)
-    myCubeAxes->VisibilityOn();
-  else
-    myCubeAxes->VisibilityOff();
-
-  ::ResetCameraClippingRange(myRenderer);
-
-  Repaint();
+  myView->onFitAll();
 }
-
-//----------------------------------------------------------------
-struct THighlightAction{
-  bool myIsHighlight;
-  THighlightAction( bool theIsHighlight ): myIsHighlight(theIsHighlight) {}
-  void operator()( SALOME_Actor* theActor) {
-    if(theActor->GetMapper()){
-      theActor->highlight( myIsHighlight );
-    }
-  }
-};
 
 //----------------------------------------------------------------
 void
 SVTK_ViewWindow
 ::onSelectionChanged()
 {
-  unHighlightAll();
-
-  const SALOME_ListIO& aListIO = mySelector->StoredIObjects();
-  SALOME_ListIteratorOfListIO anIter(aListIO);
-  for(; anIter.More(); anIter.Next()){
-    highlight(anIter.Value(),true,!anIter.More());
-  }
-
-  emit selectionChanged();
+  myView->onSelectionChanged();
 }
 
 //----------------------------------------------------------------
@@ -525,9 +195,7 @@ void
 SVTK_ViewWindow
 ::SetSelectionMode(Selection_Mode theMode)
 {
-  mySelector->SetSelectionMode(theMode);
-
-  //myRWInteractor->SetSelectionMode(theMode);
+  myView->SetSelectionMode( theMode );
 }
 
 //----------------------------------------------------------------
@@ -535,7 +203,7 @@ Selection_Mode
 SVTK_ViewWindow
 ::SelectionMode() const
 {
-  return mySelector->SelectionMode();
+  return myView->SelectionMode();
 }
 
 //----------------------------------------------------------------
@@ -543,14 +211,7 @@ void
 SVTK_ViewWindow
 ::unHighlightAll() 
 {
-  //cout << "--------------------------------------------------" << endl;
-  //cout << "SVTK_ViewWindow::unHighlightAll" << endl;
-
-  using namespace VTK;
-  ForEach<SALOME_Actor>( myRenderer->GetActors(),
-			 THighlightAction( false ) );
-
-  //myRenderWindow->update();
+  myView->unHighlightAll();
 }
 
 //----------------------------------------------------------------
@@ -560,12 +221,7 @@ SVTK_ViewWindow
 	     bool theIsHighlight, 
 	     bool theIsUpdate ) 
 {
-  using namespace VTK;
-  ForEachIf<SALOME_Actor>(myRenderer->GetActors(),
-			  TIsSameIObject<SALOME_Actor>(theIO),
-			  THighlightAction(theIsHighlight));
-
-  //myRenderWindow->update();
+  myView->highlight( theIO, theIsHighlight, theIsUpdate );
 }
 
 //----------------------------------------------------------------
@@ -573,7 +229,7 @@ bool
 SVTK_ViewWindow
 ::isInViewer( const Handle(SALOME_InteractiveObject)& theIO ) 
 {
-  return myRWInteractor->isInViewer( theIO );
+  return myView->isInViewer( theIO );
 }
 
 //----------------------------------------------------------------
@@ -581,7 +237,7 @@ bool
 SVTK_ViewWindow
 ::isVisible( const Handle(SALOME_InteractiveObject)& theIO ) 
 {
-  return myRWInteractor->isVisible( theIO );
+  return myView->isVisible( theIO );
 }
 
 //----------------------------------------------------------------------------
@@ -589,8 +245,7 @@ void
 SVTK_ViewWindow
 ::setBackgroundColor( const QColor& color )
 {
-  if ( myRenderer )
-    myRenderer->SetBackground( color.red()/255., color.green()/255., color.blue()/255. );
+  myView->setBackgroundColor( color );
 }
 
 //----------------------------------------------------------------------------
@@ -598,12 +253,7 @@ QColor
 SVTK_ViewWindow
 ::backgroundColor() const
 {
-  float backint[3];
-  if ( myRenderer ) {
-    myRenderer->GetBackground( backint );
-    return QColor(int(backint[0]*255), int(backint[1]*255), int(backint[2]*255));
-  }
-  return SUIT_ViewWindow::backgroundColor();
+  return myView->backgroundColor();
 }
 
 //----------------------------------------------------------------------------
@@ -611,9 +261,7 @@ void
 SVTK_ViewWindow
 ::Repaint(bool theUpdateTrihedron)
 {
-  if (theUpdateTrihedron) 
-    onAdjustTrihedron();
-  myRenderWindow->update();
+  myView->Repaint( theUpdateTrihedron );
 }
 
 //----------------------------------------------------------------------------
@@ -621,7 +269,7 @@ void
 SVTK_ViewWindow
 ::GetScale( double theScale[3] ) 
 {
-  myTransform->GetMatrixScale( theScale );
+  myView->GetScale( theScale );
 }
 
 //----------------------------------------------------------------------------
@@ -629,9 +277,7 @@ void
 SVTK_ViewWindow
 ::SetScale( double theScale[3] ) 
 {
-  myTransform->SetMatrixScale( theScale[0], theScale[1], theScale[2] );
-  myRWInteractor->Render();
-  Repaint();
+  myView->SetScale( theScale );
 }
 
 //----------------------------------------------------------------------------
@@ -639,14 +285,14 @@ bool
 SVTK_ViewWindow
 ::isTrihedronDisplayed()
 {
-  return myTrihedron->GetVisibility() == VTKViewer_Trihedron::eOn;
+  return myView->isTrihedronDisplayed();
 }
 
 bool
 SVTK_ViewWindow
 ::isCubeAxesDisplayed()
 {
-  return myCubeAxes->GetVisibility() == 1;
+  return myView->isCubeAxesDisplayed();
 }
 
 //----------------------------------------------------------------------------
@@ -654,30 +300,14 @@ void
 SVTK_ViewWindow
 ::onViewTrihedron()
 {
-  if(!myTrihedron) 
-    return;
-
-  if(isTrihedronDisplayed())
-    myTrihedron->VisibilityOff();
-  else
-    myTrihedron->VisibilityOn();
-
-  Repaint();
+  myView->onViewTrihedron();
 }
 
 void
 SVTK_ViewWindow
 ::onViewCubeAxes()
 {
-  if(!myCubeAxes)
-    return;
-
-  if(isCubeAxesDisplayed())
-    myCubeAxes->VisibilityOff();
-  else
-    myCubeAxes->VisibilityOn();
-
-  Repaint();
+  myView->onViewCubeAxes();
 }
 
 //----------------------------------------------------------------------------
@@ -719,18 +349,24 @@ SVTK_ViewWindow
 }*/
 
 //----------------------------------------------------------------------------
+VTKViewer_Trihedron* SVTK_ViewWindow::GetTrihedron()
+{
+  return myView->GetTrihedron();
+}
+
+SVTK_CubeAxesActor2D* SVTK_ViewWindow::GetCubeAxes()
+{
+  return myView->GetCubeAxes();
+}
+
 int SVTK_ViewWindow::GetTrihedronSize() const
 {
-  return myTrihedronSize;
+  return myView->GetTrihedronSize();
 }
 
 void SVTK_ViewWindow::SetTrihedronSize( const int sz )
 {
-  if ( myTrihedronSize == sz )
-    return;
-
-  myTrihedronSize = sz;
-  AdjustTrihedrons( true );
+  myView->SetTrihedronSize( sz );
 }
 
 /*! If parameter theIsForcedUpdate is true, recalculate parameters for
@@ -740,74 +376,7 @@ void
 SVTK_ViewWindow
 ::AdjustTrihedrons(const bool theIsForcedUpdate)
 {
-  if ((!isCubeAxesDisplayed() && !isTrihedronDisplayed()) && !theIsForcedUpdate)
-    return;
-
-  float bnd[ 6 ];
-  float newbnd[6];
-  newbnd[ 0 ] = newbnd[ 2 ] = newbnd[ 4 ] = VTK_LARGE_FLOAT;
-  newbnd[ 1 ] = newbnd[ 3 ] = newbnd[ 5 ] = -VTK_LARGE_FLOAT;
-
-  myCubeAxes->GetBounds(bnd);
-
-  int aVisibleNum = myTrihedron->GetVisibleActorCount( myRenderer );
-  //if (aVisibleNum || theIsForcedUpdate) {
-  if (aVisibleNum) {
-    // if the new trihedron size have sufficient difference, then apply the value
-    double aNewSize = 100, anOldSize=myTrihedron->GetSize();
-    bool aTDisplayed = isTrihedronDisplayed();
-    bool aCDisplayed = isCubeAxesDisplayed();
-    if(aTDisplayed) myTrihedron->VisibilityOff();
-    if(aCDisplayed) myCubeAxes->VisibilityOff();
-
-    SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
-    QString aSetting = aResMgr->stringValue("Viewer:TrihedronSize", "105");
-    static float aSizeInPercents = aSetting.toFloat();
-
-    //bool isComputeTrihedronSize =
-      ::ComputeTrihedronSize(myRenderer, aNewSize, anOldSize, aSizeInPercents);
-
-    myTrihedron->SetSize( aNewSize );
-
-    // iterate through displayed objects and set size if necessary
-    vtkActorCollection* anActors = getRenderer()->GetActors();
-    anActors->InitTraversal();
-    while (vtkActor* anActor = anActors->GetNextActor())
-    {
-      if (SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast( anActor ))
-      {
-	if (aSActor->IsResizable())
-	  aSActor->SetSize( 0.5 * aNewSize );
-        if (aSActor->GetVisibility() && !aSActor->IsInfinitive()) {
-	  float *abounds = aSActor->GetBounds();
-          if (abounds[0] > -VTK_LARGE_FLOAT && abounds[1] < VTK_LARGE_FLOAT &&
-              abounds[2] > -VTK_LARGE_FLOAT && abounds[3] < VTK_LARGE_FLOAT &&
-              abounds[4] > -VTK_LARGE_FLOAT && abounds[5] < VTK_LARGE_FLOAT)
-	    for (int i = 0; i < 5; i = i + 2) {
-	      if (abounds[i] < newbnd[i]) newbnd[i] = abounds[i];
-	      if (abounds[i+1] > newbnd[i+1]) newbnd[i+1] = abounds[i+1];
-	    }
-        }
-      }
-    }
-    if (aTDisplayed) myTrihedron->VisibilityOn();
-    if (aCDisplayed) myCubeAxes->VisibilityOn();
-    
-  } else {
-     double aSize = myTrihedron->GetSize();
-     newbnd[0] = newbnd[2] = newbnd[4] = 0;
-     newbnd[1] = newbnd[3] = newbnd[5] = aSize;
-  }
-  
-  if (newbnd[0] < VTK_LARGE_FLOAT && newbnd[2] < VTK_LARGE_FLOAT && newbnd[4] < VTK_LARGE_FLOAT &&
-      newbnd[1] >-VTK_LARGE_FLOAT && newbnd[3] >-VTK_LARGE_FLOAT && newbnd[5] >-VTK_LARGE_FLOAT) {
-    for(int i=0;i<6;i++) bnd[i] = newbnd[i];
-    myCubeAxes->SetBounds(bnd);
-  }
-  
-  myCubeAxes->SetBounds(bnd);
-
-  ::ResetCameraClippingRange(myRenderer);
+  myView->AdjustTrihedrons( theIsForcedUpdate );
 }
 
 //----------------------------------------------------------------------------
@@ -815,14 +384,14 @@ void
 SVTK_ViewWindow
 ::onAdjustTrihedron()
 {   
-  AdjustTrihedrons( false );
+  myView->onAdjustTrihedron();
 }
 
 void
 SVTK_ViewWindow
 ::onAdjustCubeAxes()
 {   
-  AdjustTrihedrons(false);
+  myView->onAdjustCubeAxes();
 }
 
 #define INCREMENT_FOR_OP 10
@@ -990,35 +559,23 @@ void
 SVTK_ViewWindow
 ::InsertActor( VTKViewer_Actor* theActor, bool theMoveInternalActors )
 {
-  //cout << "SVTK_ViewWindow::InsertActor" << endl;
-  theActor->AddToRender(myRenderer);
-
-  theActor->SetTransform(myTransform);
-  //if(theMoveInternalActors) 
-  //  myRWInteractor->MoveInternalActors();
+  myView->InsertActor( theActor, theMoveInternalActors );
 }
 
 //----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
-::AddActor( VTKViewer_Actor* theActor, bool theUpdate /*=false*/ )
+::AddActor( VTKViewer_Actor* theActor, bool theUpdate )
 {
-  InsertActor(theActor);
-  if(theUpdate) 
-    Repaint();
+  myView->AddActor( theActor, theUpdate );
 }
 
 //----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
-::RemoveActor( VTKViewer_Actor* theActor, bool theUpdate /*=false*/ )
+::RemoveActor( VTKViewer_Actor* theActor, bool theUpdate )
 {
-  //cout << "SVTK_ViewWindow::RemoveActor" << endl;
-  theActor->RemoveFromRender(myRenderer);
-
-  theActor->RemoveFromRender(myRenderer);
-  if(theUpdate) 
-    Repaint();
+  myView->RemoveActor( theActor, theUpdate );
 }
 
 //----------------------------------------------------------------------------
@@ -1026,8 +583,7 @@ void
 SVTK_ViewWindow
 ::MoveActor( VTKViewer_Actor* theActor)
 {
-  RemoveActor(theActor);
-  InsertActor(theActor,true);
+  myView->MoveActor( theActor );
 }
 
 //----------------------------------------------------------------------------
@@ -1035,10 +591,11 @@ QImage
 SVTK_ViewWindow
 ::dumpView()
 {
-  QPixmap px = QPixmap::grabWindow( myRenderWindow->winId() );
+  QPixmap px = QPixmap::grabWindow( myView->winId() );
   return px.convertToImage();
 }
 
+//----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
 ::SetSelectionProp(const double& theRed, 
@@ -1046,7 +603,7 @@ SVTK_ViewWindow
 		   const double& theBlue, 
 		   const int& theWidth) 
 {
-  vtkActorCollection* anActors = getRenderer()->GetActors();
+  vtkActorCollection* anActors = myView->getRenderer()->GetActors();
   anActors->InitTraversal();
   while( vtkActor* anActor = anActors->GetNextActor() )
   {
@@ -1064,12 +621,13 @@ SVTK_ViewWindow
   }
 }
 
+//----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
 ::SetSelectionTolerance(const double& theTolNodes, 
 			const double& theTolItems)
 {
-  vtkActorCollection* anActors = getRenderer()->GetActors();
+  vtkActorCollection* anActors = myView->getRenderer()->GetActors();
   anActors->InitTraversal();
   while( vtkActor* anActor = anActors->GetNextActor() )
   {
