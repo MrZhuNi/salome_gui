@@ -65,7 +65,8 @@ class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
   bool isTrihedronDisplayed();
   bool isCubeAxesDisplayed();
 
-  void Repaint( bool theUpdateTrihedron = true );
+  void Repaint( bool theUpdateTrihedron );
+  void Repaint() { Repaint( true ); }
 
   void setBackgroundColor( const QColor& );
   QColor backgroundColor() const;
