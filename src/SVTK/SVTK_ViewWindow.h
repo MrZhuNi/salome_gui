@@ -143,9 +143,9 @@ protected slots:
 
 private:
   void InitialSetup();
-  void InsertActor( VTKViewer_Actor* theActor,
-                    bool theMoveInternalActors = false );
-  void MoveActor( VTKViewer_Actor* theActor );
+  //void InsertActor( VTKViewer_Actor* theActor,
+  //                  bool theMoveInternalActors = false );
+  //void MoveActor( VTKViewer_Actor* theActor );
 
 private:  
   SVTK_Viewer* myModel;

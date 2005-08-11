@@ -555,12 +555,12 @@ SVTK_ViewWindow
 }
 
 //----------------------------------------------------------------------------
-void
-SVTK_ViewWindow
-::InsertActor( VTKViewer_Actor* theActor, bool theMoveInternalActors )
-{
-  myView->InsertActor( theActor, theMoveInternalActors );
-}
+//void
+//SVTK_ViewWindow
+//::InsertActor( VTKViewer_Actor* theActor, bool theMoveInternalActors )
+//{
+//  myView->InsertActor( theActor, theMoveInternalActors );
+//}
 
 //----------------------------------------------------------------------------
 void
@@ -579,12 +579,12 @@ SVTK_ViewWindow
 }
 
 //----------------------------------------------------------------------------
-void
-SVTK_ViewWindow
-::MoveActor( VTKViewer_Actor* theActor)
-{
-  myView->MoveActor( theActor );
-}
+//void
+//SVTK_ViewWindow
+//::MoveActor( VTKViewer_Actor* theActor)
+//{
+//  myView->MoveActor( theActor );
+//}
 
 //----------------------------------------------------------------------------
 QImage
