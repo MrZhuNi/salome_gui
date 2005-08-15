@@ -34,8 +34,8 @@
 #include "Handle_SALOME_InteractiveObject.hxx"
 #endif
 
-#include <vtkLODActor.h> // INCLUDES "stdio.h"
-#include <vtkProperty.h> 
+//#include <vtkLODActor.h> // INCLUDES "stdio.h"
+//#include <vtkProperty.h> 
 
 // to overcome the conflict between std::ostream and io::ostream 
 // the following variable must be defined:
@@ -51,6 +51,9 @@ class vtkDataSet;
 class vtkPolyData;
 class vtkCamera;
 class vtkProperty;
+class vtkPolyDataMapper;
+class vtkOutlineSource;
+class vtkRenderer;
 
 class VTKViewer_Transform;
 class VTKViewer_GeometryFilter;
@@ -72,8 +75,6 @@ extern int SALOME_POINT_SIZE;
 #include "SVTK_SelectionEvent.h"
 
 #include <string>
-
-class vtkRenderer;
 
 class SVTK_Actor;
 class SVTK_InteractorStyle;
@@ -196,7 +197,7 @@ class SALOME_OBJECT_EXPORT SALOME_Actor : public VTKViewer_Actor {
 
   // From VISU
  public:
-  virtual void highlight( bool );
+  virtual void highlight( bool, Selection_Mode );
 
   virtual void SetVisibility( int );
 
@@ -239,6 +240,10 @@ class SALOME_OBJECT_EXPORT SALOME_Actor : public VTKViewer_Actor {
 
   SVTK_Actor* myPreHighlightActor;
   SVTK_Actor* myHighlightActor;
+
+  vtkActor* myOutlineActor;
+  vtkOutlineSource* myOutline;
+  vtkPolyDataMapper* myOutlineMapper;
 };
 
 #endif // SALOME_ACTOR_H

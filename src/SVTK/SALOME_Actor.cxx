@@ -58,6 +58,7 @@
 #include <vtkDataSetMapper.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
+#include "vtkOutlineSource.h"
 
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
@@ -127,6 +128,21 @@ SALOME_Actor::SALOME_Actor(){
   myHighlightActor = SVTK_Actor::New(); 
   myHighlightActor->PickableOff();
   myHighlightActor->SetProperty( myPointProperty );
+
+
+  myOutline = vtkOutlineSource::New();
+
+  myOutlineMapper = vtkPolyDataMapper::New();
+  myOutlineMapper->SetInput( myOutline->GetOutput() );
+
+  myOutlineActor = vtkActor::New();
+  myOutlineActor->PickableOff();
+  myOutlineActor->DragableOff();
+  myOutlineActor->SetMapper( myOutlineMapper );
+  myOutlineActor->GetProperty()->SetColor(0.0,1.0,0.0);
+  myOutlineActor->GetProperty()->SetAmbient(1.0);
+  myOutlineActor->GetProperty()->SetDiffuse(0.0);
+  myOutlineActor->SetVisibility( false );
 }
 
 
@@ -152,7 +168,11 @@ SALOME_Actor::~SALOME_Actor(){
   myPointPicker->Delete();
   myCellPicker->Delete();
   myCellRectPicker->Delete();
-  myHighlightActor->SetProperty( NULL );
+  myHighlightActor->Delete();
+
+  myOutline->Delete();
+  myOutlineMapper->Delete();
+  myOutlineActor->Delete();
 }
 
 
@@ -162,6 +182,7 @@ void SALOME_Actor::AddToRender(vtkRenderer* theRenderer){
   // from VISU
   theRenderer->AddActor( myPreHighlightActor );
   theRenderer->AddActor( myHighlightActor );
+  theRenderer->AddActor( myOutlineActor );
 }
 
 void SALOME_Actor::RemoveFromRender(vtkRenderer* theRenderer){
@@ -170,6 +191,7 @@ void SALOME_Actor::RemoveFromRender(vtkRenderer* theRenderer){
   // from VISU
   theRenderer->RemoveActor( myPreHighlightActor );
   theRenderer->RemoveActor( myHighlightActor );
+  theRenderer->RemoveActor( myOutlineActor );
 }
 
 
@@ -363,11 +385,17 @@ void SALOME_Actor::setDisplayMode(int theMode){
 // from VISU
 
 //----------------------------------------------------------------
-void SALOME_Actor::highlight( bool theHighlight )
+void SALOME_Actor::highlight( bool theHighlight, Selection_Mode theMode )
 {
   //cout << "SALOME_Actor::highlight " << ( theHighlight ? "on" : "off" ) << endl;
 
-  myHighlightActor->SetVisibility( theHighlight );
+  if( !GetVisibility() )
+    return;
+
+  myOutline->SetBounds( GetBounds() );
+  myOutlineActor->SetVisibility( theHighlight );
+
+  myHighlightActor->SetVisibility( theHighlight && theMode != ActorSelection );
 }
 
 //----------------------------------------------------------------
@@ -376,6 +404,7 @@ void SALOME_Actor::SetVisibility( int theVisibility )
   //cout << "SALOME_Actor::SetVisibility " << ( theVisibility ? "on" : "off" ) << endl;
   vtkProp::SetVisibility( theVisibility );
 
+  myOutlineActor->SetVisibility( theVisibility && isHighlighted() );
   myHighlightActor->SetVisibility( theVisibility && isHighlighted() );
 }
 
@@ -731,22 +760,15 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
   cout << "IsHighlight : " << ( theIsHighlight ? "true" : "false" ) << endl;
   */
 
-  if( GetVisibility() && theIsHighlight )
-    theInteractorStyle->HighlightProp( this );
-  else if( !theIsHighlight )
-    theInteractorStyle->HighlightProp( NULL );
-
   switch( aSelectionMode )
   {
     case NodeSelection:
       myHighlightActor->SetProperty( myPointProperty );
       myHighlightActor->MapPoints( this, aMapIndex );
-      highlight( theIsHighlight );
       break;
     case EdgeOfCellSelection:
       myHighlightActor->SetProperty( myEdgeProperty );
       myHighlightActor->MapEdge( this, aMapIndex );
-      highlight( theIsHighlight );
       break;
     case CellSelection:
     case EdgeSelection:
@@ -754,12 +776,12 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
     case VolumeSelection:
       myHighlightActor->SetProperty( myCellProperty );
       myHighlightActor->MapCells( this, aMapIndex );
-      highlight( theIsHighlight );
       break;
     case ActorSelection:
-      highlight( false );
       break;
   }
+
+  highlight( theIsHighlight, aSelectionMode );
 
   return true;
 }

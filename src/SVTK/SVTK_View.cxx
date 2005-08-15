@@ -98,10 +98,13 @@ SVTK_View
 //----------------------------------------------------------------
 struct THighlightAction{
   bool myIsHighlight;
-  THighlightAction( bool theIsHighlight ): myIsHighlight(theIsHighlight) {}
+  Selection_Mode myMode;
+  THighlightAction( bool theIsHighlight, Selection_Mode theMode = ActorSelection )
+    : myIsHighlight( theIsHighlight ),
+      myMode( theMode ) {}
   void operator()( SALOME_Actor* theActor) {
     if(theActor->GetMapper()){
-      theActor->highlight( myIsHighlight );
+      theActor->highlight( myIsHighlight, myMode );
     }
   }
 };
@@ -145,14 +148,13 @@ void
 SVTK_View
 ::unHighlightAll() 
 {
-  //cout << "--------------------------------------------------" << endl;
   //cout << "SVTK_View::unHighlightAll" << endl;
 
   using namespace VTK;
   ForEach<SALOME_Actor>( getRenderer()->GetActors(),
 			 THighlightAction( false ) );
 
-  //myRenderWindow->update();
+  update();
 }
 
 //----------------------------------------------------------------
@@ -162,12 +164,13 @@ SVTK_View
 	     bool theIsHighlight, 
 	     bool theIsUpdate ) 
 {
+  //cout << "SVTK_View::highlight" << endl;
   using namespace VTK;
-  ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
-			  TIsSameIObject<SALOME_Actor>(theIO),
-			  THighlightAction(theIsHighlight));
+  ForEachIf<SALOME_Actor>( getRenderer()->GetActors(),
+			   TIsSameIObject<SALOME_Actor>( theIO ),
+			   THighlightAction( theIsHighlight, mySelector->SelectionMode() ) );
 
-  //myRenderWindow->update();
+  update();
 }
 
 #define INCREMENT_FOR_OP 10

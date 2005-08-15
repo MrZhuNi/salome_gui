@@ -187,7 +187,8 @@ void
 SVTK_ViewWindow
 ::onSelectionChanged()
 {
-  //myView->onSelectionChanged();
+  //cout << "SVTK_ViewWindow::onSelectionChanged" << endl;
+  myView->onSelectionChanged();
   emit selectionChanged();
 }
 
