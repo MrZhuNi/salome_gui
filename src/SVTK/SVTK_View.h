@@ -54,8 +54,6 @@ public:
               bool immediatly = true );
   void DisplayAll();
   void EraseAll();
-  void Repaint( bool theUpdateTrihedron );
-  void Repaint() { Repaint(true); }
 
   //apply existing transformation on adding SALOME_Actor
   void AddActor( VTKViewer_Actor*, bool update = false );
