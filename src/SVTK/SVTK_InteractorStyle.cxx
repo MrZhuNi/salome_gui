@@ -1079,7 +1079,7 @@ SVTK_InteractorStyle
 	  } //end switch
 	  Interactor->EndPickCallback();
 	}
-	//myViewWindow->onSelectionChanged();
+	myViewWindow->onSelectionChanged();
       } 
     } 
     break;
