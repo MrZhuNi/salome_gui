@@ -374,7 +374,7 @@ void SALOME_Actor::highlight( bool theHighlight )
 void SALOME_Actor::SetVisibility( int theVisibility )
 {
   //cout << "SALOME_Actor::SetVisibility " << ( theVisibility ? "on" : "off" ) << endl;
-  //vtkProp::SetVisibility( theVisibility );
+  vtkProp::SetVisibility( theVisibility );
 
   myHighlightActor->SetVisibility( theVisibility && isHighlighted() );
 }
