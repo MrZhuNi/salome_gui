@@ -1,7 +1,7 @@
 #include "SalomeApp_VTKSelector.h"
 #include "SalomeApp_DataOwner.h"
 
-#include "SVTK_ViewModel.h"
+#include "SVTK_ViewModelBase.h"
 #include "SVTK_Selector.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_Functor.h"
@@ -58,7 +58,7 @@ SalomeApp_SVTKDataOwner
   Constructor.
 */
 SalomeApp_VTKSelector
-::SalomeApp_VTKSelector( SVTK_Viewer* viewer, 
+::SalomeApp_VTKSelector( SVTK_ViewModelBase* viewer, 
 			 SUIT_SelectionMgr* mgr ): 
   SUIT_Selector( mgr, viewer ),
   myViewer( viewer )
@@ -78,7 +78,7 @@ SalomeApp_VTKSelector
 /*!
   Gets viewer.
 */
-SVTK_Viewer* 
+SVTK_ViewModelBase* 
 SalomeApp_VTKSelector
 ::viewer() const
 {
@@ -92,7 +92,7 @@ QString
 SalomeApp_VTKSelector
 ::type() const
 { 
-  return SVTK_Viewer::Type(); 
+  return myViewer->getType(); 
 }
 
 /*!
