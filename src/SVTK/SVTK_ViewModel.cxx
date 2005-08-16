@@ -16,6 +16,8 @@
 #include "SVTK_RenderWindowInteractor.h"
 #include "SVTK_RenderWindow.h"
 
+#include "VTKViewer_ViewModel.h"
+
 #include "ToolsGUI.h"
 
 #include "SALOME_Actor.h"
@@ -433,11 +435,3 @@ SVTK_Viewer
 	if(SVTK_RenderWindow* aRW = aView->getView())
 	  aRW->update();
 }
-
-void 
-SVTK_Viewer
-::onSelectionChanged()
-{
-  emit selectionChanged();
-}
-

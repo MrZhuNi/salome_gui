@@ -26,7 +26,7 @@
 
 //#include "SVTK_View.h"
 #include "SVTK_ViewWindow.h"
-#include "SVTK_ViewModel.h"
+#include "SVTK_ViewModelBase.h"
 #include "SVTK_RenderWindowInteractor.h"
 #include "SVTK_InteractorStyle.h"
 
@@ -40,10 +40,9 @@
 //----------------------------------------------------------------------------
 SVTK_ViewWindow
 ::SVTK_ViewWindow( SUIT_Desktop* theDesktop, 
-		   SVTK_Viewer* theModel)
+		   SVTK_ViewModelBase* theModel)
   : SUIT_ViewWindow( theDesktop )
 {
-  myModel = theModel;
   mySelector = new SVTK_SelectorDef();
   connect(this,SIGNAL(selectionChanged()),theModel,SLOT(onSelectionChanged()));
 

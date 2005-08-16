@@ -27,7 +27,8 @@ EXPORT_HEADERS= SVTK.h \
 		SVTK_RenderWindowInteractor.h \
 		SVTK_Selector.h \
 		SVTK_Selection.h \
-		SVTK_SelectionEvent.h
+		SVTK_SelectionEvent.h \
+		SVTK_ViewModelBase.h
 
 # Libraries targets
 LIB = libSVTK.la
@@ -52,7 +53,8 @@ LIB_MOC = 	SVTK_RenderWindowInteractor.h \
 		SVTK_View.h \
 		SVTK_ViewWindow.h \
 		SVTK_ViewModel.h \
-		SVTK_ViewManager.h
+		SVTK_ViewManager.h \
+		SVTK_ViewModelBase.h
 
 LIB_CLIENT_IDL = SALOMEDS.idl \
 		 SALOME_Exception.idl \

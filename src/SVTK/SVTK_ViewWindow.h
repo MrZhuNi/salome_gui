@@ -18,7 +18,7 @@ class SUIT_Desktop;
 class VTKViewer_Actor;
 class VTKViewer_Trihedron;
 
-class SVTK_Viewer;
+class SVTK_ViewModelBase;
 class SVTK_Selector;
 
 //class SVTK_View;
@@ -33,7 +33,7 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   Q_OBJECT
 
 public:
-  SVTK_ViewWindow( SUIT_Desktop*, SVTK_Viewer* );
+  SVTK_ViewWindow( SUIT_Desktop*, SVTK_ViewModelBase* );
   virtual ~SVTK_ViewWindow();
   
   void setBackgroundColor( const QColor& );
@@ -148,7 +148,6 @@ private:
   //void MoveActor( VTKViewer_Actor* theActor );
 
 private:  
-  SVTK_Viewer* myModel;
   SVTK_Selector* mySelector;
 
   SVTK_View* myView;
