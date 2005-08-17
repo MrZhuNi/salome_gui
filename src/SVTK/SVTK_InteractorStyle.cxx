@@ -1002,8 +1002,6 @@ SVTK_InteractorStyle
 	    this->HighlightProp( NULL );
 	    GetSelector()->ClearIObjects();
 	  }
-
-	  Interactor->EndPickCallback();
         } else {
           //processing rectangle selection
 	  if(aSelActiveCompOnly && aComponentDataType.isEmpty()) return;
@@ -1033,52 +1031,19 @@ SVTK_InteractorStyle
 	  aSelectionEvent.LastX = x1;
 	  aSelectionEvent.LastY = y1;
 	  
-	  switch (aSelectionMode) {
-	  case NodeSelection: {
-	    //if ( vtkPointPicker* aPointPicker = vtkPointPicker::SafeDownCast(Interactor->GetPicker()) ) {
-	      vtkActorCollection* aListActors = this->CurrentRenderer->GetActors();
-	      aListActors->InitTraversal();
-	      while (vtkActor* aActor = aListActors->GetNextActor()) {
-		if (!aActor->GetVisibility()) 
-		  continue;
-		if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor))
-		  aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
-	      }
-	      //}
-	    break;
-	  }
-	  case CellSelection:
-	  case EdgeOfCellSelection:
-	  case EdgeSelection:
-	  case FaceSelection:
-	  case VolumeSelection: 
-	    {
-	      vtkSmartPointer<VTKViewer_CellRectPicker> picker = VTKViewer_CellRectPicker::New();
-	      picker->SetTolerance(0.001);
-	      picker->Pick(x1, y1, 0.0, x2, y2, 0.0, this->CurrentRenderer);
-	      
-	      vtkActorCollection* aListActors = picker->GetActors();
-	      aListActors->InitTraversal();
-	      while(vtkActor* aActor = aListActors->GetNextActor())
-		if (SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor))
-		  aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
-	    }
-	    break;	    
-	  case ActorSelection: // objects selection
-	    {
-	      vtkSmartPointer<VTKViewer_RectPicker> picker = VTKViewer_RectPicker::New();
-	      picker->SetTolerance(0.001);
-	      picker->Pick(x1, y1, 0.0, x2, y2, 0.0, this->CurrentRenderer);
+	  vtkSmartPointer<VTKViewer_RectPicker> aPicker = VTKViewer_RectPicker::New();
+	  aPicker->SetTolerance(0.001);
+	  aPicker->Pick(x1, y1, 0.0, x2, y2, 0.0, this->CurrentRenderer);
 
-	      vtkActorCollection* aListActors = picker->GetActors();
-	      aListActors->InitTraversal();
-	      while(vtkActor* aActor = aListActors->GetNextActor())
-		if (SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor))
-		  aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
-	    } // end case 4
-	  } //end switch
-	  Interactor->EndPickCallback();
+	  vtkActorCollection* aListActors = aPicker->GetActors();
+	  aListActors->InitTraversal();
+	  while(vtkActor* aActor = aListActors->GetNextActor()){
+	    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)){
+	      aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
+	    }
+	  }
 	}
+	Interactor->EndPickCallback();
 	myViewWindow->onSelectionChanged();
       } 
     } 
