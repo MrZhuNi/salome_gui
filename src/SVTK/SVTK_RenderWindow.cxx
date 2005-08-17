@@ -650,3 +650,12 @@ SVTK_RenderWindow
 {   
   AdjustTrihedrons(false);
 }
+
+//----------------------------------------------------------------------------
+QImage
+SVTK_RenderWindow
+::dumpView()
+{
+  QPixmap px = QPixmap::grabWindow( winId() );
+  return px.convertToImage();
+}

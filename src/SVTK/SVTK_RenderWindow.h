@@ -30,6 +30,7 @@
 #define SVTK_RenderWindow_h
 
 #include <qmainwindow.h>
+#include <qimage.h>
 
 #include "SVTK.h"
 
@@ -100,6 +101,11 @@ class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
   void onAdjustTrihedron();
   void onAdjustCubeAxes();
 
+  void onDumpView();
+
+ public:
+  QImage dumpView();
+
  protected:
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, ViewTrihedronId };
@@ -108,6 +114,7 @@ class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
   void createActions();
   void createToolBar();
 
+ protected:
   vtkRenderer* myRenderer;
   vtkRenderWindow* myRenderWindow;
 
