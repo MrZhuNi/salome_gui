@@ -106,13 +106,13 @@ SALOME_Actor::SALOME_Actor(){
   myCellRectPicker = VTKViewer_CellRectPicker::New();
 
   myPreHighlightActor = SVTK_Actor::New(); 
-  myPreHighlightActor->GetProperty()->SetColor(0,1,0);
-  myPreHighlightActor->GetProperty()->SetPointSize(15);
+  myPreHighlightActor->GetProperty()->SetColor(0,1,1);
+  myPreHighlightActor->GetProperty()->SetPointSize(5);
   myPreHighlightActor->GetProperty()->SetRepresentationToPoints();
 
   myPointProperty = vtkProperty::New();
-  myPointProperty->SetColor(1,0,1);
-  myPointProperty->SetPointSize(15);
+  myPointProperty->SetColor(1,1,0);
+  myPointProperty->SetPointSize(5);
   myPointProperty->SetRepresentationToPoints();
 
   myCellProperty = vtkProperty::New();
@@ -139,7 +139,7 @@ SALOME_Actor::SALOME_Actor(){
   myOutlineActor->PickableOff();
   myOutlineActor->DragableOff();
   myOutlineActor->SetMapper( myOutlineMapper );
-  myOutlineActor->GetProperty()->SetColor(0.0,1.0,0.0);
+  myOutlineActor->GetProperty()->SetColor(1.0,0.0,0.0);
   myOutlineActor->GetProperty()->SetAmbient(1.0);
   myOutlineActor->GetProperty()->SetDiffuse(0.0);
   myOutlineActor->SetVisibility( false );
