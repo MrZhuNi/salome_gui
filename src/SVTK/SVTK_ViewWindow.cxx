@@ -53,7 +53,7 @@ SVTK_ViewWindow
   QSplitter* aSplitter = new QSplitter( Qt::Vertical, aCentralWidget );
 
   // Create an interactor.
-  myView = new SVTK_View( aSplitter, "TopView" );
+  myView = new SVTK_View( aSplitter, "SVTK_View" );
   /*
   SVTK_View* bottomView = new SVTK_View( aSplitter, "BottomView" );
   bottomView->getInteractor()->SetInteractorStyle( myInteractorStyle ); 
@@ -592,8 +592,7 @@ QImage
 SVTK_ViewWindow
 ::dumpView()
 {
-  QPixmap px = QPixmap::grabWindow( myView->winId() );
-  return px.convertToImage();
+  return myView->dumpView();
 }
 
 //----------------------------------------------------------------------------
