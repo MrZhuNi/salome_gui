@@ -148,26 +148,9 @@ SVTK_RenderWindowInteractor
 // ================================== 
 void
 SVTK_RenderWindowInteractor
-::Start() 
-{
-  //
-  // We do not allow this interactor to control the 
-  // event loop. Only the QtApplication objects are
-  // allowed to do that. 
-  //
-  //vtkErrorMacro(<<"SVTK_RenderWindowInteractor::Start() not allowed to start event loop.") ;
-  return ;
-}
-
-void
-SVTK_RenderWindowInteractor
 ::UpdateSize(int w, int h) 
 {
-  // if the size changed send this on to the RenderWindow
-  if ((w != myInteractor->GetSize()[0])||(h != myInteractor->GetSize()[1])) {
-    myInteractor->SetSize( w, h );
-    getRenderWindow()->SetSize( w, h );
-  }
+  myInteractor->UpdateSize(w,h);
 }
 
 int

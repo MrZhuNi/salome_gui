@@ -70,12 +70,6 @@ public:
   virtual void Initialize();
 
   // Description:
-  // This will start up the X event loop and never return. If you
-  // call this method it will loop processing X events until the
-  // application is exited.
-  virtual void Start();
-  
-  // Description:
   // Event loop notification member for Window size change
   virtual void UpdateSize(int x,int y);
 
