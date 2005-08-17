@@ -327,16 +327,6 @@ SVTK_View
   InsertActor(theActor,true);
 }
 
-/*
-//----------------------------------------------------------------------------
-QImage
-SVTK_View
-::dumpView()
-{
-  QPixmap px = QPixmap::grabWindow( myRenderWindow->winId() );
-  return px.convertToImage();
-}
-*/
 //----------------------------------------------------------------------------
 void
 SVTK_View

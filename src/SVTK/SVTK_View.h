@@ -92,9 +92,6 @@ public slots:
   virtual void activatePanning(); 
   virtual void activateGlobalPanning(); 
 
-protected:
-  //QImage dumpView();
-
 protected slots:
   void onKeyPressed(QKeyEvent* event);
   void onKeyReleased(QKeyEvent* event);
