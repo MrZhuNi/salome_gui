@@ -1120,8 +1120,10 @@ SVTK_InteractorStyle
   
   Interactor->EndPickCallback();
 
-  if(anIsChanged)
-    Interactor->Render();
+  if(anIsChanged){
+    Interactor->CreateTimer(VTKI_TIMER_FIRST);
+    //Interactor->Render();
+  }
   
   this->LastPos[0] = x;
   this->LastPos[1] = y;
@@ -1276,6 +1278,16 @@ SVTK_InteractorStyle
   // register EventCallbackCommand as observer of custorm event (3d space mouse event)
   interactor->AddObserver( SpaceMouseMoveEvent,   EventCallbackCommand, Priority );
   interactor->AddObserver( SpaceMouseButtonEvent, EventCallbackCommand, Priority );
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::OnTimer() 
+{
+  //vtkInteractorStyle::OnTimer();
+  this->Interactor->Render();
 }
 
 //----------------------------------------------------------------------------

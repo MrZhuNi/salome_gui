@@ -50,8 +50,8 @@
 #include <vtkCamera.h>
 
 // QT Includes
+#include <qtimer.h>
 #include <qcolordialog.h>
-#include <qwidget.h>
 #include <qpaintdevice.h>
 
 #include "utilities.h"
@@ -66,17 +66,72 @@ static int MYDEBUG = 0;
 
 
 //----------------------------------------------------------------------------
+vtkStandardNewMacro(QtRenderWindowInteractor);
+
+QtRenderWindowInteractor
+::QtRenderWindowInteractor()
+{
+  myTimer = new QTimer( ) ;
+  connect(myTimer, SIGNAL(timeout()), this, SLOT(OnTimeOut())) ;
+}
+
+QtRenderWindowInteractor
+::~QtRenderWindowInteractor()
+{
+  delete myTimer;
+}
+
+
+//----------------------------------------------------------------------------
+void
+QtRenderWindowInteractor
+::OnTimeOut() 
+{
+  if( GetEnabled() ) {
+    this->InvokeEvent(vtkCommand::TimerEvent,NULL);
+  }
+}
+
+int
+QtRenderWindowInteractor
+::CreateTimer(int vtkNotUsed(timertype)) 
+{
+  //
+  // Start a one-shot timer for 10ms. 
+  //
+  myTimer->start(10, TRUE) ;
+  return 1 ;
+}
+
+int
+QtRenderWindowInteractor
+::DestroyTimer(void) 
+{
+  //
+  // :TRICKY: Tue May  2 00:17:32 2000 Pagey
+  //
+  // QTimer will automatically expire after 10ms. So 
+  // we do not need to do anything here. In fact, we 
+  // should not even Stop() the QTimer here because doing 
+  // this will skip some of the processing that the TimerFunc()
+  // does and will result in undesirable effects. For 
+  // example, this will result in vtkLODActor to leave
+  // the models in low-res mode after the mouse stops
+  // moving. 
+  //
+  return 1 ;
+}
+
+
+//----------------------------------------------------------------------------
 SVTK_RenderWindowInteractor
 ::SVTK_RenderWindowInteractor( QWidget* parent, const char* name ) :
   SVTK_RenderWindow( parent, name )
 {
-  myInteractor = vtkGenericRenderWindowInteractor::New();
+  myInteractor = QtRenderWindowInteractor::New();
 
   myInteractor->SetRenderWindow( getRenderWindow() );
   myDisplayMode = 0;
-
-  mTimer = new QTimer( this ) ;
-  connect(mTimer, SIGNAL(timeout()), this, SLOT(TimerFunc())) ;
 }
 
 
@@ -89,8 +144,6 @@ SVTK_RenderWindowInteractor
   SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
   if ( sm->isSpaceMouseOn() )
     sm->close( x11Display() );
-
-  delete mTimer ;
 
   myInteractor->Delete();
 }
@@ -110,52 +163,6 @@ SVTK_RenderWindowInteractor
 {
   myInteractor->UpdateSize(w,h);
 }
-
-//----------------------------------------------------------------------------
-int
-SVTK_RenderWindowInteractor
-::CreateTimer(int vtkNotUsed(timertype)) 
-{
-  //
-  // Start a one-shot timer for 10ms. 
-  //
-  mTimer->start(10, TRUE) ;
-  return 1 ;
-}
-
-int
-SVTK_RenderWindowInteractor
-::DestroyTimer(void) 
-{
-  //
-  // :TRICKY: Tue May  2 00:17:32 2000 Pagey
-  //
-  // QTimer will automatically expire after 10ms. So 
-  // we do not need to do anything here. In fact, we 
-  // should not even Stop() the QTimer here because doing 
-  // this will skip some of the processing that the TimerFunc()
-  // does and will result in undesirable effects. For 
-  // example, this will result in vtkLODActor to leave
-  // the models in low-res mode after the mouse stops
-  // moving. 
-  //
-  return 1 ;
-}
-
-void
-SVTK_RenderWindowInteractor
-::TimerFunc() 
-{
-  if( ! myInteractor->GetEnabled() ) {
-    return ;
-  }
-
-  vtkInteractorStyle* aStyle = vtkInteractorStyle::SafeDownCast( myInteractor->GetInteractorStyle() );
-  aStyle->OnTimer();
-
-  update();
-}
-
 
 //----------------------------------------------------------------------------
 int
@@ -510,14 +517,10 @@ void
 SVTK_RenderWindowInteractor
 ::mouseMoveEvent( QMouseEvent* event ) 
 {
-  //cout << "SVTK_RenderWindowInteractor::mouseMoveEvent" << endl;
-
   myInteractor->SetEventInformation( event->x(), event->y(),
 				     ( event->state() & ControlButton ),
 				     ( event->state() & ShiftButton ) );
   myInteractor->MouseMoveEvent();
-
-  //emit MouseMove( event ) ;
 }
 
 //----------------------------------------------------------------------------
@@ -525,20 +528,15 @@ void
 SVTK_RenderWindowInteractor
 ::mousePressEvent( QMouseEvent* event ) 
 {
-  //cout << "SVTK_RenderWindowInteractor::mousePressEvent" << endl;
-
   myInteractor->SetEventInformation( event->x(), event->y(),
 				     ( event->state() & ControlButton ),
 				     ( event->state() & ShiftButton ) );
-
   if( event->button() & LeftButton )
     myInteractor->LeftButtonPressEvent();
   else if( event->button() & MidButton )
     myInteractor->MiddleButtonPressEvent();
   else if( event->button() & RightButton )
     myInteractor->RightButtonPressEvent();
-
-  //emit MouseButtonPressed( event );
 }
 
 //----------------------------------------------------------------------------
@@ -546,8 +544,6 @@ void
 SVTK_RenderWindowInteractor
 ::mouseReleaseEvent( QMouseEvent *event )
 {
-  //cout << "SVTK_RenderWindowInteractor::mouseReleaseEvent" << endl;
-
   myInteractor->SetEventInformation( event->x(), event->y(),
 				     ( event->state() & ControlButton ),
 				     ( event->state() & ShiftButton ) );
@@ -558,34 +554,23 @@ SVTK_RenderWindowInteractor
     myInteractor->MiddleButtonReleaseEvent();
   else if( event->button() & RightButton )
     myInteractor->RightButtonReleaseEvent();
-
-  //emit MouseButtonReleased( event );
 }
 
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
 ::mouseDoubleClickEvent( QMouseEvent* event )
-{
-  //cout << "SVTK_RenderWindowInteractor::mouseDoubleClickEvent" << endl;
-
-  //emit MouseDoubleClicked( event );
-}
+{}
 
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
 ::keyPressEvent( QKeyEvent* event ) 
 {
-  //cout << "SVTK_RenderWindowInteractor::keyPressEvent" << endl;
-
   myInteractor->SetKeyEventInformation( ( event->state() & ControlButton ),
 					( event->state() & ShiftButton ),
 					0 );
-
   myInteractor->KeyPressEvent();
-
-  //emit KeyPressed(event) ;
 }
 
 //----------------------------------------------------------------------------
@@ -593,37 +578,17 @@ void
 SVTK_RenderWindowInteractor
 ::keyReleaseEvent( QKeyEvent * event ) 
 {
-  //cout << "SVTK_RenderWindowInteractor::keyReleaseEvent" << endl;
-
   myInteractor->SetKeyEventInformation( ( event->state() & ControlButton ),
 					( event->state() & ShiftButton ),
 					0 );
-
   myInteractor->KeyReleaseEvent();
-
-  //emit KeyReleased(event) ;
 }
 
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
 ::wheelEvent( QWheelEvent* event )
-{
-  //cout << "SVTK_RenderWindowInteractor::wheelEvent" << endl;
-
-  //emit WheelMoved(event) ;
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::contextMenuEvent( QContextMenuEvent* event )
-{
-  //cout << "SVTK_RenderWindowInteractor::contextMenuEvent" << endl;
-
-  if( !( event->state() & KeyButtonMask ) )
-    emit contextMenuRequested( event );
-}
+{}
 
 //----------------------------------------------------------------------------
 void
@@ -631,6 +596,15 @@ SVTK_RenderWindowInteractor
 ::paintEvent( QPaintEvent* theEvent ) 
 {
   getRenderWindow()->Render();
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::contextMenuEvent( QContextMenuEvent* event )
+{
+  if( !( event->state() & KeyButtonMask ) )
+    emit contextMenuRequested( event );
 }
 
 //----------------------------------------------------------------------------

@@ -35,11 +35,10 @@
 
 #include "SALOME_InteractiveObject.hxx"
 
-// QT Includes
-#include <qtimer.h>
-
 // VTK Includes
-#include <vtkVersion.h>
+#include <vtkGenericRenderWindowInteractor.h>
+
+class QTimer;
 
 class vtkActorCollection;
 class vtkGenericRenderWindowInteractor;
@@ -53,15 +52,43 @@ class SALOME_Actor;
 // Hence the order of the two classes QObject and vtkRenderWindowInteractor
 // matters here. Be careful not to change it by accident. 
 // ------------------------------------------------------------
-class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow//, public vtkRenderWindowInteractor
+class SVTK_EXPORT QtRenderWindowInteractor: 
+ public QObject,
+ public vtkGenericRenderWindowInteractor
 {
-  Q_OBJECT
+  Q_OBJECT;
 
-public:
+ protected slots:
+  virtual
+  void
+  OnTimeOut();
+
+ protected:
+  QtRenderWindowInteractor();
+  ~QtRenderWindowInteractor();
+
+  QTimer* myTimer ;
+
+ public:
+  
+  static QtRenderWindowInteractor* New();
+  vtkTypeMacro(QtRenderWindowInteractor,vtkGenericRenderWindowInteractor);
+
+  virtual int CreateTimer( int ) ; 
+  virtual int DestroyTimer() ; 
+};
+
+
+// ------------------------------------------------------------
+class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
+{
+  Q_OBJECT;
+
+ public:
   SVTK_RenderWindowInteractor( QWidget*, const char* );
   ~SVTK_RenderWindowInteractor();
 
-  vtkGenericRenderWindowInteractor* getInteractor() { return myInteractor; }
+  vtkRenderWindowInteractor* getInteractor() { return myInteractor; }
 
   // Description:
   // Initializes the event handlers without an XtAppContext.  This is
@@ -73,15 +100,6 @@ public:
   // Event loop notification member for Window size change
   virtual void UpdateSize(int x,int y);
 
-  // Description:
-  // Timer methods must be overridden by platform dependent subclasses.
-  // flag is passed to indicate if this is first timer set or an update
-  // as Win32 uses repeating timers, whereas X uses One shot more timer
-  // if flag==VTKXI_TIMER_FIRST Win32 and X should createtimer
-  // otherwise Win32 should exit and X should perform AddTimeOut()
-  virtual int CreateTimer(int ) ; 
-  virtual int DestroyTimer() ; 
-  
   /* Selection Management */
   bool isInViewer( const Handle(SALOME_InteractiveObject)& IObject);
   bool isVisible( const Handle(SALOME_InteractiveObject)& IObject);
@@ -139,14 +157,7 @@ public:
  protected:
   vtkGenericRenderWindowInteractor* myInteractor;
 
-  // Timer used during various mouse events to figure 
-  // out mouse movements. 
-  QTimer *mTimer ;
-
   int myDisplayMode;
-  
-  // User for switching to stereo mode.
-  int PositionBeforeStereo[2];
 
  protected:
   virtual void mouseMoveEvent( QMouseEvent* );
@@ -156,7 +167,6 @@ public:
   virtual void wheelEvent( QWheelEvent* );
   virtual void keyPressEvent( QKeyEvent* );
   virtual void keyReleaseEvent( QKeyEvent* );
-  virtual void contextMenuEvent( QContextMenuEvent * e );
   virtual bool x11Event( XEvent *e );
 
   virtual void paintEvent( QPaintEvent* );
@@ -168,16 +178,10 @@ public:
   virtual void focusInEvent ( QFocusEvent* );
   virtual void focusOutEvent( QFocusEvent* );
 
- private slots:
-  // Not all of these slots are needed in VTK_MAJOR_VERSION=3,
-  // but moc does not understand "#if VTK_MAJOR_VERSION". Hence, 
-  // we have to include all of these for the time being. Once,
-  // this bug in MOC is fixed, we can separate these. 
-  void TimerFunc() ;
+  virtual void contextMenuEvent( QContextMenuEvent * e );
 
  signals:
   void contextMenuRequested( QContextMenuEvent *e );
-
 };
 
 

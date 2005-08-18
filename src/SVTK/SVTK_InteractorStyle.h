@@ -87,7 +87,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
 
   SVTK_SelectionEvent GetSelectionEvent();
 
-  //merge with V2_2_0_VISU_improvements:void setTriedron(VTKViewer_Trihedron* theTrihedron);
   void setPreselectionProp(const double& theRed = 0, 
 			   const double& theGreen = 1,
 			   const double& theBlue = 1, 
@@ -95,6 +94,9 @@ class SVTK_EXPORT SVTK_InteractorStyle :
 
   // redefined in order to add an observer (callback) for custorm event (space mouse event)
   virtual void SetInteractor( vtkRenderWindowInteractor* );
+
+  // redefined in order to cach rendering
+  virtual void OnTimer();
 
   // VTK events
   virtual void OnMouseMove();
