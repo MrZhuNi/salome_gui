@@ -150,10 +150,10 @@ SVTK_InteractorStyle
   Interactor->GetEventPosition( x, y );
   Interactor->GetSize( w, h );
 
-  aSelectionEvent.X = x;
-  aSelectionEvent.Y = h - y - 1;
-  aSelectionEvent.IsCtrl = Interactor->GetControlKey();
-  aSelectionEvent.IsShift = Interactor->GetShiftKey();
+  aSelectionEvent.myX = x;
+  aSelectionEvent.myY = h - y - 1;
+  aSelectionEvent.myIsCtrl = Interactor->GetControlKey();
+  aSelectionEvent.myIsShift = Interactor->GetShiftKey();
 
   return aSelectionEvent;
 }
@@ -952,8 +952,8 @@ SVTK_InteractorStyle
           myPicker->Pick(x, y, 0.0, this->CurrentRenderer);
 	  if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
 	    SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
-	    aSelectionEvent.SelectionMode = aSelectionMode;
-	    aSelectionEvent.IsRectangle = false;
+	    aSelectionEvent.mySelectionMode = aSelectionMode;
+	    aSelectionEvent.myIsRectangle = false;
 	    aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
 	  }else{
 	    GetSelector()->ClearIObjects();
@@ -984,10 +984,10 @@ SVTK_InteractorStyle
 	  myRectPicker->Pick(x1, y1, 0.0, x2, y2, 0.0, this->CurrentRenderer);
 
 	  SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
-	  aSelectionEvent.SelectionMode = aSelectionMode;
-	  aSelectionEvent.IsRectangle = true;
-	  aSelectionEvent.LastX = x1;
-	  aSelectionEvent.LastY = y1;
+	  aSelectionEvent.mySelectionMode = aSelectionMode;
+	  aSelectionEvent.myIsRectangle = true;
+	  aSelectionEvent.myLastX = x1;
+	  aSelectionEvent.myLastY = y1;
 	  
 	  vtkActorCollection* aListActors = myRectPicker->GetActors();
 	  aListActors->InitTraversal();
@@ -1104,20 +1104,24 @@ SVTK_InteractorStyle
   Interactor->StartPickCallback();
 
   SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
-  aSelectionEvent.SelectionMode = myViewWindow->SelectionMode();
-  aSelectionEvent.X = x;
-  aSelectionEvent.Y = y;
+  aSelectionEvent.mySelectionMode = myViewWindow->SelectionMode();
+  aSelectionEvent.myX = x;
+  aSelectionEvent.myY = y;
 
-  if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor()))
-    aSActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, false );
+  bool anIsChanged = false;
+  SALOME_Actor* aLastActor = SALOME_Actor::SafeDownCast(myPicker->GetActor());
 
   myPicker->Pick(x, y, 0.0, this->CurrentRenderer);
-  if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor()))
-    aSActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
+  if(SALOME_Actor* anActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
+    anIsChanged |= anActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
+    if(aLastActor && aLastActor != anActor)
+      aLastActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, false );
+  }
   
   Interactor->EndPickCallback();
-  //Interactor->Render();
-  myGUIWindow->update();
+
+  if(anIsChanged)
+    Interactor->Render();
   
   this->LastPos[0] = x;
   this->LastPos[1] = y;

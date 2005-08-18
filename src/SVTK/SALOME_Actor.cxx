@@ -80,6 +80,7 @@ vtkStandardNewMacro(SALOME_Actor);
 SALOME_Actor
 ::SALOME_Actor()
 {
+  mySelectionMode = ActorSelection;
   myIsHighlighted = myIsPreselected = false;
 
   myRepresentation = 1;
@@ -462,7 +463,7 @@ SALOME_Actor::setDisplayMode(int theMode)
 //----------------------------------------------------------------
 void
 SALOME_Actor
-::highlight( bool theHighlight, Selection_Mode theMode )
+::highlight( bool theHighlight, int theSelectionMode )
 {
   myIsHighlighted = theHighlight; 
 
@@ -472,7 +473,7 @@ SALOME_Actor
   myOutline->SetBounds( GetBounds() );
   myOutlineActor->SetVisibility( theHighlight );
 
-  myHighlightActor->SetVisibility( theHighlight && theMode != ActorSelection );
+  myHighlightActor->SetVisibility( theHighlight && theSelectionMode != ActorSelection );
 }
 
 //----------------------------------------------------------------
@@ -484,6 +485,7 @@ SALOME_Actor
 
   myOutlineActor->SetVisibility( theVisibility && isHighlighted() );
   myHighlightActor->SetVisibility( theVisibility && isHighlighted() );
+  myPreHighlightActor->SetVisibility( theVisibility && myIsPreselected );
 }
 
 
@@ -521,90 +523,117 @@ SALOME_Actor
 		SVTK_SelectionEvent theSelectionEvent,
 		bool theIsHighlight )
 {
-  Selection_Mode aSelectionMode = theSelectionEvent.SelectionMode;
-  float x = theSelectionEvent.X;
-  float y = theSelectionEvent.Y;
+  myPreHighlightActor->SetVisibility( false );
+    
+  bool anIsSelectionModeChanged = (theSelectionEvent.mySelectionMode != mySelectionMode);
+  if(!anIsSelectionModeChanged && mySelectionMode == ActorSelection)
+    return false;
+
+  mySelectionMode = theSelectionEvent.mySelectionMode;
+
+  float x = theSelectionEvent.myX;
+  float y = theSelectionEvent.myY;
   float z = 0.0;
 
+
+  bool anIsChanged = false;
   if( !theIsHighlight )
   {
-    myPreHighlightActor->SetVisibility( false );
-
     vtkActorCollection* theActors = theRenderer->GetActors();
     theActors->InitTraversal();
     while( vtkActor *ac = theActors->GetNextActor() )
       if( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( ac ) )
-	anActor->SetPreSelected( false );
+	if( anActor->hasIO() && myIO->isSame( anActor->getIO() ) )
+	  anActor->SetPreSelected( false );
 
-    return false;
-  }
-
-  if( aSelectionMode == NodeSelection )
-  {
-    myPointPicker->Pick( x, y, z, theRenderer );
-
-    int aVtkId = myPointPicker->GetPointId();
-    if( aVtkId >= 0 && theValidator->IsValid( this, aVtkId, true ) && hasIO() )
+    myIsPreselected = theIsHighlight;
+    anIsChanged = true;
+  }else{
+    switch(mySelectionMode){
+    case NodeSelection: 
     {
-      int anObjId = GetNodeObjId( aVtkId );
-      TColStd_IndexedMapOfInteger aMapIndex;
-      aMapIndex.Add( anObjId );
-
-      myPreHighlightActor->GetProperty()->SetRepresentationToPoints();
-      myPreHighlightActor->SetVisibility( true );
-      myPreHighlightActor->MapPoints( this, aMapIndex );
-    }
-  }
-  else if( aSelectionMode == CellSelection )
-  {
-    myCellPicker->Pick( x, y, z, theRenderer );
-
-    int aVtkId = myCellPicker->GetCellId();
-    if ( aVtkId >= 0 && theValidator->IsValid( this, aVtkId ) && hasIO() )
-    {
-      int anObjId = GetElemObjId (aVtkId );
-      TColStd_IndexedMapOfInteger aMapIndex;
-      aMapIndex.Add( anObjId );
-
-      myPreHighlightActor->GetProperty()->SetRepresentationToSurface();
-      myPreHighlightActor->SetVisibility( true );
-      myPreHighlightActor->MapCells( this, aMapIndex );
-    }
-  }
-  else if( aSelectionMode == EdgeOfCellSelection )
-  {
-    myCellPicker->Pick( x, y, z, theRenderer );
-
-    int aVtkId = myCellPicker->GetCellId();
-    if ( aVtkId >= 0 && theValidator->IsValid( this, aVtkId ) && hasIO() )
-    {
-      int anObjId = GetElemObjId( aVtkId );
-      int anEdgeId = GetEdgeId( myCellPicker, anObjId );
-      TColStd_IndexedMapOfInteger aMapIndex;
-      aMapIndex.Add( anObjId );
-      aMapIndex.Add( anEdgeId );
-
-      myPreHighlightActor->GetProperty()->SetRepresentationToWireframe();
-      myPreHighlightActor->SetVisibility( true );
-      myPreHighlightActor->MapEdge( this, aMapIndex );
-    }
-  }
-  else
-  {
-    if( hasIO() && !theSelector->IsSelected( myIO ) )
-    {
-      vtkActorCollection* theActors = theRenderer->GetActors();
-      theActors->InitTraversal();
-      while( vtkActor *ac = theActors->GetNextActor() )
+      myPointPicker->Pick( x, y, z, theRenderer );
+      
+      int aVtkId = myPointPicker->GetPointId();
+      if( aVtkId >= 0 && theValidator->IsValid( this, aVtkId, true ) && hasIO() )
       {
-	if( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( ac ) )
-	  if( anActor->hasIO() && myIO->isSame( anActor->getIO() ) )
-	    anActor->SetPreSelected( true );
+	int anObjId = GetNodeObjId( aVtkId );
+	TColStd_IndexedMapOfInteger aMapIndex;
+	aMapIndex.Add( anObjId );
+	
+	myPreHighlightActor->GetProperty()->SetRepresentationToPoints();
+	myPreHighlightActor->SetVisibility( true );
+	myPreHighlightActor->MapPoints( this, aMapIndex );
+
+	myIsPreselected = theIsHighlight;
+	anIsChanged = true;
       }
+      break;
+    }
+    case CellSelection:
+    {
+      myCellPicker->Pick( x, y, z, theRenderer );
+      
+      int aVtkId = myCellPicker->GetCellId();
+      if ( aVtkId >= 0 && theValidator->IsValid( this, aVtkId ) && hasIO() )
+      {
+	int anObjId = GetElemObjId (aVtkId );
+	TColStd_IndexedMapOfInteger aMapIndex;
+	aMapIndex.Add( anObjId );
+
+	myPreHighlightActor->GetProperty()->SetRepresentationToSurface();
+	myPreHighlightActor->SetVisibility( true );
+	myPreHighlightActor->MapCells( this, aMapIndex );
+
+	myIsPreselected = theIsHighlight;
+	anIsChanged = true;
+      }
+      break;
+    }
+    case EdgeOfCellSelection:
+    {
+      myCellPicker->Pick( x, y, z, theRenderer );
+      
+      int aVtkId = myCellPicker->GetCellId();
+      if ( aVtkId >= 0 && theValidator->IsValid( this, aVtkId ) && hasIO() )
+      {
+	int anObjId = GetElemObjId( aVtkId );
+	int anEdgeId = GetEdgeId( myCellPicker, anObjId );
+	TColStd_IndexedMapOfInteger aMapIndex;
+	aMapIndex.Add( anObjId );
+	aMapIndex.Add( anEdgeId );
+	
+	myPreHighlightActor->GetProperty()->SetRepresentationToWireframe();
+	myPreHighlightActor->SetVisibility( true );
+	myPreHighlightActor->MapEdge( this, aMapIndex );
+
+	myIsPreselected = theIsHighlight;
+	anIsChanged = true;
+      }
+      break;
+    }
+    default:
+    {
+      myPreHighlightActor->SetVisibility( true );
+
+      if( hasIO() && !theSelector->IsSelected( myIO ) )
+      {
+	vtkActorCollection* theActors = theRenderer->GetActors();
+	theActors->InitTraversal();
+	while( vtkActor *ac = theActors->GetNextActor() )
+        {
+	  if( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( ac ) )
+	    if( anActor->hasIO() && myIO->isSame( anActor->getIO() ) )
+	      anActor->SetPreSelected( true );
+	}
+      }
+      myIsPreselected = theIsHighlight;
+      anIsChanged = true;
+    }
     }
   }
 
-  return true;
+  return anIsChanged;
 }
 
 
@@ -617,15 +646,15 @@ SALOME_Actor
 	     SVTK_SelectionEvent theSelectionEvent,
 	     bool theIsHighlight )
 {
-  Selection_Mode aSelectionMode = theSelectionEvent.SelectionMode;
-  float x1 = theSelectionEvent.X;
-  float y1 = theSelectionEvent.Y;
+  int aSelectionMode = theSelectionEvent.mySelectionMode;
+  float x1 = theSelectionEvent.myX;
+  float y1 = theSelectionEvent.myY;
   float z1 = 0.0;
-  float x2 = theSelectionEvent.LastX;
-  float y2 = theSelectionEvent.LastY;
+  float x2 = theSelectionEvent.myLastX;
+  float y2 = theSelectionEvent.myLastY;
   float z2 = 0.0;
-  bool isShift = theSelectionEvent.IsShift;
-  bool isRectangle = theSelectionEvent.IsRectangle;
+  bool isShift = theSelectionEvent.myIsShift;
+  bool isRectangle = theSelectionEvent.myIsRectangle;
 
   if( !isRectangle )
   {

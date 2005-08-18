@@ -33,16 +33,16 @@
 
 struct SVTK_SelectionEvent
 {
-  Selection_Mode SelectionMode;
-  int            X;
-  int            Y;
-  int            LastX;
-  int            LastY;
-  bool           IsRectangle;
-  bool           IsCtrl;
-  bool           IsShift;
-  int            KeyCode;
-  int            RepeatCount;
+  int mySelectionMode;
+  int myX;
+  int myY;
+  int myLastX;
+  int myLastY;
+  bool myIsRectangle;
+  bool myIsCtrl;
+  bool myIsShift;
+  int myKeyCode;
+  int myRepeatCount;
 };
 
 #endif

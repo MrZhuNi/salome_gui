@@ -131,7 +131,7 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 
   virtual
   void
-  highlight( bool, Selection_Mode );
+  highlight( bool theHighlight, int theSelectionMode );
 
   virtual
   void
@@ -397,9 +397,10 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 
   vtkProperty *PreviewProperty;
   bool myIsPreselected;
+  bool myIsHighlighted;
+  int mySelectionMode;
 
   float myOpacity;
-  bool myIsHighlighted;
   int myDisplayMode;
   bool myIsInfinite;
 
@@ -416,9 +417,6 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 
   SALOME_Actor();
   ~SALOME_Actor();
-
-  // From VISU
- public:
 
  protected:
   int GetEdgeId( vtkPicker*, int );
