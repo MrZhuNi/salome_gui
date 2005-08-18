@@ -100,6 +100,39 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
   // Event loop notification member for Window size change
   virtual void UpdateSize(int x,int y);
 
+  virtual void Render();
+
+  void Update();
+
+  vtkRenderer* GetRenderer();
+
+ protected:
+  vtkGenericRenderWindowInteractor* myInteractor;
+
+  virtual void paintEvent( QPaintEvent* );
+  virtual void resizeEvent( QResizeEvent* );
+
+  virtual void mouseMoveEvent( QMouseEvent* );
+  virtual void mousePressEvent( QMouseEvent* );
+  virtual void mouseReleaseEvent( QMouseEvent* );
+  virtual void mouseDoubleClickEvent( QMouseEvent* );
+  virtual void wheelEvent( QWheelEvent* );
+  virtual void keyPressEvent( QKeyEvent* );
+  virtual void keyReleaseEvent( QKeyEvent* );
+
+  virtual bool x11Event( XEvent *e );
+  // reimplemented from QWidget in order to set window - receiver
+  // of space mouse events. 
+  virtual void focusInEvent ( QFocusEvent* );
+  virtual void focusOutEvent( QFocusEvent* );
+
+  virtual void contextMenuEvent( QContextMenuEvent * e );
+
+ signals:
+  void contextMenuRequested( QContextMenuEvent *e );
+
+ public:
+
   /* Selection Management */
   bool isInViewer( const Handle(SALOME_InteractiveObject)& IObject);
   bool isVisible( const Handle(SALOME_InteractiveObject)& IObject);
@@ -148,40 +181,9 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
 		QColor thecolor);
   QColor GetColor(const Handle(SALOME_InteractiveObject)& IObject);
 
-  void Update();
-
-  vtkRenderer* GetRenderer();
-
-  virtual void Render();
-
  protected:
-  vtkGenericRenderWindowInteractor* myInteractor;
-
   int myDisplayMode;
 
- protected:
-  virtual void mouseMoveEvent( QMouseEvent* );
-  virtual void mousePressEvent( QMouseEvent* );
-  virtual void mouseReleaseEvent( QMouseEvent* );
-  virtual void mouseDoubleClickEvent( QMouseEvent* );
-  virtual void wheelEvent( QWheelEvent* );
-  virtual void keyPressEvent( QKeyEvent* );
-  virtual void keyReleaseEvent( QKeyEvent* );
-  virtual bool x11Event( XEvent *e );
-
-  virtual void paintEvent( QPaintEvent* );
-  virtual void resizeEvent( QResizeEvent* );
-  virtual void onChangeBackgroundColor();
-
-  // reimplemented from QWidget in order to set window - receiver
-  // of space mouse events. 
-  virtual void focusInEvent ( QFocusEvent* );
-  virtual void focusOutEvent( QFocusEvent* );
-
-  virtual void contextMenuEvent( QContextMenuEvent * e );
-
- signals:
-  void contextMenuRequested( QContextMenuEvent *e );
 };
 
 

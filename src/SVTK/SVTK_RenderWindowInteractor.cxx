@@ -148,6 +148,7 @@ SVTK_RenderWindowInteractor
   myInteractor->Delete();
 }
 
+
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
@@ -156,6 +157,7 @@ SVTK_RenderWindowInteractor
   myInteractor->Initialize();
 }
 
+
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
@@ -163,6 +165,238 @@ SVTK_RenderWindowInteractor
 {
   myInteractor->UpdateSize(w,h);
 }
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::Render()
+{
+  myInteractor->Render();
+}
+
+
+//----------------------------------------------------------------------------
+struct TUpdateAction
+{
+  void operator()(vtkActor* theActor){
+    theActor->ApplyProperties();
+  }
+};
+
+void
+SVTK_RenderWindowInteractor
+::Update() 
+{
+  vtkRenderer* aRen = GetRenderer();
+
+  using namespace VTK;
+  ForEach<vtkActor>(aRen->GetActors(),TUpdateAction());
+
+  aRen->ResetCamera();
+
+  update();
+}
+
+
+//----------------------------------------------------------------------------
+vtkRenderer* 
+SVTK_RenderWindowInteractor
+::GetRenderer()
+{
+  vtkRendererCollection * theRenderers =  getRenderWindow()->GetRenderers();
+  theRenderers->InitTraversal();
+  return theRenderers->GetNextItem();
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::paintEvent( QPaintEvent* theEvent ) 
+{
+  myInteractor->Render();
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::resizeEvent( QResizeEvent* theEvent )
+{
+  int aWidth = getRenderWindow()->GetSize()[0], aHeight = getRenderWindow()->GetSize()[1];
+
+  myInteractor->UpdateSize( width(), height() );
+
+  if( aWidth != width() || aHeight != height() )
+  {
+    vtkRendererCollection * aRenderers = getRenderWindow()->GetRenderers();
+    aRenderers->InitTraversal();
+    double aCoeff = 1.0;
+    if(vtkRenderer *aRenderer = aRenderers->GetNextItem())
+    {
+      vtkCamera *aCamera = aRenderer->GetActiveCamera();
+      double aScale = aCamera->GetParallelScale();
+      if((aWidth - width())*(aHeight - height()) > 0)
+        aCoeff = sqrt(double(aWidth)/double(width())*double(height())/double(aHeight));
+      else
+        aCoeff = double(aWidth)/double(width());
+      aCamera->SetParallelScale(aScale*aCoeff);
+    }
+  }
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::mouseMoveEvent( QMouseEvent* event ) 
+{
+  myInteractor->SetEventInformation( event->x(), event->y(),
+				     ( event->state() & ControlButton ),
+				     ( event->state() & ShiftButton ) );
+  myInteractor->MouseMoveEvent();
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::mousePressEvent( QMouseEvent* event ) 
+{
+  myInteractor->SetEventInformation( event->x(), event->y(),
+				     ( event->state() & ControlButton ),
+				     ( event->state() & ShiftButton ) );
+  if( event->button() & LeftButton )
+    myInteractor->LeftButtonPressEvent();
+  else if( event->button() & MidButton )
+    myInteractor->MiddleButtonPressEvent();
+  else if( event->button() & RightButton )
+    myInteractor->RightButtonPressEvent();
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::mouseReleaseEvent( QMouseEvent *event )
+{
+  myInteractor->SetEventInformation( event->x(), event->y(),
+				     ( event->state() & ControlButton ),
+				     ( event->state() & ShiftButton ) );
+
+  if( event->button() & LeftButton )
+    myInteractor->LeftButtonReleaseEvent();
+  else if( event->button() & MidButton )
+    myInteractor->MiddleButtonReleaseEvent();
+  else if( event->button() & RightButton )
+    myInteractor->RightButtonReleaseEvent();
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::mouseDoubleClickEvent( QMouseEvent* event )
+{}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::wheelEvent( QWheelEvent* event )
+{}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::keyPressEvent( QKeyEvent* event ) 
+{
+  myInteractor->SetKeyEventInformation( ( event->state() & ControlButton ),
+					( event->state() & ShiftButton ),
+					0 );
+  myInteractor->KeyPressEvent();
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::keyReleaseEvent( QKeyEvent * event ) 
+{
+  myInteractor->SetKeyEventInformation( ( event->state() & ControlButton ),
+					( event->state() & ShiftButton ),
+					0 );
+  myInteractor->KeyReleaseEvent();
+}
+
+
+//----------------------------------------------------------------------------
+bool 
+SVTK_RenderWindowInteractor
+::x11Event( XEvent *xEvent )
+{
+  // handle 3d space mouse events
+  SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
+  if ( sm->isSpaceMouseOn() && xEvent->type == ClientMessage ) {
+    SVTK_SpaceMouse::MoveEvent spaceMouseEvent;
+    int type = sm->translateEvent( x11Display(), xEvent, &spaceMouseEvent, 1.0, 1.0 );
+    switch ( type )
+    {
+    case SVTK_SpaceMouse::SpaceMouseMove : 
+      myInteractor->InvokeEvent( SpaceMouseMoveEvent, spaceMouseEvent.data );
+      break;
+    case SVTK_SpaceMouse::SpaceButtonPress :
+      myInteractor->InvokeEvent( SpaceMouseButtonEvent, &spaceMouseEvent.button );
+      break;
+    case SVTK_SpaceMouse::SpaceButtonRelease :
+      break;
+    }
+    return true; // stop handling the event
+  }
+
+  return SVTK_RenderWindow::x11Event( xEvent );
+}
+
+//----------------------------------------------------------------------------
+void  
+SVTK_RenderWindowInteractor
+::focusInEvent ( QFocusEvent* event )
+{
+  QWidget::focusInEvent( event );
+
+  // register set space mouse events receiver
+  SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
+  if ( !sm->isSpaceMouseOn() ) {// initialize 3D space mouse driver 
+    sm->initialize( x11Display(), winId() );
+    if ( !sm->isSpaceMouseOn() )
+      printf( "\nError: 3D Space Mouse driver was not started.\n" );
+  }
+  else
+    SVTK_SpaceMouse::getInstance()->setWindow( x11Display(), winId() );
+}
+
+//----------------------------------------------------------------------------
+void  
+SVTK_RenderWindowInteractor
+::focusOutEvent ( QFocusEvent* event )
+{
+  QWidget::focusInEvent( event );
+  // unregister set space mouse events receiver
+  if ( SVTK_SpaceMouse::getInstance()->isSpaceMouseOn() )
+    SVTK_SpaceMouse::getInstance()->setWindow( x11Display(), 0 );
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::contextMenuEvent( QContextMenuEvent* event )
+{
+  if( !( event->state() & KeyButtonMask ) )
+    emit contextMenuRequested( event );
+}
+
 
 //----------------------------------------------------------------------------
 int
@@ -238,17 +472,8 @@ SVTK_RenderWindowInteractor
 
 
 //----------------------------------------------------------------------------
-vtkRenderer* 
-SVTK_RenderWindowInteractor
-::GetRenderer()
+struct TErase
 {
-  vtkRendererCollection * theRenderers =  getRenderWindow()->GetRenderers();
-  theRenderers->InitTraversal();
-  return theRenderers->GetNextItem();
-}
-
-
-struct TErase{
   VTK::TSetFunction<vtkActor,int> mySetFunction;
   TErase():
     mySetFunction(&vtkActor::SetVisibility,false)
@@ -312,7 +537,8 @@ SVTK_RenderWindowInteractor
 }
 
 
-struct TRemoveAction{
+struct TRemoveAction
+{
   vtkRenderer* myRen;
   TRemoveAction(vtkRenderer* theRen): myRen(theRen){}
   void operator()(SALOME_Actor* theActor){
@@ -423,26 +649,6 @@ SVTK_RenderWindowInteractor
     update();
 }
 
-struct TUpdateAction{
-  void operator()(vtkActor* theActor){
-    theActor->ApplyProperties();
-  }
-};
-
-void
-SVTK_RenderWindowInteractor
-::Update() 
-{
-  vtkRenderer* aRen = GetRenderer();
-
-  using namespace VTK;
-  ForEach<vtkActor>(aRen->GetActors(),TUpdateAction());
-
-  aRen->ResetCamera();
-
-  update();
-}
-
 //-----------------
 // Color methods
 //-----------------
@@ -510,207 +716,4 @@ SVTK_RenderWindowInteractor
 			  TIsSameIObject<SALOME_Actor>(theIObject),
 			  TSetFunction<SALOME_Actor,const char*,QString>
 			  (&SALOME_Actor::setName,theName.latin1()));
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::mouseMoveEvent( QMouseEvent* event ) 
-{
-  myInteractor->SetEventInformation( event->x(), event->y(),
-				     ( event->state() & ControlButton ),
-				     ( event->state() & ShiftButton ) );
-  myInteractor->MouseMoveEvent();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::mousePressEvent( QMouseEvent* event ) 
-{
-  myInteractor->SetEventInformation( event->x(), event->y(),
-				     ( event->state() & ControlButton ),
-				     ( event->state() & ShiftButton ) );
-  if( event->button() & LeftButton )
-    myInteractor->LeftButtonPressEvent();
-  else if( event->button() & MidButton )
-    myInteractor->MiddleButtonPressEvent();
-  else if( event->button() & RightButton )
-    myInteractor->RightButtonPressEvent();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::mouseReleaseEvent( QMouseEvent *event )
-{
-  myInteractor->SetEventInformation( event->x(), event->y(),
-				     ( event->state() & ControlButton ),
-				     ( event->state() & ShiftButton ) );
-
-  if( event->button() & LeftButton )
-    myInteractor->LeftButtonReleaseEvent();
-  else if( event->button() & MidButton )
-    myInteractor->MiddleButtonReleaseEvent();
-  else if( event->button() & RightButton )
-    myInteractor->RightButtonReleaseEvent();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::mouseDoubleClickEvent( QMouseEvent* event )
-{}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::keyPressEvent( QKeyEvent* event ) 
-{
-  myInteractor->SetKeyEventInformation( ( event->state() & ControlButton ),
-					( event->state() & ShiftButton ),
-					0 );
-  myInteractor->KeyPressEvent();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::keyReleaseEvent( QKeyEvent * event ) 
-{
-  myInteractor->SetKeyEventInformation( ( event->state() & ControlButton ),
-					( event->state() & ShiftButton ),
-					0 );
-  myInteractor->KeyReleaseEvent();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::wheelEvent( QWheelEvent* event )
-{}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::paintEvent( QPaintEvent* theEvent ) 
-{
-  getRenderWindow()->Render();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::contextMenuEvent( QContextMenuEvent* event )
-{
-  if( !( event->state() & KeyButtonMask ) )
-    emit contextMenuRequested( event );
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::resizeEvent( QResizeEvent* theEvent )
-{
-  int aWidth = getRenderWindow()->GetSize()[0], aHeight = getRenderWindow()->GetSize()[1];
-
-  myInteractor->UpdateSize( width(), height() );
-
-  if( aWidth != width() || aHeight != height() )
-  {
-    vtkRendererCollection * aRenderers = getRenderWindow()->GetRenderers();
-    aRenderers->InitTraversal();
-    double aCoeff = 1.0;
-    if(vtkRenderer *aRenderer = aRenderers->GetNextItem())
-    {
-      vtkCamera *aCamera = aRenderer->GetActiveCamera();
-      double aScale = aCamera->GetParallelScale();
-      if((aWidth - width())*(aHeight - height()) > 0)
-        aCoeff = sqrt(double(aWidth)/double(width())*double(height())/double(aHeight));
-      else
-        aCoeff = double(aWidth)/double(width());
-      aCamera->SetParallelScale(aScale*aCoeff);
-    }
-  }
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::onChangeBackgroundColor()
-{
-  float backint[3];
-
-  vtkRendererCollection* theRenderers = getRenderWindow()->GetRenderers();
-  theRenderers->InitTraversal();
-  vtkRenderer* theRenderer = theRenderers->GetNextItem();
-  theRenderer->GetBackground(backint);
-
-  QColor selColor = QColorDialog::getColor ( QColor(int(backint[0]*255), int(backint[1]*255), int(backint[2]*255)), NULL );	
-  if ( selColor.isValid() )
-    theRenderer->SetBackground( selColor.red()/255., selColor.green()/255., selColor.blue()/255. ); 
-}
-
-//----------------------------------------------------------------------------
-bool 
-SVTK_RenderWindowInteractor
-::x11Event( XEvent *xEvent )
-{
-  // handle 3d space mouse events
-  SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
-  if ( sm->isSpaceMouseOn() && xEvent->type == ClientMessage ) {
-    SVTK_SpaceMouse::MoveEvent spaceMouseEvent;
-    int type = sm->translateEvent( x11Display(), xEvent, &spaceMouseEvent, 1.0, 1.0 );
-    switch ( type )
-    {
-    case SVTK_SpaceMouse::SpaceMouseMove : 
-      myInteractor->InvokeEvent( SpaceMouseMoveEvent, spaceMouseEvent.data );
-      break;
-    case SVTK_SpaceMouse::SpaceButtonPress :
-      myInteractor->InvokeEvent( SpaceMouseButtonEvent, &spaceMouseEvent.button );
-      break;
-    case SVTK_SpaceMouse::SpaceButtonRelease :
-      break;
-    }
-    return true; // stop handling the event
-  }
-
-  return SVTK_RenderWindow::x11Event( xEvent );
-}
-
-//----------------------------------------------------------------------------
-void  
-SVTK_RenderWindowInteractor
-::focusInEvent ( QFocusEvent* event )
-{
-  QWidget::focusInEvent( event );
-
-  // register set space mouse events receiver
-  SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
-  if ( !sm->isSpaceMouseOn() ) {// initialize 3D space mouse driver 
-    sm->initialize( x11Display(), winId() );
-    if ( !sm->isSpaceMouseOn() )
-      printf( "\nError: 3D Space Mouse driver was not started.\n" );
-  }
-  else
-    SVTK_SpaceMouse::getInstance()->setWindow( x11Display(), winId() );
-}
-
-//----------------------------------------------------------------------------
-void  
-SVTK_RenderWindowInteractor
-::focusOutEvent ( QFocusEvent* event )
-{
-  QWidget::focusInEvent( event );
-  // unregister set space mouse events receiver
-  if ( SVTK_SpaceMouse::getInstance()->isSpaceMouseOn() )
-    SVTK_SpaceMouse::getInstance()->setWindow( x11Display(), 0 );
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::Render()
-{
-  getRenderWindow()->Render();
 }
