@@ -28,6 +28,8 @@ EXPORT_HEADERS= SVTK.h \
 		SVTK_Selector.h \
 		SVTK_Selection.h \
 		SVTK_SelectionEvent.h \
+		SVTK_SpaceMouse.h \
+		SVTK_SpaceMouseEvent.h \
 		SVTK_ViewModelBase.h
 
 # Libraries targets
@@ -45,6 +47,7 @@ LIB_SRC= 	SVTK_Prs.cxx \
 		SVTK_RenderWindow.cxx \
 		SVTK_InteractorStyle.cxx \
 		SVTK_RenderWindowInteractor.cxx \
+		SVTK_SpaceMouse.cxx \
 		SVTK_Selector.cxx
 
 LIB_MOC = 	SVTK_RenderWindowInteractor.h \

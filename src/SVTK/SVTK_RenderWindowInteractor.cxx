@@ -31,6 +31,8 @@
 #include "VTKViewer_Algorithm.h"
 #include "SVTK_Functor.h"
 #include "SALOME_Actor.h"
+#include "SVTK_SpaceMouse.h" 
+#include "SVTK_SpaceMouseEvent.h" 
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,6 +51,8 @@
 
 // QT Includes
 #include <qcolordialog.h>
+#include <qwidget.h>
+#include <qpaintdevice.h>
 
 #include "utilities.h"
 
@@ -80,6 +84,11 @@ SVTK_RenderWindowInteractor
 ::~SVTK_RenderWindowInteractor() 
 {
   if(MYDEBUG) INFOS("SVTK_RenderWindowInteractor::~SVTK_RenderWindowInteractor()");
+
+  // stop 3d space mouse driver
+  SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
+  if ( sm->isSpaceMouseOn() )
+    sm->close( x11Display() );
 
   delete mTimer ;
 
@@ -153,7 +162,7 @@ int
 SVTK_RenderWindowInteractor
 ::GetDisplayMode() 
 {
-  return myDisplayMode;
+  return myDisplayMode; 
 }
 
 
@@ -506,7 +515,6 @@ SVTK_RenderWindowInteractor
   myInteractor->SetEventInformation( event->x(), event->y(),
 				     ( event->state() & ControlButton ),
 				     ( event->state() & ShiftButton ) );
-
   myInteractor->MouseMoveEvent();
 
   //emit MouseMove( event ) ;
@@ -667,6 +675,62 @@ SVTK_RenderWindowInteractor
   QColor selColor = QColorDialog::getColor ( QColor(int(backint[0]*255), int(backint[1]*255), int(backint[2]*255)), NULL );	
   if ( selColor.isValid() )
     theRenderer->SetBackground( selColor.red()/255., selColor.green()/255., selColor.blue()/255. ); 
+}
+
+//----------------------------------------------------------------------------
+bool 
+SVTK_RenderWindowInteractor
+::x11Event( XEvent *xEvent )
+{
+  // handle 3d space mouse events
+  SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
+  if ( sm->isSpaceMouseOn() && xEvent->type == ClientMessage ) {
+    SVTK_SpaceMouse::MoveEvent spaceMouseEvent;
+    int type = sm->translateEvent( x11Display(), xEvent, &spaceMouseEvent, 1.0, 1.0 );
+    switch ( type )
+    {
+    case SVTK_SpaceMouse::SpaceMouseMove : 
+      myInteractor->InvokeEvent( SpaceMouseMoveEvent, spaceMouseEvent.data );
+      break;
+    case SVTK_SpaceMouse::SpaceButtonPress :
+      myInteractor->InvokeEvent( SpaceMouseButtonEvent, &spaceMouseEvent.button );
+      break;
+    case SVTK_SpaceMouse::SpaceButtonRelease :
+      break;
+    }
+    return true; // stop handling the event
+  }
+
+  return SVTK_RenderWindow::x11Event( xEvent );
+}
+
+//----------------------------------------------------------------------------
+void  
+SVTK_RenderWindowInteractor
+::focusInEvent ( QFocusEvent* event )
+{
+  QWidget::focusInEvent( event );
+
+  // register set space mouse events receiver
+  SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
+  if ( !sm->isSpaceMouseOn() ) {// initialize 3D space mouse driver 
+    sm->initialize( x11Display(), winId() );
+    if ( !sm->isSpaceMouseOn() )
+      printf( "\nError: 3D Space Mouse driver was not started.\n" );
+  }
+  else
+    SVTK_SpaceMouse::getInstance()->setWindow( x11Display(), winId() );
+}
+
+//----------------------------------------------------------------------------
+void  
+SVTK_RenderWindowInteractor
+::focusOutEvent ( QFocusEvent* event )
+{
+  QWidget::focusInEvent( event );
+  // unregister set space mouse events receiver
+  if ( SVTK_SpaceMouse::getInstance()->isSpaceMouseOn() )
+    SVTK_SpaceMouse::getInstance()->setWindow( x11Display(), 0 );
 }
 
 //----------------------------------------------------------------------------

@@ -35,12 +35,16 @@
 #include "SVTK_RenderWindow.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_Selection.h"
+#include "SVTK_SpaceMouseEvent.h" 
+#include "SVTK_Selector.h"
 
 #include "SALOME_Actor.h"
-#include "SVTK_Selector.h"
 
 #include "SALOME_ListIteratorOfListIO.hxx"
 #include "SALOME_ListIO.hxx"
+
+#include "SUIT_Session.h"
+#include "SUIT_ResourceMgr.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkMath.h>
@@ -50,6 +54,8 @@
 #include <vtkPicker.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkCallbackCommand.h>
+#include <vtkRendererCollection.h>
 
 #include <qapplication.h>
 //VRV: porting on Qt 3.0.5
@@ -99,6 +105,9 @@ SVTK_InteractorStyle
   this->RadianToDegree = 180.0 / vtkMath::Pi();
   this->ForcedState = VTK_INTERACTOR_STYLE_CAMERA_NONE;
   loadCursors();
+
+  // set custom event handling function (to handle 3d space mouse events)
+  EventCallbackCommand->SetCallback( SVTK_InteractorStyle::ProcessEvents );
 
   myPicker = vtkPicker::New();
   myPicker->Delete();
@@ -1014,6 +1023,7 @@ SVTK_InteractorStyle
 
 
 // called during viewer operation when user moves mouse (!put necessary processing here!)
+//----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
 ::onOperation(QPoint mousePos) 
@@ -1080,6 +1090,7 @@ SVTK_InteractorStyle
 
 // called when user moves mouse inside viewer window and there is no active viewer operation 
 // (!put necessary processing here!)
+//----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
 ::onCursorMove(QPoint mousePos) 
@@ -1113,6 +1124,7 @@ SVTK_InteractorStyle
 }
 
 // called on finsh GlobalPan operation 
+//----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
 ::Place(const int theX, const int theY) 
@@ -1140,6 +1152,7 @@ SVTK_InteractorStyle
 
 
 // Translates view from Point to Point
+//----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
 ::TranslateView(int toX, int toY, int fromX, int fromY)
@@ -1173,6 +1186,7 @@ SVTK_InteractorStyle
 		   motionVector[2] + viewPoint[2]);
 }
 
+//----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
 ::SetFilter( const Handle(VTKViewer_Filter)& theFilter )
@@ -1180,6 +1194,7 @@ SVTK_InteractorStyle
   myFilters[ theFilter->GetId() ] = theFilter;
 }
 
+//----------------------------------------------------------------------------
 bool
 SVTK_InteractorStyle
 ::IsFilterPresent( const int theId )
@@ -1187,6 +1202,7 @@ SVTK_InteractorStyle
   return myFilters.find( theId ) != myFilters.end();
 }
 
+//----------------------------------------------------------------------------
 void  
 SVTK_InteractorStyle
 ::RemoveFilter( const int theId )
@@ -1195,7 +1211,7 @@ SVTK_InteractorStyle
     myFilters.erase( theId );
 }
 
-
+//----------------------------------------------------------------------------
 bool
 SVTK_InteractorStyle
 ::IsValid( SALOME_Actor* theActor,
@@ -1213,6 +1229,7 @@ SVTK_InteractorStyle
   return true;
 }
 
+//----------------------------------------------------------------------------
 Handle(VTKViewer_Filter) 
 SVTK_InteractorStyle
 ::GetFilter( const int theId )
@@ -1220,6 +1237,7 @@ SVTK_InteractorStyle
   return IsFilterPresent( theId ) ? myFilters[ theId ] : Handle(VTKViewer_Filter)();
 }
 
+//----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
 ::IncrementalPan( const int incrX, const int incrY )
@@ -1227,6 +1245,7 @@ SVTK_InteractorStyle
   this->PanXY( incrX, incrY, 0, 0 );
 }
 
+//----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
 ::IncrementalZoom( const int incr )
@@ -1234,9 +1253,129 @@ SVTK_InteractorStyle
   this->DollyXY( incr, incr );
 }
 
+//----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
 ::IncrementalRotate( const int incrX, const int incrY )
 {
   this->RotateXY( incrX, -incrY );
 }
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::SetInteractor( vtkRenderWindowInteractor* interactor )
+{
+  // register EventCallbackCommand as observer of standard events (keypress, mousemove, etc)
+  vtkInteractorStyle::SetInteractor( interactor );
+
+  // register EventCallbackCommand as observer of custorm event (3d space mouse event)
+  interactor->AddObserver( SpaceMouseMoveEvent,   EventCallbackCommand, Priority );
+  interactor->AddObserver( SpaceMouseButtonEvent, EventCallbackCommand, Priority );
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::onSpaceMouseMove( double* data )
+{
+  //  printf( "x=%+5.0lf y=%+5.0lf z=%+5.0lf a=%+5.0lf b=%+5.0lf c=%+5.0lf\n",
+  //	  data[0], data[1], data[2], data[3], data[4], data[5] );
+  
+  // general things, do SetCurrentRenderer() within FindPokedRenderer() 
+  int x, y;
+  Interactor->GetEventPosition( x, y ); // current mouse position (from last mouse move event or any other event)
+  FindPokedRenderer( x, y ); // calls SetCurrentRenderer
+  
+  IncrementalZoom( (int)data[2] );        // 1. push toward / pull backward = zoom out / zoom in
+  IncrementalPan(  (int)data[0],  (int)data[1] );// 2. pull up / push down = pan up / down, 3. move left / right = pan left / right
+  IncrementalRotate( 0,  (int)data[4] );   // 4. twist the control = rotate around Y axis
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::onSpaceMouseButton( int button )
+{
+  //  printf( "Button pressed [%d]  \n", button );
+  SUIT_ResourceMgr* resMgr = SUIT_Session::session()->resourceMgr();
+  if ( resMgr->integerValue( "VISU", "spacemouse_func1_btn" ) == button )
+    DecreaseSpeedIncrement();
+  if ( resMgr->integerValue( "VISU", "spacemouse_func2_btn" ) == button )
+    IncreaseSpeedIncrement();
+  if ( resMgr->integerValue( "VISU", "spacemouse_func3_btn" ) == button )
+    DecreaseGaussPointMagnification();
+  if ( resMgr->integerValue( "VISU", "spacemouse_func4_btn" ) == button )
+    IncreaseGaussPointMagnification();
+  if ( resMgr->integerValue( "VISU", "spacemouse_func5_btn" ) == button )
+    DominantCombinedSwitch();
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::DecreaseSpeedIncrement()
+{
+  printf( "\n--DecreaseSpeedIncrement() NOT IMPLEMENTED--\n" );
+  
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::IncreaseSpeedIncrement()
+{
+  printf( "\n--IncreaseSpeedIncrement() NOT IMPLEMENTED--\n" );
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::DecreaseGaussPointMagnification()
+{
+  printf( "\n--DecreaseGaussPointMagnification() NOT IMPLEMENTED--\n" );
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::IncreaseGaussPointMagnification()
+{
+  printf( "\n--IncreaseGaussPointMagnification() NOT IMPLEMENTED--\n" );
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::DominantCombinedSwitch()
+{
+  printf( "\n--DominantCombinedSwitch() NOT IMPLEMENTED--\n" );
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::ProcessEvents( vtkObject* object,
+		 unsigned long event,
+		 void* clientData, 
+		 void* callData )
+{
+  if ( event != SpaceMouseMoveEvent && event != SpaceMouseButtonEvent )
+    vtkInteractorStyle::ProcessEvents( object, event, clientData, callData );
+
+  else if ( clientData && callData ) {
+    vtkObject* anObject = reinterpret_cast<vtkObject*>( clientData );
+    SVTK_InteractorStyle* self = dynamic_cast<SVTK_InteractorStyle*>( anObject );
+    if ( self ) {
+      switch ( event ) {
+      case SpaceMouseMoveEvent : 
+	self->onSpaceMouseMove( (double*)callData ); 
+	break;
+      case SpaceMouseButtonEvent : 
+	self->onSpaceMouseButton( *((int*)callData) ); 
+	break;
+      }
+    }
+  }
+}
+

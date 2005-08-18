@@ -157,10 +157,16 @@ public:
   virtual void keyPressEvent( QKeyEvent* );
   virtual void keyReleaseEvent( QKeyEvent* );
   virtual void contextMenuEvent( QContextMenuEvent * e );
+  virtual bool x11Event( XEvent *e );
 
   virtual void paintEvent( QPaintEvent* );
   virtual void resizeEvent( QResizeEvent* );
   virtual void onChangeBackgroundColor();
+
+  // reimplemented from QWidget in order to set window - receiver
+  // of space mouse events. 
+  virtual void focusInEvent ( QFocusEvent* );
+  virtual void focusOutEvent( QFocusEvent* );
 
  private slots:
   // Not all of these slots are needed in VTK_MAJOR_VERSION=3,

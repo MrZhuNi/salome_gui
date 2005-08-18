@@ -96,6 +96,9 @@ SVTK_ViewWindow
            this, SIGNAL(contextMenuRequested( QContextMenuEvent * )) );
 
   onResetView();
+
+  setFocusProxy( myView ); // send focus events to myView (fixes a bug
+                           // when on module activation myView received focusOutEvent 
 }
 
 //----------------------------------------------------------------------------

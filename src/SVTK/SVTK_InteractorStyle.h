@@ -34,6 +34,9 @@
 #include <vtkInteractorStyle.h>
 #include <vtkSmartPointer.h>
 
+class vtkCell;
+class vtkRenderWindowInteractor;
+
 #include <qobject.h>
 #include <qcursor.h>
 #include <qevent.h>
@@ -83,6 +86,15 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   virtual int GetState();
 
   SVTK_SelectionEvent GetSelectionEvent();
+
+  //merge with V2_2_0_VISU_improvements:void setTriedron(VTKViewer_Trihedron* theTrihedron);
+  void setPreselectionProp(const double& theRed = 0, 
+			   const double& theGreen = 1,
+			   const double& theBlue = 1, 
+			   const int& theWidth = 5);
+
+  // redefined in order to add an observer (callback) for custorm event (space mouse event)
+  virtual void SetInteractor( vtkRenderWindowInteractor* );
 
   // VTK events
   virtual void OnMouseMove();
@@ -144,6 +156,10 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   void Place(const int theX, const int theY);
   void TranslateView(int toX, int toY, int fromX, int fromY);
 
+  // custom event handling function (to handle 3d space mouse events)
+  static void ProcessEvents( vtkObject* object, unsigned long event,
+			     void* clientData, void* callData );
+
   float MotionFactor;
   float RadianToDegree;                 // constant: for conv from deg to rad
   double myScale;
@@ -167,6 +183,15 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   void onCursorMove(QPoint mousePos);
   void setCursor(const int operation);
 
+  void onSpaceMouseMove( double* data );
+  void onSpaceMouseButton( int button );
+
+  void DecreaseSpeedIncrement();
+  void IncreaseSpeedIncrement();
+  void DecreaseGaussPointMagnification();
+  void IncreaseGaussPointMagnification();
+  void DominantCombinedSwitch();
+  
  signals:
   void RenderWindowModified() ;
 
