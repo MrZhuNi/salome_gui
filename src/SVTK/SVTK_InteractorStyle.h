@@ -81,16 +81,11 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
   void setViewWindow(SVTK_ViewWindow* theViewWindow);
-  void setGUIWindow(QWidget* theWindow);
+  void SetRenderWidget(QWidget* theRenderWidget);
 
   virtual int GetState();
 
   SVTK_SelectionEvent GetSelectionEvent();
-
-  void setPreselectionProp(const double& theRed = 0, 
-			   const double& theGreen = 1,
-			   const double& theBlue = 1, 
-			   const int& theWidth = 5);
 
   // redefined in order to add an observer (callback) for custorm event (space mouse event)
   virtual void SetInteractor( vtkRenderWindowInteractor* );
@@ -174,7 +169,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   void startRotate();
   void startFitArea();
   void startSpin();
-  bool needsRedrawing();
 
  protected:
   void loadCursors();
@@ -194,9 +188,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   void IncreaseGaussPointMagnification();
   void DominantCombinedSwitch();
   
- signals:
-  void RenderWindowModified() ;
-
  protected:
   QCursor                   myDefCursor;
   QCursor                   myPanCursor;
@@ -212,7 +203,7 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   int                       ForcedState;
   
   SVTK_ViewWindow*          myViewWindow;
-  QWidget*                  myGUIWindow;
+  QWidget*                  myRenderWidget;
 
   vtkSmartPointer<vtkPicker> myPicker;
   vtkSmartPointer<VTKViewer_RectPicker> myRectPicker;
@@ -222,7 +213,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   //  members from old version
   double                    DeltaElevation;
   double                    DeltaAzimuth;
-  int                       LastPos[2];
 };
 
 #endif

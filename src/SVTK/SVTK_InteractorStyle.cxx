@@ -169,9 +169,9 @@ SVTK_InteractorStyle
 //----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
-::setGUIWindow(QWidget* theWindow)
+::SetRenderWidget(QWidget* theWidget)
 {
-  myGUIWindow = theWindow;
+  myRenderWidget = theWidget;
 }
 
 //----------------------------------------------------------------------------
@@ -200,8 +200,7 @@ SVTK_InteractorStyle
   cam->Elevation(ryf);
   cam->OrthogonalizeViewUp();
   ::ResetCameraClippingRange(this->CurrentRenderer); 
-  //this->Interactor->Render();
-  myGUIWindow->update();
+  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
 }
 
 //----------------------------------------------------------------------------
@@ -210,8 +209,7 @@ SVTK_InteractorStyle
 ::PanXY(int x, int y, int oldX, int oldY)
 {
   TranslateView(x, y, oldX, oldY);   
-  //this->Interactor->Render();
-  myGUIWindow->update();
+  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
 }
 
 
@@ -235,8 +233,7 @@ SVTK_InteractorStyle
     ::ResetCameraClippingRange(this->CurrentRenderer);
   }
 
-  //this->Interactor->Render();
-  myGUIWindow->update();
+  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
 }
 
 //----------------------------------------------------------------------------
@@ -263,8 +260,7 @@ SVTK_InteractorStyle
   cam->Roll(newAngle - oldAngle);
   cam->OrthogonalizeViewUp();
       
-  //this->Interactor->Render();
-  myGUIWindow->update();
+  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
 }
 
 
@@ -370,9 +366,6 @@ SVTK_InteractorStyle
     onOperation(QPoint(x, y));
   else if (ForcedState == VTK_INTERACTOR_STYLE_CAMERA_NONE)
     onCursorMove(QPoint(x, y));
-
-  if( needsRedrawing() )
-    emit RenderWindowModified() ; 
 }
 
 
@@ -628,8 +621,8 @@ bool
 SVTK_InteractorStyle
 ::eventFilter(QObject* object, QEvent* event)
 {
-  if (!myGUIWindow) return false;
-  if ( (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::KeyPress) && object != myGUIWindow)
+  if (!myRenderWidget) return false;
+  if ( (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::KeyPress) && object != myRenderWidget)
   {
     qApp->removeEventFilter(this);
     startOperation(VTK_INTERACTOR_STYLE_CAMERA_NONE);
@@ -743,23 +736,9 @@ SVTK_InteractorStyle
 
   if (myViewWindow) myViewWindow->onFitAll();
 
-  if (myGUIWindow) myGUIWindow->update();
+  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
   
   qApp->installEventFilter(this);
-}
-
-
-//----------------------------------------------------------------------------
-// returns TRUE if needs redrawing
-bool
-SVTK_InteractorStyle
-::needsRedrawing()
-{
-  return State == VTK_INTERACTOR_STYLE_CAMERA_ZOOM   ||
-         State == VTK_INTERACTOR_STYLE_CAMERA_PAN    ||
-         State == VTK_INTERACTOR_STYLE_CAMERA_ROTATE ||
-         State == VTK_INTERACTOR_STYLE_CAMERA_SPIN   ||
-         State == VTK_INTERACTOR_STYLE_CAMERA_NONE;
 }
 
 
@@ -795,7 +774,7 @@ SVTK_InteractorStyle
     ::ResetCameraClippingRange(this->CurrentRenderer);
   }
   
-  myGUIWindow->update();
+  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
 }
 
 
@@ -836,37 +815,37 @@ void
 SVTK_InteractorStyle
 ::setCursor(const int operation)
 {
-  if (!myGUIWindow) return;
+  if (!myRenderWidget) return;
   switch (operation)
   {
     case VTK_INTERACTOR_STYLE_CAMERA_ZOOM:
-      myGUIWindow->setCursor(myZoomCursor); 
+      myRenderWidget->setCursor(myZoomCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_PAN:
-      myGUIWindow->setCursor(myPanCursor); 
+      myRenderWidget->setCursor(myPanCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_ROTATE:
-      myGUIWindow->setCursor(myRotateCursor); 
+      myRenderWidget->setCursor(myRotateCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_SPIN:
-      myGUIWindow->setCursor(mySpinCursor); 
+      myRenderWidget->setCursor(mySpinCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_GLOBAL_PAN:
-      myGUIWindow->setCursor(myGlobalPanCursor); 
+      myRenderWidget->setCursor(myGlobalPanCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_FIT:
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
-      myGUIWindow->setCursor(myHandCursor); 
+      myRenderWidget->setCursor(myHandCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_NONE:
     default:
-      myGUIWindow->setCursor(myDefCursor); 
+      myRenderWidget->setCursor(myDefCursor); 
       myCursorState = false;
       break;
   }
@@ -879,14 +858,14 @@ void
 SVTK_InteractorStyle
 ::onStartOperation()
 {
-  if (!myGUIWindow) return;
+  if (!myRenderWidget) return;
   // VSV: LOD actor activisation
   //  this->Interactor->GetRenderWindow()->SetDesiredUpdateRate(this->Interactor->GetDesiredUpdateRate());
   switch (State) {
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
     case VTK_INTERACTOR_STYLE_CAMERA_FIT:
     {
-      QPainter p(myGUIWindow);
+      QPainter p(myRenderWidget);
       p.setPen(Qt::lightGray);
       p.setRasterOp(Qt::XorROP);
       p.drawRect(QRect(myPoint, myOtherPoint));
@@ -908,7 +887,7 @@ void
 SVTK_InteractorStyle
 ::onFinishOperation() 
 {
-  if (!myGUIWindow) 
+  if (!myRenderWidget) 
     return;
 
   // VSV: LOD actor activisation
@@ -920,7 +899,7 @@ SVTK_InteractorStyle
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
     case VTK_INTERACTOR_STYLE_CAMERA_FIT:
     {
-      QPainter p(myGUIWindow);
+      QPainter p(myRenderWidget);
       p.setPen(Qt::lightGray);
       p.setRasterOp(Qt::XorROP);
       QRect rect(myPoint, myOtherPoint);
@@ -1017,8 +996,8 @@ SVTK_InteractorStyle
     }
     break;
   }
-  if (myGUIWindow) myGUIWindow->update();
 
+  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
 }
 
 
@@ -1028,38 +1007,30 @@ void
 SVTK_InteractorStyle
 ::onOperation(QPoint mousePos) 
 {
-  if (!myGUIWindow) return;
-  int w, h;
-  GetInteractor()->GetSize(w, h);
+  if (!myRenderWidget) 
+    return;
+
   switch (State) {
   case VTK_INTERACTOR_STYLE_CAMERA_PAN: 
     {
-      // processing panning
-      //this->FindPokedCamera(mousePos.x(), mousePos.y());
       this->PanXY(mousePos.x(), myPoint.y(), myPoint.x(), mousePos.y());
       myPoint = mousePos;
       break;
     }
   case VTK_INTERACTOR_STYLE_CAMERA_ZOOM: 
     {    
-      // processing zooming
-      //this->FindPokedCamera(mousePos.x(), mousePos.y());
       this->DollyXY(mousePos.x() - myPoint.x(), mousePos.y() - myPoint.y());
       myPoint = mousePos;
       break;
     }
   case VTK_INTERACTOR_STYLE_CAMERA_ROTATE: 
     {
-      // processing rotation
-      //this->FindPokedCamera(mousePos.x(), mousePos.y());
       this->RotateXY(mousePos.x() - myPoint.x(), myPoint.y() - mousePos.y());
       myPoint = mousePos;
       break;
     }
   case VTK_INTERACTOR_STYLE_CAMERA_SPIN: 
     {
-      // processing spinning
-      //this->FindPokedCamera(mousePos.x(), mousePos.y());
       this->SpinXY(mousePos.x(), mousePos.y(), myPoint.x(), myPoint.y());
       myPoint = mousePos;
       break;
@@ -1075,7 +1046,7 @@ SVTK_InteractorStyle
     }
   case VTK_INTERACTOR_STYLE_CAMERA_FIT:
     {
-      QPainter p(myGUIWindow);
+      QPainter p(myRenderWidget);
       p.setPen(Qt::lightGray);
       p.setRasterOp(Qt::XorROP);
       p.drawRect(QRect(myPoint, myOtherPoint));
@@ -1084,8 +1055,6 @@ SVTK_InteractorStyle
       break;
     }
   }
-  this->LastPos[0] = mousePos.x();
-  this->LastPos[1] = h - mousePos.y() - 1;
 }
 
 // called when user moves mouse inside viewer window and there is no active viewer operation 
@@ -1120,13 +1089,8 @@ SVTK_InteractorStyle
   
   Interactor->EndPickCallback();
 
-  if(anIsChanged){
-    Interactor->CreateTimer(VTKI_TIMER_FIRST);
-    //Interactor->Render();
-  }
-  
-  this->LastPos[0] = x;
-  this->LastPos[1] = y;
+  if(anIsChanged)
+    this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
 }
 
 // called on finsh GlobalPan operation 
@@ -1151,8 +1115,7 @@ SVTK_InteractorStyle
   cam->SetParallelScale(myScale);
   ::ResetCameraClippingRange(this->CurrentRenderer);
 
-  if (myGUIWindow) myGUIWindow->update();
-
+  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
 }
 
 

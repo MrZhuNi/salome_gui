@@ -60,7 +60,7 @@ SVTK_ViewWindow
   bottomView->Initialize();
   */
   myInteractorStyle = SVTK_InteractorStyle::New();
-  myInteractorStyle->setGUIWindow( myView );
+  myInteractorStyle->SetRenderWidget( myView );
   myInteractorStyle->setViewWindow( this );
 
   myView->SetInteractorStyle( myInteractorStyle );
@@ -75,23 +75,6 @@ SVTK_ViewWindow
   myView->setFocusPolicy( StrongFocus );
   myView->setFocus();
 
-  /*
-  connect( myRenderWindow, SIGNAL(KeyPressed( QKeyEvent* )),
-           this,           SLOT(onKeyPressed( QKeyEvent* )) );
-  connect( myRenderWindow, SIGNAL(KeyReleased( QKeyEvent* )),
-           this,           SLOT(onKeyReleased( QKeyEvent* )) );
-  connect( myRenderWindow, SIGNAL(MouseButtonPressed( QMouseEvent* )),
-           this,           SLOT(onMousePressed( QMouseEvent* )) );
-  connect( myRenderWindow, SIGNAL(MouseButtonReleased( QMouseEvent* )),
-           this,           SLOT(onMouseReleased( QMouseEvent* )) );
-  connect( myRenderWindow, SIGNAL(MouseDoubleClicked( QMouseEvent* )),
-           this,           SLOT(onMouseDoubleClicked( QMouseEvent* )) );
-  connect( myRenderWindow, SIGNAL(MouseMove( QMouseEvent* )),
-           this,           SLOT(onMouseMoving( QMouseEvent* )) );
-  */
-
-  connect( myInteractorStyle, SIGNAL(RenderWindowModified()),
-           myView, SLOT(update()) );
   connect( myView, SIGNAL(contextMenuRequested( QContextMenuEvent * )),
            this, SIGNAL(contextMenuRequested( QContextMenuEvent * )) );
 
