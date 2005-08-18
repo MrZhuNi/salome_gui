@@ -60,19 +60,18 @@ static int MYDEBUG = 0;
 static int MYDEBUG = 0;
 #endif
 
+
+//----------------------------------------------------------------------------
 SVTK_RenderWindowInteractor
 ::SVTK_RenderWindowInteractor( QWidget* parent, const char* name ) :
   SVTK_RenderWindow( parent, name )
 {
   myInteractor = vtkGenericRenderWindowInteractor::New();
-  //myInteractor->DebugOn();
 
   myInteractor->SetRenderWindow( getRenderWindow() );
-
-  myInteractor->Disable();
-  mTimer = new QTimer( this ) ;
   myDisplayMode = 0;
 
+  mTimer = new QTimer( this ) ;
   connect(mTimer, SIGNAL(timeout()), this, SLOT(TimerFunc())) ;
 }
 
@@ -87,65 +86,16 @@ SVTK_RenderWindowInteractor
   myInteractor->Delete();
 }
 
-//
-// We never allow the SVTK_RenderWindowInteractor to control 
-// the event loop. The application always has the control. 
-//
+//----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
 ::Initialize() 
 {
-  //
-  // We cannot do much unless there is a render window 
-  // associated with this interactor. 
-  //
-  if( !getRenderWindow() ) {
-    //vtkErrorMacro(<< "SVTK_RenderWindowInteractor::Initialize(): No render window attached!") ;
-    return ;
-  }
-
-  //
-  // We cannot hand a render window which is not a VTKViewer_RenderWindow. 
-  // One way to force this is to use dynamic_cast and hope that 
-  // it works. If the dynamic_cast does not work, we flag an error
-  // and get the hell out.
-  //
-  //vtkRenderWindow *aRenderWindow = dynamic_cast<vtkRenderWindow *>(getRenderWindow());
-  if( !getRenderWindow() ) {
-    //vtkErrorMacro(<< "SVTK_RenderWindowInteractor::Initialize() can only handle VTKViewer_RenderWindow.") ;
-    return ;
-  }
-
-  //
-  // If the render window has zero size, then set it to a default 
-  // value of 300x300.
-  // 
-  int* aSize = getRenderWindow()->GetSize();
-  myInteractor->SetSize( ((aSize[0] > 0) ? aSize[0] : 300), ((aSize[1] > 0) ? aSize[1] : 300) );
-
-  myInteractor->SetPicker(vtkPicker::New());
-
-  //SetSelectionTolerance();
-
-  //
-  // The interactor has been initialized.
-  //
-  myInteractor->Initialize() ;
-
-  //
-  // Enable the interactor. 
-  //
-  myInteractor->Enable() ;
-
-  //
-  // Start the rendering of the window. 
-  //
-  getRenderWindow()->Start() ;
-
-  return ;
+  myInteractor->Initialize();
 }
 
-// ================================== 
+
+//----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
 ::UpdateSize(int w, int h) 
@@ -153,6 +103,8 @@ SVTK_RenderWindowInteractor
   myInteractor->UpdateSize(w,h);
 }
 
+
+//----------------------------------------------------------------------------
 int
 SVTK_RenderWindowInteractor
 ::CreateTimer(int vtkNotUsed(timertype)) 
@@ -197,6 +149,8 @@ SVTK_RenderWindowInteractor
   update();
 }
 
+
+//----------------------------------------------------------------------------
 int
 SVTK_RenderWindowInteractor
 ::GetDisplayMode() 
@@ -204,6 +158,8 @@ SVTK_RenderWindowInteractor
   return myDisplayMode;
 }
 
+
+//----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
 ::SetDisplayMode(int theMode)
@@ -267,6 +223,7 @@ SVTK_RenderWindowInteractor
 }
 
 
+//----------------------------------------------------------------------------
 vtkRenderer* 
 SVTK_RenderWindowInteractor
 ::GetRenderer()
