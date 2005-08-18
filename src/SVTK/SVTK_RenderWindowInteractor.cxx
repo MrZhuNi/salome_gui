@@ -94,7 +94,6 @@ SVTK_RenderWindowInteractor
   myInteractor->Initialize();
 }
 
-
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
@@ -102,7 +101,6 @@ SVTK_RenderWindowInteractor
 {
   myInteractor->UpdateSize(w,h);
 }
-
 
 //----------------------------------------------------------------------------
 int
@@ -669,4 +667,12 @@ SVTK_RenderWindowInteractor
   QColor selColor = QColorDialog::getColor ( QColor(int(backint[0]*255), int(backint[1]*255), int(backint[2]*255)), NULL );	
   if ( selColor.isValid() )
     theRenderer->SetBackground( selColor.red()/255., selColor.green()/255., selColor.blue()/255. ); 
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
+::Render()
+{
+  getRenderWindow()->Render();
 }

@@ -134,6 +134,8 @@ public:
 
   vtkRenderer* GetRenderer();
 
+  virtual void Render();
+
  protected:
   vtkGenericRenderWindowInteractor* myInteractor;
 
