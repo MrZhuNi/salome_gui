@@ -32,9 +32,7 @@
 #include "SVTK.h"
 
 #include <vtkInteractorStyle.h>
-
-class vtkCell;
-class vtkRenderWindowInteractor;
+#include <vtkSmartPointer.h>
 
 #include <qobject.h>
 #include <qcursor.h>
@@ -45,8 +43,10 @@ class vtkRenderWindowInteractor;
 #include "VTKViewer_Filter.h"
 
 #include "SVTK_SelectionEvent.h"
+#include "SALOME_Actor.h"
 
-class VTKViewer_Trihedron;
+class vtkPicker;
+class VTKViewer_RectPicker;
 
 class SALOME_Actor;
 class SVTK_Viewer;
@@ -62,10 +62,12 @@ class SVTK_ViewWindow;
 #define VTK_INTERACTOR_STYLE_CAMERA_SELECT     6
 #define VTK_INTERACTOR_STYLE_CAMERA_GLOBAL_PAN 7
 
-class SVTK_EXPORT SVTK_InteractorStyle : public QObject, 
+class SVTK_EXPORT SVTK_InteractorStyle : 
+  public QObject,
+  public VTK::TValidator,
   public vtkInteractorStyle
 {
-  Q_OBJECT
+  Q_OBJECT;
 
  public:
   // Description:
@@ -81,12 +83,6 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   virtual int GetState();
 
   SVTK_SelectionEvent GetSelectionEvent();
-
-  //merge with V2_2_0_VISU_improvements:void setTriedron(VTKViewer_Trihedron* theTrihedron);
-  void setPreselectionProp(const double& theRed = 0, 
-			   const double& theGreen = 1,
-			   const double& theBlue = 1, 
-			   const int& theWidth = 5);
 
   // VTK events
   virtual void OnMouseMove();
@@ -106,21 +102,31 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   void OnRightButtonDown(int ctrl, int shift, int x, int y);
   void OnRightButtonUp  (int ctrl, int shift, int x, int y);
 
-  void OnSelectionModeChanged();
+  void 
+  SetFilter( const Handle(VTKViewer_Filter)& );
 
-  //merge with V2_2_0_VISU_improvements:void  ViewFitAll();
+  Handle(VTKViewer_Filter) 
+  GetFilter( const int );  
 
-  void                     SetFilter( const Handle(VTKViewer_Filter)& );
-  Handle(VTKViewer_Filter) GetFilter( const int );  
-  bool                     IsFilterPresent( const int );
-  void                     RemoveFilter( const int );
-  bool                     IsValid( SALOME_Actor* theActor,
-                                    const int     theId,
-                                    const bool    theIsNode = false );
+  bool
+  IsFilterPresent( const int );
+
+  void
+  RemoveFilter( const int );
+
+  bool
+  IsValid( SALOME_Actor* theActor,
+	   const int theId,
+	   const bool theIsNode = false );
   
-  void                     IncrementalPan   ( const int incrX, const int incrY );
-  void                     IncrementalZoom  ( const int incr );
-  void                     IncrementalRotate( const int incrX, const int incrY );
+  void
+  IncrementalPan( const int incrX, const int incrY );
+
+  void
+  IncrementalZoom( const int incr );
+
+  void
+  IncrementalRotate( const int incrX, const int incrY );
 
  protected:
   SVTK_InteractorStyle();
@@ -141,13 +147,6 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   float MotionFactor;
   float RadianToDegree;                 // constant: for conv from deg to rad
   double myScale;
-
-  SALOME_Actor* myPreViewActor;
-
-  SALOME_Actor* mySelectedActor;
-  int myElemId;
-  int myEdgeId;
-  int myNodeId;
 
  public:
   bool eventFilter(QObject* object, QEvent* event);
@@ -170,7 +169,6 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
 
  signals:
   void RenderWindowModified() ;
-  void contextMenuRequested( QContextMenuEvent *e );
 
  protected:
   QCursor                   myDefCursor;
@@ -187,8 +185,10 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   int                       ForcedState;
   
   SVTK_ViewWindow*          myViewWindow;
-  //merge with V2_2_0_VISU_improvements:VTKViewer_Trihedron*      myTrihedron;
   QWidget*                  myGUIWindow;
+
+  vtkSmartPointer<vtkPicker> myPicker;
+  vtkSmartPointer<VTKViewer_RectPicker> myRectPicker;
   
   std::map<int, Handle(VTKViewer_Filter)> myFilters;
 

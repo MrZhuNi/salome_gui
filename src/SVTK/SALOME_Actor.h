@@ -29,18 +29,15 @@
 #ifndef SALOME_ACTOR_H
 #define SALOME_ACTOR_H
 
-#include "SALOME_InteractiveObject.hxx" // INCLUDES "using namespace std"
-#ifndef _Handle_SALOME_InteractiveObject_HeaderFile
-#include "Handle_SALOME_InteractiveObject.hxx"
-#endif
+#include "SVTK_SelectionEvent.h"
+#include "SVTK_Selector.h"
+#include "SVTK.h"
 
-//#include <vtkLODActor.h> // INCLUDES "stdio.h"
-//#include <vtkProperty.h> 
+#include "VTKViewer_Actor.h"
 
-// to overcome the conflict between std::ostream and io::ostream 
-// the following variable must be defined:
-// VTK_USE_ANSI_STDLIB
+#include "SALOME_InteractiveObject.hxx"
 
+#include <string>
 #include <vector>
 
 class vtkCell;
@@ -61,110 +58,334 @@ class VTKViewer_TransformFilter;
 class VTKViewer_PassThroughFilter;
 class VTKViewer_CellRectPicker;
 
-extern int SALOME_POINT_SIZE;
-
-#ifdef WNT
-#define SALOME_OBJECT_EXPORT __declspec (dllexport)
-#else
-#define SALOME_OBJECT_EXPORT
-#endif
-
-#include <VTKViewer_Actor.h>
-
-#include "SVTK_Selector.h"
-#include "SVTK_SelectionEvent.h"
-
-#include <string>
-
 class SVTK_Actor;
 class SVTK_InteractorStyle;
 
-class SALOME_OBJECT_EXPORT SALOME_Actor : public VTKViewer_Actor {
+extern int SALOME_POINT_SIZE;
+
+class SALOME_Actor;
+
+namespace VTK
+{
+  struct TValidator
+  {
+    virtual 
+    bool 
+    IsValid( SALOME_Actor* theActor,
+	     const int theId,
+	     const bool theIsNode = false ) = 0;
+  };
+}
+
+class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor 
+{
  public:
   static SALOME_Actor* New();
-
+  
   vtkTypeMacro(SALOME_Actor,vtkLODActor);
 
-  virtual Standard_Boolean hasIO() { return !myIO.IsNull(); }
-  virtual const Handle(SALOME_InteractiveObject)& getIO() { return myIO; } 
-  virtual void setIO(const Handle(SALOME_InteractiveObject)& io) { myIO = io; }
+  virtual
+  Standard_Boolean 
+  hasIO() 
+  { 
+    return !myIO.IsNull(); 
+  }
 
-  virtual const char* getName() { return myName.c_str(); }
-  virtual void setName(const char* theName){
-    if(hasIO())	myIO->setName(theName);
+  virtual 
+  const Handle(SALOME_InteractiveObject)& 
+  getIO()
+  { 
+    return myIO; 
+  } 
+
+  virtual
+  void
+  setIO(const Handle(SALOME_InteractiveObject)& theIO) 
+  { 
+    myIO = theIO; 
+  }
+
+  virtual 
+  const char* 
+  getName() 
+  { 
+    return myName.c_str(); 
+  }
+
+  virtual
+  void
+  setName(const char* theName)
+  {
+    if(hasIO())	
+      myIO->setName(theName);
     myName = theName;
   }
 
   // To generate highlight automaticaly
-  virtual bool hasHighlight() { return false; } 
-  //virtual void highlight(bool theHighlight) { myIsHighlighted = theHighlight; }  
-  virtual bool isHighlighted() { return myIsHighlighted; }
+  virtual
+  bool
+  hasHighlight() 
+  { 
+    return false; 
+  } 
 
-  virtual void SetOpacity(float theOpacity);
-  virtual float GetOpacity();
+  virtual
+  void
+  highlight( bool, Selection_Mode );
 
-  virtual void SetColor(float r,float g,float b);
-  virtual void GetColor(float& r,float& g,float& b);
-  void SetColor(const float theRGB[3]){ 
+  virtual
+  void
+  highlight(bool theHighlight) 
+  { 
+    highlight(theHighlight,ActorSelection); 
+  }  
+
+  virtual
+  bool
+  isHighlighted() 
+  { 
+    return myIsHighlighted; 
+  }
+
+  virtual
+  void
+  SetOpacity(float theOpacity);
+
+  virtual
+  float 
+  GetOpacity();
+
+  virtual
+  void
+  SetColor(float r,float g,float b);
+
+  virtual
+  void
+  GetColor(float& r,float& g,float& b);
+
+  virtual
+  void
+  SetColor(const float theRGB[3])
+  { 
     SetColor(theRGB[0],theRGB[1],theRGB[2]);
   }
 
   vtkSetObjectMacro(PreviewProperty,vtkProperty);
 
-  virtual void SetPreSelected(bool thePreselect = false) { myIsPreselected = thePreselect;}
+  virtual
+  void
+  SetPreSelected(bool thePreselect = false) 
+  { 
+    myIsPreselected = thePreselect;
+  }
 
   // Used to obtain all dependent actors
-  virtual void GetChildActors(vtkActorCollection*) {};
+  virtual
+  void
+  GetChildActors(vtkActorCollection*) 
+  {};
   
-  //virtual void AddToRender(vtkRenderer* theRenderer); 
-  //virtual void RemoveFromRender(vtkRenderer* theRenderer);
-
-
   // For selection mapping purpose
-  virtual int GetNodeObjId(int theVtkID) { return theVtkID;}
-  virtual float* GetNodeCoord(int theObjID);
+  virtual
+  int 
+  GetNodeObjId(int theVtkID)
+  { 
+    return theVtkID;
+  }
 
-  virtual int GetElemObjId(int theVtkID) { return theVtkID;}
-  virtual vtkCell* GetElemCell(int theObjID);
+  virtual
+  float*
+  GetNodeCoord(int theObjID);
 
-  virtual int GetObjDimension( const int theObjId );
+  virtual 
+  int
+  GetElemObjId(int theVtkID) 
+  { 
+    return theVtkID;
+  }
 
-  virtual void SetMapper(vtkMapper* theMapper); 
-  virtual vtkDataSet* GetInput(); 
+  virtual
+  vtkCell* 
+  GetElemCell(int theObjID);
 
+  virtual
+  int
+  GetObjDimension( const int theObjId );
 
-  virtual void SetTransform(VTKViewer_Transform* theTransform); 
-  virtual unsigned long int GetMTime();
+  virtual
+  void
+  SetMapper(vtkMapper* theMapper); 
 
-  virtual void SetRepresentation(int theMode);
-  virtual int GetRepresentation();
+  virtual
+  vtkDataSet* 
+  GetInput(); 
 
-  virtual int getDisplayMode();
-  virtual void setDisplayMode(int theMode);
+  virtual
+  void
+  SetTransform(VTKViewer_Transform* theTransform); 
+
+  virtual
+  unsigned long int
+  GetMTime();
+
+  virtual
+  void
+  SetRepresentation(int theMode);
+
+  virtual
+  int
+  GetRepresentation();
+
+  virtual
+  int
+  getDisplayMode();
+
+  virtual
+  void
+  setDisplayMode(int theMode);
 
   // Infinitive means actor without size (point for example),
   // which is not taken into account in calculation of boundaries of the scene
-  void SetInfinitive(bool theIsInfinite) { myIsInfinite = theIsInfinite; }
-  virtual bool IsInfinitive();
+  void
+  SetInfinitive(bool theIsInfinite)
+  { 
+    myIsInfinite = theIsInfinite; 
+  }
+
+  virtual
+  bool
+  IsInfinitive();
     
-  void SetResolveCoincidentTopology(bool theIsResolve);
-  void SetPolygonOffsetParameters(float factor, float units);
-  void GetPolygonOffsetParameters(float& factor, float& units);
+  void
+  SetResolveCoincidentTopology(bool theIsResolve);
 
-  virtual void Render(vtkRenderer *, vtkMapper *);
+  void
+  SetPolygonOffsetParameters(float factor, float units);
 
-  virtual float GetShrinkFactor() { return 1.0;}
+  void
+  GetPolygonOffsetParameters(float& factor, float& units);
 
-  virtual bool IsShrunkable() { return false;}
-  virtual bool IsShrunk() { return false;}
+  virtual
+  void
+  Render(vtkRenderer *, vtkMapper *);
 
-  virtual void SetShrink() {} 
-  virtual void UnShrink() {}
+  virtual
+  float
+  GetShrinkFactor() 
+  { 
+    return 1.0;
+  }
 
-  virtual bool IsSetCamera() const { return false; }
-  virtual bool IsResizable() const { return false; }
-  virtual void SetSize( const float ) {}
-  virtual void SetCamera( vtkCamera* ) {}
+  virtual
+  bool
+  IsShrunkable() 
+  { 
+    return false;
+  }
+
+  virtual
+  bool
+  IsShrunk() 
+  { 
+    return false;
+  }
+
+  virtual
+  void
+  SetShrink() 
+  {} 
+
+  virtual
+  void
+  UnShrink() 
+  {}
+
+  virtual
+  bool
+  IsSetCamera() const 
+  { 
+    return false; 
+  }
+
+  virtual
+  bool
+  IsResizable() const 
+  { 
+    return false; 
+  }
+
+  virtual
+  void
+  SetSize( const float ) 
+  {}
+
+  virtual
+  void 
+  SetCamera( vtkCamera* ) 
+  {}
+
+  virtual
+  void
+  SetVisibility( int );
+
+  virtual
+  void
+  AddToRender( vtkRenderer* ); 
+
+  virtual
+  void
+  RemoveFromRender( vtkRenderer* );
+
+  virtual
+  bool
+  PreHighlight( VTK::TValidator*, 
+		SVTK_Selector*, 
+		vtkRenderer*, 
+		SVTK_SelectionEvent, 
+		bool );
+  virtual 
+  bool
+  Highlight( VTK::TValidator*, 
+	     SVTK_Selector*, 
+	     vtkRenderer*, 
+	     SVTK_SelectionEvent, 
+	     bool );
+
+  vtkProperty* 
+  getPointProperty()
+  { 
+    return myPointProperty; 
+  }
+
+  vtkProperty* 
+  getCellProperty()
+  { 
+    return myCellProperty; 
+  }
+
+  vtkProperty* 
+  getEdgeProperty()
+  { 
+    return myEdgeProperty; 
+  }
+
+  vtkPointPicker* 
+  getPointPicker() 
+  { 
+    return myPointPicker; 
+  }
+
+  vtkCellPicker* 
+  getCellPicker() 
+  { 
+    return myCellPicker; 
+  }
+
+  VTKViewer_CellRectPicker* 
+  getCellRectPicker() 
+  { 
+    return myCellRectPicker; 
+  }
 
  protected:
   bool myIsResolveCoincidentTopology;
@@ -190,46 +411,18 @@ class SALOME_OBJECT_EXPORT SALOME_Actor : public VTKViewer_Actor {
   int myRepresentation;
   vtkProperty *myProperty;
 
-  void InitPipeLine(vtkMapper* theMapper); 
+  void
+  InitPipeLine(vtkMapper* theMapper); 
 
   SALOME_Actor();
   ~SALOME_Actor();
 
   // From VISU
  public:
-  virtual void highlight( bool, Selection_Mode );
-
-  virtual void SetVisibility( int );
-
-  virtual void AddToRender( vtkRenderer* ); 
-  virtual void RemoveFromRender( vtkRenderer* );
-
-  virtual bool PreHighlight( SVTK_InteractorStyle*, SVTK_Selector*, vtkRenderer*, SVTK_SelectionEvent, bool );
-  virtual bool    Highlight( SVTK_InteractorStyle*, SVTK_Selector*, vtkRenderer*, SVTK_SelectionEvent, bool );
-
-  vtkProperty* getPointProperty() const { return myPointProperty; }
-  vtkProperty* getCellProperty() const { return myCellProperty; }
-  vtkProperty* getEdgeProperty() const { return myEdgeProperty; }
-
-  vtkPointPicker* getPointPicker() const { return myPointPicker; }
-  vtkCellPicker* getCellPicker() const { return myCellPicker; }
-  VTKViewer_CellRectPicker* getCellRectPicker() const { return myCellRectPicker; }
 
  protected:
   int GetEdgeId( vtkPicker*, int );
 
-  /*
-  bool IsInRect(vtkActor* theActor, 
-		const int left, const int top, 
-		const int right, const int bottom);
-  bool IsInRect(vtkCell* theCell, 
-		const int left, const int top, 
-		const int right, const int bottom);
-  bool IsInRect(float* thePoint, 
-		const int left, const int top, 
-		const int right, const int bottom);
-  */
- protected:
   vtkProperty* myPointProperty;
   vtkProperty* myCellProperty;
   vtkProperty* myEdgeProperty;

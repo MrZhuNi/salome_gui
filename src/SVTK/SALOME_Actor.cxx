@@ -41,10 +41,6 @@
 #include "VTKViewer_CellRectPicker.h"
 
 #include "SVTK_Actor.h"
-#include "SVTK_InteractorStyle.h"
-
-// SALOME Includes
-//#include "utilities.h"
 
 // VTK Includes
 #include <vtkCell.h>
@@ -58,12 +54,14 @@
 #include <vtkDataSetMapper.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
-#include "vtkOutlineSource.h"
+#include <vtkOutlineSource.h>
 
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 
-//using namespace std;
+#include "utilities.h"
+
+using namespace std;
 
 #if defined __GNUC__
   #if __GNUC__ == 2
@@ -74,10 +72,14 @@
 int SALOME_POINT_SIZE = 3;
 
 
+//----------------------------------------------------------------------------
 vtkStandardNewMacro(SALOME_Actor);
 
 
-SALOME_Actor::SALOME_Actor(){
+//----------------------------------------------------------------------------
+SALOME_Actor
+::SALOME_Actor()
+{
   myIsHighlighted = myIsPreselected = false;
 
   myRepresentation = 1;
@@ -146,7 +148,10 @@ SALOME_Actor::SALOME_Actor(){
 }
 
 
-SALOME_Actor::~SALOME_Actor(){
+//----------------------------------------------------------------------------
+SALOME_Actor
+::~SALOME_Actor()
+{
   SetPreviewProperty(NULL);
 
   myGeomFilter->UnRegisterAllOutputs(); 
@@ -176,7 +181,11 @@ SALOME_Actor::~SALOME_Actor(){
 }
 
 
-void SALOME_Actor::AddToRender(vtkRenderer* theRenderer){
+//----------------------------------------------------------------------------
+void
+SALOME_Actor
+::AddToRender(vtkRenderer* theRenderer)
+{
   theRenderer->AddActor(this);
 
   // from VISU
@@ -185,7 +194,10 @@ void SALOME_Actor::AddToRender(vtkRenderer* theRenderer){
   theRenderer->AddActor( myOutlineActor );
 }
 
-void SALOME_Actor::RemoveFromRender(vtkRenderer* theRenderer){
+void 
+SALOME_Actor
+::RemoveFromRender(vtkRenderer* theRenderer)
+{
   theRenderer->RemoveActor(this);
 
   // from VISU
@@ -195,16 +207,26 @@ void SALOME_Actor::RemoveFromRender(vtkRenderer* theRenderer){
 }
 
 
-void SALOME_Actor::SetTransform(VTKViewer_Transform* theTransform){
+//----------------------------------------------------------------------------
+void
+SALOME_Actor
+::SetTransform(VTKViewer_Transform* theTransform)
+{
   myTransformFilter->SetTransform(theTransform);
 }
 
 
-void SALOME_Actor::SetMapper(vtkMapper* theMapper){
+void
+SALOME_Actor
+::SetMapper(vtkMapper* theMapper)
+{
   InitPipeLine(theMapper);
 }
 
-void SALOME_Actor::InitPipeLine(vtkMapper* theMapper){
+void
+SALOME_Actor
+::InitPipeLine(vtkMapper* theMapper)
+{
   if(theMapper){
     int anId = 0;
     myPassFilter[ anId ]->SetInput( theMapper->GetInput() );
@@ -236,7 +258,11 @@ void SALOME_Actor::InitPipeLine(vtkMapper* theMapper){
 }
 
 
-void SALOME_Actor::Render(vtkRenderer *ren, vtkMapper* m){
+//----------------------------------------------------------------------------
+void
+ SALOME_Actor
+::Render(vtkRenderer *ren, vtkMapper* m)
+{
   if(myIsResolveCoincidentTopology){
     int aResolveCoincidentTopology = vtkMapper::GetResolveCoincidentTopology();
     float aFactor, aUnit; 
@@ -255,27 +281,42 @@ void SALOME_Actor::Render(vtkRenderer *ren, vtkMapper* m){
 }
 
 
-void SALOME_Actor::SetResolveCoincidentTopology(bool theIsResolve) {
+void
+SALOME_Actor
+::SetResolveCoincidentTopology(bool theIsResolve) 
+{
   myIsResolveCoincidentTopology = theIsResolve;
 }
 
-void SALOME_Actor::SetPolygonOffsetParameters(float factor, float units){
+void
+SALOME_Actor
+::SetPolygonOffsetParameters(float factor, float units)
+{
   myPolygonOffsetFactor = factor;
   myPolygonOffsetUnits = units;
 }
 
-void SALOME_Actor::GetPolygonOffsetParameters(float& factor, float& units){
+void
+SALOME_Actor::GetPolygonOffsetParameters(float& factor, float& units)
+{
   factor = myPolygonOffsetFactor;
   units = myPolygonOffsetUnits;
 }
 
 
-vtkDataSet* SALOME_Actor::GetInput(){
+//----------------------------------------------------------------------------
+vtkDataSet* 
+SALOME_Actor
+::GetInput()
+{
   return myPassFilter.front()->GetOutput();
 }
 
 
-unsigned long int SALOME_Actor::GetMTime(){
+unsigned long int
+SALOME_Actor
+::GetMTime()
+{
   unsigned long mTime = this->Superclass::GetMTime();
   unsigned long time = myTransformFilter->GetMTime();
   mTime = ( time > mTime ? time : mTime );
@@ -287,7 +328,11 @@ unsigned long int SALOME_Actor::GetMTime(){
 }
 
 
-void SALOME_Actor::SetRepresentation(int theMode) { 
+//----------------------------------------------------------------------------
+void
+SALOME_Actor
+::SetRepresentation(int theMode) 
+{ 
   switch(myRepresentation){
   case VTK_POINTS : 
   case VTK_SURFACE : 
@@ -317,17 +362,26 @@ void SALOME_Actor::SetRepresentation(int theMode) {
   myRepresentation = theMode;
 }
 
-int SALOME_Actor::GetRepresentation(){ 
+int
+SALOME_Actor
+::GetRepresentation()
+{ 
   return myRepresentation;
 }
 
 
-vtkCell* SALOME_Actor::GetElemCell(int theObjID){
+//----------------------------------------------------------------------------
+vtkCell* 
+SALOME_Actor
+::GetElemCell(int theObjID)
+{
   return GetInput()->GetCell(theObjID);
 }
 
 
-float* SALOME_Actor::GetNodeCoord(int theObjID){
+float* 
+SALOME_Actor::GetNodeCoord(int theObjID)
+{
   return GetInput()->GetPoint(theObjID);
 }
 
@@ -337,7 +391,9 @@ float* SALOME_Actor::GetNodeCoord(int theObjID){
 // purpose  : Return object dimension.
 //            Virtual method shoulb be redifined by derived classes
 //=================================================================================
-int SALOME_Actor::GetObjDimension( const int theObjId )
+int
+SALOME_Actor
+::GetObjDimension( const int theObjId )
 {
   if ( vtkCell* aCell = GetElemCell(theObjId) )
     return aCell->GetCellDimension();
@@ -345,26 +401,41 @@ int SALOME_Actor::GetObjDimension( const int theObjId )
 }
 
 
-bool SALOME_Actor::IsInfinitive(){ 
+bool
+SALOME_Actor
+::IsInfinitive()
+{ 
   return myIsInfinite; 
 }
 
 
-void SALOME_Actor::SetOpacity(float theOpacity){ 
+void
+SALOME_Actor
+::SetOpacity(float theOpacity)
+{ 
   myOpacity = theOpacity;
   GetProperty()->SetOpacity(theOpacity);
 }
 
-float SALOME_Actor::GetOpacity(){
+float
+SALOME_Actor
+::GetOpacity()
+{
   return myOpacity;
 }
 
 
-void SALOME_Actor::SetColor(float r,float g,float b){
+void
+SALOME_Actor
+::SetColor(float r,float g,float b)
+{
   GetProperty()->SetColor(r,g,b);
 }
 
-void SALOME_Actor::GetColor(float& r,float& g,float& b){
+void
+SALOME_Actor
+::GetColor(float& r,float& g,float& b)
+{
   float aColor[3];
   GetProperty()->GetColor(aColor);
   r = aColor[0];
@@ -373,21 +444,27 @@ void SALOME_Actor::GetColor(float& r,float& g,float& b){
 }
 
 
-int SALOME_Actor::getDisplayMode(){ 
+int
+SALOME_Actor
+::getDisplayMode()
+{ 
   return myDisplayMode; 
 }
 
-void SALOME_Actor::setDisplayMode(int theMode){ 
+void
+SALOME_Actor::setDisplayMode(int theMode)
+{ 
   SetRepresentation(theMode+1); 
   myDisplayMode = GetRepresentation() - 1;
 }
 
-// from VISU
 
 //----------------------------------------------------------------
-void SALOME_Actor::highlight( bool theHighlight, Selection_Mode theMode )
+void
+SALOME_Actor
+::highlight( bool theHighlight, Selection_Mode theMode )
 {
-  //cout << "SALOME_Actor::highlight " << ( theHighlight ? "on" : "off" ) << endl;
+  myIsHighlighted = theHighlight; 
 
   if( !GetVisibility() )
     return;
@@ -399,17 +476,21 @@ void SALOME_Actor::highlight( bool theHighlight, Selection_Mode theMode )
 }
 
 //----------------------------------------------------------------
-void SALOME_Actor::SetVisibility( int theVisibility )
+void
+SALOME_Actor
+::SetVisibility( int theVisibility )
 {
-  //cout << "SALOME_Actor::SetVisibility " << ( theVisibility ? "on" : "off" ) << endl;
   vtkProp::SetVisibility( theVisibility );
 
   myOutlineActor->SetVisibility( theVisibility && isHighlighted() );
   myHighlightActor->SetVisibility( theVisibility && isHighlighted() );
 }
 
+
 //----------------------------------------------------------------
-int SALOME_Actor::GetEdgeId( vtkPicker* thePicker, int theObjId )
+int
+SALOME_Actor
+::GetEdgeId( vtkPicker* thePicker, int theObjId )
 {
   int anEdgeId = -1;
   if (vtkCell* aPickedCell = GetElemCell(theObjId)) {
@@ -430,29 +511,21 @@ int SALOME_Actor::GetEdgeId( vtkPicker* thePicker, int theObjId )
   return anEdgeId;
 }
 
+
 //----------------------------------------------------------------
-bool SALOME_Actor::PreHighlight( SVTK_InteractorStyle* theInteractorStyle,
-				 SVTK_Selector* theSelector,
-				 vtkRenderer* theRenderer,
-				 SVTK_SelectionEvent theSelectionEvent,
-				 bool theIsHighlight )
+bool
+SALOME_Actor
+::PreHighlight( VTK::TValidator* theValidator,
+		SVTK_Selector* theSelector,
+		vtkRenderer* theRenderer,
+		SVTK_SelectionEvent theSelectionEvent,
+		bool theIsHighlight )
 {
   Selection_Mode aSelectionMode = theSelectionEvent.SelectionMode;
   float x = theSelectionEvent.X;
   float y = theSelectionEvent.Y;
   float z = 0.0;
-  /*
-  cout << "SALOME_Actor::PreHighlight" << endl;
-  cout << "SelectionMode : ";
-  switch( aSelectionMode )
-  {
-    case NodeSelection: cout << "Nodes" << endl; break;
-    case CellSelection: cout << "Cells" << endl; break;
-    case ActorSelection: cout << "Actor" << endl; break;
-    default: cout << "Other" << endl; break;
-  }
-  cout << "IsHighlight : " << ( theIsHighlight ? "true" : "false" ) << endl;
-  */
+
   if( !theIsHighlight )
   {
     myPreHighlightActor->SetVisibility( false );
@@ -471,12 +544,11 @@ bool SALOME_Actor::PreHighlight( SVTK_InteractorStyle* theInteractorStyle,
     myPointPicker->Pick( x, y, z, theRenderer );
 
     int aVtkId = myPointPicker->GetPointId();
-    if( aVtkId >= 0 && theInteractorStyle->IsValid( this, aVtkId, true ) && hasIO() )
+    if( aVtkId >= 0 && theValidator->IsValid( this, aVtkId, true ) && hasIO() )
     {
       int anObjId = GetNodeObjId( aVtkId );
       TColStd_IndexedMapOfInteger aMapIndex;
       aMapIndex.Add( anObjId );
-      //cout << "Index : " << anObjId << endl;
 
       myPreHighlightActor->GetProperty()->SetRepresentationToPoints();
       myPreHighlightActor->SetVisibility( true );
@@ -488,12 +560,11 @@ bool SALOME_Actor::PreHighlight( SVTK_InteractorStyle* theInteractorStyle,
     myCellPicker->Pick( x, y, z, theRenderer );
 
     int aVtkId = myCellPicker->GetCellId();
-    if ( aVtkId >= 0 && theInteractorStyle->IsValid( this, aVtkId ) && hasIO() )
+    if ( aVtkId >= 0 && theValidator->IsValid( this, aVtkId ) && hasIO() )
     {
       int anObjId = GetElemObjId (aVtkId );
       TColStd_IndexedMapOfInteger aMapIndex;
       aMapIndex.Add( anObjId );
-      //cout << "Index : " << anObjId << endl;
 
       myPreHighlightActor->GetProperty()->SetRepresentationToSurface();
       myPreHighlightActor->SetVisibility( true );
@@ -505,14 +576,13 @@ bool SALOME_Actor::PreHighlight( SVTK_InteractorStyle* theInteractorStyle,
     myCellPicker->Pick( x, y, z, theRenderer );
 
     int aVtkId = myCellPicker->GetCellId();
-    if ( aVtkId >= 0 && theInteractorStyle->IsValid( this, aVtkId ) && hasIO() )
+    if ( aVtkId >= 0 && theValidator->IsValid( this, aVtkId ) && hasIO() )
     {
       int anObjId = GetElemObjId( aVtkId );
       int anEdgeId = GetEdgeId( myCellPicker, anObjId );
       TColStd_IndexedMapOfInteger aMapIndex;
       aMapIndex.Add( anObjId );
       aMapIndex.Add( anEdgeId );
-      //cout << "Index : " << anObjId << " " << anEdgeId << endl;
 
       myPreHighlightActor->GetProperty()->SetRepresentationToWireframe();
       myPreHighlightActor->SetVisibility( true );
@@ -537,12 +607,15 @@ bool SALOME_Actor::PreHighlight( SVTK_InteractorStyle* theInteractorStyle,
   return true;
 }
 
+
 //----------------------------------------------------------------
-bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
-			      SVTK_Selector* theSelector,
-			      vtkRenderer* theRenderer,
-			      SVTK_SelectionEvent theSelectionEvent,
-			      bool theIsHighlight )
+bool
+SALOME_Actor
+::Highlight( VTK::TValidator* theValidator,
+	     SVTK_Selector* theSelector,
+	     vtkRenderer* theRenderer,
+	     SVTK_SelectionEvent theSelectionEvent,
+	     bool theIsHighlight )
 {
   Selection_Mode aSelectionMode = theSelectionEvent.SelectionMode;
   float x1 = theSelectionEvent.X;
@@ -561,7 +634,7 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
       myPointPicker->Pick( x1, y1, z1, theRenderer );
 
       int aVtkId = myPointPicker->GetPointId();
-      if( aVtkId >= 0 && hasIO() && theInteractorStyle->IsValid( this, aVtkId, true ) )
+      if( aVtkId >= 0 && hasIO() && theValidator->IsValid( this, aVtkId, true ) )
       {
 	int anObjId = GetNodeObjId( aVtkId );
 	if( anObjId >= 0 )
@@ -572,7 +645,6 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
 	  {
 	    if( !isShift )
 	    {
-	      theInteractorStyle->HighlightProp( NULL );
 	      theSelector->ClearIObjects();
 	    }
 	    theSelector->AddOrRemoveIndex( myIO, anObjId, isShift );
@@ -586,12 +658,11 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
       myCellPicker->Pick( x1, y1, z1, theRenderer );
     
       int aVtkId = myCellPicker->GetCellId();
-      if( aVtkId >= 0 && hasIO() && theInteractorStyle->IsValid( this, aVtkId ) )
+      if( aVtkId >= 0 && hasIO() && theValidator->IsValid( this, aVtkId ) )
       {
 	int anObjId = GetElemObjId( aVtkId );
 	if( anObjId >= 0 )
 	{
-	  //if( theInteractorStyle->CheckDimensionId( aSelectionMode, this, anObjId ) )
 	  {
 	    if( theSelector->IsSelected( myIO ) )
 	      theSelector->AddOrRemoveIndex( myIO, anObjId, isShift );
@@ -599,7 +670,6 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
 	    {
 	      if( !isShift )
 	      {
-		theInteractorStyle->HighlightProp( NULL );
 		theSelector->ClearIObjects();
 	      }
 	      theSelector->AddOrRemoveIndex( myIO, anObjId, isShift );
@@ -614,17 +684,16 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
       myCellPicker->Pick( x1, y1, z1, theRenderer );
     
       int aVtkId = myCellPicker->GetCellId();
-      if( aVtkId >= 0 && hasIO() && theInteractorStyle->IsValid( this, aVtkId ) )
+      if( aVtkId >= 0 && hasIO() && theValidator->IsValid( this, aVtkId ) )
       {
 	int anObjId = GetElemObjId( aVtkId );
 	if( anObjId >= 0 )
         {
 	  if( !isShift )
 	  {
-	    theInteractorStyle->HighlightProp( NULL );
 	    theSelector->ClearIObjects();
 	  }
-	  int anEdgeId = 0;//theInteractorStyle->GetEdgeId( myCellPicker, this, anObjId );
+	  int anEdgeId = GetEdgeId( myCellPicker, anObjId );
 	  if( anEdgeId >= 0 )
 	  {
 	    theSelector->AddOrRemoveIndex( myIO, anObjId, false );
@@ -638,14 +707,12 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
     {
       if ( hasIO() )
       {
-	//theInteractorStyle->PropPicked++;
 	if( theSelector->IsSelected( myIO ) && isShift )
 	  theSelector->RemoveIObject( this );
 	else
 	{
 	  if( !isShift )
 	  {
-	    theInteractorStyle->HighlightProp( NULL );
 	    theSelector->ClearIObjects();
 	  }
 	  theSelector->AddIObject( this );
@@ -671,10 +738,8 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
 	  theRenderer->GetDisplayPoint( aPnt );
 
 	  if( aPnt[0] > x2 && aPnt[0] < x1 && aPnt[1] > y1 && aPnt[1] < y2 )
-	  //if( theInteractorStyle->IsInRect( aPoint, x2, y2, x1, y1 ) )
 	  {
 	    float aDisp[3];
-	    //theInteractorStyle->ComputeWorldToDisplay( aPoint[0], aPoint[1] ,aPoint[2], aDisp );
 	    theRenderer->SetWorldPoint( aPoint[0], aPoint[1], aPoint[2], 1.0 );
 	    theRenderer->WorldToDisplay();
 	    theRenderer->GetDisplayPoint( aDisp );
@@ -688,7 +753,7 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
 		  float aPickedPoint[3];
 		  myPointPicker->GetMapperPosition( aPickedPoint );
 		  vtkIdType aVtkId = aDataSet->FindPoint( aPickedPoint );
-		  if( aVtkId >= 0 && theInteractorStyle->IsValid( this, aVtkId, true ) )
+		  if( aVtkId >= 0 && theValidator->IsValid( this, aVtkId, true ) )
 		  {
 		    int anObjId = GetNodeObjId( aVtkId );
 		    anIndices.Add( anObjId );
@@ -721,13 +786,12 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
 	for( it = cellList.begin(); it != cellList.end(); ++it )
 	{
 	  int aCellId = (*it).cellId;
-	  if ( !theInteractorStyle->IsValid( this, aCellId ) )
+	  if ( !theValidator->IsValid( this, aCellId ) )
 	    continue;
 
 	  int anObjId = GetElemObjId( aCellId );
 	  if( anObjId != -1 )
 	  {
-	    //if( CheckDimensionId( aSelectionMode, this ,anObjId ) )
 	    anIndexes.Add( anObjId );
 	  }
 	}
@@ -743,22 +807,6 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
 
   TColStd_IndexedMapOfInteger aMapIndex;
   theSelector->GetIndex( getIO(), aMapIndex );
-  /*
-  cout << "SALOME_Actor::Highlight : ";
-  for( int i = 1, n = aMapIndex.Extent(); i <= n; i++ )
-    cout << aMapIndex(i) << " ";
-  cout << endl;
-  cout << "SelectionMode : ";
-  switch( aSelectionMode )
-  {
-    case NodeSelection: cout << "Nodes" << endl; break;
-    case CellSelection: cout << "Cells" << endl; break;
-    case ActorSelection: cout << "Actor" << endl; break;
-    default: cout << "Other" << endl; break;
-  }
-  cout << "IsRectangle : " << ( isRectangle ? "true" : "false" ) << endl;
-  cout << "IsHighlight : " << ( theIsHighlight ? "true" : "false" ) << endl;
-  */
 
   switch( aSelectionMode )
   {
@@ -785,69 +833,3 @@ bool SALOME_Actor::Highlight( SVTK_InteractorStyle* theInteractorStyle,
 
   return true;
 }
-
-/*
-/// Checks: is the given Actor within display coordinates?
-bool
-SVTK_InteractorStyle
-::IsInRect(vtkActor* theActor, 
-	   const int left, const int top, 
-	   const int right, const int bottom)
-{
-  float* aBounds = theActor->GetBounds();
-  float aMin[3], aMax[3];
-  ComputeWorldToDisplay(aBounds[0], aBounds[2], aBounds[4], aMin);
-  ComputeWorldToDisplay(aBounds[1], aBounds[3], aBounds[5], aMax);
-  if (aMin[0] > aMax[0]) {
-    float aBuf = aMin[0];
-    aMin[0] = aMax[0];
-    aMax[0] = aBuf;
-  }
-  if (aMin[1] > aMax[1]) {
-    float aBuf = aMin[1];
-    aMin[1] = aMax[1];
-    aMax[1] = aBuf;    
-  }
-
-  return ((aMin[0]>left) && (aMax[0]<right) && (aMin[1]>bottom) && (aMax[1]<top));
-}
-
-
-/// Checks: is the given Cell within display coordinates?
-bool
-SVTK_InteractorStyle
-::IsInRect(vtkCell* theCell, 
-	   const int left, const int top, 
-	   const int right, const int bottom)
-{
-  float* aBounds = theCell->GetBounds();
-  float aMin[3], aMax[3];
-  ComputeWorldToDisplay(aBounds[0], aBounds[2], aBounds[4], aMin);
-  ComputeWorldToDisplay(aBounds[1], aBounds[3], aBounds[5], aMax);
-  if (aMin[0] > aMax[0]) {
-    float aBuf = aMin[0];
-    aMin[0] = aMax[0];
-    aMax[0] = aBuf;
-  }
-  if (aMin[1] > aMax[1]) {
-    float aBuf = aMin[1];
-    aMin[1] = aMax[1];
-    aMax[1] = aBuf;    
-  }
-
-  return ((aMin[0]>left) && (aMax[0]<right) && (aMin[1]>bottom) && (aMax[1]<top));
-}
-
-
-bool
-SVTK_InteractorStyle
-::IsInRect(float* thePoint, 
-	   const int left, const int top, 
-	   const int right, const int bottom)
-{
-  float aPnt[3];
-  ComputeWorldToDisplay(thePoint[0], thePoint[1], thePoint[2], aPnt);
-
-  return ((aPnt[0]>left) && (aPnt[0]<right) && (aPnt[1]>bottom) && (aPnt[1]<top));
-}
-*/

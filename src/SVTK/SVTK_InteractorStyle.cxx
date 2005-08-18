@@ -29,9 +29,6 @@
 
 #include "SVTK_InteractorStyle.h"
 
-#include "utilities.h"
-
-#include "VTKViewer_CellRectPicker.h"
 #include "VTKViewer_Utilities.h"
 #include "VTKViewer_RectPicker.h"
 
@@ -45,21 +42,12 @@
 #include "SALOME_ListIteratorOfListIO.hxx"
 #include "SALOME_ListIO.hxx"
 
-#include "SUIT_Session.h"
-#include "CAM_Application.h"
-
 #include <vtkObjectFactory.h>
 #include <vtkMath.h>
 #include <vtkCommand.h>
 #include <vtkCamera.h>
 #include <vtkRenderer.h>
 #include <vtkPicker.h>
-#include <vtkPointPicker.h>
-#include <vtkCellPicker.h>
-#include <vtkLine.h> 
-#include <vtkMapper.h>
-#include <vtkDataSet.h>
-#include <vtkSmartPointer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 
@@ -71,8 +59,9 @@
 //VRV: porting on Qt 3.0.5
 #include <algorithm>
 
-using namespace std;
+#include "utilities.h"
 
+using namespace std;
 
 #ifdef _DEBUG_
 static int MYDEBUG = 0;
@@ -111,7 +100,11 @@ SVTK_InteractorStyle
   this->ForcedState = VTK_INTERACTOR_STYLE_CAMERA_NONE;
   loadCursors();
 
-  OnSelectionModeChanged();
+  myPicker = vtkPicker::New();
+  myPicker->Delete();
+
+  myRectPicker = VTKViewer_RectPicker::New();
+  myRectPicker->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -127,23 +120,6 @@ SVTK_InteractorStyle
 ::GetSelector() 
 {
   return myViewWindow->GetSelector();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorStyle
-::setPreselectionProp(const double& theRed, 
-		      const double& theGreen, 
-		      const double& theBlue, 
-		      const int& theWidth) 
-{
-  /*
-  if ( myPreSelectionActor->GetProperty() == 0 )
-    return;
-  myPreSelectionActor->GetProperty()->SetColor(theRed, theGreen, theBlue);
-  myPreSelectionActor->GetProperty()->SetLineWidth(theWidth);
-  myPreSelectionActor->GetProperty()->SetPointSize(theWidth);
-  */
 }
 
 //----------------------------------------------------------------------------
@@ -288,8 +264,6 @@ void
 SVTK_InteractorStyle
 ::OnMouseMove() 
 {
-  //cout << "SVTK_InteractorStyle::OnMouseMove" << endl;
-
   int x, y;
   this->Interactor->GetEventPosition( x, y );
   this->OnMouseMove( this->Interactor->GetControlKey(),
@@ -303,8 +277,6 @@ void
 SVTK_InteractorStyle
 ::OnLeftButtonDown()
 {
-  //cout << "SVTK_InteractorStyle::OnLeftButtonDown" << endl;
-
   int x, y;
   this->Interactor->GetEventPosition( x, y );
   this->OnLeftButtonDown( this->Interactor->GetControlKey(),
@@ -318,8 +290,6 @@ void
 SVTK_InteractorStyle
 ::OnLeftButtonUp()
 {
-  //cout << "SVTK_InteractorStyle::OnLeftButtonUp" << endl;
-
   int x, y;
   this->Interactor->GetEventPosition( x, y );
   this->OnLeftButtonUp( this->Interactor->GetControlKey(),
@@ -333,8 +303,6 @@ void
 SVTK_InteractorStyle
 ::OnMiddleButtonDown() 
 {
-  //cout << "SVTK_InteractorStyle::OnMiddleButtonDown" << endl;
-
   int x, y;
   this->Interactor->GetEventPosition( x, y );
   this->OnMiddleButtonDown( this->Interactor->GetControlKey(),
@@ -348,8 +316,6 @@ void
 SVTK_InteractorStyle
 ::OnMiddleButtonUp()
 {
-  //cout << "SVTK_InteractorStyle::OnMiddleButtonUp" << endl;
-
   int x, y;
   this->Interactor->GetEventPosition( x, y );
   this->OnMiddleButtonUp( this->Interactor->GetControlKey(),
@@ -363,8 +329,6 @@ void
 SVTK_InteractorStyle
 ::OnRightButtonDown() 
 {
-  //cout << "SVTK_InteractorStyle::OnRightButtonDown" << endl;
-
   int x, y;
   this->Interactor->GetEventPosition( x, y );
   this->OnRightButtonDown( this->Interactor->GetControlKey(),
@@ -377,8 +341,6 @@ void
 SVTK_InteractorStyle
 ::OnRightButtonUp()
 {
-  //cout << "SVTK_InteractorStyle::OnRightButtonUp" << endl;
-
   int x, y;
   this->Interactor->GetEventPosition( x, y );
   this->OnRightButtonUp( this->Interactor->GetControlKey(),
@@ -944,14 +906,6 @@ SVTK_InteractorStyle
   //  rwi->GetRenderWindow()->SetDesiredUpdateRate(rwi->GetStillUpdateRate());
 
   Selection_Mode aSelectionMode = myViewWindow->SelectionMode();
-  bool aSelActiveCompOnly = false;
-
-  QString aComponentDataType;
-  if(SUIT_Session* aSession = SUIT_Session::session())
-    if(SUIT_Application* aSUITApp = aSession->activeApplication())
-      if(CAM_Application* aCAMApp = dynamic_cast<CAM_Application*>(aSUITApp))
-	if(CAM_Module* aModule = aCAMApp->activeModule())
-	  aComponentDataType = aModule->name();
 
   switch (State) {
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
@@ -986,25 +940,17 @@ SVTK_InteractorStyle
           this->FindPokedRenderer(x, y);
 	  Interactor->StartPickCallback();
 
-	  vtkPicker* aPicker = vtkPicker::SafeDownCast(Interactor->GetPicker());
-          aPicker->Pick(x, y, 0.0, this->CurrentRenderer);
-    
-	  SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aPicker->GetActor());
-
-	  SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
-	  aSelectionEvent.SelectionMode = aSelectionMode;
-	  aSelectionEvent.IsRectangle = false;
-
-	  if( aSActor )
+          myPicker->Pick(x, y, 0.0, this->CurrentRenderer);
+	  if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
+	    SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
+	    aSelectionEvent.SelectionMode = aSelectionMode;
+	    aSelectionEvent.IsRectangle = false;
 	    aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
-	  else
-	  {
-	    this->HighlightProp( NULL );
+	  }else{
 	    GetSelector()->ClearIObjects();
 	  }
         } else {
           //processing rectangle selection
-	  if(aSelActiveCompOnly && aComponentDataType.isEmpty()) return;
 	  Interactor->StartPickCallback();
 
 	  if (!myShiftState) {
@@ -1025,17 +971,16 @@ SVTK_InteractorStyle
 	  x2 = rect.right(); 
 	  y2 = h - rect.bottom() - 1;
 
+	  myRectPicker->SetTolerance(0.001);
+	  myRectPicker->Pick(x1, y1, 0.0, x2, y2, 0.0, this->CurrentRenderer);
+
 	  SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
 	  aSelectionEvent.SelectionMode = aSelectionMode;
 	  aSelectionEvent.IsRectangle = true;
 	  aSelectionEvent.LastX = x1;
 	  aSelectionEvent.LastY = y1;
 	  
-	  vtkSmartPointer<VTKViewer_RectPicker> aPicker = VTKViewer_RectPicker::New();
-	  aPicker->SetTolerance(0.001);
-	  aPicker->Pick(x1, y1, 0.0, x2, y2, 0.0, this->CurrentRenderer);
-
-	  vtkActorCollection* aListActors = aPicker->GetActors();
+	  vtkActorCollection* aListActors = myRectPicker->GetActors();
 	  aListActors->InitTraversal();
 	  while(vtkActor* aActor = aListActors->GetNextActor()){
 	    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)){
@@ -1133,16 +1078,6 @@ SVTK_InteractorStyle
   this->LastPos[1] = h - mousePos.y() - 1;
 }
 
-// called when selection mode changed (!put necessary initialization here!)
-void
-SVTK_InteractorStyle
-::OnSelectionModeChanged()
-{
-  
-  myElemId = myEdgeId = myNodeId = -1;
-  mySelectedActor = NULL;
-}
-
 // called when user moves mouse inside viewer window and there is no active viewer operation 
 // (!put necessary processing here!)
 void
@@ -1150,8 +1085,6 @@ SVTK_InteractorStyle
 ::onCursorMove(QPoint mousePos) 
 {
   // processing highlighting
-  Selection_Mode aSelectionMode = myViewWindow->SelectionMode();
-
   int w, h, x, y;
   Interactor->GetSize(w, h);
   x = mousePos.x(); y = h - mousePos.y() - 1;
@@ -1159,48 +1092,18 @@ SVTK_InteractorStyle
   this->FindPokedRenderer(x,y);
   Interactor->StartPickCallback();
 
-  vtkPicker* aPicker = vtkPicker::SafeDownCast(Interactor->GetPicker());
-
-  SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aPicker->GetActor());
-
   SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
+  aSelectionEvent.SelectionMode = myViewWindow->SelectionMode();
   aSelectionEvent.X = x;
   aSelectionEvent.Y = y;
-  aSelectionEvent.SelectionMode = aSelectionMode;
 
-  if( aSActor )
+  if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor()))
     aSActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, false );
-  //cout << "onCursorMove : " << ( aSActor ? "1" : "0" ) << " ";
 
-  aPicker->Pick(x, y, 0.0, this->CurrentRenderer);
-
-  aSActor = SALOME_Actor::SafeDownCast(aPicker->GetActor());
-  //cout << ( aSActor ? "1" : "0" ) << endl;
-
-  if (vtkCellPicker* picker = vtkCellPicker::SafeDownCast(aPicker)) {
-    if ( aSActor )
-      aSActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
-  }
-  else if (vtkPointPicker* picker = vtkPointPicker::SafeDownCast(aPicker)) {
-    if ( aSActor )
-      aSActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
-  }
-  else if ( vtkPicker::SafeDownCast(aPicker) ) {
-    if( aSActor )
-      aSActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
-    /*
-    else {
-      myPreViewActor = NULL;
-      vtkActorCollection* theActors = this->CurrentRenderer->GetActors();
-      theActors->InitTraversal();
-      while( vtkActor *ac = theActors->GetNextActor() ) {
-        if ( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( ac ) ) {
-          anActor->SetPreSelected( false );
-        }
-      }
-    }
-    */
-  }
+  myPicker->Pick(x, y, 0.0, this->CurrentRenderer);
+  if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor()))
+    aSActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
+  
   Interactor->EndPickCallback();
   //Interactor->Render();
   myGUIWindow->update();
