@@ -57,21 +57,7 @@ SVTK_ViewWindow
   bottomView->Initialize();
   */
 
-  myInteractorStyle = SVTK_InteractorStyle::New();
-  myInteractorStyle->SetRenderWidget( myView );
-  myInteractorStyle->setViewWindow( this );
-  myInteractorStyle->SetSelector( myView->GetSelector() );
-
-  myInteractorStyle->SetSelector( myView->GetSelector() );
-  myView->SetInteractorStyle( myInteractorStyle );
   myView->Initialize();
-
-  connect(myView,SIGNAL(selectionChanged()),theModel,SLOT(onSelectionChanged()));
-
-  //merge with V2_2_0_VISU_improvements:myInteractorStyle->setTriedron( myTrihedron );
-  myInteractorStyle->FindPokedRenderer( 0, 0 );
-
-  SetSelectionMode( ActorSelection );
 
   myView->setFocusPolicy( StrongFocus );
   myView->setFocus();
@@ -90,6 +76,9 @@ SVTK_ViewWindow
            this,   SLOT(onMouseMoving( QMouseEvent* )) );
   connect( myView, SIGNAL(contextMenuRequested( QContextMenuEvent * )),
            this,   SIGNAL(contextMenuRequested( QContextMenuEvent * )) );
+  connect( myView, SIGNAL(selectionChanged()),
+	   theModel,SLOT(onSelectionChanged()));
+
 
   onResetView();
 
@@ -100,13 +89,7 @@ SVTK_ViewWindow
 //----------------------------------------------------------------------------
 SVTK_ViewWindow
 ::~SVTK_ViewWindow()
-{
-  // In order to ensure that the interactor unregisters
-  // this RenderWindow, we assign a NULL RenderWindow to 
-  // it before deleting it.
-  //myView->SetRenderWindow( NULL );
-  //delete myView;
-}
+{}
 
 //----------------------------------------------------------------------------
 vtkRenderer*
@@ -119,8 +102,38 @@ SVTK_ViewWindow
 //----------------------------------------------------------------------------
 SVTK_Selector* 
 SVTK_ViewWindow
-::GetSelector() { 
+::GetSelector() 
+{ 
   return myView->GetSelector(); 
+}
+
+//----------------------------------------------------------------------------
+SVTK_InteractorStyle* 
+SVTK_ViewWindow
+::getInteractorStyle()
+{ 
+  return myView->GetInteractorStyle();
+}
+
+//----------------------------------------------------------------------------
+SVTK_View* 
+SVTK_ViewWindow
+::getView() { 
+  return myView; 
+}
+
+SVTK_View* 
+SVTK_ViewWindow
+::getRenderWindow() 
+{ 
+  return myView; 
+}
+
+SVTK_View* 
+SVTK_ViewWindow
+::getRWInteractor() 
+{ 
+  return myView; 
 }
 
 //----------------------------------------------------------------------------
@@ -316,44 +329,6 @@ SVTK_ViewWindow
 }
 
 //----------------------------------------------------------------------------
-/*bool
-SVTK_ViewWindow
-::ComputeTrihedronSize( double& theNewSize, double& theSize )
-{
-  // calculating diagonal of visible props of the renderer
-  float aBndBox[ 6 ];
-  myTrihedron->VisibilityOff();
-
-  if ( ::ComputeVisiblePropBounds( myRenderer, aBndBox ) == 0 ) {
-    aBndBox[ 1 ] = aBndBox[ 3 ] = aBndBox[ 5 ] = 100;
-    aBndBox[ 0 ] = aBndBox[ 2 ] = aBndBox[ 4 ] = 0;
-  }
-
-  myTrihedron->VisibilityOn();
-  float aLength = 0;
-  static bool aCalcByDiag = false;
-  if ( aCalcByDiag ) {
-    aLength = sqrt( ( aBndBox[1]-aBndBox[0])*(aBndBox[1]-aBndBox[0] )+
-                    ( aBndBox[3]-aBndBox[2])*(aBndBox[3]-aBndBox[2] )+
-                    ( aBndBox[5]-aBndBox[4])*(aBndBox[5]-aBndBox[4] ) );
-  } else {
-    aLength = aBndBox[ 1 ]-aBndBox[ 0 ];
-    aLength = max( ( aBndBox[ 3 ] - aBndBox[ 2 ] ),aLength );
-    aLength = max( ( aBndBox[ 5 ] - aBndBox[ 4 ] ),aLength );
-  }
-
-  float aSizeInPercents = myTrihedronSize;
-
-  static float EPS_SIZE = 5.0E-3;
-  theSize = myTrihedron->GetSize();
-  theNewSize = aLength * aSizeInPercents / 100.0;
-
-  // if the new trihedron size have sufficient difference, then apply the value
-  return fabs( theNewSize - theSize) > theSize * EPS_SIZE ||
-         fabs( theNewSize-theSize ) > theNewSize * EPS_SIZE;
-}*/
-
-//----------------------------------------------------------------------------
 VTKViewer_Trihedron* SVTK_ViewWindow::GetTrihedron()
 {
   return myView->GetTrihedron();
@@ -397,107 +372,6 @@ SVTK_ViewWindow
 ::onAdjustCubeAxes()
 {   
   myView->onAdjustCubeAxes();
-}
-
-#define INCREMENT_FOR_OP 10
-
-//=======================================================================
-// name    : onPanLeft
-// Purpose : Performs incremental panning to the left
-//=======================================================================
-void
-SVTK_ViewWindow
-::onPanLeft()
-{
-  myInteractorStyle->IncrementalPan( -INCREMENT_FOR_OP, 0 );
-}
-
-//=======================================================================
-// name    : onPanRight
-// Purpose : Performs incremental panning to the right
-//=======================================================================
-void
-SVTK_ViewWindow
-::onPanRight()
-{
-  myInteractorStyle->IncrementalPan( INCREMENT_FOR_OP, 0 );
-}
-
-//=======================================================================
-// name    : onPanUp
-// Purpose : Performs incremental panning to the top
-//=======================================================================
-void
-SVTK_ViewWindow
-::onPanUp()
-{
-  myInteractorStyle->IncrementalPan( 0, INCREMENT_FOR_OP );
-}
-
-//=======================================================================
-// name    : onPanDown
-// Purpose : Performs incremental panning to the bottom
-//=======================================================================
-void
-SVTK_ViewWindow
-::onPanDown()
-{
-  myInteractorStyle->IncrementalPan( 0, -INCREMENT_FOR_OP );
-}
-
-//=======================================================================
-// name    : onZoomIn
-// Purpose : Performs incremental zooming in
-//=======================================================================
-void
-SVTK_ViewWindow
-::onZoomIn()
-{
-  myInteractorStyle->IncrementalZoom( INCREMENT_FOR_OP );
-}
-
-//=======================================================================
-// name    : onZoomOut
-// Purpose : Performs incremental zooming out
-//=======================================================================
-void
-SVTK_ViewWindow
-::onZoomOut()
-{
-  myInteractorStyle->IncrementalZoom( -INCREMENT_FOR_OP );
-}
-
-//=======================================================================
-// name    : onRotateLeft
-// Purpose : Performs incremental rotating to the left
-//=======================================================================
-void
-SVTK_ViewWindow
-::onRotateLeft()
-{
-  myInteractorStyle->IncrementalRotate( -INCREMENT_FOR_OP, 0 );
-}
-
-//=======================================================================
-// name    : onRotateRight
-// Purpose : Performs incremental rotating to the right
-//=======================================================================
-void
-SVTK_ViewWindow
-::onRotateRight()
-{
-  myInteractorStyle->IncrementalRotate( INCREMENT_FOR_OP, 0 );
-}
-
-//=======================================================================
-// name    : onRotateUp
-// Purpose : Performs incremental rotating to the top
-//=======================================================================
-void
-SVTK_ViewWindow
-::onRotateUp()
-{
-  myInteractorStyle->IncrementalRotate( 0, -INCREMENT_FOR_OP );
 }
 
 //=======================================================================
@@ -548,25 +422,6 @@ SVTK_ViewWindow
   emit mouseDoubleClicked( this, event );
 }
 
-//=======================================================================
-// name    : onRotateDown
-// Purpose : Performs incremental rotating to the bottom
-//=======================================================================
-void
-SVTK_ViewWindow
-::onRotateDown()
-{
-  myInteractorStyle->IncrementalRotate( 0, INCREMENT_FOR_OP );
-}
-
-//----------------------------------------------------------------------------
-//void
-//SVTK_ViewWindow
-//::InsertActor( VTKViewer_Actor* theActor, bool theMoveInternalActors )
-//{
-//  myView->InsertActor( theActor, theMoveInternalActors );
-//}
-
 //----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
@@ -582,14 +437,6 @@ SVTK_ViewWindow
 {
   myView->RemoveActor( theActor, theUpdate );
 }
-
-//----------------------------------------------------------------------------
-//void
-//SVTK_ViewWindow
-//::MoveActor( VTKViewer_Actor* theActor)
-//{
-//  myView->MoveActor( theActor );
-//}
 
 //----------------------------------------------------------------------------
 QImage

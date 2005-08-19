@@ -43,11 +43,11 @@ public:
 
   vtkRenderer* getRenderer();
   SVTK_Selector* GetSelector();
+  SVTK_InteractorStyle* getInteractorStyle();
 
-  SVTK_View* getView() { return myView; }
-  SVTK_View* getRenderWindow() { return myView; }
-  SVTK_View* getRWInteractor() { return myView; }
-  SVTK_InteractorStyle* getInteractorStyle(){ return myInteractorStyle;}
+  SVTK_View* getView();
+  SVTK_View* getRenderWindow();
+  SVTK_View* getRWInteractor();
 
   Selection_Mode SelectionMode() const;
   void SetSelectionMode(Selection_Mode theMode);
@@ -118,17 +118,6 @@ public slots:
 
   void onAdjustTrihedron();
   void onAdjustCubeAxes();
- 
-  void onPanLeft();
-  void onPanRight();
-  void onPanUp();
-  void onPanDown();
-  void onZoomIn();
-  void onZoomOut();
-  void onRotateLeft();
-  void onRotateRight();
-  void onRotateUp();
-  void onRotateDown();
 
 protected slots:
   void onKeyPressed(QKeyEvent* event);
@@ -142,7 +131,6 @@ protected:
   QImage dumpView();
 
   SVTK_View* myView;
-  SVTK_InteractorStyle* myInteractorStyle;
 };
 
 #ifdef WIN32
