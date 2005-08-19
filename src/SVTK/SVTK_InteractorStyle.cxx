@@ -128,7 +128,7 @@ SVTK_Selector*
 SVTK_InteractorStyle
 ::GetSelector() 
 {
-  return myViewWindow->GetSelector();
+  return mySelector.GetPointer();
 }
 
 //----------------------------------------------------------------------------
@@ -154,6 +154,7 @@ SVTK_InteractorStyle
   aSelectionEvent.myY = h - y - 1;
   aSelectionEvent.myIsCtrl = Interactor->GetControlKey();
   aSelectionEvent.myIsShift = Interactor->GetShiftKey();
+  aSelectionEvent.mySelectionMode = GetSelector()->SelectionMode();
 
   return aSelectionEvent;
 }
@@ -164,6 +165,14 @@ SVTK_InteractorStyle
 ::setViewWindow(SVTK_ViewWindow* theViewWindow)
 {
   myViewWindow = theViewWindow;
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
+::SetSelector( SVTK_Selector* theSelector ) 
+{ 
+  mySelector = theSelector; 
 }
 
 //----------------------------------------------------------------------------
@@ -200,7 +209,7 @@ SVTK_InteractorStyle
   cam->Elevation(ryf);
   cam->OrthogonalizeViewUp();
   ::ResetCameraClippingRange(this->CurrentRenderer); 
-  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
+  this->Render();
 }
 
 //----------------------------------------------------------------------------
@@ -209,7 +218,7 @@ SVTK_InteractorStyle
 ::PanXY(int x, int y, int oldX, int oldY)
 {
   TranslateView(x, y, oldX, oldY);   
-  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
+  this->Render();
 }
 
 
@@ -233,7 +242,7 @@ SVTK_InteractorStyle
     ::ResetCameraClippingRange(this->CurrentRenderer);
   }
 
-  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
+  this->Render();
 }
 
 //----------------------------------------------------------------------------
@@ -260,7 +269,7 @@ SVTK_InteractorStyle
   cam->Roll(newAngle - oldAngle);
   cam->OrthogonalizeViewUp();
       
-  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
+  this->Render();
 }
 
 
@@ -736,7 +745,7 @@ SVTK_InteractorStyle
 
   if (myViewWindow) myViewWindow->onFitAll();
 
-  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
+  this->Render();
   
   qApp->installEventFilter(this);
 }
@@ -774,7 +783,7 @@ SVTK_InteractorStyle
     ::ResetCameraClippingRange(this->CurrentRenderer);
   }
   
-  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
+  this->Render();
 }
 
 
@@ -893,7 +902,7 @@ SVTK_InteractorStyle
   // VSV: LOD actor activisation
   //  rwi->GetRenderWindow()->SetDesiredUpdateRate(rwi->GetStillUpdateRate());
 
-  Selection_Mode aSelectionMode = myViewWindow->SelectionMode();
+  Selection_Mode aSelectionMode = GetSelector()->SelectionMode();
 
   switch (State) {
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
@@ -940,6 +949,7 @@ SVTK_InteractorStyle
         } else {
           //processing rectangle selection
 	  Interactor->StartPickCallback();
+	  GetSelector()->StartPickCallback();
 
 	  if (!myShiftState) {
 	    this->PropPicked = 0;
@@ -977,7 +987,7 @@ SVTK_InteractorStyle
 	  }
 	}
 	Interactor->EndPickCallback();
-	myViewWindow->onSelectionChanged();
+	GetSelector()->EndPickCallback();
       } 
     } 
     break;
@@ -997,7 +1007,7 @@ SVTK_InteractorStyle
     break;
   }
 
-  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
+  this->Render();
 }
 
 
@@ -1071,9 +1081,9 @@ SVTK_InteractorStyle
 
   this->FindPokedRenderer(x,y);
   Interactor->StartPickCallback();
+  GetSelector()->StartPickCallback();
 
   SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
-  aSelectionEvent.mySelectionMode = myViewWindow->SelectionMode();
   aSelectionEvent.myX = x;
   aSelectionEvent.myY = y;
 
@@ -1088,9 +1098,10 @@ SVTK_InteractorStyle
   }
   
   Interactor->EndPickCallback();
+  GetSelector()->EndPickCallback();
 
   if(anIsChanged)
-    this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
+    this->Render();
 }
 
 // called on finsh GlobalPan operation 
@@ -1115,7 +1126,7 @@ SVTK_InteractorStyle
   cam->SetParallelScale(myScale);
   ::ResetCameraClippingRange(this->CurrentRenderer);
 
-  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
+  this->Render();
 }
 
 
@@ -1256,6 +1267,14 @@ SVTK_InteractorStyle
 //----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
+::Render() 
+{
+  this->Interactor->CreateTimer(VTKI_TIMER_FIRST);
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
 ::onSpaceMouseMove( double* data )
 {
   //  printf( "x=%+5.0lf y=%+5.0lf z=%+5.0lf a=%+5.0lf b=%+5.0lf c=%+5.0lf\n",
@@ -1357,4 +1376,3 @@ SVTK_InteractorStyle
     }
   }
 }
-

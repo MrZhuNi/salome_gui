@@ -30,17 +30,28 @@
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 
-
 #include "SALOME_Actor.h"
 #include "SVTK_ViewModel.h"
 #include "SVTK_ViewWindow.h"
 
 #include "SVTK_SelectorDef.h"
+
 #include "utilities.h"
 
+#include <vtkCallbackCommand.h>
+
+SVTK_Selector* 
+SVTK_Selector
+::New()
+{
+  return new SVTK_SelectorDef();
+}
+
+//----------------------------------------------------------------------------
 SVTK_SelectorDef
 ::SVTK_SelectorDef()
 {
+  mySelectionMode = ActorSelection;
 }
 
 SVTK_SelectorDef
@@ -48,6 +59,23 @@ SVTK_SelectorDef
 {
 }
 
+//----------------------------------------------------------------------------
+void 
+SVTK_SelectorDef
+::StartPickCallback()
+{
+  this->InvokeEvent(vtkCommand::StartPickEvent,NULL);
+}
+
+//----------------------------------------------------------------------------
+void 
+SVTK_SelectorDef
+::EndPickCallback()
+{
+  this->InvokeEvent(vtkCommand::EndPickEvent,NULL);
+}
+
+//----------------------------------------------------------------------------
 void 
 SVTK_SelectorDef
 ::SetSelectionMode(Selection_Mode theMode)

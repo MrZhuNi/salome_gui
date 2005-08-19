@@ -32,7 +32,7 @@
 
 #include "SALOME_ListIteratorOfListIO.hxx"
 
-#include "SVTK_SelectorDef.h"
+#include "SVTK_Selector.h"
 
 #include "VTKViewer_Algorithm.h"
 #include "SVTK_Functor.h"
@@ -43,9 +43,6 @@ SVTK_ViewWindow
 		   SVTK_ViewModelBase* theModel)
   : SUIT_ViewWindow( theDesktop )
 {
-  mySelector = new SVTK_SelectorDef();
-  connect(this,SIGNAL(selectionChanged()),theModel,SLOT(onSelectionChanged()));
-
   QWidget* aCentralWidget = new QWidget( this );
   setCentralWidget( aCentralWidget );
   QBoxLayout* aLayout = new QVBoxLayout( aCentralWidget );
@@ -59,13 +56,16 @@ SVTK_ViewWindow
   bottomView->getInteractor()->SetInteractorStyle( myInteractorStyle ); 
   bottomView->Initialize();
   */
+
   myInteractorStyle = SVTK_InteractorStyle::New();
   myInteractorStyle->SetRenderWidget( myView );
   myInteractorStyle->setViewWindow( this );
+  myInteractorStyle->SetSelector( myView->GetSelector() );
 
   myView->SetInteractorStyle( myInteractorStyle );
-  myView->SetSelector( mySelector );
   myView->Initialize();
+
+  connect(myView,SIGNAL(selectionChanged()),theModel,SLOT(onSelectionChanged()));
 
   //merge with V2_2_0_VISU_improvements:myInteractorStyle->setTriedron( myTrihedron );
   myInteractorStyle->FindPokedRenderer( 0, 0 );
@@ -101,6 +101,13 @@ SVTK_ViewWindow
 ::getRenderer()
 {
   return myView->getRenderer();
+}
+
+//----------------------------------------------------------------------------
+SVTK_Selector* 
+SVTK_ViewWindow
+::GetSelector() { 
+  return myView->GetSelector(); 
 }
 
 //----------------------------------------------------------------------------
@@ -172,8 +179,6 @@ void
 SVTK_ViewWindow
 ::onSelectionChanged()
 {
-  //cout << "SVTK_ViewWindow::onSelectionChanged" << endl;
-  myView->onSelectionChanged();
   emit selectionChanged();
 }
 

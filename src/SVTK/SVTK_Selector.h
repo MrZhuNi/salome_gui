@@ -29,6 +29,8 @@
 #ifndef SVTK_SELECTOR_H
 #define SVTK_SELECTOR_H
 
+#include <vtkObject.h>
+
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 
@@ -37,10 +39,12 @@
 
 class SALOME_Actor;
 
-class SVTK_Selector
+class SVTK_Selector: public vtkObject
 {
 public:
-  virtual ~SVTK_Selector() {};
+  static SVTK_Selector* New();
+  
+  vtkTypeMacro(SVTK_Selector,vtkObject);
 
   virtual
   void 
@@ -125,6 +129,14 @@ public:
   virtual
   void 
   ClearIndex() = 0;
+
+  virtual
+  void 
+  StartPickCallback() = 0;
+
+  virtual
+  void 
+  EndPickCallback() = 0;
 };
 
 

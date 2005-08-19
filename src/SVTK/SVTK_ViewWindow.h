@@ -13,6 +13,8 @@
 
 #include "SALOME_InteractiveObject.hxx"
 
+#include <vtkSmartPointer.h>
+
 class SUIT_Desktop;
 
 class VTKViewer_Actor;
@@ -40,7 +42,7 @@ public:
   QColor backgroundColor() const;
 
   vtkRenderer* getRenderer();
-  SVTK_Selector* GetSelector() {return mySelector;}
+  SVTK_Selector* GetSelector();
 
   SVTK_View* getView() { return myView; }
   SVTK_View* getRenderWindow() { return myView; }
@@ -130,9 +132,6 @@ public slots:
   void onRotateUp();
   void onRotateDown();
 
-protected:
-  QImage dumpView();
-
 protected slots:
   void onKeyPressed(QKeyEvent* event);
   void onKeyReleased(QKeyEvent* event);
@@ -141,21 +140,11 @@ protected slots:
   void onMouseReleased(QMouseEvent* event);
   void onMouseMoving(QMouseEvent* event);
 
-private:
-  void InitialSetup();
-  //void InsertActor( VTKViewer_Actor* theActor,
-  //                  bool theMoveInternalActors = false );
-  //void MoveActor( VTKViewer_Actor* theActor );
-
-private:  
-  SVTK_Selector* mySelector;
+protected:
+  QImage dumpView();
 
   SVTK_View* myView;
   SVTK_InteractorStyle* myInteractorStyle;
-
-  double myCurScale;
-
-  friend class SVTK_RenderWindowInteractor;
 };
 
 #ifdef WIN32

@@ -11,6 +11,9 @@
 
 #include "SALOME_InteractiveObject.hxx"
 
+#include <vtkSmartPointer.h>
+
+class vtkCallbackCommand;
 class VTKViewer_Actor;
 
 class SVTK_Viewer;
@@ -21,17 +24,25 @@ class SVTK_InteractorStyle;
 
 class SVTK_EXPORT SVTK_View : public SVTK_RenderWindowInteractor
 {
-  Q_OBJECT
+  Q_OBJECT;
 
 public:
   SVTK_View( QWidget*, const char* );
   virtual ~SVTK_View();
   
-  SVTK_Selector* GetSelector() { return mySelector; }
-  void SetSelector( SVTK_Selector* theSelector ) { mySelector = theSelector; }
-
-  SVTK_InteractorStyle* GetInteractorStyle() { return myInteractorStyle; }
+  SVTK_InteractorStyle* GetInteractorStyle();
   void SetInteractorStyle( SVTK_InteractorStyle* );
+
+  SVTK_Selector* GetSelector();
+  void SetSelector( SVTK_Selector* theSelector );
+
+  // Main process VTK event method
+  static
+  void
+  ProcessEvents(vtkObject* theObject, 
+		unsigned long theEvent,
+		void* theClientData, 
+		void* theCallData);
 
   Selection_Mode SelectionMode() const;
   void SetSelectionMode( Selection_Mode );
@@ -70,6 +81,7 @@ public:
 
 public slots:
   void onSelectionChanged();
+  void onEmitSelectionChanged();
 
 signals:
   void selectionChanged();
@@ -108,13 +120,16 @@ private:
 
 private:  
   SVTK_Viewer* myModel;
-  SVTK_Selector* mySelector;
 
+  // Used to process VTK events
+  vtkSmartPointer<vtkCallbackCommand> myEventCallbackCommand;
+  // Priority at which events are processed
+  float myPriority;
+
+  vtkSmartPointer<SVTK_Selector> mySelector;
   SVTK_InteractorStyle* myInteractorStyle;
 
   double myCurScale;
-
-  friend class SVTK_RenderWindowInteractor;
 };
 
 #ifdef WIN32

@@ -133,6 +133,14 @@ public:
   void 
   ClearIndex();
 
+  virtual
+  void 
+  StartPickCallback();
+
+  virtual
+  void 
+  EndPickCallback();
+
 private:
   Selection_Mode mySelectionMode;
 

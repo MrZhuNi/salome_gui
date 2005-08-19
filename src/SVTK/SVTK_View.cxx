@@ -2,6 +2,7 @@
 
 #include <qapplication.h>
 
+#include <vtkCallbackCommand.h>
 #include <vtkTextProperty.h>
 #include <vtkActorCollection.h>
 #include <vtkRenderer.h>
@@ -38,6 +39,16 @@ SVTK_View
 ::SVTK_View( QWidget* parent, const char* name ) :
   SVTK_RenderWindowInteractor( parent, name )
 {
+  mySelector = SVTK_Selector::New();
+  mySelector->Delete();
+
+  myEventCallbackCommand = vtkCallbackCommand::New();
+  myEventCallbackCommand->Delete();
+
+  myEventCallbackCommand->SetClientData(this); 
+  myPriority = 0.0;
+
+  myEventCallbackCommand->SetCallback(SVTK_View::ProcessEvents);
 }
 
 //----------------------------------------------------------------------------
@@ -47,12 +58,59 @@ SVTK_View
 }
 
 //----------------------------------------------------------------------------
+SVTK_InteractorStyle* 
+SVTK_View
+::GetInteractorStyle() 
+{ 
+  return myInteractorStyle; 
+}
+
 void
 SVTK_View
 ::SetInteractorStyle( SVTK_InteractorStyle* theStyle )
 {
   myInteractorStyle = theStyle;
   getInteractor()->SetInteractorStyle( theStyle ); 
+}
+
+//----------------------------------------------------------------------------
+SVTK_Selector* 
+SVTK_View
+::GetSelector() 
+{ 
+  return mySelector.GetPointer(); 
+}
+
+void
+SVTK_View
+::SetSelector( SVTK_Selector* theSelector )
+{ 
+  if(mySelector.GetPointer())
+    mySelector->RemoveObserver(myEventCallbackCommand.GetPointer());
+
+  mySelector = theSelector; 
+
+  if(mySelector.GetPointer())
+    mySelector->AddObserver(vtkCommand::EndPickEvent, 
+			    myEventCallbackCommand.GetPointer(), 
+			    myPriority);
+}
+
+//----------------------------------------------------------------------------
+void 
+SVTK_View
+::ProcessEvents(vtkObject* vtkNotUsed(theObject), 
+		unsigned long theEvent,
+		void* theClientData, 
+		void* vtkNotUsed(theCallData))
+{
+  SVTK_View* self = reinterpret_cast<SVTK_View*>(theClientData);
+
+  switch(theEvent){
+  case vtkCommand::EndPickEvent:
+    self->onEmitSelectionChanged();
+    break;
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -121,7 +179,13 @@ SVTK_View
   for(; anIter.More(); anIter.Next()){
     highlight(anIter.Value(),true,!anIter.More());
   }
+}
 
+//----------------------------------------------------------------
+void
+SVTK_View
+::onEmitSelectionChanged()
+{
   emit selectionChanged();
 }
 
@@ -131,8 +195,6 @@ SVTK_View
 ::SetSelectionMode(Selection_Mode theMode)
 {
   mySelector->SetSelectionMode(theMode);
-
-  //myRWInteractor->SetSelectionMode(theMode);
 }
 
 //----------------------------------------------------------------

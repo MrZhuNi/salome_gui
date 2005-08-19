@@ -81,6 +81,10 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
   void setViewWindow(SVTK_ViewWindow* theViewWindow);
+
+  void SetSelector( SVTK_Selector* theSelector );
+  SVTK_Selector* GetSelector();
+
   void SetRenderWidget(QWidget* theRenderWidget);
 
   virtual int GetState();
@@ -89,6 +93,8 @@ class SVTK_EXPORT SVTK_InteractorStyle :
 
   // redefined in order to add an observer (callback) for custorm event (space mouse event)
   virtual void SetInteractor( vtkRenderWindowInteractor* );
+
+  virtual void Render();
 
   // redefined in order to cach rendering
   virtual void OnTimer();
@@ -142,8 +148,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   ~SVTK_InteractorStyle();
   SVTK_InteractorStyle(const SVTK_InteractorStyle&) {};
   void operator=(const SVTK_InteractorStyle&) {};
-
-  SVTK_Selector* GetSelector();
 
   void RotateXY(int dx, int dy);
   void PanXY(int x, int y, int oldX, int oldY);
@@ -202,6 +206,7 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   bool                      myShiftState;
   int                       ForcedState;
   
+  vtkSmartPointer<SVTK_Selector> mySelector;
   SVTK_ViewWindow*          myViewWindow;
   QWidget*                  myRenderWidget;
 
