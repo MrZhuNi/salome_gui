@@ -111,6 +111,7 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
 
   virtual void paintEvent( QPaintEvent* );
   virtual void resizeEvent( QResizeEvent* );
+  virtual void contextMenuEvent( QContextMenuEvent * e );
 
   virtual void mouseMoveEvent( QMouseEvent* );
   virtual void mousePressEvent( QMouseEvent* );
@@ -120,19 +121,27 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
   virtual void keyPressEvent( QKeyEvent* );
   virtual void keyReleaseEvent( QKeyEvent* );
 
-  virtual bool x11Event( XEvent *e );
   // reimplemented from QWidget in order to set window - receiver
   // of space mouse events. 
   virtual void focusInEvent ( QFocusEvent* );
   virtual void focusOutEvent( QFocusEvent* );
 
-  virtual void contextMenuEvent( QContextMenuEvent * e );
+  virtual bool x11Event( XEvent *e );
 
+ public:
  signals:
+  void MouseMove( QMouseEvent* );
+  void MouseButtonPressed( QMouseEvent* );
+  void MouseButtonReleased( QMouseEvent* );
+  void MouseDoubleClicked( QMouseEvent* );
+  void WheelMoved( QWheelEvent* );
+  void ButtonPressed(const QMouseEvent *event);
+  void ButtonReleased(const QMouseEvent *event);
+  void KeyPressed( QKeyEvent* );
+  void KeyReleased( QKeyEvent* );
   void contextMenuRequested( QContextMenuEvent *e );
 
  public:
-
   /* Selection Management */
   bool isInViewer( const Handle(SALOME_InteractiveObject)& IObject);
   bool isVisible( const Handle(SALOME_InteractiveObject)& IObject);

@@ -250,12 +250,24 @@ SVTK_RenderWindowInteractor
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
+::contextMenuEvent( QContextMenuEvent* event )
+{
+  if( !( event->state() & KeyButtonMask ) )
+    emit contextMenuRequested( event );
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindowInteractor
 ::mouseMoveEvent( QMouseEvent* event ) 
 {
   myInteractor->SetEventInformation( event->x(), event->y(),
 				     ( event->state() & ControlButton ),
 				     ( event->state() & ShiftButton ) );
   myInteractor->MouseMoveEvent();
+
+  emit MouseMove( event );
 }
 
 
@@ -273,6 +285,8 @@ SVTK_RenderWindowInteractor
     myInteractor->MiddleButtonPressEvent();
   else if( event->button() & RightButton )
     myInteractor->RightButtonPressEvent();
+
+  emit MouseButtonPressed( event );
 }
 
 
@@ -291,6 +305,8 @@ SVTK_RenderWindowInteractor
     myInteractor->MiddleButtonReleaseEvent();
   else if( event->button() & RightButton )
     myInteractor->RightButtonReleaseEvent();
+
+  emit MouseButtonReleased( event );
 }
 
 
@@ -298,14 +314,18 @@ SVTK_RenderWindowInteractor
 void
 SVTK_RenderWindowInteractor
 ::mouseDoubleClickEvent( QMouseEvent* event )
-{}
+{
+  emit MouseDoubleClicked( event );
+}
 
 
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
 ::wheelEvent( QWheelEvent* event )
-{}
+{
+  emit WheelMoved( event );
+}
 
 
 //----------------------------------------------------------------------------
@@ -317,6 +337,8 @@ SVTK_RenderWindowInteractor
 					( event->state() & ShiftButton ),
 					0 );
   myInteractor->KeyPressEvent();
+
+  emit KeyPressed( event );
 }
 
 //----------------------------------------------------------------------------
@@ -328,6 +350,42 @@ SVTK_RenderWindowInteractor
 					( event->state() & ShiftButton ),
 					0 );
   myInteractor->KeyReleaseEvent();
+
+  emit KeyReleased( event );
+}
+
+
+//----------------------------------------------------------------------------
+void  
+SVTK_RenderWindowInteractor
+::focusInEvent ( QFocusEvent* event )
+{
+  QWidget::focusInEvent( event );
+
+  // register set space mouse events receiver
+  SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
+  if ( !sm->isSpaceMouseOn() ) {// initialize 3D space mouse driver 
+    sm->initialize( x11Display(), winId() );
+    if ( !sm->isSpaceMouseOn() )
+      printf( "\nError: 3D Space Mouse driver was not started.\n" );
+  }
+  else
+    SVTK_SpaceMouse::getInstance()->setWindow( x11Display(), winId() );
+
+  myInteractor->EnterEvent();
+}
+
+//----------------------------------------------------------------------------
+void  
+SVTK_RenderWindowInteractor
+::focusOutEvent ( QFocusEvent* event )
+{
+  QWidget::focusInEvent( event );
+  // unregister set space mouse events receiver
+  if ( SVTK_SpaceMouse::getInstance()->isSpaceMouseOn() )
+    SVTK_SpaceMouse::getInstance()->setWindow( x11Display(), 0 );
+
+  myInteractor->LeaveEvent();
 }
 
 
@@ -357,46 +415,6 @@ SVTK_RenderWindowInteractor
 
   return SVTK_RenderWindow::x11Event( xEvent );
 }
-
-//----------------------------------------------------------------------------
-void  
-SVTK_RenderWindowInteractor
-::focusInEvent ( QFocusEvent* event )
-{
-  QWidget::focusInEvent( event );
-
-  // register set space mouse events receiver
-  SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
-  if ( !sm->isSpaceMouseOn() ) {// initialize 3D space mouse driver 
-    sm->initialize( x11Display(), winId() );
-    if ( !sm->isSpaceMouseOn() )
-      printf( "\nError: 3D Space Mouse driver was not started.\n" );
-  }
-  else
-    SVTK_SpaceMouse::getInstance()->setWindow( x11Display(), winId() );
-}
-
-//----------------------------------------------------------------------------
-void  
-SVTK_RenderWindowInteractor
-::focusOutEvent ( QFocusEvent* event )
-{
-  QWidget::focusInEvent( event );
-  // unregister set space mouse events receiver
-  if ( SVTK_SpaceMouse::getInstance()->isSpaceMouseOn() )
-    SVTK_SpaceMouse::getInstance()->setWindow( x11Display(), 0 );
-}
-
-
-//----------------------------------------------------------------------------
-void
-SVTK_RenderWindowInteractor
-::contextMenuEvent( QContextMenuEvent* event )
-{
-  if( !( event->state() & KeyButtonMask ) )
-    emit contextMenuRequested( event );
-}
-
 
 //----------------------------------------------------------------------------
 int

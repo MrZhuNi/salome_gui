@@ -75,8 +75,20 @@ SVTK_ViewWindow
   myView->setFocusPolicy( StrongFocus );
   myView->setFocus();
 
+  connect( myView, SIGNAL(KeyPressed( QKeyEvent* )),
+           this,   SLOT(onKeyPressed( QKeyEvent* )) );
+  connect( myView, SIGNAL(KeyReleased( QKeyEvent* )),
+           this,   SLOT(onKeyReleased( QKeyEvent* )) );
+  connect( myView, SIGNAL(MouseButtonPressed( QMouseEvent* )),
+           this,   SLOT(onMousePressed( QMouseEvent* )) );
+  connect( myView, SIGNAL(MouseButtonReleased( QMouseEvent* )),
+           this,   SLOT(onMouseReleased( QMouseEvent* )) );
+  connect( myView, SIGNAL(MouseDoubleClicked( QMouseEvent* )),
+           this,   SLOT(onMouseDoubleClicked( QMouseEvent* )) );
+  connect( myView, SIGNAL(MouseMove( QMouseEvent* )),
+           this,   SLOT(onMouseMoving( QMouseEvent* )) );
   connect( myView, SIGNAL(contextMenuRequested( QContextMenuEvent * )),
-           this, SIGNAL(contextMenuRequested( QContextMenuEvent * )) );
+           this,   SIGNAL(contextMenuRequested( QContextMenuEvent * )) );
 
   onResetView();
 

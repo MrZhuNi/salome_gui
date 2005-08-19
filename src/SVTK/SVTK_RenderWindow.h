@@ -75,8 +75,6 @@ class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
   //apply existing transformation on adding SALOME_Actor
   void SetScale( double theScale[3] );
   void GetScale( double theScale[3] );
-  //void AddActor( VTKViewer_Actor*, bool update = false );
-  //void RemoveActor(VTKViewer_Actor*, bool update = false);
 
  public slots:
   virtual void activateZoom();

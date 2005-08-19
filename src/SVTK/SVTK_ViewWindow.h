@@ -83,8 +83,6 @@ public:
   void RemoveActor(VTKViewer_Actor*, bool update = false);
 
   void AdjustTrihedrons( const bool forced );
-  //merge with V2_2_0_VISU_improvements:bool ComputeTrihedronSize( double& theNewSize,
-  //merge with V2_2_0_VISU_improvements:                          double& theOldSize );
 
   VTKViewer_Trihedron*  GetTrihedron();
   SVTK_CubeAxesActor2D* GetCubeAxes();

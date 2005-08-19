@@ -104,15 +104,7 @@ public slots:
   virtual void activatePanning(); 
   virtual void activateGlobalPanning(); 
 
-protected slots:
-  void onKeyPressed(QKeyEvent* event);
-  void onKeyReleased(QKeyEvent* event);
-  void onMousePressed(QMouseEvent* event);
-  void onMouseDoubleClicked(QMouseEvent* event);
-  void onMouseReleased(QMouseEvent* event);
-  void onMouseMoving(QMouseEvent* event);
-
-private:
+protected:
   void InitialSetup();
   void InsertActor( VTKViewer_Actor* theActor,
                     bool theMoveInternalActors = false );
