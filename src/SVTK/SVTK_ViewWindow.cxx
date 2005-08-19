@@ -62,6 +62,7 @@ SVTK_ViewWindow
   myInteractorStyle->setViewWindow( this );
   myInteractorStyle->SetSelector( myView->GetSelector() );
 
+  myInteractorStyle->SetSelector( myView->GetSelector() );
   myView->SetInteractorStyle( myInteractorStyle );
   myView->Initialize();
 
@@ -191,7 +192,7 @@ void
 SVTK_ViewWindow
 ::onSelectionChanged()
 {
-  emit selectionChanged();
+  myView->onSelectionChanged();
 }
 
 //----------------------------------------------------------------

@@ -39,9 +39,6 @@ SVTK_View
 ::SVTK_View( QWidget* parent, const char* name ) :
   SVTK_RenderWindowInteractor( parent, name )
 {
-  mySelector = SVTK_Selector::New();
-  mySelector->Delete();
-
   myEventCallbackCommand = vtkCallbackCommand::New();
   myEventCallbackCommand->Delete();
 
@@ -49,6 +46,9 @@ SVTK_View
   myPriority = 0.0;
 
   myEventCallbackCommand->SetCallback(SVTK_View::ProcessEvents);
+
+  SetSelector(SVTK_Selector::New());
+  GetSelector()->Delete();
 }
 
 //----------------------------------------------------------------------------

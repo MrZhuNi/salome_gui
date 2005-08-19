@@ -1080,8 +1080,6 @@ SVTK_InteractorStyle
   x = mousePos.x(); y = h - mousePos.y() - 1;
 
   this->FindPokedRenderer(x,y);
-  Interactor->StartPickCallback();
-  GetSelector()->StartPickCallback();
 
   SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
   aSelectionEvent.myX = x;
@@ -1097,9 +1095,6 @@ SVTK_InteractorStyle
       aLastActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, false );
   }
   
-  Interactor->EndPickCallback();
-  GetSelector()->EndPickCallback();
-
   if(anIsChanged)
     this->Render();
 }
