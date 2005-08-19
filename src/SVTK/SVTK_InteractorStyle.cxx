@@ -37,6 +37,10 @@
 #include "SVTK_Selection.h"
 #include "SVTK_SpaceMouseEvent.h" 
 #include "SVTK_Selector.h"
+#include "SVTK_Functor.h"
+
+#include "VTKViewer_Algorithm.h"
+#include "SVTK_Functor.h"
 
 #include "SALOME_Actor.h"
 
@@ -99,7 +103,6 @@ vtkStandardNewMacro(SVTK_InteractorStyle);
 SVTK_InteractorStyle
 ::SVTK_InteractorStyle() 
 {
-  myViewWindow = NULL;
   this->MotionFactor = 10.0;
   this->State = VTK_INTERACTOR_STYLE_CAMERA_NONE;
   this->RadianToDegree = 180.0 / vtkMath::Pi();
@@ -160,14 +163,6 @@ SVTK_InteractorStyle
 }
 
 //----------------------------------------------------------------------------
-void 
-SVTK_InteractorStyle
-::setViewWindow(SVTK_ViewWindow* theViewWindow)
-{
-  myViewWindow = theViewWindow;
-}
-
-//----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
 ::SetSelector( SVTK_Selector* theSelector ) 
@@ -192,23 +187,23 @@ SVTK_InteractorStyle
   double ryf;
   vtkCamera *cam;
   
-  if (this->CurrentRenderer == NULL)
-    {
-      return;
-    }
+  if (GetCurrentRenderer() == NULL)
+    return;
   
-  int *size = this->CurrentRenderer->GetRenderWindow()->GetSize();
+  int *size = GetCurrentRenderer()->GetRenderWindow()->GetSize();
   this->DeltaElevation = -20.0 / size[1];
   this->DeltaAzimuth = -20.0 / size[0];
   
   rxf = (double)dx * this->DeltaAzimuth *  this->MotionFactor;
   ryf = (double)dy * this->DeltaElevation * this->MotionFactor;
   
-  cam = this->CurrentRenderer->GetActiveCamera();
+  cam = GetCurrentRenderer()->GetActiveCamera();
   cam->Azimuth(rxf);
   cam->Elevation(ryf);
   cam->OrthogonalizeViewUp();
-  ::ResetCameraClippingRange(this->CurrentRenderer); 
+
+  GetCurrentRenderer()->ResetCameraClippingRange(); 
+
   this->Render();
 }
 
@@ -227,19 +222,20 @@ void
 SVTK_InteractorStyle
 ::DollyXY(int dx, int dy)
 {
-  if (this->CurrentRenderer == NULL) return;
+  if (GetCurrentRenderer() == NULL) 
+    return;
 
-  double dxf = this->MotionFactor * (double)(dx) / (double)(this->CurrentRenderer->GetCenter()[1]);
-  double dyf = this->MotionFactor * (double)(dy) / (double)(this->CurrentRenderer->GetCenter()[1]);
+  double dxf = this->MotionFactor * (double)(dx) / (double)(GetCurrentRenderer()->GetCenter()[1]);
+  double dyf = this->MotionFactor * (double)(dy) / (double)(GetCurrentRenderer()->GetCenter()[1]);
 
   double zoomFactor = pow((double)1.1, dxf + dyf);
   
-  vtkCamera *aCam = this->CurrentRenderer->GetActiveCamera();
+  vtkCamera *aCam = GetCurrentRenderer()->GetActiveCamera();
   if (aCam->GetParallelProjection())
     aCam->SetParallelScale(aCam->GetParallelScale()/zoomFactor);
   else{
     aCam->Dolly(zoomFactor);
-    ::ResetCameraClippingRange(this->CurrentRenderer);
+    GetCurrentRenderer()->ResetCameraClippingRange(); 
   }
 
   this->Render();
@@ -252,20 +248,18 @@ SVTK_InteractorStyle
 {
   vtkCamera *cam;
 
-  if (this->CurrentRenderer == NULL)
-    {
-      return;
-    }
+  if (GetCurrentRenderer() == NULL)
+    return;
 
-  double newAngle = atan2((double)(y - this->CurrentRenderer->GetCenter()[1]),
-			  (double)(x - this->CurrentRenderer->GetCenter()[0]));
-  double oldAngle = atan2((double)(oldY -this->CurrentRenderer->GetCenter()[1]),
-			  (double)(oldX - this->CurrentRenderer->GetCenter()[0]));
+  double newAngle = atan2((double)(y - GetCurrentRenderer()->GetCenter()[1]),
+			  (double)(x - GetCurrentRenderer()->GetCenter()[0]));
+  double oldAngle = atan2((double)(oldY -GetCurrentRenderer()->GetCenter()[1]),
+			  (double)(oldX - GetCurrentRenderer()->GetCenter()[0]));
   
   newAngle *= this->RadianToDegree;
   oldAngle *= this->RadianToDegree;
 
-  cam = this->CurrentRenderer->GetActiveCamera();
+  cam = GetCurrentRenderer()->GetActiveCamera();
   cam->Roll(newAngle - oldAngle);
   cam->OrthogonalizeViewUp();
       
@@ -388,10 +382,11 @@ SVTK_InteractorStyle
     this->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
     return;
   }
+
   this->FindPokedRenderer(x, y);
-  if (this->CurrentRenderer == NULL) {
+  if (GetCurrentRenderer() == NULL)
     return;
-  }
+
   myShiftState = shift;
   // finishing current viewer operation
   if (State != VTK_INTERACTOR_STYLE_CAMERA_NONE) {
@@ -440,11 +435,11 @@ SVTK_InteractorStyle
       this->InvokeEvent(vtkCommand::MiddleButtonPressEvent,NULL);
       return;
     }
+
   this->FindPokedRenderer(x, y);
-  if (this->CurrentRenderer == NULL)
-    {
-      return;
-    }
+  if (GetCurrentRenderer() == NULL)
+    return;
+
   myShiftState = shift;
   // finishing current viewer operation
   if (State != VTK_INTERACTOR_STYLE_CAMERA_NONE) {
@@ -491,11 +486,11 @@ SVTK_InteractorStyle
       this->InvokeEvent(vtkCommand::RightButtonPressEvent,NULL);
       return;
     }
+
   this->FindPokedRenderer(x, y);
-  if (this->CurrentRenderer == NULL)
-    {
-      return;
-    }
+  if (GetCurrentRenderer() == NULL)
+    return;
+
   myShiftState = shift;
   // finishing current viewer operation
   if (State != VTK_INTERACTOR_STYLE_CAMERA_NONE) {
@@ -740,10 +735,10 @@ SVTK_InteractorStyle
   ForcedState = VTK_INTERACTOR_STYLE_CAMERA_GLOBAL_PAN;
 
   // store current zoom scale
-  vtkCamera *cam = this->CurrentRenderer->GetActiveCamera();
+  vtkCamera *cam = GetCurrentRenderer()->GetActiveCamera();
   myScale = cam->GetParallelScale();
 
-  if (myViewWindow) myViewWindow->onFitAll();
+  GetCurrentRenderer()->ResetCamera();
 
   this->Render();
   
@@ -760,12 +755,13 @@ SVTK_InteractorStyle
 	  const int right, 
 	  const int bottom)
 {
-  if (this->CurrentRenderer == NULL) return;
+  if (GetCurrentRenderer() == NULL) 
+    return;
  
   // move camera
   int x = (left + right)/2;
   int y = (top + bottom)/2;
-  int *aSize = this->CurrentRenderer->GetRenderWindow()->GetSize();
+  int *aSize = GetCurrentRenderer()->GetRenderWindow()->GetSize();
   int oldX = aSize[0]/2;
   int oldY = aSize[1]/2;
   TranslateView(oldX, oldY, x, y);
@@ -775,12 +771,12 @@ SVTK_InteractorStyle
   double dyf = (double)(aSize[1]) / (double)(abs(bottom - top));
   double zoomFactor = (dxf + dyf)/2 ;
 
-  vtkCamera *aCam = this->CurrentRenderer->GetActiveCamera();
+  vtkCamera *aCam = GetCurrentRenderer()->GetActiveCamera();
   if(aCam->GetParallelProjection())
     aCam->SetParallelScale(aCam->GetParallelScale()/zoomFactor);
   else{
     aCam->Dolly(zoomFactor);
-    ::ResetCameraClippingRange(this->CurrentRenderer);
+    GetCurrentRenderer()->ResetCameraClippingRange();
   }
   
   this->Render();
@@ -926,7 +922,8 @@ SVTK_InteractorStyle
         fitRect(x1, y1, x2, y2);
       }
       else {
-	myViewWindow->unHighlightAll();
+	VTK::ForEach<SALOME_Actor>(GetCurrentRenderer()->GetActors(),
+				   VTK::THighlight<SALOME_Actor>(false));
         if (myPoint == myOtherPoint) {
 	  // process point selection
           int w, h, x, y;
@@ -937,12 +934,12 @@ SVTK_InteractorStyle
           this->FindPokedRenderer(x, y);
 	  Interactor->StartPickCallback();
 
-          myPicker->Pick(x, y, 0.0, this->CurrentRenderer);
+          myPicker->Pick(x, y, 0.0, GetCurrentRenderer());
 	  if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
 	    SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
 	    aSelectionEvent.mySelectionMode = aSelectionMode;
 	    aSelectionEvent.myIsRectangle = false;
-	    aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
+	    aSActor->Highlight( this, GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
 	  }else{
 	    GetSelector()->ClearIObjects();
 	  }
@@ -970,7 +967,7 @@ SVTK_InteractorStyle
 	  y2 = h - rect.bottom() - 1;
 
 	  myRectPicker->SetTolerance(0.001);
-	  myRectPicker->Pick(x1, y1, 0.0, x2, y2, 0.0, this->CurrentRenderer);
+	  myRectPicker->Pick(x1, y1, 0.0, x2, y2, 0.0, GetCurrentRenderer());
 
 	  SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
 	  aSelectionEvent.mySelectionMode = aSelectionMode;
@@ -982,7 +979,7 @@ SVTK_InteractorStyle
 	  aListActors->InitTraversal();
 	  while(vtkActor* aActor = aListActors->GetNextActor()){
 	    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)){
-	      aSActor->Highlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
+	      aSActor->Highlight( this, GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
 	    }
 	  }
 	}
@@ -1088,11 +1085,11 @@ SVTK_InteractorStyle
   bool anIsChanged = false;
   SALOME_Actor* aLastActor = SALOME_Actor::SafeDownCast(myPicker->GetActor());
 
-  myPicker->Pick(x, y, 0.0, this->CurrentRenderer);
+  myPicker->Pick(x, y, 0.0, GetCurrentRenderer());
   if(SALOME_Actor* anActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
-    anIsChanged |= anActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, true );
+    anIsChanged |= anActor->PreHighlight( this, GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
     if(aLastActor && aLastActor != anActor)
-      aLastActor->PreHighlight( this, GetSelector(), this->CurrentRenderer, aSelectionEvent, false );
+      aLastActor->PreHighlight( this, GetSelector(), GetCurrentRenderer(), aSelectionEvent, false );
   }
   
   if(anIsChanged)
@@ -1105,21 +1102,20 @@ void
 SVTK_InteractorStyle
 ::Place(const int theX, const int theY) 
 {
-  if (this->CurrentRenderer == NULL) {
+  if (GetCurrentRenderer() == NULL)
     return;
-  }
 
   //translate view
-  int *aSize = this->CurrentRenderer->GetRenderWindow()->GetSize();
+  int *aSize = GetCurrentRenderer()->GetRenderWindow()->GetSize();
   int centerX = aSize[0]/2;
   int centerY = aSize[1]/2;
 
   TranslateView(centerX, centerY, theX, theY);
 
   // restore zoom scale
-  vtkCamera *cam = this->CurrentRenderer->GetActiveCamera();
+  vtkCamera *cam = GetCurrentRenderer()->GetActiveCamera();
   cam->SetParallelScale(myScale);
-  ::ResetCameraClippingRange(this->CurrentRenderer);
+  GetCurrentRenderer()->ResetCameraClippingRange();
 
   this->Render();
 }
@@ -1132,7 +1128,7 @@ void
 SVTK_InteractorStyle
 ::TranslateView(int toX, int toY, int fromX, int fromY)
 {
-  vtkCamera *cam = this->CurrentRenderer->GetActiveCamera();
+  vtkCamera *cam = GetCurrentRenderer()->GetActiveCamera();
   double viewFocus[4], focalDepth, viewPoint[3];
   float newPickPoint[4], oldPickPoint[4], motionVector[3];
   cam->GetFocalPoint(viewFocus);

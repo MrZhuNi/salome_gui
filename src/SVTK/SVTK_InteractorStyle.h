@@ -80,8 +80,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   static SVTK_InteractorStyle *New();
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
-  void setViewWindow(SVTK_ViewWindow* theViewWindow);
-
   void SetSelector( SVTK_Selector* theSelector );
   SVTK_Selector* GetSelector();
 
@@ -206,9 +204,8 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   bool                      myShiftState;
   int                       ForcedState;
   
-  vtkSmartPointer<SVTK_Selector> mySelector;
-  SVTK_ViewWindow*          myViewWindow;
   QWidget*                  myRenderWidget;
+  vtkSmartPointer<SVTK_Selector> mySelector;
 
   vtkSmartPointer<vtkPicker> myPicker;
   vtkSmartPointer<VTKViewer_RectPicker> myRectPicker;

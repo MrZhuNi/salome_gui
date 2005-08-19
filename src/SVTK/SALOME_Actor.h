@@ -247,15 +247,19 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   // Infinitive means actor without size (point for example),
   // which is not taken into account in calculation of boundaries of the scene
   void
-  SetInfinitive(bool theIsInfinite)
-  { 
-    myIsInfinite = theIsInfinite; 
-  }
+  SetInfinitive(bool theIsInfinite);
 
   virtual
   bool
   IsInfinitive();
     
+  virtual
+  float* 
+  GetBounds();
+
+  void
+  GetBounds(float bounds[6]);
+
   void
   SetResolveCoincidentTopology(bool theIsResolve);
 
