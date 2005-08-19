@@ -119,7 +119,7 @@ private:
   float myPriority;
 
   vtkSmartPointer<SVTK_Selector> mySelector;
-  SVTK_InteractorStyle* myInteractorStyle;
+  vtkSmartPointer<SVTK_InteractorStyle> myInteractorStyle;
 
   double myCurScale;
 };

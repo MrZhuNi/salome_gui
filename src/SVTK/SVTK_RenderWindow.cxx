@@ -25,9 +25,6 @@
 #include <vtkCamera.h>
 #ifndef WNT
 #include <vtkXOpenGLRenderWindow.h>
-//#include <GL/gl.h>
-//#include <GL/glu.h>
-//#include <qgl.h>
 #endif
 
 #if QT_VERSION > 300
@@ -308,7 +305,6 @@ SVTK_RenderWindow
 ::SetScale( double theScale[3] ) 
 {
   myTransform->SetMatrixScale( theScale[0], theScale[1], theScale[2] );
-  //myRWInteractor->Render();
   Repaint();
 }
 
@@ -445,23 +441,10 @@ void
 SVTK_RenderWindow
 ::onResetView()
 {
-  int aTrihedronIsVisible = isTrihedronDisplayed();
-  int aCubeAxesIsVisible  = isCubeAxesDisplayed();
-
-  myTrihedron->SetVisibility( VTKViewer_Trihedron::eOnlyLineOn );
-  myCubeAxes->SetVisibility(0);
-
-  ::ResetCamera(myRenderer,true);  
+  myRenderer->ResetCamera();
   vtkCamera* aCamera = myRenderer->GetActiveCamera();
-  aCamera->SetPosition(1,-1,1);
-  aCamera->SetViewUp(0,0,1);
-  ::ResetCamera(myRenderer,true);  
-
-  if (aTrihedronIsVisible) myTrihedron->VisibilityOn();
-  else myTrihedron->VisibilityOff();
-
-  if (aCubeAxesIsVisible) myCubeAxes->VisibilityOn();
-  else myCubeAxes->VisibilityOff();
+  aCamera->SetPosition(1.0,-1.0,0.5);
+  aCamera->SetViewUp(0.0,0.0,1.0);
 
   static float aCoeff = 3.0;
   aCamera->SetParallelScale(aCoeff*aCamera->GetParallelScale());
@@ -473,41 +456,7 @@ void
 SVTK_RenderWindow
 ::onFitAll()
 {
-  int aTrihedronWasVisible = false;
-  int aCubeAxesWasVisible = false;
-  if (myTrihedron) {
-    aTrihedronWasVisible = isTrihedronDisplayed();
-    if (aTrihedronWasVisible)
-      myTrihedron->VisibilityOff();
-  }
-
-  if (myCubeAxes) {
-    aCubeAxesWasVisible = isCubeAxesDisplayed();
-    if (aCubeAxesWasVisible)
-      myCubeAxes->VisibilityOff();
-  }
-
-  if (myTrihedron->GetVisibleActorCount(myRenderer)) {
-    myTrihedron->VisibilityOff();
-    myCubeAxes->VisibilityOff();
-    ::ResetCamera(myRenderer);
-  } else {
-    myTrihedron->SetVisibility(VTKViewer_Trihedron::eOnlyLineOn);
-    myCubeAxes->SetVisibility(2);
-    ::ResetCamera(myRenderer,true);
-  }
-
-  if (aTrihedronWasVisible)
-    myTrihedron->VisibilityOn();
-  else
-    myTrihedron->VisibilityOff();
-
-  if (aCubeAxesWasVisible)
-    myCubeAxes->VisibilityOn();
-  else
-    myCubeAxes->VisibilityOff();
-
-  ::ResetCameraClippingRange(myRenderer);
+  myRenderer->ResetCamera();
 
   Repaint();
 }
@@ -589,8 +538,7 @@ SVTK_RenderWindow
     SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
     static float aSizeInPercents = aResMgr->doubleValue("VTKViewer","trihedron_size", 105);
 
-    //bool isComputeTrihedronSize =
-      ::ComputeTrihedronSize(myRenderer, aNewSize, anOldSize, aSizeInPercents);
+    ComputeTrihedronSize(myRenderer, aNewSize, anOldSize, aSizeInPercents);
 
     myTrihedron->SetSize( aNewSize );
 

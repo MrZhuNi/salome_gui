@@ -49,6 +49,9 @@ SVTK_View
 
   SetSelector(SVTK_Selector::New());
   GetSelector()->Delete();
+
+  SetInteractorStyle(SVTK_InteractorStyle::New());
+  GetInteractorStyle()->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -62,7 +65,7 @@ SVTK_InteractorStyle*
 SVTK_View
 ::GetInteractorStyle() 
 { 
-  return myInteractorStyle; 
+  return myInteractorStyle.GetPointer(); 
 }
 
 void
@@ -71,6 +74,10 @@ SVTK_View
 {
   myInteractorStyle = theStyle;
   getInteractor()->SetInteractorStyle( theStyle ); 
+  myInteractorStyle->FindPokedRenderer( 0, 0 );
+
+  myInteractorStyle->SetSelector( GetSelector() );
+  myInteractorStyle->SetRenderWidget( this );
 }
 
 //----------------------------------------------------------------------------
@@ -226,7 +233,6 @@ SVTK_View
 	     bool theIsHighlight, 
 	     bool theIsUpdate ) 
 {
-  //cout << "SVTK_View::highlight" << endl;
   using namespace VTK;
   ForEachIf<SALOME_Actor>( getRenderer()->GetActors(),
 			   TIsSameIObject<SALOME_Actor>( theIO ),
