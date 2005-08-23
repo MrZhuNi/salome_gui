@@ -38,6 +38,8 @@
 
 class VTKViewer_Trihedron;
 class VTKViewer_Transform;
+class VTKViewer_Actor;
+
 class SVTK_CubeAxesActor2D;
 class SVTK_Renderer;
 
@@ -48,7 +50,7 @@ class vtkRenderWindow;
 
 class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
 {
-  Q_OBJECT
+  Q_OBJECT;
 
  public:
   SVTK_RenderWindow( QWidget*, const char* );
@@ -78,6 +80,9 @@ class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
   //apply existing transformation on adding SALOME_Actor
   void SetScale( double theScale[3] );
   void GetScale( double theScale[3] );
+
+  void AddActor(VTKViewer_Actor* theActor, bool theIsUpdate = false);
+  void RemoveActor(VTKViewer_Actor* theActor, bool theIsUpdate = false);
 
  public slots:
   virtual void activateZoom();

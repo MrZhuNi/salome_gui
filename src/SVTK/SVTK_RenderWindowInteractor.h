@@ -35,7 +35,7 @@
 
 #include "SALOME_InteractiveObject.hxx"
 
-// VTK Includes
+#include <vtkSmartPointer.h>
 #include <vtkGenericRenderWindowInteractor.h>
 
 class QTimer;
@@ -88,7 +88,7 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
   SVTK_RenderWindowInteractor( QWidget*, const char* );
   ~SVTK_RenderWindowInteractor();
 
-  vtkRenderWindowInteractor* getInteractor() { return myInteractor; }
+  vtkRenderWindowInteractor* getDevice();
 
   // Description:
   // Initializes the event handlers without an XtAppContext.  This is
@@ -107,7 +107,7 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
   vtkRenderer* GetRenderer();
 
  protected:
-  vtkGenericRenderWindowInteractor* myInteractor;
+  vtkSmartPointer<vtkGenericRenderWindowInteractor> myInteractor;
 
   virtual void paintEvent( QPaintEvent* );
   virtual void resizeEvent( QResizeEvent* );

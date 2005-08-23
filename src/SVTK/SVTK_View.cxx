@@ -56,8 +56,7 @@ SVTK_View
 //----------------------------------------------------------------------------
 SVTK_View
 ::~SVTK_View()
-{
-}
+{}
 
 //----------------------------------------------------------------------------
 SVTK_Selector* 
@@ -140,7 +139,8 @@ SVTK_View
 }
 
 //----------------------------------------------------------------
-struct THighlightAction{
+struct THighlightAction
+{
   bool myIsHighlight;
   Selection_Mode myMode;
   THighlightAction( bool theIsHighlight, Selection_Mode theMode = ActorSelection )
@@ -196,8 +196,6 @@ void
 SVTK_View
 ::unHighlightAll() 
 {
-  //cout << "SVTK_View::unHighlightAll" << endl;
-
   using namespace VTK;
   ForEach<SALOME_Actor>( getRenderer()->GetActors(),
 			 THighlightAction( false ) );
@@ -218,48 +216,6 @@ SVTK_View
 			   THighlightAction( theIsHighlight, mySelector->SelectionMode() ) );
 
   update();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_View
-::InsertActor( VTKViewer_Actor* theActor, bool theMoveInternalActors )
-{
-  theActor->AddToRender( getRenderer() );
-
-  //theActor->SetTransform(myTransform);
-  //if(theMoveInternalActors) 
-  //  myRWInteractor->MoveInternalActors();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_View
-::AddActor( VTKViewer_Actor* theActor, bool theUpdate )
-{
-  InsertActor(theActor);
-  if(theUpdate) 
-    Repaint();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_View
-::RemoveActor( VTKViewer_Actor* theActor, bool theUpdate )
-{
-  theActor->RemoveFromRender( getRenderer() );
-
-  if(theUpdate) 
-    Repaint();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_View
-::MoveActor( VTKViewer_Actor* theActor)
-{
-  RemoveActor(theActor);
-  InsertActor(theActor,true);
 }
 
 //----------------------------------------------------------------------------
@@ -312,7 +268,7 @@ void
 SVTK_View
 ::initInteractorStyle( SVTK_InteractorStyle* interactorStyle )
 {
-  getInteractor()->SetInteractorStyle( interactorStyle ); 
+  getDevice()->SetInteractorStyle( interactorStyle ); 
   interactorStyle->FindPokedRenderer( 0, 0 );
 
   interactorStyle->SetSelector( GetSelector() );
@@ -324,7 +280,7 @@ void
 SVTK_View
 ::pushInteractorStyle( SVTK_InteractorStyle* interactorStyle )
 {
-  myInteractorStyles.push( interactorStyle );
+  myInteractorStyles.push( PInteractorStyle(interactorStyle) );
   initInteractorStyle( interactorStyle );
 }
 
@@ -345,5 +301,5 @@ SVTK_InteractorStyle*
 SVTK_View
 ::getInteractorStyle()
 {
-  return myInteractorStyles.empty() ? 0 : myInteractorStyles.top();
+  return myInteractorStyles.empty() ? 0 : myInteractorStyles.top().GetPointer();
 }

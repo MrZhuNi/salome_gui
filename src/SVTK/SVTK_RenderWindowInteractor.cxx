@@ -126,10 +126,10 @@ QtRenderWindowInteractor
 //----------------------------------------------------------------------------
 SVTK_RenderWindowInteractor
 ::SVTK_RenderWindowInteractor( QWidget* parent, const char* name ) :
-  SVTK_RenderWindow( parent, name )
+  SVTK_RenderWindow( parent, name ),
+  myInteractor(QtRenderWindowInteractor::New())
 {
-  myInteractor = QtRenderWindowInteractor::New();
-
+  myInteractor->Delete();
   myInteractor->SetRenderWindow( getRenderWindow() );
   myDisplayMode = 0;
 }
@@ -144,12 +144,17 @@ SVTK_RenderWindowInteractor
   SVTK_SpaceMouse* sm = SVTK_SpaceMouse::getInstance();
   if ( sm->isSpaceMouseOn() )
     sm->close( x11Display() );
-
-  myInteractor->Delete();
 }
 
 
 //----------------------------------------------------------------------------
+vtkRenderWindowInteractor* 
+SVTK_RenderWindowInteractor
+::getDevice()
+{
+  return myInteractor.GetPointer();
+}
+
 void
 SVTK_RenderWindowInteractor
 ::Initialize() 

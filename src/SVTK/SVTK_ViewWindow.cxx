@@ -120,14 +120,14 @@ SVTK_ViewWindow
   return myView; 
 }
 
-SVTK_View* 
+SVTK_RenderWindow* 
 SVTK_ViewWindow
 ::getRenderWindow() 
 { 
   return myView; 
 }
 
-SVTK_View* 
+SVTK_RenderWindowInteractor* 
 SVTK_ViewWindow
 ::getRWInteractor() 
 { 

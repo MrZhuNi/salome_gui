@@ -39,14 +39,6 @@ public:
   void pushInteractorStyle( SVTK_InteractorStyle* );
   void popInteractorStyle();
 
-  // Main process VTK event method
-  static
-  void
-  ProcessEvents(vtkObject* theObject, 
-		unsigned long theEvent,
-		void* theClientData, 
-		void* theCallData);
-
   Selection_Mode SelectionMode() const;
   void SetSelectionMode( Selection_Mode );
 
@@ -68,10 +60,6 @@ public:
               bool immediatly = true );
   void DisplayAll();
   void EraseAll();
-
-  //apply existing transformation on adding SALOME_Actor
-  void AddActor( VTKViewer_Actor*, bool update = false );
-  void RemoveActor(VTKViewer_Actor*, bool update = false);
 
   void AdjustTrihedrons( const bool forced );
 
@@ -96,13 +84,15 @@ public slots:
   virtual void activatePanning(); 
   virtual void activateGlobalPanning(); 
 
-protected:
-  void InitialSetup();
-  void InsertActor( VTKViewer_Actor* theActor,
-                    bool theMoveInternalActors = false );
-  void MoveActor( VTKViewer_Actor* theActor );
+protected:  
+  // Main process VTK event method
+  static
+  void
+  ProcessEvents(vtkObject* theObject, 
+		unsigned long theEvent,
+		void* theClientData, 
+		void* theCallData);
 
-private:  
   SVTK_Viewer* myModel;
 
   // Used to process VTK events
@@ -113,9 +103,9 @@ private:
   vtkSmartPointer<SVTK_Selector> mySelector;
 
   void initInteractorStyle( SVTK_InteractorStyle* );
-  std::stack<SVTK_InteractorStyle*> myInteractorStyles;
 
-  double myCurScale;
+  typedef vtkSmartPointer<SVTK_InteractorStyle> PInteractorStyle;
+  std::stack<PInteractorStyle> myInteractorStyles;
 };
 
 #ifdef WIN32

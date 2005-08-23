@@ -24,7 +24,8 @@ class SVTK_Selector;
 class SVTK_InteractorStyle;
 class SVTK_CubeAxesActor2D;
 
-class vtkRenderer;
+class SVTK_RenderWindow;
+class SVTK_RenderWindowInteractor;
 
 class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 {
@@ -41,8 +42,8 @@ public:
   SVTK_Selector* GetSelector();
   
   SVTK_View* getView();
-  SVTK_View* getRenderWindow();
-  SVTK_View* getRWInteractor();
+  SVTK_RenderWindow* getRenderWindow();
+  SVTK_RenderWindowInteractor* getRWInteractor();
 
   SVTK_InteractorStyle* getInteractorStyle();
 

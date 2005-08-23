@@ -270,6 +270,7 @@ SVTK_RenderWindow
 		int(aBackgroundColor[2]*255));
 }
 
+
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindow
@@ -278,13 +279,33 @@ SVTK_RenderWindow
   myRenderer->GetScale( theScale );
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_RenderWindow
 ::SetScale( double theScale[3] ) 
 {
   myRenderer->SetScale( theScale );
   Repaint();
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindow
+::AddActor(VTKViewer_Actor* theActor, bool theIsUpdate)
+{
+  myRenderer->AddActor(theActor);
+  if(theIsUpdate) 
+    Repaint();
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_RenderWindow
+::RemoveActor(VTKViewer_Actor* theActor, bool theIsUpdate)
+{
+  myRenderer->RemoveActor(theActor);
+  if(theIsUpdate) 
+    Repaint();
 }
 
 //----------------------------------------------------------------------------
