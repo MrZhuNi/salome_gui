@@ -50,34 +50,13 @@ SVTK_View
   SetSelector(SVTK_Selector::New());
   GetSelector()->Delete();
 
-  SetInteractorStyle(SVTK_InteractorStyle::New());
-  GetInteractorStyle()->Delete();
+  pushInteractorStyle( SVTK_InteractorStyle::New() );
 }
 
 //----------------------------------------------------------------------------
 SVTK_View
 ::~SVTK_View()
 {
-}
-
-//----------------------------------------------------------------------------
-SVTK_InteractorStyle* 
-SVTK_View
-::GetInteractorStyle() 
-{ 
-  return myInteractorStyle.GetPointer(); 
-}
-
-void
-SVTK_View
-::SetInteractorStyle( SVTK_InteractorStyle* theStyle )
-{
-  myInteractorStyle = theStyle;
-  getInteractor()->SetInteractorStyle( theStyle ); 
-  myInteractorStyle->FindPokedRenderer( 0, 0 );
-
-  myInteractorStyle->SetSelector( GetSelector() );
-  myInteractorStyle->SetRenderWidget( this );
 }
 
 //----------------------------------------------------------------------------
@@ -125,7 +104,7 @@ void
 SVTK_View
 ::activateZoom()
 {
-  myInteractorStyle->startZoom();
+  getInteractorStyle()->startZoom();
 }
 
 //----------------------------------------------------------------------------
@@ -133,7 +112,7 @@ void
 SVTK_View
 ::activatePanning()
 {
-  myInteractorStyle->startPan();
+  getInteractorStyle()->startPan();
 }
 
 //----------------------------------------------------------------------------
@@ -141,7 +120,7 @@ void
 SVTK_View
 ::activateRotation()
 {
-  myInteractorStyle->startRotate();
+  getInteractorStyle()->startRotate();
 }
 
 //----------------------------------------------------------------------------
@@ -149,7 +128,7 @@ void
 SVTK_View
 ::activateGlobalPanning()
 {
-  myInteractorStyle->startGlobalPan();
+  getInteractorStyle()->startGlobalPan();
 }
 
 //----------------------------------------------------------------------------
@@ -157,7 +136,7 @@ void
 SVTK_View
 ::activateWindowFit()
 {
-  myInteractorStyle->startFitArea();
+  getInteractorStyle()->startFitArea();
 }
 
 //----------------------------------------------------------------
@@ -239,118 +218,6 @@ SVTK_View
 			   THighlightAction( theIsHighlight, mySelector->SelectionMode() ) );
 
   update();
-}
-
-#define INCREMENT_FOR_OP 10
-
-//=======================================================================
-// name    : onPanLeft
-// Purpose : Performs incremental panning to the left
-//=======================================================================
-void
-SVTK_View
-::onPanLeft()
-{
-  myInteractorStyle->IncrementalPan( -INCREMENT_FOR_OP, 0 );
-}
-
-//=======================================================================
-// name    : onPanRight
-// Purpose : Performs incremental panning to the right
-//=======================================================================
-void
-SVTK_View
-::onPanRight()
-{
-  myInteractorStyle->IncrementalPan( INCREMENT_FOR_OP, 0 );
-}
-
-//=======================================================================
-// name    : onPanUp
-// Purpose : Performs incremental panning to the top
-//=======================================================================
-void
-SVTK_View
-::onPanUp()
-{
-  myInteractorStyle->IncrementalPan( 0, INCREMENT_FOR_OP );
-}
-
-//=======================================================================
-// name    : onPanDown
-// Purpose : Performs incremental panning to the bottom
-//=======================================================================
-void
-SVTK_View
-::onPanDown()
-{
-  myInteractorStyle->IncrementalPan( 0, -INCREMENT_FOR_OP );
-}
-
-//=======================================================================
-// name    : onZoomIn
-// Purpose : Performs incremental zooming in
-//=======================================================================
-void
-SVTK_View
-::onZoomIn()
-{
-  myInteractorStyle->IncrementalZoom( INCREMENT_FOR_OP );
-}
-
-//=======================================================================
-// name    : onZoomOut
-// Purpose : Performs incremental zooming out
-//=======================================================================
-void
-SVTK_View
-::onZoomOut()
-{
-  myInteractorStyle->IncrementalZoom( -INCREMENT_FOR_OP );
-}
-
-//=======================================================================
-// name    : onRotateLeft
-// Purpose : Performs incremental rotating to the left
-//=======================================================================
-void
-SVTK_View
-::onRotateLeft()
-{
-  myInteractorStyle->IncrementalRotate( -INCREMENT_FOR_OP, 0 );
-}
-
-//=======================================================================
-// name    : onRotateRight
-// Purpose : Performs incremental rotating to the right
-//=======================================================================
-void
-SVTK_View
-::onRotateRight()
-{
-  myInteractorStyle->IncrementalRotate( INCREMENT_FOR_OP, 0 );
-}
-
-//=======================================================================
-// name    : onRotateUp
-// Purpose : Performs incremental rotating to the top
-//=======================================================================
-void
-SVTK_View
-::onRotateUp()
-{
-  myInteractorStyle->IncrementalRotate( 0, -INCREMENT_FOR_OP );
-}
-
-//=======================================================================
-// name    : onRotateDown
-// Purpose : Performs incremental rotating to the bottom
-//=======================================================================
-void
-SVTK_View
-::onRotateDown()
-{
-  myInteractorStyle->IncrementalRotate( 0, INCREMENT_FOR_OP );
 }
 
 //----------------------------------------------------------------------------
@@ -438,4 +305,45 @@ SVTK_View
       aSActor->getCellRectPicker()->SetTolerance( theTolItems );
     }
   }
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_View
+::initInteractorStyle( SVTK_InteractorStyle* interactorStyle )
+{
+  getInteractor()->SetInteractorStyle( interactorStyle ); 
+  interactorStyle->FindPokedRenderer( 0, 0 );
+
+  interactorStyle->SetSelector( GetSelector() );
+  interactorStyle->SetRenderWidget( this );
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_View
+::pushInteractorStyle( SVTK_InteractorStyle* interactorStyle )
+{
+  myInteractorStyles.push( interactorStyle );
+  initInteractorStyle( interactorStyle );
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_View
+::popInteractorStyle()
+{
+  if ( getInteractorStyle() )
+    myInteractorStyles.pop();
+  
+  if ( getInteractorStyle() ) 
+    initInteractorStyle( getInteractorStyle() );
+}
+
+//----------------------------------------------------------------------------
+SVTK_InteractorStyle* 
+SVTK_View
+::getInteractorStyle()
+{
+  return myInteractorStyles.empty() ? 0 : myInteractorStyles.top();
 }

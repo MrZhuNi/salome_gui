@@ -49,18 +49,17 @@ SVTK_ViewWindow
   aLayout->setAutoAdd( true );
   QSplitter* aSplitter = new QSplitter( Qt::Vertical, aCentralWidget );
 
-  // Create an interactor.
+  // Create SVTK_View (successor of RenderWindowInteractor).
   myView = new SVTK_View( aSplitter, "SVTK_View" );
+  myView->Initialize();
+  myView->setFocusPolicy( StrongFocus );
+  myView->setFocus();
+
   /*
   SVTK_View* bottomView = new SVTK_View( aSplitter, "BottomView" );
   bottomView->getInteractor()->SetInteractorStyle( myInteractorStyle ); 
   bottomView->Initialize();
   */
-
-  myView->Initialize();
-
-  myView->setFocusPolicy( StrongFocus );
-  myView->setFocus();
 
   connect( myView, SIGNAL(KeyPressed( QKeyEvent* )),
            this,   SLOT(onKeyPressed( QKeyEvent* )) );
@@ -79,9 +78,7 @@ SVTK_ViewWindow
   connect( myView, SIGNAL(selectionChanged()),
 	   theModel,SLOT(onSelectionChanged()));
 
-
   onResetView();
-
   setFocusProxy( myView ); // send focus events to myView (fixes a bug
                            // when on module activation myView received focusOutEvent 
 }
@@ -90,6 +87,15 @@ SVTK_ViewWindow
 SVTK_ViewWindow
 ::~SVTK_ViewWindow()
 {}
+
+
+//----------------------------------------------------------------------------
+SVTK_InteractorStyle* 
+SVTK_ViewWindow
+::getInteractorStyle()
+{
+  return myView->getInteractorStyle();
+}
 
 //----------------------------------------------------------------------------
 vtkRenderer*
@@ -105,14 +111,6 @@ SVTK_ViewWindow
 ::GetSelector() 
 { 
   return myView->GetSelector(); 
-}
-
-//----------------------------------------------------------------------------
-SVTK_InteractorStyle* 
-SVTK_ViewWindow
-::getInteractorStyle()
-{ 
-  return myView->GetInteractorStyle();
 }
 
 //----------------------------------------------------------------------------

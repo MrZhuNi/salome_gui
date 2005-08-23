@@ -1239,10 +1239,15 @@ SVTK_InteractorStyle
 {
   // register EventCallbackCommand as observer of standard events (keypress, mousemove, etc)
   vtkInteractorStyle::SetInteractor( interactor );
+ 
+  if ( interactor ) { 
+    // initialize renderer attribute
+    FindPokedRenderer( 0, 0 );
 
-  // register EventCallbackCommand as observer of custorm event (3d space mouse event)
-  interactor->AddObserver( SpaceMouseMoveEvent,   EventCallbackCommand, Priority );
-  interactor->AddObserver( SpaceMouseButtonEvent, EventCallbackCommand, Priority );
+    // register EventCallbackCommand as observer of custorm event (3d space mouse event)
+    interactor->AddObserver( SpaceMouseMoveEvent,   EventCallbackCommand, Priority );
+    interactor->AddObserver( SpaceMouseButtonEvent, EventCallbackCommand, Priority );
+  }
 }
 
 

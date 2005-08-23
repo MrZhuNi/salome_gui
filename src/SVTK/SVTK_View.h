@@ -13,6 +13,8 @@
 
 #include <vtkSmartPointer.h>
 
+#include <stack>
+
 class vtkCallbackCommand;
 class VTKViewer_Actor;
 
@@ -30,11 +32,12 @@ public:
   SVTK_View( QWidget*, const char* );
   virtual ~SVTK_View();
   
-  SVTK_InteractorStyle* GetInteractorStyle();
-  void SetInteractorStyle( SVTK_InteractorStyle* );
-
   SVTK_Selector* GetSelector();
   void SetSelector( SVTK_Selector* theSelector );
+
+  SVTK_InteractorStyle* getInteractorStyle();
+  void pushInteractorStyle( SVTK_InteractorStyle* );
+  void popInteractorStyle();
 
   // Main process VTK event method
   static
@@ -87,17 +90,6 @@ signals:
   void selectionChanged();
 
 public slots:
-  void onPanLeft();
-  void onPanRight();
-  void onPanUp();
-  void onPanDown();
-  void onZoomIn();
-  void onZoomOut();
-  void onRotateLeft();
-  void onRotateRight();
-  void onRotateUp();
-  void onRotateDown();
-
   virtual void activateZoom();
   virtual void activateWindowFit();
   virtual void activateRotation();
@@ -119,7 +111,9 @@ private:
   float myPriority;
 
   vtkSmartPointer<SVTK_Selector> mySelector;
-  vtkSmartPointer<SVTK_InteractorStyle> myInteractorStyle;
+
+  void initInteractorStyle( SVTK_InteractorStyle* );
+  std::stack<SVTK_InteractorStyle*> myInteractorStyles;
 
   double myCurScale;
 };

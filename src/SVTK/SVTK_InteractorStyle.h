@@ -106,15 +106,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   virtual void OnRightButtonDown();
   virtual void OnRightButtonUp();
 
-  // Generic event bindings must be overridden in subclasses
-  void OnMouseMove  (int ctrl, int shift, int x, int y);
-  void OnLeftButtonDown(int ctrl, int shift, int x, int y);
-  void OnLeftButtonUp  (int ctrl, int shift, int x, int y);
-  void OnMiddleButtonDown(int ctrl, int shift, int x, int y);
-  void OnMiddleButtonUp  (int ctrl, int shift, int x, int y);
-  void OnRightButtonDown(int ctrl, int shift, int x, int y);
-  void OnRightButtonUp  (int ctrl, int shift, int x, int y);
-
   void 
   SetFilter( const Handle(VTKViewer_Filter)& );
 
@@ -146,6 +137,15 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   ~SVTK_InteractorStyle();
   SVTK_InteractorStyle(const SVTK_InteractorStyle&) {};
   void operator=(const SVTK_InteractorStyle&) {};
+
+  // Generic event bindings must be overridden in subclasses
+  virtual void OnMouseMove  (int ctrl, int shift, int x, int y);
+  virtual void OnLeftButtonDown(int ctrl, int shift, int x, int y);
+  virtual void OnLeftButtonUp  (int ctrl, int shift, int x, int y);
+  virtual void OnMiddleButtonDown(int ctrl, int shift, int x, int y);
+  virtual void OnMiddleButtonUp  (int ctrl, int shift, int x, int y);
+  virtual void OnRightButtonDown(int ctrl, int shift, int x, int y);
+  virtual void OnRightButtonUp  (int ctrl, int shift, int x, int y);
 
   void RotateXY(int dx, int dy);
   void PanXY(int x, int y, int oldX, int oldY);

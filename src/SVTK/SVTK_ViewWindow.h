@@ -13,8 +13,6 @@
 
 #include "SALOME_InteractiveObject.hxx"
 
-#include <vtkSmartPointer.h>
-
 class SUIT_Desktop;
 
 class VTKViewer_Actor;
@@ -23,8 +21,6 @@ class VTKViewer_Trihedron;
 class SVTK_ViewModelBase;
 class SVTK_Selector;
 
-//class SVTK_View;
-//class SVTK_RenderWindowInteractor;
 class SVTK_InteractorStyle;
 class SVTK_CubeAxesActor2D;
 
@@ -43,11 +39,12 @@ public:
 
   vtkRenderer* getRenderer();
   SVTK_Selector* GetSelector();
-  SVTK_InteractorStyle* getInteractorStyle();
-
+  
   SVTK_View* getView();
   SVTK_View* getRenderWindow();
   SVTK_View* getRWInteractor();
+
+  SVTK_InteractorStyle* getInteractorStyle();
 
   Selection_Mode SelectionMode() const;
   void SetSelectionMode(Selection_Mode theMode);
