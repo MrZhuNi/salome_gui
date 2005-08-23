@@ -29,6 +29,8 @@
 #ifndef SVTK_RenderWindow_h
 #define SVTK_RenderWindow_h
 
+#include <vtkSmartPointer.h>
+
 #include <qmainwindow.h>
 #include <qimage.h>
 
@@ -37,6 +39,7 @@
 class VTKViewer_Trihedron;
 class VTKViewer_Transform;
 class SVTK_CubeAxesActor2D;
+class SVTK_Renderer;
 
 class QtxAction;
 
@@ -51,13 +54,13 @@ class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
   SVTK_RenderWindow( QWidget*, const char* );
   virtual ~SVTK_RenderWindow() ;
 
-  QToolBar* getToolBar() { return myToolBar; }
+  QToolBar* getToolBar();
 
-  vtkRenderer* getRenderer() { return myRenderer;}
-  vtkRenderWindow* getRenderWindow() { return myRenderWindow; }
+  vtkRenderer* getRenderer();
+  vtkRenderWindow* getRenderWindow();
 
-  VTKViewer_Trihedron*  GetTrihedron() { return myTrihedron; }
-  SVTK_CubeAxesActor2D* GetCubeAxes() { return myCubeAxes; }
+  VTKViewer_Trihedron* GetTrihedron();
+  SVTK_CubeAxesActor2D* GetCubeAxes();
 
   int  GetTrihedronSize() const;
   void SetTrihedronSize( const int );
@@ -113,16 +116,11 @@ class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
   void createToolBar();
 
  protected:
-  vtkRenderer* myRenderer;
-  vtkRenderWindow* myRenderWindow;
+  vtkSmartPointer<SVTK_Renderer> myRenderer;
+  vtkSmartPointer<vtkRenderWindow> myRenderWindow;
 
-  VTKViewer_Transform*  myTransform;
-  VTKViewer_Trihedron*  myTrihedron;  
-  int                   myTrihedronSize;
-  SVTK_CubeAxesActor2D* myCubeAxes;
-
-  QToolBar* myToolBar;
   ActionsMap myActionsMap;  
+  QToolBar* myToolBar;
 };
 
 #endif
