@@ -153,7 +153,7 @@ public:
   virtual void Execute() {
     if( SVTK_ViewWindow* aVTKViewWindow = GetVTKViewWindow() ) {
       PyObject* aPyClass = GetPyClass("vtkRenderWindowInteractor");
-      vtkRenderWindowInteractor* aVTKObject = aVTKViewWindow->getRWInteractor()->getInteractor();
+      vtkRenderWindowInteractor* aVTKObject = aVTKViewWindow->getRWInteractor()->getDevice();
       myResult = PyVTKObject_New(aPyClass,aVTKObject);
     }
   }
