@@ -35,7 +35,7 @@
 #include "SVTK_RenderWindow.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_Selection.h"
-#include "SVTK_SpaceMouseEvent.h" 
+#include "SVTK_Event.h" 
 #include "SVTK_Selector.h"
 #include "SVTK_Functor.h"
 
@@ -46,9 +46,6 @@
 
 #include "SALOME_ListIteratorOfListIO.hxx"
 #include "SALOME_ListIO.hxx"
-
-#include "SUIT_Session.h"
-#include "SUIT_ResourceMgr.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkMath.h>
@@ -1245,8 +1242,18 @@ SVTK_InteractorStyle
     FindPokedRenderer( 0, 0 );
 
     // register EventCallbackCommand as observer of custorm event (3d space mouse event)
-    interactor->AddObserver( SpaceMouseMoveEvent,   EventCallbackCommand, Priority );
+    interactor->AddObserver( SpaceMouseMoveEvent, EventCallbackCommand, Priority );
     interactor->AddObserver( SpaceMouseButtonEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( PanLeftEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( PanRightEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( PanUpEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( PanDownEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( ZoomInEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( ZoomOutEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( RotateLeftEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( RotateRightEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( RotateUpEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( RotateDownEvent, EventCallbackCommand, Priority );
   }
 }
 
@@ -1291,35 +1298,11 @@ void
 SVTK_InteractorStyle
 ::onSpaceMouseButton( int button )
 {
-  //  printf( "Button pressed [%d]  \n", button );
-  SUIT_ResourceMgr* resMgr = SUIT_Session::session()->resourceMgr();
-  if ( resMgr->integerValue( "VISU", "spacemouse_func1_btn" ) == button )
-    DecreaseSpeedIncrement();
-  if ( resMgr->integerValue( "VISU", "spacemouse_func2_btn" ) == button )
-    IncreaseSpeedIncrement();
-  if ( resMgr->integerValue( "VISU", "spacemouse_func3_btn" ) == button )
-    DecreaseGaussPointMagnification();
-  if ( resMgr->integerValue( "VISU", "spacemouse_func4_btn" ) == button )
-    IncreaseGaussPointMagnification();
-  if ( resMgr->integerValue( "VISU", "spacemouse_func5_btn" ) == button )
-    DominantCombinedSwitch();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorStyle
-::DecreaseSpeedIncrement()
-{
-  printf( "\n--DecreaseSpeedIncrement() NOT IMPLEMENTED--\n" );
-  
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorStyle
-::IncreaseSpeedIncrement()
-{
-  printf( "\n--IncreaseSpeedIncrement() NOT IMPLEMENTED--\n" );
+  if ( mySpaceMouseBtns[0] == button )    --mySpeedIncrement;
+  if ( mySpaceMouseBtns[1] == button )    ++mySpeedIncrement;
+  if ( mySpaceMouseBtns[2] == button )    DecreaseGaussPointMagnification();
+  if ( mySpaceMouseBtns[3] == button )    IncreaseGaussPointMagnification();
+  if ( mySpaceMouseBtns[4] == button )    DominantCombinedSwitch();
 }
 
 //----------------------------------------------------------------------------
@@ -1354,10 +1337,10 @@ SVTK_InteractorStyle
 		 void* clientData, 
 		 void* callData )
 {
-  if ( event != SpaceMouseMoveEvent && event != SpaceMouseButtonEvent )
+  if ( event < vtkCommand::UserEvent  )
     vtkInteractorStyle::ProcessEvents( object, event, clientData, callData );
 
-  else if ( clientData && callData ) {
+  else if ( clientData ) {
     vtkObject* anObject = reinterpret_cast<vtkObject*>( clientData );
     SVTK_InteractorStyle* self = dynamic_cast<SVTK_InteractorStyle*>( anObject );
     if ( self ) {
@@ -1367,6 +1350,60 @@ SVTK_InteractorStyle
 	break;
       case SpaceMouseButtonEvent : 
 	self->onSpaceMouseButton( *((int*)callData) ); 
+	break;
+      case PanLeftEvent: 
+	self->IncrementalPan( -self->mySpeedIncrement, 0 );
+	break;
+      case PanRightEvent:
+	self->IncrementalPan( self->mySpeedIncrement, 0 );
+	break;
+      case PanUpEvent:
+	self->IncrementalPan( 0, self->mySpeedIncrement );
+	break;
+      case PanDownEvent:
+	self->IncrementalPan( 0, -self->mySpeedIncrement );
+	break;
+      case ZoomInEvent:
+	self->IncrementalZoom( self->mySpeedIncrement );
+	break;
+      case ZoomOutEvent:
+	self->IncrementalZoom( -self->mySpeedIncrement );
+	break;
+      case RotateLeftEvent: 
+	self->IncrementalRotate( -self->mySpeedIncrement, 0 );
+	break;
+      case RotateRightEvent:
+	self->IncrementalRotate( self->mySpeedIncrement, 0 );
+	break;
+      case RotateUpEvent:
+	self->IncrementalRotate( 0, -self->mySpeedIncrement );
+	break;
+      case RotateDownEvent:
+	self->IncrementalRotate( 0, self->mySpeedIncrement );
+	break;
+      case PlusSpeedIncrementEvent:
+	++(self->mySpeedIncrement);
+	break;
+      case MinusSpeedIncrementEvent:
+	--(self->mySpeedIncrement);
+	break;
+      case SetSpeedIncrementEvent:
+	self->mySpeedIncrement = *((int*)callData);
+	break;
+      case SetSpaceMouseF1Event:
+	self->mySpaceMouseBtns[0] = *((int*)callData);
+	break;
+      case SetSpaceMouseF2Event:
+	self->mySpaceMouseBtns[1] = *((int*)callData);
+	break;
+      case SetSpaceMouseF3Event:
+	self->mySpaceMouseBtns[2] = *((int*)callData);
+	break;
+      case SetSpaceMouseF4Event:
+	self->mySpaceMouseBtns[3] = *((int*)callData);
+	break;
+      case SetSpaceMouseF5Event:
+	self->mySpaceMouseBtns[4] = *((int*)callData);
 	break;
       }
     }

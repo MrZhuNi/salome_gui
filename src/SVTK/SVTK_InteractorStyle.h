@@ -184,8 +184,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   void onSpaceMouseMove( double* data );
   void onSpaceMouseButton( int button );
 
-  void DecreaseSpeedIncrement();
-  void IncreaseSpeedIncrement();
   void DecreaseGaussPointMagnification();
   void IncreaseGaussPointMagnification();
   void DominantCombinedSwitch();
@@ -203,6 +201,14 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   bool                      myCursorState;
   bool                      myShiftState;
   int                       ForcedState;
+
+  int                       mySpeedIncrement; // "increment" for pan/rotate/zoom operations
+  int                       mySpaceMouseBtns[5];  // space_mouse_button assigned for functions 1..5 :
+  // [1] Decrease Speed Increment
+  // [2] Increase Speed Increment
+  // [3] Decrease Gauss Point Magnification
+  // [4] Increase Gauss Point Magnification
+  // [5] Dominant Combined Switch
   
   QWidget*                  myRenderWidget;
   vtkSmartPointer<SVTK_Selector> mySelector;

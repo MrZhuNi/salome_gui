@@ -127,6 +127,7 @@ protected slots:
 
 protected:
   QImage dumpView();
+  virtual void      action( const int );
 
   SVTK_View* myView;
 };

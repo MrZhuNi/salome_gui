@@ -31,9 +31,28 @@
 
 #include <vtkCommand.h>
 
-enum SpaceMouseEvent {
+enum Event {
   SpaceMouseMoveEvent = vtkCommand::UserEvent+1, 
-  SpaceMouseButtonEvent 
+  SpaceMouseButtonEvent,
+  PanLeftEvent,
+  PanRightEvent,
+  PanUpEvent,
+  PanDownEvent,
+  ZoomInEvent,
+  ZoomOutEvent,
+  RotateLeftEvent,
+  RotateRightEvent,
+  RotateUpEvent,
+  RotateDownEvent,
+  PlusSpeedIncrementEvent,
+  MinusSpeedIncrementEvent,
+  SetSpeedIncrementEvent,
+  SetSpaceMouseF1Event,
+  SetSpaceMouseF2Event,
+  SetSpaceMouseF3Event,
+  SetSpaceMouseF4Event,
+  SetSpaceMouseF5Event,
+  LastEvent
 };
   
 #endif

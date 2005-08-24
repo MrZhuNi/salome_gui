@@ -190,6 +190,9 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
 		QColor thecolor);
   QColor GetColor(const Handle(SALOME_InteractiveObject)& IObject);
 
+  // SVTK events manamegent (key accelerators, speed increment, etc.)
+  void FireEvent( const int svtkAccelEvent, void* data );
+
  protected:
   int myDisplayMode;
 

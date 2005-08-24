@@ -20,11 +20,12 @@
 
 #include "SUIT_Tools.h"
 #include "SUIT_ResourceMgr.h"
+#include "SUIT_Accel.h"
 
 #include "VTKViewer_Utilities.h"
 #include "VTKViewer_CellRectPicker.h"
 
-//#include "SVTK_View.h"
+#include "SVTK_Event.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_ViewModelBase.h"
 #include "SVTK_RenderWindowInteractor.h"
@@ -486,5 +487,36 @@ SVTK_ViewWindow
       aSActor->getCellPicker()->SetTolerance( theTolItems );
       aSActor->getCellRectPicker()->SetTolerance( theTolItems );
     }
+  }
+}
+
+//----------------------------------------------------------------------------
+int convertAction( const int accelAction )
+{
+  switch ( accelAction ) {
+  case SUIT_Accel::PanLeft     : return PanLeftEvent;
+  case SUIT_Accel::PanRight    : return PanRightEvent;
+  case SUIT_Accel::PanUp       : return PanUpEvent;
+  case SUIT_Accel::PanDown     : return PanDownEvent;
+  case SUIT_Accel::ZoomIn      : return ZoomInEvent;
+  case SUIT_Accel::ZoomOut     : return ZoomOutEvent;
+  case SUIT_Accel::RotateLeft  : return RotateLeftEvent;
+  case SUIT_Accel::RotateRight : return RotateRightEvent;
+  case SUIT_Accel::RotateUp    : return RotateUpEvent;
+  case SUIT_Accel::RotateDown  : return RotateDownEvent;  
+  }
+  return accelAction;
+}
+
+//----------------------------------------------------------------------------
+void 
+SVTK_ViewWindow
+::action( const int accelAction  )
+{
+  if ( accelAction == SUIT_Accel::ZoomFit )
+    onFitAll();
+  else {
+    int svtkEvent = convertAction( accelAction );
+    myView->FireEvent( svtkEvent, 0 );
   }
 }

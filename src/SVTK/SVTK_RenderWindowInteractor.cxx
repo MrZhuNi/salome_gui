@@ -32,7 +32,7 @@
 #include "SVTK_Functor.h"
 #include "SALOME_Actor.h"
 #include "SVTK_SpaceMouse.h" 
-#include "SVTK_SpaceMouseEvent.h" 
+#include "SVTK_Event.h" 
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -739,4 +739,11 @@ SVTK_RenderWindowInteractor
 			  TIsSameIObject<SALOME_Actor>(theIObject),
 			  TSetFunction<SALOME_Actor,const char*,QString>
 			  (&SALOME_Actor::setName,theName.latin1()));
+}
+
+void
+SVTK_RenderWindowInteractor
+::FireEvent(const int svtkEvent, void* data)
+{
+  myInteractor->InvokeEvent( svtkEvent, data );
 }

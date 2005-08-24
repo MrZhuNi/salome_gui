@@ -30,7 +30,7 @@ EXPORT_HEADERS= SVTK.h \
 		SVTK_Selection.h \
 		SVTK_SelectionEvent.h \
 		SVTK_SpaceMouse.h \
-		SVTK_SpaceMouseEvent.h \
+		SVTK_Event.h \
 		SVTK_ViewModelBase.h
 
 # Libraries targets
