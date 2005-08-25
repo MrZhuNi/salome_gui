@@ -114,6 +114,14 @@ SVTK_InteractorStyle
 
   myRectPicker = VTKViewer_RectPicker::New();
   myRectPicker->Delete();
+
+  // set default values of properties.  user may edit them in preferences.
+  mySpeedIncrement = 10;
+  mySpaceMouseBtns[0] = 1;
+  mySpaceMouseBtns[1] = 2;
+  mySpaceMouseBtns[2] = 10;
+  mySpaceMouseBtns[3] = 11;
+  mySpaceMouseBtns[4] = 9;
 }
 
 //----------------------------------------------------------------------------
@@ -1254,6 +1262,14 @@ SVTK_InteractorStyle
     interactor->AddObserver( RotateRightEvent, EventCallbackCommand, Priority );
     interactor->AddObserver( RotateUpEvent, EventCallbackCommand, Priority );
     interactor->AddObserver( RotateDownEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( PlusSpeedIncrementEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( MinusSpeedIncrementEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SetSpeedIncrementEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SetSpaceMouseF1Event, EventCallbackCommand, Priority );
+    interactor->AddObserver( SetSpaceMouseF2Event, EventCallbackCommand, Priority );
+    interactor->AddObserver( SetSpaceMouseF3Event, EventCallbackCommand, Priority );
+    interactor->AddObserver( SetSpaceMouseF4Event, EventCallbackCommand, Priority );
+    interactor->AddObserver( SetSpaceMouseF5Event, EventCallbackCommand, Priority );
   }
 }
 
