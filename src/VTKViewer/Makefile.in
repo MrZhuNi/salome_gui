@@ -18,6 +18,7 @@ EXPORT_HEADERS= VTKViewer_Actor.h \
 		VTKViewer_ConvexTool.h \
 	        VTKViewer_Filter.h \
 		VTKViewer_GeometryFilter.h \
+		VTKViewer_AppendFilter.h \
 		VTKViewer_Algorithm.h \
 		VTKViewer.h \
 		VTKViewer_InteractorStyle.h \
@@ -47,6 +48,7 @@ LIB_SRC= VTKViewer_Actor.cxx \
 	 VTKViewer_ExtractUnstructuredGrid.cxx \
 	 VTKViewer_Filter.cxx \
 	 VTKViewer_GeometryFilter.cxx \
+	 VTKViewer_AppendFilter.cxx \
 	 VTKViewer_InteractorStyle.cxx \
 	 VTKViewer_PassThroughFilter.cxx \
 	 VTKViewer_RectPicker.cxx \
