@@ -340,7 +340,7 @@ SVTK_RenderWindowInteractor
 {
   myInteractor->SetKeyEventInformation( ( event->state() & ControlButton ),
 					( event->state() & ShiftButton ),
-					0 );
+					event->key() );
   myInteractor->KeyPressEvent();
 
   emit KeyPressed( event );
@@ -353,7 +353,7 @@ SVTK_RenderWindowInteractor
 {
   myInteractor->SetKeyEventInformation( ( event->state() & ControlButton ),
 					( event->state() & ShiftButton ),
-					0 );
+					event->key() );
   myInteractor->KeyReleaseEvent();
 
   emit KeyReleased( event );
