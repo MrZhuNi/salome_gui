@@ -71,17 +71,29 @@ vtkCxxRevisionMacro(VTKViewer_AppendFilter, "$Revision$");
 vtkStandardNewMacro(VTKViewer_AppendFilter);
 
 VTKViewer_AppendFilter::VTKViewer_AppendFilter() 
-{}
-
+{
+  myDoMappingFlag=true;
+}
 
 VTKViewer_AppendFilter::~VTKViewer_AppendFilter()
 {}
 
+void VTKViewer_AppendFilter::SetDoMappingFlag(const bool theFlag)
+{
+  myDoMappingFlag=theFlag;
+}
+
+bool VTKViewer_AppendFilter::DoMappingFlag() const
+{
+  return myDoMappingFlag;
+}
 
 void VTKViewer_AppendFilter::Execute()
 {
   vtkAppendFilter::Execute();
-  DoMapping();
+  if (myDoMappingFlag){
+    DoMapping();
+  }
 }
 
 void VTKViewer_AppendFilter::Reset()

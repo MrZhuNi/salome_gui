@@ -20,6 +20,10 @@ public:
    */
   vtkTypeRevisionMacro(VTKViewer_AppendFilter, vtkAppendFilter);
 
+  void SetDoMappingFlag(const bool theFlag);
+
+  bool DoMappingFlag() const;
+
   int GetElemObjId(int theVtkI, 
 		   int& theInputIndex);
 
@@ -49,10 +53,12 @@ private:
   typedef std::vector<int> VectorInt;
 
 private:
+  bool      myDoMappingFlag;
   TVectorId myNodeIds;
   TVectorId myCellIds;
   VectorInt myNodeRanges;
   VectorInt myCellRanges;
+  
 };
 
 #endif
