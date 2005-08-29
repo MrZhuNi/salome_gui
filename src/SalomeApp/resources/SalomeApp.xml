@@ -23,7 +23,7 @@
   </section>
   <section name="language">
     <parameter name="language"    value="en"/>
-    <parameter name="translators" value="%P_msg_%L.qm|%PM_msg_%L.qm|%P_icons.qm|%P_images.qm"/>
+    <parameter name="translators" value="%P_msg_%L.qm|%PM_msg_%L.qm|%P_icons.qm|%P_images.qm|%PM_images.qm"/>
   </section>
   <section name="resources">
     <parameter name="SUIT"         value="${SUITRoot}/resources"/>
@@ -140,6 +140,14 @@
   <parameter value="1" name="sweeping_number_cycles" />
   <parameter value="20" name="sweeping_number_steps" />
   <parameter value="0.2" name="sweeping_time_step" />
+  <parameter value="0" name="mouse_behaviour" />
+  <parameter value="10" name="speed_increment" />
+  <parameter value="1" name="spacemouse_func1_btn" />
+  <parameter value="2" name="spacemouse_func2_btn" />
+  <parameter value="10" name="spacemouse_func3_btn" />
+  <parameter value="11" name="spacemouse_func4_btn" />
+  <parameter value="9" name="spacemouse_func5_btn" />
+  <parameter value="10" name="camera_movement_steps" />
   </section>
   <!-- Here go optional sections for other modules -->
   <section name="resources">
