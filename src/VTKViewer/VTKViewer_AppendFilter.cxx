@@ -72,7 +72,7 @@ vtkStandardNewMacro(VTKViewer_AppendFilter);
 
 VTKViewer_AppendFilter::VTKViewer_AppendFilter() 
 {
-  myDoMappingFlag=true;
+  myDoMappingFlag=false;//modified by NIZNHY-PKV Tue Aug 30 10:09:50 2005ft
 }
 
 VTKViewer_AppendFilter::~VTKViewer_AppendFilter()
@@ -102,16 +102,23 @@ void VTKViewer_AppendFilter::Reset()
   myCellIds.clear();
   myNodeRanges.clear();
   myCellRanges.clear();
+  //modified by NIZNHY-PKV Tue Aug 30 10:09:35 2005f
+  myNodeMapObjIDVtkID.clear();
+  myCellMapObjIDVtkID.clear();
+  //modified by NIZNHY-PKV Tue Aug 30 10:09:39 2005t
 }
 
 void VTKViewer_AppendFilter::DoMapping()
 {
-  int i, j, i1, i2; 
+  int i, j, i1, i2, iNodeCnt, iCellCnt; 
+  IteratorOfDataMapOfIntegerInteger aMapIt;
   vtkIdType aNbPnts, aNbCells, aId;
   vtkDataSet *pDS;
   //
   Reset();
   //
+  iNodeCnt=0;
+  iCellCnt=0;
   for (i=0; i<NumberOfInputs; ++i) {
     pDS=(vtkDataSet *)Inputs[i];
     //
@@ -125,6 +132,13 @@ void VTKViewer_AppendFilter::DoMapping()
     for(j=0; j<aNbPnts; ++j) {
       aId=(vtkIdType)j;
       myNodeIds.push_back(aId);
+      //
+      aMapIt=myNodeMapObjIDVtkID.find(aId);
+      if (aMapIt==myNodeMapObjIDVtkID.end()) {
+	// if not found
+	myNodeMapObjIDVtkID[aId]=iNodeCnt;
+      }
+      ++iNodeCnt;
     }
     //
     // Cells
@@ -136,9 +150,45 @@ void VTKViewer_AppendFilter::DoMapping()
     for(j=0; j<aNbCells; ++j) {
       aId=(vtkIdType)j;
       myCellIds.push_back(aId);
+      //
+      aMapIt=myCellMapObjIDVtkID.find(aId);
+      if (aMapIt==myCellMapObjIDVtkID.end()) {
+	// if not found
+	myCellMapObjIDVtkID[aId]=iCellCnt;
+      }
+      ++iCellCnt;
     }
   }
 }
+//modified by NIZNHY-PKV Tue Aug 30 10:20:50 2005f
+int VTKViewer_AppendFilter::GetElemVtkID(int theObjID)
+{
+  int aVtkID=-1;
+  IteratorOfDataMapOfIntegerInteger aMapIt;
+  //
+  aMapIt=myCellMapObjIDVtkID.find(theObjID);
+  if (aMapIt!=myCellMapObjIDVtkID.end()) {
+    // found
+    PairOfDataMapOfIntegerInteger& aPair=(*aMapIt);
+    aVtkID=aPair.second;
+  }
+  return aVtkID;
+}
+
+int VTKViewer_AppendFilter::GetNodeVtkID(int theObjID)
+{
+  int aVtkID=-1;
+  IteratorOfDataMapOfIntegerInteger aMapIt;
+  //
+  aMapIt=myNodeMapObjIDVtkID.find(theObjID);
+  if (aMapIt!=myNodeMapObjIDVtkID.end()) {
+    // found
+    PairOfDataMapOfIntegerInteger& aPair=(*aMapIt);
+    aVtkID=aPair.second;
+  }
+  return aVtkID;
+}
+//modified by NIZNHY-PKV Tue Aug 30 10:20:54 2005t
 
 int VTKViewer_AppendFilter::GetNodeObjId(int theVtkID, 
 					 int& theInputIndex)

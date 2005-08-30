@@ -6,6 +6,11 @@
 #include <vtkAppendFilter.h>
 
 #include <vector>
+//pkv f
+#include <map>
+using namespace std;
+//pkv t
+
 /*! \brief This class used same as vtkAppendFilter. See documentation on VTK for more information.
  */
 class VTKVIEWER_EXPORT VTKViewer_AppendFilter : public vtkAppendFilter 
@@ -29,6 +34,12 @@ public:
 
   int GetNodeObjId(int theVtkID, 
 		   int& theInputIndex);
+
+  //pkv f
+  int GetElemVtkID(int theObjID);
+
+  int GetNodeVtkID(int theObjID);
+  //pkv t
   //
 protected:
   /*! \fn VTKViewer_AppendFilter();
@@ -51,14 +62,21 @@ protected:
 private:
   typedef std::vector<vtkIdType> TVectorId;
   typedef std::vector<int> VectorInt;
-
+  //pkv f
+  typedef std::map <int , int, less<int> >             DataMapOfIntegerInteger;
+  typedef std::map < int, int, std::less<int> >::iterator   IteratorOfDataMapOfIntegerInteger;
+  typedef std::map < int, int, std::less<int> >::value_type PairOfDataMapOfIntegerInteger;
+  //pkv t
 private:
   bool      myDoMappingFlag;
   TVectorId myNodeIds;
   TVectorId myCellIds;
   VectorInt myNodeRanges;
   VectorInt myCellRanges;
-  
+  //pkv f
+  DataMapOfIntegerInteger myNodeMapObjIDVtkID;
+  DataMapOfIntegerInteger myCellMapObjIDVtkID;
+  //pkv t
 };
 
 #endif
