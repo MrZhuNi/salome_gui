@@ -301,5 +301,5 @@ SVTK_InteractorStyle*
 SVTK_View
 ::getInteractorStyle()
 {
-  return myInteractorStyles.empty() ? 0 : myInteractorStyles.top().GetPointer();
+  return myInteractorStyles.isEmpty() ? 0 : myInteractorStyles.top().GetPointer();
 }

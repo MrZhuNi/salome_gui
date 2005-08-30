@@ -6,14 +6,16 @@
 #endif
 
 #include "SVTK.h"
+
 #include "SVTK_Selection.h"
 #include "SVTK_RenderWindowInteractor.h"
+
 
 #include "SALOME_InteractiveObject.hxx"
 
 #include <vtkSmartPointer.h>
 
-#include <stack>
+#include <qvaluestack.h>
 
 class vtkCallbackCommand;
 class VTKViewer_Actor;
@@ -105,7 +107,7 @@ protected:
   void initInteractorStyle( SVTK_InteractorStyle* );
 
   typedef vtkSmartPointer<SVTK_InteractorStyle> PInteractorStyle;
-  std::stack<PInteractorStyle> myInteractorStyles;
+  QValueStack<PInteractorStyle> myInteractorStyles;
 };
 
 #ifdef WIN32
