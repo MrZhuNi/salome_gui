@@ -4,12 +4,12 @@
 #include "VTKViewer.h"
 
 #include <vtkAppendFilter.h>
+#include <vtkSmartPointer.h>
 
 #include <vector>
-//pkv f
 #include <map>
-using namespace std;
-//pkv t
+
+class vtkPoints;
 
 /*! \brief This class used same as vtkAppendFilter. See documentation on VTK for more information.
  */
@@ -29,18 +29,26 @@ public:
 
   bool DoMappingFlag() const;
 
-  int GetElemObjId(int theVtkI, 
-		   int& theInputIndex);
+  void
+  SetPoints(vtkPoints* thePoints);
 
-  int GetNodeObjId(int theVtkID, 
-		   int& theInputIndex);
+  vtkPoints*
+  GetPoints();
 
-  //pkv f
-  int GetElemVtkID(int theObjID);
+  vtkIdType
+  GetPointOutputID(vtkIdType theInputID);
 
-  int GetNodeVtkID(int theObjID);
-  //pkv t
-  //
+  vtkIdType
+  GetCellOutputID(vtkIdType theInputID);
+
+  vtkIdType 
+  GetPointInputID(vtkIdType theOutputID, 
+		  vtkIdType& theInputDataSetID);
+
+  vtkIdType
+  GetCellInputID(vtkIdType theOutputID, 
+		 vtkIdType& theInputDataSetID);
+
 protected:
   /*! \fn VTKViewer_AppendFilter();
    * \brief Constructor
@@ -59,13 +67,15 @@ protected:
 
   void Reset();
   //
+  vtkSmartPointer<vtkPoints> myPoints;
+
 private:
   typedef std::vector<vtkIdType> TVectorId;
   typedef std::vector<int> VectorInt;
   //pkv f
-  typedef std::map <int , int, less<int> >             DataMapOfIntegerInteger;
-  typedef std::map < int, int, std::less<int> >::iterator   IteratorOfDataMapOfIntegerInteger;
-  typedef std::map < int, int, std::less<int> >::value_type PairOfDataMapOfIntegerInteger;
+  typedef std::map <int,int>                  DataMapOfIntegerInteger;
+  typedef DataMapOfIntegerInteger::iterator   IteratorOfDataMapOfIntegerInteger;
+  typedef DataMapOfIntegerInteger::value_type PairOfDataMapOfIntegerInteger;
   //pkv t
 private:
   bool      myDoMappingFlag;

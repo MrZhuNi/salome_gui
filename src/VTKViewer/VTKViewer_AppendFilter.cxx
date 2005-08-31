@@ -70,25 +70,47 @@ using namespace std;
 vtkCxxRevisionMacro(VTKViewer_AppendFilter, "$Revision$");
 vtkStandardNewMacro(VTKViewer_AppendFilter);
 
-VTKViewer_AppendFilter::VTKViewer_AppendFilter() 
+VTKViewer_AppendFilter
+::VTKViewer_AppendFilter() 
 {
   myDoMappingFlag=false;//modified by NIZNHY-PKV Tue Aug 30 10:09:50 2005ft
 }
 
-VTKViewer_AppendFilter::~VTKViewer_AppendFilter()
+VTKViewer_AppendFilter
+::~VTKViewer_AppendFilter()
 {}
 
-void VTKViewer_AppendFilter::SetDoMappingFlag(const bool theFlag)
+void
+VTKViewer_AppendFilter
+::SetDoMappingFlag(const bool theFlag)
 {
   myDoMappingFlag=theFlag;
 }
 
-bool VTKViewer_AppendFilter::DoMappingFlag() const
+bool 
+VTKViewer_AppendFilter
+::DoMappingFlag() const
 {
   return myDoMappingFlag;
 }
 
-void VTKViewer_AppendFilter::Execute()
+void
+VTKViewer_AppendFilter
+::SetPoints(vtkPoints* thePoints)
+{
+  myPoints = thePoints;
+}
+
+vtkPoints*
+VTKViewer_AppendFilter
+::GetPoints()
+{
+  return myPoints.GetPointer();
+}
+
+void
+VTKViewer_AppendFilter
+::Execute()
 {
   vtkAppendFilter::Execute();
   if (myDoMappingFlag){
@@ -160,13 +182,35 @@ void VTKViewer_AppendFilter::DoMapping()
     }
   }
 }
-//modified by NIZNHY-PKV Tue Aug 30 10:20:50 2005f
-int VTKViewer_AppendFilter::GetElemVtkID(int theObjID)
+
+
+//---------------------------------------------------------------
+vtkIdType
+VTKViewer_AppendFilter
+::GetPointOutputID(vtkIdType theInputID)
 {
   int aVtkID=-1;
   IteratorOfDataMapOfIntegerInteger aMapIt;
   //
-  aMapIt=myCellMapObjIDVtkID.find(theObjID);
+  aMapIt=myNodeMapObjIDVtkID.find(theInputID);
+  if (aMapIt!=myNodeMapObjIDVtkID.end()) {
+    // found
+    PairOfDataMapOfIntegerInteger& aPair=(*aMapIt);
+    aVtkID=aPair.second;
+  }
+  return aVtkID;
+}
+
+
+//---------------------------------------------------------------
+vtkIdType 
+VTKViewer_AppendFilter
+::GetCellOutputID(vtkIdType theInputID)
+{
+  int aVtkID=-1;
+  IteratorOfDataMapOfIntegerInteger aMapIt;
+  //
+  aMapIt=myCellMapObjIDVtkID.find(theInputID);
   if (aMapIt!=myCellMapObjIDVtkID.end()) {
     // found
     PairOfDataMapOfIntegerInteger& aPair=(*aMapIt);
@@ -175,71 +219,64 @@ int VTKViewer_AppendFilter::GetElemVtkID(int theObjID)
   return aVtkID;
 }
 
-int VTKViewer_AppendFilter::GetNodeVtkID(int theObjID)
-{
-  int aVtkID=-1;
-  IteratorOfDataMapOfIntegerInteger aMapIt;
-  //
-  aMapIt=myNodeMapObjIDVtkID.find(theObjID);
-  if (aMapIt!=myNodeMapObjIDVtkID.end()) {
-    // found
-    PairOfDataMapOfIntegerInteger& aPair=(*aMapIt);
-    aVtkID=aPair.second;
-  }
-  return aVtkID;
-}
-//modified by NIZNHY-PKV Tue Aug 30 10:20:54 2005t
 
-int VTKViewer_AppendFilter::GetNodeObjId(int theVtkID, 
-					 int& theInputIndex)
+//---------------------------------------------------------------
+vtkIdType 
+VTKViewer_AppendFilter
+::GetPointInputID(vtkIdType theOutputID, 
+		  vtkIdType& theInputDataSetID)
 {
   int aNb, aNbRanges, aRetID, i, i1, i2, j;
   //
   aRetID=-1;
-  theInputIndex=-1;
+  theInputDataSetID=-1;
   //
   aNb=myNodeIds.size();
-  if (theVtkID<0 ||  theVtkID>=aNb) {
+  if (theOutputID<0 ||  theOutputID>=aNb) {
     return aRetID;
   }
   //
-  aRetID=(int)myNodeIds[theVtkID];
+  aRetID=(int)myNodeIds[theOutputID];
   //
   aNbRanges=myNodeRanges.size()/2;
   for (i=0; i<aNbRanges; ++i) {
     j=2*i;
     i1=myNodeRanges[j];
     i2=myNodeRanges[j+1];
-    if (theVtkID>=i1 && theVtkID<=i2) {
-      theInputIndex=i;
+    if (theOutputID>=i1 && theOutputID<=i2) {
+      theInputDataSetID=i;
     }
   }
   //
   return aRetID;
 }
 
-int VTKViewer_AppendFilter::GetElemObjId(int theVtkID,
-					 int& theInputIndex)
+
+//---------------------------------------------------------------
+vtkIdType 
+VTKViewer_AppendFilter
+::GetCellInputID(vtkIdType theOutputID, 
+		 vtkIdType& theInputDataSetID)
 {
   int aNb, aNbRanges, aRetID, i, i1, i2, j;
   //
   aRetID=-1;
-  theInputIndex=-1;
+  theInputDataSetID=-1;
   //
   aNb=myCellIds.size();
-  if (theVtkID<0 ||  theVtkID>=aNb) {
+  if (theOutputID<0 ||  theOutputID>=aNb) {
     return aRetID;
   }
   //
-  aRetID=(int)myCellIds[theVtkID];
+  aRetID=(int)myCellIds[theOutputID];
   //
   aNbRanges=myCellRanges.size()/2;
   for (i=0; i<aNbRanges; ++i) {
     j=2*i;
     i1=myCellRanges[j];
     i2=myCellRanges[j+1];
-    if (theVtkID>=i1 && theVtkID<=i2) {
-      theInputIndex=i;
+    if (theOutputID>=i1 && theOutputID<=i2) {
+      theInputDataSetID=i;
     }
   }
   //
