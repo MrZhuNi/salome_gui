@@ -66,27 +66,26 @@ protected:
   void DoMapping();
 
   void Reset();
+
+  void MakeOutput();
+
   //
   vtkSmartPointer<vtkPoints> myPoints;
 
 private:
   typedef std::vector<vtkIdType> TVectorId;
   typedef std::vector<int> VectorInt;
-  //pkv f
   typedef std::map <int,int>                  DataMapOfIntegerInteger;
   typedef DataMapOfIntegerInteger::iterator   IteratorOfDataMapOfIntegerInteger;
   typedef DataMapOfIntegerInteger::value_type PairOfDataMapOfIntegerInteger;
-  //pkv t
 private:
   bool      myDoMappingFlag;
   TVectorId myNodeIds;
   TVectorId myCellIds;
   VectorInt myNodeRanges;
   VectorInt myCellRanges;
-  //pkv f
   DataMapOfIntegerInteger myNodeMapObjIDVtkID;
   DataMapOfIntegerInteger myCellMapObjIDVtkID;
-  //pkv t
 };
 
 #endif

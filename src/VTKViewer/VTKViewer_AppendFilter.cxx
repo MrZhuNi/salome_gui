@@ -73,7 +73,7 @@ vtkStandardNewMacro(VTKViewer_AppendFilter);
 VTKViewer_AppendFilter
 ::VTKViewer_AppendFilter() 
 {
-  myDoMappingFlag=false;//modified by NIZNHY-PKV Tue Aug 30 10:09:50 2005ft
+  myDoMappingFlag=false;
 }
 
 VTKViewer_AppendFilter
@@ -112,25 +112,35 @@ void
 VTKViewer_AppendFilter
 ::Execute()
 {
-  vtkAppendFilter::Execute();
+  if (myPoints.GetPointer()) {
+    MakeOutput();
+  }
+  else {
+    vtkAppendFilter::Execute();
+  }
   if (myDoMappingFlag){
     DoMapping();
   }
 }
 
-void VTKViewer_AppendFilter::Reset()
+void 
+VTKViewer_AppendFilter
+::Reset()
 {
   myNodeIds.clear();
   myCellIds.clear();
   myNodeRanges.clear();
   myCellRanges.clear();
-  //modified by NIZNHY-PKV Tue Aug 30 10:09:35 2005f
   myNodeMapObjIDVtkID.clear();
   myCellMapObjIDVtkID.clear();
-  //modified by NIZNHY-PKV Tue Aug 30 10:09:39 2005t
 }
-
-void VTKViewer_AppendFilter::DoMapping()
+//==================================================================
+// function: DoMapping
+// purpose :
+//==================================================================
+void 
+VTKViewer_AppendFilter
+::DoMapping()
 {
   int i, j, i1, i2, iNodeCnt, iCellCnt; 
   IteratorOfDataMapOfIntegerInteger aMapIt;
@@ -145,22 +155,24 @@ void VTKViewer_AppendFilter::DoMapping()
     pDS=(vtkDataSet *)Inputs[i];
     //
     // Nodes
-    aNbPnts=pDS->GetNumberOfPoints();
-    i1=myNodeIds.size();
-    i2=i1+aNbPnts-1;
-    myNodeRanges.push_back(i1);
-    myNodeRanges.push_back(i2);
-    //
-    for(j=0; j<aNbPnts; ++j) {
-      aId=(vtkIdType)j;
-      myNodeIds.push_back(aId);
+    if (!myPoints.GetPointer()) {
+      aNbPnts=pDS->GetNumberOfPoints();
+      i1=myNodeIds.size();
+      i2=i1+aNbPnts-1;
+      myNodeRanges.push_back(i1);
+      myNodeRanges.push_back(i2);
       //
-      aMapIt=myNodeMapObjIDVtkID.find(aId);
-      if (aMapIt==myNodeMapObjIDVtkID.end()) {
-	// if not found
-	myNodeMapObjIDVtkID[aId]=iNodeCnt;
+      for(j=0; j<aNbPnts; ++j) {
+	aId=(vtkIdType)j;
+	myNodeIds.push_back(aId);
+	//
+	aMapIt=myNodeMapObjIDVtkID.find(aId);
+	if (aMapIt==myNodeMapObjIDVtkID.end()) {
+	  // if not found
+	  myNodeMapObjIDVtkID[aId]=iNodeCnt;
+	}
+	++iNodeCnt;
       }
-      ++iNodeCnt;
     }
     //
     // Cells
@@ -183,12 +195,15 @@ void VTKViewer_AppendFilter::DoMapping()
   }
 }
 
-
 //---------------------------------------------------------------
 vtkIdType
 VTKViewer_AppendFilter
 ::GetPointOutputID(vtkIdType theInputID)
 {
+  if (myPoints.GetPointer()) {
+    return theInputID;
+  }
+  //
   int aVtkID=-1;
   IteratorOfDataMapOfIntegerInteger aMapIt;
   //
@@ -226,6 +241,11 @@ VTKViewer_AppendFilter
 ::GetPointInputID(vtkIdType theOutputID, 
 		  vtkIdType& theInputDataSetID)
 {
+  if (myPoints.GetPointer()) {
+    theInputDataSetID=0;
+    return theOutputID;
+  }
+  //
   int aNb, aNbRanges, aRetID, i, i1, i2, j;
   //
   aRetID=-1;
@@ -283,4 +303,61 @@ VTKViewer_AppendFilter
   return aRetID;
 }
 
+
+//---------------------------------------------------------------
+void 
+VTKViewer_AppendFilter
+::MakeOutput()
+{
+  int idx;
+  vtkIdType numPts, numCells, newCellId, cellId;
+  vtkCellData *cd;
+  vtkIdList *ptIds;
+  vtkDataSet *ds;
+  vtkUnstructuredGrid *output = this->GetOutput();
+  //
+  numPts = myPoints->GetNumberOfPoints();
+  if (numPts < 1) {
+    return;
+  }
+  //
+  numCells = 0;
+  for (idx = 0; idx < this->NumberOfInputs; ++idx) {
+    ds = (vtkDataSet *)(this->Inputs[idx]);
+    if (ds != NULL)  {
+      if ( ds->GetNumberOfPoints() <= 0 && ds->GetNumberOfCells() <= 0 )  {
+        continue; //no input, just skip
+      }
+      numCells += ds->GetNumberOfCells();
+    }//if non-empty dataset
+  }//for all inputs
+  if (numCells < 1) {
+    return;
+  }
+  //
+  // Now can allocate memory
+  output->Allocate(numCells); 
+  ptIds = vtkIdList::New(); 
+  ptIds->Allocate(VTK_CELL_SIZE);
+  //
+  // Append each input dataset together
+  //
+  // 1.points
+  output->SetPoints(myPoints.GetPointer());
+  // 2.cells
+  for (idx = 0; idx < this->NumberOfInputs; ++idx) {
+    ds = (vtkDataSet *)(this->Inputs[idx]);
+    if (ds != NULL) {
+      numCells = ds->GetNumberOfCells(); 
+      cd = ds->GetCellData();
+      // copy cell and cell data
+      for (cellId=0; cellId<numCells; cellId++)  {
+        ds->GetCellPoints(cellId, ptIds);
+        newCellId = output->InsertNextCell(ds->GetCellType(cellId), ptIds);
+      }
+    }
+  }
+  //
+  ptIds->Delete();
+}
 
