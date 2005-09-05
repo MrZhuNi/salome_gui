@@ -78,7 +78,7 @@ SVTK_SelectorDef
 //----------------------------------------------------------------------------
 void 
 SVTK_SelectorDef
-::SetSelectionMode(Selection_Mode theMode)
+::SetSelectionMode(int theMode)
 {
   mySelectionMode = theMode;
 }
@@ -357,3 +357,59 @@ SVTK_SelectorDef
 {
   myMapIOSubIndex.clear();  
 }
+
+//----------------------------------------------------------------------------
+void
+SVTK_SelectorDef
+::SetFilter(const Handle(VTKViewer_Filter)& theFilter)
+{
+  myFilters.insert(TFilters::value_type(theFilter->GetId(),theFilter));
+}
+
+//----------------------------------------------------------------------------
+bool
+SVTK_SelectorDef
+::IsFilterPresent(const TFilterID theId) const
+{
+  return myFilters.find(theId) != myFilters.end();
+}
+
+//----------------------------------------------------------------------------
+void  
+SVTK_SelectorDef
+::RemoveFilter(const TFilterID theId)
+{
+  if(IsFilterPresent(theId))
+    myFilters.erase(theId);
+}
+
+//----------------------------------------------------------------------------
+bool
+SVTK_SelectorDef
+::IsValid(SALOME_Actor* theActor,
+	  const TFilterID theId,
+	  const bool theIsNode) const
+{
+  TFilters::const_iterator anIter = myFilters.begin();
+  for(; anIter != myFilters.end(); ++anIter){
+    const Handle(VTKViewer_Filter)& aFilter = anIter->second;
+    if(theIsNode == aFilter->IsNodeFilter() &&
+       !aFilter->IsValid(theActor,theId))
+      return false;
+  }
+  return true;
+}
+
+//----------------------------------------------------------------------------
+Handle(VTKViewer_Filter) 
+SVTK_SelectorDef
+::GetFilter(const TFilterID theId) const
+{
+  TFilters::const_iterator anIter = myFilters.find(theId);
+  if(anIter != myFilters.end()){
+    const Handle(VTKViewer_Filter)& aFilter = anIter->second;
+    return aFilter;
+  }
+  return Handle(VTKViewer_Filter)();
+}
+

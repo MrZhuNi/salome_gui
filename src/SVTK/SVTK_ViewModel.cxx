@@ -13,9 +13,6 @@
 #include "SVTK_View.h"
 #include "SVTK_Prs.h"
 
-#include "SVTK_RenderWindowInteractor.h"
-#include "SVTK_RenderWindow.h"
-
 #include "VTKViewer_ViewModel.h"
 
 #include "ToolsGUI.h"
@@ -74,12 +71,17 @@ void SVTK_Viewer::setBackgroundColor( const QColor& c )
 }
 
 //==========================================================
-SUIT_ViewWindow* SVTK_Viewer::createView( SUIT_Desktop* theDesktop )
+SUIT_ViewWindow* 
+SVTK_Viewer::
+createView( SUIT_Desktop* theDesktop )
 {
-  SVTK_ViewWindow* vw = new SVTK_ViewWindow( theDesktop, this );
-  vw->setBackgroundColor( backgroundColor() );
-  vw->SetTrihedronSize( trihedronSize() );
-  return vw;
+  SVTK_ViewWindow* aViewWindow = new SVTK_ViewWindow(theDesktop);
+  aViewWindow->Initialize(this);
+    
+  aViewWindow->setBackgroundColor( backgroundColor() );
+  aViewWindow->SetTrihedronSize( trihedronSize() );
+
+  return aViewWindow;
 }
 
 int SVTK_Viewer::trihedronSize() const
@@ -126,81 +128,39 @@ void SVTK_Viewer::setViewManager(SUIT_ViewManager* theViewManager)
 }
 
 //==========================================================
-void SVTK_Viewer::contextMenuPopup( QPopupMenu* thePopup )
+void
+SVTK_Viewer
+::contextMenuPopup( QPopupMenu* thePopup )
 {
   thePopup->insertItem( VTKViewer_Viewer::tr( "MEN_DUMP_VIEW" ), this, SLOT( onDumpView() ) );
   thePopup->insertItem( VTKViewer_Viewer::tr( "MEN_CHANGE_BACKGROUD" ), this, SLOT( onChangeBgColor() ) );
 
   thePopup->insertSeparator();
 
-  SVTK_ViewWindow* aView = (SVTK_ViewWindow*)(myViewManager->getActiveView());
-  //if ( aView && !aView->getToolBar()->isVisible() )
-  //  thePopup->insertItem( VTKViewer_Viewer::tr( "MEN_SHOW_TOOLBAR" ), this, SLOT( onShowToolbar() ) );
+  if(TViewWindow* aView = dynamic_cast<TViewWindow*>(myViewManager->getActiveView())){
+    if ( !aView->getView()->getToolBar()->isVisible() ){
+      thePopup->insertItem( VTKViewer_Viewer::tr( "MEN_SHOW_TOOLBAR" ), this, SLOT( onShowToolbar() ) );
+    }
+  }
 }
 
 //==========================================================
-void SVTK_Viewer::onMousePress(SUIT_ViewWindow* vw, QMouseEvent* event)
-{
-  /*
-  if(SVTK_ViewWindow* aVW = dynamic_cast<SVTK_ViewWindow*>(vw)){
-    if(SVTK_RenderWindowInteractor* aRWI = aVW->getView()){
-      switch(event->button()) {
-      case LeftButton:
-	aRWI->LeftButtonPressed(event) ;
-	break ;
-      case MidButton:
-	aRWI->MiddleButtonPressed(event) ;
-	break ;
-      case RightButton:
-	aRWI->RightButtonPressed(event) ;
-	break;
-      default:
-	break ;
-      }
-    }
-  }
-  */
-}
+void 
+SVTK_Viewer
+::onMousePress(SUIT_ViewWindow* vw, QMouseEvent* event)
+{}
 
 //==========================================================
 void 
 SVTK_Viewer
 ::onMouseMove(SUIT_ViewWindow* vw, QMouseEvent* event)
-{
-  /*
-  if(SVTK_ViewWindow* aVW = dynamic_cast<SVTK_ViewWindow*>(vw)){
-    if(SVTK_RenderWindowInteractor* aRWI = aVW->getView()){
-      aRWI->MouseMove( event );
-    }
-  }
-  */
-}
+{}
 
 //==========================================================
 void 
 SVTK_Viewer
 ::onMouseRelease(SUIT_ViewWindow* vw, QMouseEvent* event)
-{
-  /*
-  if(SVTK_ViewWindow* aVW = dynamic_cast<SVTK_ViewWindow*>(vw)){
-    if(SVTK_RenderWindowInteractor* aRWI = aVW->getView()){
-      switch(event->button()) {
-      case LeftButton:
-	aRWI->LeftButtonReleased(event) ;
-	break ;
-      case MidButton:
-	aRWI->MiddleButtonReleased(event) ;
-	break ;
-      case RightButton:
-	aRWI->RightButtonReleased(event) ;
-	break;
-      default:
-	break ;
-      }
-    }
-  }
-  */
-}
+{}
 
 //==========================================================
 void 
@@ -220,24 +180,23 @@ SVTK_Viewer
   //!! To be done for view windows
 }
 
-void SVTK_Viewer::onDumpView()
+void
+SVTK_Viewer
+::onDumpView()
 {
-  SVTK_ViewWindow* aView = (SVTK_ViewWindow*)(myViewManager->getActiveView());
-  if ( aView )
+  if(SUIT_ViewWindow* aView = myViewManager->getActiveView())
     aView->onDumpView();
 }
 
 //==========================================================
-void SVTK_Viewer::onChangeBgColor()
+void
+SVTK_Viewer
+::onChangeBgColor()
 {
-  QPtrVector<SUIT_ViewWindow> aViews = myViewManager->getViews();
-  for(int i = 0, iEnd = aViews.size(); i < iEnd; i++)
-    if(SUIT_ViewWindow* aViewWindow = aViews.at(i))
-      if(SVTK_ViewWindow* aView = dynamic_cast<SVTK_ViewWindow*>(aViewWindow)){
-	QColor aColor = QColorDialog::getColor( aView->backgroundColor(), aView);
-	if ( aColor.isValid() )
-	  aView->setBackgroundColor(aColor);
-      }
+  if(SUIT_ViewWindow* aView = myViewManager->getActiveView()){
+    QColor aColor = QColorDialog::getColor( backgroundColor(), aView);
+    setBackgroundColor(aColor);
+  }
 }
 
 //==========================================================
@@ -245,13 +204,12 @@ void
 SVTK_Viewer
 ::onShowToolbar() 
 {
-  /*
   QPtrVector<SUIT_ViewWindow> aViews = myViewManager->getViews();
-  for(int i = 0, iEnd = aViews.size(); i < iEnd; i++)
-    if(SUIT_ViewWindow* aViewWindow = aViews.at(i))
-      if(SVTK_ViewWindow* aView = dynamic_cast<SVTK_ViewWindow*>(aViewWindow))
-	aView->getToolBar()->show();
-  */
+  for(int i = 0, iEnd = aViews.size(); i < iEnd; i++){
+    if(TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at(i))){
+      aView->getView()->getToolBar()->show();
+    }
+  }
 }
 
 //==========================================================
@@ -277,14 +235,12 @@ SVTK_Viewer
 	  // just display the object
 	  QPtrVector<SUIT_ViewWindow> aViews = myViewManager->getViews();
 	  for(int i = 0, iEnd = aViews.size(); i < iEnd; i++){
-	    if(SUIT_ViewWindow* aViewWindow = aViews.at(i)){
-	      if(SVTK_ViewWindow* aView = dynamic_cast<SVTK_ViewWindow*>(aViewWindow)){
-		if(SVTK_RenderWindowInteractor* aRWI = aView->getView()){
-		  aRWI->Display(anAct,false);
-		  if(anAct->IsSetCamera()){
-		    vtkRenderer* aRenderer =  aView->getView()->getRenderer();
-		    anAct->SetCamera( aRenderer->GetActiveCamera() );
-		  }
+	    if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(aViews.at(i))){
+	      if(SVTK_View* aView = aViewWindow->getView()){
+		aView->Display(anAct,false);
+		if(anAct->IsSetCamera()){
+		  vtkRenderer* aRenderer = aView->GetRenderer();
+		  anAct->SetCamera( aRenderer->GetActiveCamera() );
 		}
 	      }
 	    }
@@ -318,13 +274,12 @@ SVTK_Viewer
 	  // just display the object
 	  QPtrVector<SUIT_ViewWindow> aViews = myViewManager->getViews();
 	  for(int i = 0, iEnd = aViews.size(); i < iEnd; i++){
-	    if(SUIT_ViewWindow* aViewWindow = aViews.at(i))
-	      if(SVTK_ViewWindow* aView = dynamic_cast<SVTK_ViewWindow*>(aViewWindow))
-		if(SVTK_RenderWindowInteractor* aRWI = aView->getView())
-		  if ( forced )
-		    aRWI->Remove(anAct,false);
-		  else
-		    aRWI->Erase(anAct,forced);
+	    if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(aViews.at(i)))
+	      if(SVTK_View* aView = aViewWindow->getView())
+		if ( forced )
+		  aView->Remove(anAct,false);
+		else
+		  aView->Erase(anAct,forced);
 	  }
 	}
     }
@@ -339,9 +294,9 @@ SVTK_Viewer
   _PTR(Study) aStudy(getStudyDS());
   QPtrVector<SUIT_ViewWindow> aViews = myViewManager->getViews();
   for(int i = 0, iEnd = aViews.size(); i < iEnd; i++){
-    if(SUIT_ViewWindow* aViewWindow = aViews.at(i)){
-      if(SVTK_ViewWindow* aView = dynamic_cast<SVTK_ViewWindow*>(aViewWindow)){
-	vtkRenderer* aRenderer =  aView->getView()->getRenderer();
+    if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(aViews.at(i)))
+      if(SVTK_View* aView = aViewWindow->getView()){
+	vtkRenderer* aRenderer =  aView->GetRenderer();
 	vtkActorCollection* anActorCollection = aRenderer->GetActors();
 	anActorCollection->InitTraversal();
 	while(vtkActor* anActor = anActorCollection->GetNextActor()){
@@ -366,7 +321,6 @@ SVTK_Viewer
 	  }
 	}
       }
-    }
   }
   Repaint();
 }
@@ -378,16 +332,19 @@ SVTK_Viewer
 {
   SVTK_Prs* prs = new SVTK_Prs();
   if ( entry ) {
-    vtkRenderer* rnr =  ( (SVTK_ViewWindow*) getViewManager()->getActiveView() )->getView()->getRenderer();
-    vtkActorCollection* theActors = rnr->GetActors();
-    theActors->InitTraversal();
-    vtkActor* ac;
-    while( ( ac = theActors->GetNextActor() ) ) {
-      SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( ac );
-      if ( anActor && anActor->hasIO() && !strcmp( anActor->getIO()->getEntry(), entry ) ) {
-	prs->AddObject( ac );
+    if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(getViewManager()->getActiveView()))
+      if(SVTK_View* aView = aViewWindow->getView()){
+	vtkRenderer* aRenderer =  aView->GetRenderer();
+	vtkActorCollection* theActors = aRenderer->GetActors();
+	theActors->InitTraversal();
+	vtkActor* ac;
+	while( ( ac = theActors->GetNextActor() ) ) {
+	  SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( ac );
+	  if ( anActor && anActor->hasIO() && !strcmp( anActor->getIO()->getEntry(), entry ) ) {
+	    prs->AddObject( ac );
+	  }
+	}
       }
-    }
   }
   return prs;
 }
@@ -414,11 +371,11 @@ SVTK_Viewer
 {
   QPtrVector<SUIT_ViewWindow> aViews = myViewManager->getViews();
   for(int i = 0, iEnd = aViews.size(); i < iEnd; i++)
-    if(SUIT_ViewWindow* aViewWindow = aViews.at(i))
-      if(SVTK_ViewWindow* aView = dynamic_cast<SVTK_ViewWindow*>(aViewWindow))
-	if(SVTK_RenderWindowInteractor* aRWI = aView->getView())
-	  if(!aRWI->isVisible( io ))
-	    return false;
+    if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(aViews.at(i)))
+      if(SVTK_View* aView = aViewWindow->getView())
+	if(!aView->isVisible( io ))
+	  return false;
+
   return true;
 }
 
@@ -430,8 +387,7 @@ SVTK_Viewer
 //  if (theUpdateTrihedron) onAdjustTrihedron();
   QPtrVector<SUIT_ViewWindow> aViews = myViewManager->getViews();
   for(int i = 0, iEnd = aViews.size(); i < iEnd; i++)
-    if(SUIT_ViewWindow* aViewWindow = aViews.at(i))
-      if(SVTK_ViewWindow* aView = dynamic_cast<SVTK_ViewWindow*>(aViewWindow))
-	if(SVTK_RenderWindow* aRW = aView->getView())
-	  aRW->update();
+    if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(aViews.at(i)))
+      if(SVTK_View* aView = aViewWindow->getView())
+	aView->update();
 }

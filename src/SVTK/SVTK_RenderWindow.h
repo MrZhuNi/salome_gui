@@ -36,14 +36,8 @@
 
 #include "SVTK.h"
 
-class VTKViewer_Trihedron;
-class VTKViewer_Transform;
-class VTKViewer_Actor;
-
-class SVTK_CubeAxesActor2D;
 class SVTK_Renderer;
 
-class QtxAction;
 
 class vtkRenderer;
 class vtkRenderWindow;
@@ -56,76 +50,10 @@ class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
   SVTK_RenderWindow( QWidget*, const char* );
   virtual ~SVTK_RenderWindow() ;
 
-  QToolBar* getToolBar();
-
-  vtkRenderer* getRenderer();
   vtkRenderWindow* getRenderWindow();
 
-  VTKViewer_Trihedron* GetTrihedron();
-  SVTK_CubeAxesActor2D* GetCubeAxes();
-
-  int  GetTrihedronSize() const;
-  void SetTrihedronSize( const int );
-  void AdjustTrihedrons( const bool forced );
-
-  bool isTrihedronDisplayed();
-  bool isCubeAxesDisplayed();
-
-  void Repaint( bool theUpdateTrihedron );
-  void Repaint() { Repaint( true ); }
-
-  void setBackgroundColor( const QColor& );
-  QColor backgroundColor() const;
-
-  //apply existing transformation on adding SALOME_Actor
-  void SetScale( double theScale[3] );
-  void GetScale( double theScale[3] );
-
-  void AddActor(VTKViewer_Actor* theActor, bool theIsUpdate = false);
-  void RemoveActor(VTKViewer_Actor* theActor, bool theIsUpdate = false);
-
- public slots:
-  virtual void activateZoom();
-  virtual void activateWindowFit();
-  virtual void activateRotation();
-  virtual void activatePanning(); 
-  virtual void activateGlobalPanning(); 
-
-  void onFrontView(); 
-  void onBackView(); 
-  void onTopView();
-  void onBottomView();
-  void onRightView(); 
-  void onLeftView();     
-
-  void onResetView();     
-  void onFitAll();
-
-  void onViewTrihedron(); 
-  void onViewCubeAxes();
-
-  void onAdjustTrihedron();
-  void onAdjustCubeAxes();
-
-  void onDumpView();
-
- public:
-  QImage dumpView();
-
  protected:
-  enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, RotationId,
-         FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, ViewTrihedronId };
-  typedef QMap<int, QtxAction*> ActionsMap;
-  
-  void createActions();
-  void createToolBar();
-
- protected:
-  vtkSmartPointer<SVTK_Renderer> myRenderer;
   vtkSmartPointer<vtkRenderWindow> myRenderWindow;
-
-  ActionsMap myActionsMap;  
-  QToolBar* myToolBar;
 };
 
 #endif

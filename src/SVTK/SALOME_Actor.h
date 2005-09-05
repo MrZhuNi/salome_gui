@@ -65,18 +65,6 @@ extern int SALOME_POINT_SIZE;
 
 class SALOME_Actor;
 
-namespace VTK
-{
-  struct TValidator
-  {
-    virtual 
-    bool 
-    IsValid( SALOME_Actor* theActor,
-	     const int theId,
-	     const bool theIsNode = false ) = 0;
-  };
-}
-
 class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor 
 {
  public:
@@ -342,15 +330,13 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 
   virtual
   bool
-  PreHighlight( VTK::TValidator*, 
-		SVTK_Selector*, 
+  PreHighlight(	SVTK_Selector*, 
 		vtkRenderer*, 
 		SVTK_SelectionEvent, 
 		bool );
   virtual 
   bool
-  Highlight( VTK::TValidator*, 
-	     SVTK_Selector*, 
+  Highlight( SVTK_Selector*, 
 	     vtkRenderer*, 
 	     SVTK_SelectionEvent, 
 	     bool );

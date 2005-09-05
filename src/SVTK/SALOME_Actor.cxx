@@ -550,8 +550,7 @@ SALOME_Actor
 //----------------------------------------------------------------
 bool
 SALOME_Actor
-::PreHighlight( VTK::TValidator* theValidator,
-		SVTK_Selector* theSelector,
+::PreHighlight( SVTK_Selector* theSelector,
 		vtkRenderer* theRenderer,
 		SVTK_SelectionEvent theSelectionEvent,
 		bool theIsHighlight )
@@ -588,7 +587,7 @@ SALOME_Actor
       myPointPicker->Pick( x, y, z, theRenderer );
       
       int aVtkId = myPointPicker->GetPointId();
-      if( aVtkId >= 0 && theValidator->IsValid( this, aVtkId, true ) && hasIO() )
+      if( aVtkId >= 0 && theSelector->IsValid( this, aVtkId, true ) && hasIO() )
       {
 	int anObjId = GetNodeObjId( aVtkId );
 	TColStd_IndexedMapOfInteger aMapIndex;
@@ -608,7 +607,7 @@ SALOME_Actor
       myCellPicker->Pick( x, y, z, theRenderer );
       
       int aVtkId = myCellPicker->GetCellId();
-      if ( aVtkId >= 0 && theValidator->IsValid( this, aVtkId ) && hasIO() )
+      if ( aVtkId >= 0 && theSelector->IsValid( this, aVtkId ) && hasIO() )
       {
 	int anObjId = GetElemObjId (aVtkId );
 	TColStd_IndexedMapOfInteger aMapIndex;
@@ -628,7 +627,7 @@ SALOME_Actor
       myCellPicker->Pick( x, y, z, theRenderer );
       
       int aVtkId = myCellPicker->GetCellId();
-      if ( aVtkId >= 0 && theValidator->IsValid( this, aVtkId ) && hasIO() )
+      if ( aVtkId >= 0 && theSelector->IsValid( this, aVtkId ) && hasIO() )
       {
 	int anObjId = GetElemObjId( aVtkId );
 	int anEdgeId = GetEdgeId( myCellPicker, anObjId );
@@ -673,8 +672,7 @@ SALOME_Actor
 //----------------------------------------------------------------
 bool
 SALOME_Actor
-::Highlight( VTK::TValidator* theValidator,
-	     SVTK_Selector* theSelector,
+::Highlight( SVTK_Selector* theSelector,
 	     vtkRenderer* theRenderer,
 	     SVTK_SelectionEvent theSelectionEvent,
 	     bool theIsHighlight )
@@ -696,7 +694,7 @@ SALOME_Actor
       myPointPicker->Pick( x1, y1, z1, theRenderer );
 
       int aVtkId = myPointPicker->GetPointId();
-      if( aVtkId >= 0 && hasIO() && theValidator->IsValid( this, aVtkId, true ) )
+      if( aVtkId >= 0 && hasIO() && theSelector->IsValid( this, aVtkId, true ) )
       {
 	int anObjId = GetNodeObjId( aVtkId );
 	if( anObjId >= 0 )
@@ -720,7 +718,7 @@ SALOME_Actor
       myCellPicker->Pick( x1, y1, z1, theRenderer );
     
       int aVtkId = myCellPicker->GetCellId();
-      if( aVtkId >= 0 && hasIO() && theValidator->IsValid( this, aVtkId ) )
+      if( aVtkId >= 0 && hasIO() && theSelector->IsValid( this, aVtkId ) )
       {
 	int anObjId = GetElemObjId( aVtkId );
 	if( anObjId >= 0 )
@@ -746,7 +744,7 @@ SALOME_Actor
       myCellPicker->Pick( x1, y1, z1, theRenderer );
     
       int aVtkId = myCellPicker->GetCellId();
-      if( aVtkId >= 0 && hasIO() && theValidator->IsValid( this, aVtkId ) )
+      if( aVtkId >= 0 && hasIO() && theSelector->IsValid( this, aVtkId ) )
       {
 	int anObjId = GetElemObjId( aVtkId );
 	if( anObjId >= 0 )
@@ -815,7 +813,7 @@ SALOME_Actor
 		  float aPickedPoint[3];
 		  myPointPicker->GetMapperPosition( aPickedPoint );
 		  vtkIdType aVtkId = aDataSet->FindPoint( aPickedPoint );
-		  if( aVtkId >= 0 && theValidator->IsValid( this, aVtkId, true ) )
+		  if( aVtkId >= 0 && theSelector->IsValid( this, aVtkId, true ) )
 		  {
 		    int anObjId = GetNodeObjId( aVtkId );
 		    anIndices.Add( anObjId );
@@ -848,7 +846,7 @@ SALOME_Actor
 	for( it = cellList.begin(); it != cellList.end(); ++it )
 	{
 	  int aCellId = (*it).cellId;
-	  if ( !theValidator->IsValid( this, aCellId ) )
+	  if ( !theSelector->IsValid( this, aCellId ) )
 	    continue;
 
 	  int anObjId = GetElemObjId( aCellId );

@@ -51,10 +51,10 @@ public:
 
   virtual
   void 
-  SetSelectionMode( Selection_Mode theMode );
+  SetSelectionMode( int theMode );
 
   virtual
-  Selection_Mode
+  int
   SelectionMode() const { return mySelectionMode; }
 
   virtual
@@ -133,6 +133,30 @@ public:
   void 
   ClearIndex();
 
+  //----------------------------------------------------------------------------
+  virtual
+  void 
+  SetFilter(const Handle(VTKViewer_Filter)& theFilter);
+
+  virtual
+  Handle(VTKViewer_Filter) 
+  GetFilter(const TFilterID theId) const;
+
+  virtual
+  bool
+  IsFilterPresent(const TFilterID theId) const;
+
+  virtual
+  void
+  RemoveFilter(const int theId);
+
+  virtual
+  bool
+  IsValid(SALOME_Actor* theActor,
+	  const TFilterID theId,
+	  const bool theIsNode = false) const;
+  
+  //----------------------------------------------------------------------------
   virtual
   void 
   StartPickCallback();
@@ -142,7 +166,7 @@ public:
   EndPickCallback();
 
 private:
-  Selection_Mode mySelectionMode;
+  int mySelectionMode;
 
   struct TIOLessThan
   {
@@ -154,7 +178,8 @@ private:
     }
   };
 
-  struct TIndexedMapOfInteger{
+  struct TIndexedMapOfInteger
+  {
     TColStd_IndexedMapOfInteger myMap;
     TIndexedMapOfInteger()
     {}
@@ -178,7 +203,9 @@ private:
                    TIndexedMapOfInteger,
                    TIOLessThan> TMapIOSubIndex;
   TMapIOSubIndex myMapIOSubIndex;
-};
 
+  typedef std::map<TFilterID,Handle(VTKViewer_Filter)> TFilters;
+  TFilters myFilters;
+};
 
 #endif

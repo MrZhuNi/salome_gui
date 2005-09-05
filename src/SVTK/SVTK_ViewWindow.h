@@ -29,26 +29,35 @@ class SVTK_RenderWindowInteractor;
 
 class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 {
-  Q_OBJECT
+  Q_OBJECT;
 
-public:
-  SVTK_ViewWindow( SUIT_Desktop*, SVTK_ViewModelBase* );
-  virtual ~SVTK_ViewWindow();
+ public:
+  SVTK_ViewWindow(SUIT_Desktop* theDesktop);
+
+  virtual
+  ~SVTK_ViewWindow();
   
-  void setBackgroundColor( const QColor& );
-  QColor backgroundColor() const;
+  virtual
+  void
+  Initialize(SVTK_ViewModelBase* theModel);
 
-  vtkRenderer* getRenderer();
-  SVTK_Selector* GetSelector();
+  SVTK_View* 
+  getView();
+
+  SVTK_View* 
+  getRenderWindow();
+
+  vtkRenderer* 
+  getRenderer();
+
+  SVTK_Selector* 
+  GetSelector();
   
-  SVTK_View* getView();
-  SVTK_RenderWindow* getRenderWindow();
-  SVTK_RenderWindowInteractor* getRWInteractor();
-
-  SVTK_InteractorStyle* getInteractorStyle();
-
   Selection_Mode SelectionMode() const;
   void SetSelectionMode(Selection_Mode theMode);
+
+  void setBackgroundColor( const QColor& );
+  QColor backgroundColor() const;
 
   bool isTrihedronDisplayed();
   bool isCubeAxesDisplayed();
@@ -126,10 +135,16 @@ protected slots:
   void onMouseMoving(QMouseEvent* event);
 
 protected:
+  virtual
+  void
+  Initialize(SVTK_View* theView,
+	     SVTK_ViewModelBase* theModel);
+
   QImage dumpView();
-  virtual void      action( const int );
+  virtual void action( const int );
 
   SVTK_View* myView;
+  SVTK_ViewModelBase* myModel;
 };
 
 #ifdef WIN32

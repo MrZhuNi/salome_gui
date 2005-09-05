@@ -192,21 +192,17 @@ void
 SVTK_InteractorStyle
 ::RotateXY(int dx, int dy)
 {
-  double rxf;
-  double ryf;
-  vtkCamera *cam;
-  
-  if (GetCurrentRenderer() == NULL)
+  if(GetCurrentRenderer() == NULL)
     return;
   
   int *size = GetCurrentRenderer()->GetRenderWindow()->GetSize();
-  this->DeltaElevation = -20.0 / size[1];
-  this->DeltaAzimuth = -20.0 / size[0];
+  double aDeltaElevation = -20.0 / size[1];
+  double aDeltaAzimuth = -20.0 / size[0];
   
-  rxf = (double)dx * this->DeltaAzimuth *  this->MotionFactor;
-  ryf = (double)dy * this->DeltaElevation * this->MotionFactor;
+  double rxf = double(dx) * aDeltaAzimuth * this->MotionFactor;
+  double ryf = double(dy) * aDeltaElevation * this->MotionFactor;
   
-  cam = GetCurrentRenderer()->GetActiveCamera();
+  vtkCamera *cam = GetCurrentRenderer()->GetActiveCamera();
   cam->Azimuth(rxf);
   cam->Elevation(ryf);
   cam->OrthogonalizeViewUp();
@@ -907,7 +903,7 @@ SVTK_InteractorStyle
   // VSV: LOD actor activisation
   //  rwi->GetRenderWindow()->SetDesiredUpdateRate(rwi->GetStillUpdateRate());
 
-  Selection_Mode aSelectionMode = GetSelector()->SelectionMode();
+  int aSelectionMode = GetSelector()->SelectionMode();
 
   switch (State) {
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
@@ -948,7 +944,7 @@ SVTK_InteractorStyle
 	    SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
 	    aSelectionEvent.mySelectionMode = aSelectionMode;
 	    aSelectionEvent.myIsRectangle = false;
-	    aSActor->Highlight( this, GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
+	    aSActor->Highlight( GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
 	  }else{
 	    GetSelector()->ClearIObjects();
 	  }
@@ -988,7 +984,7 @@ SVTK_InteractorStyle
 	  aListActors->InitTraversal();
 	  while(vtkActor* aActor = aListActors->GetNextActor()){
 	    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)){
-	      aSActor->Highlight( this, GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
+	      aSActor->Highlight( GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
 	    }
 	  }
 	}
@@ -1096,9 +1092,9 @@ SVTK_InteractorStyle
 
   myPicker->Pick(x, y, 0.0, GetCurrentRenderer());
   if(SALOME_Actor* anActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
-    anIsChanged |= anActor->PreHighlight( this, GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
+    anIsChanged |= anActor->PreHighlight( GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
     if(aLastActor && aLastActor != anActor)
-      aLastActor->PreHighlight( this, GetSelector(), GetCurrentRenderer(), aSelectionEvent, false );
+      aLastActor->PreHighlight( GetSelector(), GetCurrentRenderer(), aSelectionEvent, false );
   }
   
   if(anIsChanged)
@@ -1169,57 +1165,6 @@ SVTK_InteractorStyle
 //----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
-::SetFilter( const Handle(VTKViewer_Filter)& theFilter )
-{
-  myFilters[ theFilter->GetId() ] = theFilter;
-}
-
-//----------------------------------------------------------------------------
-bool
-SVTK_InteractorStyle
-::IsFilterPresent( const int theId )
-{
-  return myFilters.find( theId ) != myFilters.end();
-}
-
-//----------------------------------------------------------------------------
-void  
-SVTK_InteractorStyle
-::RemoveFilter( const int theId )
-{
-  if ( IsFilterPresent( theId ) )
-    myFilters.erase( theId );
-}
-
-//----------------------------------------------------------------------------
-bool
-SVTK_InteractorStyle
-::IsValid( SALOME_Actor* theActor,
-	   const int     theId,
-	   const bool    theIsNode )
-{
-  std::map<int, Handle(VTKViewer_Filter)>::const_iterator anIter;
-  for ( anIter = myFilters.begin(); anIter != myFilters.end(); ++anIter )
-  {
-    const Handle(VTKViewer_Filter)& aFilter = anIter->second;
-    if ( theIsNode == aFilter->IsNodeFilter() &&
-         !aFilter->IsValid( theActor, theId ) )
-      return false;
-  }
-  return true;
-}
-
-//----------------------------------------------------------------------------
-Handle(VTKViewer_Filter) 
-SVTK_InteractorStyle
-::GetFilter( const int theId )
-{
-  return IsFilterPresent( theId ) ? myFilters[ theId ] : Handle(VTKViewer_Filter)();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorStyle
 ::IncrementalPan( const int incrX, const int incrY )
 {
   this->PanXY( incrX, incrY, 0, 0 );
@@ -1254,26 +1199,33 @@ SVTK_InteractorStyle
     FindPokedRenderer( 0, 0 );
 
     // register EventCallbackCommand as observer of custorm event (3d space mouse event)
-    interactor->AddObserver( SpaceMouseMoveEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SpaceMouseButtonEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( PanLeftEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( PanRightEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( PanUpEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( PanDownEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( ZoomInEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( ZoomOutEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( RotateLeftEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( RotateRightEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( RotateUpEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( RotateDownEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( PlusSpeedIncrementEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( MinusSpeedIncrementEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SetSpeedIncrementEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SetSpaceMouseF1Event, EventCallbackCommand, Priority );
-    interactor->AddObserver( SetSpaceMouseF2Event, EventCallbackCommand, Priority );
-    interactor->AddObserver( SetSpaceMouseF3Event, EventCallbackCommand, Priority );
-    interactor->AddObserver( SetSpaceMouseF4Event, EventCallbackCommand, Priority );
-    interactor->AddObserver( SetSpaceMouseF5Event, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::SpaceMouseMoveEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::SpaceMouseButtonEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::PanLeftEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::PanRightEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::PanUpEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::PanDownEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::ZoomInEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::ZoomOutEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::RotateLeftEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::RotateRightEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::RotateUpEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::RotateDownEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::PlusSpeedIncrementEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::MinusSpeedIncrementEvent, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::SetSpeedIncrementEvent, EventCallbackCommand, Priority );
+
+    interactor->AddObserver( SVTK::SetSpaceMouseF1Event, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::SetSpaceMouseF2Event, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::SetSpaceMouseF3Event, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::SetSpaceMouseF4Event, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::SetSpaceMouseF5Event, EventCallbackCommand, Priority );
+
+    interactor->AddObserver( SVTK::StartZoom, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::StartPan, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::StartRotate, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::StartGlobalPan, EventCallbackCommand, Priority );
+    interactor->AddObserver( SVTK::StartFitArea, EventCallbackCommand, Priority );
   }
 }
 
@@ -1365,65 +1317,82 @@ SVTK_InteractorStyle
     SVTK_InteractorStyle* self = dynamic_cast<SVTK_InteractorStyle*>( anObject );
     if ( self ) {
       switch ( event ) {
-      case SpaceMouseMoveEvent : 
+      case SVTK::SpaceMouseMoveEvent : 
 	self->onSpaceMouseMove( (double*)callData ); 
 	break;
-      case SpaceMouseButtonEvent : 
+      case SVTK::SpaceMouseButtonEvent : 
 	self->onSpaceMouseButton( *((int*)callData) ); 
 	break;
-      case PanLeftEvent: 
+      case SVTK::PanLeftEvent: 
 	self->IncrementalPan( -self->mySpeedIncrement, 0 );
 	break;
-      case PanRightEvent:
+      case SVTK::PanRightEvent:
 	self->IncrementalPan( self->mySpeedIncrement, 0 );
 	break;
-      case PanUpEvent:
+      case SVTK::PanUpEvent:
 	self->IncrementalPan( 0, self->mySpeedIncrement );
 	break;
-      case PanDownEvent:
+      case SVTK::PanDownEvent:
 	self->IncrementalPan( 0, -self->mySpeedIncrement );
 	break;
-      case ZoomInEvent:
+      case SVTK::ZoomInEvent:
 	self->IncrementalZoom( self->mySpeedIncrement );
 	break;
-      case ZoomOutEvent:
+      case SVTK::ZoomOutEvent:
 	self->IncrementalZoom( -self->mySpeedIncrement );
 	break;
-      case RotateLeftEvent: 
+      case SVTK::RotateLeftEvent: 
 	self->IncrementalRotate( -self->mySpeedIncrement, 0 );
 	break;
-      case RotateRightEvent:
+      case SVTK::RotateRightEvent:
 	self->IncrementalRotate( self->mySpeedIncrement, 0 );
 	break;
-      case RotateUpEvent:
+      case SVTK::RotateUpEvent:
 	self->IncrementalRotate( 0, -self->mySpeedIncrement );
 	break;
-      case RotateDownEvent:
+      case SVTK::RotateDownEvent:
 	self->IncrementalRotate( 0, self->mySpeedIncrement );
 	break;
-      case PlusSpeedIncrementEvent:
+      case SVTK::PlusSpeedIncrementEvent:
 	++(self->mySpeedIncrement);
 	break;
-      case MinusSpeedIncrementEvent:
+      case SVTK::MinusSpeedIncrementEvent:
 	--(self->mySpeedIncrement);
 	break;
-      case SetSpeedIncrementEvent:
+      case SVTK::SetSpeedIncrementEvent:
 	self->mySpeedIncrement = *((int*)callData);
 	break;
-      case SetSpaceMouseF1Event:
+
+      case SVTK::SetSpaceMouseF1Event:
 	self->mySpaceMouseBtns[0] = *((int*)callData);
 	break;
-      case SetSpaceMouseF2Event:
+      case SVTK::SetSpaceMouseF2Event:
 	self->mySpaceMouseBtns[1] = *((int*)callData);
 	break;
-      case SetSpaceMouseF3Event:
+      case SVTK::SetSpaceMouseF3Event:
 	self->mySpaceMouseBtns[2] = *((int*)callData);
 	break;
-      case SetSpaceMouseF4Event:
+      case SVTK::SetSpaceMouseF4Event:
 	self->mySpaceMouseBtns[3] = *((int*)callData);
 	break;
-      case SetSpaceMouseF5Event:
+      case SVTK::SetSpaceMouseF5Event:
 	self->mySpaceMouseBtns[4] = *((int*)callData);
+	break;
+
+      case SVTK::StartZoom:
+	self->startZoom();
+	break;
+      case SVTK::StartPan:
+	self->startPan();
+	break;
+      case SVTK::StartRotate:
+	self->startRotate();
+	break;
+      case SVTK::StartGlobalPan:
+	self->startGlobalPan();
+	break;
+      case SVTK::StartFitArea:
+	self->startFitArea();
 	break;
       }
     }

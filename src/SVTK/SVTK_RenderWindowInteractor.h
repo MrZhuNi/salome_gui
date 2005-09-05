@@ -38,12 +38,17 @@
 #include <vtkSmartPointer.h>
 #include <vtkGenericRenderWindowInteractor.h>
 
+#include <qvaluestack.h>
+
 class QTimer;
 
+class vtkCallbackCommand;
 class vtkActorCollection;
 class vtkGenericRenderWindowInteractor;
 
 class SALOME_Actor;
+class SVTK_Selector;
+class SVTK_InteractorStyle;
 
 // ------------------------------------------------------------
 // :TRICKY: Fri Apr 21 22:19:27 2000 Pagey
@@ -58,6 +63,18 @@ class SVTK_EXPORT QtRenderWindowInteractor:
 {
   Q_OBJECT;
 
+ public:
+  static QtRenderWindowInteractor* New();
+  vtkTypeMacro(QtRenderWindowInteractor,vtkGenericRenderWindowInteractor);
+
+  virtual
+  int
+  CreateTimer( int ) ; 
+
+  virtual
+  int
+  DestroyTimer() ; 
+
  protected slots:
   virtual
   void
@@ -68,50 +85,49 @@ class SVTK_EXPORT QtRenderWindowInteractor:
   ~QtRenderWindowInteractor();
 
   QTimer* myTimer ;
-
- public:
-  
-  static QtRenderWindowInteractor* New();
-  vtkTypeMacro(QtRenderWindowInteractor,vtkGenericRenderWindowInteractor);
-
-  virtual int CreateTimer( int ) ; 
-  virtual int DestroyTimer() ; 
 };
 
 
 // ------------------------------------------------------------
-class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
+class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
 {
   Q_OBJECT;
 
  public:
-  SVTK_RenderWindowInteractor( QWidget*, const char* );
-  ~SVTK_RenderWindowInteractor();
+  QVTK_RenderWindowInteractor(QWidget* theParent, 
+			      const char* theName);
 
-  vtkRenderWindowInteractor* getDevice();
+  ~QVTK_RenderWindowInteractor();
+
+  vtkRenderWindowInteractor* 
+  GetDevice();
+
+  void
+  SetRenderWindow(vtkRenderWindow *theRenderWindow);
+
+  vtkRenderWindow*
+  GetRenderWindow();
 
   // Description:
   // Initializes the event handlers without an XtAppContext.  This is
   // good for when you don`t have a user interface, but you still
   // want to have mouse interaction.
-  virtual void Initialize();
+  void
+  Initialize();
+
+  virtual
+  void
+  InvokeEvent(unsigned long theEvent, void* theCallData);
 
   // Description:
   // Event loop notification member for Window size change
-  virtual void UpdateSize(int x,int y);
-
-  virtual void Render();
-
-  void Update();
-
-  vtkRenderer* GetRenderer();
+  virtual
+  void
+  UpdateSize(int x,int y);
 
  protected:
-  vtkSmartPointer<vtkGenericRenderWindowInteractor> myInteractor;
-
   virtual void paintEvent( QPaintEvent* );
   virtual void resizeEvent( QResizeEvent* );
-  virtual void contextMenuEvent( QContextMenuEvent * e );
 
   virtual void mouseMoveEvent( QMouseEvent* );
   virtual void mousePressEvent( QMouseEvent* );
@@ -120,13 +136,43 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
   virtual void wheelEvent( QWheelEvent* );
   virtual void keyPressEvent( QKeyEvent* );
   virtual void keyReleaseEvent( QKeyEvent* );
+  virtual void contextMenuEvent( QContextMenuEvent * e );
 
   // reimplemented from QWidget in order to set window - receiver
   // of space mouse events. 
-  virtual void focusInEvent ( QFocusEvent* );
+  virtual void focusInEvent( QFocusEvent* );
   virtual void focusOutEvent( QFocusEvent* );
 
   virtual bool x11Event( XEvent *e );
+
+  vtkSmartPointer<vtkGenericRenderWindowInteractor> myInteractor;
+};
+
+
+// ------------------------------------------------------------
+class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteractor
+{
+  Q_OBJECT;
+
+ public:
+  SVTK_RenderWindowInteractor(QWidget* theParent, 
+			      const char* theName);
+
+  ~SVTK_RenderWindowInteractor();
+
+  SVTK_Selector* GetSelector();
+  void SetSelector(SVTK_Selector* theSelector);
+
+  SVTK_InteractorStyle* GetInteractorStyle();
+  void PushInteractorStyle(SVTK_InteractorStyle* theStyle);
+  void PopInteractorStyle();
+
+  int SelectionMode() const;
+  void SetSelectionMode(int theMode);
+
+ public:
+  void
+  onEmitSelectionChanged();
 
  public:
  signals:
@@ -134,69 +180,46 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public SVTK_RenderWindow
   void MouseButtonPressed( QMouseEvent* );
   void MouseButtonReleased( QMouseEvent* );
   void MouseDoubleClicked( QMouseEvent* );
-  void WheelMoved( QWheelEvent* );
   void ButtonPressed(const QMouseEvent *event);
   void ButtonReleased(const QMouseEvent *event);
+  void WheelMoved( QWheelEvent* );
   void KeyPressed( QKeyEvent* );
   void KeyReleased( QKeyEvent* );
   void contextMenuRequested( QContextMenuEvent *e );
 
- public:
-  /* Selection Management */
-  bool isInViewer( const Handle(SALOME_InteractiveObject)& IObject);
-  bool isVisible( const Handle(SALOME_InteractiveObject)& IObject);
-  void rename(const Handle(SALOME_InteractiveObject)& IObject, QString newName);
-
-  // Displaymode management
-  int GetDisplayMode();
-  void SetDisplayMode(int);
-
-  // Switch representation wireframe/shading
-  void SetDisplayMode(const Handle(SALOME_InteractiveObject)& IObject, int theMode);
-
-  // Change all actors to wireframe or surface
-  void ChangeRepresentationToWireframe();
-  void ChangeRepresentationToSurface();
-
-  // Change to wireframe or surface a list of vtkactor
-  void ChangeRepresentationToWireframe(vtkActorCollection* ListofActors);
-  void ChangeRepresentationToSurface(vtkActorCollection* ListofActors);
-
-  // Erase Display functions
-  void EraseAll();
-  void DisplayAll();
-  void RemoveAll( const bool immediatly );
-  void Erase(const Handle(SALOME_InteractiveObject)& IObject, 
-	     bool immediatly=true);
-  void Remove(const Handle(SALOME_InteractiveObject)& IObject, 
-	      bool immediatly=true);
-  void Display(const Handle(SALOME_InteractiveObject)& IObject, 
-	       bool immediatly=true);
-
-  void Display( SALOME_Actor* SActor, 
-		bool immediatly = true );
-  void Erase( SALOME_Actor* SActor, 
-	      bool immediatly = true );
-  void Remove( SALOME_Actor* SActor, 
-	       bool updateViewer = true );
-
-  // Transparency
-  void SetTransparency(const Handle(SALOME_InteractiveObject)& IObject,
-		       float trans);
-  float GetTransparency(const Handle(SALOME_InteractiveObject)& IObject);
-
-  // Color
-  void SetColor(const Handle(SALOME_InteractiveObject)& IObject,
-		QColor thecolor);
-  QColor GetColor(const Handle(SALOME_InteractiveObject)& IObject);
-
-  // SVTK events manamegent (key accelerators, speed increment, etc.)
-  void FireEvent( const int svtkAccelEvent, void* data );
+  void selectionChanged();
 
  protected:
-  int myDisplayMode;
+  virtual void mouseMoveEvent( QMouseEvent* );
+  virtual void mousePressEvent( QMouseEvent* );
+  virtual void mouseReleaseEvent( QMouseEvent* );
+  virtual void mouseDoubleClickEvent( QMouseEvent* );
+  virtual void wheelEvent( QWheelEvent* );
+  virtual void keyPressEvent( QKeyEvent* );
+  virtual void keyReleaseEvent( QKeyEvent* );
+  virtual void contextMenuEvent( QContextMenuEvent * e );
 
+  void
+  InitInteractorStyle(SVTK_InteractorStyle* theStyle);
+
+  // Main process VTK event method
+  static
+  void
+  ProcessEvents(vtkObject* theObject, 
+		unsigned long theEvent,
+		void* theClientData, 
+		void* theCallData);
+
+  // Used to process VTK events
+  vtkSmartPointer<vtkCallbackCommand> myEventCallbackCommand;
+
+  // Priority at which events are processed
+  float myPriority;
+
+  vtkSmartPointer<SVTK_Selector> mySelector;
+
+  typedef vtkSmartPointer<SVTK_InteractorStyle> PInteractorStyle;
+  QValueStack<PInteractorStyle> myInteractorStyles;
 };
-
 
 #endif

@@ -43,10 +43,7 @@ class vtkRenderWindowInteractor;
 
 #include <map>
 
-#include "VTKViewer_Filter.h"
-
 #include "SVTK_SelectionEvent.h"
-#include "SALOME_Actor.h"
 
 class vtkPicker;
 class VTKViewer_RectPicker;
@@ -67,7 +64,6 @@ class SVTK_ViewWindow;
 
 class SVTK_EXPORT SVTK_InteractorStyle : 
   public QObject,
-  public VTK::TValidator,
   public vtkInteractorStyle
 {
   Q_OBJECT;
@@ -106,23 +102,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   virtual void OnRightButtonDown();
   virtual void OnRightButtonUp();
 
-  void 
-  SetFilter( const Handle(VTKViewer_Filter)& );
-
-  Handle(VTKViewer_Filter) 
-  GetFilter( const int );  
-
-  bool
-  IsFilterPresent( const int );
-
-  void
-  RemoveFilter( const int );
-
-  bool
-  IsValid( SALOME_Actor* theActor,
-	   const int theId,
-	   const bool theIsNode = false );
-  
   void
   IncrementalPan( const int incrX, const int incrY );
 
@@ -215,12 +194,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
 
   vtkSmartPointer<vtkPicker> myPicker;
   vtkSmartPointer<VTKViewer_RectPicker> myRectPicker;
-  
-  std::map<int, Handle(VTKViewer_Filter)> myFilters;
-
-  //  members from old version
-  double                    DeltaElevation;
-  double                    DeltaAzimuth;
 };
 
 #endif

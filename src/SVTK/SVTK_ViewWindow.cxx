@@ -1,6 +1,7 @@
 #include "SALOME_Actor.h"
 
 #include <qapplication.h>
+#include <qpushbutton.h>
 #include <qsplitter.h>
 #include <qlayout.h>
 
@@ -40,48 +41,49 @@
 
 //----------------------------------------------------------------------------
 SVTK_ViewWindow
-::SVTK_ViewWindow( SUIT_Desktop* theDesktop, 
-		   SVTK_ViewModelBase* theModel)
-  : SUIT_ViewWindow( theDesktop )
+::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
+  SUIT_ViewWindow(theDesktop)
+{}
+
+//----------------------------------------------------------------------------
+void
+SVTK_ViewWindow
+::Initialize(SVTK_ViewModelBase* theModel)
 {
-  QWidget* aCentralWidget = new QWidget( this );
-  setCentralWidget( aCentralWidget );
-  QBoxLayout* aLayout = new QVBoxLayout( aCentralWidget );
-  aLayout->setAutoAdd( true );
-  QSplitter* aSplitter = new QSplitter( Qt::Vertical, aCentralWidget );
+  if(SUIT_ResourceMgr* aResourceMgr = SUIT_Session::session()->resourceMgr()){
+    myView = new SVTK_View(this,"SVTK_View",aResourceMgr);
+    setCentralWidget(myView);
+    
+    Initialize(myView,theModel);
+  }
+}
 
-  // Create SVTK_View (successor of RenderWindowInteractor).
-  myView = new SVTK_View( aSplitter, "SVTK_View" );
-  myView->Initialize();
-  myView->setFocusPolicy( StrongFocus );
-  myView->setFocus();
 
-  /*
-  SVTK_View* bottomView = new SVTK_View( aSplitter, "BottomView" );
-  bottomView->getInteractor()->SetInteractorStyle( myInteractorStyle ); 
-  bottomView->Initialize();
-  */
-
-  connect( myView, SIGNAL(KeyPressed( QKeyEvent* )),
-           this,   SLOT(onKeyPressed( QKeyEvent* )) );
-  connect( myView, SIGNAL(KeyReleased( QKeyEvent* )),
-           this,   SLOT(onKeyReleased( QKeyEvent* )) );
-  connect( myView, SIGNAL(MouseButtonPressed( QMouseEvent* )),
-           this,   SLOT(onMousePressed( QMouseEvent* )) );
-  connect( myView, SIGNAL(MouseButtonReleased( QMouseEvent* )),
-           this,   SLOT(onMouseReleased( QMouseEvent* )) );
-  connect( myView, SIGNAL(MouseDoubleClicked( QMouseEvent* )),
-           this,   SLOT(onMouseDoubleClicked( QMouseEvent* )) );
-  connect( myView, SIGNAL(MouseMove( QMouseEvent* )),
-           this,   SLOT(onMouseMoving( QMouseEvent* )) );
-  connect( myView, SIGNAL(contextMenuRequested( QContextMenuEvent * )),
-           this,   SIGNAL(contextMenuRequested( QContextMenuEvent * )) );
-  connect( myView, SIGNAL(selectionChanged()),
-	   theModel,SLOT(onSelectionChanged()));
+void
+SVTK_ViewWindow
+::Initialize(SVTK_View* theView,
+	     SVTK_ViewModelBase* theModel)
+{
+  theView->Initialize();
 
   onResetView();
-  setFocusProxy( myView ); // send focus events to myView (fixes a bug
-                           // when on module activation myView received focusOutEvent 
+
+  connect(theView,SIGNAL(KeyPressed(QKeyEvent*)),
+          this,SLOT(onKeyPressed(QKeyEvent*)) );
+  connect(theView,SIGNAL(KeyReleased(QKeyEvent*)),
+          this,SLOT(onKeyReleased(QKeyEvent*)));
+  connect(theView,SIGNAL(MouseButtonPressed(QMouseEvent*)),
+          this,SLOT(onMousePressed(QMouseEvent*)));
+  connect(theView,SIGNAL(MouseButtonReleased(QMouseEvent*)),
+          this,SLOT(onMouseReleased(QMouseEvent*)));
+  connect(theView,SIGNAL(MouseDoubleClicked(QMouseEvent*)),
+          this,SLOT(onMouseDoubleClicked(QMouseEvent*)));
+  connect(theView,SIGNAL(MouseMove(QMouseEvent*)),
+          this,SLOT(onMouseMoving(QMouseEvent*)));
+  connect(theView,SIGNAL(contextMenuRequested(QContextMenuEvent*)),
+          this,SIGNAL(contextMenuRequested(QContextMenuEvent *)));
+  connect(theView,SIGNAL(selectionChanged()),
+	  theModel,SLOT(onSelectionChanged()));
 }
 
 //----------------------------------------------------------------------------
@@ -91,19 +93,11 @@ SVTK_ViewWindow
 
 
 //----------------------------------------------------------------------------
-SVTK_InteractorStyle* 
-SVTK_ViewWindow
-::getInteractorStyle()
-{
-  return myView->getInteractorStyle();
-}
-
-//----------------------------------------------------------------------------
 vtkRenderer*
 SVTK_ViewWindow
 ::getRenderer()
 {
-  return myView->getRenderer();
+  return myView->GetRenderer();
 }
 
 //----------------------------------------------------------------------------
@@ -118,20 +112,6 @@ SVTK_ViewWindow
 SVTK_View* 
 SVTK_ViewWindow
 ::getView() { 
-  return myView; 
-}
-
-SVTK_RenderWindow* 
-SVTK_ViewWindow
-::getRenderWindow() 
-{ 
-  return myView; 
-}
-
-SVTK_RenderWindowInteractor* 
-SVTK_ViewWindow
-::getRWInteractor() 
-{ 
   return myView; 
 }
 
@@ -220,7 +200,7 @@ Selection_Mode
 SVTK_ViewWindow
 ::SelectionMode() const
 {
-  return myView->SelectionMode();
+  return Selection_Mode(myView->SelectionMode());
 }
 
 //----------------------------------------------------------------
@@ -453,22 +433,7 @@ SVTK_ViewWindow
 		   const double& theBlue, 
 		   const int& theWidth) 
 {
-  vtkActorCollection* anActors = myView->getRenderer()->GetActors();
-  anActors->InitTraversal();
-  while( vtkActor* anActor = anActors->GetNextActor() )
-  {
-    if( SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast( anActor ) )
-    {
-      aSActor->getPointProperty()->SetColor( theRed, theGreen, theBlue );
-      aSActor->getPointProperty()->SetLineWidth( theWidth );
-
-      aSActor->getCellProperty()->SetColor( theRed, theGreen, theBlue );
-      aSActor->getCellProperty()->SetLineWidth( theWidth );
-
-      aSActor->getEdgeProperty()->SetColor( theRed, theGreen, theBlue );
-      aSActor->getEdgeProperty()->SetLineWidth( theWidth );
-    }
-  }
+  myView->SetSelectionProp(theRed,theGreen,theBlue,theWidth);
 }
 
 //----------------------------------------------------------------------------
@@ -477,33 +442,23 @@ SVTK_ViewWindow
 ::SetSelectionTolerance(const double& theTolNodes, 
 			const double& theTolItems)
 {
-  vtkActorCollection* anActors = myView->getRenderer()->GetActors();
-  anActors->InitTraversal();
-  while( vtkActor* anActor = anActors->GetNextActor() )
-  {
-    if( SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast( anActor ) )
-    {
-      aSActor->getPointPicker()->SetTolerance( theTolNodes );
-      aSActor->getCellPicker()->SetTolerance( theTolItems );
-      aSActor->getCellRectPicker()->SetTolerance( theTolItems );
-    }
-  }
+  myView->SetSelectionTolerance(theTolNodes,theTolItems);
 }
 
 //----------------------------------------------------------------------------
 int convertAction( const int accelAction )
 {
   switch ( accelAction ) {
-  case SUIT_Accel::PanLeft     : return PanLeftEvent;
-  case SUIT_Accel::PanRight    : return PanRightEvent;
-  case SUIT_Accel::PanUp       : return PanUpEvent;
-  case SUIT_Accel::PanDown     : return PanDownEvent;
-  case SUIT_Accel::ZoomIn      : return ZoomInEvent;
-  case SUIT_Accel::ZoomOut     : return ZoomOutEvent;
-  case SUIT_Accel::RotateLeft  : return RotateLeftEvent;
-  case SUIT_Accel::RotateRight : return RotateRightEvent;
-  case SUIT_Accel::RotateUp    : return RotateUpEvent;
-  case SUIT_Accel::RotateDown  : return RotateDownEvent;  
+  case SUIT_Accel::PanLeft     : return SVTK::PanLeftEvent;
+  case SUIT_Accel::PanRight    : return SVTK::PanRightEvent;
+  case SUIT_Accel::PanUp       : return SVTK::PanUpEvent;
+  case SUIT_Accel::PanDown     : return SVTK::PanDownEvent;
+  case SUIT_Accel::ZoomIn      : return SVTK::ZoomInEvent;
+  case SUIT_Accel::ZoomOut     : return SVTK::ZoomOutEvent;
+  case SUIT_Accel::RotateLeft  : return SVTK::RotateLeftEvent;
+  case SUIT_Accel::RotateRight : return SVTK::RotateRightEvent;
+  case SUIT_Accel::RotateUp    : return SVTK::RotateUpEvent;
+  case SUIT_Accel::RotateDown  : return SVTK::RotateDownEvent;  
   }
   return accelAction;
 }
@@ -517,6 +472,6 @@ SVTK_ViewWindow
     onFitAll();
   else {
     int svtkEvent = convertAction( accelAction );
-    myView->FireEvent( svtkEvent, 0 );
+    myView->InvokeEvent( svtkEvent, 0 );
   }
 }
