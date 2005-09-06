@@ -198,7 +198,6 @@ QVTK_RenderWindowInteractor
 #endif
   GetRenderWindow()->SetWindowId((void*)winId());
   myInteractor->Enable();
-  myInteractor->ConfigureEvent();
 }
 
 //----------------------------------------------------------------------------
@@ -215,10 +214,11 @@ QVTK_RenderWindowInteractor
 ::paintEvent( QPaintEvent* theEvent ) 
 {
   if(myInteractor->GetEnabled()){
-    if(!myInteractor->GetInitialized())
+    if(!myInteractor->GetInitialized()){
       myInteractor->Initialize();
-    else
-      myInteractor->Render();
+      myInteractor->ConfigureEvent();
+    }
+    myInteractor->Render();
   }
 }
 

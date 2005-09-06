@@ -275,6 +275,15 @@ SVTK_InteractorStyle
 //----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
+::OnConfigure() 
+{
+  GetCurrentRenderer()->InvokeEvent(vtkCommand::ConfigureEvent,NULL);
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_InteractorStyle
 ::OnMouseMove() 
 {
   int x, y;
@@ -1312,92 +1321,90 @@ SVTK_InteractorStyle
 		 void* clientData, 
 		 void* callData )
 {
-  if ( event < vtkCommand::UserEvent  )
-    vtkInteractorStyle::ProcessEvents( object, event, clientData, callData );
-
-  else if ( clientData ) {
+  if ( clientData ) {
     vtkObject* anObject = reinterpret_cast<vtkObject*>( clientData );
     SVTK_InteractorStyle* self = dynamic_cast<SVTK_InteractorStyle*>( anObject );
     if ( self ) {
       switch ( event ) {
       case SVTK::SpaceMouseMoveEvent : 
 	self->onSpaceMouseMove( (double*)callData ); 
-	break;
+	return;
       case SVTK::SpaceMouseButtonEvent : 
 	self->onSpaceMouseButton( *((int*)callData) ); 
-	break;
+	return;
       case SVTK::PanLeftEvent: 
 	self->IncrementalPan( -self->mySpeedIncrement, 0 );
-	break;
+	return;
       case SVTK::PanRightEvent:
 	self->IncrementalPan( self->mySpeedIncrement, 0 );
-	break;
+	return;
       case SVTK::PanUpEvent:
 	self->IncrementalPan( 0, self->mySpeedIncrement );
-	break;
+	return;
       case SVTK::PanDownEvent:
 	self->IncrementalPan( 0, -self->mySpeedIncrement );
-	break;
+	return;
       case SVTK::ZoomInEvent:
 	self->IncrementalZoom( self->mySpeedIncrement );
-	break;
+	return;
       case SVTK::ZoomOutEvent:
 	self->IncrementalZoom( -self->mySpeedIncrement );
-	break;
+	return;
       case SVTK::RotateLeftEvent: 
 	self->IncrementalRotate( -self->mySpeedIncrement, 0 );
-	break;
+	return;
       case SVTK::RotateRightEvent:
 	self->IncrementalRotate( self->mySpeedIncrement, 0 );
-	break;
+	return;
       case SVTK::RotateUpEvent:
 	self->IncrementalRotate( 0, -self->mySpeedIncrement );
-	break;
+	return;
       case SVTK::RotateDownEvent:
 	self->IncrementalRotate( 0, self->mySpeedIncrement );
-	break;
+	return;
       case SVTK::PlusSpeedIncrementEvent:
 	++(self->mySpeedIncrement);
-	break;
+	return;
       case SVTK::MinusSpeedIncrementEvent:
 	--(self->mySpeedIncrement);
-	break;
+	return;
       case SVTK::SetSpeedIncrementEvent:
 	self->mySpeedIncrement = *((int*)callData);
-	break;
+	return;
 
       case SVTK::SetSpaceMouseF1Event:
 	self->mySpaceMouseBtns[0] = *((int*)callData);
-	break;
+	return;
       case SVTK::SetSpaceMouseF2Event:
 	self->mySpaceMouseBtns[1] = *((int*)callData);
-	break;
+	return;
       case SVTK::SetSpaceMouseF3Event:
 	self->mySpaceMouseBtns[2] = *((int*)callData);
-	break;
+	return;
       case SVTK::SetSpaceMouseF4Event:
 	self->mySpaceMouseBtns[3] = *((int*)callData);
-	break;
+	return;
       case SVTK::SetSpaceMouseF5Event:
 	self->mySpaceMouseBtns[4] = *((int*)callData);
-	break;
+	return;
 
       case SVTK::StartZoom:
 	self->startZoom();
-	break;
+	return;
       case SVTK::StartPan:
 	self->startPan();
-	break;
+	return;
       case SVTK::StartRotate:
 	self->startRotate();
-	break;
+	return;
       case SVTK::StartGlobalPan:
 	self->startGlobalPan();
-	break;
+	return;
       case SVTK::StartFitArea:
 	self->startFitArea();
-	break;
+	return;
       }
     }
   }
+  vtkInteractorStyle::ProcessEvents( object, event, clientData, callData );
 }

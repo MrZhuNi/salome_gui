@@ -76,6 +76,9 @@ SVTK_Renderer
   this->AddObserver(vtkCommand::ResetCameraEvent,
 		    myEventCallbackCommand.GetPointer(), 
 		    myPriority);
+  this->AddObserver(vtkCommand::ConfigureEvent,
+		    myEventCallbackCommand.GetPointer(), 
+		    myPriority);
 }
 
 SVTK_Renderer
@@ -92,6 +95,11 @@ SVTK_Renderer
 {
   SVTK_Renderer* self = reinterpret_cast<SVTK_Renderer*>(theClientData);
 
+  switch(theEvent){
+  case vtkCommand::ConfigureEvent:
+    self->onResetView();
+    break;
+  }
   switch(theEvent){
   case vtkCommand::ResetCameraEvent:
     self->onFitAll();

@@ -94,6 +94,7 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   virtual void OnTimer();
 
   // VTK events
+  virtual void OnConfigure();
   virtual void OnMouseMove();
   virtual void OnLeftButtonDown();
   virtual void OnLeftButtonUp();
