@@ -164,7 +164,8 @@ QVTK_RenderWindowInteractor
   theRenderWindow->DoubleBufferOn();
   setMouseTracking(true);
 
-  Initialize();
+  // To avoid UnbindContext: Assertion `vb.context == ctx' failed
+  // Initialize();
 }
 
 vtkRenderWindow*
