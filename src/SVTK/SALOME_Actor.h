@@ -51,7 +51,7 @@ class vtkProperty;
 class vtkPolyDataMapper;
 class vtkOutlineSource;
 class vtkRenderer;
-
+class vtkInteractorStyle;
 class VTKViewer_Transform;
 class VTKViewer_GeometryFilter;
 class VTKViewer_TransformFilter;
@@ -328,16 +328,18 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   void
   RemoveFromRender( vtkRenderer* );
 
+  
   virtual
   bool
   PreHighlight(	SVTK_Selector*, 
-		vtkRenderer*, 
+		vtkInteractorStyle*, 
 		SVTK_SelectionEvent, 
 		bool );
+
   virtual 
   bool
   Highlight( SVTK_Selector*, 
-	     vtkRenderer*, 
+	     vtkInteractorStyle*,
 	     SVTK_SelectionEvent, 
 	     bool );
 

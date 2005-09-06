@@ -944,11 +944,13 @@ SVTK_InteractorStyle
 	    SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
 	    aSelectionEvent.mySelectionMode = aSelectionMode;
 	    aSelectionEvent.myIsRectangle = false;
-	    aSActor->Highlight( GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
-	  }else{
+	    aSActor->Highlight( GetSelector(), this, aSelectionEvent, true );
+	  }
+	  else{
 	    GetSelector()->ClearIObjects();
 	  }
-        } else {
+        } 
+	else {
           //processing rectangle selection
 	  Interactor->StartPickCallback();
 	  GetSelector()->StartPickCallback();
@@ -984,7 +986,7 @@ SVTK_InteractorStyle
 	  aListActors->InitTraversal();
 	  while(vtkActor* aActor = aListActors->GetNextActor()){
 	    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)){
-	      aSActor->Highlight( GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
+	      aSActor->Highlight( GetSelector(), this, aSelectionEvent, true );
 	    }
 	  }
 	}
@@ -1092,9 +1094,10 @@ SVTK_InteractorStyle
 
   myPicker->Pick(x, y, 0.0, GetCurrentRenderer());
   if(SALOME_Actor* anActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
-    anIsChanged |= anActor->PreHighlight( GetSelector(), GetCurrentRenderer(), aSelectionEvent, true );
-    if(aLastActor && aLastActor != anActor)
-      aLastActor->PreHighlight( GetSelector(), GetCurrentRenderer(), aSelectionEvent, false );
+    anIsChanged |= anActor->PreHighlight( GetSelector(), this, aSelectionEvent, true );
+    if(aLastActor && aLastActor != anActor) {
+      aLastActor->PreHighlight( GetSelector(), this, aSelectionEvent, false );
+    }
   }
   
   if(anIsChanged)
