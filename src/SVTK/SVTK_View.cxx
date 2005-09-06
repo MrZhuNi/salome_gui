@@ -563,8 +563,6 @@ SVTK_InteractorHolder
   myInteractor = theInteractor;
 
   if(myInteractor){
-    myInteractor->SetRenderWindow(myRenderWindow.GetPointer());
-
     connect(myInteractor,SIGNAL(KeyPressed(QKeyEvent*)),
 	    this,SIGNAL(KeyPressed(QKeyEvent*)) );
     connect(myInteractor,SIGNAL(KeyReleased(QKeyEvent*)),
@@ -589,6 +587,8 @@ SVTK_InteractorHolder
     myInteractor->setFocusPolicy(StrongFocus);
     myInteractor->setFocus();
     setFocusProxy(myInteractor);
+
+    myInteractor->SetRenderWindow(myRenderWindow.GetPointer());
   }
 }
 
@@ -633,14 +633,6 @@ SVTK_InteractorHolder
 ::InvokeEvent(unsigned long theEvent, void* theCallData)
 {
   myInteractor->InvokeEvent(theEvent,theCallData);
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorHolder
-::Initialize()
-{
-  myInteractor->Initialize();
 }
 
 //----------------------------------------------------------------------------

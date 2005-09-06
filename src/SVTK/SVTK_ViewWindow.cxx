@@ -64,8 +64,6 @@ SVTK_ViewWindow
 ::Initialize(SVTK_View* theView,
 	     SVTK_ViewModelBase* theModel)
 {
-  theView->Initialize();
-
   onResetView();
 
   connect(theView,SIGNAL(KeyPressed(QKeyEvent*)),

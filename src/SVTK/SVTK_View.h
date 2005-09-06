@@ -174,9 +174,6 @@ public:
   InvokeEvent(unsigned long theEvent, void* theCallData);
 
   void
-  Initialize();
-
-  void
   SetRenderWindow(vtkRenderWindow *theRenderWindow);
 
   vtkRenderWindow*

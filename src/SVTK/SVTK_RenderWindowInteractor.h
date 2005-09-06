@@ -108,22 +108,14 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
   vtkRenderWindow*
   GetRenderWindow();
 
-  // Description:
-  // Initializes the event handlers without an XtAppContext.  This is
-  // good for when you don`t have a user interface, but you still
-  // want to have mouse interaction.
-  void
-  Initialize();
-
   virtual
   void
   InvokeEvent(unsigned long theEvent, void* theCallData);
 
-  // Description:
-  // Event loop notification member for Window size change
-  virtual
-  void
-  UpdateSize(int x,int y);
+ public slots:
+  virtual void show();
+  virtual void polish();
+  virtual void resize(int w, int h);
 
  protected:
   virtual void paintEvent( QPaintEvent* );

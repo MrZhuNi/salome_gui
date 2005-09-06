@@ -132,6 +132,8 @@ QVTK_RenderWindowInteractor
   myInteractor(QtRenderWindowInteractor::New())
 {
   myInteractor->Delete();
+
+  setMouseTracking(true);
 }
 
 
@@ -157,15 +159,7 @@ QVTK_RenderWindowInteractor
 ::SetRenderWindow(vtkRenderWindow *theRenderWindow)
 {
   myInteractor->SetRenderWindow(theRenderWindow);
-#ifndef WNT
-  theRenderWindow->SetDisplayId((void*)x11Display());
-#endif
-  theRenderWindow->SetWindowId((void*)winId());
   theRenderWindow->DoubleBufferOn();
-  setMouseTracking(true);
-
-  // To avoid UnbindContext: Assertion `vb.context == ctx' failed
-  // Initialize();
 }
 
 vtkRenderWindow*
@@ -173,14 +167,6 @@ QVTK_RenderWindowInteractor
 ::GetRenderWindow()
 {
   return myInteractor->GetRenderWindow();
-}
-
-//----------------------------------------------------------------------------
-void
-QVTK_RenderWindowInteractor
-::Initialize() 
-{
-  myInteractor->Initialize();
 }
 
 //----------------------------------------------------------------------------
@@ -194,7 +180,31 @@ QVTK_RenderWindowInteractor
 //----------------------------------------------------------------------------
 void
 QVTK_RenderWindowInteractor
-::UpdateSize(int w, int h) 
+::show()
+{
+  QWidget::show();
+  update(); // needed for initial contents display on Win32
+}
+
+//----------------------------------------------------------------------------
+void
+QVTK_RenderWindowInteractor
+::polish()
+{
+  // Final initialization just before the widget is displayed.
+  myInteractor->SetSize(width(),height());
+#ifndef WNT
+  GetRenderWindow()->SetDisplayId((void*)x11Display());
+#endif
+  GetRenderWindow()->SetWindowId((void*)winId());
+  myInteractor->Enable();
+  myInteractor->ConfigureEvent();
+}
+
+//----------------------------------------------------------------------------
+void
+QVTK_RenderWindowInteractor
+::resize(int w, int h) 
 {
   myInteractor->UpdateSize(w,h);
 }
@@ -204,7 +214,12 @@ void
 QVTK_RenderWindowInteractor
 ::paintEvent( QPaintEvent* theEvent ) 
 {
-  myInteractor->Render();
+  if(myInteractor->GetEnabled()){
+    if(!myInteractor->GetInitialized())
+      myInteractor->Initialize();
+    else
+      myInteractor->Render();
+  }
 }
 
 
@@ -217,7 +232,9 @@ QVTK_RenderWindowInteractor
   int aWidth = aSize[0];
   int aHeight = aSize[1];
 
-  UpdateSize( width(), height() );
+  //myInteractor->SetSize(width(),height());
+  myInteractor->UpdateSize(width(),height());
+  myInteractor->ConfigureEvent();
 
   if( aWidth != width() || aHeight != height() )
   {
@@ -235,6 +252,8 @@ QVTK_RenderWindowInteractor
       aCamera->SetParallelScale(aScale*aCoeff);
     }
   }
+
+  update(); 
 }
 
 
