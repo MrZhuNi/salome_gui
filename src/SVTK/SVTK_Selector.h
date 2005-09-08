@@ -32,6 +32,7 @@
 #include "SVTK_Selection.h"
 #include "SALOME_ListIO.hxx"
 #include "VTKViewer_Filter.h"
+#include "SALOME_InteractiveObject.hxx"
 
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>

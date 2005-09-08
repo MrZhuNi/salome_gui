@@ -27,16 +27,14 @@
 //  $Header$
 
 
-#include <TColStd_MapIteratorOfMapOfInteger.hxx>
-#include <TColStd_IndexedMapOfInteger.hxx>
-
-#include "SALOME_Actor.h"
-#include "SVTK_ViewModel.h"
-#include "SVTK_ViewWindow.h"
-
 #include "SVTK_SelectorDef.h"
 
+#include "SALOME_Actor.h"
+
 #include "utilities.h"
+
+#include <TColStd_MapIteratorOfMapOfInteger.hxx>
+#include <TColStd_IndexedMapOfInteger.hxx>
 
 #include <vtkCallbackCommand.h>
 

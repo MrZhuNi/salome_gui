@@ -159,8 +159,8 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   void PushInteractorStyle(SVTK_InteractorStyle* theStyle);
   void PopInteractorStyle();
 
-  int SelectionMode() const;
-  void SetSelectionMode(int theMode);
+  Selection_Mode SelectionMode() const;
+  void SetSelectionMode(Selection_Mode theMode);
 
  public:
   void
