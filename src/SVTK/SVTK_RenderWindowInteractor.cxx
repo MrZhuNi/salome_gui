@@ -65,6 +65,7 @@ static int MYDEBUG = 0;
 static int MYDEBUG = 0;
 #endif
 
+//#define GENERATE_SUIT_EVENTS
 
 //----------------------------------------------------------------------------
 vtkStandardNewMacro(QtRenderWindowInteractor);
@@ -100,8 +101,8 @@ QtRenderWindowInteractor
   //
   // Start a one-shot timer for 10ms. 
   //
-  myTimer->start(10, TRUE) ;
-  return 1 ;
+  myTimer->start(1,TRUE);
+  return 1;
 }
 
 int
@@ -120,7 +121,7 @@ QtRenderWindowInteractor
   // the models in low-res mode after the mouse stops
   // moving. 
   //
-  return 1 ;
+  return 1;
 }
 
 
@@ -234,7 +235,7 @@ QVTK_RenderWindowInteractor
 
   myInteractor->UpdateSize(width(),height());
 
-  if(true || aWidth && aHeight){
+  if(aWidth && aHeight){
     if( aWidth != width() || aHeight != height() ) {
       vtkRendererCollection * aRenderers = GetRenderWindow()->GetRenderers();
       aRenderers->InitTraversal();
@@ -482,7 +483,6 @@ SVTK_RenderWindowInteractor
 ::InitInteractorStyle(SVTK_InteractorStyle* theStyle)
 {
   GetDevice()->SetInteractorStyle(theStyle); 
-  theStyle->FindPokedRenderer(0,0);
 
   theStyle->SetSelector(GetSelector());
   theStyle->SetRenderWidget(this);
@@ -554,8 +554,9 @@ SVTK_RenderWindowInteractor
 ::mouseMoveEvent( QMouseEvent* event ) 
 {
   QVTK_RenderWindowInteractor::mouseMoveEvent(event);
-
+#ifdef GENERATE_SUIT_EVENTS
   emit MouseMove( event );
+#endif
 }
 
 
@@ -565,8 +566,9 @@ SVTK_RenderWindowInteractor
 ::mousePressEvent( QMouseEvent* event ) 
 {
   QVTK_RenderWindowInteractor::mousePressEvent(event);
-
+#ifdef GENERATE_SUIT_EVENTS
   emit MouseButtonPressed( event );
+#endif
 }
 
 
@@ -576,8 +578,9 @@ SVTK_RenderWindowInteractor
 ::mouseReleaseEvent( QMouseEvent *event )
 {
   QVTK_RenderWindowInteractor::mouseReleaseEvent(event);
-
+#ifdef GENERATE_SUIT_EVENTS
   emit MouseButtonReleased( event );
+#endif
 }
 
 
@@ -587,8 +590,9 @@ SVTK_RenderWindowInteractor
 ::mouseDoubleClickEvent( QMouseEvent* event )
 {
   QVTK_RenderWindowInteractor::mouseDoubleClickEvent(event);
-
+#ifdef GENERATE_SUIT_EVENTS
   emit MouseDoubleClicked( event );
+#endif
 }
 
 
@@ -598,8 +602,9 @@ SVTK_RenderWindowInteractor
 ::wheelEvent( QWheelEvent* event )
 {
   QVTK_RenderWindowInteractor::wheelEvent(event);
-
+#ifdef GENERATE_SUIT_EVENTS
   emit WheelMoved( event );
+#endif
 }
 
 
@@ -609,8 +614,9 @@ SVTK_RenderWindowInteractor
 ::keyPressEvent( QKeyEvent* event ) 
 {
   QVTK_RenderWindowInteractor::keyPressEvent(event);
-
+#ifdef GENERATE_SUIT_EVENTS
   emit KeyPressed( event );
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -619,8 +625,9 @@ SVTK_RenderWindowInteractor
 ::keyReleaseEvent( QKeyEvent * event ) 
 {
   QVTK_RenderWindowInteractor::keyReleaseEvent(event);
-
+#ifdef GENERATE_SUIT_EVENTS
   emit KeyReleased( event );
+#endif
 }
 
 //----------------------------------------------------------------------------
