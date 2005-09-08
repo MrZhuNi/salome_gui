@@ -156,7 +156,7 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   void loadCursors();
   void startOperation(int operation);
   void onStartOperation();
-  void onFinishOperation();
+  virtual void onFinishOperation();
   void onOperation(QPoint mousePos);
   void onCursorMove(QPoint mousePos);
   void setCursor(const int operation);
