@@ -101,10 +101,13 @@ SVTK_Renderer
 
   myEventCallbackCommand->SetClientData(this);
   myEventCallbackCommand->SetCallback(SVTK_Renderer::ProcessEvents);
+  this->AddObserver(vtkCommand::ConfigureEvent,
+		    myEventCallbackCommand.GetPointer(), 
+		    myPriority);
   this->AddObserver(vtkCommand::ResetCameraEvent,
 		    myEventCallbackCommand.GetPointer(), 
 		    myPriority);
-  this->AddObserver(vtkCommand::ConfigureEvent,
+  this->AddObserver(vtkCommand::ResetCameraClippingRangeEvent,
 		    myEventCallbackCommand.GetPointer(), 
 		    myPriority);
 }
@@ -127,10 +130,11 @@ SVTK_Renderer
   case vtkCommand::ConfigureEvent:
     self->onResetView();
     break;
-  }
-  switch(theEvent){
   case vtkCommand::ResetCameraEvent:
     self->onFitAll();
+    break;
+  case vtkCommand::ResetCameraClippingRangeEvent:
+    self->onResetClippingRange();
     break;
   }
 }
@@ -418,6 +422,16 @@ SVTK_Renderer
   else
     myCubeAxes->VisibilityOff();
 
+  ::ResetCameraClippingRange(this);
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_Renderer
+::onResetClippingRange()
+{
+  return;
   ::ResetCameraClippingRange(this);
 }
 

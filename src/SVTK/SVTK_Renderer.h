@@ -101,6 +101,7 @@ class SVTK_EXPORT SVTK_Renderer : public SVTK_RENDERER_SUPERCLASS
 
   void onFitAll();
   void onResetView();     
+  void onResetClippingRange();
 
   void onFrontView(); 
   void onBackView(); 
