@@ -130,7 +130,7 @@ public:
   virtual void Execute() {
     if( SVTK_ViewWindow* aVTKViewWindow = GetVTKViewWindow() ) {
       PyObject* aPyClass = GetPyClass("vtkRenderWindow");
-      vtkRenderWindow* aVTKObject = aVTKViewWindow->getView()->GetRenderWindow();
+      vtkRenderWindow* aVTKObject = aVTKViewWindow->getRenderWindow();
       myResult = PyVTKObject_New(aPyClass,aVTKObject);
     }
   }
@@ -151,7 +151,7 @@ public:
   virtual void Execute() {
     if( SVTK_ViewWindow* aVTKViewWindow = GetVTKViewWindow() ) {
       PyObject* aPyClass = GetPyClass("vtkRenderWindowInteractor");
-      vtkRenderWindowInteractor* aVTKObject = aVTKViewWindow->getView()->GetRenderWindowInteractor();
+      vtkRenderWindowInteractor* aVTKObject = aVTKViewWindow->getInteractor();
       myResult = PyVTKObject_New(aPyClass,aVTKObject);
     }
   }

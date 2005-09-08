@@ -138,7 +138,7 @@ SVTK_Viewer
   thePopup->insertSeparator();
 
   if(TViewWindow* aView = dynamic_cast<TViewWindow*>(myViewManager->getActiveView())){
-    if ( !aView->getView()->getToolBar()->isVisible() ){
+    if ( !aView->getView()->GetMainWindow()->getToolBar()->isVisible() ){
       thePopup->insertItem( VTKViewer_Viewer::tr( "MEN_SHOW_TOOLBAR" ), this, SLOT( onShowToolbar() ) );
     }
   }
@@ -207,7 +207,7 @@ SVTK_Viewer
   QPtrVector<SUIT_ViewWindow> aViews = myViewManager->getViews();
   for(int i = 0, iEnd = aViews.size(); i < iEnd; i++){
     if(TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at(i))){
-      aView->getView()->getToolBar()->show();
+      aView->getView()->GetMainWindow()->getToolBar()->show();
     }
   }
 }
@@ -239,7 +239,7 @@ SVTK_Viewer
 	      if(SVTK_View* aView = aViewWindow->getView()){
 		aView->Display(anAct,false);
 		if(anAct->IsSetCamera()){
-		  vtkRenderer* aRenderer = aView->GetRenderer();
+		  vtkRenderer* aRenderer = aView->getRenderer();
 		  anAct->SetCamera( aRenderer->GetActiveCamera() );
 		}
 	      }
@@ -296,7 +296,7 @@ SVTK_Viewer
   for(int i = 0, iEnd = aViews.size(); i < iEnd; i++){
     if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(aViews.at(i)))
       if(SVTK_View* aView = aViewWindow->getView()){
-	vtkRenderer* aRenderer =  aView->GetRenderer();
+	vtkRenderer* aRenderer =  aView->getRenderer();
 	vtkActorCollection* anActorCollection = aRenderer->GetActors();
 	anActorCollection->InitTraversal();
 	while(vtkActor* anActor = anActorCollection->GetNextActor()){
@@ -334,7 +334,7 @@ SVTK_Viewer
   if ( entry ) {
     if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(getViewManager()->getActiveView()))
       if(SVTK_View* aView = aViewWindow->getView()){
-	vtkRenderer* aRenderer =  aView->GetRenderer();
+	vtkRenderer* aRenderer =  aView->getRenderer();
 	vtkActorCollection* theActors = aRenderer->GetActors();
 	theActors->InitTraversal();
 	vtkActor* ac;
@@ -389,5 +389,5 @@ SVTK_Viewer
   for(int i = 0, iEnd = aViews.size(); i < iEnd; i++)
     if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(aViews.at(i)))
       if(SVTK_View* aView = aViewWindow->getView())
-	aView->update();
+	aView->Repaint();
 }

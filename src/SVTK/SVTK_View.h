@@ -6,7 +6,7 @@
 #endif
 
 #include "SVTK.h"
-
+#include "SVTK_Selection.h"
 #include "SALOME_InteractiveObject.hxx"
 
 #include <vtkSmartPointer.h>
@@ -42,70 +42,126 @@ class SVTK_RenderWindowInteractor;
 class SALOME_Actor;
 
 //----------------------------------------------------------------------------
-class SVTK_EXPORT SVTK_RendererHolder: public QMainWindow
+class SVTK_EXPORT SVTK_MainWindow: public QMainWindow
 {
   Q_OBJECT;
 
 public:
-  SVTK_RendererHolder(QWidget* theParent, 
-		      const char* theName);
+  SVTK_MainWindow(QWidget* theParent, 
+		  const char* theName,
+		  SUIT_ResourceMgr* theResourceMgr);
 
   virtual
-  ~SVTK_RendererHolder();
+  ~SVTK_MainWindow();
 
-  vtkRenderer* GetRenderer();
+  //----------------------------------------------------------------------------
+  void
+  SetInteractor(SVTK_RenderWindowInteractor* theInteractor);
 
-  virtual void Repaint() = 0;
+  SVTK_RenderWindowInteractor*
+  GetInteractor();
 
-  void setBackgroundColor( const QColor& );
-  QColor backgroundColor() const;
-
-  //apply existing transformation on adding SALOME_Actor
-  void SetScale( double theScale[3] );
-  void GetScale( double theScale[3] );
-
-  void AddActor(VTKViewer_Actor* theActor, bool theIsUpdate = false);
-  void RemoveActor(VTKViewer_Actor* theActor, bool theIsUpdate = false);
-
-  int  GetTrihedronSize() const;
-  void SetTrihedronSize( const int );
-  void AdjustTrihedrons( const bool forced );
-
-  bool isTrihedronDisplayed();
-  bool isCubeAxesDisplayed();
-
-  VTKViewer_Trihedron* GetTrihedron();
-  SVTK_CubeAxesActor2D* GetCubeAxes();
-
- protected:  
-  vtkSmartPointer<SVTK_Renderer> myRenderer;
-};
-
-
-//----------------------------------------------------------------------------
-class SVTK_EXPORT SVTK_ActionHolder: public SVTK_RendererHolder
-{
-  Q_OBJECT;
-
-public:
-  SVTK_ActionHolder(QWidget* theParent, 
-		    const char* theName,
-		    SUIT_ResourceMgr* theResourceMgr);
-
-  virtual
-  ~SVTK_ActionHolder();
+  vtkRenderWindowInteractor*
+  getInteractor();
 
   void
-  SetEventDispatcher(vtkObject* theDispatcher);
+  Repaint();
 
+  void
+  Repaint(bool theUpdateTrihedron);
+
+  void
+  InvokeEvent(unsigned long theEvent, void* theCallData);
+
+  //----------------------------------------------------------------------------
+  SVTK_InteractorStyle* 
+  GetInteractorStyle();
+
+  void
+  PushInteractorStyle(SVTK_InteractorStyle* theStyle);
+
+  void
+  PopInteractorStyle();
+
+  //----------------------------------------------------------------------------
+  SVTK_Selector* 
+  GetSelector();
+
+  void
+  SetSelector(SVTK_Selector* theSelector);
+
+  Selection_Mode
+  SelectionMode();
+
+  void 
+  SetSelectionMode(Selection_Mode theMode);
+
+  //----------------------------------------------------------------------------
+  void
+  SetRenderWindow(SVTK_RenderWindow *theRenderWindow);
+
+  SVTK_RenderWindow*
+  GetRenderWindow();
+
+  vtkRenderWindow*
+  getRenderWindow();
+
+  //----------------------------------------------------------------------------
+  SVTK_Renderer* 
+  GetRenderer();
+
+  vtkRenderer* 
+  getRenderer();
+
+  void
+  SetBackgroundColor(const QColor& theColor);
+
+  QColor 
+  BackgroundColor();
+
+  void
+  SetScale(double theScale[3]);
+
+  void
+  GetScale(double theScale[3]);
+
+  void 
+  AddActor(VTKViewer_Actor* theActor, 
+	   bool theIsUpdate = false);
+  void 
+  RemoveActor(VTKViewer_Actor* theActor, 
+	      bool theIsUpdate = false);
+
+  int  
+  GetTrihedronSize();
+
+  void
+  SetTrihedronSize(const int theSize);
+
+  void 
+  AdjustTrihedrons(const bool theIsForced);
+
+  bool
+  IsTrihedronDisplayed();
+ 
+  bool
+  IsCubeAxesDisplayed();
+
+  VTKViewer_Trihedron* 
+  GetTrihedron();
+
+  SVTK_CubeAxesActor2D*
+  GetCubeAxes();
+
+  //----------------------------------------------------------------------------
   QToolBar* getToolBar();
 
  public slots:
-  virtual void activateZoom();
-  virtual void activateWindowFit();
-  virtual void activateRotation();
-  virtual void activatePanning(); 
-  virtual void activateGlobalPanning(); 
+  void activateZoom();
+  void activateWindowFit();
+  void activateRotation();
+  void activatePanning(); 
+  void activateGlobalPanning(); 
 
   void onFrontView(); 
   void onBackView(); 
@@ -135,6 +191,9 @@ public:
   void
   createToolBar();
 
+  void
+  SetEventDispatcher(vtkObject* theDispatcher);
+
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, ViewTrihedronId };
   typedef QMap<int, QtxAction*> TActionsMap;
@@ -142,59 +201,41 @@ public:
   vtkSmartPointer<vtkObject> myEventDispatcher;
   TActionsMap myActionsMap;  
   QToolBar* myToolBar;
+
+  SVTK_RenderWindowInteractor* myInteractor;
+  vtkSmartPointer<SVTK_RenderWindow> myRenderWindow;
 };
 
 
 //----------------------------------------------------------------------------
-class SVTK_EXPORT SVTK_InteractorHolder : public SVTK_ActionHolder
+class SVTK_EXPORT SVTK_SignalHandler : public QObject
 {
   Q_OBJECT;
 
 public:
-  SVTK_InteractorHolder(QWidget* theParent, 
-			const char* theName,
-			SUIT_ResourceMgr* theResourceMgr);
+  SVTK_SignalHandler(SVTK_MainWindow* theMainWindow);
 
   virtual
-  ~SVTK_InteractorHolder();
+  ~SVTK_SignalHandler();
+
+  SVTK_MainWindow*
+  GetMainWindow();
+
+  //----------------------------------------------------------------------------
+  void
+  Repaint();
 
   void
-  SetInteractor(SVTK_RenderWindowInteractor* theInteractor);
+  Repaint(bool theUpdateTrihedron);
 
-  SVTK_RenderWindowInteractor*
-  GetInteractor();
+  //----------------------------------------------------------------------------
+  SVTK_Renderer* 
+  GetRenderer();
 
-  vtkRenderWindowInteractor*
-  GetRenderWindowInteractor();
+  vtkRenderer* 
+  getRenderer();
 
-  virtual void Repaint();
-  void Repaint( bool theUpdateTrihedron );
-
-  void
-  InvokeEvent(unsigned long theEvent, void* theCallData);
-
-  void
-  SetRenderWindow(vtkRenderWindow *theRenderWindow);
-
-  vtkRenderWindow*
-  GetRenderWindow();
-
-  vtkRenderWindow*
-  getRenderWindow()
-  {
-    return GetRenderWindow();
-  }
-
-  SVTK_Selector* GetSelector();
-  void SetSelector(SVTK_Selector* theSelector);
-
-  SVTK_InteractorStyle* GetInteractorStyle();
-  void PushInteractorStyle(SVTK_InteractorStyle* theStyle);
-  void PopInteractorStyle();
-
-  int SelectionMode() const;
-  void SetSelectionMode(int theMode);
-
+  //----------------------------------------------------------------------------
  public slots:
   void onSelectionChanged();
 
@@ -210,24 +251,20 @@ public:
   void KeyPressed( QKeyEvent* );
   void KeyReleased( QKeyEvent* );
   void contextMenuRequested( QContextMenuEvent *e );
-
   void selectionChanged();
 
- protected:  
-  SVTK_RenderWindowInteractor* myInteractor;
-  vtkSmartPointer<SVTK_RenderWindow> myRenderWindow;
+ protected:
+  SVTK_MainWindow* myMainWindow;
 };
 
 
 //----------------------------------------------------------------------------
-class SVTK_EXPORT SVTK_View : public SVTK_InteractorHolder
+class SVTK_EXPORT SVTK_View : public SVTK_SignalHandler
 {
   Q_OBJECT;
 
 public:
-  SVTK_View(QWidget* theParent, 
-	    const char* theName,
-	    SUIT_ResourceMgr* theResourceMgr);
+  SVTK_View(SVTK_MainWindow* theMainWindow);
 
   virtual
   ~SVTK_View();

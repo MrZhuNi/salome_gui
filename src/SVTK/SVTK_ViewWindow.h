@@ -6,11 +6,8 @@
 #endif
 
 #include "SVTK.h"
-#include "SVTK_View.h"
 #include "SVTK_Selection.h"
-
 #include "SUIT_ViewWindow.h"
-
 #include "SALOME_InteractiveObject.hxx"
 
 class SUIT_Desktop;
@@ -19,13 +16,19 @@ class VTKViewer_Actor;
 class VTKViewer_Trihedron;
 
 class SVTK_ViewModelBase;
+class SVTK_MainWindow;
 class SVTK_Selector;
+class SVTK_View;
 
 class SVTK_InteractorStyle;
 class SVTK_CubeAxesActor2D;
 
 class SVTK_RenderWindow;
 class SVTK_RenderWindowInteractor;
+
+class vtkRenderer;
+class vtkRenderWindow;
+class vtkRenderWindowInteractor;
 
 class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 {
@@ -44,8 +47,14 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   SVTK_View* 
   getView();
 
-  SVTK_View* 
+  SVTK_MainWindow* 
+  getMainWindow();
+
+  vtkRenderWindow* 
   getRenderWindow();
+
+  vtkRenderWindowInteractor*
+  getInteractor();
 
   vtkRenderer* 
   getRenderer();
@@ -53,8 +62,11 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   SVTK_Selector* 
   GetSelector();
   
-  Selection_Mode SelectionMode() const;
-  void SetSelectionMode(Selection_Mode theMode);
+  Selection_Mode
+  SelectionMode() const;
+  
+  void
+  SetSelectionMode(Selection_Mode theMode);
 
   void setBackgroundColor( const QColor& );
   QColor backgroundColor() const;
@@ -144,6 +156,7 @@ protected:
   virtual void action( const int );
 
   SVTK_View* myView;
+  SVTK_MainWindow* myMainWindow;
   SVTK_ViewModelBase* myModel;
 };
 

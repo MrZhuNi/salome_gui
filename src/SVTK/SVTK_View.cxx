@@ -39,157 +39,13 @@
 #include "VTKViewer_Algorithm.h"
 #include "SVTK_Functor.h"
 
-//----------------------------------------------------------------------------
-SVTK_RendererHolder
-::SVTK_RendererHolder(QWidget* theParent, 
-		      const char* theName):
-  QMainWindow(theParent,theName,0),
-  myRenderer(SVTK_Renderer::New())
-{
-  myRenderer->Delete();
-}
-
-SVTK_RendererHolder
-::~SVTK_RendererHolder()
-{}
 
 //----------------------------------------------------------------------------
-vtkRenderer* 
-SVTK_RendererHolder
-::GetRenderer()
-{
-  return myRenderer.GetPointer();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RendererHolder
-::setBackgroundColor(const QColor& theColor)
-{
-  myRenderer->SetBackground(theColor.red()/255.0, 
-			    theColor.green()/255.0,
-			    theColor.blue()/255.0);
-}
-
-//----------------------------------------------------------------------------
-QColor
-SVTK_RendererHolder
-::backgroundColor() const
-{
-  float aBackgroundColor[3];
-  myRenderer->GetBackground(aBackgroundColor);
-  return QColor(int(aBackgroundColor[0]*255), 
-		int(aBackgroundColor[1]*255), 
-		int(aBackgroundColor[2]*255));
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RendererHolder
-::GetScale( double theScale[3] ) 
-{
-  myRenderer->GetScale( theScale );
-}
-
-void
-SVTK_RendererHolder
-::SetScale( double theScale[3] ) 
-{
-  myRenderer->SetScale( theScale );
-  Repaint();
-}
-
-
-//----------------------------------------------------------------------------
-void
-SVTK_RendererHolder
-::AddActor(VTKViewer_Actor* theActor, bool theIsUpdate)
-{
-  myRenderer->AddActor(theActor);
-  if(theIsUpdate) 
-    Repaint();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_RendererHolder
-::RemoveActor(VTKViewer_Actor* theActor, bool theIsUpdate)
-{
-  myRenderer->RemoveActor(theActor);
-  if(theIsUpdate) 
-    Repaint();
-}
-
-
-//----------------------------------------------------------------------------
-int
-SVTK_RendererHolder
-::GetTrihedronSize() const
-{
-  return myRenderer->GetTrihedronSize();
-}
-
-//----------------------------------------------------------------------------
-void 
-SVTK_RendererHolder
-::SetTrihedronSize( const int theSize )
-{
-  myRenderer->SetTrihedronSize(theSize);
-  Repaint();
-}
-
-
-//----------------------------------------------------------------------------
-/*! If parameter theIsForcedUpdate is true, recalculate parameters for
- *  trihedron and cube axes, even if trihedron and cube axes is invisible.
- */
-void
-SVTK_RendererHolder
-::AdjustTrihedrons(const bool theIsForced)
-{
-  myRenderer->AdjustTrihedrons(theIsForced);
-  Repaint();
-}
-
-//----------------------------------------------------------------------------
-bool
-SVTK_RendererHolder
-::isTrihedronDisplayed()
-{
-  return myRenderer->isTrihedronDisplayed();
-}
-
-//----------------------------------------------------------------------------
-bool
-SVTK_RendererHolder
-::isCubeAxesDisplayed()
-{
-  return myRenderer->isCubeAxesDisplayed();
-}
-
-//----------------------------------------------------------------------------
-VTKViewer_Trihedron*  
-SVTK_RendererHolder
-::GetTrihedron() 
-{ 
-  return myRenderer->GetTrihedron(); 
-}
-
-//----------------------------------------------------------------------------
-SVTK_CubeAxesActor2D* 
-SVTK_RendererHolder
-::GetCubeAxes() 
-{ 
-  return myRenderer->GetCubeAxes(); 
-}
-
-
-//----------------------------------------------------------------------------
-SVTK_ActionHolder
-::SVTK_ActionHolder(QWidget* theParent, 
-		    const char* theName,
-		    SUIT_ResourceMgr* theResourceMgr) :
-  SVTK_RendererHolder(theParent,theName)
+SVTK_MainWindow
+::SVTK_MainWindow(QWidget* theParent, 
+		  const char* theName,
+		  SUIT_ResourceMgr* theResourceMgr) :
+  QMainWindow(theParent,theName,0)
 {
   myToolBar = new QToolBar(this);
   myToolBar->setCloseMode(QDockWindow::Undocked);
@@ -200,13 +56,292 @@ SVTK_ActionHolder
 }
 
 //----------------------------------------------------------------------------
-SVTK_ActionHolder
-::~SVTK_ActionHolder()
+SVTK_MainWindow
+::~SVTK_MainWindow()
 {}
+
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
+::SetInteractor(SVTK_RenderWindowInteractor* theInteractor)
+{
+  myInteractor = theInteractor;
+  SetEventDispatcher(myInteractor->GetDevice());
+
+  setCentralWidget(myInteractor);
+
+  myInteractor->setFocusPolicy(StrongFocus);
+  myInteractor->setFocus();
+  setFocusProxy(myInteractor);
+}
+
+SVTK_RenderWindowInteractor*
+SVTK_MainWindow
+::GetInteractor()
+{
+  return myInteractor;
+}
+
+vtkRenderWindowInteractor*
+SVTK_MainWindow
+::getInteractor()
+{
+  return GetInteractor()->GetDevice();
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
+::Repaint() 
+{ 
+  Repaint( true ); 
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
+::Repaint(bool theUpdateTrihedron)
+{
+  if(theUpdateTrihedron) 
+    GetRenderer()->onAdjustTrihedron();
+
+  GetInteractor()->update();
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
+::InvokeEvent(unsigned long theEvent, void* theCallData)
+{
+  myInteractor->InvokeEvent(theEvent,theCallData);
+}
+
+//----------------------------------------------------------------------------
+SVTK_InteractorStyle*
+SVTK_MainWindow
+::GetInteractorStyle()
+{
+  return myInteractor->GetInteractorStyle();
+}
+
+void
+SVTK_MainWindow
+::PushInteractorStyle(SVTK_InteractorStyle* theStyle)
+{
+  myInteractor->PushInteractorStyle(theStyle);
+}
+
+void
+SVTK_MainWindow
+::PopInteractorStyle()
+{
+  myInteractor->PopInteractorStyle();
+}
+
+//----------------------------------------------------------------------------
+SVTK_Selector*
+SVTK_MainWindow
+::GetSelector()
+{
+  return myInteractor->GetSelector();
+}
+
+void
+SVTK_MainWindow
+::SetSelector(SVTK_Selector* theSelector)
+{
+  myInteractor->SetSelector(theSelector);
+}
+
+Selection_Mode
+SVTK_MainWindow
+::SelectionMode()
+{
+  return GetSelector()->SelectionMode();
+}
+
+void
+SVTK_MainWindow
+::SetSelectionMode(Selection_Mode theMode)
+{
+  GetSelector()->SetSelectionMode(theMode);
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
+::SetRenderWindow(SVTK_RenderWindow *theRenderWindow)
+{
+  myRenderWindow = theRenderWindow;
+}
+
+SVTK_RenderWindow*
+SVTK_MainWindow
+::GetRenderWindow()
+{
+  return myRenderWindow.GetPointer();
+}
+
+vtkRenderWindow*
+SVTK_MainWindow
+::getRenderWindow()
+{
+  return myRenderWindow.GetPointer();
+}
+
+
+//----------------------------------------------------------------------------
+SVTK_Renderer* 
+SVTK_MainWindow
+::GetRenderer()
+{
+  return GetRenderWindow()->GetRenderer();
+}
+
+vtkRenderer* 
+SVTK_MainWindow
+::getRenderer()
+{
+  return GetRenderWindow()->GetRenderer();
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
+::SetBackgroundColor(const QColor& theColor)
+{
+  GetRenderer()->SetBackground(theColor.red()/255.0, 
+			       theColor.green()/255.0,
+			       theColor.blue()/255.0);
+}
+
+QColor
+SVTK_MainWindow
+::BackgroundColor()
+{
+  float aBackgroundColor[3];
+  GetRenderer()->GetBackground(aBackgroundColor);
+  return QColor(int(aBackgroundColor[0]*255), 
+		int(aBackgroundColor[1]*255), 
+		int(aBackgroundColor[2]*255));
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
+::GetScale( double theScale[3] ) 
+{
+  GetRenderer()->GetScale( theScale );
+}
+
+void
+SVTK_MainWindow
+::SetScale( double theScale[3] ) 
+{
+  GetRenderer()->SetScale( theScale );
+  Repaint();
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
+::AddActor(VTKViewer_Actor* theActor, 
+	   bool theIsUpdate)
+{
+  GetRenderer()->AddActor(theActor);
+  if(theIsUpdate) 
+    Repaint();
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
+::RemoveActor(VTKViewer_Actor* theActor, 
+	      bool theIsUpdate)
+{
+  GetRenderer()->RemoveActor(theActor);
+  if(theIsUpdate) 
+    Repaint();
+}
+
+
+//----------------------------------------------------------------------------
+int
+SVTK_MainWindow
+::GetTrihedronSize()
+{
+  return GetRenderer()->GetTrihedronSize();
+}
+
+//----------------------------------------------------------------------------
+void 
+SVTK_MainWindow
+::SetTrihedronSize( const int theSize )
+{
+  GetRenderer()->SetTrihedronSize(theSize);
+  Repaint();
+}
+
+
+//----------------------------------------------------------------------------
+/*! If parameter theIsForcedUpdate is true, recalculate parameters for
+ *  trihedron and cube axes, even if trihedron and cube axes is invisible.
+ */
+void
+SVTK_MainWindow
+::AdjustTrihedrons(const bool theIsForced)
+{
+  GetRenderer()->AdjustTrihedrons(theIsForced);
+  Repaint();
+}
+
+//----------------------------------------------------------------------------
+bool
+SVTK_MainWindow
+::IsTrihedronDisplayed()
+{
+  return GetRenderer()->isTrihedronDisplayed();
+}
+
+//----------------------------------------------------------------------------
+bool
+SVTK_MainWindow
+::IsCubeAxesDisplayed()
+{
+  return GetRenderer()->isCubeAxesDisplayed();
+}
+
+//----------------------------------------------------------------------------
+VTKViewer_Trihedron*  
+SVTK_MainWindow
+::GetTrihedron() 
+{ 
+  return GetRenderer()->GetTrihedron(); 
+}
+
+//----------------------------------------------------------------------------
+SVTK_CubeAxesActor2D* 
+SVTK_MainWindow
+::GetCubeAxes() 
+{ 
+  return GetRenderer()->GetCubeAxes(); 
+}
+
+
+//----------------------------------------------------------------------------
+QToolBar* 
+SVTK_MainWindow
+::getToolBar()
+{
+  return myToolBar;
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
 ::SetEventDispatcher(vtkObject* theDispatcher)
 {
   myEventDispatcher = theDispatcher;
@@ -214,7 +349,7 @@ SVTK_ActionHolder
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::createActions(SUIT_ResourceMgr* theResourceMgr)
 {
   if(!myActionsMap.isEmpty()) 
@@ -340,7 +475,7 @@ SVTK_ActionHolder
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::createToolBar()
 {
   myActionsMap[DumpId]->addTo(myToolBar);
@@ -369,16 +504,8 @@ SVTK_ActionHolder
 }
 
 //----------------------------------------------------------------------------
-QToolBar* 
-SVTK_ActionHolder
-::getToolBar()
-{
-  return myToolBar;
-}
-
-//----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::activateZoom()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartZoom,0);
@@ -386,7 +513,7 @@ SVTK_ActionHolder
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::activatePanning()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartPan,0);
@@ -394,7 +521,7 @@ SVTK_ActionHolder
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::activateRotation()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartRotate,0);
@@ -402,7 +529,7 @@ SVTK_ActionHolder
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::activateGlobalPanning()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartGlobalPan,0);
@@ -410,7 +537,7 @@ SVTK_ActionHolder
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::activateWindowFit()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartFitArea,0);
@@ -418,113 +545,113 @@ SVTK_ActionHolder
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onFrontView()
 {
-  myRenderer->onFrontView();
+  GetRenderer()->onFrontView();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onBackView()
 {
-  myRenderer->onBackView();
+  GetRenderer()->onBackView();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onTopView()
 {
-  myRenderer->onTopView();
+  GetRenderer()->onTopView();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onBottomView()
 {
-  myRenderer->onBottomView();
+  GetRenderer()->onBottomView();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onLeftView()
 {
-  myRenderer->onLeftView();
+  GetRenderer()->onLeftView();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onRightView()
 {
-  myRenderer->onRightView();
+  GetRenderer()->onRightView();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onResetView()
 {
-  myRenderer->onResetView();
+  GetRenderer()->onResetView();
   Repaint();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onFitAll()
 {
-  myRenderer->onFitAll();
+  GetRenderer()->onFitAll();
   Repaint();
 }
 
 //----------------------------------------------------------------------------
 void 
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onViewTrihedron()
 {
-  myRenderer->onViewTrihedron();
+  GetRenderer()->onViewTrihedron();
   Repaint();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onViewCubeAxes()
 {
-  myRenderer->onViewCubeAxes();
+  GetRenderer()->onViewCubeAxes();
   Repaint();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onAdjustTrihedron()
 {   
-  myRenderer->onAdjustTrihedron();
+  GetRenderer()->onAdjustTrihedron();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onAdjustCubeAxes()
 {   
-  myRenderer->onAdjustCubeAxes();
+  GetRenderer()->onAdjustCubeAxes();
 }
 
 //----------------------------------------------------------------------------
 void
-SVTK_ActionHolder
+SVTK_MainWindow
 ::onDumpView()
 {}
 
 //----------------------------------------------------------------------------
 QImage
-SVTK_ActionHolder
+SVTK_MainWindow
 ::dumpView()
 {
   QPixmap px = QPixmap::grabWindow( winId() );
@@ -533,193 +660,92 @@ SVTK_ActionHolder
 
 
 //----------------------------------------------------------------------------
-SVTK_InteractorHolder
-::SVTK_InteractorHolder(QWidget* theParent, 
-			const char* theName,
-			SUIT_ResourceMgr* theResourceMgr) :
-  SVTK_ActionHolder(theParent,theName,theResourceMgr),
-  myRenderWindow(SVTK_RenderWindow::New())
+SVTK_SignalHandler
+::SVTK_SignalHandler(SVTK_MainWindow* theMainWindow):
+  QObject(theMainWindow),
+  myMainWindow(theMainWindow)
 {
-  myRenderWindow->Delete();
+  SVTK_RenderWindow* aRenderWindow = SVTK_RenderWindow::New();
+  theMainWindow->SetRenderWindow(aRenderWindow);
+  aRenderWindow->Delete();
 
-  myRenderWindow->AddRenderer(GetRenderer());
+  aRenderWindow->SetRenderer(SVTK_Renderer::New());
 
-  myInteractor = new SVTK_RenderWindowInteractor(this,"SVTK_RenderWindowInteractor");
+  SVTK_RenderWindowInteractor* anInteractor = 
+    new SVTK_RenderWindowInteractor(theMainWindow,"SVTK_RenderWindowInteractor");
+  anInteractor->SetRenderWindow(aRenderWindow);
 
-  SetInteractor(myInteractor);
+  theMainWindow->SetInteractor(anInteractor);
 
-  myInteractor->PushInteractorStyle(SVTK_InteractorStyle::New());
+  anInteractor->PushInteractorStyle(SVTK_InteractorStyle::New());
+
+  connect(anInteractor,SIGNAL(KeyPressed(QKeyEvent*)),
+	  this,SIGNAL(KeyPressed(QKeyEvent*)) );
+  connect(anInteractor,SIGNAL(KeyReleased(QKeyEvent*)),
+	  this,SIGNAL(KeyReleased(QKeyEvent*)));
+  connect(anInteractor,SIGNAL(MouseButtonPressed(QMouseEvent*)),
+	  this,SIGNAL(MouseButtonPressed(QMouseEvent*)));
+  connect(anInteractor,SIGNAL(MouseButtonReleased(QMouseEvent*)),
+	  this,SIGNAL(MouseButtonReleased(QMouseEvent*)));
+  connect(anInteractor,SIGNAL(MouseDoubleClicked(QMouseEvent*)),
+	  this,SIGNAL(MouseDoubleClicked(QMouseEvent*)));
+  connect(anInteractor,SIGNAL(MouseMove(QMouseEvent*)),
+	  this,SIGNAL(MouseMove(QMouseEvent*)));
+  connect(anInteractor,SIGNAL(contextMenuRequested(QContextMenuEvent*)),
+	  this,SIGNAL(contextMenuRequested(QContextMenuEvent*)));
+  connect(anInteractor,SIGNAL(selectionChanged()),
+	  this,SIGNAL(selectionChanged()));
 }
 
-//----------------------------------------------------------------------------
-SVTK_InteractorHolder
-::~SVTK_InteractorHolder()
+SVTK_SignalHandler
+::~SVTK_SignalHandler()
 {}
 
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorHolder
-::SetInteractor(SVTK_RenderWindowInteractor* theInteractor)
+SVTK_MainWindow*
+SVTK_SignalHandler
+::GetMainWindow()
 {
-  myInteractor = theInteractor;
-
-  if(myInteractor){
-    connect(myInteractor,SIGNAL(KeyPressed(QKeyEvent*)),
-	    this,SIGNAL(KeyPressed(QKeyEvent*)) );
-    connect(myInteractor,SIGNAL(KeyReleased(QKeyEvent*)),
-	    this,SIGNAL(KeyReleased(QKeyEvent*)));
-    connect(myInteractor,SIGNAL(MouseButtonPressed(QMouseEvent*)),
-	    this,SIGNAL(MouseButtonPressed(QMouseEvent*)));
-    connect(myInteractor,SIGNAL(MouseButtonReleased(QMouseEvent*)),
-	    this,SIGNAL(MouseButtonReleased(QMouseEvent*)));
-    connect(myInteractor,SIGNAL(MouseDoubleClicked(QMouseEvent*)),
-	    this,SIGNAL(MouseDoubleClicked(QMouseEvent*)));
-    connect(myInteractor,SIGNAL(MouseMove(QMouseEvent*)),
-	    this,SIGNAL(MouseMove(QMouseEvent*)));
-    connect(myInteractor,SIGNAL(contextMenuRequested(QContextMenuEvent*)),
-	    this,SIGNAL(contextMenuRequested(QContextMenuEvent*)));
-    connect(myInteractor,SIGNAL(selectionChanged()),
-	    this,SIGNAL(selectionChanged()));
-
-    SetEventDispatcher(myInteractor->GetDevice());
-
-    setCentralWidget(myInteractor);
-
-    myInteractor->setFocusPolicy(StrongFocus);
-    myInteractor->setFocus();
-    setFocusProxy(myInteractor);
-
-    myInteractor->SetRenderWindow(myRenderWindow.GetPointer());
-  }
-}
-
-//----------------------------------------------------------------------------
-SVTK_RenderWindowInteractor*
-SVTK_InteractorHolder
-::GetInteractor()
-{
-  return myInteractor;
-}
-
-//----------------------------------------------------------------------------
-vtkRenderWindowInteractor*
-SVTK_InteractorHolder
-::GetRenderWindowInteractor()
-{
-  return myInteractor->GetDevice();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorHolder
-::Repaint( bool theUpdateTrihedron )
-{
-  if(theUpdateTrihedron) 
-    myRenderer->onAdjustTrihedron();
-
-  myInteractor->update();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorHolder
-::Repaint() 
-{ 
-  Repaint( true ); 
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorHolder
-::InvokeEvent(unsigned long theEvent, void* theCallData)
-{
-  myInteractor->InvokeEvent(theEvent,theCallData);
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorHolder
-::SetRenderWindow(vtkRenderWindow *theRenderWindow)
-{
-  myRenderWindow = theRenderWindow;
-
-  if(myInteractor)
-    myInteractor->SetRenderWindow(myRenderWindow.GetPointer());
-}
-
-//----------------------------------------------------------------------------
-vtkRenderWindow*
-SVTK_InteractorHolder
-::GetRenderWindow()
-{
-  return myRenderWindow.GetPointer();
-}
-
-//----------------------------------------------------------------------------
-SVTK_Selector* 
-SVTK_InteractorHolder
-::GetSelector() 
-{ 
-  return myInteractor->GetSelector(); 
-}
-
-void
-SVTK_InteractorHolder
-::SetSelector(SVTK_Selector* theSelector)
-{ 
-  myInteractor->SetSelector(theSelector);
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorHolder
-::PushInteractorStyle(SVTK_InteractorStyle* theStyle)
-{
-  myInteractor->PushInteractorStyle(theStyle);
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorHolder
-::PopInteractorStyle()
-{
-  myInteractor->PopInteractorStyle();
-}
-
-
-//----------------------------------------------------------------------------
-SVTK_InteractorStyle* 
-SVTK_InteractorHolder
-::GetInteractorStyle()
-{
-  return myInteractor->GetInteractorStyle(); 
+  return myMainWindow;
 }
 
 
 //----------------------------------------------------------------
 void
-SVTK_InteractorHolder
-::SetSelectionMode(int theMode)
+SVTK_SignalHandler
+::Repaint()
 {
-  myInteractor->SetSelectionMode(theMode);
+  myMainWindow->Repaint();
 }
 
-
-//----------------------------------------------------------------
-int
-SVTK_InteractorHolder
-::SelectionMode() const
+void
+SVTK_SignalHandler
+::Repaint(bool theUpdateTrihedron)
 {
-  return myInteractor->SelectionMode();
+  myMainWindow->Repaint(theUpdateTrihedron);
 }
 
+//----------------------------------------------------------------------------
+SVTK_Renderer* 
+SVTK_SignalHandler
+::GetRenderer()
+{
+  return myMainWindow->GetRenderer();
+}
+
+vtkRenderer* 
+SVTK_SignalHandler
+::getRenderer()
+{
+  return myMainWindow->GetRenderer();
+}
 
 //----------------------------------------------------------------
 struct THighlightAction
 {
   bool myIsHighlight;
-  int mySelectionMode;
-  THighlightAction( bool theIsHighlight, int theSelectionMode = ActorSelection ):
+  Selection_Mode mySelectionMode;
+  THighlightAction( bool theIsHighlight, 
+		    Selection_Mode theSelectionMode = ActorSelection ):
     myIsHighlight( theIsHighlight ),
     mySelectionMode( theSelectionMode ) 
   {}
@@ -733,36 +759,33 @@ struct THighlightAction
   }
 };
 
-//----------------------------------------------------------------
 void
-SVTK_InteractorHolder
+SVTK_SignalHandler
 ::onSelectionChanged()
 {
-  vtkActorCollection* anActors = GetRenderer()->GetActors();
+  vtkActorCollection* anActors = myMainWindow->GetRenderer()->GetActors();
 
   using namespace VTK;
   ForEach<SALOME_Actor>(anActors,
 			THighlightAction( false ));
-
-  const SALOME_ListIO& aListIO = GetSelector()->StoredIObjects();
+  SVTK_Selector* aSelector = myMainWindow->GetSelector();
+  const SALOME_ListIO& aListIO = aSelector->StoredIObjects();
   SALOME_ListIteratorOfListIO anIter(aListIO);
-  int aSelectionMode = SelectionMode();
+  Selection_Mode aSelectionMode = aSelector->SelectionMode();
   for(; anIter.More(); anIter.Next()){
     ForEachIf<SALOME_Actor>(anActors,
 			    TIsSameIObject<SALOME_Actor>(anIter.Value()),
 			    THighlightAction(true,aSelectionMode));
   }
 
-  Repaint();
+  myMainWindow->Repaint();
 }
 
 
 //----------------------------------------------------------------------------
 SVTK_View
-::SVTK_View(QWidget* theParent, 
-	    const char* theName,
-	    SUIT_ResourceMgr* theResourceMgr) :
-  SVTK_InteractorHolder(theParent,theName,theResourceMgr)
+::SVTK_View(SVTK_MainWindow* theMainWindow) :
+  SVTK_SignalHandler(theMainWindow)
 {}
 
 //----------------------------------------------------------------------------
@@ -790,9 +813,10 @@ SVTK_View
 	     bool theIsUpdate ) 
 {
   using namespace VTK;
+  SVTK_Selector* aSelector = myMainWindow->GetSelector();
   ForEachIf<SALOME_Actor>(GetRenderer()->GetActors(),
 			  TIsSameIObject<SALOME_Actor>( theIO ),
-			  THighlightAction( theIsHighlight, GetSelector()->SelectionMode() ));
+			  THighlightAction( theIsHighlight, aSelector->SelectionMode() ));
   
   Repaint();
 }
