@@ -276,7 +276,8 @@ void
 SVTK_InteractorStyle
 ::OnConfigure() 
 {
-  GetCurrentRenderer()->InvokeEvent(vtkCommand::ConfigureEvent,NULL);
+  this->FindPokedRenderer(0,0);
+  this->GetCurrentRenderer()->InvokeEvent(vtkCommand::ConfigureEvent,NULL);
 }
 
 
@@ -1208,9 +1209,6 @@ SVTK_InteractorStyle
   vtkInteractorStyle::SetInteractor( interactor );
  
   if ( interactor ) { 
-    // initialize renderer attribute
-    FindPokedRenderer( 0, 0 );
-
     // register EventCallbackCommand as observer of custorm event (3d space mouse event)
     interactor->AddObserver( SVTK::SpaceMouseMoveEvent, EventCallbackCommand, Priority );
     interactor->AddObserver( SVTK::SpaceMouseButtonEvent, EventCallbackCommand, Priority );
