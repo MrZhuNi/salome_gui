@@ -28,6 +28,7 @@
 #include "SVTK_Event.h"
 #include "SVTK_Renderer.h"
 #include "SVTK_ViewModel.h"
+#include "SVTK_RenderWindow.h"
 #include "SVTK_InteractorStyle.h"
 #include "SVTK_RenderWindowInteractor.h"
 
@@ -537,7 +538,7 @@ SVTK_InteractorHolder
 			const char* theName,
 			SUIT_ResourceMgr* theResourceMgr) :
   SVTK_ActionHolder(theParent,theName,theResourceMgr),
-  myRenderWindow(vtkRenderWindow::New())
+  myRenderWindow(SVTK_RenderWindow::New())
 {
   myRenderWindow->Delete();
 

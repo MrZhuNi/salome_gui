@@ -215,7 +215,7 @@ public:
 
  protected:  
   SVTK_RenderWindowInteractor* myInteractor;
-  vtkSmartPointer<vtkRenderWindow> myRenderWindow;
+  vtkSmartPointer<SVTK_RenderWindow> myRenderWindow;
 };
 
 

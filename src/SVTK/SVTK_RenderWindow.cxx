@@ -1,47 +1,47 @@
-#include "SVTK_RenderWindow.h"
-#include "SVTK_Trihedron.h"
-#include "SVTK_CubeAxesActor2D.h"
-#include "SALOME_Actor.h"
+//  SALOME VTKViewer : build VTK viewer into Salome desktop
+//
+//  Copyright (C) 2003  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
+//  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS 
+// 
+//  This library is free software; you can redistribute it and/or 
+//  modify it under the terms of the GNU Lesser General Public 
+//  License as published by the Free Software Foundation; either 
+//  version 2.1 of the License. 
+// 
+//  This library is distributed in the hope that it will be useful, 
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+//  Lesser General Public License for more details. 
+// 
+//  You should have received a copy of the GNU Lesser General Public 
+//  License along with this library; if not, write to the Free Software 
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA 
+// 
+//  See http://www.opencascade.org/SALOME/ or email : webmaster.salome@opencascade.org 
+//
+//
+//
+//  File   :
+//  Author :
+//  Module :
+//  $Header$
 
-#include "VTKViewer_Transform.h"
-#include "VTKViewer_Utilities.h"
+#include "SVTK_RenderWindow.h"
 
 #include "SVTK_Renderer.h"
+#include "SVTK_Selector.h"
 
-#include "QtxAction.h"
+#include <vtkObjectFactory.h>
 
-#include "SUIT_Session.h"
-#include "SUIT_ToolButton.h"
-#include "SUIT_MessageBox.h"
+//----------------------------------------------------------------------------
+vtkStandardNewMacro(SVTK_RenderWindow);
 
-#include "SUIT_Tools.h"
-#include "SUIT_ResourceMgr.h"
-
-#include <vtkRenderWindow.h>
-
-#if QT_VERSION > 300
-#include <qcursor.h>
-#endif
 
 //----------------------------------------------------------------------------
 SVTK_RenderWindow
-::SVTK_RenderWindow(QWidget* parent, const char* name) :
-  QMainWindow(parent, name, 
-	      Qt::WStyle_NoBorder | 
-	      Qt::WDestructiveClose | 
-	      Qt::WResizeNoErase | 
-	      Qt::WRepaintNoErase),
-    myRenderWindow(vtkRenderWindow::New())
+::SVTK_RenderWindow():
+  myRenderWidget(NULL)
 {
-  myRenderWindow->Delete();
-
-#ifndef WNT
-  myRenderWindow->SetDisplayId((void*)x11Display());
-#endif
-  myRenderWindow->SetWindowId((void*)winId());
-  myRenderWindow->DoubleBufferOn();
-  setMouseTracking(true);
-
 }
 
 SVTK_RenderWindow
@@ -49,9 +49,51 @@ SVTK_RenderWindow
 {}
 
 
-vtkRenderWindow* 
+//----------------------------------------------------------------------------
+SVTK_Renderer* 
 SVTK_RenderWindow
-::getRenderWindow()
-{ 
-  return myRenderWindow.GetPointer(); 
+::GetRenderer()
+{
+  return myRenderer.GetPointer();
+}
+
+void
+SVTK_RenderWindow
+::SetRenderer(SVTK_Renderer* theRenderer)
+{
+  this->RemoveRenderer(GetRenderer());
+  myRenderer = theRenderer;
+  this->AddRenderer(GetRenderer());
+}
+
+
+//----------------------------------------------------------------------------
+SVTK_Selector* 
+SVTK_RenderWindow
+::GetSelector()
+{
+  return mySelector.GetPointer();
+}
+
+void
+SVTK_RenderWindow
+::SetSelector(SVTK_Selector* theSelector)
+{
+  mySelector = theSelector;
+}
+
+
+//----------------------------------------------------------------------------
+SVTK_RenderWindow::TRenderWidget* 
+SVTK_RenderWindow
+::GetRenderWidget()
+{
+  return myRenderWidget;
+}
+
+void
+SVTK_RenderWindow
+::GetRenderWidget(TRenderWidget* theWidget)
+{
+  myRenderWidget = theWidget;
 }

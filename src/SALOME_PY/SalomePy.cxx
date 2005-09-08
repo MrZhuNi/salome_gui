@@ -42,8 +42,6 @@
 
 #include "SVTK_ViewManager.h"
 #include "SVTK_ViewWindow.h"
-#include "SVTK_RenderWindow.h"
-#include "SVTK_RenderWindowInteractor.h"
 
 using namespace std;
 

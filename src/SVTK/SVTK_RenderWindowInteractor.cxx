@@ -232,24 +232,22 @@ QVTK_RenderWindowInteractor
   int aWidth = aSize[0];
   int aHeight = aSize[1];
 
-  //myInteractor->SetSize(width(),height());
   myInteractor->UpdateSize(width(),height());
-  myInteractor->ConfigureEvent();
 
-  if( aWidth != width() || aHeight != height() )
-  {
-    vtkRendererCollection * aRenderers = GetRenderWindow()->GetRenderers();
-    aRenderers->InitTraversal();
-    double aCoeff = 1.0;
-    if(vtkRenderer *aRenderer = aRenderers->GetNextItem())
-    {
-      vtkCamera *aCamera = aRenderer->GetActiveCamera();
-      double aScale = aCamera->GetParallelScale();
-      if((aWidth - width())*(aHeight - height()) > 0)
-        aCoeff = sqrt(double(aWidth)/double(width())*double(height())/double(aHeight));
-      else
-        aCoeff = double(aWidth)/double(width());
-      aCamera->SetParallelScale(aScale*aCoeff);
+  if(true || aWidth && aHeight){
+    if( aWidth != width() || aHeight != height() ) {
+      vtkRendererCollection * aRenderers = GetRenderWindow()->GetRenderers();
+      aRenderers->InitTraversal();
+      double aCoeff = 1.0;
+      if(vtkRenderer *aRenderer = aRenderers->GetNextItem()) {
+	vtkCamera *aCamera = aRenderer->GetActiveCamera();
+	double aScale = aCamera->GetParallelScale();
+	if((aWidth - width())*(aHeight - height()) > 0)
+	  aCoeff = sqrt(double(aWidth)/double(width())*double(height())/double(aHeight));
+	else
+	  aCoeff = double(aWidth)/double(width());
+	aCamera->SetParallelScale(aScale*aCoeff);
+      }
     }
   }
 

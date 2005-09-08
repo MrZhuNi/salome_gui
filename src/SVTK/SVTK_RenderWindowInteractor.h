@@ -31,7 +31,6 @@
 
 #include "SVTK.h"
 #include "SVTK_Selection.h"
-#include "SVTK_RenderWindow.h"
 
 #include "SALOME_InteractiveObject.hxx"
 
@@ -39,6 +38,7 @@
 #include <vtkGenericRenderWindowInteractor.h>
 
 #include <qvaluestack.h>
+#include <qwidget.h>
 
 class QTimer;
 

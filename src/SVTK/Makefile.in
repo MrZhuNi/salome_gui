@@ -46,7 +46,7 @@ LIB_SRC= 	SVTK_Prs.cxx \
 		SVTK_ViewModel.cxx \
 		SVTK_Renderer.cxx \
 		SVTK_ViewWindow.cxx \
-		SVTK_RenderWindow.cxx \
+		SVTK_RenderWindow.cxx\
 		SVTK_InteractorStyle.cxx \
 		SVTK_RenderWindowInteractor.cxx \
 		SVTK_SpaceMouse.cxx \
@@ -54,7 +54,6 @@ LIB_SRC= 	SVTK_Prs.cxx \
 
 LIB_MOC = 	SVTK_RenderWindowInteractor.h \
 		SVTK_InteractorStyle.h \
-		SVTK_RenderWindow.h \
 		SVTK_View.h \
 		SVTK_ViewWindow.h \
 		SVTK_ViewModel.h \

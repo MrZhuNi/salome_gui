@@ -32,8 +32,6 @@
 #include "VTKViewer_Utilities.h"
 #include "VTKViewer_RectPicker.h"
 
-#include "SVTK_RenderWindow.h"
-#include "SVTK_ViewWindow.h"
 #include "SVTK_Selection.h"
 #include "SVTK_Event.h" 
 #include "SVTK_Selector.h"
@@ -59,6 +57,7 @@
 #include <vtkRendererCollection.h>
 
 #include <qapplication.h>
+#include <qpixmap.h>
 //VRV: porting on Qt 3.0.5
 #if QT_VERSION >= 0x030005
 #include <qpainter.h>
@@ -640,7 +639,9 @@ SVTK_InteractorStyle
 ::eventFilter(QObject* object, QEvent* event)
 {
   if (!myRenderWidget) return false;
-  if ( (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::KeyPress) && object != myRenderWidget)
+  if ( (event->type() == QEvent::MouseButtonPress || 
+	event->type() == QEvent::KeyPress) && 
+       object != myRenderWidget)
   {
     qApp->removeEventFilter(this);
     startOperation(VTK_INTERACTOR_STYLE_CAMERA_NONE);
@@ -1408,3 +1409,5 @@ SVTK_InteractorStyle
   }
   vtkInteractorStyle::ProcessEvents( object, event, clientData, callData );
 }
+
+#include "SVTK_RenderWindow.h"

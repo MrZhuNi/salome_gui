@@ -29,31 +29,46 @@
 #ifndef SVTK_RenderWindow_h
 #define SVTK_RenderWindow_h
 
-#include <vtkSmartPointer.h>
-
-#include <qmainwindow.h>
-#include <qimage.h>
-
 #include "SVTK.h"
 
+#include <vtkSmartPointer.h>
+
+#ifndef VTK_IMPLEMENT_MESA_CXX
+#include <vtkXOpenGLRenderWindow.h>
+#define SVTK_RENDER_WINDOW_SUPERCLASS vtkXOpenGLRenderWindow
+#else
+#include <vtkXMesaRenderWindow.h>
+#define SVTK_RENDER_WINDOW_SUPERCLASS vtkXMesaRenderWindow
+#endif
+
+class QWidget;
 class SVTK_Renderer;
+class SVTK_Selector;
 
-
-class vtkRenderer;
-class vtkRenderWindow;
-
-class SVTK_EXPORT SVTK_RenderWindow : public QMainWindow
+class SVTK_EXPORT SVTK_RenderWindow: public SVTK_RENDER_WINDOW_SUPERCLASS
 {
-  Q_OBJECT;
-
  public:
-  SVTK_RenderWindow( QWidget*, const char* );
-  virtual ~SVTK_RenderWindow() ;
+  vtkTypeMacro(SVTK_RenderWindow,SVTK_RENDER_WINDOW_SUPERCLASS);
+  static SVTK_RenderWindow* New();
 
-  vtkRenderWindow* getRenderWindow();
+  SVTK_RenderWindow();
+  virtual ~SVTK_RenderWindow();
+
+  SVTK_Renderer* GetRenderer();
+  void SetRenderer(SVTK_Renderer* theRenderer);
+
+  SVTK_Selector* GetSelector();
+  void SetSelector(SVTK_Selector* theSelector);
+
+  typedef QWidget TRenderWidget;
+  TRenderWidget* GetRenderWidget();
+  void GetRenderWidget(TRenderWidget* theWidget);
 
  protected:
-  vtkSmartPointer<vtkRenderWindow> myRenderWindow;
+  vtkSmartPointer<SVTK_Selector> mySelector;
+  vtkSmartPointer<SVTK_Renderer> myRenderer;
+  TRenderWidget* myRenderWidget;
 };
+
 
 #endif

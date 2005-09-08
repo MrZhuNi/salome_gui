@@ -35,10 +35,10 @@
 
 #ifndef VTK_IMPLEMENT_MESA_CXX
 #include <vtkOpenGLRenderer.h>
-#define RENDERER_SUPERCLASS vtkOpenGLRenderer
+#define SVTK_RENDERER_SUPERCLASS vtkOpenGLRenderer
 #else
 #include <vtkMesaRenderer.h>
-#define RENDERER_SUPERCLASS vtkMesaRenderer
+#define SVTK_RENDERER_SUPERCLASS vtkMesaRenderer
 #endif
 
 class vtkCallbackCommand;
@@ -48,7 +48,7 @@ class VTKViewer_Transform;
 class SVTK_CubeAxesActor2D;
 class VTKViewer_Actor;
 
-class SVTK_EXPORT SVTK_Renderer : public RENDERER_SUPERCLASS
+class SVTK_EXPORT SVTK_Renderer : public SVTK_RENDERER_SUPERCLASS
 {
  protected:
   SVTK_Renderer();
@@ -73,7 +73,7 @@ class SVTK_EXPORT SVTK_Renderer : public RENDERER_SUPERCLASS
                             void* calldata);
   
  public:
-  vtkTypeMacro(SVTK_Renderer,RENDERER_SUPERCLASS);
+  vtkTypeMacro(SVTK_Renderer,SVTK_RENDERER_SUPERCLASS);
   static SVTK_Renderer* New();
 
   VTKViewer_Trihedron* GetTrihedron();
