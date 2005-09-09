@@ -28,7 +28,6 @@
 #include "SVTK_Event.h"
 #include "SVTK_Renderer.h"
 #include "SVTK_ViewModel.h"
-#include "SVTK_RenderWindow.h"
 #include "SVTK_InteractorStyle.h"
 #include "SVTK_RenderWindowInteractor.h"
 
@@ -54,6 +53,22 @@ SVTK_MainWindow
   createActions(theResourceMgr);
   createToolBar();
 }
+
+void
+SVTK_MainWindow
+::Initialize()
+{
+  SetInteractor(new SVTK_RenderWindowInteractor(this,"SVTK_RenderWindowInteractor"));
+
+  SVTK_Renderer* aRenderer = SVTK_Renderer::New();
+  GetInteractor()->SetRenderer(aRenderer);
+  aRenderer->Delete();
+
+  SVTK_InteractorStyle* aStyle = SVTK_InteractorStyle::New();
+  GetInteractor()->PushInteractorStyle(aStyle);
+  aStyle->Delete();
+}
+
 
 //----------------------------------------------------------------------------
 SVTK_MainWindow
@@ -90,6 +105,13 @@ SVTK_MainWindow
   return GetInteractor()->GetDevice();
 }
 
+vtkRenderWindow*
+SVTK_MainWindow
+::getRenderWindow()
+{
+  return GetInteractor()->getRenderWindow();
+}
+
 //----------------------------------------------------------------------------
 void
 SVTK_MainWindow
@@ -114,7 +136,7 @@ void
 SVTK_MainWindow
 ::InvokeEvent(unsigned long theEvent, void* theCallData)
 {
-  myInteractor->InvokeEvent(theEvent,theCallData);
+  GetInteractor()->InvokeEvent(theEvent,theCallData);
 }
 
 //----------------------------------------------------------------------------
@@ -122,21 +144,21 @@ SVTK_InteractorStyle*
 SVTK_MainWindow
 ::GetInteractorStyle()
 {
-  return myInteractor->GetInteractorStyle();
+  return GetInteractor()->GetInteractorStyle();
 }
 
 void
 SVTK_MainWindow
 ::PushInteractorStyle(SVTK_InteractorStyle* theStyle)
 {
-  myInteractor->PushInteractorStyle(theStyle);
+  GetInteractor()->PushInteractorStyle(theStyle);
 }
 
 void
 SVTK_MainWindow
 ::PopInteractorStyle()
 {
-  myInteractor->PopInteractorStyle();
+  GetInteractor()->PopInteractorStyle();
 }
 
 //----------------------------------------------------------------------------
@@ -144,14 +166,14 @@ SVTK_Selector*
 SVTK_MainWindow
 ::GetSelector()
 {
-  return myInteractor->GetSelector();
+  return GetInteractor()->GetSelector();
 }
 
 void
 SVTK_MainWindow
 ::SetSelector(SVTK_Selector* theSelector)
 {
-  myInteractor->SetSelector(theSelector);
+  GetInteractor()->SetSelector(theSelector);
 }
 
 Selection_Mode
@@ -172,39 +194,23 @@ SVTK_MainWindow
 //----------------------------------------------------------------------------
 void
 SVTK_MainWindow
-::SetRenderWindow(SVTK_RenderWindow *theRenderWindow)
+::SetRenderer(SVTK_Renderer* theRenderer)
 {
-  myRenderWindow = theRenderWindow;
+  GetInteractor()->SetRenderer(theRenderer);
 }
 
-SVTK_RenderWindow*
-SVTK_MainWindow
-::GetRenderWindow()
-{
-  return myRenderWindow.GetPointer();
-}
-
-vtkRenderWindow*
-SVTK_MainWindow
-::getRenderWindow()
-{
-  return myRenderWindow.GetPointer();
-}
-
-
-//----------------------------------------------------------------------------
 SVTK_Renderer* 
 SVTK_MainWindow
 ::GetRenderer()
 {
-  return GetRenderWindow()->GetRenderer();
+  return GetInteractor()->GetRenderer();
 }
 
 vtkRenderer* 
 SVTK_MainWindow
 ::getRenderer()
 {
-  return GetRenderWindow()->GetRenderer();
+  return GetInteractor()->getRenderer();
 }
 
 //----------------------------------------------------------------------------
@@ -654,7 +660,7 @@ QImage
 SVTK_MainWindow
 ::dumpView()
 {
-  QPixmap px = QPixmap::grabWindow( winId() );
+  QPixmap px = QPixmap::grabWindow( GetInteractor()->winId() );
   return px.convertToImage();
 }
 
@@ -665,19 +671,7 @@ SVTK_SignalHandler
   QObject(theMainWindow),
   myMainWindow(theMainWindow)
 {
-  SVTK_RenderWindow* aRenderWindow = SVTK_RenderWindow::New();
-  theMainWindow->SetRenderWindow(aRenderWindow);
-  aRenderWindow->Delete();
-
-  aRenderWindow->SetRenderer(SVTK_Renderer::New());
-
-  SVTK_RenderWindowInteractor* anInteractor = 
-    new SVTK_RenderWindowInteractor(theMainWindow,"SVTK_RenderWindowInteractor");
-  anInteractor->SetRenderWindow(aRenderWindow);
-
-  theMainWindow->SetInteractor(anInteractor);
-
-  anInteractor->PushInteractorStyle(SVTK_InteractorStyle::New());
+  SVTK_RenderWindowInteractor* anInteractor = theMainWindow->GetInteractor();
 
   connect(anInteractor,SIGNAL(KeyPressed(QKeyEvent*)),
 	  this,SIGNAL(KeyPressed(QKeyEvent*)) );

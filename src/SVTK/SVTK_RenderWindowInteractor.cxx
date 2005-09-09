@@ -29,11 +29,14 @@
 #include "SVTK_RenderWindowInteractor.h"
 
 #include "SVTK_InteractorStyle.h"
-#include "VTKViewer_Algorithm.h"
+#include "SVTK_Renderer.h"
 #include "SVTK_Functor.h"
 #include "SALOME_Actor.h"
+
 #include "SVTK_SpaceMouse.h" 
 #include "SVTK_Event.h" 
+
+#include "VTKViewer_Algorithm.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -416,7 +419,8 @@ SVTK_RenderWindowInteractor
 ::SVTK_RenderWindowInteractor(QWidget* theParent, 
 			       const char* theName):
   QVTK_RenderWindowInteractor(theParent,theName),
-  myEventCallbackCommand(vtkCallbackCommand::New())
+  myEventCallbackCommand(vtkCallbackCommand::New()),
+  myRenderWindow(vtkRenderWindow::New())
 {
   myEventCallbackCommand->Delete();
 
@@ -425,55 +429,47 @@ SVTK_RenderWindowInteractor
 
   myEventCallbackCommand->SetCallback(SVTK_RenderWindowInteractor::ProcessEvents);
 
+  myRenderWindow->Delete();
+  GetDevice()->SetRenderWindow(getRenderWindow()); 
+
   SetSelector(SVTK_Selector::New());
-  GetSelector()->Delete();
+  mySelector->Delete();
 }
 
 SVTK_RenderWindowInteractor
 ::~SVTK_RenderWindowInteractor() 
 {}
 
-
-//----------------------------------------------------------------------------
-SVTK_Selector* 
+vtkRenderWindow* 
 SVTK_RenderWindowInteractor
-::GetSelector() 
-{ 
-  return mySelector.GetPointer(); 
+::getRenderWindow()
+{
+  return myRenderWindow.GetPointer();
 }
 
+
+//----------------------------------------------------------------------------
+SVTK_Renderer* 
+SVTK_RenderWindowInteractor
+::GetRenderer()
+{
+  return myRenderer.GetPointer();
+}
+
+vtkRenderer* 
+SVTK_RenderWindowInteractor
+::getRenderer()
+{
+  return GetRenderer();
+}
 
 void
 SVTK_RenderWindowInteractor
-::SetSelector(SVTK_Selector* theSelector)
-{ 
-  if(mySelector.GetPointer())
-    mySelector->RemoveObserver(myEventCallbackCommand.GetPointer());
-
-  mySelector = theSelector; 
-
-  if(mySelector.GetPointer())
-    mySelector->AddObserver(vtkCommand::EndPickEvent, 
-			    myEventCallbackCommand.GetPointer(), 
-			    myPriority);
-}
-
-
-//----------------------------------------------------------------------------
-void 
-SVTK_RenderWindowInteractor
-::ProcessEvents(vtkObject* vtkNotUsed(theObject), 
-		unsigned long theEvent,
-		void* theClientData, 
-		void* vtkNotUsed(theCallData))
+::SetRenderer(SVTK_Renderer* theRenderer)
 {
-  SVTK_RenderWindowInteractor* self = reinterpret_cast<SVTK_RenderWindowInteractor*>(theClientData);
-
-  switch(theEvent){
-  case vtkCommand::EndPickEvent:
-    self->onEmitSelectionChanged();
-    break;
-  }
+  myRenderWindow->RemoveRenderer(GetRenderer());
+  myRenderer = theRenderer;
+  myRenderWindow->AddRenderer(GetRenderer());
 }
 
 
@@ -518,6 +514,49 @@ SVTK_RenderWindowInteractor
 ::GetInteractorStyle()
 {
   return myInteractorStyles.isEmpty() ? 0 : myInteractorStyles.top().GetPointer();
+}
+
+
+//----------------------------------------------------------------------------
+SVTK_Selector* 
+SVTK_RenderWindowInteractor
+::GetSelector() 
+{ 
+  return mySelector.GetPointer(); 
+}
+
+
+void
+SVTK_RenderWindowInteractor
+::SetSelector(SVTK_Selector* theSelector)
+{ 
+  if(mySelector.GetPointer())
+    mySelector->RemoveObserver(myEventCallbackCommand.GetPointer());
+
+  mySelector = theSelector; 
+
+  if(mySelector.GetPointer())
+    mySelector->AddObserver(vtkCommand::EndPickEvent, 
+			    myEventCallbackCommand.GetPointer(), 
+			    myPriority);
+}
+
+
+//----------------------------------------------------------------------------
+void 
+SVTK_RenderWindowInteractor
+::ProcessEvents(vtkObject* vtkNotUsed(theObject), 
+		unsigned long theEvent,
+		void* theClientData, 
+		void* vtkNotUsed(theCallData))
+{
+  SVTK_RenderWindowInteractor* self = reinterpret_cast<SVTK_RenderWindowInteractor*>(theClientData);
+
+  switch(theEvent){
+  case vtkCommand::EndPickEvent:
+    self->onEmitSelectionChanged();
+    break;
+  }
 }
 
 

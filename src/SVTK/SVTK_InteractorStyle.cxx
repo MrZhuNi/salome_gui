@@ -1407,5 +1407,3 @@ SVTK_InteractorStyle
   }
   vtkInteractorStyle::ProcessEvents( object, event, clientData, callData );
 }
-
-#include "SVTK_RenderWindow.h"

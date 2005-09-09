@@ -44,20 +44,20 @@ SVTK_ViewWindow
   SUIT_ViewWindow(theDesktop)
 {}
 
-//----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
 ::Initialize(SVTK_ViewModelBase* theModel)
 {
   if(SUIT_ResourceMgr* aResourceMgr = SUIT_Session::session()->resourceMgr()){
     myMainWindow = new SVTK_MainWindow(this,"SVTK_MainWindow",aResourceMgr);
+    myMainWindow->Initialize();
+
     setCentralWidget(myMainWindow);
     
     myView = new SVTK_View(myMainWindow);
     Initialize(myView,theModel);
   }
 }
-
 
 void
 SVTK_ViewWindow
@@ -82,14 +82,11 @@ SVTK_ViewWindow
 	  theModel,SLOT(onSelectionChanged()));
 }
 
-//----------------------------------------------------------------------------
 SVTK_ViewWindow
 ::~SVTK_ViewWindow()
 {}
 
 
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 SVTK_View* 
 SVTK_ViewWindow

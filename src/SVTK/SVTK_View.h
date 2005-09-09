@@ -52,6 +52,10 @@ public:
 		  SUIT_ResourceMgr* theResourceMgr);
 
   virtual
+  void
+  Initialize();
+
+  virtual
   ~SVTK_MainWindow();
 
   //----------------------------------------------------------------------------
@@ -63,6 +67,9 @@ public:
 
   vtkRenderWindowInteractor*
   getInteractor();
+
+  vtkRenderWindow*
+  getRenderWindow();
 
   void
   Repaint();
@@ -98,15 +105,8 @@ public:
 
   //----------------------------------------------------------------------------
   void
-  SetRenderWindow(SVTK_RenderWindow *theRenderWindow);
+  SetRenderer(SVTK_Renderer* theRenderer);
 
-  SVTK_RenderWindow*
-  GetRenderWindow();
-
-  vtkRenderWindow*
-  getRenderWindow();
-
-  //----------------------------------------------------------------------------
   SVTK_Renderer* 
   GetRenderer();
 
@@ -203,7 +203,6 @@ public:
   QToolBar* myToolBar;
 
   SVTK_RenderWindowInteractor* myInteractor;
-  vtkSmartPointer<SVTK_RenderWindow> myRenderWindow;
 };
 
 

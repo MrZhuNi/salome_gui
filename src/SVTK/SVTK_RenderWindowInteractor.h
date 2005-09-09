@@ -48,6 +48,7 @@ class vtkGenericRenderWindowInteractor;
 
 class SALOME_Actor;
 class SVTK_Selector;
+class SVTK_Renderer;
 class SVTK_InteractorStyle;
 
 // ------------------------------------------------------------
@@ -152,15 +153,41 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
 
   ~SVTK_RenderWindowInteractor();
 
-  SVTK_Selector* GetSelector();
-  void SetSelector(SVTK_Selector* theSelector);
+  vtkRenderWindow*
+  getRenderWindow();
 
-  SVTK_InteractorStyle* GetInteractorStyle();
-  void PushInteractorStyle(SVTK_InteractorStyle* theStyle);
-  void PopInteractorStyle();
+  //----------------------------------------------------------------------------
+  void
+  SetRenderer(SVTK_Renderer *theRenderer);
 
-  Selection_Mode SelectionMode() const;
-  void SetSelectionMode(Selection_Mode theMode);
+  SVTK_Renderer* 
+  GetRenderer();
+
+  vtkRenderer* 
+  getRenderer();
+
+  //----------------------------------------------------------------------------
+  SVTK_InteractorStyle* 
+  GetInteractorStyle();
+
+  void
+  PushInteractorStyle(SVTK_InteractorStyle* theStyle);
+
+  void
+  PopInteractorStyle();
+
+  //----------------------------------------------------------------------------
+  SVTK_Selector* 
+  GetSelector();
+
+  void
+  SetSelector(SVTK_Selector* theSelector);
+
+  Selection_Mode 
+  SelectionMode() const;
+
+  void 
+  SetSelectionMode(Selection_Mode theMode);
 
  public:
   void
@@ -210,8 +237,12 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
 
   vtkSmartPointer<SVTK_Selector> mySelector;
 
+  vtkSmartPointer<SVTK_Renderer> myRenderer;
+  vtkSmartPointer<vtkRenderWindow> myRenderWindow;
+
   typedef vtkSmartPointer<SVTK_InteractorStyle> PInteractorStyle;
   QValueStack<PInteractorStyle> myInteractorStyles;
 };
+
 
 #endif
