@@ -27,6 +27,7 @@
 //  $Header$
 
 #include "SVTK_RenderWindowInteractor.h"
+#include "SVTK_GenericRenderWindowInteractor.h"
 
 #include "SVTK_InteractorStyle.h"
 #include "SVTK_Renderer.h"
@@ -63,80 +64,21 @@
 using namespace std;
 
 #ifdef _DEBUG_
-static int MYDEBUG = 0;
+static int MYDEBUG = 1;
 #else
 static int MYDEBUG = 0;
 #endif
 
 //#define GENERATE_SUIT_EVENTS
 
-//----------------------------------------------------------------------------
-vtkStandardNewMacro(QtRenderWindowInteractor);
-
-QtRenderWindowInteractor
-::QtRenderWindowInteractor()
-{
-  myTimer = new QTimer( ) ;
-  connect(myTimer, SIGNAL(timeout()), this, SLOT(OnTimeOut())) ;
-}
-
-QtRenderWindowInteractor
-::~QtRenderWindowInteractor()
-{
-  delete myTimer;
-}
-
-
-//----------------------------------------------------------------------------
-void
-QtRenderWindowInteractor
-::OnTimeOut() 
-{
-  if( GetEnabled() ) {
-    this->InvokeEvent(vtkCommand::TimerEvent,NULL);
-  }
-}
-
-int
-QtRenderWindowInteractor
-::CreateTimer(int vtkNotUsed(timertype)) 
-{
-  //
-  // Start a one-shot timer for 10ms. 
-  //
-  myTimer->start(1,TRUE);
-  return 1;
-}
-
-int
-QtRenderWindowInteractor
-::DestroyTimer(void) 
-{
-  //
-  // :TRICKY: Tue May  2 00:17:32 2000 Pagey
-  //
-  // QTimer will automatically expire after 10ms. So 
-  // we do not need to do anything here. In fact, we 
-  // should not even Stop() the QTimer here because doing 
-  // this will skip some of the processing that the TimerFunc()
-  // does and will result in undesirable effects. For 
-  // example, this will result in vtkLODActor to leave
-  // the models in low-res mode after the mouse stops
-  // moving. 
-  //
-  return 1;
-}
-
 
 //----------------------------------------------------------------------------
 QVTK_RenderWindowInteractor
 ::QVTK_RenderWindowInteractor(QWidget* theParent, 
 			      const char* theName):
-  QWidget(theParent,theName),
-  myInteractor(QtRenderWindowInteractor::New())
+  QWidget(theParent,theName)
 {
-  myInteractor->Delete();
-
+  if(MYDEBUG) INFOS("QVTK_RenderWindowInteractor() - "<<this);
   setMouseTracking(true);
 }
 
@@ -144,17 +86,26 @@ QVTK_RenderWindowInteractor
 QVTK_RenderWindowInteractor
 ::~QVTK_RenderWindowInteractor() 
 {
+  if(MYDEBUG) INFOS("~QVTK_RenderWindowInteractor() - "<<this);
+
   if(SVTK_SpaceMouse* aSpaceMouse = SVTK_SpaceMouse::getInstance())
     if(aSpaceMouse->isSpaceMouseOn())
       aSpaceMouse->close(x11Display());
 }
 
 //----------------------------------------------------------------------------
-vtkRenderWindowInteractor* 
+vtkGenericRenderWindowInteractor* 
 QVTK_RenderWindowInteractor
 ::GetDevice()
 {
-  return myInteractor.GetPointer();
+  return myDevice.GetPointer();
+}
+
+void 
+QVTK_RenderWindowInteractor
+::SetDevice(vtkGenericRenderWindowInteractor* theDevice)
+{
+  myDevice = theDevice;
 }
 
 //----------------------------------------------------------------------------
@@ -162,7 +113,7 @@ void
 QVTK_RenderWindowInteractor
 ::SetRenderWindow(vtkRenderWindow *theRenderWindow)
 {
-  myInteractor->SetRenderWindow(theRenderWindow);
+  GetDevice()->SetRenderWindow(theRenderWindow);
   theRenderWindow->DoubleBufferOn();
 }
 
@@ -170,7 +121,7 @@ vtkRenderWindow*
 QVTK_RenderWindowInteractor
 ::GetRenderWindow()
 {
-  return myInteractor->GetRenderWindow();
+  return GetDevice()->GetRenderWindow();
 }
 
 //----------------------------------------------------------------------------
@@ -178,7 +129,7 @@ void
 QVTK_RenderWindowInteractor
 ::InvokeEvent(unsigned long theEvent, void* theCallData)
 {
-  myInteractor->InvokeEvent(theEvent,theCallData);
+  GetDevice()->InvokeEvent(theEvent,theCallData);
 }
 
 //----------------------------------------------------------------------------
@@ -195,13 +146,13 @@ void
 QVTK_RenderWindowInteractor
 ::polish()
 {
-  // Final initialization just before the widget is displayed.
-  myInteractor->SetSize(width(),height());
+  // Final initialization just before the widget is displayed
+  GetDevice()->SetSize(width(),height());
 #ifndef WNT
   GetRenderWindow()->SetDisplayId((void*)x11Display());
 #endif
   GetRenderWindow()->SetWindowId((void*)winId());
-  myInteractor->Enable();
+  GetDevice()->Enable();
 }
 
 //----------------------------------------------------------------------------
@@ -209,7 +160,7 @@ void
 QVTK_RenderWindowInteractor
 ::resize(int w, int h) 
 {
-  myInteractor->UpdateSize(w,h);
+  GetDevice()->UpdateSize(w,h);
 }
 
 //----------------------------------------------------------------------------
@@ -217,12 +168,12 @@ void
 QVTK_RenderWindowInteractor
 ::paintEvent( QPaintEvent* theEvent ) 
 {
-  if(myInteractor->GetEnabled()){
-    if(!myInteractor->GetInitialized()){
-      myInteractor->Initialize();
-      myInteractor->ConfigureEvent();
+  if(GetDevice()->GetEnabled()){
+    if(!GetDevice()->GetInitialized()){
+      GetDevice()->Initialize();
+      GetDevice()->ConfigureEvent();
     }
-    myInteractor->Render();
+    GetDevice()->Render();
   }
 }
 
@@ -236,9 +187,9 @@ QVTK_RenderWindowInteractor
   int aWidth = aSize[0];
   int aHeight = aSize[1];
 
-  myInteractor->UpdateSize(width(),height());
+  GetDevice()->UpdateSize(width(),height());
 
-  if(aWidth && aHeight){
+  if(isVisible() && aWidth && aHeight){
     if( aWidth != width() || aHeight != height() ) {
       vtkRendererCollection * aRenderers = GetRenderWindow()->GetRenderers();
       aRenderers->InitTraversal();
@@ -271,10 +222,11 @@ void
 QVTK_RenderWindowInteractor
 ::mouseMoveEvent( QMouseEvent* event ) 
 {
-  myInteractor->SetEventInformation( event->x(), event->y(),
-				     ( event->state() & ControlButton ),
-				     ( event->state() & ShiftButton ) );
-  myInteractor->MouseMoveEvent();
+  GetDevice()->SetEventInformationFlipY(event->x(), 
+					event->y(),
+					event->state() & ControlButton,
+					event->state() & ShiftButton);
+  GetDevice()->MouseMoveEvent();
 }
 
 
@@ -283,15 +235,16 @@ void
 QVTK_RenderWindowInteractor
 ::mousePressEvent( QMouseEvent* event ) 
 {
-  myInteractor->SetEventInformation( event->x(), event->y(),
-				     ( event->state() & ControlButton ),
-				     ( event->state() & ShiftButton ) );
+  GetDevice()->SetEventInformationFlipY(event->x(), 
+					event->y(),
+					event->state() & ControlButton,
+					event->state() & ShiftButton);
   if( event->button() & LeftButton )
-    myInteractor->LeftButtonPressEvent();
+    GetDevice()->LeftButtonPressEvent();
   else if( event->button() & MidButton )
-    myInteractor->MiddleButtonPressEvent();
+    GetDevice()->MiddleButtonPressEvent();
   else if( event->button() & RightButton )
-    myInteractor->RightButtonPressEvent();
+    GetDevice()->RightButtonPressEvent();
 }
 
 
@@ -300,16 +253,17 @@ void
 QVTK_RenderWindowInteractor
 ::mouseReleaseEvent( QMouseEvent *event )
 {
-  myInteractor->SetEventInformation( event->x(), event->y(),
-				     ( event->state() & ControlButton ),
-				     ( event->state() & ShiftButton ) );
+  GetDevice()->SetEventInformationFlipY(event->x(), 
+					event->y(),
+					event->state() & ControlButton,
+					event->state() & ShiftButton);
 
   if( event->button() & LeftButton )
-    myInteractor->LeftButtonReleaseEvent();
+    GetDevice()->LeftButtonReleaseEvent();
   else if( event->button() & MidButton )
-    myInteractor->MiddleButtonReleaseEvent();
+    GetDevice()->MiddleButtonReleaseEvent();
   else if( event->button() & RightButton )
-    myInteractor->RightButtonReleaseEvent();
+    GetDevice()->RightButtonReleaseEvent();
 }
 
 
@@ -332,10 +286,11 @@ void
 QVTK_RenderWindowInteractor
 ::keyPressEvent( QKeyEvent* event ) 
 {
-  myInteractor->SetKeyEventInformation( ( event->state() & ControlButton ),
-					( event->state() & ShiftButton ),
-					event->key() );
-  myInteractor->KeyPressEvent();
+  GetDevice()->SetKeyEventInformation(event->state() & ControlButton,
+				      event->state() & ShiftButton,
+				      event->key());
+  GetDevice()->KeyPressEvent();
+  GetDevice()->CharEvent();
 }
 
 //----------------------------------------------------------------------------
@@ -343,10 +298,10 @@ void
 QVTK_RenderWindowInteractor
 ::keyReleaseEvent( QKeyEvent * event ) 
 {
-  myInteractor->SetKeyEventInformation( ( event->state() & ControlButton ),
-					( event->state() & ShiftButton ),
-					event->key() );
-  myInteractor->KeyReleaseEvent();
+  GetDevice()->SetKeyEventInformation(event->state() & ControlButton,
+				      event->state() & ShiftButton,
+				      event->key());
+  GetDevice()->KeyReleaseEvent();
 }
 
 
@@ -366,7 +321,7 @@ QVTK_RenderWindowInteractor
     }
   }
 
-  myInteractor->EnterEvent();
+  GetDevice()->EnterEvent();
 }
 
 //----------------------------------------------------------------------------
@@ -382,7 +337,7 @@ QVTK_RenderWindowInteractor
       aSpaceMouse->setWindow(x11Display(),0);
   }
 
-  myInteractor->LeaveEvent();
+  GetDevice()->LeaveEvent();
 }
 
 
@@ -398,10 +353,10 @@ QVTK_RenderWindowInteractor
       int type = aSpaceMouse->translateEvent( x11Display(), xEvent, &anEvent, 1.0, 1.0 );
       switch( type ){
       case SVTK_SpaceMouse::SpaceMouseMove : 
-	myInteractor->InvokeEvent(SVTK::SpaceMouseMoveEvent, anEvent.data );
+	GetDevice()->InvokeEvent(SVTK::SpaceMouseMoveEvent, anEvent.data );
 	break;
       case SVTK_SpaceMouse::SpaceButtonPress :
-	myInteractor->InvokeEvent( SVTK::SpaceMouseButtonEvent, &anEvent.button );
+	GetDevice()->InvokeEvent( SVTK::SpaceMouseButtonEvent, &anEvent.button );
 	break;
       case SVTK_SpaceMouse::SpaceButtonRelease :
 	break;
@@ -422,6 +377,8 @@ SVTK_RenderWindowInteractor
   myEventCallbackCommand(vtkCallbackCommand::New()),
   myRenderWindow(vtkRenderWindow::New())
 {
+  if(MYDEBUG) INFOS("SVTK_RenderWindowInteractor() - "<<this);
+
   myEventCallbackCommand->Delete();
 
   myEventCallbackCommand->SetClientData(this); 
@@ -429,16 +386,26 @@ SVTK_RenderWindowInteractor
 
   myEventCallbackCommand->SetCallback(SVTK_RenderWindowInteractor::ProcessEvents);
 
-  myRenderWindow->Delete();
-  GetDevice()->SetRenderWindow(getRenderWindow()); 
+  SVTK_GenericRenderWindowInteractor* aDevice = SVTK_GenericRenderWindowInteractor::New();
+  SetDevice(aDevice);
+  aDevice->Delete();
+
+  aDevice->SetRenderWidget(this);
 
   SetSelector(SVTK_Selector::New());
   mySelector->Delete();
+
+  aDevice->SetSelector(GetSelector());
+
+  GetDevice()->SetRenderWindow(getRenderWindow()); 
+  myRenderWindow->Delete();
 }
 
 SVTK_RenderWindowInteractor
 ::~SVTK_RenderWindowInteractor() 
-{}
+{
+  if(MYDEBUG) INFOS("~SVTK_RenderWindowInteractor() - "<<this);
+}
 
 vtkRenderWindow* 
 SVTK_RenderWindowInteractor
@@ -460,35 +427,43 @@ vtkRenderer*
 SVTK_RenderWindowInteractor
 ::getRenderer()
 {
-  return GetRenderer();
+  return GetRenderer()->GetDevice();
 }
 
 void
 SVTK_RenderWindowInteractor
 ::SetRenderer(SVTK_Renderer* theRenderer)
 {
-  myRenderWindow->RemoveRenderer(GetRenderer());
+  if(theRenderer == myRenderer.GetPointer())
+    return;
+
+  if(GetRenderer()){
+    myRenderWindow->RemoveRenderer(getRenderer());
+    theRenderer->SetInteractor(NULL);
+  }
+
   myRenderer = theRenderer;
-  myRenderWindow->AddRenderer(GetRenderer());
+
+  if(GetRenderer()){
+    myRenderWindow->AddRenderer(getRenderer());
+    theRenderer->SetInteractor(GetDevice());
+  }
 }
 
 
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
-::InitInteractorStyle(SVTK_InteractorStyle* theStyle)
+::InitInteractorStyle(vtkInteractorStyle* theStyle)
 {
   GetDevice()->SetInteractorStyle(theStyle); 
-
-  theStyle->SetSelector(GetSelector());
-  theStyle->SetRenderWidget(this);
 }
 
 
 //----------------------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
-::PushInteractorStyle(SVTK_InteractorStyle* theStyle)
+::PushInteractorStyle(vtkInteractorStyle* theStyle)
 {
   myInteractorStyles.push(PInteractorStyle(theStyle));
   InitInteractorStyle(theStyle);
@@ -509,7 +484,7 @@ SVTK_RenderWindowInteractor
 
 
 //----------------------------------------------------------------------------
-SVTK_InteractorStyle* 
+vtkInteractorStyle* 
 SVTK_RenderWindowInteractor
 ::GetInteractorStyle()
 {

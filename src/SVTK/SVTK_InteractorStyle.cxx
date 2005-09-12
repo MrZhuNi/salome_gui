@@ -21,8 +21,8 @@
 //
 //
 //
-//  File   : SVTK_InteractorStyle.cxx
-//  Author : Christophe ATTANASIO
+//  File   : 
+//  Author : 
 //  Module : SALOME
 //  $Header$
 
@@ -31,6 +31,7 @@
 
 #include "VTKViewer_Utilities.h"
 #include "VTKViewer_RectPicker.h"
+#include "SVTK_GenericRenderWindowInteractor.h"
 
 #include "SVTK_Selection.h"
 #include "SVTK_Event.h" 
@@ -74,25 +75,21 @@
 using namespace std;
 
 #ifdef _DEBUG_
-static int MYDEBUG = 0;
+static int MYDEBUG = 1;
 #else
 static int MYDEBUG = 0;
 #endif
 
 namespace
 {
-  bool CheckDimensionId(Selection_Mode theMode, SALOME_Actor *theActor, vtkIdType theObjId){
-    switch(theMode){
-    case CellSelection:
-      return true;
-    case EdgeSelection:
-      return ( theActor->GetObjDimension( theObjId ) == 1 );
-    case FaceSelection:
-      return ( theActor->GetObjDimension( theObjId ) == 2 );
-    case VolumeSelection:
-      return ( theActor->GetObjDimension( theObjId ) == 3 );
-    };
-    return false;
+  inline 
+  void
+  GetEventPosition(vtkRenderWindowInteractor* theInteractor,
+		   int& theX, 
+		   int& theY)
+  {
+    theInteractor->GetEventPosition(theX,theY);
+    theY = theInteractor->GetSize()[1] - theY - 1;
   }
 }  
   
@@ -103,6 +100,8 @@ vtkStandardNewMacro(SVTK_InteractorStyle);
 SVTK_InteractorStyle
 ::SVTK_InteractorStyle() 
 {
+  if(MYDEBUG) INFOS("SVTK_InteractorStyle() - "<<this);
+
   this->MotionFactor = 10.0;
   this->State = VTK_INTERACTOR_STYLE_CAMERA_NONE;
   this->RadianToDegree = 180.0 / vtkMath::Pi();
@@ -131,15 +130,22 @@ SVTK_InteractorStyle
 SVTK_InteractorStyle
 ::~SVTK_InteractorStyle() 
 {
-  if(MYDEBUG) INFOS("SVTK_InteractorStyle::~SVTK_InteractorStyle()");
+  if(MYDEBUG) INFOS("~SVTK_InteractorStyle() - "<<this);
 }
 
 //----------------------------------------------------------------------------
+QWidget*
+SVTK_InteractorStyle
+::GetRenderWidget()
+{
+  return myInteractor->GetRenderWidget();
+}
+
 SVTK_Selector*
 SVTK_InteractorStyle
 ::GetSelector() 
 {
-  return mySelector.GetPointer();
+  return myInteractor->GetSelector();
 }
 
 //----------------------------------------------------------------------------
@@ -157,33 +163,16 @@ SVTK_InteractorStyle
 {
   SVTK_SelectionEvent aSelectionEvent;
 
-  int x, y, w, h;
-  Interactor->GetEventPosition( x, y );
-  Interactor->GetSize( w, h );
+  int x, y;
+  GetEventPosition( this->Interactor, x, y );
 
   aSelectionEvent.myX = x;
-  aSelectionEvent.myY = h - y - 1;
+  aSelectionEvent.myY = y;
   aSelectionEvent.myIsCtrl = Interactor->GetControlKey();
   aSelectionEvent.myIsShift = Interactor->GetShiftKey();
   aSelectionEvent.mySelectionMode = GetSelector()->SelectionMode();
 
   return aSelectionEvent;
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorStyle
-::SetSelector( SVTK_Selector* theSelector ) 
-{ 
-  mySelector = theSelector; 
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorStyle
-::SetRenderWidget(QWidget* theWidget)
-{
-  myRenderWidget = theWidget;
 }
 
 //----------------------------------------------------------------------------
@@ -287,7 +276,7 @@ SVTK_InteractorStyle
 ::OnMouseMove() 
 {
   int x, y;
-  this->Interactor->GetEventPosition( x, y );
+  GetEventPosition( this->Interactor, x, y );
   this->OnMouseMove( this->Interactor->GetControlKey(),
 		     this->Interactor->GetShiftKey(),
 		     x, y );
@@ -300,7 +289,7 @@ SVTK_InteractorStyle
 ::OnLeftButtonDown()
 {
   int x, y;
-  this->Interactor->GetEventPosition( x, y );
+  GetEventPosition( this->Interactor, x, y );
   this->OnLeftButtonDown( this->Interactor->GetControlKey(),
 			  this->Interactor->GetShiftKey(),
 			  x, y );
@@ -313,7 +302,7 @@ SVTK_InteractorStyle
 ::OnLeftButtonUp()
 {
   int x, y;
-  this->Interactor->GetEventPosition( x, y );
+  GetEventPosition( this->Interactor, x, y );
   this->OnLeftButtonUp( this->Interactor->GetControlKey(),
 			this->Interactor->GetShiftKey(),
 			x, y );
@@ -326,7 +315,7 @@ SVTK_InteractorStyle
 ::OnMiddleButtonDown() 
 {
   int x, y;
-  this->Interactor->GetEventPosition( x, y );
+  GetEventPosition( this->Interactor, x, y );
   this->OnMiddleButtonDown( this->Interactor->GetControlKey(),
 			    this->Interactor->GetShiftKey(),
 			    x, y );
@@ -339,7 +328,7 @@ SVTK_InteractorStyle
 ::OnMiddleButtonUp()
 {
   int x, y;
-  this->Interactor->GetEventPosition( x, y );
+  GetEventPosition( this->Interactor, x, y );
   this->OnMiddleButtonUp( this->Interactor->GetControlKey(),
 			  this->Interactor->GetShiftKey(),
 			  x, y );
@@ -352,7 +341,7 @@ SVTK_InteractorStyle
 ::OnRightButtonDown() 
 {
   int x, y;
-  this->Interactor->GetEventPosition( x, y );
+  GetEventPosition( this->Interactor, x, y );
   this->OnRightButtonDown( this->Interactor->GetControlKey(),
 			   this->Interactor->GetShiftKey(),
 			   x, y );
@@ -364,7 +353,7 @@ SVTK_InteractorStyle
 ::OnRightButtonUp()
 {
   int x, y;
-  this->Interactor->GetEventPosition( x, y );
+  GetEventPosition( this->Interactor, x, y );
   this->OnRightButtonUp( this->Interactor->GetControlKey(),
 			 this->Interactor->GetShiftKey(),
 			 x, y );
@@ -622,32 +611,14 @@ void
 SVTK_InteractorStyle
 ::loadCursors()
 {
-  myDefCursor       = QCursor(ArrowCursor);
-  myHandCursor      = QCursor(PointingHandCursor);
-  myPanCursor       = QCursor(SizeAllCursor);
+  myDefCursor       = QCursor(Qt::ArrowCursor);
+  myHandCursor      = QCursor(Qt::PointingHandCursor);
+  myPanCursor       = QCursor(Qt::SizeAllCursor);
   myZoomCursor      = QCursor(QPixmap(imageZoomCursor));
   myRotateCursor    = QCursor(QPixmap(imageRotateCursor));
   mySpinCursor      = QCursor(QPixmap(imageRotateCursor)); // temporarly !!!!!!
-  myGlobalPanCursor = QCursor(CrossCursor);
+  myGlobalPanCursor = QCursor(Qt::CrossCursor);
   myCursorState     = false;
-}
-
-
-//----------------------------------------------------------------------------
-// event filter - controls mouse and keyboard events during viewer operations
-bool
-SVTK_InteractorStyle
-::eventFilter(QObject* object, QEvent* event)
-{
-  if (!myRenderWidget) return false;
-  if ( (event->type() == QEvent::MouseButtonPress || 
-	event->type() == QEvent::KeyPress) && 
-       object != myRenderWidget)
-  {
-    qApp->removeEventFilter(this);
-    startOperation(VTK_INTERACTOR_STYLE_CAMERA_NONE);
-  }
-  return QObject::eventFilter(object, event);
 }
 
 
@@ -664,7 +635,6 @@ SVTK_InteractorStyle
   }
   setCursor(VTK_INTERACTOR_STYLE_CAMERA_ZOOM);
   ForcedState = VTK_INTERACTOR_STYLE_CAMERA_ZOOM;
-  qApp->installEventFilter(this);
 }
 
 
@@ -681,7 +651,6 @@ SVTK_InteractorStyle
   }
   setCursor(VTK_INTERACTOR_STYLE_CAMERA_PAN);
   ForcedState = VTK_INTERACTOR_STYLE_CAMERA_PAN;
-  qApp->installEventFilter(this);
 }
 
 //----------------------------------------------------------------------------
@@ -697,7 +666,6 @@ SVTK_InteractorStyle
   }
   setCursor(VTK_INTERACTOR_STYLE_CAMERA_ROTATE);
   ForcedState = VTK_INTERACTOR_STYLE_CAMERA_ROTATE;
-  qApp->installEventFilter(this);
 }
 
 
@@ -714,7 +682,6 @@ SVTK_InteractorStyle
   }
   setCursor(VTK_INTERACTOR_STYLE_CAMERA_SPIN);
   ForcedState = VTK_INTERACTOR_STYLE_CAMERA_SPIN;
-  qApp->installEventFilter(this);
 }
 
 
@@ -732,7 +699,6 @@ SVTK_InteractorStyle
   }
   setCursor(VTK_INTERACTOR_STYLE_CAMERA_FIT);
   ForcedState = VTK_INTERACTOR_STYLE_CAMERA_FIT;
-  qApp->installEventFilter(this);
 }
 
 
@@ -751,14 +717,11 @@ SVTK_InteractorStyle
   ForcedState = VTK_INTERACTOR_STYLE_CAMERA_GLOBAL_PAN;
 
   // store current zoom scale
-  vtkCamera *cam = GetCurrentRenderer()->GetActiveCamera();
-  myScale = cam->GetParallelScale();
+  myScale = GetCurrentRenderer()->GetActiveCamera()->GetParallelScale();
 
   GetCurrentRenderer()->ResetCamera();
 
   this->Render();
-  
-  qApp->installEventFilter(this);
 }
 
 
@@ -836,37 +799,37 @@ void
 SVTK_InteractorStyle
 ::setCursor(const int operation)
 {
-  if (!myRenderWidget) return;
+  if (!GetRenderWidget()) return;
   switch (operation)
   {
     case VTK_INTERACTOR_STYLE_CAMERA_ZOOM:
-      myRenderWidget->setCursor(myZoomCursor); 
+      GetRenderWidget()->setCursor(myZoomCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_PAN:
-      myRenderWidget->setCursor(myPanCursor); 
+      GetRenderWidget()->setCursor(myPanCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_ROTATE:
-      myRenderWidget->setCursor(myRotateCursor); 
+      GetRenderWidget()->setCursor(myRotateCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_SPIN:
-      myRenderWidget->setCursor(mySpinCursor); 
+      GetRenderWidget()->setCursor(mySpinCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_GLOBAL_PAN:
-      myRenderWidget->setCursor(myGlobalPanCursor); 
+      GetRenderWidget()->setCursor(myGlobalPanCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_FIT:
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
-      myRenderWidget->setCursor(myHandCursor); 
+      GetRenderWidget()->setCursor(myHandCursor); 
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_NONE:
     default:
-      myRenderWidget->setCursor(myDefCursor); 
+      GetRenderWidget()->setCursor(myDefCursor); 
       myCursorState = false;
       break;
   }
@@ -879,14 +842,14 @@ void
 SVTK_InteractorStyle
 ::onStartOperation()
 {
-  if (!myRenderWidget) return;
+  if (!GetRenderWidget()) return;
   // VSV: LOD actor activisation
   //  this->Interactor->GetRenderWindow()->SetDesiredUpdateRate(this->Interactor->GetDesiredUpdateRate());
   switch (State) {
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
     case VTK_INTERACTOR_STYLE_CAMERA_FIT:
     {
-      QPainter p(myRenderWidget);
+      QPainter p(GetRenderWidget());
       p.setPen(Qt::lightGray);
       p.setRasterOp(Qt::XorROP);
       p.drawRect(QRect(myPoint, myOtherPoint));
@@ -908,7 +871,7 @@ void
 SVTK_InteractorStyle
 ::onFinishOperation() 
 {
-  if (!myRenderWidget) 
+  if (!GetRenderWidget()) 
     return;
 
   // VSV: LOD actor activisation
@@ -920,7 +883,7 @@ SVTK_InteractorStyle
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
     case VTK_INTERACTOR_STYLE_CAMERA_FIT:
     {
-      QPainter p(myRenderWidget);
+      QPainter p(GetRenderWidget());
       p.setPen(Qt::lightGray);
       p.setRasterOp(Qt::XorROP);
       QRect rect(myPoint, myOtherPoint);
@@ -1032,7 +995,7 @@ void
 SVTK_InteractorStyle
 ::onOperation(QPoint mousePos) 
 {
-  if (!myRenderWidget) 
+  if (!GetRenderWidget()) 
     return;
 
   switch (State) {
@@ -1071,7 +1034,7 @@ SVTK_InteractorStyle
     }
   case VTK_INTERACTOR_STYLE_CAMERA_FIT:
     {
-      QPainter p(myRenderWidget);
+      QPainter p(GetRenderWidget());
       p.setPen(Qt::lightGray);
       p.setRasterOp(Qt::XorROP);
       p.drawRect(QRect(myPoint, myOtherPoint));
@@ -1203,40 +1166,42 @@ SVTK_InteractorStyle
 //----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
-::SetInteractor( vtkRenderWindowInteractor* interactor )
+::SetInteractor( vtkRenderWindowInteractor* theInteractor )
 {
   // register EventCallbackCommand as observer of standard events (keypress, mousemove, etc)
-  vtkInteractorStyle::SetInteractor( interactor );
+  vtkInteractorStyle::SetInteractor( theInteractor );
  
-  if ( interactor ) { 
+  myInteractor = dynamic_cast<SVTK_GenericRenderWindowInteractor*>(theInteractor);
+
+  if ( myInteractor.GetPointer() ) { 
     // register EventCallbackCommand as observer of custorm event (3d space mouse event)
-    interactor->AddObserver( SVTK::SpaceMouseMoveEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::SpaceMouseButtonEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::PanLeftEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::PanRightEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::PanUpEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::PanDownEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::ZoomInEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::ZoomOutEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::RotateLeftEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::RotateRightEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::RotateUpEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::RotateDownEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::PlusSpeedIncrementEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::MinusSpeedIncrementEvent, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::SetSpeedIncrementEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SpaceMouseMoveEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SpaceMouseButtonEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::PanLeftEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::PanRightEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::PanUpEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::PanDownEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::ZoomInEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::ZoomOutEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::RotateLeftEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::RotateRightEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::RotateUpEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::RotateDownEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::PlusSpeedIncrementEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::MinusSpeedIncrementEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SetSpeedIncrementEvent, EventCallbackCommand, Priority );
 
-    interactor->AddObserver( SVTK::SetSpaceMouseF1Event, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::SetSpaceMouseF2Event, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::SetSpaceMouseF3Event, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::SetSpaceMouseF4Event, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::SetSpaceMouseF5Event, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SetSpaceMouseF1Event, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SetSpaceMouseF2Event, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SetSpaceMouseF3Event, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SetSpaceMouseF4Event, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SetSpaceMouseF5Event, EventCallbackCommand, Priority );
 
-    interactor->AddObserver( SVTK::StartZoom, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::StartPan, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::StartRotate, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::StartGlobalPan, EventCallbackCommand, Priority );
-    interactor->AddObserver( SVTK::StartFitArea, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::StartZoom, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::StartPan, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::StartRotate, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::StartGlobalPan, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::StartFitArea, EventCallbackCommand, Priority );
   }
 }
 
@@ -1268,7 +1233,7 @@ SVTK_InteractorStyle
   
   // general things, do SetCurrentRenderer() within FindPokedRenderer() 
   int x, y;
-  Interactor->GetEventPosition( x, y ); // current mouse position (from last mouse move event or any other event)
+  GetEventPosition( this->Interactor, x, y ); // current mouse position (from last mouse move event or any other event)
   FindPokedRenderer( x, y ); // calls SetCurrentRenderer
   
   IncrementalZoom( (int)data[2] );        // 1. push toward / pull backward = zoom out / zoom in

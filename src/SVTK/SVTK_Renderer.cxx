@@ -31,19 +31,24 @@
 #include "SVTK_Trihedron.h"
 #include "SVTK_CubeAxesActor2D.h"
 
-#include "VTKViewer_Actor.h"
 #include "SALOME_Actor.h"
-
+#include "VTKViewer_Actor.h"
 #include "VTKViewer_Transform.h"
 #include "VTKViewer_Utilities.h"
 
-#include "SUIT_Session.h"
-#include "SUIT_ResourceMgr.h"
-
 #include <vtkCamera.h>
+#include <vtkRenderer.h>
 #include <vtkTextProperty.h>
 #include <vtkObjectFactory.h>
 #include <vtkCallbackCommand.h>
+
+#include "utilities.h"
+
+#ifdef _DEBUG_
+static int MYDEBUG = 1;
+#else
+static int MYDEBUG = 0;
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -52,6 +57,8 @@ vtkStandardNewMacro(SVTK_Renderer);
 //----------------------------------------------------------------------------
 SVTK_Renderer
 ::SVTK_Renderer():
+  myDevice(vtkRenderer::New()),
+  myInteractor(NULL),
   myTransform(VTKViewer_Transform::New()),
   myCubeAxes(SVTK_CubeAxesActor2D::New()),
   myTrihedron(SVTK_Trihedron::New()),
@@ -59,62 +66,60 @@ SVTK_Renderer
   myPriority(0.0),
   myEventCallbackCommand(vtkCallbackCommand::New())
 {
+  if(MYDEBUG) INFOS("SVTK_Renderer() - "<<this);
+
   myTransform->Delete();
   myTrihedron->Delete();
   myCubeAxes->Delete();
   myEventCallbackCommand->Delete();
 
-  myTrihedron->AddToRender(this);
-  this->AddProp(GetCubeAxes());
+  myTrihedron->AddToRender(GetDevice());
+  GetDevice()->AddProp(GetCubeAxes());
 
-  vtkTextProperty* aTextProp = vtkTextProperty::New();
-  aTextProp->SetColor(1, 1, 1);
-  aTextProp->ShadowOn();
-  
-  float aBndBox[6];
-  aBndBox[0] = aBndBox[2] = aBndBox[4] = 0;
-  aBndBox[1] = aBndBox[3] = aBndBox[5] = myTrihedron->GetSize();
-  myCubeAxes->SetBounds(aBndBox);
-  myCubeAxes->SetCamera(this->GetActiveCamera());
+  myBndBox[0] = myBndBox[2] = myBndBox[4] = 0;
+  myBndBox[1] = myBndBox[3] = myBndBox[5] = myTrihedron->GetSize();
+
+  myCubeAxes->SetBounds(myBndBox);
+  myCubeAxes->SetCamera(GetDevice()->GetActiveCamera());
 
   myCubeAxes->SetLabelFormat("%6.4g");
   myCubeAxes->SetFlyModeToOuterEdges(); // ENK remarks: it must bee
   myCubeAxes->SetFontFactor(0.8);
-  myCubeAxes->SetAxisTitleTextProperty(aTextProp);
-  myCubeAxes->SetAxisLabelTextProperty(aTextProp);
   myCubeAxes->SetCornerOffset(0);
   myCubeAxes->SetScaling(0);
   myCubeAxes->SetNumberOfLabels(5);
   myCubeAxes->VisibilityOff();
   myCubeAxes->SetTransform(GetTransform());
+
+  vtkTextProperty* aTextProp = vtkTextProperty::New();
+  aTextProp->SetColor(1, 1, 1);
+  aTextProp->ShadowOn();
+  myCubeAxes->SetAxisTitleTextProperty(aTextProp);
+  myCubeAxes->SetAxisLabelTextProperty(aTextProp);
   aTextProp->Delete();
 
-  SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
-  QColor aColor = aResMgr->colorValue("VTKViewer","background",QColor());
-  this->SetBackground(aColor.red()/255.0,
-		      aColor.green()/255.0,
-		      aColor.blue()/255.0);
-
-  this->GetActiveCamera()->ParallelProjectionOn();
-  this->LightFollowCameraOn();
-  this->TwoSidedLightingOn();
+  GetDevice()->GetActiveCamera()->ParallelProjectionOn();
+  GetDevice()->LightFollowCameraOn();
+  GetDevice()->TwoSidedLightingOn();
 
   myEventCallbackCommand->SetClientData(this);
   myEventCallbackCommand->SetCallback(SVTK_Renderer::ProcessEvents);
-  this->AddObserver(vtkCommand::ConfigureEvent,
-		    myEventCallbackCommand.GetPointer(), 
-		    myPriority);
-  this->AddObserver(vtkCommand::ResetCameraEvent,
-		    myEventCallbackCommand.GetPointer(), 
-		    myPriority);
-  this->AddObserver(vtkCommand::ResetCameraClippingRangeEvent,
-		    myEventCallbackCommand.GetPointer(), 
-		    myPriority);
+  GetDevice()->AddObserver(vtkCommand::ConfigureEvent,
+			   myEventCallbackCommand.GetPointer(), 
+			   myPriority);
+  GetDevice()->AddObserver(vtkCommand::ResetCameraEvent,
+			   myEventCallbackCommand.GetPointer(), 
+			   myPriority);
+  GetDevice()->AddObserver(vtkCommand::ResetCameraClippingRangeEvent,
+			   myEventCallbackCommand.GetPointer(), 
+			   myPriority);
 }
 
 SVTK_Renderer
 ::~SVTK_Renderer()
-{}
+{
+  if(MYDEBUG) INFOS("~SVTK_Renderer() - "<<this);
+}
 
 
 void 
@@ -128,60 +133,75 @@ SVTK_Renderer
 
   switch(theEvent){
   case vtkCommand::ConfigureEvent:
-    self->onResetView();
+    self->OnResetView();
     break;
   case vtkCommand::ResetCameraEvent:
-    self->onFitAll();
+    self->OnFitAll();
     break;
   case vtkCommand::ResetCameraClippingRangeEvent:
-    self->onResetClippingRange();
+    self->OnResetClippingRange();
     break;
   }
 }
+
 //----------------------------------------------------------------------------
-SVTK_CubeAxesActor2D* 
+vtkRenderer* 
 SVTK_Renderer
-::GetCubeAxes()
+::GetDevice()
 {
-  return myCubeAxes.GetPointer();
+  return myDevice.GetPointer();
 }
 
-bool
+void 
 SVTK_Renderer
-::isCubeAxesDisplayed()
+::SetInteractor(vtkRenderWindowInteractor* theInteractor)
 {
-  return myCubeAxes->GetVisibility() == 1;
+  myInteractor = theInteractor;
 }
 
-VTKViewer_Trihedron* 
+//----------------------------------------------------------------------------
+void
 SVTK_Renderer
-::GetTrihedron()
+::AddActor(VTKViewer_Actor* theActor)
 {
-  return myTrihedron.GetPointer();
-}
-
-bool
-SVTK_Renderer
-::isTrihedronDisplayed()
-{
-  return myTrihedron->GetVisibility() == VTKViewer_Trihedron::eOn;
-}
-
-int
-SVTK_Renderer
-::GetTrihedronSize() const
-{
-  return myTrihedronSize;
+  if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor))
+    anActor->AddToInteractor(myInteractor);
+  theActor->SetTransform(GetTransform());
+  theActor->AddToRender(GetDevice());
+  AdjustActors();
 }
 
 void
 SVTK_Renderer
-::SetTrihedronSize(int theSize)
+::RemoveActor(VTKViewer_Actor* theActor)
 {
-  if(myTrihedronSize != theSize){
-    myTrihedronSize = theSize;
-    AdjustTrihedrons(true);
-  }
+  if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor))
+    anActor->RemoveFromInteractor(myInteractor);
+  theActor->SetTransform(NULL);
+  theActor->RemoveFromRender(GetDevice());
+  AdjustActors();
+}
+
+VTKViewer_Transform* 
+SVTK_Renderer
+::GetTransform()
+{
+  return myTransform.GetPointer();
+}
+
+void
+SVTK_Renderer
+::GetScale( double theScale[3] ) 
+{
+  myTransform->GetMatrixScale( theScale );
+}
+
+void
+SVTK_Renderer
+::SetScale( double theScale[3] ) 
+{
+  myTransform->SetMatrixScale( theScale[0], theScale[1], theScale[2] );
+  AdjustActors();
 }
 
 
@@ -201,51 +221,39 @@ CheckBndBox(const float theBounds[6])
   return false;
 }
 
-void
+bool
 SVTK_Renderer
-::AdjustTrihedrons(const bool theIsForced)
+::OnAdjustActors()
 {
-  bool aTDisplayed = isTrihedronDisplayed();
-  bool aCDisplayed = isCubeAxesDisplayed();
-
-  if(!aCDisplayed && !aTDisplayed && !theIsForced)
-    return;
-
-  float aBndBox[ 6 ];
-  myCubeAxes->GetBounds(aBndBox);
+  bool aTDisplayed = IsTrihedronDisplayed();
+  bool aCDisplayed = IsCubeAxesDisplayed();
 
   float aNewBndBox[6];
   aNewBndBox[ 0 ] = aNewBndBox[ 2 ] = aNewBndBox[ 4 ] = VTK_LARGE_FLOAT;
   aNewBndBox[ 1 ] = aNewBndBox[ 3 ] = aNewBndBox[ 5 ] = -VTK_LARGE_FLOAT;
 
-  int aVisibleNum = myTrihedron->GetVisibleActorCount(this);
+  int aVisibleNum = myTrihedron->GetVisibleActorCount(GetDevice());
   if(aVisibleNum){
-    // if the new trihedron size have sufficient difference, then apply the value
-    double aNewSize = 100;
-    double anOldSize = myTrihedron->GetSize();
-
     if(aTDisplayed)
       myTrihedron->VisibilityOff();
 
     if(aCDisplayed) 
       myCubeAxes->VisibilityOff();
 
-    static SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
-    float aSizeInPercents = aResMgr->doubleValue("VTKViewer","trihedron_size", 105);
-
-    ComputeTrihedronSize(this,aNewSize,anOldSize,aSizeInPercents);
-
-    myTrihedron->SetSize(aNewSize);
+    // if the new trihedron size have sufficient difference, then apply the value
+    double aSize = myTrihedron->GetSize();
+    ComputeTrihedronSize(GetDevice(),aSize,aSize,myTrihedronSize);
+    myTrihedron->SetSize(aSize);
 
     // iterate through displayed objects and set size if necessary
-    vtkActorCollection* anActors = this->GetActors();
+    vtkActorCollection* anActors = GetDevice()->GetActors();
     anActors->InitTraversal();
-    while(vtkActor* anActor = anActors->GetNextActor()){
-      if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast( anActor )){
-	if(aSActor->IsResizable())
-	  aSActor->SetSize(0.5 * aNewSize);
-        if(aSActor->GetVisibility() && !aSActor->IsInfinitive()){
-	  float *aBounds = aSActor->GetBounds();
+    while(vtkActor* anAct = anActors->GetNextActor()){
+      if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(anAct)){
+	if(anActor->IsResizable())
+	  anActor->SetSize(0.5*aSize);
+        if(anActor->GetVisibility() && !anActor->IsInfinitive()){
+	  float *aBounds = anActor->GetBounds();
           if(CheckBndBox(aBounds))
 	    for(int i = 0; i < 5; i = i + 2){
 	      if(aBounds[i] < aNewBndBox[i]) 
@@ -269,19 +277,62 @@ SVTK_Renderer
     aNewBndBox[1] = aNewBndBox[3] = aNewBndBox[5] = aSize;
   }
   
-  if(CheckBndBox(aNewBndBox))
-    myCubeAxes->SetBounds(aNewBndBox);
+  if(CheckBndBox(aNewBndBox)){
+    for(int i = 0; i < 6; i++)
+      myBndBox[i] = aNewBndBox[i];
+    myCubeAxes->SetBounds(myBndBox);
+    return true;
+  }
 
-  ::ResetCameraClippingRange(this);
+  return false;
+}
+
+void
+SVTK_Renderer
+::AdjustActors()
+{
+  if(OnAdjustActors())
+    ::ResetCameraClippingRange(GetDevice());
+}
+
+void
+SVTK_Renderer
+::SetTrihedronSize(int theSize)
+{
+  if(myTrihedronSize != theSize){
+    myTrihedronSize = theSize;
+    AdjustActors();
+  }
+}
+
+int
+SVTK_Renderer
+::GetTrihedronSize() const
+{
+  return myTrihedronSize;
 }
 
 
 //----------------------------------------------------------------------------
+VTKViewer_Trihedron* 
+SVTK_Renderer
+::GetTrihedron()
+{
+  return myTrihedron.GetPointer();
+}
+
+bool
+SVTK_Renderer
+::IsTrihedronDisplayed()
+{
+  return myTrihedron->GetVisibility() == VTKViewer_Trihedron::eOn;
+}
+
 void 
 SVTK_Renderer
-::onViewTrihedron()
+::OnViewTrihedron()
 {
-  if(isTrihedronDisplayed())
+  if(IsTrihedronDisplayed())
     myTrihedron->VisibilityOff();
   else
     myTrihedron->VisibilityOn();
@@ -289,87 +340,61 @@ SVTK_Renderer
 
 void
 SVTK_Renderer
-::onViewCubeAxes()
+::OnAdjustTrihedron()
+{   
+  AdjustActors();
+}
+
+
+//----------------------------------------------------------------------------
+SVTK_CubeAxesActor2D* 
+SVTK_Renderer
+::GetCubeAxes()
 {
-  if(isCubeAxesDisplayed())
+  return myCubeAxes.GetPointer();
+}
+
+bool
+SVTK_Renderer
+::IsCubeAxesDisplayed()
+{
+  return myCubeAxes->GetVisibility() == 1;
+}
+
+void
+SVTK_Renderer
+::OnViewCubeAxes()
+{
+  if(IsCubeAxesDisplayed())
     myCubeAxes->VisibilityOff();
   else
     myCubeAxes->VisibilityOn();
 }
 
-
-//----------------------------------------------------------------------------
 void
 SVTK_Renderer
-::onAdjustTrihedron()
+::OnAdjustCubeAxes()
 {   
-  AdjustTrihedrons(false);
-}
-
-void
-SVTK_Renderer
-::onAdjustCubeAxes()
-{   
-  AdjustTrihedrons(false);
-}
-
-
-//----------------------------------------------------------------------------
-VTKViewer_Transform* 
-SVTK_Renderer
-::GetTransform()
-{
-  return myTransform.GetPointer();
-}
-
-void
-SVTK_Renderer
-::GetScale( double theScale[3] ) 
-{
-  myTransform->GetMatrixScale( theScale );
-}
-
-void
-SVTK_Renderer
-::SetScale( double theScale[3] ) 
-{
-  myTransform->SetMatrixScale( theScale[0], theScale[1], theScale[2] );
+  AdjustActors();
 }
 
 
 //----------------------------------------------------------------------------
 void
 SVTK_Renderer
-::AddActor(VTKViewer_Actor* theActor)
+::OnResetView()
 {
-  theActor->SetTransform(GetTransform());
-  theActor->AddToRender(this);
-}
-
-void
-SVTK_Renderer
-::RemoveActor(VTKViewer_Actor* theActor)
-{
-  theActor->RemoveFromRender(this);
-}
-
-
-//----------------------------------------------------------------------------
-void
-SVTK_Renderer
-::onResetView()
-{
-  int aTrihedronIsVisible = isTrihedronDisplayed();
-  int aCubeAxesIsVisible = isCubeAxesDisplayed();
+  int aTrihedronIsVisible = IsTrihedronDisplayed();
+  int aCubeAxesIsVisible = IsCubeAxesDisplayed();
 
   myTrihedron->SetVisibility( VTKViewer_Trihedron::eOnlyLineOn );
   myCubeAxes->SetVisibility(0);
 
-  ::ResetCamera(this,true);  
-  vtkCamera* aCamera = this->GetActiveCamera();
+  ::ResetCamera(GetDevice(),true);  
+  vtkCamera* aCamera = GetDevice()->GetActiveCamera();
   aCamera->SetPosition(1,-1,1);
   aCamera->SetViewUp(0,0,1);
-  ::ResetCamera(this,true);  
+  ::ResetCamera(GetDevice(),true);  
 
   if(aTrihedronIsVisible) 
     myTrihedron->VisibilityOn();
@@ -389,27 +414,27 @@ SVTK_Renderer
 //----------------------------------------------------------------------------
 void
 SVTK_Renderer
-::onFitAll()
+::OnFitAll()
 {
   int aTrihedronWasVisible = false;
   int aCubeAxesWasVisible = false;
 
-  aTrihedronWasVisible = isTrihedronDisplayed();
+  aTrihedronWasVisible = IsTrihedronDisplayed();
   if(aTrihedronWasVisible)
     myTrihedron->VisibilityOff();
 
-  aCubeAxesWasVisible = isCubeAxesDisplayed();
+  aCubeAxesWasVisible = IsCubeAxesDisplayed();
   if(aCubeAxesWasVisible)
     myCubeAxes->VisibilityOff();
 
-  if(myTrihedron->GetVisibleActorCount(this)){
+  if(myTrihedron->GetVisibleActorCount(GetDevice())){
     myTrihedron->VisibilityOff();
     myCubeAxes->VisibilityOff();
-    ::ResetCamera(this);
+    ::ResetCamera(GetDevice());
   }else{
     myTrihedron->SetVisibility(VTKViewer_Trihedron::eOnlyLineOn);
     myCubeAxes->SetVisibility(2);
-    ::ResetCamera(this,true);
+    ::ResetCamera(GetDevice(),true);
   }
 
   if(aTrihedronWasVisible)
@@ -422,88 +447,88 @@ SVTK_Renderer
   else
     myCubeAxes->VisibilityOff();
 
-  ::ResetCameraClippingRange(this);
+  ::ResetCameraClippingRange(GetDevice());
 }
 
 
 //----------------------------------------------------------------------------
 void
 SVTK_Renderer
-::onResetClippingRange()
+::OnResetClippingRange()
 {
   return;
-  ::ResetCameraClippingRange(this);
+  ::ResetCameraClippingRange(GetDevice());
 }
 
 
 //----------------------------------------------------------------------------
 void
 SVTK_Renderer
-::onFrontView()
+::OnFrontView()
 {
-  vtkCamera* aCamera = this->GetActiveCamera();
+  vtkCamera* aCamera = GetDevice()->GetActiveCamera();
   aCamera->SetPosition(1,0,0);
   aCamera->SetViewUp(0,0,1);
   aCamera->SetFocalPoint(0,0,0);
-  this->onFitAll();
+  this->OnFitAll();
 }
 
 //----------------------------------------------------------------------------
 void
 SVTK_Renderer
-::onBackView()
+::OnBackView()
 {
-  vtkCamera* aCamera = this->GetActiveCamera();
+  vtkCamera* aCamera = GetDevice()->GetActiveCamera();
   aCamera->SetPosition(-1,0,0);
   aCamera->SetViewUp(0,0,1);
   aCamera->SetFocalPoint(0,0,0);
-  this->onFitAll();
+  this->OnFitAll();
 }
 
 //----------------------------------------------------------------------------
 void
 SVTK_Renderer
-::onTopView()
+::OnTopView()
 {
-  vtkCamera* aCamera = this->GetActiveCamera();
+  vtkCamera* aCamera = GetDevice()->GetActiveCamera();
   aCamera->SetPosition(0,0,1);
   aCamera->SetViewUp(0,1,0);
   aCamera->SetFocalPoint(0,0,0);
-  this->onFitAll();
+  this->OnFitAll();
 }
 
 //----------------------------------------------------------------------------
 void
 SVTK_Renderer
-::onBottomView()
+::OnBottomView()
 {
-  vtkCamera* aCamera = this->GetActiveCamera();
+  vtkCamera* aCamera = GetDevice()->GetActiveCamera();
   aCamera->SetPosition(0,0,-1);
   aCamera->SetViewUp(0,1,0);
   aCamera->SetFocalPoint(0,0,0);
-  this->onFitAll();
+  this->OnFitAll();
 }
 
 //----------------------------------------------------------------------------
 void
 SVTK_Renderer
-::onLeftView()
+::OnLeftView()
 {
-  vtkCamera* aCamera = this->GetActiveCamera(); 
+  vtkCamera* aCamera = GetDevice()->GetActiveCamera(); 
   aCamera->SetPosition(0,-1,0);
   aCamera->SetViewUp(0,0,1);
   aCamera->SetFocalPoint(0,0,0);
-  this->onFitAll();
+  this->OnFitAll();
 }
 
 //----------------------------------------------------------------------------
 void
 SVTK_Renderer
-::onRightView()
+::OnRightView()
 {
-  vtkCamera* aCamera = this->GetActiveCamera();
+  vtkCamera* aCamera = GetDevice()->GetActiveCamera();
   aCamera->SetPosition(0,1,0);
   aCamera->SetViewUp(0,0,1);
   aCamera->SetFocalPoint(0,0,0);
-  this->onFitAll();
+  this->OnFitAll();
 }

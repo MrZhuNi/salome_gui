@@ -17,6 +17,7 @@ class QtxAction;
 
 class vtkRenderer;
 class vtkRenderWindow;
+class vtkInteractorStyle;
 class vtkRenderWindowInteractor;
 
 class vtkObject;
@@ -36,7 +37,6 @@ class VTKViewer_Actor;
 class SVTK_Renderer;
 
 class SVTK_RenderWindow;
-class SVTK_InteractorStyle;
 class SVTK_RenderWindowInteractor;
 
 class SALOME_Actor;
@@ -50,6 +50,10 @@ public:
   SVTK_MainWindow(QWidget* theParent, 
 		  const char* theName,
 		  SUIT_ResourceMgr* theResourceMgr);
+
+  virtual
+  void
+  Initialize(SVTK_Renderer *theRenderer);
 
   virtual
   void
@@ -81,11 +85,11 @@ public:
   InvokeEvent(unsigned long theEvent, void* theCallData);
 
   //----------------------------------------------------------------------------
-  SVTK_InteractorStyle* 
+  vtkInteractorStyle* 
   GetInteractorStyle();
 
   void
-  PushInteractorStyle(SVTK_InteractorStyle* theStyle);
+  PushInteractorStyle(vtkInteractorStyle* theStyle);
 
   void
   PopInteractorStyle();
@@ -128,6 +132,7 @@ public:
   void 
   AddActor(VTKViewer_Actor* theActor, 
 	   bool theIsUpdate = false);
+
   void 
   RemoveActor(VTKViewer_Actor* theActor, 
 	      bool theIsUpdate = false);
@@ -139,7 +144,7 @@ public:
   SetTrihedronSize(const int theSize);
 
   void 
-  AdjustTrihedrons(const bool theIsForced);
+  AdjustActors();
 
   bool
   IsTrihedronDisplayed();

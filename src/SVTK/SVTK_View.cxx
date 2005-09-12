@@ -1,8 +1,37 @@
+//  SALOME VTKViewer : build VTK viewer into Salome desktop
+//
+//  Copyright (C) 2003  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
+//  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS 
+// 
+//  This library is free software; you can redistribute it and/or 
+//  modify it under the terms of the GNU Lesser General Public 
+//  License as published by the Free Software Foundation; either 
+//  version 2.1 of the License. 
+// 
+//  This library is distributed in the hope that it will be useful, 
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+//  Lesser General Public License for more details. 
+// 
+//  You should have received a copy of the GNU Lesser General Public 
+//  License along with this library; if not, write to the Free Software 
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA 
+// 
+//  See http://www.opencascade.org/SALOME/ or email : webmaster.salome@opencascade.org 
+//
+//
+//
+//  File   : 
+//  Author : 
+//  Module : SALOME
+//  $Header$
+
 #include "SALOME_Actor.h"
 
 #include <qapplication.h>
 #include <qpushbutton.h>
 
+#include <vtkGenericRenderWindowInteractor.h>
 #include <vtkCallbackCommand.h>
 #include <vtkTextProperty.h>
 #include <vtkActorCollection.h>
@@ -38,6 +67,14 @@
 #include "VTKViewer_Algorithm.h"
 #include "SVTK_Functor.h"
 
+#include "utilities.h"
+
+#ifdef _DEBUG_
+static int MYDEBUG = 1;
+#else
+static int MYDEBUG = 0;
+#endif
+
 
 //----------------------------------------------------------------------------
 SVTK_MainWindow
@@ -46,6 +83,8 @@ SVTK_MainWindow
 		  SUIT_ResourceMgr* theResourceMgr) :
   QMainWindow(theParent,theName,0)
 {
+  if(MYDEBUG) INFOS("SVTK_MainWindow() - "<<this);
+
   myToolBar = new QToolBar(this);
   myToolBar->setCloseMode(QDockWindow::Undocked);
   myToolBar->setLabel(tr("LBL_TOOLBAR_LABEL"));
@@ -56,24 +95,33 @@ SVTK_MainWindow
 
 void
 SVTK_MainWindow
-::Initialize()
+::Initialize(SVTK_Renderer *theRenderer)
 {
   SetInteractor(new SVTK_RenderWindowInteractor(this,"SVTK_RenderWindowInteractor"));
-
-  SVTK_Renderer* aRenderer = SVTK_Renderer::New();
-  GetInteractor()->SetRenderer(aRenderer);
-  aRenderer->Delete();
 
   SVTK_InteractorStyle* aStyle = SVTK_InteractorStyle::New();
   GetInteractor()->PushInteractorStyle(aStyle);
   aStyle->Delete();
+
+  GetInteractor()->SetRenderer(theRenderer);
+}
+
+void
+SVTK_MainWindow
+::Initialize()
+{
+  SVTK_Renderer* aRenderer = SVTK_Renderer::New();
+  Initialize(aRenderer);
+  aRenderer->Delete();
 }
 
 
 //----------------------------------------------------------------------------
 SVTK_MainWindow
 ::~SVTK_MainWindow()
-{}
+{
+  if(MYDEBUG) INFOS("~SVTK_MainWindow() - "<<this);
+}
 
 
 //----------------------------------------------------------------------------
@@ -126,7 +174,7 @@ SVTK_MainWindow
 ::Repaint(bool theUpdateTrihedron)
 {
   if(theUpdateTrihedron) 
-    GetRenderer()->onAdjustTrihedron();
+    GetRenderer()->OnAdjustTrihedron();
 
   GetInteractor()->update();
 }
@@ -140,7 +188,7 @@ SVTK_MainWindow
 }
 
 //----------------------------------------------------------------------------
-SVTK_InteractorStyle*
+vtkInteractorStyle*
 SVTK_MainWindow
 ::GetInteractorStyle()
 {
@@ -149,7 +197,7 @@ SVTK_MainWindow
 
 void
 SVTK_MainWindow
-::PushInteractorStyle(SVTK_InteractorStyle* theStyle)
+::PushInteractorStyle(vtkInteractorStyle* theStyle)
 {
   GetInteractor()->PushInteractorStyle(theStyle);
 }
@@ -218,7 +266,7 @@ void
 SVTK_MainWindow
 ::SetBackgroundColor(const QColor& theColor)
 {
-  GetRenderer()->SetBackground(theColor.red()/255.0, 
+  getRenderer()->SetBackground(theColor.red()/255.0, 
 			       theColor.green()/255.0,
 			       theColor.blue()/255.0);
 }
@@ -228,7 +276,7 @@ SVTK_MainWindow
 ::BackgroundColor()
 {
   float aBackgroundColor[3];
-  GetRenderer()->GetBackground(aBackgroundColor);
+  getRenderer()->GetBackground(aBackgroundColor);
   return QColor(int(aBackgroundColor[0]*255), 
 		int(aBackgroundColor[1]*255), 
 		int(aBackgroundColor[2]*255));
@@ -298,9 +346,9 @@ SVTK_MainWindow
  */
 void
 SVTK_MainWindow
-::AdjustTrihedrons(const bool theIsForced)
+::AdjustActors()
 {
-  GetRenderer()->AdjustTrihedrons(theIsForced);
+  GetRenderer()->AdjustActors();
   Repaint();
 }
 
@@ -309,7 +357,7 @@ bool
 SVTK_MainWindow
 ::IsTrihedronDisplayed()
 {
-  return GetRenderer()->isTrihedronDisplayed();
+  return GetRenderer()->IsTrihedronDisplayed();
 }
 
 //----------------------------------------------------------------------------
@@ -317,7 +365,7 @@ bool
 SVTK_MainWindow
 ::IsCubeAxesDisplayed()
 {
-  return GetRenderer()->isCubeAxesDisplayed();
+  return GetRenderer()->IsCubeAxesDisplayed();
 }
 
 //----------------------------------------------------------------------------
@@ -554,7 +602,7 @@ void
 SVTK_MainWindow
 ::onFrontView()
 {
-  GetRenderer()->onFrontView();
+  GetRenderer()->OnFrontView();
 }
 
 //----------------------------------------------------------------------------
@@ -562,7 +610,7 @@ void
 SVTK_MainWindow
 ::onBackView()
 {
-  GetRenderer()->onBackView();
+  GetRenderer()->OnBackView();
 }
 
 //----------------------------------------------------------------------------
@@ -570,7 +618,7 @@ void
 SVTK_MainWindow
 ::onTopView()
 {
-  GetRenderer()->onTopView();
+  GetRenderer()->OnTopView();
 }
 
 //----------------------------------------------------------------------------
@@ -578,7 +626,7 @@ void
 SVTK_MainWindow
 ::onBottomView()
 {
-  GetRenderer()->onBottomView();
+  GetRenderer()->OnBottomView();
 }
 
 //----------------------------------------------------------------------------
@@ -586,7 +634,7 @@ void
 SVTK_MainWindow
 ::onLeftView()
 {
-  GetRenderer()->onLeftView();
+  GetRenderer()->OnLeftView();
 }
 
 //----------------------------------------------------------------------------
@@ -594,7 +642,7 @@ void
 SVTK_MainWindow
 ::onRightView()
 {
-  GetRenderer()->onRightView();
+  GetRenderer()->OnRightView();
 }
 
 //----------------------------------------------------------------------------
@@ -602,7 +650,7 @@ void
 SVTK_MainWindow
 ::onResetView()
 {
-  GetRenderer()->onResetView();
+  GetRenderer()->OnResetView();
   Repaint();
 }
 
@@ -611,7 +659,7 @@ void
 SVTK_MainWindow
 ::onFitAll()
 {
-  GetRenderer()->onFitAll();
+  GetRenderer()->OnFitAll();
   Repaint();
 }
 
@@ -620,7 +668,7 @@ void
 SVTK_MainWindow
 ::onViewTrihedron()
 {
-  GetRenderer()->onViewTrihedron();
+  GetRenderer()->OnViewTrihedron();
   Repaint();
 }
 
@@ -629,7 +677,7 @@ void
 SVTK_MainWindow
 ::onViewCubeAxes()
 {
-  GetRenderer()->onViewCubeAxes();
+  GetRenderer()->OnViewCubeAxes();
   Repaint();
 }
 
@@ -638,7 +686,7 @@ void
 SVTK_MainWindow
 ::onAdjustTrihedron()
 {   
-  GetRenderer()->onAdjustTrihedron();
+  GetRenderer()->OnAdjustTrihedron();
 }
 
 //----------------------------------------------------------------------------
@@ -646,7 +694,7 @@ void
 SVTK_MainWindow
 ::onAdjustCubeAxes()
 {   
-  GetRenderer()->onAdjustCubeAxes();
+  GetRenderer()->OnAdjustCubeAxes();
 }
 
 //----------------------------------------------------------------------------
@@ -671,6 +719,8 @@ SVTK_SignalHandler
   QObject(theMainWindow),
   myMainWindow(theMainWindow)
 {
+  if(MYDEBUG) INFOS("SVTK_SignalHandler() - "<<this);
+
   SVTK_RenderWindowInteractor* anInteractor = theMainWindow->GetInteractor();
 
   connect(anInteractor,SIGNAL(KeyPressed(QKeyEvent*)),
@@ -693,7 +743,9 @@ SVTK_SignalHandler
 
 SVTK_SignalHandler
 ::~SVTK_SignalHandler()
-{}
+{
+  if(MYDEBUG) INFOS("~SVTK_SignalHandler() - "<<this);
+}
 
 SVTK_MainWindow*
 SVTK_SignalHandler
@@ -730,7 +782,7 @@ vtkRenderer*
 SVTK_SignalHandler
 ::getRenderer()
 {
-  return myMainWindow->GetRenderer();
+  return myMainWindow->getRenderer();
 }
 
 //----------------------------------------------------------------
@@ -757,7 +809,7 @@ void
 SVTK_SignalHandler
 ::onSelectionChanged()
 {
-  vtkActorCollection* anActors = myMainWindow->GetRenderer()->GetActors();
+  vtkActorCollection* anActors = myMainWindow->getRenderer()->GetActors();
 
   using namespace VTK;
   ForEach<SALOME_Actor>(anActors,
@@ -780,12 +832,16 @@ SVTK_SignalHandler
 SVTK_View
 ::SVTK_View(SVTK_MainWindow* theMainWindow) :
   SVTK_SignalHandler(theMainWindow)
-{}
+{
+  if(MYDEBUG) INFOS("SVTK_View() - "<<this);
+}
 
 //----------------------------------------------------------------------------
 SVTK_View
 ::~SVTK_View()
-{}
+{
+  if(MYDEBUG) INFOS("~SVTK_View() - "<<this);
+}
 
 //----------------------------------------------------------------
 void 
@@ -793,7 +849,7 @@ SVTK_View
 ::unHighlightAll() 
 {
   using namespace VTK;
-  ForEach<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEach<SALOME_Actor>(getRenderer()->GetActors(),
 			THighlightAction( false ));
 
   Repaint();
@@ -808,7 +864,7 @@ SVTK_View
 {
   using namespace VTK;
   SVTK_Selector* aSelector = myMainWindow->GetSelector();
-  ForEachIf<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			  TIsSameIObject<SALOME_Actor>( theIO ),
 			  THighlightAction( theIsHighlight, aSelector->SelectionMode() ));
   
@@ -823,7 +879,7 @@ SVTK_View
 		   const double& theBlue, 
 		   const int& theWidth) 
 {
-  vtkActorCollection* anActors = GetRenderer()->GetActors();
+  vtkActorCollection* anActors = getRenderer()->GetActors();
   anActors->InitTraversal();
   while( vtkActor* anActor = anActors->GetNextActor() )
   {
@@ -847,7 +903,7 @@ SVTK_View
 ::SetSelectionTolerance(const double& theTolNodes, 
 			const double& theTolItems)
 {
-  vtkActorCollection* anActors = GetRenderer()->GetActors();
+  vtkActorCollection* anActors = getRenderer()->GetActors();
   anActors->InitTraversal();
   while( vtkActor* anActor = anActors->GetNextActor() )
   {
@@ -867,7 +923,7 @@ SVTK_View
 {
   using namespace VTK;
   SALOME_Actor* anActor = 
-    Find<SALOME_Actor>(GetRenderer()->GetActors(),
+    Find<SALOME_Actor>(getRenderer()->GetActors(),
 		       TIsSameIObject<SALOME_Actor>(theIObject));
   return anActor != NULL;
 }
@@ -879,7 +935,7 @@ SVTK_View
 {
   using namespace VTK;
   SALOME_Actor* anActor = 
-    Find<SALOME_Actor>(GetRenderer()->GetActors(),
+    Find<SALOME_Actor>(getRenderer()->GetActors(),
 		       TIsSameIObject<SALOME_Actor>(theIObject));
   return anActor != NULL && anActor->GetVisibility();
 }
@@ -891,7 +947,7 @@ SVTK_View
 	 const QString& theName)
 {
   using namespace VTK;
-  ForEachIf<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			  TIsSameIObject<SALOME_Actor>(theIObject),
 			  TSetFunction<SALOME_Actor,const char*,QString>
 			  (&SALOME_Actor::setName,theName.latin1()));
@@ -922,7 +978,7 @@ SVTK_View
 		 int theMode)
 {
   using namespace VTK;
-  ForEachIf<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			  TIsSameIObject<SALOME_Actor>(theIObject),
 			  TSetFunction<SALOME_Actor,int>
 			  (&SALOME_Actor::setDisplayMode,theMode));
@@ -933,14 +989,14 @@ void
 SVTK_View
 ::ChangeRepresentationToWireframe()
 {
-  ChangeRepresentationToWireframe(GetRenderer()->GetActors());
+  ChangeRepresentationToWireframe(getRenderer()->GetActors());
 }
 
 void
 SVTK_View
 ::ChangeRepresentationToSurface()
 {
-  ChangeRepresentationToSurface(GetRenderer()->GetActors());
+  ChangeRepresentationToSurface(getRenderer()->GetActors());
 }
 
 
@@ -988,7 +1044,7 @@ SVTK_View
 ::EraseAll()
 {   
   using namespace VTK;
-  ForEach<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEach<SALOME_Actor>(getRenderer()->GetActors(),
 			TErase());
   Repaint();
 }
@@ -998,7 +1054,7 @@ SVTK_View
 ::DisplayAll()
 { 
   using namespace VTK;
-  ForEach<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEach<SALOME_Actor>(getRenderer()->GetActors(),
 			TSetVisibility<SALOME_Actor>(true));
   Repaint();
 }
@@ -1022,7 +1078,7 @@ SVTK_View
 	bool theIsUpdate)
 {
   using namespace VTK;
-  ForEachIf<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			  TIsSameIObject<SALOME_Actor>(theIObject),
 			  TErase());
   if(theIsUpdate)
@@ -1049,7 +1105,7 @@ SVTK_View
 	  bool theIsUpdate)
 {
   using namespace VTK;
-  ForEachIf<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			  TIsSameIObject<SALOME_Actor>(theIObject),
 			  TSetVisibility<SALOME_Actor>(true));
 
@@ -1060,10 +1116,14 @@ SVTK_View
 //----------------------------------------------------------------------------
 struct TRemoveAction
 {
-  vtkRenderer* myRen;
-  TRemoveAction(vtkRenderer* theRen): myRen(theRen){}
-  void operator()(SALOME_Actor* theActor){
-    myRen->RemoveActor(theActor);
+  SVTK_Renderer* myRenderer;
+  TRemoveAction(SVTK_Renderer* theRenderer): 
+    myRenderer(theRenderer)
+  {}
+  void
+  operator()(SALOME_Actor* theActor)
+  {
+    myRenderer->RemoveActor(theActor);
   }
 };
 
@@ -1073,7 +1133,7 @@ SVTK_View
 	 bool theIsUpdate)
 {
   using namespace VTK;
-  ForEachIf<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			  TIsSameIObject<SALOME_Actor>(theIObject),
 			  TRemoveAction(GetRenderer()));
   if(theIsUpdate)
@@ -1085,7 +1145,7 @@ SVTK_View
 ::Remove(SALOME_Actor* theActor, 
 	 bool theIsUpdate)
 {
-  GetRenderer()->RemoveProp(theActor);
+  GetRenderer()->RemoveActor(theActor);
   if(theIsUpdate)
     Repaint();
 }
@@ -1094,7 +1154,7 @@ void
 SVTK_View
 ::RemoveAll(bool theIsUpdate)
 {
-  vtkRenderer* aRenderer = GetRenderer();
+  vtkRenderer* aRenderer = getRenderer();
   if(vtkActorCollection* anActors = aRenderer->GetActors()){
     anActors->InitTraversal();
     while(vtkActor *anAct = anActors->GetNextActor()){
@@ -1116,7 +1176,7 @@ SVTK_View
 {
   using namespace VTK;
   SALOME_Actor* anActor = 
-    Find<SALOME_Actor>(GetRenderer()->GetActors(),
+    Find<SALOME_Actor>(getRenderer()->GetActors(),
 		       TIsSameIObject<SALOME_Actor>(theIObject));
   if(anActor)
     return 1.0 - anActor->GetOpacity();
@@ -1131,7 +1191,7 @@ SVTK_View
 {
   float anOpacity = 1.0 - theTrans;
   using namespace VTK;
-  ForEachIf<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			  TIsSameIObject<SALOME_Actor>(theIObject),
 			  TSetFunction<SALOME_Actor,float>
 			  (&SALOME_Actor::SetOpacity,anOpacity));
@@ -1146,7 +1206,7 @@ SVTK_View
   float aColor[3] = {theColor.red()/255., theColor.green()/255., theColor.blue()/255.};
 
   using namespace VTK;
-  ForEachIf<SALOME_Actor>(GetRenderer()->GetActors(),
+  ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			  TIsSameIObject<SALOME_Actor>(theIObject),
 			  TSetFunction<SALOME_Actor,const float*>
 			  (&SALOME_Actor::SetColor,aColor));
@@ -1159,7 +1219,7 @@ SVTK_View
 {
   using namespace VTK;
   SALOME_Actor* anActor = 
-    Find<SALOME_Actor>(GetRenderer()->GetActors(),
+    Find<SALOME_Actor>(getRenderer()->GetActors(),
 		       TIsSameIObject<SALOME_Actor>(theIObject));
   if(anActor){
     float r,g,b;

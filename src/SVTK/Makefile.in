@@ -25,6 +25,7 @@ EXPORT_HEADERS= SVTK.h \
 		SVTK_Renderer.h \
 		SVTK_InteractorStyle.h \
 		SVTK_RenderWindowInteractor.h \
+		SVTK_GenericRenderWindowInteractor.h \
 		SVTK_Selector.h \
 		SVTK_Selection.h \
 		SVTK_SelectionEvent.h \
@@ -47,25 +48,29 @@ LIB_SRC= 	SVTK_Prs.cxx \
 		SVTK_ViewWindow.cxx \
 		SVTK_InteractorStyle.cxx \
 		SVTK_RenderWindowInteractor.cxx \
+		SVTK_GenericRenderWindowInteractor.cxx \
 		SVTK_SpaceMouse.cxx \
 		SVTK_Selector.cxx
 
-LIB_MOC = 	SVTK_RenderWindowInteractor.h \
-		SVTK_InteractorStyle.h \
-		SVTK_View.h \
+LIB_MOC = 	SVTK_GenericRenderWindowInteractor.h \
+		SVTK_RenderWindowInteractor.h \
+		SVTK_ViewModelBase.h \
+		SVTK_ViewManager.h \
 		SVTK_ViewWindow.h \
 		SVTK_ViewModel.h \
-		SVTK_ViewManager.h \
-		SVTK_ViewModelBase.h
+		SVTK_View.h
 
 LIB_CLIENT_IDL = SALOMEDS.idl \
+		 SALOMEDS_Attributes.idl \
 		 SALOME_Exception.idl \
 		 SALOME_ModuleCatalog.idl \
 		 SALOME_GenericObj.idl
 
+BIN = SVTK
+
 CPPFLAGS+=$(QT_INCLUDES) $(OCC_INCLUDES) $(VTK_INCLUDES) $(BOOST_CPPFLAGS) -I$(KERNEL_ROOT_DIR)/include/salome
 
 LDFLAGS+=$(QT_MT_LIBS) $(OCC_LIBS) $(VTK_LIBS) -L$(KERNEL_ROOT_DIR)/lib/salome
-LIBS+= -lsuit -lCAM -lSalomeObject -lSalomePrs -lVTKViewer -lOpUtil
+LIBS+= -lsuit -lCAM -lSalomeObject -lSalomePrs -lVTKViewer -lOpUtil -lToolsGUI -lSalomeDS
 
 @CONCLUDE@

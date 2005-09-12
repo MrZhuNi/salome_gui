@@ -208,6 +208,16 @@ SALOME_Actor
   theRenderer->RemoveActor( myOutlineActor );
 }
 
+void
+SALOME_Actor
+::AddToInteractor(vtkRenderWindowInteractor* theInteractor)
+{}
+
+void
+SALOME_Actor
+::RemoveFromInteractor(vtkRenderWindowInteractor* theInteractor)
+{}
+
 
 //----------------------------------------------------------------------------
 void

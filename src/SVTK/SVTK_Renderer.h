@@ -21,8 +21,8 @@
 //
 //
 //
-//  File   : VTKViewer_RenderWindow.h
-//  Author : Nicolas REJNERI
+//  File   : 
+//  Author : 
 //  Module : SALOME
 //  $Header$
 
@@ -31,33 +31,106 @@
 
 #include "SVTK.h"
 
+#include <vtkObject.h>
 #include <vtkSmartPointer.h>
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-#include <vtkOpenGLRenderer.h>
-#define SVTK_RENDERER_SUPERCLASS vtkOpenGLRenderer
-#else
-#include <vtkMesaRenderer.h>
-#define SVTK_RENDERER_SUPERCLASS vtkMesaRenderer
-#endif
-
+class vtkRenderer;
 class vtkCallbackCommand;
+class vtkRenderWindowInteractor;
 
 class VTKViewer_Trihedron;
 class VTKViewer_Transform;
 class SVTK_CubeAxesActor2D;
 class VTKViewer_Actor;
 
-class SVTK_EXPORT SVTK_Renderer : public SVTK_RENDERER_SUPERCLASS
+class SVTK_EXPORT SVTK_Renderer : public vtkObject
 {
+ public:
+  vtkTypeMacro(SVTK_Renderer,vtkObject);
+  static SVTK_Renderer* New();
+
+  //----------------------------------------------------------------------------
+  vtkRenderer* 
+  GetDevice();
+
+  virtual
+  void 
+  SetInteractor(vtkRenderWindowInteractor* theInteractor);
+
+  //----------------------------------------------------------------------------
+  virtual
+  void 
+  AddActor(VTKViewer_Actor* theActor);
+
+  virtual
+  void 
+  RemoveActor(VTKViewer_Actor* theActor);
+
+  VTKViewer_Transform* 
+  GetTransform();
+
+  virtual
+  void
+  SetScale( double theScale[3] );
+
+  void
+  GetScale( double theScale[3] );
+
+  //----------------------------------------------------------------------------
+  void
+  AdjustActors();
+
+  void
+  SetTrihedronSize(int theSize);
+ 
+  int  
+  GetTrihedronSize() const;
+
+  //----------------------------------------------------------------------------
+  VTKViewer_Trihedron* 
+  GetTrihedron();
+
+  bool 
+  IsTrihedronDisplayed();
+
+  void 
+  OnViewTrihedron(); 
+
+  void 
+  OnAdjustTrihedron();
+
+  //----------------------------------------------------------------------------
+  SVTK_CubeAxesActor2D* 
+  GetCubeAxes();
+
+  bool 
+  IsCubeAxesDisplayed();
+
+  void 
+  OnViewCubeAxes();
+
+  void 
+  OnAdjustCubeAxes();
+
+  //----------------------------------------------------------------------------
+  void OnFitAll();
+  void OnResetView();     
+  void OnResetClippingRange();
+
+  void OnFrontView(); 
+  void OnBackView(); 
+  void OnTopView();
+  void OnBottomView();
+  void OnRightView(); 
+  void OnLeftView();     
+
  protected:
   SVTK_Renderer();
   ~SVTK_Renderer();
 
-  vtkSmartPointer<VTKViewer_Transform> myTransform;
-  vtkSmartPointer<SVTK_CubeAxesActor2D> myCubeAxes;
-  vtkSmartPointer<VTKViewer_Trihedron> myTrihedron;  
-  int myTrihedronSize;
+  virtual
+  bool
+  OnAdjustActors();
 
   // Priority at which events are processed
   float myPriority;
@@ -72,43 +145,14 @@ class SVTK_EXPORT SVTK_Renderer : public SVTK_RENDERER_SUPERCLASS
                             void* clientdata, 
                             void* calldata);
   
- public:
-  vtkTypeMacro(SVTK_Renderer,SVTK_RENDERER_SUPERCLASS);
-  static SVTK_Renderer* New();
+  vtkSmartPointer<vtkRenderer> myDevice;
+  vtkRenderWindowInteractor* myInteractor;
 
-  VTKViewer_Trihedron* GetTrihedron();
-  SVTK_CubeAxesActor2D* GetCubeAxes();
-
-  bool isTrihedronDisplayed();
-  bool isCubeAxesDisplayed();
-
-  int  GetTrihedronSize() const;
-  void SetTrihedronSize(int theSize);
-  void AdjustTrihedrons(bool theIsForced);
-
-  void onViewTrihedron(); 
-  void onViewCubeAxes();
-
-  void onAdjustTrihedron();
-  void onAdjustCubeAxes();
-
-  VTKViewer_Transform* GetTransform();
-  void SetScale( double theScale[3] );
-  void GetScale( double theScale[3] );
-
-  void AddActor(VTKViewer_Actor* theActor);
-  void RemoveActor(VTKViewer_Actor* theActor);
-
-  void onFitAll();
-  void onResetView();     
-  void onResetClippingRange();
-
-  void onFrontView(); 
-  void onBackView(); 
-  void onTopView();
-  void onBottomView();
-  void onRightView(); 
-  void onLeftView();     
+  vtkSmartPointer<VTKViewer_Transform> myTransform;
+  vtkSmartPointer<SVTK_CubeAxesActor2D> myCubeAxes;
+  vtkSmartPointer<VTKViewer_Trihedron> myTrihedron;  
+  int myTrihedronSize;
+  float myBndBox[6];
 };
 
 #endif

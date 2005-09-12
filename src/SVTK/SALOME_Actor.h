@@ -52,6 +52,8 @@ class vtkPolyDataMapper;
 class vtkOutlineSource;
 class vtkRenderer;
 class vtkInteractorStyle;
+class vtkRenderWindowInteractor;
+
 class VTKViewer_Transform;
 class VTKViewer_GeometryFilter;
 class VTKViewer_TransformFilter;
@@ -320,6 +322,7 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   void
   SetVisibility( int );
 
+  //----------------------------------------------------------------------------
   virtual
   void
   AddToRender( vtkRenderer* ); 
@@ -328,7 +331,15 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   void
   RemoveFromRender( vtkRenderer* );
 
-  
+  virtual
+  void
+  AddToInteractor(vtkRenderWindowInteractor* theInteractor);
+
+  virtual
+  void
+  RemoveFromInteractor(vtkRenderWindowInteractor* theInteractor);
+
+  //----------------------------------------------------------------------------
   virtual
   bool
   PreHighlight(	SVTK_Selector*, 

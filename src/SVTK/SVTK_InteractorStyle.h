@@ -31,27 +31,22 @@
 
 #include "SVTK.h"
 
+#include "SVTK_SelectionEvent.h"
+
 #include <vtkInteractorStyle.h>
 #include <vtkSmartPointer.h>
 
-class vtkCell;
-class vtkRenderWindowInteractor;
-
-#include <qobject.h>
 #include <qcursor.h>
 #include <qevent.h>
 
 #include <map>
 
-#include "SVTK_SelectionEvent.h"
-
+class vtkCell;
 class vtkPicker;
 class VTKViewer_RectPicker;
 
-class SALOME_Actor;
-class SVTK_Viewer;
 class SVTK_Selector;
-class SVTK_ViewWindow;
+class SVTK_GenericRenderWindowInteractor;
 
 #define VTK_INTERACTOR_STYLE_CAMERA_NONE    0
 #define VTK_INTERACTOR_STYLE_CAMERA_ROTATE  1
@@ -62,12 +57,8 @@ class SVTK_ViewWindow;
 #define VTK_INTERACTOR_STYLE_CAMERA_SELECT     6
 #define VTK_INTERACTOR_STYLE_CAMERA_GLOBAL_PAN 7
 
-class SVTK_EXPORT SVTK_InteractorStyle : 
-  public QObject,
-  public vtkInteractorStyle
+class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
 {
-  Q_OBJECT;
-
  public:
   // Description:
   // This class must be supplied with a vtkRenderWindowInteractor wrapper or
@@ -75,11 +66,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   // programmers.
   static SVTK_InteractorStyle *New();
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
-
-  void SetSelector( SVTK_Selector* theSelector );
-  SVTK_Selector* GetSelector();
-
-  void SetRenderWidget(QWidget* theRenderWidget);
 
   virtual int GetState();
 
@@ -103,20 +89,15 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   virtual void OnRightButtonDown();
   virtual void OnRightButtonUp();
 
-  void
-  IncrementalPan( const int incrX, const int incrY );
-
-  void
-  IncrementalZoom( const int incr );
-
-  void
-  IncrementalRotate( const int incrX, const int incrY );
-
  protected:
   SVTK_InteractorStyle();
   ~SVTK_InteractorStyle();
-  SVTK_InteractorStyle(const SVTK_InteractorStyle&) {};
-  void operator=(const SVTK_InteractorStyle&) {};
+
+  QWidget*
+  GetRenderWidget();
+
+  SVTK_Selector* 
+  GetSelector();
 
   // Generic event bindings must be overridden in subclasses
   virtual void OnMouseMove  (int ctrl, int shift, int x, int y);
@@ -135,6 +116,15 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   void Place(const int theX, const int theY);
   void TranslateView(int toX, int toY, int fromX, int fromY);
 
+  void
+  IncrementalPan( const int incrX, const int incrY );
+
+  void
+  IncrementalZoom( const int incr );
+
+  void
+  IncrementalRotate( const int incrX, const int incrY );
+
   // custom event handling function (to handle 3d space mouse events)
   static void ProcessEvents( vtkObject* object, unsigned long event,
 			     void* clientData, void* callData );
@@ -144,7 +134,6 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   double myScale;
 
  public:
-  bool eventFilter(QObject* object, QEvent* event);
   void startZoom();
   void startPan();
   void startGlobalPan();
@@ -192,6 +181,7 @@ class SVTK_EXPORT SVTK_InteractorStyle :
   
   QWidget*                  myRenderWidget;
   vtkSmartPointer<SVTK_Selector> mySelector;
+  vtkSmartPointer<SVTK_GenericRenderWindowInteractor> myInteractor;
 
   vtkSmartPointer<vtkPicker> myPicker;
   vtkSmartPointer<VTKViewer_RectPicker> myRectPicker;

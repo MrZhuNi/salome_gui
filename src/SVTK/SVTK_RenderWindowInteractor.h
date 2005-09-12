@@ -21,8 +21,8 @@
 //
 //
 //
-//  File   : SVTK_RenderWindowInteractor.h
-//  Author : Nicolas REJNERI
+//  File   : 
+//  Author : 
 //  Module : SALOME
 //  $Header$
 
@@ -32,62 +32,20 @@
 #include "SVTK.h"
 #include "SVTK_Selection.h"
 
-#include "SALOME_InteractiveObject.hxx"
+#include <qwidget.h>
+#include <qvaluestack.h>
 
 #include <vtkSmartPointer.h>
-#include <vtkGenericRenderWindowInteractor.h>
 
-#include <qvaluestack.h>
-#include <qwidget.h>
-
-class QTimer;
-
-class vtkCallbackCommand;
-class vtkActorCollection;
 class vtkGenericRenderWindowInteractor;
+class vtkInteractorStyle;
+class vtkCallbackCommand;
+class vtkRenderWindow;
+class vtkRenderer;
+class vtkObject;
 
-class SALOME_Actor;
 class SVTK_Selector;
 class SVTK_Renderer;
-class SVTK_InteractorStyle;
-
-// ------------------------------------------------------------
-// :TRICKY: Fri Apr 21 22:19:27 2000 Pagey
-// The Signal/Slot mechanism used by Qt requires that QObject 
-// appear as the first class when using multiple inheritance. 
-// Hence the order of the two classes QObject and vtkRenderWindowInteractor
-// matters here. Be careful not to change it by accident. 
-// ------------------------------------------------------------
-class SVTK_EXPORT QtRenderWindowInteractor: 
- public QObject,
- public vtkGenericRenderWindowInteractor
-{
-  Q_OBJECT;
-
- public:
-  static QtRenderWindowInteractor* New();
-  vtkTypeMacro(QtRenderWindowInteractor,vtkGenericRenderWindowInteractor);
-
-  virtual
-  int
-  CreateTimer( int ) ; 
-
-  virtual
-  int
-  DestroyTimer() ; 
-
- protected slots:
-  virtual
-  void
-  OnTimeOut();
-
- protected:
-  QtRenderWindowInteractor();
-  ~QtRenderWindowInteractor();
-
-  QTimer* myTimer ;
-};
-
 
 // ------------------------------------------------------------
 class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
@@ -100,8 +58,11 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
 
   ~QVTK_RenderWindowInteractor();
 
-  vtkRenderWindowInteractor* 
+  vtkGenericRenderWindowInteractor* 
   GetDevice();
+
+  void
+  SetDevice(vtkGenericRenderWindowInteractor* theDevice);
 
   void
   SetRenderWindow(vtkRenderWindow *theRenderWindow);
@@ -138,7 +99,7 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
 
   virtual bool x11Event( XEvent *e );
 
-  vtkSmartPointer<vtkGenericRenderWindowInteractor> myInteractor;
+  vtkSmartPointer<vtkGenericRenderWindowInteractor> myDevice;
 };
 
 
@@ -167,11 +128,11 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   getRenderer();
 
   //----------------------------------------------------------------------------
-  SVTK_InteractorStyle* 
+  vtkInteractorStyle* 
   GetInteractorStyle();
 
   void
-  PushInteractorStyle(SVTK_InteractorStyle* theStyle);
+  PushInteractorStyle(vtkInteractorStyle* theStyle);
 
   void
   PopInteractorStyle();
@@ -219,7 +180,7 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   virtual void contextMenuEvent( QContextMenuEvent * e );
 
   void
-  InitInteractorStyle(SVTK_InteractorStyle* theStyle);
+  InitInteractorStyle(vtkInteractorStyle* theStyle);
 
   // Main process VTK event method
   static
@@ -240,7 +201,7 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   vtkSmartPointer<SVTK_Renderer> myRenderer;
   vtkSmartPointer<vtkRenderWindow> myRenderWindow;
 
-  typedef vtkSmartPointer<SVTK_InteractorStyle> PInteractorStyle;
+  typedef vtkSmartPointer<vtkInteractorStyle> PInteractorStyle;
   QValueStack<PInteractorStyle> myInteractorStyles;
 };
 

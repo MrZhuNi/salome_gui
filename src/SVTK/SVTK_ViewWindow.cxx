@@ -41,7 +41,9 @@
 //----------------------------------------------------------------------------
 SVTK_ViewWindow
 ::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
-  SUIT_ViewWindow(theDesktop)
+  SUIT_ViewWindow(theDesktop),
+  myMainWindow(NULL),
+  myView(NULL)
 {}
 
 void
@@ -359,7 +361,7 @@ void
 SVTK_ViewWindow
 ::AdjustTrihedrons(const bool theIsForcedUpdate)
 {
-  myMainWindow->AdjustTrihedrons( theIsForcedUpdate );
+  myMainWindow->AdjustActors();
 }
 
 //----------------------------------------------------------------------------

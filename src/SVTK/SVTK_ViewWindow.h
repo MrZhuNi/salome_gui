@@ -96,18 +96,37 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   void Repaint() { Repaint(true); }
 
   //apply existing transformation on adding SALOME_Actor
-  void SetScale( double theScale[3] );
-  void GetScale( double theScale[3] );
-  void AddActor( VTKViewer_Actor*, bool update = false );
-  void RemoveActor(VTKViewer_Actor*, bool update = false);
+  virtual
+  void 
+  SetScale( double theScale[3] );
+
+  virtual
+  void
+  GetScale( double theScale[3] );
+
+  virtual
+  void
+  AddActor(VTKViewer_Actor* theActor,
+	   bool theIsUpdate = false);
+
+  virtual
+  void
+  RemoveActor(VTKViewer_Actor* theActor,
+	      bool theIsUpdate = false);
 
   void AdjustTrihedrons( const bool forced );
 
-  VTKViewer_Trihedron*  GetTrihedron();
-  SVTK_CubeAxesActor2D* GetCubeAxes();
+  VTKViewer_Trihedron*  
+  GetTrihedron();
 
-  int  GetTrihedronSize() const;
-  void SetTrihedronSize( const int );
+  SVTK_CubeAxesActor2D* 
+  GetCubeAxes();
+
+  int  
+  GetTrihedronSize() const;
+
+  void 
+  SetTrihedronSize( const int );
 
   void SetSelectionProp(const double& theRed = 1, 
 			const double& theGreen = 1,
@@ -129,8 +148,14 @@ public slots:
   void onBottomView();
   void onRightView(); 
   void onLeftView();     
-  void onResetView();     
-  void onFitAll();
+
+  virtual
+  void
+  onResetView();     
+
+  virtual
+  void 
+  onFitAll();
 
   void onViewTrihedron(); 
   void onViewCubeAxes();
