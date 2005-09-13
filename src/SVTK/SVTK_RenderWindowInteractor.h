@@ -32,10 +32,9 @@
 #include "SVTK.h"
 #include "SVTK_Selection.h"
 
-#include <qwidget.h>
-#include <qvaluestack.h>
-
 #include <vtkSmartPointer.h>
+#include <qwidget.h>
+#include <stack>
 
 class vtkGenericRenderWindowInteractor;
 class vtkInteractorStyle;
@@ -202,7 +201,8 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   vtkSmartPointer<vtkRenderWindow> myRenderWindow;
 
   typedef vtkSmartPointer<vtkInteractorStyle> PInteractorStyle;
-  QValueStack<PInteractorStyle> myInteractorStyles;
+  typedef std::stack<PInteractorStyle> TInteractorStyles;
+  TInteractorStyles myInteractorStyles;
 };
 
 

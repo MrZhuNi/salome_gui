@@ -21,8 +21,8 @@
 //
 //
 //
-//  File   : VTKViewer_RenderWindowInteractor.cxx
-//  Author : Nicolas REJNERI
+//  File   : 
+//  Author : 
 //  Module : SALOME
 //  $Header$
 
@@ -405,6 +405,19 @@ SVTK_RenderWindowInteractor
 ::~SVTK_RenderWindowInteractor() 
 {
   if(MYDEBUG) INFOS("~SVTK_RenderWindowInteractor() - "<<this);
+
+  // Sequence of the destruction call are fixed and should be changed.
+  // vtkRenderWindow instance should be destroyed after all vtkRenderer's
+  GetDevice()->SetInteractorStyle(NULL); 
+  while(!myInteractorStyles.empty()){
+    const PInteractorStyle& aStyle = myInteractorStyles.top();
+    aStyle->SetInteractor(NULL);
+    myInteractorStyles.pop();
+  }
+
+  SetRenderer(NULL);
+
+  GetDevice()->SetRenderWindow(NULL);
 }
 
 vtkRenderWindow* 
@@ -439,7 +452,7 @@ SVTK_RenderWindowInteractor
 
   if(GetRenderer()){
     myRenderWindow->RemoveRenderer(getRenderer());
-    theRenderer->SetInteractor(NULL);
+    myRenderer->SetInteractor(NULL);
   }
 
   myRenderer = theRenderer;
@@ -488,7 +501,7 @@ vtkInteractorStyle*
 SVTK_RenderWindowInteractor
 ::GetInteractorStyle()
 {
-  return myInteractorStyles.isEmpty() ? 0 : myInteractorStyles.top().GetPointer();
+  return myInteractorStyles.empty() ? 0 : myInteractorStyles.top().GetPointer();
 }
 
 
@@ -616,6 +629,10 @@ SVTK_RenderWindowInteractor
 ::wheelEvent( QWheelEvent* event )
 {
   QVTK_RenderWindowInteractor::wheelEvent(event);
+  if(event->delta() > 0)
+    GetDevice()->InvokeEvent(SVTK::ZoomInEvent,NULL);
+  else
+    GetDevice()->InvokeEvent(SVTK::ZoomOutEvent,NULL);
 #ifdef GENERATE_SUIT_EVENTS
   emit WheelMoved( event );
 #endif
