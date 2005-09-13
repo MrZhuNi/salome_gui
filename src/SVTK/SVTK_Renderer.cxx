@@ -68,6 +68,7 @@ SVTK_Renderer
 {
   if(MYDEBUG) INFOS("SVTK_Renderer() - "<<this);
 
+  myDevice->Delete();
   myTransform->Delete();
   myTrihedron->Delete();
   myCubeAxes->Delete();
