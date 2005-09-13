@@ -43,9 +43,6 @@
 
 #include "SALOME_Actor.h"
 
-#include "SALOME_ListIteratorOfListIO.hxx"
-#include "SALOME_ListIO.hxx"
-
 #include <vtkObjectFactory.h>
 #include <vtkMath.h>
 #include <vtkCommand.h>
@@ -381,13 +378,8 @@ SVTK_InteractorStyle
 ::OnLeftButtonDown(int ctrl, int shift, 
 		   int x, int y) 
 {
-  if (this->HasObserver(vtkCommand::LeftButtonPressEvent)) {
-    this->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-    return;
-  }
-
   this->FindPokedRenderer(x, y);
-  if (GetCurrentRenderer() == NULL)
+  if(GetCurrentRenderer() == NULL)
     return;
 
   myShiftState = shift;
@@ -433,14 +425,8 @@ SVTK_InteractorStyle
 		     int shift, 
 		     int x, int y) 
 {
-  if (this->HasObserver(vtkCommand::MiddleButtonPressEvent)) 
-    {
-      this->InvokeEvent(vtkCommand::MiddleButtonPressEvent,NULL);
-      return;
-    }
-
   this->FindPokedRenderer(x, y);
-  if (GetCurrentRenderer() == NULL)
+  if(GetCurrentRenderer() == NULL)
     return;
 
   myShiftState = shift;
@@ -484,14 +470,8 @@ SVTK_InteractorStyle
 		    int shift, 
 		    int x, int y) 
 {
-  if (this->HasObserver(vtkCommand::RightButtonPressEvent)) 
-    {
-      this->InvokeEvent(vtkCommand::RightButtonPressEvent,NULL);
-      return;
-    }
-
   this->FindPokedRenderer(x, y);
-  if (GetCurrentRenderer() == NULL)
+  if(GetCurrentRenderer() == NULL)
     return;
 
   myShiftState = shift;
