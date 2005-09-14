@@ -114,11 +114,16 @@ myPrefs( 0 )
   setDesktop( desk );
 
   SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
-  QPixmap aLogo = aResMgr->loadPixmap( "LightApp", tr( "APP_DEFAULT_ICO" ), false );
+  QPixmap aLogo = aResMgr->loadPixmap( "SalomeApp", tr( "APP_DEFAULT_ICO" ), false );
 
   desktop()->setIcon( aLogo );
   desktop()->setDockableMenuBar( true );
   desktop()->setDockableStatusBar( false );
+
+  // base logo (salome itself)
+  desktop()->addLogo( "_app_base",  aResMgr->loadPixmap( "SalomeApp", tr( "APP_BASE_LOGO" ), false ) );
+  // extra logo (salome-based application)
+  desktop()->addLogo( "_app_extra", aResMgr->loadPixmap( "SalomeApp", tr( "APP_EXTRA_LOGO" ), false ) );
 
   clearViewManagers();
 
@@ -152,7 +157,6 @@ myPrefs( 0 )
            this, SLOT( onDesktopClosing( SUIT_Desktop*, QCloseEvent* ) ) );
 
   connect( mySelMgr, SIGNAL( selectionChanged() ), this, SLOT( onSelection() ) );
-
 }
 
 /*!Destructor.
@@ -205,30 +209,37 @@ QString LightApp_Application::applicationVersion() const
 
   if ( _app_version.isEmpty() )
   {
-    QString path( ::getenv( "GUI_ROOT_DIR" ) );
-    if ( !path.isEmpty() )
-      path += QDir::separator();
-    path += QString( "bin/salome/VERSION" );
-
-    QFile vf( path );
-    if ( vf.open( IO_ReadOnly ) )
+    QString resVersion = tr( "APP_VERSION" );
+    if ( resVersion != "APP_VERSION" ) 
     {
-      QString line;
-      vf.readLine( line, 1024 );
-      vf.close();
+      _app_version = resVersion;
+    }
+    else 
+    {
+      QString path( ::getenv( "GUI_ROOT_DIR" ) );
+      if ( !path.isEmpty() )
+        path += QDir::separator();
+      path += QString( "bin/salome/VERSION" );
 
-      if ( !line.isEmpty() )
+      QFile vf( path );
+      if ( vf.open( IO_ReadOnly ) )
       {
-	while ( !line.isEmpty() && line.at( line.length() - 1 ) == QChar( '\n' ) )
-	  line.remove( line.length() - 1, 1 );
-
-	int idx = line.findRev( ":" );
-	if ( idx != -1 )
-	  _app_version = line.mid( idx + 1 ).stripWhiteSpace();
+        QString line;
+	vf.readLine( line, 1024 );
+	vf.close();
+	
+	if ( !line.isEmpty() )
+        {
+	  while ( !line.isEmpty() && line.at( line.length() - 1 ) == QChar( '\n' ) )
+	    line.remove( line.length() - 1, 1 );
+	  
+	  int idx = line.findRev( ":" );
+	  if ( idx != -1 )
+	    _app_version = line.mid( idx + 1 ).stripWhiteSpace(); 
+        }
       }
     }
   }
-
   return _app_version;
 }
 
@@ -257,7 +268,7 @@ bool LightApp_Application::activateModule( const QString& modName )
   if ( actName == modName )
     return true;
 
-  putInfo( tr( "ACTIVATING_MODULE" ).arg( modName ) );
+  putInfo( tr( "ACTIVATING_MODULE" ).arg( modName ) );  
 
   saveWindowsGeometry();
 
@@ -265,7 +276,7 @@ bool LightApp_Application::activateModule( const QString& modName )
 
   updateModuleActions();
 
-  putInfo( "" );
+  putInfo( "" );  
 
   if ( !status )
     return false;
