@@ -68,6 +68,8 @@ public:
 
   LightApp_Preferences*               preferences() const;
 
+  virtual QString                     getFileFilter() const;
+
   virtual QString                     getFileName( bool open, const QString& initial, const QString& filters, 
 						   const QString& caption, QWidget* parent );
   virtual QString                     getDirectory( const QString& initial, const QString& caption, QWidget* parent );

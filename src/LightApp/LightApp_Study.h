@@ -39,10 +39,10 @@ public:
   /** @name methods to be used by  modules*/
   //@{
   virtual std::vector<std::string> GetListOfFiles () const;
-  virtual void                     SetListOfFiles (const std::vector<std::string> theListOfFiles);
+  virtual void        SetListOfFiles (const std::vector<std::string> theListOfFiles);
 
   virtual std::string GetTmpDir (const char* theURL,
-                                  const bool  isMultiFile);
+                                 const bool  isMultiFile);
 
   virtual void        RemoveTemporaryFiles (const bool isMultiFile) const;
   //@}

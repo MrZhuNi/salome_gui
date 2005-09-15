@@ -120,11 +120,6 @@ myPrefs( 0 )
   desktop()->setDockableMenuBar( true );
   desktop()->setDockableStatusBar( false );
 
-  // base logo (salome itself)
-  desktop()->addLogo( "_app_base",  aResMgr->loadPixmap( "SalomeApp", tr( "APP_BASE_LOGO" ), false ) );
-  // extra logo (salome-based application)
-  desktop()->addLogo( "_app_extra", aResMgr->loadPixmap( "SalomeApp", tr( "APP_EXTRA_LOGO" ), false ) );
-
   clearViewManagers();
 
   mySelMgr = new LightApp_SelectionMgr( this );
@@ -209,37 +204,30 @@ QString LightApp_Application::applicationVersion() const
 
   if ( _app_version.isEmpty() )
   {
-    QString resVersion = tr( "APP_VERSION" );
-    if ( resVersion != "APP_VERSION" ) 
-    {
-      _app_version = resVersion;
-    }
-    else 
-    {
-      QString path( ::getenv( "GUI_ROOT_DIR" ) );
-      if ( !path.isEmpty() )
-        path += QDir::separator();
-      path += QString( "bin/salome/VERSION" );
+    QString path( ::getenv( "GUI_ROOT_DIR" ) );
+    if ( !path.isEmpty() )
+      path += QDir::separator();
+    path += QString( "bin/salome/VERSION" );
 
-      QFile vf( path );
-      if ( vf.open( IO_ReadOnly ) )
+    QFile vf( path );
+    if ( vf.open( IO_ReadOnly ) )
+    {
+      QString line;
+      vf.readLine( line, 1024 );
+      vf.close();
+
+      if ( !line.isEmpty() )
       {
-        QString line;
-	vf.readLine( line, 1024 );
-	vf.close();
-	
-	if ( !line.isEmpty() )
-        {
-	  while ( !line.isEmpty() && line.at( line.length() - 1 ) == QChar( '\n' ) )
-	    line.remove( line.length() - 1, 1 );
-	  
-	  int idx = line.findRev( ":" );
-	  if ( idx != -1 )
-	    _app_version = line.mid( idx + 1 ).stripWhiteSpace(); 
-        }
+	while ( !line.isEmpty() && line.at( line.length() - 1 ) == QChar( '\n' ) )
+	  line.remove( line.length() - 1, 1 );
+
+	int idx = line.findRev( ":" );
+	if ( idx != -1 )
+	  _app_version = line.mid( idx + 1 ).stripWhiteSpace();
       }
     }
   }
+
   return _app_version;
 }
 
@@ -946,6 +934,14 @@ void LightApp_Application::onDesktopActivated()
   LightApp_Module* aModule = dynamic_cast<LightApp_Module*>(activeModule());
   if(aModule)
     aModule->studyActivated();
+}
+
+/*!Gets file filter.
+ *\retval QString "(*.hdf)"
+ */
+QString LightApp_Application::getFileFilter() const
+{
+  return "(*.hdf)";
 }
 
 /*!*/

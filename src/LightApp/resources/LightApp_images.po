@@ -23,5 +23,8 @@ msgstr "icon_about.png"
 msgid "APP_DEFAULT_ICO"
 msgstr "icon_default.png"
 
+msgid "ICON_SELECT"
+msgstr "icon_select.png"
+
 msgid "APP_LOGO_ICO"
 msgstr "icon_applogo.png"

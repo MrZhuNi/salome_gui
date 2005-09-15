@@ -37,13 +37,14 @@ public:
   virtual bool                        isModified() const;
   virtual bool                        isSaved()  const;
 
+  LightApp_Module*                    getModule() const;
+
 signals:
   void                                opened();
   void                                saved();
   void                                closed();
 
 protected:
-  LightApp_Module*                    getModule() const;
   LightApp_Study*                     getStudy() const;
 
 };

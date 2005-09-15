@@ -12,10 +12,21 @@
 #include "LightApp_Study.h"
 #include "LightApp_Preferences.h"
 #include "LightApp_Selection.h"
+#include "LightApp_Operation.h"
+#include "LightApp_SwitchOp.h"
+#include "LightApp_UpdateFlags.h"
 
+#include "SUIT_Operation.h"
 #include <SUIT_Study.h>
 #include <SUIT_DataObject.h>
 #include <SUIT_ResourceMgr.h>
+
+#include <SVTK_ViewWindow.h>
+#include <OCCViewer_ViewWindow.h>
+#include <OCCViewer_ViewPort3d.h>
+#include <GLViewer_ViewFrame.h>
+#include <GLViewer_ViewPort.h>
+#include <Plot2d_ViewWindow.h>
 
 #include <OB_Browser.h>
 
@@ -28,13 +39,16 @@
 /*!Constructor.*/
 LightApp_Module::LightApp_Module( const QString& name )
 : CAM_Module( name ),
-myPopupMgr( 0 )
+  myPopupMgr( 0 ),
+  mySwitchOp( 0 )
 {
 }
 
 /*!Destructor.*/
 LightApp_Module::~LightApp_Module()
 {
+  if ( mySwitchOp )
+    delete mySwitchOp;
 }
 
 /*!Initialize module.*/
@@ -89,12 +103,18 @@ bool LightApp_Module::activateModule( SUIT_Study* study )
   if ( res && application() && application()->resourceMgr() )
     application()->resourceMgr()->raiseTranslators( name() );
 
+  if ( mySwitchOp == 0 )
+    mySwitchOp = new LightApp_SwitchOp( this );
+
   return res;
 }
 
 /*!Deactivate module.*/
 bool LightApp_Module::deactivateModule( SUIT_Study* )
 {
+  delete mySwitchOp;
+  mySwitchOp = 0;
+
   return true;
 }
 
@@ -117,6 +137,55 @@ void LightApp_Module::preferencesChanged( const QString&, const QString& )
 LightApp_Application* LightApp_Module::getApp() const
 {
   return (LightApp_Application*)application();
+}
+
+/*!
+ * \brief Update something in accordance with update flags
+  * \param theFlags - update flags
+*
+* Update viewer or/and object browser etc. in accordance with update flags ( see
+* LightApp_UpdateFlags enumeration ). Derived modules can redefine this method for their
+* own purposes
+*/
+void LightApp_Module::update( const int theFlags )
+{
+  if ( theFlags & UF_Model )
+  {
+    if( CAM_DataModel* aDataModel = dataModel() )
+      if( LightApp_DataModel* aModel = dynamic_cast<LightApp_DataModel*>( aDataModel ) ) {
+        LightApp_Study* aStudy = dynamic_cast<LightApp_Study*>( getApp()->activeStudy() );
+        if (aStudy)
+          aModel->update( 0, aStudy );
+      }
+  }
+  if ( theFlags & UF_ObjBrowser )
+    getApp()->objectBrowser()->updateTree( 0 );
+  if ( theFlags & UF_Controls )
+    updateControls();
+  if ( theFlags & UF_Viewer )
+  {
+    if ( SUIT_ViewManager* viewMgr = getApp()->activeViewManager() )
+      if ( SUIT_ViewWindow* viewWnd = viewMgr->getActiveView() )
+      {
+        if ( viewWnd->inherits( "SVTK_ViewWindow" ) )
+          ( (SVTK_ViewWindow*)viewWnd )->Repaint();
+        else if ( viewWnd->inherits( "OCCViewer_ViewWindow" ) )
+          ( (OCCViewer_ViewWindow*)viewWnd )->getViewPort()->onUpdate();
+        else if ( viewWnd->inherits( "Plot2d_ViewWindow" ) )
+          ( (Plot2d_ViewWindow*)viewWnd )->getViewFrame()->Repaint();
+        else if ( viewWnd->inherits( "GLViewer_ViewFrame" ) )
+          ( (GLViewer_ViewFrame*)viewWnd )->getViewPort()->onUpdate();
+      }
+  }
+}
+/*!
+ * \brief Updates controls
+*
+* Updates (i.e. disable/enable) controls states (menus, tool bars etc.). This method is
+* called from update( UF_Controls ). You may redefine it in concrete module.
+*/
+void LightApp_Module::updateControls()
+{
 }
 
 /*!Create new instance of data model and return it.*/
@@ -203,4 +272,83 @@ void LightApp_Module::setPreferenceProperty( const int id, const QString& prop, 
   LightApp_Preferences* pref = preferences();
   if ( pref )
     pref->setItemProperty( id, prop, var );
+}
+
+/*!
+ * \brief Starts operation with given identifier
+  * \param id - identifier of operation to be started
+*
+* Module stores operations in map. This method starts operation by id.
+* If operation isn't in map, then it will be created by createOperation method
+* and will be inserted to map
+*/
+void LightApp_Module::startOperation( const int id )
+{
+  LightApp_Operation* op = 0;
+  if( myOperations.contains( id ) )
+    op = myOperations[ id ];
+  else
+  {
+    op = createOperation( id );
+    if( op )
+    {
+      myOperations.insert( id, op );
+      op->setModule( this );
+      connect( op, SIGNAL( stopped( SUIT_Operation* ) ), this, SLOT( onOperationStopped( SUIT_Operation* ) ) );
+      connect( op, SIGNAL( destroyed() ), this, SLOT( onOperationDestroyed() ) );
+    }
+  }
+
+  if( op )
+    op->start();
+}
+
+/*!
+ * \brief Creates operation with given identifier
+  * \param id - identifier of operation to be started
+  * \return Pointer on created operation or NULL if operation is not created
+*
+* Creates operation with given id. You should not call this method, it will be called
+* automatically from startOperation. You may redefine this method in concrete module to
+* create operations. 
+*/
+LightApp_Operation* LightApp_Module::createOperation( const int /*id*/ ) const
+{
+  return 0;
+}
+
+/*!
+ * \brief Virtual protected slot called when operation stopped
+  * \param theOp - stopped operation
+*
+* Virtual protected slot called when operation stopped. Redefine this slot if you want to
+* perform actions after stopping operation
+*/
+void LightApp_Module::onOperationStopped( SUIT_Operation* /*theOp*/ )
+{
+}
+
+/*!
+ * \brief Virtual protected slot called when operation destroyed
+  * \param theOp - destroyed operation
+*
+* Virtual protected slot called when operation destroyed. Redefine this slot if you want to
+* perform actions after destroying operation. Base implementation removes pointer on
+* destroyed operation from the map of operations
+*/
+void LightApp_Module::onOperationDestroyed()
+{
+  const QObject* s = sender();
+  if( s && s->inherits( "LightApp_Operation" ) )
+  {
+    const LightApp_Operation* op = ( LightApp_Operation* )s;
+    MapOfOperation::const_iterator anIt = myOperations.begin(),
+                                   aLast = myOperations.end();
+    for( ; anIt!=aLast; anIt++ )
+      if( anIt.data()==op )
+      {
+        myOperations.remove( anIt.key() );
+        break;
+      }
+  }
 }
