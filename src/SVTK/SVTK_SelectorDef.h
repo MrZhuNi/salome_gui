@@ -51,10 +51,10 @@ public:
 
   virtual
   void 
-  SetSelectionMode( int theMode );
+  SetSelectionMode(Selection_Mode theMode);
 
   virtual
-  int
+  Selection_Mode
   SelectionMode() const { return mySelectionMode; }
 
   virtual

@@ -881,19 +881,25 @@ SVTK_View
 {
   vtkActorCollection* anActors = getRenderer()->GetActors();
   anActors->InitTraversal();
-  while( vtkActor* anActor = anActors->GetNextActor() )
-  {
-    if( SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast( anActor ) )
-    {
-      aSActor->getPointProperty()->SetColor( theRed, theGreen, theBlue );
-      aSActor->getPointProperty()->SetLineWidth( theWidth );
+  while(vtkActor* anActor = anActors->GetNextActor()){
+    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(anActor))
+      aSActor->SetSelectionProp(theRed,theGreen,theBlue,theWidth);
+  }
+}
 
-      aSActor->getCellProperty()->SetColor( theRed, theGreen, theBlue );
-      aSActor->getCellProperty()->SetLineWidth( theWidth );
-
-      aSActor->getEdgeProperty()->SetColor( theRed, theGreen, theBlue );
-      aSActor->getEdgeProperty()->SetLineWidth( theWidth );
-    }
+//----------------------------------------------------------------------------
+void
+SVTK_View
+::SetPreselectionProp(const double& theRed, 
+		      const double& theGreen, 
+		      const double& theBlue, 
+		      const int& theWidth) 
+{
+  vtkActorCollection* anActors = getRenderer()->GetActors();
+  anActors->InitTraversal();
+  while(vtkActor* anActor = anActors->GetNextActor()){
+    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(anActor))
+      aSActor->SetPreselectionProp(theRed,theGreen,theBlue,theWidth);
   }
 }
 
@@ -901,18 +907,13 @@ SVTK_View
 void
 SVTK_View
 ::SetSelectionTolerance(const double& theTolNodes, 
-			const double& theTolItems)
+			const double& theTolCell)
 {
   vtkActorCollection* anActors = getRenderer()->GetActors();
   anActors->InitTraversal();
-  while( vtkActor* anActor = anActors->GetNextActor() )
-  {
-    if( SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast( anActor ) )
-    {
-      aSActor->getPointPicker()->SetTolerance( theTolNodes );
-      aSActor->getCellPicker()->SetTolerance( theTolItems );
-      aSActor->getCellRectPicker()->SetTolerance( theTolItems );
-    }
+  while(vtkActor* anActor = anActors->GetNextActor()){
+    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(anActor))
+      aSActor->SetSelectionTolerance(theTolNodes,theTolCell);
   }
 }
 

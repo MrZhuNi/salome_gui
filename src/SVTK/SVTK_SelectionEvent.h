@@ -33,7 +33,7 @@
 
 struct SVTK_SelectionEvent
 {
-  int mySelectionMode;
+  Selection_Mode mySelectionMode;
   int myX;
   int myY;
   int myLastX;

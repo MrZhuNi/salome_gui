@@ -295,6 +295,7 @@ public:
   rename(const Handle(SALOME_InteractiveObject)& IObject, 
 	 const QString& newName);
   
+  //----------------------------------------------------------------------------
   // Displaymode management
   int 
   GetDisplayMode();
@@ -335,6 +336,7 @@ public:
   QColor
   GetColor(const Handle(SALOME_InteractiveObject)& theIObject);
 
+  //----------------------------------------------------------------------------
   // Erase Display functions
   void
   EraseAll();
@@ -371,11 +373,18 @@ public:
   Remove(SALOME_Actor* SActor, 
 	 bool updateViewer = true);
 
+  //----------------------------------------------------------------------------
   void
   SetSelectionProp(const double& theRed = 1, 
 		   const double& theGreen = 1,
 		   const double& theBlue = 0, 
 		   const int& theWidth = 5);
+
+  void
+  SetPreselectionProp(const double& theRed = 0, 
+		      const double& theGreen = 1,
+		      const double& theBlue = 1, 
+		      const int& theWidth = 5);
 
   void
   SetSelectionTolerance(const double& theTolNodes = 0.025, 

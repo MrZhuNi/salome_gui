@@ -551,14 +551,14 @@ SVTK_RenderWindowInteractor
 //----------------------------------------------------------------
 void
 SVTK_RenderWindowInteractor
-::SetSelectionMode(int theMode)
+::SetSelectionMode(Selection_Mode theMode)
 {
   mySelector->SetSelectionMode(theMode);
 }
 
 
 //----------------------------------------------------------------
-int
+Selection_Mode
 SVTK_RenderWindowInteractor
 ::SelectionMode() const
 {

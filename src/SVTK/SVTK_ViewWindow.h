@@ -177,6 +177,12 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 
   virtual
   void
+  SetPreselectionProp(const double& theRed = 0, 
+		      const double& theGreen = 1,
+		      const double& theBlue = 1, 
+		      const int& theWidth = 5);
+  virtual
+  void
   SetSelectionTolerance(const double& theTolNodes = 0.025, 
 			const double& theTolCell = 0.001);
   

@@ -76,7 +76,7 @@ SVTK_SelectorDef
 //----------------------------------------------------------------------------
 void 
 SVTK_SelectorDef
-::SetSelectionMode(int theMode)
+::SetSelectionMode(Selection_Mode theMode)
 {
   mySelectionMode = theMode;
 }

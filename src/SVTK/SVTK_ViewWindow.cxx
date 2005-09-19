@@ -497,6 +497,17 @@ SVTK_ViewWindow
 //----------------------------------------------------------------------------
 void
 SVTK_ViewWindow
+::SetPreselectionProp(const double& theRed, 
+		      const double& theGreen, 
+		      const double& theBlue, 
+		      const int& theWidth) 
+{
+  myView->SetPreselectionProp(theRed,theGreen,theBlue,theWidth);
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_ViewWindow
 ::SetSelectionTolerance(const double& theTolNodes, 
 			const double& theTolItems)
 {

@@ -40,6 +40,8 @@
 #include <string>
 #include <vector>
 
+#include <vtkSmartPointer.h>
+
 class vtkCell;
 class vtkPicker;
 class vtkPointPicker;
@@ -64,6 +66,7 @@ class SVTK_Actor;
 class SVTK_InteractorStyle;
 
 extern int SALOME_POINT_SIZE;
+extern int SALOME_LINE_WIDTH;
 
 class SALOME_Actor;
 
@@ -74,69 +77,51 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   
   vtkTypeMacro(SALOME_Actor,vtkLODActor);
 
+  //----------------------------------------------------------------------------
   virtual
   Standard_Boolean 
-  hasIO() 
-  { 
-    return !myIO.IsNull(); 
-  }
+  hasIO();
 
   virtual 
   const Handle(SALOME_InteractiveObject)& 
-  getIO()
-  { 
-    return myIO; 
-  } 
+  getIO(); 
 
   virtual
   void
-  setIO(const Handle(SALOME_InteractiveObject)& theIO) 
-  { 
-    myIO = theIO; 
-  }
+  setIO(const Handle(SALOME_InteractiveObject)& theIO);
 
   virtual 
   const char* 
-  getName() 
-  { 
-    return myName.c_str(); 
-  }
+  getName();
 
   virtual
   void
-  setName(const char* theName)
-  {
-    if(hasIO())	
-      myIO->setName(theName);
-    myName = theName;
-  }
+  setName(const char* theName);
 
+  //----------------------------------------------------------------------------
   // To generate highlight automaticaly
   virtual
   bool
-  hasHighlight() 
-  { 
-    return false; 
-  } 
+  hasHighlight(); 
 
   virtual
   void
-  highlight( bool theHighlight, int theSelectionMode );
+  highlight(bool theHighlight, 
+	    Selection_Mode theSelectionMode);
 
   virtual
   void
-  highlight(bool theHighlight) 
-  { 
-    highlight(theHighlight,ActorSelection); 
-  }  
+  highlight(bool theHighlight);  
 
   virtual
   bool
-  isHighlighted() 
-  { 
-    return myIsHighlighted; 
-  }
+  isHighlighted();
 
+  virtual
+  void
+  SetPreSelected(bool thePreselect = false);
+
+  //----------------------------------------------------------------------------
   virtual
   void
   SetOpacity(float theOpacity);
@@ -155,33 +140,13 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 
   virtual
   void
-  SetColor(const float theRGB[3])
-  { 
-    SetColor(theRGB[0],theRGB[1],theRGB[2]);
-  }
+  SetColor(const float theRGB[3]);
 
-  vtkSetObjectMacro(PreviewProperty,vtkProperty);
-
-  virtual
-  void
-  SetPreSelected(bool thePreselect = false) 
-  { 
-    myIsPreselected = thePreselect;
-  }
-
-  // Used to obtain all dependent actors
-  virtual
-  void
-  GetChildActors(vtkActorCollection*) 
-  {};
-  
+  //----------------------------------------------------------------------------
   // For selection mapping purpose
   virtual
   int 
-  GetNodeObjId(int theVtkID)
-  { 
-    return theVtkID;
-  }
+  GetNodeObjId(int theVtkID);
 
   virtual
   float*
@@ -189,15 +154,13 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 
   virtual 
   int
-  GetElemObjId(int theVtkID) 
-  { 
-    return theVtkID;
-  }
+  GetElemObjId(int theVtkID);
 
   virtual
   vtkCell* 
   GetElemCell(int theObjID);
 
+  //----------------------------------------------------------------------------
   virtual
   int
   GetObjDimension( const int theObjId );
@@ -218,6 +181,7 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   unsigned long int
   GetMTime();
 
+  //----------------------------------------------------------------------------
   virtual
   void
   SetRepresentation(int theMode);
@@ -234,6 +198,7 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   void
   setDisplayMode(int theMode);
 
+  //----------------------------------------------------------------------------
   // Infinitive means actor without size (point for example),
   // which is not taken into account in calculation of boundaries of the scene
   void
@@ -250,6 +215,24 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   void
   GetBounds(float bounds[6]);
 
+  //----------------------------------------------------------------------------
+  virtual
+  bool
+  IsSetCamera() const;
+
+  virtual
+  bool
+  IsResizable() const;
+
+  virtual
+  void
+  SetSize( const float );
+
+  virtual
+  void 
+  SetCamera( vtkCamera* );
+
+  //----------------------------------------------------------------------------
   void
   SetResolveCoincidentTopology(bool theIsResolve);
 
@@ -263,61 +246,28 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   void
   Render(vtkRenderer *, vtkMapper *);
 
+  //----------------------------------------------------------------------------
   virtual
   float
-  GetShrinkFactor() 
-  { 
-    return 1.0;
-  }
+  GetShrinkFactor();
 
   virtual
   bool
-  IsShrunkable() 
-  { 
-    return false;
-  }
+  IsShrunkable();
 
   virtual
   bool
-  IsShrunk() 
-  { 
-    return false;
-  }
+  IsShrunk();
 
   virtual
   void
-  SetShrink() 
-  {} 
+  SetShrink();
 
   virtual
   void
-  UnShrink() 
-  {}
+  UnShrink();
 
-  virtual
-  bool
-  IsSetCamera() const 
-  { 
-    return false; 
-  }
-
-  virtual
-  bool
-  IsResizable() const 
-  { 
-    return false; 
-  }
-
-  virtual
-  void
-  SetSize( const float ) 
-  {}
-
-  virtual
-  void 
-  SetCamera( vtkCamera* ) 
-  {}
-
+  //----------------------------------------------------------------------------
   virtual
   void
   SetVisibility( int );
@@ -334,6 +284,11 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   vtkRenderer*
   GetRenderer();
 
+  // Used to obtain all dependent actors
+  virtual
+  void
+  GetChildActors(vtkActorCollection*);
+  
   //----------------------------------------------------------------------------
   virtual
   void
@@ -346,55 +301,41 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   //----------------------------------------------------------------------------
   virtual
   bool
-  PreHighlight(	SVTK_Selector*, 
-		vtkInteractorStyle*, 
-		SVTK_SelectionEvent, 
-		bool );
+  PreHighlight(SVTK_Selector* theSelector, 
+	       vtkInteractorStyle* theInteractorStyle, 
+	       const SVTK_SelectionEvent& theSelectionEvent,
+	       bool theIsHighlight);
 
   virtual 
   bool
-  Highlight( SVTK_Selector*, 
-	     vtkInteractorStyle*,
-	     SVTK_SelectionEvent, 
-	     bool );
+  Highlight(SVTK_Selector* theSelector, 
+	    vtkInteractorStyle* theInteractorStyle, 
+	    const SVTK_SelectionEvent& theSelectionEvent,
+	    bool theIsHighlight);
 
-  vtkProperty* 
-  getPointProperty()
-  { 
-    return myPointProperty; 
-  }
+  virtual
+  void
+  SetSelectionProp(const double& theRed = 1, 
+		   const double& theGreen = 1,
+		   const double& theBlue = 0, 
+		   const int& theWidth = 5);
 
-  vtkProperty* 
-  getCellProperty()
-  { 
-    return myCellProperty; 
-  }
+  virtual
+  void
+  SetPreselectionProp(const double& theRed = 0, 
+		      const double& theGreen = 1,
+		      const double& theBlue = 1, 
+		      const int& theWidth = 5);
 
-  vtkProperty* 
-  getEdgeProperty()
-  { 
-    return myEdgeProperty; 
-  }
+  virtual
+  void
+  SetSelectionTolerance(const double& theTolNodes = 0.025, 
+			const double& theTolCell = 0.001);
 
-  vtkPointPicker* 
-  getPointPicker() 
-  { 
-    return myPointPicker; 
-  }
-
-  vtkCellPicker* 
-  getCellPicker() 
-  { 
-    return myCellPicker; 
-  }
-
-  VTKViewer_CellRectPicker* 
-  getCellRectPicker() 
-  { 
-    return myCellRectPicker; 
-  }
+  vtkSetObjectMacro(PreviewProperty,vtkProperty);
 
  protected:
+  //----------------------------------------------------------------------------
   vtkRenderWindowInteractor* myInteractor;
   vtkRenderer* myRenderer;
 
@@ -429,22 +370,21 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   ~SALOME_Actor();
 
  protected:
-  int GetEdgeId( vtkPicker*, int );
+  //----------------------------------------------------------------------------
+  // Highlight/ Prehighlight devices
+  vtkSmartPointer<vtkPointPicker> myPointPicker;
+  vtkSmartPointer<vtkCellPicker> myCellPicker;
+  vtkSmartPointer<VTKViewer_CellRectPicker> myCellRectPicker;
 
-  vtkProperty* myPointProperty;
-  vtkProperty* myCellProperty;
-  vtkProperty* myEdgeProperty;
+  vtkSmartPointer<vtkProperty> myPreHighlightProperty;
+  vtkSmartPointer<SVTK_Actor> myPreHighlightActor;
 
-  vtkPointPicker* myPointPicker;
-  vtkCellPicker* myCellPicker;
-  VTKViewer_CellRectPicker* myCellRectPicker;
+  vtkSmartPointer<vtkProperty> myHighlightProperty;
+  vtkSmartPointer<SVTK_Actor> myHighlightActor;
 
-  SVTK_Actor* myPreHighlightActor;
-  SVTK_Actor* myHighlightActor;
-
-  vtkActor* myOutlineActor;
-  vtkOutlineSource* myOutline;
-  vtkPolyDataMapper* myOutlineMapper;
+  vtkSmartPointer<vtkActor> myOutlineActor;
+  vtkSmartPointer<vtkOutlineSource> myOutline;
+  vtkSmartPointer<vtkPolyDataMapper> myOutlineMapper;
 };
 
 #endif // SALOME_ACTOR_H

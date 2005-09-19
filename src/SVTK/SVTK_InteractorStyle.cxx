@@ -874,7 +874,7 @@ SVTK_InteractorStyle
   // VSV: LOD actor activisation
   //  rwi->GetRenderWindow()->SetDesiredUpdateRate(rwi->GetStillUpdateRate());
 
-  int aSelectionMode = GetSelector()->SelectionMode();
+  Selection_Mode aSelectionMode = GetSelector()->SelectionMode();
 
   switch (State) {
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
