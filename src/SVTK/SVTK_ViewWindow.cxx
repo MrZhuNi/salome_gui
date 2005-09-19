@@ -248,6 +248,14 @@ SVTK_ViewWindow
 }
 
 //----------------------------------------------------------------
+bool
+SVTK_ViewWindow
+::isVisible( const Handle(SALOME_InteractiveObject)& theIO ) 
+{
+  return myView->isVisible( theIO );
+}
+
+//----------------------------------------------------------------
 void
 SVTK_ViewWindow
 ::Display(const Handle(SALOME_InteractiveObject)& theIO,
