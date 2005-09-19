@@ -95,7 +95,8 @@ RESOURCES_FILES = icon_about.png \
 		  icon_module.png \
 		  icon_module_big.png \
 		  icon_select.png \
-		  LightApp.ini
+		  LightApp.ini \
+		  LightApp.xml
 
 CPPFLAGS+=$(PYTHON_INCLUDES) $(QT_INCLUDES) $(QWT_INCLUDES) $(OCC_INCLUDES) $(VTK_INCLUDES)
 
