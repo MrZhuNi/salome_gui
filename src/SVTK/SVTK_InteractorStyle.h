@@ -70,7 +70,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   virtual int GetState();
 
   SVTK_SelectionEvent GetSelectionEvent();
-
+  SVTK_SelectionEvent GetSelectionEventFlipY();
   // redefined in order to add an observer (callback) for custorm event (space mouse event)
   virtual void SetInteractor( vtkRenderWindowInteractor* );
 
@@ -180,7 +180,6 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   // [5] Dominant Combined Switch
   
   QWidget*                  myRenderWidget;
-  vtkSmartPointer<SVTK_Selector> mySelector;
   vtkSmartPointer<SVTK_GenericRenderWindowInteractor> myInteractor;
 
   vtkSmartPointer<vtkPicker> myPicker;

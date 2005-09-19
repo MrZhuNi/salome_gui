@@ -171,7 +171,24 @@ SVTK_InteractorStyle
 
   return aSelectionEvent;
 }
+//----------------------------------------------------------------------------
+SVTK_SelectionEvent
+SVTK_InteractorStyle
+::GetSelectionEventFlipY()
+{
+  SVTK_SelectionEvent aSelectionEvent;
+  int x, y;
 
+  //GetEventPosition( this->Interactor, x, y );
+  Interactor->GetEventPosition(x, y);
+  aSelectionEvent.myX = x;
+  aSelectionEvent.myY = y;
+  aSelectionEvent.myIsCtrl = Interactor->GetControlKey();
+  aSelectionEvent.myIsShift = Interactor->GetShiftKey();
+  aSelectionEvent.mySelectionMode = GetSelector()->SelectionMode();
+
+  return aSelectionEvent;
+}
 //----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
@@ -895,7 +912,7 @@ SVTK_InteractorStyle
 
           myPicker->Pick(x, y, 0.0, GetCurrentRenderer());
 	  if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
-	    SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
+	    SVTK_SelectionEvent aSelectionEvent = GetSelectionEventFlipY();
 	    aSelectionEvent.mySelectionMode = aSelectionMode;
 	    aSelectionEvent.myIsRectangle = false;
 	    aSActor->Highlight( GetSelector(), this, aSelectionEvent, true );
@@ -929,13 +946,11 @@ SVTK_InteractorStyle
 
 	  myRectPicker->SetTolerance(0.001);
 	  myRectPicker->Pick(x1, y1, 0.0, x2, y2, 0.0, GetCurrentRenderer());
-
-	  SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
+	  SVTK_SelectionEvent aSelectionEvent = GetSelectionEventFlipY();
 	  aSelectionEvent.mySelectionMode = aSelectionMode;
 	  aSelectionEvent.myIsRectangle = true;
 	  aSelectionEvent.myLastX = x1;
 	  aSelectionEvent.myLastY = y1;
-	  
 	  vtkActorCollection* aListActors = myRectPicker->GetActors();
 	  aListActors->InitTraversal();
 	  while(vtkActor* aActor = aListActors->GetNextActor()){
