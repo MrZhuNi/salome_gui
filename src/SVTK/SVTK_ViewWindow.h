@@ -65,37 +65,73 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   Selection_Mode
   SelectionMode() const;
   
+  virtual
   void
   SetSelectionMode(Selection_Mode theMode);
 
-  void setBackgroundColor( const QColor& );
-  QColor backgroundColor() const;
+  virtual
+  void
+  setBackgroundColor( const QColor& );
 
-  bool isTrihedronDisplayed();
-  bool isCubeAxesDisplayed();
+  QColor
+  backgroundColor() const;
+
+  bool
+  isTrihedronDisplayed();
+
+  bool
+  isCubeAxesDisplayed();
  
   /*  interactive object management */
-  void highlight( const Handle(SALOME_InteractiveObject)& IObject, 
-                  bool highlight, bool immediatly = true );
-  void unHighlightAll();
-  bool isInViewer( const Handle(SALOME_InteractiveObject)& IObject );
-  bool isVisible( const Handle(SALOME_InteractiveObject)& IObject );
+  virtual
+  void
+  highlight(const Handle(SALOME_InteractiveObject)& theIO, 
+	    bool theIsHighlight = true, 
+	    bool theIsUpdate = true);
+  virtual
+  void
+  unHighlightAll();
+
+  bool
+  isInViewer(const Handle(SALOME_InteractiveObject)& theIObject);
+
+  bool
+  isVisible(const Handle(SALOME_InteractiveObject)& theIObject);
 
   /* selection */
-  Handle(SALOME_InteractiveObject) FindIObject(const char* Entry);
+  //----------------------------------------------------------------------------
+  Handle(SALOME_InteractiveObject) 
+  FindIObject(const char* theEntry);
   
   /* display */		
-  void Display( const Handle(SALOME_InteractiveObject)& IObject,
-                bool immediatly = true );
-  void DisplayOnly( const Handle(SALOME_InteractiveObject)& IObject );
-  void Erase( const Handle(SALOME_InteractiveObject)& IObject,
-              bool immediatly = true );
-  void DisplayAll();
-  void EraseAll();
-  void Repaint( bool theUpdateTrihedron );
-  void Repaint() { Repaint(true); }
+  //----------------------------------------------------------------------------
+  virtual
+  void
+  Display(const Handle(SALOME_InteractiveObject)& theIObject,
+	  bool theImmediatly = true);
 
-  //apply existing transformation on adding SALOME_Actor
+  virtual
+  void
+  DisplayOnly(const Handle(SALOME_InteractiveObject)& theIObject);
+
+  virtual
+  void
+  Erase(const Handle(SALOME_InteractiveObject)& theIObject,
+	bool theImmediatly = true);
+
+  virtual
+  void 
+  DisplayAll();
+
+  virtual
+  void 
+  EraseAll();
+
+  virtual
+  void
+  Repaint(bool theUpdateTrihedron = true);
+
+  //----------------------------------------------------------------------------
   virtual
   void 
   SetScale( double theScale[3] );
@@ -114,7 +150,10 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   RemoveActor(VTKViewer_Actor* theActor,
 	      bool theIsUpdate = false);
 
-  void AdjustTrihedrons( const bool forced );
+  //----------------------------------------------------------------------------
+  virtual
+  void
+  AdjustTrihedrons(const bool theIsForced);
 
   VTKViewer_Trihedron*  
   GetTrihedron();
@@ -125,29 +164,54 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   int  
   GetTrihedronSize() const;
 
+  virtual
   void 
   SetTrihedronSize( const int );
 
-  void SetSelectionProp(const double& theRed = 1, 
-			const double& theGreen = 1,
-			const double& theBlue = 0, 
-			const int& theWidth = 5);
-  void SetSelectionTolerance(const double& theTolNodes = 0.025, 
-			     const double& theTolCell = 0.001);
+  virtual
+  void
+  SetSelectionProp(const double& theRed = 1, 
+		   const double& theGreen = 1,
+		   const double& theBlue = 0, 
+		   const int& theWidth = 5);
 
+  virtual
+  void
+  SetSelectionTolerance(const double& theTolNodes = 0.025, 
+			const double& theTolCell = 0.001);
+  
 public slots:
-  void onSelectionChanged();
+  virtual
+  void
+  onSelectionChanged();
 
 signals:
  void selectionChanged();
 
 public slots:
-  void onFrontView(); 
-  void onBackView(); 
-  void onTopView();
-  void onBottomView();
-  void onRightView(); 
-  void onLeftView();     
+  virtual
+  void
+  onFrontView(); 
+
+  virtual
+  void
+  onBackView(); 
+
+  virtual
+  void
+  onTopView();
+
+  virtual
+  void
+  onBottomView();
+
+  virtual
+  void 
+  onRightView(); 
+
+  virtual
+  void 
+  onLeftView();     
 
   virtual
   void
@@ -157,11 +221,21 @@ public slots:
   void 
   onFitAll();
 
-  void onViewTrihedron(); 
-  void onViewCubeAxes();
+  virtual
+  void
+  onViewTrihedron(); 
 
-  void onAdjustTrihedron();
-  void onAdjustCubeAxes();
+  virtual
+  void
+  onViewCubeAxes();
+
+  virtual
+  void
+  onAdjustTrihedron();
+
+  virtual
+  void 
+  onAdjustCubeAxes();
 
 protected slots:
   void onKeyPressed(QKeyEvent* event);

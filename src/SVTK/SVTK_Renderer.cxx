@@ -166,7 +166,7 @@ SVTK_Renderer
 ::AddActor(VTKViewer_Actor* theActor)
 {
   if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor))
-    anActor->AddToInteractor(myInteractor);
+    anActor->SetInteractor(myInteractor);
   theActor->SetTransform(GetTransform());
   theActor->AddToRender(GetDevice());
   AdjustActors();
@@ -176,8 +176,6 @@ void
 SVTK_Renderer
 ::RemoveActor(VTKViewer_Actor* theActor)
 {
-  if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor))
-    anActor->RemoveFromInteractor(myInteractor);
   theActor->SetTransform(NULL);
   theActor->RemoveFromRender(GetDevice());
   AdjustActors();

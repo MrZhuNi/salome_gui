@@ -1091,13 +1091,14 @@ SVTK_View
 ::Display(SALOME_Actor* theActor, 
 	  bool theIsUpdate)
 {
-  GetRenderer()->AddActor(theActor);
+  if(!isInViewer(theActor->getIO()))
+    GetRenderer()->AddActor(theActor);
+
   theActor->SetVisibility(true);
 
   if(theIsUpdate)
     Repaint();
 }
-
 
 void
 SVTK_View
@@ -1112,6 +1113,15 @@ SVTK_View
   if(theIsUpdate)
     Repaint();
 }
+
+void
+SVTK_View
+::DisplayOnly(const Handle(SALOME_InteractiveObject)& theIObject)
+{
+  EraseAll();
+  Display(theIObject);
+}
+
 
 //----------------------------------------------------------------------------
 struct TRemoveAction

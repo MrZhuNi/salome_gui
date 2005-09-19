@@ -55,7 +55,9 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkOutlineSource.h>
+
 #include <vtkInteractorStyle.h>
+#include <vtkRenderWindowInteractor.h>
 
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
@@ -79,27 +81,24 @@ vtkStandardNewMacro(SALOME_Actor);
 
 //----------------------------------------------------------------------------
 SALOME_Actor
-::SALOME_Actor()
+::SALOME_Actor():
+  myRenderer(NULL),
+  myInteractor(NULL),
+  mySelectionMode(ActorSelection),
+  myIsHighlighted(false),
+  myIsPreselected(false),
+  myRepresentation(VTK_WIREFRAME),
+  myDisplayMode(0),
+  myProperty(vtkProperty::New()),
+  PreviewProperty(NULL),
+  myIsInfinite(false),
+  myIsResolveCoincidentTopology(true),
+  myStoreMapping(false),
+  myGeomFilter(VTKViewer_GeometryFilter::New()),
+  myTransformFilter(VTKViewer_TransformFilter::New())
 {
-  mySelectionMode = ActorSelection;
-  myIsHighlighted = myIsPreselected = false;
-
-  myRepresentation = 1;
-  myDisplayMode = myRepresentation - 1;
-
-  myProperty = vtkProperty::New();
-  PreviewProperty = NULL;
-
-  myIsInfinite = false;
-
-  myIsResolveCoincidentTopology = true;
-
   vtkMapper::GetResolveCoincidentTopologyPolygonOffsetParameters(myPolygonOffsetFactor,
 								 myPolygonOffsetUnits);
-  myStoreMapping = false;
-  myGeomFilter = VTKViewer_GeometryFilter::New();
-
-  myTransformFilter = VTKViewer_TransformFilter::New();
 
   for(int i = 0; i < 6; i++)
     myPassFilter.push_back(VTKViewer_PassThroughFilter::New());
@@ -188,9 +187,10 @@ void
 SALOME_Actor
 ::AddToRender(vtkRenderer* theRenderer)
 {
+  myRenderer = theRenderer;
+
   theRenderer->AddActor(this);
 
-  // from VISU
   theRenderer->AddActor( myPreHighlightActor );
   theRenderer->AddActor( myHighlightActor );
   theRenderer->AddActor( myOutlineActor );
@@ -202,21 +202,33 @@ SALOME_Actor
 {
   theRenderer->RemoveActor(this);
 
-  // from VISU
   theRenderer->RemoveActor( myPreHighlightActor );
   theRenderer->RemoveActor( myHighlightActor );
   theRenderer->RemoveActor( myOutlineActor );
 }
 
+vtkRenderer*
+SALOME_Actor
+::GetRenderer()
+{
+  return myRenderer;
+}
+
+
+//----------------------------------------------------------------------------
 void
 SALOME_Actor
-::AddToInteractor(vtkRenderWindowInteractor* theInteractor)
-{}
+::SetInteractor(vtkRenderWindowInteractor* theInteractor)
+{
+  myInteractor = theInteractor;
+}
 
 void
 SALOME_Actor
-::RemoveFromInteractor(vtkRenderWindowInteractor* theInteractor)
-{}
+::Update()
+{
+  myInteractor->CreateTimer(VTKI_TIMER_UPDATE);    
+}
 
 
 //----------------------------------------------------------------------------

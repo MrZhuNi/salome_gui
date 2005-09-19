@@ -325,19 +325,23 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   //----------------------------------------------------------------------------
   virtual
   void
-  AddToRender( vtkRenderer* ); 
+  AddToRender(vtkRenderer* theRendere); 
 
   virtual
   void
-  RemoveFromRender( vtkRenderer* );
+  RemoveFromRender(vtkRenderer* theRendere);
+
+  vtkRenderer*
+  GetRenderer();
+
+  //----------------------------------------------------------------------------
+  virtual
+  void
+  SetInteractor(vtkRenderWindowInteractor* theInteractor);
 
   virtual
   void
-  AddToInteractor(vtkRenderWindowInteractor* theInteractor);
-
-  virtual
-  void
-  RemoveFromInteractor(vtkRenderWindowInteractor* theInteractor);
+  Update();
 
   //----------------------------------------------------------------------------
   virtual
@@ -391,6 +395,9 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   }
 
  protected:
+  vtkRenderWindowInteractor* myInteractor;
+  vtkRenderer* myRenderer;
+
   bool myIsResolveCoincidentTopology;
   float myPolygonOffsetFactor;
   float myPolygonOffsetUnits;
@@ -401,7 +408,7 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   vtkProperty *PreviewProperty;
   bool myIsPreselected;
   bool myIsHighlighted;
-  int mySelectionMode;
+  Selection_Mode mySelectionMode;
 
   float myOpacity;
   int myDisplayMode;

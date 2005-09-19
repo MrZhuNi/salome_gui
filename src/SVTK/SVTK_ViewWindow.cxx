@@ -232,9 +232,9 @@ SVTK_ViewWindow
 //----------------------------------------------------------------
 void
 SVTK_ViewWindow
-::highlight( const Handle(SALOME_InteractiveObject)& theIO, 
-	     bool theIsHighlight, 
-	     bool theIsUpdate ) 
+::highlight(const Handle(SALOME_InteractiveObject)& theIO, 
+	    bool theIsHighlight, 
+	    bool theIsUpdate ) 
 {
   myView->highlight( theIO, theIsHighlight, theIsUpdate );
 }
@@ -248,11 +248,41 @@ SVTK_ViewWindow
 }
 
 //----------------------------------------------------------------
-bool
+void
 SVTK_ViewWindow
-::isVisible( const Handle(SALOME_InteractiveObject)& theIO ) 
+::Display(const Handle(SALOME_InteractiveObject)& theIO,
+	  bool theImmediatly) 
 {
-  return myView->isVisible( theIO );
+  myView->Display(theIO,theImmediatly);
+}
+
+void
+SVTK_ViewWindow
+::Erase(const Handle(SALOME_InteractiveObject)& theIO,
+	  bool theImmediatly) 
+{
+  myView->Erase(theIO,theImmediatly);
+}
+
+void
+SVTK_ViewWindow
+::DisplayOnly(const Handle(SALOME_InteractiveObject)& theIO) 
+{
+  myView->DisplayOnly(theIO);
+}
+
+void 
+SVTK_ViewWindow
+::DisplayAll() 
+{
+  myView->DisplayAll();
+}
+
+void 
+SVTK_ViewWindow
+::EraseAll() 
+{
+  myView->EraseAll();
 }
 
 //----------------------------------------------------------------------------

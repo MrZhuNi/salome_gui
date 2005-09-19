@@ -26,6 +26,27 @@
 //  Module :
 //  $Header$
 
+#include "SVTK.h"
+#include "SVTK_Prs.h"
+#include "SVTK_Actor.h"
+#include "SALOME_Actor.h"
+#include "SVTK_CubeAxesActor2D.h"
+#include "SVTK_Functor.h"
+#include "SVTK_View.h"
+#include "SVTK_ViewManager.h"
+#include "SVTK_ViewModel.h"
+#include "SVTK_ViewWindow.h"
+#include "SVTK_Renderer.h"
+#include "SVTK_InteractorStyle.h"
+#include "SVTK_RenderWindowInteractor.h"
+#include "SVTK_GenericRenderWindowInteractor.h"
+#include "SVTK_Selector.h"
+#include "SVTK_Selection.h"
+#include "SVTK_SelectionEvent.h"
+#include "SVTK_SpaceMouse.h"
+#include "SVTK_Event.h"
+#include "SVTK_ViewModelBase.h"
+
 int
 main(int argc, char** argv)
 {
