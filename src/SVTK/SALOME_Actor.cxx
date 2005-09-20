@@ -704,7 +704,7 @@ SALOME_Actor
 ::highlight(bool theHighlight, 
 	    Selection_Mode theSelectionMode)
 {
-  if(hasHighlight() && theSelectionMode == ActorSelection)
+  if(hasHighlight())
     highlight(theHighlight);
   else{
     myIsHighlighted = theHighlight; 
@@ -712,10 +712,11 @@ SALOME_Actor
     if( !GetVisibility() )
       return;
     
-    myOutline->SetBounds( GetBounds() );
-    myOutlineActor->SetVisibility( theHighlight );
-    
-    myHighlightActor->SetVisibility( theHighlight && theSelectionMode != ActorSelection );
+    if(theSelectionMode == ActorSelection){
+      myOutline->SetBounds( GetBounds() );
+      myOutlineActor->SetVisibility( theHighlight );
+    }else
+      myHighlightActor->SetVisibility( theHighlight );
   }
 }
 
@@ -724,11 +725,11 @@ void
 SALOME_Actor
 ::SetVisibility( int theVisibility )
 {
-  vtkProp::SetVisibility( theVisibility );
+  Superclass::SetVisibility( theVisibility );
 
-  myOutlineActor->SetVisibility( theVisibility && isHighlighted() );
-  myHighlightActor->SetVisibility( theVisibility && isHighlighted() );
-  myPreHighlightActor->SetVisibility( theVisibility && myIsPreselected );
+  myOutlineActor->SetVisibility( theVisibility && isHighlighted() && !hasHighlight() );
+  myHighlightActor->SetVisibility( theVisibility && isHighlighted() && !hasHighlight() );
+  myPreHighlightActor->SetVisibility( theVisibility && myIsPreselected && !hasHighlight() );
 }
 
 
@@ -861,6 +862,9 @@ SALOME_Actor
 	    SVTK_SelectionEvent* theSelectionEvent,
 	    bool theIsHighlight)
 {
+  myOutlineActor->SetVisibility( false );
+  myHighlightActor->SetVisibility( false );
+
   vtkRenderer *aRenderer = theInteractorStyle->GetCurrentRenderer();
   //
   int aSelectionMode = theSelectionEvent->mySelectionMode;
@@ -871,9 +875,8 @@ SALOME_Actor
   float y2 = theSelectionEvent->myLastY;
   float z2 = 0.0;
   bool isShift = theSelectionEvent->myIsShift;
-  bool isRectangle = theSelectionEvent->myIsRectangle;
 
-  if( !isRectangle )
+  if( !theSelectionEvent->myIsRectangle )
   {
     if( aSelectionMode == NodeSelection )
     {
@@ -965,9 +968,7 @@ SALOME_Actor
 	}
       }
     }
-  }
-  else if( isRectangle )
-  {
+  }else{
     if( aSelectionMode == NodeSelection && hasIO() && !myIO.IsNull() )
     {
       if( vtkDataSet* aDataSet = GetInput() )
