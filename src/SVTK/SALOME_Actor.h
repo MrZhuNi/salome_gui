@@ -303,14 +303,14 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   bool
   PreHighlight(SVTK_Selector* theSelector, 
 	       vtkInteractorStyle* theInteractorStyle, 
-	       const SVTK_SelectionEvent& theSelectionEvent,
+	       SVTK_SelectionEvent* theSelectionEvent,
 	       bool theIsHighlight);
 
   virtual 
   bool
   Highlight(SVTK_Selector* theSelector, 
 	    vtkInteractorStyle* theInteractorStyle, 
-	    const SVTK_SelectionEvent& theSelectionEvent,
+	    SVTK_SelectionEvent* theSelectionEvent,
 	    bool theIsHighlight);
 
   virtual

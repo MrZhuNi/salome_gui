@@ -733,21 +733,21 @@ bool
 SALOME_Actor
 ::PreHighlight(SVTK_Selector* theSelector,
 	       vtkInteractorStyle *theInteractorStyle, 
-	       const SVTK_SelectionEvent& theSelectionEvent,
+	       SVTK_SelectionEvent* theSelectionEvent,
 	       bool theIsHighlight)
 {
   vtkRenderer *aRenderer = theInteractorStyle->GetCurrentRenderer();
   //
   myPreHighlightActor->SetVisibility( false );
     
-  bool anIsSelectionModeChanged = (theSelectionEvent.mySelectionMode != mySelectionMode);
+  bool anIsSelectionModeChanged = (theSelectionEvent->mySelectionMode != mySelectionMode);
   if(!anIsSelectionModeChanged && mySelectionMode == ActorSelection)
     return false;
 
-  mySelectionMode = theSelectionEvent.mySelectionMode;
+  mySelectionMode = theSelectionEvent->mySelectionMode;
 
-  float x = theSelectionEvent.myX;
-  float y = theSelectionEvent.myY;
+  float x = theSelectionEvent->myX;
+  float y = theSelectionEvent->myY;
   float z = 0.0;
 
 
@@ -857,20 +857,20 @@ bool
 SALOME_Actor
 ::Highlight(SVTK_Selector* theSelector,
 	    vtkInteractorStyle *theInteractorStyle, 
-	    const SVTK_SelectionEvent& theSelectionEvent,
+	    SVTK_SelectionEvent* theSelectionEvent,
 	    bool theIsHighlight)
 {
   vtkRenderer *aRenderer = theInteractorStyle->GetCurrentRenderer();
   //
-  int aSelectionMode = theSelectionEvent.mySelectionMode;
-  float x1 = theSelectionEvent.myX;
-  float y1 = theSelectionEvent.myY;
+  int aSelectionMode = theSelectionEvent->mySelectionMode;
+  float x1 = theSelectionEvent->myX;
+  float y1 = theSelectionEvent->myY;
   float z1 = 0.0;
-  float x2 = theSelectionEvent.myLastX;
-  float y2 = theSelectionEvent.myLastY;
+  float x2 = theSelectionEvent->myLastX;
+  float y2 = theSelectionEvent->myLastY;
   float z2 = 0.0;
-  bool isShift = theSelectionEvent.myIsShift;
-  bool isRectangle = theSelectionEvent.myIsRectangle;
+  bool isShift = theSelectionEvent->myIsShift;
+  bool isRectangle = theSelectionEvent->myIsRectangle;
 
   if( !isRectangle )
   {

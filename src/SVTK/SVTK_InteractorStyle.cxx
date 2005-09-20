@@ -95,24 +95,25 @@ vtkStandardNewMacro(SVTK_InteractorStyle);
 //----------------------------------------------------------------------------
 
 SVTK_InteractorStyle
-::SVTK_InteractorStyle() 
+::SVTK_InteractorStyle():
+  mySelectionEvent(new SVTK_SelectionEvent()),
+  myRectPicker(VTKViewer_RectPicker::New()),
+  myPicker(vtkPicker::New())
 {
+  myRectPicker->Delete();
+  myPicker->Delete();
+
   if(MYDEBUG) INFOS("SVTK_InteractorStyle() - "<<this);
 
   this->MotionFactor = 10.0;
   this->State = VTK_INTERACTOR_STYLE_CAMERA_NONE;
   this->RadianToDegree = 180.0 / vtkMath::Pi();
   this->ForcedState = VTK_INTERACTOR_STYLE_CAMERA_NONE;
+
   loadCursors();
 
   // set custom event handling function (to handle 3d space mouse events)
   EventCallbackCommand->SetCallback( SVTK_InteractorStyle::ProcessEvents );
-
-  myPicker = vtkPicker::New();
-  myPicker->Delete();
-
-  myRectPicker = VTKViewer_RectPicker::New();
-  myRectPicker->Delete();
 
   // set default values of properties.  user may edit them in preferences.
   mySpeedIncrement = 10;
@@ -154,41 +155,41 @@ SVTK_InteractorStyle
 }
 
 //----------------------------------------------------------------------------
-SVTK_SelectionEvent
+SVTK_SelectionEvent*
 SVTK_InteractorStyle
 ::GetSelectionEvent()
 {
-  SVTK_SelectionEvent aSelectionEvent;
+  mySelectionEvent->mySelectionMode = GetSelector()->SelectionMode();
 
-  int x, y;
-  GetEventPosition( this->Interactor, x, y );
+  mySelectionEvent->myIsCtrl = Interactor->GetControlKey();
+  mySelectionEvent->myIsShift = Interactor->GetShiftKey();
 
-  aSelectionEvent.myX = x;
-  aSelectionEvent.myY = y;
-  aSelectionEvent.myIsCtrl = Interactor->GetControlKey();
-  aSelectionEvent.myIsShift = Interactor->GetShiftKey();
-  aSelectionEvent.mySelectionMode = GetSelector()->SelectionMode();
+  mySelectionEvent->myLastX = mySelectionEvent->myX;
+  mySelectionEvent->myLastY = mySelectionEvent->myY;
 
-  return aSelectionEvent;
+  GetEventPosition( this->Interactor, mySelectionEvent->myX, mySelectionEvent->myY );
+
+  return mySelectionEvent.get();
 }
+
 //----------------------------------------------------------------------------
-SVTK_SelectionEvent
+SVTK_SelectionEvent*
 SVTK_InteractorStyle
 ::GetSelectionEventFlipY()
 {
-  SVTK_SelectionEvent aSelectionEvent;
-  int x, y;
+  mySelectionEvent->mySelectionMode = GetSelector()->SelectionMode();
 
-  //GetEventPosition( this->Interactor, x, y );
-  Interactor->GetEventPosition(x, y);
-  aSelectionEvent.myX = x;
-  aSelectionEvent.myY = y;
-  aSelectionEvent.myIsCtrl = Interactor->GetControlKey();
-  aSelectionEvent.myIsShift = Interactor->GetShiftKey();
-  aSelectionEvent.mySelectionMode = GetSelector()->SelectionMode();
+  mySelectionEvent->myIsCtrl = Interactor->GetControlKey();
+  mySelectionEvent->myIsShift = Interactor->GetShiftKey();
 
-  return aSelectionEvent;
+  mySelectionEvent->myLastX = mySelectionEvent->myX;
+  mySelectionEvent->myLastY = mySelectionEvent->myY;
+
+  this->Interactor->GetEventPosition(mySelectionEvent->myX, mySelectionEvent->myY);
+
+  return mySelectionEvent.get();
 }
+
 //----------------------------------------------------------------------------
 void
 SVTK_InteractorStyle
@@ -874,27 +875,27 @@ SVTK_InteractorStyle
   // VSV: LOD actor activisation
   //  rwi->GetRenderWindow()->SetDesiredUpdateRate(rwi->GetStillUpdateRate());
 
-  Selection_Mode aSelectionMode = GetSelector()->SelectionMode();
+  SVTK_SelectionEvent* aSelectionEvent = GetSelectionEventFlipY();
 
   switch (State) {
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
     case VTK_INTERACTOR_STYLE_CAMERA_FIT:
     {
-      QPainter p(GetRenderWidget());
-      p.setPen(Qt::lightGray);
-      p.setRasterOp(Qt::XorROP);
-      QRect rect(myPoint, myOtherPoint);
-      p.drawRect(rect);
-      rect = rect.normalize();
+      QPainter aPainter(GetRenderWidget());
+      aPainter.setPen(Qt::lightGray);
+      aPainter.setRasterOp(Qt::XorROP);
+      QRect aRect(myPoint, myOtherPoint);
+      aPainter.drawRect(aRect);
+      aRect = aRect.normalize();
+
       if (State == VTK_INTERACTOR_STYLE_CAMERA_FIT) {
         // making fit rect opeation 
         int w, h;
         Interactor->GetSize(w, h);
-        int x1, y1, x2, y2;
-        x1 = rect.left(); 
-        y1 = h - rect.top() - 1;
-        x2 = rect.right(); 
-        y2 = h - rect.bottom() - 1;
+        int x1 = aRect.left(); 
+        int y1 = h - aRect.top() - 1;
+        int x2 = aRect.right(); 
+        int y2 = h - aRect.bottom() - 1;
         fitRect(x1, y1, x2, y2);
       }
       else {
@@ -902,19 +903,16 @@ SVTK_InteractorStyle
 				   VTK::THighlight<SALOME_Actor>(false));
         if (myPoint == myOtherPoint) {
 	  // process point selection
-          int w, h, x, y;
-          Interactor->GetSize(w, h);
-          x = myPoint.x(); 
-          y = h - myPoint.y() - 1;
-
-          this->FindPokedRenderer(x, y);
+          this->FindPokedRenderer(aSelectionEvent->myX, aSelectionEvent->myY);
 	  Interactor->StartPickCallback();
 
-          myPicker->Pick(x, y, 0.0, GetCurrentRenderer());
+          myPicker->Pick(aSelectionEvent->myX, 
+			 aSelectionEvent->myY, 
+			 0.0, 
+			 GetCurrentRenderer());
+
 	  if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
-	    SVTK_SelectionEvent aSelectionEvent = GetSelectionEventFlipY();
-	    aSelectionEvent.mySelectionMode = aSelectionMode;
-	    aSelectionEvent.myIsRectangle = false;
+	    aSelectionEvent->myIsRectangle = false;
 	    aSActor->Highlight( GetSelector(), this, aSelectionEvent, true );
 	  }
 	  else{
@@ -925,32 +923,20 @@ SVTK_InteractorStyle
           //processing rectangle selection
 	  Interactor->StartPickCallback();
 	  GetSelector()->StartPickCallback();
+	  aSelectionEvent->myIsRectangle = true;
 
-	  if (!myShiftState) {
-	    this->PropPicked = 0;
-	    this->HighlightProp( NULL );
+	  if(!myShiftState)
 	    GetSelector()->ClearIObjects();
-	  }
-
-	  // Compute bounds
-	  //	  vtkCamera *cam = this->CurrentRenderer->GetActiveCamera();
-	  QRect rect(myPoint, myOtherPoint);
-	  rect = rect.normalize();
-	  int w, h;
-	  Interactor->GetSize(w, h);
-	  int x1, y1, x2, y2;
-	  x1 = rect.left(); 
-	  y1 = h - rect.top() - 1;
-	  x2 = rect.right(); 
-	  y2 = h - rect.bottom() - 1;
 
 	  myRectPicker->SetTolerance(0.001);
-	  myRectPicker->Pick(x1, y1, 0.0, x2, y2, 0.0, GetCurrentRenderer());
-	  SVTK_SelectionEvent aSelectionEvent = GetSelectionEventFlipY();
-	  aSelectionEvent.mySelectionMode = aSelectionMode;
-	  aSelectionEvent.myIsRectangle = true;
-	  aSelectionEvent.myLastX = x1;
-	  aSelectionEvent.myLastY = y1;
+	  myRectPicker->Pick(aSelectionEvent->myLastX, 
+			     aSelectionEvent->myLastY, 
+			     0.0, 
+			     aSelectionEvent->myX, 
+			     aSelectionEvent->myY, 
+			     0.0, 
+			     GetCurrentRenderer());
+
 	  vtkActorCollection* aListActors = myRectPicker->GetActors();
 	  aListActors->InitTraversal();
 	  while(vtkActor* aActor = aListActors->GetNextActor()){
@@ -1048,20 +1034,17 @@ SVTK_InteractorStyle
 ::onCursorMove(QPoint mousePos) 
 {
   // processing highlighting
-  int w, h, x, y;
-  Interactor->GetSize(w, h);
-  x = mousePos.x(); y = h - mousePos.y() - 1;
-
-  this->FindPokedRenderer(x,y);
-
-  SVTK_SelectionEvent aSelectionEvent = GetSelectionEvent();
-  aSelectionEvent.myX = x;
-  aSelectionEvent.myY = y;
+  SVTK_SelectionEvent* aSelectionEvent = GetSelectionEventFlipY();
+  this->FindPokedRenderer(aSelectionEvent->myX,aSelectionEvent->myY);
 
   bool anIsChanged = false;
   SALOME_Actor* aLastActor = SALOME_Actor::SafeDownCast(myPicker->GetActor());
 
-  myPicker->Pick(x, y, 0.0, GetCurrentRenderer());
+  myPicker->Pick(aSelectionEvent->myX, 
+		 aSelectionEvent->myY, 
+		 0.0, 
+		 GetCurrentRenderer());
+
   if(SALOME_Actor* anActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
     anIsChanged |= anActor->PreHighlight( GetSelector(), this, aSelectionEvent, true );
     if(aLastActor && aLastActor != anActor) {

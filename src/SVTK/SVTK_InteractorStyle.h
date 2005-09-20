@@ -33,6 +33,8 @@
 
 #include "SVTK_SelectionEvent.h"
 
+#include <boost/shared_ptr.hpp>
+
 #include <vtkInteractorStyle.h>
 #include <vtkSmartPointer.h>
 
@@ -67,27 +69,66 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   static SVTK_InteractorStyle *New();
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
-  virtual int GetState();
+  virtual
+  int
+  GetState();
 
-  SVTK_SelectionEvent GetSelectionEvent();
-  SVTK_SelectionEvent GetSelectionEventFlipY();
+  typedef boost::shared_ptr<SVTK_SelectionEvent> PSelectionEvent;
+
+  virtual
+  SVTK_SelectionEvent*
+  GetSelectionEvent();
+
+  virtual
+  SVTK_SelectionEvent*
+  GetSelectionEventFlipY();
+
   // redefined in order to add an observer (callback) for custorm event (space mouse event)
-  virtual void SetInteractor( vtkRenderWindowInteractor* );
+  virtual
+  void
+  SetInteractor( vtkRenderWindowInteractor* );
 
-  virtual void Render();
+  virtual 
+  void
+  Render();
 
   // redefined in order to cach rendering
-  virtual void OnTimer();
+  virtual
+  void
+  OnTimer();
 
   // VTK events
-  virtual void OnConfigure();
-  virtual void OnMouseMove();
-  virtual void OnLeftButtonDown();
-  virtual void OnLeftButtonUp();
-  virtual void OnMiddleButtonDown();
-  virtual void OnMiddleButtonUp();
-  virtual void OnRightButtonDown();
-  virtual void OnRightButtonUp();
+  virtual
+  void
+  OnConfigure();
+
+  virtual 
+  void
+  OnMouseMove();
+
+  virtual
+  void
+  OnLeftButtonDown();
+
+  virtual
+  void
+  OnLeftButtonUp();
+
+  virtual
+  void
+  OnMiddleButtonDown();
+
+  virtual
+  void
+  OnMiddleButtonUp();
+
+  virtual
+  void
+  OnRightButtonDown();
+
+  virtual
+  void
+  OnRightButtonUp();
 
  protected:
   SVTK_InteractorStyle();
@@ -179,8 +220,10 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   // [4] Increase Gauss Point Magnification
   // [5] Dominant Combined Switch
   
-  QWidget*                  myRenderWidget;
+  QWidget* myRenderWidget;
   vtkSmartPointer<SVTK_GenericRenderWindowInteractor> myInteractor;
+
+  PSelectionEvent mySelectionEvent;
 
   vtkSmartPointer<vtkPicker> myPicker;
   vtkSmartPointer<VTKViewer_RectPicker> myRectPicker;
