@@ -116,8 +116,8 @@ SALOME_Actor
   mySelectionMode(ActorSelection),
   myIsHighlighted(false),
   myIsPreselected(false),
-  myRepresentation(VTK_WIREFRAME),
-  myDisplayMode(0),
+  myRepresentation(VTK_SURFACE),
+  myDisplayMode(1),
   myProperty(vtkProperty::New()),
   PreviewProperty(NULL),
   myIsInfinite(false),
@@ -704,15 +704,19 @@ SALOME_Actor
 ::highlight(bool theHighlight, 
 	    Selection_Mode theSelectionMode)
 {
-  myIsHighlighted = theHighlight; 
-
-  if( !GetVisibility() )
-    return;
-
-  myOutline->SetBounds( GetBounds() );
-  myOutlineActor->SetVisibility( theHighlight );
-
-  myHighlightActor->SetVisibility( theHighlight && theSelectionMode != ActorSelection );
+  if(hasHighlight() && theSelectionMode == ActorSelection)
+    highlight(theHighlight);
+  else{
+    myIsHighlighted = theHighlight; 
+    
+    if( !GetVisibility() )
+      return;
+    
+    myOutline->SetBounds( GetBounds() );
+    myOutlineActor->SetVisibility( theHighlight );
+    
+    myHighlightActor->SetVisibility( theHighlight && theSelectionMode != ActorSelection );
+  }
 }
 
 //----------------------------------------------------------------
