@@ -1092,9 +1092,7 @@ SVTK_View
 ::Display(SALOME_Actor* theActor, 
 	  bool theIsUpdate)
 {
-  if(!isInViewer(theActor->getIO()))
-    GetRenderer()->AddActor(theActor);
-
+  GetRenderer()->AddActor(theActor);
   theActor->SetVisibility(true);
 
   if(theIsUpdate)
