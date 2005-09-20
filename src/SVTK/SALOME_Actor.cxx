@@ -72,8 +72,8 @@ using namespace std;
   #endif
 #endif
 
-int SALOME_POINT_SIZE = 3;
-int SALOME_LINE_WIDTH = 2;
+int SALOME_POINT_SIZE = 5;
+int SALOME_LINE_WIDTH = 3;
 
 //----------------------------------------------------------------------------
 namespace
@@ -704,7 +704,7 @@ SALOME_Actor
 ::highlight(bool theHighlight, 
 	    Selection_Mode theSelectionMode)
 {
-  if(hasHighlight())
+  if(hasHighlight() && theSelectionMode == ActorSelection)
     highlight(theHighlight);
   else{
     myIsHighlighted = theHighlight; 
@@ -728,8 +728,8 @@ SALOME_Actor
   Superclass::SetVisibility( theVisibility );
 
   myOutlineActor->SetVisibility( theVisibility && isHighlighted() && !hasHighlight() );
-  myHighlightActor->SetVisibility( theVisibility && isHighlighted() && !hasHighlight() );
-  myPreHighlightActor->SetVisibility( theVisibility && myIsPreselected && !hasHighlight() );
+  myHighlightActor->SetVisibility( theVisibility && isHighlighted() );
+  myPreHighlightActor->SetVisibility( theVisibility && myIsPreselected );
 }
 
 
