@@ -1038,7 +1038,8 @@ SVTK_InteractorStyle
   this->FindPokedRenderer(aSelectionEvent->myX,aSelectionEvent->myY);
 
   bool anIsChanged = false;
-  SALOME_Actor* aLastActor = SALOME_Actor::SafeDownCast(myPicker->GetActor());
+  if(SALOME_Actor* aLastActor = SALOME_Actor::SafeDownCast(myPicker->GetActor()))
+    anIsChanged |= aLastActor->PreHighlight( GetSelector(), this, aSelectionEvent, false );
 
   myPicker->Pick(aSelectionEvent->myX, 
 		 aSelectionEvent->myY, 
@@ -1047,9 +1048,6 @@ SVTK_InteractorStyle
 
   if(SALOME_Actor* anActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
     anIsChanged |= anActor->PreHighlight( GetSelector(), this, aSelectionEvent, true );
-    if(aLastActor && aLastActor != anActor) {
-      aLastActor->PreHighlight( GetSelector(), this, aSelectionEvent, false );
-    }
   }
   
   if(anIsChanged)

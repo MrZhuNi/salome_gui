@@ -744,9 +744,7 @@ SALOME_Actor
   //
   myPreHighlightActor->SetVisibility( false );
     
-  bool anIsSelectionModeChanged = (theSelectionEvent->mySelectionMode != mySelectionMode);
-  if(!anIsSelectionModeChanged && mySelectionMode == ActorSelection)
-    return false;
+  bool anIsChanged = (mySelectionMode != theSelectionEvent->mySelectionMode);
 
   mySelectionMode = theSelectionEvent->mySelectionMode;
 
@@ -754,10 +752,9 @@ SALOME_Actor
   float y = theSelectionEvent->myY;
   float z = 0.0;
 
-
-  bool anIsChanged = false;
   if( !theIsHighlight )
   {
+    SetPreSelected( false );
     vtkActorCollection* theActors = aRenderer->GetActors();
     theActors->InitTraversal();
     while( vtkActor *ac = theActors->GetNextActor() )
@@ -765,7 +762,6 @@ SALOME_Actor
 	if( anActor->hasIO() && myIO->isSame( anActor->getIO() ) )
 	  anActor->SetPreSelected( false );
 
-    myIsPreselected = theIsHighlight;
     anIsChanged = true;
   }else{
     switch(mySelectionMode){
@@ -833,20 +829,21 @@ SALOME_Actor
     }
     default:
     {
-      myPreHighlightActor->SetVisibility( true );
-
       if( hasIO() && !theSelector->IsSelected( myIO ) )
       {
+	SetPreSelected( true );
+
 	vtkActorCollection* theActors = aRenderer->GetActors();
 	theActors->InitTraversal();
-	while( vtkActor *ac = theActors->GetNextActor() )
+	while( vtkActor *anAct = theActors->GetNextActor() )
         {
-	  if( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( ac ) )
-	    if( anActor->hasIO() && myIO->isSame( anActor->getIO() ) )
-	      anActor->SetPreSelected( true );
+	  if( anAct != this )
+	    if( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( anAct ) )
+	      if( anActor->hasIO() && myIO->isSame( anActor->getIO() ) )
+		anActor->SetPreSelected( true );
 	}
       }
-      myIsPreselected = theIsHighlight;
+
       anIsChanged = true;
     }
     }
