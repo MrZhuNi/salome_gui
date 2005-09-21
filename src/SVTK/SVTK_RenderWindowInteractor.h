@@ -57,17 +57,15 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
 
   ~QVTK_RenderWindowInteractor();
 
+  virtual
+  void
+  Initialize(vtkGenericRenderWindowInteractor* theDevice);
+
   vtkGenericRenderWindowInteractor* 
   GetDevice();
 
-  void
-  SetDevice(vtkGenericRenderWindowInteractor* theDevice);
-
-  void
-  SetRenderWindow(vtkRenderWindow *theRenderWindow);
-
   vtkRenderWindow*
-  GetRenderWindow();
+  getRenderWindow();
 
   virtual
   void
@@ -98,6 +96,7 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
 
   virtual bool x11Event( XEvent *e );
 
+  vtkSmartPointer<vtkRenderWindow> myRenderWindow;
   vtkSmartPointer<vtkGenericRenderWindowInteractor> myDevice;
 };
 
@@ -113,13 +112,13 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
 
   ~SVTK_RenderWindowInteractor();
 
-  vtkRenderWindow*
-  getRenderWindow();
+  virtual
+  void
+  Initialize(vtkGenericRenderWindowInteractor* theDevice,
+	     SVTK_Renderer* theRenderer,
+	     SVTK_Selector* theSelector);
 
   //----------------------------------------------------------------------------
-  void
-  SetRenderer(SVTK_Renderer *theRenderer);
-
   SVTK_Renderer* 
   GetRenderer();
 
@@ -139,9 +138,6 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   //----------------------------------------------------------------------------
   SVTK_Selector* 
   GetSelector();
-
-  void
-  SetSelector(SVTK_Selector* theSelector);
 
   Selection_Mode 
   SelectionMode() const;
@@ -179,6 +175,12 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   virtual void contextMenuEvent( QContextMenuEvent * e );
 
   void
+  SetRenderer(SVTK_Renderer *theRenderer);
+
+  void
+  SetSelector(SVTK_Selector* theSelector);
+
+  void
   InitInteractorStyle(vtkInteractorStyle* theStyle);
 
   // Main process VTK event method
@@ -198,7 +200,6 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   vtkSmartPointer<SVTK_Selector> mySelector;
 
   vtkSmartPointer<SVTK_Renderer> myRenderer;
-  vtkSmartPointer<vtkRenderWindow> myRenderWindow;
 
   typedef vtkSmartPointer<vtkInteractorStyle> PInteractorStyle;
   typedef std::stack<PInteractorStyle> TInteractorStyles;

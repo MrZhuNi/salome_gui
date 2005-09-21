@@ -76,13 +76,31 @@ static int MYDEBUG = 0;
 QVTK_RenderWindowInteractor
 ::QVTK_RenderWindowInteractor(QWidget* theParent, 
 			      const char* theName):
-  QWidget(theParent,theName)
+  QWidget(theParent,theName),
+  myRenderWindow(vtkRenderWindow::New())
 {
   if(MYDEBUG) INFOS("QVTK_RenderWindowInteractor() - "<<this);
   setMouseTracking(true);
+
+  myRenderWindow->Delete();
+  myRenderWindow->DoubleBufferOn();
 }
 
 
+void 
+QVTK_RenderWindowInteractor
+::Initialize(vtkGenericRenderWindowInteractor* theDevice)
+{
+  if(GetDevice())
+    myDevice->SetRenderWindow(NULL);
+
+  myDevice = theDevice;
+
+  if(theDevice)
+    theDevice->SetRenderWindow(getRenderWindow());
+}
+
+//----------------------------------------------------------------------------
 QVTK_RenderWindowInteractor
 ::~QVTK_RenderWindowInteractor() 
 {
@@ -93,6 +111,7 @@ QVTK_RenderWindowInteractor
       aSpaceMouse->close(x11Display());
 }
 
+
 //----------------------------------------------------------------------------
 vtkGenericRenderWindowInteractor* 
 QVTK_RenderWindowInteractor
@@ -101,27 +120,12 @@ QVTK_RenderWindowInteractor
   return myDevice.GetPointer();
 }
 
-void 
-QVTK_RenderWindowInteractor
-::SetDevice(vtkGenericRenderWindowInteractor* theDevice)
-{
-  myDevice = theDevice;
-}
-
 //----------------------------------------------------------------------------
-void
-QVTK_RenderWindowInteractor
-::SetRenderWindow(vtkRenderWindow *theRenderWindow)
-{
-  GetDevice()->SetRenderWindow(theRenderWindow);
-  theRenderWindow->DoubleBufferOn();
-}
-
 vtkRenderWindow*
 QVTK_RenderWindowInteractor
-::GetRenderWindow()
+::getRenderWindow()
 {
-  return GetDevice()->GetRenderWindow();
+  return myRenderWindow.GetPointer();
 }
 
 //----------------------------------------------------------------------------
@@ -149,9 +153,9 @@ QVTK_RenderWindowInteractor
   // Final initialization just before the widget is displayed
   GetDevice()->SetSize(width(),height());
 #ifndef WNT
-  GetRenderWindow()->SetDisplayId((void*)x11Display());
+  getRenderWindow()->SetDisplayId((void*)x11Display());
 #endif
-  GetRenderWindow()->SetWindowId((void*)winId());
+  getRenderWindow()->SetWindowId((void*)winId());
   GetDevice()->Enable();
 }
 
@@ -183,7 +187,7 @@ void
 QVTK_RenderWindowInteractor
 ::resizeEvent( QResizeEvent* theEvent )
 {
-  int* aSize = GetRenderWindow()->GetSize();
+  int* aSize = getRenderWindow()->GetSize();
   int aWidth = aSize[0];
   int aHeight = aSize[1];
 
@@ -191,7 +195,7 @@ QVTK_RenderWindowInteractor
 
   if(isVisible() && aWidth && aHeight){
     if( aWidth != width() || aHeight != height() ) {
-      vtkRendererCollection * aRenderers = GetRenderWindow()->GetRenderers();
+      vtkRendererCollection * aRenderers = getRenderWindow()->GetRenderers();
       aRenderers->InitTraversal();
       double aCoeff = 1.0;
       if(vtkRenderer *aRenderer = aRenderers->GetNextItem()) {
@@ -374,8 +378,7 @@ SVTK_RenderWindowInteractor
 ::SVTK_RenderWindowInteractor(QWidget* theParent, 
 			       const char* theName):
   QVTK_RenderWindowInteractor(theParent,theName),
-  myEventCallbackCommand(vtkCallbackCommand::New()),
-  myRenderWindow(vtkRenderWindow::New())
+  myEventCallbackCommand(vtkCallbackCommand::New())
 {
   if(MYDEBUG) INFOS("SVTK_RenderWindowInteractor() - "<<this);
 
@@ -385,22 +388,20 @@ SVTK_RenderWindowInteractor
   myPriority = 0.0;
 
   myEventCallbackCommand->SetCallback(SVTK_RenderWindowInteractor::ProcessEvents);
-
-  SVTK_GenericRenderWindowInteractor* aDevice = SVTK_GenericRenderWindowInteractor::New();
-  SetDevice(aDevice);
-  aDevice->Delete();
-
-  aDevice->SetRenderWidget(this);
-
-  SetSelector(SVTK_Selector::New());
-  mySelector->Delete();
-
-  aDevice->SetSelector(GetSelector());
-
-  GetDevice()->SetRenderWindow(getRenderWindow()); 
-  myRenderWindow->Delete();
 }
 
+void
+SVTK_RenderWindowInteractor
+::Initialize(vtkGenericRenderWindowInteractor* theDevice,
+	     SVTK_Renderer* theRenderer,
+	     SVTK_Selector* theSelector)
+{
+  QVTK_RenderWindowInteractor::Initialize(theDevice);
+  SetRenderer(theRenderer);
+  SetSelector(theSelector);
+}
+
+//----------------------------------------------------------------------------
 SVTK_RenderWindowInteractor
 ::~SVTK_RenderWindowInteractor() 
 {
@@ -419,14 +420,6 @@ SVTK_RenderWindowInteractor
 
   GetDevice()->SetRenderWindow(NULL);
 }
-
-vtkRenderWindow* 
-SVTK_RenderWindowInteractor
-::getRenderWindow()
-{
-  return myRenderWindow.GetPointer();
-}
-
 
 //----------------------------------------------------------------------------
 SVTK_Renderer* 

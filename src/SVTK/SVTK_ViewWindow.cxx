@@ -27,8 +27,12 @@
 #include "VTKViewer_CellRectPicker.h"
 
 #include "SVTK_Event.h"
+#include "SVTK_Renderer.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_ViewModelBase.h"
+#include "SVTK_InteractorStyle.h"
+#include "SVTK_RenderWindowInteractor.h"
+#include "SVTK_GenericRenderWindowInteractor.h"
 
 #include "SALOME_ListIteratorOfListIO.hxx"
 
@@ -52,7 +56,30 @@ SVTK_ViewWindow
 {
   if(SUIT_ResourceMgr* aResourceMgr = SUIT_Session::session()->resourceMgr()){
     myMainWindow = new SVTK_MainWindow(this,"SVTK_MainWindow",aResourceMgr);
-    myMainWindow->Initialize();
+
+    SVTK_RenderWindowInteractor* anIteractor = 
+      new SVTK_RenderWindowInteractor(myMainWindow,"SVTK_RenderWindowInteractor");
+
+    SVTK_Renderer* aRenderer = SVTK_Renderer::New();
+
+    SVTK_Selector* aSelector = SVTK_Selector::New();
+
+    SVTK_GenericRenderWindowInteractor* aDevice = 
+      SVTK_GenericRenderWindowInteractor::New();
+    aDevice->SetRenderWidget(anIteractor);
+    aDevice->SetSelector(aSelector);
+
+    anIteractor->Initialize(aDevice,aRenderer,aSelector);
+
+    aDevice->Delete();
+    aRenderer->Delete();
+    aSelector->Delete();
+
+    myMainWindow->Initialize(anIteractor);
+
+    SVTK_InteractorStyle* aStyle = SVTK_InteractorStyle::New();
+    anIteractor->PushInteractorStyle(aStyle);
+    aStyle->Delete();
 
     setCentralWidget(myMainWindow);
     

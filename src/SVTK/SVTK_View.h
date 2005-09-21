@@ -53,11 +53,7 @@ public:
 
   virtual
   void
-  Initialize(SVTK_Renderer *theRenderer);
-
-  virtual
-  void
-  Initialize();
+  Initialize(SVTK_RenderWindowInteractor* theInteractor);
 
   virtual
   ~SVTK_MainWindow();
@@ -98,9 +94,6 @@ public:
   SVTK_Selector* 
   GetSelector();
 
-  void
-  SetSelector(SVTK_Selector* theSelector);
-
   Selection_Mode
   SelectionMode();
 
@@ -108,9 +101,6 @@ public:
   SetSelectionMode(Selection_Mode theMode);
 
   //----------------------------------------------------------------------------
-  void
-  SetRenderer(SVTK_Renderer* theRenderer);
-
   SVTK_Renderer* 
   GetRenderer();
 

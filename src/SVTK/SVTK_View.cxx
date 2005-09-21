@@ -95,24 +95,16 @@ SVTK_MainWindow
 
 void
 SVTK_MainWindow
-::Initialize(SVTK_Renderer *theRenderer)
+::Initialize(SVTK_RenderWindowInteractor* theInteractor)
 {
-  SetInteractor(new SVTK_RenderWindowInteractor(this,"SVTK_RenderWindowInteractor"));
+  myInteractor = theInteractor;
+  SetEventDispatcher(myInteractor->GetDevice());
 
-  SVTK_InteractorStyle* aStyle = SVTK_InteractorStyle::New();
-  GetInteractor()->PushInteractorStyle(aStyle);
-  aStyle->Delete();
+  setCentralWidget(myInteractor);
 
-  GetInteractor()->SetRenderer(theRenderer);
-}
-
-void
-SVTK_MainWindow
-::Initialize()
-{
-  SVTK_Renderer* aRenderer = SVTK_Renderer::New();
-  Initialize(aRenderer);
-  aRenderer->Delete();
+  myInteractor->setFocusPolicy(StrongFocus);
+  myInteractor->setFocus();
+  setFocusProxy(myInteractor);
 }
 
 
@@ -125,20 +117,6 @@ SVTK_MainWindow
 
 
 //----------------------------------------------------------------------------
-void
-SVTK_MainWindow
-::SetInteractor(SVTK_RenderWindowInteractor* theInteractor)
-{
-  myInteractor = theInteractor;
-  SetEventDispatcher(myInteractor->GetDevice());
-
-  setCentralWidget(myInteractor);
-
-  myInteractor->setFocusPolicy(StrongFocus);
-  myInteractor->setFocus();
-  setFocusProxy(myInteractor);
-}
-
 SVTK_RenderWindowInteractor*
 SVTK_MainWindow
 ::GetInteractor()
@@ -217,13 +195,6 @@ SVTK_MainWindow
   return GetInteractor()->GetSelector();
 }
 
-void
-SVTK_MainWindow
-::SetSelector(SVTK_Selector* theSelector)
-{
-  GetInteractor()->SetSelector(theSelector);
-}
-
 Selection_Mode
 SVTK_MainWindow
 ::SelectionMode()
@@ -240,13 +211,6 @@ SVTK_MainWindow
 
 
 //----------------------------------------------------------------------------
-void
-SVTK_MainWindow
-::SetRenderer(SVTK_Renderer* theRenderer)
-{
-  GetInteractor()->SetRenderer(theRenderer);
-}
-
 SVTK_Renderer* 
 SVTK_MainWindow
 ::GetRenderer()
