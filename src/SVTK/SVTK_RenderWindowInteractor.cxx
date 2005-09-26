@@ -39,11 +39,6 @@
 
 #include "VTKViewer_Algorithm.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
 // VTK Includes
 #include <vtkObjectFactory.h>
 #include <vtkRendererCollection.h>
@@ -56,6 +51,7 @@
 
 // QT Includes
 #include <qtimer.h>
+#include <qapplication.h>
 #include <qcolordialog.h>
 #include <qpaintdevice.h>
 
@@ -226,6 +222,9 @@ void
 QVTK_RenderWindowInteractor
 ::mouseMoveEvent( QMouseEvent* event ) 
 {
+  if(qApp->focusWidget() != this)
+    setFocus();
+
   GetDevice()->SetEventInformationFlipY(event->x(), 
 					event->y(),
 					event->state() & ControlButton,
@@ -312,7 +311,7 @@ QVTK_RenderWindowInteractor
 //----------------------------------------------------------------------------
 void  
 QVTK_RenderWindowInteractor
-::focusInEvent ( QFocusEvent* event )
+::focusInEvent( QFocusEvent* event )
 {
   QWidget::focusInEvent( event );
 
@@ -333,7 +332,7 @@ void
 QVTK_RenderWindowInteractor
 ::focusOutEvent ( QFocusEvent* event )
 {
-  QWidget::focusInEvent( event );
+  QWidget::focusOutEvent( event );
 
   // unregister set space mouse events receiver
   if(SVTK_SpaceMouse* aSpaceMouse = SVTK_SpaceMouse::getInstance()){

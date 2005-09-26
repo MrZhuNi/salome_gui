@@ -183,6 +183,7 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   void
   InitInteractorStyle(vtkInteractorStyle* theStyle);
 
+  //----------------------------------------------------------------
   // Main process VTK event method
   static
   void
@@ -197,6 +198,7 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   // Priority at which events are processed
   float myPriority;
 
+  //----------------------------------------------------------------
   vtkSmartPointer<SVTK_Selector> mySelector;
 
   vtkSmartPointer<SVTK_Renderer> myRenderer;

@@ -26,6 +26,10 @@
 #include "VTKViewer_Utilities.h"
 #include "VTKViewer_CellRectPicker.h"
 
+#include "SVTK_View.h"
+#include "SVTK_MainWindow.h"
+#include "SVTK_Selector.h"
+
 #include "SVTK_Event.h"
 #include "SVTK_Renderer.h"
 #include "SVTK_ViewWindow.h"
@@ -35,9 +39,6 @@
 #include "SVTK_GenericRenderWindowInteractor.h"
 
 #include "SALOME_ListIteratorOfListIO.hxx"
-
-#include "SVTK_Selector.h"
-#include "SVTK_View.h"
 
 #include "VTKViewer_Algorithm.h"
 #include "SVTK_Functor.h"

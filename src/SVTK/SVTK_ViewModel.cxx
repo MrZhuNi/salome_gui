@@ -11,6 +11,7 @@
 #include "SVTK_ViewModel.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_View.h"
+#include "SVTK_MainWindow.h"
 #include "SVTK_Prs.h"
 
 #include "VTKViewer_ViewModel.h"
