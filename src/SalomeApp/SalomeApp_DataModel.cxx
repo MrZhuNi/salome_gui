@@ -63,7 +63,7 @@ SUIT_DataObject* SalomeApp_DataModel::BuildTree( const _PTR(SObject)& obj,
               componentObj->removeChild(itc.current());
 
             // delete DataObject itself and re-create it and all its sub-objects
-	    delete componentObj;
+            delete componentObj;
 	    // don't do anything here, because iterator may be corrupted (deleted object inside it)
 	    break; // proceed to build_a_data_object code below
           }
@@ -108,7 +108,7 @@ SalomeApp_DataModel::~SalomeApp_DataModel()
 // Function : open
 /*! Purpose  : Open data model*/
 //================================================================
-bool SalomeApp_DataModel::open( const QString& name, CAM_Study* study )
+bool SalomeApp_DataModel::open( const QString& name, CAM_Study* study, QStringList )
 {
   SalomeApp_Study* aDoc = dynamic_cast<SalomeApp_Study*>( study );
   if ( !aDoc )
@@ -123,7 +123,8 @@ bool SalomeApp_DataModel::open( const QString& name, CAM_Study* study )
   if ( aSComp )
     buildTree( aSComp, 0, aDoc );
 
-  LightApp_DataModel::open(name, study);
+  QStringList listOfFiles;
+  LightApp_DataModel::open(name, study, listOfFiles);
   return true;
 }
 
@@ -133,36 +134,30 @@ bool SalomeApp_DataModel::open( const QString& name, CAM_Study* study )
 //================================================================
 void SalomeApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
 {
-  SalomeApp_Study* aSStudy = 0;
+  SalomeApp_Study* aSStudy = dynamic_cast<SalomeApp_Study*>(study);
   LightApp_RootObject* studyRoot = 0;
   _PTR(SObject) sobj;
   SalomeApp_DataObject* modelRoot = dynamic_cast<SalomeApp_DataObject*>( root() );
   if ( !modelRoot ){ // not yet connected to a study -> try using <study> argument
-    aSStudy = dynamic_cast<SalomeApp_Study*>( study );
     if ( !aSStudy )
       aSStudy = dynamic_cast<SalomeApp_Study*>( getModule()->getApp()->activeStudy() );
     if ( aSStudy ){
       studyRoot = dynamic_cast<LightApp_RootObject*>( aSStudy->root() );
-      if ( studyRoot ) {
-        QString anId = getRootEntry( aSStudy );
-        if ( !anId.isEmpty() ){ // if nothing is published in the study for this module -> do nothing
-	  _PTR(Study) aStudy ( aSStudy->studyDS() );
-	  sobj = aStudy->FindComponentID( std::string( anId.latin1() ) );
-        }
+      QString anId = getRootEntry( aSStudy );
+      if ( !anId.isEmpty() ){ // if nothing is published in the study for this module -> do nothing
+	_PTR(Study) aStudy ( aSStudy->studyDS() );
+	sobj = aStudy->FindComponentID( std::string( anId.latin1() ) );
       }
     }
   }
   else{
     studyRoot = dynamic_cast<LightApp_RootObject*>( modelRoot->root() );
     if ( studyRoot ) {
-      aSStudy = dynamic_cast<SalomeApp_Study*>( study );
+      aSStudy = dynamic_cast<SalomeApp_Study*>( studyRoot->study() ); // <study> value should not change here theoretically, but just to make sure
       if ( aSStudy ) {
-        aSStudy = dynamic_cast<SalomeApp_Study*>( studyRoot->study() ); // <study> value should not change here theoretically, but just to make sure
-        if ( aSStudy ) {
-          _PTR(Study) aStudy ( aSStudy->studyDS() );
-          // modelRoot->object() cannot be reused here: it is about to be deleted by buildTree() soon
-          sobj = aStudy->FindComponentID( std::string( modelRoot->entry().latin1() ) );
-        }
+        _PTR(Study) aStudy ( aSStudy->studyDS() );
+        // modelRoot->object() cannot be reused here: it is about to be deleted by buildTree() soon
+        sobj = aStudy->FindComponentID( std::string( modelRoot->entry().latin1() ) );
       }
     }
   }

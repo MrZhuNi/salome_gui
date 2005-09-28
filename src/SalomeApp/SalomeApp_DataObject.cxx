@@ -309,7 +309,7 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
 
 /*!Constructor.Initialize by \a parent.*/
 SalomeApp_ModuleObject::SalomeApp_ModuleObject( SUIT_DataObject* parent )
-: SalomeApp_DataObject( parent ), 
+: SalomeApp_DataObject( parent ),
   CAM_RootObject( parent ),
   CAM_DataObject( parent )
 {
@@ -317,7 +317,7 @@ SalomeApp_ModuleObject::SalomeApp_ModuleObject( SUIT_DataObject* parent )
 
 /*!Constructor.Initialize by \a parent and SObject.*/
 SalomeApp_ModuleObject::SalomeApp_ModuleObject( const _PTR(SObject)& sobj, SUIT_DataObject* parent )
-: SalomeApp_DataObject( sobj, parent ), 
+: SalomeApp_DataObject( sobj, parent ),
   CAM_RootObject( 0, parent ),
   CAM_DataObject( parent )
 {
@@ -325,9 +325,9 @@ SalomeApp_ModuleObject::SalomeApp_ModuleObject( const _PTR(SObject)& sobj, SUIT_
 
 /*!Constructor.Initialize by \a parent and CAM_DataModel.*/
 SalomeApp_ModuleObject::SalomeApp_ModuleObject( CAM_DataModel* dm, const _PTR(SObject)& sobj, SUIT_DataObject* parent )
-: SalomeApp_DataObject( sobj, parent ), 
+: SalomeApp_DataObject( sobj, parent ),
   CAM_RootObject( dm, parent ),
-  CAM_DataObject( parent )  
+  CAM_DataObject( parent )
 {
 }
 
@@ -335,3 +335,10 @@ SalomeApp_ModuleObject::SalomeApp_ModuleObject( CAM_DataModel* dm, const _PTR(SO
 SalomeApp_ModuleObject::~SalomeApp_ModuleObject()
 {
 }
+
+/*!Returns module name */
+QString SalomeApp_ModuleObject::name() const
+{
+  return SalomeApp_DataObject::name();
+}
+

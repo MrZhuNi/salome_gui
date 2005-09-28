@@ -35,7 +35,7 @@ class SALOME_LifeCycleCORBA;
 #endif
 
 /*!
-  Description : Application containing SalomeApp module
+  Description : Application containing SalomeApp module or LightApp module
 */
 
 class SALOMEAPP_EXPORT SalomeApp_Application : public LightApp_Application
@@ -53,6 +53,8 @@ public:
   virtual void                        contextMenuPopup( const QString&, QPopupMenu*, QString& );
   virtual void                        updateObjectBrowser( const bool = true );
 
+  virtual QString                     getFileFilter() const;
+
   SUIT_ViewManager*                   getViewManager( const QString&, const bool );
 
   virtual void                        start();
@@ -65,6 +67,7 @@ public:
 
 public slots:
   virtual void                        onLoadDoc();
+  virtual bool                        onLoadDoc( const QString& );
   virtual void                        onCopy();
   virtual void                        onPaste();  
   

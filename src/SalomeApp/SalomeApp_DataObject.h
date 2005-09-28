@@ -61,6 +61,8 @@ public:
   SalomeApp_ModuleObject( const _PTR(SObject)&, SUIT_DataObject* = 0 );
   SalomeApp_ModuleObject( CAM_DataModel*, const _PTR(SObject)&, SUIT_DataObject* = 0 );
   virtual ~SalomeApp_ModuleObject();
+
+  virtual QString        name() const;
 };
 
 #endif

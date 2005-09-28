@@ -30,8 +30,7 @@ public:
   /*! engineIOR() should be a pure virtual method, to avoid logical errors!\n
    * Implementation in derived classes can return the following values:\n
    * module`s engine IOR - means that this is a standard SALOME module with a CORBA engine
-   * \li "" (empty string)   - means that this is a light module, default engine should be used for interaction with SALOMEDS persistence
-   * \li "-1"                - means that this is a light module, SALOMEDS persistence is not used at all\n
+   * \li "" (empty string)   - means that this not correct SALOME module
    */
   virtual QString                     engineIOR() const = 0;
   

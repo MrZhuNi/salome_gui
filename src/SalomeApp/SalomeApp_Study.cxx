@@ -2,10 +2,11 @@
 
 #include "SalomeApp_Module.h"
 #include "SalomeApp_DataModel.h"
-#include "LightApp_RootObject.h"
 #include "SalomeApp_DataObject.h"
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Engine_i.hxx"
+
+#include "LightApp_RootObject.h"
 
 #include <OB_Browser.h>
 
@@ -72,7 +73,11 @@ void SalomeApp_Study::createDocument()
   setStudyDS( study );
   setStudyName( aName );
 
-  LightApp_Study::createDocument();
+  // create myRoot
+  setRoot( new LightApp_RootObject( this ) );
+
+  CAM_Study::createDocument();
+  emit created( this );
 }
 
 //=======================================================================
@@ -90,8 +95,22 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
 
   setStudyDS( study );
 
-  bool res = LightApp_Study::openDocument( theFileName );
-  
+  setRoot( new LightApp_RootObject( this ) ); // create myRoot
+
+  // update loaded data models: call open() and update() on them.
+  ModelList dm_s;
+  dataModels( dm_s );
+  for ( ModelListIterator it( dm_s ); it.current(); ++it )
+    openDataModel( studyName(), it.current() );
+
+  // this will build a SUIT_DataObject-s tree under myRoot member field
+  // passing "false" in order NOT to rebuild existing data models' trees - it was done in previous step
+  // but tree that corresponds to not-loaded data models will be updated any way. 
+  ((SalomeApp_Application*)application())->updateObjectBrowser( false ); 
+
+  bool res = CAM_Study::openDocument( theFileName );
+  emit opened( this );
+
   return res;
 }
 
@@ -110,7 +129,26 @@ bool SalomeApp_Study::loadDocument( const QString& theStudyName )
 
   setStudyDS( study );
 
-  bool res = LightApp_Study::loadDocument( theStudyName );
+  setRoot( new LightApp_RootObject( this ) ); // create myRoot
+
+  //SRN: BugID IPAL9021, put there the same code as in a method openDocument
+
+  // update loaded data models: call open() and update() on them.
+  ModelList dm_s;
+  dataModels( dm_s );
+
+  for ( ModelListIterator it( dm_s ); it.current(); ++it )
+    openDataModel( studyName(), it.current() );
+
+  // this will build a SUIT_DataObject-s tree under myRoot member field
+  // passing "false" in order NOT to rebuild existing data models' trees - it was done in previous step
+  // but tree that corresponds to not-loaded data models will be updated any way. 
+  ((SalomeApp_Application*)application())->updateObjectBrowser( false ); 
+
+  bool res = CAM_Study::openDocument( theStudyName );
+  emit opened( this );
+
+  //SRN: BugID IPAL9021: End
 
   return res;
 }
@@ -121,16 +159,31 @@ bool SalomeApp_Study::loadDocument( const QString& theStudyName )
 //=======================================================================
 bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 {
+  ModelList list; dataModels( list );
+
+  SalomeApp_DataModel* aModel = (SalomeApp_DataModel*)list.first();
+  QStringList listOfFiles;
+  for ( ; aModel; aModel = (SalomeApp_DataModel*)list.next() ) {
+    listOfFiles.clear();
+    aModel->saveAs( theFileName, this, listOfFiles );
+    if ( !listOfFiles.isEmpty() )
+      saveModuleData(aModel->module()->name(), listOfFiles);
+  }
+
   // save SALOMEDS document
   SUIT_ResourceMgr* resMgr = application()->resourceMgr();
   if( !resMgr )
     return false;
-  bool res = LightApp_Study::saveDocumentAs( theFileName );  //SRN: BugID IPAL9377, removed usage of uninitialized variable <res>
 
   bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false ),
        isAscii = resMgr->booleanValue( "Study", "ascii_file", true );
   isAscii ? SalomeApp_Application::studyMgr()->SaveAsASCII( theFileName.latin1(), studyDS(), isMultiFile ) :
             SalomeApp_Application::studyMgr()->SaveAs     ( theFileName.latin1(), studyDS(), isMultiFile );
+
+  bool res = CAM_Study::saveDocumentAs( theFileName );  //SRN: BugID IPAL9377, removed usage of uninitialized variable <res>
+  res = res && saveStudyData(theFileName);
+  if ( res )
+    emit saved( this );
 
   return res;
 }
@@ -139,18 +192,36 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 // name    : saveDocument
 /*! Purpose : Save document*/
 //=======================================================================
-void SalomeApp_Study::saveDocument()
+bool SalomeApp_Study::saveDocument()
 {
+  ModelList list; dataModels( list );
+
+  SalomeApp_DataModel* aModel = (SalomeApp_DataModel*)list.first();
+  QStringList listOfFiles;
+  for ( ; aModel; aModel = (SalomeApp_DataModel*)list.next() ) {
+    listOfFiles.clear();
+    aModel->save(listOfFiles);
+    if ( !listOfFiles.isEmpty() )
+      saveModuleData(aModel->module()->name(), listOfFiles);
+  }
+
   // save SALOMEDS document
   SUIT_ResourceMgr* resMgr = application()->resourceMgr();
   if( !resMgr )
-    return;
-  LightApp_Study::saveDocument();
-  
+    return false;
+
   bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false ),
        isAscii = resMgr->booleanValue( "Study", "ascii_file", true );
   isAscii ? SalomeApp_Application::studyMgr()->SaveASCII( studyDS(), isMultiFile ) :
             SalomeApp_Application::studyMgr()->Save     ( studyDS(), isMultiFile );
+
+  bool res = CAM_Study::saveDocument();
+
+  res = res && saveStudyData(studyName());
+  if ( res )
+    emit saved( this );  
+
+  return res;
 }
 
 //================================================================
@@ -197,6 +268,69 @@ bool SalomeApp_Study::isSaved() const
   return isAllSaved; 
 }
 
+//=======================================================================
+// name    : saveModuleData
+/*! Purpose : save list file for module 'theModuleName' */
+//=======================================================================
+void SalomeApp_Study::saveModuleData( QString theModuleName, QStringList theListOfFiles )
+{
+  int aNb = theListOfFiles.count();
+  if ( aNb == 0 )
+    return;
+
+  std::vector<std::string> aListOfFiles ( aNb );
+  int anIndex = 0;
+  for ( QStringList::Iterator it = theListOfFiles.begin(); it != theListOfFiles.end(); ++it ) {
+    if ( (*it).isEmpty() )
+      continue;
+    aListOfFiles[anIndex] = (*it).latin1();
+    anIndex++;
+  }
+  SetListOfFiles(theModuleName, aListOfFiles);
+}
+
+//=======================================================================
+// name    : openModuleData
+/*! Purpose : gets list of file for module 'theModuleNam' */
+//=======================================================================
+void SalomeApp_Study::openModuleData( QString theModuleName, QStringList& theListOfFiles )
+{
+  std::vector<std::string> aListOfFiles =  GetListOfFiles( theModuleName );
+
+  int i, aLength = aListOfFiles.size() - 1;
+  if ( aLength < 0 )
+    return;
+
+  //Get a temporary directory for saved a file
+  theListOfFiles.append(aListOfFiles[0].c_str());
+
+  for(i = 0; i < aLength; i++)
+    theListOfFiles.append(aListOfFiles[i+1].c_str());
+}
+
+//=======================================================================
+// name    : saveStudyData
+/*! Purpose : save data from study */
+//=======================================================================
+bool SalomeApp_Study::saveStudyData( const QString& theFileName )
+{
+  ModelList list; dataModels( list );
+  SalomeApp_DataModel* aModel = (SalomeApp_DataModel*)list.first();
+  std::vector<std::string> listOfFiles(0);
+  for ( ; aModel; aModel = (SalomeApp_DataModel*)list.next() )
+    SetListOfFiles(aModel->module()->name(), listOfFiles);
+  return true;
+}
+
+//=======================================================================
+// name    : openStudyData
+/*! Purpose : open data for study */
+//=======================================================================
+bool SalomeApp_Study::openStudyData( const QString& theFileName )
+{
+ return true;
+}
+
 /*!
   Set studyDS.
 */
@@ -214,12 +348,17 @@ void SalomeApp_Study::dataModelInserted (const CAM_DataModel* dm)
 
   CAM_Study::dataModelInserted(dm);
 
-  // Create SComponent for module, using default engine (CORBAless)
-  //  SalomeApp_Module* aModule = (SalomeApp_Module*)(dm->module());
+  //  addComponent(dm);
+}
+
+/*!
+ Create SComponent for module, using default engine (CORBAless)
+*/
+void SalomeApp_Study::addComponent(const CAM_DataModel* dm)
+{
   SalomeApp_Module* aModule = dynamic_cast<SalomeApp_Module*>( dm->module() );
   // 1. aModule == 0 means that this is a light module (no CORBA enigine)
-  // 2. engineIOR == "" means this is a full module but without CORBA engine
-  if (!aModule || aModule->engineIOR().isEmpty()) {
+  if (!aModule) {
     // Check SComponent existance
     _PTR(Study) aStudy = studyDS();
     if (!aStudy) 
@@ -227,11 +366,18 @@ void SalomeApp_Study::dataModelInserted (const CAM_DataModel* dm)
     _PTR(SComponent) aComp = aStudy->FindComponent(dm->module()->name());
     if (!aComp) {
       // Create SComponent
-      _PTR(StudyBuilder) aBuilder = studyDS()->NewBuilder();
+      _PTR(StudyBuilder) aBuilder = aStudy->NewBuilder();
       aComp = aBuilder->NewComponent(dm->module()->name());
-      
+      aBuilder->SetName(aComp, dm->module()->moduleName());
+      QString anIconName = dm->module()->iconName();
+      if (!anIconName.isEmpty()) {
+        _PTR(AttributePixMap) anAttr = aBuilder->FindOrCreateAttribute(aComp, "AttributePixMap");
+        if (anAttr)
+          anAttr->SetPixMap(anIconName);
+      }
       // Set default engine IOR
       aBuilder->DefineComponentInstance(aComp, SalomeApp_Application::defaultEngineIOR().latin1());
+      SalomeApp_DataModel::BuildTree( aComp, root(), this, /*skipExisitng=*/true );
     }
   }
 }
@@ -250,8 +396,7 @@ bool SalomeApp_Study::openDataModel( const QString& studyName, CAM_DataModel* dm
   _PTR(SComponent)  aSComp;
   QString anEngine;
   // 1. aModule == 0 means that this is a light module (no CORBA enigine)
-  // 2. engineIOR == "" means this is a full module but without CORBA engine
-  if (!aModule || aModule->engineIOR().isEmpty()) {
+  if (!aModule) {
     anEngine = SalomeApp_Application::defaultEngineIOR();
     aSComp = aStudy->FindComponent(dm->module()->name());
   }
@@ -261,20 +406,9 @@ bool SalomeApp_Study::openDataModel( const QString& studyName, CAM_DataModel* dm
       QString anId = aDM->getRootEntry( this );
       if ( anId.isEmpty() )
         return true; // Probably nothing to load
-
-      if ( aDM ) {
-        anEngine = aDM->getModule()->engineIOR();
-        if ( anEngine == "-1" ) {
-          // Module doesn't have a CORBA engine and doesn't use
-          // a default one -> SALOMEDS persistence cannot be used
-          return false;
-        }
-      }
-      if ( anEngine.isEmpty() ) {
-        // Module use a default engine
-        //TODO: deside, if the below code has to be copyed in a light data model to avoid bulding of data tree twice
-        anEngine = SalomeApp_Application::defaultEngineIOR();
-      }
+      anEngine = aDM->getModule()->engineIOR();
+      if ( anEngine.isEmpty() )
+        return false;
       aSComp = aStudy->FindComponentID( std::string( anId.latin1() ) );
     }
   }
@@ -289,13 +423,21 @@ bool SalomeApp_Study::openDataModel( const QString& studyName, CAM_DataModel* dm
         return false;
       }
       // Something has been read -> create data model tree
+      //SalomeApp_DataModel* aDM = dynamic_cast<SalomeApp_DataModel*>( dm );
       // aDM->buildTree( aSComp, 0, this );
     }
   } else {
     // Don't return false here, for there might be no data
     // for a given component in the study yet
   }
-  if (dm && dm->open(studyName, this)) {
+  QStringList listOfFiles;
+  openModuleData(dm->module()->name(), listOfFiles);
+  if (dm && dm->open(studyName, this, listOfFiles)) {
+    // Remove the files and temporary directory, created
+    // for this module by LightApp_Engine_i::Load()
+    bool isMultiFile = false; // TODO: decide, how to access this parameter
+    RemoveTemporaryFiles( dm->module()->name(), isMultiFile );
+
     // Something has been read -> create data model tree
     LightApp_DataModel* aDM = dynamic_cast<LightApp_DataModel*>( dm );
     if ( aDM )
@@ -331,13 +473,11 @@ QString SalomeApp_Study::newStudyName() const
 // Function : GetListOfFiles
 /*! Purpose  : to be used by CORBAless modules*/
 //================================================================
-std::vector<std::string> SalomeApp_Study::GetListOfFiles() const
+std::vector<std::string> SalomeApp_Study::GetListOfFiles( const char* theModuleName  ) const
 {
   SalomeApp_Engine_i* aDefaultEngine = SalomeApp_Engine_i::GetInstance();
-  if (aDefaultEngine) {
-    const char* aName = ((CAM_Application*)application())->activeModule()->name();
-    return aDefaultEngine->GetListOfFiles(id(), aName);
-  }
+  if (aDefaultEngine)
+    return aDefaultEngine->GetListOfFiles(id(), theModuleName);
 
   std::vector<std::string> aListOfFiles;
   return aListOfFiles;
@@ -347,21 +487,19 @@ std::vector<std::string> SalomeApp_Study::GetListOfFiles() const
 // Function : SetListOfFiles
 /*! Purpose  : to be used by CORBAless modules*/
 //================================================================
-void SalomeApp_Study::SetListOfFiles (const std::vector<std::string> theListOfFiles)
+void SalomeApp_Study::SetListOfFiles ( const char* theModuleName,
+                                       const std::vector<std::string> theListOfFiles )
 {
   SalomeApp_Engine_i* aDefaultEngine = SalomeApp_Engine_i::GetInstance();
-  if (aDefaultEngine) {
-    const char* aName = ((CAM_Application*)application())->activeModule()->name();
-    aDefaultEngine->SetListOfFiles(theListOfFiles, id(), aName);
-  }
+  if (aDefaultEngine)
+    aDefaultEngine->SetListOfFiles(theListOfFiles, id(), theModuleName);
 }
 
 //================================================================
 // Function : GetTmpDir
 /*! Purpose  : to be used by CORBAless modules*/
 //================================================================
-std::string SalomeApp_Study::GetTmpDir (const char* theURL,
-                                            const bool  isMultiFile)
+std::string SalomeApp_Study::GetTmpDir ( const char* theURL, const bool  isMultiFile )
 {
   std::string anURLDir = SALOMEDS_Tool::GetDirFromPath(theURL);
   std::string aTmpDir = isMultiFile ? anURLDir : SALOMEDS_Tool::GetTmpDir();
@@ -372,12 +510,12 @@ std::string SalomeApp_Study::GetTmpDir (const char* theURL,
 // Function : RemoveTemporaryFiles
 /*! Purpose  : to be used by CORBAless modules*/
 //================================================================
-void SalomeApp_Study::RemoveTemporaryFiles (const bool isMultiFile) const
+void SalomeApp_Study::RemoveTemporaryFiles ( const char* theModuleName, const bool isMultiFile ) const
 {
   if (isMultiFile)
     return;
 
-  std::vector<std::string> aListOfFiles = GetListOfFiles();
+  std::vector<std::string> aListOfFiles = GetListOfFiles( theModuleName );
   if (aListOfFiles.size() > 0) {
     std::string aTmpDir = aListOfFiles[0];
 

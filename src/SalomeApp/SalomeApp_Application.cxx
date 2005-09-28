@@ -66,9 +66,10 @@ extern "C" SALOMEAPP_EXPORT SUIT_Application* createApplication()
 
 /*
   Class       : SalomeApp_Application
-  Description : Application containing SalomeApp module
+  Description : Application containing SalomeApp module or LightApp module
 */
 
+/*!Constructor.*/
 SalomeApp_Application::SalomeApp_Application()
 : LightApp_Application()
 {
@@ -182,6 +183,12 @@ void SalomeApp_Application::onLoadDoc()
      updateViewManagers();
      updateObjectBrowser(true);
   }
+}
+
+/*!SLOT. Load document with \a aName.*/
+bool SalomeApp_Application::onLoadDoc( const QString& str )
+{
+  return LightApp_Application::onLoadDoc(str);
 }
 
 /*!SLOT. Copy objects to study maneger from selection maneger..*/
@@ -532,6 +539,7 @@ SALOME_LifeCycleCORBA* SalomeApp_Application::lcc()
   return _lcc;
 }
 
+/*!Return default engine IOR for light modules*/
 QString SalomeApp_Application::defaultEngineIOR()
 {
   /// Look for a default module engine (needed for CORBAless modules to use SALOMEDS persistence)
@@ -563,7 +571,7 @@ void SalomeApp_Application::onProperties()
   updateDesktopTitle();
 }
 
-/*!*/
+/*!Insert items in popup, which necessary for current application*/
 void SalomeApp_Application::contextMenuPopup( const QString& type, QPopupMenu* thePopup, QString& title )
 {
   LightApp_Application::contextMenuPopup( type, thePopup, title );
@@ -623,9 +631,15 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QPopupMenu* t
   thePopup->insertItem( tr( "MEN_OPENWITH" ), this, SLOT( onOpenWith() ) );
 }
 
-/*!Update obect browser*/
+/*!Update obect browser:
+ 1.if 'updateModels' true, update existing data models;
+ 2. update "non-existing" (not loaded yet) data models;
+ 3. update object browser if it existing */
 void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 {
+  // update existing data models (already loaded SComponents)
+  LightApp_Application::updateObjectBrowser(updateModels);
+
   // update "non-existing" (not loaded yet) data models
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>(activeStudy());
   if ( study ) 
@@ -639,12 +653,24 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 
 	if ( aComponent->ComponentDataType() == "Interface Applicative" )
 	  continue; // skip the magic "Interface Applicative" component
-    
-	SalomeApp_DataModel::BuildTree( aComponent, study->root(), study, /*skipExisitng=*/true );
+
+        SalomeApp_DataModel::BuildTree( aComponent, study->root(), study, /*skipExisitng=*/true );
       }
     }
   }
-  LightApp_Application::updateObjectBrowser(updateModels);
+  if ( objectBrowser() )
+  {
+    objectBrowser()->updateGeometry();
+    objectBrowser()->updateTree();
+  }
+}
+
+/*!Gets file filter.
+ *\retval QString "(*.hdf)"
+ */
+QString SalomeApp_Application::getFileFilter() const
+{
+  return "(*.hdf)";
 }
 
 /*!Display Catalog Genenerator dialog */

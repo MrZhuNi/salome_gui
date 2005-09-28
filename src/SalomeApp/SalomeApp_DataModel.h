@@ -34,7 +34,7 @@ public:
                                       SalomeApp_DataModel ( CAM_Module* theModule );
   virtual                             ~SalomeApp_DataModel();
 
-  virtual bool                        open( const QString&, CAM_Study* );
+  virtual bool                        open( const QString&, CAM_Study*, QStringList );
   virtual void                        update( LightApp_DataObject* = 0, LightApp_Study* = 0 );
 
   QString                             getRootEntry( SalomeApp_Study* ) const;
