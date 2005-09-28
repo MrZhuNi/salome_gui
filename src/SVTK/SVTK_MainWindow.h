@@ -112,10 +112,12 @@ public:
   void
   GetScale(double theScale[3]);
 
+  virtual
   void 
   AddActor(VTKViewer_Actor* theActor, 
 	   bool theIsUpdate = false);
 
+  virtual
   void 
   RemoveActor(VTKViewer_Actor* theActor, 
 	      bool theIsUpdate = false);
