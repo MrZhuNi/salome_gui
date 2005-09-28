@@ -1,5 +1,5 @@
 /**
-*  SALOME SalomeApp
+*  LIGHT LightApp
 *
 *  Copyright (C) 2005  CEA/DEN, EDF R&D
 *
@@ -7,7 +7,7 @@
 *
 *  File   : LightApp_SwitchOp.h
 *  Author : Sergey LITONIN
-*  Module : SALOME
+*  Module : LIGHT
 */
 
 

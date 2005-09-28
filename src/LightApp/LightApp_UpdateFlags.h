@@ -1,4 +1,4 @@
-//  SALOME LightApp
+//  LIGHT LightApp
 //
 //  Copyright (C) 2005  CEA/DEN, EDF R&D
 //
@@ -6,7 +6,7 @@
 //
 //  File   : LightApp_UpdateFlags.h
 //  Author : Sergey LITONIN
-//  Module : SALOME
+//  Module : LIGHT
 
 
 #ifndef LightApp_UpdateFlags_H

@@ -10,7 +10,7 @@
 
 /*
   Class       : LightApp_Dialog
-  Description : Base class for all SALOME dialogs
+  Description : Base class for all dialogs
 */
 
 //=======================================================================

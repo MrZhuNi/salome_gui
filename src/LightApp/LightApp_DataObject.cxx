@@ -87,7 +87,7 @@ SUIT_DataObjectKey* LightApp_DataObject::key() const
  */
 SUIT_DataObject* LightApp_DataObject::componentObject() const
 {
-  SUIT_DataObject* compObj = 0; // for root object (invisible SALOME_ROOT_OBJECT) 
+  SUIT_DataObject* compObj = 0; // for root object
 
   if ( parent() && parent() == root() ) 
     compObj = (SUIT_DataObject*)this; // for component-level objects
@@ -106,3 +106,48 @@ QString LightApp_DataObject::componentDataType() const
   return "";
 }
 
+/*
+	Class: LightApp_ModuleObject
+	Level: Public
+*/
+
+/*!Constructor.Initialize by \a parent.*/
+LightApp_ModuleObject::LightApp_ModuleObject( SUIT_DataObject* parent )
+: CAM_RootObject( parent ),
+  CAM_DataObject( parent )
+{
+}
+
+/*!Constructor.Initialize by \a module and parent.*/
+LightApp_ModuleObject::LightApp_ModuleObject( CAM_DataModel* dm, SUIT_DataObject* parent )
+: CAM_RootObject( dm, parent ),
+  CAM_DataObject( parent )
+{
+}
+
+/*!Destructor. Do nothing.*/
+LightApp_ModuleObject::~LightApp_ModuleObject()
+{
+}
+
+/*!Returns module name */
+QString LightApp_ModuleObject::name() const
+{
+  return CAM_RootObject::name();
+}
+
+/*!Insert new child object to the children list at specified position
+ *\add component in Study for this module object if it necessary*/
+void LightApp_ModuleObject::insertChild( SUIT_DataObject* theObj, int thePosition )
+{
+  CAM_RootObject::insertChild(theObj, thePosition);
+
+  CAM_DataModel* aModel = dataModel();
+
+  LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>(parent());
+
+  if (aRoot)
+    aRoot->study()->addComponent(aModel);
+
+
+}

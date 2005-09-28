@@ -25,6 +25,7 @@
 
 #include <CAM_Module.h>
 #include <CAM_DataModel.h>
+#include <CAM_Study.h>
 #include <STD_TabDesktop.h>
 
 #include <SUIT_Session.h>
@@ -105,6 +106,7 @@ LightApp_Preferences* LightApp_Application::_prefs_ = 0;
   Description : Application containing LightApp module
 */
 
+/*!Constructor.*/
 LightApp_Application::LightApp_Application()
 : CAM_Application( false ),
 myPrefs( 0 )
@@ -114,7 +116,7 @@ myPrefs( 0 )
   setDesktop( desk );
 
   SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
-  QPixmap aLogo = aResMgr->loadPixmap( "SalomeApp", tr( "APP_DEFAULT_ICO" ), false );
+  QPixmap aLogo = aResMgr->loadPixmap( "LightApp", tr( "APP_DEFAULT_ICO" ), false );
 
   desktop()->setIcon( aLogo );
   desktop()->setDockableMenuBar( true );
@@ -606,6 +608,11 @@ void LightApp_Application::onSelectionChanged()
 {
 }
 
+/*!Return window.
+ *\param flag - key for window
+ *\param studyId - study id
+ * Flag used how identificator of window in windows list.
+ */
 QWidget* LightApp_Application::window( const int flag, const int studyId ) const
 {
   QWidget* wid = 0;
@@ -770,17 +777,20 @@ PythonConsole* LightApp_Application::pythonConsole()
 /*!Update obect browser*/
 void LightApp_Application::updateObjectBrowser( const bool updateModels )
 {
-  // update existing data models (already loaded SComponents)
+  // update existing data models
   if ( updateModels ) 
   {
-    for ( ModuleListIterator it = modules(); it.current(); ++it )
-    {
-      CAM_DataModel* camDM = it.current()->dataModel();
-      if ( camDM && camDM->inherits( "LightApp_DataModel" ) )
-        ((LightApp_DataModel*)camDM)->update();
+    LightApp_Study* study = dynamic_cast<LightApp_Study*>(activeStudy());
+    if ( study ) {
+      CAM_Study::ModelList dm_list;
+      study->dataModels( dm_list );
+      for ( CAM_Study::ModelListIterator it( dm_list ); it.current(); ++it ) {
+        CAM_DataModel* camDM = it.current();
+        if ( camDM && camDM->inherits( "LightApp_DataModel" ) )
+          ((LightApp_DataModel*)camDM)->update();
+      }
     }
   }
-
   if ( objectBrowser() )
   {
     objectBrowser()->updateGeometry();
@@ -870,6 +880,10 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
   return viewMgr;
 }
 
+//=======================================================================
+// name    : onCloseView
+/*! Purpose : SLOT. Remove view manager from application*/
+//=======================================================================
 void LightApp_Application::onCloseView( SUIT_ViewManager* theVM )
 {
   removeViewManager( theVM );
@@ -937,14 +951,14 @@ void LightApp_Application::onDesktopActivated()
 }
 
 /*!Gets file filter.
- *\retval QString "(*.hdf)"
+ *\retval QString "(*.bin)"
  */
 QString LightApp_Application::getFileFilter() const
 {
-  return "(*.hdf)";
+  return "(*.bin)";
 }
 
-/*!*/
+/*! Gets file name*/
 QString LightApp_Application::getFileName( bool open, const QString& initial, const QString& filters, 
                                            const QString& caption, QWidget* parent )
 {
@@ -954,7 +968,7 @@ QString LightApp_Application::getFileName( bool open, const QString& initial, co
   return SUIT_FileDlg::getFileName( parent, initial, fls, caption, open, true );
 }
 
-/*!*/
+/*! Gets directory*/
 QString LightApp_Application::getDirectory( const QString& initial, const QString& caption, QWidget* parent )
 {
   if ( !parent )
@@ -962,7 +976,7 @@ QString LightApp_Application::getDirectory( const QString& initial, const QStrin
   return SUIT_FileDlg::getExistingDirectory( parent, initial, caption, true );
 }
 
-/*!*/
+/*! Get open file names*/
 QStringList LightApp_Application::getOpenFileNames( const QString& initial, const QString& filters, 
                                                     const QString& caption, QWidget* parent )
 {
@@ -1175,6 +1189,7 @@ void LightApp_Application::moduleAdded( CAM_Module* mod )
   }
 }
 
+/*!Create preferences.*/
 void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 {
   if ( !pref )
@@ -1315,6 +1330,7 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 
 }
 
+/*!Changed preferences */
 void LightApp_Application::preferencesChanged( const QString& sec, const QString& param )
 {
   SUIT_ResourceMgr* resMgr = resourceMgr();
@@ -1558,6 +1574,7 @@ void LightApp_Application::moduleIconNames( QMap<QString, QString>& iconMap ) co
   }
 }
 
+/*!Insert items in popup, which necessary for current application*/
 void LightApp_Application::contextMenuPopup( const QString& type, QPopupMenu* thePopup, QString& title )
 {
   CAM_Application::contextMenuPopup( type, thePopup, title );

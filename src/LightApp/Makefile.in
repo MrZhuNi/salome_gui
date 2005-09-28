@@ -20,6 +20,7 @@ EXPORT_HEADERS= LightApp.h \
 		LightApp_DataOwner.h \
 		LightApp_DataSubOwner.h \
 		LightApp_Dialog.h \
+		LightApp_Driver.h \
 		LightApp_GLSelector.h \
 		LightApp_Module.h \
 		LightApp_ModuleDlg.h \
@@ -53,6 +54,7 @@ LIB_SRC= LightApp_AboutDlg.cxx \
 	 LightApp_DataOwner.cxx \
 	 LightApp_DataSubOwner.cxx \
 	 LightApp_Dialog.cxx \
+	 LightApp_Driver.cxx \
 	 LightApp_GLSelector.cxx \
 	 LightApp_Module.cxx \
 	 LightApp_ModuleDlg.cxx \
@@ -74,6 +76,7 @@ LIB_MOC = LightApp_AboutDlg.h \
 	  LightApp_Application.h \
 	  LightApp_DataModel.h \
 	  LightApp_Dialog.h \
+	  LightApp_Driver.h \
 	  LightApp_GLSelector.h \
 	  LightApp_OBSelector.h \
 	  LightApp_OCCSelector.h \

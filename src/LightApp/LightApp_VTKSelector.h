@@ -50,7 +50,7 @@ class LightApp_SVTKDataOwner : public LightApp_DataOwner
 
 
 /*!
-  Provide salome vtk selection of data owners.
+  Provide vtk selection of data owners.
 */
 class LIGHTAPP_EXPORT LightApp_VTKSelector : public SUIT_Selector
 {

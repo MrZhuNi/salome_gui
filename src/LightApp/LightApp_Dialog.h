@@ -18,7 +18,7 @@ class SUIT_ResourceMgr;
 
 /*
   Class       : LightApp_Dialog
-  Description : Base class for all SALOME dialogs
+  Description : Base class for all LightApp dialogs
 */
 class LightApp_Dialog : public QtxDialog
 {

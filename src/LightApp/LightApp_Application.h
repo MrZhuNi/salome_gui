@@ -34,7 +34,7 @@ class QPixmap;
 #endif
 
 /*!
-  Description : Application containing LightApp module
+  Description : Application containing only LightApp module
 */
 
 class LIGHTAPP_EXPORT LightApp_Application : public CAM_Application

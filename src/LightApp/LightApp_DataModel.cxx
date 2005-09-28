@@ -35,9 +35,9 @@ LightApp_DataModel::~LightApp_DataModel()
 
 //================================================================
 // Function : open
-/*! Purpose  : Open data model*/
+/*! Purpose  : Emit opened()*/
 //================================================================
-bool LightApp_DataModel::open( const QString&, CAM_Study* study )
+bool LightApp_DataModel::open( const QString&, CAM_Study* study, QStringList )
 {
   emit opened(); //TODO: is it really needed? to be removed maybe...
   return true;
@@ -47,7 +47,7 @@ bool LightApp_DataModel::open( const QString&, CAM_Study* study )
 // Function : save
 /*! Purpose  : Emit saved()*/
 //================================================================
-bool LightApp_DataModel::save()
+bool LightApp_DataModel::save( QStringList& )
 {
   emit saved();
   return true;
@@ -55,9 +55,9 @@ bool LightApp_DataModel::save()
 
 //================================================================
 // Function : saveAs
-/*! Purpose  : Emit saved() */
+/*! Purpose  : Emit saved()*/
 //================================================================
-bool LightApp_DataModel::saveAs( const QString&, CAM_Study* )
+bool LightApp_DataModel::saveAs( const QString&, CAM_Study*, QStringList& )
 {
   emit saved();
   return true;
@@ -75,7 +75,7 @@ bool LightApp_DataModel::close()
 
 //================================================================
 // Function : update
-/*! Purpose  : Update application.*/
+/*! Purpose  : Update application (empty virtual function).*/
 //================================================================
 void LightApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
 {

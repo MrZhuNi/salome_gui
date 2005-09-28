@@ -78,7 +78,7 @@ LightApp_VTKSelector
 }
 
 /*!
-  Gets type of salome vtk viewer.
+  Gets type of vtk viewer.
 */
 QString
 LightApp_VTKSelector

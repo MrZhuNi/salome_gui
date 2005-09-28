@@ -80,7 +80,9 @@ void LightApp_Module::contextMenuPopup( const QString& client, QPopupMenu* menu,
   delete sel;
 }
 
-/*!Update object browser.*/
+/*!Update object browser.
+ * For updating model or whole object browser use update() method can be used.
+*/
 void LightApp_Module::updateObjBrowser( bool updateDataModel, SUIT_DataObject* root )
 {
   if( updateDataModel )
@@ -141,7 +143,7 @@ LightApp_Application* LightApp_Module::getApp() const
 
 /*!
  * \brief Update something in accordance with update flags
-  * \param theFlags - update flags
+ * \param theFlags - update flags
 *
 * Update viewer or/and object browser etc. in accordance with update flags ( see
 * LightApp_UpdateFlags enumeration ). Derived modules can redefine this method for their
@@ -276,7 +278,7 @@ void LightApp_Module::setPreferenceProperty( const int id, const QString& prop, 
 
 /*!
  * \brief Starts operation with given identifier
-  * \param id - identifier of operation to be started
+ * \param id - identifier of operation to be started
 *
 * Module stores operations in map. This method starts operation by id.
 * If operation isn't in map, then it will be created by createOperation method
@@ -311,6 +313,7 @@ void LightApp_Module::startOperation( const int id )
 * Creates operation with given id. You should not call this method, it will be called
 * automatically from startOperation. You may redefine this method in concrete module to
 * create operations. 
+
 */
 LightApp_Operation* LightApp_Module::createOperation( const int /*id*/ ) const
 {
@@ -319,7 +322,7 @@ LightApp_Operation* LightApp_Module::createOperation( const int /*id*/ ) const
 
 /*!
  * \brief Virtual protected slot called when operation stopped
-  * \param theOp - stopped operation
+ * \param theOp - stopped operation
 *
 * Virtual protected slot called when operation stopped. Redefine this slot if you want to
 * perform actions after stopping operation

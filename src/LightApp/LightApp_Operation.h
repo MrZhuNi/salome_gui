@@ -1,4 +1,4 @@
-//  SALOME LightApp
+//  LIGHT LightApp
 //
 //  Copyright (C) 2005  CEA/DEN, EDF R&D
 //
@@ -6,7 +6,7 @@
 //
 //  File   : LightApp_Operation.h
 //  Author : Sergey LITONIN
-//  Module : SALOME
+//  Module : LIGHT
 
 
 #ifndef LightApp_Operation_H
@@ -27,9 +27,9 @@ class SUIT_Desktop;
 */
 
 /*!
- * \brief Base class for all salome operations
+ * \brief Base class for all operations
  *
- *  Base class for all salome operations (see SUIT_Operation for more description)
+ *  Base class for all operations (see SUIT_Operation for more description)
 */
 class LightApp_Operation : public SUIT_Operation
 {

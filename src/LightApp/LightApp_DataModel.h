@@ -17,8 +17,9 @@ class LightApp_Module;
 class LightApp_Study;
 class LightApp_DataObject;
 
-//   Class       : LightApp_DataModel
-///  Description : Base class of data model
+/*!
+  Description : Base class of data model
+*/
 class LIGHTAPP_EXPORT LightApp_DataModel : public CAM_DataModel
 {
   Q_OBJECT
@@ -27,9 +28,9 @@ public:
                                       LightApp_DataModel ( CAM_Module* theModule );
   virtual                             ~LightApp_DataModel();
 
-  virtual bool                        open( const QString&, CAM_Study* );
-  virtual bool                        save();
-  virtual bool                        saveAs( const QString&, CAM_Study* );
+  virtual bool                        open( const QString&, CAM_Study*, QStringList );
+  virtual bool                        save( QStringList& );
+  virtual bool                        saveAs( const QString&, CAM_Study*, QStringList& );
   virtual bool                        close();
 
   virtual void                        update( LightApp_DataObject* = 0, LightApp_Study* = 0 );

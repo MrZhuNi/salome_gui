@@ -27,7 +27,7 @@ class QVariant;
 
 /*
   Class : LightApp_Module
-  Description : Base class for all salome modules
+  Description : Base class for all light modules
 */
 
 class LIGHTAPP_EXPORT LightApp_Module : public CAM_Module
@@ -49,13 +49,9 @@ public:
   LightApp_Application*               getApp() const;
 
   virtual void                        update( const int );
-  // Update viewer or/and object browser etc. in accordance with update flags
-  // ( see LightApp_UpdateFlags enumeration ). Derived modules can redefine this method
-  // for their own purposes
 
   virtual void                        updateObjBrowser( bool = true, SUIT_DataObject* = 0 );
-   // Update object bropwser ( for updating model or whole object browser use update() method
-  // can be used )
+
   virtual void                        selectionChanged();
   virtual void                        preferencesChanged( const QString&, const QString& );
 
@@ -88,16 +84,9 @@ protected:
 				                     const QString& param = QString::null );
   QVariant                            preferenceProperty( const int, const QString& ) const;
   void                                setPreferenceProperty( const int, const QString&, const QVariant& );
-  /*! Module stores operations in map. This method starts operation by id.
-   *  If operation isn't in map, then it will be created by createOperation method
-   *  and will be inserted to map
-   */
-  void                                startOperation( const int );
 
-  /*! Create operation by its id. You must not call this method, it will be called automatically
-   *  by startOperation. Please redefine this method in current module
-   */
-  virtual LightApp_Operation*        createOperation( const int ) const;
+  void                                startOperation( const int );
+  virtual LightApp_Operation*         createOperation( const int ) const;
 
   virtual void                        updateControls();
 
