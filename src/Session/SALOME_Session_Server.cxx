@@ -327,7 +327,7 @@ int main( int argc, char **argv )
 
       // create splash object: widget ( splash with progress bar ) and "pinging" thread
       InquireServersGUI splash;
-      splash.setPixmap( resMgr.loadPixmap( "LightApp", QObject::tr( "ABOUT" ) ) );
+      splash.setPixmap( resMgr.loadPixmap( "SalomeApp", QObject::tr( "ABOUT" ) ) );
       SUIT_Tools::centerWidget( &splash, _qappl.desktop() );
       
       _qappl.setMainWidget( &splash );
