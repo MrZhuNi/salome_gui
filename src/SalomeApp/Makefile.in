@@ -62,8 +62,7 @@ LIB_CLIENT_IDL = SALOMEDS.idl \
 		 SALOME_Exception.idl \
 		 SALOME_GenericObj.idl
 
-RESOURCES_FILES = icon_about.png \
-		  SalomeApp.ini \
+RESOURCES_FILES = SalomeApp.ini \
 		  SalomeApp.xml
 
 CPPFLAGS+=$(PYTHON_INCLUDES) $(QT_INCLUDES) $(QWT_INCLUDES) $(OCC_INCLUDES) $(VTK_INCLUDES) $(BOOST_CPPFLAGS) -I${KERNEL_ROOT_DIR}/include/salome

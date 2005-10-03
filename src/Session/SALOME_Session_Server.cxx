@@ -323,11 +323,11 @@ int main( int argc, char **argv )
       SUIT_ResourceMgr resMgr( "SalomeApp", QString( "%1Config" ) );
       resMgr.setVersion( salomeVersion() );
       resMgr.setCurrentFormat( "xml" );
-      resMgr.loadLanguage( "SalomeApp", "en" );
+      resMgr.loadLanguage( "LightApp", "en" );
 
       // create splash object: widget ( splash with progress bar ) and "pinging" thread
       InquireServersGUI splash;
-      splash.setPixmap( resMgr.loadPixmap( "SalomeApp", QObject::tr( "ABOUT" ) ) );
+      splash.setPixmap( resMgr.loadPixmap( "LightApp", QObject::tr( "ABOUT" ) ) );
       SUIT_Tools::centerWidget( &splash, _qappl.desktop() );
       
       _qappl.setMainWidget( &splash );
