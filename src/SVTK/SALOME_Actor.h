@@ -111,6 +111,11 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 
   virtual
   void
+  highlight(bool theHighlight, 
+	    SVTK_Selector* theSelector);
+
+  virtual
+  void
   highlight(bool theHighlight);  
 
   virtual

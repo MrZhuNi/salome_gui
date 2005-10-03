@@ -258,7 +258,7 @@ void
 SALOME_Actor
 ::highlight(bool theHighlight) 
 { 
-  highlight(theHighlight,ActorSelection); 
+  highlight(theHighlight,mySelectionMode); 
 }  
 
 bool
@@ -867,7 +867,7 @@ SALOME_Actor
 
   vtkRenderer *aRenderer = theInteractorStyle->GetCurrentRenderer();
   //
-  int aSelectionMode = theSelectionEvent->mySelectionMode;
+  Selection_Mode aSelectionMode = theSelectionEvent->mySelectionMode;
   float x1 = theSelectionEvent->myX;
   float y1 = theSelectionEvent->myY;
   float z1 = 0.0;
@@ -1052,10 +1052,22 @@ SALOME_Actor
     }
   }
 
+  mySelectionMode = aSelectionMode;
+
+  highlight(theIsHighlight,theSelector);
+
+  return true;
+}
+
+void
+SALOME_Actor
+::highlight(bool theIsHighlight, 
+	    SVTK_Selector* theSelector)
+{
   TColStd_IndexedMapOfInteger aMapIndex;
   theSelector->GetIndex( getIO(), aMapIndex );
 
-  switch( aSelectionMode )
+  switch( mySelectionMode )
   {
     case NodeSelection:
       myHighlightProperty->SetRepresentationToPoints();
@@ -1076,10 +1088,9 @@ SALOME_Actor
       break;
   }
 
-  highlight( theIsHighlight, aSelectionMode );
-
-  return true;
+  highlight( theIsHighlight, mySelectionMode );
 }
+
 
 //----------------------------------------------------------------------------
 void

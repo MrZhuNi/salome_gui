@@ -141,6 +141,25 @@ struct THighlightAction
   }
 };
 
+struct TSelectionAction
+{
+  bool myIsHighlight;
+  SVTK_Selector* mySelector;
+  TSelectionAction( bool theIsHighlight, 
+		    SVTK_Selector* theSelector ):
+    myIsHighlight( theIsHighlight ),
+    mySelector( theSelector ) 
+  {}
+
+  void
+  operator()( SALOME_Actor* theActor) 
+  {
+    if(theActor->GetMapper()){
+      theActor->highlight( myIsHighlight, mySelector );
+    }
+  }
+};
+
 void
 SVTK_SignalHandler
 ::onSelectionChanged()
@@ -153,14 +172,13 @@ SVTK_SignalHandler
   SVTK_Selector* aSelector = myMainWindow->GetSelector();
   const SALOME_ListIO& aListIO = aSelector->StoredIObjects();
   SALOME_ListIteratorOfListIO anIter(aListIO);
-  Selection_Mode aSelectionMode = aSelector->SelectionMode();
   for(; anIter.More(); anIter.Next()){
     ForEachIf<SALOME_Actor>(anActors,
 			    TIsSameIObject<SALOME_Actor>(anIter.Value()),
-			    THighlightAction(true,aSelectionMode));
+			    TSelectionAction(true,aSelector));
   }
 
-  myMainWindow->Repaint();
+  myMainWindow->Repaint(false);
 }
 
 
