@@ -36,6 +36,8 @@
 #include "SVTK_MainWindow.h"
 #include "SVTK_MainWindow.h"
 #include "SVTK_NonIsometricDlg.h"
+#include "SVTK_CubeAxesDlg.h"
+#include "SVTK_FontWidget.h"
 #include "SVTK_ViewModel.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_Renderer.h"

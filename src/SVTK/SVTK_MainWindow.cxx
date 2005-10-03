@@ -39,6 +39,7 @@
 #include "SUIT_Tools.h"
 #include "SUIT_ResourceMgr.h"
 #include "SVTK_NonIsometricDlg.h"
+#include "SVTK_CubeAxesDlg.h"
 
 #include "SVTK_MainWindow.h"
 #include "SVTK_Event.h"
@@ -482,6 +483,17 @@ SVTK_MainWindow
   myActionsMap[ NonIsometric ] = anAction;
 
   myNonIsometricDlg = new SVTK_NonIsometricDlg(this,"SVTK_NonIsometricDlg",anAction);
+
+  // onGraduatedAxes: Manage graduated axes params
+  anAction = new QtxAction(tr("MNU_SVTK_GRADUATED_AXES"), 
+			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_GRADUATED_AXES" ) ),
+			   tr( "MNU_SVTK_GRADUATED_AXES" ), 0, this);
+  anAction->setStatusTip(tr("DSC_SVTK_GRADUATED_AXES"));
+  anAction->setToggleAction(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onGraduatedAxes(bool)));
+  myActionsMap[ GraduatedAxes ] = anAction;
+
+  myCubeAxesDlg = new SVTK_CubeAxesDlg(this,"SVTK_CubeAxesDlg",anAction);
 }
 
 //----------------------------------------------------------------------------
@@ -514,6 +526,7 @@ SVTK_MainWindow
   myActionsMap[ResetId]->addTo(myToolBar);
 
   myActionsMap[NonIsometric]->addTo(myToolBar);
+  myActionsMap[GraduatedAxes]->addTo(myToolBar);
 }
 
 //----------------------------------------------------------------------------
@@ -650,6 +663,17 @@ SVTK_MainWindow
     myNonIsometricDlg->show();
   }else
     myNonIsometricDlg->hide();
+}
+
+void
+SVTK_MainWindow
+::onGraduatedAxes(bool theIsActivate)
+{
+  if(theIsActivate){
+    myCubeAxesDlg->Update();
+    myCubeAxesDlg->show();
+  }else
+    myCubeAxesDlg->hide();
 }
 
 //----------------------------------------------------------------------------

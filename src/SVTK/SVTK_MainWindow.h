@@ -25,6 +25,7 @@ class SUIT_ResourceMgr;
 class SVTK_RenderWindowInteractor;
 class SVTK_NonIsometricDlg;
 class SVTK_CubeAxesActor2D;
+class SVTK_CubeAxesDlg;
 
 class VTKViewer_Trihedron;
 class VTKViewer_Transform;
@@ -167,6 +168,7 @@ public:
   void onViewCubeAxes();
 
   void onNonIsometric(bool theIsActivate);
+  void onGraduatedAxes(bool theIsActivate);
 
   void onAdjustTrihedron();
   void onAdjustCubeAxes();
@@ -188,10 +190,12 @@ public:
 
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
-	 ViewTrihedronId, NonIsometric};
+	 ViewTrihedronId, NonIsometric, GraduatedAxes};
   typedef QMap<int, QtxAction*> TActionsMap;
 
   SVTK_NonIsometricDlg* myNonIsometricDlg;
+  SVTK_CubeAxesDlg* myCubeAxesDlg;
+
   vtkSmartPointer<vtkObject> myEventDispatcher;
   TActionsMap myActionsMap;  
   QToolBar* myToolBar;
