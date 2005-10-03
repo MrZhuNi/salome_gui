@@ -35,3 +35,6 @@ msgstr ""
 
 msgid "ICON_SVTK_SCALING"
 msgstr "view_scaling.png"
+
+msgid "ICON_GRADUATED_AXES"
+msgstr "view_graduated_axes.png"
