@@ -61,8 +61,10 @@ using namespace std;
 
 #ifdef _DEBUG_
 static int MYDEBUG = 0;
+static int MYVTKDEBUG = 0;
 #else
 static int MYDEBUG = 0;
+static int MYVTKDEBUG = 0;
 #endif
 
 static bool GENERATE_SUIT_EVENTS = false;
@@ -409,10 +411,16 @@ SVTK_RenderWindowInteractor
 
   // Sequence of the destruction call are fixed and should be changed.
   // vtkRenderWindow instance should be destroyed after all vtkRenderer's
+  if(MYVTKDEBUG){
+    getRenderWindow()->DebugOn();
+    getRenderer()->DebugOn();
+    GetDevice()->DebugOn();
+  }
   GetDevice()->SetInteractorStyle(NULL); 
   while(!myInteractorStyles.empty()){
     const PInteractorStyle& aStyle = myInteractorStyles.top();
     aStyle->SetInteractor(NULL);
+    if(MYVTKDEBUG) aStyle->DebugOn();
     myInteractorStyles.pop();
   }
 
