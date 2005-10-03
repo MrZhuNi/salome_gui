@@ -153,12 +153,16 @@
   <parameter value="${VISU_ROOT_DIR}/share/salome/resources/sprite_texture.bmp" name="point_sprite_main_texture" />
   <parameter value="${VISU_ROOT_DIR}/share/salome/resources/sprite_alpha.bmp" name="point_sprite_alpha_texture" />
   <parameter value="0.1" name="point_sprite_alpha_threshold" />
-  <parameter value="10" name="point_sprite_size" />
   <parameter value="3" name="point_sprite_min_size" />
-  <parameter value="33" name="point_sprite_max_size" />
+  <parameter value="30" name="point_sprite_max_size" />
   <parameter value="100" name="point_sprite_magnification" />
   <parameter value="10" name="point_sprite_increment" />
+  <parameter value="10" name="point_sprite_size" />
   <parameter value="0, 0, 255" name="point_sprite_color" />
+  <parameter value="true" name="scalar_bar_display_global" />
+  <parameter value="0" name="scalar_bar_active_local" />
+  <parameter value="1" name="scalar_bar_bicolor" />
+  <parameter value="0.01" name="scalar_bar_spacing" />
   </section>
   <!-- Here go optional sections for other modules -->
   <section name="resources">
