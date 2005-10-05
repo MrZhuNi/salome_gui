@@ -117,11 +117,9 @@ SVTK_InteractorStyle
 
   // set default values of properties.  user may edit them in preferences.
   mySpeedIncrement = 10;
-  mySpaceMouseBtns[0] = 1;
-  mySpaceMouseBtns[1] = 2;
-  mySpaceMouseBtns[2] = 10;
-  mySpaceMouseBtns[3] = 11;
-  mySpaceMouseBtns[4] = 9;
+  mySMDecreaseSpeedBtn = 1;
+  mySMIncreaseSpeedBtn = 2;
+  mySMDominantCombinedSwitchBtn = 9;
 }
 
 //----------------------------------------------------------------------------
@@ -1145,11 +1143,11 @@ SVTK_InteractorStyle
 ::SetInteractor( vtkRenderWindowInteractor* theInteractor )
 {
   // register EventCallbackCommand as observer of standard events (keypress, mousemove, etc)
-  vtkInteractorStyle::SetInteractor( theInteractor );
+  Superclass::SetInteractor( theInteractor );
  
   myInteractor = dynamic_cast<SVTK_GenericRenderWindowInteractor*>(theInteractor);
 
-  if ( myInteractor.GetPointer() ) { 
+  if(theInteractor) { 
     // register EventCallbackCommand as observer of custorm event (3d space mouse event)
     theInteractor->AddObserver( SVTK::SpaceMouseMoveEvent, EventCallbackCommand, Priority );
     theInteractor->AddObserver( SVTK::SpaceMouseButtonEvent, EventCallbackCommand, Priority );
@@ -1167,11 +1165,9 @@ SVTK_InteractorStyle
     theInteractor->AddObserver( SVTK::MinusSpeedIncrementEvent, EventCallbackCommand, Priority );
     theInteractor->AddObserver( SVTK::SetSpeedIncrementEvent, EventCallbackCommand, Priority );
 
-    theInteractor->AddObserver( SVTK::SetSpaceMouseF1Event, EventCallbackCommand, Priority );
-    theInteractor->AddObserver( SVTK::SetSpaceMouseF2Event, EventCallbackCommand, Priority );
-    theInteractor->AddObserver( SVTK::SetSpaceMouseF3Event, EventCallbackCommand, Priority );
-    theInteractor->AddObserver( SVTK::SetSpaceMouseF4Event, EventCallbackCommand, Priority );
-    theInteractor->AddObserver( SVTK::SetSpaceMouseF5Event, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SetSMDecreaseSpeedEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SetSMIncreaseSpeedEvent, EventCallbackCommand, Priority );
+    theInteractor->AddObserver( SVTK::SetSMDominantCombinedSwitchEvent, EventCallbackCommand, Priority );
 
     theInteractor->AddObserver( SVTK::StartZoom, EventCallbackCommand, Priority );
     theInteractor->AddObserver( SVTK::StartPan, EventCallbackCommand, Priority );
@@ -1204,9 +1200,6 @@ void
 SVTK_InteractorStyle
 ::onSpaceMouseMove( double* data )
 {
-  //  printf( "x=%+5.0lf y=%+5.0lf z=%+5.0lf a=%+5.0lf b=%+5.0lf c=%+5.0lf\n",
-  //	  data[0], data[1], data[2], data[3], data[4], data[5] );
-  
   // general things, do SetCurrentRenderer() within FindPokedRenderer() 
   int x, y;
   GetEventPosition( this->Interactor, x, y ); // current mouse position (from last mouse move event or any other event)
@@ -1222,27 +1215,12 @@ void
 SVTK_InteractorStyle
 ::onSpaceMouseButton( int button )
 {
-  if ( mySpaceMouseBtns[0] == button )    --mySpeedIncrement;
-  if ( mySpaceMouseBtns[1] == button )    ++mySpeedIncrement;
-  if ( mySpaceMouseBtns[2] == button )    DecreaseGaussPointMagnification();
-  if ( mySpaceMouseBtns[3] == button )    IncreaseGaussPointMagnification();
-  if ( mySpaceMouseBtns[4] == button )    DominantCombinedSwitch();
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorStyle
-::DecreaseGaussPointMagnification()
-{
-  printf( "\n--DecreaseGaussPointMagnification() NOT IMPLEMENTED--\n" );
-}
-
-//----------------------------------------------------------------------------
-void
-SVTK_InteractorStyle
-::IncreaseGaussPointMagnification()
-{
-  printf( "\n--IncreaseGaussPointMagnification() NOT IMPLEMENTED--\n" );
+  if( mySMDecreaseSpeedBtn == button )    
+    --mySpeedIncrement;
+  if( mySMIncreaseSpeedBtn == button )    
+    ++mySpeedIncrement;
+  if( mySMDominantCombinedSwitchBtn == button )    
+    DominantCombinedSwitch();
 }
 
 //----------------------------------------------------------------------------
@@ -1312,20 +1290,14 @@ SVTK_InteractorStyle
 	self->mySpeedIncrement = *((int*)callData);
 	return;
 
-      case SVTK::SetSpaceMouseF1Event:
-	self->mySpaceMouseBtns[0] = *((int*)callData);
+      case SVTK::SetSMDecreaseSpeedEvent:
+	self->mySMDecreaseSpeedBtn = *((int*)callData);
 	return;
-      case SVTK::SetSpaceMouseF2Event:
-	self->mySpaceMouseBtns[1] = *((int*)callData);
+      case SVTK::SetSMIncreaseSpeedEvent:
+	self->mySMIncreaseSpeedBtn = *((int*)callData);
 	return;
-      case SVTK::SetSpaceMouseF3Event:
-	self->mySpaceMouseBtns[2] = *((int*)callData);
-	return;
-      case SVTK::SetSpaceMouseF4Event:
-	self->mySpaceMouseBtns[3] = *((int*)callData);
-	return;
-      case SVTK::SetSpaceMouseF5Event:
-	self->mySpaceMouseBtns[4] = *((int*)callData);
+      case SVTK::SetSMDominantCombinedSwitchEvent:
+	self->mySMDominantCombinedSwitchBtn = *((int*)callData);
 	return;
 
       case SVTK::StartZoom:
@@ -1346,5 +1318,6 @@ SVTK_InteractorStyle
       }
     }
   }
-  vtkInteractorStyle::ProcessEvents( object, event, clientData, callData );
+
+  Superclass::ProcessEvents( object, event, clientData, callData );
 }

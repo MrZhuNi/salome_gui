@@ -21,13 +21,13 @@
 //
 //
 //
-//  File   : SVTK_SpaceMouseEvent.h
+//  File   : 
 //  Author : Alexander SLADKOV
 //  Module : SALOME
 //  $Header$
 
-#ifndef SVTK_SpaceMouseEvent_h
-#define SVTK_SpaceMouseEvent_h
+#ifndef SVTK_Event_h
+#define SVTK_Event_h
 
 #include <vtkCommand.h>
 
@@ -51,11 +51,9 @@ namespace SVTK
     MinusSpeedIncrementEvent,
     SetSpeedIncrementEvent,
 
-    SetSpaceMouseF1Event,
-    SetSpaceMouseF2Event,
-    SetSpaceMouseF3Event,
-    SetSpaceMouseF4Event,
-    SetSpaceMouseF5Event,
+    SetSMDecreaseSpeedEvent,
+    SetSMIncreaseSpeedEvent,
+    SetSMDominantCombinedSwitchEvent,
 
     StartZoom,
     StartPan,

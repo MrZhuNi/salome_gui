@@ -167,8 +167,12 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   IncrementalRotate( const int incrX, const int incrY );
 
   // custom event handling function (to handle 3d space mouse events)
-  static void ProcessEvents( vtkObject* object, unsigned long event,
-			     void* clientData, void* callData );
+  static 
+  void
+  ProcessEvents(vtkObject* object, 
+		unsigned long event,
+		void* clientData, 
+		void* callData );
 
   float MotionFactor;
   float RadianToDegree;                 // constant: for conv from deg to rad
@@ -192,10 +196,8 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   void setCursor(const int operation);
 
   void onSpaceMouseMove( double* data );
-  void onSpaceMouseButton( int button );
+  virtual void onSpaceMouseButton( int button );
 
-  void DecreaseGaussPointMagnification();
-  void IncreaseGaussPointMagnification();
   void DominantCombinedSwitch();
   
  protected:
@@ -212,13 +214,13 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   bool                      myShiftState;
   int                       ForcedState;
 
-  int                       mySpeedIncrement; // "increment" for pan/rotate/zoom operations
-  int                       mySpaceMouseBtns[5];  // space_mouse_button assigned for functions 1..5 :
-  // [1] Decrease Speed Increment
-  // [2] Increase Speed Increment
-  // [3] Decrease Gauss Point Magnification
-  // [4] Increase Gauss Point Magnification
-  // [5] Dominant Combined Switch
+  // "increment" for pan/rotate/zoom operations
+  int                       mySpeedIncrement; 
+  
+  // SpaceMouse short cuts
+  int                       mySMDecreaseSpeedBtn;
+  int                       mySMIncreaseSpeedBtn;
+  int                       mySMDominantCombinedSwitchBtn;
   
   QWidget* myRenderWidget;
   vtkSmartPointer<SVTK_GenericRenderWindowInteractor> myInteractor;
