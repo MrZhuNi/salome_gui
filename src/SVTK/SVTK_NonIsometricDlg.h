@@ -53,6 +53,8 @@ public:
   void Update();
 
 protected:
+  virtual void closeEvent( QCloseEvent* );
+
   SVTK_MainWindow *m_MainWindow;
   QtxAction* m_Action;
 

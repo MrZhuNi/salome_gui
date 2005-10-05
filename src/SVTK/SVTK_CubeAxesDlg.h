@@ -63,6 +63,9 @@ public:
 
   void            Update();
 
+protected:
+  virtual void    closeEvent( QCloseEvent* );
+
 private slots:
   void            onOk();
   bool            onApply();

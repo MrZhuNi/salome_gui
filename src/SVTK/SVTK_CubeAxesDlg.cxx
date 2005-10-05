@@ -564,3 +564,8 @@ void SVTK_CubeAxesDlg::onClose()
 
   myAction->setOn( false );
 }
+
+void SVTK_CubeAxesDlg::closeEvent( QCloseEvent* )
+{
+  myAction->setOn( false );
+}

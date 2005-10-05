@@ -192,3 +192,10 @@ SVTK_NonIsometricDlg
 
   m_Action->setOn( false );
 }
+
+void 
+SVTK_NonIsometricDlg
+::closeEvent( QCloseEvent* )
+{
+  m_Action->setOn( false );
+}
