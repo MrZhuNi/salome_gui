@@ -63,10 +63,6 @@
 //VRV: porting on Qt 3.0.5
 #include <algorithm>
 
-// undefining min and max because CASCADE's Xw_Extensions.hxx defines them and
-// it clashes with std::min(), std::max() included in utilities.h
-#undef min
-#undef max
 #include "utilities.h"
 
 using namespace std;

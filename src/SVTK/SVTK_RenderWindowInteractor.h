@@ -34,6 +34,12 @@
 
 #include <vtkSmartPointer.h>
 #include <qwidget.h>
+
+// undefining min and max because CASCADE's defines them and
+// it clashes with std::min(), std::max()
+#undef min
+#undef max
+
 #include <stack>
 
 class vtkGenericRenderWindowInteractor;

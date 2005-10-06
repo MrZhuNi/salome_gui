@@ -42,6 +42,11 @@
 #include <vtkObjectFactory.h>
 #include <vtkCallbackCommand.h>
 
+// undefining min and max because CASCADE's defines them and
+// it clashes with std::min(), std::max() included in utilities.h
+#undef min
+#undef max
+
 #include "utilities.h"
 
 #ifdef _DEBUG_

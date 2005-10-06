@@ -33,9 +33,14 @@
 #include "SVTK_Selector.h"
 #include "SVTK.h"
 
-#include "VTKViewer_Actor.h"
-
 #include "SALOME_InteractiveObject.hxx"
+
+// undefining min and max because CASCADE's defines them and
+// it clashes with std::min(), std::max()
+#undef min
+#undef max
+
+#include "VTKViewer_Actor.h"
 
 #include <string>
 #include <vector>
