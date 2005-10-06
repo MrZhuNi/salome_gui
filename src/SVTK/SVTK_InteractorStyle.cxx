@@ -1208,6 +1208,7 @@ SVTK_InteractorStyle
   IncrementalZoom( (int)data[2] );        // 1. push toward / pull backward = zoom out / zoom in
   IncrementalPan(  (int)data[0],  (int)data[1] );// 2. pull up / push down = pan up / down, 3. move left / right = pan left / right
   IncrementalRotate( 0,  (int)data[4] );   // 4. twist the control = rotate around Y axis
+  IncrementalRotate( (int)data[3], 0  );   // 5. tilt the control forward/backward = rotate around X axis (Z axis of local coordinate system of space mouse)
 }
 
 //----------------------------------------------------------------------------
