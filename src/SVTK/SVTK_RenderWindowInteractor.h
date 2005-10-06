@@ -87,6 +87,9 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
   virtual void wheelEvent( QWheelEvent* );
   virtual void keyPressEvent( QKeyEvent* );
   virtual void keyReleaseEvent( QKeyEvent* );
+  virtual void enterEvent( QEvent * );
+  virtual void leaveEvent( QEvent * );
+
   virtual void contextMenuEvent( QContextMenuEvent * e );
 
   // reimplemented from QWidget in order to set window - receiver
@@ -96,6 +99,7 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
 
   virtual bool x11Event( XEvent *e );
 
+  QWidget* myPreviousFocusWidget;
   vtkSmartPointer<vtkRenderWindow> myRenderWindow;
   vtkSmartPointer<vtkGenericRenderWindowInteractor> myDevice;
 };

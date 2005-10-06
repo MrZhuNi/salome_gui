@@ -76,7 +76,8 @@ QVTK_RenderWindowInteractor
 ::QVTK_RenderWindowInteractor(QWidget* theParent, 
 			      const char* theName):
   QWidget(theParent,theName),
-  myRenderWindow(vtkRenderWindow::New())
+  myRenderWindow(vtkRenderWindow::New()),
+  myPreviousFocusWidget(NULL)
 {
   if(MYDEBUG) INFOS("QVTK_RenderWindowInteractor() - "<<this);
   setMouseTracking(true);
@@ -314,6 +315,31 @@ QVTK_RenderWindowInteractor
 //----------------------------------------------------------------------------
 void  
 QVTK_RenderWindowInteractor
+::enterEvent( QEvent* event )
+{
+  if(qApp->focusWidget() != this)
+    myPreviousFocusWidget = qApp->focusWidget();
+
+  QWidget::setFocus();
+
+  GetDevice()->EnterEvent();
+}
+
+//----------------------------------------------------------------------------
+void  
+QVTK_RenderWindowInteractor
+::leaveEvent( QEvent * )
+{
+  if(myPreviousFocusWidget)
+    myPreviousFocusWidget->setFocus();
+
+  GetDevice()->LeaveEvent();
+}
+
+
+//----------------------------------------------------------------------------
+void  
+QVTK_RenderWindowInteractor
 ::focusInEvent( QFocusEvent* event )
 {
   QWidget::focusInEvent( event );
@@ -326,8 +352,6 @@ QVTK_RenderWindowInteractor
       aSpaceMouse->setWindow(x11Display(),winId());
     }
   }
-
-  GetDevice()->EnterEvent();
 }
 
 //----------------------------------------------------------------------------
@@ -342,8 +366,6 @@ QVTK_RenderWindowInteractor
     if(aSpaceMouse->isSpaceMouseOn())
       aSpaceMouse->setWindow(x11Display(),0);
   }
-
-  GetDevice()->LeaveEvent();
 }
 
 
