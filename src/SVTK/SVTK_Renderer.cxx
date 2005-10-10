@@ -125,6 +125,14 @@ SVTK_Renderer
 ::~SVTK_Renderer()
 {
   if(MYDEBUG) INFOS("~SVTK_Renderer() - "<<this);
+  vtkActorCollection* anActors = GetDevice()->GetActors();
+  anActors->InitTraversal();
+  while(vtkActor* anAct = anActors->GetNextActor()){
+    if(VTKViewer_Actor* anActor = dynamic_cast<VTKViewer_Actor*>(anAct)){
+      anActor->RemoveFromRender(GetDevice());
+      anActor->SetTransform(NULL);
+    }
+  }
 }
 
 
