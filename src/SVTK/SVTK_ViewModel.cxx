@@ -50,25 +50,42 @@ static _PTR(Study) getStudyDS()
 }
 
 //==========================================================
-SVTK_Viewer::SVTK_Viewer()
+SVTK_Viewer
+::SVTK_Viewer()
 {
-  myTrihedronSize = 100;
+  myTrihedronSize = 105;
 }
 
 //==========================================================
-SVTK_Viewer::~SVTK_Viewer() 
+SVTK_Viewer
+::~SVTK_Viewer() 
 {
 }
 
-QColor SVTK_Viewer::backgroundColor() const
+QColor
+SVTK_Viewer
+::backgroundColor() const
 {
   return myBgColor;
 }
 
-void SVTK_Viewer::setBackgroundColor( const QColor& c )
+void
+SVTK_Viewer
+::setBackgroundColor( const QColor& theColor )
 {
-  if ( c.isValid() )
-    myBgColor = c;
+  if ( !theColor.isValid() )
+    return;
+
+  QPtrVector<SUIT_ViewWindow> aViews = myViewManager->getViews();
+  for(int i = 0, iEnd = aViews.size(); i < iEnd; i++){
+    if(SUIT_ViewWindow* aViewWindow = aViews.at(i)){
+      if(TViewWindow* aView = dynamic_cast<TViewWindow*>(aViewWindow)){
+	aView->getMainWindow()->SetBackgroundColor(theColor);
+      }
+    }
+  }
+
+  myBgColor = theColor;
 }
 
 //==========================================================
