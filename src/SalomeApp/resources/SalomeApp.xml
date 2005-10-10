@@ -33,6 +33,7 @@
     <parameter name="GLViewer"     value="${SUITRoot}/resources"/>
     <parameter name="OCCViewer"    value="${SUITRoot}/resources"/>
     <parameter name="VTKViewer"    value="${SUITRoot}/resources"/>
+    <parameter name="SVTK"         value="${SUITRoot}/resources"/>
     <parameter name="SalomeApp"    value="${SUITRoot}/resources"/>
     <parameter name="OB"           value="${SUITRoot}/resources"/>
     <parameter name="CAM"          value="${SUITRoot}/resources"/>
@@ -75,6 +76,29 @@
   </section>
   <section name="ObjectBrowser" >
     <parameter value="false" name="auto_size" />
+    <parameter value="true" name="visibility_column_0" />
+    <parameter value="false" name="visibility_column_1" />
+    <parameter value="false" name="visibility_column_2" />
+    <parameter value="false" name="visibility_column_3" />
+  </section>
+  <section name="OCCViewer" >
+    <parameter value="35, 136, 145" name="background" />
+    <parameter value="1" name="iso_number_u" />
+    <parameter value="1" name="iso_number_v" />
+    <parameter value="100" name="trihedron_size" />
+ </section>
+ <section name="VTKViewer" >
+    <parameter value="0, 0, 0" name="background" />
+    <parameter value="100" name="trihedron_size" />
+ </section>
+ <section name="Plot2d" >
+    <parameter value="255, 255, 255" name="Background" />
+    <parameter value="1" name="CurveType" />
+    <parameter value="0" name="HorScaleMode" />
+    <parameter value="1" name="LegendPos" />
+    <parameter value="9" name="MarkerSize" />
+    <parameter value="true" name="ShowLegend" />
+    <parameter value="0" name="VerScaleMode" />
   </section>
   <section name="Geometry" >
     <parameter value="10" name="SettingsGeomStep" />
@@ -114,6 +138,8 @@
     <parameter value="0.01" name="scalar_bar_vertical_x" />
     <parameter value="0.1" name="scalar_bar_vertical_y" />
     <parameter value="true" name="DisplayMode" />
+    <parameter value="true" name="auto_update" />
+    <parameter value="1" name="display_mode" />
   </section>
   <section name="VISU" >
   <parameter value="false" name="full_med_loading" />
