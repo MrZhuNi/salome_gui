@@ -317,7 +317,7 @@ void
 QVTK_RenderWindowInteractor
 ::enterEvent( QEvent* event )
 {
-  if(qApp->focusWidget() != this)
+  if(false && qApp->focusWidget() != this)
     myPreviousFocusWidget = qApp->focusWidget();
 
   QWidget::setFocus();
@@ -330,7 +330,7 @@ void
 QVTK_RenderWindowInteractor
 ::leaveEvent( QEvent * )
 {
-  if(myPreviousFocusWidget)
+  if(false && myPreviousFocusWidget)
     myPreviousFocusWidget->setFocus();
 
   GetDevice()->LeaveEvent();
