@@ -128,9 +128,12 @@ SVTK_Renderer
   vtkActorCollection* anActors = GetDevice()->GetActors();
   anActors->InitTraversal();
   while(vtkActor* anAct = anActors->GetNextActor()){
-    if(VTKViewer_Actor* anActor = dynamic_cast<VTKViewer_Actor*>(anAct)){
-      anActor->RemoveFromRender(GetDevice());
+    if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(anAct)){
+      // Order of the calls are important because VTKViewer_Actor::RemoveFromRender
+      //   can leads do destruction of the actor
       anActor->SetTransform(NULL);
+      anActor->SetInteractor(NULL);
+      anActor->RemoveFromRender(GetDevice());
     }
   }
 }
@@ -178,20 +181,24 @@ void
 SVTK_Renderer
 ::AddActor(VTKViewer_Actor* theActor)
 {
-  if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor))
+  if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor)){
     anActor->SetInteractor(myInteractor);
-  theActor->SetTransform(GetTransform());
-  theActor->AddToRender(GetDevice());
-  AdjustActors();
+    anActor->SetTransform(GetTransform());
+    anActor->AddToRender(GetDevice());
+    AdjustActors();
+  }
 }
 
 void
 SVTK_Renderer
 ::RemoveActor(VTKViewer_Actor* theActor)
 {
-  theActor->SetTransform(NULL);
-  theActor->RemoveFromRender(GetDevice());
-  AdjustActors();
+  if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor)){
+    anActor->SetInteractor(NULL);
+    anActor->SetTransform(NULL);
+    anActor->RemoveFromRender(GetDevice());
+    AdjustActors();
+  }
 }
 
 VTKViewer_Transform* 
