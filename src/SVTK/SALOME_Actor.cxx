@@ -724,6 +724,9 @@ SALOME_Actor
 ::highlight(bool theHighlight, 
 	    Selection_Mode theSelectionMode)
 {
+  myHighlightActor->SetVisibility( false );
+  myOutlineActor->SetVisibility( false );
+
   if(hasHighlight() && theSelectionMode == ActorSelection)
     highlight(theHighlight);
   else{
@@ -732,11 +735,11 @@ SALOME_Actor
     if( !GetVisibility() )
       return;
     
-    if(theSelectionMode == ActorSelection){
-      myOutline->SetBounds( GetBounds() );
-      myOutlineActor->SetVisibility( theHighlight );
-    }else
+    if(theSelectionMode != ActorSelection)
       myHighlightActor->SetVisibility( theHighlight );
+
+    myOutline->SetBounds( GetBounds() );
+    myOutlineActor->SetVisibility( theHighlight );
   }
 }
 
