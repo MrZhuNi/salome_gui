@@ -1026,7 +1026,7 @@ SALOME_Actor
 	  }
 	}
 	if( !anIndices.IsEmpty() ) {
-	  theSelector->AddOrRemoveIndex( myIO, anIndices, false );
+	  theSelector->AddOrRemoveIndex( myIO, anIndices, true );
 	  theSelector->AddIObject( this );
 	  anIndices.Clear();
 	}
