@@ -188,15 +188,15 @@ SALOME_Actor
   myOutline = vtkOutlineSource::New();
   myOutline->Delete();
 
-  myOutlineMapper = vtkPolyDataMapper::New();
-  myOutlineMapper->Delete();
-  myOutlineMapper->SetInput(myOutline->GetOutput());
+  vtkSmartPointer<vtkPolyDataMapper> anOutlineMapper = vtkPolyDataMapper::New();
+  anOutlineMapper->Delete();
+  anOutlineMapper->SetInput(myOutline->GetOutput());
 
-  myOutlineActor = vtkActor::New();
+  myOutlineActor = VTKViewer_Actor::New();
   myOutlineActor->Delete();
   myOutlineActor->PickableOff();
   myOutlineActor->DragableOff();
-  myOutlineActor->SetMapper( myOutlineMapper.GetPointer() );
+  myOutlineActor->SetMapper( anOutlineMapper.GetPointer() );
   myOutlineActor->GetProperty()->SetColor(1.0,0.0,0.0);
   myOutlineActor->GetProperty()->SetAmbient(1.0);
   myOutlineActor->GetProperty()->SetDiffuse(0.0);
@@ -356,6 +356,7 @@ SALOME_Actor
 ::SetTransform(VTKViewer_Transform* theTransform)
 {
   myTransformFilter->SetTransform(theTransform);
+  myOutlineActor->SetTransform(theTransform);
 }
 
 

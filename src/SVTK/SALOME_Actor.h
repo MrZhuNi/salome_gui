@@ -55,7 +55,6 @@ class vtkDataSet;
 class vtkPolyData;
 class vtkCamera;
 class vtkProperty;
-class vtkPolyDataMapper;
 class vtkOutlineSource;
 class vtkRenderer;
 class vtkInteractorStyle;
@@ -392,9 +391,8 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   vtkSmartPointer<vtkProperty> myHighlightProperty;
   vtkSmartPointer<SVTK_Actor> myHighlightActor;
 
-  vtkSmartPointer<vtkActor> myOutlineActor;
+  vtkSmartPointer<VTKViewer_Actor> myOutlineActor;
   vtkSmartPointer<vtkOutlineSource> myOutline;
-  vtkSmartPointer<vtkPolyDataMapper> myOutlineMapper;
 };
 
 #endif // SALOME_ACTOR_H
