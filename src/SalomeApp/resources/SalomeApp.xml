@@ -196,7 +196,7 @@
   <parameter value="25" name="outside_point_sprite_size" />
   <parameter value="0, 255, 0" name="outside_point_sprite_color" />
   <parameter value="1.0" name="picking_pyramid_height" />
-  <parameter value="0.5" name="picking_transparency" />
+  <parameter value="50" name="picking_transparency" />
   <parameter value="0" name="picking_position" />
   <parameter value="1.5" name="picking_zoom_factor" />
   <parameter value="10" name="picking_step_number" />
