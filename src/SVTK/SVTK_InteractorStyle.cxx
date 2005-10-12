@@ -1318,3 +1318,7 @@ SVTK_InteractorStyle
 
   Superclass::ProcessEvents( object, event, clientData, callData );
 }
+//----------------------------------------------------------------------------
+void SVTK_InteractorStyle::OnChar()
+{
+}

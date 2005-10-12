@@ -130,6 +130,10 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   void
   OnRightButtonUp();
 
+  virtual
+  void
+  OnChar();
+
  protected:
   SVTK_InteractorStyle();
   ~SVTK_InteractorStyle();
