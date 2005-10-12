@@ -771,8 +771,7 @@ SALOME_Actor
     
   bool anIsChanged = (mySelectionMode != theSelectionEvent->mySelectionMode);
 
-  mySelectionMode = theSelectionEvent->mySelectionMode;
-
+  Selection_Mode aSelectionMode = theSelectionEvent->mySelectionMode;
   float x = theSelectionEvent->myX;
   float y = theSelectionEvent->myY;
   float z = 0.0;
@@ -821,7 +820,7 @@ SALOME_Actor
       if ( aVtkId >= 0 && theSelector->IsValid( this, aVtkId ) && hasIO() ) {
 	int anObjId = GetElemObjId (aVtkId );
 	if ( anObjId >= 0 ) {
-	  if ( CheckDimensionId(mySelectionMode,this,anObjId) ) {
+	  if ( CheckDimensionId(aSelectionMode,this,anObjId) ) {
 	    TColStd_IndexedMapOfInteger aMapIndex;
 	    aMapIndex.Add( anObjId );
 	    
@@ -879,6 +878,8 @@ SALOME_Actor
       break;
     }
   }
+
+  mySelectionMode = aSelectionMode;
 
   return anIsChanged;
 }
@@ -939,7 +940,7 @@ SALOME_Actor
       if( aVtkId >= 0 && theSelector->IsValid( this, aVtkId ) ) {
 	int anObjId = GetElemObjId( aVtkId );
 	if( anObjId >= 0 ) {
-	  if ( CheckDimensionId(mySelectionMode,this,anObjId) ) {
+	  if ( CheckDimensionId(aSelectionMode,this,anObjId) ) {
 	    if( theSelector->IsSelected( myIO ) )
 	      theSelector->AddOrRemoveIndex( myIO, anObjId, isShift );
 	    else {
@@ -1059,7 +1060,7 @@ SALOME_Actor
 
 	  int anObjId = GetElemObjId( aCellId );
 	  if( anObjId != -1 )
-	    if ( CheckDimensionId(mySelectionMode,this,anObjId) ) {
+	    if ( CheckDimensionId(aSelectionMode,this,anObjId) ) {
 	      anIndexes.Add(anObjId);
 	    }
 	}
