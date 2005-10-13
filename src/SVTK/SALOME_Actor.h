@@ -79,7 +79,7 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
  public:
   static SALOME_Actor* New();
   
-  vtkTypeMacro(SALOME_Actor,vtkLODActor);
+  vtkTypeMacro(SALOME_Actor,VTKViewer_Actor);
 
   //----------------------------------------------------------------------------
   virtual

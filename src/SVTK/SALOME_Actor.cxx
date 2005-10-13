@@ -355,7 +355,10 @@ void
 SALOME_Actor
 ::SetTransform(VTKViewer_Transform* theTransform)
 {
-  myTransformFilter->SetTransform(theTransform);
+  Superclass::SetTransform(theTransform);
+
+  myPreHighlightActor->SetTransform(theTransform);
+  myHighlightActor->SetTransform(theTransform);
   myOutlineActor->SetTransform(theTransform);
 }
 
@@ -398,7 +401,7 @@ SALOME_Actor
       aMapper->SetInput(myPassFilter[anId]->GetPolyDataOutput());
     }
   }
-  vtkLODActor::SetMapper(theMapper);
+  Superclass::SetMapper(theMapper);
 }
 
 
@@ -415,12 +418,12 @@ void
     vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
     vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(myPolygonOffsetFactor,
 								   myPolygonOffsetUnits);
-    vtkLODActor::Render(ren,m);
+    Superclass::Render(ren,m);
     
     vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(aFactor,aUnit);
     vtkMapper::SetResolveCoincidentTopology(aResolveCoincidentTopology);
   }else{
-    vtkLODActor::Render(ren,m);
+    Superclass::Render(ren,m);
   }
 }
 
@@ -739,7 +742,7 @@ SALOME_Actor
     if(theSelectionMode != ActorSelection)
       myHighlightActor->SetVisibility( theHighlight );
 
-    myOutline->SetBounds( GetBounds() );
+    myOutline->SetBounds( GetInput()->GetBounds() );
     myOutlineActor->SetVisibility( theHighlight );
   }
 }
