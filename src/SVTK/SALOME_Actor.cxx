@@ -308,6 +308,8 @@ SALOME_Actor
   theRenderer->AddActor( myPreHighlightActor.GetPointer() );
   theRenderer->AddActor( myHighlightActor.GetPointer() );
   theRenderer->AddActor( myOutlineActor.GetPointer() );
+
+  this->SetSelectionTolerance( 0.005 );
 }
 
 void 
