@@ -30,7 +30,6 @@
 #include "SVTK_InteractorStyle.h"
 
 #include "VTKViewer_Utilities.h"
-#include "VTKViewer_RectPicker.h"
 #include "SVTK_GenericRenderWindowInteractor.h"
 
 #include "SVTK_Selection.h"
@@ -93,10 +92,8 @@ vtkStandardNewMacro(SVTK_InteractorStyle);
 SVTK_InteractorStyle
 ::SVTK_InteractorStyle():
   mySelectionEvent(new SVTK_SelectionEvent()),
-  myRectPicker(VTKViewer_RectPicker::New()),
   myPicker(vtkPicker::New())
 {
-  myRectPicker->Delete();
   myPicker->Delete();
 
   if(MYDEBUG) INFOS("SVTK_InteractorStyle() - "<<this);
@@ -922,16 +919,7 @@ SVTK_InteractorStyle
 	  if(!myShiftState)
 	    GetSelector()->ClearIObjects();
 
-	  myRectPicker->SetTolerance(0.001);
-	  myRectPicker->Pick(aSelectionEvent->myLastX, 
-			     aSelectionEvent->myLastY, 
-			     0.0, 
-			     aSelectionEvent->myX, 
-			     aSelectionEvent->myY, 
-			     0.0, 
-			     GetCurrentRenderer());
-
-	  vtkActorCollection* aListActors = myRectPicker->GetActors();
+	  vtkActorCollection* aListActors = GetCurrentRenderer()->GetActors();
 	  aListActors->InitTraversal();
 	  while(vtkActor* aActor = aListActors->GetNextActor()){
 	    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)){

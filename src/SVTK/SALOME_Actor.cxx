@@ -904,18 +904,16 @@ SALOME_Actor
   vtkRenderer *aRenderer = theInteractorStyle->GetCurrentRenderer();
   //
   Selection_Mode aSelectionMode = theSelectionEvent->mySelectionMode;
-  float x1 = theSelectionEvent->myX;
-  float y1 = theSelectionEvent->myY;
-  float z1 = 0.0;
-  float x2 = theSelectionEvent->myLastX;
-  float y2 = theSelectionEvent->myLastY;
-  float z2 = 0.0;
   bool isShift = theSelectionEvent->myIsShift;
+
+  float x = theSelectionEvent->myX;
+  float y = theSelectionEvent->myY;
+  float z = 0.0;
 
   if( !theSelectionEvent->myIsRectangle ) {
     switch(aSelectionMode){
     case NodeSelection: {
-      myPointPicker->Pick( x1, y1, z1, aRenderer );
+      myPointPicker->Pick( x, y, z, aRenderer );
 
       int aVtkId = myPointPicker->GetPointId();
       if( aVtkId >= 0 && theSelector->IsValid( this, aVtkId, true ) ) {
@@ -939,7 +937,7 @@ SALOME_Actor
     case FaceSelection:
     case VolumeSelection: 
     {
-      myCellPicker->Pick( x1, y1, z1, aRenderer );
+      myCellPicker->Pick( x, y, z, aRenderer );
     
       int aVtkId = myCellPicker->GetCellId();
       if( aVtkId >= 0 && theSelector->IsValid( this, aVtkId ) ) {
@@ -962,7 +960,7 @@ SALOME_Actor
     }
     case EdgeOfCellSelection: 
     {
-      myCellPicker->Pick( x1, y1, z1, aRenderer );
+      myCellPicker->Pick( x, y, z, aRenderer );
     
       int aVtkId = myCellPicker->GetCellId();
       if( aVtkId >= 0 && theSelector->IsValid( this, aVtkId ) ) {
@@ -997,6 +995,17 @@ SALOME_Actor
       break;
     }
   }else{
+    float xLast = theSelectionEvent->myLastX;
+    float yLast = theSelectionEvent->myLastY;
+    float zLast = 0.0;
+
+    float x1 = x < xLast ? x : xLast;
+    float y1 = y < yLast ? y : yLast;
+    float z1 = z < zLast ? z : zLast;
+    float x2 = x > xLast ? x : xLast;
+    float y2 = y > yLast ? y : yLast;
+    float z2 = z > zLast ? z : zLast;
+
     switch(aSelectionMode){
     case NodeSelection: {
       if( vtkDataSet* aDataSet = GetInput() ) {
@@ -1010,7 +1019,7 @@ SALOME_Actor
 	  aRenderer->WorldToDisplay();
 	  aRenderer->GetDisplayPoint( aPnt );
 
-	  if( aPnt[0] > x2 && aPnt[0] < x1 && aPnt[1] > y1 && aPnt[1] < y2 ) {
+	  if( aPnt[0] > x1 && aPnt[0] < x2 && aPnt[1] > y1 && aPnt[1] < y2 ) {
 	    float aDisp[3];
 	    aRenderer->SetWorldPoint( aPoint[0], aPoint[1], aPoint[2], 1.0 );
 	    aRenderer->WorldToDisplay();
@@ -1043,7 +1052,28 @@ SALOME_Actor
     }
     case ActorSelection :
     {
-      theSelector->AddIObject( this );
+      float aPnt[3];
+      float* aBounds = GetBounds();
+
+      bool picked = true;
+      for( int i = 0; i <= 1; i++ ) {
+	for( int j = 2; j <= 3; j++ ) {
+	  for( int k = 4; k <= 5; k++ ) {
+	    aRenderer->SetWorldPoint( aBounds[ i ], aBounds[ j ], aBounds[ k ], 1.0 );
+	    aRenderer->WorldToDisplay();
+	    aRenderer->GetDisplayPoint( aPnt );
+
+	    if( aPnt[0] < x1 || aPnt[0] > x2 || aPnt[1] < y1 || aPnt[1] > y2 ) {
+	      picked = false;
+	      break;
+	    }
+	  }
+	}
+      }
+
+      if( picked )
+	theSelector->AddIObject(this);
+
       break;
     }
     case CellSelection: 
@@ -1052,7 +1082,7 @@ SALOME_Actor
     case VolumeSelection: 
     {
       myCellRectPicker->SetTolerance( 0.001 );
-      myCellRectPicker->Pick( x2, y2, z2, x1, y1, z1, aRenderer );
+      myCellRectPicker->Pick( x1, y1, z1, x2, y2, z2, aRenderer );
 
       VTKViewer_CellDataSet aCellList = myCellRectPicker->GetCellData( this );
       TColStd_MapOfInteger anIndexes;

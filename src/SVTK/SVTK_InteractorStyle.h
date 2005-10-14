@@ -45,7 +45,6 @@
 
 class vtkCell;
 class vtkPicker;
-class VTKViewer_RectPicker;
 
 class SVTK_Selector;
 class SVTK_GenericRenderWindowInteractor;
@@ -232,7 +231,6 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   PSelectionEvent mySelectionEvent;
 
   vtkSmartPointer<vtkPicker> myPicker;
-  vtkSmartPointer<VTKViewer_RectPicker> myRectPicker;
 };
 
 #endif
