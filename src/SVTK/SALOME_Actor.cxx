@@ -409,7 +409,7 @@ SALOME_Actor
 
 //----------------------------------------------------------------------------
 void
- SALOME_Actor
+SALOME_Actor
 ::Render(vtkRenderer *ren, vtkMapper* m)
 {
   if(myIsResolveCoincidentTopology){
@@ -603,10 +603,6 @@ SALOME_Actor
 ::SetInfinitive(bool theIsInfinite)
 { 
   myIsInfinite = theIsInfinite;
-  if(myIsInfinite){
-    Bounds[0] = Bounds[2] = Bounds[4] = VTK_LARGE_FLOAT;
-    Bounds[1] = Bounds[3] = Bounds[5] = -VTK_LARGE_FLOAT;
-  }
 }
 
 
@@ -622,20 +618,15 @@ float*
 SALOME_Actor
 ::GetBounds()
 {
-  if(myIsInfinite)
-    return Bounds;
-  else
-    return Superclass::GetBounds();
+  return Superclass::GetBounds();
 }
 
 
 void
 SALOME_Actor
-::GetBounds(float bounds[6])
+::GetBounds(float theBounds[6])
 {
-  this->GetBounds();
-  for (int i=0; i<6; i++)
-    bounds[i] = this->Bounds[i];
+  Superclass::GetBounds(theBounds);
 }
 
 
