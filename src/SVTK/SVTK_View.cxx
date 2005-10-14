@@ -206,7 +206,6 @@ SVTK_View
     using namespace VTK;
     ForEach<SALOME_Actor>(getRenderer()->GetActors(),
 			  THighlightAction( false ));
-    aSelector->EndPickCallback();
     Repaint();
   }
 }
@@ -223,7 +222,6 @@ SVTK_View
     ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			    TIsSameIObject<SALOME_Actor>( theIO ),
 			    THighlightAction( theIsHighlight, aSelector->SelectionMode() ));
-    aSelector->EndPickCallback();
     Repaint();
   }
 }
