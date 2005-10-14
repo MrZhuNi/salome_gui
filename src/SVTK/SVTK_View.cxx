@@ -135,7 +135,7 @@ struct THighlightAction
   void
   operator()( SALOME_Actor* theActor) 
   {
-    if(theActor->GetMapper()){
+    if(theActor->GetMapper() && theActor->hasIO()){
       theActor->highlight( myIsHighlight, mySelectionMode );
     }
   }
