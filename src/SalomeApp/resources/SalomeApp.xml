@@ -182,7 +182,7 @@
   <parameter value="3" name="point_sprite_min_size" />
   <parameter value="30" name="point_sprite_max_size" />
   <parameter value="100" name="point_sprite_magnification" />
-  <parameter value="10" name="point_sprite_increment" />
+  <parameter value="2" name="point_sprite_increment" />
   <parameter value="10" name="point_sprite_size" />
   <parameter value="0, 0, 255" name="point_sprite_color" />
   <parameter value="true" name="scalar_bar_display_global" />
