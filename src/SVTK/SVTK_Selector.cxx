@@ -78,7 +78,11 @@ void
 SVTK_SelectorDef
 ::SetSelectionMode(Selection_Mode theMode)
 {
-  mySelectionMode = theMode;
+  if(mySelectionMode != theMode){
+    mySelectionMode = theMode;
+    myMapIOSubIndex.clear();
+    this->EndPickCallback();
+  }
 }
 
 void 

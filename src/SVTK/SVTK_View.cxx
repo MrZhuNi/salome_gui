@@ -202,12 +202,10 @@ void
 SVTK_View
 ::unHighlightAll() 
 {
-  if(SVTK_Selector* aSelector = myMainWindow->GetSelector()){
-    using namespace VTK;
-    ForEach<SALOME_Actor>(getRenderer()->GetActors(),
-			  THighlightAction( false ));
-    Repaint();
-  }
+  using namespace VTK;
+  ForEach<SALOME_Actor>(getRenderer()->GetActors(),
+			THighlightAction( false ));
+  Repaint();
 }
 
 //----------------------------------------------------------------
@@ -221,7 +219,7 @@ SVTK_View
     using namespace VTK;
     ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			    TIsSameIObject<SALOME_Actor>( theIO ),
-			    THighlightAction( theIsHighlight, aSelector->SelectionMode() ));
+			    TSelectionAction(theIsHighlight,aSelector));
     Repaint();
   }
 }
@@ -234,12 +232,7 @@ SVTK_View
 		   const double& theBlue, 
 		   const int& theWidth) 
 {
-  vtkActorCollection* anActors = getRenderer()->GetActors();
-  anActors->InitTraversal();
-  while(vtkActor* anActor = anActors->GetNextActor()){
-    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(anActor))
-      aSActor->SetSelectionProp(theRed,theGreen,theBlue,theWidth);
-  }
+  GetRenderer()->SetSelectionProp(theRed,theGreen,theBlue,theWidth);
 }
 
 //----------------------------------------------------------------------------
@@ -250,12 +243,7 @@ SVTK_View
 		      const double& theBlue, 
 		      const int& theWidth) 
 {
-  vtkActorCollection* anActors = getRenderer()->GetActors();
-  anActors->InitTraversal();
-  while(vtkActor* anActor = anActors->GetNextActor()){
-    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(anActor))
-      aSActor->SetPreselectionProp(theRed,theGreen,theBlue,theWidth);
-  }
+  GetRenderer()->SetSelectionProp(theRed,theGreen,theBlue,theWidth);
 }
 
 //----------------------------------------------------------------------------
@@ -264,12 +252,7 @@ SVTK_View
 ::SetSelectionTolerance(const double& theTolNodes, 
 			const double& theTolCell)
 {
-  vtkActorCollection* anActors = getRenderer()->GetActors();
-  anActors->InitTraversal();
-  while(vtkActor* anActor = anActors->GetNextActor()){
-    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(anActor))
-      aSActor->SetSelectionTolerance(theTolNodes,theTolCell);
-  }
+  GetRenderer()->SetSelectionTolerance(theTolNodes,theTolCell);
 }
 
 //----------------------------------------------------------------------------

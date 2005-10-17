@@ -890,8 +890,6 @@ SVTK_InteractorStyle
         fitRect(x1, y1, x2, y2);
       }
       else {
-	VTK::ForEach<SALOME_Actor>(GetCurrentRenderer()->GetActors(),
-				   VTK::THighlight<SALOME_Actor>(false));
         if (myPoint == myOtherPoint) {
 	  // process point selection
           this->FindPokedRenderer(aSelectionEvent->myX, aSelectionEvent->myY);
