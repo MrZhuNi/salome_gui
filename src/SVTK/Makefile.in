@@ -97,4 +97,6 @@ LDFLAGS+= \
 
 LIBS+= -lsuit -lCAM -lSalomeObject -lSalomePrs -lVTKViewer -lOpUtil -lToolsGUI -lSalomeDS
 
+LDFLAGSFORBIN=$(LDFLAGS) $(LIBS)
+
 @CONCLUDE@
