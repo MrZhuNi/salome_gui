@@ -195,7 +195,8 @@ SVTK_NonIsometricDlg
 
 void 
 SVTK_NonIsometricDlg
-::closeEvent( QCloseEvent* )
+::done( int r )
 {
   m_Action->setOn( false );
+  QDialog::done( r );
 }

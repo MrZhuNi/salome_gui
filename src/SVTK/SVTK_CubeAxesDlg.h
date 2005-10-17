@@ -63,13 +63,12 @@ public:
 
   void            Update();
 
-protected:
-  virtual void    closeEvent( QCloseEvent* );
-
 private slots:
   void            onOk();
   bool            onApply();
   void            onClose();
+
+  virtual void    done( int );
 
 private:
   QWidget*        createButtonFrame( QWidget* );
