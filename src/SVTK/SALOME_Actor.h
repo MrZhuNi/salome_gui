@@ -187,6 +187,14 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   SetTransform(VTKViewer_Transform* theTransform); 
 
   virtual
+  void
+  SetPosition(float _arg1, float _arg2, float _arg3);
+
+  virtual
+  void
+  SetPosition(float _arg[3]);
+
+  virtual
   unsigned long int
   GetMTime();
 
@@ -297,7 +305,7 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   virtual
   void
   GetChildActors(vtkActorCollection*);
-  
+
   //----------------------------------------------------------------------------
   virtual
   void
@@ -322,24 +330,22 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 	    SVTK_SelectionEvent* theSelectionEvent,
 	    bool theIsHighlight);
 
-  virtual
+  //----------------------------------------------------------------------------
   void
-  SetSelectionProp(const double& theRed = 1, 
-		   const double& theGreen = 1,
-		   const double& theBlue = 0, 
-		   const int& theWidth = 5);
+  SetPointPicker(vtkPointPicker* thePointPicker); 
 
-  virtual
   void
-  SetPreselectionProp(const double& theRed = 0, 
-		      const double& theGreen = 1,
-		      const double& theBlue = 1, 
-		      const int& theWidth = 5);
+  SetCellPicker(vtkCellPicker* theCellPicker); 
 
-  virtual
   void
-  SetSelectionTolerance(const double& theTolNodes = 0.025, 
-			const double& theTolCell = 0.001);
+  SetCellRectPicker(VTKViewer_CellRectPicker* theCellRectPicker);
+
+  //----------------------------------------------------------------------------
+  void
+  SetPreHighlightProperty(vtkProperty* theProperty);
+
+  void
+  SetHighlightProperty(vtkProperty* theProperty);
 
   vtkSetObjectMacro(PreviewProperty,vtkProperty);
 
@@ -385,10 +391,7 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   vtkSmartPointer<vtkCellPicker> myCellPicker;
   vtkSmartPointer<VTKViewer_CellRectPicker> myCellRectPicker;
 
-  vtkSmartPointer<vtkProperty> myPreHighlightProperty;
   vtkSmartPointer<SVTK_Actor> myPreHighlightActor;
-
-  vtkSmartPointer<vtkProperty> myHighlightProperty;
   vtkSmartPointer<SVTK_Actor> myHighlightActor;
 
   vtkSmartPointer<VTKViewer_Actor> myOutlineActor;
