@@ -901,8 +901,10 @@ SVTK_InteractorStyle
 			 GetCurrentRenderer());
 
 	  if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
-	    aSelectionEvent->myIsRectangle = false;
-	    aSActor->Highlight( GetSelector(), this, aSelectionEvent, true );
+	    if(aSActor->hasIO()){
+	      aSelectionEvent->myIsRectangle = false;
+	      aSActor->Highlight( GetSelector(), this, aSelectionEvent, true );
+	    }
 	  }
 	  else{
 	    GetSelector()->ClearIObjects();
@@ -921,7 +923,9 @@ SVTK_InteractorStyle
 	  aListActors->InitTraversal();
 	  while(vtkActor* aActor = aListActors->GetNextActor()){
 	    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)){
-	      aSActor->Highlight( GetSelector(), this, aSelectionEvent, true );
+	      if(aSActor->hasIO()){
+		aSActor->Highlight( GetSelector(), this, aSelectionEvent, true );
+	      }
 	    }
 	  }
 	}

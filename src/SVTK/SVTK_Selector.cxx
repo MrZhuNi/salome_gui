@@ -99,7 +99,7 @@ bool
 SVTK_SelectorDef
 ::IsSelected(const Handle(SALOME_InteractiveObject)& theIO) const
 {
-  return myIObjects.find(theIO) != myIObjects.end();
+  return !theIO.IsNull() && (myIObjects.find(theIO) != myIObjects.end());
 }
 
 bool
