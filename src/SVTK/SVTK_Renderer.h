@@ -38,6 +38,13 @@ class vtkRenderer;
 class vtkCallbackCommand;
 class vtkRenderWindowInteractor;
 
+class vtkPicker;
+class vtkPointPicker;
+class vtkCellPicker;
+class vtkProperty;
+
+class VTKViewer_CellRectPicker;
+
 class VTKViewer_Trihedron;
 class VTKViewer_Transform;
 class SVTK_CubeAxesActor2D;
@@ -75,6 +82,23 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
 
   void
   GetScale( double theScale[3] );
+
+  //----------------------------------------------------------------------------
+  void
+  SetSelectionProp(const double& theRed = 1, 
+		   const double& theGreen = 1,
+		   const double& theBlue = 0, 
+		   const int& theWidth = 5);
+
+  void
+  SetPreselectionProp(const double& theRed = 0, 
+		      const double& theGreen = 1,
+		      const double& theBlue = 1, 
+		      const int& theWidth = 5);
+
+  void
+  SetSelectionTolerance(const double& theTolNodes = 0.025, 
+			const double& theTolCell = 0.001);
 
   //----------------------------------------------------------------------------
   void
@@ -132,6 +156,7 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
   bool
   OnAdjustActors();
 
+  //----------------------------------------------------------------------------
   // Priority at which events are processed
   float myPriority;
 
@@ -148,7 +173,19 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
   vtkSmartPointer<vtkRenderer> myDevice;
   vtkRenderWindowInteractor* myInteractor;
 
+  //----------------------------------------------------------------------------
   vtkSmartPointer<VTKViewer_Transform> myTransform;
+
+  //----------------------------------------------------------------------------
+  // Highlight/ Prehighlight devices
+  vtkSmartPointer<vtkPointPicker> myPointPicker;
+  vtkSmartPointer<vtkCellPicker> myCellPicker;
+  vtkSmartPointer<VTKViewer_CellRectPicker> myCellRectPicker;
+
+  vtkSmartPointer<vtkProperty> myPreHighlightProperty;
+  vtkSmartPointer<vtkProperty> myHighlightProperty;
+
+  //----------------------------------------------------------------------------
   vtkSmartPointer<SVTK_CubeAxesActor2D> myCubeAxes;
   vtkSmartPointer<VTKViewer_Trihedron> myTrihedron;  
   int myTrihedronSize;

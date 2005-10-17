@@ -30,6 +30,7 @@
 
 #include "SVTK_Trihedron.h"
 #include "SVTK_CubeAxesActor2D.h"
+#include "VTKViewer_CellRectPicker.h"
 
 #include "SALOME_Actor.h"
 #include "VTKViewer_Actor.h"
@@ -41,6 +42,12 @@
 #include <vtkTextProperty.h>
 #include <vtkObjectFactory.h>
 #include <vtkCallbackCommand.h>
+
+#include <vtkPicker.h>
+#include <vtkPointPicker.h>
+#include <vtkCellPicker.h>
+
+#include <vtkProperty.h>
 
 // undefining min and max because CASCADE's defines them and
 // it clashes with std::min(), std::max() included in utilities.h
@@ -64,17 +71,42 @@ SVTK_Renderer
 ::SVTK_Renderer():
   myDevice(vtkRenderer::New()),
   myInteractor(NULL),
+  myPriority(0.0),
+  myEventCallbackCommand(vtkCallbackCommand::New()),
+  myPointPicker(vtkPointPicker::New()),
+  myCellPicker(vtkCellPicker::New()),
+  myCellRectPicker(VTKViewer_CellRectPicker::New()),
+  myPreHighlightProperty(vtkProperty::New()),
+  myHighlightProperty(vtkProperty::New()),
   myTransform(VTKViewer_Transform::New()),
   myCubeAxes(SVTK_CubeAxesActor2D::New()),
   myTrihedron(SVTK_Trihedron::New()),
-  myTrihedronSize(105),
-  myPriority(0.0),
-  myEventCallbackCommand(vtkCallbackCommand::New())
+  myTrihedronSize(105)
 {
   if(MYDEBUG) INFOS("SVTK_Renderer() - "<<this);
 
   myDevice->Delete();
   myTransform->Delete();
+
+  SetSelectionTolerance();
+  myPointPicker->Delete();
+  myCellPicker->Delete();
+  myCellRectPicker->Delete();
+
+  //SetPreselectionProp();
+  myPreHighlightProperty->Delete();
+  myPreHighlightProperty->SetColor(0,1,1);
+  myPreHighlightProperty->SetPointSize(SALOME_POINT_SIZE);
+  myPreHighlightProperty->SetLineWidth(SALOME_LINE_WIDTH);
+  myPreHighlightProperty->SetRepresentationToPoints();
+
+  //SetSelectionProp();
+  myHighlightProperty->Delete();
+  myHighlightProperty->SetColor(1,1,0);
+  myHighlightProperty->SetPointSize(SALOME_POINT_SIZE);
+  myHighlightProperty->SetLineWidth(SALOME_LINE_WIDTH);
+  myHighlightProperty->SetRepresentationToPoints();
+
   myTrihedron->Delete();
   myCubeAxes->Delete();
   myEventCallbackCommand->Delete();
@@ -129,11 +161,7 @@ SVTK_Renderer
   anActors->InitTraversal();
   while(vtkActor* anAct = anActors->GetNextActor()){
     if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(anAct)){
-      // Order of the calls are important because VTKViewer_Actor::RemoveFromRender
-      //   can leads do destruction of the actor
-      anActor->SetTransform(NULL);
-      anActor->SetInteractor(NULL);
-      anActor->RemoveFromRender(GetDevice());
+      RemoveActor(anActor);
     }
   }
 }
@@ -183,7 +211,16 @@ SVTK_Renderer
 {
   if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor)){
     anActor->SetInteractor(myInteractor);
+
     anActor->SetTransform(GetTransform());
+
+    anActor->SetPointPicker(myPointPicker.GetPointer());
+    anActor->SetCellPicker(myCellPicker.GetPointer());
+    anActor->SetCellRectPicker(myCellRectPicker.GetPointer());
+
+    anActor->SetPreHighlightProperty(myPreHighlightProperty.GetPointer());
+    anActor->SetHighlightProperty(myHighlightProperty.GetPointer());
+
     anActor->AddToRender(GetDevice());
     AdjustActors();
   }
@@ -194,8 +231,18 @@ SVTK_Renderer
 ::RemoveActor(VTKViewer_Actor* theActor)
 {
   if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor)){
+    // Order of the calls are important because VTKViewer_Actor::RemoveFromRender
+    //   can leads do destruction of the actor
     anActor->SetInteractor(NULL);
     anActor->SetTransform(NULL);
+
+    anActor->SetPointPicker(NULL);
+    anActor->SetCellPicker(NULL);
+    anActor->SetCellRectPicker(NULL);
+
+    anActor->SetPreHighlightProperty(NULL);
+    anActor->SetHighlightProperty(NULL);
+
     anActor->RemoveFromRender(GetDevice());
     AdjustActors();
   }
@@ -221,6 +268,42 @@ SVTK_Renderer
 {
   myTransform->SetMatrixScale( theScale[0], theScale[1], theScale[2] );
   AdjustActors();
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_Renderer
+::SetSelectionProp(const double& theRed, 
+		   const double& theGreen, 
+		   const double& theBlue, 
+		   const int& theWidth) 
+{
+  myHighlightProperty->SetColor( theRed, theGreen, theBlue );
+  myHighlightProperty->SetLineWidth( theWidth );
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_Renderer
+::SetPreselectionProp(const double& theRed, 
+		      const double& theGreen, 
+		      const double& theBlue, 
+		      const int& theWidth) 
+{
+  myPreHighlightProperty->SetColor( theRed, theGreen, theBlue );
+  myPreHighlightProperty->SetLineWidth( theWidth );
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_Renderer
+::SetSelectionTolerance(const double& theTolNodes, 
+			const double& theTolCell)
+{
+  myPointPicker->SetTolerance( theTolNodes );
+  myCellPicker->SetTolerance( theTolCell );
+  myCellRectPicker->SetTolerance( theTolCell );
 }
 
 
