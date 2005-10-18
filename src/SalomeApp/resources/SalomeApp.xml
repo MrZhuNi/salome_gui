@@ -200,6 +200,7 @@
   <parameter value="0" name="picking_position" />
   <parameter value="1.5" name="picking_zoom_factor" />
   <parameter value="10" name="picking_step_number" />
+  <parameter value="false" name="picking_display_parent_mesh" />
   </section>
   <!-- Here go optional sections for other modules -->
   <section name="resources">
