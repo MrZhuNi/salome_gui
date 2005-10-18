@@ -1,4 +1,4 @@
-//  SALOME SALOMEGUI : implementation of desktop and GUI kernel
+//  SALOME VTKViewer : build VTK viewer into Salome desktop
 //
 //  Copyright (C) 2003  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 //  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS 
@@ -21,24 +21,48 @@
 //
 //
 //
-//  File   : SALOME_Selection.h
-//  Author : Nicolas REJNERI
+//  File   : 
+//  Author : Alexander SLADKOV
 //  Module : SALOME
 //  $Header$
 
-#ifndef SVTK_SELECTION_H
-#define SVTK_SELECTION_H
+#ifndef SVTK_Event_h
+#define SVTK_Event_h
 
+#include <vtkCommand.h>
 
-typedef int Selection_Mode;
+namespace SVTK
+{
+  enum Event 
+  {
+    SpaceMouseMoveEvent = vtkCommand::UserEvent + 1000, 
+    SpaceMouseButtonEvent,
+    PanLeftEvent,
+    PanRightEvent,
+    PanUpEvent,
+    PanDownEvent,
+    ZoomInEvent,
+    ZoomOutEvent,
+    RotateLeftEvent,
+    RotateRightEvent,
+    RotateUpEvent,
+    RotateDownEvent,
+    PlusSpeedIncrementEvent,
+    MinusSpeedIncrementEvent,
+    SetSpeedIncrementEvent,
 
-const Selection_Mode NodeSelection = 0;
-const Selection_Mode CellSelection = 1;
-const Selection_Mode EdgeOfCellSelection = 2;
-const Selection_Mode EdgeSelection = 3;
-const Selection_Mode FaceSelection = 4;
-const Selection_Mode VolumeSelection = 5;
-const Selection_Mode ActorSelection = 6;
+    SetSMDecreaseSpeedEvent,
+    SetSMIncreaseSpeedEvent,
+    SetSMDominantCombinedSwitchEvent,
 
+    StartZoom,
+    StartPan,
+    StartRotate,
+    StartGlobalPan,
+    StartFitArea,
 
+    LastEvent
+  };
+}
+  
 #endif

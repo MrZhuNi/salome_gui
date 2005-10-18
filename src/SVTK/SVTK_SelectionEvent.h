@@ -21,24 +21,28 @@
 //
 //
 //
-//  File   : SALOME_Selection.h
-//  Author : Nicolas REJNERI
+//  File   : SVTK_SelectionEvent.h
+//  Author : 
 //  Module : SALOME
 //  $Header$
 
-#ifndef SVTK_SELECTION_H
-#define SVTK_SELECTION_H
+#ifndef SVTK_SELECTIONEVENT_H
+#define SVTK_SELECTIONEVENT_H
 
+#include "SVTK_Selection.h"
 
-typedef int Selection_Mode;
-
-const Selection_Mode NodeSelection = 0;
-const Selection_Mode CellSelection = 1;
-const Selection_Mode EdgeOfCellSelection = 2;
-const Selection_Mode EdgeSelection = 3;
-const Selection_Mode FaceSelection = 4;
-const Selection_Mode VolumeSelection = 5;
-const Selection_Mode ActorSelection = 6;
-
+struct SVTK_SelectionEvent
+{
+  Selection_Mode mySelectionMode;
+  int myX;
+  int myY;
+  int myLastX;
+  int myLastY;
+  bool myIsRectangle;
+  bool myIsCtrl;
+  bool myIsShift;
+  int myKeyCode;
+  int myRepeatCount;
+};
 
 #endif

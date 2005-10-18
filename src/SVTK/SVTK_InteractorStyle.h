@@ -31,26 +31,23 @@
 
 #include "SVTK.h"
 
+#include "SVTK_SelectionEvent.h"
+
+#include <boost/shared_ptr.hpp>
+
 #include <vtkInteractorStyle.h>
+#include <vtkSmartPointer.h>
 
-class vtkCell;
-class vtkRenderWindowInteractor;
-
-#include <qobject.h>
 #include <qcursor.h>
+#include <qevent.h>
 
 #include <map>
 
-#include "VTKViewer_Filter.h"
+class vtkCell;
+class vtkPicker;
 
-class VTKViewer_Trihedron;
-
-class SALOME_Actor;
-class SVTK_Actor;
-class SVTK_Viewer;
 class SVTK_Selector;
-class SVTK_ViewWindow;
-class SVTK_RenderWindowInteractor;
+class SVTK_GenericRenderWindowInteractor;
 
 #define VTK_INTERACTOR_STYLE_CAMERA_NONE    0
 #define VTK_INTERACTOR_STYLE_CAMERA_ROTATE  1
@@ -61,11 +58,8 @@ class SVTK_RenderWindowInteractor;
 #define VTK_INTERACTOR_STYLE_CAMERA_SELECT     6
 #define VTK_INTERACTOR_STYLE_CAMERA_GLOBAL_PAN 7
 
-class SVTK_EXPORT SVTK_InteractorStyle : public QObject, 
-  public vtkInteractorStyle
+class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
 {
-  Q_OBJECT;
-
  public:
   // Description:
   // This class must be supplied with a vtkRenderWindowInteractor wrapper or
@@ -74,50 +68,89 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   static SVTK_InteractorStyle *New();
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
-  virtual void SetInteractor(vtkRenderWindowInteractor *theInteractor);
-  void setViewWindow(SVTK_ViewWindow* theViewWindow);
-  void setGUIWindow(QWidget* theWindow);
+  virtual
+  int
+  GetState();
 
-  virtual int GetState();
+  typedef boost::shared_ptr<SVTK_SelectionEvent> PSelectionEvent;
 
-  //merge with V2_2_0_VISU_improvements:void setTriedron(VTKViewer_Trihedron* theTrihedron);
-  void setPreselectionProp(const double& theRed = 0, 
-			   const double& theGreen = 1,
-			   const double& theBlue = 1, 
-			   const int& theWidth = 5);
+  virtual
+  SVTK_SelectionEvent*
+  GetSelectionEvent();
 
-  // Generic event bindings must be overridden in subclasses
-  void OnMouseMove  (int ctrl, int shift, int x, int y);
-  void OnLeftButtonDown(int ctrl, int shift, int x, int y);
-  void OnLeftButtonUp  (int ctrl, int shift, int x, int y);
-  void OnMiddleButtonDown(int ctrl, int shift, int x, int y);
-  void OnMiddleButtonUp  (int ctrl, int shift, int x, int y);
-  void OnRightButtonDown(int ctrl, int shift, int x, int y);
-  void OnRightButtonUp  (int ctrl, int shift, int x, int y);
+  virtual
+  SVTK_SelectionEvent*
+  GetSelectionEventFlipY();
 
-  void OnSelectionModeChanged();
+  // redefined in order to add an observer (callback) for custorm event (space mouse event)
+  virtual
+  void
+  SetInteractor( vtkRenderWindowInteractor* );
 
-  //merge with V2_2_0_VISU_improvements:void  ViewFitAll();
+  virtual 
+  void
+  Render();
 
-  void                     SetFilter( const Handle(VTKViewer_Filter)& );
-  Handle(VTKViewer_Filter) GetFilter( const int );  
-  bool                     IsFilterPresent( const int );
-  void                     RemoveFilter( const int );
-  bool                     IsValid( SALOME_Actor* theActor,
-                                    const int     theId,
-                                    const bool    theIsNode = false );
-  
-  void                     IncrementalPan   ( const int incrX, const int incrY );
-  void                     IncrementalZoom  ( const int incr );
-  void                     IncrementalRotate( const int incrX, const int incrY );
+  // redefined in order to cach rendering
+  virtual
+  void
+  OnTimer();
+
+  // VTK events
+  virtual
+  void
+  OnConfigure();
+
+  virtual 
+  void
+  OnMouseMove();
+
+  virtual
+  void
+  OnLeftButtonDown();
+
+  virtual
+  void
+  OnLeftButtonUp();
+
+  virtual
+  void
+  OnMiddleButtonDown();
+
+  virtual
+  void
+  OnMiddleButtonUp();
+
+  virtual
+  void
+  OnRightButtonDown();
+
+  virtual
+  void
+  OnRightButtonUp();
+
+  virtual
+  void
+  OnChar();
 
  protected:
   SVTK_InteractorStyle();
   ~SVTK_InteractorStyle();
-  SVTK_InteractorStyle(const SVTK_InteractorStyle&) {};
-  void operator=(const SVTK_InteractorStyle&) {};
 
-  SVTK_Selector* GetSelector();
+  QWidget*
+  GetRenderWidget();
+
+  SVTK_Selector* 
+  GetSelector();
+
+  // Generic event bindings must be overridden in subclasses
+  virtual void OnMouseMove  (int ctrl, int shift, int x, int y);
+  virtual void OnLeftButtonDown(int ctrl, int shift, int x, int y);
+  virtual void OnLeftButtonUp  (int ctrl, int shift, int x, int y);
+  virtual void OnMiddleButtonDown(int ctrl, int shift, int x, int y);
+  virtual void OnMiddleButtonUp  (int ctrl, int shift, int x, int y);
+  virtual void OnRightButtonDown(int ctrl, int shift, int x, int y);
+  virtual void OnRightButtonUp  (int ctrl, int shift, int x, int y);
 
   void RotateXY(int dx, int dy);
   void PanXY(int x, int y, int oldX, int oldY);
@@ -126,47 +159,50 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   void fitRect(const int left, const int top, const int right, const int bottom);
   void Place(const int theX, const int theY);
   void TranslateView(int toX, int toY, int fromX, int fromY);
-  bool IsInRect(vtkActor* theActor, 
-		const int left, const int top, 
-		const int right, const int bottom);
-  bool IsInRect(vtkCell* theCell, 
-		const int left, const int top, 
-		const int right, const int bottom);
-  bool IsInRect(float* thePoint, 
-		const int left, const int top, 
-		const int right, const int bottom);
+
+  void
+  IncrementalPan( const int incrX, const int incrY );
+
+  void
+  IncrementalZoom( const int incr );
+
+  void
+  IncrementalRotate( const int incrX, const int incrY );
+
+  // custom event handling function (to handle 3d space mouse events)
+  static 
+  void
+  ProcessEvents(vtkObject* object, 
+		unsigned long event,
+		void* clientData, 
+		void* callData );
 
   float MotionFactor;
   float RadianToDegree;                 // constant: for conv from deg to rad
   double myScale;
 
-  SALOME_Actor* myPreViewActor;
-
-  SVTK_Actor* myPreSelectionActor;
-  SALOME_Actor* mySelectedActor;
-  int myElemId;
-  int myEdgeId;
-  int myNodeId;
-
  public:
-  bool eventFilter(QObject* object, QEvent* event);
   void startZoom();
   void startPan();
   void startGlobalPan();
   void startRotate();
   void startFitArea();
   void startSpin();
-  bool needsRedrawing();
 
  protected:
   void loadCursors();
   void startOperation(int operation);
   void onStartOperation();
-  void onFinishOperation();
+  virtual void onFinishOperation();
   void onOperation(QPoint mousePos);
   void onCursorMove(QPoint mousePos);
   void setCursor(const int operation);
 
+  void onSpaceMouseMove( double* data );
+  virtual void onSpaceMouseButton( int button );
+
+  void DominantCombinedSwitch();
+  
  protected:
   QCursor                   myDefCursor;
   QCursor                   myPanCursor;
@@ -180,18 +216,21 @@ class SVTK_EXPORT SVTK_InteractorStyle : public QObject,
   bool                      myCursorState;
   bool                      myShiftState;
   int                       ForcedState;
-  
-  SVTK_RenderWindowInteractor* myInteractor;
-  SVTK_ViewWindow*          myViewWindow;
-  //merge with V2_2_0_VISU_improvements:VTKViewer_Trihedron*      myTrihedron;
-  QWidget*                  myGUIWindow;
-  
-  std::map<int, Handle(VTKViewer_Filter)> myFilters;
 
-  //  members from old version
-  double                    DeltaElevation;
-  double                    DeltaAzimuth;
-  int                       LastPos[2];
+  // "increment" for pan/rotate/zoom operations
+  int                       mySpeedIncrement; 
+  
+  // SpaceMouse short cuts
+  int                       mySMDecreaseSpeedBtn;
+  int                       mySMIncreaseSpeedBtn;
+  int                       mySMDominantCombinedSwitchBtn;
+  
+  QWidget* myRenderWidget;
+  vtkSmartPointer<SVTK_GenericRenderWindowInteractor> myInteractor;
+
+  PSelectionEvent mySelectionEvent;
+
+  vtkSmartPointer<vtkPicker> myPicker;
 };
 
 #endif

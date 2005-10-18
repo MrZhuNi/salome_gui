@@ -1,3 +1,5 @@
+//  SALOME VTKViewer : build VTK viewer into Salome desktop
+//
 //  Copyright (C) 2003  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 //  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS 
 // 
@@ -16,53 +18,41 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA 
 // 
 //  See http://www.opencascade.org/SALOME/ or email : webmaster.salome@opencascade.org 
-
-#ifndef SVTK_ACTOR_H
-#define SVTK_ACTOR_H
-
-#include <TColStd_IndexedMapOfInteger.hxx>
-
-class vtkRenderer;
-class vtkShrinkFilter;
-class vtkDataSetMapper;
-class vtkUnstructuredGrid;
+//
+//
+//
+//  File   :
+//  Author :
+//  Module :
+//  $Header$
 
 #include "SVTK.h"
+#include "SVTK_Prs.h"
+#include "SVTK_Actor.h"
 #include "SALOME_Actor.h"
+#include "SVTK_CubeAxesActor2D.h"
+#include "SVTK_Functor.h"
+#include "SVTK_View.h"
+#include "SVTK_MainWindow.h"
+#include "SVTK_MainWindow.h"
+#include "SVTK_NonIsometricDlg.h"
+#include "SVTK_CubeAxesDlg.h"
+#include "SVTK_FontWidget.h"
+#include "SVTK_ViewModel.h"
+#include "SVTK_ViewWindow.h"
+#include "SVTK_Renderer.h"
+#include "SVTK_InteractorStyle.h"
+#include "SVTK_RenderWindowInteractor.h"
+#include "SVTK_GenericRenderWindowInteractor.h"
+#include "SVTK_Selector.h"
+#include "SVTK_Selection.h"
+#include "SVTK_SelectionEvent.h"
+#include "SVTK_SpaceMouse.h"
+#include "SVTK_Event.h"
+#include "SVTK_ViewModelBase.h"
 
-class SVTK_EXPORT SVTK_Actor : public VTKViewer_Actor
+int
+main(int argc, char** argv)
 {
-public:
-  virtual ~SVTK_Actor();
-
-  static SVTK_Actor* New();
-
-  vtkTypeMacro(SVTK_Actor,VTKViewer_Actor);
-
-  void  SetShrinkFactor(float value);
-  virtual void SetShrink(); 
-  virtual void UnShrink(); 
-
-  void MapCells(SALOME_Actor* theMapActor, 
-		const TColStd_IndexedMapOfInteger& theMapIndex);
-
-  void MapPoints(SALOME_Actor* theMapActor, 
-		 const TColStd_IndexedMapOfInteger& theMapIndex);
-
-  void MapEdge(SALOME_Actor* theMapActor, 
-	       const TColStd_IndexedMapOfInteger& theMapIndex);
-
- protected:
-  vtkUnstructuredGrid* myUnstructuredGrid;
-  vtkDataSetMapper* myMapper;
-
-  vtkRenderer* myRenderer;
-
-  vtkShrinkFilter* myShrinkFilter;
-  bool myIsShrinkable;
-  bool myIsShrunk;
-
-  SVTK_Actor();
-};
-
-#endif
+  return 0;
+}

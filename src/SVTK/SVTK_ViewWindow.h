@@ -6,132 +6,242 @@
 #endif
 
 #include "SVTK.h"
-#include "SUIT_ViewWindow.h"
-
 #include "SVTK_Selection.h"
+#include "SUIT_ViewWindow.h"
 #include "SALOME_InteractiveObject.hxx"
 
-class vtkRenderer;
-
-class QtxAction;
 class SUIT_Desktop;
 
+class VTKViewer_Actor;
 class VTKViewer_Trihedron;
-class VTKViewer_Transform;
 
-class SALOME_Actor;
-
-class SVTK_Viewer;
+class SVTK_ViewModelBase;
+class SVTK_MainWindow;
 class SVTK_Selector;
+class SVTK_View;
+
+class SVTK_InteractorStyle;
 class SVTK_CubeAxesActor2D;
 
 class SVTK_RenderWindow;
-class SVTK_InteractorStyle;
 class SVTK_RenderWindowInteractor;
+
+class vtkRenderer;
+class vtkRenderWindow;
+class vtkRenderWindowInteractor;
 
 class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 {
   Q_OBJECT;
 
-public:
-  SVTK_ViewWindow( SUIT_Desktop*, SVTK_Viewer* );
-  virtual ~SVTK_ViewWindow();
-  
-  QToolBar* getToolBar() { return myToolBar; }
-  
-  void setBackgroundColor( const QColor& );
-  QColor backgroundColor() const;
+ public:
+  SVTK_ViewWindow(SUIT_Desktop* theDesktop);
 
-  vtkRenderer* getRenderer() {return myRenderer;}
-  SVTK_Selector* GetSelector() {return mySelector;}
-  SVTK_RenderWindow* getRenderWindow() {return myRenderWindow;}
-  SVTK_RenderWindowInteractor* getRWInteractor() {return myRWInteractor;}
-  Selection_Mode SelectionMode() const;
-  void SetSelectionMode(Selection_Mode theMode);
+  virtual
+  ~SVTK_ViewWindow();
+  
+  virtual
+  void
+  Initialize(SVTK_ViewModelBase* theModel);
 
-  bool isTrihedronDisplayed();
-  bool isCubeAxesDisplayed();
+  SVTK_View* 
+  getView();
+
+  SVTK_MainWindow* 
+  getMainWindow();
+
+  vtkRenderWindow* 
+  getRenderWindow();
+
+  vtkRenderWindowInteractor*
+  getInteractor();
+
+  vtkRenderer* 
+  getRenderer();
+
+  SVTK_Selector* 
+  GetSelector();
+  
+  Selection_Mode
+  SelectionMode() const;
+  
+  virtual
+  void
+  SetSelectionMode(Selection_Mode theMode);
+
+  virtual
+  void
+  setBackgroundColor( const QColor& );
+
+  QColor
+  backgroundColor() const;
+
+  bool
+  isTrihedronDisplayed();
+
+  bool
+  isCubeAxesDisplayed();
  
   /*  interactive object management */
-  void highlight( const Handle(SALOME_InteractiveObject)& IObject, 
-                  bool highlight, bool immediatly = true );
-  void unHighlightAll();
-  bool isInViewer( const Handle(SALOME_InteractiveObject)& IObject );
-  bool isVisible( const Handle(SALOME_InteractiveObject)& IObject );
+  virtual
+  void
+  highlight(const Handle(SALOME_InteractiveObject)& theIO, 
+	    bool theIsHighlight = true, 
+	    bool theIsUpdate = true);
+  virtual
+  void
+  unHighlightAll();
+
+  bool
+  isInViewer(const Handle(SALOME_InteractiveObject)& theIObject);
+
+  bool
+  isVisible(const Handle(SALOME_InteractiveObject)& theIObject);
 
   /* selection */
-  Handle(SALOME_InteractiveObject) FindIObject(const char* Entry);
+  //----------------------------------------------------------------------------
+  Handle(SALOME_InteractiveObject) 
+  FindIObject(const char* theEntry);
   
   /* display */		
-  void Display( const Handle(SALOME_InteractiveObject)& IObject,
-                bool immediatly = true );
-  void DisplayOnly( const Handle(SALOME_InteractiveObject)& IObject );
-  void Erase( const Handle(SALOME_InteractiveObject)& IObject,
-              bool immediatly = true );
-  void DisplayAll();
-  void EraseAll();
-  void Repaint( bool theUpdateTrihedron );
-  void Repaint() { Repaint(true); }
+  //----------------------------------------------------------------------------
+  virtual
+  void
+  Display(const Handle(SALOME_InteractiveObject)& theIObject,
+	  bool theImmediatly = true);
 
-  //apply existing transformation on adding SALOME_Actor
-  void SetScale( double theScale[3] );
-  void GetScale( double theScale[3] );
-  void AddActor( SALOME_Actor*, bool update = false );
-  void RemoveActor(SALOME_Actor*, bool update = false);
+  virtual
+  void
+  DisplayOnly(const Handle(SALOME_InteractiveObject)& theIObject);
 
-  void AdjustTrihedrons( const bool forced );
-  //merge with V2_2_0_VISU_improvements:bool ComputeTrihedronSize( double& theNewSize,
-  //merge with V2_2_0_VISU_improvements:                          double& theOldSize );
+  virtual
+  void
+  Erase(const Handle(SALOME_InteractiveObject)& theIObject,
+	bool theImmediatly = true);
 
-  int  GetTrihedronSize() const;
-  void SetTrihedronSize( const int );
+  virtual
+  void 
+  DisplayAll();
 
-  VTKViewer_Trihedron*  GetTrihedron() {return this->myTrihedron;};
-  SVTK_CubeAxesActor2D* GetCubeAxes() {return this->myCubeAxes;};
+  virtual
+  void 
+  EraseAll();
 
+  virtual
+  void
+  Repaint(bool theUpdateTrihedron = true);
+
+  //----------------------------------------------------------------------------
+  virtual
+  void 
+  SetScale( double theScale[3] );
+
+  virtual
+  void
+  GetScale( double theScale[3] );
+
+  virtual
+  void
+  AddActor(VTKViewer_Actor* theActor,
+	   bool theIsUpdate = false);
+
+  virtual
+  void
+  RemoveActor(VTKViewer_Actor* theActor,
+	      bool theIsUpdate = false);
+
+  //----------------------------------------------------------------------------
+  virtual
+  void
+  AdjustTrihedrons(const bool theIsForced);
+
+  VTKViewer_Trihedron*  
+  GetTrihedron();
+
+  SVTK_CubeAxesActor2D* 
+  GetCubeAxes();
+
+  int  
+  GetTrihedronSize() const;
+
+  virtual
+  void 
+  SetTrihedronSize( const int );
+
+  virtual
+  void
+  SetSelectionProp(const double& theRed = 1, 
+		   const double& theGreen = 1,
+		   const double& theBlue = 0, 
+		   const int& theWidth = 5);
+
+  virtual
+  void
+  SetPreselectionProp(const double& theRed = 0, 
+		      const double& theGreen = 1,
+		      const double& theBlue = 1, 
+		      const int& theWidth = 5);
+  virtual
+  void
+  SetSelectionTolerance(const double& theTolNodes = 0.025, 
+			const double& theTolCell = 0.001);
+  
 public slots:
-  void onSelectionChanged();
+  virtual
+  void
+  onSelectionChanged();
 
 signals:
  void selectionChanged();
 
 public slots:
-  void onFrontView(); 
-  void onBackView(); 
-  void onTopView();
-  void onBottomView();
-  void onRightView(); 
-  void onLeftView();     
+  virtual
+  void
+  onFrontView(); 
 
-  void onResetView();     
-  void onFitAll();
+  virtual
+  void
+  onBackView(); 
 
-  void onViewTrihedron(); 
-  void onViewCubeAxes();
+  virtual
+  void
+  onTopView();
 
-  void onAdjustTrihedron();
-  void onAdjustCubeAxes();
- 
-  void onPanLeft();
-  void onPanRight();
-  void onPanUp();
-  void onPanDown();
-  void onZoomIn();
-  void onZoomOut();
-  void onRotateLeft();
-  void onRotateRight();
-  void onRotateUp();
-  void onRotateDown();
+  virtual
+  void
+  onBottomView();
 
-  void activateZoom();
-  void activateWindowFit();
-  void activateRotation();
-  void activatePanning(); 
-  void activateGlobalPanning(); 
+  virtual
+  void 
+  onRightView(); 
 
-protected:
-  QImage dumpView();
-  virtual void      action( const int );
+  virtual
+  void 
+  onLeftView();     
+
+  virtual
+  void
+  onResetView();     
+
+  virtual
+  void 
+  onFitAll();
+
+  virtual
+  void
+  onViewTrihedron(); 
+
+  virtual
+  void
+  onViewCubeAxes();
+
+  virtual
+  void
+  onAdjustTrihedron();
+
+  virtual
+  void 
+  onAdjustCubeAxes();
 
 protected slots:
   void onKeyPressed(QKeyEvent* event);
@@ -141,39 +251,18 @@ protected slots:
   void onMouseReleased(QMouseEvent* event);
   void onMouseMoving(QMouseEvent* event);
 
-private:
-  void InitialSetup();
-  void InsertActor( SALOME_Actor* theActor,
-                    bool theMoveInternalActors = false );
-  void MoveActor( SALOME_Actor* theActor );
+protected:
+  virtual
+  void
+  Initialize(SVTK_View* theView,
+	     SVTK_ViewModelBase* theModel);
 
-private:  
-  enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, RotationId,
-         FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, ViewTrihedronId };
-  typedef QMap<int, QtxAction*> ActionsMap;
-  
-  void createActions();
-  void createToolBar();
-  
-  vtkRenderer* myRenderer;
+  QImage dumpView();
+  virtual void action( const int );
 
-  SVTK_Viewer* myModel;
-  SVTK_Selector* mySelector;
-
-  SVTK_RenderWindow* myRenderWindow;
-  SVTK_RenderWindowInteractor* myRWInteractor;
-
-  VTKViewer_Transform*  myTransform;
-  VTKViewer_Trihedron*  myTrihedron;  
-  int                   myTrihedronSize;
-  SVTK_CubeAxesActor2D* myCubeAxes;
-  
-  QToolBar* myToolBar;
-  ActionsMap myActionsMap;  
-  
-  double myCurScale;
-
-  friend class SVTK_RenderWindowInteractor;
+  SVTK_View* myView;
+  SVTK_MainWindow* myMainWindow;
+  SVTK_ViewModelBase* myModel;
 };
 
 #ifdef WIN32

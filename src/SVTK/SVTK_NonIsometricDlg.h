@@ -1,4 +1,4 @@
-//  SALOME SALOMEGUI : implementation of desktop and GUI kernel
+//  SALOME VTKViewer : build VTK viewer into Salome desktop
 //
 //  Copyright (C) 2003  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 //  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS 
@@ -21,24 +21,53 @@
 //
 //
 //
-//  File   : SALOME_Selection.h
-//  Author : Nicolas REJNERI
+//  File   : 
+//  Author : 
 //  Module : SALOME
 //  $Header$
 
-#ifndef SVTK_SELECTION_H
-#define SVTK_SELECTION_H
+#ifndef SVTK_NONISOMETRICDLG_H
+#define SVTK_NONISOMETRICDLG_H
+
+#include <qdialog.h>
+
+class SVTK_MainWindow;
+
+class QtxDblSpinBox;
+class QtxAction;
+
+class QPushButton;
 
 
-typedef int Selection_Mode;
+class SVTK_NonIsometricDlg : public QDialog
+{
+  Q_OBJECT;
 
-const Selection_Mode NodeSelection = 0;
-const Selection_Mode CellSelection = 1;
-const Selection_Mode EdgeOfCellSelection = 2;
-const Selection_Mode EdgeSelection = 3;
-const Selection_Mode FaceSelection = 4;
-const Selection_Mode VolumeSelection = 5;
-const Selection_Mode ActorSelection = 6;
+public:
+  SVTK_NonIsometricDlg(SVTK_MainWindow* theParent,
+		       const char* theName,
+		       QtxAction* theAction);
 
+  ~SVTK_NonIsometricDlg();
 
-#endif
+  void Update();
+
+protected:
+  SVTK_MainWindow *m_MainWindow;
+  QtxAction* m_Action;
+
+  QtxDblSpinBox* m_sbXcoeff;
+  QtxDblSpinBox* m_sbYcoeff;
+  QtxDblSpinBox* m_sbZcoeff;
+  QPushButton* m_bReset;
+
+protected slots:
+  void onClickApply();
+  void onClickReset();
+  void onClickOk();
+  void onClickClose();
+
+  virtual void done( int );
+};
+
+#endif // SVTK_NONISOMETRICDLG_H

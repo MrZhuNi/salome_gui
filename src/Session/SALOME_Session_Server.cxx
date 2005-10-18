@@ -279,6 +279,7 @@ int main( int argc, char **argv )
   SUIT_Session* aGUISession = 0;
   SALOME_NamingService* _NS = 0;
   GetInterfaceThread* guiThread = 0;
+  SALOMETraceCollector* myThreadTrace = 0;
   Session_ServerLauncher* myServerLauncher = 0;
 
   try {
@@ -304,6 +305,7 @@ int main( int argc, char **argv )
     ASSERT( SINGLETON_<ORB_INIT>::IsAlreadyExisting() );
     int orbArgc = 1;
     orb = init( orbArgc, argv );
+    myThreadTrace = SALOMETraceCollector::instance( orb );
 
     // Install SALOME thread event handler
     SALOME_Event::GetSessionThread();
@@ -437,9 +439,7 @@ int main( int argc, char **argv )
   delete guiThread;
   delete myServerLauncher;
   delete _NS;
-
-  LocalTraceBufferPool *bp1 = LocalTraceBufferPool::instance();
-  LocalTraceBufferPool::deleteInstance(bp1);
+  delete myThreadTrace;
 
   return result;
 }

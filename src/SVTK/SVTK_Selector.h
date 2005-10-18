@@ -29,22 +29,28 @@
 #ifndef SVTK_SELECTOR_H
 #define SVTK_SELECTOR_H
 
+#include "SVTK_Selection.h"
+#include "SALOME_ListIO.hxx"
+#include "VTKViewer_Filter.h"
+#include "SALOME_InteractiveObject.hxx"
+
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 
-#include "SVTK_Selection.h"
-#include "SALOME_ListIO.hxx"
+#include <vtkObject.h>
 
 class SALOME_Actor;
 
-class SVTK_Selector
+class SVTK_Selector: public vtkObject
 {
 public:
-  virtual ~SVTK_Selector() {};
+  static SVTK_Selector* New();
+  
+  vtkTypeMacro(SVTK_Selector,vtkObject);
 
   virtual
   void 
-  SetSelectionMode( Selection_Mode theMode ) = 0;
+  SetSelectionMode(Selection_Mode theMode) = 0;
 
   virtual
   Selection_Mode
@@ -125,6 +131,40 @@ public:
   virtual
   void 
   ClearIndex() = 0;
+
+  //----------------------------------------------------------------------------
+  typedef int TFilterID;
+
+  virtual
+  void 
+  SetFilter(const Handle(VTKViewer_Filter)& theFilter) = 0;
+
+  virtual
+  Handle(VTKViewer_Filter) 
+  GetFilter(const TFilterID theId) const = 0;
+
+  virtual
+  bool
+  IsFilterPresent(const TFilterID theId) const = 0;
+
+  virtual
+  void
+  RemoveFilter(const TFilterID theId) = 0;
+
+  virtual
+  bool
+  IsValid(SALOME_Actor* theActor,
+	  const TFilterID theId,
+	  const bool theIsNode = false) const = 0;
+  
+  //----------------------------------------------------------------------------
+  virtual
+  void 
+  StartPickCallback() = 0;
+
+  virtual
+  void 
+  EndPickCallback() = 0;
 };
 
 

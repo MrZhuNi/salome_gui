@@ -2,18 +2,23 @@
 #define SVTK_VIEWMODEL_H
 
 #include "SVTK.h"
-#include "SUIT_ViewModel.h"
+#include "SVTK_ViewModelBase.h"
+
+#include "VTKViewer_ViewModel.h"
 
 #include "SALOME_Prs.h"
 #include "SALOME_InteractiveObject.hxx"
 
 #include <qcolor.h>
 
-class SVTK_EXPORT SVTK_Viewer : public SUIT_ViewModel, public SALOME_View 
+class SVTK_ViewWindow;
+
+class SVTK_EXPORT SVTK_Viewer : public SVTK_ViewModelBase, public SALOME_View 
 {
   Q_OBJECT;
 
 public:
+  typedef SVTK_ViewWindow TViewWindow;
   static QString Type() { return "VTKViewer"; }
 
   SVTK_Viewer();
@@ -49,16 +54,6 @@ public:
   virtual void                   AfterDisplay ( SALOME_Displayer* d );
   virtual bool                   isVisible( const Handle(SALOME_InteractiveObject)& );
   virtual void                   Repaint();
-
-  //implemented in SOCC, but were not found in VTKVIEwer_ViewFrame, so not implemented here..
-  //?virtual void                LocalSelection( const SALOME_OCCPrs*, const int );
-  //?virtual void                GlobalSelection( const bool = false ) const;
-
-public slots:
-  void onSelectionChanged();
-
- signals:
-  void selectionChanged();
 
 protected slots:
   void onMousePress(SUIT_ViewWindow*, QMouseEvent*);
