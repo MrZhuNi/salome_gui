@@ -61,9 +61,10 @@ SVTK_ViewWindow
     SVTK_RenderWindowInteractor* anIteractor = 
       new SVTK_RenderWindowInteractor(myMainWindow,"SVTK_RenderWindowInteractor");
 
-    SVTK_Renderer* aRenderer = SVTK_Renderer::New();
-
     SVTK_Selector* aSelector = SVTK_Selector::New();
+
+    SVTK_Renderer* aRenderer = SVTK_Renderer::New();
+    aRenderer->Initialize(anIteractor->GetDevice(),aSelector);
 
     SVTK_GenericRenderWindowInteractor* aDevice = 
       SVTK_GenericRenderWindowInteractor::New();

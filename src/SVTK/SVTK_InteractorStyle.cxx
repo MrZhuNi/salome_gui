@@ -910,7 +910,7 @@ SVTK_InteractorStyle
 	    //if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
 	    if(aSActor->hasIO()){
 	      aSelectionEvent->myIsRectangle = false;
-	      aSActor->Highlight( GetSelector(), this, aSelectionEvent, true );
+	      aSActor->Highlight( this, aSelectionEvent, true );
 	    }
 	  }
 	  else{
@@ -931,7 +931,7 @@ SVTK_InteractorStyle
 	  while(vtkActor* aActor = aListActors->GetNextActor()){
 	    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)){
 	      if(aSActor->hasIO()){
-		aSActor->Highlight( GetSelector(), this, aSelectionEvent, true );
+		aSActor->Highlight( this, aSelectionEvent, true );
 	      }
 	    }
 	  }
@@ -1033,7 +1033,7 @@ SVTK_InteractorStyle
   //
   GetFirstSALOMEActor(myPicker.GetPointer(), aLastActor);
   if (aLastActor){
-    anIsChanged |= aLastActor->PreHighlight( GetSelector(), this, aSelectionEvent, false );
+    anIsChanged |= aLastActor->PreHighlight( this, aSelectionEvent, false );
   }
   myPicker->Pick(aSelectionEvent->myX, 
 		 aSelectionEvent->myY, 
@@ -1044,7 +1044,7 @@ SVTK_InteractorStyle
   //
   GetFirstSALOMEActor(myPicker.GetPointer(), anActor);
   if (anActor){
-    anIsChanged |= anActor->PreHighlight( GetSelector(), this, aSelectionEvent, true );
+    anIsChanged |= anActor->PreHighlight( this, aSelectionEvent, true );
   }
   
   if(anIsChanged)

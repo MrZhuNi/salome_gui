@@ -49,7 +49,10 @@ class VTKViewer_Trihedron;
 class VTKViewer_Transform;
 class SVTK_CubeAxesActor2D;
 class VTKViewer_Actor;
+class SVTK_Selector;
 
+
+//----------------------------------------------------------------------------
 class SVTK_EXPORT SVTK_Renderer : public vtkObject
 {
  public:
@@ -62,7 +65,8 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
 
   virtual
   void 
-  SetInteractor(vtkRenderWindowInteractor* theInteractor);
+  Initialize(vtkRenderWindowInteractor* theInteractor,
+	     SVTK_Selector* theSelector);
 
   //----------------------------------------------------------------------------
   virtual
@@ -172,6 +176,7 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
   
   vtkSmartPointer<vtkRenderer> myDevice;
   vtkRenderWindowInteractor* myInteractor;
+  vtkSmartPointer<SVTK_Selector> mySelector;
 
   //----------------------------------------------------------------------------
   vtkSmartPointer<VTKViewer_Transform> myTransform;

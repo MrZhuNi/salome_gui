@@ -199,9 +199,11 @@ SVTK_Renderer
 
 void 
 SVTK_Renderer
-::SetInteractor(vtkRenderWindowInteractor* theInteractor)
+::Initialize(vtkRenderWindowInteractor* theInteractor,
+	     SVTK_Selector* theSelector)
 {
   myInteractor = theInteractor;
+  mySelector = theSelector;
 }
 
 //----------------------------------------------------------------------------
@@ -211,8 +213,8 @@ SVTK_Renderer
 {
   if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor)){
     anActor->SetInteractor(myInteractor);
-
     anActor->SetTransform(GetTransform());
+    anActor->SetSelector(mySelector.GetPointer());
 
     anActor->SetPointPicker(myPointPicker.GetPointer());
     anActor->SetCellPicker(myCellPicker.GetPointer());
@@ -235,6 +237,7 @@ SVTK_Renderer
     //   can leads do destruction of the actor
     anActor->SetInteractor(NULL);
     anActor->SetTransform(NULL);
+    anActor->SetSelector(NULL);
 
     anActor->SetPointPicker(NULL);
     anActor->SetCellPicker(NULL);

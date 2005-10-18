@@ -125,37 +125,15 @@ SVTK_SignalHandler
 struct THighlightAction
 {
   bool myIsHighlight;
-  Selection_Mode mySelectionMode;
-  THighlightAction( bool theIsHighlight, 
-		    Selection_Mode theSelectionMode = ActorSelection ):
-    myIsHighlight( theIsHighlight ),
-    mySelectionMode( theSelectionMode ) 
+  THighlightAction( bool theIsHighlight ):
+    myIsHighlight( theIsHighlight )
   {}
 
   void
   operator()( SALOME_Actor* theActor) 
   {
     if(theActor->GetMapper() && theActor->hasIO()){
-      theActor->highlight( myIsHighlight, mySelectionMode );
-    }
-  }
-};
-
-struct TSelectionAction
-{
-  bool myIsHighlight;
-  SVTK_Selector* mySelector;
-  TSelectionAction( bool theIsHighlight, 
-		    SVTK_Selector* theSelector ):
-    myIsHighlight( theIsHighlight ),
-    mySelector( theSelector ) 
-  {}
-
-  void
-  operator()( SALOME_Actor* theActor) 
-  {
-    if(theActor->GetMapper()){
-      theActor->highlight( myIsHighlight, mySelector );
+      theActor->Highlight( myIsHighlight );
     }
   }
 };
@@ -175,7 +153,7 @@ SVTK_SignalHandler
   for(; anIter.More(); anIter.Next()){
     ForEachIf<SALOME_Actor>(anActors,
 			    TIsSameIObject<SALOME_Actor>(anIter.Value()),
-			    TSelectionAction(true,aSelector));
+			    THighlightAction(true));
   }
 
   myMainWindow->Repaint(false);
@@ -215,13 +193,11 @@ SVTK_View
 	     bool theIsHighlight, 
 	     bool theIsUpdate ) 
 {
-  if(SVTK_Selector* aSelector = myMainWindow->GetSelector()){
-    using namespace VTK;
-    ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
-			    TIsSameIObject<SALOME_Actor>( theIO ),
-			    TSelectionAction(theIsHighlight,aSelector));
-    Repaint();
-  }
+  using namespace VTK;
+  ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
+			  TIsSameIObject<SALOME_Actor>( theIO ),
+			  THighlightAction(theIsHighlight));
+  Repaint();
 }
 
 //----------------------------------------------------------------------------

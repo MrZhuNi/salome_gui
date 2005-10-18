@@ -103,34 +103,6 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   setName(const char* theName);
 
   //----------------------------------------------------------------------------
-  // To generate highlight automaticaly
-  virtual
-  bool
-  hasHighlight(); 
-
-  virtual
-  void
-  highlight(bool theHighlight, 
-	    Selection_Mode theSelectionMode);
-
-  virtual
-  void
-  highlight(bool theHighlight, 
-	    SVTK_Selector* theSelector);
-
-  virtual
-  void
-  highlight(bool theHighlight);  
-
-  virtual
-  bool
-  isHighlighted();
-
-  virtual
-  void
-  SetPreSelected(bool thePreselect = false);
-
-  //----------------------------------------------------------------------------
   virtual
   void
   SetOpacity(float theOpacity);
@@ -316,17 +288,42 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   Update();
 
   //----------------------------------------------------------------------------
+  // To generate highlight automaticaly
   virtual
   bool
-  PreHighlight(SVTK_Selector* theSelector, 
-	       vtkInteractorStyle* theInteractorStyle, 
+  hasHighlight(); 
+
+  virtual
+  bool
+  isHighlighted();
+
+  virtual
+  void
+  SetPreSelected(bool thePreselect = false);
+
+  //----------------------------------------------------------------------------
+  virtual
+  void
+  SetSelector(SVTK_Selector* theSelector);
+
+  virtual
+  void
+  highlight(bool theHighlight);  
+
+  virtual
+  void
+  Highlight(bool theHighlight);  
+
+  //----------------------------------------------------------------------------
+  virtual
+  bool
+  PreHighlight(vtkInteractorStyle* theInteractorStyle, 
 	       SVTK_SelectionEvent* theSelectionEvent,
 	       bool theIsHighlight);
 
   virtual 
   bool
-  Highlight(SVTK_Selector* theSelector, 
-	    vtkInteractorStyle* theInteractorStyle, 
+  Highlight(vtkInteractorStyle* theInteractorStyle, 
 	    SVTK_SelectionEvent* theSelectionEvent,
 	    bool theIsHighlight);
 
@@ -361,11 +358,6 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   Handle(SALOME_InteractiveObject) myIO;
   std::string myName;
 
-  vtkProperty *PreviewProperty;
-  bool myIsPreselected;
-  bool myIsHighlighted;
-  Selection_Mode mySelectionMode;
-
   float myOpacity;
   int myDisplayMode;
   bool myIsInfinite;
@@ -385,6 +377,12 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   ~SALOME_Actor();
 
  protected:
+  vtkProperty *PreviewProperty;
+  bool myIsPreselected;
+  bool myIsHighlighted;
+  Selection_Mode mySelectionMode;
+  vtkSmartPointer<SVTK_Selector> mySelector;
+
   //----------------------------------------------------------------------------
   // Highlight/ Prehighlight devices
   vtkSmartPointer<vtkPointPicker> myPointPicker;

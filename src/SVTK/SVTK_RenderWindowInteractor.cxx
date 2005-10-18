@@ -473,17 +473,13 @@ SVTK_RenderWindowInteractor
   if(theRenderer == myRenderer.GetPointer())
     return;
 
-  if(GetRenderer()){
+  if(GetRenderer())
     myRenderWindow->RemoveRenderer(getRenderer());
-    myRenderer->SetInteractor(NULL);
-  }
 
   myRenderer = theRenderer;
 
-  if(GetRenderer()){
+  if(GetRenderer())
     myRenderWindow->AddRenderer(getRenderer());
-    theRenderer->SetInteractor(GetDevice());
-  }
 }
 
 
