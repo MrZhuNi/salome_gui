@@ -243,7 +243,7 @@ SVTK_View
 		      const double& theBlue, 
 		      const int& theWidth) 
 {
-  GetRenderer()->SetSelectionProp(theRed,theGreen,theBlue,theWidth);
+  GetRenderer()->SetPreselectionProp(theRed,theGreen,theBlue,theWidth);
 }
 
 //----------------------------------------------------------------------------
