@@ -96,15 +96,15 @@ SVTK_Renderer
   //SetPreselectionProp();
   myPreHighlightProperty->Delete();
   myPreHighlightProperty->SetColor(0,1,1);
-  myPreHighlightProperty->SetPointSize(SALOME_POINT_SIZE);
-  myPreHighlightProperty->SetLineWidth(SALOME_LINE_WIDTH);
+  myPreHighlightProperty->SetPointSize(SALOME_POINT_SIZE+2);
+  myPreHighlightProperty->SetLineWidth(SALOME_LINE_WIDTH+2);
   myPreHighlightProperty->SetRepresentationToPoints();
 
   //SetSelectionProp();
   myHighlightProperty->Delete();
   myHighlightProperty->SetColor(1,1,0);
-  myHighlightProperty->SetPointSize(SALOME_POINT_SIZE);
-  myHighlightProperty->SetLineWidth(SALOME_LINE_WIDTH);
+  myHighlightProperty->SetPointSize(SALOME_POINT_SIZE+2);
+  myHighlightProperty->SetLineWidth(SALOME_LINE_WIDTH+2);
   myHighlightProperty->SetRepresentationToPoints();
 
   myTrihedron->Delete();
@@ -284,6 +284,7 @@ SVTK_Renderer
 {
   myHighlightProperty->SetColor( theRed, theGreen, theBlue );
   myHighlightProperty->SetLineWidth( theWidth );
+  myHighlightProperty->SetPointSize( theWidth );
 }
 
 //----------------------------------------------------------------------------
@@ -296,6 +297,7 @@ SVTK_Renderer
 {
   myPreHighlightProperty->SetColor( theRed, theGreen, theBlue );
   myPreHighlightProperty->SetLineWidth( theWidth );
+  myPreHighlightProperty->SetPointSize( theWidth );
 }
 
 //----------------------------------------------------------------------------
