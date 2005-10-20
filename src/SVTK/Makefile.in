@@ -97,6 +97,9 @@ LDFLAGS+= \
 
 LIBS+= -lsuit -lCAM -lSalomeObject -lSalomePrs -lVTKViewer -lOpUtil -lToolsGUI -lSalomeDS
 
-LDFLAGSFORBIN=$(LDFLAGS) $(LIBS)
+LDFLAGSFORBIN=$(LDFLAGS) $(LIBS) \
+	-lqtx -lstd -lSALOMELocalTrace -lSalomeNS -lTOOLSDS -lSalomeHDFPersist -lSalomeDSImpl \
+	-lSalomeGenericObj -lSalomeLifeCycleCORBA -lSALOMEBasics -lSalomeContainer \
+	-lSalomeResourcesManager -lRegistry -lSalomeNotification
 
 @CONCLUDE@
