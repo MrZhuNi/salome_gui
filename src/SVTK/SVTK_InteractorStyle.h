@@ -58,35 +58,35 @@ class SVTK_GenericRenderWindowInteractor;
 #define VTK_INTERACTOR_STYLE_CAMERA_SELECT     6
 #define VTK_INTERACTOR_STYLE_CAMERA_GLOBAL_PAN 7
 
+//! Introduce SALOME way of user interaction
+/*!
+  This class defines SALOME way of user interaction for VTK viewer, as well, 
+  as introduce a new selection mechanism
+*/
 class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
 {
  public:
-  // Description:
-  // This class must be supplied with a vtkRenderWindowInteractor wrapper or
-  // parent. This class should not normally be instantiated by application
-  // programmers.
   static SVTK_InteractorStyle *New();
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
-  virtual
-  int
-  GetState();
-
   typedef boost::shared_ptr<SVTK_SelectionEvent> PSelectionEvent;
 
+  //! Generate special #SVTK_SelectionEvent
   virtual
   SVTK_SelectionEvent*
   GetSelectionEvent();
 
+  //! Generate special #SVTK_SelectionEvent with flipped Y coordinate
   virtual
   SVTK_SelectionEvent*
   GetSelectionEventFlipY();
 
-  // redefined in order to add an observer (callback) for custorm event (space mouse event)
+  //! Redefined in order to add an observer (callback) for custorm event (space mouse event)
   virtual
   void
   SetInteractor( vtkRenderWindowInteractor* );
 
+  //! 
   virtual 
   void
   Render();

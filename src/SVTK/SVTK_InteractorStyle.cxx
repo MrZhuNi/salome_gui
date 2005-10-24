@@ -141,14 +141,6 @@ SVTK_InteractorStyle
 }
 
 //----------------------------------------------------------------------------
-int
-SVTK_InteractorStyle
-::GetState()
-{
-  return State | ForcedState;
-}
-
-//----------------------------------------------------------------------------
 SVTK_SelectionEvent*
 SVTK_InteractorStyle
 ::GetSelectionEvent()
