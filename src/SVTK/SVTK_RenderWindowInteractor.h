@@ -144,6 +144,7 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
 
   ~SVTK_RenderWindowInteractor();
 
+  //! To initialize properly the class
   virtual
   void
   Initialize(vtkGenericRenderWindowInteractor* theDevice,
@@ -151,33 +152,42 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
 	     SVTK_Selector* theSelector);
 
   //----------------------------------------------------------------------------
+  //! To get corresponding SVTK_Renderer instance
   SVTK_Renderer* 
   GetRenderer();
 
+  //! To get corresponding SVTK_Renderer device (just to simplify collobaration with SVTK_Renderer)
   vtkRenderer* 
   getRenderer();
 
   //----------------------------------------------------------------------------
+  //! To get current interactor style
   vtkInteractorStyle* 
   GetInteractorStyle();
 
+  //! To change current interactor style by pushing the new one into the container
   void
   PushInteractorStyle(vtkInteractorStyle* theStyle);
 
+  //! To restore previous interactor style
   void
   PopInteractorStyle();
 
   //----------------------------------------------------------------------------
+  //! To get corresponding SVTK_Selector
   SVTK_Selector* 
   GetSelector();
 
+  //! To get current selection mode (just to simplify collobaration with SVTK_Selector)
   Selection_Mode 
   SelectionMode() const;
 
+  //! To change selection mode (just to simplify collobaration with SVTK_Selector)
   void 
   SetSelectionMode(Selection_Mode theMode);
 
  public:
+  //! To transform vtkCommand::EndPickEvent to Qt selectionChanged signal
   void
   onEmitSelectionChanged();
 
