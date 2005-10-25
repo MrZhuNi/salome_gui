@@ -52,7 +52,13 @@ class vtkObject;
 class SVTK_Selector;
 class SVTK_Renderer;
 
-// ------------------------------------------------------------
+//============================================================================
+//! Implemements Qt based vtkRenderWindowInteractor.
+/*!
+  The class inherits #QWidget class in order to be possible process Qt events.
+  It invokes corresponding VTK events through usage of its device - a #vtkGenericRenderWindowInteractor.
+  Also, it creates, initialize and holds vtkRenderWindow instance.
+*/
 class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
 {
   Q_OBJECT;
@@ -63,6 +69,7 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
 
   ~QVTK_RenderWindowInteractor();
 
+  //! To initialize by #vtkGenericRenderWindowInteractor instance
   virtual
   void
   Initialize(vtkGenericRenderWindowInteractor* theDevice);
@@ -73,13 +80,19 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
   vtkRenderWindow*
   getRenderWindow();
 
+  //! Just to simplify usage of its device (#vtkGenericRenderWindowInteractor)
   virtual
   void
   InvokeEvent(unsigned long theEvent, void* theCallData);
 
  public slots:
+   //! Need for initial contents display on Win32
   virtual void show();
+
+  //! To implement final initialization, just before the widget is displayed
   virtual void polish();
+
+  //! To adjust widget and vtkRenderWindow size
   virtual void resize(int w, int h);
 
  protected:
@@ -103,6 +116,7 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
   virtual void focusInEvent( QFocusEvent* );
   virtual void focusOutEvent( QFocusEvent* );
 
+  //! To handle native X11 events (from such devices as SpaceMouse)
   virtual bool x11Event( XEvent *e );
 
   QWidget* myPreviousFocusWidget;
@@ -111,7 +125,15 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
 };
 
 
-// ------------------------------------------------------------
+//============================================================================
+//! Extends QVTK_RenderWindowInteractor functionality.
+/*!
+  Implements such features as 
+  support of selection, 
+  run-time interactor style management,
+  one render window per one renderer collaboration,
+  SUIT_ViewWindow events invocation.
+*/
 class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteractor
 {
   Q_OBJECT;

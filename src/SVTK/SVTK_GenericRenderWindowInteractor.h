@@ -87,7 +87,7 @@ class SVTK_EXPORT QVTK_GenericRenderWindowInteractor:
 
 
 //============================================================================
-//! This class introduce SALOME specific to the base class
+//! This class introduce SALOME specific to the base one
 /*!
   In this class new members is added (#mySelector and #myRenderWidget).
   They are used for initialization of #SVTK_InteractorStyle by redefinition of

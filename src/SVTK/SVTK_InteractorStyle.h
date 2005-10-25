@@ -86,49 +86,57 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   void
   SetInteractor( vtkRenderWindowInteractor* );
 
-  //! 
+  //! To invoke #vtkRenderWindowInteractor::CreateTimer
   virtual 
   void
   Render();
 
-  // redefined in order to cach rendering
+  //! To implement cached rendering
   virtual
   void
   OnTimer();
 
-  // VTK events
+  //! To reset reset view
   virtual
   void
   OnConfigure();
 
+  //! To handle mouse move event
   virtual 
   void
   OnMouseMove();
 
+  //! To handle left mouse button down event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnLeftButtonDown();
 
+  //! To handle left mouse button up event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnLeftButtonUp();
 
+  //! To handle middle mouse button down event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnMiddleButtonDown();
 
+  //! To handle middle mouse button up event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnMiddleButtonUp();
 
+  //! To handle right mouse button down event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnRightButtonDown();
 
+  //! To handle right mouse button up event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnRightButtonUp();
 
+  //! To handle keyboard event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnChar();
@@ -169,7 +177,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   void
   IncrementalRotate( const int incrX, const int incrY );
 
-  // custom event handling function (to handle 3d space mouse events)
+  // Main process event method (reimplemented from #vtkInteractorStyle)
   static 
   void
   ProcessEvents(vtkObject* object, 
@@ -181,7 +189,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   float RadianToDegree;                 // constant: for conv from deg to rad
   double myScale;
 
- public:
+ protected:
   void startZoom();
   void startPan();
   void startGlobalPan();
@@ -217,7 +225,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   bool                      myShiftState;
   int                       ForcedState;
 
-  // "increment" for pan/rotate/zoom operations
+  //! "Increment" for pan/rotate/zoom operations
   int                       mySpeedIncrement; 
   
   // SpaceMouse short cuts
@@ -225,7 +233,6 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   int                       mySMIncreaseSpeedBtn;
   int                       mySMDominantCombinedSwitchBtn;
   
-  QWidget* myRenderWidget;
   vtkSmartPointer<SVTK_GenericRenderWindowInteractor> myInteractor;
 
   PSelectionEvent mySelectionEvent;
