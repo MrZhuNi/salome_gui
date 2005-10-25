@@ -131,7 +131,7 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
   Implements such features as 
   support of selection, 
   run-time interactor style management,
-  one render window per one renderer collaboration,
+  one render window per one renderer collaboration and
   SUIT_ViewWindow events invocation.
 */
 class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteractor
