@@ -74,6 +74,10 @@ extern int SALOME_LINE_WIDTH;
 
 class SALOME_Actor;
 
+//! The class is a basic class for all SALOME VTK presentation.
+/*!
+  The 
+ */
 class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor 
 {
  public:
@@ -82,125 +86,156 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   vtkTypeMacro(SALOME_Actor,VTKViewer_Actor);
 
   //----------------------------------------------------------------------------
+  //! To check, if the #SALOME_Actor has a reference to #SALOME_InteractiveObject
   virtual
   Standard_Boolean 
   hasIO();
 
+  //! Get correspoinding reference to #SALOME_InteractiveObject
   virtual 
   const Handle(SALOME_InteractiveObject)& 
   getIO(); 
 
+  //! Set reference to #SALOME_InteractiveObject
   virtual
   void
   setIO(const Handle(SALOME_InteractiveObject)& theIO);
 
+  //! Get its name
   virtual 
   const char* 
   getName();
 
+  //! Name the #SALOME_Actor
   virtual
   void
   setName(const char* theName);
 
   //----------------------------------------------------------------------------
+  //! Change opacity
   virtual
   void
   SetOpacity(float theOpacity);
 
+  //! Get current opacity
   virtual
   float 
   GetOpacity();
 
+  //! Change color
   virtual
   void
   SetColor(float r,float g,float b);
 
+  //! Get current color
   virtual
   void
   GetColor(float& r,float& g,float& b);
 
+  //! Change color
   virtual
   void
   SetColor(const float theRGB[3]);
 
   //----------------------------------------------------------------------------
   // For selection mapping purpose
+  //! Maps VTK index of a node to corresponding object index
   virtual
   int 
   GetNodeObjId(int theVtkID);
 
+  //! Get coordinates of a node for given object index
   virtual
   float*
   GetNodeCoord(int theObjID);
 
+  //! Maps VTK index of a cell to corresponding object index
   virtual 
   int
   GetElemObjId(int theVtkID);
 
+  //! Get corresponding #vtkCell for given object index
   virtual
   vtkCell* 
   GetElemCell(int theObjID);
 
   //----------------------------------------------------------------------------
+  //! Get dimension of corresponding mesh element
   virtual
   int
   GetObjDimension( const int theObjId );
 
+  //! To insert some additional filters and then sets the given #vtkMapper
   virtual
   void
   SetMapper(vtkMapper* theMapper); 
 
+  //! Allows to get initial #vtkDataSet
   virtual
   vtkDataSet* 
   GetInput(); 
 
+  //! Apply view transformation
   virtual
   void
   SetTransform(VTKViewer_Transform* theTransform); 
 
+  //! Apply additional position
   virtual
   void
   SetPosition(float _arg1, float _arg2, float _arg3);
 
+  //! Apply additional position
   virtual
   void
   SetPosition(float _arg[3]);
 
+  //! To calculatate last modified time
   virtual
   unsigned long int
   GetMTime();
 
   //----------------------------------------------------------------------------
+  //! Set representation (VTK_SURFACE, VTK_POINTS, VTK_WIREFRAME and so on)
   virtual
   void
   SetRepresentation(int theMode);
 
+  //! Get current representation mode
   virtual
   int
   GetRepresentation();
 
+  //! Get current display mode (obsolete)
   virtual
   int
   getDisplayMode();
 
+  //! Set display mode (obsolete)
   virtual
   void
   setDisplayMode(int theMode);
 
   //----------------------------------------------------------------------------
-  // Infinitive means actor without size (point for example),
-  // which is not taken into account in calculation of boundaries of the scene
+  //! Set infinive flag
+  /*!
+    Infinitive means actor without size (point for example),
+    which is not taken into account in calculation of boundaries of the scene
+  */
   void
   SetInfinitive(bool theIsInfinite);
 
+  //! Get infinive flag
   virtual
   bool
   IsInfinitive();
     
+  //! To calcualte current bounding box
   virtual
   float* 
   GetBounds();
 
+  //! To calcualte current bounding box
   void
   GetBounds(float bounds[6]);
 
@@ -222,12 +257,15 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   SetCamera( vtkCamera* );
 
   //----------------------------------------------------------------------------
+  //! Set ResolveCoincidentTopology flag
   void
   SetResolveCoincidentTopology(bool theIsResolve);
 
+  //! Set ResolveCoincidentTopology parameters
   void
   SetPolygonOffsetParameters(float factor, float units);
 
+  //! Get current ResolveCoincidentTopology parameters
   void
   GetPolygonOffsetParameters(float& factor, float& units);
 
@@ -236,32 +274,39 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   Render(vtkRenderer *, vtkMapper *);
 
   //----------------------------------------------------------------------------
+  //! Get current shrink factor
   virtual
   float
   GetShrinkFactor();
 
+  //! Is the actor is shrunkable
   virtual
   bool
   IsShrunkable();
 
+  //! Is the actor is shrunk
   virtual
   bool
   IsShrunk();
 
+  //! Insert shrink filter into pipeline
   virtual
   void
   SetShrink();
 
+  //! Remove shrink filter from pipeline
   virtual
   void
   UnShrink();
 
   //----------------------------------------------------------------------------
+  //! Visibility management
   virtual
   void
   SetVisibility( int );
 
   //----------------------------------------------------------------------------
+  //! 
   virtual
   void
   AddToRender(vtkRenderer* theRendere); 
