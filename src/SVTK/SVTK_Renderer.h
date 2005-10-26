@@ -125,11 +125,11 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
   void
   AdjustActors();
 
-  //! Set size of the trihedron in percent from bounding box of the scene
+  //! Set size of the trihedron in percents from bounding box of the scene
   void
   SetTrihedronSize(int theSize);
  
-  //! Get size of the trihedron in percent from bounding box of the scene
+  //! Get size of the trihedron in percents from bounding box of the scene
   int  
   GetTrihedronSize() const;
 
