@@ -99,8 +99,7 @@ void SUIT_Application::putInfo ( const QString& msg, const int msec )
       desktop()->statusBar()->addWidget(myStatusLabel, /*int stretch = */1);
     }
     myStatusLabel->setText(msg);
-    if( msec != -1 )
-      QTimer::singleShot(msec <= 0 ? DEFAULT_MESSAGE_DELAY : msec, myStatusLabel, SLOT(clear()));
+    QTimer::singleShot(msec <= 0 ? DEFAULT_MESSAGE_DELAY : msec, myStatusLabel, SLOT(clear()));
   }
 }
 

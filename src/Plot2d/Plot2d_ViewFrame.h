@@ -51,14 +51,6 @@ public:
   void    updateLegend( const Plot2d_Prs* prs );
   void    fitAll();
   void    fitArea( const QRect& area );
-  void    fitData(const int mode,
-		  const double xMin, const double xMax,
-		  const double yMin, const double yMax,
-		  const double y2Min = 0, const double y2Max = 0);
-
-  void    getFitRanges(double& xMin, double& xMax,
-		       double& yMin, double& yMax,
-		       double& y2Min, double& y2Max);
 
   /* view parameters */
   void    copyPreferences( Plot2d_ViewFrame* );
