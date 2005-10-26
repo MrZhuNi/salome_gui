@@ -89,11 +89,11 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   QColor
   backgroundColor() const;
 
-  //! Redirect the request to #SVTK_Renderer::isTrihedronDisplayed
+  //! Redirect the request to #SVTK_Renderer::IsTrihedronDisplayed
   bool
   isTrihedronDisplayed();
 
-  //! Redirect the request to #SVTK_Renderer::isCubeAxesDisplayed
+  //! Redirect the request to #SVTK_Renderer::IsCubeAxesDisplayed
   bool
   isCubeAxesDisplayed();
  

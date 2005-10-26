@@ -74,9 +74,11 @@ extern int SALOME_LINE_WIDTH;
 
 class SALOME_Actor;
 
-//! The class is a basic class for all SALOME VTK presentation.
+//! The class is a basic one for all SALOME VTK presentation.
 /*!
-  The 
+  It provide highlight and prehighlight capabilites,
+  common way to publish and remove VTK presentation, 
+  mapping of VTK and object IDs and so on.
  */
 class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor 
 {
@@ -306,66 +308,77 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   SetVisibility( int );
 
   //----------------------------------------------------------------------------
-  //! 
+  //! To publish the actor an all its internal devices
   virtual
   void
   AddToRender(vtkRenderer* theRendere); 
 
+  //! To remove the actor an all its internal devices
   virtual
   void
   RemoveFromRender(vtkRenderer* theRendere);
 
+  //! Get reference on renderer where it is published
   vtkRenderer*
   GetRenderer();
 
-  // Used to obtain all dependent actors
+  //! Used to obtain all dependent actors
   virtual
   void
   GetChildActors(vtkActorCollection*);
 
   //----------------------------------------------------------------------------
+  //! To set interactor in order to use #vtkInteractorObserver devices
   virtual
   void
   SetInteractor(vtkRenderWindowInteractor* theInteractor);
 
+  //! Put a request to redraw the view 
   virtual
   void
   Update();
 
   //----------------------------------------------------------------------------
-  // To generate highlight automaticaly
+  //! Ask, if the descendant of the SALOME_Actor will implement its own highlight or not
   virtual
   bool
   hasHighlight(); 
 
+  //! Ask, if the SALOME_Actor is already highlighted
   virtual
   bool
   isHighlighted();
 
+  //! Set preselection mode
   virtual
   void
   SetPreSelected(bool thePreselect = false);
 
   //----------------------------------------------------------------------------
+  //! Set selector in order to the actor at any time can restore current selection
   virtual
   void
   SetSelector(SVTK_Selector* theSelector);
 
+  //! Just to update visibility of the highlight devices
   virtual
   void
   highlight(bool theHighlight);  
 
+  //! To map current selection to VTK representation
   virtual
   void
   Highlight(bool theHighlight);  
 
   //----------------------------------------------------------------------------
+  //! To process prehighlight (called from #SVTK_InteractorStyle)
   virtual
   bool
   PreHighlight(vtkInteractorStyle* theInteractorStyle, 
 	       SVTK_SelectionEvent* theSelectionEvent,
 	       bool theIsHighlight);
 
+  //! To process highlight (called from #SVTK_InteractorStyle)
   virtual 
   bool
   Highlight(vtkInteractorStyle* theInteractorStyle, 
@@ -373,19 +386,24 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 	    bool theIsHighlight);
 
   //----------------------------------------------------------------------------
+  //! To set up a picker for nodal selection (initialized by #SVTK_Renderer::AddActor)
   void
   SetPointPicker(vtkPointPicker* thePointPicker); 
 
+  //! To set up a picker for cell selection (initialized by #SVTK_Renderer::AddActor)
   void
   SetCellPicker(vtkCellPicker* theCellPicker); 
 
+  //! To set up a picker for cell rectangle selection (initialized by #SVTK_Renderer::AddActor)
   void
   SetCellRectPicker(VTKViewer_CellRectPicker* theCellRectPicker);
 
   //----------------------------------------------------------------------------
+  //! To set up a prehighlight property (initialized by #SVTK_Renderer::AddActor)
   void
   SetPreHighlightProperty(vtkProperty* theProperty);
 
+  //! To set up a highlight property (initialized by #SVTK_Renderer::AddActor)
   void
   SetHighlightProperty(vtkProperty* theProperty);
 
