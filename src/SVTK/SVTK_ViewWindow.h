@@ -55,19 +55,19 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   SVTK_MainWindow* 
   getMainWindow();
 
-  //! Get #vtkRenderWindow (obsolete)
+  //! Redirect the request to #SVTK_MainWindow::getRenderWindow
   vtkRenderWindow* 
   getRenderWindow();
 
-  //! Get #vtkRenderWindow (obsolete)
+  //! Redirect the request to #SVTK_MainWindow::getInteractor
   vtkRenderWindowInteractor*
   getInteractor();
 
-  //! Get #vtkRenderer
+  //! Redirect the request to #SVTK_MainWindow::getRenderer 
   vtkRenderer* 
   getRenderer();
 
-  //! Get #SVTK_Selector
+  //! Redirect the request to #SVTK_MainWindow::GetSelector 
   SVTK_Selector* 
   GetSelector();
   
@@ -80,12 +80,12 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   void
   SetSelectionMode(Selection_Mode theMode);
 
-  //! Set background color
+  //! Redirect the request to #SVTK_MainWindow::SetBackgroundColor 
   virtual
   void
   setBackgroundColor( const QColor& );
 
-  //! Get current background color
+  //! Redirect the request to #SVTK_MainWindow::SetBackgroundColor 
   QColor
   backgroundColor() const;
 

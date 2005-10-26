@@ -36,6 +36,11 @@ class SVTK_Selector;
 
 
 //----------------------------------------------------------------------------
+//! The class is a container for #SVTK_RenderWindowInteractor.
+/*!
+  The class contains #SVTK_RenderWindowInteractor instance and
+  adds predefined viewer actions and toolbar for user interaction.
+*/
 class SVTK_EXPORT SVTK_MainWindow: public QMainWindow
 {
   Q_OBJECT;
@@ -44,7 +49,8 @@ public:
   SVTK_MainWindow(QWidget* theParent, 
 		  const char* theName,
 		  SUIT_ResourceMgr* theResourceMgr);
-
+  
+  //! To initialize the class
   virtual
   void
   Initialize(SVTK_RenderWindowInteractor* theInteractor);
@@ -53,94 +59,114 @@ public:
   ~SVTK_MainWindow();
 
   //----------------------------------------------------------------------------
-  void
-  SetInteractor(SVTK_RenderWindowInteractor* theInteractor);
-
+  //! Get used #SVTK_RenderWindowInteractor
   SVTK_RenderWindowInteractor*
   GetInteractor();
 
+  //! Get used #vtkRenderWindowInteractor (obsolete)
   vtkRenderWindowInteractor*
   getInteractor();
 
+  //! Get used #vtkRenderWindow (obsolete)
   vtkRenderWindow*
   getRenderWindow();
 
+  //! To repaint the view
   void
-  Repaint();
+  Repaint(bool theUpdateTrihedron = true);
 
-  void
-  Repaint(bool theUpdateTrihedron);
-
+  //! To invoke a VTK event on #SVTK_RenderWindowInteractor instance
   void
   InvokeEvent(unsigned long theEvent, void* theCallData);
 
   //----------------------------------------------------------------------------
+  //! Redirect the request to #SVTK_RenderWindowInteractor::GetInteractorStyle
   vtkInteractorStyle* 
   GetInteractorStyle();
 
+  //! Redirect the request to #SVTK_RenderWindowInteractor::PushInteractorStyle
   void
   PushInteractorStyle(vtkInteractorStyle* theStyle);
 
+  //! Redirect the request to #SVTK_RenderWindowInteractor::PopInteractorStyle
   void
   PopInteractorStyle();
 
   //----------------------------------------------------------------------------
+  //! Redirect the request to #SVTK_RenderWindowInteractor::GetSelector
   SVTK_Selector* 
   GetSelector();
 
+  //! Redirect the request to #SVTK_RenderWindowInteractor::SelectionMode
   Selection_Mode
   SelectionMode();
 
+  //! Redirect the request to #SVTK_RenderWindowInteractor::SetSelectionMode
   void 
   SetSelectionMode(Selection_Mode theMode);
 
   //----------------------------------------------------------------------------
+  //! Redirect the request to #SVTK_RenderWindowInteractor::GetRenderer
   SVTK_Renderer* 
   GetRenderer();
 
+  //! Redirect the request to #SVTK_RenderWindowInteractor::getRenderer
   vtkRenderer* 
   getRenderer();
 
+  //! Set background color to the view
   void
   SetBackgroundColor(const QColor& theColor);
 
+  //! Get background color of the view
   QColor 
   BackgroundColor();
 
+  //! Redirect the request to #SVTK_Renderer::SetScale
   void
   SetScale(double theScale[3]);
 
+  //! Redirect the request to #SVTK_Renderer::GetScale
   void
   GetScale(double theScale[3]);
 
+  //! Redirect the request to #SVTK_Renderer::AddActor
   virtual
   void 
   AddActor(VTKViewer_Actor* theActor, 
 	   bool theIsUpdate = false);
 
+  //! Redirect the request to #SVTK_Renderer::RemoveActor
   virtual
   void 
   RemoveActor(VTKViewer_Actor* theActor, 
 	      bool theIsUpdate = false);
 
+  //! Redirect the request to #SVTK_Renderer::GetTrihedronSize
   int  
   GetTrihedronSize();
 
+  //! Redirect the request to #SVTK_Renderer::SetTrihedronSize
   void
   SetTrihedronSize(const int theSize);
 
+  //! Redirect the request to #SVTK_Renderer::AdjustActors
   void 
   AdjustActors();
 
+  //! Redirect the request to #SVTK_Renderer::IsTrihedronDisplayed
   bool
   IsTrihedronDisplayed();
  
+  //! Redirect the request to #SVTK_Renderer::IsCubeAxesDisplayed
   bool
   IsCubeAxesDisplayed();
 
+  //! Redirect the request to #SVTK_Renderer::GetTrihedron
   VTKViewer_Trihedron* 
   GetTrihedron();
 
+  //! Redirect the request to #SVTK_Renderer::GetCubeAxes
   SVTK_CubeAxesActor2D*
   GetCubeAxes();
 
