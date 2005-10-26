@@ -98,23 +98,23 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   isCubeAxesDisplayed();
  
   /*  interactive object management */
-  //! To highlight a VTK presentation with the same #SALOME_InteractiveObject
+  //! Redirect the request to #SVTK_View::highlight (to support old code)
   virtual
   void
   highlight(const Handle(SALOME_InteractiveObject)& theIO, 
 	    bool theIsHighlight = true, 
 	    bool theIsUpdate = true);
 
-  //! To unhighlight all VTK presentations
+  //! Redirect the request to #SVTK_View::unHighlightAll (to support old code)
   virtual
   void
   unHighlightAll();
 
-  //! Check, if the viewer contains a presentatin with defined #SALOME_InteractiveObject
+  //! Redirect the request to #SVTK_View::isInViewer (to support old code)
   bool
   isInViewer(const Handle(SALOME_InteractiveObject)& theIObject);
 
-  //! Check, if a presentatin with defined #SALOME_InteractiveObject is visible
+  //! Redirect the request to #SVTK_View::isVisible (to support old code)
   bool
   isVisible(const Handle(SALOME_InteractiveObject)& theIObject);
 
@@ -125,29 +125,29 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   
   /* display */		
   //----------------------------------------------------------------------------
-  //! To display VTK presentation with defined #SALOME_InteractiveObject
+  //! Redirect the request to #SVTK_View::Display (to support old code)
   virtual
   void
   Display(const Handle(SALOME_InteractiveObject)& theIObject,
 	  bool theImmediatly = true);
 
-  //! To display VTK presentation with defined #SALOME_InteractiveObject and erase all anothers
+  //! Redirect the request to #SVTK_View::DisplayOnly (to support old code)
   virtual
   void
   DisplayOnly(const Handle(SALOME_InteractiveObject)& theIObject);
 
-  //! To erase VTK presentation with defined #SALOME_InteractiveObject
+  //! Redirect the request to #SVTK_View::Erase (to support old code)
   virtual
   void
   Erase(const Handle(SALOME_InteractiveObject)& theIObject,
 	bool theImmediatly = true);
 
-  //! To display all existing VTK presentations
+  //! Redirect the request to #SVTK_View::DisplayAll (to support old code)
   virtual
   void 
   DisplayAll();
 
-  //! To erase all existing VTK presentations
+  //! Redirect the request to #SVTK_View::EraseAll (to support old code)
   virtual
   void 
   EraseAll();

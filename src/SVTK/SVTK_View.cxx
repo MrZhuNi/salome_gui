@@ -94,13 +94,6 @@ SVTK_SignalHandler
 //----------------------------------------------------------------
 void
 SVTK_SignalHandler
-::Repaint()
-{
-  myMainWindow->Repaint();
-}
-
-void
-SVTK_SignalHandler
 ::Repaint(bool theUpdateTrihedron)
 {
   myMainWindow->Repaint(theUpdateTrihedron);
