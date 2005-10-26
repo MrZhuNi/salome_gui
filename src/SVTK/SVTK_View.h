@@ -44,7 +44,7 @@ public:
   //----------------------------------------------------------------------------
   //! Redirect the request to #SVTK_MainWindow::Repaint (just for flexibility)
   void
-  Repaint(bool theUpdateTrihedron);
+  Repaint(bool theUpdateTrihedron = true);
 
   //----------------------------------------------------------------------------
   //! Redirect the request to #SVTK_MainWindow::GetRenderer (just for flexibility)
