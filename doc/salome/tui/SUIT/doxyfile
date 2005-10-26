@@ -32,7 +32,7 @@ SUBGROUPING            = YES
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
-EXTRACT_ALL            = NO
+EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = YES
 EXTRACT_STATIC         = YES
 EXTRACT_LOCAL_CLASSES  = YES
@@ -70,9 +70,8 @@ WARN_LOGFILE           = log.txt
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-#INPUT                  = ../../../share/salome/src \
-#			 ../../../share/salome/idl
-INPUT                  = ../../../share/salome/src/SVTK
+INPUT                  = ../../../share/salome/src \
+			 ../../../share/salome/idl
 FILE_PATTERNS          = *.idl *.h *.hh *.hxx *.c *.cc *.cxx *.ixx *.jxx
 RECURSIVE              = YES
 EXCLUDE                = 
