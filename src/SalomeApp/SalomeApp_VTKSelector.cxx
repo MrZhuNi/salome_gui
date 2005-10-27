@@ -112,6 +112,7 @@ void
 SalomeApp_VTKSelector
 ::getSelection( SUIT_DataOwnerPtrList& aList ) const
 {
+  using namespace SVTK;
   if(myViewer){
     if(SUIT_ViewManager* aViewMgr = myViewer->getViewManager()){
       if(SVTK_ViewWindow* aView = dynamic_cast<SVTK_ViewWindow*>(aViewMgr->getActiveView())){
@@ -126,7 +127,7 @@ SalomeApp_VTKSelector
 	      aSelector->GetIndex(anIO,anIds);
 	      SALOME_Actor* anActor = aSelector->GetActor(anIO);
 	      if( !anActor )
-	        anActor = VTK::Find<SALOME_Actor>(aView->getRenderer()->GetActors(),VTK::TIsSameIObject<SALOME_Actor>(anIO));
+	        anActor = Find<SALOME_Actor>(aView->getRenderer()->GetActors(),TIsSameIObject<SALOME_Actor>(anIO));
 
 	      aList.append(new SalomeApp_SVTKDataOwner(anIO,anIds,aMode,anActor));
 	      if(MYDEBUG) MESSAGE("VTKSelector::getSelection - "<<anIO->getEntry());

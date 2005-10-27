@@ -43,7 +43,7 @@ class SVTK_Renderer;
 
 
 //============================================================================
-//! Implemementation of the class is intended to implement Qt based CreateTimer and DestroyTimer functionality.
+//! Introduction of the class is intended to implement Qt based #CreateTimer and #DestroyTimer functionality.
 /*!
   The class intendes to implement platform indepenedant subclass of vtkRenderWindowInteractor.
   This is done by usage of Qt library.

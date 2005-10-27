@@ -15,8 +15,10 @@
   Combination with algorithms it gives powerful, flexible and simple to extend way to introduce new type of operation.
 */
 
-namespace VTK
+namespace SVTK
 {
+  using namespace VTK;
+
   //! This functor check, if the actor have pointed entry
   template<class TActor> 
   struct TIsSameEntry
