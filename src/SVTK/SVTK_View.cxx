@@ -381,7 +381,7 @@ SVTK_View
 ::Erase(SALOME_Actor* theActor, 
 	bool theIsUpdate)
 {
-  TErase()(theActor);
+  SVTK::TErase()(theActor);
 
   if(theIsUpdate)
     Repaint();
