@@ -30,8 +30,7 @@
 #define SVTK_SELECTION_H
 
 
-//! It is possible to introduce new type of selection 
-typedef int Selection_Mode; 
+typedef int Selection_Mode;
 
 const Selection_Mode NodeSelection = 0;
 const Selection_Mode CellSelection = 1;

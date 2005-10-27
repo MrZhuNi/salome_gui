@@ -36,8 +36,6 @@ class SUIT_Accel;
 
 class SALOME_LifeCycleCORBA;
 
-class QListViewItem;
-
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
@@ -134,7 +132,6 @@ private slots:
   void                                onSelection();
   void                                onRefresh();
   void                                onDeleteReferences();
-  void                                onDblClick( QListViewItem* );
 
 protected:
   virtual void                        createActions();

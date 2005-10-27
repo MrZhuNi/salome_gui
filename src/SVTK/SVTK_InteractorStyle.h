@@ -58,85 +58,77 @@ class SVTK_GenericRenderWindowInteractor;
 #define VTK_INTERACTOR_STYLE_CAMERA_SELECT     6
 #define VTK_INTERACTOR_STYLE_CAMERA_GLOBAL_PAN 7
 
-//! Introduce SALOME way of user interaction
-/*!
-  This class defines SALOME way of user interaction for VTK viewer, as well, 
-  as introduce a new selection mechanism
-*/
 class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
 {
  public:
+  // Description:
+  // This class must be supplied with a vtkRenderWindowInteractor wrapper or
+  // parent. This class should not normally be instantiated by application
+  // programmers.
   static SVTK_InteractorStyle *New();
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
+  virtual
+  int
+  GetState();
+
   typedef boost::shared_ptr<SVTK_SelectionEvent> PSelectionEvent;
 
-  //! Generate special #SVTK_SelectionEvent
   virtual
   SVTK_SelectionEvent*
   GetSelectionEvent();
 
-  //! Generate special #SVTK_SelectionEvent with flipped Y coordinate
   virtual
   SVTK_SelectionEvent*
   GetSelectionEventFlipY();
 
-  //! Redefined in order to add an observer (callback) for custorm event (space mouse event)
+  // redefined in order to add an observer (callback) for custorm event (space mouse event)
   virtual
   void
   SetInteractor( vtkRenderWindowInteractor* );
 
-  //! To invoke #vtkRenderWindowInteractor::CreateTimer
   virtual 
   void
   Render();
 
-  //! To implement cached rendering
+  // redefined in order to cach rendering
   virtual
   void
   OnTimer();
 
-  //! To reset reset view
+  // VTK events
   virtual
   void
   OnConfigure();
 
-  //! To handle mouse move event
   virtual 
   void
   OnMouseMove();
 
-  //! To handle left mouse button down event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnLeftButtonDown();
 
-  //! To handle left mouse button up event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnLeftButtonUp();
 
-  //! To handle middle mouse button down event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnMiddleButtonDown();
 
-  //! To handle middle mouse button up event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnMiddleButtonUp();
 
-  //! To handle right mouse button down event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnRightButtonDown();
 
-  //! To handle right mouse button up event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnRightButtonUp();
 
-  //! To handle keyboard event (reimplemented from #vtkInteractorStyle)
   virtual
   void
   OnChar();
@@ -177,7 +169,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   void
   IncrementalRotate( const int incrX, const int incrY );
 
-  // Main process event method (reimplemented from #vtkInteractorStyle)
+  // custom event handling function (to handle 3d space mouse events)
   static 
   void
   ProcessEvents(vtkObject* object, 
@@ -189,7 +181,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   float RadianToDegree;                 // constant: for conv from deg to rad
   double myScale;
 
- protected:
+ public:
   void startZoom();
   void startPan();
   void startGlobalPan();
@@ -225,7 +217,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   bool                      myShiftState;
   int                       ForcedState;
 
-  //! "Increment" for pan/rotate/zoom operations
+  // "increment" for pan/rotate/zoom operations
   int                       mySpeedIncrement; 
   
   // SpaceMouse short cuts
@@ -233,6 +225,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   int                       mySMIncreaseSpeedBtn;
   int                       mySMDominantCombinedSwitchBtn;
   
+  QWidget* myRenderWidget;
   vtkSmartPointer<SVTK_GenericRenderWindowInteractor> myInteractor;
 
   PSelectionEvent mySelectionEvent;

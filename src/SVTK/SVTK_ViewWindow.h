@@ -30,91 +30,71 @@ class vtkRenderer;
 class vtkRenderWindow;
 class vtkRenderWindowInteractor;
 
-//! Define a container for SALOME VTK view window
 class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 {
   Q_OBJECT;
 
  public:
-  //! To construct #SVTK_ViewWindow instance
   SVTK_ViewWindow(SUIT_Desktop* theDesktop);
 
   virtual
   ~SVTK_ViewWindow();
   
-  //! To initialize #SVTK_ViewWindow instance
   virtual
   void
   Initialize(SVTK_ViewModelBase* theModel);
 
-  //! Get #SVTK_View
   SVTK_View* 
   getView();
 
-  //! Get #SVTK_MainWindow
   SVTK_MainWindow* 
   getMainWindow();
 
-  //! Redirect the request to #SVTK_MainWindow::getRenderWindow
   vtkRenderWindow* 
   getRenderWindow();
 
-  //! Redirect the request to #SVTK_MainWindow::getInteractor
   vtkRenderWindowInteractor*
   getInteractor();
 
-  //! Redirect the request to #SVTK_MainWindow::getRenderer 
   vtkRenderer* 
   getRenderer();
 
-  //! Redirect the request to #SVTK_MainWindow::GetSelector 
   SVTK_Selector* 
   GetSelector();
   
-  //! Redirect the request to #SVTK_Selector::SelectionMode
   Selection_Mode
   SelectionMode() const;
   
-  //! Change selection mode
   virtual
   void
   SetSelectionMode(Selection_Mode theMode);
 
-  //! Redirect the request to #SVTK_MainWindow::SetBackgroundColor 
   virtual
   void
   setBackgroundColor( const QColor& );
 
-  //! Redirect the request to #SVTK_MainWindow::SetBackgroundColor 
   QColor
   backgroundColor() const;
 
-  //! Redirect the request to #SVTK_Renderer::IsTrihedronDisplayed
   bool
   isTrihedronDisplayed();
 
-  //! Redirect the request to #SVTK_Renderer::IsCubeAxesDisplayed
   bool
   isCubeAxesDisplayed();
  
   /*  interactive object management */
-  //! Redirect the request to #SVTK_View::highlight (to support old code)
   virtual
   void
   highlight(const Handle(SALOME_InteractiveObject)& theIO, 
 	    bool theIsHighlight = true, 
 	    bool theIsUpdate = true);
-
-  //! Redirect the request to #SVTK_View::unHighlightAll (to support old code)
   virtual
   void
   unHighlightAll();
 
-  //! Redirect the request to #SVTK_View::isInViewer (to support old code)
   bool
   isInViewer(const Handle(SALOME_InteractiveObject)& theIObject);
 
-  //! Redirect the request to #SVTK_View::isVisible (to support old code)
   bool
   isVisible(const Handle(SALOME_InteractiveObject)& theIObject);
 
@@ -125,85 +105,69 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   
   /* display */		
   //----------------------------------------------------------------------------
-  //! Redirect the request to #SVTK_View::Display (to support old code)
   virtual
   void
   Display(const Handle(SALOME_InteractiveObject)& theIObject,
 	  bool theImmediatly = true);
 
-  //! Redirect the request to #SVTK_View::DisplayOnly (to support old code)
   virtual
   void
   DisplayOnly(const Handle(SALOME_InteractiveObject)& theIObject);
 
-  //! Redirect the request to #SVTK_View::Erase (to support old code)
   virtual
   void
   Erase(const Handle(SALOME_InteractiveObject)& theIObject,
 	bool theImmediatly = true);
 
-  //! Redirect the request to #SVTK_View::DisplayAll (to support old code)
   virtual
   void 
   DisplayAll();
 
-  //! Redirect the request to #SVTK_View::EraseAll (to support old code)
   virtual
   void 
   EraseAll();
 
-  //! To repaint the viewer
   virtual
   void
   Repaint(bool theUpdateTrihedron = true);
 
   //----------------------------------------------------------------------------
-  //! Redirect the request to #SVTK_Renderer::SetScale
   virtual
   void 
   SetScale( double theScale[3] );
 
-  //! Redirect the request to #SVTK_Renderer::GetScale
   virtual
   void
   GetScale( double theScale[3] );
 
-  //! Redirect the request to #SVTK_Renderer::AddActor
   virtual
   void
   AddActor(VTKViewer_Actor* theActor,
 	   bool theIsUpdate = false);
 
-  //! Redirect the request to #SVTK_Renderer::RemoveActor
   virtual
   void
   RemoveActor(VTKViewer_Actor* theActor,
 	      bool theIsUpdate = false);
 
   //----------------------------------------------------------------------------
-  //! Redirect the request to #SVTK_Renderer::AdjustActors
   virtual
   void
   AdjustTrihedrons(const bool theIsForced);
 
-  //! Redirect the request to #SVTK_Renderer::GetTrihedron
   VTKViewer_Trihedron*  
   GetTrihedron();
 
-  //! Redirect the request to #SVTK_Renderer::GetCubeAxes
   SVTK_CubeAxesActor2D* 
   GetCubeAxes();
 
-  //! Redirect the request to #SVTK_Renderer::GetTrihedronSize
   int  
   GetTrihedronSize() const;
 
-  //! Redirect the request to #SVTK_Renderer::SetTrihedronSize
   virtual
   void 
   SetTrihedronSize( const int );
 
-  //! Redirect the request to #SVTK_Renderer::SetSelectionProp
   virtual
   void
   SetSelectionProp(const double& theRed = 1, 
@@ -211,15 +175,12 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 		   const double& theBlue = 0, 
 		   const int& theWidth = 5);
 
-  //! Redirect the request to #SVTK_Renderer::SetPreselectionProp
   virtual
   void
   SetPreselectionProp(const double& theRed = 0, 
 		      const double& theGreen = 1,
 		      const double& theBlue = 1, 
 		      const int& theWidth = 5);
-
-  //! Redirect the request to #SVTK_Renderer::SetSelectionTolerance
   virtual
   void
   SetSelectionTolerance(const double& theTolNodes = 0.025, 
@@ -234,62 +195,50 @@ signals:
  void selectionChanged();
 
 public slots:
-  //! Redirect the request to #SVTK_Renderer::OnFrontView
   virtual
   void
   onFrontView(); 
 
-  //! Redirect the request to #SVTK_Renderer::OnBackView
   virtual
   void
   onBackView(); 
 
-  //! Redirect the request to #SVTK_Renderer::OnTopView
   virtual
   void
   onTopView();
 
-  //! Redirect the request to #SVTK_Renderer::OnBottomView
   virtual
   void
   onBottomView();
 
-  //! Redirect the request to #SVTK_Renderer::OnRightView
   virtual
   void 
   onRightView(); 
 
-  //! Redirect the request to #SVTK_Renderer::OnLeftView
   virtual
   void 
   onLeftView();     
 
-  //! Redirect the request to #SVTK_Renderer::OnResetView
   virtual
   void
   onResetView();     
 
-  //! Redirect the request to #SVTK_Renderer::OnFitAll
   virtual
   void 
   onFitAll();
 
-  //! Redirect the request to #SVTK_Renderer::OnViewTrihedron
   virtual
   void
   onViewTrihedron(); 
 
-  //! Redirect the request to #SVTK_Renderer::OnViewCubeAxes
   virtual
   void
   onViewCubeAxes();
 
-  //! Redirect the request to #SVTK_Renderer::OnAdjustTrihedron
   virtual
   void
   onAdjustTrihedron();
 
-  //! Redirect the request to #SVTK_Renderer::OnAdjustCubeAxes
   virtual
   void 
   onAdjustCubeAxes();

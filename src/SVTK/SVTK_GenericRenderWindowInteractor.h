@@ -41,18 +41,13 @@ class QWidget;
 class SVTK_Selector;
 class SVTK_Renderer;
 
-
-//============================================================================
-//! Introduction of the class is intended to implement Qt based #CreateTimer and #DestroyTimer functionality.
-/*!
-  The class intendes to implement platform indepenedant subclass of vtkRenderWindowInteractor.
-  This is done by usage of Qt library.
-  \note
-  The Signal/Slot mechanism used by Qt requires that QObject 
-  appear as the first class when using multiple inheritance. 
-  Hence the order of the two classes QObject and vtkRenderWindowInteractor
-  matters here. So, be careful, not to change the sequence of the inheritance by accident. 
-*/
+// ------------------------------------------------------------
+// :TRICKY: Fri Apr 21 22:19:27 2000 Pagey
+// The Signal/Slot mechanism used by Qt requires that QObject 
+// appear as the first class when using multiple inheritance. 
+// Hence the order of the two classes QObject and vtkRenderWindowInteractor
+// matters here. Be careful not to change it by accident. 
+// ------------------------------------------------------------
 class SVTK_EXPORT QVTK_GenericRenderWindowInteractor: 
  public QObject,
  public vtkGenericRenderWindowInteractor
@@ -63,55 +58,42 @@ class SVTK_EXPORT QVTK_GenericRenderWindowInteractor:
   static QVTK_GenericRenderWindowInteractor* New();
   vtkTypeMacro(QVTK_GenericRenderWindowInteractor,vtkGenericRenderWindowInteractor);
 
-  //! Starts the QTimer instance on defined microseconds
   virtual
   int
   CreateTimer( int ) ; 
 
-  //! Stops the QTimer instance
   virtual
   int
   DestroyTimer() ; 
 
  protected slots:
-  //! The slot connects to QTimer::timeout signal to invoke vtkCommand::TimerEvent
   void
   OnTimeOut();
 
  protected:
-  QVTK_GenericRenderWindowInteractor(); //!< Instatiate QTimer
-  ~QVTK_GenericRenderWindowInteractor(); //!< Destroy the instance of QTimer
+  QVTK_GenericRenderWindowInteractor();
+  ~QVTK_GenericRenderWindowInteractor();
 
-  QTimer* myTimer; //!< Qt timer device
+  QTimer* myTimer ;
 };
 
 
-//============================================================================
-//! This class introduce SALOME specific to the base one
-/*!
-  In this class new members is added (#mySelector and #myRenderWidget).
-  They are used for initialization of #SVTK_InteractorStyle by redefinition of
-  #SVTK_InteractorStyle::SetInteractor method
-*/
+// ------------------------------------------------------------
 class SVTK_EXPORT SVTK_GenericRenderWindowInteractor: public QVTK_GenericRenderWindowInteractor
 {
  public:
   static SVTK_GenericRenderWindowInteractor* New();
   vtkTypeMacro(SVTK_GenericRenderWindowInteractor,QVTK_GenericRenderWindowInteractor);
 
-  //! To get access to SVTK_Selector
   SVTK_Selector* 
-  GetSelector(); 
+  GetSelector();
 
-  //! To initialize mySelector field
   void
   SetSelector(SVTK_Selector* theSelector);
 
-  //! To get access to QWidget, where vtkRenderWindow maps to.
   QWidget*
   GetRenderWidget();
 
-  //! To initialize myRenderWidget field.
   void
   SetRenderWidget(QWidget* theRenderWidget);
 
@@ -119,8 +101,8 @@ class SVTK_EXPORT SVTK_GenericRenderWindowInteractor: public QVTK_GenericRenderW
   SVTK_GenericRenderWindowInteractor();
   ~SVTK_GenericRenderWindowInteractor();
 
-  vtkSmartPointer<SVTK_Selector> mySelector; //!< Keeps a pointer to SVTK_Selector
-  QWidget* myRenderWidget; //!< Keeps a pointer to QWidget, where vtkRenderWindow maps to.
+  vtkSmartPointer<SVTK_Selector> mySelector;
+  QWidget* myRenderWidget;
 };
 
 #endif

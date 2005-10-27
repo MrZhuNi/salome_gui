@@ -124,6 +124,14 @@ SVTK_MainWindow
 //----------------------------------------------------------------------------
 void
 SVTK_MainWindow
+::Repaint() 
+{ 
+  Repaint( true ); 
+}
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
 ::Repaint(bool theUpdateTrihedron)
 {
   if(theUpdateTrihedron) 

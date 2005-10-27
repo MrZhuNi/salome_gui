@@ -30,7 +30,6 @@ class vtkUnstructuredGrid;
 #include "SVTK.h"
 #include "SALOME_Actor.h"
 
-//! This class used for internal SVTK package purpose (highlight and prehighlight)
 class SVTK_EXPORT SVTK_Actor : public VTKViewer_Actor
 {
 public:
@@ -44,15 +43,12 @@ public:
   virtual void SetShrink(); 
   virtual void UnShrink(); 
 
-  //! Allow to recostruct selected cells from source SALOME_Actor and map of subindexes
   void MapCells(SALOME_Actor* theMapActor, 
 		const TColStd_IndexedMapOfInteger& theMapIndex);
 
-  //! Allow to recostruct selected points from source SALOME_Actor and map of subindexes
   void MapPoints(SALOME_Actor* theMapActor, 
 		 const TColStd_IndexedMapOfInteger& theMapIndex);
 
-  //! Allow to recostruct selected edges from source SALOME_Actor and map of subindexes
   void MapEdge(SALOME_Actor* theMapActor, 
 	       const TColStd_IndexedMapOfInteger& theMapIndex);
 
