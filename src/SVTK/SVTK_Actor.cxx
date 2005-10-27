@@ -31,7 +31,7 @@
 #include <vtkPolyData.h>
 #include <vtkShrinkFilter.h>
 
-//#include "utilities.h"
+#include "utilities.h"
 
 using namespace std;
 
@@ -59,6 +59,8 @@ vtkStandardNewMacro(SVTK_Actor);
 
 SVTK_Actor::SVTK_Actor()
 {
+  if(MYDEBUG) INFOS("SVTK_Actor - "<<this);
+
   myRenderer = NULL;
   myIsInfinite = true;
 
@@ -111,7 +113,7 @@ void SVTK_Actor::UnShrink()
 //----------------------------------------------------------------------------
 SVTK_Actor::~SVTK_Actor()
 {
-  //if(MYDEBUG) INFOS("VTKViewer_Actor::~VTKViewer_Actor()");
+  if(MYDEBUG) INFOS("~SVTK_Actor()");
 
   myMapper->RemoveAllInputs();
   myMapper->Delete();

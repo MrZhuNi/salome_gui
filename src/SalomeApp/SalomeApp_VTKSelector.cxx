@@ -1,7 +1,7 @@
 #include "SalomeApp_VTKSelector.h"
 #include "SalomeApp_DataOwner.h"
 
-#include "SVTK_ViewModel.h"
+#include "SVTK_ViewModelBase.h"
 #include "SVTK_Selector.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_Functor.h"
@@ -16,7 +16,7 @@
 #include "utilities.h"
 
 #ifdef _DEBUG_
-static int MYDEBUG = 1;
+static int MYDEBUG = 0;
 #else
 static int MYDEBUG = 0;
 #endif
@@ -58,7 +58,7 @@ SalomeApp_SVTKDataOwner
   Constructor.
 */
 SalomeApp_VTKSelector
-::SalomeApp_VTKSelector( SVTK_Viewer* viewer, 
+::SalomeApp_VTKSelector( SVTK_ViewModelBase* viewer, 
 			 SUIT_SelectionMgr* mgr ): 
   SUIT_Selector( mgr, viewer ),
   myViewer( viewer )
@@ -78,7 +78,7 @@ SalomeApp_VTKSelector
 /*!
   Gets viewer.
 */
-SVTK_Viewer* 
+SVTK_ViewModelBase* 
 SalomeApp_VTKSelector
 ::viewer() const
 {
@@ -92,7 +92,7 @@ QString
 SalomeApp_VTKSelector
 ::type() const
 { 
-  return SVTK_Viewer::Type(); 
+  return myViewer->getType(); 
 }
 
 /*!
@@ -112,6 +112,7 @@ void
 SalomeApp_VTKSelector
 ::getSelection( SUIT_DataOwnerPtrList& aList ) const
 {
+  using namespace SVTK;
   if(myViewer){
     if(SUIT_ViewManager* aViewMgr = myViewer->getViewManager()){
       if(SVTK_ViewWindow* aView = dynamic_cast<SVTK_ViewWindow*>(aViewMgr->getActiveView())){
@@ -126,7 +127,7 @@ SalomeApp_VTKSelector
 	      aSelector->GetIndex(anIO,anIds);
 	      SALOME_Actor* anActor = aSelector->GetActor(anIO);
 	      if( !anActor )
-	        anActor = VTK::Find<SALOME_Actor>(aView->getRenderer()->GetActors(),VTK::TIsSameIObject<SALOME_Actor>(anIO));
+	        anActor = Find<SALOME_Actor>(aView->getRenderer()->GetActors(),TIsSameIObject<SALOME_Actor>(anIO));
 
 	      aList.append(new SalomeApp_SVTKDataOwner(anIO,anIds,aMode,anActor));
 	      if(MYDEBUG) MESSAGE("VTKSelector::getSelection - "<<anIO->getEntry());

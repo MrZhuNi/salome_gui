@@ -14,7 +14,7 @@
 #include "SALOME_InteractiveObject.hxx"
 
 class SALOME_Actor;
-class SVTK_Viewer;
+class SVTK_ViewModelBase;
 
 /*!
   Provide salome vtk data owner list.
@@ -57,10 +57,10 @@ class SALOMEAPP_EXPORT SalomeApp_VTKSelector : public SUIT_Selector
   Q_OBJECT;
 
 public:
-  SalomeApp_VTKSelector( SVTK_Viewer*, SUIT_SelectionMgr* );
+  SalomeApp_VTKSelector( SVTK_ViewModelBase*, SUIT_SelectionMgr* );
   virtual ~SalomeApp_VTKSelector();
 
-  SVTK_Viewer* viewer() const;
+  SVTK_ViewModelBase* viewer() const;
 
   virtual QString type() const;
 
@@ -72,7 +72,7 @@ protected:
   virtual void      setSelection( const SUIT_DataOwnerPtrList& );
 
 private:
-  SVTK_Viewer* myViewer;
+  SVTK_ViewModelBase* myViewer;
 };
 
 #endif

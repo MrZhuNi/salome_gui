@@ -27,20 +27,29 @@
 //  $Header$
 
 
+#include "SVTK_SelectorDef.h"
+
+#include "SALOME_Actor.h"
+
+#include "utilities.h"
+
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 
+#include <vtkCallbackCommand.h>
 
-#include "SALOME_Actor.h"
-#include "SVTK_ViewModel.h"
-#include "SVTK_ViewWindow.h"
+SVTK_Selector* 
+SVTK_Selector
+::New()
+{
+  return new SVTK_SelectorDef();
+}
 
-#include "SVTK_SelectorDef.h"
-#include "utilities.h"
-
+//----------------------------------------------------------------------------
 SVTK_SelectorDef
 ::SVTK_SelectorDef()
 {
+  mySelectionMode = ActorSelection;
 }
 
 SVTK_SelectorDef
@@ -48,11 +57,32 @@ SVTK_SelectorDef
 {
 }
 
+//----------------------------------------------------------------------------
+void 
+SVTK_SelectorDef
+::StartPickCallback()
+{
+  this->InvokeEvent(vtkCommand::StartPickEvent,NULL);
+}
+
+//----------------------------------------------------------------------------
+void 
+SVTK_SelectorDef
+::EndPickCallback()
+{
+  this->InvokeEvent(vtkCommand::EndPickEvent,NULL);
+}
+
+//----------------------------------------------------------------------------
 void 
 SVTK_SelectorDef
 ::SetSelectionMode(Selection_Mode theMode)
 {
-  mySelectionMode = theMode;
+  if(mySelectionMode != theMode){
+    mySelectionMode = theMode;
+    myMapIOSubIndex.clear();
+    this->EndPickCallback();
+  }
 }
 
 void 
@@ -69,7 +99,7 @@ bool
 SVTK_SelectorDef
 ::IsSelected(const Handle(SALOME_InteractiveObject)& theIO) const
 {
-  return myIObjects.find(theIO) != myIObjects.end();
+  return !theIO.IsNull() && (myIObjects.find(theIO) != myIObjects.end());
 }
 
 bool
@@ -330,3 +360,59 @@ SVTK_SelectorDef
 {
   myMapIOSubIndex.clear();  
 }
+
+//----------------------------------------------------------------------------
+void
+SVTK_SelectorDef
+::SetFilter(const Handle(VTKViewer_Filter)& theFilter)
+{
+  myFilters.insert(TFilters::value_type(theFilter->GetId(),theFilter));
+}
+
+//----------------------------------------------------------------------------
+bool
+SVTK_SelectorDef
+::IsFilterPresent(const TFilterID theId) const
+{
+  return myFilters.find(theId) != myFilters.end();
+}
+
+//----------------------------------------------------------------------------
+void  
+SVTK_SelectorDef
+::RemoveFilter(const TFilterID theId)
+{
+  if(IsFilterPresent(theId))
+    myFilters.erase(theId);
+}
+
+//----------------------------------------------------------------------------
+bool
+SVTK_SelectorDef
+::IsValid(SALOME_Actor* theActor,
+	  const TFilterID theId,
+	  const bool theIsNode) const
+{
+  TFilters::const_iterator anIter = myFilters.begin();
+  for(; anIter != myFilters.end(); ++anIter){
+    const Handle(VTKViewer_Filter)& aFilter = anIter->second;
+    if(theIsNode == aFilter->IsNodeFilter() &&
+       !aFilter->IsValid(theActor,theId))
+      return false;
+  }
+  return true;
+}
+
+//----------------------------------------------------------------------------
+Handle(VTKViewer_Filter) 
+SVTK_SelectorDef
+::GetFilter(const TFilterID theId) const
+{
+  TFilters::const_iterator anIter = myFilters.find(theId);
+  if(anIter != myFilters.end()){
+    const Handle(VTKViewer_Filter)& aFilter = anIter->second;
+    return aFilter;
+  }
+  return Handle(VTKViewer_Filter)();
+}
+
