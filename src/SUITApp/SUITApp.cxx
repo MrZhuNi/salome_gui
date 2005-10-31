@@ -14,6 +14,8 @@
 #include <Python.h>
 #endif
 
+#include <stdlib.h>
+
 #include <qstringlist.h>
 #include <qfile.h>
 #include <qdir.h>
