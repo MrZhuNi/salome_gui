@@ -5,20 +5,20 @@
 #include <vtkRenderer.h>
 #include <vtkActorCollection.h>
 
-#include "SUIT_Session.h"
+#include <SUIT_Session.h>
 
-#include "SVTK_Selection.h"
-#include "SVTK_ViewModel.h"
-#include "SVTK_ViewWindow.h"
-#include "SVTK_Prs.h"
+#include <SVTK_Selection.h>
+#include <SVTK_ViewModel.h>
+#include <SVTK_ViewWindow.h>
+#include <SVTK_Prs.h>
 
-#include "SVTK_RenderWindowInteractor.h"
-#include "SVTK_RenderWindow.h"
+#include <SVTK_RenderWindowInteractor.h>
+#include <SVTK_RenderWindow.h>
 
-#include "ToolsGUI.h"
+//#include <ToolsGUI.h>
 
-#include "SALOME_Actor.h"
-#include "SALOME_InteractiveObject.hxx"
+#include <SALOME_Actor.h>
+#include <SALOME_InteractiveObject.hxx>
 
 // Temporarily commented to avoid awful dependecy on SALOMEDS
 // TODO: better mechanism of storing display/erse status in a study
