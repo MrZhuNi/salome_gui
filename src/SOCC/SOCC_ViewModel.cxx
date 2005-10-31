@@ -1,12 +1,12 @@
-#include "SOCC_ViewModel.h"
+#include <SOCC_ViewModel.h>
 
-#include "SOCC_Prs.h"
-#include "SOCC_ViewWindow.h"
+#include <SOCC_Prs.h>
+#include <SOCC_ViewWindow.h>
 
-#include "SUIT_Session.h"
-#include "SUIT_Application.h"
+#include <SUIT_Session.h>
+#include <SUIT_Application.h>
 
-#include "ToolsGUI.h"
+//#include "ToolsGUI.h"
 
 // Temporarily commented to avoid awful dependecy on SALOMEDS
 // TODO: better mechanism of storing display/erse status in a study
