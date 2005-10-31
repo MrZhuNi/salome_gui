@@ -4,6 +4,7 @@
 #ifndef LIGHTAPP_DIALOG_H
 #define LIGHTAPP_DIALOG_H
 
+#include "LightApp.h"
 #include <QtxDialog.h>
 
 #include <qvaluelist.h>
@@ -20,7 +21,7 @@ class SUIT_ResourceMgr;
   Class       : LightApp_Dialog
   Description : Base class for all LightApp dialogs
 */
-class LightApp_Dialog : public QtxDialog
+class LIGHTAPP_EXPORT LightApp_Dialog : public QtxDialog
 {
   Q_OBJECT
   

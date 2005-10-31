@@ -12,7 +12,8 @@ LightApp_GLSelector::LightApp_GLSelector( GLViewer_Viewer2d* viewer, SUIT_Select
   myViewer( viewer )
 {
   if ( myViewer )
-    connect( myViewer, SIGNAL( selectionChanged() ), this, SLOT( onSelectionChanged() ) );
+    connect( myViewer, SIGNAL( selectionChanged( SelectionChangeStatus ) ), 
+             this, SLOT( onSelectionChanged() ) );
 }
 
 /*!Destructor. Do nothing.*/

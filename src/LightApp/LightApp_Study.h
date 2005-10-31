@@ -1,19 +1,15 @@
 #ifndef LIGHTAPP_STUDY_H
 #define LIGHTAPP_STUDY_H
 
-#include "LightApp.h"
-#include "LightApp_Driver.h"
+#include <LightApp.h>
+#include <LightApp_Driver.h>
 
-#include "CAM_Study.h"
-#include "CAM_DataModel.h"
-#include "SUIT_Study.h"
+#include <CAM_Study.h>
+#include <CAM_DataModel.h>
+#include <SUIT_Study.h>
 
-#include "string.h"
-#include "vector.h"
-
-#ifdef WIN32
-#pragma warning( disable:4251 )
-#endif
+#include "string"
+#include "vector"
 
 class SUIT_Application;
 class CAM_DataModel;

@@ -11,6 +11,10 @@
 #include <OSD_SingleProtection.hxx>
 #include <OSD_FileIterator.hxx>
 
+#ifdef WIN32
+#include <time.h>
+#endif
+
 /*! Constructor.*/
 LightApp_Driver::LightApp_Driver()
 {

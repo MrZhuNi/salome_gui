@@ -19,7 +19,7 @@ class SVTK_Viewer;
 /*!
   Provide salome vtk data owner list.
 */
-class LightApp_SVTKDataOwner : public LightApp_DataOwner
+class LIGHTAPP_EXPORT LightApp_SVTKDataOwner : public LightApp_DataOwner
 {
  public:
     LightApp_SVTKDataOwner( const Handle(SALOME_InteractiveObject)& theIO,

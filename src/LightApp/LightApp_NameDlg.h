@@ -5,6 +5,7 @@
 #ifndef LIGHTAPP_NAMEDLG_H
 #define LIGHTAPP_NAMEDLG_H
 
+#include "LightApp.h"
 #include <qdialog.h>
 
 class QLineEdit;
@@ -14,7 +15,7 @@ class QPushButton;
 // class    : LightApp_NameDlg
 /*! purpose  : Common <Rename> dialog box class*/
 //=================================================================================
-class LightApp_NameDlg : public QDialog
+class LIGHTAPP_EXPORT LightApp_NameDlg : public QDialog
 { 
   Q_OBJECT
 

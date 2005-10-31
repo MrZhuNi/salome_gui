@@ -29,6 +29,7 @@
 #ifndef LIGHTAPP_SELECTION_HeaderFile
 #define LIGHTAPP_SELECTION_HeaderFile
 
+#include "LightApp.h"
 #include <QtxPopupMgr.h>
 
 class LightApp_SelectionMgr;
@@ -37,7 +38,7 @@ class LightApp_Study;
 class SUIT_ViewWindow;
 
 
-class LightApp_Selection : public QtxPopupMgr::Selection
+class LIGHTAPP_EXPORT LightApp_Selection : public QtxPopupMgr::Selection
 {
 public:
   LightApp_Selection();

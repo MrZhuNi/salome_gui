@@ -12,6 +12,7 @@
 #ifndef LightApp_Operation_H
 #define LightApp_Operation_H
 
+#include "LightApp.h"
 #include <SUIT_Operation.h>
 
 class LightApp_Module;
@@ -31,7 +32,7 @@ class SUIT_Desktop;
  *
  *  Base class for all operations (see SUIT_Operation for more description)
 */
-class LightApp_Operation : public SUIT_Operation
+class LIGHTAPP_EXPORT LightApp_Operation : public SUIT_Operation
 {
   Q_OBJECT
 

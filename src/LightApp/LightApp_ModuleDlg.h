@@ -5,6 +5,7 @@
 #ifndef LIGHTAPP_MODULEDLG_H
 #define LIGHTAPP_MODULEDLG_H
 
+#include "LightApp.h"
 #include <qdialog.h> 
 #include <qpixmap.h>
 
@@ -12,7 +13,7 @@ class QFrame;
 class QLabel;
 class QPushButton;
 
-class LightApp_ModuleDlg : public QDialog
+class LIGHTAPP_EXPORT LightApp_ModuleDlg : public QDialog
 {
   Q_OBJECT
 

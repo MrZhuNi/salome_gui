@@ -2,17 +2,20 @@
 //  Author : Vadim SANDLER
 //  $Header$
 
-#include "LightApp_NameDlg.h"
-#include "SUIT_Application.h"
-#include "SUIT_Desktop.h"
-#include "SUIT_Tools.h"
+#include <LightApp_NameDlg.h>
+#include <SUIT_Application.h>
+#include <SUIT_Desktop.h>
+#include <SUIT_Tools.h>
 
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
+
+#ifndef WIN32
 using namespace std;
+#endif
 
 /*!
   Constructor

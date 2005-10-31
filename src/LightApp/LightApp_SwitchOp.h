@@ -15,6 +15,7 @@
 #ifndef LightApp_SwitchOp_H
 #define LightApp_SwitchOp_H
 
+#include "LightApp.h"
 #include <qobject.h>
 
 class LightApp_Module;
@@ -38,7 +39,7 @@ class SUIT_Study;
  * operation is suspended and new operation activated. Module contains this class as a
  * field. Then module is created instance of this class created too.
  */
-class LightApp_SwitchOp : public QObject
+class LIGHTAPP_EXPORT LightApp_SwitchOp : public QObject
 {
   Q_OBJECT
 

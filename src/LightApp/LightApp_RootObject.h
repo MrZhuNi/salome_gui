@@ -17,7 +17,15 @@ class LIGHTAPP_EXPORT LightApp_RootObject : public SUIT_DataObject
 {
 public:
   LightApp_RootObject( LightApp_Study* study )
-    : myStudy( study ) {}
+    : myStudy( study ) 
+  {
+    // to do : to be removed
+    FILE* f = fopen( "d:\\temp\\SUIT.log", "a" );
+    char str[ 255 ];
+    sprintf( str, "LightApp_RootObject 0x%X \n", this );
+    fputs( str, f );
+    fclose( f );
+  }
 
   virtual ~LightApp_RootObject() {}
     

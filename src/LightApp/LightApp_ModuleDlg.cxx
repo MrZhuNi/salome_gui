@@ -2,14 +2,17 @@
 //  Author : Michael Zorin (mzn)
 //  Module : LightApp
 
-#include "LightApp_ModuleDlg.h"
+#include <LightApp_ModuleDlg.h>
 
 #include <qframe.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qpixmap.h>
+
+#ifndef WIN32
 using namespace std;
+#endif
 
 /*!Default icon*/
 static const char* const default_icon[] = { 
