@@ -24,7 +24,5 @@
 
 #define APP_VERSION "0.1"
 
-#if defined WNT
-#pragma warning ( disable: 4251 )
-#endif
-
+#pragma warning ( disable:4251 )
+#pragma warning ( disable:4786 )
