@@ -1,0 +1,480 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "CAM"=..\src\CAM\CAM.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    CAM
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name STD
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "GLViewer"=..\src\GLViewer\GLViewer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    GLViewer
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "LightApp"=..\src\LightApp\LightApp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    LightApp
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name CAM
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name GLViewer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name LogWindow
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ObjBrowser
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Plot2d
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name STD
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name PyInterp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name VTKViewer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name OCCViewer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name PythonConsole
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name OBJECT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SOCC
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SVTK
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Prs
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "LogWindow"=..\src\LogWindow\LogWindow.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    LogWindow
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "OBJECT"=..\src\OBJECT\OBJECT.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    OBJECT
+    ..\src\object
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name GLViewer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name VTKViewer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "OCCViewer"=..\src\OCCViewer\OCCViewer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    OCCViewer
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ObjBrowser"=..\src\ObjBrowser\ObjBrowser.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    ObjBrowser
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Plot2d"=..\src\Plot2d\Plot2d.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    Plot2d
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Prs"=..\src\Prs\Prs.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    Prs
+    ..\src\prs
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "PyInterp"=..\src\PyInterp\PyInterp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    PyInterp
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "PythonConsole"=..\src\PythonConsole\PythonConsole.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    PythonConsole
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name PyInterp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Qtx"=..\src\Qtx\Qtx.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    Qtx
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "SOCC"=..\src\SOCC\SOCC.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    SOCC
+    ..\src\socc
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name OCCViewer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Prs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name OBJECT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "STD"=..\src\STD\STD.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    STD
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "SUIT"=..\src\SUIT\SUIT.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    SUIT
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "SUITApp"=..\src\SUITApp\SUITApp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    GUI_SRC/src/SUITApp
+    ..\src\suitapp
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "SVTK"=..\src\SVTK\SVTK.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    SVTK
+    ..\src\svtk
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name OBJECT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name VTKViewer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name CAM
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Prs
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Style"=..\src\Style\Style.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    Style
+    ..\src\style
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "VTKViewer"=..\src\VTKViewer\VTKViewer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    VTKViewer
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name SUIT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Qtx
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
