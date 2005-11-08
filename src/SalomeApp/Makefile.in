@@ -1,0 +1,78 @@
+#  File   : Makefile.in
+#  Author : Vladimir Klyachin (OCN)
+#  Module : SalomeApp
+#  $Header$
+
+top_srcdir=@top_srcdir@
+top_builddir=../..
+srcdir=@srcdir@
+VPATH=.:@srcdir@:@srcdir@/resources
+
+
+@COMMENCE@
+
+# header files 
+EXPORT_HEADERS= SalomeApp.h \
+		SalomeApp_Application.h \
+		SalomeApp_DataModel.h \
+		SalomeApp_DataObject.h \
+		SalomeApp_Module.h \
+		SalomeApp_Study.h \
+		SalomeApp_ExceptionHandler.h \
+		SalomeApp_EventFilter.h \
+		SalomeApp_Tools.h \
+		SalomeApp_ImportOperation.h \
+		SalomeApp_Filter.h \
+		SalomeApp_TypeFilter.h \
+		SalomeApp_StudyPropertiesDlg.h \
+		SalomeApp_CheckFileDlg.h
+
+# .po files to transform in .qm
+PO_FILES = SalomeApp_images.po \
+	   SalomeApp_msg_en.po
+
+# Libraries targets
+LIB = libSalomeApp.la
+
+LIB_SRC= SalomeApp_Module.cxx \
+         SalomeApp_Application.cxx \
+	 SalomeApp_DataModel.cxx \
+	 SalomeApp_DataObject.cxx \
+	 SalomeApp_Study.cxx \
+	 SalomeApp_ExceptionHandler.cxx \
+	 SalomeApp_EventFilter.cxx \
+	 SalomeApp_PyInterp.cxx \
+	 SalomeApp_Tools.cxx \
+	 SalomeApp_ImportOperation.cxx \
+	 SalomeApp_Filter.cxx \
+	 SalomeApp_TypeFilter.cxx \
+	 SalomeApp_StudyPropertiesDlg.cxx \
+	 SalomeApp_ListView.cxx \
+	 SalomeApp_CheckFileDlg.cxx
+
+LIB_MOC = SalomeApp_Application.h \
+	  SalomeApp_DataModel.h \
+	  SalomeApp_Module.h \
+	  SalomeApp_Study.h \
+	  SalomeApp_StudyPropertiesDlg.h \
+	  SalomeApp_ListView.h \
+	  SalomeApp_CheckFileDlg.h
+
+LIB_CLIENT_IDL = SALOMEDS.idl \
+		 SALOME_Exception.idl \
+		 SALOME_GenericObj.idl
+
+RESOURCES_FILES = SalomeApp.ini \
+		  SalomeApp.xml
+
+CPPFLAGS+=$(PYTHON_INCLUDES) $(QT_INCLUDES) $(QWT_INCLUDES) $(OCC_INCLUDES) $(VTK_INCLUDES) $(BOOST_CPPFLAGS) -I${KERNEL_ROOT_DIR}/include/salome
+
+LDFLAGS+=$(PYTHON_LIBS) $(QT_MT_LIBS) 
+LIBS+= -lsuit -lstd -lCAM -lObjBrowser -lSalomePrs -L$(KERNEL_ROOT_DIR)/lib/salome -lOpUtil -lSALOMELocalTrace $(CAS_KERNEL) -lSPlot2d -lGLViewer -lOCCViewer -lVTKViewer -lSalomeObject -lSVTK -lSOCC -lPyInterp -lPythonConsole -lLogWindow -lLightApp -lSalomeContainer -lToolsGUI
+
+@CONCLUDE@
+
+
+
+
+
