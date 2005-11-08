@@ -68,7 +68,6 @@ static int MYVTKDEBUG = 0;
 #endif
 
 static bool GENERATE_SUIT_EVENTS = false;
-static bool FOCUS_UNDER_MOUSE = false;
 
 
 //----------------------------------------------------------------------------
@@ -226,9 +225,6 @@ void
 QVTK_RenderWindowInteractor
 ::mouseMoveEvent( QMouseEvent* event ) 
 {
-  if(FOCUS_UNDER_MOUSE && qApp->focusWidget() != this)
-    setFocus();
-
   GetDevice()->SetEventInformationFlipY(event->x(), 
 					event->y(),
 					event->state() & ControlButton,
@@ -320,8 +316,6 @@ QVTK_RenderWindowInteractor
   if(false && qApp->focusWidget() != this)
     myPreviousFocusWidget = qApp->focusWidget();
 
-  QWidget::setFocus();
-
   GetDevice()->EnterEvent();
 }
 
@@ -330,9 +324,6 @@ void
 QVTK_RenderWindowInteractor
 ::leaveEvent( QEvent * )
 {
-  if(false && myPreviousFocusWidget)
-    myPreviousFocusWidget->setFocus();
-
   GetDevice()->LeaveEvent();
 }
 
