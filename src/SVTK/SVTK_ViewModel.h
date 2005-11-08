@@ -2,9 +2,8 @@
 #define SVTK_VIEWMODEL_H
 
 #include "SVTK.h"
+#include "SUIT_ViewModel.h"
 #include "SVTK_ViewModelBase.h"
-
-#include "VTKViewer_ViewModel.h"
 
 #include "SALOME_Prs.h"
 #include "SALOME_InteractiveObject.hxx"
