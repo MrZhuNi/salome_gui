@@ -84,6 +84,7 @@ SVTK_MainWindow
   SetEventDispatcher(myInteractor->GetDevice());
 
   setCentralWidget(myInteractor);
+  myInteractor->setBackgroundMode(Qt::NoBackground);
 
   myInteractor->setFocusPolicy(StrongFocus);
   myInteractor->setFocus();

@@ -68,16 +68,14 @@ static int MYVTKDEBUG = 0;
 #endif
 
 static bool GENERATE_SUIT_EVENTS = false;
-static bool FOCUS_UNDER_MOUSE = false;
 
 
 //----------------------------------------------------------------------------
 QVTK_RenderWindowInteractor
 ::QVTK_RenderWindowInteractor(QWidget* theParent, 
 			      const char* theName):
-  QWidget(theParent,theName),
-  myRenderWindow(vtkRenderWindow::New()),
-  myPreviousFocusWidget(NULL)
+  QWidget(theParent,theName,Qt::WNoAutoErase),
+  myRenderWindow(vtkRenderWindow::New())
 {
   if(MYDEBUG) INFOS("QVTK_RenderWindowInteractor() - "<<this);
   setMouseTracking(true);
@@ -226,9 +224,6 @@ void
 QVTK_RenderWindowInteractor
 ::mouseMoveEvent( QMouseEvent* event ) 
 {
-  if(FOCUS_UNDER_MOUSE && qApp->focusWidget() != this)
-    setFocus();
-
   GetDevice()->SetEventInformationFlipY(event->x(), 
 					event->y(),
 					event->state() & ControlButton,
@@ -317,11 +312,6 @@ void
 QVTK_RenderWindowInteractor
 ::enterEvent( QEvent* event )
 {
-  if(false && qApp->focusWidget() != this)
-    myPreviousFocusWidget = qApp->focusWidget();
-
-  QWidget::setFocus();
-
   GetDevice()->EnterEvent();
 }
 
@@ -330,9 +320,6 @@ void
 QVTK_RenderWindowInteractor
 ::leaveEvent( QEvent * )
 {
-  if(false && myPreviousFocusWidget)
-    myPreviousFocusWidget->setFocus();
-
   GetDevice()->LeaveEvent();
 }
 
