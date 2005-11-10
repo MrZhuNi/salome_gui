@@ -460,12 +460,22 @@ void SalomeApp_Application::createActions()
   modules( aModuleList, false );
   
   int id = SalomeApp_Application::UserID;
-  // help for KERNEL and GUI
+  // help for KERNEL
   QCString dir;
+  if (dir = getenv("KERNEL_ROOT_DIR")) {
+    a = createAction( id, tr( QString("Kernel Help") ), QIconSet(),
+		      tr( QString("Kernel Help") ),
+		      tr( QString("Kernel Help") ),
+		      0, desk, false, this, SLOT( onHelpContentsModule() ) );
+    a->setName( QString("KERNEL") );
+    createMenu( a, helpModuleMenu, -1 );
+    id++;
+  }
+  // help for KERNEL and GUI
   if (dir = getenv("GUI_ROOT_DIR")) {
-    a = createAction( id, tr( QString("Kernel & GUI Help") ), QIconSet(),
-		      tr( QString("Kernel && GUI Help") ),
-		      tr( QString("Kernel & GUI Help") ),
+    a = createAction( id, tr( QString("GUI Help") ), QIconSet(),
+		      tr( QString("GUI Help") ),
+		      tr( QString("GUI Help") ),
 		      0, desk, false, this, SLOT( onHelpContentsModule() ) );
     a->setName( QString("GUI") );
     createMenu( a, helpModuleMenu, -1 );
@@ -478,7 +488,7 @@ void SalomeApp_Application::createActions()
       continue;
 
     QString modName = moduleName( *it );
-    if ( modName.compare("GEOM") == 0 ) { // to be removed when documentation for other modules will be done
+    if ( modName.compare("MED") == 0 || modName.compare("VISU") == 0) { // to be removed when documentation for other modules will be done
       QAction* a = createAction( id, tr( moduleTitle(modName) + QString(" Help") ), QIconSet(),
 				 tr( moduleTitle(modName) + QString(" Help") ),
 				 tr( moduleTitle(modName) + QString(" Help") ),
@@ -1001,13 +1011,13 @@ void SalomeApp_Application::onHelpContentsModule()
   const QAction* obj = (QAction*) sender();
   
   QString aComponentName = obj->name();
-  QString aFileName = aComponentName.lower() + ".htm";
+  QString aFileName = aComponentName + "_index.html";
 
   QCString dir;
   QString root;
   QString homeDir;
   if (dir = getenv( aComponentName + "_ROOT_DIR")) {
-    root = Qtx::addSlash( Qtx::addSlash(dir) +  Qtx::addSlash("doc") +  Qtx::addSlash("salome")  +  Qtx::addSlash(aComponentName));
+    root = Qtx::addSlash( Qtx::addSlash(dir) +  Qtx::addSlash("doc") +  Qtx::addSlash("salome"));
     if ( QFileInfo( root + aFileName ).exists() ) {
       homeDir = root;
     } else {
