@@ -56,10 +56,14 @@ public:
   void MapEdge(SALOME_Actor* theMapActor, 
 	       const TColStd_IndexedMapOfInteger& theMapIndex);
 
+  const TColStd_IndexedMapOfInteger&
+  GetMapIndex() const;
+
  protected:
+  TColStd_IndexedMapOfInteger myMapIndex;
+
   vtkUnstructuredGrid* myUnstructuredGrid;
   vtkDataSetMapper* myMapper;
-
   vtkRenderer* myRenderer;
 
   vtkShrinkFilter* myShrinkFilter;

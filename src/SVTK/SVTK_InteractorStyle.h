@@ -46,6 +46,8 @@
 class vtkCell;
 class vtkPicker;
 
+class SALOME_Actor;
+
 class SVTK_Selector;
 class SVTK_GenericRenderWindowInteractor;
 
@@ -224,6 +226,9 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   bool                      myCursorState;
   bool                      myShiftState;
   int                       ForcedState;
+
+  SALOME_Actor*             myLastHighlitedActor;
+  SALOME_Actor*             myLastPreHighlitedActor;
 
   //! "Increment" for pan/rotate/zoom operations
   int                       mySpeedIncrement; 

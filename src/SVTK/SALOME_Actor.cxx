@@ -89,7 +89,7 @@ namespace
 	    vtkPicker* thePicker, 
 	    int theObjId)
   {
-    int anEdgeId = -1;
+    int anEdgeId = 0;
     if (vtkCell* aPickedCell = theActor->GetElemCell(theObjId)) {
       float aPickPosition[3];
       thePicker->GetPickPosition(aPickPosition);
@@ -100,7 +100,7 @@ namespace
 	  aLine->EvaluatePosition(aPickPosition,closestPoint,subId,pcoords,aDist,weights);
 	  if (aDist < aMinDist) {
 	    aMinDist = aDist;
-	    anEdgeId = i;
+	    anEdgeId = -1 - i;
 	  }
 	}
       }
@@ -802,7 +802,8 @@ SALOME_Actor
   vtkRenderer *aRenderer = theInteractorStyle->GetCurrentRenderer();
   //
   myPreHighlightActor->SetVisibility( false );
-    
+  bool anIsPreselected = myIsPreselected;
+  
   Selection_Mode aSelectionMode = theSelectionEvent->mySelectionMode;
   bool anIsChanged = (mySelectionMode != aSelectionMode);
 
@@ -819,7 +820,6 @@ SALOME_Actor
 	if( anActor->hasIO() && myIO->isSame( anActor->getIO() ) )
 	  anActor->SetPreSelected( false );
 
-    anIsChanged = true;
   }else{
     switch(aSelectionMode){
     case NodeSelection: 
@@ -829,16 +829,19 @@ SALOME_Actor
       int aVtkId = myPointPicker->GetPointId();
       if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId, true ) ) {
 	int anObjId = GetNodeObjId( aVtkId );
-	if ( anObjId >= 0 ) {
-	  TColStd_IndexedMapOfInteger aMapIndex;
-	  aMapIndex.Add( anObjId );
-	
-	  myPreHighlightActor->GetProperty()->SetRepresentationToPoints();
-	  myPreHighlightActor->SetVisibility( true );
-	  myPreHighlightActor->MapPoints( this, aMapIndex );
-
-	  myIsPreselected = theIsHighlight;
-	  anIsChanged = true;
+	myIsPreselected = (anObjId >= 0);
+	if(myIsPreselected){
+	  const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
+	  int anExtent = aMapIndex.Extent();
+	  anIsChanged |= (anExtent == 0 || anExtent > 0 && anObjId != aMapIndex(1));
+	  if(anIsChanged){
+	    TColStd_IndexedMapOfInteger aMapIndex;
+	    aMapIndex.Add( anObjId );
+	    
+	    myPreHighlightActor->GetProperty()->SetRepresentationToPoints();
+	    myPreHighlightActor->SetVisibility( true );
+	    myPreHighlightActor->MapPoints( this, aMapIndex );
+	  }
 	}
       }
       break;
@@ -854,16 +857,19 @@ SALOME_Actor
       if ( aVtkId >= 0 && mySelector->IsValid( this, aVtkId ) && hasIO() ) {
 	int anObjId = GetElemObjId (aVtkId );
 	if ( anObjId >= 0 ) {
-	  if ( CheckDimensionId(aSelectionMode,this,anObjId) ) {
-	    TColStd_IndexedMapOfInteger aMapIndex;
-	    aMapIndex.Add( anObjId );
-	    
-	    myPreHighlightActor->GetProperty()->SetRepresentationToSurface();
-	    myPreHighlightActor->SetVisibility( true );
-	    myPreHighlightActor->MapCells( this, aMapIndex );
-	    
-	    myIsPreselected = theIsHighlight;
-	    anIsChanged = true;
+	  myIsPreselected = CheckDimensionId(aSelectionMode,this,anObjId);
+	  if(myIsPreselected){
+	    const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
+	    int anExtent = aMapIndex.Extent();
+	    anIsChanged |= (anExtent == 0 || anExtent > 0 && anObjId != aMapIndex(1));
+	    if(anIsChanged){
+	      TColStd_IndexedMapOfInteger aMapIndex;
+	      aMapIndex.Add( anObjId );
+	      
+	      myPreHighlightActor->GetProperty()->SetRepresentationToSurface();
+	      myPreHighlightActor->SetVisibility( true );
+	      myPreHighlightActor->MapCells( this, aMapIndex );
+	    }
 	  }
 	}
       }
@@ -878,16 +884,22 @@ SALOME_Actor
 	int anObjId = GetElemObjId( aVtkId );
 	if ( anObjId >= 0 ) {
 	  int anEdgeId = GetEdgeId(this,myCellPicker.GetPointer(),anObjId);
-	  TColStd_IndexedMapOfInteger aMapIndex;
-	  aMapIndex.Add( anObjId );
-	  aMapIndex.Add( anEdgeId );
+	  myIsPreselected = anEdgeId < 0;
+	  if(myIsPreselected){
+	    const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
+	    int anExtent = aMapIndex.Extent();
+	    anIsChanged |= (anExtent != 2);
+	    anIsChanged |= (anExtent == 0 && (anObjId != aMapIndex(1) || anEdgeId != aMapIndex(2)));
+	    if(anIsChanged){
+	      TColStd_IndexedMapOfInteger aMapIndex;
+	      aMapIndex.Add( anObjId );
+	      aMapIndex.Add( anEdgeId );
 	
-	  myPreHighlightActor->GetProperty()->SetRepresentationToWireframe();
-	  myPreHighlightActor->SetVisibility( true );
-	  myPreHighlightActor->MapEdge( this, aMapIndex );
-
-	  myIsPreselected = theIsHighlight;
-	  anIsChanged = true;
+	      myPreHighlightActor->GetProperty()->SetRepresentationToWireframe();
+	      myPreHighlightActor->SetVisibility( true );
+	      myPreHighlightActor->MapEdge( this, aMapIndex );
+	    }
+	  }
 	}
       }
       break;
@@ -906,7 +918,6 @@ SALOME_Actor
 		anActor->SetPreSelected( true );
 	}
       }
-      anIsChanged = true;
     }
     default:
       break;
@@ -914,6 +925,7 @@ SALOME_Actor
   }
 
   mySelectionMode = aSelectionMode;
+  anIsChanged |= (anIsPreselected != myIsPreselected);
 
   return anIsChanged;
 }

@@ -72,10 +72,6 @@ static int MYDEBUG = 0;
 static int MYDEBUG = 0;
 #endif
 
-static 
-  bool GetFirstSALOMEActor(vtkPicker *pPicker, 
-			   SALOME_Actor*& pSA);
-
 namespace
 {
   inline 
@@ -87,7 +83,29 @@ namespace
     theInteractor->GetEventPosition(theX,theY);
     theY = theInteractor->GetSize()[1] - theY - 1;
   }
-}  
+
+  //==================================================================
+  // function : GetFirstSALOMEActor
+  // purpose  :
+  //==================================================================
+  struct THaveIO
+  {
+    bool
+    operator()(SALOME_Actor* theActor)
+    {
+      return theActor->hasIO();
+    }
+  };
+
+  inline
+  SALOME_Actor* 
+  GetFirstSALOMEActor(vtkPicker *thePicker)
+  {
+    return VTK::Find<SALOME_Actor>(thePicker->GetActors(),THaveIO());
+  }
+}
+
+
 //----------------------------------------------------------------------------
 vtkStandardNewMacro(SVTK_InteractorStyle);
 //----------------------------------------------------------------------------
@@ -95,7 +113,9 @@ vtkStandardNewMacro(SVTK_InteractorStyle);
 SVTK_InteractorStyle
 ::SVTK_InteractorStyle():
   mySelectionEvent(new SVTK_SelectionEvent()),
-  myPicker(vtkPicker::New())
+  myPicker(vtkPicker::New()),
+  myLastHighlitedActor(NULL),
+  myLastPreHighlitedActor(NULL)
 {
   myPicker->Delete();
 
@@ -895,20 +915,17 @@ SVTK_InteractorStyle
 			 0.0, 
 			 GetCurrentRenderer());
 	  //
-	  SALOME_Actor* aSActor=NULL;
-	  //
-	  GetFirstSALOMEActor(myPicker.GetPointer(), aSActor);
-	  if (aSActor){
-	    //if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(myPicker->GetActor())){
-	    if(aSActor->hasIO()){
-	      aSelectionEvent->myIsRectangle = false;
-	      aSActor->Highlight( this, aSelectionEvent, true );
-	    }
-	  }
-	  else{
+	  SALOME_Actor* anActor = GetFirstSALOMEActor(myPicker.GetPointer());
+	  aSelectionEvent->myIsRectangle = false;
+	  if(anActor){
+	    anActor->Highlight( this, aSelectionEvent, true );
+	  }else{
+	    if(myLastHighlitedActor && myLastHighlitedActor != anActor)
+	      myLastHighlitedActor->Highlight( this, aSelectionEvent, false );
 	    GetSelector()->ClearIObjects();
 	  }
-        } 
+	  myLastHighlitedActor = anActor;
+	} 
 	else {
           //processing rectangle selection
 	  Interactor->StartPickCallback();
@@ -1021,24 +1038,22 @@ SVTK_InteractorStyle
   this->FindPokedRenderer(aSelectionEvent->myX,aSelectionEvent->myY);
 
   bool anIsChanged = false;
-  SALOME_Actor *aLastActor=NULL;
-  //
-  GetFirstSALOMEActor(myPicker.GetPointer(), aLastActor);
-  if (aLastActor){
-    anIsChanged |= aLastActor->PreHighlight( this, aSelectionEvent, false );
-  }
+
   myPicker->Pick(aSelectionEvent->myX, 
 		 aSelectionEvent->myY, 
 		 0.0, 
 		 GetCurrentRenderer());
   
-  SALOME_Actor *anActor=NULL;
-  //
-  GetFirstSALOMEActor(myPicker.GetPointer(), anActor);
+  SALOME_Actor *anActor = GetFirstSALOMEActor(myPicker.GetPointer());
   if (anActor){
     anIsChanged |= anActor->PreHighlight( this, aSelectionEvent, true );
   }
-  
+
+  if(myLastPreHighlitedActor && myLastPreHighlitedActor != anActor)
+    anIsChanged |= myLastPreHighlitedActor->PreHighlight( this, aSelectionEvent, false );   
+
+  myLastPreHighlitedActor = anActor;
+
   if(anIsChanged)
     this->Render();
 }
@@ -1316,32 +1331,4 @@ SVTK_InteractorStyle
 //----------------------------------------------------------------------------
 void SVTK_InteractorStyle::OnChar()
 {
-}
-//==================================================================
-// function : GetFirstSALOMEActor
-// purpose  :
-//==================================================================
-bool GetFirstSALOMEActor(vtkPicker *pPicker, 
-			 SALOME_Actor*& pSA)
-{
-  bool bRet=false;
-  pSA=NULL;
-  vtkActor *pA;
-  //
-  vtkActorCollection *pActors=pPicker->GetActors();
-  //
-  pActors->InitTraversal(); 
-  while(1) {
-    pA=pActors->GetNextActor();
-    if (!pA) {
-      break;
-    }
-    //
-    pSA=SALOME_Actor::SafeDownCast(pA);
-    if (pSA){
-      bRet=!bRet;
-      break;
-    }
-  }
-  return bRet;
 }
