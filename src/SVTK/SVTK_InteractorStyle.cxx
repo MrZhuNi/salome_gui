@@ -920,7 +920,7 @@ SVTK_InteractorStyle
 	  if(anActor){
 	    anActor->Highlight( this, aSelectionEvent, true );
 	  }else{
-	    if(myLastHighlitedActor && myLastHighlitedActor != anActor)
+	    if(myLastHighlitedActor.GetPointer() && myLastHighlitedActor.GetPointer() != anActor)
 	      myLastHighlitedActor->Highlight( this, aSelectionEvent, false );
 	    GetSelector()->ClearIObjects();
 	  }
@@ -1049,7 +1049,7 @@ SVTK_InteractorStyle
     anIsChanged |= anActor->PreHighlight( this, aSelectionEvent, true );
   }
 
-  if(myLastPreHighlitedActor && myLastPreHighlitedActor != anActor)
+  if(myLastPreHighlitedActor.GetPointer() && myLastPreHighlitedActor.GetPointer() != anActor)
     anIsChanged |= myLastPreHighlitedActor->PreHighlight( this, aSelectionEvent, false );   
 
   myLastPreHighlitedActor = anActor;

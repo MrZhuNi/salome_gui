@@ -227,8 +227,8 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   bool                      myShiftState;
   int                       ForcedState;
 
-  SALOME_Actor*             myLastHighlitedActor;
-  SALOME_Actor*             myLastPreHighlitedActor;
+  vtkSmartPointer<SALOME_Actor> myLastHighlitedActor;
+  vtkSmartPointer<SALOME_Actor> myLastPreHighlitedActor;
 
   //! "Increment" for pan/rotate/zoom operations
   int                       mySpeedIncrement; 
