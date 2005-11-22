@@ -17,6 +17,8 @@ SalomeApp_OBSelector::SalomeApp_OBSelector( OB_Browser* ob, SUIT_SelectionMgr* m
   if ( myBrowser ) {
     connect( myBrowser, SIGNAL( selectionChanged() ), this, SLOT( onSelectionChanged() ) );
   }    
+
+  setModified();
 }
 
 /*!
@@ -63,15 +65,16 @@ void SalomeApp_OBSelector::setSelection( const SUIT_DataOwnerPtrList& thelist )
   if ( !myBrowser )
     return;
 
-  QMap<QString, SalomeApp_DataObject*> themap;
-  fillEntries( themap );
+  if( myEntries.count() == 0 ||
+      myModifiedTime < myBrowser->getModifiedTime() )
+    fillEntries( myEntries );
 
   DataObjectList objList;
   for ( SUIT_DataOwnerPtrList::const_iterator it = thelist.begin(); it != thelist.end(); ++it )
   {
     const SalomeApp_DataOwner* owner = dynamic_cast<const SalomeApp_DataOwner*>( (*it).operator->() );
-    if ( owner && themap.contains( owner->entry() ) )
-      objList.append( themap[owner->entry()] );
+    if ( owner && myEntries.contains( owner->entry() ) )
+      objList.append( myEntries[owner->entry()] );
   }
 
   myBrowser->setSelected( objList );
@@ -98,4 +101,12 @@ void SalomeApp_OBSelector::fillEntries( QMap<QString, SalomeApp_DataObject*>& en
     if ( obj )
       entires.insert( obj->entry(), obj );
   }
+
+  setModified();
+}
+
+/*!Update modified time.*/
+void SalomeApp_OBSelector::setModified()
+{
+  myModifiedTime = clock();
 }

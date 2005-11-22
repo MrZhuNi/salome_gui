@@ -95,6 +95,8 @@ myRootDecorated( true )
   connect( myView, SIGNAL( selectionChanged() ), this, SIGNAL( selectionChanged() ) );
 
   setRootObject( root );
+
+  setModified();
 }
 
 OB_Browser::~OB_Browser()
@@ -198,6 +200,8 @@ void OB_Browser::setRootObject( SUIT_DataObject* theRoot )
   restoreState( selObjs, openObjs, curObj, selKeys, openKeys, curKey );
 
   autoOpenBranches();
+
+  setModified();
 
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
@@ -506,6 +510,8 @@ void OB_Browser::updateTree( SUIT_DataObject* obj )
 
   autoOpenBranches();
 
+  setModified();
+
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
 }
@@ -543,6 +549,8 @@ void OB_Browser::replaceTree( SUIT_DataObject* src, SUIT_DataObject* trg )
   restoreState( selObjs, openObjs, curObj, selKeys, openKeys, curKey );
 
   autoOpenBranches();
+
+  setModified();
 
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
@@ -1088,4 +1096,9 @@ void OB_Browser::openBranch( QListViewItem* item, const int level )
     openBranch( item->firstChild(), level - 1 );
     item = item->nextSibling();
   }
+}
+
+void OB_Browser::setModified()
+{
+  myModifiedTime = clock();
 }
