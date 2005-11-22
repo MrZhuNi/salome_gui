@@ -115,7 +115,8 @@ SVTK_InteractorStyle
   mySelectionEvent(new SVTK_SelectionEvent()),
   myPicker(vtkPicker::New()),
   myLastHighlitedActor(NULL),
-  myLastPreHighlitedActor(NULL)
+  myLastPreHighlitedActor(NULL),
+  myInteractorStyleController(SVTK_InteractorStyleController::New())
 {
   myPicker->Delete();
 
@@ -132,10 +133,10 @@ SVTK_InteractorStyle
   EventCallbackCommand->SetCallback( SVTK_InteractorStyle::ProcessEvents );
 
   // set default values of properties.  user may edit them in preferences.
-  mySpeedIncrement = 10;
   mySMDecreaseSpeedBtn = 1;
   mySMIncreaseSpeedBtn = 2;
   mySMDominantCombinedSwitchBtn = 9;
+  myInteractorStyleController->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -1222,10 +1223,12 @@ void
 SVTK_InteractorStyle
 ::onSpaceMouseButton( int button )
 {
-  if( mySMDecreaseSpeedBtn == button )    
-    --mySpeedIncrement;
-  if( mySMIncreaseSpeedBtn == button )    
-    ++mySpeedIncrement;
+  if( mySMDecreaseSpeedBtn == button ) {   
+    Controller()->IncrementDecrease();
+  }
+  if( mySMIncreaseSpeedBtn == button ) {    
+    Controller()->IncrementIncrease();
+  }
   if( mySMDominantCombinedSwitchBtn == button )    
     DominantCombinedSwitch();
 }
@@ -1249,6 +1252,7 @@ SVTK_InteractorStyle
   if ( clientData ) {
     vtkObject* anObject = reinterpret_cast<vtkObject*>( clientData );
     SVTK_InteractorStyle* self = dynamic_cast<SVTK_InteractorStyle*>( anObject );
+    int aSpeedIncrement=self->Controller()->IncrementCurrent();
     if ( self ) {
       switch ( event ) {
       case SVTK::SpaceMouseMoveEvent : 
@@ -1258,43 +1262,43 @@ SVTK_InteractorStyle
 	self->onSpaceMouseButton( *((int*)callData) ); 
 	return;
       case SVTK::PanLeftEvent: 
-	self->IncrementalPan( -self->mySpeedIncrement, 0 );
+	self->IncrementalPan(-aSpeedIncrement, 0);
 	return;
       case SVTK::PanRightEvent:
-	self->IncrementalPan( self->mySpeedIncrement, 0 );
+	self->IncrementalPan(aSpeedIncrement, 0);
 	return;
       case SVTK::PanUpEvent:
-	self->IncrementalPan( 0, self->mySpeedIncrement );
+	self->IncrementalPan(0, aSpeedIncrement);
 	return;
       case SVTK::PanDownEvent:
-	self->IncrementalPan( 0, -self->mySpeedIncrement );
+	self->IncrementalPan(0, -aSpeedIncrement);
 	return;
       case SVTK::ZoomInEvent:
-	self->IncrementalZoom( self->mySpeedIncrement );
+	self->IncrementalZoom(aSpeedIncrement);
 	return;
       case SVTK::ZoomOutEvent:
-	self->IncrementalZoom( -self->mySpeedIncrement );
+	self->IncrementalZoom(-aSpeedIncrement);
 	return;
       case SVTK::RotateLeftEvent: 
-	self->IncrementalRotate( -self->mySpeedIncrement, 0 );
+	self->IncrementalRotate(-aSpeedIncrement, 0);
 	return;
       case SVTK::RotateRightEvent:
-	self->IncrementalRotate( self->mySpeedIncrement, 0 );
+	self->IncrementalRotate(aSpeedIncrement, 0);
 	return;
       case SVTK::RotateUpEvent:
-	self->IncrementalRotate( 0, -self->mySpeedIncrement );
+	self->IncrementalRotate(0, -aSpeedIncrement);
 	return;
       case SVTK::RotateDownEvent:
-	self->IncrementalRotate( 0, self->mySpeedIncrement );
+	self->IncrementalRotate(0, aSpeedIncrement);
 	return;
       case SVTK::PlusSpeedIncrementEvent:
-	++(self->mySpeedIncrement);
+	self->Controller()->IncrementIncrease();
 	return;
       case SVTK::MinusSpeedIncrementEvent:
-	--(self->mySpeedIncrement);
+	self->Controller()->IncrementDecrease();
 	return;
       case SVTK::SetSpeedIncrementEvent:
-	self->mySpeedIncrement = *((int*)callData);
+	self->Controller()->SetIncrementStartValue(*((int*)callData));
 	return;
 
       case SVTK::SetSMDecreaseSpeedEvent:
@@ -1331,4 +1335,49 @@ SVTK_InteractorStyle
 //----------------------------------------------------------------------------
 void SVTK_InteractorStyle::OnChar()
 {
+}
+//----------------------------------------------------------------------------
+void SVTK_InteractorStyle::SetController(SVTK_InteractorStyleController* theController)
+{
+  myInteractorStyleController=theController;
+}
+//----------------------------------------------------------------------------
+SVTK_InteractorStyleController* SVTK_InteractorStyle::Controller()
+{
+  return myInteractorStyleController.GetPointer();
+}
+
+vtkStandardNewMacro(SVTK_InteractorStyleController);
+//----------------------------------------------------------------------------
+SVTK_InteractorStyleController::SVTK_InteractorStyleController()
+{
+  myIncrement=10;
+}
+//----------------------------------------------------------------------------
+SVTK_InteractorStyleController::~SVTK_InteractorStyleController()
+{
+}
+//----------------------------------------------------------------------------
+void SVTK_InteractorStyleController::SetIncrementStartValue(const int theValue)
+{
+  myIncrement=theValue;
+}
+//----------------------------------------------------------------------------
+int SVTK_InteractorStyleController::IncrementCurrent()const
+{
+  return myIncrement;
+}
+//----------------------------------------------------------------------------
+int SVTK_InteractorStyleController::IncrementIncrease()
+{
+  ++myIncrement;
+  return myIncrement;
+}
+//----------------------------------------------------------------------------
+int SVTK_InteractorStyleController::IncrementDecrease()
+{
+  if (myIncrement>1){
+    --myIncrement;
+  }
+  return myIncrement;
 }

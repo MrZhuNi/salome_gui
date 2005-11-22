@@ -43,6 +43,43 @@
 
 #include <map>
 
+#include <vtkObject.h>
+//
+//-------------------------------------------
+//! Control the value of increment  in SALOME way.
+/*!
+  This class controls of value of increment,
+  for pan/rotate/zoom operations in SALOME way
+*/
+class SVTK_InteractorStyleController : public vtkObject{
+ public:
+  vtkTypeMacro(SVTK_InteractorStyleController, vtkObject);
+  static SVTK_InteractorStyleController* New();
+
+  //! Set start value of increment
+  void SetIncrementStartValue(const int );
+
+  //! Get current value of increment
+  int IncrementCurrent()const;
+
+  //! Increace the increment value by add 1
+  virtual int IncrementIncrease();
+
+  //! Decreace the increment value by subtract 1
+  virtual int IncrementDecrease();
+  
+ protected:
+  SVTK_InteractorStyleController();
+  virtual ~SVTK_InteractorStyleController();
+ protected:
+  int myIncrement;
+  
+ private:
+  SVTK_InteractorStyleController(const SVTK_InteractorStyleController&);  //Not implemented
+  void operator=(const SVTK_InteractorStyleController&);  //Not implemented
+};
+//-------------------------------------------
+
 class vtkCell;
 class vtkPicker;
 
@@ -72,6 +109,8 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
   typedef boost::shared_ptr<SVTK_SelectionEvent> PSelectionEvent;
+
+  
 
   //! Generate special #SVTK_SelectionEvent
   virtual
@@ -143,6 +182,12 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   void
   OnChar();
 
+  //! To set current increment controller 
+  void SetController(SVTK_InteractorStyleController*);
+
+  //! To get current increment controller 
+  SVTK_InteractorStyleController* Controller();
+ 
  protected:
   SVTK_InteractorStyle();
   ~SVTK_InteractorStyle();
@@ -230,9 +275,9 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   vtkSmartPointer<SALOME_Actor> myLastHighlitedActor;
   vtkSmartPointer<SALOME_Actor> myLastPreHighlitedActor;
 
-  //! "Increment" for pan/rotate/zoom operations
-  int                       mySpeedIncrement; 
-  
+  //! "Increment" controller for pan/rotate/zoom operations
+  vtkSmartPointer<SVTK_InteractorStyleController> myInteractorStyleController;
+
   // SpaceMouse short cuts
   int                       mySMDecreaseSpeedBtn;
   int                       mySMIncreaseSpeedBtn;
