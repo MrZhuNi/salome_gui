@@ -18,7 +18,7 @@
     <parameter name="killall"    value="no"/>
     <parameter name="modules"    value="GEOM,SMESH,VISU,SUPERV,MED,COMPONENT"/>
     <parameter name="pyModules"  value=""/>
-    <parameter name="embedded"   value="SalomeAppEngine"/>
+    <parameter name="embedded"   value="SalomeAppEngine,study"/>
     <parameter name="standalone" value="pyContainer,cppContainer,registry,moduleCatalog"/>
   </section>
   <section name="language">
@@ -45,7 +45,7 @@
     <parameter name="COMPONENT"    value="${COMPONENT_ROOT_DIR}/share/salome/resources"/>
     <parameter name="NETGENPlugin" value="${NETGENPLUGIN_ROOT_DIR}/share/salome/resources"/>
     <parameter name="GHS3DPlugin"  value="${GHS3DPLUGIN_ROOT_DIR}/share/salome/resources"/>
-
+    <parameter name="ToolsGUI"     value="${SUITRoot}/resources"/>
   </section>
   <section name="GEOM">
     <parameter name="name"       value="Geometry"/>

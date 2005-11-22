@@ -93,6 +93,8 @@ myRootDecorated( true )
   connect( myView, SIGNAL( dropped( QPtrList<QListViewItem>, QListViewItem*, int ) ),
            this, SLOT( onDropped( QPtrList<QListViewItem>, QListViewItem*, int ) ) );
   connect( myView, SIGNAL( selectionChanged() ), this, SIGNAL( selectionChanged() ) );
+  connect( myView, SIGNAL( doubleClicked( QListViewItem* ) ),
+           this, SLOT( onDoubleClicked( QListViewItem* ) ) );
 
   setRootObject( root );
 }
@@ -499,7 +501,6 @@ void OB_Browser::updateTree( SUIT_DataObject* obj )
 
   SUIT_DataObject* curObj = storeState( selObjs, openObjs, selKeys, openKeys, curKey );
 
-  createConnections( obj );
   updateView( obj );
 
   restoreState( selObjs, openObjs, curObj, selKeys, openKeys, curKey );
@@ -537,8 +538,8 @@ void OB_Browser::replaceTree( SUIT_DataObject* src, SUIT_DataObject* trg )
 
   trg->setParent( parent );
 
-  createConnections( trg );
   updateView( trg );
+  createConnections( trg );
 
   restoreState( selObjs, openObjs, curObj, selKeys, openKeys, curKey );
 
@@ -680,6 +681,7 @@ QListViewItem* OB_Browser::createItem( const SUIT_DataObject* o,
   }
 
   myItems.insert( obj, item );
+  obj->connect( this, SLOT( onDestroyed( SUIT_DataObject* ) ) );
 
   updateText( item );
 
@@ -1048,7 +1050,11 @@ void OB_Browser::removeObject( SUIT_DataObject* obj, const bool autoUpd )
   myItems.remove( obj );
 
   if ( obj == myRoot )
-    myRoot = 0;
+  {
+    // remove all child list view items
+    setRootObject( 0 );
+    return;
+  }
 
   if ( !autoUpd )
     return;
@@ -1079,7 +1085,7 @@ void OB_Browser::autoOpenBranches()
 
 void OB_Browser::openBranch( QListViewItem* item, const int level )
 {
-  if ( !item || level < 1 || !item->childCount() )
+  if ( level < 1 )
     return;
 
   while ( item )
@@ -1088,4 +1094,10 @@ void OB_Browser::openBranch( QListViewItem* item, const int level )
     openBranch( item->firstChild(), level - 1 );
     item = item->nextSibling();
   }
+}
+
+void OB_Browser::onDoubleClicked( QListViewItem* item )
+{
+  if ( item )
+    emit doubleClicked( dataObject( item ) );
 }
