@@ -109,14 +109,14 @@ namespace
 //----------------------------------------------------------------------------
 vtkStandardNewMacro(SVTK_InteractorStyle);
 //----------------------------------------------------------------------------
-
 SVTK_InteractorStyle
 ::SVTK_InteractorStyle():
   mySelectionEvent(new SVTK_SelectionEvent()),
   myPicker(vtkPicker::New()),
   myLastHighlitedActor(NULL),
   myLastPreHighlitedActor(NULL),
-  myInteractorStyleController(SVTK_InteractorStyleController::New())
+  myControllerIncrement(SVTK_ControllerIncrement::New()),
+  myControllerOnKeyDown(SVTK_ControllerOnKeyDown::New())
 {
   myPicker->Delete();
 
@@ -136,7 +136,9 @@ SVTK_InteractorStyle
   mySMDecreaseSpeedBtn = 1;
   mySMIncreaseSpeedBtn = 2;
   mySMDominantCombinedSwitchBtn = 9;
-  myInteractorStyleController->Delete();
+  //
+  myControllerIncrement->Delete();
+  myControllerOnKeyDown->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -1224,10 +1226,10 @@ SVTK_InteractorStyle
 ::onSpaceMouseButton( int button )
 {
   if( mySMDecreaseSpeedBtn == button ) {   
-    Controller()->IncrementDecrease();
+    ControllerIncrement()->Decrease();
   }
   if( mySMIncreaseSpeedBtn == button ) {    
-    Controller()->IncrementIncrease();
+    ControllerIncrement()->Increase();
   }
   if( mySMDominantCombinedSwitchBtn == button )    
     DominantCombinedSwitch();
@@ -1252,7 +1254,7 @@ SVTK_InteractorStyle
   if ( clientData ) {
     vtkObject* anObject = reinterpret_cast<vtkObject*>( clientData );
     SVTK_InteractorStyle* self = dynamic_cast<SVTK_InteractorStyle*>( anObject );
-    int aSpeedIncrement=self->Controller()->IncrementCurrent();
+    int aSpeedIncrement=self->ControllerIncrement()->Current();
     if ( self ) {
       switch ( event ) {
       case SVTK::SpaceMouseMoveEvent : 
@@ -1292,13 +1294,13 @@ SVTK_InteractorStyle
 	self->IncrementalRotate(0, aSpeedIncrement);
 	return;
       case SVTK::PlusSpeedIncrementEvent:
-	self->Controller()->IncrementIncrease();
+	self->ControllerIncrement()->Increase();
 	return;
       case SVTK::MinusSpeedIncrementEvent:
-	self->Controller()->IncrementDecrease();
+	self->ControllerIncrement()->Decrease();
 	return;
       case SVTK::SetSpeedIncrementEvent:
-	self->Controller()->SetIncrementStartValue(*((int*)callData));
+	self->ControllerIncrement()->SetStartValue(*((int*)callData));
 	return;
 
       case SVTK::SetSMDecreaseSpeedEvent:
@@ -1337,47 +1339,93 @@ void SVTK_InteractorStyle::OnChar()
 {
 }
 //----------------------------------------------------------------------------
-void SVTK_InteractorStyle::SetController(SVTK_InteractorStyleController* theController)
+void SVTK_InteractorStyle::OnKeyDown()
 {
-  myInteractorStyleController=theController;
+  bool bInvokeSuperclass=myControllerOnKeyDown->OnKeyDown(this);
+  if (bInvokeSuperclass){
+    Superclass::OnKeyDown();
+  }
 }
 //----------------------------------------------------------------------------
-SVTK_InteractorStyleController* SVTK_InteractorStyle::Controller()
+void SVTK_InteractorStyle::ActionPicking()
 {
-  return myInteractorStyleController.GetPointer();
+  int x, y;
+  Interactor->GetEventPosition( x, y ); 
+  FindPokedRenderer( x, y ); 
+  
+  myOtherPoint = myPoint = QPoint(x, y);
+  
+  startOperation(VTK_INTERACTOR_STYLE_CAMERA_SELECT);
+  onFinishOperation();
+  startOperation(VTK_INTERACTOR_STYLE_CAMERA_NONE);
+}
+//----------------------------------------------------------------------------
+void SVTK_InteractorStyle::SetControllerOnKeyDown(SVTK_ControllerOnKeyDown* theController)
+{
+  myControllerOnKeyDown=theController;
+}
+//----------------------------------------------------------------------------
+SVTK_ControllerOnKeyDown* SVTK_InteractorStyle::ControllerOnKeyDown()
+{
+  return myControllerOnKeyDown.GetPointer();
+}
+//----------------------------------------------------------------------------
+void SVTK_InteractorStyle::SetControllerIncrement(SVTK_ControllerIncrement* theController)
+{
+  myControllerIncrement=theController;
+}
+//----------------------------------------------------------------------------
+SVTK_ControllerIncrement* SVTK_InteractorStyle::ControllerIncrement()
+{
+  return myControllerIncrement.GetPointer();
 }
 
-vtkStandardNewMacro(SVTK_InteractorStyleController);
+vtkStandardNewMacro(SVTK_ControllerIncrement);
 //----------------------------------------------------------------------------
-SVTK_InteractorStyleController::SVTK_InteractorStyleController()
+SVTK_ControllerIncrement::SVTK_ControllerIncrement()
 {
   myIncrement=10;
 }
 //----------------------------------------------------------------------------
-SVTK_InteractorStyleController::~SVTK_InteractorStyleController()
+SVTK_ControllerIncrement::~SVTK_ControllerIncrement()
 {
 }
 //----------------------------------------------------------------------------
-void SVTK_InteractorStyleController::SetIncrementStartValue(const int theValue)
+void SVTK_ControllerIncrement::SetStartValue(const int theValue)
 {
   myIncrement=theValue;
 }
 //----------------------------------------------------------------------------
-int SVTK_InteractorStyleController::IncrementCurrent()const
+int SVTK_ControllerIncrement::Current()const
 {
   return myIncrement;
 }
 //----------------------------------------------------------------------------
-int SVTK_InteractorStyleController::IncrementIncrease()
+int SVTK_ControllerIncrement::Increase()
 {
   ++myIncrement;
   return myIncrement;
 }
 //----------------------------------------------------------------------------
-int SVTK_InteractorStyleController::IncrementDecrease()
+int SVTK_ControllerIncrement::Decrease()
 {
   if (myIncrement>1){
     --myIncrement;
   }
   return myIncrement;
+}
+
+vtkStandardNewMacro(SVTK_ControllerOnKeyDown);
+//----------------------------------------------------------------------------
+SVTK_ControllerOnKeyDown::SVTK_ControllerOnKeyDown()
+{
+}
+//----------------------------------------------------------------------------
+SVTK_ControllerOnKeyDown::~SVTK_ControllerOnKeyDown()
+{
+}
+//----------------------------------------------------------------------------
+bool SVTK_ControllerOnKeyDown::OnKeyDown(vtkInteractorStyle* theIS)
+{
+  return true;
 }
