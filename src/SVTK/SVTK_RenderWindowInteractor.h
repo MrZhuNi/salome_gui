@@ -119,7 +119,6 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
   //! To handle native X11 events (from such devices as SpaceMouse)
   virtual bool x11Event( XEvent *e );
 
-  QWidget* myPreviousFocusWidget;
   vtkSmartPointer<vtkRenderWindow> myRenderWindow;
   vtkSmartPointer<vtkGenericRenderWindowInteractor> myDevice;
 };

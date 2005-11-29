@@ -43,8 +43,68 @@
 
 #include <map>
 
+#include <vtkObject.h>
+//
+//-------------------------------------------
+//! Control the value of increment  in SALOME way.
+/*!
+  This class controls of value of increment,
+  for pan/rotate/zoom operations in SALOME way
+*/
+class SVTK_ControllerIncrement : public vtkObject{
+ public:
+  vtkTypeMacro(SVTK_ControllerIncrement, vtkObject);
+  static SVTK_ControllerIncrement* New();
+
+  //! Set start value of increment
+  void SetStartValue(const int );
+
+  //! Get current value of increment
+  int Current()const;
+
+  //! Increace the increment value by add 1
+  virtual int Increase();
+
+  //! Decreace the increment value by subtract 1
+  virtual int Decrease();
+ protected:
+  SVTK_ControllerIncrement();
+  virtual ~SVTK_ControllerIncrement();
+ protected:
+  int  myIncrement;
+ private:
+  SVTK_ControllerIncrement(const SVTK_ControllerIncrement&);//Not implemented
+  void operator=(const SVTK_ControllerIncrement&);          //Not implemented
+};
+//
+//-------------------------------------------
+//! Control the behaviour of KeyDown event in SALOME way.
+/*!
+  This class controls the behaviour of KeyDown event
+  in SALOME way
+*/
+class SVTK_ControllerOnKeyDown : public vtkObject{
+ public:
+  vtkTypeMacro(SVTK_ControllerOnKeyDown, vtkObject);
+  static SVTK_ControllerOnKeyDown* New();
+
+  //! Provides the action on event 
+  virtual bool OnKeyDown(vtkInteractorStyle* );
+
+ protected:
+  SVTK_ControllerOnKeyDown();
+  virtual ~SVTK_ControllerOnKeyDown();
+  
+ private:
+  SVTK_ControllerOnKeyDown(const SVTK_ControllerOnKeyDown&);//Not implemented
+  void operator=(const SVTK_ControllerOnKeyDown&);          //Not implemented
+};
+//-------------------------------------------
+
 class vtkCell;
 class vtkPicker;
+
+class SALOME_Actor;
 
 class SVTK_Selector;
 class SVTK_GenericRenderWindowInteractor;
@@ -70,6 +130,8 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
   typedef boost::shared_ptr<SVTK_SelectionEvent> PSelectionEvent;
+
+  
 
   //! Generate special #SVTK_SelectionEvent
   virtual
@@ -141,16 +203,33 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   void
   OnChar();
 
+  //! To set current increment controller 
+  void SetControllerIncrement(SVTK_ControllerIncrement*);
+
+  //! To get current increment controller 
+  SVTK_ControllerIncrement* ControllerIncrement();
+ 
+  //! Redefine vtkInteractorStyle::OnKeyDown
+  virtual void OnKeyDown();
+
+  //! Provide instructions for Picking
+  void ActionPicking();
+
+  //! To set current OnKeyDown controller 
+  void SetControllerOnKeyDown(SVTK_ControllerOnKeyDown*);
+
+  //! To get current OnKeyDown controller 
+  SVTK_ControllerOnKeyDown* ControllerOnKeyDown();
+  
+  SVTK_Selector* GetSelector();
+
  protected:
   SVTK_InteractorStyle();
   ~SVTK_InteractorStyle();
 
   QWidget*
   GetRenderWidget();
-
-  SVTK_Selector* 
-  GetSelector();
-
+  
   // Generic event bindings must be overridden in subclasses
   virtual void OnMouseMove  (int ctrl, int shift, int x, int y);
   virtual void OnLeftButtonDown(int ctrl, int shift, int x, int y);
@@ -225,9 +304,15 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   bool                      myShiftState;
   int                       ForcedState;
 
-  //! "Increment" for pan/rotate/zoom operations
-  int                       mySpeedIncrement; 
-  
+  vtkSmartPointer<SALOME_Actor> myLastHighlitedActor;
+  vtkSmartPointer<SALOME_Actor> myLastPreHighlitedActor;
+
+  //! "Increment" controller for pan/rotate/zoom operations
+  vtkSmartPointer<SVTK_ControllerIncrement> myControllerIncrement;
+
+  //!controls the behaviour of KeyDown event in SALOME way
+  vtkSmartPointer<SVTK_ControllerOnKeyDown> myControllerOnKeyDown;
+
   // SpaceMouse short cuts
   int                       mySMDecreaseSpeedBtn;
   int                       mySMIncreaseSpeedBtn;

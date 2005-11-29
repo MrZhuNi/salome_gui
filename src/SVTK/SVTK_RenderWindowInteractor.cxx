@@ -74,9 +74,8 @@ static bool GENERATE_SUIT_EVENTS = false;
 QVTK_RenderWindowInteractor
 ::QVTK_RenderWindowInteractor(QWidget* theParent, 
 			      const char* theName):
-  QWidget(theParent,theName),
-  myRenderWindow(vtkRenderWindow::New()),
-  myPreviousFocusWidget(NULL)
+  QWidget(theParent,theName,Qt::WNoAutoErase),
+  myRenderWindow(vtkRenderWindow::New())
 {
   if(MYDEBUG) INFOS("QVTK_RenderWindowInteractor() - "<<this);
   setMouseTracking(true);
@@ -313,9 +312,6 @@ void
 QVTK_RenderWindowInteractor
 ::enterEvent( QEvent* event )
 {
-  if(false && qApp->focusWidget() != this)
-    myPreviousFocusWidget = qApp->focusWidget();
-
   GetDevice()->EnterEvent();
 }
 
