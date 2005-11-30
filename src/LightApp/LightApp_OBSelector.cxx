@@ -72,7 +72,7 @@ void LightApp_OBSelector::setSelection( const SUIT_DataOwnerPtrList& theList )
   DataObjectList objList;
   for ( SUIT_DataOwnerPtrList::const_iterator it = theList.begin(); it != theList.end(); ++it )
   {
-    const LightApp_DataObject* owner = dynamic_cast<const LightApp_DataObject*>( (*it).operator->() );
+    const LightApp_DataOwner* owner = dynamic_cast<const LightApp_DataOwner*>( (*it).operator->() );
     if ( owner && myEntries.contains( owner->entry() ) )
       objList.append( myEntries[owner->entry()] );
   }
