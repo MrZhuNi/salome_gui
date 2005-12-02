@@ -493,7 +493,14 @@ void VTKViewer_GeometryFilter::UnstructuredGridExecute()
 	}
         //Quadratic cells
         case VTK_QUADRATIC_EDGE: {
-	  newCellId = output->InsertNextCell(VTK_POLY_LINE,npts,pts);
+	  numFacePts = 3;
+	  aCellType = VTK_POLY_LINE;
+
+	  aNewPts[0] = pts[0];
+	  aNewPts[2] = pts[1];
+	  aNewPts[1] = pts[2];
+
+	  newCellId = output->InsertNextCell(aCellType,numFacePts,aNewPts);
 	  if(myStoreMapping)
 	    myVTK2ObjIds.push_back(cellId);
 
