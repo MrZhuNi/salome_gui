@@ -37,6 +37,7 @@
 #include "PyInterp_base.h" // this include must be first (see PyInterp_base.h)!
 
 #include <cStringIO.h>
+using namespace std;
 
 /*!
  * constructor : multi Python interpreter, one per SALOME study.
@@ -80,6 +81,7 @@ bool SalomeApp_PyInterp::initContext()
    * It is the caller responsability caller to acquire the GIL
    * It will still be held on initContext output
    */
+  cerr << "SalomeApp_PyInterp::initContext" << endl;
   if ( !PythonConsole_PyInterp::initContext() )
     return false;
 
@@ -107,6 +109,7 @@ bool SalomeApp_PyInterp::initContext()
     return false;
   }
 
+  cerr << "------------------SalomeApp_PyInterp::initContext" << endl;
   return true;
 }
 

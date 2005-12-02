@@ -28,12 +28,15 @@ PyInterp_Dispatcher* PyInterp_Dispatcher::myInstance = 0;
 
 void PyInterp_Request::process()
 {
+  cerr << "PyInterp_Request::process" << endl;
   safeExecute();
+  cerr << "----------PyInterp_Request::process" << endl;
 
   myMutex.lock();
   if ( !IsSync() && getListener() && getEvent() )
     postEvent();
   myMutex.unlock();
+  cerr << "---------------------------PyInterp_Request::process" << endl;
 }
 
 void PyInterp_Request::safeExecute()
@@ -81,10 +84,12 @@ void PyInterp_Request::setListener( QObject* o )
 
 void PyInterp_LockRequest::safeExecute()
 {
+  cerr << "PyInterp_Request::safeExecute" << endl;
   if ( getInterp() ){
     PyLockWrapper aLock = getInterp()->GetLockWrapper();
     execute();
   }
+  cerr << "---------------------PyInterp_Request::safeExecute" << endl;
 }
 
 //////////////////////////////////////////////////////////
@@ -139,12 +144,15 @@ bool PyInterp_Dispatcher::IsBusy() const
 
 void PyInterp_Dispatcher::Exec( PyInterp_Request* theRequest )
 {
+  cerr << "PyInterp_Dispatcher::Exec" << endl;
   if ( !theRequest )
     return;
 
-  if ( theRequest->IsSync() && !IsBusy() ) // synchronous processing - nothing is done if dispatcher is busy!
+  //if ( theRequest->IsSync() && !IsBusy() ) // synchronous processing - nothing is done if dispatcher is busy!
+  if ( theRequest->IsSync() ) // synchronous processing - nothing is done if dispatcher is busy!
     processRequest( theRequest );
   else { // asynchronous processing
+    cerr << "PyInterp_Dispatcher::Exec request delayed" << endl;
     myQueueMutex.lock();
     myQueue.push_back( theRequest );
     if ( theRequest->getListener() )
@@ -154,6 +162,7 @@ void PyInterp_Dispatcher::Exec( PyInterp_Request* theRequest )
     if ( !IsBusy() )
       start();
   }
+  cerr << "--------------------------PyInterp_Dispatcher::Exec" << endl;
 }
 
 void PyInterp_Dispatcher::run()

@@ -1281,6 +1281,7 @@ SUIT_Study* LightApp_Application::createNewStudy()
 /*!Create window.*/
 QWidget* LightApp_Application::createWindow( const int flag )
 {
+  cerr << "LightApp_Application::createWindow" << endl;
   QWidget* wid = 0;
   if ( flag == WT_ObjectBrowser )
   {
@@ -1303,9 +1304,11 @@ QWidget* LightApp_Application::createWindow( const int flag )
   }
   else  if ( flag == WT_PyConsole )
   {
+    cerr << "LightApp_Application::createWindow: create Python Console" << endl;
     PythonConsole* pyCons = new PythonConsole( desktop() );
     pyCons->setCaption( tr( "PYTHON_CONSOLE" ) );
     wid = pyCons;
+    cerr << "-----------------------------LightApp_Application::createWindow: create Python Console" << endl;
     //    pyCons->connectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
   }
   else if ( flag == WT_LogWindow )
@@ -1315,6 +1318,7 @@ QWidget* LightApp_Application::createWindow( const int flag )
     wid = logWin;
     logWin->connectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
   }
+  cerr << "------------------------------LightApp_Application::createWindow" << endl;
   return wid;
 }
 

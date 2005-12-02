@@ -38,9 +38,11 @@ bool SALOME_PYQT_PyInterp::initState()
   */
   SCRUTE(KERNEL_PYTHON::_gtstate);
   _tstate = KERNEL_PYTHON::_gtstate;
-  PyEval_AcquireLock();
-  PyThreadState_Swap(_tstate);
+  //PyEval_AcquireLock();
+  //PyThreadState_Swap(_tstate);
+  PyEval_AcquireThread(_tstate);
   SCRUTE(_tstate);
+  PyEval_ReleaseThread(_tstate);
   return true;
 }
 

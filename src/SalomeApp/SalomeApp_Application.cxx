@@ -548,7 +548,9 @@ QString SalomeApp_Application::getFileFilter() const
 /*!Create window.*/
 QWidget* SalomeApp_Application::createWindow( const int flag )
 {
-  QWidget* wid = LightApp_Application::createWindow(flag);
+  cerr << "SalomeApp_Application::createWindow" << endl;
+  QWidget* wid = 0;
+  if ( flag != WT_PyConsole ) wid = LightApp_Application::createWindow(flag);
 
   SUIT_ResourceMgr* resMgr = resourceMgr();
 
@@ -567,13 +569,14 @@ QWidget* SalomeApp_Application::createWindow( const int flag )
   }
   else if ( flag == WT_PyConsole )
   {
-    delete wid;
-    wid = 0;
+    cerr << "create Python Console" << endl;
     PythonConsole* pyCons = new PythonConsole( desktop(), new SalomeApp_PyInterp() );
     pyCons->setCaption( tr( "PYTHON_CONSOLE" ) );
     wid = pyCons;
+    cerr << "-------------------create Python Console" << endl;
     //    pyCons->connectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
   }
+  cerr << "----------------------------------SalomeApp_Application::createWindow" << endl;
   return wid;
 }
 

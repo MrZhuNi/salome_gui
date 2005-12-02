@@ -101,6 +101,7 @@ PythonConsole_PyEditor::PythonConsole_PyEditor(PyInterp_base* theInterp, QWidget
   QTextEdit(theParent,theName),
   myInterp( 0 )
 {
+  cerr << "PythonConsole_PyEditor::PythonConsole_PyEditor" << endl;
   QString fntSet( "" );
   QFont aFont = SUIT_Tools::stringToFont( fntSet );
   setFont(aFont);
@@ -114,6 +115,7 @@ PythonConsole_PyEditor::PythonConsole_PyEditor(PyInterp_base* theInterp, QWidget
 
   // san - This is necessary for troubleless initialization
   onPyInterpChanged( theInterp );
+  cerr << "------------------------PythonConsole_PyEditor::PythonConsole_PyEditor" << endl;
 }
 
 /*!

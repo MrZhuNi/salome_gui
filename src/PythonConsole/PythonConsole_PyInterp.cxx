@@ -72,6 +72,7 @@ PythonConsole_PyInterp::~PythonConsole_PyInterp()
 
 bool PythonConsole_PyInterp::initState()
 {
+  cerr << "PythonConsole_PyInterp::initState" << endl;
   /*
    * The GIL is acquired and will be held on initState output
    * It is the caller responsability to release the lock if needed
@@ -92,6 +93,8 @@ bool PythonConsole_PyInterp::initState()
     _tstate->interp->builtins = PyModule_GetDict(builtinmodule);
     Py_INCREF(_tstate->interp->builtins);
   }
+  PyEval_ReleaseThread(_tstate);
+  cerr << "--------------------------PythonConsole_PyInterp::initState" << endl;
   return true;
 }
 

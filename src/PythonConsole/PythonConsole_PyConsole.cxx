@@ -12,6 +12,7 @@ using namespace std;
 PythonConsole::PythonConsole(QWidget* parent, PyInterp_base* interp)
 : QWidget(parent), myEditor( 0 )
 {
+  cerr << "PythonConsole::PythonConsole" << endl;
   // create python interpreter
   myInterp = interp;
   if ( !myInterp )
@@ -24,6 +25,7 @@ PythonConsole::PythonConsole(QWidget* parent, PyInterp_base* interp)
   QVBoxLayout* lay = new QVBoxLayout( this );
   myEditor = new PythonConsole_PyEditor(myInterp, this,"Python Interpreter");
   lay->addWidget( myEditor );
+  cerr << "-----------------------------PythonConsole::PythonConsole" << endl;
 }
 
 //****************************************************************
