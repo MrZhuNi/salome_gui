@@ -510,13 +510,25 @@ SALOME_Actor
   switch(theMode){
   case 3 : 
     myGeomFilter->SetInside(true);
+    myGeomFilter->SetWireframeMode(true);
     GetProperty()->SetRepresentation(1);
     break;
   case VTK_POINTS : 
     GetProperty()->SetPointSize(SALOME_POINT_SIZE);  
-  default :
     GetProperty()->SetRepresentation(theMode);
+    myGeomFilter->SetWireframeMode(false);
     myGeomFilter->SetInside(false);
+    break;
+  case VTK_WIREFRAME : 
+    GetProperty()->SetRepresentation(theMode);
+    myGeomFilter->SetWireframeMode(true);
+    myGeomFilter->SetInside(false);
+    break;
+  case VTK_SURFACE : 
+    GetProperty()->SetRepresentation(theMode);
+    myGeomFilter->SetWireframeMode(false);
+    myGeomFilter->SetInside(false);
+    break;
   }
   myRepresentation = theMode;
 }
