@@ -569,22 +569,64 @@ void VTKViewer_GeometryFilter::UnstructuredGridExecute()
 	    }
 	    case VTK_QUADRATIC_TETRA: {
 	      aCellType = VTK_POLYGON;
-	      numFacePts = 8;
+	      numFacePts = 6;
 	      
+	      //---------------------------------------------------------------
 	      aNewPts[0] = pts[0];
 	      aNewPts[1] = pts[4];
 	      aNewPts[2] = pts[1];
 	      aNewPts[3] = pts[5];
 	      aNewPts[4] = pts[2];
 	      aNewPts[5] = pts[6];
-	      aNewPts[6] = pts[3];
-	      aNewPts[7] = pts[7];
 	      
 	      newCellId = output->InsertNextCell(aCellType,numFacePts,aNewPts);
 	      if(myStoreMapping)
 		myVTK2ObjIds.push_back(cellId);
 	      
 	      outputCD->CopyData(cd,cellId,newCellId);
+
+	      //---------------------------------------------------------------
+	      aNewPts[0] = pts[0];
+	      aNewPts[1] = pts[7];
+	      aNewPts[2] = pts[3];
+	      aNewPts[3] = pts[8];
+	      aNewPts[4] = pts[1];
+	      aNewPts[5] = pts[4];
+	      
+	      newCellId = output->InsertNextCell(aCellType,numFacePts,aNewPts);
+	      if(myStoreMapping)
+		myVTK2ObjIds.push_back(cellId);
+	      
+	      outputCD->CopyData(cd,cellId,newCellId);
+
+	      //---------------------------------------------------------------
+	      aNewPts[0] = pts[1];
+	      aNewPts[1] = pts[8];
+	      aNewPts[2] = pts[3];
+	      aNewPts[3] = pts[9];
+	      aNewPts[4] = pts[2];
+	      aNewPts[5] = pts[5];
+	      
+	      newCellId = output->InsertNextCell(aCellType,numFacePts,aNewPts);
+	      if(myStoreMapping)
+		myVTK2ObjIds.push_back(cellId);
+	      
+	      outputCD->CopyData(cd,cellId,newCellId);
+
+	      //---------------------------------------------------------------
+	      aNewPts[0] = pts[2];
+	      aNewPts[1] = pts[9];
+	      aNewPts[2] = pts[3];
+	      aNewPts[3] = pts[7];
+	      aNewPts[4] = pts[0];
+	      aNewPts[5] = pts[6];
+	      
+	      newCellId = output->InsertNextCell(aCellType,numFacePts,aNewPts);
+	      if(myStoreMapping)
+		myVTK2ObjIds.push_back(cellId);
+	      
+	      outputCD->CopyData(cd,cellId,newCellId);
+
 	      break;
 	    }
 	    case VTK_QUADRATIC_HEXAHEDRON: {
