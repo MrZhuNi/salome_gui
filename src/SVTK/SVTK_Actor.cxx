@@ -61,7 +61,8 @@ CopyPoints(vtkUnstructuredGrid* theGrid, vtkDataSet *theSourceDataSet)
 vtkStandardNewMacro(SVTK_Actor);
 
 SVTK_Actor
-::SVTK_Actor()
+::SVTK_Actor():
+  myUnstructuredGrid(vtkUnstructuredGrid::New())
 {
   if(MYDEBUG) INFOS("SVTK_Actor - "<<this);
 
@@ -70,7 +71,7 @@ SVTK_Actor
 
   Visibility = Pickable = false;
 
-  myUnstructuredGrid = vtkUnstructuredGrid::New();
+  myUnstructuredGrid->Delete();
   myUnstructuredGrid->Allocate();
 
   myIsShrunk = false;
@@ -79,12 +80,45 @@ SVTK_Actor
 
   myMapper = vtkDataSetMapper::New();
 
-  myMapper->SetInput(myUnstructuredGrid);
-  Superclass::InitPipeLine(myMapper);
-
   SetResolveCoincidentTopology(false);
 }
 
+//----------------------------------------------------------------------------
+void
+SVTK_Actor
+::Initialize()
+{
+  myMapper->SetInput(GetSource());
+  Superclass::InitPipeLine(myMapper);
+}
+
+
+//----------------------------------------------------------------------------
+void
+SVTK_Actor
+::SetSource(vtkUnstructuredGrid* theUnstructuredGrid)
+{
+  if(GetSource() == theUnstructuredGrid)
+    return;
+
+  myUnstructuredGrid = theUnstructuredGrid;
+
+  myMapper->SetInput(theUnstructuredGrid);
+
+  Superclass::InitPipeLine(myMapper);
+
+  Modified();
+}
+
+vtkUnstructuredGrid*
+SVTK_Actor
+::GetSource()
+{
+  return myUnstructuredGrid.GetPointer();
+}
+
+
+//----------------------------------------------------------------------------
 void
 SVTK_Actor
 ::SetShrinkFactor(float theValue)
@@ -127,13 +161,9 @@ SVTK_Actor
 {
   if(MYDEBUG) INFOS("~SVTK_Actor()");
 
-  myMapper->RemoveAllInputs();
   myMapper->Delete();
 
-  myShrinkFilter->UnRegisterAllOutputs();
   myShrinkFilter->Delete();
-
-  myUnstructuredGrid->Delete();
 }
 
 
@@ -155,13 +185,13 @@ SVTK_Actor
   myUnstructuredGrid->Reset();
 
   vtkDataSet *aSourceDataSet = theMapActor->GetInput();
-  CopyPoints(myUnstructuredGrid,aSourceDataSet);
+  CopyPoints(GetSource(),aSourceDataSet);
 
   int aNbOfParts = theMapIndex.Extent();
   for(int ind = 1; ind <= aNbOfParts; ind++){
     int aPartId = theMapIndex( ind );
-    vtkCell* aCell = theMapActor->GetElemCell(aPartId);
-    myUnstructuredGrid->InsertNextCell(aCell->GetCellType(),aCell->GetPointIds());
+    if(vtkCell* aCell = theMapActor->GetElemCell(aPartId))
+      myUnstructuredGrid->InsertNextCell(aCell->GetCellType(),aCell->GetPointIds());
   }
 
   UnShrink();
@@ -186,9 +216,10 @@ SVTK_Actor
     aPoints->SetNumberOfPoints(aNbOfParts);
     for(int i = 0; i < aNbOfParts; i++){
       int aPartId = theMapIndex( i+1 );
-      float* aCoord = theMapActor->GetNodeCoord(aPartId);
-      aPoints->SetPoint(i,aCoord);
-      myUnstructuredGrid->InsertNextCell(VTK_VERTEX,1,&i);
+      if(float* aCoord = theMapActor->GetNodeCoord(aPartId)){
+	aPoints->SetPoint(i,aCoord);
+	myUnstructuredGrid->InsertNextCell(VTK_VERTEX,1,&i);
+      }
     }
     myUnstructuredGrid->SetPoints(aPoints);
     aPoints->Delete();
@@ -209,7 +240,7 @@ SVTK_Actor
   myUnstructuredGrid->Reset();
 
   vtkDataSet *aSourceDataSet = theMapActor->GetInput();
-  CopyPoints(myUnstructuredGrid,aSourceDataSet);
+  CopyPoints(GetSource(),aSourceDataSet);
 
   int iEnd = theMapIndex.Extent();
   int aCellId = -1, aCellCounter = 0;
@@ -222,18 +253,19 @@ SVTK_Actor
   }
 
   if(aCellCounter == 1){
-    vtkCell* aCell = theMapActor->GetElemCell(aCellId);
-    if(aCell->GetCellType() <= VTK_LINE){
-      myUnstructuredGrid->InsertNextCell(aCell->GetCellType(),aCell->GetPointIds());
-    }else{
-      int aNbOfParts = aCell->GetNumberOfEdges();
-      for(int i = 1; i <= iEnd; i++){
-        int aPartId = theMapIndex(i);
-	if( aPartId < 0){
-          aPartId = -aPartId-1;
-	  if(0 > aPartId || aPartId >= aNbOfParts) break;
-	  vtkCell* anEdgeCell = aCell->GetEdge(aPartId);
-	  myUnstructuredGrid->InsertNextCell(VTK_LINE,anEdgeCell->GetPointIds());
+    if(vtkCell* aCell = theMapActor->GetElemCell(aCellId)){
+      if(aCell->GetCellType() <= VTK_LINE){
+	myUnstructuredGrid->InsertNextCell(aCell->GetCellType(),aCell->GetPointIds());
+      }else{
+	int aNbOfParts = aCell->GetNumberOfEdges();
+	for(int i = 1; i <= iEnd; i++){
+	  int aPartId = theMapIndex(i);
+	  if( aPartId < 0){
+	    aPartId = -aPartId-1;
+	    if(0 > aPartId || aPartId >= aNbOfParts) break;
+	    if(vtkCell* anEdgeCell = aCell->GetEdge(aPartId))
+	      myUnstructuredGrid->InsertNextCell(VTK_LINE,anEdgeCell->GetPointIds());
+	  }
 	}
       }
     }
