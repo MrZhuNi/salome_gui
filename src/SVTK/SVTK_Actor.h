@@ -84,9 +84,6 @@ public:
   const TColStd_IndexedMapOfInteger&
   GetMapIndex() const;
 
-  const TColStd_IndexedMapOfInteger&
-  GetMapIndex() const;
-
  protected:
   TColStd_IndexedMapOfInteger myMapIndex;
 
