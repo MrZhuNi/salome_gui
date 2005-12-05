@@ -40,21 +40,46 @@ public:
 
   vtkTypeMacro(SVTK_Actor,VTKViewer_Actor);
 
-  void  SetShrinkFactor(float value);
-  virtual void SetShrink(); 
-  virtual void UnShrink(); 
+  //! Initialiaze the instance completely
+  void
+  Initialize();
+
+  //! Allows to set an external source 
+  void
+  SetSource(vtkUnstructuredGrid* theUnstructuredGrid);
+
+  //! Get its internal data set
+  vtkUnstructuredGrid*
+  GetSource();
+
+  //! To manage shrink functionality
+  void
+  SetShrinkFactor(float value);
+
+  //! To manage shrink functionality
+  virtual
+  void
+  SetShrink(); 
+
+  //! To manage shrink functionality
+  virtual
+  void
+  UnShrink(); 
 
   //! Allow to recostruct selected cells from source SALOME_Actor and map of subindexes
-  void MapCells(SALOME_Actor* theMapActor, 
-		const TColStd_IndexedMapOfInteger& theMapIndex);
+  void
+  MapCells(SALOME_Actor* theMapActor, 
+	   const TColStd_IndexedMapOfInteger& theMapIndex);
 
   //! Allow to recostruct selected points from source SALOME_Actor and map of subindexes
-  void MapPoints(SALOME_Actor* theMapActor, 
-		 const TColStd_IndexedMapOfInteger& theMapIndex);
+  void 
+  MapPoints(SALOME_Actor* theMapActor, 
+	    const TColStd_IndexedMapOfInteger& theMapIndex);
 
   //! Allow to recostruct selected edges from source SALOME_Actor and map of subindexes
-  void MapEdge(SALOME_Actor* theMapActor, 
-	       const TColStd_IndexedMapOfInteger& theMapIndex);
+  void 
+  MapEdge(SALOME_Actor* theMapActor, 
+	  const TColStd_IndexedMapOfInteger& theMapIndex);
 
   const TColStd_IndexedMapOfInteger&
   GetMapIndex() const;
@@ -62,7 +87,7 @@ public:
  protected:
   TColStd_IndexedMapOfInteger myMapIndex;
 
-  vtkUnstructuredGrid* myUnstructuredGrid;
+  vtkSmartPointer<vtkUnstructuredGrid> myUnstructuredGrid;
   vtkDataSetMapper* myMapper;
   vtkRenderer* myRenderer;
 

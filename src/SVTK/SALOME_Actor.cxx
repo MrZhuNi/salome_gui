@@ -165,10 +165,12 @@ SALOME_Actor
     myPassFilter.push_back(VTKViewer_PassThroughFilter::New());
 
   myPreHighlightActor->Delete();
+  myPreHighlightActor->Initialize();
   myPreHighlightActor->PickableOff();
   myPreHighlightActor->SetVisibility( false );
 
   myHighlightActor->Delete();
+  myHighlightActor->Initialize();
   myHighlightActor->PickableOff();
   myHighlightActor->SetVisibility( false );
 
