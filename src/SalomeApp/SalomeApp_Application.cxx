@@ -80,7 +80,8 @@ SalomeApp_Application::SalomeApp_Application()
  */
 SalomeApp_Application::~SalomeApp_Application()
 {
-  SalomeApp_EventFilter::Destroy();
+  // Do not destroy. It's a singleton !
+  //SalomeApp_EventFilter::Destroy();
 }
 
 /*!Start application.*/

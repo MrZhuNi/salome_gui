@@ -22,19 +22,47 @@ PyLockWrapper::PyLockWrapper(PyThreadState* theThreadState):
   myThreadState(theThreadState),
   mySaveThreadState(0)
 {
+  cerr << "PyLockWrapper::PyLockWrapper" << endl;
+#if defined(USE_GILSTATE)
+  if(myThreadState->interp == PyInterp_base::_interp)
+  {
+     cerr << "PyLockWrapper::PyLockWrapper:GILstate" << endl;
+     _savestate = PyGILState_Ensure();
+     cerr << "------------------------PyLockWrapper::PyLockWrapper:GILstate" << endl;
+  }
+  else
+  {
+     cerr << "PyLockWrapper::PyLockWrapper:PyEval_AcquireThread" << endl;
+     PyEval_AcquireThread(myThreadState);
+     cerr << "------------------------PyLockWrapper::PyLockWrapper:PyEval_AcquireThread" << endl;
+  }
+#else 
   PyEval_AcquireThread(myThreadState);
-  //PyEval_AcquireLock();
-  //mySaveThreadState = PyThreadState_Swap(myThreadState); // store previous current in save,
-                                                         // set local in current
+#endif
+  cerr << "----------------------------PyLockWrapper::PyLockWrapper" << endl;
 }
 
-
-PyLockWrapper::~PyLockWrapper(){
+PyLockWrapper::~PyLockWrapper()
+{
+  cerr << "PyLockWrapper::~PyLockWrapper" << endl;
+#if defined(USE_GILSTATE)
+  if(myThreadState->interp == PyInterp_base::_interp)
+  {
+     cerr << "PyLockWrapper::~PyLockWrapper:GILstate" << endl;
+     PyGILState_Release(_savestate);
+     cerr << "------------------------PyLockWrapper::~PyLockWrapper:GILstate" << endl;
+  }
+  else
+  {
+     cerr << "PyLockWrapper::~PyLockWrapper:PyEval_ReleaseThread" << endl;
+     PyEval_ReleaseThread(myThreadState);
+     cerr << "------------------------PyLockWrapper::~PyLockWrapper:PyEval_ReleaseThread" << endl;
+  }
+#else 
   PyEval_ReleaseThread(myThreadState);
-  //PyThreadState_Swap(mySaveThreadState); // restore previous current (no need to get local,
-  //PyEval_ReleaseLock();                  // local thread state* already in _tstate
+#endif
+  cerr << "----------------------------PyLockWrapper::~PyLockWrapper" << endl;
 }
-
 
 class PyReleaseLock{
 public:
@@ -49,13 +77,15 @@ PyLockWrapper PyInterp_base::GetLockWrapper(){
 }
 
 
-// main python interpreter
+// main python interpreter (static attributes)
 
-//PyThreadState *PyInterp_base::_gtstate = 0; // force 0 before execution
 int PyInterp_base::_argc = 1;
 char* PyInterp_base::_argv[] = {""};
 
 PyObject *PyInterp_base::builtinmodule = NULL;
+
+PyThreadState *PyInterp_base::_gtstate = NULL;
+PyInterpreterState *PyInterp_base::_interp = NULL;
 
 
 /*!
@@ -68,8 +98,6 @@ PyInterp_base::PyInterp_base(): _tstate(0), _vout(0), _verr(0), _g(0), _atFirst(
 
 PyInterp_base::~PyInterp_base()
 {
-  PyLockWrapper aLock(_tstate);
-  //Py_EndInterpreter(_tstate);
 }
 
 
@@ -88,9 +116,6 @@ void PyInterp_base::initialize()
   init_python();
   // Here the global lock is released
 
-  // The lock will be acquired in initState. Make provision to release it on exit
-  // PyReleaseLock aReleaseLock;
-
   initState();
 
   PyLockWrapper aLock= GetLockWrapper();
@@ -101,47 +126,40 @@ void PyInterp_base::initialize()
   PyObjWrapper m(PyImport_ImportModule("codeop"));
   if(!m){
     PyErr_Print();
-    //PyEval_SaveThread();
     return;
   }   
   
   // Create cStringIO to capture stdout and stderr
   PycString_IMPORT;
-  //PycStringIO = (PycStringIO_CAPI *)xxxPyCObject_Import("cStringIO", "cStringIO_CAPI");
   _vout = PycStringIO->NewOutput(128);
   _verr = PycStringIO->NewOutput(128);
   
   // All the initRun outputs are redirected to the standard output (console)
   initRun();
-  //PyEval_SaveThread();
+
   cerr << "---------------------------PyInterp_base::initialize" << endl;
 }
 
 void PyInterp_base::init_python()
 {
-  static PyThreadState *_gtstate = 0;
-
   _atFirst = false;
   if (Py_IsInitialized())
     return;
 
+  // Python is not initialized
+  cerr << "Python not initialized" << endl;
   Py_SetProgramName(_argv[0]);
   Py_Initialize(); // Initialize the interpreter
   PySys_SetArgv(_argc, _argv);
   PyEval_InitThreads(); // Create (and acquire) the interpreter lock
+  _interp = PyThreadState_Get()->interp;
   _gtstate = PyEval_SaveThread(); // Release global thread state
-  // There the thread state is NULL
-//  if(!_gtstate){
-//    PyReleaseLock aReleaseLock;
-//    Py_Initialize(); // Initialize the interpreter
-//    PyEval_InitThreads(); // Initialize and acquire the global interpreter lock
-//    PySys_SetArgv(_argc,_argv); // initialize sys.argv
-//    _gtstate = PyThreadState_Get();
-//  }
+  cerr << "-------------------------Python not initialized" << endl;
 }
 
 string PyInterp_base::getbanner()
 {
+ // Should we take the lock ?
  // PyEval_RestoreThread(_tstate);
   string aBanner("Python ");
   aBanner = aBanner + Py_GetVersion() + " on " + Py_GetPlatform() ;
@@ -197,11 +215,7 @@ int compile_command(const char *command,PyObject *context)
     return 1;
   }else{
     // Complete and correct text. We evaluate it.
-#ifndef WNT
-    PyObjWrapper r(PyEval_EvalCode(v,context,context));
-#else
     PyObjWrapper r(PyEval_EvalCode((PyCodeObject *)(void *)v,context,context));
-#endif
     if(!r){
       // Execution error. We return -1
       PyErr_Print();

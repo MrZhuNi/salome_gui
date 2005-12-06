@@ -489,9 +489,7 @@ void SALOME_PYQT_Module::init( CAM_Application* app )
   if(PyObject_HasAttrString(myModule , "initialize")){
     PyObjWrapper res( PyObject_CallMethod( myModule, "initialize", "" ) );
     if( !res ) {
-      // CCAR already tested // VSR: this method may not be implemented in Python module
       PyErr_Print();
-      //PyErr_Clear();
     }
   }
   
@@ -505,9 +503,7 @@ void SALOME_PYQT_Module::init( CAM_Application* app )
   if(PyObject_HasAttrString(myModule , "windows")){
     PyObjWrapper res1( PyObject_CallMethod( myModule, "windows", "" ) );
     if( !res1 ) {
-      // VSR: this method may not be implemented in Python module
       PyErr_Print();
-      //PyErr_Clear();
     }
     else {
       myWindowsMap.clear();
@@ -532,9 +528,7 @@ void SALOME_PYQT_Module::init( CAM_Application* app )
   if(PyObject_HasAttrString(myModule , "views")){
     PyObjWrapper res2( PyObject_CallMethod( myModule, "views", "" ) );
     if( !res2 ) {
-      // VSR: this method may not be implemented in Python module
       PyErr_Print();
-      //PyErr_Clear();
     }
     else {
       // parse the return value
@@ -589,9 +583,7 @@ void SALOME_PYQT_Module::activate( SUIT_Study* theStudy )
     if(PyObject_HasAttrString(myModule , "setSettings")){
       PyObjWrapper res( PyObject_CallMethod( myModule, "setSettings", "" ) );
       if( !res ) {
-        // VSR: this method may not be implemented in Python module
         PyErr_Print();
-        //PyErr_Clear();
       }
     }
   }                         //__CALL_OLD_METHODS__
@@ -600,9 +592,7 @@ void SALOME_PYQT_Module::activate( SUIT_Study* theStudy )
   if(PyObject_HasAttrString(myModule , "activate")){
     PyObjWrapper res1( PyObject_CallMethod( myModule, "activate", "" ) );
     if( !res1 ) {
-      // VSR: this method may not be implemented in Python module
       PyErr_Print();
-      //PyErr_Clear();
     }
   }
 }
@@ -622,9 +612,7 @@ void SALOME_PYQT_Module::deactivate( SUIT_Study* theStudy )
   if(PyObject_HasAttrString(myModule , "deactivate")){
     PyObjWrapper res( PyObject_CallMethod( myModule, "deactivate", "" ) );
     if( !res ) {
-      // VSR: this method may not be implemented in Python module
       PyErr_Print();
-      //PyErr_Clear();
     }
   }
 }
@@ -658,9 +646,7 @@ void SALOME_PYQT_Module::studyChanged( SUIT_Study* theStudy )
   if(PyObject_HasAttrString(myModule , "activeStudyChanged")){
     PyObjWrapper res( PyObject_CallMethod( myModule, "activeStudyChanged", "i", aStudyId ) );
     if( !res ) {
-      // VSR: this method may not be implemented in Python module
       PyErr_Print();
-      //PyErr_Clear();
     }
   }
 }
@@ -750,9 +736,7 @@ void SALOME_PYQT_Module::contextMenu( const QString& theContext, QPopupMenu* the
 					  aObject.latin1(), 
 					  aParent.latin1() ) );
     if( !res ) {
-      // VSR: this method may not be implemented in Python module
       PyErr_Print();
-      //PyErr_Clear();
     }
     else {
       // parse return value
@@ -780,9 +764,7 @@ void SALOME_PYQT_Module::contextMenu( const QString& theContext, QPopupMenu* the
 					  sipPopup.get(),
 					  aContext.latin1() ) );
     if( !res1 ) {
-      // VSR: this method may not be implemented in Python module
       PyErr_Print();
-      //PyErr_Clear();
     }
   }
 
@@ -797,9 +779,7 @@ void SALOME_PYQT_Module::contextMenu( const QString& theContext, QPopupMenu* the
 					    aObject.latin1(), 
 					    aParent.latin1() ) );
     if( !res2 ) {
-      // VSR: this method may not be implemented in Python module
       PyErr_Print();
-      //PyErr_Clear();
     }
   }                        //__CALL_OLD_METHODS__
 }
@@ -818,9 +798,7 @@ void SALOME_PYQT_Module::guiEvent( const int theId )
   if ( PyObject_HasAttrString(myModule , "OnGUIEvent") ) { 
     PyObjWrapper res( PyObject_CallMethod( myModule, "OnGUIEvent", "i", theId ) );
     if( !res ) {
-      // VSR: this method may not be implemented in Python module
       PyErr_Print();
-      //PyErr_Clear();
     }
   }
 }
@@ -939,9 +917,7 @@ void SALOME_PYQT_Module::setWorkSpace()
     if ( PyObject_HasAttrString(myModule , "setWorkSpace") ) { 
       PyObjWrapper res( PyObject_CallMethod( myModule, "setWorkSpace", "O", pyws.get() ) );
       if( !res ) {
-        // VSR: this method may not be implemented in Python module
         PyErr_Print();
-        //PyErr_Clear();
       }
     }
   }                         //__CALL_OLD_METHODS__
