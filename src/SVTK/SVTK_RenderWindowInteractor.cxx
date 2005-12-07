@@ -312,6 +312,9 @@ void
 QVTK_RenderWindowInteractor
 ::enterEvent( QEvent* event )
 {
+  setActiveWindow();
+  setFocus();
+  
   GetDevice()->EnterEvent();
 }
 
