@@ -22,6 +22,7 @@ EXPORT_HEADERS= LightApp.h \
 		LightApp_Dialog.h \
 		LightApp_Displayer.h \
 		LightApp_Driver.h \
+		LightApp_HDFDriver.h \
 		LightApp_GLSelector.h \
 		LightApp_Module.h \
 		LightApp_ModuleDlg.h \
@@ -58,6 +59,7 @@ LIB_SRC= LightApp_AboutDlg.cxx \
 	 LightApp_Dialog.cxx \
 	 LightApp_Displayer.cxx \
 	 LightApp_Driver.cxx \
+	 LightApp_HDFDriver.cxx \
 	 LightApp_GLSelector.cxx \
 	 LightApp_Module.cxx \
 	 LightApp_ModuleDlg.cxx \
@@ -105,9 +107,9 @@ RESOURCES_FILES = icon_about.png \
 		  LightApp.ini \
 		  LightApp.xml
 
-CPPFLAGS+=$(PYTHON_INCLUDES) $(QT_INCLUDES) $(QWT_INCLUDES) $(OCC_INCLUDES) $(VTK_INCLUDES)
+CPPFLAGS+=$(PYTHON_INCLUDES) $(QT_INCLUDES) $(QWT_INCLUDES) $(OCC_INCLUDES) $(VTK_INCLUDES) $(HDF5_INCLUDES)
 
 LDFLAGS+=$(PYTHON_LIBS) $(QT_MT_LIBS)
-LIBS+= -lsuit -lstd -lCAM -lObjBrowser -lLogWindow $(CAS_KERNEL) -lGLViewer -lOCCViewer -lVTKViewer -lSalomeObject -lSOCC -lSVTK -lSPlot2d -lSUPERVGraph -lPyInterp -lPythonConsole
+LIBS+= -lsuit -lstd -lCAM -lObjBrowser -lLogWindow $(CAS_KERNEL) -lGLViewer -lOCCViewer -lVTKViewer -lSalomeObject -lSOCC -lSVTK -lSPlot2d -lSUPERVGraph -lPyInterp -lPythonConsole $(HDF5_LIBS) -lSalomeHDFPersistCopy
 
 @CONCLUDE@

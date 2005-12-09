@@ -1201,7 +1201,8 @@ void LightApp_Application::onDesktopActivated()
  */
 QString LightApp_Application::getFileFilter() const
 {
-  return "(*.bin)";
+  //return "(*.bin)";
+  return "(*.hdf)";
 }
 
 /*! Gets file name*/

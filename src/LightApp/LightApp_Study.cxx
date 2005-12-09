@@ -23,7 +23,7 @@
 #include "LightApp_DataModel.h"
 #include "LightApp_DataObject.h"
 #include "LightApp_RootObject.h"
-#include "LightApp_Driver.h"
+#include "LightApp_HDFDriver.h"
 
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_DataObjectIterator.h"
@@ -50,7 +50,7 @@
 LightApp_Study::LightApp_Study( SUIT_Application* app )
 : CAM_Study( app )
 {
-  myDriver = new LightApp_Driver();
+  myDriver = new LightApp_HDFDriver();
 }
  
 /*!
@@ -311,8 +311,8 @@ bool LightApp_Study::isSaved() const
 }
 
 //=======================================================================
-// name    : saveModuleData
-/*! Purpose :  Create SComponent for module, necessary for SalomeApp study */
+// name    : addComponent
+/*! Purpose : Create SComponent for module, necessary for SalomeApp study */
 //=======================================================================
 void LightApp_Study::addComponent(const CAM_DataModel* dm)
 {
@@ -451,7 +451,7 @@ void LightApp_Study::RemoveTemporaryFiles (const char* theModuleName, const bool
 }
 
 //================================================================
-// Function : RemoveTemporaryFiles
+// Function : components
 /*! Purpose  : to be used by modules*/
 //================================================================
 void LightApp_Study::components( QStringList& comp ) const
@@ -465,4 +465,3 @@ void LightApp_Study::components( QStringList& comp ) const
       comp.append( obj->entry() );
   }
 }
-
