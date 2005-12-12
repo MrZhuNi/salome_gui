@@ -217,6 +217,7 @@
   <parameter value="33" name="inside_point_sprite_max_size" />
   <parameter value="100" name="inside_point_sprite_magnification" />
   <parameter value="2" name="inside_point_sprite_increment" />
+  <parameter value="8" name="inside_geom_sphere_resolution" />
   <parameter value="0" name="outside_point_sprite_primitive_type" />
   <parameter value="256" name="outside_point_sprite_clamp" />
   <parameter value="${VISU_ROOT_DIR}/share/salome/resources/sprite_texture.bmp" name="outside_point_sprite_main_texture"/>
@@ -225,6 +226,7 @@
   <parameter value="25" name="outside_point_sprite_size" />
   <parameter value="true" name="outside_point_sprite_uniform" />
   <parameter value="85, 0, 127" name="outside_point_sprite_color" />
+  <parameter value="8" name="outside_geom_sphere_resolution" />
   <parameter value="1.0" name="picking_pyramid_height" />
   <parameter value="255, 255, 0" name="picking_selection_color" />
   <parameter value="0.01" name="picking_point_tolerance" />
@@ -233,6 +235,7 @@
   <parameter value="1.5" name="picking_zoom_factor" />
   <parameter value="10" name="picking_step_number" />
   <parameter value="false" name="picking_display_parent_mesh" />
+  <parameter value="true" name="close_at_finish" />
   </section>
   <!-- Here go optional sections for other modules -->
   <section name="resources">
