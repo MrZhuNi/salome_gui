@@ -236,6 +236,10 @@
   <parameter value="10" name="picking_step_number" />
   <parameter value="false" name="picking_display_parent_mesh" />
   <parameter value="true" name="close_at_finish" />
+  <parameter value="1" name="recorder_mode" />
+  <parameter value="17.3" name="recorder_fps" />
+  <parameter value="100" name="recorder_quality" />
+  <parameter value="true" name="recorder_progressive" />
   </section>
   <!-- Here go optional sections for other modules -->
   <section name="resources">
