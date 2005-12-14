@@ -493,7 +493,7 @@ void VTKViewer_GeometryFilter::UnstructuredGridExecute()
 	      for (int j=0; j < cell->GetNumberOfFaces(); j++){
 		vtkCell *face = cell->GetFace(j);
 		input->GetCellNeighbors(cellId, face->PointIds, cellIds);
-		if ( cellIds->GetNumberOfIds() <= 0 && myShowInside ) {
+		if ( cellIds->GetNumberOfIds() <= 0 || myShowInside ) {
 		  face->Triangulate(0,pts,coords);
 		  for (i=0; i < pts->GetNumberOfIds(); i+=3) {
 		    aNewPts[0] = pts->GetId(i);
