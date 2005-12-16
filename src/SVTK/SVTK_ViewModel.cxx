@@ -14,6 +14,8 @@
 #include "SVTK_MainWindow.h"
 #include "SVTK_Prs.h"
 
+#include "VTKViewer_ViewModel.h"
+
 #include "SALOME_Actor.h"
 #include "SALOME_InteractiveObject.hxx"
 
@@ -138,14 +140,14 @@ void
 SVTK_Viewer
 ::contextMenuPopup( QPopupMenu* thePopup )
 {
-  thePopup->insertItem( tr( "MEN_DUMP_VIEW" ), this, SLOT( onDumpView() ) );
-  thePopup->insertItem( tr( "MEN_CHANGE_BACKGROUD" ), this, SLOT( onChangeBgColor() ) );
+  thePopup->insertItem( VTKViewer_Viewer::tr( "MEN_DUMP_VIEW" ), this, SLOT( onDumpView() ) );
+  thePopup->insertItem( VTKViewer_Viewer::tr( "MEN_CHANGE_BACKGROUD" ), this, SLOT( onChangeBgColor() ) );
 
   thePopup->insertSeparator();
 
   if(TViewWindow* aView = dynamic_cast<TViewWindow*>(myViewManager->getActiveView())){
     if ( !aView->getView()->GetMainWindow()->getToolBar()->isVisible() ){
-      thePopup->insertItem( tr( "MEN_SHOW_TOOLBAR" ), this, SLOT( onShowToolbar() ) );
+      thePopup->insertItem( VTKViewer_Viewer::tr( "MEN_SHOW_TOOLBAR" ), this, SLOT( onShowToolbar() ) );
     }
   }
 }
