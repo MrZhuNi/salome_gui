@@ -30,8 +30,10 @@ extern "C"
 }
 #include "HDFcontainerObject.hxx"
 #include "HDFexception.hxx"
+#ifndef WIN32
 #include "utilities.h"
 using namespace std;
+#endif
 
 HDFcontainerObject::HDFcontainerObject(char *name)
   : HDFinternalObject(name)

@@ -30,8 +30,10 @@ extern "C"
 #include "hdfi.h"
 #include <string.h>
 }
+#ifndef WIN32
 #include "utilities.h"
 using namespace std;
+#endif
 
 HDFobject::HDFobject(char *name)
 {

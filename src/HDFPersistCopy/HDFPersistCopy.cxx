@@ -21,32 +21,23 @@
 //
 //
 //
-//  File   : HDFexplorer.hxx
+//  File   : HDFPersistCopy.cxx
 //  Module : SALOME
 
-#ifndef HDFEXPLORER_HXX
-#define HDFEXPLORER_HXX
 
-#include "HDFinternalObject.hxx"
-#include "HDFcontainerObject.hxx"
-#include <Standard_Macro.hxx>
+// This file for WNT compilation in Microsoft Visual Studio only
 
-class Standard_EXPORT HDFexplorer {
-private :
-  int _size;
-  HDFcontainerObject *_container;
-  HDFinternalObject *_head;
-  HDFinternalObject *_queue;
-  HDFinternalObject *_current;
-public :
-  HDFexplorer(HDFcontainerObject *container);
-  ~HDFexplorer();
+#ifdef WIN32
 
-  void Reset(HDFcontainerObject *new_container);
-  void Init();
-  void Next();
-  int More();
-  HDFinternalObject *Value();
-};
+#include "HDFobject.cc"
+#include "HDFinternalObject.cc"
+#include "HDFattribute.cc"
+#include "HDFcontainerObject.cc"
+#include "HDFdataset.cc"
+#include "HDFfile.cc"
+#include "HDFgroup.cc"
+#include "HDFexplorer.cc"
+#include "HDFconvert.cc"
+#include "HDFascii.cc"
 
 #endif
