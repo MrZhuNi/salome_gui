@@ -227,6 +227,7 @@
   <parameter value="true" name="outside_point_sprite_uniform" />
   <parameter value="85, 0, 127" name="outside_point_sprite_color" />
   <parameter value="8" name="outside_geom_sphere_resolution" />
+  <parameter value="0.5" name="picking_cursor_size" />
   <parameter value="1.0" name="picking_pyramid_height" />
   <parameter value="255, 255, 0" name="picking_selection_color" />
   <parameter value="0.01" name="picking_point_tolerance" />
