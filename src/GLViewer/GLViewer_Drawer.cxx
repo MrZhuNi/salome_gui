@@ -47,6 +47,8 @@ GLint              status;
 
 GLViewer_TexFont*  staticGlFont;
 
+//static float text_scale_factor = 32.;
+
 //================================================================
 // Class       : GLViewer_TexFont
 // Description : 
@@ -139,7 +141,11 @@ void GLViewer_TexFont::generateTexture()
     QFontMetrics aFM( myQFont );
 
     GLViewer_TexFindId aFindFont;
-    aFindFont.myFontString = myQFont.toString();
+    aFindFont.myFontFamily = myQFont.family();//myQFont.toString();
+    aFindFont.myIsBold = myQFont.bold();
+    aFindFont.myIsItal = myQFont.italic();
+    aFindFont.myIsUndl = myQFont.underline();
+    aFindFont.myPointSize = myQFont.pointSize();
     aFindFont.myViewPortId = (int)QGLContext::currentContext();
         
     if( TexFontBase.contains( aFindFont ) )
@@ -234,7 +240,7 @@ void GLViewer_TexFont::generateTexture()
 // Function: drawString
 // Purpose :
 //=======================================================================
-void GLViewer_TexFont::drawString( QString theStr, GLdouble theX , GLdouble theY )
+void GLViewer_TexFont::drawString( QString theStr, GLdouble theX , GLdouble theY, GLfloat theScale )
 {
     double aXScale = 1., aYScale = 1.;
     // store attributes
@@ -244,9 +250,9 @@ void GLViewer_TexFont::drawString( QString theStr, GLdouble theX , GLdouble theY
     {
       glGetDoublev (GL_MODELVIEW_MATRIX, modelMatrix);
       aXScale = modelMatrix[0];
-      aYScale = modelMatrix[5];
-    }
-
+      aYScale = modelMatrix[5];     
+    }     
+    
     glEnable(GL_TEXTURE_2D);
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -266,7 +272,14 @@ void GLViewer_TexFont::drawString( QString theStr, GLdouble theX , GLdouble theY
     glBindTexture(GL_TEXTURE_2D, myTexFont);
     glBegin(GL_QUADS);
 
+    if ( myIsResizeable && theScale > 0. )
+    {
+      aXScale = aXScale / theScale;
+      aYScale = aYScale / theScale;
+    }
+
     theY = theY - ( myTexFontHeight - QFontMetrics( myQFont ).height() ) / aYScale;
+    
 
     double aLettBegin, aLettEnd, aDY = ( myTexFontHeight - 1 ) / aYScale, aDX;
     char aLetter;
@@ -327,7 +340,11 @@ static GLuint displayListBase( QFont* theFont )
   GLuint aList = 0;
   //static QMap<GLViewer_TexFindId, GLuint> fontCache;
   GLViewer_TexFindId aFindFont;
-  aFindFont.myFontString = theFont->toString();
+  aFindFont.myFontFamily = theFont->family();//theFont->toString();
+  aFindFont.myIsBold = theFont->bold();
+  aFindFont.myIsItal = theFont->italic();
+  aFindFont.myIsUndl = theFont->underline();
+  aFindFont.myPointSize = theFont->pointSize();
 
 #ifdef WIN32
   HGLRC ctx = ::wglGetCurrentContext();
@@ -445,6 +462,7 @@ GLViewer_Drawer::GLViewer_Drawer()
   myObjectType = "GLViewer_Object";
   myPriority = 0;
   myTextFormat = DTF_BITMAP;
+  myTextScale = 0.125;
 }
 
 //======================================================================
@@ -717,7 +735,10 @@ void GLViewer_Drawer::drawText( const QString& text, GLfloat xPos, GLfloat yPos,
   {
     GLViewer_TexFont aTexFont( theFont, theSeparator, theFormat == DTF_TEXTURE_SCALABLE, GL_LINEAR );
     aTexFont.generateTexture();
-    aTexFont.drawString( text, xPos, yPos );
+    if ( theFormat == DTF_TEXTURE_SCALABLE )
+      aTexFont.drawString( text, xPos, yPos, textScale() );
+    else
+      aTexFont.drawString( text, xPos, yPos );
   }
   else
   {
@@ -758,9 +779,11 @@ void GLViewer_Drawer::drawGLText( QString text, float x, float y,
   if( smallFont )
     aFont.setPointSize( aFont.pointSize() * 0.8 );
 
+  GLfloat scale = textScale() > 0. ? textScale() : 1.;
+
   QFontMetrics aFontMetrics( aFont );
-  float width  = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.width( text ) : aFontMetrics.width( text ) / myXScale;
-  float height = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.height() : aFontMetrics.height() / myYScale;
+  float width  = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.width( text ) * scale : aFontMetrics.width( text ) / myXScale;
+  float height = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.height() * scale : aFontMetrics.height() / myYScale;
   float gap = 5 / myXScale;
 
   switch( hPosition )
@@ -780,6 +803,21 @@ void GLViewer_Drawer::drawGLText( QString text, float x, float y,
   }
 
   drawText( text, x, y, color, &aFont, 2, myTextFormat );
+}
+
+//======================================================================
+// Function: textRect
+// Purpose :
+//=======================================================================
+GLViewer_Rect GLViewer_Drawer::textRect( const QString& text ) const
+{
+  GLfloat scale = textScale() > 0. ? textScale() : 1.;
+
+  QFontMetrics aFontMetrics( myFont );
+  float width  = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.width( text ) * scale : aFontMetrics.width( text );
+  float height = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.height() * scale : aFontMetrics.height();
+
+  return GLViewer_Rect( 0, width, height, 0 );
 }
 
 //======================================================================

@@ -67,15 +67,33 @@ struct GLVIEWER_API GLViewer_TexIdStored
  */
 struct GLVIEWER_API GLViewer_TexFindId
 {
-  //! Font description
-  QString     myFontString;
+  //! Font family description
+  QString     myFontFamily;
+  //! Bold parameter
+  bool        myIsBold;
+  //! Italic parameter
+  bool        myIsItal;
+  //! Underline parameter
+  bool        myIsUndl;
+  //! Font Size
+  int         myPointSize;
   //! View POrt ID
   int         myViewPortId;
   //! Overloaded operator for using struct as MAP key
   bool operator < (const GLViewer_TexFindId theStruct) const 
   { 
-    if ( myViewPortId != theStruct.myViewPortId ) return myViewPortId < theStruct.myViewPortId; 
-    else return myFontString < theStruct.myFontString;
+    if ( myViewPortId != theStruct.myViewPortId )
+      return myViewPortId < theStruct.myViewPortId;
+    else if ( myPointSize != theStruct.myPointSize )
+      return myPointSize < theStruct.myPointSize;
+    else if ( myIsBold != theStruct.myIsBold )
+      return myIsBold < theStruct.myIsBold;
+    else if ( myIsItal != theStruct.myIsItal )
+      return myIsItal < theStruct.myIsItal;
+    else if ( myIsUndl != theStruct.myIsUndl )
+      return myIsUndl < theStruct.myIsUndl;
+    else
+      return myFontFamily < theStruct.myFontFamily;
   }
 };
 
@@ -112,7 +130,10 @@ public:
   //! Generating font texture
   void            generateTexture();
   //! Drawing string theStr in point with coords theX and theY
-  void            drawString( QString theStr, GLdouble theX = 0.0, GLdouble theY = 0.0 );
+  void            drawString( QString  theStr,
+                              GLdouble theX = 0.0,
+                              GLdouble theY = 0.0,
+                              GLfloat  theScale = 1.0 );
   
   //! Returns separator between letters
   int             getSeparator(){ return mySeparator; }
@@ -359,10 +380,23 @@ public:
   /*!
    *\param format    - the default text displaying format
   */
-  inline void                     setTextFormat( DisplayTextFormat format ) { myTextFormat = format; }
+  inline void                     setTextFormat( const DisplayTextFormat format ) { myTextFormat = format; }
 
   //! Returns a default text displaying format used by drawGLText method
   inline DisplayTextFormat        textFormat() const { return myTextFormat; }
+
+  //! Sets a text string displaying scale factor (used only with text format DTF_TEXTURE_SCALABLE)
+  /*!
+   *\param factor    - scale factor
+  */
+  inline void                     setTextScale( const GLfloat factor ) { myTextScale = factor; }
+
+  //! Returns a text string displaying scale factor
+  inline GLfloat                  textScale() const { return myTextScale; }
+
+  //! Returns a rectangle of text (without viewer scale)
+  GLViewer_Rect                   textRect( const QString& ) const;
+
 
   //! Draw rectangle with predefined color
   static void                     drawRectangle( GLViewer_Rect* theRect, QColor = Qt::black );
@@ -390,6 +424,10 @@ protected:
   QFont                           myFont;
   //! Default text displaying format for drawGLText() method
   DisplayTextFormat               myTextFormat;
+
+  //! Scale factor for text string draw, by default 0.125
+  //! (used only with text format DTF_TEXTURE_SCALABLE)
+  GLfloat                         myTextScale;
 };
 
 #ifdef WNT
