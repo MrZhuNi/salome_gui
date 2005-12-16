@@ -15,6 +15,7 @@
 #include "SUIT_ResourceMgr.h"
 
 #include <qapplication.h>
+#include <qimage.h>
 
 #include <vtkRenderer.h>
 #include <vtkCamera.h>

@@ -4,6 +4,7 @@
 #include <qpushbutton.h>
 #include <qsplitter.h>
 #include <qlayout.h>
+#include <qimage.h>
 
 #include <vtkTextProperty.h>
 #include <vtkActorCollection.h>
