@@ -1,25 +1,7 @@
-// Copyright (C) 2005  OPEN CASCADE, CEA/DEN, EDF R&D, PRINCIPIA R&D
-// 
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either 
-// version 2.1 of the License.
-// 
-// This library is distributed in the hope that it will be useful 
-// but WITHOUT ANY WARRANTY; without even the implied warranty of 
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public  
-// License along with this library; if not, write to the Free Software 
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-//
-// See http://www.salome-platform.org/
-//
 #include "LightApp_VTKSelector.h"
 #include "LightApp_DataOwner.h"
 
-#include "SVTK_ViewModel.h"
+#include "SVTK_ViewModelBase.h"
 #include "SVTK_Selector.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_Functor.h"
@@ -36,9 +18,9 @@
 */
 LightApp_SVTKDataOwner
 ::LightApp_SVTKDataOwner( const Handle(SALOME_InteractiveObject)& theIO,
-                          const TColStd_IndexedMapOfInteger& theIds,
-                          Selection_Mode theMode,
-                          SALOME_Actor* theActor):
+			  const TColStd_IndexedMapOfInteger& theIds,
+			  Selection_Mode theMode,
+			  SALOME_Actor* theActor):
   LightApp_DataOwner( theIO ),
   mySelectionMode(theMode),
   myActor(theActor)
@@ -68,8 +50,8 @@ LightApp_SVTKDataOwner
   Constructor.
 */
 LightApp_VTKSelector
-::LightApp_VTKSelector( SVTK_Viewer* viewer, 
-                        SUIT_SelectionMgr* mgr ): 
+::LightApp_VTKSelector( SVTK_ViewModelBase* viewer, 
+			SUIT_SelectionMgr* mgr ): 
   SUIT_Selector( mgr, viewer ),
   myViewer( viewer )
 {
@@ -88,7 +70,7 @@ LightApp_VTKSelector
 /*!
   Gets viewer.
 */
-SVTK_Viewer* 
+SVTK_ViewModelBase* 
 LightApp_VTKSelector
 ::viewer() const
 {
@@ -96,13 +78,13 @@ LightApp_VTKSelector
 }
 
 /*!
-  Gets type of vtk viewer.
+  Gets type of salome vtk viewer.
 */
 QString
 LightApp_VTKSelector
 ::type() const
 { 
-  return SVTK_Viewer::Type(); 
+  return myViewer->getType(); 
 }
 
 /*!
@@ -135,9 +117,10 @@ LightApp_VTKSelector
 	      TColStd_IndexedMapOfInteger anIds;
 	      aSelector->GetIndex(anIO,anIds);
 	      SALOME_Actor* anActor = aSelector->GetActor(anIO);
-	      if( !anActor )
-	        anActor = VTK::Find<SALOME_Actor>(aView->getRenderer()->GetActors(),VTK::TIsSameIObject<SALOME_Actor>(anIO));
-
+	      if( !anActor ){
+		using namespace SVTK;
+	        anActor = Find<SALOME_Actor>(aView->getRenderer()->GetActors(),TIsSameIObject<SALOME_Actor>(anIO));
+	      }
 	      aList.append(new LightApp_SVTKDataOwner(anIO,anIds,aMode,anActor));
 	    }
 	  }

@@ -1,21 +1,3 @@
-// Copyright (C) 2005  OPEN CASCADE, CEA/DEN, EDF R&D, PRINCIPIA R&D
-// 
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either 
-// version 2.1 of the License.
-// 
-// This library is distributed in the hope that it will be useful 
-// but WITHOUT ANY WARRANTY; without even the implied warranty of 
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public  
-// License along with this library; if not, write to the Free Software 
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-//
-// See http://www.salome-platform.org/
-//
 #ifndef VTKVIEWER_GEOMETRYFILTER_H
 #define VTKVIEWER_GEOMETRYFILTER_H
 
@@ -47,6 +29,16 @@ public:
    * \retval myShowInside
    */
   int GetInside();
+  /*! \fn void SetWireframeMode(int theIsWireframeMode)
+   * \brief Sets \a myIsWireframeMode flag. \a myIsWireframeMode is changed, call this->Modified().
+   * \param theIsWireframeMode - used for changing value of \a myIsWireframeMode variable.
+   */
+  void SetWireframeMode(int theIsWireframeMode);
+  /*! \fn int GetWireframeMode()
+   * \brief Return value of \a myIsWireframeMode
+   * \retval myIsWireframeMode
+   */
+  int GetWireframeMode();
   /*! \fn void SetStoreMapping(int theStoreMapping);
    * \brief Sets \a myStoreMapping flag and call this->Modified()
    * \param theStoreMapping - used for changing value of \a myStoreMapping variable.
@@ -56,7 +48,7 @@ public:
    * \brief Return value of \a myStoreMapping
    * \retval myStoreMapping
    */
-  int GetStoreMapping(){ return myStoreMapping;}
+  int GetStoreMapping();
   /*! \fn virtual vtkIdType GetNodeObjId(int theVtkID)
    * \brief Return input value theVtkID
    * \retval theVtkID
@@ -93,6 +85,7 @@ private:
   TVectorId myVTK2ObjIds;
   int       myShowInside;
   int       myStoreMapping;
+  int       myIsWireframeMode;
 };
 
 #endif

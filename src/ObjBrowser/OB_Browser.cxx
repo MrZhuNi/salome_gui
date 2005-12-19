@@ -1,21 +1,3 @@
-// Copyright (C) 2005  OPEN CASCADE, CEA/DEN, EDF R&D, PRINCIPIA R&D
-// 
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either 
-// version 2.1 of the License.
-// 
-// This library is distributed in the hope that it will be useful 
-// but WITHOUT ANY WARRANTY; without even the implied warranty of 
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public  
-// License along with this library; if not, write to the Free Software 
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-//
-// See http://www.salome-platform.org/
-//
 #include "OB_Browser.h"
 
 #include "OB_Filter.h"
@@ -115,6 +97,8 @@ myRootDecorated( true )
            this, SLOT( onDoubleClicked( QListViewItem* ) ) );
 
   setRootObject( root );
+
+  setModified();
 }
 
 OB_Browser::~OB_Browser()
@@ -218,6 +202,8 @@ void OB_Browser::setRootObject( SUIT_DataObject* theRoot )
   restoreState( selObjs, openObjs, curObj, selKeys, openKeys, curKey );
 
   autoOpenBranches();
+
+  setModified();
 
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
@@ -525,6 +511,8 @@ void OB_Browser::updateTree( SUIT_DataObject* obj )
 
   autoOpenBranches();
 
+  setModified();
+
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
 }
@@ -562,6 +550,8 @@ void OB_Browser::replaceTree( SUIT_DataObject* src, SUIT_DataObject* trg )
   restoreState( selObjs, openObjs, curObj, selKeys, openKeys, curKey );
 
   autoOpenBranches();
+
+  setModified();
 
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
@@ -1118,4 +1108,9 @@ void OB_Browser::onDoubleClicked( QListViewItem* item )
 {
   if ( item )
     emit doubleClicked( dataObject( item ) );
+}
+
+void OB_Browser::setModified()
+{
+  myModifiedTime = clock();
 }
