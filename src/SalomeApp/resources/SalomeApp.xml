@@ -204,6 +204,7 @@
   <parameter value="15" name="point_sprite_size" />
   <parameter value="0, 0, 255" name="point_sprite_color" />
   <parameter value="8" name="geom_sphere_resolution" />
+  <parameter value="50000" name="geom_sphere_face_limit" />
   <parameter value="true" name="scalar_bar_display_global" />
   <parameter value="0" name="scalar_bar_active_local" />
   <parameter value="1" name="scalar_bar_bicolor" />
@@ -218,6 +219,7 @@
   <parameter value="100" name="inside_point_sprite_magnification" />
   <parameter value="2" name="inside_point_sprite_increment" />
   <parameter value="8" name="inside_geom_sphere_resolution" />
+  <parameter value="50000" name="inside_geom_sphere_face_limit" />
   <parameter value="0" name="outside_point_sprite_primitive_type" />
   <parameter value="256" name="outside_point_sprite_clamp" />
   <parameter value="${VISU_ROOT_DIR}/share/salome/resources/sprite_texture.bmp" name="outside_point_sprite_main_texture"/>
@@ -227,6 +229,7 @@
   <parameter value="true" name="outside_point_sprite_uniform" />
   <parameter value="85, 0, 127" name="outside_point_sprite_color" />
   <parameter value="8" name="outside_geom_sphere_resolution" />
+  <parameter value="50000" name="outside_geom_sphere_face_limit" />
   <parameter value="0.5" name="picking_cursor_size" />
   <parameter value="1.0" name="picking_pyramid_height" />
   <parameter value="255, 255, 0" name="picking_selection_color" />
@@ -237,6 +240,9 @@
   <parameter value="10" name="picking_step_number" />
   <parameter value="false" name="picking_display_parent_mesh" />
   <parameter value="false" name="build_at_once" />
+  <parameter value="true" name="build_fields" />
+  <parameter value="true" name="build_min_max" />
+  <parameter value="true" name="build_groups" />
   <parameter value="true" name="close_at_finish" />
   <parameter value="1" name="recorder_mode" />
   <parameter value="17.3" name="recorder_fps" />
