@@ -53,6 +53,7 @@ public:
   virtual QString       applicationName() const;
 
   virtual bool          isPossibleToClose();
+  virtual void          closeApplication();
   virtual bool          useFile( const QString& );
 
   virtual void          createEmptyStudy();

@@ -84,6 +84,23 @@ void STD_Application::start()
   SUIT_Application::start();
 }
 
+/*!Closes the active study (if any)*/
+void STD_Application::closeApplication()
+{
+  SUIT_Study* study = activeStudy();
+
+  if ( study ){
+    study->closeDocument();
+
+    setActiveStudy( 0 );
+    delete study;
+  }
+
+  setDesktop( 0 );
+  
+  SUIT_Application::closeApplication();
+}
+
 /*!Event on closing desktop*/
 void STD_Application::onDesktopClosing( SUIT_Desktop*, QCloseEvent* e )
 {
@@ -97,16 +114,6 @@ void STD_Application::onDesktopClosing( SUIT_Desktop*, QCloseEvent* e )
     e->ignore();
     return;
   }
-
-  SUIT_Study* study = activeStudy();
-
-  if ( study )
-    study->closeDocument();
-
-  setActiveStudy( 0 );
-  delete study;
-
-  setDesktop( 0 );
 
   closeApplication();
 }
