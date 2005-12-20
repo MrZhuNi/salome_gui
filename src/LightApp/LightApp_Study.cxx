@@ -229,16 +229,14 @@ bool LightApp_Study::saveDocument()
 //================================================================
 void LightApp_Study::closeDocument(bool permanently)
 {
-  // Remove temporary files
-  ModelList aList;
-  dataModels( aList );
-  myDriver->ClearDriverContents();
-
   // Inform everybody that this study is going to close when it's most safe to,
   // i.e. in the very beginning
   emit closed( this );
 
   CAM_Study::closeDocument(permanently);
+  
+  // Remove temporary files
+  myDriver->ClearDriverContents();
 }
 
 //================================================================
