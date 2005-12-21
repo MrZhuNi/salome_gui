@@ -28,17 +28,19 @@ class vtkDataSetMapper;
 class vtkUnstructuredGrid;
 
 #include "SVTK.h"
-#include "SALOME_Actor.h"
+#include "SVTK_DeviceActor.h"
+
+#include <vtkSmartPointer.h>
+
+class SALOME_Actor;
 
 //! This class used for internal SVTK package purpose (highlight and prehighlight)
-class SVTK_EXPORT SVTK_Actor : public VTKViewer_Actor
+class SVTK_EXPORT SVTK_Actor : public SVTK_DeviceActor
 {
 public:
-  virtual ~SVTK_Actor();
-
   static SVTK_Actor* New();
 
-  vtkTypeMacro(SVTK_Actor,VTKViewer_Actor);
+  vtkTypeMacro(SVTK_Actor,SVTK_DeviceActor);
 
   //! Initialiaze the instance completely
   void
@@ -51,20 +53,6 @@ public:
   //! Get its internal data set
   vtkUnstructuredGrid*
   GetSource();
-
-  //! To manage shrink functionality
-  void
-  SetShrinkFactor(float value);
-
-  //! To manage shrink functionality
-  virtual
-  void
-  SetShrink(); 
-
-  //! To manage shrink functionality
-  virtual
-  void
-  UnShrink(); 
 
   //! Allow to recostruct selected cells from source SALOME_Actor and map of subindexes
   void
@@ -88,14 +76,10 @@ public:
   TColStd_IndexedMapOfInteger myMapIndex;
 
   vtkSmartPointer<vtkUnstructuredGrid> myUnstructuredGrid;
-  vtkDataSetMapper* myMapper;
-  vtkRenderer* myRenderer;
-
-  vtkShrinkFilter* myShrinkFilter;
-  bool myIsShrinkable;
-  bool myIsShrunk;
 
   SVTK_Actor();
+  virtual
+  ~SVTK_Actor();
 };
 
 #endif

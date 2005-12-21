@@ -18,8 +18,7 @@
 //  See http://www.opencascade.org/SALOME/ or email : webmaster.salome@opencascade.org
 
 #include "SVTK_Actor.h"
-
-#include "VTKViewer_PassThroughFilter.h"
+#include "SALOME_Actor.h"
 
 // VTK Includes
 #include <vtkObjectFactory.h>
@@ -29,7 +28,6 @@
 
 #include <vtkCell.h>
 #include <vtkPolyData.h>
-#include <vtkShrinkFilter.h>
 
 #include "utilities.h"
 
@@ -66,21 +64,12 @@ SVTK_Actor
 {
   if(MYDEBUG) INFOS("SVTK_Actor - "<<this);
 
-  myRenderer = NULL;
-  myIsInfinite = true;
+  myIsShaded = true;
 
   Visibility = Pickable = false;
 
   myUnstructuredGrid->Delete();
   myUnstructuredGrid->Allocate();
-
-  myIsShrunk = false;
-  myIsShrinkable = true;
-  myShrinkFilter = vtkShrinkFilter::New();
-
-  myMapper = vtkDataSetMapper::New();
-
-  SetResolveCoincidentTopology(false);
 }
 
 //----------------------------------------------------------------------------
@@ -88,8 +77,7 @@ void
 SVTK_Actor
 ::Initialize()
 {
-  myMapper->SetInput(GetSource());
-  Superclass::InitPipeLine(myMapper);
+  SetInput(GetSource());
 }
 
 
@@ -103,11 +91,7 @@ SVTK_Actor
 
   myUnstructuredGrid = theUnstructuredGrid;
 
-  myMapper->SetInput(theUnstructuredGrid);
-
-  Superclass::InitPipeLine(myMapper);
-
-  Modified();
+  SetInput(theUnstructuredGrid);
 }
 
 vtkUnstructuredGrid*
@@ -119,51 +103,10 @@ SVTK_Actor
 
 
 //----------------------------------------------------------------------------
-void
-SVTK_Actor
-::SetShrinkFactor(float theValue)
-{
-  myShrinkFilter->SetShrinkFactor(theValue);
-  Modified();
-}
-
-void
-SVTK_Actor
-::SetShrink()
-{
-  if ( !myIsShrinkable ) return;
-  if ( vtkDataSet* aDataSet = myPassFilter[0]->GetOutput() )
-  {
-    myShrinkFilter->SetInput( aDataSet );
-    myPassFilter[1]->SetInput( myShrinkFilter->GetOutput() );
-    myIsShrunk = true;
-  }
-}
-
-void
-SVTK_Actor
-::UnShrink()
-{
-  if ( !myIsShrunk ) return;
-  if ( vtkDataSet* aDataSet = myPassFilter[0]->GetOutput() )
-  {
-    myPassFilter[1]->SetInput( aDataSet );
-    myPassFilter[1]->Modified();
-    myIsShrunk = false;
-    Modified();
-  }
-}
-
-
-//----------------------------------------------------------------------------
 SVTK_Actor
 ::~SVTK_Actor()
 {
   if(MYDEBUG) INFOS("~SVTK_Actor()");
-
-  myMapper->Delete();
-
-  myShrinkFilter->Delete();
 }
 
 
