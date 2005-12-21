@@ -60,10 +60,16 @@ protected:
   std::string GetTmpDir();
   std::string GetDirFromPath(const std::string& thePath);
 
+  void                SetIsTemporary( bool theFlag ) { myIsTemp = theFlag; }
+  bool                IsTemporary() const { return myIsTemp; }
+
 protected:
   typedef std::map<std::string, ListOfFiles> MapOfListOfFiles;
   MapOfListOfFiles                           myMap;
   std::string                                myTmpDir;
+
+private:
+  bool                                       myIsTemp;
 };
 
 #endif 
