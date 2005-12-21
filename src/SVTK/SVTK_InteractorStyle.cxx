@@ -753,8 +753,8 @@ SVTK_InteractorStyle
   TranslateView(oldX, oldY, x, y);
 
   // zoom camera
-  double dxf = (double)(aSize[0]) / (double)(abs(right - left));
-  double dyf = (double)(aSize[1]) / (double)(abs(bottom - top));
+  double dxf = right == left ? 1.0 : (double)(aSize[0]) / (double)(abs(right - left));
+  double dyf = bottom == top ? 1.0 : (double)(aSize[1]) / (double)(abs(bottom - top));
   double zoomFactor = (dxf + dyf)/2 ;
 
   vtkCamera *aCam = GetCurrentRenderer()->GetActiveCamera();
