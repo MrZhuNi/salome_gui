@@ -337,6 +337,8 @@ int GLViewer_TexFont::getStringHeight()
 //! function for generation list base for bitmap fonts
 static GLuint displayListBase( QFont* theFont )
 {
+  if ( !theFont )
+    return 0;
   GLuint aList = 0;
   //static QMap<GLViewer_TexFindId, GLuint> fontCache;
   GLViewer_TexFindId aFindFont;
@@ -409,16 +411,17 @@ static GLuint displayListBase( QFont* theFont )
     
     //glXUseXFont( (Font)(theFont->handle()), 0, 256, listBase );
     int aFontCont = 0;
-    char** xFontList = XListFonts( aDisp, aFindFont.myFontString.data(), 1, &aFontCont  );
+    QString aFontDef = theFont->toString();
+    char** xFontList = XListFonts( aDisp, aFontDef.latin1()/*aFindFont.myFontString.data()*/, 1, &aFontCont  );
     if( !theFont->handle() )
     {       
 #ifdef _DEBUG_
-      printf( "Can't load font %s. loading default font....\n", aFindFont.myFontString.data() );
+      printf( "Can't load font %s. loading default font....\n", aFontDef.latin1()/*aFindFont.myFontString.data()*/ );
 #endif
       QString aFontMask ("-*-*-*-r-*-*-");
-      aFontMask += aFindFont.myFontString.section( ',', 1, 1 );
+      aFontMask += aFontDef/*aFindFont.myFontString*/.section( ',', 1, 1 );
 #ifdef _DEBUG_
-      printf( "Height of Default font: %s\n", aFindFont.myFontString.section( ',', 1, 1 ).data() );
+      printf( "Height of Default font: %s\n", aFontDef/*aFindFont.myFontString*/.section( ',', 1, 1 ).data() );
 #endif
       aFontMask += "-*-*-*-m-*-*-*";
       xFontList = XListFonts( aDisp, aFontMask.data()/*"-*-*-*-r-*-*-12-*-*-*-m-*-*-*"*/, 1, &aFontCont  );
