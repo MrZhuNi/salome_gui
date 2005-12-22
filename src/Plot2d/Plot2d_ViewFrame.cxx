@@ -597,6 +597,15 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
 {
   if ( !curve )
     return;
+
+  // san -- Protection against QwtCurve bug in Qwt 0.4.x: 
+  // it crashes if switched to X/Y logarithmic mode, when one or more points have
+  // non-positive X/Y coordinate
+  if ( myXMode && curve->getMinX() <= 0. )
+    setHorScaleMode( 0, false );
+  if ( myYMode && curve->getMinY() <= 0. )
+    setVerScaleMode( 0, false );
+
   if ( hasCurve( curve ) ) {
     updateCurve( curve, update );
   }
