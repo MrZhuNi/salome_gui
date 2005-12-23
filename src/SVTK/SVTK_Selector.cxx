@@ -276,10 +276,12 @@ SVTK_SelectorDef
   for(int i = 1, iEnd = theIndices.Extent(); i <= iEnd; i++)
     aMapIndex.Add(theIndices(i));
   
-  if(aMapIndex.IsEmpty())
+  if(aMapIndex.IsEmpty()) {
     myMapIOSubIndex.erase(theIO);
+    return false;
+  }
 
-  return !aMapIndex.IsEmpty();
+  return true;
 }
 
 
@@ -304,10 +306,12 @@ SVTK_SelectorDef
   for(; anIter.More(); anIter.Next())
     aMapIndex.Add(anIter.Key());
   
-  if(aMapIndex.IsEmpty())
+  if(aMapIndex.IsEmpty()) {
     myMapIOSubIndex.erase(theIO);
+    return false;
+  }
 
-  return !aMapIndex.IsEmpty();
+  return true;
 }
 
 
