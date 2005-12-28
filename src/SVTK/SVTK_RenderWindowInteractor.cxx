@@ -82,6 +82,11 @@ QVTK_RenderWindowInteractor
 
   myRenderWindow->Delete();
   myRenderWindow->DoubleBufferOn();
+
+#ifndef WNT
+  myRenderWindow->SetDisplayId((void*)x11Display());
+#endif
+  myRenderWindow->SetWindowId((void*)winId());
 }
 
 
@@ -150,11 +155,10 @@ QVTK_RenderWindowInteractor
 {
   // Final initialization just before the widget is displayed
   GetDevice()->SetSize(width(),height());
-#ifndef WNT
-  getRenderWindow()->SetDisplayId((void*)x11Display());
-#endif
-  getRenderWindow()->SetWindowId((void*)winId());
-  GetDevice()->Enable();
+  if(!GetDevice()->GetInitialized()){
+    GetDevice()->Initialize();
+    GetDevice()->ConfigureEvent();
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -170,13 +174,7 @@ void
 QVTK_RenderWindowInteractor
 ::paintEvent( QPaintEvent* theEvent ) 
 {
-  if(GetDevice()->GetEnabled()){
-    if(!GetDevice()->GetInitialized()){
-      GetDevice()->Initialize();
-      GetDevice()->ConfigureEvent();
-    }
-    GetDevice()->Render();
-  }
+  GetDevice()->Render();
 }
 
 
