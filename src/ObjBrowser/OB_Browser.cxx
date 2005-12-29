@@ -1,3 +1,21 @@
+// Copyright (C) 2005  OPEN CASCADE, CEA/DEN, EDF R&D, PRINCIPIA R&D
+// 
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either 
+// version 2.1 of the License.
+// 
+// This library is distributed in the hope that it will be useful 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public  
+// License along with this library; if not, write to the Free Software 
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+//
+// See http://www.salome-platform.org/
+//
 #include "OB_Browser.h"
 
 #include "OB_Filter.h"
@@ -118,7 +136,7 @@ void OB_Browser::setRootIsDecorated( const bool decor )
     return;
 
   myRootDecorated = decor;
-  updateTree();
+  updateTree( 0, false );
 }
 
 int OB_Browser::autoOpenLevel() const
@@ -492,7 +510,7 @@ void OB_Browser::setAppropriateColumn( const int id, const bool on )
   myView->setAppropriate( myColumnIds[id], on );
 }
 
-void OB_Browser::updateTree( SUIT_DataObject* obj )
+void OB_Browser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
 {
   if ( !obj && !(obj = getRootObject()) )
     return;
@@ -509,7 +527,8 @@ void OB_Browser::updateTree( SUIT_DataObject* obj )
 
   restoreState( selObjs, openObjs, curObj, selKeys, openKeys, curKey );
 
-  autoOpenBranches();
+  if( autoOpen )
+    autoOpenBranches();
 
   setModified();
 
@@ -850,11 +869,22 @@ void OB_Browser::restoreState( const DataObjectMap& selObjs, const DataObjectMap
 
     if ( openObjs.contains( obj ) )
     {
-      if ( openObjs[obj] )
+      bool parentOpen = true;
+      if( item && item->parent() )
+	parentOpen = item->parent()->isOpen();
+	
+      if ( openObjs[obj] && parentOpen )
         lv->setOpen( item, true );
     }
     else if ( !key.isNull() && openKeys.contains( key ) )
-      lv->setOpen( item, true );
+    {
+      bool parentOpen = true;
+      if( item && item->parent() )
+	parentOpen = item->parent()->isOpen();
+
+      if( parentOpen )
+	lv->setOpen( item, true );
+    }
 
     if ( !curItem && ( curObj == obj || ( !curKey.isNull() && curKey == key )) )
       curItem = item;
@@ -882,7 +912,7 @@ OB_Browser::DataObjectKey OB_Browser::objectKey( SUIT_DataObject* obj ) const
 void OB_Browser::keyPressEvent( QKeyEvent* e )
 {
   if ( e->key() == Qt::Key_F5 )
-    updateTree();
+    updateTree( 0, false );
 
   QFrame::keyPressEvent( e );
 }
@@ -1048,9 +1078,12 @@ void OB_Browser::removeObject( SUIT_DataObject* obj, const bool autoUpd )
   // Otherwise, "delete item" line will destroy all item's children,
   // and <myItems> will contain invalid pointers (see ~QListViewItem() description in Qt docs)
   DataObjectList childList;
-  obj->children( childList );
+  obj->children( childList, true );
   for ( DataObjectListIterator it( childList ); it.current(); ++it )
-    removeObject( it.current(), false );
+  {
+    it.current()->disconnect( this, SLOT( onDestroyed( SUIT_DataObject* ) ) );
+    myItems.remove( it.current() );
+  }
 
   QListViewItem* item = listViewItem( obj );
 
@@ -1070,7 +1103,7 @@ void OB_Browser::removeObject( SUIT_DataObject* obj, const bool autoUpd )
   if ( isAutoUpdate() )
   {
     SUIT_DataObject* pObj = item && item->parent() ? dataObject( item->parent() ) : 0;
-    updateTree( pObj );
+    updateTree( pObj, false );
   }
   else
     delete item;
