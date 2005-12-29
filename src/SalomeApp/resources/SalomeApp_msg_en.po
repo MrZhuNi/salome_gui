@@ -1,0 +1,192 @@
+// File:      CATHAREGUI_msg_en.po
+// Created:   10/25/2004 12:46:36 PM
+// Author:    Sergey LITONIN
+// Copyright (C) CEA 2004
+
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2002-02-22 16:56:46 CET\n"
+"PO-Revision-Date: 2004-02-17 11:17+0300\n"
+"Last-Translator: FULLNAME <EMAIL@ADDRESS>\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+
+//=======================================================================================
+
+msgid "BUT_OK"
+msgstr "&OK"
+
+msgid "BUT_NEW"
+msgstr "&New"
+
+msgid "BUT_OPEN"
+msgstr "&Open"
+
+msgid "BUT_LOAD"
+msgstr "&Load"
+
+msgid "BUT_CANCEL"
+msgstr "&Cancel"
+
+//=======================================================================================
+
+msgid "SalomeApp_Application::PYTHON_CONSOLE"
+msgstr "Python Console"
+
+msgid "SalomeApp_Application::TOT_DESK_FILE_DUMP_STUDY"
+msgstr "Dump study"
+
+msgid "SalomeApp_Application::MEN_DESK_FILE_DUMP_STUDY"
+msgstr "&Dump study..."
+
+msgid "SalomeApp_Application::PRP_DESK_FILE_DUMP_STUDY"
+msgstr "Dumps study to the python script"
+
+msgid "SalomeApp_Application::TOT_DESK_FILE_LOAD_SCRIPT"
+msgstr "Load python script"
+
+msgid "SalomeApp_Application::MEN_DESK_FILE_LOAD_SCRIPT"
+msgstr "Load scrip&t..."
+
+msgid "SalomeApp_Application::PRP_DESK_FILE_LOAD_SCRIPT"
+msgstr "Loads python script from file"
+
+msgid "SalomeApp_Application::TOT_FILE_DESK_PREFERENCES"
+msgstr "Preferences"
+
+msgid "SalomeApp_Application::MEN_DESK_TOOLS"
+msgstr "&Tools"
+
+msgid "SalomeApp_Application::TOT_DESK_CATALOG_GENERATOR"
+msgstr "Catalog generator"
+
+msgid "SalomeApp_Application::MEN_DESK_CATALOG_GENERATOR"
+msgstr "Catalog &generator"
+
+msgid "SalomeApp_Application::PRP_DESK_CATALOG_GENERATOR"
+msgstr "Generates XML catalog of a component's interface"
+
+msgid "SalomeApp_Application::TOT_DESK_REGISTRY_DISPLAY"
+msgstr "Registry display"
+
+msgid "SalomeApp_Application::MEN_DESK_REGISTRY_DISPLAY"
+msgstr "Registry &display"
+
+msgid "SalomeApp_Application::PRP_DESK_REGISTRY_DISPLAY"
+msgstr "Displays content of the Registry CORBA server"
+
+msgid "SalomeApp_Application::TOT_DESK_MRU"
+msgstr "Most recently used"
+
+msgid "SalomeApp_Application::MEN_DESK_MRU"
+msgstr "Most recently used"
+
+msgid "SalomeApp_Application::TOT_DESK_PROPERTIES"
+msgstr "Study properties"
+
+msgid "SalomeApp_Application::MEN_DESK_PROPERTIES"
+msgstr "Pro&perties..."
+
+msgid "SalomeApp_Application::PRP_DESK_PROPERTIES"
+msgstr "Edits study properties"
+
+msgid "SalomeApp_Application::PREF_CATEGORY_SALOME"
+msgstr "SALOME"
+
+msgid "SalomeApp_Application::PREF_TAB_OBJBROWSER"
+msgstr "Object browser"
+
+msgid "SalomeApp_Application::MEN_OPENWITH"
+msgstr "Activate Module"
+
+msgid "SalomeApp_Application::MEN_DELETE_INVALID_REFERENCE"
+msgstr "Delete Invalid Reference"
+
+//=======================================================================================
+
+msgid "SalomeApp_Application::MEN_WINDOWS_NEW"
+msgstr "New window"
+
+msgid "SalomeApp_Application::MEN_VIEW_WNDS"
+msgstr "Windows"
+
+//=======================================================================================
+
+msgid "SalomeApp_Application::PREF_GROUP_DEF_COLUMNS"
+msgstr "Default columns"
+
+msgid "SalomeApp_Application::PREF_OBJ_BROWSER_SETTINGS"
+msgstr "Settings"
+
+//=======================================================================================
+
+msgid "SalomeApp_Application::OBJ_BROWSER_NAME"
+msgstr "Object"
+
+msgid "SalomeApp_Application::OBJ_BROWSER_COLUMN_0"
+msgstr "Value"
+
+msgid "SalomeApp_Application::OBJ_BROWSER_COLUMN_1"
+msgstr "Entry"
+
+msgid "SalomeApp_Application::OBJ_BROWSER_COLUMN_2"
+msgstr "IOR"
+
+msgid "SalomeApp_Application::OBJ_BROWSER_COLUMN_3"
+msgstr "Reference entry"
+
+msgid "SalomeApp_Application::ALL_FILES_FILTER"
+msgstr "All files (*.*)"
+
+msgid "SalomeApp_Application::PYTHON_FILES_FILTER"
+msgstr "PYTHON Files (*.py)"
+
+msgid "SalomeApp_Application::STUDY_LOCKED"
+msgstr "LOCKED"
+
+msgid "SalomeApp_Application::QUE_DOC_ALREADYEXIST"
+msgstr "The document %1 already exists in study manager.\nDo you want to reload it ?"
+
+//=======================================================================================
+
+msgid "SalomeApp_StudyPropertiesDlg::PRP_MODE_FROM_SCRATCH"
+msgstr "from scratch"
+
+msgid "SalomeApp_StudyPropertiesDlg::PRP_MODE_FROM_COPYFROM"
+msgstr "copy from"
+
+msgid "SalomeApp_StudyPropertiesDlg::TLT_STUDY_PROPERTIES"
+msgstr "Study Properties"
+
+msgid "SalomeApp_StudyPropertiesDlg::PRP_AUTHOR"
+msgstr "Author"
+
+msgid "SalomeApp_StudyPropertiesDlg::PRP_DATE"
+msgstr "Created"
+
+msgid "SalomeApp_StudyPropertiesDlg::PRP_MODE"
+msgstr "Mode"
+
+msgid "SalomeApp_StudyPropertiesDlg::PRP_LOCKED"
+msgstr "Locked"
+
+msgid "SalomeApp_StudyPropertiesDlg::PRP_MODIFIED"
+msgstr "Modified"
+
+msgid "SalomeApp_StudyPropertiesDlg::PRP_MODIFICATIONS"
+msgstr "Modifications"
+
+msgid "SalomeApp_StudyPropertiesDlg::PRP_YES"
+msgstr "Yes"
+
+msgid "SalomeApp_StudyPropertiesDlg::PRP_NO"
+msgstr "No"
+
+//=======================================================================================
+
+msgid "SalomeApp_Application::PUBLISH_IN_STUDY"
+msgstr "Publish in study"
+
+msgid "SalomeApp_Application::WRN_DUMP_STUDY_FAILED"
+msgstr "Dump study failed"
+
