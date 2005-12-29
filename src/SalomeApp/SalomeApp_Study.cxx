@@ -396,7 +396,7 @@ void SalomeApp_Study::addComponent(const CAM_DataModel* dm)
       }
       // Set default engine IOR
       aBuilder->DefineComponentInstance(aComp, SalomeApp_Application::defaultEngineIOR().latin1());
-      SalomeApp_DataModel::synchronize( aComp, this );
+      SalomeApp_DataModel::BuildTree( aComp, root(), this, /*skipExisitng=*/true );
     }
   }
 }
