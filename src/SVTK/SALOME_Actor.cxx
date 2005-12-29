@@ -853,9 +853,9 @@ SALOME_Actor
 	    aMapIndex.Add( anObjId );
 	    
 	    myPreHighlightActor->GetProperty()->SetRepresentationToPoints();
-	    myPreHighlightActor->SetVisibility( true );
 	    myPreHighlightActor->MapPoints( this, aMapIndex );
 	  }
+	  myPreHighlightActor->SetVisibility( true );
 	}
       }
       break;
@@ -881,9 +881,9 @@ SALOME_Actor
 	      aMapIndex.Add( anObjId );
 	      
 	      myPreHighlightActor->GetProperty()->SetRepresentationToSurface();
-	      myPreHighlightActor->SetVisibility( true );
 	      myPreHighlightActor->MapCells( this, aMapIndex );
 	    }
+	    myPreHighlightActor->SetVisibility( true );
 	  }
 	}
       }
@@ -910,9 +910,9 @@ SALOME_Actor
 	      aMapIndex.Add( anEdgeId );
 	
 	      myPreHighlightActor->GetProperty()->SetRepresentationToWireframe();
-	      myPreHighlightActor->SetVisibility( true );
 	      myPreHighlightActor->MapEdge( this, aMapIndex );
 	    }
+	    myPreHighlightActor->SetVisibility( true );
 	  }
 	}
       }
