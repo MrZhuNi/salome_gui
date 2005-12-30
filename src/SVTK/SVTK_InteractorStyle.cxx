@@ -930,7 +930,8 @@ SVTK_InteractorStyle
 		  } 
 		}
 	      }
-	    } else {
+	    } else if( !myShiftState )
+	    {
 	      this->HighlightProp( NULL );
 	      GetSelector()->ClearIObjects();
 	    }
