@@ -39,6 +39,7 @@
 
 #include "GLViewer.h"
 #include "GLViewer_Defs.h"
+#include "GLViewer_Geom.h"
 
 class GLViewer_Object;
 class GLViewer_Rect;
@@ -368,6 +369,20 @@ public:
   static void                     drawRectangle( GLViewer_Rect* theRect, QColor = Qt::black );
 
 protected:
+  //! Draw basic primitives: rectangle, contour, polygon, vertex, cross, arrow
+  //* with predefined color
+  static void                     drawRectangle( GLViewer_Rect*, GLfloat, GLfloat = 0, QColor = Qt::black, 
+						 bool = false, QColor = Qt::white );
+  static void                     drawContour( GLViewer_Rect*, QColor, GLfloat, GLushort, bool );
+  static void                     drawContour( const GLViewer_PntList&, QColor, GLfloat );
+  static void                     drawPolygon( GLViewer_Rect*, QColor, GLushort, bool );
+  static void                     drawPolygon( const GLViewer_PntList&, QColor );
+  static void                     drawVertex( GLfloat, GLfloat, QColor );
+  static void                     drawCross( GLfloat, GLfloat, QColor );
+  static void                     drawArrow( const GLfloat red, const GLfloat green, const GLfloat blue,
+					     GLfloat, GLfloat, GLfloat, GLfloat,
+					     GLfloat, GLfloat, GLfloat, GLboolean = GL_FALSE );
+
   //! Draw object text
   virtual void                    drawText( GLViewer_Object* theObject );
 
