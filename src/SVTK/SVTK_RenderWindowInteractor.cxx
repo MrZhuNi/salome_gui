@@ -55,17 +55,7 @@
 #include <qcolordialog.h>
 #include <qpaintdevice.h>
 
-#include "utilities.h"
-
 using namespace std;
-
-#ifdef _DEBUG_
-static int MYDEBUG = 0;
-static int MYVTKDEBUG = 0;
-#else
-static int MYDEBUG = 0;
-static int MYVTKDEBUG = 0;
-#endif
 
 static bool GENERATE_SUIT_EVENTS = false;
 
@@ -77,7 +67,6 @@ QVTK_RenderWindowInteractor
   QWidget(theParent,theName,Qt::WNoAutoErase),
   myRenderWindow(vtkRenderWindow::New())
 {
-  if(MYDEBUG) INFOS("QVTK_RenderWindowInteractor() - "<<this);
   setMouseTracking(true);
 
   myRenderWindow->Delete();
@@ -107,8 +96,6 @@ QVTK_RenderWindowInteractor
 QVTK_RenderWindowInteractor
 ::~QVTK_RenderWindowInteractor() 
 {
-  if(MYDEBUG) INFOS("~QVTK_RenderWindowInteractor() - "<<this);
-
   if(SVTK_SpaceMouse* aSpaceMouse = SVTK_SpaceMouse::getInstance())
     if(aSpaceMouse->isSpaceMouseOn())
       aSpaceMouse->close(x11Display());
@@ -392,8 +379,6 @@ SVTK_RenderWindowInteractor
   QVTK_RenderWindowInteractor(theParent,theName),
   myEventCallbackCommand(vtkCallbackCommand::New())
 {
-  if(MYDEBUG) INFOS("SVTK_RenderWindowInteractor() - "<<this);
-
   myEventCallbackCommand->Delete();
 
   myEventCallbackCommand->SetClientData(this); 
@@ -417,20 +402,12 @@ SVTK_RenderWindowInteractor
 SVTK_RenderWindowInteractor
 ::~SVTK_RenderWindowInteractor() 
 {
-  if(MYDEBUG) INFOS("~SVTK_RenderWindowInteractor() - "<<this);
-
   // Sequence of the destruction call are fixed and should be changed.
   // vtkRenderWindow instance should be destroyed after all vtkRenderer's
-  if(MYVTKDEBUG){
-    getRenderWindow()->DebugOn();
-    getRenderer()->DebugOn();
-    GetDevice()->DebugOn();
-  }
   GetDevice()->SetInteractorStyle(NULL); 
   while(!myInteractorStyles.empty()){
     const PInteractorStyle& aStyle = myInteractorStyles.top();
     aStyle->SetInteractor(NULL);
-    if(MYVTKDEBUG) aStyle->DebugOn();
     myInteractorStyles.pop();
   }
 

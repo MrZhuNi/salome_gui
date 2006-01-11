@@ -1,3 +1,21 @@
+// Copyright (C) 2005  OPEN CASCADE, CEA/DEN, EDF R&D, PRINCIPIA R&D
+// 
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either 
+// version 2.1 of the License.
+// 
+// This library is distributed in the hope that it will be useful 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public  
+// License along with this library; if not, write to the Free Software 
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+//
+// See http://www.salome-platform.org/
+//
 #include "LightApp_OBSelector.h"
 
 #include "LightApp_DataOwner.h"
@@ -6,6 +24,7 @@
 #include <OB_Browser.h>
 
 #include <SUIT_DataObjectIterator.h>
+#include <qdatetime.h>
 
 /*!
   Constructor
@@ -41,22 +60,25 @@ OB_Browser* LightApp_OBSelector::browser() const
 */
 void LightApp_OBSelector::getSelection( SUIT_DataOwnerPtrList& theList ) const
 {
-  if ( !myBrowser )
-    return;
-
-  DataObjectList objlist;
-  myBrowser->getSelected( objlist );
-  for ( DataObjectListIterator it( objlist ); it.current(); ++it )
-  {
-    LightApp_DataObject* obj = dynamic_cast<LightApp_DataObject*>( it.current() );
-    if ( obj )
+  if (mySelectedList.count() == 0 ) {
+    if ( !myBrowser )
+      return;
+    DataObjectList objlist;
+    myBrowser->getSelected( objlist );
+    LightApp_OBSelector* that = (LightApp_OBSelector*)this;
+    for ( DataObjectListIterator it( objlist ); it.current(); ++it )
     {
-      Handle( SALOME_InteractiveObject ) aSObj = new SALOME_InteractiveObject
-	( obj->entry(), obj->componentDataType(), obj->name() );
-      LightApp_DataOwner* owner = new LightApp_DataOwner( aSObj  );
-      theList.append( SUIT_DataOwnerPtr( owner ) );
+      LightApp_DataObject* obj = dynamic_cast<LightApp_DataObject*>( it.current() );
+      if ( obj )
+      {
+        Handle(SALOME_InteractiveObject) aSObj = new SALOME_InteractiveObject
+          ( obj->entry(), obj->componentDataType(), obj->name() );
+        LightApp_DataOwner* owner = new LightApp_DataOwner( aSObj  );
+        that->mySelectedList.append( SUIT_DataOwnerPtr( owner ) );
+      }
     }
   }
+  theList = mySelectedList;
 }
 
 /*!Sets selection.*/
@@ -83,7 +105,11 @@ void LightApp_OBSelector::setSelection( const SUIT_DataOwnerPtrList& theList )
 /*!On selection changed.*/
 void LightApp_OBSelector::onSelectionChanged()
 {
+  QTime t1 = QTime::currentTime();
+  mySelectedList.clear();
   selectionChanged();
+  QTime t2 = QTime::currentTime();
+  qDebug( QString( "selection time = %1 msecs" ).arg( t1.msecsTo( t2 ) ) );
 }
 
 /*!Fill entries.*/

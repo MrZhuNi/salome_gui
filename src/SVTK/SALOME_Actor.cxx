@@ -62,15 +62,7 @@
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 
-#include "utilities.h"
-
 using namespace std;
-
-#ifdef _DEBUG_
-static int MYDEBUG = 1;
-#else
-static int MYDEBUG = 0;
-#endif
 
 #if defined __GNUC__
   #if __GNUC__ == 2
@@ -156,8 +148,6 @@ SALOME_Actor
   myOutline(vtkOutlineSource::New()),
   myOutlineActor(VTKViewer_Actor::New())
 {
-  if(MYDEBUG) MESSAGE("SALOME_Actor::SALOME_Actor - this = "<<this);
-
   vtkMapper::GetResolveCoincidentTopologyPolygonOffsetParameters(myPolygonOffsetFactor,
 								 myPolygonOffsetUnits);
 
@@ -196,8 +186,6 @@ SALOME_Actor
 SALOME_Actor
 ::~SALOME_Actor()
 {
-  if(MYDEBUG) MESSAGE("SALOME_Actor::~SALOME_Actor - this = "<<this);
-
   SetPreviewProperty(NULL);
 
   myGeomFilter->UnRegisterAllOutputs(); 
@@ -764,10 +752,6 @@ SALOME_Actor
   myHighlightActor->SetVisibility( false );
   myOutlineActor->SetVisibility( false );
 
-  if(MYDEBUG) MESSAGE("SALOME_Actor::highlight - this = "<<this<<
-		      "; theIsHighlight = "<<theIsHighlight<<
-		      "; mySelectionMode = "<<mySelectionMode);
-    
   if(mySelector.GetPointer()){
     if(mySelectionMode != ActorSelection){
       TColStd_IndexedMapOfInteger aMapIndex;

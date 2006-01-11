@@ -50,14 +50,6 @@
 
 #include <qimage.h>
 
-#include "utilities.h"
-
-#ifdef _DEBUG_
-static int MYDEBUG = 0;
-#else
-static int MYDEBUG = 0;
-#endif
-
 
 //----------------------------------------------------------------------------
 SVTK_MainWindow
@@ -66,8 +58,6 @@ SVTK_MainWindow
 		  SUIT_ResourceMgr* theResourceMgr) :
   QMainWindow(theParent,theName,0)
 {
-  if(MYDEBUG) INFOS("SVTK_MainWindow() - "<<this);
-
   myToolBar = new QToolBar(this);
   myToolBar->setCloseMode(QDockWindow::Undocked);
   myToolBar->setLabel(tr("LBL_TOOLBAR_LABEL"));
@@ -96,7 +86,6 @@ SVTK_MainWindow
 SVTK_MainWindow
 ::~SVTK_MainWindow()
 {
-  if(MYDEBUG) INFOS("~SVTK_MainWindow() - "<<this);
 }
 
 
@@ -342,6 +331,10 @@ SVTK_MainWindow
 }
 
 //----------------------------------------------------------------------------
+#if defined(WIN32) && !defined(_DEBUG)
+#pragma optimize( "", off )
+#endif
+
 void
 SVTK_MainWindow
 ::createActions(SUIT_ResourceMgr* theResourceMgr)
@@ -488,6 +481,10 @@ SVTK_MainWindow
 
   myCubeAxesDlg = new SVTK_CubeAxesDlg(this,"SVTK_CubeAxesDlg",anAction);
 }
+
+#if defined(WIN32) && !defined(_DEBUG)
+#pragma optimize( "", on )
+#endif
 
 //----------------------------------------------------------------------------
 void

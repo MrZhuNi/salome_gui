@@ -31,8 +31,6 @@
 
 #include "SALOME_Actor.h"
 
-#include "utilities.h"
-
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 

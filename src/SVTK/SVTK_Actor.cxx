@@ -29,15 +29,7 @@
 #include <vtkCell.h>
 #include <vtkPolyData.h>
 
-#include "utilities.h"
-
 using namespace std;
-
-#ifdef _DEBUG_
-static int MYDEBUG = 0;
-#else
-static int MYDEBUG = 0;
-#endif
 
 
 static 
@@ -62,8 +54,6 @@ SVTK_Actor
 ::SVTK_Actor():
   myUnstructuredGrid(vtkUnstructuredGrid::New())
 {
-  if(MYDEBUG) INFOS("SVTK_Actor - "<<this);
-
   myIsShaded = true;
 
   Visibility = Pickable = false;
@@ -106,7 +96,6 @@ SVTK_Actor
 SVTK_Actor
 ::~SVTK_Actor()
 {
-  if(MYDEBUG) INFOS("~SVTK_Actor()");
 }
 
 

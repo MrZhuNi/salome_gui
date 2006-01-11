@@ -16,30 +16,32 @@
 //
 // See http://www.salome-platform.org/
 //
-#ifndef VTKVIEWER_VIEWMANAGER_H
-#define VTKVIEWER_VIEWMANAGER_H
+// File:      QtxDblValidator.cxx
+// Author:    Alexandre SOLOVYOV
 
-#include "VTKViewer.h"
+#include "QtxDblValidator.h"
 
-#include <SUIT_ViewManager.h>
-
-class SUIT_Desktop;
-
-/*!View manager.*/
-class VTKVIEWER_EXPORT VTKViewer_ViewManager : public SUIT_ViewManager
+QtxDblValidator::QtxDblValidator( const double bot, const double top, const int dec,
+				  QObject* o, const char* name )
+: QDoubleValidator( bot, top, dec, o, name )
 {
-  Q_OBJECT
+}
 
-public:
-  VTKViewer_ViewManager( SUIT_Study* study, SUIT_Desktop* );
-  virtual ~VTKViewer_ViewManager();
+QtxDblValidator::~QtxDblValidator()
+{
+}
 
-protected:
-  void setViewName( SUIT_ViewWindow* theView );
-
-private:
-  int               myId;
-  static  int       _VTKViewMgr_Id;
-};
-
-#endif
+void QtxDblValidator::fixup( QString& str ) const
+{
+  bool ok = false;
+  double d = str.toDouble( &ok );
+  if( ok )
+  {
+    if( d<bottom() )
+      str = QString::number( bottom() );
+    else if( d>top() )
+      str = QString::number( top() );
+  }
+  else
+    str = "0";
+}

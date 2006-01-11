@@ -309,8 +309,7 @@ Standard_Real DDS_DicItem::FromSI( const Standard_Real theVal, const UnitSystem&
   Parse record in XML file and retrieve information relevant for this data dic item
 */
 void DDS_DicItem::FillDataMap( TCollection_AsciiString theID, const LDOM_Element& theDatum,
-                               const LDOM_Element& theCompElement, const LDOM_Element& theDocElement,
-                               const TColStd_SequenceOfAsciiString& theSystems )
+                               const LDOM_Element& theDocElement, const TColStd_SequenceOfAsciiString& theSystems )
 {
   TCollection_AsciiString aLabel    = theDatum.getAttribute( DDS_Dictionary::KeyWord( "DATUM_LABEL" ) );
   TCollection_AsciiString aFormat   = theDatum.getAttribute( DDS_Dictionary::KeyWord( "DATUM_FORMAT" ) );
@@ -463,43 +462,32 @@ void DDS_DicItem::FillDataMap( TCollection_AsciiString theID, const LDOM_Element
         LDOMString aListId = aListRef.getAttribute( DDS_Dictionary::KeyWord( "VLR_LIST" ) );
         aDefV = aListRef.getAttribute( DDS_Dictionary::KeyWord( "VD_DEFV" ) );
         aDefV.RemoveAll( ' ' );
-        LDOM_Element foundListItem;
-        for ( LDOM_Element aListItem = theCompElement.GetChildByTagName( DDS_Dictionary::KeyWord( "VALUE_LIST" ) );
-              aListItem != NULL && foundListItem == NULL; aListItem = aListItem.GetSiblingByTagName() )
+        for ( LDOM_Element aListItem = theDocElement.GetChildByTagName( DDS_Dictionary::KeyWord( "VALUE_LIST" ) );
+              aListItem != NULL; aListItem = aListItem.GetSiblingByTagName() )
         {
           if ( aListItem.getAttribute( DDS_Dictionary::KeyWord( "VALUE_LIST_ID" ) ).equals( aListId ) )
-            foundListItem = aListItem;
-
-        }
-        for ( LDOM_Element aLstItem = theDocElement.GetChildByTagName( DDS_Dictionary::KeyWord( "VALUE_LIST" ) );
-              aLstItem != NULL && foundListItem == NULL; aLstItem = aLstItem.GetSiblingByTagName() )
-        {
-          if ( aLstItem.getAttribute( DDS_Dictionary::KeyWord( "VALUE_LIST_ID" ) ).equals( aListId ) )
-            foundListItem = aLstItem;
-        }
-
-        if ( foundListItem != NULL )
-        {
-          //  The appropriate list of values is found: store the list name
-          aListName = foundListItem.getAttribute( DDS_Dictionary::KeyWord( "VALUE_LIST_NAME" ) );
-          //  Iteration through the list of values
-          LDOM_Element aListItemValue = foundListItem.GetChildByTagName( DDS_Dictionary::KeyWord( "VALUE_LIST_VALUE" ) );
-          while ( aListItemValue != NULL )
           {
-            // read value ID
-            TCollection_AsciiString aListValueID = aListItemValue.getAttribute( DDS_Dictionary::KeyWord( "VALUE_LIST_VALUEID" ) );
-            if ( aListValueID.IsIntegerValue() )
+            //  The appropriate list of values is found: store the list name
+            aListName = aListItem.getAttribute( DDS_Dictionary::KeyWord( "VALUE_LIST_NAME" ) );
+            //  Iteration through the list of values
+            LDOM_Element aListItemValue = aListItem.GetChildByTagName( DDS_Dictionary::KeyWord( "VALUE_LIST_VALUE" ) );
+            while ( aListItemValue != NULL )
             {
-              //  Read the text in the element "value"
-              LDOM_Text aListItemTxt = (const LDOM_Text&)aListItemValue.getFirstChild();
-              if ( !aListItemTxt.isNull() )
+              // read value ID
+              TCollection_AsciiString aListValueID = aListItemValue.getAttribute( DDS_Dictionary::KeyWord( "VALUE_LIST_VALUEID" ) );
+              if ( aListValueID.IsIntegerValue() )
               {
-                // adding ID and text value to sequence
-                aSeqOfValueID.Append( aListValueID.IntegerValue() );
-                aSeqOfValue.Append( aListItemTxt.getData() );
-                // adding icon file name (optional) to sequence
-                TCollection_ExtendedString aListValueIcon = aListItemValue.getAttribute( DDS_Dictionary::KeyWord( "VALUE_LIST_VALUEICON" ) );
-                aSeqOfValueIconName.Append( aListValueIcon );
+                //  Read the text in the element "value"
+                LDOM_Text aListItemTxt = (const LDOM_Text&)aListItemValue.getFirstChild();
+                if ( !aListItemTxt.isNull() )
+                {
+                  // adding ID and text value to sequence
+                  aSeqOfValueID.Append( aListValueID.IntegerValue() );
+                  aSeqOfValue.Append( aListItemTxt.getData() );
+                  // adding icon file name (optional) to sequence
+                  TCollection_ExtendedString aListValueIcon = aListItemValue.getAttribute( DDS_Dictionary::KeyWord( "VALUE_LIST_VALUEICON" ) );
+                  aSeqOfValueIconName.Append( aListValueIcon );
+                }
               }
               aListItemValue = aListItemValue.GetSiblingByTagName();
             }

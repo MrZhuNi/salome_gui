@@ -33,8 +33,6 @@
 #include "QtxDblSpinBox.h"
 #include "QtxAction.h"
 
-#include "utilities.h"
-
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qpushbutton.h>

@@ -54,14 +54,6 @@
 #undef min
 #undef max
 
-#include "utilities.h"
-
-#ifdef _DEBUG_
-static int MYDEBUG = 0;
-#else
-static int MYDEBUG = 0;
-#endif
-
 
 //----------------------------------------------------------------------------
 vtkStandardNewMacro(SVTK_Renderer);
@@ -83,8 +75,6 @@ SVTK_Renderer
   myTrihedron(SVTK_Trihedron::New()),
   myTrihedronSize(105)
 {
-  if(MYDEBUG) INFOS("SVTK_Renderer() - "<<this);
-
   myDevice->Delete();
   myTransform->Delete();
 
@@ -156,7 +146,6 @@ SVTK_Renderer
 SVTK_Renderer
 ::~SVTK_Renderer()
 {
-  if(MYDEBUG) INFOS("~SVTK_Renderer() - "<<this);
   vtkActorCollection* anActors = GetDevice()->GetActors();
   anActors->InitTraversal();
   while(vtkActor* anAct = anActors->GetNextActor()){

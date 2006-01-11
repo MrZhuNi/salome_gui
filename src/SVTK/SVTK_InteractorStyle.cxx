@@ -62,15 +62,7 @@
 //VRV: porting on Qt 3.0.5
 #include <algorithm>
 
-#include "utilities.h"
-
 using namespace std;
-
-#ifdef _DEBUG_
-static int MYDEBUG = 0;
-#else
-static int MYDEBUG = 0;
-#endif
 
 namespace
 {
@@ -120,8 +112,6 @@ SVTK_InteractorStyle
 {
   myPicker->Delete();
 
-  if(MYDEBUG) INFOS("SVTK_InteractorStyle() - "<<this);
-
   this->MotionFactor = 10.0;
   this->State = VTK_INTERACTOR_STYLE_CAMERA_NONE;
   this->RadianToDegree = 180.0 / vtkMath::Pi();
@@ -145,7 +135,6 @@ SVTK_InteractorStyle
 SVTK_InteractorStyle
 ::~SVTK_InteractorStyle() 
 {
-  if(MYDEBUG) INFOS("~SVTK_InteractorStyle() - "<<this);
 }
 
 //----------------------------------------------------------------------------

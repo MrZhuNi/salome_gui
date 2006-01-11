@@ -29,8 +29,6 @@
 #include "SVTK_GenericRenderWindowInteractor.h"
 #include "SVTK_Selector.h"
 
-#include "utilities.h"
-
 #include <vtkObjectFactory.h>
 #include <vtkCommand.h>
 
@@ -38,19 +36,12 @@
 
 using namespace std;
 
-#ifdef _DEBUG_
-static int MYDEBUG = 0;
-#else
-static int MYDEBUG = 0;
-#endif
-
 //----------------------------------------------------------------------------
 vtkStandardNewMacro(QVTK_GenericRenderWindowInteractor);
 
 QVTK_GenericRenderWindowInteractor
 ::QVTK_GenericRenderWindowInteractor()
 {
-  if(MYDEBUG) INFOS("QVTK_GenericRenderWindowInteractor() - "<<this);
   myTimer = new QTimer( ) ;
   connect(myTimer, SIGNAL(timeout()), this, SLOT(OnTimeOut())) ;
 }
@@ -58,7 +49,6 @@ QVTK_GenericRenderWindowInteractor
 QVTK_GenericRenderWindowInteractor
 ::~QVTK_GenericRenderWindowInteractor()
 {
-  if(MYDEBUG) INFOS("~QVTK_GenericRenderWindowInteractor() - "<<this);
   delete myTimer;
 }
 
@@ -112,13 +102,11 @@ SVTK_GenericRenderWindowInteractor
 ::SVTK_GenericRenderWindowInteractor():
   myRenderWidget(NULL)
 {
-  if(MYDEBUG) INFOS("SVTK_GenericRenderWindowInteractor() - "<<this);
 }
 
 SVTK_GenericRenderWindowInteractor
 ::~SVTK_GenericRenderWindowInteractor()
 {
-  if(MYDEBUG) INFOS("~SVTK_GenericRenderWindowInteractor() - "<<this);
 }
 
 SVTK_Selector*

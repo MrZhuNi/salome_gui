@@ -6,7 +6,7 @@
 top_srcdir=@top_srcdir@
 top_builddir=../..
 srcdir=@srcdir@
-VPATH=.:@srcdir@
+VPATH=.:@srcdir@:@srcdir@/resources
 
 
 @COMMENCE@
@@ -36,6 +36,8 @@ EXPORT_HEADERS= \
 	SVTK_SpaceMouse.h \
 	SVTK_Event.h \
 	SVTK_ViewModelBase.h
+
+PO_FILES = SVTK_msg_en.po
 
 # Libraries targets
 LIB = libSVTK.la
@@ -81,20 +83,15 @@ CPPFLAGS+= \
 	$(QT_INCLUDES) \
 	$(OCC_INCLUDES) \
 	$(VTK_INCLUDES) \
-	$(BOOST_CPPFLAGS) \
-	-I$(KERNEL_ROOT_DIR)/include/salome
+	$(BOOST_CPPFLAGS)
 
 LDFLAGS+= \
 	$(QT_MT_LIBS) \
 	$(OCC_LIBS) \
-	$(VTK_LIBS) \
-	-L$(KERNEL_ROOT_DIR)/lib/salome
+	$(VTK_LIBS)
 
-LIBS+= -lsuit -lCAM -lSalomeObject -lSalomePrs -lVTKViewer -lOpUtil -lToolsGUI -lSalomeDS
+LIBS+= -lqtx -lsuit -lstd -lCAM -lSalomeObject -lSalomePrs -lVTKViewer
 
-LDFLAGSFORBIN=$(LDFLAGS) $(LIBS) \
-	-lqtx -lstd -lSALOMELocalTrace -lSalomeNS -lTOOLSDS -lSalomeHDFPersist -lSalomeDSImpl \
-	-lSalomeGenericObj -lSalomeLifeCycleCORBA -lSALOMEBasics -lSalomeContainer \
-	-lSalomeResourcesManager -lRegistry -lSalomeNotification
+LDFLAGSFORBIN=$(LDFLAGS) $(LIBS)
 
 @CONCLUDE@

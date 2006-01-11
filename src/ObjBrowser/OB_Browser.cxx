@@ -530,8 +530,6 @@ void OB_Browser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
   if( autoOpen )
     autoOpenBranches();
 
-  setModified();
-
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
 }

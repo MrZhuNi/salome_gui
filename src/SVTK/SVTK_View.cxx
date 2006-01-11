@@ -40,14 +40,6 @@
 #include <vtkActorCollection.h>
 #include <vtkRenderer.h>
 
-#include "utilities.h"
-
-#ifdef _DEBUG_
-static int MYDEBUG = 0;
-#else
-static int MYDEBUG = 0;
-#endif
-
 
 //----------------------------------------------------------------------------
 SVTK_SignalHandler
@@ -55,8 +47,6 @@ SVTK_SignalHandler
   QObject(theMainWindow),
   myMainWindow(theMainWindow)
 {
-  if(MYDEBUG) INFOS("SVTK_SignalHandler() - "<<this);
-
   SVTK_RenderWindowInteractor* anInteractor = theMainWindow->GetInteractor();
 
   connect(anInteractor,SIGNAL(KeyPressed(QKeyEvent*)),
@@ -80,7 +70,6 @@ SVTK_SignalHandler
 SVTK_SignalHandler
 ::~SVTK_SignalHandler()
 {
-  if(MYDEBUG) INFOS("~SVTK_SignalHandler() - "<<this);
 }
 
 SVTK_MainWindow*
@@ -161,14 +150,12 @@ SVTK_View
 ::SVTK_View(SVTK_MainWindow* theMainWindow) :
   SVTK_SignalHandler(theMainWindow)
 {
-  if(MYDEBUG) INFOS("SVTK_View() - "<<this);
 }
 
 //----------------------------------------------------------------------------
 SVTK_View
 ::~SVTK_View()
 {
-  if(MYDEBUG) INFOS("~SVTK_View() - "<<this);
 }
 
 //----------------------------------------------------------------
