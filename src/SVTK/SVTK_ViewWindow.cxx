@@ -73,7 +73,7 @@ SVTK_ViewWindow
 ::Initialize(SVTK_ViewModelBase* theModel)
 {
   if(SUIT_ResourceMgr* aResourceMgr = SUIT_Session::session()->resourceMgr()){
-    myMainWindow = new SVTK_MainWindow(this,"SVTK_MainWindow",aResourceMgr);
+    myMainWindow = new SVTK_MainWindow(this,"SVTK_MainWindow",aResourceMgr,this);
 
     SVTK_RenderWindowInteractor* anIteractor = 
       new SVTK_RenderWindowInteractor(myMainWindow,"SVTK_RenderWindowInteractor");
