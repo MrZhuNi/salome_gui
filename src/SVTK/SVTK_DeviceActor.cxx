@@ -57,7 +57,7 @@ SVTK_DeviceActor
   myIsShrunk = false;
   myIsShrinkable = true;
 
-  myIsShaded = false;
+  myIsShaded = true;
   myProperty = vtkProperty::New();
   myRepresentation = SVTK::Representation::Surface;
 
@@ -268,13 +268,13 @@ SVTK_DeviceActor
   if(IsShaded()){
     switch(myRepresentation){
     case Points : 
-    case Wireframe : 
+    case Surface : 
       myProperty->DeepCopy(GetProperty());
     }
     
     switch(theMode){
     case Points : 
-    case Wireframe : 
+    case Surface : 
       GetProperty()->DeepCopy(myProperty);
       break;
     default:
@@ -288,21 +288,21 @@ SVTK_DeviceActor
   case Insideframe : 
     myGeomFilter->SetInside(true);
     myGeomFilter->SetWireframeMode(true);
-    GetProperty()->SetRepresentation(1);
+    GetProperty()->SetRepresentation(VTK_WIREFRAME);
     break;
   case Points : 
     GetProperty()->SetPointSize(GetDefaultPointSize());  
-    GetProperty()->SetRepresentation(theMode);
+    GetProperty()->SetRepresentation(VTK_POINTS);
     myGeomFilter->SetWireframeMode(false);
     myGeomFilter->SetInside(false);
     break;
   case Wireframe : 
-    GetProperty()->SetRepresentation(theMode);
+    GetProperty()->SetRepresentation(VTK_WIREFRAME);
     myGeomFilter->SetWireframeMode(true);
     myGeomFilter->SetInside(false);
     break;
   case Surface : 
-    GetProperty()->SetRepresentation(theMode);
+    GetProperty()->SetRepresentation(VTK_SURFACE);
     myGeomFilter->SetWireframeMode(false);
     myGeomFilter->SetInside(false);
     break;
