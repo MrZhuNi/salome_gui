@@ -930,9 +930,11 @@ SVTK_InteractorStyle
 	  vtkActorCollection* aListActors = GetCurrentRenderer()->GetActors();
 	  aListActors->InitTraversal();
 	  while(vtkActor* aActor = aListActors->GetNextActor()){
-	    if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)){
-	      if(aSActor->hasIO()){
-		aSActor->Highlight( this, aSelectionEvent, true );
+	    if(aActor->GetVisibility()){
+	      if(SALOME_Actor* aSActor = SALOME_Actor::SafeDownCast(aActor)){
+		if(aSActor->hasIO()){
+		  aSActor->Highlight( this, aSelectionEvent, true );
+		}
 	      }
 	    }
 	  }
