@@ -58,6 +58,7 @@
 using namespace std;
 
 static bool GENERATE_SUIT_EVENTS = false;
+static bool FOCUS_UNDER_MOUSE = false;
 
 
 //----------------------------------------------------------------------------
@@ -297,9 +298,10 @@ void
 QVTK_RenderWindowInteractor
 ::enterEvent( QEvent* event )
 {
-  setActiveWindow();
-  setFocus();
-  
+  if(FOCUS_UNDER_MOUSE){
+    setActiveWindow();
+    setFocus();
+  }
   GetDevice()->EnterEvent();
 }
 
