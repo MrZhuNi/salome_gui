@@ -35,6 +35,7 @@
 
 #include "SUIT_ToolButton.h"
 #include "SUIT_MessageBox.h"
+#include "SUIT_ViewWindow.h"
 
 #include "SUIT_Tools.h"
 #include "SUIT_ResourceMgr.h"
@@ -55,8 +56,10 @@
 SVTK_MainWindow
 ::SVTK_MainWindow(QWidget* theParent, 
 		  const char* theName,
-		  SUIT_ResourceMgr* theResourceMgr) :
-  QMainWindow(theParent,theName,0)
+		  SUIT_ResourceMgr* theResourceMgr,
+		  SUIT_ViewWindow* theViewWindow) :
+  QMainWindow(theParent,theName,0),
+  myViewWindow(theViewWindow)
 {
   myToolBar = new QToolBar(this);
   myToolBar->setCloseMode(QDockWindow::Undocked);
@@ -349,7 +352,7 @@ SVTK_MainWindow
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_DUMP" ) ),
 			   tr( "MNU_DUMP_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_DUMP_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onDumpView()));
+  connect(anAction, SIGNAL(activated()), myViewWindow, SLOT(onDumpView()));
   myActionsMap[ DumpId ] = anAction;
 
   // FitAll
@@ -681,12 +684,6 @@ SVTK_MainWindow
 {   
   GetRenderer()->OnAdjustCubeAxes();
 }
-
-//----------------------------------------------------------------------------
-void
-SVTK_MainWindow
-::onDumpView()
-{}
 
 //----------------------------------------------------------------------------
 QImage

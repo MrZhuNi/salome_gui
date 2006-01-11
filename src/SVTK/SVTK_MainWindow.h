@@ -21,6 +21,7 @@ class vtkInteractorStyle;
 class vtkRenderWindowInteractor;
 
 class SUIT_ResourceMgr;
+class SUIT_ViewWindow;
 
 class SVTK_RenderWindowInteractor;
 class SVTK_NonIsometricDlg;
@@ -48,7 +49,8 @@ class SVTK_EXPORT SVTK_MainWindow: public QMainWindow
 public:
   SVTK_MainWindow(QWidget* theParent, 
 		  const char* theName,
-		  SUIT_ResourceMgr* theResourceMgr);
+		  SUIT_ResourceMgr* theResourceMgr,
+		  SUIT_ViewWindow* theViewWindow);
   
   //! To initialize the class
   virtual
@@ -199,8 +201,6 @@ public:
   void onAdjustTrihedron();
   void onAdjustCubeAxes();
 
-  void onDumpView();
-
  public:
   QImage dumpView();
 
@@ -218,6 +218,8 @@ public:
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
 	 ViewTrihedronId, NonIsometric, GraduatedAxes};
   typedef QMap<int, QtxAction*> TActionsMap;
+
+  SUIT_ViewWindow* myViewWindow;
 
   SVTK_NonIsometricDlg* myNonIsometricDlg;
   SVTK_CubeAxesDlg* myCubeAxesDlg;
