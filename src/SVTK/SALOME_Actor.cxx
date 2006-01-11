@@ -704,7 +704,7 @@ SALOME_Actor
 
   myPreHighlightActor->SetVisibility( theVisibility && myIsPreselected );
 
-  if(mySelector.GetPointer()){
+  if(mySelector.GetPointer() && hasIO()){
     if(mySelector->SelectionMode() != ActorSelection){
       int aHasIndex = mySelector->HasIndex( getIO() );
       myHighlightActor->SetVisibility( theVisibility && isHighlighted() && aHasIndex);
