@@ -114,7 +114,8 @@ SVTK_Actor
 ::MapCells(SALOME_Actor* theMapActor,
 	   const TColStd_IndexedMapOfInteger& theMapIndex)
 {
-  myUnstructuredGrid->Reset();
+  myUnstructuredGrid->Initialize();
+  myUnstructuredGrid->Allocate();
 
   vtkDataSet *aSourceDataSet = theMapActor->GetInput();
   CopyPoints(GetSource(),aSourceDataSet);
@@ -142,7 +143,9 @@ SVTK_Actor
 ::MapPoints(SALOME_Actor* theMapActor,
 	    const TColStd_IndexedMapOfInteger& theMapIndex)
 {
-  myUnstructuredGrid->Reset();
+  myUnstructuredGrid->Initialize();
+  myUnstructuredGrid->Allocate();
+
   if(int aNbOfParts = theMapIndex.Extent()){
     vtkPoints *aPoints = vtkPoints::New();
     aPoints->SetNumberOfPoints(aNbOfParts);
@@ -169,7 +172,8 @@ SVTK_Actor
 ::MapEdge(SALOME_Actor* theMapActor,
 	  const TColStd_IndexedMapOfInteger& theMapIndex)
 {
-  myUnstructuredGrid->Reset();
+  myUnstructuredGrid->Initialize();
+  myUnstructuredGrid->Allocate();
 
   vtkDataSet *aSourceDataSet = theMapActor->GetInput();
   CopyPoints(GetSource(),aSourceDataSet);
