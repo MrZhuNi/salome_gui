@@ -41,7 +41,6 @@
 #include "SUIT_Accel.h"
 
 #include "VTKViewer_Utilities.h"
-#include "VTKViewer_CellRectPicker.h"
 
 #include "SVTK_View.h"
 #include "SVTK_MainWindow.h"
