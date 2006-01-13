@@ -33,6 +33,8 @@
 #include <GL/glx.h>
 #endif
 
+#include <gp_Pnt2d.hxx>
+
 #include <qimage.h>
 #include <qpainter.h>
 
@@ -846,3 +848,224 @@ bool GLViewer_Drawer::translateToEMF( HDC hDC, GLViewer_CoordSystem* aViewerCS, 
     return result;
 }
 #endif
+
+//======================================================================
+// Function: drawRectangle
+// Purpose :
+//=======================================================================
+void GLViewer_Drawer::drawRectangle( GLViewer_Rect* rect, GLfloat lineWidth, GLfloat gap,
+				     QColor color, bool filled, QColor fillingColor )
+{
+  if( !rect )
+    return;
+
+  float x1 = rect->left() - gap;
+  float x2 = rect->right() + gap;
+  float y1 = rect->bottom() - gap;
+  float y2 = rect->top() + gap;
+  
+  if( filled )
+  {
+    glColor3f( ( GLfloat )fillingColor.red() / 255,
+      ( GLfloat )fillingColor.green() / 255,
+      ( GLfloat )fillingColor.blue() / 255 );
+    glBegin( GL_POLYGON );
+    glVertex2f( x1, y1 );
+    glVertex2f( x1, y2 );
+    glVertex2f( x2, y2 );
+    glVertex2f( x2, y1 );
+    glEnd();
+  }
+
+  glColor3f( ( GLfloat )color.red() / 255,
+    ( GLfloat )color.green() / 255,
+    ( GLfloat )color.blue() / 255 );
+  glLineWidth( lineWidth );
+  
+  glBegin( GL_LINE_LOOP );
+  glVertex2f( x1, y1 );
+  glVertex2f( x1, y2 );
+  glVertex2f( x2, y2 );
+  glVertex2f( x2, y1 );
+  glEnd();
+}
+
+//======================================================================
+// Function: drawContour
+// Purpose :
+//=======================================================================
+void GLViewer_Drawer::drawContour( const GLViewer_PntList& pntList, QColor color, GLfloat lineWidth )
+{
+  glColor3f( ( GLfloat )color.red() / 255,
+    ( GLfloat )color.green() / 255,
+    ( GLfloat )color.blue() / 255 );
+  glLineWidth( lineWidth );
+  
+  glBegin( GL_LINES );
+  QValueList<GLViewer_Pnt>::const_iterator it = pntList.begin();
+  for( ; it != pntList.end(); ++it )
+    glVertex2f( (*it).x(), (*it).y() );
+  glEnd();
+}
+
+//======================================================================
+// Function: drawContour
+// Purpose :
+//=======================================================================
+void GLViewer_Drawer::drawContour( GLViewer_Rect* rect, QColor color, GLfloat lineWidth,
+				   GLushort pattern, bool isStripe )
+{
+  float x1 = rect->left();
+  float x2 = rect->right();
+  float y1 = rect->bottom();
+  float y2 = rect->top();
+  
+  glColor3f( ( GLfloat )color.red() / 255,
+    ( GLfloat )color.green() / 255,
+    ( GLfloat )color.blue() / 255 );
+  glLineWidth( lineWidth );
+  
+  if ( isStripe )
+  {
+    glEnable( GL_LINE_STIPPLE );
+    glLineStipple( 1, pattern );
+  }
+
+  glBegin( GL_LINE_LOOP );
+
+  glVertex2f( x1, y1 );
+  glVertex2f( x1, y2 );
+  glVertex2f( x2, y2 );
+  glVertex2f( x2, y1 );
+
+  glEnd();
+  glDisable( GL_LINE_STIPPLE );
+}
+
+//======================================================================
+// Function: drawPolygon
+// Purpose :
+//=======================================================================
+void GLViewer_Drawer::drawPolygon( const GLViewer_PntList& pntList, QColor color )
+{
+  glColor3f( ( GLfloat )color.red() / 255,
+    ( GLfloat )color.green() / 255,
+    ( GLfloat )color.blue() / 255 );
+  glBegin( GL_POLYGON );
+  QValueList<GLViewer_Pnt>::const_iterator it = pntList.begin();
+  for( ; it != pntList.end(); ++it )
+    glVertex2f( (*it).x(), (*it).y() );
+  glEnd();
+}
+
+//======================================================================
+// Function: drawPolygon
+// Purpose :
+//=======================================================================
+void GLViewer_Drawer::drawPolygon( GLViewer_Rect* rect, QColor color,
+                                      GLushort pattern, bool isStripe )
+{
+  float x1 = rect->left();
+  float x2 = rect->right();
+  float y1 = rect->bottom();
+  float y2 = rect->top();
+  glColor3f( ( GLfloat )color.red() / 255,
+    ( GLfloat )color.green() / 255,
+    ( GLfloat )color.blue() / 255 );
+
+  if ( isStripe )
+  {
+    glEnable( GL_LINE_STIPPLE );
+    glLineStipple( 1, pattern );
+  }
+  glBegin( GL_POLYGON );
+
+  glVertex2f( x1, y1 );
+  glVertex2f( x1, y2 );
+  glVertex2f( x2, y2 );
+  glVertex2f( x2, y1 );
+
+  glEnd();
+  glDisable( GL_LINE_STIPPLE );
+}
+
+//======================================================================
+// Function: drawVertex
+// Purpose :
+//=======================================================================
+GLubyte rasterVertex[5] = { 0x70, 0xf8, 0xf8, 0xf8, 0x70 };
+void GLViewer_Drawer::drawVertex( GLfloat x, GLfloat y, QColor color )
+{
+  glColor3f( ( GLfloat )color.red() / 255, ( GLfloat )color.green() / 255, ( GLfloat )color.blue() / 255 );
+  glRasterPos2f( x, y );
+  glBitmap( 5, 5, 2, 2, 0, 0, rasterVertex );
+}
+
+//======================================================================
+// Function: drawCross
+// Purpose :
+//=======================================================================
+GLubyte rasterCross[7] =  { 0x82, 0x44, 0x28, 0x10, 0x28, 0x44, 0x82 };
+void GLViewer_Drawer::drawCross( GLfloat x, GLfloat y, QColor color )
+{
+  glColor3f( ( GLfloat )color.red() / 255, ( GLfloat )color.green() / 255, ( GLfloat )color.blue() / 255 );
+  glRasterPos2f( x, y );
+  glBitmap( 7, 7, 3, 3, 0, 0, rasterCross );
+}
+
+//======================================================================
+// Function: drawArrow
+// Purpose :
+//=======================================================================
+void GLViewer_Drawer::drawArrow( const GLfloat red, const GLfloat green, const GLfloat blue,
+				 GLfloat lineWidth,
+				 GLfloat staff, GLfloat length, GLfloat width,
+				 GLfloat x, GLfloat y, GLfloat angle, GLboolean filled )
+{
+  GLfloat vx1 = x;
+  GLfloat vy1 = y + staff + length;
+  GLfloat vx2 = vx1 - width / 2;
+  GLfloat vy2 = vy1 - length;
+  GLfloat vx3 = vx1 + width / 2;
+  GLfloat vy3 = vy1 - length;
+
+  gp_Pnt2d p0( x, y );
+  gp_Pnt2d p1( vx1, vy1 );
+  gp_Pnt2d p2( vx2, vy2 );
+  gp_Pnt2d p3( vx3, vy3 );
+
+  p1.Rotate( p0, angle );
+  p2.Rotate( p0, angle );
+  p3.Rotate( p0, angle );
+  
+  vx1 = p1.X(); vy1 = p1.Y();
+  vx2 = p2.X(); vy2 = p2.Y();
+  vx3 = p3.X(); vy3 = p3.Y();
+
+  glColor3f( red, green, blue );
+  glLineWidth( lineWidth );
+
+  glBegin( GL_LINES );
+  glVertex2f( x, y );
+  glVertex2f( vx1, vy1 );
+  glEnd();
+
+  filled = true;
+  if( !filled )
+  {
+    glBegin( GL_LINES );
+    glVertex2f( vx1, vy1 );
+    glVertex2f( vx2, vy2 );
+    glVertex2f( vx1, vy1 );
+    glVertex2f( vx3, vy3 );
+    glEnd();
+  }
+  else
+  {
+    glBegin( GL_POLYGON );
+    glVertex2f( vx1, vy1 );
+    glVertex2f( vx2, vy2 );
+    glVertex2f( vx3, vy3 );
+    glEnd();
+  }
+}
