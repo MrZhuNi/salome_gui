@@ -30,6 +30,9 @@
 
 #include "SVTK.h"
 
+#include <map>
+#include <vector>
+
 #include <vtkAbstractPropPicker.h>
 
 class vtkRenderer;
@@ -48,18 +51,55 @@ class SVTK_EXPORT SVTK_RectPicker : public vtkAbstractPropPicker
 
   vtkTypeMacro(SVTK_RectPicker,vtkAbstractPropPicker);
   
+  /*! 
+    Specify tolerance for performing pick operation. Tolerance is specified
+    as fraction of rendering window size. (Rendering window size is measured
+    across diagonal.)
+  */
+  vtkSetMacro(Tolerance,float);
+  vtkGetMacro(Tolerance,float);
+
+  //! Use these methods to pick points or points and cells
+  vtkSetMacro(PickPoints,int);
+  vtkGetMacro(PickPoints,int);
+  vtkBooleanMacro(PickPoints,int);
+
   virtual 
   int
-  Pick(float selectionX1, float selectionY1, float selectionZ1, 
-       float selectionX2, float selectionY2, float selectionZ2,
-       vtkRenderer *renderer);  
+  Pick(float theSelectionX, float theSelectionY, float theSelectionZ, 
+       float theSelectionX2, float theSelectionY2, float theSelectionZ2,
+       vtkRenderer *theRenderer);  
 
   int
-  Pick(float selectionPt1[3], float selectionPt2[3], vtkRenderer *ren);
+  Pick(float theSelection[3], float theSelection2[3], vtkRenderer *theRenderer);
+
+  typedef std::vector<vtkIdType> TVectorIds;
+  typedef std::map<vtkActor*,TVectorIds> TVectorIdsMap;
+
+  const TVectorIdsMap& 
+  GetPointIdsMap() const;
+
+  const TVectorIdsMap& 
+  GetCellIdsMap() const;
 
  protected:
   SVTK_RectPicker();
   ~SVTK_RectPicker();
+
+  //! tolerance for computation (% of window)
+  float Tolerance;
+
+  //! use the following to control picking mode
+  int PickPoints;
+
+  //! second rectangle selection point in window (pixel) coordinates
+  float SelectionPoint2[3]; 
+
+  //! second rectangle selection point in world coordinates
+  float PickPosition2[3]; 
+
+  TVectorIdsMap myPointIdsMap;
+  TVectorIdsMap myCellIdsMap;
 
  private:
   virtual 

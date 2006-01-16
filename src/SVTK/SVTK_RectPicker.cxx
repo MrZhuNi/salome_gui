@@ -27,9 +27,18 @@
 
 #include "SVTK_RectPicker.h"
 
-#include <vector>
+#include <set>
 
 #include <vtkObjectFactory.h>
+#include <vtkCommand.h>
+
+#include <vtkAbstractMapper3D.h>
+#include <vtkMapper.h>
+#include <vtkProperty.h>
+
+#include <vtkAssemblyPath.h>
+#include <vtkAssemblyNode.h>
+
 #include <vtkRenderWindow.h>
 #include <vtkMatrix4x4.h>
 #include <vtkRenderer.h>
@@ -41,23 +50,66 @@
 //----------------------------------------------------------------------------
 namespace
 {
-  typedef std::vector<vtkIdType> TVectorIds;
+  //----------------------------------------------------------------------------
+  inline
+  float
+  GetZ(float* theZPtr,
+       int theSelection[4],
+       int theDX,
+       int theDY)
+  {
+    return theZPtr[theDX - theSelection[0] + (theDY - theSelection[1])*(theSelection[2] - theSelection[0] + 1)];
+  }
+
+
+  //----------------------------------------------------------------------------
+  inline
+  int
+  Check(float* theZPtr,
+	int theSelection[4],
+	float theTolerance,
+	float theDZ,
+	int theDX,
+	int theDY)
+  {
+    int aRet = 0;
+    if(theDX < theSelection[0] || theDX > theSelection[2] ||
+       theDY < theSelection[1] || theDY > theSelection[3])
+      return aRet;
+
+    // Access the value from the captured zbuffer.  Note, we only
+    // captured a portion of the zbuffer, so we need to offset dx by
+    // the selection window.
+    float aZ = GetZ(theZPtr,theSelection,theDX,theDY);
+    
+    if(aZ == 0.0 || aZ == 1.0)
+      return aRet;
+
+    aRet = fabs(aZ - theDZ) <= theTolerance? 1: -1;
+    //cout<<"Check = {"<<theDX<<", "<<theDY<<", "<<theDZ<<", "<<aZ<<"} = "<<aRet<<"\n";
+
+    return aRet;
+  }
+
 
   //----------------------------------------------------------------------------
   void
   SelectVisiblePoints(int theSelection[4],
 		      vtkRenderer *theRenderer,
 		      vtkDataSet *theInput,
-		      TVectorIds& theVectorIds,
-		      float theTolerance = 0.001)
+		      SVTK_RectPicker::TVectorIds& theVisibleIds,
+		      SVTK_RectPicker::TVectorIds& theInVisibleIds,
+		      float theTolerance)
   {
-    theVectorIds.clear();
+    theVisibleIds.clear();
+    theInVisibleIds.clear();
 
     vtkIdType aNumPts = theInput->GetNumberOfPoints();
     if(aNumPts < 1)
       return;
     
-    theVectorIds.reserve(aNumPts/2 + 1);
+    theVisibleIds.reserve(aNumPts/2 + 1);
+    theInVisibleIds.reserve(aNumPts/2 + 1);
 
     // Grab the composite perspective transform.  This matrix is used to convert
     // each point to view coordinates.  vtkRenderer provides a WorldToView()
@@ -68,20 +120,23 @@ namespace
     aMatrix->DeepCopy(theRenderer->GetActiveCamera()->
 		      GetCompositePerspectiveTransformMatrix(1,0,1));
 
-    // If we have more than a few query points, we grab the z-buffer for the
-    // selection region all at once and probe the resulting array.  When we
-    // have just a few points, we perform individual z-buffer queries.
-    const int SimpleQueryLimit = 25;
-    float *aZPtr = NULL;
-    if(aNumPts > SimpleQueryLimit){
-      aZPtr = theRenderer->GetRenderWindow()->
-	GetZbufferData(theSelection[0], theSelection[2], theSelection[1], theSelection[3]);
+    // We grab the z-buffer for the selection region all at once and probe the resulting array.
+    float *aZPtr = theRenderer->GetRenderWindow()->
+      GetZbufferData(theSelection[0], theSelection[1], theSelection[2], theSelection[3]);
+    /*
+    cout<<"theSelection = {"<<theSelection[0]<<", "<<theSelection[1]<<", "<<theSelection[2]<<", "<<theSelection[3]<<"}\n";
+    for(int iY = theSelection[1]; iY <= theSelection[3];  iY++){
+      for(int iX = theSelection[0]; iX <= theSelection[2];  iX++){
+	cout<<GetZ(aZPtr,theSelection,iX,iY)<<" ";
+      }
+      cout<<endl;
     }
-
-    float aX[4] = {1.0, 1.0, 1.0, 1.0};
+    */
     for(vtkIdType aPntId = 0; aPntId < aNumPts; aPntId++){
       // perform conversion
+      float aX[4] = {1.0, 1.0, 1.0, 1.0};
       theInput->GetPoint(aPntId,aX);
+
       float aView[4];
       aMatrix->MultiplyPoint(aX,aView);
       if(aView[3] == 0.0)
@@ -90,33 +145,61 @@ namespace
 				aView[1]/aView[3],
 				aView[2]/aView[3]);
       theRenderer->ViewToDisplay();
+
       float aDX[3];
       theRenderer->GetDisplayPoint(aDX);
-      bool anIsVisible = false;
-
+      
       // check whether visible and in selection window 
-      if(aDX[0] >= theSelection[0] && aDX[0] <= theSelection[1] &&
-         aDX[1] >= theSelection[2] && aDX[1] <= theSelection[3] )
+      if(aDX[0] >= theSelection[0] && aDX[0] <= theSelection[2] &&
+         aDX[1] >= theSelection[1] && aDX[1] <= theSelection[3])
       {
-	float aZ = 0.0;
-	if(aNumPts > SimpleQueryLimit){
-	  // Access the value from the captured zbuffer.  Note, we only
-	  // captured a portion of the zbuffer, so we need to offset dx by
-	  // the selection window.
-	  aZ = aZPtr[int(aDX[0]) - theSelection[0]
-		     + (int(aDX[1]) - theSelection[2])
-		     *(theSelection[1] - theSelection[0] + 1)];
-        }else{
-        aZ = theRenderer->GetZ(int(aDX[0]), 
-			       int(aDX[1]));
-        }
-	float aDiff = fabs(aZ-aDX[2]);
-	if(aDiff <= theTolerance)
-	  anIsVisible = true;
-      }
+	//cout<<"\naPntId "<<aPntId<<"; aDX = {"<<aDX[0]<<", "<<aDX[1]<<", "<<aDX[2]<<"}\n";
+	int aDX0 = int(aDX[0]);
+	int aDX1 = int(aDX[1]);
 
-      if(anIsVisible)
-	theVectorIds.push_back(aPntId);
+	int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aDX0,aDX1);
+	if(aRet > 0)
+	  goto ADD_VISIBLE;
+	if(aRet < 0)
+	  goto ADD_INVISIBLE;
+
+	static int aMaxRadius = 5;
+	for(int aRadius = 0; aRadius < aMaxRadius; aRadius++){
+	  int aStartDX[2] = {aDX0 - aRadius, aDX1 - aRadius};
+	  for(int i = 0; i < aRadius; i++){
+	    int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aStartDX[0]++,aStartDX[1]);
+	    if(aRet > 0)
+	      goto ADD_VISIBLE;
+	    if(aRet < 0)
+	      goto ADD_INVISIBLE;
+	  }
+	  for(int i = 0; i < aRadius; i++){
+	    int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aStartDX[0],aStartDX[1]++);
+	    if(aRet > 0)
+	      goto ADD_VISIBLE;
+	    if(aRet < 0)
+	      goto ADD_INVISIBLE;
+	  }
+	  for(int i = 0; i < aRadius; i++){
+	    int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aStartDX[0]--,aStartDX[1]);
+	    if(aRet > 0)
+	      goto ADD_VISIBLE;
+	    if(aRet < 0)
+	      goto ADD_INVISIBLE;
+	  }
+	  for(int i = 0; i < aRadius; i++){
+	    int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aStartDX[0],aStartDX[1]--);
+	    if(aRet > 0)
+	      goto ADD_VISIBLE;
+	    if(aRet < 0)
+	      goto ADD_INVISIBLE;
+	  }
+	}
+	if(false)
+	  ADD_VISIBLE : theVisibleIds.push_back(aPntId);
+	if(false)
+	  ADD_INVISIBLE : theInVisibleIds.push_back(aPntId);
+      }
     }//for all points
 
     aMatrix->Delete();
@@ -131,8 +214,8 @@ namespace
   SelectVisibleCells(int theSelection[4],
 		     vtkRenderer *theRenderer,
 		     vtkDataSet *theInput,
-		     TVectorIds& theVectorIds,
-		     float theTolerance = 0.001)
+		     SVTK_RectPicker::TVectorIds& theVectorIds,
+		     float theTolerance)
   {
     theVectorIds.clear();
 
@@ -141,6 +224,19 @@ namespace
       return;
     
     theVectorIds.reserve(aNumCells/2 + 1);
+
+    SVTK_RectPicker::TVectorIds aVisiblePntIds;
+    SVTK_RectPicker::TVectorIds anInVisiblePntIds;
+    SelectVisiblePoints(theSelection,
+			theRenderer,
+			theInput,
+			aVisiblePntIds,
+			anInVisiblePntIds,
+			theTolerance);
+
+    typedef std::set<vtkIdType> TIdsSet;
+    TIdsSet aVisibleIds(aVisiblePntIds.begin(),aVisiblePntIds.end());
+    TIdsSet anInVisibleIds(anInVisiblePntIds.begin(),anInVisiblePntIds.end());
 
     // Grab the composite perspective transform.  This matrix is used to convert
     // each point to view coordinates.  vtkRenderer provides a WorldToView()
@@ -151,67 +247,46 @@ namespace
     aMatrix->DeepCopy(theRenderer->GetActiveCamera()->
 		      GetCompositePerspectiveTransformMatrix(1,0,1));
 
-    // If we have more than a few query points, we grab the z-buffer for the
-    // selection region all at once and probe the resulting array.  When we
-    // have just a few points, we perform individual z-buffer queries.
-    const int SimpleQueryLimit = 25;
-    float *aZPtr = NULL;
-    if(aNumCells > SimpleQueryLimit){
-      aZPtr = theRenderer->GetRenderWindow()->
-	GetZbufferData(theSelection[0], theSelection[2], theSelection[1], theSelection[3]);
-    }
-
-    float aX[4] = {1.0, 1.0, 1.0, 1.0};
     for(vtkIdType aCellId = 0; aCellId < aNumCells; aCellId++){
-      bool anIsVisible = true;
+      //cout<<"aCellId = "<<aCellId<<"\n";
       vtkCell* aCell = theInput->GetCell(aCellId);
       vtkIdType aNumPts = aCell->GetNumberOfPoints();
+      bool anIsInRectangle = true;
+      bool anIsVisible = false;
       for(vtkIdType anId = 0; anId < aNumPts; anId++){
-	// perform conversion
 	vtkIdType aPntId = aCell->GetPointId(anId);
-	theInput->GetPoint(aPntId,aX);
-	float aView[4];
-	aMatrix->MultiplyPoint(aX,aView);
-	if(aView[3] == 0.0)
-	  continue;
-	theRenderer->SetViewPoint(aView[0]/aView[3], 
-				  aView[1]/aView[3],
-				  aView[2]/aView[3]);
-	theRenderer->ViewToDisplay();
-	float aDX[3];
-	theRenderer->GetDisplayPoint(aDX);
+	//cout<<"\taPntId = "<<aPntId<<"; ";
 
-	// check whether visible and in selection window 
-	if(aDX[0] >= theSelection[0] && aDX[0] <= theSelection[1] &&
-	   aDX[1] >= theSelection[2] && aDX[1] <= theSelection[3])
-	{
-	  float aZ = 0.0;
-	  if(aNumPts > SimpleQueryLimit){
-	    // Access the value from the captured zbuffer.  Note, we only
-	    // captured a portion of the zbuffer, so we need to offset dx by
-	    // the selection window.
-	    aZ = aZPtr[int(aDX[0]) - theSelection[0]
-		       + (int(aDX[1]) - theSelection[2])
-		       *(theSelection[1] - theSelection[0] + 1)];
-	  }else{
-	    aZ = theRenderer->GetZ(int(aDX[0]), 
-				   int(aDX[1]));
-	  }
-	  float aDiff = fabs(aZ-aDX[2]);
-	  if(aDiff > theTolerance){
-	    anIsVisible = false;
-	    break;
-	  }
-	}
+	anIsInRectangle &= 
+	  aVisibleIds.find(aPntId) != aVisibleIds.end() ||
+	  anInVisibleIds.find(aPntId) != anInVisibleIds.end();
+
+	anIsVisible |= aVisibleIds.find(aPntId) != aVisibleIds.end();
       }
-      if(anIsVisible)
+      //cout<<"\t"<<anIsInRectangle<<"; "<<anIsVisible<<"\n";
+      if(anIsInRectangle && anIsVisible)
 	theVectorIds.push_back(aCellId);
     }//for all parts
-    
-    aMatrix->Delete();
-    
-    if(aZPtr)
-      delete [] aZPtr;
+  }
+
+  //----------------------------------------------------------------------------
+  void
+  CalculatePickPosition(vtkRenderer *theRenderer,
+			float theSelectionX, 
+			float theSelectionY, 
+			float theSelectionZ,
+			float thePickPosition[3])
+  {
+    // Convert the selection point into world coordinates.
+    //
+    theRenderer->SetDisplayPoint(theSelectionX, theSelectionY, theSelectionZ);
+    theRenderer->DisplayToWorld();
+    float* aWorldCoords = theRenderer->GetWorldPoint();
+    if ( aWorldCoords[3] != 0.0 ) {
+      for (int i=0; i < 3; i++) {
+	thePickPosition[i] = aWorldCoords[i] / aWorldCoords[3];
+      }
+    }
   }
 }
 
@@ -221,7 +296,10 @@ vtkStandardNewMacro(SVTK_RectPicker);
 //----------------------------------------------------------------------------
 SVTK_RectPicker
 ::SVTK_RectPicker()
-{}
+{
+  this->Tolerance = 0.025; // 1/40th of the renderer window
+  this->PickPoints = 1;
+}
 
 SVTK_RectPicker
 ::~SVTK_RectPicker()
@@ -237,19 +315,141 @@ SVTK_RectPicker
 //----------------------------------------------------------------------------
 int
 SVTK_RectPicker
-::Pick(float selectionPt1[3], float selectionPt2[3], vtkRenderer *ren)
+::Pick(float theSelection[3], float theSelection2[3], vtkRenderer *theRenderer)
 {
-  return Pick(selectionPt1[0], selectionPt1[1], selectionPt1[2], 
-	      selectionPt2[0], selectionPt2[1], selectionPt2[2],
-	      ren);
+  return Pick(theSelection[0], theSelection[1], theSelection[2], 
+	      theSelection2[0], theSelection2[1], theSelection2[2],
+	      theRenderer);
 }
 
 //----------------------------------------------------------------------------
 int 
 SVTK_RectPicker
-::Pick(float selectionX1, float selectionY1, float selectionZ1,
-       float selectionX2, float selectionY2, float selectionZ2,
-       vtkRenderer *renderer)
+::Pick(float theSelectionX, float theSelectionY, float theSelectionZ, 
+       float theSelectionX2, float theSelectionY2, float theSelectionZ2,
+       vtkRenderer *theRenderer)
 {
-  return 0;
+  //  Initialize picking process
+  this->Initialize();
+  myCellIdsMap.clear();
+  myPointIdsMap.clear();
+  this->Renderer = theRenderer;
+
+  // Get camera focal point and position. Convert to display (screen) 
+  // coordinates. We need a depth value for z-buffer.
+  //
+  vtkCamera* aCamera = theRenderer->GetActiveCamera();
+
+  float aCameraFP[4];
+  aCamera->GetFocalPoint(aCameraFP); 
+  aCameraFP[3] = 1.0;
+
+  theRenderer->SetWorldPoint(aCameraFP);
+  theRenderer->WorldToDisplay();
+  float* aDisplayCoords = theRenderer->GetDisplayPoint();
+  float aSelectionZ = aDisplayCoords[2];
+
+  this->SelectionPoint[0] = theSelectionX;
+  this->SelectionPoint[1] = theSelectionY;
+  this->SelectionPoint[2] = theSelectionZ;
+
+  // Convert the selection point into world coordinates.
+  //
+  CalculatePickPosition(theRenderer,
+			theSelectionX,
+			theSelectionY,
+			aSelectionZ,
+			this->PickPosition);
+
+  this->SelectionPoint2[0] = theSelectionX2;
+  this->SelectionPoint2[1] = theSelectionY2;
+  this->SelectionPoint2[2] = theSelectionZ2;
+
+  // Convert the selection point into world coordinates.
+  //
+  CalculatePickPosition(theRenderer,
+			theSelectionX2,
+			theSelectionY2,
+			aSelectionZ,
+			this->PickPosition2);
+
+  // Invoke start pick method if defined
+  this->InvokeEvent(vtkCommand::StartPickEvent,NULL);
+
+  vtkPropCollection *aProps;
+  if ( this->PickFromList ) 
+    aProps = this->GetPickList();
+  else 
+    aProps = theRenderer->GetProps();
+
+  aProps->InitTraversal();
+  while ( vtkProp* aProp = aProps->GetNextProp() ) {
+    aProp->InitPathTraversal();
+    while ( vtkAssemblyPath* aPath = aProp->GetNextPath() ) {
+      vtkMapper *aMapper = NULL;
+      bool anIsPickable = false;
+      vtkActor* anActor = NULL;
+      vtkProp *aPropCandidate = aPath->GetLastNode()->GetProp();
+      if ( aPropCandidate->GetPickable() && aPropCandidate->GetVisibility() ) {
+        anIsPickable = true;
+	anActor = vtkActor::SafeDownCast(aPropCandidate);
+	if ( anActor ) {
+          aMapper = anActor->GetMapper();
+          if ( anActor->GetProperty()->GetOpacity() <= 0.0 )
+	    anIsPickable = false;
+	}
+      }
+      if ( anIsPickable  &&  aMapper && aMapper->GetInput()) {
+	int aSelectionPoint[4] = {int(theSelectionX),
+				  int(theSelectionY),
+				  int(theSelectionX2),
+				  int(theSelectionY2)};
+	if ( this->PickPoints ) {
+	  TVectorIds& aVisibleIds = myPointIdsMap[anActor];
+	  TVectorIds anInVisibleIds;
+	  SelectVisiblePoints(aSelectionPoint,
+			      theRenderer,
+			      aMapper->GetInput(),
+			      aVisibleIds,
+			      anInVisibleIds,
+			      this->Tolerance);
+	  if ( aVisibleIds.empty() ) {
+	    myPointIdsMap.erase(myPointIdsMap.find(anActor));
+	  }
+	} else {
+	  TVectorIds& aVectorIds = myCellIdsMap[anActor];
+	  SelectVisibleCells(aSelectionPoint,
+			     theRenderer,
+			     aMapper->GetInput(),
+			     aVectorIds,
+			     this->Tolerance);
+	  if ( aVectorIds.empty() ) {
+	    myCellIdsMap.erase(myCellIdsMap.find(anActor));
+	  }
+	}
+      }
+    }
+  }
+
+  // Invoke end pick method if defined
+  this->InvokeEvent(vtkCommand::EndPickEvent,NULL);
+
+  return myPointIdsMap.empty() || myCellIdsMap.empty();
 }
+
+
+//----------------------------------------------------------------------------
+const SVTK_RectPicker::TVectorIdsMap& 
+SVTK_RectPicker
+::GetPointIdsMap() const
+{
+  return myPointIdsMap;
+}
+
+const SVTK_RectPicker::TVectorIdsMap& 
+SVTK_RectPicker
+::GetCellIdsMap() const
+{
+  return myCellIdsMap;
+}
+

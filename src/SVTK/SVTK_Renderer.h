@@ -43,7 +43,7 @@ class vtkPointPicker;
 class vtkCellPicker;
 class vtkProperty;
 
-class VTKViewer_CellRectPicker;
+class SVTK_RectPicker;
 
 class VTKViewer_Trihedron;
 class VTKViewer_Transform;
@@ -228,7 +228,9 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
   // Highlight/ Prehighlight devices
   vtkSmartPointer<vtkPointPicker> myPointPicker;
   vtkSmartPointer<vtkCellPicker> myCellPicker;
-  vtkSmartPointer<VTKViewer_CellRectPicker> myCellRectPicker;
+
+  vtkSmartPointer<SVTK_RectPicker> myPointRectPicker;
+  vtkSmartPointer<SVTK_RectPicker> myCellRectPicker;
 
   vtkSmartPointer<vtkProperty> myPreHighlightProperty;
   vtkSmartPointer<vtkProperty> myHighlightProperty;

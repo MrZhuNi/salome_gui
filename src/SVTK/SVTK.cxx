@@ -30,6 +30,8 @@
 #include "SVTK_Prs.h"
 #include "SVTK_Actor.h"
 #include "SALOME_Actor.h"
+#include "SVTK_RectPicker.h"
+#include "SVTK_DeviceActor.h"
 #include "SVTK_CubeAxesActor2D.h"
 #include "SVTK_Functor.h"
 #include "SVTK_View.h"

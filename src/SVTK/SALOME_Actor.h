@@ -64,9 +64,9 @@ class VTKViewer_Transform;
 class VTKViewer_GeometryFilter;
 class VTKViewer_TransformFilter;
 class VTKViewer_PassThroughFilter;
-class VTKViewer_CellRectPicker;
 
 class SVTK_Actor;
+class SVTK_RectPicker;
 class SVTK_InteractorStyle;
 
 extern int SALOME_POINT_SIZE;
@@ -394,9 +394,13 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   void
   SetCellPicker(vtkCellPicker* theCellPicker); 
 
+  //! To set up a picker for point rectangle selection (initialized by #SVTK_Renderer::AddActor)
+  void
+  SetPointRectPicker(SVTK_RectPicker* theRectPicker);
+
   //! To set up a picker for cell rectangle selection (initialized by #SVTK_Renderer::AddActor)
   void
-  SetCellRectPicker(VTKViewer_CellRectPicker* theCellRectPicker);
+  SetCellRectPicker(SVTK_RectPicker* theRectPicker);
 
   //----------------------------------------------------------------------------
   //! To set up a prehighlight property (initialized by #SVTK_Renderer::AddActor)
@@ -450,7 +454,9 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   // Highlight/ Prehighlight devices
   vtkSmartPointer<vtkPointPicker> myPointPicker;
   vtkSmartPointer<vtkCellPicker> myCellPicker;
-  vtkSmartPointer<VTKViewer_CellRectPicker> myCellRectPicker;
+
+  vtkSmartPointer<SVTK_RectPicker> myPointRectPicker;
+  vtkSmartPointer<SVTK_RectPicker> myCellRectPicker;
 
   vtkSmartPointer<SVTK_Actor> myPreHighlightActor;
   vtkSmartPointer<SVTK_Actor> myHighlightActor;

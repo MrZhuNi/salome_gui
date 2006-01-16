@@ -38,7 +38,7 @@
 #include "VTKViewer_TransformFilter.h"
 #include "VTKViewer_PassThroughFilter.h"
 #include "VTKViewer_GeometryFilter.h"
-#include "VTKViewer_CellRectPicker.h"
+#include "SVTK_RectPicker.h"
 
 #include "SVTK_Actor.h"
 
@@ -1046,46 +1046,34 @@ SALOME_Actor
 
     switch(aSelectionMode){
     case NodeSelection: {
-      if( vtkDataSet* aDataSet = GetInput() ) {
-	TColStd_MapOfInteger anIndices;
-	for( int i = 0; i < aDataSet->GetNumberOfPoints(); i++)	{
-	  float aPoint[3];
-	  aDataSet->GetPoint( i, aPoint );
+      myPointRectPicker->InitializePickList();
+      myPointRectPicker->AddPickList(this);
+      myPointRectPicker->Pick( x1, y1, z1, x2, y2, z2, aRenderer );
 
-	  float aPnt[3];
-	  aRenderer->SetWorldPoint( aPoint[0], aPoint[1], aPoint[2], 1.0 );
-	  aRenderer->WorldToDisplay();
-	  aRenderer->GetDisplayPoint( aPnt );
-
-	  if( aPnt[0] > x1 && aPnt[0] < x2 && aPnt[1] > y1 && aPnt[1] < y2 ) {
-	    float aDisp[3];
-	    aRenderer->SetWorldPoint( aPoint[0], aPoint[1], aPoint[2], 1.0 );
-	    aRenderer->WorldToDisplay();
-	    aRenderer->GetDisplayPoint( aDisp );
-
-	    if( myPointPicker->Pick( aDisp[0], aDisp[1], 0.0, aRenderer ) ) {
-	      if( vtkActorCollection* anActorCollection = myPointPicker->GetActors() ) {
-		if( anActorCollection->IsItemPresent( this ) ) {
-		  float aPickedPoint[3];
-		  myPointPicker->GetMapperPosition( aPickedPoint );
-		  vtkIdType aVtkId = aDataSet->FindPoint( aPickedPoint );
-		  if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId, true ) ) {
-		    int anObjId = GetNodeObjId( aVtkId );
-		    anIndices.Add( anObjId );
-		  }
-		}
-	      }
-	    }
+      const SVTK_RectPicker::TVectorIdsMap& aVectorIdsMap = myPointRectPicker->GetPointIdsMap();
+      SVTK_RectPicker::TVectorIdsMap::const_iterator aMapIter = aVectorIdsMap.find(this);
+      TColStd_MapOfInteger anIndexes;
+      if(aMapIter != aVectorIdsMap.end()){
+	const SVTK_RectPicker::TVectorIds& aVectorIds = aMapIter->second;
+	vtkIdType anEnd = aVectorIds.size();
+	SVTK_RectPicker::TVectorIds::const_iterator anIdIter = aVectorIds.begin();
+	for(vtkIdType anId = 0; anId < anEnd; anId++ ) {
+	  int aPointId = aVectorIds[anId];
+	  if( aPointId >= 0 && mySelector->IsValid( this, aPointId, true ) ) {
+	    int anObjId = GetNodeObjId( aPointId );
+	    anIndexes.Add( anObjId );
 	  }
 	}
-	if( !anIndices.IsEmpty() ) {
-	  mySelector->AddOrRemoveIndex( myIO, anIndices, true );
-	  mySelector->AddIObject( this );
-	  anIndices.Clear();
-	}
-	else
-	  mySelector->RemoveIObject( this );
       }
+      
+      if( !anIndexes.IsEmpty() ) {
+	mySelector->AddOrRemoveIndex( myIO, anIndexes, true );
+	mySelector->AddIObject( this );
+	anIndexes.Clear();
+      }
+      else
+	mySelector->RemoveIObject( this );
+
       break;
     }
     case ActorSelection :
@@ -1119,15 +1107,19 @@ SALOME_Actor
     case FaceSelection:
     case VolumeSelection: 
     {
-      myCellRectPicker->SetTolerance( 0.001 );
+      myCellRectPicker->InitializePickList();
+      myCellRectPicker->AddPickList(this);
       myCellRectPicker->Pick( x1, y1, z1, x2, y2, z2, aRenderer );
 
-      VTKViewer_CellDataSet aCellList = myCellRectPicker->GetCellData( this );
+      const SVTK_RectPicker::TVectorIdsMap& aVectorIdsMap = myCellRectPicker->GetCellIdsMap();
+      SVTK_RectPicker::TVectorIdsMap::const_iterator aMapIter = aVectorIdsMap.find(this);
       TColStd_MapOfInteger anIndexes;
-      if( !aCellList.empty() ) {
-	VTKViewer_CellDataSet::iterator anIter = aCellList.begin();
-	for(; anIter != aCellList.end(); ++anIter ) {
-	  int aCellId = anIter->cellId;
+      if(aMapIter != aVectorIdsMap.end()){
+	const SVTK_RectPicker::TVectorIds& aVectorIds = aMapIter->second;
+	vtkIdType anEnd = aVectorIds.size();
+	SVTK_RectPicker::TVectorIds::const_iterator anIdIter = aVectorIds.begin();
+	for(vtkIdType anId = 0; anId < anEnd; anId++ ) {
+	  int aCellId = aVectorIds[anId];
 	  if ( !mySelector->IsValid( this, aCellId ) )
 	    continue;
 
@@ -1168,9 +1160,16 @@ SALOME_Actor
 
 void
 SALOME_Actor
-::SetCellRectPicker(VTKViewer_CellRectPicker* theCellRectPicker) 
+::SetPointRectPicker(SVTK_RectPicker* theRectPicker) 
 {
-  myCellRectPicker = theCellRectPicker;
+  myPointRectPicker = theRectPicker;
+}
+
+void
+SALOME_Actor
+::SetCellRectPicker(SVTK_RectPicker* theRectPicker) 
+{
+  myCellRectPicker = theRectPicker;
 }
 
 //----------------------------------------------------------------------------

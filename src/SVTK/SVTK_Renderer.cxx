@@ -30,7 +30,7 @@
 
 #include "SVTK_Trihedron.h"
 #include "SVTK_CubeAxesActor2D.h"
-#include "VTKViewer_CellRectPicker.h"
+#include "SVTK_RectPicker.h"
 
 #include "SALOME_Actor.h"
 #include "VTKViewer_Actor.h"
@@ -67,7 +67,8 @@ SVTK_Renderer
   myEventCallbackCommand(vtkCallbackCommand::New()),
   myPointPicker(vtkPointPicker::New()),
   myCellPicker(vtkCellPicker::New()),
-  myCellRectPicker(VTKViewer_CellRectPicker::New()),
+  myPointRectPicker(SVTK_RectPicker::New()),
+  myCellRectPicker(SVTK_RectPicker::New()),
   myPreHighlightProperty(vtkProperty::New()),
   myHighlightProperty(vtkProperty::New()),
   myTransform(VTKViewer_Transform::New()),
@@ -79,9 +80,16 @@ SVTK_Renderer
   myTransform->Delete();
 
   SetSelectionTolerance();
+
   myPointPicker->Delete();
   myCellPicker->Delete();
+
+  myPointRectPicker->Delete();
+  myPointRectPicker->PickFromListOn();
+
   myCellRectPicker->Delete();
+  myCellRectPicker->PickFromListOn();
+  myCellRectPicker->PickPointsOff();
 
   //SetPreselectionProp();
   myPreHighlightProperty->Delete();
@@ -207,6 +215,8 @@ SVTK_Renderer
 
     anActor->SetPointPicker(myPointPicker.GetPointer());
     anActor->SetCellPicker(myCellPicker.GetPointer());
+
+    anActor->SetPointRectPicker(myPointRectPicker.GetPointer());
     anActor->SetCellRectPicker(myCellRectPicker.GetPointer());
 
     anActor->SetPreHighlightProperty(myPreHighlightProperty.GetPointer());
@@ -230,6 +240,8 @@ SVTK_Renderer
 
     anActor->SetPointPicker(NULL);
     anActor->SetCellPicker(NULL);
+
+    anActor->SetPointRectPicker(NULL);
     anActor->SetCellRectPicker(NULL);
 
     anActor->SetPreHighlightProperty(NULL);
