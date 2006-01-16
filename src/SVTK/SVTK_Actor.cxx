@@ -178,45 +178,20 @@ SVTK_Actor
   vtkDataSet *aSourceDataSet = theMapActor->GetInput();
   CopyPoints(GetSource(),aSourceDataSet);
 
-  int iEnd = theMapIndex.Extent();
-  int aCellId = -1, aCellCounter = 0;
-  for(int i = 1; i <= iEnd; i++){
-    int anId = theMapIndex( i );
-    if(anId > 0) {
-      aCellCounter++;
-      aCellId = anId;
-    }
-  }
-
-  if(aCellCounter == 1){
-    if(vtkCell* aCell = theMapActor->GetElemCell(aCellId)){
-      if(aCell->GetCellType() <= VTK_LINE){
-	myUnstructuredGrid->InsertNextCell(aCell->GetCellType(),aCell->GetPointIds());
-      }else{
-	int aNbOfParts = aCell->GetNumberOfEdges();
-	for(int i = 1; i <= iEnd; i++){
-	  int aPartId = theMapIndex(i);
-	  if( aPartId < 0){
-	    aPartId = -aPartId-1;
-	    if(0 > aPartId || aPartId >= aNbOfParts) break;
-	    if(vtkCell* anEdgeCell = aCell->GetEdge(aPartId))
-	      myUnstructuredGrid->InsertNextCell(VTK_LINE,anEdgeCell->GetPointIds());
-	  }
+  if(theMapIndex.Extent() == 2){
+    if(vtkCell* aCell = theMapActor->GetElemCell(theMapIndex(1))){
+      int anEdgeId = theMapIndex(2);
+      if(anEdgeId < 0){
+	int anEdgeId = -theMapIndex(2) - 1;
+	int aNbOfEdges = aCell->GetNumberOfEdges();
+	if(0 <= anEdgeId || anEdgeId < aNbOfEdges){
+	  if(vtkCell* anEdge = aCell->GetEdge(anEdgeId))
+	    myUnstructuredGrid->InsertNextCell(VTK_LINE,anEdge->GetPointIds());
 	}
       }
     }
-  }else{
-    int aNbOfParts = aSourceDataSet->GetNumberOfCells();
-    for(int i = 1; i <= iEnd; i++){
-      int aPartId = theMapIndex( i );
-      if(aPartId > 0){
-	if(aPartId >= aNbOfParts) break;
-	vtkCell* aCell = aSourceDataSet->GetCell(aPartId);
-	myUnstructuredGrid->InsertNextCell(aCell->GetCellType(),aCell->GetPointIds());
-      }
-    }
   }
-
+  
   UnShrink();
   if(theMapActor->IsShrunk()){
     SetShrinkFactor(theMapActor->GetShrinkFactor());

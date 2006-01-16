@@ -886,13 +886,13 @@ SALOME_Actor
 	  if(myIsPreselected){
 	    const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
 	    int anExtent = aMapIndex.Extent();
-	    anIsChanged |= (anExtent != 2);
-	    anIsChanged |= (anExtent == 0 && (anObjId != aMapIndex(1) || anEdgeId != aMapIndex(2)));
+	    anIsChanged |= (anExtent == 0);
+	    anIsChanged |= (anExtent == 2 && (anObjId != aMapIndex(1) || anEdgeId != aMapIndex(2)));
 	    if(anIsChanged){
 	      TColStd_IndexedMapOfInteger aMapIndex;
 	      aMapIndex.Add( anObjId );
 	      aMapIndex.Add( anEdgeId );
-	
+
 	      myPreHighlightActor->GetProperty()->SetRepresentationToWireframe();
 	      myPreHighlightActor->MapEdge( this, aMapIndex );
 	    }
@@ -1008,9 +1008,9 @@ SALOME_Actor
 	    mySelector->ClearIObjects();
 	  }
 	  int anEdgeId = GetEdgeId(this,myCellPicker.GetPointer(),anObjId);
-	  if( anEdgeId >= 0 ) {
+	  if( anEdgeId < 0 ) {
 	    mySelector->AddOrRemoveIndex( myIO, anObjId, false );
-	    mySelector->AddOrRemoveIndex( myIO, -anEdgeId-1, true );
+	    mySelector->AddOrRemoveIndex( myIO, anEdgeId, true );
 	    mySelector->AddIObject( this );
 	  } 
 	}
