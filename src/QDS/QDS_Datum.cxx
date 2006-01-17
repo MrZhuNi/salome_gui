@@ -43,6 +43,7 @@ myWid( 0 )
 {
   QHBoxLayout* base = new QHBoxLayout( this );
   base->setAutoAdd( true );
+  setFocusPolicy( StrongFocus );
 }
 
 QDS_Datum::Wrapper::~Wrapper()
@@ -70,6 +71,7 @@ void QDS_Datum::Wrapper::setWidget( QWidget* wid )
   if ( myWid->parent() != this )
     myWid->reparent( this, QPoint( 0, 0 ) );
 
+  setTabOrder( this, myWid );
   setFocusProxy( myWid );
 
   myWid->updateGeometry();
