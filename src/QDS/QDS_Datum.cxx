@@ -248,8 +248,8 @@ QString QDS_Datum::minimumValue() const
   initDatum();
 
   QString min;
-  if ( !myDicItem.IsNull() )
-    min = format( format(), type(), myDicItem->GetMinValue() );
+  if ( !myDicItem.IsNull() && myDicItem->HasData( DDS_DicItem::MinValue ) )
+      min = format( format(), type(), myDicItem->GetMinValue() );
   return min;
 }
 
@@ -258,7 +258,7 @@ QString QDS_Datum::maximumValue() const
   initDatum();
 
   QString max;
-  if ( !myDicItem.IsNull() )
+  if ( !myDicItem.IsNull() && myDicItem->HasData( DDS_DicItem::MaxValue ) )
     max = format( format(), type(), myDicItem->GetMaxValue() );
   return max;
 }

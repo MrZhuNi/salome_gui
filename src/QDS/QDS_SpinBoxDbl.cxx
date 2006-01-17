@@ -134,6 +134,6 @@ void QDS_SpinBoxDbl::unitSystemChanged( const QString& system )
   sb->setPrecision( aPreci );
 
   sb->setLineStep( .1 );
-  sb->setMinValue( minValue().toDouble() );
-  sb->setMaxValue( maxValue().toDouble() );
+  sb->setMinValue( minValue().isEmpty() ? -DBL_MAX : minValue().toDouble() );
+  sb->setMaxValue( maxValue().isEmpty() ? DBL_MAX : maxValue().toDouble() );
 }
