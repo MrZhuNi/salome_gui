@@ -99,6 +99,13 @@ void LightApp_PreferencesDlg::onHelp()
 void LightApp_PreferencesDlg::onApply()
 {
   myPrefs->store();
+  
+  // Fix for Bug PAL11197: Restoring the corrected values from resource manager.
+  // (Correcting in VisuGUI.cxx and SMESHGUI.cxx in methods
+  // ::preferencesChanged( const QString& sect, const QString& name ))
+  myPrefs->retrieve();
+  //
+  
   myPrefs->toBackup();
   mySaved = true;
 }
