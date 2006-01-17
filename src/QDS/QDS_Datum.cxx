@@ -156,6 +156,11 @@ QDS_Datum::~QDS_Datum()
 */
 }
 
+QDS_Datum::operator QWidget*() const
+{
+  return widget( Control );
+}
+
 QString QDS_Datum::id() const
 {
   initDatum();

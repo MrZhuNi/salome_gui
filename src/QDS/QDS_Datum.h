@@ -87,6 +87,8 @@ public:
 
   virtual bool              eventFilter( QObject*, QEvent* );
 
+  operator QWidget*() const;
+
 signals:
   void                      paramChanged();
   void                      paramChanged( QString& );
