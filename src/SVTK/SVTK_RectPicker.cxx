@@ -297,7 +297,7 @@ vtkStandardNewMacro(SVTK_RectPicker);
 SVTK_RectPicker
 ::SVTK_RectPicker()
 {
-  this->Tolerance = 0.025; // 1/40th of the renderer window
+  this->Tolerance = 0.005;
   this->PickPoints = 1;
 }
 
