@@ -548,10 +548,15 @@ bool QDS_Datum::isValid( const bool msgBox, const QString& extMsg, const QString
   if ( type() == DDS_DicItem::String && isDoubleFormat( format() ) )
     return true;
 
+  QString req;
+  if ( !dicItem().IsNull() )
+    req = toQString( dicItem()->GetRequired() );
+
   bool aState = true;
   QString aStr = getString();
+
   if ( aStr.isEmpty() )
-    aState = false;
+    aState = !( req == QString( "yes" ) || req == QString( "true" ) || req.toInt() );
   else
     aState = validate( aStr );
 
@@ -611,7 +616,7 @@ bool QDS_Datum::isValid( const bool msgBox, const QString& extMsg, const QString
     info = QString( "<p><nobr>%1</nobr></p>" ).arg( msg );
 
     QMessageBox::critical( controlWidget() ? controlWidget()->topLevelWidget() : 0,
-                           tr( "DATA_ERR_TITLE" ), info, tr( "BUT_OK" ) );
+                           tr( "DATA_ERR_TITLE" ), info, tr( "OK" ) );
     if ( controlWidget() )
       controlWidget()->setFocus();
   }
