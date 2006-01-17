@@ -942,7 +942,10 @@ SALOME_Actor
   vtkRenderer *aRenderer = theInteractorStyle->GetCurrentRenderer();
   //
   Selection_Mode aSelectionMode = theSelectionEvent->mySelectionMode;
-  bool isShift = theSelectionEvent->myIsShift;
+  bool anIsShift = theSelectionEvent->myIsShift;
+  if( !anIsShift ) {
+    mySelector->RemoveIObject( this );
+  }
 
   float x = theSelectionEvent->myX;
   float y = theSelectionEvent->myY;
@@ -957,15 +960,8 @@ SALOME_Actor
       if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId, true ) ) {
 	int anObjId = GetNodeObjId( aVtkId );
 	if( anObjId >= 0 ) {
-	  if( mySelector->IsSelected( myIO ) )
-	    mySelector->AddOrRemoveIndex( myIO, anObjId, isShift );
-	  else {
-	    if( !isShift ) {
-	      mySelector->ClearIObjects();
-	    }
-	    mySelector->AddOrRemoveIndex( myIO, anObjId, isShift );
-	    mySelector->AddIObject( this );
-	  }
+	  mySelector->AddOrRemoveIndex( myIO, anObjId, anIsShift );
+	  mySelector->AddIObject( this );
 	}
       }
       break;
@@ -982,15 +978,8 @@ SALOME_Actor
 	int anObjId = GetElemObjId( aVtkId );
 	if( anObjId >= 0 ) {
 	  if ( CheckDimensionId(aSelectionMode,this,anObjId) ) {
-	    if( mySelector->IsSelected( myIO ) )
-	      mySelector->AddOrRemoveIndex( myIO, anObjId, isShift );
-	    else {
-	      if( !isShift ) {
-		mySelector->ClearIObjects();
-	      }
-	      mySelector->AddOrRemoveIndex( myIO, anObjId, isShift );
-	      mySelector->AddIObject( this );
-	    }
+	    mySelector->AddOrRemoveIndex( myIO, anObjId, anIsShift );
+	    mySelector->AddIObject( this );
 	  }
 	}
       }
@@ -1004,9 +993,6 @@ SALOME_Actor
       if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId ) ) {
 	int anObjId = GetElemObjId( aVtkId );
 	if( anObjId >= 0 ) {
-	  if( !isShift ) {
-	    mySelector->ClearIObjects();
-	  }
 	  int anEdgeId = GetEdgeId(this,myCellPicker.GetPointer(),anObjId);
 	  if( anEdgeId < 0 ) {
 	    mySelector->AddOrRemoveIndex( myIO, anObjId, false );
@@ -1019,12 +1005,9 @@ SALOME_Actor
     }
     case ActorSelection : 
     {
-      if( mySelector->IsSelected( myIO ) && isShift )
+      if( mySelector->IsSelected( myIO ) && anIsShift )
 	mySelector->RemoveIObject( this );
       else {
-	if( !isShift ) {
-	  mySelector->ClearIObjects();
-	}
 	mySelector->AddIObject( this );
       }
       break;
@@ -1067,7 +1050,7 @@ SALOME_Actor
       }
       
       if( !anIndexes.IsEmpty() ) {
-	mySelector->AddOrRemoveIndex( myIO, anIndexes, true );
+	mySelector->AddOrRemoveIndex( myIO, anIndexes, anIsShift );
 	mySelector->AddIObject( this );
 	anIndexes.Clear();
       }
@@ -1081,7 +1064,7 @@ SALOME_Actor
       float aPnt[3];
       float* aBounds = GetBounds();
 
-      bool picked = true;
+      bool anIsPicked = true;
       for( int i = 0; i <= 1; i++ ) {
 	for( int j = 2; j <= 3; j++ ) {
 	  for( int k = 4; k <= 5; k++ ) {
@@ -1090,14 +1073,14 @@ SALOME_Actor
 	    aRenderer->GetDisplayPoint( aPnt );
 
 	    if( aPnt[0] < x1 || aPnt[0] > x2 || aPnt[1] < y1 || aPnt[1] > y2 ) {
-	      picked = false;
+	      anIsPicked = false;
 	      break;
 	    }
 	  }
 	}
       }
 
-      if( picked )
+      if( anIsPicked )
 	mySelector->AddIObject(this);
 
       break;
@@ -1130,7 +1113,7 @@ SALOME_Actor
 	    }
 	}
       }
-      mySelector->AddOrRemoveIndex( myIO, anIndexes, true );
+      mySelector->AddOrRemoveIndex( myIO, anIndexes, anIsShift );
       mySelector->AddIObject( this );
     }
     default:

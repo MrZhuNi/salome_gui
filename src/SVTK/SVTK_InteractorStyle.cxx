@@ -914,7 +914,8 @@ SVTK_InteractorStyle
 	  }else{
 	    if(myLastHighlitedActor.GetPointer() && myLastHighlitedActor.GetPointer() != anActor)
 	      myLastHighlitedActor->Highlight( this, aSelectionEvent, false );
-	    GetSelector()->ClearIObjects();
+	    if(!myShiftState)
+	      GetSelector()->ClearIObjects();
 	  }
 	  myLastHighlitedActor = anActor;
 	} 
