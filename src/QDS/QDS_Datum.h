@@ -5,6 +5,7 @@
 
 #include <qobject.h>
 #include <qstring.h>
+#include <qvariant.h>
 #include <qguardedptr.h>
 
 #include <DDS_DicItem.h>
@@ -41,6 +42,8 @@ public:
   QString                   minimumValue() const;
   QString                   maximumValue() const;
 
+  virtual QVariant          value() const;
+
   virtual QString           stringValue() const;
   virtual double            doubleValue() const;
   virtual int               integerValue() const;
@@ -51,6 +54,8 @@ public:
 
   virtual void              reset();
   virtual void              clear();
+
+  virtual void              setValue( const QVariant& );
 
   virtual void              setStringValue( const QString& );
   virtual void              setDoubleValue( const double );
