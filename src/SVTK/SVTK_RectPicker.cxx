@@ -73,21 +73,20 @@ namespace
 	int theDY)
   {
     int aRet = 0;
-    if(theDX < theSelection[0] || theDX > theSelection[2] ||
-       theDY < theSelection[1] || theDY > theSelection[3])
-      return aRet;
+    float aZ = -1.0;
+    if(theDX >= theSelection[0] && theDX <= theSelection[2] &&
+       theDY >= theSelection[1] && theDY <= theSelection[3])
+    {
+      // Access the value from the captured zbuffer.  Note, we only
+      // captured a portion of the zbuffer, so we need to offset dx by
+      // the selection window.
+      aZ = GetZ(theZPtr,theSelection,theDX,theDY);
+      if(aZ > theTolerance && aZ < 1.0 - theTolerance){
+	aRet = fabs(aZ - theDZ) <= theTolerance;
+      }
+    }
 
-    // Access the value from the captured zbuffer.  Note, we only
-    // captured a portion of the zbuffer, so we need to offset dx by
-    // the selection window.
-    float aZ = GetZ(theZPtr,theSelection,theDX,theDY);
-    
-    if(aZ == 0.0 || aZ == 1.0)
-      return aRet;
-
-    aRet = fabs(aZ - theDZ) <= theTolerance? 1: -1;
-    //cout<<"Check = {"<<theDX<<", "<<theDY<<", "<<theDZ<<", "<<aZ<<"} = "<<aRet<<"\n";
-
+    //cout<<"\tCheck = {"<<theDX<<", "<<theDY<<", "<<theDZ<<", "<<aZ<<"} = "<<aRet<<"\n";
     return aRet;
   }
 
@@ -123,8 +122,9 @@ namespace
     // We grab the z-buffer for the selection region all at once and probe the resulting array.
     float *aZPtr = theRenderer->GetRenderWindow()->
       GetZbufferData(theSelection[0], theSelection[1], theSelection[2], theSelection[3]);
+
+    //cout<<"theSelection = {"<<theSelection[0]<<", "<<theSelection[1]<<", "<<theSelection[2]<<", "<<theSelection[3]<<"}\n";
     /*
-    cout<<"theSelection = {"<<theSelection[0]<<", "<<theSelection[1]<<", "<<theSelection[2]<<", "<<theSelection[3]<<"}\n";
     for(int iY = theSelection[1]; iY <= theSelection[3];  iY++){
       for(int iX = theSelection[0]; iX <= theSelection[2];  iX++){
 	cout<<GetZ(aZPtr,theSelection,iX,iY)<<" ";
@@ -153,7 +153,7 @@ namespace
       if(aDX[0] >= theSelection[0] && aDX[0] <= theSelection[2] &&
          aDX[1] >= theSelection[1] && aDX[1] <= theSelection[3])
       {
-	//cout<<"\naPntId "<<aPntId<<"; aDX = {"<<aDX[0]<<", "<<aDX[1]<<", "<<aDX[2]<<"}\n";
+	//cout<<"aPntId "<<aPntId<<"; aDX = {"<<aDX[0]<<", "<<aDX[1]<<", "<<aDX[2]<<"}\n";
 	int aDX0 = int(aDX[0]);
 	int aDX1 = int(aDX[1]);
 
@@ -164,30 +164,30 @@ namespace
 	  goto ADD_INVISIBLE;
 
 	static int aMaxRadius = 5;
-	for(int aRadius = 0; aRadius < aMaxRadius; aRadius++){
+	for(int aRadius = 1; aRadius < aMaxRadius; aRadius++){
 	  int aStartDX[2] = {aDX0 - aRadius, aDX1 - aRadius};
-	  for(int i = 0; i < aRadius; i++){
+	  for(int i = 0; i <= aRadius; i++){
 	    int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aStartDX[0]++,aStartDX[1]);
 	    if(aRet > 0)
 	      goto ADD_VISIBLE;
 	    if(aRet < 0)
 	      goto ADD_INVISIBLE;
 	  }
-	  for(int i = 0; i < aRadius; i++){
+	  for(int i = 0; i <= aRadius; i++){
 	    int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aStartDX[0],aStartDX[1]++);
 	    if(aRet > 0)
 	      goto ADD_VISIBLE;
 	    if(aRet < 0)
 	      goto ADD_INVISIBLE;
 	  }
-	  for(int i = 0; i < aRadius; i++){
+	  for(int i = 0; i <= aRadius; i++){
 	    int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aStartDX[0]--,aStartDX[1]);
 	    if(aRet > 0)
 	      goto ADD_VISIBLE;
 	    if(aRet < 0)
 	      goto ADD_INVISIBLE;
 	  }
-	  for(int i = 0; i < aRadius; i++){
+	  for(int i = 0; i <= aRadius; i++){
 	    int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aStartDX[0],aStartDX[1]--);
 	    if(aRet > 0)
 	      goto ADD_VISIBLE;
@@ -210,6 +210,16 @@ namespace
 
 
   //----------------------------------------------------------------------------
+  inline
+  void
+  GetCenter(const float theBounds[6],
+	    float theCenter[3])
+  {
+    theCenter[0] = (theBounds[1] + theBounds[0]) / 2.0;
+    theCenter[1] = (theBounds[3] + theBounds[2]) / 2.0;
+    theCenter[2] = (theBounds[5] + theBounds[4]) / 2.0;
+  }
+
   void
   SelectVisibleCells(int theSelection[4],
 		     vtkRenderer *theRenderer,
@@ -248,24 +258,48 @@ namespace
 		      GetCompositePerspectiveTransformMatrix(1,0,1));
 
     for(vtkIdType aCellId = 0; aCellId < aNumCells; aCellId++){
-      //cout<<"aCellId = "<<aCellId<<"\n";
       vtkCell* aCell = theInput->GetCell(aCellId);
-      vtkIdType aNumPts = aCell->GetNumberOfPoints();
-      bool anIsInRectangle = true;
-      bool anIsVisible = false;
-      for(vtkIdType anId = 0; anId < aNumPts; anId++){
-	vtkIdType aPntId = aCell->GetPointId(anId);
-	//cout<<"\taPntId = "<<aPntId<<"; ";
 
-	anIsInRectangle &= 
-	  aVisibleIds.find(aPntId) != aVisibleIds.end() ||
-	  anInVisibleIds.find(aPntId) != anInVisibleIds.end();
+      float aBounds[6];
+      aCell->GetBounds(aBounds);
 
-	anIsVisible |= aVisibleIds.find(aPntId) != aVisibleIds.end();
+      float aCenter[3];
+      GetCenter(aBounds,aCenter);
+
+      float aView[4];
+      float aX[4] = {aCenter[0], aCenter[1], aCenter[2], 1.0};
+      aMatrix->MultiplyPoint(aX,aView);
+
+      if(aView[3] == 0.0)
+	continue;
+
+      theRenderer->SetViewPoint(aView[0]/aView[3], 
+				aView[1]/aView[3],
+				aView[2]/aView[3]);
+      theRenderer->ViewToDisplay();
+
+      float aDX[3];
+      theRenderer->GetDisplayPoint(aDX);
+      
+      // check whether visible and in selection window 
+      if(aDX[0] >= theSelection[0] && aDX[0] <= theSelection[2] &&
+         aDX[1] >= theSelection[1] && aDX[1] <= theSelection[3])
+      {
+
+	//cout<<"aCellId = "<<aCellId<<": ";
+	vtkIdType aNumPts = aCell->GetNumberOfPoints();
+	bool anIsVisible = true;
+	for(vtkIdType anId = 0; anId < aNumPts; anId++){
+	  vtkIdType aPntId = aCell->GetPointId(anId);
+	  //cout<<aPntId<<"; ";
+	  anIsVisible = aVisibleIds.find(aPntId) != aVisibleIds.end();
+	  if(!anIsVisible)
+	    break;
+	}
+	//cout<<"\t"<<anIsVisible<<"\n";
+	if(anIsVisible)
+	  theVectorIds.push_back(aCellId);
       }
-      //cout<<"\t"<<anIsInRectangle<<"; "<<anIsVisible<<"\n";
-      if(anIsInRectangle && anIsVisible)
-	theVectorIds.push_back(aCellId);
     }//for all parts
   }
 
