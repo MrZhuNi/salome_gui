@@ -18,8 +18,6 @@ public:
 
   virtual void         setAlignment( const int, const int = Label );
 
-  QLineEdit*           lineEdit() const;
-
 signals:
   void                 returnPressed();
 
@@ -31,6 +29,7 @@ private slots:
 
 protected:
   virtual QWidget*     createControl( QWidget* );
+  QLineEdit*           lineEdit() const;
 
   virtual QString      getString() const;
   virtual void         setString( const QString& );
