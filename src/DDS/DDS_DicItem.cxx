@@ -444,7 +444,7 @@ void DDS_DicItem::FillDataMap( TCollection_AsciiString theID, const LDOM_Element
       else if ( aType.IsEqual( "Integer" ) )
         aEnumType = Integer;
 
-      if ( !aValueDescr.getAttributeNode( DDS_Dictionary::KeyWord( "VD_MAXV" ) ).isNull() )
+      if ( !aValueDescr.getAttributeNode( DDS_Dictionary::KeyWord( "VD_MINV" ) ).isNull() )
         myData |= MinValue;
       aMinV = aValueDescr.getAttribute( DDS_Dictionary::KeyWord( "VD_MINV" ) );
       aMinV.RemoveAll( ' ' );
