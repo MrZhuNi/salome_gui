@@ -784,7 +784,9 @@ void
 SALOME_Actor
 ::highlight(bool theIsHighlight)
 {
-  myOutline->SetBounds( GetInput()->GetBounds() );
+  float aBounds[6];
+  GetInput()->GetBounds(aBounds);
+  myOutline->SetBounds(aBounds);
   myOutlineActor->SetVisibility( GetVisibility() && theIsHighlight );
   myIsHighlighted = theIsHighlight; 
 }
