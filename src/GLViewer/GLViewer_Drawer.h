@@ -128,7 +128,7 @@ public:
   ~GLViewer_TexFont();
   
   //! Generating font texture
-  void            generateTexture();
+  bool            generateTexture();
   //! Drawing string theStr in point with coords theX and theY
   void            drawString( QString  theStr,
                               GLdouble theX = 0.0,
@@ -152,8 +152,14 @@ public:
   static QMap<GLViewer_TexFindId,GLViewer_TexIdStored> TexFontBase;
   //! Map for strorage generated bitmaps fonts
   static QMap<GLViewer_TexFindId,GLuint>               BitmapFontCache;
+
+private:
+  //! Initializes font parameters
+  void            init();
   
-protected:
+private:
+  //! Number of characters in the font texture
+  int             myNbSymbols;
   //! Array of letter width
   int*            myWidths;
   //! Array of letter positions in texture
@@ -172,6 +178,10 @@ protected:
   bool            myIsResizeable;
   //! Min/mag filter
   GLuint          myMinMagFilter;
+  //! Font height
+  int             myFontHeight;
+  //! Diagnostic information
+  int             myMaxRowWidth;
 };
 
 /***************************************************************************
