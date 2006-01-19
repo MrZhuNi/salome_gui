@@ -98,6 +98,7 @@ void VTKViewer_GeometryFilter::UnstructuredGridExecute()
   vtkCellArray *Connectivity = input->GetCells();
   if (Connectivity == NULL) {return;}
   vtkIdType cellId;
+  vtkGenericCell *cell = vtkGenericCell::New();
   int i;
   int allVisible;
   vtkIdType npts = 0;
@@ -279,7 +280,25 @@ void VTKViewer_GeometryFilter::UnstructuredGridExecute()
 	  outputCD->CopyData(cd,cellId,newCellId);
           break;
 	  
-	case VTK_CONVEX_POINT_SET:{
+	case VTK_CONVEX_POINT_SET: {
+	  aCellType = VTK_TRIANGLE;
+	  numFacePts = 3;
+	  input->GetCell(cellId,cell);
+	  for (int j=0; j < cell->GetNumberOfFaces(); j++){
+	    vtkCell *face = cell->GetFace(j);
+	    input->GetCellNeighbors(cellId, face->PointIds, cellIds);
+	    if ( true || cellIds->GetNumberOfIds() <= 0 || myShowInside ) {
+	      aNewPts[0] = face->PointIds->GetId(0);
+	      aNewPts[1] = face->PointIds->GetId(1);
+	      aNewPts[2] = face->PointIds->GetId(2);
+	      newCellId = output->InsertNextCell(aCellType,numFacePts,aNewPts);
+	      if(myStoreMapping)
+		myVTK2ObjIds.push_back(cellId);
+	      outputCD->CopyData(cd,cellId,newCellId);
+	    }
+	  }
+	  break;
+	  /*
 	  TCellArray tmpCellArray;
 	  try{
 	    CONVEX_TOOL::GetPolygonalFaces(input,cellId,tmpCellArray); // "VTKViewer_ConvexTool.cxx"
@@ -310,6 +329,7 @@ void VTKViewer_GeometryFilter::UnstructuredGridExecute()
 	    outputCD->CopyData(cd,cellId,newCellId);
 	  }
 	  break;
+	  */
 	}
         case VTK_TETRA: {
           for (faceId = 0; faceId < 4; faceId++)

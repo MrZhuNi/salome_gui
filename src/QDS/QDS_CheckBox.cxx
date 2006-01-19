@@ -23,7 +23,10 @@ QDS_CheckBox::~QDS_CheckBox()
 */
 QString QDS_CheckBox::getString() const
 {
-  return checkBox() && checkBox()->isChecked() ? "1" : "0";
+  QString val;
+  if ( checkBox() && checkBox()->state() != QButton::NoChange )
+    val = checkBox()->isChecked() ? "1" : "0";
+  return val;
 }
 
 /*!
@@ -31,10 +34,20 @@ QString QDS_CheckBox::getString() const
 */
 void QDS_CheckBox::setString( const QString& txt )
 {
-  bool isOk;
-  int val = (int)txt.toDouble( &isOk );
-  if ( checkBox() )
+  if ( !checkBox() )
+    return;
+
+  if ( txt.isEmpty() )
+  {
+    checkBox()->setTristate();
+    checkBox()->setNoChange();
+  }
+  else
+  {
+    bool isOk;
+    int val = (int)txt.toDouble( &isOk );
     checkBox()->setChecked( isOk && val != 0 );
+  }
 }
 
 /*!
@@ -53,6 +66,7 @@ QWidget* QDS_CheckBox::createControl( QWidget* parent )
   QCheckBox* cb = new QCheckBox( parent );
   connect( cb, SIGNAL( stateChanged( int ) ), SLOT( onParamChanged() ) );
   connect( cb, SIGNAL( toggled( bool ) ), SIGNAL( toggled( bool ) ) );
+  connect( cb, SIGNAL( stateChanged( int ) ), this, SLOT( onStateChanged( int ) ) );
   return cb;
 }
 
@@ -62,6 +76,12 @@ QWidget* QDS_CheckBox::createControl( QWidget* parent )
 void QDS_CheckBox::onParamChanged()
 {
   emit paramChanged();
+}
+
+void QDS_CheckBox::onStateChanged( int state )
+{
+  if ( state != QButton::NoChange && checkBox() )
+    checkBox()->setTristate( false );
 }
 
 void QDS_CheckBox::setChecked( const bool theState )

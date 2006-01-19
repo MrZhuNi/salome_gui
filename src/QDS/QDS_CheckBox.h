@@ -21,6 +21,7 @@ signals:
 
 private slots:
   void                 onParamChanged();
+  void                 onStateChanged( int );
 
 protected:
   QCheckBox*           checkBox() const;

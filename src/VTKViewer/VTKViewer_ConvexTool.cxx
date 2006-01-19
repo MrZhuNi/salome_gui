@@ -66,8 +66,8 @@ static float FACE_ANGLE_TOLERANCE=1.5;
   static int MYDEBUG = 0;
   static int MYDEBUG_REMOVE = 0;
 #else
-  static int MYDEBUG = 0;
-  static int MYDEBUG_REMOVE = 0;
+  static int MYDEBUG = 1;
+  static int MYDEBUG_REMOVE = 1;
 #endif
 
 /*! \fn static void GetCenter(TInput* theGrid,TCell theptIds,float *center)
@@ -519,7 +519,7 @@ static void GetAndRemoveIdsOnOneLine(vtkPoints* points,
 }
 
 static vtkConvexPointSet* RemoveAllUnneededPoints(vtkConvexPointSet* convex){
-  vtkSmartPointer<vtkConvexPointSet> out = vtkConvexPointSet::New();
+  vtkConvexPointSet* out = vtkConvexPointSet::New();
   
   TUIDS two_points,input_points,out_two_points_ids,removed_points_ids,loc_removed_points_ids;
   vtkIdList* aPointIds = convex->GetPointIds();
@@ -624,7 +624,7 @@ static vtkConvexPointSet* RemoveAllUnneededPoints(vtkConvexPointSet* convex){
   out->Modified();
   out->Initialize();
   
-  return out.GetPointer();
+  return out;
 }
 
 void GetPolygonalFaces(vtkUnstructuredGrid* theGrid,int cellId,TCellArray &outputCellArray)
@@ -632,7 +632,7 @@ void GetPolygonalFaces(vtkUnstructuredGrid* theGrid,int cellId,TCellArray &outpu
   if (theGrid->GetCellType(cellId) == VTK_CONVEX_POINT_SET){
     // get vtkCell type = VTK_CONVEX_POINT_SET
     if(vtkConvexPointSet* convex_in = static_cast<vtkConvexPointSet*>(theGrid->GetCell(cellId))){
-      vtkConvexPointSet* convex = RemoveAllUnneededPoints(convex_in);
+      vtkSmartPointer<vtkConvexPointSet> convex = RemoveAllUnneededPoints(convex_in);
       TCellArray f2points;
       float convex_center[3]; // convex center point coorinat
       int aNbFaces = convex->GetNumberOfFaces();
