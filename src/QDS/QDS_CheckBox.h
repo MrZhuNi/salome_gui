@@ -16,6 +16,8 @@ public:
   bool                 isChecked() const;
   void                 setChecked( const bool );
 
+  virtual void         clear();
+
 signals:
   void                 toggled( bool );
 

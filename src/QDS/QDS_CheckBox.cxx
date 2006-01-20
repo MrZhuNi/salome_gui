@@ -19,6 +19,14 @@ QDS_CheckBox::~QDS_CheckBox()
 }
 
 /*!
+  Sets the state "NoChange" for checkbox.
+*/
+void QDS_CheckBox::clear()
+{
+  setStringValue( "-1" );
+}
+
+/*!
   Returns string from QCheckBox widget.
 */
 QString QDS_CheckBox::getString() const
@@ -37,17 +45,15 @@ void QDS_CheckBox::setString( const QString& txt )
   if ( !checkBox() )
     return;
 
-  if ( txt.isEmpty() )
+  bool isOk;
+  int val = (int)txt.toDouble( &isOk );
+  if ( isOk && val < 0 )
   {
     checkBox()->setTristate();
     checkBox()->setNoChange();
   }
   else
-  {
-    bool isOk;
-    int val = (int)txt.toDouble( &isOk );
     checkBox()->setChecked( isOk && val != 0 );
-  }
 }
 
 /*!
