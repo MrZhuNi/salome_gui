@@ -568,6 +568,7 @@ SVTK_MainWindow
 ::onFrontView()
 {
   GetRenderer()->OnFrontView();
+  Repaint();
 }
 
 //----------------------------------------------------------------------------
@@ -576,6 +577,7 @@ SVTK_MainWindow
 ::onBackView()
 {
   GetRenderer()->OnBackView();
+  Repaint();
 }
 
 //----------------------------------------------------------------------------
@@ -584,6 +586,7 @@ SVTK_MainWindow
 ::onTopView()
 {
   GetRenderer()->OnTopView();
+  Repaint();
 }
 
 //----------------------------------------------------------------------------
@@ -592,6 +595,7 @@ SVTK_MainWindow
 ::onBottomView()
 {
   GetRenderer()->OnBottomView();
+  Repaint();
 }
 
 //----------------------------------------------------------------------------
@@ -600,6 +604,7 @@ SVTK_MainWindow
 ::onLeftView()
 {
   GetRenderer()->OnLeftView();
+  Repaint();
 }
 
 //----------------------------------------------------------------------------
@@ -608,6 +613,7 @@ SVTK_MainWindow
 ::onRightView()
 {
   GetRenderer()->OnRightView();
+  Repaint();
 }
 
 //----------------------------------------------------------------------------
