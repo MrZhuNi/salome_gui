@@ -30,6 +30,8 @@
 #include <qlistview.h>
 #include <qpopupmenu.h>
 
+#include <time.h>
+
 /*!
     Class: OB_Browser::ToolTip
     Descr: Tool tip for OB_Browser.
