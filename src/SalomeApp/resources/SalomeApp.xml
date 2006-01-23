@@ -17,7 +17,7 @@
     <parameter name="portkill"   value="no"/>
     <parameter name="killall"    value="no"/>
     <parameter name="noexcepthandler"  value="no"/>
-    <parameter name="modules"    value="GEOM,SMESH,VISU,SUPERV,MED,COMPONENT"/>
+    <parameter name="modules"    value="GEOM,SMESH,VISU,SUPERV,MED,COMPONENT,PYCALCULATOR"/>
     <parameter name="pyModules"  value=""/>
     <parameter name="embedded"   value="SalomeAppEngine,study,cppContainer,registry,moduleCatalog"/>
     <parameter name="standalone" value="pyContainer,supervContainer"/>
@@ -48,6 +48,7 @@
     <parameter name="MED"          value="${MED_ROOT_DIR}/share/salome/resources"/>
     <parameter name="StdMeshers"   value="${SMESH_ROOT_DIR}/share/salome/resources"/>
     <parameter name="COMPONENT"    value="${COMPONENT_ROOT_DIR}/share/salome/resources"/>
+    <parameter name="PYCALCULATOR" value="${PYCALCULATOR_ROOT_DIR}/share/salome/resources"/>
     <parameter name="HELLO"        value="${HELLO_ROOT_DIR}/share/salome/resources"/>
     <parameter name="PYHELLO"      value="${PYHELLO_ROOT_DIR}/share/salome/resources"/>
     <parameter name="NETGENPlugin" value="${NETGENPLUGIN_ROOT_DIR}/share/salome/resources"/>
