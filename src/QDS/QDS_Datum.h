@@ -144,9 +144,10 @@ protected:
 
   virtual void              unitSystemChanged( const QString& );
 
+  void                      initDatum() const;
+
 private:
   void                      initialize();
-  void                      initDatum() const;
 
   Wrapper*                  wrapper( QWidget* ) const;
   Wrapper*                  wrapper( const int ) const;
