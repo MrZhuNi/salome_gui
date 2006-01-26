@@ -158,3 +158,16 @@ void SUIT_ViewWindow::onAccelAction( int _action )
 void SUIT_ViewWindow::action( const int  )
 {
 }
+
+/*! The method returns the visual parameters of this view as a formated string
+ */
+QString SUIT_ViewWindow::getVisualParameters()
+{
+  return " ";
+}
+
+/* The method restors visual parameters of this view from a formated string
+ */
+void SUIT_ViewWindow::setVisualParameters( const QString& parameters )
+{
+}
