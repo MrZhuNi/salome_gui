@@ -743,9 +743,6 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QPopupMenu* t
  3. update object browser if it existing */
 void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 {
-  // update existing data models (already loaded SComponents)
-  LightApp_Application::updateObjectBrowser(updateModels);
-
   // update "non-existing" (not loaded yet) data models
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>(activeStudy());
   if ( study )
@@ -760,16 +757,24 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 	if ( aComponent->ComponentDataType() == "Interface Applicative" )
 	  continue; // skip the magic "Interface Applicative" component
 
-        SalomeApp_DataModel::BuildTree( aComponent, study->root(), study, /*skipExisitng=*/true );
+	OB_Browser* ob = objectBrowser();
+	const bool isAutoUpdate = ob->isAutoUpdate();
+	ob->setAutoUpdate( false );
+	SalomeApp_DataModel::synchronize( aComponent, study );
+	ob->setAutoUpdate( isAutoUpdate );
+        //SalomeApp_DataModel::BuildTree( aComponent, study->root(), study, /*skipExisitng=*/true );
       }
     }
   }
 
-  if ( objectBrowser() )
+  // update existing data models (already loaded SComponents)
+  LightApp_Application::updateObjectBrowser( updateModels );
+
+/*  if ( objectBrowser() )
   {
     objectBrowser()->updateGeometry();
-    objectBrowser()->updateTree( 0, false );
-  }
+    objectBrowser()->updateTree();
+  }*/
 }
 
 /*!Display Catalog Genenerator dialog */
