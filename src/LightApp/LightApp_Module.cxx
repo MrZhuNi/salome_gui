@@ -424,6 +424,25 @@ LightApp_Displayer* LightApp_Module::displayer()
   return 0;
 }
 
+/*!
+ * \brief Virtual public
+ *
+ * This method is called just before the study document is saved, so the module has a possibility
+ * to store visual parameters in AttributeParameter attribue(s)
+ */
+void LightApp_Module::storeVisualParameters() {
+  cout << "LightApp_Module::storeVisualParameters"   << endl;
+}
+
+/*!
+ * \brief Virtual public
+ *
+ * This method is called after the study document is opened, so the module has a possibility to restore
+ * visual parameters
+ */
+void LightApp_Module::restoreVisualParameters() {}
+
+
 void LightApp_Module::onShowHide()
 {
   if( !sender()->inherits( "QAction" ) || !popupMgr() )
