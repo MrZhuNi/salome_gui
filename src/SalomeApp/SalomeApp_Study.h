@@ -66,9 +66,12 @@ public:
   virtual void        children( const QString&, QStringList& ) const;
   virtual void        components( QStringList& ) const;
 
-  void                storeViewers();
-  void                restoreViewers();
-  _PTR(AttributeParameter) getViewerParameters();
+  int                 getNbSavePoints();
+  QString             getNameOfSavePoint(int savePoint);
+  void                setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint);
+  void                storeViewers(int savePoint);
+  void                restoreViewers(int savePoint);
+  _PTR(AttributeParameter) getViewerParameters(int savePoint);
 
 protected:
   virtual void        saveModuleData ( QString theModuleName, QStringList theListOfFiles );

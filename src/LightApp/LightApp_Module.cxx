@@ -430,9 +430,7 @@ LightApp_Displayer* LightApp_Module::displayer()
  * This method is called just before the study document is saved, so the module has a possibility
  * to store visual parameters in AttributeParameter attribue(s)
  */
-void LightApp_Module::storeVisualParameters() {
-  cout << "LightApp_Module::storeVisualParameters"   << endl;
-}
+void LightApp_Module::storeVisualParameters(int savePoint) {}
 
 /*!
  * \brief Virtual public
@@ -440,7 +438,7 @@ void LightApp_Module::storeVisualParameters() {
  * This method is called after the study document is opened, so the module has a possibility to restore
  * visual parameters
  */
-void LightApp_Module::restoreVisualParameters() {}
+void LightApp_Module::restoreVisualParameters(int savePoint) {}
 
 
 void LightApp_Module::onShowHide()

@@ -66,8 +66,8 @@ public:
 
   virtual LightApp_Displayer*         displayer();
 
-  virtual void                        storeVisualParameters();
-  virtual void                        restoreVisualParameters();
+  virtual void                        storeVisualParameters(int savePoint);
+  virtual void                        restoreVisualParameters(int savePoint);
 
 public slots:
   virtual bool                        activateModule( SUIT_Study* );

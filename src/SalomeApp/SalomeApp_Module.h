@@ -39,8 +39,8 @@ public:
 
   SalomeApp_Application*              getApp() const;
 
-  virtual void                        storeVisualParameters();
-  virtual void                        restoreVisualParameters();
+  virtual void                        storeVisualParameters(int savePoint);
+  virtual void                        restoreVisualParameters(int savePoint);
 
 protected:
   virtual CAM_DataModel*              createDataModel();

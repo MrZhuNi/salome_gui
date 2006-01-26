@@ -181,7 +181,7 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
   emit opened( this );
   study->IsSaved(true);
 
-  restoreViewers();//############### VISUAL PARAMETERS
+  restoreViewers(1);//############### VISUAL PARAMETERS
 
   return res;
 }
@@ -231,7 +231,7 @@ bool SalomeApp_Study::loadDocument( const QString& theStudyName )
 //=======================================================================
 bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 {
-  storeViewers();//############### VISUAL PARAMETERS
+  storeViewers(1);//############### VISUAL PARAMETERS
 
   ModelList list; dataModels( list );
 
@@ -268,7 +268,7 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 //=======================================================================
 bool SalomeApp_Study::saveDocument()
 {
-  storeViewers(); //############### VISUAL PARAMETERS
+  storeViewers(1); //############### VISUAL PARAMETERS
 
   ModelList list; dataModels( list );
 
@@ -686,11 +686,41 @@ void SalomeApp_Study::components( QStringList& comps ) const
 }
 
 //================================================================
+// Function : getNbSavePoints
+/*! Purpose : returns a number of saved points
+*/
+//================================================================
+int SalomeApp_Study::getNbSavePoints()
+{
+  return 1;
+}
+
+//================================================================
+// Function : getNameOfSavePoint
+/*! Purpose : returns a name of save point
+*/
+//================================================================
+QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
+{
+  return "Default save point";
+}
+
+//================================================================
+// Function : setNameOfSavePoint
+/*! Purpose : sets a name of save point
+*/
+//================================================================
+void SalomeApp_Study::setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint)
+{
+  
+}
+
+//================================================================
 // Function : storeViewers
 /*! Purpose : store the visual parameters of the viewers
 */
 //================================================================
-void SalomeApp_Study::storeViewers()
+void SalomeApp_Study::storeViewers(int savePoint)
 {
   SUIT_ViewWindow* activeWindow = application()->desktop()->activeWindow();
 
@@ -734,7 +764,7 @@ void SalomeApp_Study::storeViewers()
   ((SalomeApp_Application*)application())->modules( list );
   for(SalomeApp_Module* module = (SalomeApp_Module*)list.first(); module; module = (SalomeApp_Module*)list.next()) {
     container.addModule(module->moduleName());
-    module->storeVisualParameters(); 
+    module->storeVisualParameters(savePoint); 
   }
 }
 
@@ -743,9 +773,19 @@ void SalomeApp_Study::storeViewers()
 /*! Purpose : restore the visual parameters of the viewers
 */
 //================================================================
-void SalomeApp_Study::restoreViewers()
+void SalomeApp_Study::restoreViewers(int savePoint)
 {
   ViewerContainer container;
+
+  //Remove all already existent veiwers and their views
+  ViewManagerList lst;
+  ((SalomeApp_Application*)application())->viewManagers(lst);
+  for(QPtrListIterator<SUIT_ViewManager> it(lst); it.current(); ++it) {
+    SUIT_ViewManager* vm = it.current();
+    if(vm) ((SalomeApp_Application*)application())->removeViewManager(vm);
+  }
+
+  //Restore the viewers
   int nbViewers = container.getNbViewers();
   int activeViewID = container.getActiveViewID();
   SUIT_ViewWindow *viewWin = 0, *activeView = 0;
@@ -793,7 +833,7 @@ void SalomeApp_Study::restoreViewers()
   for(int i = 0; i<v.size(); i++) {
     ((SalomeApp_Application*)application())->activateModule(v[i].c_str());
     SalomeApp_Module* module = (SalomeApp_Module*)(((SalomeApp_Application*)application())->activeModule());
-    module->restoreVisualParameters();
+    module->restoreVisualParameters(savePoint);
   }
 
   QString activeModuleName = container.getActiveModule();
@@ -807,7 +847,7 @@ void SalomeApp_Study::restoreViewers()
  *            parameters
 */
 //================================================================
-_PTR(AttributeParameter) SalomeApp_Study::getViewerParameters()
+_PTR(AttributeParameter) SalomeApp_Study::getViewerParameters(int savePoint)
 {
   _PTR(StudyBuilder) builder = studyDS()->NewBuilder();
   _PTR(SObject) so = studyDS()->FindComponent("Interface Applicative");
@@ -841,7 +881,7 @@ ViewerContainer::ViewerContainer()
 
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( SUIT_Session::session()->activeApplication()->activeStudy() );
   if( !study ) return;
-  _ap = study->getViewerParameters();
+  _ap = study->getViewerParameters(0);
 }
 
 int ViewerContainer::getNbViewers()
