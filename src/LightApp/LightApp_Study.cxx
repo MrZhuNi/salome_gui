@@ -264,6 +264,18 @@ void LightApp_Study::children( const QString&, QStringList& ) const
 //================================================================
 bool LightApp_Study::isComponent( const QString& entry ) const
 {
+  if( !root() )
+    return false;
+
+  DataObjectList ch;
+  root()->children( ch );
+  DataObjectList::const_iterator anIt = ch.begin(), aLast = ch.end();
+  for( ; anIt!=aLast; anIt++ )
+  {
+    LightApp_DataObject* obj = dynamic_cast<LightApp_DataObject*>( *anIt );
+    if( obj && obj->entry()==entry )
+      return true;
+  }
   return false;
 }
 
