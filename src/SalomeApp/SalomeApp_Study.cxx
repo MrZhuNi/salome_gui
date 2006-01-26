@@ -52,7 +52,7 @@ using namespace std;
 class SALOMEAPP_EXPORT ViewerContainer
 {
  public:
-  ViewerContainer();
+  ViewerContainer(int savePoint);
   /*! returns a number of viewers*/
   int getNbViewers();
   /*! sets an active view ID*/
@@ -82,7 +82,10 @@ class SALOMEAPP_EXPORT ViewerContainer
   QString getActiveModule();
   std::vector<std::string> getModules();
 
-  void clear();
+  void setSavePointName(const QString& name);
+  QString getSavePointName();
+
+  void init();
 
  protected:
   _PTR(AttributeParameter) _ap;
@@ -702,7 +705,8 @@ int SalomeApp_Study::getNbSavePoints()
 //================================================================
 QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 {
-  return "Default save point";
+  ViewerContainer container(savePoint); 
+  return container.getSavePointName();
 }
 
 //================================================================
@@ -712,7 +716,8 @@ QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 //================================================================
 void SalomeApp_Study::setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint)
 {
-  
+  ViewerContainer container(savePoint); 
+  container.setSavePointName(nameOfSavePoint);
 }
 
 //================================================================
@@ -725,8 +730,8 @@ void SalomeApp_Study::storeViewers(int savePoint)
   SUIT_ViewWindow* activeWindow = application()->desktop()->activeWindow();
 
   //Remove the previous content of the attribute
-  ViewerContainer container;  
-  container.clear();
+  ViewerContainer container(savePoint);  
+  container.init();
 
   SUIT_ViewManager* vm = 0;
   ViewManagerList lst;
@@ -775,7 +780,7 @@ void SalomeApp_Study::storeViewers(int savePoint)
 //================================================================
 void SalomeApp_Study::restoreViewers(int savePoint)
 {
-  ViewerContainer container;
+  ViewerContainer container(savePoint);
 
   //Remove all already existent veiwers and their views
   ViewManagerList lst;
@@ -865,23 +870,21 @@ _PTR(AttributeParameter) SalomeApp_Study::getViewerParameters(int savePoint)
 #define PT_INTARRAY  5
 #define PT_STRARRAY  6
 
-#define AP_ID_OF_VIEWERS  1 //Int array
-#define AP_ID_OF_VIEWS    2 //Int array
-#define AP_MODULES        1 //String array
-#define AP_ACTIVE_VIEW    1 //INT
-#define AP_ACTIVE_MODULE  1 //STRING
+#define AP_ID_OF_VIEWERS   1 //Int array
+#define AP_ID_OF_VIEWS     2 //Int array
+#define AP_MODULES         1 //String array
+#define AP_ACTIVE_VIEW     1 //INT
+#define AP_ACTIVE_MODULE   1 //STRING
+#define AP_SAVE_POINT_NAME 2 //STRING
 
 #define START_VIEWER_ID  100
 #define START_VIEW_ID    200
 
-ViewerContainer::ViewerContainer()
+ViewerContainer::ViewerContainer(int savePoint)
 {
-  _currentViewerID = START_VIEWER_ID;
-  _currentViewID =  START_VIEW_ID;
-
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( SUIT_Session::session()->activeApplication()->activeStudy() );
   if( !study ) return;
-  _ap = study->getViewerParameters(0);
+  _ap = study->getViewerParameters(savePoint);
 }
 
 int ViewerContainer::getNbViewers()
@@ -1025,7 +1028,23 @@ vector<string> ViewerContainer::getModules()
   return _ap->GetStrArray(AP_MODULES);
 }
 
-void ViewerContainer::clear()
+void ViewerContainer::setSavePointName(const QString& name)
+{
+  if(!_ap) return;
+  _ap->SetString(AP_SAVE_POINT_NAME, name.latin1());
+}
+
+QString ViewerContainer::getSavePointName()
+{
+  if(!_ap) return "";
+  if(!_ap->IsSet(AP_SAVE_POINT_NAME, PT_STRING)) return "";
+  return _ap->GetString(AP_SAVE_POINT_NAME);
+}
+
+
+void ViewerContainer::init()
 {
   _ap->Clear();
+  _currentViewerID = START_VIEWER_ID;
+  _currentViewID =  START_VIEW_ID; 
 }
