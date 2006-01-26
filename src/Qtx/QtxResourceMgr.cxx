@@ -36,8 +36,9 @@
   Level: Internal
 */
 
-QtxResourceMgr::Resources::Resources( const QString& fileName )
-: myFileName( fileName )
+QtxResourceMgr::Resources::Resources( const QtxResourceMgr* mgr, const QString& fileName )
+: myFileName( fileName ),
+  myMgr( const_cast<QtxResourceMgr*>( mgr ) )
 {
 }
 
@@ -130,6 +131,11 @@ QString QtxResourceMgr::Resources::path( const QString& sec, const QString& pref
   return filePath;
 }
 
+QtxResourceMgr* QtxResourceMgr::Resources::resMgr() const
+{
+  return myMgr;
+}
+
 QtxResourceMgr::Section& QtxResourceMgr::Resources::section( const QString& sn )
 {
   if ( !mySections.contains( sn ) )
@@ -157,12 +163,30 @@ QString QtxResourceMgr::Resources::fileName( const QString& sect, const QString&
       path = Qtx::addSlash( path ) + name;
     }
   }
-  return QDir::convertSeparators( path );
+  if( !path.isEmpty() )
+  {
+    QString fname = QDir::convertSeparators( path );
+    QFileInfo inf( fname );
+    fname = inf.absFilePath();
+    return fname;
+  }
+  return QString();
 }
 
 QPixmap QtxResourceMgr::Resources::loadPixmap( const QString& sect, const QString& prefix, const QString& name ) const
 {
-  return QPixmap( fileName( sect, prefix, name ) );
+  QString fname = fileName( sect, prefix, name );
+  bool toCache = resMgr() ? resMgr()->isPixmapCached() : false;
+  QPixmap p;
+  if( toCache && myPixmapCache.contains( fname ) )
+    p = myPixmapCache[fname];
+  else
+  {
+    p.load( fname );
+    if( toCache )
+      ( ( QMap<QString,QPixmap>& )myPixmapCache ).insert( fname, p );
+  }
+  return p;
 }
 
 QTranslator* QtxResourceMgr::Resources::loadTranslator( const QString& sect, const QString& prefix, const QString& name ) const
@@ -642,7 +666,8 @@ bool QtxResourceMgr::Format::save( Resources* res )
 */
 QtxResourceMgr::QtxResourceMgr( const QString& appName, const QString& resVarTemplate )
 : myAppName( appName ),
-myCheckExist( true )
+  myCheckExist( true ),
+  myIsPixmapCached( true )
 {
   QString envVar = !resVarTemplate.isEmpty() ? resVarTemplate : QString( "%1Resources" );
   if ( envVar.contains( "%1" ) )
@@ -721,16 +746,33 @@ void QtxResourceMgr::initialize( const bool autoLoad ) const
   QtxResourceMgr* that = (QtxResourceMgr*)this;
 
   if ( !userFileName( appName() ).isEmpty() )
-    that->myResources.append( new Resources( userFileName( appName() ) ) );
+    that->myResources.append( new Resources( this, userFileName( appName() ) ) );
 
   for ( QStringList::const_iterator it = myDirList.begin(); it != myDirList.end(); ++it )
   {
     QString path = Qtx::addSlash( *it ) + globalFileName( appName() );
-    that->myResources.append( new Resources( path ) );
+    that->myResources.append( new Resources( this, path ) );
   }
 
   if ( autoLoad )
     that->load();
+}
+
+/*!
+  \brief Return true if all loaded pixmaps are stored in internal map; by default: true
+*/
+bool QtxResourceMgr::isPixmapCached() const
+{
+  return myIsPixmapCached;
+}
+
+/*!
+  \brief Set true, if it is necessary to store all loaded pixmap in internal map
+  (it accelerates following calls of loadPixmap)
+*/
+void QtxResourceMgr::setIsPixmapCached( const bool on )
+{
+  myIsPixmapCached = on;
 }
 
 /*!

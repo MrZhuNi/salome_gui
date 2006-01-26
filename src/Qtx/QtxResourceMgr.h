@@ -68,6 +68,9 @@ public:
   bool            checkExisting() const;
   virtual void    setCheckExisting( const bool );
 
+  bool            isPixmapCached() const;
+  void            setIsPixmapCached( const bool );
+
   void            clear();
 
   bool            value( const QString&, const QString&, int& ) const;
@@ -165,6 +168,7 @@ private:
   bool            myCheckExist;
   TransListMap    myTranslator;
   QPixmap         myDefaultPix;
+  bool            myIsPixmapCached;
 };
 
 /*!
@@ -202,7 +206,7 @@ private:
 class QtxResourceMgr::Resources
 {
 public:
-  Resources( const QString& );
+  Resources( const QtxResourceMgr*, const QString& );
   virtual ~Resources();
 
   QString                file() const;
@@ -230,6 +234,9 @@ public:
 
   QString                path( const QString&, const QString&, const QString& ) const;
 
+protected:
+  QtxResourceMgr*        resMgr() const;
+
 private:
   Section&               section( const QString& );
   const Section&         section( const QString& ) const;
@@ -242,6 +249,8 @@ private:
 private:
   SectionMap             mySections;
   QString                myFileName;
+  QMap<QString,QPixmap>  myPixmapCache;
+  QtxResourceMgr*        myMgr;
 
   friend class QtxResourceMgr::Format;
 };
