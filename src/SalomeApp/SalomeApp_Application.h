@@ -26,6 +26,7 @@ class QComboBox;
 class QDockWindow;
 
 class LightApp_Preferences;
+class SalomeApp_Study;
 class SalomeApp_Module;
 
 class SALOME_LifeCycleCORBA;
@@ -94,6 +95,8 @@ private slots:
   void                                onCatalogGen();
   void                                onRegDisplay();
   void                                onOpenWith();
+
+  friend class SalomeApp_Study;
 };
 
 #ifdef WIN32

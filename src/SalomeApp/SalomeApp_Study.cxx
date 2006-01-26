@@ -33,13 +33,63 @@
 #include <qptrlist.h>
 
 #include "utilities.h"
-#include "string.h"
-#include "vector.h"
+#include <iostream.h>
+#include <string>
+#include <vector>
+
+#include <SUIT_Session.h>
 
 #include "SALOMEDS_Tool.hxx"
 
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Exception)
+
+using namespace std;
+
+/*!
+ * \brief internal class
+*/
+class SALOMEAPP_EXPORT ViewerContainer
+{
+ public:
+  ViewerContainer();
+  /*! returns a number of viewers*/
+  int getNbViewers();
+  /*! sets an active view ID*/
+  void setActiveViewID(int viewID);
+  /*! returns an active view ID*/
+  int getActiveViewID();
+  /*! returns an ID of the viewer with given number [1:nbViewers]*/
+  int getViewerID(int viewerNumber);
+  /*! returns a type of the viewer with given ID*/
+  std::string getViewerType(int viewerID);
+  /*! returns the added viewer ID */
+  int addViewer(const QString& type);
+  /*! returns a number of views of the viewer with given ID*/
+  int getNbViews(int viewerID);
+  /*! returns an ID of the view with given number [1:nbViews]*/
+  int getViewID(int viewerID, int viewNumber);
+  /*! adds a view of the viewer */
+  int addView(int viewerID, const QString& caption, const QString& parameters);
+  /*! return a caption of the view with given ID*/
+  QString getViewCaption(int viewID);
+  /*! return parameters of the view with given ID*/
+  QString getViewParameters(int viewID);
+  
+
+  void addModule(const QString& name);
+  void setActiveModule(const QString& name);
+  QString getActiveModule();
+  std::vector<std::string> getModules();
+
+  void clear();
+
+ protected:
+  _PTR(AttributeParameter) _ap;
+  int _currentViewerID;
+  int _currentViewID;
+};
+
 
 /*!
   Constructor.
@@ -130,6 +180,9 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
   
   emit opened( this );
   study->IsSaved(true);
+
+  restoreViewers();//############### VISUAL PARAMETERS
+
   return res;
 }
 
@@ -178,6 +231,8 @@ bool SalomeApp_Study::loadDocument( const QString& theStudyName )
 //=======================================================================
 bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 {
+  storeViewers();//############### VISUAL PARAMETERS
+
   ModelList list; dataModels( list );
 
   SalomeApp_DataModel* aModel = (SalomeApp_DataModel*)list.first();
@@ -199,8 +254,7 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
        res = isAscii ? 
 	 SalomeApp_Application::studyMgr()->SaveAsASCII( theFileName.latin1(), studyDS(), isMultiFile ) :
 	 SalomeApp_Application::studyMgr()->SaveAs     ( theFileName.latin1(), studyDS(), isMultiFile ) &&
-    CAM_Study::saveDocumentAs( theFileName ) &&  //SRN: BugID IPAL9377, removed usage of uninitialized variable <res>
-    saveStudyData(theFileName);
+    CAM_Study::saveDocumentAs( theFileName ) && saveStudyData(theFileName);
 
   if ( res )
     emit saved( this );
@@ -214,6 +268,8 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 //=======================================================================
 bool SalomeApp_Study::saveDocument()
 {
+  storeViewers(); //############### VISUAL PARAMETERS
+
   ModelList list; dataModels( list );
 
   SalomeApp_DataModel* aModel = (SalomeApp_DataModel*)list.first();
@@ -221,7 +277,7 @@ bool SalomeApp_Study::saveDocument()
   for ( ; aModel; aModel = (SalomeApp_DataModel*)list.next() ) {
     listOfFiles.clear();
     aModel->save(listOfFiles);
-    if ( !listOfFiles.isEmpty() )
+    if ( !listOfFiles.isEmpty() ) 
       saveModuleData(aModel->module()->name(), listOfFiles);
   }
 
@@ -627,4 +683,309 @@ void SalomeApp_Study::components( QStringList& comps ) const
       continue; // skip the magic "Interface Applicative" component
     comps.append( aComponent->ComponentDataType().c_str() );
   }
+}
+
+//================================================================
+// Function : storeViewers
+/*! Purpose : store the visual parameters of the viewers
+*/
+//================================================================
+void SalomeApp_Study::storeViewers()
+{
+  SUIT_ViewWindow* activeWindow = application()->desktop()->activeWindow();
+
+  //Remove the previous content of the attribute
+  ViewerContainer container;  
+  container.clear();
+
+  SUIT_ViewManager* vm = 0;
+  ViewManagerList lst;
+  ((SalomeApp_Application*)application())->viewManagers(lst);
+  for(QPtrListIterator<SUIT_ViewManager> it(lst); it.current(); ++it) {
+    vm = it.current();
+    if(vm) {
+      int view_count = vm->getViewsCount();
+      if(!view_count) continue; //No views is opened in the viewer
+      
+      int viewerID = container.addViewer(vm->getType());
+
+      QPtrVector<SUIT_ViewWindow> views = vm->getViews();
+      for(int i = 0; i<view_count; i++) {
+	SUIT_ViewWindow* vw = views[i];
+	
+	QString visualParameters = vw->getVisualParameters();
+	int viewID = container.addView(viewerID, vw->caption(), vw->getVisualParameters());
+	
+	if(vw == activeWindow) container.setActiveViewID(viewID); //Store the active view ID
+      }
+    }
+  }
+
+  //Sava a name of the active module
+  CAM_Module* activeModule = ((SalomeApp_Application*)application())->activeModule();
+  QString moduleName = "";
+  if(activeModule) {
+    moduleName = activeModule->moduleName();
+    container.setActiveModule(moduleName);
+  }
+
+  //Store visual parameters of the modules
+  QPtrList<CAM_Module> list; 
+  ((SalomeApp_Application*)application())->modules( list );
+  for(SalomeApp_Module* module = (SalomeApp_Module*)list.first(); module; module = (SalomeApp_Module*)list.next()) {
+    container.addModule(module->moduleName());
+    module->storeVisualParameters(); 
+  }
+}
+
+//================================================================
+// Function : restoreViewers
+/*! Purpose : restore the visual parameters of the viewers
+*/
+//================================================================
+void SalomeApp_Study::restoreViewers()
+{
+  ViewerContainer container;
+  int nbViewers = container.getNbViewers();
+  int activeViewID = container.getActiveViewID();
+  SUIT_ViewWindow *viewWin = 0, *activeView = 0;
+
+  for(int i = 1; i <= nbViewers; i++) {
+    int viewerID = container.getViewerID(i);
+    std::string type = container.getViewerType(viewerID);
+    SUIT_ViewManager* vm = ((SalomeApp_Application*)application())->createViewManager(type.c_str());
+    if(!vm) continue; //Unknown viewer
+    
+    
+    int nbViews = container.getNbViews(viewerID);
+    //Create nbViews-1 view (-1 because 1 view is created by createViewManager)
+    for(int i = 1; i< nbViews; i++)  vm->createViewWindow();
+    
+    int viewCount = vm->getViewsCount();
+    if(viewCount != nbViews) {
+      cout << "Unknow error, Can't create a view!" << endl;
+      continue;
+    }
+
+     //Resize the views, set their captions and apply visual parameters.
+    QPtrVector<SUIT_ViewWindow> views = vm->getViews();  
+    for(int i = 1; i<=viewCount; i++) {
+      viewWin = views[i-1];
+      if(!viewWin) continue;
+      if(application()->desktop()) 
+	viewWin->resize( (int)( application()->desktop()->width() * 0.6 ), (int)( application()->desktop()->height() * 0.6 ) );
+      int viewID = container.getViewID(viewerID, i);
+      viewWin->setCaption(container.getViewCaption(viewID));
+      viewWin->setVisualParameters(container.getViewParameters(viewID));
+      if(!activeView && viewID == activeViewID) activeView = viewWin;
+    }
+  }
+
+  //Set focus to an active view window
+  if(activeView) {
+    activeView->show();
+    activeView->raise();
+    activeView->setActiveWindow();
+    activeView->setFocus();
+  }
+
+  vector<string> v = container.getModules();
+  for(int i = 0; i<v.size(); i++) {
+    ((SalomeApp_Application*)application())->activateModule(v[i].c_str());
+    SalomeApp_Module* module = (SalomeApp_Module*)(((SalomeApp_Application*)application())->activeModule());
+    module->restoreVisualParameters();
+  }
+
+  QString activeModuleName = container.getActiveModule();
+  if(activeModuleName != "") ((SalomeApp_Application*)application())->activateModule(activeModuleName);
+  
+}
+
+//================================================================
+// Function : getViewerParameters
+/*! Purpose : Return an attribute that stores the viewers'
+ *            parameters
+*/
+//================================================================
+_PTR(AttributeParameter) SalomeApp_Study::getViewerParameters()
+{
+  _PTR(StudyBuilder) builder = studyDS()->NewBuilder();
+  _PTR(SObject) so = studyDS()->FindComponent("Interface Applicative");
+  if(!so) so = builder->NewComponent("Interface Applicative"); 
+  return builder->FindOrCreateAttribute(so, "AttributeParameter");
+}
+
+/*###############################################################################################*/
+
+#define PT_INTEGER   0
+#define PT_REAL      1
+#define PT_BOOLEAN   2
+#define PT_STRING    3
+#define PT_REALARRAY 4
+#define PT_INTARRAY  5
+#define PT_STRARRAY  6
+
+#define AP_ID_OF_VIEWERS  1 //Int array
+#define AP_ID_OF_VIEWS    2 //Int array
+#define AP_MODULES        1 //String array
+#define AP_ACTIVE_VIEW    1 //INT
+#define AP_ACTIVE_MODULE  1 //STRING
+
+#define START_VIEWER_ID  100
+#define START_VIEW_ID    200
+
+ViewerContainer::ViewerContainer()
+{
+  _currentViewerID = START_VIEWER_ID;
+  _currentViewID =  START_VIEW_ID;
+
+  SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( SUIT_Session::session()->activeApplication()->activeStudy() );
+  if( !study ) return;
+  _ap = study->getViewerParameters();
+}
+
+int ViewerContainer::getNbViewers()
+{
+  if(!_ap) return -1;
+  if(!_ap->IsSet(AP_ID_OF_VIEWERS, PT_INTARRAY)) return 0;
+  return _ap->GetIntArray(AP_ID_OF_VIEWERS).size();
+}
+
+void ViewerContainer::setActiveViewID(int viewerID)
+{
+  if(!_ap) return;
+  _ap->SetInt(AP_ACTIVE_VIEW, viewerID);
+}
+
+int ViewerContainer::getActiveViewID()
+{
+  if(!_ap) return -1;
+  if(!_ap->IsSet(AP_ACTIVE_VIEW, PT_INTEGER)) return -1;
+  return _ap->GetInt(AP_ACTIVE_VIEW);
+}
+
+int ViewerContainer::getViewerID(int viewerNumber)
+{
+  if(!_ap) return -1;
+  vector<int> v;
+  if(_ap->IsSet(AP_ID_OF_VIEWERS, PT_INTARRAY)) v = _ap->GetIntArray(AP_ID_OF_VIEWERS);
+  if(v.size() < viewerNumber) return -1;
+  return v[viewerNumber-1];
+}
+
+string ViewerContainer::getViewerType(int viewerID)
+{
+  if(!_ap) return "";
+  if(!_ap->IsSet(viewerID, PT_STRING)) return "";
+  return _ap->GetString(viewerID);
+}
+
+int ViewerContainer::addViewer(const QString& type)
+{
+  if(!_ap) return -1;
+  vector<int> v;
+  if(_ap->IsSet(AP_ID_OF_VIEWERS, PT_INTARRAY)) v = _ap->GetIntArray(AP_ID_OF_VIEWERS);
+  int viewerID = _currentViewerID;
+  v.push_back(viewerID);
+  _ap->SetIntArray(AP_ID_OF_VIEWERS, v); //Added a new viewer to the list of viewers
+  _ap->SetString(viewerID, type.latin1()); //Viewer type
+
+  //Compute the next viewer ID
+  _currentViewerID++;
+
+  return viewerID;
+}
+
+int ViewerContainer::getNbViews(int viewerID)
+{
+  if(!_ap) return -1;
+  if(!_ap->IsSet(viewerID, PT_INTARRAY)) return 0;
+  return _ap->GetIntArray(viewerID).size();
+}
+
+int ViewerContainer::getViewID(int viewerID, int viewNumber)
+{
+  if(!_ap) return -1;
+  //Get a list of view ID's associated with the given viewer
+  vector<int> v;
+  if(_ap->IsSet(viewerID, PT_INTARRAY)) v = _ap->GetIntArray(viewerID);
+  if(v.size() < viewNumber) return -1;
+  return v[viewNumber-1];  
+}
+
+int ViewerContainer::addView(int viewerID, const QString& caption, const QString& parameters)
+{
+  if(!_ap) return -1;
+  //Get a list of view ID's associated with the given viewer
+  vector<int> v;
+  if(_ap->IsSet(viewerID, PT_INTARRAY)) v = _ap->GetIntArray(viewerID);
+  int viewID = _currentViewID;
+
+  v.push_back(viewID);
+  _ap->SetIntArray(viewerID, v); //Add a view to the list of viewer's views
+
+  vector<string> vs;
+  vs.push_back(caption.latin1());
+  vs.push_back(parameters.latin1());
+  _ap->SetStrArray(viewID, vs); //Store view's caption and parameters
+
+  
+
+  //Compute the next view ID
+  _currentViewID++;
+
+  return viewID;
+}
+
+QString ViewerContainer::getViewCaption(int viewID)
+{
+  if(!_ap) return "";
+  vector<string> vs;
+  if(_ap->IsSet(viewID, PT_STRARRAY)) vs = _ap->GetStrArray(viewID);
+  if(vs.size() < 2) return "";
+  return vs[0];
+}
+
+QString ViewerContainer::getViewParameters(int viewID)
+{
+  if(!_ap) return "";
+  vector<string> vs;
+  if(_ap->IsSet(viewID, PT_STRARRAY)) vs = _ap->GetStrArray(viewID);
+  if(vs.size() < 2) return "";
+  return vs[1];
+}
+
+void ViewerContainer::addModule(const QString& name)
+{
+  vector<string> v;
+  if(!_ap) return;
+  if(_ap->IsSet(AP_MODULES, PT_STRARRAY)) v = _ap->GetStrArray(AP_MODULES);
+  v.push_back(name.latin1());
+  _ap->SetStrArray(AP_MODULES, v);
+}
+
+void ViewerContainer::setActiveModule(const QString& name)
+{
+  if(!_ap) return;
+  _ap->SetString(AP_ACTIVE_MODULE, name.latin1());
+}
+
+QString ViewerContainer::getActiveModule()
+{
+  if(!_ap) return "";
+  if(!_ap->IsSet(AP_ACTIVE_MODULE, PT_STRING)) return "";
+  return _ap->GetString(AP_ACTIVE_MODULE);
+}
+
+vector<string> ViewerContainer::getModules()
+{
+  vector<string> v;
+  if(!_ap) return v;
+  if(!_ap->IsSet(AP_MODULES, PT_STRARRAY)) return v;
+  return _ap->GetStrArray(AP_MODULES);
+}
+
+void ViewerContainer::clear()
+{
+  _ap->Clear();
 }

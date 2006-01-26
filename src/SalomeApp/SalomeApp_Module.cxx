@@ -97,3 +97,26 @@ void SalomeApp_Module::extractContainers( const SALOME_ListIO& source, SALOME_Li
     dest.Append( obj );
   }
 }
+
+/*!
+ * \brief Virtual public
+ *
+ * This method is called just before the study document is saved, so the module has a possibility
+ * to store visual parameters in AttributeParameter attribue(s)
+ */
+void SalomeApp_Module::storeVisualParameters()
+{
+  cout << "SalomeApp_Module::storeVisualParameters" << endl;  
+}
+
+/*!
+ * \brief Virtual public
+ *
+ * This method is called after the study document is opened, so the module has a possibility to restore
+ * visual parameters
+ */
+void SalomeApp_Module::restoreVisualParameters()
+{
+  cout << "SalomeApp_Module::restoreVisualParameters" << endl;
+}
+

@@ -66,6 +66,10 @@ public:
   virtual void        children( const QString&, QStringList& ) const;
   virtual void        components( QStringList& ) const;
 
+  void                storeViewers();
+  void                restoreViewers();
+  _PTR(AttributeParameter) getViewerParameters();
+
 protected:
   virtual void        saveModuleData ( QString theModuleName, QStringList theListOfFiles );
   virtual void        openModuleData ( QString theModuleName, QStringList& theListOfFiles );
