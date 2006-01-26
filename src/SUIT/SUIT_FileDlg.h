@@ -62,6 +62,9 @@ private:
   void                addExtension();
   bool                processPath( const QString& path );
 
+  QString             dirPath() const; // QFileDialog::dirPath() has a bug on Linux Debian (1 level up from correct 
+                                       // directory is returned).  This redefinition fixes the bug.  
+
 protected slots:
   void                accept();        
   void                reject(); 
