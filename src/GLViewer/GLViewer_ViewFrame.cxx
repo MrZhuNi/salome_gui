@@ -547,3 +547,16 @@ void GLViewer_ViewFrame::wheelEvent( QWheelEvent* e )
     break;
   }
 }
+
+/*! The method returns the visual parameters of this view as a formated string
+ */
+QString GLViewer_ViewFrame::getVisualParameters()
+{
+  return " ";
+}
+
+/* The method restors visual parameters of this view from a formated string
+ */
+void GLViewer_ViewFrame::setVisualParameters( const QString& parameters )
+{
+}

@@ -559,3 +559,56 @@ QImage VTKViewer_ViewWindow::dumpView()
   QPixmap px = QPixmap::grabWindow( myRenderWindow->winId() );
   return px.convertToImage();
 }
+
+/*! The method returns the visual parameters of this view as a formated string
+ */
+QString VTKViewer_ViewWindow::getVisualParameters()
+{
+  double pos[3], focalPnt[3], viewUp[3], parScale, scale[3];
+
+  vtkCamera* camera = myRenderer->GetActiveCamera();
+  camera->GetPosition( pos );
+  camera->GetFocalPoint( focalPnt );
+  camera->GetViewUp( viewUp );
+  parScale = camera->GetParallelScale();
+  GetScale( scale );
+
+  return QString( "%1*%2*%3*%4*%5*%6*%7*%8*%9*%10*%11*%12*%13" ).arg( 
+    pos[0] ).arg( pos[1] ).arg( pos[2] ).arg( focalPnt[0] ).arg( focalPnt[1] ).arg( 
+    focalPnt[2] ).arg( viewUp[0] ).arg( viewUp[1] ).arg( viewUp[2] ).arg( parScale ).arg(
+    scale[0] ).arg( scale[1] ).arg( scale[2] );
+}
+
+/* The method restors visual parameters of this view from a formated string
+ */
+void VTKViewer_ViewWindow::setVisualParameters( const QString& parameters )
+{
+  QStringList paramsLst = QStringList::split( '*', parameters, true );
+  if ( paramsLst.size() == 13 ) {
+    printf( "-- VTK::setVisualParameters = %f %f %f %f %f %f %f %f %f %f %f %f %f\n", paramsLst[0].toDouble(),
+	    paramsLst[1].toDouble(), paramsLst[2].toDouble(), paramsLst[3].toDouble(), paramsLst[4].toDouble(), 
+	    paramsLst[5].toDouble(), paramsLst[6].toDouble(), paramsLst[7].toDouble(), paramsLst[8].toDouble(), 
+	    paramsLst[9].toDouble(), paramsLst[10].toDouble(), paramsLst[11].toDouble(), paramsLst[12].toDouble() );
+
+    double pos[3], focalPnt[3], viewUp[3], parScale, scale[3];
+    pos[0] = paramsLst[0].toDouble();
+    pos[0] = paramsLst[1].toDouble();
+    pos[0] = paramsLst[2].toDouble();
+    focalPnt[0] = paramsLst[3].toDouble();
+    focalPnt[0] = paramsLst[4].toDouble();
+    focalPnt[0] = paramsLst[5].toDouble();
+    viewUp[0] = paramsLst[6].toDouble();
+    viewUp[0] = paramsLst[7].toDouble();
+    viewUp[0] = paramsLst[8].toDouble();
+    parScale = paramsLst[9].toDouble();
+    scale[0] = paramsLst[10].toDouble();
+    scale[0] = paramsLst[11].toDouble();
+    scale[0] = paramsLst[12].toDouble();
+    vtkCamera* camera = myRenderer->GetActiveCamera();
+    camera->SetPosition( pos );
+    camera->SetFocalPoint( focalPnt );
+    camera->SetViewUp( viewUp );
+    camera->SetParallelScale( parScale );
+    SetScale( scale );
+  }
+}
