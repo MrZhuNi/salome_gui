@@ -107,6 +107,9 @@ public:
   VTKViewer_Trihedron*  GetTrihedron() {return this->myTrihedron;};
   SVTK_CubeAxesActor2D* GetCubeAxes() {return this->myCubeAxes;};
 
+  virtual QString   getVisualParameters();
+  virtual void      setVisualParameters( const QString& parameters );
+
 public slots:
   void onSelectionChanged();
 
