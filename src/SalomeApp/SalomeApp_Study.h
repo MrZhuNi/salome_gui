@@ -69,8 +69,8 @@ public:
   int                 getNbSavePoints();
   QString             getNameOfSavePoint(int savePoint);
   void                setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint);
-  void                storeViewers(int savePoint);
-  void                restoreViewers(int savePoint);
+  void                storeState(int savePoint);
+  void                restoreState(int savePoint);
   _PTR(AttributeParameter) getViewerParameters(int savePoint);
 
 protected:

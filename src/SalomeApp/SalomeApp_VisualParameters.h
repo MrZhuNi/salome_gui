@@ -23,6 +23,10 @@
 
 #include <string>
 #include <vector>
+#include <qstring.h>
+
+#include "SUIT_Session.h"
+#include "SalomeApp_Study.h"
 
 #include <SALOMEDSClient.hxx>
 
@@ -32,7 +36,7 @@
 class SALOMEAPP_EXPORT SalomeApp_VisualParameters
 {
 public:
-  SalomeApp_VisualParameters(_PTR(SComponent), const int savePoint); 
+  SalomeApp_VisualParameters(const _PTR(SComponent)& sco, const int savePoint); 
   
   void setColor(const std::string& entry, std::vector<double> color);
   std::vector<double> getColor(const std::string& entry);
@@ -61,6 +65,53 @@ public:
  private:
   _PTR(AttributeParameter) _ap;
 
+};
+
+/*!
+ * \brief internal class
+*/
+class SALOMEAPP_EXPORT ViewerContainer
+{
+ public:
+  ViewerContainer(int savePoint);
+  /*! returns a number of viewers*/
+  int getNbViewers();
+  /*! sets an active view ID*/
+  void setActiveViewID(int viewID);
+  /*! returns an active view ID*/
+  int getActiveViewID();
+  /*! returns an ID of the viewer with given number [1:nbViewers]*/
+  int getViewerID(int viewerNumber);
+  /*! returns a type of the viewer with given ID*/
+  std::string getViewerType(int viewerID);
+  /*! returns the added viewer ID */
+  int addViewer(const QString& type);
+  /*! returns a number of views of the viewer with given ID*/
+  int getNbViews(int viewerID);
+  /*! returns an ID of the view with given number [1:nbViews]*/
+  int getViewID(int viewerID, int viewNumber);
+  /*! adds a view of the viewer */
+  int addView(int viewerID, const QString& caption, const QString& parameters);
+  /*! return a caption of the view with given ID*/
+  QString getViewCaption(int viewID);
+  /*! return parameters of the view with given ID*/
+  QString getViewParameters(int viewID);
+  
+
+  void addModule(const QString& name);
+  void setActiveModule(const QString& name);
+  QString getActiveModule();
+  std::vector<std::string> getModules();
+
+  void setSavePointName(const QString& name);
+  QString getSavePointName();
+
+  void init();
+
+ protected:
+  _PTR(AttributeParameter) _ap;
+  int _currentViewerID;
+  int _currentViewID;
 };
 
 #endif
