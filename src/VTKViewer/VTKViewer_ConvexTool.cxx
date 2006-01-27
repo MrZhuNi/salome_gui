@@ -48,6 +48,10 @@ typedef std::map<vtkIdType,TUIDS> TPTOIDS; // id points -> unique ids
 
 namespace CONVEX_TOOL
 {
+  // all pairs
+  typedef std::pair<vtkIdType,vtkIdType> TPair;
+  typedef std::set<TPair> TSet;
+  
   void
   WriteToFile(vtkUnstructuredGrid* theDataSet, const std::string& theFileName)
   {
@@ -384,7 +388,7 @@ static void GetAndRemoveIdsOnOneLine(vtkPoints* points,
   float P[3][3];
   vtkIdType current_points_ids[2];
   if(MYDEBUG_REMOVE) 
-    if(input_two_points_ids.size()!=2) cout << "Error. Must be two ids in variable input_two_points_ids"<<endl;
+    if(input_two_points_ids.size()!=2) cout << "Error. Must be two ids in variable input_two_points_ids="<<input_two_points_ids.size()<<endl;
   TUIDS::const_iterator aInPointsIter = input_two_points_ids.begin();
   for(int i=0;i<2 && aInPointsIter!=input_two_points_ids.end();aInPointsIter++,i++){
     current_points_ids[i] = *aInPointsIter;
@@ -518,15 +522,13 @@ static void GetAndRemoveIdsOnOneLine(vtkPoints* points,
   out_two_points_ids.insert(current_points_ids[1]);
 }
 
-static vtkConvexPointSet* RemoveAllUnneededPoints(vtkConvexPointSet* convex){
+static vtkSmartPointer<vtkConvexPointSet> RemoveAllUnneededPoints(vtkConvexPointSet* convex){
   vtkSmartPointer<vtkConvexPointSet> out = vtkConvexPointSet::New();
   
   TUIDS two_points,input_points,out_two_points_ids,removed_points_ids,loc_removed_points_ids;
   vtkIdList* aPointIds = convex->GetPointIds();
   int numIds = aPointIds->GetNumberOfIds();
-  // all pairs
-  typedef std::pair<vtkIdType,vtkIdType> TPair;
-  typedef std::set<TPair> TSet;
+  if (numIds<2) return out;
   TSet good_point_ids;
   TSet aLists[numIds-2];
   for(int i=0;i<numIds-2;i++){
@@ -624,7 +626,7 @@ static vtkConvexPointSet* RemoveAllUnneededPoints(vtkConvexPointSet* convex){
   out->Modified();
   out->Initialize();
   
-  return out.GetPointer();
+  return out;
 }
 
 void GetPolygonalFaces(vtkUnstructuredGrid* theGrid,int cellId,TCellArray &outputCellArray)
@@ -632,7 +634,7 @@ void GetPolygonalFaces(vtkUnstructuredGrid* theGrid,int cellId,TCellArray &outpu
   if (theGrid->GetCellType(cellId) == VTK_CONVEX_POINT_SET){
     // get vtkCell type = VTK_CONVEX_POINT_SET
     if(vtkConvexPointSet* convex_in = static_cast<vtkConvexPointSet*>(theGrid->GetCell(cellId))){
-      vtkConvexPointSet* convex = RemoveAllUnneededPoints(convex_in);
+      vtkSmartPointer<vtkConvexPointSet> convex = RemoveAllUnneededPoints(convex_in);
       TCellArray f2points;
       float convex_center[3]; // convex center point coorinat
       int aNbFaces = convex->GetNumberOfFaces();
