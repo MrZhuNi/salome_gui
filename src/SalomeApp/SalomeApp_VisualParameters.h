@@ -36,8 +36,8 @@
 class SALOMEAPP_EXPORT SalomeApp_VisualParameters
 {
 public:
-  SalomeApp_VisualParameters(const _PTR(SComponent)& sco, const int savePoint); 
-  
+  SalomeApp_VisualParameters(const std::string& moduleName, const int savePoint); 
+
   void setColor(const std::string& entry, std::vector<double> color);
   std::vector<double> getColor(const std::string& entry);
 
@@ -74,6 +74,7 @@ class SALOMEAPP_EXPORT ViewerContainer
 {
  public:
   ViewerContainer(int savePoint);
+
   /*! returns a number of viewers*/
   int getNbViewers();
   /*! sets an active view ID*/

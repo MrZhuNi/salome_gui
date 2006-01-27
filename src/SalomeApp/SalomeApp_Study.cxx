@@ -137,7 +137,8 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
   emit opened( this );
   study->IsSaved(true);
 
-  restoreState(1);//############### VISUAL PARAMETERS
+  vector<int> savePoints = getSavePoints();
+  if(savePoints.size() > 0) restoreState(savePoints[savePoints.size()-1]);//############### VISUAL PARAMETERS
 
   return res;
 }
@@ -187,7 +188,7 @@ bool SalomeApp_Study::loadDocument( const QString& theStudyName )
 //=======================================================================
 bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 {
-  storeState(1);//############### VISUAL PARAMETERS
+  storeState();//############### VISUAL PARAMETERS
 
   ModelList list; dataModels( list );
 
@@ -224,7 +225,7 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 //=======================================================================
 bool SalomeApp_Study::saveDocument()
 {
-  storeState(1); //############### VISUAL PARAMETERS
+  storeState(); //############### VISUAL PARAMETERS
 
   ModelList list; dataModels( list );
 
@@ -642,16 +643,16 @@ void SalomeApp_Study::components( QStringList& comps ) const
 }
 
 //================================================================
-// Function : getNbSavePoints
-/*! Purpose : returns a number of saved points
+// Function : getSavePoints
+/*! Purpose : returns a list of saved points' IDs
 */
 //================================================================
-int SalomeApp_Study::getNbSavePoints()
+vector<int> SalomeApp_Study::getSavePoints()
 {
-  int nbSavePoints = 0;
+  vector<int> v;
 
   _PTR(SObject) so = studyDS()->FindComponent("Interface Applicative");
-  if(!so) return 0;
+  if(!so) return v;
 
   _PTR(StudyBuilder) builder = studyDS()->NewBuilder();
   _PTR(ChildIterator) anIter ( studyDS()->NewChildIterator( so ) );
@@ -659,10 +660,10 @@ int SalomeApp_Study::getNbSavePoints()
   {
     _PTR(SObject) val( anIter->Value() );
     _PTR(GenericAttribute) genAttr;
-    if(builder->FindAttribute(val, genAttr, "AttributeParameter")) nbSavePoints++;
+    if(builder->FindAttribute(val, genAttr, "AttributeParameter")) v.push_back(val->Tag());
   }
 
-  return nbSavePoints;
+  return v;
 }
 
 //================================================================
@@ -692,9 +693,15 @@ void SalomeApp_Study::setNameOfSavePoint(int savePoint, const QString& nameOfSav
 /*! Purpose : store the visual parameters of the viewers
 */
 //================================================================
-void SalomeApp_Study::storeState(int savePoint)
+int SalomeApp_Study::storeState()
 {
-  SUIT_ViewWindow* activeWindow = application()->desktop()->activeWindow();
+  SUIT_ViewWindow* activeWindow = 0;
+  if(application()->desktop()) activeWindow = application()->desktop()->activeWindow();
+
+  int savePoint = 1;
+  vector<int> savePoints = getSavePoints();
+  //Calculate a new savePoint number = the last save point number + 1
+  if(savePoints.size() > 0) savePoint = savePoints[savePoints.size()-1] + 1;
 
   //Remove the previous content of the attribute
   ViewerContainer container(savePoint);  
@@ -738,6 +745,8 @@ void SalomeApp_Study::storeState(int savePoint)
     container.addModule(module->moduleName());
     module->storeVisualParameters(savePoint); 
   }
+
+  return savePoint;
 }
 
 //================================================================
@@ -814,12 +823,11 @@ void SalomeApp_Study::restoreState(int savePoint)
 }
 
 //================================================================
-// Function : getViewerParameters
-/*! Purpose : Return an attribute that stores the viewers'
- *            parameters
+// Function : getStateParameters
+/*! Purpose : Return an attribute that stores the saved state parameters
 */
 //================================================================
-_PTR(AttributeParameter) SalomeApp_Study::getViewerParameters(int savePoint)
+_PTR(AttributeParameter) SalomeApp_Study::getStateParameters(int savePoint)
 {
   _PTR(StudyBuilder) builder = studyDS()->NewBuilder();
   _PTR(SObject) so = studyDS()->FindComponent("Interface Applicative");

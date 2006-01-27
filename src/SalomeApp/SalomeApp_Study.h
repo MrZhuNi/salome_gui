@@ -66,12 +66,12 @@ public:
   virtual void        children( const QString&, QStringList& ) const;
   virtual void        components( QStringList& ) const;
 
-  int                 getNbSavePoints();
+  std::vector<int>    getSavePoints();
   QString             getNameOfSavePoint(int savePoint);
   void                setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint);
-  void                storeState(int savePoint);
+  int                 storeState();
   void                restoreState(int savePoint);
-  _PTR(AttributeParameter) getViewerParameters(int savePoint);
+  _PTR(AttributeParameter) getStateParameters(int savePoint);
 
 protected:
   virtual void        saveModuleData ( QString theModuleName, QStringList theListOfFiles );

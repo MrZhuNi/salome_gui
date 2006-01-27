@@ -41,13 +41,15 @@ using namespace std;
 /*!
   Constructor
 */
-SalomeApp_VisualParameters::SalomeApp_VisualParameters(const _PTR(SComponent)& sco, const int savePoint)
+SalomeApp_VisualParameters::SalomeApp_VisualParameters(const string& moduleName, const int savePoint)
 {
+  /*
   if(!sco) return;
   _PTR(Study) study = sco->GetStudy();
   _PTR(StudyBuilder) builder = study->NewBuilder();
   _PTR(SObject) so = builder->NewObjectToTag(sco, savePoint);
   _ap = builder->FindOrCreateAttribute(so, "AttributeParameter");
+  */
 } 
 
 /*!
@@ -181,7 +183,7 @@ ViewerContainer::ViewerContainer(int savePoint)
 {
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( SUIT_Session::session()->activeApplication()->activeStudy() );
   if( !study ) return;
-  _ap = study->getViewerParameters(savePoint);
+  _ap = study->getStateParameters(savePoint);
 }
 
 int ViewerContainer::getNbViewers()
