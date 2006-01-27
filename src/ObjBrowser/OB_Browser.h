@@ -118,9 +118,6 @@ public:
 
   virtual void      contextMenuPopup( QPopupMenu* );
 
-  void              setModified();
-  unsigned long     getModifiedTime() { return myModifiedTime; }
-
 signals:
   void              selectionChanged();
   void              doubleClicked( SUIT_DataObject* );
@@ -189,8 +186,6 @@ private:
   int               myAutoOpenLevel;
 
   friend class OB_Browser::ToolTip;
-
-  unsigned long     myModifiedTime;
 };
 
 #endif

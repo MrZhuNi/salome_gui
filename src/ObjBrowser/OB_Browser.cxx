@@ -252,8 +252,6 @@ myRootDecorated( true )
            this, SLOT( onDoubleClicked( QListViewItem* ) ) );
 
   setRootObject( root );
-
-  setModified();
 }
 
 OB_Browser::~OB_Browser()
@@ -357,8 +355,6 @@ void OB_Browser::setRootObject( SUIT_DataObject* theRoot )
   restoreState( selObjs, openObjs, curObj, selKeys, openKeys, curKey );
 
   autoOpenBranches();
-
-  setModified();
 
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
@@ -669,13 +665,8 @@ void OB_Browser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
   if( autoOpen )
     autoOpenBranches();
 
-  setModified();
-
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
-
-//  QTime t2 = QTime::currentTime();
-//  qDebug( QString( "update tree time = %1 msecs" ).arg( t1.msecsTo( t2 ) ) );
 }
 
 void OB_Browser::replaceTree( SUIT_DataObject* src, SUIT_DataObject* trg )
@@ -711,8 +702,6 @@ void OB_Browser::replaceTree( SUIT_DataObject* src, SUIT_DataObject* trg )
   restoreState( selObjs, openObjs, curObj, selKeys, openKeys, curKey );
 
   autoOpenBranches();
-
-  setModified();
 
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
@@ -1266,9 +1255,3 @@ void OB_Browser::onDoubleClicked( QListViewItem* item )
   if ( item )
     emit doubleClicked( dataObject( item ) );
 }
-
-void OB_Browser::setModified()
-{
-  myModifiedTime = clock();
-}
-
