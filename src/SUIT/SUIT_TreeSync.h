@@ -117,7 +117,8 @@ void diffSiblings( const SrcItem& src, const TrgItem& trg,
 
   for( ; src_it!=src_last; src_it++ )
   {
-    typename QValueList<TrgItem>::const_iterator f = findEqual( trg_ch, cur, *src_it, td );
+    typename QValueList<TrgItem>::const_iterator f =
+      findEqual<SrcItem, TrgItem, TreeData>( trg_ch, cur, *src_it, td );
     if( f!=trg_last )  //is found
     {
       //mark all items before found as "to be deleted"
