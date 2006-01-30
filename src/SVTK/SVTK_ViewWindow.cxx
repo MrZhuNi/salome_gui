@@ -1098,10 +1098,12 @@ SVTK_ViewWindow
   parScale = camera->GetParallelScale();
   GetScale( scale );
 
-  return QString( "%1*%2*%3*%4*%5*%6*%7*%8*%9*%10*%11*%12*%13" ).arg( 
-    pos[0] ).arg( pos[1] ).arg( pos[2] ).arg( focalPnt[0] ).arg( focalPnt[1] ).arg( 
-    focalPnt[2] ).arg( viewUp[0] ).arg( viewUp[1] ).arg( viewUp[2] ).arg( parScale ).arg(
-    scale[0] ).arg( scale[1] ).arg( scale[2] );
+  QString retStr;
+  retStr.sprintf( "%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f", 
+		  pos[0], pos[1], pos[2], focalPnt[0], focalPnt[1], focalPnt[2], viewUp[0], viewUp[1], 
+		  viewUp[2], parScale, scale[0], scale[1], scale[2] );
+  printf( "-- SVTK::getVisualParameters() = %s \n", retStr.latin1() );
+  return retStr;
 }
 
 //----------------------------------------------------------------------------
@@ -1113,7 +1115,7 @@ SVTK_ViewWindow
 {
   QStringList paramsLst = QStringList::split( '*', parameters, true );
   if ( paramsLst.size() == 13 ) {
-    printf( "-- VTK::setVisualParameters = %f %f %f %f %f %f %f %f %f %f %f %f %f\n", paramsLst[0].toDouble(),
+    printf( "-- SVTK::setVisualParameters = %f %f %f %f %f %f %f %f %f %f %f %f %f\n", paramsLst[0].toDouble(),
 	    paramsLst[1].toDouble(), paramsLst[2].toDouble(), paramsLst[3].toDouble(), paramsLst[4].toDouble(), 
 	    paramsLst[5].toDouble(), paramsLst[6].toDouble(), paramsLst[7].toDouble(), paramsLst[8].toDouble(), 
 	    paramsLst[9].toDouble(), paramsLst[10].toDouble(), paramsLst[11].toDouble(), paramsLst[12].toDouble() );

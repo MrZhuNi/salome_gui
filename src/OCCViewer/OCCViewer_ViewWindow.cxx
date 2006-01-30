@@ -871,14 +871,16 @@ void OCCViewer_ViewWindow::performRestoring( const viewAspect& anItem )
 {
 	Handle(V3d_View) aView3d = myViewPort->getView();
 
+	printf( "-- performRestoring, proj = %f %f %f \n", anItem.atX, anItem.atY, anItem.atZ );
+
 	Standard_Boolean prev = aView3d->SetImmediateUpdate( Standard_False );
 	aView3d->SetScale( anItem.scale );
 	aView3d->SetCenter( anItem.centerX, anItem.centerY );
-	aView3d->SetProj( anItem.projX, anItem.projY, anItem.projZ );
 	aView3d->SetTwist( anItem.twist );
 	aView3d->SetAt( anItem.atX, anItem.atY, anItem.atZ );
 	aView3d->SetImmediateUpdate( prev );
 	aView3d->SetEye( anItem.eyeX, anItem.eyeY, anItem.eyeZ );
+	aView3d->SetProj( anItem.projX, anItem.projY, anItem.projZ );
 		
 	myRestoreFlag = 0;
 }
@@ -993,10 +995,13 @@ viewAspect OCCViewer_ViewWindow::getViewParams() const
 QString OCCViewer_ViewWindow::getVisualParameters()
 {
   viewAspect params = getViewParams();
-  return QString( "%1*%2*%3*%4*%5*%6*%7*%8*%9*%10*%11*%12*%13" ).arg( 
-    params.scale ).arg( params.centerX ).arg( params.centerY ).arg( params.projX ).arg( 
-    params.projY ).arg( params.projZ ).arg( params.twist ).arg( params.atX ).arg( 
-    params.atY ).arg( params.atZ ).arg( params.eyeX ).arg( params.eyeY ).arg( params.eyeZ );
+  QString retStr;
+  retStr.sprintf( "%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f", params.scale,
+		  params.centerX, params.centerY, params.projX, params.projY, params.projZ, params.twist,
+		  params.atX, params.atY, params.atZ, params.eyeX, params.eyeY, params.eyeZ );
+
+  //  printf( "-- OCC::getVisualParameters() = %s \n", retStr.latin1() );
+  return retStr;
 }
 
 /* The method restors visual parameters of this view from a formated string
@@ -1005,11 +1010,10 @@ void OCCViewer_ViewWindow::setVisualParameters( const QString& parameters )
 {
   QStringList paramsLst = QStringList::split( '*', parameters, true );
   if ( paramsLst.size() == 13 ) {
-    printf( "-- OCC::setVisualParameters = %f %f %f %f %f %f %f %f %f %f %f %f %f\n", paramsLst[0].toDouble(),
-	    paramsLst[1].toDouble(), paramsLst[2].toDouble(), paramsLst[3].toDouble(), paramsLst[4].toDouble(), 
-	    paramsLst[5].toDouble(), paramsLst[6].toDouble(), paramsLst[7].toDouble(), paramsLst[8].toDouble(), 
-	    paramsLst[9].toDouble(), paramsLst[10].toDouble(), paramsLst[11].toDouble(), paramsLst[12].toDouble() );
-
+    //    printf( "-- OCC::setVisualParameters = %f %f %f %f %f %f %f %f %f %f %f %f %f\n", paramsLst[0].toDouble(),
+    //	    paramsLst[1].toDouble(), paramsLst[2].toDouble(), paramsLst[3].toDouble(), paramsLst[4].toDouble(), 
+    //	    paramsLst[5].toDouble(), paramsLst[6].toDouble(), paramsLst[7].toDouble(), paramsLst[8].toDouble(), 
+    //	    paramsLst[9].toDouble(), paramsLst[10].toDouble(), paramsLst[11].toDouble(), paramsLst[12].toDouble() );
     viewAspect params;
     params.scale    = paramsLst[0].toDouble();
     params.centerX  = paramsLst[1].toDouble();
