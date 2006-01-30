@@ -104,10 +104,56 @@ void SalomeApp_Module::extractContainers( const SALOME_ListIO& source, SALOME_Li
  * This method is called just before the study document is saved, so the module has a possibility
  * to store visual parameters in AttributeParameter attribue(s)
  */
+//#include "SalomeApp_VisualParameters.h"
 void SalomeApp_Module::storeVisualParameters(int savePoint)
 {
-  cout << "SalomeApp_Module::storeVisualParameters" << endl;  
+  cout << "SalomeApp_Module::storeVisualParameters" << endl;
+  /*
+  SalomeApp_VisualParameters vp("test", 1);
+  _PTR(AttributeParameter) ap = vp.getContainer();
+
+  vector<double> v;
+  v.push_back(0);
+  v.push_back(1);
+  v.push_back(1);
+  vp.setColor("0:1", v);
+  vp.setLineWidth("0:1", 0.1);
+  
+  cout << "CHECK 1 ";
+  vector<double> vr = ap->GetRealArray(1);
+  for(int i = 0; i<vr.size(); i++) 
+    cout <<  vr[i] << " ";
+  cout << " CHECK 1 done"   << endl;
+ 
+  v[0] = 1;
+  v[2] = 0;
+
+  vp.setColor("0:2", v);
+  vp.setTransparency("0:2", 0.2);
+
+  
+  cout << "CHECK 2 ";
+  vr = ap->GetRealArray(1);
+  for(int i = 0; i<vr.size(); i++) 
+    cout <<  vr[i] << " ";
+  cout << " CHECK 2 done"   << endl;
+
+  vp.setPresentationMode("0:1", 11);
+  vp.setPresentationMode("0:2", 22);
+
+  cout << "color 1"   << endl;
+  v = vp.getColor("0:1");
+  for(int i = 0; i<3; i++) cout << "0:1 color " << v[i] << endl;
+  cout << "color 2"   << endl;
+  v = vp.getColor("0:2");
+  for(int i = 0; i<3; i++) cout << "0:2 color " << v[i] << endl;
+  cout << "Line width " << vp.getLineWidth("0:1")  << endl;
+  cout << "Display mode for 0:1 " << vp.getPresentationMode("0:1")  << endl;
+  cout << "Display mode for 0:2 " << vp.getPresentationMode("0:2")  << endl;
+  cout << "Transparency " <<  vp.getTransparency("0:2") << endl;
+  */
 }
+
 
 /*!
  * \brief Virtual public
@@ -117,6 +163,28 @@ void SalomeApp_Module::storeVisualParameters(int savePoint)
  */
 void SalomeApp_Module::restoreVisualParameters(int savePoint)
 {
+
   cout << "SalomeApp_Module::restoreVisualParameters" << endl;
+  /* 
+  SalomeApp_VisualParameters vp("test", 1);
+  _PTR(AttributeParameter) ap = vp.getContainer();
+
+  cout << "CHECK ";
+  vector<double> vr = ap->GetRealArray(1);
+  for(int i = 0; i<vr.size(); i++) 
+    cout <<  vr[i] << " ";
+  cout << " CHECK  done"   << endl;
+
+  cout << "color 1"   << endl;
+  vector<double> v = vp.getColor("0:1");
+  for(int i = 0; i<3; i++) cout << "0:1 color " << v[i] << endl;
+  cout << "color 2"   << endl;
+  v = vp.getColor("0:2");
+  for(int i = 0; i<3; i++) cout << "0:2 color " << v[i] << endl;
+  cout << "Line width " << vp.getLineWidth("0:1")  << endl;
+  cout << "Display mode for 0:1 " << vp.getPresentationMode("0:1")  << endl;
+  cout << "Display mode for 0:2 " << vp.getPresentationMode("0:2")  << endl;
+  cout << "Transparency " <<  vp.getTransparency("0:2") << endl;
+  */
 }
 

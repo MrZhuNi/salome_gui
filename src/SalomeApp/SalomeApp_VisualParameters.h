@@ -38,7 +38,10 @@ class SALOMEAPP_EXPORT SalomeApp_VisualParameters
 public:
   SalomeApp_VisualParameters(const std::string& moduleName, const int savePoint); 
 
-  void setColor(const std::string& entry, std::vector<double> color);
+  void setModuleName(const std::string& moduleName);
+  std::string getModuleName();
+
+  void setColor(const std::string& entry, const std::vector<double>& color);
   std::vector<double> getColor(const std::string& entry);
 
   void setTransparency(const std::string& entry, const double& value);
@@ -56,12 +59,18 @@ public:
   void setTypeOfDisplayed(const std::string& entry, const int type);
   int getTypeOfDisplayed(const std::string& entry);
 
-  void setClipping(const std::string& entry, std::vector<double> color);
+  void setClipping(const std::string& entry, const std::vector<double>& color);
   std::vector<double> getClipping(const std::string& entry);
 
-  _PTR(AttributeParameter) getContainer();
+  _PTR(AttributeParameter) getContainer() { return _ap; }
   
   
+  std::vector<std::string> getEntries();
+  int getEntryID(const std::string& entry);
+
+ protected:
+  int addEntry(const std::string& entry);
+
  private:
   _PTR(AttributeParameter) _ap;
 
@@ -108,6 +117,8 @@ class SALOMEAPP_EXPORT ViewerContainer
   QString getSavePointName();
 
   void init();
+
+  _PTR(AttributeParameter) getContainer() { return _ap; }
 
  protected:
   _PTR(AttributeParameter) _ap;

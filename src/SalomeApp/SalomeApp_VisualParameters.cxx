@@ -29,43 +29,109 @@ using namespace std;
 #define PT_INTARRAY  5
 #define PT_STRARRAY  6
 
-#define AP_ENTRIES         0 //StrArray
-#define AP_COLOR           1 //RealArray
-#define AP_CLIPPING        2 //RealArray
-#define AP_TRANSPARENCY    1 //Double
-#define AP_LINE_WIDTH      2 //Double
-#define AP_MODE            1 //Int
-#define AP_TYPE            2 //Int
-#define AP_IS_DISPLAYED    1 //Bool
+#define ONE_ENTRY_DBL_ARGS_LENGTH   12
+#define IDX_COLOR_R        0
+#define IDX_COLOR_G        1
+#define IDX_COLOR_B        2
+#define IDX_TRANSPARENCY   3
+#define IDX_LINE_WIDTH     4
+#define IDX_CLIPPING       5 //[5:11] 
+#define CLIPPING_LENGTH    6
 
+#define ONE_ENTRY_INT_ARGS_LENGTH   4
+#define IDX_DISPLAY_MODE   0
+#define IDX_DISPLAYED      1
+#define IDX_TYPE           2
+
+#define AP_ENTRIES         0 //StrArray
+#define AP_DOUBLE_ARGS     1 //RealArray
+#define AP_INT_ARGS        1 //IntArray
+#define AP_MODULE_NAME     1 //String
 /*!
   Constructor
 */
 SalomeApp_VisualParameters::SalomeApp_VisualParameters(const string& moduleName, const int savePoint)
 {
-  /*
-  if(!sco) return;
-  _PTR(Study) study = sco->GetStudy();
-  _PTR(StudyBuilder) builder = study->NewBuilder();
-  _PTR(SObject) so = builder->NewObjectToTag(sco, savePoint);
+  SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( SUIT_Session::session()->activeApplication()->activeStudy() );
+  if( !study ) return;
+  _PTR(AttributeParameter) main_ap = study->getStateParameters(savePoint);
+  _PTR(SObject) main_so = main_ap->GetSObject();
+  
+
+  _PTR(ChildIterator) it = study->studyDS()->NewChildIterator(main_so);
+  for(; it->More(); it->Next()) {
+    _PTR(SObject) so(it->Value());
+    _PTR(GenericAttribute) ga;
+    if(so->FindAttribute(ga, "AttributeParameter")) {
+      _PTR(AttributeParameter) par(ga);
+      if(!par->IsSet(AP_MODULE_NAME, PT_STRING)) continue;
+      if(par->GetString(AP_MODULE_NAME) == moduleName) {
+	_ap = par;
+	return;
+      }
+    }
+  }
+
+  _PTR(StudyBuilder) builder = study->studyDS()->NewBuilder();
+  _PTR(SObject) so = builder->NewObject(main_so);
   _ap = builder->FindOrCreateAttribute(so, "AttributeParameter");
-  */
+  setModuleName(moduleName);
 } 
 
 /*!
-  sets a color for the obect with id \a entry
-*/  
-void SalomeApp_VisualParameters::setColor(const string& entry, vector<double> color)
+  sets a name of the module for which the parameters are stored
+*/ 
+void SalomeApp_VisualParameters::setModuleName(const string& moduleName)
 {
+  if(!_ap) return;
+  _ap->SetString(AP_MODULE_NAME, moduleName);
 }
 
 /*!
-  returns a color for the obect with id \a entry
+  returns a name of the module for which the parameters are stored
+*/
+string SalomeApp_VisualParameters::getModuleName()
+{
+  if(!_ap) return "";
+  if(!_ap->IsSet(AP_MODULE_NAME, PT_STRING)) return "";
+  return _ap->GetString(AP_MODULE_NAME);
+}
+
+/*!
+  sets a color (RGB values) for the obect with id \a entry
+*/  
+void SalomeApp_VisualParameters::setColor(const string& entry, const vector<double>& color)
+{
+  int entryID = getEntryID(entry);
+  if(entryID < 0 || color.size() < 3) return;
+  vector<double> vr;
+  if(!_ap->IsSet(AP_DOUBLE_ARGS, PT_REALARRAY)) return;
+  vr = _ap->GetRealArray(AP_DOUBLE_ARGS);
+  int idx = entryID*ONE_ENTRY_DBL_ARGS_LENGTH;
+
+  vr[idx+IDX_COLOR_R] = color[0];
+  vr[idx+IDX_COLOR_G] = color[1];
+  vr[idx+IDX_COLOR_B] = color[2];
+  _ap->SetRealArray(AP_DOUBLE_ARGS, vr);
+}
+
+/*!
+  returns a color (RGB values) for the obect with id \a entry
 */
 vector<double> SalomeApp_VisualParameters::getColor(const string& entry)
 {
-  vector<double> v;
-  return v;
+  vector<double> color, vr;
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return color;
+  if(!_ap->IsSet(AP_DOUBLE_ARGS, PT_REALARRAY)) return color;
+  vr = _ap->GetRealArray(AP_DOUBLE_ARGS);
+  int idx = entryID*ONE_ENTRY_DBL_ARGS_LENGTH;
+
+  color.push_back(vr[idx+IDX_COLOR_R]);
+  color.push_back(vr[idx+IDX_COLOR_G]);
+  color.push_back(vr[idx+IDX_COLOR_B]); 
+
+  return color;
 }
 
 /*!
@@ -73,6 +139,14 @@ vector<double> SalomeApp_VisualParameters::getColor(const string& entry)
 */
 void SalomeApp_VisualParameters::setTransparency(const string& entry, const double& value)
 {
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return;
+  if(!_ap->IsSet(AP_DOUBLE_ARGS, PT_REALARRAY)) return;
+  vector<double> vr = _ap->GetRealArray(AP_DOUBLE_ARGS);
+  int idx = entryID*ONE_ENTRY_DBL_ARGS_LENGTH;
+
+  vr[idx+IDX_TRANSPARENCY] = value;
+  _ap->SetRealArray(AP_DOUBLE_ARGS, vr);
 }
 
 /*!
@@ -80,7 +154,13 @@ void SalomeApp_VisualParameters::setTransparency(const string& entry, const doub
 */
 double SalomeApp_VisualParameters::getTransparency(const string& entry)
 {
-  return 0.0;
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return -1.0;
+  if(!_ap->IsSet(AP_DOUBLE_ARGS, PT_REALARRAY)) return -1.0;
+  vector<double> vr = _ap->GetRealArray(AP_DOUBLE_ARGS);
+  int idx = entryID*ONE_ENTRY_DBL_ARGS_LENGTH;
+
+  return vr[idx+IDX_TRANSPARENCY];
 } 
 
 /*!
@@ -88,6 +168,14 @@ double SalomeApp_VisualParameters::getTransparency(const string& entry)
 */
 void SalomeApp_VisualParameters::setLineWidth(const string& entry, const double& value)
 {
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return;
+  if(!_ap->IsSet(AP_DOUBLE_ARGS, PT_REALARRAY)) return;
+  vector<double> vr = _ap->GetRealArray(AP_DOUBLE_ARGS);
+  int idx = entryID*ONE_ENTRY_DBL_ARGS_LENGTH;
+
+  vr[idx+IDX_LINE_WIDTH] = value;
+  _ap->SetRealArray(AP_DOUBLE_ARGS, vr);
 }
 
 /*!
@@ -95,7 +183,13 @@ void SalomeApp_VisualParameters::setLineWidth(const string& entry, const double&
 */
 double SalomeApp_VisualParameters::getLineWidth(const string& entry)
 {
-  return 0.0;
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return -1.0;
+  if(!_ap->IsSet(AP_DOUBLE_ARGS, PT_REALARRAY)) return -1.0;
+  vector<double> vr = _ap->GetRealArray(AP_DOUBLE_ARGS);
+  int idx = entryID*ONE_ENTRY_DBL_ARGS_LENGTH;
+
+  return vr[idx+IDX_LINE_WIDTH];
 }
 
 /*!
@@ -103,6 +197,14 @@ double SalomeApp_VisualParameters::getLineWidth(const string& entry)
 */
 void SalomeApp_VisualParameters::setPresentationMode(const string& entry, const int mode)
 {
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return;
+  if(!_ap->IsSet(AP_INT_ARGS, PT_INTARRAY)) return;
+  vector<int> vr = _ap->GetIntArray(AP_INT_ARGS);
+  int idx = entryID*ONE_ENTRY_INT_ARGS_LENGTH;
+
+  vr[idx+IDX_DISPLAY_MODE] = mode;
+  _ap->SetIntArray(AP_INT_ARGS, vr);
 }
 
 /*!
@@ -110,7 +212,13 @@ void SalomeApp_VisualParameters::setPresentationMode(const string& entry, const 
 */
 int SalomeApp_VisualParameters::getPresentationMode(const string& entry)
 {
-  return -1;
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return -1;
+  if(!_ap->IsSet(AP_INT_ARGS, PT_INTARRAY)) return -1;
+  vector<int> vr = _ap->GetIntArray(AP_INT_ARGS);
+  int idx = entryID*ONE_ENTRY_INT_ARGS_LENGTH;
+
+  return vr[idx+IDX_DISPLAY_MODE];
 }
 
 /*!
@@ -118,6 +226,14 @@ int SalomeApp_VisualParameters::getPresentationMode(const string& entry)
 */
 void SalomeApp_VisualParameters::setDisplayed(const string& entry)
 {
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return;
+  if(!_ap->IsSet(AP_INT_ARGS, PT_INTARRAY)) return;
+  vector<int> vr = _ap->GetIntArray(AP_INT_ARGS);
+  int idx = entryID*ONE_ENTRY_INT_ARGS_LENGTH;
+
+  vr[idx+IDX_DISPLAYED] = 1;
+  _ap->SetIntArray(AP_INT_ARGS, vr);
 }
 
 /*!
@@ -125,7 +241,13 @@ void SalomeApp_VisualParameters::setDisplayed(const string& entry)
 */
 bool SalomeApp_VisualParameters::isDisplayed(const string& entry)
 {
-  return false;
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return -1;
+  if(!_ap->IsSet(AP_INT_ARGS, PT_INTARRAY)) return -1;
+  vector<int> vr = _ap->GetIntArray(AP_INT_ARGS);
+  int idx = entryID*ONE_ENTRY_INT_ARGS_LENGTH;
+
+  return (vr[idx+IDX_DISPLAYED] == 1);
 }
 
 /*!
@@ -133,6 +255,14 @@ bool SalomeApp_VisualParameters::isDisplayed(const string& entry)
 */
 void SalomeApp_VisualParameters::setTypeOfDisplayed(const string& entry, const int type)
 {
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return;
+  if(!_ap->IsSet(AP_INT_ARGS, PT_INTARRAY)) return;
+  vector<int> vr = _ap->GetIntArray(AP_INT_ARGS);
+  int idx = entryID*ONE_ENTRY_INT_ARGS_LENGTH;
+
+  vr[idx+IDX_TYPE] = type;
+  _ap->SetIntArray(AP_INT_ARGS, vr);
 }
 
 /*!
@@ -140,13 +270,19 @@ void SalomeApp_VisualParameters::setTypeOfDisplayed(const string& entry, const i
 */
 int SalomeApp_VisualParameters::getTypeOfDisplayed(const string& entry)
 {
-  return -1;
+  int entryID = getEntryID(entry);
+  if(entryID < 0) return -1;
+  if(!_ap->IsSet(AP_INT_ARGS, PT_INTARRAY)) return -1;
+  vector<int> vr = _ap->GetIntArray(AP_INT_ARGS);
+  int idx = entryID*ONE_ENTRY_INT_ARGS_LENGTH;
+
+  return vr[idx+IDX_TYPE];
 }
 
 /*!
   sets clipping plane definitions for the object with id \a entry
 */
-void SalomeApp_VisualParameters::setClipping(const string& entry, vector<double> color)
+void SalomeApp_VisualParameters::setClipping(const string& entry, const vector<double>& color)
 {
 }
  
@@ -160,12 +296,69 @@ vector<double> SalomeApp_VisualParameters::getClipping(const string& entry)
 }
 
 /*!
-  returns an AttributeParameter attribute
+  returns a list of stored entries
 */
-_PTR(AttributeParameter) SalomeApp_VisualParameters::getContainer()
+vector<string> SalomeApp_VisualParameters::getEntries()
 {
-  return _ap;
+  vector<string> v;
+  if(!_ap) return v;
+  if(!_ap->IsSet(AP_ENTRIES, PT_STRARRAY)) return v;
+  return _ap->GetStrArray(AP_ENTRIES);
 }
+
+/*!
+  returns an id of the \a entry 
+*/
+int SalomeApp_VisualParameters::getEntryID(const std::string& entry)
+{
+  if(!_ap) return -1;
+  vector<string> v = getEntries();
+  int idx = 0;
+  for(int i = 0; i<v.size(); i++) {
+    if(v[i] == entry) return i;
+  }
+ 
+  idx =  addEntry(entry);
+  return idx;
+}
+
+int SalomeApp_VisualParameters::addEntry(const std::string& entry)
+{
+  if(!_ap) return -1;
+  vector<string> v = getEntries();
+  v.push_back(entry);
+  _ap->SetStrArray(AP_ENTRIES, v);
+  
+  //Add double parameters of the entry
+  vector<double> vr, new_vr;
+  if(_ap->IsSet(AP_DOUBLE_ARGS, PT_REALARRAY)) vr = _ap->GetRealArray(AP_DOUBLE_ARGS);
+  int length = vr.size(), new_length = vr.size();
+  new_length += ONE_ENTRY_DBL_ARGS_LENGTH;
+  new_vr.resize(new_length);
+  for(int i = 0; i<new_length; i++) {
+    if(i<length) new_vr[i] = vr[i];
+    else new_vr[i] = 0.0;
+  }
+  _ap->SetRealArray(AP_DOUBLE_ARGS, new_vr);
+
+
+  //Add int parameters of the entry
+  vector<int> vi, new_vi;
+  if(_ap->IsSet(AP_INT_ARGS, PT_INTARRAY)) vi = _ap->GetIntArray(AP_INT_ARGS);
+  length = vi.size(); 
+  new_length = vi.size();
+  new_length += ONE_ENTRY_INT_ARGS_LENGTH;
+  new_vi.resize(new_length);
+  for(int i = 0; i<new_length; i++) {
+    if(i<length) new_vi[i] = vi[i];
+    else new_vi[i] = 0;
+  }
+  _ap->SetIntArray(AP_INT_ARGS, new_vi);
+
+  return (v.size()-1);
+}
+
+
 
 /*###############################################################################################*/
 
