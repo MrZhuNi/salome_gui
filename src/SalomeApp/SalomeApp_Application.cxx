@@ -757,7 +757,7 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 	if ( aComponent->ComponentDataType() == "Interface Applicative" )
 	  continue; // skip the magic "Interface Applicative" component
 
-	OB_Browser* ob = objectBrowser();
+	OB_Browser* ob = static_cast<OB_Browser*>( getWindow( WT_ObjectBrowser ));
 	const bool isAutoUpdate = ob->isAutoUpdate();
 	ob->setAutoUpdate( false );
 	SalomeApp_DataModel::synchronize( aComponent, study );
