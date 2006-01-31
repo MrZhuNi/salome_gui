@@ -558,7 +558,7 @@ QString GLViewer_ViewFrame::getVisualParameters()
     GLfloat xSc, ySc, xPan, yPan;
     vp2d->getScale( xSc, ySc );
     vp2d->getPan( xPan, yPan );
-    retStr.sprintf( "%.12f*%.12f*%.12f*%.12f", xSc, ySc, xPan, yPan );
+    retStr.sprintf( "%.12e*%.12e*%.12e*%.12e", xSc, ySc, xPan, yPan );
   }
   return retStr;
 }
