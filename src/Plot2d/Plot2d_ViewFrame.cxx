@@ -1932,7 +1932,7 @@ QString Plot2d_ViewFrame::getVisualParameters()
   double xmin, xmax, ymin, ymax, y2min, y2max;
   getFitRanges( xmin, xmax, ymin, ymax, y2min, y2max );
   QString retStr;
-  retStr.sprintf( "%d*%d*%d*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f", myXMode,
+  retStr.sprintf( "%d*%d*%d*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e", myXMode,
 		  myYMode, mySecondY, xmin, xmax, ymin, ymax, y2min, y2max );
   return retStr; 
 }
