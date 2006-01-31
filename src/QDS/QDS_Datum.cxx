@@ -279,7 +279,7 @@ QString QDS_Datum::shortDescription() const
 
   QString sdStr;
   if ( !myDicItem.IsNull() )
-    sdStr = toQString( myDicItem->GetLongDescription() );
+    sdStr = toQString( myDicItem->GetShortDescription() );
   return sdStr;
 }
 
