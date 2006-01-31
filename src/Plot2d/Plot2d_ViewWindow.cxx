@@ -470,11 +470,12 @@ QString Plot2d_ViewWindow::filter() const
  */
 QString Plot2d_ViewWindow::getVisualParameters()
 {
-  return " ";
+  return myViewFrame->getVisualParameters();
 }
 
 /* The method restors visual parameters of this view from a formated string
  */
 void Plot2d_ViewWindow::setVisualParameters( const QString& parameters )
 {
+  myViewFrame->setVisualParameters( parameters );
 }

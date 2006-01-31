@@ -552,11 +552,32 @@ void GLViewer_ViewFrame::wheelEvent( QWheelEvent* e )
  */
 QString GLViewer_ViewFrame::getVisualParameters()
 {
-  return " ";
+  QString retStr;
+  if ( myVP && myVP->inherits( "GLViewer_ViewPort2d" ) ) {
+    GLViewer_ViewPort2d* vp2d = (GLViewer_ViewPort2d*)myVP;
+    GLfloat xSc, ySc, xPan, yPan;
+    vp2d->getScale( xSc, ySc );
+    vp2d->getPan( xPan, yPan );
+    retStr.sprintf( "%.12f*%.12f*%.12f*%.12f", xSc, ySc, xPan, yPan );
+  }
+  return retStr;
 }
 
 /* The method restors visual parameters of this view from a formated string
  */
 void GLViewer_ViewFrame::setVisualParameters( const QString& parameters )
 {
+  QStringList paramsLst = QStringList::split( '*', parameters, true );
+  if ( myVP && myVP->inherits( "GLViewer_ViewPort2d" ) && paramsLst.size() == 4) {
+    GLViewer_ViewPort2d* vp2d = (GLViewer_ViewPort2d*)myVP;
+
+    GLfloat xSc, ySc, xPan, yPan;
+    xSc = paramsLst[0].toDouble();
+    ySc = paramsLst[1].toDouble();
+    xPan = paramsLst[2].toDouble();
+    yPan = paramsLst[3].toDouble();
+
+    vp2d->getGLWidget()->setScale( xSc, ySc, 1. );
+    vp2d->getGLWidget()->setPan( xPan, yPan, 0. );
+  }
 }
