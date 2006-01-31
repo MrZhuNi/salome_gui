@@ -247,7 +247,8 @@ void SalomeApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
       }
     }
   }
-  updateTree( sobj, aSStudy );
+  if ( sobj && aSStudy )
+    updateTree( sobj, aSStudy );
 }
 
 //================================================================
@@ -256,7 +257,7 @@ void SalomeApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
 //================================================================
 SUIT_DataObject* SalomeApp_DataModel::synchronize( const _PTR( SComponent )& sobj, SalomeApp_Study* study )
 {
-  if( !study || !study->root() )
+  if( !study || !study->root() || !sobj )
     return 0;
 
   DataObjectList ch; study->root()->children( ch );
