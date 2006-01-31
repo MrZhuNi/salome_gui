@@ -871,8 +871,6 @@ void OCCViewer_ViewWindow::performRestoring( const viewAspect& anItem )
 {
 	Handle(V3d_View) aView3d = myViewPort->getView();
 
-	printf( "-- performRestoring, proj = %f %f %f \n", anItem.atX, anItem.atY, anItem.atZ );
-
 	Standard_Boolean prev = aView3d->SetImmediateUpdate( Standard_False );
 	aView3d->SetScale( anItem.scale );
 	aView3d->SetCenter( anItem.centerX, anItem.centerY );
@@ -996,11 +994,9 @@ QString OCCViewer_ViewWindow::getVisualParameters()
 {
   viewAspect params = getViewParams();
   QString retStr;
-  retStr.sprintf( "%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f", params.scale,
+  retStr.sprintf( "%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e", params.scale,
 		  params.centerX, params.centerY, params.projX, params.projY, params.projZ, params.twist,
 		  params.atX, params.atY, params.atZ, params.eyeX, params.eyeY, params.eyeZ );
-
-  //  printf( "-- OCC::getVisualParameters() = %s \n", retStr.latin1() );
   return retStr;
 }
 
@@ -1010,10 +1006,6 @@ void OCCViewer_ViewWindow::setVisualParameters( const QString& parameters )
 {
   QStringList paramsLst = QStringList::split( '*', parameters, true );
   if ( paramsLst.size() == 13 ) {
-    //    printf( "-- OCC::setVisualParameters = %f %f %f %f %f %f %f %f %f %f %f %f %f\n", paramsLst[0].toDouble(),
-    //	    paramsLst[1].toDouble(), paramsLst[2].toDouble(), paramsLst[3].toDouble(), paramsLst[4].toDouble(), 
-    //	    paramsLst[5].toDouble(), paramsLst[6].toDouble(), paramsLst[7].toDouble(), paramsLst[8].toDouble(), 
-    //	    paramsLst[9].toDouble(), paramsLst[10].toDouble(), paramsLst[11].toDouble(), paramsLst[12].toDouble() );
     viewAspect params;
     params.scale    = paramsLst[0].toDouble();
     params.centerX  = paramsLst[1].toDouble();

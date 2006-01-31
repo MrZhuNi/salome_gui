@@ -1099,10 +1099,9 @@ SVTK_ViewWindow
   GetScale( scale );
 
   QString retStr;
-  retStr.sprintf( "%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f*%.12f", 
+  retStr.sprintf( "%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e", 
 		  pos[0], pos[1], pos[2], focalPnt[0], focalPnt[1], focalPnt[2], viewUp[0], viewUp[1], 
 		  viewUp[2], parScale, scale[0], scale[1], scale[2] );
-  printf( "-- SVTK::getVisualParameters() = %s \n", retStr.latin1() );
   return retStr;
 }
 
@@ -1115,11 +1114,6 @@ SVTK_ViewWindow
 {
   QStringList paramsLst = QStringList::split( '*', parameters, true );
   if ( paramsLst.size() == 13 ) {
-    printf( "-- SVTK::setVisualParameters = %f %f %f %f %f %f %f %f %f %f %f %f %f\n", paramsLst[0].toDouble(),
-	    paramsLst[1].toDouble(), paramsLst[2].toDouble(), paramsLst[3].toDouble(), paramsLst[4].toDouble(), 
-	    paramsLst[5].toDouble(), paramsLst[6].toDouble(), paramsLst[7].toDouble(), paramsLst[8].toDouble(), 
-	    paramsLst[9].toDouble(), paramsLst[10].toDouble(), paramsLst[11].toDouble(), paramsLst[12].toDouble() );
-
     double pos[3], focalPnt[3], viewUp[3], parScale, scale[3];
     pos[0] = paramsLst[0].toDouble();
     pos[1] = paramsLst[1].toDouble();
