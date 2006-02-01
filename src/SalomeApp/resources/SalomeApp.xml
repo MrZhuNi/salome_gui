@@ -153,8 +153,8 @@
     <parameter value="0, 255,   255" name="highlight_color" />
     <parameter value="255, 255,   0" name="selection_element_color" />
     <parameter value="255, 255, 255" name="selection_object_color" />
-    <parameter value="0.001" name="selection_precision_element" />
-    <parameter value="0.025" name="selection_precision_node" />
+    <parameter value="0.005" name="selection_precision_element" />
+    <parameter value="0.005" name="selection_precision_node" />
     <parameter value="5" name="selection_width" />
     <parameter value="5" name="highlight_width" />
     <parameter value="0" name="controls_precision" />
