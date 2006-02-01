@@ -309,6 +309,8 @@ SVTK_Renderer
 {
   myPointPicker->SetTolerance( theTolNodes );
   myCellPicker->SetTolerance( theTolCell );
+
+  myPointRectPicker->SetTolerance( theTolNodes );
   myCellRectPicker->SetTolerance( theTolCell );
 }
 
