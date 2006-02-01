@@ -530,6 +530,10 @@ QString SUIT_FileDlg::dirPath() const
 {
   if ( !mySelectedFile.isNull() )
     return QFileInfo( mySelectedFile ).dirPath();
+
+  const QDir* aDir = dir();
+  if ( aDir->exists() )
+    return aDir->absPath();
   
   return QFileDialog::dirPath();
 }
