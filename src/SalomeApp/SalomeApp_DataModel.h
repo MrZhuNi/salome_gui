@@ -33,6 +33,7 @@ public:
   virtual                             ~SalomeApp_DataModel();
 
   virtual bool                        open( const QString&, CAM_Study*, QStringList );
+  virtual bool                        create( CAM_Study* );
   virtual void                        update( LightApp_DataObject* = 0, LightApp_Study* = 0 );
 
   QString                             getRootEntry( SalomeApp_Study* ) const;

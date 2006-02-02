@@ -215,6 +215,16 @@ bool SalomeApp_DataModel::open( const QString& name, CAM_Study* study, QStringLi
 }
 
 //================================================================
+// Function : create
+/*! Purpose  : Create data model*/
+//================================================================
+bool SalomeApp_DataModel::create( CAM_Study* theStudy )
+{
+  update(NULL, (LightApp_Study*)theStudy);
+  return true;
+}
+
+//================================================================
 // Function : update
 /*! Purpose  : Update application.*/
 //================================================================
