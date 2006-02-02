@@ -69,8 +69,8 @@ public:
   std::vector<int>    getSavePoints();
   QString             getNameOfSavePoint(int savePoint);
   void                setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint);
-  int                 storeState();
-  void                restoreState(int savePoint);
+  virtual int         storeState();
+  virtual void        restoreState(int savePoint);
   _PTR(AttributeParameter) getStateParameters(int savePoint);
 
 protected:

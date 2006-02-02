@@ -756,6 +756,8 @@ int SalomeApp_Study::storeState()
 //================================================================
 void SalomeApp_Study::restoreState(int savePoint)
 {
+  cout << "SalomeApp_Study::restoreState: " << savePoint << endl;
+
   ViewerContainer container(savePoint);
 
   //Remove all already existent veiwers and their views
@@ -769,6 +771,8 @@ void SalomeApp_Study::restoreState(int savePoint)
   //Restore the viewers
   int nbViewers = container.getNbViewers();
   int activeViewID = container.getActiveViewID();
+
+  cout << "Nb viewers " << nbViewers << " activeViewID " << activeViewID << endl;
   SUIT_ViewWindow *viewWin = 0, *activeView = 0;
 
   for(int i = 1; i <= nbViewers; i++) {
