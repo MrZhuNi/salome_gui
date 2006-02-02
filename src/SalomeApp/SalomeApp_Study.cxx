@@ -673,8 +673,9 @@ vector<int> SalomeApp_Study::getSavePoints()
 //================================================================
 QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 {
-  ViewerContainer container(savePoint); 
-  return container.getSavePointName();
+  _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  if(!AP->IsSet("AP_SAVEPOINT_NAME", 3)) return "";
+  return AP->GetString("AP_SAVEPOINT_NAME");
 }
 
 //================================================================
@@ -684,8 +685,8 @@ QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 //================================================================
 void SalomeApp_Study::setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint)
 {
-  ViewerContainer container(savePoint); 
-  container.setSavePointName(nameOfSavePoint);
+  _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  AP->SetString("AP_SAVEPOINT_NAME", nameOfSavePoint.latin1());
 }
 
 //================================================================
@@ -702,7 +703,7 @@ int SalomeApp_Study::storeState()
   vector<int> savePoints = getSavePoints();
   //Calculate a new savePoint number = the last save point number + 1
   if(savePoints.size() > 0) savePoint = savePoints[savePoints.size()-1] + 1;
-
+  /*
   //Remove the previous content of the attribute
   ViewerContainer container(savePoint);  
   container.init();
@@ -745,7 +746,7 @@ int SalomeApp_Study::storeState()
     container.addModule(module->moduleName());
     module->storeVisualParameters(savePoint); 
   }
-
+  */
   return savePoint;
 }
 
@@ -758,6 +759,7 @@ void SalomeApp_Study::restoreState(int savePoint)
 {
   cout << "SalomeApp_Study::restoreState: " << savePoint << endl;
 
+  /*
   ViewerContainer container(savePoint);
 
   //Remove all already existent veiwers and their views
@@ -823,20 +825,6 @@ void SalomeApp_Study::restoreState(int savePoint)
 
   QString activeModuleName = container.getActiveModule();
   if(activeModuleName != "") ((SalomeApp_Application*)application())->activateModule(activeModuleName);
-  
-}
-
-//================================================================
-// Function : getStateParameters
-/*! Purpose : Return an attribute that stores the saved state parameters
-*/
-//================================================================
-_PTR(AttributeParameter) SalomeApp_Study::getStateParameters(int savePoint)
-{
-  _PTR(StudyBuilder) builder = studyDS()->NewBuilder();
-  _PTR(SObject) so = studyDS()->FindComponent("Interface Applicative");
-  if(!so) so = builder->NewComponent("Interface Applicative"); 
-  _PTR(SObject) newSO = builder->NewObjectToTag(so, savePoint);
-  return builder->FindOrCreateAttribute(newSO, "AttributeParameter");
+  */  
 }
 

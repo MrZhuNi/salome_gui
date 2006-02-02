@@ -71,7 +71,6 @@ public:
   void                setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint);
   virtual int         storeState();
   virtual void        restoreState(int savePoint);
-  _PTR(AttributeParameter) getStateParameters(int savePoint);
 
 protected:
   virtual void        saveModuleData ( QString theModuleName, QStringList theListOfFiles );
