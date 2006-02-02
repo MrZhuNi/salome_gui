@@ -213,3 +213,19 @@ CORBA::Long SALOME_Session_i::GetActiveStudyId()
   }
   return aStudyId;
 }
+
+bool SALOME_Session_i::restoreVisualState(CORBA::Long theSavePoint)
+{
+  if(SUIT_Session::session() && SUIT_Session::session()->activeApplication() ) {
+    SUIT_Study* study = SUIT_Session::session()->activeApplication()->activeStudy();
+    if(!study) {
+      SUIT_Session::session()->activeApplication()->createEmptyStudy();
+      study = SUIT_Session::session()->activeApplication()->activeStudy();
+    }
+    if(!study) return false;
+    study->restoreState(theSavePoint);
+    return true;
+  }
+ 
+  return false;
+}
