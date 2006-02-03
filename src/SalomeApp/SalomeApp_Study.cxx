@@ -42,6 +42,8 @@
 
 #include "SALOMEDS_Tool.hxx"
 
+#include "SALOMEDS_IParameters.hxx"
+
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Exception)
 
@@ -674,8 +676,8 @@ vector<int> SalomeApp_Study::getSavePoints()
 QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 {
   _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
-  if(!AP->IsSet("AP_SAVEPOINT_NAME", 3)) return "";
-  return AP->GetString("AP_SAVEPOINT_NAME");
+  SALOMEDS_IParameters ip(AP);
+  return ip.getProperty("AP_SAVEPOINT_NAME");
 }
 
 //================================================================
@@ -686,7 +688,8 @@ QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 void SalomeApp_Study::setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint)
 {
   _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
-  AP->SetString("AP_SAVEPOINT_NAME", nameOfSavePoint.latin1());
+  SALOMEDS_IParameters ip(AP);
+  ip.setProperty("AP_SAVEPOINT_NAME", nameOfSavePoint.latin1());
 }
 
 //================================================================
@@ -703,11 +706,11 @@ int SalomeApp_Study::storeState()
   vector<int> savePoints = getSavePoints();
   //Calculate a new savePoint number = the last save point number + 1
   if(savePoints.size() > 0) savePoint = savePoints[savePoints.size()-1] + 1;
-  /*
-  //Remove the previous content of the attribute
-  ViewerContainer container(savePoint);  
-  container.init();
 
+  _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  SALOMEDS_IParameters ip(ap);
+  char buffer[128];
+  int viewerID = 0;
   SUIT_ViewManager* vm = 0;
   ViewManagerList lst;
   ((SalomeApp_Application*)application())->viewManagers(lst);
@@ -717,36 +720,47 @@ int SalomeApp_Study::storeState()
       int view_count = vm->getViewsCount();
       if(!view_count) continue; //No views is opened in the viewer
       
-      int viewerID = container.addViewer(vm->getType());
+      sprintf(buffer, "%d", ++viewerID);
+      string viewerEntry(vm->getType().latin1());
+      viewerEntry+="_";
+      viewerEntry+=buffer;
+
+      int viewerID = ip.append("AP_VIEWERS_LIST", viewerEntry);
 
       QPtrVector<SUIT_ViewWindow> views = vm->getViews();
       for(int i = 0; i<view_count; i++) {
 	SUIT_ViewWindow* vw = views[i];
 	
-	QString visualParameters = vw->getVisualParameters();
-	int viewID = container.addView(viewerID, vw->caption(), vw->getVisualParameters());
 	
-	if(vw == activeWindow) container.setActiveViewID(viewID); //Store the active view ID
+	QString visualParameters = vw->getVisualParameters();
+	
+	int viewID = ip.append(viewerEntry, vw->caption());
+	ip.append(viewerEntry, vw->getVisualParameters());
+	
+	if(vw == activeWindow) {
+	  sprintf(buffer, "%d_%d", viewerID, viewID);
+	  ip.setProperty("AP_ACTIVE_VIEW", buffer);
+	}
       }
     }
   }
-
+  
   //Sava a name of the active module
   CAM_Module* activeModule = ((SalomeApp_Application*)application())->activeModule();
   QString moduleName = "";
   if(activeModule) {
     moduleName = activeModule->moduleName();
-    container.setActiveModule(moduleName);
+    ip.setProperty("AP_ACTIVE_MODULE", moduleName.latin1());
   }
 
   //Store visual parameters of the modules
   QPtrList<CAM_Module> list; 
   ((SalomeApp_Application*)application())->modules( list );
   for(SalomeApp_Module* module = (SalomeApp_Module*)list.first(); module; module = (SalomeApp_Module*)list.next()) {
-    container.addModule(module->moduleName());
+    ip.append("AP_MODULES_LIST", module->moduleName().latin1());
     module->storeVisualParameters(savePoint); 
   }
-  */
+  
   return savePoint;
 }
 
@@ -759,8 +773,8 @@ void SalomeApp_Study::restoreState(int savePoint)
 {
   cout << "SalomeApp_Study::restoreState: " << savePoint << endl;
 
-  /*
-  ViewerContainer container(savePoint);
+  _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  SALOMEDS_IParameters ip(ap);
 
   //Remove all already existent veiwers and their views
   ViewManagerList lst;
@@ -771,20 +785,22 @@ void SalomeApp_Study::restoreState(int savePoint)
   }
 
   //Restore the viewers
-  int nbViewers = container.getNbViewers();
-  int activeViewID = container.getActiveViewID();
+  int nbViewers = ip.nbValues("AP_VIEWERS_LIST");
+  string activeViewID = ip.getProperty("AP_ACTIVE_VIEW");
+  char buffer[128];
 
-  cout << "Nb viewers " << nbViewers << " activeViewID " << activeViewID << endl;
   SUIT_ViewWindow *viewWin = 0, *activeView = 0;
 
-  for(int i = 1; i <= nbViewers; i++) {
-    int viewerID = container.getViewerID(i);
-    std::string type = container.getViewerType(viewerID);
+  for(int i = 0; i < nbViewers; i++) {
+    string viewerEntry = ip.getValue("AP_VIEWERS_LIST", i);
+    vector<string> veiewerParams = ip.parseValue(viewerEntry,'_');
+    string type = veiewerParams[0];
+    string viewerID = veiewerParams[1];
     SUIT_ViewManager* vm = ((SalomeApp_Application*)application())->createViewManager(type.c_str());
     if(!vm) continue; //Unknown viewer
     
     
-    int nbViews = container.getNbViews(viewerID);
+    int nbViews = (ip.nbValues(viewerEntry))/2;
     //Create nbViews-1 view (-1 because 1 view is created by createViewManager)
     for(int i = 1; i< nbViews; i++)  vm->createViewWindow();
     
@@ -796,15 +812,17 @@ void SalomeApp_Study::restoreState(int savePoint)
 
      //Resize the views, set their captions and apply visual parameters.
     QPtrVector<SUIT_ViewWindow> views = vm->getViews();  
-    for(int i = 1; i<=viewCount; i++) {
-      viewWin = views[i-1];
+    for(int i = 0, j = 0; i<viewCount; i++, j+=1) {
+      viewWin = views[i];
       if(!viewWin) continue;
       if(application()->desktop()) 
 	viewWin->resize( (int)( application()->desktop()->width() * 0.6 ), (int)( application()->desktop()->height() * 0.6 ) );
-      int viewID = container.getViewID(viewerID, i);
-      viewWin->setCaption(container.getViewCaption(viewID));
-      viewWin->setVisualParameters(container.getViewParameters(viewID));
-      if(!activeView && viewID == activeViewID) activeView = viewWin;
+      viewWin->setCaption(ip.getValue(viewerEntry, j).c_str());
+      viewWin->setVisualParameters(ip.getValue(viewerEntry, j+1).c_str());
+
+      sprintf(buffer, "%s_%d", viewerID.c_str(), j);
+      string viewEntry(buffer);
+      if(!activeView && viewEntry == activeViewID) activeView = viewWin;
     }
   }
 
@@ -816,15 +834,14 @@ void SalomeApp_Study::restoreState(int savePoint)
     activeView->setFocus();
   }
 
-  vector<string> v = container.getModules();
+  vector<string> v = ip.getValues("AP_MODULES_LIST");
   for(int i = 0; i<v.size(); i++) {
     ((SalomeApp_Application*)application())->activateModule(v[i].c_str());
     SalomeApp_Module* module = (SalomeApp_Module*)(((SalomeApp_Application*)application())->activeModule());
     module->restoreVisualParameters(savePoint);
   }
 
-  QString activeModuleName = container.getActiveModule();
-  if(activeModuleName != "") ((SalomeApp_Application*)application())->activateModule(activeModuleName);
-  */  
+  QString activeModuleName(ip.getProperty("AP_ACTIVE_MODULE").c_str());
+  if(activeModuleName != "") ((SalomeApp_Application*)application())->activateModule(activeModuleName);  
 }
 
