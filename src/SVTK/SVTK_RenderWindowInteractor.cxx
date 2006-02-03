@@ -266,7 +266,10 @@ QVTK_RenderWindowInteractor
 void
 QVTK_RenderWindowInteractor
 ::wheelEvent( QWheelEvent* event )
-{}
+{
+  setActiveWindow();
+  setFocus();
+}
 
 
 //----------------------------------------------------------------------------
@@ -615,6 +618,7 @@ SVTK_RenderWindowInteractor
 ::wheelEvent( QWheelEvent* event )
 {
   QVTK_RenderWindowInteractor::wheelEvent(event);
+
   if(event->delta() > 0)
     GetDevice()->InvokeEvent(SVTK::ZoomInEvent,NULL);
   else
