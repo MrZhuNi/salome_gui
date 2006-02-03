@@ -663,11 +663,14 @@ bool QtxResourceMgr::Format::save( Resources* res )
   function userFileName(). Any resource looking firstly in the user home resources then
   resource directories used in the specified order. All setted resources always stored into
   the resource file at the user home. Only user home resource file is saved.
+  If you want to ignore of loading of Local User Preferences, you needs setup setIngoreUserValues()
+  as true.
 */
 QtxResourceMgr::QtxResourceMgr( const QString& appName, const QString& resVarTemplate )
 : myAppName( appName ),
   myCheckExist( true ),
-  myIsPixmapCached( true )
+  myIsPixmapCached( true ),
+  myIsIgnoreUserValues( false )
 {
   QString envVar = !resVarTemplate.isEmpty() ? resVarTemplate : QString( "%1Resources" );
   if ( envVar.contains( "%1" ) )
@@ -782,6 +785,16 @@ void QtxResourceMgr::clear()
 {
   for ( ResListIterator it( myResources ); it.current(); ++it )
     it.current()->clear();
+}
+
+void QtxResourceMgr::setIgnoreUserValues( const bool val )
+{
+  myIsIgnoreUserValues = val;
+}
+
+bool QtxResourceMgr::ignoreUserValues() const
+{
+  return myIsIgnoreUserValues;
 }
 
 /*!
@@ -948,7 +961,12 @@ bool QtxResourceMgr::value( const QString& sect, const QString& name, QString& v
   initialize();
 
   bool ok = false;
-  for ( ResListIterator it( myResources ); it.current() && !ok; ++it )
+ 
+  ResListIterator it( myResources );
+  if ( ignoreUserValues() )
+    ++it;
+
+  for ( ; it.current() && !ok; ++it )
   {
     ok = it.current()->hasValue( sect, name );
     if ( ok )

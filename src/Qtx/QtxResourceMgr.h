@@ -73,6 +73,9 @@ public:
 
   void            clear();
 
+  void            setIgnoreUserValues( const bool = true );
+  bool            ignoreUserValues() const;
+
   bool            value( const QString&, const QString&, int& ) const;
   bool            value( const QString&, const QString&, double& ) const;
   bool            value( const QString&, const QString&, bool& ) const;
@@ -169,6 +172,8 @@ private:
   TransListMap    myTranslator;
   QPixmap         myDefaultPix;
   bool            myIsPixmapCached;
+
+  bool            myIsIgnoreUserValues;
 };
 
 /*!
