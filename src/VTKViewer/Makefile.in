@@ -67,7 +67,6 @@ LIB_SRC= VTKViewer_Actor.cxx \
 	 VTKViewer_ViewModel.cxx \
 	 VTKViewer_ConvexTool.cxx \
 	 VTKViewer_ViewWindow.cxx 		
-  
 
 LIB_MOC = \
 	  VTKViewer_RenderWindow.h \
@@ -76,10 +75,12 @@ LIB_MOC = \
 	  VTKViewer_ViewModel.h \
 	  VTKViewer_ViewWindow.h 
 
+BIN = VTKViewer
+
 CPPFLAGS+=$(QT_INCLUDES) $(VTK_INCLUDES) $(OCC_INCLUDES)
 
-LDFLAGS+=$(VTK_LIBS) $(QT_MT_LIBS) $(CAS_KERNEL) -lsuit
+LDFLAGS+=$(VTK_LIBS) $(QT_MT_LIBS) $(CAS_KERNEL)
+
+LDFLAGSFORBIN=$(LDFLAGS) -lqtx -lsuit
 
 @CONCLUDE@
-
-

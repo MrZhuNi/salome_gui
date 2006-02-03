@@ -132,28 +132,11 @@ SALOME_Actor
   myRenderer(NULL),
   myInteractor(NULL),
   mySelectionMode(ActorSelection),
-  myIsHighlighted(false),
-  myIsPreselected(false),
-  myRepresentation(VTK_SURFACE),
-  myDisplayMode(1),
-  myProperty(vtkProperty::New()),
-  PreviewProperty(NULL),
-  myIsInfinite(false),
-  myIsResolveCoincidentTopology(true),
-  myStoreMapping(false),
-  myGeomFilter(VTKViewer_GeometryFilter::New()),
-  myTransformFilter(VTKViewer_TransformFilter::New()),
   myPreHighlightActor(SVTK_Actor::New()),
   myHighlightActor(SVTK_Actor::New()),
   myOutline(vtkOutlineSource::New()),
   myOutlineActor(VTKViewer_Actor::New())
 {
-  vtkMapper::GetResolveCoincidentTopologyPolygonOffsetParameters(myPolygonOffsetFactor,
-								 myPolygonOffsetUnits);
-
-  for(int i = 0; i < 6; i++)
-    myPassFilter.push_back(VTKViewer_PassThroughFilter::New());
-
   myPreHighlightActor->Delete();
   myPreHighlightActor->Initialize();
   myPreHighlightActor->PickableOff();
@@ -185,24 +168,7 @@ SALOME_Actor
 //----------------------------------------------------------------------------
 SALOME_Actor
 ::~SALOME_Actor()
-{
-  SetPreviewProperty(NULL);
-
-  myGeomFilter->UnRegisterAllOutputs(); 
-  myGeomFilter->Delete();
-
-  myTransformFilter->UnRegisterAllOutputs();
-  myTransformFilter->Delete();
-
-  for(int i = 0, iEnd = myPassFilter.size(); i < iEnd; i++){
-    if(myPassFilter[i]){
-      myPassFilter[i]->UnRegisterAllOutputs(); 
-      myPassFilter[i]->Delete();
-    }
-  }
-
-  myProperty->Delete();
-}
+{}
 
 
 //----------------------------------------------------------------------------
@@ -227,20 +193,13 @@ SALOME_Actor
   myIO = theIO; 
 }
 
-const char* 
-SALOME_Actor
-::getName() 
-{ 
-  return myName.c_str(); 
-}
-
 void
 SALOME_Actor
 ::setName(const char* theName)
 {
   if(hasIO())	
     myIO->setName(theName);
-  myName = theName;
+  Superclass::setName(theName);
 }
 
 
@@ -249,9 +208,9 @@ void
 SALOME_Actor
 ::AddToRender(vtkRenderer* theRenderer)
 {
-  myRenderer = theRenderer;
+  Superclass::AddToRender(theRenderer);
 
-  theRenderer->AddActor(this);
+  myRenderer = theRenderer;
 
   theRenderer->AddActor( myPreHighlightActor.GetPointer() );
   theRenderer->AddActor( myHighlightActor.GetPointer() );
@@ -262,7 +221,7 @@ void
 SALOME_Actor
 ::RemoveFromRender(vtkRenderer* theRenderer)
 {
-  theRenderer->RemoveActor(this);
+  Superclass::RemoveFromRender(theRenderer);
 
   theRenderer->RemoveActor( myPreHighlightActor.GetPointer() );
   theRenderer->RemoveActor( myHighlightActor.GetPointer() );
@@ -275,11 +234,6 @@ SALOME_Actor
 {
   return myRenderer;
 }
-
-void
-SALOME_Actor
-::GetChildActors(vtkActorCollection*) 
-{}
 
 
 //----------------------------------------------------------------------------
@@ -331,368 +285,6 @@ SALOME_Actor
 }
 
 
-void
-SALOME_Actor
-::SetMapper(vtkMapper* theMapper)
-{
-  InitPipeLine(theMapper);
-}
-
-void
-SALOME_Actor
-::InitPipeLine(vtkMapper* theMapper)
-{
-  if(theMapper){
-    int anId = 0;
-    myPassFilter[ anId ]->SetInput( theMapper->GetInput() );
-    myPassFilter[ anId + 1]->SetInput( myPassFilter[ anId ]->GetOutput() );
-    
-    anId++; // 1
-    myGeomFilter->SetStoreMapping( myStoreMapping );
-    myGeomFilter->SetInput( myPassFilter[ anId ]->GetOutput() );
-
-    anId++; // 2
-    myPassFilter[ anId ]->SetInput( myGeomFilter->GetOutput() ); 
-    myPassFilter[ anId + 1 ]->SetInput( myPassFilter[ anId ]->GetOutput() );
-
-    anId++; // 3
-    myTransformFilter->SetInput( myPassFilter[ anId ]->GetPolyDataOutput() );
-
-    anId++; // 4
-    myPassFilter[ anId ]->SetInput( myTransformFilter->GetOutput() );
-    myPassFilter[ anId + 1 ]->SetInput( myPassFilter[ anId ]->GetOutput() );
-
-    anId++; // 5
-    if(vtkDataSetMapper* aMapper = dynamic_cast<vtkDataSetMapper*>(theMapper)){
-      aMapper->SetInput(myPassFilter[anId]->GetOutput());
-    }else if(vtkPolyDataMapper* aMapper = dynamic_cast<vtkPolyDataMapper*>(theMapper)){
-      aMapper->SetInput(myPassFilter[anId]->GetPolyDataOutput());
-    }
-  }
-  Superclass::SetMapper(theMapper);
-}
-
-
-//----------------------------------------------------------------------------
-void
-SALOME_Actor
-::Render(vtkRenderer *ren, vtkMapper* m)
-{
-  if(myIsResolveCoincidentTopology){
-    int aResolveCoincidentTopology = vtkMapper::GetResolveCoincidentTopology();
-    float aFactor, aUnit; 
-    vtkMapper::GetResolveCoincidentTopologyPolygonOffsetParameters(aFactor,aUnit);
-    
-    vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
-    vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(myPolygonOffsetFactor,
-								   myPolygonOffsetUnits);
-    Superclass::Render(ren,m);
-    
-    vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(aFactor,aUnit);
-    vtkMapper::SetResolveCoincidentTopology(aResolveCoincidentTopology);
-  }else{
-    Superclass::Render(ren,m);
-  }
-}
-
-
-void
-SALOME_Actor
-::SetResolveCoincidentTopology(bool theIsResolve) 
-{
-  myIsResolveCoincidentTopology = theIsResolve;
-}
-
-void
-SALOME_Actor
-::SetPolygonOffsetParameters(float factor, float units)
-{
-  myPolygonOffsetFactor = factor;
-  myPolygonOffsetUnits = units;
-}
-
-void
-SALOME_Actor
-::GetPolygonOffsetParameters(float& factor, float& units)
-{
-  factor = myPolygonOffsetFactor;
-  units = myPolygonOffsetUnits;
-}
-
-
-//----------------------------------------------------------------------------
-float
-SALOME_Actor
-::GetShrinkFactor() 
-{ 
-  return 1.0;
-}
-
-bool
-SALOME_Actor
-::IsShrunkable() 
-{ 
-  return false;
-}
-
-bool
-SALOME_Actor
-::IsShrunk() 
-{ 
-  return false;
-}
-
-void
-SALOME_Actor
-::SetShrink() 
-{} 
-
-void
-SALOME_Actor
-::UnShrink() 
-{}
-
-
-//----------------------------------------------------------------------------
-vtkDataSet* 
-SALOME_Actor
-::GetInput()
-{
-  return myPassFilter.front()->GetOutput();
-}
-
-
-unsigned long int
-SALOME_Actor
-::GetMTime()
-{
-  unsigned long mTime = this->Superclass::GetMTime();
-  unsigned long time = myTransformFilter->GetMTime();
-  mTime = ( time > mTime ? time : mTime );
-  if(vtkDataSet *aDataSet = myPassFilter[0]->GetInput()){
-    time = aDataSet->GetMTime();
-    mTime = ( time > mTime ? time : mTime );
-  }
-  return mTime;
-}
-
-
-//----------------------------------------------------------------------------
-void
-SALOME_Actor
-::SetRepresentation(int theMode) 
-{ 
-  switch(myRepresentation){
-  case VTK_POINTS : 
-  case VTK_SURFACE : 
-    myProperty->DeepCopy(GetProperty());
-  }    
-  switch(theMode){
-  case VTK_POINTS : 
-  case VTK_SURFACE : 
-    GetProperty()->DeepCopy(myProperty);
-    break;
-  default:
-    GetProperty()->SetAmbient(1.0);
-    GetProperty()->SetDiffuse(0.0);
-    GetProperty()->SetSpecular(0.0);
-  }
-  switch(theMode){
-  case 3 : 
-    myGeomFilter->SetInside(true);
-    myGeomFilter->SetWireframeMode(true);
-    GetProperty()->SetRepresentation(1);
-    break;
-  case VTK_POINTS : 
-    GetProperty()->SetPointSize(SALOME_POINT_SIZE);  
-    GetProperty()->SetRepresentation(theMode);
-    myGeomFilter->SetWireframeMode(false);
-    myGeomFilter->SetInside(false);
-    break;
-  case VTK_WIREFRAME : 
-    GetProperty()->SetRepresentation(theMode);
-    myGeomFilter->SetWireframeMode(true);
-    myGeomFilter->SetInside(false);
-    break;
-  case VTK_SURFACE : 
-    GetProperty()->SetRepresentation(theMode);
-    myGeomFilter->SetWireframeMode(false);
-    myGeomFilter->SetInside(false);
-    break;
-  }
-  myRepresentation = theMode;
-}
-
-int
-SALOME_Actor
-::GetRepresentation()
-{ 
-  return myRepresentation;
-}
-
-
-//----------------------------------------------------------------------------
-int 
-SALOME_Actor
-::GetNodeObjId(int theVtkID)
-{ 
-  return theVtkID;
-}
-
-float* 
-SALOME_Actor
-::GetNodeCoord(int theObjID)
-{
-  return GetInput()->GetPoint(theObjID);
-}
-
-vtkCell* 
-SALOME_Actor
-::GetElemCell(int theObjID)
-{
-  return GetInput()->GetCell(theObjID);
-}
-
-int
-SALOME_Actor
-::GetElemObjId(int theVtkID) 
-{ 
-  return theVtkID;
-}
-
-
-//=================================================================================
-// function : GetObjDimension
-// purpose  : Return object dimension.
-//            Virtual method shoulb be redifined by derived classes
-//=================================================================================
-int
-SALOME_Actor
-::GetObjDimension( const int theObjId )
-{
-  if ( vtkCell* aCell = GetElemCell(theObjId) )
-    return aCell->GetCellDimension();
-  return 0;
-}
-
-
-void
-SALOME_Actor
-::SetInfinitive(bool theIsInfinite)
-{ 
-  myIsInfinite = theIsInfinite;
-}
-
-
-bool
-SALOME_Actor
-::IsInfinitive()
-{ 
-  return myIsInfinite; 
-}
-
-
-float* 
-SALOME_Actor
-::GetBounds()
-{
-  return Superclass::GetBounds();
-}
-
-
-void
-SALOME_Actor
-::GetBounds(float theBounds[6])
-{
-  Superclass::GetBounds(theBounds);
-}
-
-
-//----------------------------------------------------------------------------
-bool
-SALOME_Actor
-::IsSetCamera() const 
-{ 
-  return false; 
-}
-
-bool
-SALOME_Actor
-::IsResizable() const 
-{ 
-  return false; 
-}
-
-void
-SALOME_Actor
-::SetSize( const float ) 
-{}
-
-
-void 
-SALOME_Actor
-::SetCamera( vtkCamera* ) 
-{}
-
-//----------------------------------------------------------------------------
-void
-SALOME_Actor
-::SetOpacity(float theOpacity)
-{ 
-  myOpacity = theOpacity;
-  GetProperty()->SetOpacity(theOpacity);
-}
-
-float
-SALOME_Actor
-::GetOpacity()
-{
-  return myOpacity;
-}
-
-
-void
-SALOME_Actor
-::SetColor(float r,float g,float b)
-{
-  GetProperty()->SetColor(r,g,b);
-}
-
-void
-SALOME_Actor
-::SetColor(const float theRGB[3])
-{ 
-  SetColor(theRGB[0],theRGB[1],theRGB[2]);
-}
-
-void
-SALOME_Actor
-::GetColor(float& r,float& g,float& b)
-{
-  float aColor[3];
-  GetProperty()->GetColor(aColor);
-  r = aColor[0];
-  g = aColor[1];
-  b = aColor[2];
-}
-
-
-//----------------------------------------------------------------------------
-int
-SALOME_Actor
-::getDisplayMode()
-{ 
-  return myDisplayMode; 
-}
-
-void
-SALOME_Actor::setDisplayMode(int theMode)
-{ 
-  SetRepresentation(theMode+1); 
-  myDisplayMode = GetRepresentation() - 1;
-}
-
-
 //----------------------------------------------------------------
 void
 SALOME_Actor
@@ -710,29 +302,6 @@ SALOME_Actor
       myHighlightActor->SetVisibility( theVisibility && isHighlighted() && aHasIndex);
     }
   }
-}
-
-
-//----------------------------------------------------------------------------
-bool
-SALOME_Actor
-::hasHighlight() 
-{ 
-  return false; 
-} 
-
-bool
-SALOME_Actor
-::isHighlighted() 
-{ 
-  return myIsHighlighted; 
-}
-
-void
-SALOME_Actor
-::SetPreSelected(bool thePreselect) 
-{ 
-  myIsPreselected = thePreselect;
 }
 
 
@@ -788,7 +357,8 @@ SALOME_Actor
   GetInput()->GetBounds(aBounds);
   myOutline->SetBounds(aBounds);
   myOutlineActor->SetVisibility( GetVisibility() && theIsHighlight );
-  myIsHighlighted = theIsHighlight; 
+
+  Superclass::highlight(theIsHighlight);
 }
 
 
