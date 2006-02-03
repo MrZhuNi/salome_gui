@@ -122,7 +122,7 @@ void SalomeApp_Application::createActions()
   //! Registry Display
   createAction( RegDisplayId, tr( "TOT_DESK_REGISTRY_DISPLAY" ),  QIconSet(),
 		tr( "MEN_DESK_REGISTRY_DISPLAY" ), tr( "PRP_DESK_REGISTRY_DISPLAY" ),
-		SHIFT+Key_D, desk, false, this, SLOT( onRegDisplay() ) );
+		/*SHIFT+Key_D*/0, desk, false, this, SLOT( onRegDisplay() ) );
 
   int fileMenu = createMenu( tr( "MEN_DESK_FILE" ), -1 );
 
