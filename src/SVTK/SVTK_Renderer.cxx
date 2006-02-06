@@ -155,12 +155,23 @@ SVTK_Renderer
 ::~SVTK_Renderer()
 {
   vtkActorCollection* anActors = GetDevice()->GetActors();
+  vtkActorCollection* anActors2 = vtkActorCollection::New();
+
   anActors->InitTraversal();
   while(vtkActor* anAct = anActors->GetNextActor()){
+    if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(anAct)){
+      anActors2->AddItem(anActor);
+    }
+  }
+
+  anActors2->InitTraversal();
+  while(vtkActor* anAct = anActors2->GetNextActor()){
     if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(anAct)){
       RemoveActor(anActor);
     }
   }
+
+  anActors2->Delete();
 }
 
 
