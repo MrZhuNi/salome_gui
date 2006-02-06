@@ -23,7 +23,6 @@
 #include "SalomeApp_DataObject.h"
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Engine_i.hxx"
-#include "SalomeApp_VisualParameters.h"
 
 #include "LightApp_RootObject.h"
 
