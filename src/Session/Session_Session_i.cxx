@@ -216,14 +216,22 @@ CORBA::Long SALOME_Session_i::GetActiveStudyId()
 
 bool SALOME_Session_i::restoreVisualState(CORBA::Long theSavePoint)
 {
+  class TEvent: public SALOME_Event {
+    int _savePoint;
+  public:
+    TEvent(int savePoint) { _savePoint = savePoint; }
+    virtual void Execute() {
+      SUIT_Study* study = SUIT_Session::session()->activeApplication()->activeStudy();
+      if ( study ) {
+	study->restoreState(_savePoint);
+      }
+    }
+  };
+  
   if(SUIT_Session::session() && SUIT_Session::session()->activeApplication() ) {
     SUIT_Study* study = SUIT_Session::session()->activeApplication()->activeStudy();
-    if(!study) {
-      SUIT_Session::session()->activeApplication()->createEmptyStudy();
-      study = SUIT_Session::session()->activeApplication()->activeStudy();
-    }
-    if(!study) return false;
-    study->restoreState(theSavePoint);
+    if(!study) SUIT_Session::session()->activeApplication()->createEmptyStudy();      
+    ProcessVoidEvent( new TEvent(theSavePoint) );
     return true;
   }
  
