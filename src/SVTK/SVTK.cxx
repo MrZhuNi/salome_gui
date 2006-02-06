@@ -1,4 +1,4 @@
-//  SALOME SALOMEGUI : implementation of desktop and GUI kernel
+//  SALOME VTKViewer : build VTK viewer into Salome desktop
 //
 //  Copyright (C) 2003  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 //  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS 
@@ -21,25 +21,40 @@
 //
 //
 //
-//  File   : SALOME_Selection.h
-//  Author : Nicolas REJNERI
-//  Module : SALOME
+//  File   :
+//  Author :
+//  Module :
 //  $Header$
 
-#ifndef SVTK_SELECTION_H
-#define SVTK_SELECTION_H
+#include "SVTK.h"
+#include "SVTK_Prs.h"
+#include "SVTK_Actor.h"
+#include "SALOME_Actor.h"
+#include "SVTK_RectPicker.h"
+#include "SVTK_DeviceActor.h"
+#include "SVTK_CubeAxesActor2D.h"
+#include "SVTK_Functor.h"
+#include "SVTK_View.h"
+#include "SVTK_MainWindow.h"
+#include "SVTK_MainWindow.h"
+#include "SVTK_NonIsometricDlg.h"
+#include "SVTK_CubeAxesDlg.h"
+#include "SVTK_FontWidget.h"
+#include "SVTK_ViewModel.h"
+#include "SVTK_ViewWindow.h"
+#include "SVTK_Renderer.h"
+#include "SVTK_InteractorStyle.h"
+#include "SVTK_RenderWindowInteractor.h"
+#include "SVTK_GenericRenderWindowInteractor.h"
+#include "SVTK_Selector.h"
+#include "SVTK_Selection.h"
+#include "SVTK_SelectionEvent.h"
+#include "SVTK_SpaceMouse.h"
+#include "SVTK_Event.h"
+#include "SVTK_ViewModelBase.h"
 
-
-//! It is possible to introduce new type of selection 
-typedef int Selection_Mode; 
-
-const Selection_Mode NodeSelection = 0;
-const Selection_Mode CellSelection = 1;
-const Selection_Mode EdgeOfCellSelection = 2;
-const Selection_Mode EdgeSelection = 3;
-const Selection_Mode FaceSelection = 4;
-const Selection_Mode VolumeSelection = 5;
-const Selection_Mode ActorSelection = 6;
-
-
-#endif
+int
+main(int argc, char** argv)
+{
+  return 0;
+}
