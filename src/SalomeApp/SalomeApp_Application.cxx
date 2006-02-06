@@ -836,3 +836,8 @@ void SalomeApp_Application::onDblClick( QListViewItem* it )
     }
   }
 }
+
+SUIT_ViewManager* SalomeApp_Application::newViewManager(const QString& type)
+{
+  return createViewManager(type);
+}

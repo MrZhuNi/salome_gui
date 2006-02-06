@@ -410,7 +410,8 @@ void SalomeApp_Study::addComponent(const CAM_DataModel* dm)
       }
       // Set default engine IOR
       aBuilder->DefineComponentInstance(aComp, SalomeApp_Application::defaultEngineIOR().latin1());
-      SalomeApp_DataModel::BuildTree( aComp, root(), this, /*skipExisitng=*/true );
+      //SalomeApp_DataModel::BuildTree( aComp, root(), this, /*skipExisitng=*/true );
+      SalomeApp_DataModel::synchronize( aComp, this );
     }
   }
 }
@@ -795,7 +796,7 @@ void SalomeApp_Study::restoreState(int savePoint)
     vector<string> veiewerParams = ip.parseValue(viewerEntry,'_');
     string type = veiewerParams[0];
     string viewerID = veiewerParams[1];
-    SUIT_ViewManager* vm = ((SalomeApp_Application*)application())->createViewManager(type.c_str());
+    SUIT_ViewManager* vm = ((SalomeApp_Application*)application())->newViewManager(type.c_str());
     if(!vm) continue; //Unknown viewer
     
     

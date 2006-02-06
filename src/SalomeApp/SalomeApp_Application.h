@@ -66,6 +66,8 @@ public:
   static SALOME_LifeCycleCORBA*       lcc();
   static QString                      defaultEngineIOR();
 
+  SUIT_ViewManager*                   newViewManager(const QString&);
+
 public slots:
   virtual bool                        onOpenDoc( const QString& );
   virtual void                        onLoadDoc();
@@ -83,7 +85,7 @@ protected:
 
   virtual void                        createPreferences( LightApp_Preferences* );
   virtual void                        updateDesktopTitle();
-
+  
 private slots:
   void                                onDeleteInvalidReferences();
   void                                onDblClick( QListViewItem* );
