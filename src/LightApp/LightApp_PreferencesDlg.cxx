@@ -23,8 +23,12 @@
 
 #include "LightApp_Preferences.h"
 
-#include <qvbox.h>
+#include "QtxResourceMgr.h"
+
+#include <qbutton.h>
 #include <qlayout.h>
+#include <qmessagebox.h>
+#include <qvbox.h>
 
 /*!
   Constructor.
@@ -50,6 +54,10 @@ myPrefs( prefs ), mySaved ( false )
 
   connect( this, SIGNAL( dlgHelp() ),  this, SLOT( onHelp() ) );
   connect( this, SIGNAL( dlgApply() ), this, SLOT( onApply() ) );
+
+  QButton* defBtn = userButton( insertButton( tr( "DEFAULT_BTN_TEXT" ) ) );
+  if ( defBtn )
+    connect( defBtn, SIGNAL( clicked() ), this, SLOT( onDefault() ) );
 }
 
 /*!
@@ -108,4 +116,19 @@ void LightApp_PreferencesDlg::onApply()
   
   myPrefs->toBackup();
   mySaved = true;
+}
+
+/*! Restore default preferences*/
+void LightApp_PreferencesDlg::onDefault()
+{
+  if( QMessageBox::Ok == QMessageBox::information( this, tr( "WARNING" ), tr( "DEFAULT_QUESTION" ), QMessageBox::Ok, QMessageBox::Cancel ) )
+    {
+      if ( myPrefs && myPrefs->resourceMgr() )
+	{
+          bool prev = myPrefs->resourceMgr()->ignoreUserValues();
+	  myPrefs->resourceMgr()->setIgnoreUserValues( true ); 
+	  myPrefs->retrieve();
+          myPrefs->resourceMgr()->setIgnoreUserValues( prev );
+	}      
+    }
 }

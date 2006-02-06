@@ -52,9 +52,6 @@ public:
 
   void              onAccelAction( int );
 
-  virtual QString   getVisualParameters();
-  virtual void      setVisualParameters( const QString& parameters );  
-
 public slots:
   virtual void      onDumpView();
 

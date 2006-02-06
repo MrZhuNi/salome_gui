@@ -283,6 +283,14 @@ QString QDS_Datum::shortDescription() const
   return sdStr;
 }
 
+QVariant QDS_Datum::value() const
+{
+  QVariant val;
+  if ( !isEmpty() )
+    val = stringValue();
+  return val;
+}
+
 QString QDS_Datum::stringValue() const
 {
   initDatum();
@@ -380,6 +388,14 @@ void QDS_Datum::clear()
     emit paramChanged();
     emit paramChanged( str );
   }
+}
+
+void QDS_Datum::setValue( const QVariant& val )
+{
+  if ( val.isValid() && val.canCast( QVariant::String ) )
+    setStringValue( val.toString() );
+  else
+    clear();
 }
 
 void QDS_Datum::setStringValue( const QString& txt )
