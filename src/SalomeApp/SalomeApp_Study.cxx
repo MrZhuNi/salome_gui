@@ -801,9 +801,13 @@ void SalomeApp_Study::restoreState(int savePoint)
     
     
     int nbViews = (ip.nbValues(viewerEntry))/2;
-    //Create nbViews-1 view (-1 because 1 view is created by createViewManager)
-    for(int i = 1; i< nbViews; i++)  vm->createViewWindow();
     
+    //Create nbViews-1 view (-1 because 1 view is created by createViewManager)
+    for ( int i = 1; i< nbViews; i++ ) { 
+      SUIT_ViewWindow* aView = vm->createViewWindow();
+      aView->show();
+    }
+
     int viewCount = vm->getViewsCount();
     if(viewCount != nbViews) {
       cout << "Unknow error, Can't create a view!" << endl;
