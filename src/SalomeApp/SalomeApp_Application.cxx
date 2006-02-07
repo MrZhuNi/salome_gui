@@ -488,7 +488,9 @@ void SalomeApp_Application::onDumpStudy( )
 
   if(!aFileName.isEmpty()) {
     QFileInfo aFileInfo(aFileName);
-    bool res = aStudy->DumpStudy( aFileInfo.dirPath( true ).latin1(), aFileInfo.baseName().latin1(), toPublish );
+    int savePoint = appStudy->storeState(); //SRN: Store a visual state of the save at the save point
+    QString prefix = appStudy->getVisulDump(savePoint); //SRN: Get a generate Python script for the study's visual state
+    bool res = aStudy->DumpStudy( aFileInfo.dirPath( true ).latin1(), aFileInfo.baseName().latin1(), toPublish ,prefix.latin1());
     if ( !res )
     SUIT_MessageBox::warn1 ( desktop(),
 			     QObject::tr("WRN_WARNING"),

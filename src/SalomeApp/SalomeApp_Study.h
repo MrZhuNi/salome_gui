@@ -71,6 +71,7 @@ public:
   void                setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint);
   virtual int         storeState();
   virtual void        restoreState(int savePoint);
+  virtual QString     getVisulDump(int savePoint);
 
 protected:
   virtual void        saveModuleData ( QString theModuleName, QStringList theListOfFiles );

@@ -814,7 +814,7 @@ void SalomeApp_Study::restoreState(int savePoint)
       continue;
     }
 
-     //Resize the views, set their captions and apply visual parameters.
+    //Resize the views, set their captions and apply visual parameters.
     QPtrVector<SUIT_ViewWindow> views = vm->getViews();  
     for(int i = 0, j = 0; i<viewCount; i++, j+=1) {
       viewWin = views[i];
@@ -849,3 +849,10 @@ void SalomeApp_Study::restoreState(int savePoint)
   if(activeModuleName != "") ((SalomeApp_Application*)application())->activateModule(activeModuleName);  
 }
 
+QString SalomeApp_Study::getVisulDump(int savePoint)
+{
+  _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  SALOMEDS_IParameters ip(ap);
+  ip.setDumpPython(true); //Enable DumpPython of visual parameters for modules.
+  return "";
+}
