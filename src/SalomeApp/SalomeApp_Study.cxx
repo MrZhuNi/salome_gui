@@ -669,6 +669,19 @@ vector<int> SalomeApp_Study::getSavePoints()
 }
 
 //================================================================
+// Function : removeSavePoint
+/*! Purpose : remove a given save point
+*/
+//================================================================
+void SalomeApp_Study::removeSavePoint(int savePoint)
+{
+  _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  _PTR(SObject) so = AP->GetSObject();
+  _PTR(StudyBuilder) builder = studyDS()->NewBuilder();
+  builder->RemoveObjectWithChildren(so);
+}
+
+//================================================================
 // Function : getNameOfSavePoint
 /*! Purpose : returns a name of save point
 */
@@ -823,7 +836,7 @@ void SalomeApp_Study::restoreState(int savePoint)
 	viewWin->resize( (int)( application()->desktop()->width() * 0.6 ), (int)( application()->desktop()->height() * 0.6 ) );
       viewWin->setCaption(ip.getValue(viewerEntry, j).c_str());
       viewWin->setVisualParameters(ip.getValue(viewerEntry, j+1).c_str());
-
+      viewWin->show();
       sprintf(buffer, "%s_%d", viewerID.c_str(), j);
       string viewEntry(buffer);
       if(!activeView && viewEntry == activeViewID) activeView = viewWin;

@@ -67,6 +67,7 @@ public:
   virtual void        components( QStringList& ) const;
 
   std::vector<int>    getSavePoints();
+  void                removeSavePoint(int savePoint);
   QString             getNameOfSavePoint(int savePoint);
   void                setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint);
   virtual int         storeState();
