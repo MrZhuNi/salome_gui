@@ -31,6 +31,7 @@
 #include <SUIT_ResourceMgr.h>
 
 #include <qptrlist.h>
+#include <qapplication.h>
 
 #include "utilities.h"
 #include <iostream.h>
@@ -669,7 +670,7 @@ vector<int> SalomeApp_Study::getSavePoints()
 }
 
 //================================================================
-// Function : removeSavePoint
+// Function :removeSavePoint
 /*! Purpose : remove a given save point
 */
 //================================================================
@@ -738,7 +739,7 @@ int SalomeApp_Study::storeState()
       viewerEntry+="_";
       viewerEntry+=buffer;
 
-      int viewerID = ip.append("AP_VIEWERS_LIST", viewerEntry);
+      /*int viewerID = */ip.append("AP_VIEWERS_LIST", viewerEntry);
 
       QPtrVector<SUIT_ViewWindow> views = vm->getViews();
       for(int i = 0; i<view_count; i++) {
@@ -792,9 +793,10 @@ void SalomeApp_Study::restoreState(int savePoint)
   //Remove all already existent veiwers and their views
   ViewManagerList lst;
   ((SalomeApp_Application*)application())->viewManagers(lst);
-  for(QPtrListIterator<SUIT_ViewManager> it(lst); it.current(); ++it) {
+  for (QPtrListIterator<SUIT_ViewManager> it(lst); it.current(); ++it) {
     SUIT_ViewManager* vm = it.current();
-    if(vm) ((SalomeApp_Application*)application())->removeViewManager(vm);
+    if (vm) 
+      ((SalomeApp_Application*)application())->removeViewManager(vm);
   }
 
   //Restore the viewers
@@ -804,14 +806,14 @@ void SalomeApp_Study::restoreState(int savePoint)
 
   SUIT_ViewWindow *viewWin = 0, *activeView = 0;
 
-  for(int i = 0; i < nbViewers; i++) {
+  for (int i = 0; i < nbViewers; i++) {
     string viewerEntry = ip.getValue("AP_VIEWERS_LIST", i);
     vector<string> veiewerParams = ip.parseValue(viewerEntry,'_');
     string type = veiewerParams[0];
     string viewerID = veiewerParams[1];
     SUIT_ViewManager* vm = ((SalomeApp_Application*)application())->newViewManager(type.c_str());
-    if(!vm) continue; //Unknown viewer
-    
+    if (!vm) 
+      continue; //Unknown viewer
     
     int nbViews = (ip.nbValues(viewerEntry))/2;
     
@@ -822,44 +824,52 @@ void SalomeApp_Study::restoreState(int savePoint)
     }
 
     int viewCount = vm->getViewsCount();
-    if(viewCount != nbViews) {
+    if (viewCount != nbViews) {
       cout << "Unknow error, Can't create a view!" << endl;
       continue;
     }
 
     //Resize the views, set their captions and apply visual parameters.
     QPtrVector<SUIT_ViewWindow> views = vm->getViews();  
-    for(int i = 0, j = 0; i<viewCount; i++, j+=1) {
+    for (int i = 0, j = 0; i<viewCount; i++, j++) {
       viewWin = views[i];
-      if(!viewWin) continue;
-      if(application()->desktop()) 
+      if ( !viewWin ) 
+	continue;
+
+      // wait untill the window is really shown.  This step fixes MANY bugs..
+      while ( !viewWin->isVisible() )
+	qApp->processEvents();
+
+      if (application()->desktop()) 
 	viewWin->resize( (int)( application()->desktop()->width() * 0.6 ), (int)( application()->desktop()->height() * 0.6 ) );
       viewWin->setCaption(ip.getValue(viewerEntry, j).c_str());
+
       viewWin->setVisualParameters(ip.getValue(viewerEntry, j+1).c_str());
       viewWin->show();
       sprintf(buffer, "%s_%d", viewerID.c_str(), j);
       string viewEntry(buffer);
-      if(!activeView && viewEntry == activeViewID) activeView = viewWin;
+      if (!activeView && viewEntry == activeViewID) {
+	activeView = viewWin;
+      }
     }
   }
 
   //Set focus to an active view window
-  if(activeView) {
-    activeView->show();
-    activeView->raise();
+  if (activeView) {
     activeView->setActiveWindow();
-    activeView->setFocus();
+    activeView->setFocus();    
   }
 
   vector<string> v = ip.getValues("AP_MODULES_LIST");
-  for(int i = 0; i<v.size(); i++) {
+  for (int i = 0; i<v.size(); i++) {
     ((SalomeApp_Application*)application())->activateModule(v[i].c_str());
     SalomeApp_Module* module = (SalomeApp_Module*)(((SalomeApp_Application*)application())->activeModule());
     module->restoreVisualParameters(savePoint);
   }
 
   QString activeModuleName(ip.getProperty("AP_ACTIVE_MODULE").c_str());
-  if(activeModuleName != "") ((SalomeApp_Application*)application())->activateModule(activeModuleName);  
+  if (activeModuleName != "") 
+    ((SalomeApp_Application*)application())->activateModule(activeModuleName);  
 }
 
 QString SalomeApp_Study::getVisulDump(int savePoint)
