@@ -871,8 +871,3 @@ void SalomeApp_Study::restoreState(int savePoint)
   if (activeModuleName != "") 
     ((SalomeApp_Application*)application())->activateModule(activeModuleName);  
 }
-
-QString SalomeApp_Study::getVisulDump(int savePoint)
-{
-  return QString(SALOMEDS_IParameters::getStudyScript(studyDS(), "Interface Applicative", savePoint));
-}

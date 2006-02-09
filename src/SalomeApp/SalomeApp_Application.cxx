@@ -51,6 +51,7 @@
 
 #include "SALOMEDS_StudyManager.hxx"
 #include "SALOMEDS_SObject.hxx"
+#include "SALOMEDS_IParameters.hxx"
 
 #include "SALOME_ListIteratorOfListIO.hxx"
 #include "SALOME_ListIO.hxx"
@@ -489,7 +490,7 @@ void SalomeApp_Application::onDumpStudy( )
   if(!aFileName.isEmpty()) {
     QFileInfo aFileInfo(aFileName);
     int savePoint = appStudy->storeState(); //SRN: Store a visual state of the save at the save point
-    QString prefix = appStudy->getVisulDump(savePoint); //SRN: Get a generate Python script for the study's visual state
+    QString prefix = SALOMEDS_IParameters::getStudyScript(appStudy->studyDS(), "Interface Applicative", savePoint);
     bool res = aStudy->DumpStudy( aFileInfo.dirPath( true ).latin1(), aFileInfo.baseName().latin1(), toPublish ,prefix.latin1());
     if ( !res )
     SUIT_MessageBox::warn1 ( desktop(),
