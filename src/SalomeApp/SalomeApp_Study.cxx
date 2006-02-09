@@ -874,35 +874,5 @@ void SalomeApp_Study::restoreState(int savePoint)
 
 QString SalomeApp_Study::getVisulDump(int savePoint)
 {
-  _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
-  SALOMEDS_IParameters ip(ap);
-
-  ip.setDumpPython(true); //Enable DumpPython of visual parameters for modules.
-  QString dump("");
-
-  dump += "import iparameters\n";
-  dump += "ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters(\"Interface Applicative\", 1))\n\n";
-  
-  
-  vector<string> v = ip.getProperties();
-  if(v.size() > 0) {
-    dump += "#Set up visual properties:\n";
-    for(int i = 0; i<v.size(); i++) {
-      string prp = ip.getProperty(v[i]);
-      dump += "ipar.setProperty(\""+v[i]+"\", \""+prp+"\")\n";
-    }
-  }
-
-  v = ip.getLists();
-  if(v.size() > 0) {
-    dump += "#Set up lists:\n";
-    for(int i = 0; i<v.size(); i++) {
-      vector<string> lst = ip.getValues(v[i]);
-      dump += "# fill list "+v[i]+"\n";
-      for(int j = 0; j < lst.size(); j++)
-	dump += "ipar.append(\""+v[i]+"\", \""+lst[j]+"\")\n";
-    }
-  }
-
-  return dump;
+  return QString(SALOMEDS_IParameters::getStudyScript(studyDS(), "Interface Applicative", savePoint));
 }
