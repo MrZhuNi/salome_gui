@@ -785,8 +785,6 @@ int SalomeApp_Study::storeState()
 //================================================================
 void SalomeApp_Study::restoreState(int savePoint)
 {
-  cout << "SalomeApp_Study::restoreState: " << savePoint << endl;
-
   _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
   SALOMEDS_IParameters ip(ap);
 
@@ -843,9 +841,7 @@ void SalomeApp_Study::restoreState(int savePoint)
       if (application()->desktop()) 
 	viewWin->resize( (int)( application()->desktop()->width() * 0.6 ), (int)( application()->desktop()->height() * 0.6 ) );
       viewWin->setCaption(ip.getValue(viewerEntry, j).c_str());
-
       viewWin->setVisualParameters(ip.getValue(viewerEntry, j+1).c_str());
-      viewWin->show();
       sprintf(buffer, "%s_%d", viewerID.c_str(), j);
       string viewEntry(buffer);
       if (!activeView && viewEntry == activeViewID) {

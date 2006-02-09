@@ -660,7 +660,6 @@ SVTK_ViewWindow
     scale[0] = paramsLst[10].toDouble();
     scale[1] = paramsLst[11].toDouble();
     scale[2] = paramsLst[12].toDouble();
-    bool isActive = (bool)paramsLst[13].toUShort();
     
     // applying parameters
     vtkCamera* camera = getRenderer()->GetActiveCamera();
@@ -668,7 +667,11 @@ SVTK_ViewWindow
     camera->SetFocalPoint( focalPnt );
     camera->SetViewUp( viewUp );
     camera->SetParallelScale( parScale );
-    getMainWindow()->GetRenderer()->GetTransform()->SetMatrixScale( scale[0], scale[1], scale[2] );
+    SetScale( scale );
+
+    getRenderer()->ResetCameraClippingRange();
+    Repaint();
+    //    getMainWindow()->GetRenderer()->GetTransform()->SetMatrixScale( scale[0], scale[1], scale[2] );
   }
 }
 
