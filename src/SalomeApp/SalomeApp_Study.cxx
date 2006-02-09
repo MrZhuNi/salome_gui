@@ -877,12 +877,6 @@ QString SalomeApp_Study::getVisulDump(int savePoint)
   _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
   SALOMEDS_IParameters ip(ap);
 
-  /*
-  char buffer[127];
-  sprintf(buffer,"%d", savePoint);
-  QString sp(buffer);
-  */
-
   ip.setDumpPython(true); //Enable DumpPython of visual parameters for modules.
   QString dump("");
 
