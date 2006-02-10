@@ -552,10 +552,10 @@ QtxValue QtxParser::calculate()
             if( has( nn ) )
             {
                 QVariant& v = myParameters[ nn ];
-                if( v.isValid() )
+                //if( v.isValid() )
                     aStack.push( v );
-                else
-                    setLastError( InvalidToken );
+                //else
+                  //  setLastError( InvalidToken );
             }
             else
                 setLastError( InvalidToken );

@@ -159,9 +159,8 @@ QtxParser::Error QtxListOfOperations::calculate( const QString& op,
             QtxParser::Error err = (*anIt).myOperations->calculate( op, nv1, nv2 );
             if( err==QtxParser::OK || err==QtxParser::InvalidResult )
             {
-                QString oop = (*anIt).myName;
-                const char* ooo = oop.latin1();
-                v1 = nv1; v2 = nv2; 
+                v1 = nv1;
+                v2 = nv2; 
                 return err;
             }
         }

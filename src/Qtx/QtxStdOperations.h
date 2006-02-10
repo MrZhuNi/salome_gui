@@ -107,6 +107,10 @@ public:
     QtxStrings();
     virtual ~QtxStrings();
 
+    virtual QtxParser::Error isValid( const QString&,
+                                      const QVariant::Type,
+                                      const QVariant::Type ) const;
+
     virtual bool  createValue( const QString&, QtxValue& ) const;
     virtual int   prior( const QString&, bool isBin ) const;
     virtual QtxParser::Error calculate( const QString&, QtxValue&, QtxValue& ) const;

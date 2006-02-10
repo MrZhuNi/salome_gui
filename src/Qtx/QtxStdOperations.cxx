@@ -544,6 +544,13 @@ QtxStrings::~QtxStrings()
 {
 }
 
+QtxParser::Error QtxStrings::isValid( const QString& name,
+                                      const QVariant::Type t1,
+                                      const QVariant::Type t2 ) const
+{
+  return name == "=" ? QtxParser::OK : QtxStdOperations::isValid( name, t1, t2 );
+}
+
 //================================================================
 // Function : 
 // Purpose  : 
@@ -609,8 +616,10 @@ QtxParser::Error QtxStrings::calculate( const QString& op,
         else if( op==">=" )
             set( v1, _v1>_v2 || _v1==_v2 );
     }
-    else if( !v1.isValid() && v2.isValid() )
+    else
     {
+      if( !v1.isValid() && v2.isValid() )
+      {
         QString val = v2.toString();
         if( op=="length" )
             v2 = ( int )val.length();
@@ -618,7 +627,11 @@ QtxParser::Error QtxStrings::calculate( const QString& op,
             v2 = val.lower();
         else if( op=="upper" )
             v2 = val.upper();
+      }
+      if ( op=="=" )
+        set( v1, false );
     }
+
 
     return err;
 }
