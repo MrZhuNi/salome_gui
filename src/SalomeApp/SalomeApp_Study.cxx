@@ -676,7 +676,8 @@ vector<int> SalomeApp_Study::getSavePoints()
 //================================================================
 void SalomeApp_Study::removeSavePoint(int savePoint)
 {
-  _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  if(savePoint <= 0) return;
+ _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters(getVisualComponentName(), savePoint);
   _PTR(SObject) so = AP->GetSObject();
   _PTR(StudyBuilder) builder = studyDS()->NewBuilder();
   builder->RemoveObjectWithChildren(so);
@@ -689,7 +690,7 @@ void SalomeApp_Study::removeSavePoint(int savePoint)
 //================================================================
 QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 {
-  _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters(getVisualComponentName(), savePoint);
   SALOMEDS_IParameters ip(AP);
   return ip.getProperty("AP_SAVEPOINT_NAME");
 }
@@ -701,9 +702,20 @@ QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 //================================================================
 void SalomeApp_Study::setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint)
 {
-  _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters(getVisualComponentName(), savePoint);
   SALOMEDS_IParameters ip(AP);
   ip.setProperty("AP_SAVEPOINT_NAME", nameOfSavePoint.latin1());
+}
+
+//================================================================
+// Function : getVisualComponentName
+/*! Purpose : returns a name of the component where visual
+ *             parameters are stored
+*/
+//================================================================
+string SalomeApp_Study::getVisualComponentName()
+{
+  return "Interface Applicative";
 }
 
 //================================================================
@@ -721,7 +733,7 @@ int SalomeApp_Study::storeState()
   //Calculate a new savePoint number = the last save point number + 1
   if(savePoints.size() > 0) savePoint = savePoints[savePoints.size()-1] + 1;
 
-  _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters(getVisualComponentName(), savePoint);
   SALOMEDS_IParameters ip(ap);
   char buffer[128];
   int viewerID = 0;
@@ -785,7 +797,7 @@ int SalomeApp_Study::storeState()
 //================================================================
 void SalomeApp_Study::restoreState(int savePoint)
 {
-  _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters("Interface Applicative", savePoint);
+  _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters(getVisualComponentName(), savePoint);
   SALOMEDS_IParameters ip(ap);
 
   //Remove all already existent veiwers and their views

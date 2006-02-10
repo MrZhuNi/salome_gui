@@ -22,6 +22,7 @@
 #include "SalomeApp.h"
 
 #include <LightApp_Study.h>
+#include <string>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -72,6 +73,7 @@ public:
   void                setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint);
   virtual int         storeState();
   virtual void        restoreState(int savePoint);
+  virtual std::string getVisualComponentName();
 
 protected:
   virtual void        saveModuleData ( QString theModuleName, QStringList theListOfFiles );
