@@ -432,9 +432,9 @@ SVTK_ViewWindow
 
 void
 SVTK_ViewWindow
-::SetTrihedronSize(const int theSize)
+::SetTrihedronSize(const int theSize, const bool theRelative)
 {
-  myMainWindow->SetTrihedronSize(theSize);
+  myMainWindow->SetTrihedronSize(theSize, theRelative);
 }
 
 /*! If parameter theIsForcedUpdate is true, recalculate parameters for

@@ -63,6 +63,7 @@
 SVTK_Viewer::SVTK_Viewer()
 {
   myTrihedronSize = 105;
+  myTrihedronRelative = true;
 }
 
 //==========================================================
@@ -105,7 +106,7 @@ createView( SUIT_Desktop* theDesktop )
   aViewWindow->Initialize(this);
     
   aViewWindow->setBackgroundColor( backgroundColor() );
-  aViewWindow->SetTrihedronSize( trihedronSize() );
+  aViewWindow->SetTrihedronSize( trihedronSize(), trihedronRelative() );
 
   return aViewWindow;
 }
@@ -115,9 +116,15 @@ int SVTK_Viewer::trihedronSize() const
   return myTrihedronSize;
 }
 
-void SVTK_Viewer::setTrihedronSize( const int sz )
+bool SVTK_Viewer::trihedronRelative() const
+{
+  return myTrihedronRelative;
+}
+
+void SVTK_Viewer::setTrihedronSize( const int sz,  const bool relative )
 {
   myTrihedronSize = sz;
+  myTrihedronRelative = relative;
 
   SUIT_ViewManager* vm = getViewManager();
   if ( !vm )
@@ -131,7 +138,7 @@ void SVTK_Viewer::setTrihedronSize( const int sz )
       continue;
 
     SVTK_ViewWindow* vw = (SVTK_ViewWindow*)win;
-    vw->SetTrihedronSize( sz );
+    vw->SetTrihedronSize( sz, relative );
   }
 }
 

@@ -219,7 +219,7 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   //! Redirect the request to #SVTK_Renderer::SetTrihedronSize
   virtual
   void 
-  SetTrihedronSize( const int );
+  SetTrihedronSize( const int, const bool = true );
 
   //! Redirect the request to #SVTK_Renderer::SetSelectionProp
   virtual

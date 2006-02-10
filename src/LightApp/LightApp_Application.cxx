@@ -1108,7 +1108,8 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     if( vm )
     {
       vm->setBackgroundColor( resMgr->colorValue( "VTKViewer", "background", vm->backgroundColor() ) );
-      vm->setTrihedronSize( resMgr->integerValue( "VTKViewer", "trihedron_size", vm->trihedronSize() ) );
+      vm->setTrihedronSize( resMgr->integerValue( "VTKViewer", "trihedron_size", vm->trihedronSize() ),
+			    resMgr->booleanValue( "VTKViewer", "relative_size", vm->trihedronRelative() ) );
       new LightApp_VTKSelector( vm, mySelMgr );
     }
   }
@@ -1641,6 +1642,7 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
   if ( sec == QString( "VTKViewer" ) && (param == QString( "trihedron_size" ) || param == QString( "relative_size" )) )
   {
     int sz = resMgr->integerValue( "VTKViewer", "trihedron_size", -1 );
+    bool isRelative = resMgr->booleanValue( "VTKViewer", "relative_size", true );
     QPtrList<SUIT_ViewManager> lst;
     viewManagers( SVTK_Viewer::Type(), lst );
     for ( QPtrListIterator<SUIT_ViewManager> it( lst ); it.current() && sz >= 0; ++it )
@@ -1652,7 +1654,7 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
       SVTK_Viewer* vtkVM = dynamic_cast<SVTK_Viewer*>( vm );
       if( vtkVM )
       {
-	vtkVM->setTrihedronSize( sz );
+	vtkVM->setTrihedronSize( sz, isRelative );
 	vtkVM->Repaint();
       }
     }
