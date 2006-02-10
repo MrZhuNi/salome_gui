@@ -838,8 +838,9 @@ void SalomeApp_Study::restoreState(int savePoint)
       while ( !viewWin->isVisible() )
 	qApp->processEvents();
 
-      if (application()->desktop()) 
-	viewWin->resize( (int)( application()->desktop()->width() * 0.6 ), (int)( application()->desktop()->height() * 0.6 ) );
+      //      if (application()->desktop()) 
+      //	viewWin->resize( (int)( application()->desktop()->width() * 0.6 ), (int)( application()->desktop()->height() * 0.6 ) );
+      
       viewWin->setCaption(ip.getValue(viewerEntry, j).c_str());
       viewWin->setVisualParameters(ip.getValue(viewerEntry, j+1).c_str());
       sprintf(buffer, "%s_%d", viewerID.c_str(), j);

@@ -669,8 +669,10 @@ SVTK_ViewWindow
     camera->SetParallelScale( parScale );
     SetScale( scale );
 
-    getRenderer()->ResetCameraClippingRange();
-    Repaint();
+    //    resize( size() );
+
+    //    getRenderer()->ResetCameraClippingRange();
+    //    Repaint();
     //    getMainWindow()->GetRenderer()->GetTransform()->SetMatrixScale( scale[0], scale[1], scale[2] );
   }
 }
