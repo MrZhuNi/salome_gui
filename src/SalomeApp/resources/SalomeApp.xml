@@ -179,6 +179,7 @@
     <parameter value="false" name="auto_groups" />
   </section>
   <section name="VISU" >
+  <parameter value="false" name="use_build_progress" />
   <parameter value="false" name="full_med_loading" />
   <parameter value="false" name="represent_shading" />
   <parameter value="0.05" name="scalar_bar_horizontal_height" />
