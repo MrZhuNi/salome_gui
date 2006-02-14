@@ -735,6 +735,7 @@ int SalomeApp_Study::storeState()
 
   _PTR(AttributeParameter) ap = studyDS()->GetCommonParameters(getVisualComponentName(), savePoint);
   SALOMEDS_IParameters ip(ap);
+
   char buffer[128];
   int viewerID = 0;
   SUIT_ViewManager* vm = 0;

@@ -489,15 +489,15 @@ void SalomeApp_Application::onDumpStudy( )
 
   if(!aFileName.isEmpty()) {
     QFileInfo aFileInfo(aFileName);
-    QString prefix("");
     bool isDumpVisualParameters = true;
     int savePoint;
     if(isDumpVisualParameters) { //SRN: Store a visual state of the study at the save point for DumpStudy method
+      SALOMEDS_IParameters::setDumpPython(appStudy->studyDS());
       savePoint = appStudy->storeState(); //SRN: create a temporary save point
-      prefix = SALOMEDS_IParameters::getStudyScript(appStudy->studyDS(), appStudy->getVisualComponentName(), savePoint);
+      //prefix = SALOMEDS_IParameters::getStudyScript(appStudy->studyDS(), appStudy->getVisualComponentName(), savePoint);
       
     }
-    bool res = aStudy->DumpStudy( aFileInfo.dirPath( true ).latin1(), aFileInfo.baseName().latin1(), toPublish ,prefix.latin1());
+    bool res = aStudy->DumpStudy( aFileInfo.dirPath( true ).latin1(), aFileInfo.baseName().latin1(), toPublish);
     if(isDumpVisualParameters) appStudy->removeSavePoint(savePoint); //SRN: remove the created temporary save point.
     if ( !res )
     SUIT_MessageBox::warn1 ( desktop(),
