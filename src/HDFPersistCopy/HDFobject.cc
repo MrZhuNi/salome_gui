@@ -31,7 +31,6 @@ extern "C"
 #include <string.h>
 }
 #ifndef WIN32
-#include "utilities.h"
 using namespace std;
 #endif
 
