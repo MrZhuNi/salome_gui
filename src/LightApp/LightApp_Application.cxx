@@ -181,14 +181,6 @@ myPrefs( 0 )
  */
 LightApp_Application::~LightApp_Application()
 {
-  saveWindowsGeometry();
-
-  if ( resourceMgr() )
-  {
-    if ( desktop() )
-      desktop()->saveGeometry( resourceMgr(), "desktop" );
-    resourceMgr()->save();
-  }
   delete mySelMgr;
 }
 
@@ -1702,6 +1694,19 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
       if( pythonConsole() )
 	pythonConsole()->setFont( resMgr->fontValue( "PyConsole", "font" ) );
   }
+}
+
+/*!Save preferences */
+void LightApp_Application::savePreferences()
+{
+  saveWindowsGeometry();
+  
+  if ( resourceMgr() )
+    {
+      if ( desktop() )
+	desktop()->saveGeometry( resourceMgr(), "desktop" );
+      resourceMgr()->save();
+    }
 }
 
 /*!Update desktop title.*/

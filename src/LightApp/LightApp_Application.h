@@ -128,6 +128,7 @@ protected:
   LightApp_Preferences*               preferences( const bool ) const;
   virtual void                        createPreferences( LightApp_Preferences* );
   virtual void                        preferencesChanged( const QString&, const QString& );
+  virtual void                        savePreferences();
   virtual void                        updateDesktopTitle();
 
 protected slots:
