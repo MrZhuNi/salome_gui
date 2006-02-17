@@ -213,7 +213,8 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
        res = isAscii ? 
 	 SalomeApp_Application::studyMgr()->SaveAsASCII( theFileName.latin1(), studyDS(), isMultiFile ) :
 	 SalomeApp_Application::studyMgr()->SaveAs     ( theFileName.latin1(), studyDS(), isMultiFile ) &&
-    CAM_Study::saveDocumentAs( theFileName ) && saveStudyData(theFileName);
+    CAM_Study::saveDocumentAs( theFileName ) &&  //SRN: BugID IPAL9377, removed usage of uninitialized variable <res>
+    saveStudyData(theFileName);
 
   if ( res )
     emit saved( this );

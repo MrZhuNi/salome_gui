@@ -150,7 +150,7 @@ msgstr "Error"
 msgid "BUT_OK"
 msgstr "Ok"
 
-# ------------------------------------
+#-------------------------------------
 # Plot2d_SetupViewDlg
 # ------------------------------------
 msgid "TLT_SETUP_PLOT2D_VIEW"
