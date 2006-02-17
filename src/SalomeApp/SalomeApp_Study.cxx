@@ -865,12 +865,6 @@ void SalomeApp_Study::restoreState(int savePoint)
     }
   }
 
-  //Set focus to an active view window
-  if (activeView) {
-    activeView->setActiveWindow();
-    activeView->setFocus();    
-  }
-
   vector<string> v = ip.getValues("AP_MODULES_LIST");
   for (int i = 0; i<v.size(); i++) {
     ((SalomeApp_Application*)application())->activateModule(v[i].c_str());
@@ -881,4 +875,10 @@ void SalomeApp_Study::restoreState(int savePoint)
   QString activeModuleName(ip.getProperty("AP_ACTIVE_MODULE").c_str());
   if (activeModuleName != "") 
     ((SalomeApp_Application*)application())->activateModule(activeModuleName);  
+
+  //Set focus to an active view window
+  if (activeView) {
+    activeView->setActiveWindow();
+    activeView->setFocus();    
+  }
 }
