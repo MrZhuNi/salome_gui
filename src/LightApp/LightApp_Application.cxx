@@ -115,6 +115,13 @@ static const char* imageEmptyIcon[] = {
 "....................",
 "...................."};
 
+int LightApp_Application::lastStudyId = 0;
+
+int LightApp_Application::studyId()
+{
+  return LightApp_Application::lastStudyId;
+}
+
 /*!Create new instance of LightApp_Application.*/
 extern "C" LIGHTAPP_EXPORT SUIT_Application* createApplication()
 {
@@ -1297,6 +1304,8 @@ void LightApp_Application::updateActions()
 //=======================================================================
 SUIT_Study* LightApp_Application::createNewStudy()
 {
+  LightApp_Application::lastStudyId++;
+
   LightApp_Study* aStudy = new LightApp_Study( this );
 
   // Set up processing of major study-related events
@@ -1674,6 +1683,12 @@ void LightApp_Application::updateDesktopTitle() {
   QString aVer = applicationVersion();
   if ( !aVer.isEmpty() )
     aTitle += QString( " " ) + aVer;
+
+  if ( activeStudy() )
+  {
+    QString sName = SUIT_Tools::file( activeStudy()->studyName().stripWhiteSpace(), false );
+	  aTitle += QString( " - [%1]" ).arg( sName );
+  }
 
   desktop()->setCaption( aTitle );
 }
