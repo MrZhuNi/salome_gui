@@ -49,14 +49,13 @@
 #include <qlistbox.h>
 #include <qregexp.h>
 
-#include "SALOMEDS_StudyManager.hxx"
-#include "SALOMEDS_SObject.hxx"
-
 #include "SALOME_ListIteratorOfListIO.hxx"
 #include "SALOME_ListIO.hxx"
 
 #include "ToolsGUI_CatalogGeneratorDlg.h"
 #include "ToolsGUI_RegWidget.h"
+
+#include <SALOMEDSClient_ClientFactory.hxx>
 
 /*!Create new instance of SalomeApp_Application.*/
 extern "C" SALOMEAPP_EXPORT SUIT_Application* createApplication()
@@ -362,12 +361,8 @@ void SalomeApp_Application::onSelectionChanged()
          _PTR(SObject) so = stdDS->FindObjectID(it.Value()->getEntry());
 
          if ( so ) {
-           SALOMEDS_SObject* aSO = dynamic_cast<SALOMEDS_SObject*>(so.get());
-
-           if ( aSO ) {
-             canCopy = studyMgr()->CanCopy(so);
-             canPaste = studyMgr()->CanPaste(so);
-           }
+	   canCopy = studyMgr()->CanCopy(so);
+	   canPaste = studyMgr()->CanPaste(so);
          }
        }
      }
@@ -630,8 +625,9 @@ CORBA::ORB_var SalomeApp_Application::orb()
 /*!Create and return SALOMEDS_StudyManager.*/
 SALOMEDSClient_StudyManager* SalomeApp_Application::studyMgr()
 {
-  static SALOMEDSClient_StudyManager* _sm = new SALOMEDS_StudyManager();
-  return _sm;
+  static _PTR(StudyManager) _sm;
+  if(!_sm) _sm = ClientFactory::StudyManager();
+  return _sm.get();
 }
 
 /*!Create and return SALOME_NamingService.*/
