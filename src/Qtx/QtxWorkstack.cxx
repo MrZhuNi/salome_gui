@@ -36,8 +36,10 @@
 #include <qapplication.h>
 #include <qinputdialog.h>
 #include <qevent.h>
+#include <qregexp.h>
 
 #define DARK_COLOR_LIGHT      250
+
 /*!
     Class: QtxWorkstack [Public]
     Descr:
@@ -1130,6 +1132,242 @@ void QtxWorkstack::updateState( QSplitter* split )
   else
     split->hide();
 }
+
+void QtxWorkstack::splitterInfo( QSplitter* split, QString& info ) const
+{
+  if ( !split )
+    return;
+
+  const QObjectList* objs = split->children();
+  if ( objs )
+  {
+    // make up a sizes string: integer values are separated by ':' char
+    QValueList<int> sizes = split->sizes();
+    QString sizesStr;
+    for ( QValueList<int>::Iterator sIt = sizes.begin(); sIt != sizes.end(); ++sIt )
+      sizesStr += QString( ":%1" ).arg( *sIt );
+    if ( !sizesStr.isEmpty() ) // cut the first ':'
+      sizesStr = sizesStr.right( sizesStr.length()-1 );    
+
+    // count all QSplitter-s and QtxWorkstackArea-s
+    int nChilds( 0 );
+    QObjectListIt it( *objs );
+    for ( ; it.current(); ++it )
+    {
+      if ( it.current()->inherits( "QSplitter" ) ||
+           it.current()->inherits( "QtxWorkstackArea" ) )
+	nChilds++;
+    }
+      
+    info += QString( "(splitter orientation=%1 sizes=%3 " ).arg( split->orientation() ).arg( sizesStr );
+    
+    for ( it = QObjectListIt( *objs ); it.current(); ++it )
+    {
+      if ( it.current()->inherits( "QSplitter" ) )
+	splitterInfo( (QSplitter*)it.current(), info );
+      else if ( it.current()->inherits( "QtxWorkstackArea" ) ) {
+	QWidgetList views = ((QtxWorkstackArea*)it.current())->widgetList();
+	info += "(views";
+	for ( QWidgetListIt wIt( views ); wIt.current(); ++wIt )
+	  info += QString( " \"%1\"" ).arg( wIt.current()->name() );
+	info += ')';
+      }
+    }
+  }
+  info += ')';
+}
+
+
+// Example of string produces by getVisualParameters() :
+//"(splitter orientation=0 children=2 sizes=532:469 (splitter orientation=1 children=3 
+// sizes=223:216:220 (views "OCCViewer_1" "VTKViewer_2")(views "OCCViewer_4")
+// (views "Plot2d_5"))(splitter orientation=1 children=2 sizes=299:366 (views
+// "GLViewer_ViewModel_3" "OCCViewer_7")(views "GLViewer_ViewModel_6")))"
+QString QtxWorkstack::getVisualParameters() const
+{
+  QString params;
+  splitterInfo( mySplit, params );
+  return params;
+}
+
+// Restore workstack's configuration stored in 'parameters' string
+void QtxWorkstack::setVisualParameters( const QString& parameters )
+{
+  //  printf( "\nWorkstack parameters = [%s]\n\n", parameters.latin1() );
+  setSplitter( mySplit, parameters );
+  updateState();
+}
+
+// cuts starting '(' symbol and ending '(' symbol
+void cutBrackets( QString& parameters )
+{
+  if ( !parameters.isEmpty() && parameters[0] == '(' && parameters[parameters.length()-1] == ')' )
+    parameters = parameters.mid( 1, parameters.length()-2 );
+}
+
+// for strings like "(splitter orientation=0 children=2 sizes=332:478" returns values of
+// parameters.  For example, getValue( example, "children" ) returns "2"
+// getValue( example, "sizes" ) returns "332:478"
+QString getValue( const QString& str, const QString& valName )
+{
+  int i = str.find( valName );
+  if ( i != -1 ) {
+    int equal_i = str.find( '=', i );
+    if ( equal_i != -1 ) {
+      int space_i = str.find( ' ', ++equal_i );
+      if ( space_i != -1 )
+	return str.mid( equal_i, space_i-equal_i );
+    }
+  }
+  return QString( "" );
+}
+
+// checks format of splitter parameters string
+bool checkFormat( const QString& parameters )
+{
+  QString params( parameters );
+  // 1. begins and ends with brackets
+  bool ok = ( params[0] == '(' && params[params.length()-1] == ')' );
+  if ( !ok ) return ok;
+  ::cutBrackets( params );
+  // 2. has splitter word
+  ok = ( params.left( 8 ) == "splitter" );
+  if ( !ok ) return ok;
+  // 3. has children?  = '(' is found
+  int i = params.find( '(' );
+  ok = i != -1;
+  if ( !ok ) return ok;
+  params = params.left( i ); // cut all children, they will be checked later
+  // 4. has orientation word and correct value
+  ::getValue( params, "orientation" ).toInt( &ok );
+  if ( !ok ) return ok;
+  // 5. has sizes word and values
+  ok = ! ::getValue( params, "sizes" ).isEmpty();
+  if ( !ok ) return ok;
+  // 6. check children -> number of '(' == number of ')' in original string
+  ok = ( parameters.contains( '(' ) == parameters.contains( ')' ) );
+  return ok;
+}
+
+// returns children of splitter in a list.  Children are separated by '(' and ')' symbols
+QStringList getChildren( const QString& str )
+{
+  QStringList lst;
+  if ( !str.startsWith( "(" ) )
+    return lst;
+  
+  int i = 1,
+  nOpen = 1, // count brackets: '(' increments nOpen, ')' decrements
+  start = 0;
+  while ( i < str.length() ) {
+    if ( str[i] == '(' ) {
+      nOpen++;
+      if ( nOpen == 1 )
+	start = i;
+    }
+    else if ( str[i] == ')' ) {
+      nOpen--;
+      if ( nOpen == 0 ) 
+	lst.append( str.mid( start, i-start+1 ) );
+    }
+    i++;
+  }
+
+  return lst;
+}
+
+// for a string like "views "GLView" "AnotherView" "ThirdView""
+// getViewName( example, 0 ) returns "GLView" (without '"' symbol), 
+// getViewName( example, 1 ) -> "AnotherView", etc.
+QString getViewName( const QString& str, int i )
+{
+  QRegExp exp( "\"([\\w\\s]+)\"" );
+  int start = 0; // start index of view name in the string
+  int num = 0 ; // index of found match
+  while ( ( start = exp.search( str, start ) ) != -1 && num < i ) {
+    start += exp.matchedLength();
+    num ++;
+  }
+  if ( start != -1 )      // +1 and -2 avoid starting and ending '"' symbols
+    return str.mid( start+1, exp.matchedLength()-2 ); 
+
+  return QString( "" );
+}
+
+// returns widget with given name
+QWidget* getView( const QWidget* parent, const QString& aName )
+{
+  QWidget* view = 0;
+  QObjectList *l = parent->topLevelWidget()->queryList( "QWidget", aName, false, true );
+  if ( !l->isEmpty() )
+    view = dynamic_cast<QWidget*>( l->first() );
+  delete l;
+  return view;
+}
+
+// installs a splitter described by given parameters string
+void QtxWorkstack::setSplitter( QSplitter* splitter, const QString& parameters )
+{
+  if ( !::checkFormat( parameters ) ) {
+    printf( "\nInvalid format of workstack parameters.  Positions of viewers can not be restored.\n" );
+    return;
+  }
+
+  QString params( parameters );
+  ::cutBrackets( params );
+
+  // splitter options string (orientaion, children, sizeses)
+  QString options = params.left( params.find( '(' ) );
+  int orient = ::getValue( params, "orientation" ).toInt();
+  QValueList<int> sizes;
+  QStringList sizesLst = QStringList::split( ':', ::getValue( params, "sizes" ) );
+  for ( QStringList::Iterator it = sizesLst.begin(); it != sizesLst.end(); ++it )
+    sizes.append( (*it).toInt() );
+
+  // get children
+  QString childrenStr = params.right( params.length()-options.length() );
+  QStringList children = ::getChildren( childrenStr );
+
+  // debug output..
+  //  printf (" splitter orient=%d, sizes_count=%d, children=%d\n", orient, sizes.count(), children.count() ); 
+  //  for ( QStringList::Iterator tit = children.begin(); tit != children.end(); ++tit ) 
+  //    printf ("   |-> child = [%s]\n", (*tit).latin1() );
+
+  splitter->setOrientation( (Qt::Orientation)orient );
+
+  for ( QStringList::Iterator it = children.begin(); it != children.end(); ++it ) {
+    if ( (*it).startsWith( "(splitter" ) ) {
+      QSplitter* newSplitter = new QSplitter( splitter );
+      setSplitter( newSplitter, *it );
+    }
+    else if ( (*it).startsWith( "(views" ) ) {
+      QtxWorkstackArea* newArea = createArea( splitter );
+      int i = 0;
+      QString viewName = ::getViewName( *it, i );
+      while ( !viewName.isEmpty() ) {
+	if ( QWidget* view = ::getView( splitter, viewName ) ) 
+	  newArea->insertWidget( view );
+	viewName = ::getViewName( *it, ++i );
+      }
+    }
+  }
+
+  qApp->processEvents(); // unfortunatelly, without this line setSize() does not work correctly.
+  splitter->setSizes( sizes );
+}
+
+QtxWorkstack& QtxWorkstack::operator<<( const QString& str )
+{
+  setVisualParameters( str );
+  return (*this);
+}
+
+QtxWorkstack& QtxWorkstack::operator>>( QString& str )
+{
+  str = getVisualParameters();
+  return (*this);
+}
+
 
 /*!
     Class: QtxWorkstackArea [Internal]
