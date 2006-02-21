@@ -28,6 +28,10 @@
 
 #include <OB_Browser.h>
 
+#include <QtxWorkstack.h>
+
+#include <STD_TabDesktop.h>
+
 #include <SUIT_ResourceMgr.h>
 
 #include <qptrlist.h>
@@ -758,12 +762,16 @@ int SalomeApp_Study::storeState()
       QPtrVector<SUIT_ViewWindow> views = vm->getViews();
       for(int i = 0; i<view_count; i++) {
 	SUIT_ViewWindow* vw = views[i];
-	
-	
-	QString visualParameters = vw->getVisualParameters();
-	
+		
 	int viewID = ip.append(viewerEntry, vw->caption());
-	ip.append(viewerEntry, vw->getVisualParameters());
+	ip.append( viewerEntry, vw->getVisualParameters().latin1() );
+
+	// setting unique name for view window in order to save this view inside 
+	// workstack's structure (see below).  On restore the view with the same name will
+	// be placed to the same place inside the workstack's splitters.
+	vw->setName( viewerEntry.c_str() );
+
+	//	cout << " --> store view : " << viewerEntry << endl;
 	
 	if(vw == activeWindow) {
 	  sprintf(buffer, "%d_%d", viewerID, viewID);
@@ -772,8 +780,16 @@ int SalomeApp_Study::storeState()
       }
     }
   }
+
+  //Save information about split areas
+  if ( application()->desktop()->inherits( "STD_TabDesktop" ) ) {
+    QtxWorkstack* workstack = ((STD_TabDesktop*)application()->desktop())->workstack();
+    QString workstackInfo;
+    (*workstack) >> workstackInfo;
+    ip.setProperty( "AP_WORKSTACK_INFO", workstackInfo.latin1() );
+  }
   
-  //Sava a name of the active module
+  //Save a name of the active module
   CAM_Module* activeModule = ((SalomeApp_Application*)application())->activeModule();
   QString moduleName = "";
   if(activeModule) {
@@ -857,12 +873,24 @@ void SalomeApp_Study::restoreState(int savePoint)
       
       viewWin->setCaption(ip.getValue(viewerEntry, j).c_str());
       viewWin->setVisualParameters(ip.getValue(viewerEntry, j+1).c_str());
+
+      // setting unique name for view window in order to restore this view's position inside 
+      // workstack's structure (see below). 
+      viewWin->setName( viewerEntry.c_str() );
+
+      //      cout << " --> restore view : " << viewerEntry << endl;
+
       sprintf(buffer, "%s_%d", viewerID.c_str(), j);
       string viewEntry(buffer);
       if (!activeView && viewEntry == activeViewID) {
 	activeView = viewWin;
       }
     }
+  }
+
+  if ( application()->desktop()->inherits( "STD_TabDesktop" ) ) {
+    QtxWorkstack* workstack = ((STD_TabDesktop*)application()->desktop())->workstack();
+    (*workstack) << ip.getProperty( "AP_WORKSTACK_INFO" ).c_str();
   }
 
   vector<string> v = ip.getValues("AP_MODULES_LIST");
