@@ -1169,7 +1169,7 @@ void QtxWorkstack::splitterInfo( QSplitter* split, QString& info ) const
 	QWidgetList views = ((QtxWorkstackArea*)it.current())->widgetList();
 	info += "(views";
 	for ( QWidgetListIt wIt( views ); wIt.current(); ++wIt )
-	  info += QString( " \"%1\"" ).arg( wIt.current()->name() );
+	  info += QString( " '%1'" ).arg( wIt.current()->name() );
 	info += ')';
       }
     }
@@ -1281,7 +1281,7 @@ QStringList getChildren( const QString& str )
 // getViewName( example, 1 ) -> "AnotherView", etc.
 QString getViewName( const QString& str, int i )
 {
-  QRegExp exp( "\"([\\w\\s]+)\"" );
+  QRegExp exp( "'([\\w\\s]+)'" );
   int start = 0; // start index of view name in the string
   int num = 0 ; // index of found match
   while ( ( start = exp.search( str, start ) ) != -1 && num < i ) {
