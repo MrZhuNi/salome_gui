@@ -1166,8 +1166,11 @@ void QtxWorkstack::splitterInfo( QSplitter* split, QString& info ) const
       if ( it.current()->inherits( "QSplitter" ) )
 	splitterInfo( (QSplitter*)it.current(), info );
       else if ( it.current()->inherits( "QtxWorkstackArea" ) ) {
-	QWidgetList views = ((QtxWorkstackArea*)it.current())->widgetList();
-	info += "(views";
+	QtxWorkstackArea* area = (QtxWorkstackArea*)it.current();
+	if ( area->isEmpty() )
+	  continue;
+	info += QString( "(views active='%1'" ).arg( area->activeWidget()->name() );
+	QWidgetList views = area->widgetList();
 	for ( QWidgetListIt wIt( views ); wIt.current(); ++wIt )
 	  info += QString( " '%1'" ).arg( wIt.current()->name() );
 	info += ')';
@@ -1276,20 +1279,20 @@ QStringList getChildren( const QString& str )
   return lst;
 }
 
-// for a string like "views "GLView" "AnotherView" "ThirdView""
-// getViewName( example, 0 ) returns "GLView" (without '"' symbol), 
+// for a string like "views active='AnotherView' 'GLView' 'AnotherView'"
+// getViewName( example, 0 ) returns "GLView", 
 // getViewName( example, 1 ) -> "AnotherView", etc.
 QString getViewName( const QString& str, int i )
 {
-  QRegExp exp( "'([\\w\\s]+)'" );
+  QRegExp exp( "\\s'\\w+'" );
   int start = 0; // start index of view name in the string
   int num = 0 ; // index of found match
   while ( ( start = exp.search( str, start ) ) != -1 && num < i ) {
     start += exp.matchedLength();
     num ++;
   }
-  if ( start != -1 )      // +1 and -2 avoid starting and ending '"' symbols
-    return str.mid( start+1, exp.matchedLength()-2 ); 
+  if ( start != -1 )      // +2 and -3 avoid starting space and starting and ending ' symbols
+    return str.mid( start+2, exp.matchedLength()-3 );
 
   return QString( "" );
 }
@@ -1342,13 +1345,21 @@ void QtxWorkstack::setSplitter( QSplitter* splitter, const QString& parameters )
     }
     else if ( (*it).startsWith( "(views" ) ) {
       QtxWorkstackArea* newArea = createArea( splitter );
+      QString activeViewName = ::getValue( *it, "active" );
+      QWidget* activeView( 0 );
+      activeViewName = activeViewName.mid( 1, activeViewName.length()-2 ); // chop off ' symbols
       int i = 0;
       QString viewName = ::getViewName( *it, i );
       while ( !viewName.isEmpty() ) {
-	if ( QWidget* view = ::getView( splitter, viewName ) ) 
+	if ( QWidget* view = ::getView( splitter, viewName ) ) {
 	  newArea->insertWidget( view );
+	  if ( activeViewName == view->name() )
+	    activeView = view;
+	}
 	viewName = ::getViewName( *it, ++i );
       }
+      if ( activeView )
+	newArea->setActiveWidget( activeView );
     }
   }
 
