@@ -106,8 +106,8 @@ protected:
 
   /** @name Create menu methods.*/
   //@{
-  int                    createMenu( const QString&, const int, const int = -1, const int = -1, const int = -1 );
-  int                    createMenu( const QString&, const QString&, const int = -1, const int = -1, const int = -1 );
+  int                    createMenu( const QString&, const int, const int = -1, const int = -1, const int = -1, const bool = false );
+  int                    createMenu( const QString&, const QString&, const int = -1, const int = -1, const int = -1, const bool = false );
   int                    createMenu( const int, const int, const int = -1, const int = -1 );
   int                    createMenu( const int, const QString&, const int = -1, const int = -1 );
   int                    createMenu( QAction*, const int, const int = -1, const int = -1, const int = -1 );
@@ -123,6 +123,8 @@ protected:
   //@}
 
   int                    registerAction( const int, QAction* );
+  bool                   unregisterAction( const int );
+  bool                   unregisterAction( QAction* );
   QAction*               createAction( const int, const QString&, const QIconSet&, const QString&,
                                        const QString&, const int, QObject* = 0,
                                        const bool = false, QObject* = 0, const char* = 0 );
