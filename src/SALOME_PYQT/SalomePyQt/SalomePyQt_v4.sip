@@ -74,8 +74,8 @@ public:
   static void              updateObjBrowser( const int = 0, bool = true );
 
   static QString           getFileName         ( QWidget*, const QString&, const QStringList&, const QString&, bool ) /ReleaseGIL/ ;
-  static QStringList       getOpenFileNames    ( QWidget*, const QString&, const QStringList&, const QString& );
-  static QString           getExistingDirectory( QWidget*, const QString&, const QString& );
+  static QStringList       getOpenFileNames    ( QWidget*, const QString&, const QStringList&, const QString& ) /ReleaseGIL/ ;
+  static QString           getExistingDirectory( QWidget*, const QString&, const QString& ) /ReleaseGIL/ ;
 
   static void              helpContext( const QString&, const QString& );
 
@@ -88,9 +88,9 @@ public:
   static int               createTool( QtxAction*, const QString&, const int = -1, const int = -1 );
 
   static int               createMenu( const QString&, const int,
-				       const int = -1, const int = -1 );
+				       const int = -1, const int = -1, const int = -1 );
   static int               createMenu( const QString&, const QString&, 
-				       const int = -1, const int = -1 );
+				       const int = -1, const int = -1, const int = -1 );
   static int               createMenu( const int,      const int,
 				       const int = -1, const int = -1 );
   static int               createMenu( const int,      const QString&, 

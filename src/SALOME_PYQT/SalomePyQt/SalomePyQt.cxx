@@ -1045,10 +1045,10 @@ int SalomePyQt::createTool( QtxAction* a, const QString& tBar, const int id, con
 class CrMenu
 {
 public:
-  CrMenu( const QString& subMenu, const int menu, const int group, const int idx ) 
-    : myCase( 0 ), mySubMenuName( subMenu ), myMenuId( menu ), myGroup( group ), myIndex( idx ) {}
-  CrMenu( const QString& subMenu, const QString& menu, const int group, const int idx ) 
-    : myCase( 1 ), mySubMenuName( subMenu ), myMenuName( menu ), myGroup( group ), myIndex( idx ) {}
+  CrMenu( const QString& subMenu, const int menu, const int id, const int group, const int idx ) 
+    : myCase( 0 ), mySubMenuName( subMenu ), myMenuId( menu ), myId( id ), myGroup( group ), myIndex( idx ) {}
+  CrMenu( const QString& subMenu, const QString& menu, const int id, const int group, const int idx ) 
+    : myCase( 1 ), mySubMenuName( subMenu ), myMenuName( menu ), myId( id ), myGroup( group ), myIndex( idx ) {}
   CrMenu( const int id, const int menu, const int group, const int idx ) 
     : myCase( 2 ), myId( id ), myMenuId( menu ), myGroup( group ), myIndex( idx ) {}
   CrMenu( const int id, const QString& menu, const int group, const int idx ) 
@@ -1063,9 +1063,9 @@ public:
     if ( module ) {
       switch ( myCase ) {
       case 0:
-        return module->createMenu( mySubMenuName, myMenuId, -1, myGroup, myIndex );
+        return module->createMenu( mySubMenuName, myMenuId, myId, myGroup, myIndex );
       case 1:
-        return module->createMenu( mySubMenuName, myMenuName, -1, myGroup, myIndex );
+        return module->createMenu( mySubMenuName, myMenuName, myId, myGroup, myIndex );
       case 2:
         return module->createMenu( myId, myMenuId, myGroup, myIndex );
       case 3:
@@ -1104,14 +1104,14 @@ public:
     }
   }
 };
-int SalomePyQt::createMenu( const QString& subMenu, const int menu, const int group, const int idx )
+int SalomePyQt::createMenu( const QString& subMenu, const int menu, const int id, const int group, const int idx )
 {
-  return ProcessEvent( new TCreateMenuEvent( CrMenu( subMenu, menu, group, idx ) ) );
+  return ProcessEvent( new TCreateMenuEvent( CrMenu( subMenu, menu, id, group, idx ) ) );
 }
 
-int SalomePyQt::createMenu( const QString& subMenu, const QString& menu, const int group, const int idx )
+int SalomePyQt::createMenu( const QString& subMenu, const QString& menu, const int id, const int group, const int idx )
 {
-  return ProcessEvent( new TCreateMenuEvent( CrMenu( subMenu, menu, group, idx ) ) );
+  return ProcessEvent( new TCreateMenuEvent( CrMenu( subMenu, menu, id, group, idx ) ) );
 }
 
 int SalomePyQt::createMenu( const int id, const int menu, const int group, const int idx )

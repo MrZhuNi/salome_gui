@@ -88,9 +88,9 @@ public:
   static int               createTool( QtxAction*, const QString&, int = -1, int = -1 );
 
   static int               createMenu( const QString&, const int,
-				       int = -1,       int = -1 );
+				       int = -1, int = -1, int = -1 );
   static int               createMenu( const QString&, const QString&, 
-				       int = -1,       int = -1 );
+				       int = -1, int = -1, int = -1 );
   static int               createMenu( const int,      const int,
 				       int = -1,       int = -1 );
   static int               createMenu( const int,      const QString&, 

@@ -109,9 +109,9 @@ public:
   static int               createTool( QtxAction*, const QString&, const int = -1, const int = -1 );
 
   static int               createMenu( const QString&, const int = -1,
-				       const int = -1, const int = -1 );
+				       const int = -1, const int = -1, const int = -1 );
   static int               createMenu( const QString&, const QString& = QString::null, 
-				       const int = -1, const int = -1 );
+				       const int = -1, const int = -1, const int = -1 );
   static int               createMenu( const int,      const int = -1,
 				       const int = -1, const int = -1 );
   static int               createMenu( const int,      const QString& = QString::null, 
