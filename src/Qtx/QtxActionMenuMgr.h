@@ -103,8 +103,8 @@ public:
 
   virtual bool load( const QString&, QtxActionMgr::Reader& );
 
-  bool         contains( const QString&, const int, const int );
-  bool         contains( const int, const int );
+  bool         contains( const QString&, const int, const int ) const;
+  bool         contains( const int, const int ) const;
 
 
 private slots:

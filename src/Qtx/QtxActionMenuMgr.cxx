@@ -680,12 +680,12 @@ bool QtxActionMenuMgr::load( const QString& fname, QtxActionMgr::Reader& r )
   return r.read( fname, cr );
 }
 
-bool QtxActionMenuMgr::contains( const QString& title, const int id, const int pid )
+bool QtxActionMenuMgr::contains( const QString& title, const int id, const int pid ) const
 {
   return (bool)find( title, id, pid );
 }
 
-bool QtxActionMenuMgr::contains( const int id, const int pid )
+bool QtxActionMenuMgr::contains( const int id, const int pid ) const
 {
   return (bool)find( id, pid );
 }
