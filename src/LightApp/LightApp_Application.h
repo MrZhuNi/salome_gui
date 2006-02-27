@@ -96,6 +96,8 @@ public:
 
   SUIT_Accel*                         accel() const;
 
+  void                                setDefaultStudyName( const QString& theName );
+
   static int                          studyId();
 
 signals:

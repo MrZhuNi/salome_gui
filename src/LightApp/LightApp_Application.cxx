@@ -1745,6 +1745,9 @@ void LightApp_Application::currentViewManagers( QStringList& lst ) const
 /*!Update windows.*/
 void LightApp_Application::updateWindows()
 {
+  if ( !activeStudy() )
+    return;
+
   QMap<int, int> winMap;
   currentWindows( winMap );
 
@@ -1927,4 +1930,19 @@ void LightApp_Application::onRenameWindow()
   QString name = QInputDialog::getText( tr( "TOT_RENAME" ), tr( "PRP_RENAME" ), QLineEdit::Normal, w->caption(), &ok, w );
   if( ok && !name.isEmpty() )
     w->setCaption( name );
+}
+
+/*! default name for an active study */
+void LightApp_Application::setDefaultStudyName( const QString& theName )
+{
+  QStringList anInfoList;
+  modules( anInfoList, false );
+
+  LightApp_Study* aStudy = (LightApp_Study*)activeStudy();
+  if( anInfoList.count() == 1 && // to avoid a conflict between different modules
+      !aStudy->isSaved() )
+  {
+    aStudy->setStudyName( theName );
+    updateDesktopTitle();
+  }
 }
