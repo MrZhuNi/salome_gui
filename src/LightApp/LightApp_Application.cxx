@@ -451,7 +451,7 @@ void LightApp_Application::createActions()
   SUIT_Tools::simplifySeparators( modTBar );
 
   // New window
-  int windowMenu = createMenu( tr( "MEN_DESK_WINDOW" ), -1, 100 );
+  int windowMenu = createMenu( tr( "MEN_DESK_WINDOW" ), -1, MenuWindowId, 100 );
   int newWinMenu = createMenu( tr( "MEN_DESK_NEWWINDOW" ), windowMenu, -1, 0 );
   createMenu( separator(), windowMenu, -1, 1 );
 
