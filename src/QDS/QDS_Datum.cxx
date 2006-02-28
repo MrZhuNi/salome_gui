@@ -941,15 +941,26 @@ void QDS_Datum::initialize()
 
 void QDS_Datum::unitSystemChanged( const QString& unitSystem )
 {
-  QString labText = label();
-  QString unitText = unitsToText( units() );
+  QString labText = label().stripWhiteSpace();
+  QString unitText = unitsToText( units() ).stripWhiteSpace();
 
   if ( flags() & UnitsWithLabel )
   {
     if ( labText.isEmpty() )
       labText = unitText;
     else if ( !unitText.isEmpty() )
-      labText = QString( "%1 (%2)" ).arg( labText ).arg( unitText );
+    {
+      int pos = labText.length() - 1;
+      while ( pos >= 0 && labText.at( pos ) == ':' )
+        pos--;
+
+      pos++;
+
+      QString first  = labText.mid( 0, pos ).stripWhiteSpace();
+      QString second = labText.mid( pos ).stripWhiteSpace();
+
+      labText = QString( "%1 (%2)%3" ).arg( first ).arg( unitText ).arg( second ).stripWhiteSpace();
+    }
     unitText = QString::null;
   }
 
