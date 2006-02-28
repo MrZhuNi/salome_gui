@@ -231,7 +231,7 @@ void QtxDialog::Area::layoutButtons()
 		else if ( aPosition == QtxDialog::Left )
 			left.append( it.current() );
 		else if ( aPosition == QtxDialog::Right )
-			right.append( it.current() );
+      buttonId[it.current()] < 0 ? right.prepend( it.current() ) : right.append( it.current() );
 		else if ( aPosition == QtxDialog::Center )
 			center.append( it.current() );
 	}
