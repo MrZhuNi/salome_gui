@@ -232,7 +232,7 @@ CAM_Module* CAM_Application::loadModule( const QString& modName )
     }
   }
 #else
-  void* modLib = dlopen( (char*)libName.latin1(), RTLD_LAZY );
+  void* modLib = dlopen( (char*)libName.latin1(), RTLD_LAZY | RTLD_GLOBAL );
   if ( !modLib )
     err = QString( "Can not load library %1. %2" ).arg( libName ).arg( dlerror() );
   else
