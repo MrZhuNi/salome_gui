@@ -392,6 +392,9 @@ void QDS_Datum::clear()
 
 void QDS_Datum::setValue( const QVariant& val )
 {
+  if ( val == value() )
+    return;
+
   if ( val.isValid() && val.canCast( QVariant::String ) )
     setStringValue( val.toString() );
   else
