@@ -1,24 +1,3 @@
-#
-#  PLEASE DO NOT MODIFY configure.in FILE
-#
-#  ALL CHANGES WILL BE DISCARDED BY THE NEXT
-#  build_configure COMMAND
-#
-#  CHANGES MUST BE MADE IN configure.in.base FILE
-#
-#
-# Author : Marc Tajchman (CEA)
-# Date : 28/06/2001
-# Modified by : Patrick GOLDBRONN (CEA)
-# Modified by : Marc Tajchman (CEA)
-#
-# Created from configure.in.base
-#
-
-
-AC_INIT(src)
-AC_CONFIG_AUX_DIR(${KERNEL_ROOT_DIR}/salome_adm/unix/config_files)
-AC_CANONICAL_HOST
 
 PACKAGE=salome
 AC_SUBST(PACKAGE)
@@ -44,6 +23,58 @@ echo Source root directory : $ROOT_SRCDIR
 echo Build  root directory : $ROOT_BUILDDIR
 echo
 echo
+
+
+dnl remember GUI_DISABLE_CORBA set by build configure
+old_disable_corba=${GUI_DISABLE_CORBA}
+
+dnl
+dnl Check --disable-corba option
+dnl  ---------------------------------------------
+                 DISABLE_CORBA
+dnl  ---------------------------------------------
+dnl
+
+dnl   Update and re-run configure if there was  build_configure --disable-corba
+dnl   but configure --disable-corba=DIR is being called
+
+if test "x${old_disable_corba}" != "x${GUI_DISABLE_CORBA}"; then
+    if test "x${old_disable_corba}" == "xyes" ; then
+         if test ! -d "${KERNEL_ROOT_DIR}"; then
+             echo "failed : KERNEL_ROOT_DIR variable is not correct !"
+             exit
+         fi
+         kernel_check_in_aclocal=`grep KERNEL_ROOT_DIR ${ROOT_SRCDIR}/aclocal.m4`
+         if test "x${kernel_check_in_aclocal}" == "x"; then
+             echo "Configuration changed: disable Corba -> enable Corba"
+             echo -n "Updating 'configure' script ...  "
+             cd $ROOT_SRCDIR
+             aclocal --acdir=adm_local/unix/config_files -I ${KERNEL_ROOT_DIR}/salome_adm/unix/config_files
+             if autoconf; then
+             	echo "done"
+             else
+             	echo "failed (check file permissions and/or user quotas ...)"
+                cd $ROOT_BUILDDIR
+                exit
+             fi
+             cd $ROOT_BUILDDIR
+             $0 $*
+             exit
+         fi
+    fi
+fi
+
+dnl  AC_CONFIG_AUX_DIR - path to install-sh, config.sub, config.guess,
+dnl  Automake and Libtool scripts etc. 
+dnl  config.sub, config.guess are needed for AC_CANONICAL_HOST
+
+AUX_CONFIG_DIR=${KERNEL_ROOT_DIR}/salome_adm/unix/config_files
+AC_CONFIG_AUX_DIR(${AUX_CONFIG_DIR})
+AC_CANONICAL_HOST
+
+dnl Modification B. Secher portage sur osf CCRT
+AC_CHECK_PROG(SHELL,sh,,)
+AC_SUBST(SHELL)
 
 if test -z "$AR"; then
    AC_CHECK_PROGS(AR,ar xar,:,$PATH)
@@ -284,13 +315,14 @@ echo
 
 CHECK_HTML_GENERATORS
 
-echo
-echo ---------------------------------------------
-echo Testing Kernel
-echo ---------------------------------------------
-echo
-
-CHECK_KERNEL
+if test "$GUI_DISABLE_CORBA" == "no"; then 
+  echo
+  echo ---------------------------------------------
+  echo Testing Kernel
+  echo ---------------------------------------------
+  echo
+  CHECK_KERNEL
+fi
 
 echo
 echo ---------------------------------------------
@@ -298,7 +330,12 @@ echo Summary
 echo ---------------------------------------------
 echo
 
-echo Configure
+if test "$GUI_DISABLE_CORBA" == "yes"; then 
+   echo "Configure (without Corba)"
+else
+   echo Configure
+fi
+
 variables="cc_ok lex_yacc_ok python_ok swig_ok threads_ok OpenGL_ok qt_ok msg2qm_ok vtk_ok hdf5_ok omniORB_ok boost_ok occ_ok sip_ok pyqt_ok qwt_ok doxygen_ok graphviz_ok Kernel_ok"
 
 for var in $variables

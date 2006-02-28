@@ -33,8 +33,14 @@ VPATH=.:@srcdir@
 @COMMENCE@
 
 SUBDIRS = Qtx DDS QDS SUIT STD CAF CAM SUITApp VTKViewer OCCViewer GLViewer \
-          LogWindow Event OBJECT Prs PyInterp PythonConsole ObjBrowser \
-          RegistryDisplay Plot2d TOOLSGUI SOCC SVTK SPlot2d SUPERVGraph \
-	  LightApp Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT Style ResExporter
+	  LogWindow OBJECT Prs PyInterp PythonConsole ObjBrowser Plot2d \
+	  SOCC SVTK SPlot2d SUPERVGraph LightApp \
+	  Style ResExporter
+
+ifeq ($(GUI_DISABLE_CORBA),no)
+  SUBDIRS +=  RegistryDisplay TOOLSGUI \
+	  Event Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT
+endif
+
 
 @MODULE@
