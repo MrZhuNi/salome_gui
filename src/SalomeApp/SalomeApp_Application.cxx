@@ -624,6 +624,11 @@ void SalomeApp_Application::createPreferences( LightApp_Preferences* pref )
                          LightApp_Preferences::Bool, "ObjectBrowser", QString().sprintf( "visibility_column_%d", i ) );
   }
   pref->setItemProperty( defCols, "columns", 1 );
+
+  // adding preference to LightApp_Application handled preferences..  a bit of hacking with resources..
+  int genTab = pref->addPreference( LightApp_Application::tr( "PREF_TAB_GENERAL" ), salomeCat );
+  int studyGroup = pref->addPreference( LightApp_Application::tr( "PREF_GROUP_STUDY" ), genTab );
+  pref->addPreference( tr( "PREF_STORE_VISUAL_STATE" ), studyGroup, LightApp_Preferences::Bool, "Study", "store_visual_state" );
 }
 
 /*!Update desktop title.*/

@@ -102,6 +102,9 @@ msgstr "Activate Module"
 msgid "SalomeApp_Application::MEN_DELETE_INVALID_REFERENCE"
 msgstr "Delete Invalid Reference"
 
+msgid "SalomeApp_Application::PREF_STORE_VISUAL_STATE"
+msgstr "Store visual parameters"
+
 //=======================================================================================
 
 msgid "PUBLISH_IN_STUDY"

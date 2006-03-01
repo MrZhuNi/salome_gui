@@ -22,6 +22,7 @@
 #include "SalomeApp_Study.h"
 #include "SalomeApp_Application.h"
 
+#include <SUIT_ResourceMgr.h>
 #include <QtxWorkstack.h>
 
 #include <STD_TabDesktop.h>
@@ -95,6 +96,10 @@ void nameViewWindows( const ViewManagerList& lst )
 //================================================================
 int SalomeApp_VisualState::storeState()
 {
+  bool store = myApp->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
+  if ( !store )
+    return -1;
+
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( myApp->activeStudy() );
   if ( !study )
     return -1;
@@ -172,6 +177,10 @@ int SalomeApp_VisualState::storeState()
 //================================================================
 void SalomeApp_VisualState::restoreState(int savePoint)
 {
+  bool store = myApp->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
+  if ( !store )
+    return;
+
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( myApp->activeStudy() );
   if ( !study )
     return;
