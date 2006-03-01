@@ -81,6 +81,7 @@ public:
   void SetRelativePosition( QWidget* wid, const Qt::Orientation o, const double pos );
   void SetRelativePositionInSplitter( QWidget* wid, const double pos );
 
+  // asv: Store/Restore visual parameters - geometry of inner windows
   QtxWorkstack& operator<<( const QString& );
   QtxWorkstack& operator>>( QString& );
 
@@ -129,12 +130,8 @@ private:
   int                 setPosition( QWidget* wid, QSplitter* split, const Qt::Orientation o,
 				                           const int need_pos, const int splitter_pos );
   
-  // asv: Store/Restore visual parameters - geometry of inner windows
-  QString             getVisualParameters() const;
-  void                setVisualParameters( const QString& parameters );
-
   void                splitterInfo( QSplitter*, QString& ) const;
-  void                setSplitter( QSplitter*, const QString& );
+  void                setSplitter( QSplitter*, const QString&, QMap< QSplitter*,QValueList<int> >& );
   
 private:
   QWidget*            myWin;
