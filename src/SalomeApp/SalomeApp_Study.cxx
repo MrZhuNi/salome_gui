@@ -802,7 +802,7 @@ int SalomeApp_Study::storeState()
     
     QPtrVector<SUIT_ViewWindow> views = vm->getViews();
     for(int i = 0; i<view_count; i++) {
-      ip.append(viewerEntry, views[i]->caption());
+      ip.append( viewerEntry, views[i]->caption() );
       ip.append( viewerEntry, views[i]->getVisualParameters().latin1() );
     }
   }
@@ -853,7 +853,7 @@ void SalomeApp_Study::restoreState(int savePoint)
       ((SalomeApp_Application*)application())->removeViewManager(vm);
   }
 
-  //Restore the viewers
+  //Restore the viewers and view windows
   int nbViewers = ip.nbValues("AP_VIEWERS_LIST");
   SUIT_ViewWindow *viewWin = 0;
 
@@ -896,6 +896,7 @@ void SalomeApp_Study::restoreState(int savePoint)
     }
   }
 
+  // restore modules' visual parameters
   vector<string> v = ip.getValues("AP_MODULES_LIST");
   for (int i = 0; i<v.size(); i++) {
     ((SalomeApp_Application*)application())->activateModule(v[i].c_str());
@@ -903,9 +904,10 @@ void SalomeApp_Study::restoreState(int savePoint)
     module->restoreVisualParameters(savePoint);
   }
 
+  // activate module that was active on save
   QString activeModuleName(ip.getProperty("AP_ACTIVE_MODULE").c_str());
   if (activeModuleName != "") 
-    ((SalomeApp_Application*)application())->activateModule(activeModuleName);  
+    ((SalomeApp_Application*)application())->activateModule(activeModuleName);
 
   // setting unique names for view windows in order to restore positions of view windows inside 
   // workstack's structure (see below).  During save the same naming algorithm was used, 
@@ -914,6 +916,21 @@ void SalomeApp_Study::restoreState(int savePoint)
   ((SalomeApp_Application*)application())->viewManagers(lst);
   nameViewWindows( lst );
 
+  // work-around to bug of setting visual parameters of views: all view windows now have
+  // correct visual parameters, bug after restoring the workstack the visual parameters 
+  // are messted, and must be re-set again.  So here we store them in a map and set them
+  // later back again.  why we don't store these parameters in a map on views creation?
+  // because 1) names of view windows are not set at that time 2) some view windows
+  // are created by modules' restoreVisualParameters (like Gauss Viewers), which is NOT here..
+  QMap<QString, QString> viewersParameters;
+  QPtrListIterator<SUIT_ViewManager> it( lst );
+  for ( ; it.current(); ++it ) {
+    int view_count = it.current()->getViewsCount();
+    QPtrVector<SUIT_ViewWindow> views = it.current()->getViews();
+    for ( int i = 0; i < view_count; i++ )
+      viewersParameters[ views[i]->name() ] = views[i]->getVisualParameters();
+  }  
+
   // restore workstack parameters.  should be done after module's restoreVisualParameters(), because
   // some modules can create their own viewers (like VISU creates GaussViewers)
   if ( application()->desktop()->inherits( "STD_TabDesktop" ) ) {
@@ -921,9 +938,18 @@ void SalomeApp_Study::restoreState(int savePoint)
     (*workstack) << ip.getProperty( "AP_WORKSTACK_INFO" ).c_str();
   }
 
+  // restore visual parameters of view windows.  it must be done AFTER restoring workstack.
+  for ( it.toFirst(); it.current(); ++it ) {
+    int view_count = it.current()->getViewsCount();
+    QPtrVector<SUIT_ViewWindow> views = it.current()->getViews();
+    for ( int i = 0; i < view_count; i++ )
+      views[i]->setVisualParameters( viewersParameters[ views[i]->name() ] );
+  }
+
   // set focus to previously saved active view window
+  /*
   string activeViewName = ip.getProperty("AP_ACTIVE_VIEW");
-  for ( QPtrListIterator<SUIT_ViewManager> it(lst); it.current(); ++it) {
+  for ( it.toFirst(); it.current(); ++it ) {
     int view_count = it.current()->getViewsCount();
     QPtrVector<SUIT_ViewWindow> views = it.current()->getViews();
     for ( int i = 0; i < view_count; i++ )  {
@@ -931,4 +957,5 @@ void SalomeApp_Study::restoreState(int savePoint)
 	views[i]->setFocus();
     }
   }
+  */
 }

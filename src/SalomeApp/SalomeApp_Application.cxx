@@ -14,8 +14,6 @@
 
 #include "SalomeApp_StudyPropertiesDlg.h"
 
-#include "SalomeApp_CheckFileDlg.h"
-
 #include "LightApp_Application.h"
 #include "LightApp_Preferences.h"
 #include "LightApp_WidgetContainer.h"
@@ -48,6 +46,9 @@
 #include <qcombobox.h>
 #include <qlistbox.h>
 #include <qregexp.h>
+#include <qcheckbox.h>
+#include <qpushbutton.h>
+#include <qlabel.h>
 
 #include "SALOMEDS_StudyManager.hxx"
 #include "SALOMEDS_SObject.hxx"
@@ -468,6 +469,27 @@ void SalomeApp_Application::updateCommandsStatus()
   onSelectionChanged();
 }
 
+/*
+  Class       : DumpStudyFileDlg
+  Description : Private class used in Dump Study operation.  Consists 2 check boxes: 
+                "Publish in study" and "Save GUI parameters"
+*/
+class DumpStudyFileDlg : public SUIT_FileDlg
+{
+public:
+  DumpStudyFileDlg( QWidget* parent ) : SUIT_FileDlg( parent, false, true, true ) 
+  {
+    QHBox* hB = new QHBox( this );
+    myPublishChk = new QCheckBox( tr("PUBLISH_IN_STUDY"), hB );
+    mySaveGUIChk = new QCheckBox( tr("SAVE_GUI_STATE"), hB );
+    QPushButton* pb = new QPushButton(this);      
+    addWidgets( new QLabel("", this), hB, pb );
+    pb->hide();    
+  }
+  QCheckBox* myPublishChk;
+  QCheckBox* mySaveGUIChk;
+};
+
 /*!Private SLOT. On dump study.*/
 void SalomeApp_Application::onDumpStudy( )
 {
@@ -478,32 +500,34 @@ void SalomeApp_Application::onDumpStudy( )
   QStringList aFilters;
   aFilters.append( tr( "PYTHON_FILES_FILTER" ) );
 
-  SalomeApp_CheckFileDlg* fd = new SalomeApp_CheckFileDlg( desktop(), false, tr("PUBLISH_IN_STUDY"), true, true);
+  DumpStudyFileDlg* fd = new DumpStudyFileDlg( desktop() );
   fd->setCaption( tr( "TOT_DESK_FILE_DUMP_STUDY" ) );
   fd->setFilters( aFilters );
-  fd->SetChecked(true);
+  fd->myPublishChk->setChecked( true );
+  fd->mySaveGUIChk->setChecked( true );
   fd->exec();
   QString aFileName = fd->selectedFile();
-  bool toPublish = fd->IsChecked();
+  bool toPublish = fd->myPublishChk->isChecked();
+  bool toSaveGUI = fd->mySaveGUIChk->isChecked();
   delete fd;
 
-  if(!aFileName.isEmpty()) {
+  if ( !aFileName.isEmpty() ) {
     QFileInfo aFileInfo(aFileName);
-    bool isDumpVisualParameters = true;
     int savePoint;
-    if(isDumpVisualParameters) { //SRN: Store a visual state of the study at the save point for DumpStudy method
+    if ( toSaveGUI ) { //SRN: Store a visual state of the study at the save point for DumpStudy method
       SALOMEDS_IParameters::setDumpPython(appStudy->studyDS());
       savePoint = appStudy->storeState(); //SRN: create a temporary save point
       //prefix = SALOMEDS_IParameters::getStudyScript(appStudy->studyDS(), appStudy->getVisualComponentName(), savePoint);
       
     }
     bool res = aStudy->DumpStudy( aFileInfo.dirPath( true ).latin1(), aFileInfo.baseName().latin1(), toPublish);
-    if(isDumpVisualParameters) appStudy->removeSavePoint(savePoint); //SRN: remove the created temporary save point.
+    if ( toSaveGUI ) 
+      appStudy->removeSavePoint(savePoint); //SRN: remove the created temporary save point.
     if ( !res )
-    SUIT_MessageBox::warn1 ( desktop(),
-			     QObject::tr("WRN_WARNING"),
-			     tr("WRN_DUMP_STUDY_FAILED"),
-			     QObject::tr("BUT_OK") );
+      SUIT_MessageBox::warn1 ( desktop(),
+			       QObject::tr("WRN_WARNING"),
+			       tr("WRN_DUMP_STUDY_FAILED"),
+			       QObject::tr("BUT_OK") );
   }
 }
 

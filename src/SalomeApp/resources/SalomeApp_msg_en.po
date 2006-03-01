@@ -104,6 +104,14 @@ msgstr "Delete Invalid Reference"
 
 //=======================================================================================
 
+msgid "PUBLISH_IN_STUDY"
+msgstr "Publish in study"
+
+msgid "SAVE_GUI_STATE"
+msgstr "Store current GUI state"
+
+//=======================================================================================
+
 msgid "SalomeApp_Application::MEN_WINDOWS_NEW"
 msgstr "New window"
 
