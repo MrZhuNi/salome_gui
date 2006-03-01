@@ -11,6 +11,7 @@
 #include "SalomeApp_DataModel.h"
 #include "SalomeApp_DataObject.h"
 #include "SalomeApp_EventFilter.h"
+#include "SalomeApp_VisualState.h"
 
 #include "SalomeApp_StudyPropertiesDlg.h"
 
@@ -516,7 +517,7 @@ void SalomeApp_Application::onDumpStudy( )
     int savePoint;
     if ( toSaveGUI ) { //SRN: Store a visual state of the study at the save point for DumpStudy method
       SALOMEDS_IParameters::setDumpPython(appStudy->studyDS());
-      savePoint = appStudy->storeState(); //SRN: create a temporary save point
+      savePoint = SalomeApp_VisualState( this ).storeState(); //SRN: create a temporary save point
       //prefix = SALOMEDS_IParameters::getStudyScript(appStudy->studyDS(), appStudy->getVisualComponentName(), savePoint);
       
     }

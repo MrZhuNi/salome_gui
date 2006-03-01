@@ -71,8 +71,6 @@ public:
   void                removeSavePoint(int savePoint);
   QString             getNameOfSavePoint(int savePoint);
   void                setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint);
-  virtual int         storeState();
-  virtual void        restoreState(int savePoint);
   virtual std::string getVisualComponentName();
 
 protected:
