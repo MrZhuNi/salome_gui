@@ -940,6 +940,24 @@ bool SalomePyQt::dumpView( const QString& filename )
 }
 
 /*!
+  SalomePyQt::defaultMenuGroup
+  Returns default menu group
+*/
+class TDefMenuGroupEvent: public SALOME_Event {
+public:
+  typedef int TResult;
+  TResult myResult;
+  TDefMenuGroupEvent() : myResult( -1 ) {}
+  virtual void Execute() {
+    myResult = SALOME_PYQT_Module::defaultMenuGroup();
+  }
+};
+int SalomePyQt::defaultMenuGroup()
+{
+  return ProcessEvent( new TDefMenuGroupEvent() );
+}
+
+/*!
   SalomePyQt::createTool
   These methods allow operating with the toolbars:
   - create a new toolbar or get the existing one (the toolbar name is passed as parameter);
@@ -1253,3 +1271,32 @@ int SalomePyQt::actionId( const QtxAction* a )
 {
   return ProcessEvent( new TActionIdEvent( a ) );
 }
+
+/*!
+  SalomePyQt::clearMenu
+  Clears given menu (recursively if necessary)
+*/
+class TClearMenuEvent: public SALOME_Event {
+public:
+  typedef  bool TResult;
+  TResult  myResult;
+  int      myId;
+  int      myMenu;
+  bool     myRemoveActions;
+  TClearMenuEvent( const int id, const int menu, const bool removeActions )
+    : myResult( false ), myId( id ), myMenu( menu ), myRemoveActions( removeActions ) {}
+  virtual void Execute() {
+    if ( SalomeApp_Application* anApp = getApplication() ) {
+      SALOME_PYQT_Module* module = SALOME_PYQT_Module::getInitModule();
+      if ( !module )
+        module = dynamic_cast<SALOME_PYQT_Module*>( anApp->activeModule() );
+      if ( module )
+        myResult = module->clearMenu( myId, myMenu, myRemoveActions );
+    }
+  }
+};
+bool SalomePyQt::clearMenu( const int id, const int menu, const bool removeActions )
+{
+  return ProcessEvent( new TClearMenuEvent( id, menu, removeActions ) );
+}
+

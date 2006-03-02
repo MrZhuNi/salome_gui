@@ -102,6 +102,8 @@ public:
 
   static bool              dumpView( const QString& );
 
+  static int               defaultMenuGroup();
+
   static int               createTool( const QString& );
   static int               createTool( const int,  const int,      const int = -1 );
   static int               createTool( const int,  const QString&, const int = -1 );
@@ -129,6 +131,9 @@ public:
 
   static QtxAction*        action( const int );
   static int               actionId( const QtxAction* );
+
+  static bool              clearMenu( const int = 0, const int = 0,
+				      const bool = true );
 
   static void              addSetting    ( const QString&, const QString&, const double );
   static void              addSetting    ( const QString&, const QString&, const int );
