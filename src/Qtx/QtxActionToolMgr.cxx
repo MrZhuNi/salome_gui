@@ -227,7 +227,7 @@ bool QtxActionToolMgr::hasToolBar( const QString& tname ) const
   return find( tname ) != -1;
 }
 
-bool QtxActionToolMgr::contains( const int id, const int tid ) const
+bool QtxActionToolMgr::containsAction( const int id, const int tid ) const
 {
   for ( ToolBarMap::ConstIterator it = myToolBars.begin(); it != myToolBars.end(); ++it )
   {

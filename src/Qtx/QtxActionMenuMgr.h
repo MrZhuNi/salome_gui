@@ -103,8 +103,8 @@ public:
 
   virtual bool load( const QString&, QtxActionMgr::Reader& );
 
-  bool         contains( const QString&, const int, const int ) const;
-  bool         contains( const int, const int ) const;
+  bool         containsMenu( const QString&, const int ) const;
+  bool         containsMenu( const int, const int ) const;
 
 
 private slots:
@@ -116,12 +116,12 @@ signals:
 
 protected:
   void         setWidget( QWidget* );
-  MenuNode*    find( const int, const int ) const;
-  MenuNode*    find( const int, MenuNode* = 0 ) const;
+  MenuNode*    find( const int, const int, const bool = true ) const;
+  MenuNode*    find( const int, MenuNode* = 0, const bool = true ) const;
   bool         find( const int, NodeList&, MenuNode* = 0 ) const;
-  MenuNode*    find( const QString&, const int, const int ) const;
-  MenuNode*    find( const QString&, const int, MenuNode* = 0 ) const;
-  bool         find( const QString&, const int, NodeList&, MenuNode* = 0 ) const;
+  MenuNode*    find( const QString&, const int, const bool = true ) const;
+  MenuNode*    find( const QString&, MenuNode* = 0, const bool = true ) const;
+  bool         find( const QString&, NodeList&, MenuNode* = 0 ) const;
   int          findId( const int, const int = -1 ) const;
 
   void         removeMenu( const int, MenuNode* );

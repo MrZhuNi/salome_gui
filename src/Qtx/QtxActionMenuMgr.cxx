@@ -321,7 +321,7 @@ void QtxActionMenuMgr::remove( const int id )
 
 void QtxActionMenuMgr::remove( const int id, const int pId, const int group )
 {
-  MenuNode* pNode = find( pId );
+  MenuNode* pNode = pId == -1 ? &myRoot : find( pId );
   if ( !pNode )
     return;
 
@@ -396,8 +396,13 @@ void QtxActionMenuMgr::onHighlighted( int id )
   }
   if ( pid ) {
     realId = findId( id, pid );
-    if ( realId != -1 )
+    if ( realId != -1 ) {
+      bool updatesEnabled = isUpdatesEnabled();
+      setUpdatesEnabled( false );
       emit menuHighlighted( pid, realId );
+      setUpdatesEnabled( updatesEnabled );
+      updateMenu( find( realId ) );
+    }
   }
 }
 
@@ -415,12 +420,12 @@ void QtxActionMenuMgr::setWidget( QWidget* mw )
     connect( myMenu, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
 }
 
-QtxActionMenuMgr::MenuNode* QtxActionMenuMgr::find( const int actId, const int pId ) const
+QtxActionMenuMgr::MenuNode* QtxActionMenuMgr::find( const int actId, const int pId, const bool rec ) const
 {
-  return find( actId, find( pId ) );
+  return find( actId, find( pId ), rec );
 }
 
-QtxActionMenuMgr::MenuNode* QtxActionMenuMgr::find( const int id, MenuNode* startNode ) const
+QtxActionMenuMgr::MenuNode* QtxActionMenuMgr::find( const int id, MenuNode* startNode, const bool rec ) const
 {
   MenuNode* node = 0;
   MenuNode* start = startNode ? startNode : (MenuNode*)&myRoot;
@@ -428,8 +433,8 @@ QtxActionMenuMgr::MenuNode* QtxActionMenuMgr::find( const int id, MenuNode* star
   {
     if ( it.current()->id == id )
       node = it.current();
-    else
-      node = find( id, it.current() );
+    else if ( rec )
+      node = find( id, it.current(), rec );
   }
   return node;
 }
@@ -447,12 +452,12 @@ bool QtxActionMenuMgr::find( const int id, NodeList& lst, MenuNode* startNode ) 
   return !lst.isEmpty();
 }
 
-QtxActionMenuMgr::MenuNode* QtxActionMenuMgr::find( const QString& title, const int id, const int pId ) const
+QtxActionMenuMgr::MenuNode* QtxActionMenuMgr::find( const QString& title, const int pId, const bool rec ) const
 {
-  return find( title, id, find( pId ) );
+  return find( title, find( pId ), rec );
 }
 
-bool QtxActionMenuMgr::find( const QString& title, const int id, NodeList& lst, MenuNode* startNode ) const
+bool QtxActionMenuMgr::find( const QString& title, NodeList& lst, MenuNode* startNode ) const
 {
   MenuNode* start = startNode ? startNode : (MenuNode*)&myRoot;
   for ( NodeListIterator it( start->children ); it.current(); ++it )
@@ -460,16 +465,15 @@ bool QtxActionMenuMgr::find( const QString& title, const int id, NodeList& lst, 
     QAction* a = itemAction( it.current()->id );
     if ( !a )
       a = menuAction( it.current()->id );
-    if ( a && clearTitle( a->text() ) == clearTitle( title ) &&
-	 ( it.current()->id == id || id == -1 ) )
+    if ( a && clearTitle( a->menuText() ) == clearTitle( title ) )
       lst.prepend( it.current() );
 
-    find( title, id, lst, it.current() );
+    find( title, lst, it.current() );
   }
   return !lst.isEmpty();
 }
 
-QtxActionMenuMgr::MenuNode* QtxActionMenuMgr::find( const QString& title, const int id, MenuNode* startNode ) const
+QtxActionMenuMgr::MenuNode* QtxActionMenuMgr::find( const QString& title, MenuNode* startNode, const bool rec ) const
 {
   MenuNode* node = 0;
   MenuNode* start = startNode ? startNode : (MenuNode*)&myRoot;
@@ -478,11 +482,10 @@ QtxActionMenuMgr::MenuNode* QtxActionMenuMgr::find( const QString& title, const 
     QAction* a = itemAction( it.current()->id );
     if ( !a )
       a = menuAction( it.current()->id );
-    if ( a && clearTitle( a->text() ) == clearTitle( title ) &&
-	 ( it.current()->id == id || id == -1 ) )
+    if ( a && clearTitle( a->menuText() ) == clearTitle( title ) )
       node = it.current();
-    if ( !node )
-      node = find( title, id, it.current() );
+    if ( !node && rec )
+      node = find( title, it.current(), rec );
   }
   return node;
 }
@@ -680,14 +683,14 @@ bool QtxActionMenuMgr::load( const QString& fname, QtxActionMgr::Reader& r )
   return r.read( fname, cr );
 }
 
-bool QtxActionMenuMgr::contains( const QString& title, const int id, const int pid ) const
+bool QtxActionMenuMgr::containsMenu( const QString& title, const int pid ) const
 {
-  return (bool)find( title, id, pid );
+  return (bool)find( title, pid, false );
 }
 
-bool QtxActionMenuMgr::contains( const int id, const int pid ) const
+bool QtxActionMenuMgr::containsMenu( const int id, const int pid ) const
 {
-  return (bool)find( id, pid );
+  return (bool)find( id, pid, false );
 }
 
 /*!
