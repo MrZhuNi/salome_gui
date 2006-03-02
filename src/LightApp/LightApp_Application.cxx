@@ -426,7 +426,7 @@ void LightApp_Application::createActions()
 
   for ( it = modList.begin(); it != modList.end(); ++it )
   {
-    if ( (*it).isEmpty() )
+    if ( !isLibExists( *it ) )
       continue;
 
     QString iconName;
@@ -1962,3 +1962,27 @@ void LightApp_Application::onRenameWindow()
   if( ok && !name.isEmpty() )
     w->setCaption( name );
 }
+
+bool LightApp_Application::isLibExists( const QString& moduleTitle ) const
+{
+  if( moduleTitle.isEmpty() )
+    return false;
+
+  QString lib = moduleLibrary( moduleTitle );
+  QStringList paths;
+#ifdef WIN32
+  paths = QStringList::split( ";", ::getenv( "PATH" ) );
+#else
+  paths = QStringList::split( ":", ::getenv( "LD_LIBRARY_PATH" ) );
+#endif
+
+  QStringList::const_iterator anIt = paths.begin(), aLast = paths.end();
+  for( ; anIt!=aLast; anIt++ )
+  {
+    QFileInfo inf( Qtx::addSlash( *anIt ) + lib );
+    if( inf.exists() )
+      return true;
+  }
+  return false;
+}
+

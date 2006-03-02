@@ -170,6 +170,7 @@ protected:
   void                                moduleIconNames( QMap<QString, QString>& ) const;
 
   void                                activateWindows();
+  bool                                isLibExists( const QString& ) const;
 
 protected:
   typedef QMap<QString, QAction*>              ActionMap;
