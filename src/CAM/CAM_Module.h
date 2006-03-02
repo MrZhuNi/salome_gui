@@ -65,14 +65,14 @@ public:
 
   /** @name Set Menu Shown*/
   //@{
-  void                   setMenuShown( const bool );
+  virtual void           setMenuShown( const bool );
   void                   setMenuShown( QAction*, const bool );
   void                   setMenuShown( const int, const bool );
   //@}
 
   /** @name Set Tool Shown*/
   //@{
-  void                   setToolShown( const bool );
+  virtual void           setToolShown( const bool );
   void                   setToolShown( QAction*, const bool );
   void                   setToolShown( const int, const bool );
   //@}
