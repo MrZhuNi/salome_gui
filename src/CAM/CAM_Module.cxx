@@ -593,12 +593,12 @@ bool CAM_Module::unregisterAction( QAction* a )
     return false;
   if ( menuMgr() ) {
     int id = menuMgr()->actionId( a );
-    if ( id != -1 && menuMgr()->contains( id, -1 ) )
+    if ( id != -1 && menuMgr()->containsMenu( id, -1 ) )
       return false;
   }
   if ( toolMgr() ) {
     int id = toolMgr()->actionId( a );
-    if ( id != -1 && toolMgr()->contains( id ) )
+    if ( id != -1 && toolMgr()->containsAction( id ) )
       return false;
   }
   if ( menuMgr() )
