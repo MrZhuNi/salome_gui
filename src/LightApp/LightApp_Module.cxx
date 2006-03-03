@@ -129,6 +129,11 @@ bool LightApp_Module::activateModule( SUIT_Study* study )
   if ( res && application() && application()->resourceMgr() )
     application()->resourceMgr()->raiseTranslators( name() );
 
+  connect( application(), SIGNAL( viewManagerAdded( SUIT_ViewManager* ) ),
+           this, SLOT( onViewManagerAdded( SUIT_ViewManager* ) ) );
+  connect( application(), SIGNAL( viewManagerRemoved( SUIT_ViewManager* ) ),
+           this, SLOT( onViewManagerRemoved( SUIT_ViewManager* ) ) );
+
   if ( mySwitchOp == 0 )
     mySwitchOp = new LightApp_SwitchOp( this );
 
@@ -140,6 +145,11 @@ bool LightApp_Module::deactivateModule( SUIT_Study* study )
 {
   delete mySwitchOp;
   mySwitchOp = 0;
+
+  disconnect( application(), SIGNAL( viewManagerAdded( SUIT_ViewManager* ) ),
+	      this, SLOT( onViewManagerAdded( SUIT_ViewManager* ) ) );
+  disconnect( application(), SIGNAL( viewManagerRemoved( SUIT_ViewManager* ) ),
+	      this, SLOT( onViewManagerRemoved( SUIT_ViewManager* ) ) );
 
   // abort all operations
   MapOfOperation::const_iterator anIt;
@@ -448,4 +458,12 @@ void LightApp_Module::onShowHide()
   int id = actionId( act );
   if( id!=-1 )
     startOperation( id );
+}
+
+void LightApp_Module::onViewManagerAdded( SUIT_ViewManager* )
+{
+}
+
+void LightApp_Module::onViewManagerRemoved( SUIT_ViewManager* )
+{
 }
