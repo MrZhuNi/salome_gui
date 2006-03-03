@@ -6,7 +6,7 @@
 # Author : Edawrd AGAPOV (OCC, 2005)
 #
 
-AC_DEFUN([DISABLE_CORBA],[
+AC_DEFUN([CHECK_DISABLE_CORBA],[
 
 AC_ARG_WITH(corba,
 	    [  --disable-corba default=no ],

@@ -3,12 +3,12 @@
 #  Author : Marc Tajchman (CEA, 2002)
 #------------------------------------------------------------
 
-AC_DEFUN([CHECK_FULL_GUI],[
+AC_DEFUN([CHECK_CORBA_IN_GUI],[
 
 AC_CHECKING(for full SalomeGUI)
 
 SalomeGUI_ok=no
-FULL_GUI="no"
+CORBA_IN_GUI="no"
 
 AC_ARG_WITH(gui,
 	    --with-salome_gui=DIR root directory path of full SALOME GUI installation,
@@ -38,7 +38,7 @@ fi
 
 if test -f ${SALOME_GUI_DIR}/lib/salome/libSalomeApp.so  ; then
   SalomeGUI_ok=yes
-  FULL_GUI=yes
+  CORBA_IN_GUI=yes
   AC_MSG_RESULT(Using SALOME GUI distribution in ${SALOME_GUI_DIR})
 
   if test "x$GUI_ROOT_DIR" == "x" ; then
@@ -47,7 +47,7 @@ if test -f ${SALOME_GUI_DIR}/lib/salome/libSalomeApp.so  ; then
 else
   AC_MSG_WARN("Cannot find compiled full SALOME GUI distribution")
 fi
-AC_SUBST(FULL_GUI)
+AC_SUBST(CORBA_IN_GUI)
   
 AC_MSG_RESULT(for full SALOME GUI: $SalomeGUI_ok)
  
