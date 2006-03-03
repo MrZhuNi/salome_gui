@@ -46,7 +46,6 @@ LIB = libSalomeSession.la
 LIB_SRC=Session_Session_i.cxx \
 	Session_ServerThread.cxx \
 	Session_ServerLauncher.cxx \
-	Session_SignalsHandler.cxx \
 	SalomeApp_Engine_i.cxx \
 	InquireServersQThread.cxx
 
