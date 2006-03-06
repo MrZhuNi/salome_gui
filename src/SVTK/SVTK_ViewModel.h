@@ -38,9 +38,6 @@ class SVTK_EXPORT SVTK_Viewer : public SVTK_ViewModelBase, public SALOME_View
 public:
   typedef SVTK_ViewWindow TViewWindow;
   
-  //! Define string representation of the viewer type
-  static QString Type() { return "VTKViewer"; }
-
   SVTK_Viewer();
   virtual ~SVTK_Viewer();
 
@@ -52,9 +49,6 @@ public:
 
   //! See #SUIT_ViewModel::contextMenuPopup
   virtual void contextMenuPopup( QPopupMenu* );
-
-  //! See #SUIT_ViewModel::getType
-  virtual QString getType() const { return Type(); }
 
   //! Get background color of the viewer
   QColor backgroundColor() const;
