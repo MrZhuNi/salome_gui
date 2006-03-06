@@ -1,9 +1,65 @@
+#
+#  PLEASE DO NOT MODIFY configure.in FILE
+#
+#  ALL CHANGES WILL BE DISCARDED BY THE NEXT
+#  build_configure COMMAND
+#
+#  CHANGES MUST BE MADE IN configure.in.base FILE
+#
+#
+# Author : Marc Tajchman (CEA)
+# Date : 28/06/2001
+# Modified by : Patrick GOLDBRONN (CEA)
+# Modified by : Marc Tajchman (CEA)
+#
+# Created from configure.in.base
+#
+
+
+AC_INIT(src)
+AC_CONFIG_AUX_DIR(${KERNEL_ROOT_DIR}/salome_adm/unix/config_files)
+AC_CANONICAL_HOST
 
 PACKAGE=salome
 AC_SUBST(PACKAGE)
 
 VERSION=0.0.1
 AC_SUBST(VERSION)
+
+########################################################################
+# Check --disable-corba option
+
+GUI_DISABLE_CORBA="no"
+DISABLE_PYCONSOLE="no"
+DISABLE_GLVIEWER="no"
+DISABLE_PLOT2DVIEWER="no"
+DISABLE_SUPERVGRAPHVIEWER="no"
+DISABLE_OCCVIEWER="no"
+DISABLE_VTKVIEWER="no"
+DISABLE_SALOMEOBJECT="no"
+
+for option
+do
+  case $option in
+      -disable-corba=yes | --disable-corba=yes | -disable-corba | --disable-corba)
+          GUI_DISABLE_CORBA="yes";;
+      -disable-pyConsole=yes | --disable-pyConsole=yes | -disable-pyConsole | --disable-pyConsole)
+          DISABLE_PYCONSOLE="yes";;
+      -disable-glViewer=yes | --disable-glViewer=yes | -disable-glViewer | --disable-glViewer)
+          DISABLE_GLVIEWER="yes";;
+      -disable-plot2dViewer=yes | --disable-plot2dViewer=yes | -disable-plot2dViewer | --disable-plot2dViewer)
+          DISABLE_PLOT2DVIEWER="yes";;
+      -disable-supervGraphViewer=yes | --disable-supervGraphViewer=yes | \
+      -disable-supervGraphViewer | --disable-supervGraphViewer)
+          DISABLE_SUPERVGRAPHVIEWER="yes";;
+      -disable-occViewer=yes | --disable-occViewer=yes | -disable-occViewer | --disable-occViewer)
+          DISABLE_OCCVIEWER="yes";;
+      -disable-vtkViewer=yes | --disable-vtkViewer=yes | -disable-vtkViewer | --disable-vtkViewer)
+          DISABLE_VTKVIEWER="yes";;
+      -disable-salomeObject=yes | --disable-salomeObject=yes | -disable-salomeObject | --disable-salomeObject)
+          DISABLE_SALOMEOBJECT="yes";;
+  esac
+done
 
 dnl
 dnl Initialize source and build root directories
@@ -23,58 +79,6 @@ echo Source root directory : $ROOT_SRCDIR
 echo Build  root directory : $ROOT_BUILDDIR
 echo
 echo
-
-
-dnl remember GUI_DISABLE_CORBA set by build configure
-old_disable_corba=${GUI_DISABLE_CORBA}
-
-dnl
-dnl Check --disable-corba option
-dnl  ---------------------------------------------
-                 DISABLE_CORBA
-dnl  ---------------------------------------------
-dnl
-
-dnl   Update and re-run configure if there was  build_configure --disable-corba
-dnl   but configure --disable-corba=DIR is being called
-
-if test "x${old_disable_corba}" != "x${GUI_DISABLE_CORBA}"; then
-    if test "x${old_disable_corba}" == "xyes" ; then
-         if test ! -d "${KERNEL_ROOT_DIR}"; then
-             echo "failed : KERNEL_ROOT_DIR variable is not correct !"
-             exit
-         fi
-         kernel_check_in_aclocal=`grep KERNEL_ROOT_DIR ${ROOT_SRCDIR}/aclocal.m4`
-         if test "x${kernel_check_in_aclocal}" == "x"; then
-             echo "Configuration changed: disable Corba -> enable Corba"
-             echo -n "Updating 'configure' script ...  "
-             cd $ROOT_SRCDIR
-             aclocal --acdir=adm_local/unix/config_files -I ${KERNEL_ROOT_DIR}/salome_adm/unix/config_files
-             if autoconf; then
-             	echo "done"
-             else
-             	echo "failed (check file permissions and/or user quotas ...)"
-                cd $ROOT_BUILDDIR
-                exit
-             fi
-             cd $ROOT_BUILDDIR
-             $0 $*
-             exit
-         fi
-    fi
-fi
-
-dnl  AC_CONFIG_AUX_DIR - path to install-sh, config.sub, config.guess,
-dnl  Automake and Libtool scripts etc. 
-dnl  config.sub, config.guess are needed for AC_CANONICAL_HOST
-
-AUX_CONFIG_DIR=${KERNEL_ROOT_DIR}/salome_adm/unix/config_files
-AC_CONFIG_AUX_DIR(${AUX_CONFIG_DIR})
-AC_CANONICAL_HOST
-
-dnl Modification B. Secher portage sur osf CCRT
-AC_CHECK_PROG(SHELL,sh,,)
-AC_SUBST(SHELL)
 
 if test -z "$AR"; then
    AC_CHECK_PROGS(AR,ar xar,:,$PATH)
@@ -221,6 +225,13 @@ echo ---------------------------------------------
 echo
 
 DEFAULT_ORB=omniORB
+
+echo
+echo ---------------------------------------------
+echo testing Corba
+echo ---------------------------------------------
+echo
+
 CHECK_CORBA
 
 AC_SUBST_FILE(CORBA)
@@ -306,6 +317,111 @@ echo ---------------------------------------------
 echo
 
 CHECK_QWT 
+
+echo
+echo ---------------------------------------------
+echo Testing Disable Corba
+echo ---------------------------------------------
+echo
+
+CHECK_DISABLE_CORBA
+echo "GUI_DISABLE_CORBA = "$GUI_DISABLE_CORBA
+
+echo "DISABLE_PYCONSOLE = "$DISABLE_PYCONSOLE
+echo
+echo ---------------------------------------------
+echo Testing PyConsole
+echo ---------------------------------------------
+echo
+
+CHECK_PYCONSOLE
+echo "DISABLE_PYCONSOLE = "$DISABLE_PYCONSOLE
+
+
+echo
+echo ---------------------------------------------
+echo Testing GlViewer
+echo ---------------------------------------------
+echo
+
+CHECK_GLVIEWER
+echo "DISABLE_GLVIEWER = "$DISABLE_GLVIEWER
+
+echo
+echo ---------------------------------------------
+echo Testing Plot2dViewer
+echo ---------------------------------------------
+echo
+
+CHECK_PLOT2DVIEWER
+echo "DISABLE_PLOT2DVIEWER = "$DISABLE_PLOT2DVIEWER
+
+echo
+echo ---------------------------------------------
+echo Testing SupervGraphViewer
+echo ---------------------------------------------
+echo
+
+CHECK_SUPERVGRAPHVIEWER
+echo "DISABLE_SUPERVGRAPHVIEWER = "$DISABLE_SUPERVGRAPHVIEWER
+
+echo
+echo ---------------------------------------------
+echo Testing OCCViewer
+echo ---------------------------------------------
+echo
+
+CHECK_OCCVIEWER
+echo "DISABLE_OCCVIEWER = "$DISABLE_OCCVIEWER
+
+echo
+echo ---------------------------------------------
+echo Testing VTKViewer
+echo ---------------------------------------------
+echo
+
+CHECK_VTKVIEWER
+echo "DISABLE_VTKVIEWER = "$DISABLE_VTKVIEWER
+
+echo
+echo ---------------------------------------------
+echo Testing SalomeObject
+echo ---------------------------------------------
+echo
+
+CHECK_SALOMEOBJECT
+echo "DISABLE_SALOMEOBJECT = "$DISABLE_SALOMEOBJECT
+
+if test "x${GUI_DISABLE_CORBA}" != "xyes" ; then
+  if test "x${DISABLE_PYCONSOLE}" == "xyes" ; then
+    echo "failed : for full configuration of GUI module necessary enable PyConsole !"
+    exit
+  fi
+  if test "x${DISABLE_GLVIEWER}" == "xyes" ; then
+    echo "failed : for full configuration of GUI module necessary enable GlViewer !"
+    exit
+  fi
+  if test "x${DISABLE_PLOT2DVIEWER}" == "xyes" ; then
+    echo "failed : for full configuration of GUI module necessary enable Plot2dViewer !"
+    exit
+  fi
+  if test "x${DISABLE_SUPERVGRAPHVIEWER}" == "xyes" ; then
+    echo "failed : for full configuration of GUI module necessary enable SupervGraphViewer !"
+    exit
+  fi
+  if test "x${DISABLE_OCCVIEWER}" == "xyes" ; then
+    echo "failed : for full configuration of GUI module necessary enable OCCViewer !"
+    exit
+  fi
+  if test "x${DISABLE_VTKVIEWER}" == "xyes" ; then
+    echo "failed : for full configuration of GUI module necessary enable VTKViewer !"
+    exit
+  fi
+  if test "x${DISABLE_SALOMEOBJECT}" == "xyes" ; then
+    echo "failed : for full configuration of GUI module necessary enable SalomeObject !"
+    exit
+  fi
+fi
 
 echo
 echo ---------------------------------------------
