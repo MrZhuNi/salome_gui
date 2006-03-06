@@ -13,28 +13,13 @@ ORIG_DIR=`pwd`
 CONF_DIR=`echo $0 | sed -e "s,[^/]*$,,;s,/$,,;s,^$,.,"`
 
 ########################################################################
-# Check --disable-corba option
-
-GUI_DISABLE_CORBA="no"
-
-for option
-do
-  case $option in
-      -disable-corba=yes | --disable-corba=yes | -disable-corba | --disable-corba)
-          GUI_DISABLE_CORBA="yes"
-          break;;
-  esac
-done
-
-########################################################################
 # Test if the KERNEL_ROOT_DIR is set correctly
-
-if test "x${GUI_DISABLE_CORBA}" == "xno"; then
-    if test ! -d "${KERNEL_ROOT_DIR}"; then
-	echo "failed : KERNEL_ROOT_DIR variable is not correct !"
-	exit
-    fi
+if test ! -d "${KERNEL_ROOT_DIR}"; then
+    echo "failed : KERNEL_ROOT_DIR variable is not correct !"
+    exit
 fi
+
+# Test if the KERNEL_SRC is set correctly
 
 #if test ! -d "${KERNEL_SRC}"; then
 #    echo "failed : KERNEL_SRC variable is not correct !"
@@ -122,66 +107,28 @@ if [ -e "${CONF_DIR}/salome_adm" ] ; then
     \rm -rf ${CONF_DIR}/salome_adm
 fi
 
-# insert header and AC_INIT(src) which must go before anything else
-cat > configure.in_tmp1 <<EOF
-#
-#  PLEASE DO NOT MODIFY configure.in FILE
-#
-#  ALL CHANGES WILL BE DISCARDED BY THE NEXT
-#  build_configure COMMAND
-#
-#  CHANGES MUST BE MADE IN configure.in.base FILE
-#
-#
-# Author : Marc Tajchman (CEA)
-# Date : 28/06/2001
-# Modified by : Patrick GOLDBRONN (CEA)
-# Modified by : Marc Tajchman (CEA)
-#
-# Created from configure.in.base
-#
-
-AC_INIT(src)
-
-EOF
-
-# initialize GUI_DISABLE_CORBA
-echo "GUI_DISABLE_CORBA=${GUI_DISABLE_CORBA}" >> configure.in_tmp1
-
-# insert the configure.in.base
-cat configure.in.base                         >> configure.in_tmp1
-
-
 # make a link allowing AC_OUTPUT to find the salome_adm/.../*.in  files
 echo "" >> configure.in_tmp1
 echo 'ln -fs ${KERNEL_ROOT_DIR}/salome_adm ${ROOT_SRCDIR}/.' >> configure.in_tmp1
+
+echo  "" >> configure.in_tmp1
+echo "AC_OUTPUT([ \\" >> configure.in_tmp1
 
 #
 # List of .in files in the adm/unix directory
 # These files MUST be on top of AC_OUTPUT list so we
 # put them "manually"
 #
-echo ""                                       >> configure.in_tmp1
-echo "AC_OUTPUT([ \\"                         >> configure.in_tmp1
-echo "	./salome_adm/unix/SALOMEconfig.h \\"  >> configure.in_tmp1
-echo "	./salome_adm/unix/sstream \\"         >> configure.in_tmp1
-echo "	./salome_adm/unix/depend \\"          >> configure.in_tmp1
-echo  " ])"                                   >> configure.in_tmp1
-echo ""                                       >> configure.in_tmp1
-echo 'if test ${GUI_DISABLE_CORBA} == no; then' >> configure.in_tmp1
-echo "{"                                      >> configure.in_tmp1
-echo "AC_OUTPUT([ \\"                         >> configure.in_tmp1
-echo "	./salome_adm/unix/F77config.h \\"     >> configure.in_tmp1
-echo "	./adm_local/unix/make_omniorb \\"     >> configure.in_tmp1
-echo "	./salome_adm/unix/envScript \\"       >> configure.in_tmp1
-echo  " ])"                                   >> configure.in_tmp1
-echo "}"                                      >> configure.in_tmp1
-echo "fi"                                     >> configure.in_tmp1
-echo ""                                       >> configure.in_tmp1
-echo "AC_OUTPUT([ \\"                         >> configure.in_tmp1
-echo "	./salome_adm/unix/make_module \\"     >> configure.in_tmp1
-echo "	./adm_local/unix/make_commence \\"    >> configure.in_tmp1
-echo "	./salome_adm/unix/make_conclude \\"   >> configure.in_tmp1
+
+echo "	./salome_adm/unix/SALOMEconfig.h \\" >> configure.in_tmp1
+echo "	./salome_adm/unix/F77config.h \\" >> configure.in_tmp1
+echo "	./salome_adm/unix/sstream \\" >> configure.in_tmp1
+echo "	./salome_adm/unix/depend \\" >> configure.in_tmp1
+echo "	./adm_local/unix/make_omniorb \\" >> configure.in_tmp1
+echo "	./salome_adm/unix/envScript \\" >> configure.in_tmp1
+echo "	./adm_local/unix/make_commence \\" >> configure.in_tmp1
+echo "	./salome_adm/unix/make_conclude \\" >> configure.in_tmp1
+echo "	./salome_adm/unix/make_module \\" >> configure.in_tmp1
 
 \rm -f configure.in_tmp2 configure.in_tmp3
 touch configure.in_tmp2
