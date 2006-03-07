@@ -96,10 +96,6 @@ void nameViewWindows( const ViewManagerList& lst )
 //================================================================
 int SalomeApp_VisualState::storeState()
 {
-  bool store = myApp->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
-  if ( !store )
-    return -1;
-
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( myApp->activeStudy() );
   if ( !study )
     return -1;
@@ -166,6 +162,9 @@ int SalomeApp_VisualState::storeState()
       sModule->storeVisualParameters( savePoint );
     }
   }
+
+  // set default name of new savePoint
+  study->setNameOfSavePoint( savePoint, QObject::tr( "SAVE_POINT_DEF_NAME" ) + QString::number( savePoint ) );
   
   return savePoint;
 }
@@ -177,10 +176,6 @@ int SalomeApp_VisualState::storeState()
 //================================================================
 void SalomeApp_VisualState::restoreState(int savePoint)
 {
-  bool store = myApp->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
-  if ( !store )
-    return;
-
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( myApp->activeStudy() );
   if ( !study )
     return;

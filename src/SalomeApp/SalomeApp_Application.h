@@ -46,7 +46,7 @@ class SALOMEAPP_EXPORT SalomeApp_Application : public LightApp_Application
 
 public:
   enum { DumpStudyId = LightApp_Application::UserID, LoadScriptId, PropertiesId,
-         CatalogGenId, RegDisplayId, UserID };
+         CatalogGenId, RegDisplayId, SaveGUIStateId, UserID };
 
 public:
   SalomeApp_Application();
@@ -75,6 +75,9 @@ public slots:
   virtual void                        onCopy();
   virtual void                        onPaste();
 
+protected slots:
+  void                                onStudySaved( SUIT_Study* );
+
 protected:
   virtual void                        createActions();
   virtual SUIT_Study*                 createNewStudy();
@@ -92,10 +95,14 @@ private slots:
   void                                onProperties();
   void                                onDumpStudy();
   void                                onLoadScript(); 
+  void                                onSaveGUIState(); 
+  void                                onDeleteGUIState(); 
 
   void                                onCatalogGen();
   void                                onRegDisplay();
   void                                onOpenWith();
+  void                                onRestoreGUIState();
+  void                                onRenameGUIState();
 };
 
 #ifdef WIN32

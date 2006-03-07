@@ -141,10 +141,12 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
   emit opened( this );
   study->IsSaved(true);
 
-  std::vector<int> savePoints = getSavePoints();
-  if ( savePoints.size() > 0 ) //############### VISUAL PARAMETERS
-    SalomeApp_VisualState( (SalomeApp_Application*)application() ).restoreState( savePoints[savePoints.size()-1] );
-
+  bool restore = application()->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
+  if ( restore ) {
+    std::vector<int> savePoints = getSavePoints();
+    if ( savePoints.size() > 0 )
+      SalomeApp_VisualState( (SalomeApp_Application*)application() ).restoreState( savePoints[savePoints.size()-1] );
+  }
 
   return res;
 }
@@ -183,6 +185,13 @@ bool SalomeApp_Study::loadDocument( const QString& theStudyName )
   bool res = CAM_Study::openDocument( theStudyName );
   emit opened( this );
 
+  bool restore = application()->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
+  if ( restore ) {
+    std::vector<int> savePoints = getSavePoints();
+    if ( savePoints.size() > 0 )
+      SalomeApp_VisualState( (SalomeApp_Application*)application() ).restoreState( savePoints[savePoints.size()-1] );
+  }
+
   //SRN: BugID IPAL9021: End
 
   return res;
@@ -194,8 +203,9 @@ bool SalomeApp_Study::loadDocument( const QString& theStudyName )
 //=======================================================================
 bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 {
-  //############### VISUAL PARAMETERS
-  SalomeApp_VisualState( (SalomeApp_Application*)application() ).storeState();
+  bool store = application()->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
+  if ( store )
+    SalomeApp_VisualState( (SalomeApp_Application*)application() ).storeState();
   
   ModelList list; dataModels( list );
 
@@ -233,8 +243,9 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 //=======================================================================
 bool SalomeApp_Study::saveDocument()
 {
-  //############### VISUAL PARAMETERS
-  SalomeApp_VisualState( (SalomeApp_Application*)application() ).storeState();
+  bool store = application()->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
+  if ( store )
+    SalomeApp_VisualState( (SalomeApp_Application*)application() ).storeState();
 
   ModelList list; dataModels( list );
 
