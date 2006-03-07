@@ -11,15 +11,15 @@
 #include "SalomeApp_DataModel.h"
 #include "SalomeApp_DataObject.h"
 #include "SalomeApp_EventFilter.h"
+#include "SalomeApp_VisualState.h"
 
 #include "SalomeApp_StudyPropertiesDlg.h"
-
-#include "SalomeApp_CheckFileDlg.h"
 
 #include "LightApp_Application.h"
 #include "LightApp_Preferences.h"
 #include "LightApp_WidgetContainer.h"
 #include "LightApp_SelectionMgr.h"
+#include "LightApp_NameDlg.h"
 
 #include "STD_LoadStudiesDlg.h"
 
@@ -48,6 +48,13 @@
 #include <qcombobox.h>
 #include <qlistbox.h>
 #include <qregexp.h>
+#include <qcheckbox.h>
+#include <qpushbutton.h>
+#include <qlabel.h>
+
+#include "SALOMEDS_StudyManager.hxx"
+#include "SALOMEDS_SObject.hxx"
+#include "SALOMEDS_IParameters.hxx"
 
 #include "SALOME_ListIteratorOfListIO.hxx"
 #include "SALOME_ListIO.hxx"
@@ -98,6 +105,11 @@ void SalomeApp_Application::createActions()
 
   SUIT_Desktop* desk = desktop();
   
+  //! Save GUI state
+  createAction( SaveGUIStateId, tr( "TOT_DESK_FILE_SAVE_GUI_STATE" ), QIconSet(),
+		tr( "MEN_DESK_FILE_SAVE_GUI_STATE" ), tr( "PRP_DESK_FILE_SAVE_GUI_STATE" ),
+		0, desk, false, this, SLOT( onSaveGUIState() ) );
+
   //! Dump study
   createAction( DumpStudyId, tr( "TOT_DESK_FILE_DUMP_STUDY" ), QIconSet(),
 		tr( "MEN_DESK_FILE_DUMP_STUDY" ), tr( "PRP_DESK_FILE_DUMP_STUDY" ),
@@ -125,6 +137,7 @@ void SalomeApp_Application::createActions()
 
   int fileMenu = createMenu( tr( "MEN_DESK_FILE" ), -1 );
 
+  createMenu( SaveGUIStateId, fileMenu, 10, -1 );
   createMenu( DumpStudyId, fileMenu, 10, -1 );
   createMenu( separator(), fileMenu, -1, 15, -1 );
   createMenu( LoadScriptId, fileMenu, 10, -1 );
@@ -361,8 +374,12 @@ void SalomeApp_Application::onSelectionChanged()
          _PTR(SObject) so = stdDS->FindObjectID(it.Value()->getEntry());
 
          if ( so ) {
-	   canCopy = studyMgr()->CanCopy(so);
-	   canPaste = studyMgr()->CanPaste(so);
+           SALOMEDS_SObject* aSO = dynamic_cast<SALOMEDS_SObject*>(so.get());
+
+           if ( aSO ) {
+             canCopy = studyMgr()->CanCopy(so);
+             canPaste = studyMgr()->CanPaste(so);
+           }
          }
        }
      }
@@ -454,13 +471,40 @@ void SalomeApp_Application::updateCommandsStatus()
   if ( a )
     a->setEnabled( activeStudy() );
 
+  // Properties menu
   a = action( PropertiesId );
+  if( a )
+    a->setEnabled( activeStudy() );
+
+  // Save GUI state menu
+  a = action( SaveGUIStateId );
   if( a )
     a->setEnabled( activeStudy() );
 
   // update state of Copy/Paste menu items
   onSelectionChanged();
 }
+
+/*
+  Class       : DumpStudyFileDlg
+  Description : Private class used in Dump Study operation.  Consists 2 check boxes: 
+                "Publish in study" and "Save GUI parameters"
+*/
+class DumpStudyFileDlg : public SUIT_FileDlg
+{
+public:
+  DumpStudyFileDlg( QWidget* parent ) : SUIT_FileDlg( parent, false, true, true ) 
+  {
+    QHBox* hB = new QHBox( this );
+    myPublishChk = new QCheckBox( tr("PUBLISH_IN_STUDY"), hB );
+    mySaveGUIChk = new QCheckBox( tr("SAVE_GUI_STATE"), hB );
+    QPushButton* pb = new QPushButton(this);      
+    addWidgets( new QLabel("", this), hB, pb );
+    pb->hide();    
+  }
+  QCheckBox* myPublishChk;
+  QCheckBox* mySaveGUIChk;
+};
 
 /*!Private SLOT. On dump study.*/
 void SalomeApp_Application::onDumpStudy( )
@@ -472,23 +516,34 @@ void SalomeApp_Application::onDumpStudy( )
   QStringList aFilters;
   aFilters.append( tr( "PYTHON_FILES_FILTER" ) );
 
-  SalomeApp_CheckFileDlg* fd = new SalomeApp_CheckFileDlg( desktop(), false, tr("PUBLISH_IN_STUDY"), true, true);
+  DumpStudyFileDlg* fd = new DumpStudyFileDlg( desktop() );
   fd->setCaption( tr( "TOT_DESK_FILE_DUMP_STUDY" ) );
   fd->setFilters( aFilters );
-  fd->SetChecked(true);
+  fd->myPublishChk->setChecked( true );
+  fd->mySaveGUIChk->setChecked( true );
   fd->exec();
   QString aFileName = fd->selectedFile();
-  bool toPublish = fd->IsChecked();
+  bool toPublish = fd->myPublishChk->isChecked();
+  bool toSaveGUI = fd->mySaveGUIChk->isChecked();
   delete fd;
 
-  if(!aFileName.isEmpty()) {
+  if ( !aFileName.isEmpty() ) {
     QFileInfo aFileInfo(aFileName);
-    bool res = aStudy->DumpStudy( aFileInfo.dirPath( true ).latin1(), aFileInfo.baseName().latin1(), toPublish );
+    int savePoint;
+    if ( toSaveGUI ) { //SRN: Store a visual state of the study at the save point for DumpStudy method
+      SALOMEDS_IParameters::setDumpPython(appStudy->studyDS());
+      savePoint = SalomeApp_VisualState( this ).storeState(); //SRN: create a temporary save point
+      //prefix = SALOMEDS_IParameters::getStudyScript(appStudy->studyDS(), appStudy->getVisualComponentName(), savePoint);
+      
+    }
+    bool res = aStudy->DumpStudy( aFileInfo.dirPath( true ).latin1(), aFileInfo.baseName().latin1(), toPublish);
+    if ( toSaveGUI ) 
+      appStudy->removeSavePoint(savePoint); //SRN: remove the created temporary save point.
     if ( !res )
-    SUIT_MessageBox::warn1 ( desktop(),
-			     QObject::tr("WRN_WARNING"),
-			     tr("WRN_DUMP_STUDY_FAILED"),
-			     QObject::tr("BUT_OK") );
+      SUIT_MessageBox::warn1 ( desktop(),
+			       QObject::tr("WRN_WARNING"),
+			       tr("WRN_DUMP_STUDY_FAILED"),
+			       QObject::tr("BUT_OK") );
   }
 }
 
@@ -522,6 +577,16 @@ void SalomeApp_Application::onLoadScript( )
     if ( pyConsole )
       pyConsole->exec( command );
   }
+}
+
+/*!Private SLOT. On save GUI state.*/
+void SalomeApp_Application::onSaveGUIState()
+{
+  SalomeApp_Study* appStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
+  if ( !appStudy ) return;
+
+  SalomeApp_VisualState( this ).storeState();
+  updateObjectBrowser( false );
 }
 
 /*!Gets file filter.
@@ -584,6 +649,11 @@ void SalomeApp_Application::createPreferences( LightApp_Preferences* pref )
                          LightApp_Preferences::Bool, "ObjectBrowser", QString().sprintf( "visibility_column_%d", i ) );
   }
   pref->setItemProperty( defCols, "columns", 1 );
+
+  // adding preference to LightApp_Application handled preferences..  a bit of hacking with resources..
+  int genTab = pref->addPreference( LightApp_Application::tr( "PREF_TAB_GENERAL" ), salomeCat );
+  int studyGroup = pref->addPreference( LightApp_Application::tr( "PREF_GROUP_STUDY" ), genTab );
+  pref->addPreference( tr( "PREF_STORE_VISUAL_STATE" ), studyGroup, LightApp_Preferences::Bool, "Study", "store_visual_state" );
 }
 
 /*!Update desktop title.*/
@@ -691,6 +761,15 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QPopupMenu* t
   LightApp_SelectionMgr* mgr = selectionMgr();
   mgr->selectedObjects( aList, QString::null, false );
 
+  // add GUI state commands: restore, rename
+  if ( aList.Extent() == 1 && aList.First()->hasEntry() && 
+       QString( aList.First()->getEntry() ).startsWith( tr( "SAVE_POINT_DEF_NAME" ) ) ) {
+    thePopup->insertSeparator();
+    thePopup->insertItem( tr( "MEN_RESTORE_VS" ), this, SLOT( onRestoreGUIState() ) );
+    thePopup->insertItem( tr( "MEN_RENAME_VS" ),  this, SLOT( onRenameGUIState() ) );
+    thePopup->insertItem( tr( "MEN_DELETE_VS" ),  this, SLOT( onDeleteGUIState() ) );
+  }
+
   // "Delete reference" item should appear only for invalid references
 
   // isInvalidRefs will be true, if at least one of selected objects is invalid reference
@@ -725,6 +804,10 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QPopupMenu* t
   if (aList.Extent() != 1)
     return;
   Handle(SALOME_InteractiveObject) aIObj = aList.First();
+  // check if item is a "GUI state" item (also a first level object)
+  QString entry( aIObj->getEntry() );
+  if ( entry.startsWith( tr( "SAVE_POINT_DEF_NAME" ) ) )
+    return;
   QString aModuleName(aIObj->getComponentDataType());
   QString aModuleTitle = moduleTitle(aModuleName);
   CAM_Module* currentModule = activeModule();
@@ -733,10 +816,63 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QPopupMenu* t
   thePopup->insertItem( tr( "MEN_OPENWITH" ), this, SLOT( onOpenWith() ) );
 }
 
+/*! updateSavePointDataObjects: syncronize data objects that correspond to save points (gui states)*/
+void updateSavePointDataObjects( OB_Browser* ob, SalomeApp_Study* study )
+{
+  if ( !study || !ob )
+    return;
+
+  // find GUI states root object
+  SUIT_DataObject* guiRootObj = 0;
+  DataObjectList ch; 
+  study->root()->children( ch ); 
+  DataObjectList::const_iterator it = ch.begin(), last = ch.end();
+  for ( ; it != last ; ++it ) {
+    if ( dynamic_cast<SalomeApp_SavePointRootObject*>( *it ) )
+      guiRootObj = *it;
+  }
+  std::vector<int> savePoints = study->getSavePoints();
+  // case 1: no more save points but they existed in study's tree
+  if ( savePoints.empty() && guiRootObj ) {
+    delete guiRootObj;
+    return;
+  }
+  // case 2: no more save points but root does not exist either
+  if ( savePoints.empty() && !guiRootObj )
+    return;
+  // case 3: save points but no root for them - create it
+  if ( !savePoints.empty() && !guiRootObj )
+    guiRootObj = new SalomeApp_SavePointRootObject( study->root() );
+  // case 4: everything already exists..  nothing to do..
+
+  // store data objects in a map id-to-DataObject
+  QMap<int,SalomeApp_SavePointObject*> mapDO;
+  ch.clear(); 
+  guiRootObj->children( ch ); 
+  for( it = ch.begin(), last = ch.end(); it != last ; ++it ) {
+    SalomeApp_SavePointObject* dobj = dynamic_cast<SalomeApp_SavePointObject*>( *it );
+    if ( dobj )
+      mapDO[dobj->getId()] = dobj;
+  }
+
+  // iterate new save points.  if DataObject with such ID not found in map - create DataObject
+  // if in the map - remove it from map.  
+  for ( int i = 0; i < savePoints.size(); i++ )
+    if ( !mapDO.contains( savePoints[i] ) )
+      new SalomeApp_SavePointObject( guiRootObj, savePoints[i], study );
+    else {
+      ob->updateTree( mapDO[ savePoints[i] ] );
+      mapDO.remove( savePoints[i] );
+    }
+  // delete DataObjects that are still in the map -- their IDs were not found in data model
+  for ( QMap<int,SalomeApp_SavePointObject*>::Iterator it = mapDO.begin(); it != mapDO.end(); ++it )
+    delete it.data();
+}
+
 /*!Update obect browser:
  1.if 'updateModels' true, update existing data models;
  2. update "non-existing" (not loaded yet) data models;
- 3. update object browser if it existing */
+ 3. update object browser if it exists */
 void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 {
   // update "non-existing" (not loaded yet) data models
@@ -761,16 +897,16 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
         //SalomeApp_DataModel::BuildTree( aComponent, study->root(), study, /*skipExisitng=*/true );
       }
     }
+    // create data objects that correspond to GUI state save points
+    ::updateSavePointDataObjects( objectBrowser(), study );
   }
 
   // update existing data models (already loaded SComponents)
   LightApp_Application::updateObjectBrowser( updateModels );
 
-/*  if ( objectBrowser() )
-  {
-    objectBrowser()->updateGeometry();
-    objectBrowser()->updateTree();
-  }*/
+  // -- debug -- 
+  //  if ( study && study->root() )
+  //    study->root()->dump();
 }
 
 /*!Display Catalog Genenerator dialog */
@@ -832,3 +968,73 @@ void SalomeApp_Application::onDblClick( QListViewItem* it )
     }
   }
 }
+
+SUIT_ViewManager* SalomeApp_Application::newViewManager(const QString& type)
+{
+  return createViewManager(type);
+}
+
+
+/*!Global utility funciton, returns selected GUI Save point object's ID */
+int getSelectedSavePoint( const LightApp_SelectionMgr* selMgr )
+{
+  SALOME_ListIO aList;
+  selMgr->selectedObjects( aList );
+  Handle(SALOME_InteractiveObject) aIObj = aList.First();
+  QString entry( aIObj->getEntry() );
+  QString startStr = QObject::tr( "SAVE_POINT_DEF_NAME" );
+  if ( !entry.startsWith( startStr ) ) // it's a "GUI state" object
+    return -1;
+  bool ok; // conversion to integer is ok?
+  int savePoint = entry.right( entry.length() - startStr.length() ).toInt( &ok );
+  return ok ? savePoint : -1;
+}
+
+/*!Called on Restore GUI State popup command*/
+void SalomeApp_Application::onRestoreGUIState()
+{
+  int savePoint = ::getSelectedSavePoint( selectionMgr() );
+  if ( savePoint == -1 ) 
+    return;  
+  SalomeApp_VisualState( this ).restoreState( savePoint );
+}
+
+/*!Called on Rename GUI State popup command*/
+void SalomeApp_Application::onRenameGUIState()
+{
+  int savePoint = ::getSelectedSavePoint( selectionMgr() );
+  if ( savePoint == -1 ) 
+    return;  
+  SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( activeStudy() );
+  if ( !study ) 
+    return;
+
+  QString newName = LightApp_NameDlg::getName( desktop(), study->getNameOfSavePoint( savePoint ) );
+  if ( !newName.isNull() && !newName.isEmpty() ) {
+    study->setNameOfSavePoint( savePoint, newName );
+    updateSavePointDataObjects( objectBrowser(), study );
+  }
+}
+
+
+/*!Called on Delete GUI State popup command*/
+void SalomeApp_Application::onDeleteGUIState()
+{
+  int savePoint = ::getSelectedSavePoint( selectionMgr() );
+  if ( savePoint == -1 ) 
+    return;  
+  SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( activeStudy() );
+  if ( !study ) 
+    return;
+  
+  study->removeSavePoint( savePoint );
+  updateSavePointDataObjects( objectBrowser(), study );
+}
+
+/*!Called on Save study operation*/
+void SalomeApp_Application::onStudySaved( SUIT_Study* study )
+{
+  updateObjectBrowser( false );
+  LightApp_Application::onStudySaved( study );
+}
+
