@@ -17,7 +17,7 @@
 // See http://www.salome-platform.org/
 //
 #include "SalomeApp_ExceptionHandler.h"
-#include "CASCatch_CatchSignals.hxx"
+#include "CASCatch.hxx"
 
 #include <OSD.hxx>
 
@@ -36,9 +36,6 @@ SalomeApp_ExceptionHandler::SalomeApp_ExceptionHandler( const bool floatSignal )
 /*!Try to call SUIT_ExceptionHandler::internalHandle(o, e), catch if failure.*/
 bool SalomeApp_ExceptionHandler::handleSignals( QObject* o, QEvent* e )
 {
-
-  CASCatch_CatchSignals aCatchSignals;
-
   CASCatch_TRY {   
     SUIT_ExceptionHandler::internalHandle( o, e );
   }
