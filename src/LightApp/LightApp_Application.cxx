@@ -173,7 +173,8 @@ myPrefs( 0 )
 
   mySelMgr = new LightApp_SelectionMgr( this );
 
-  myAccel = new SUIT_Accel( desktop() );
+  myAccel = SUIT_Accel::getAccel();
+
 #ifndef DISABLE_OCCVIEWER
   myAccel->setActionKey( SUIT_Accel::PanLeft,     CTRL+Key_Left,     OCCViewer_Viewer::Type() );
   myAccel->setActionKey( SUIT_Accel::PanRight,    CTRL+Key_Right,    OCCViewer_Viewer::Type() );
@@ -1427,7 +1428,7 @@ QWidget* LightApp_Application::createWindow( const int flag )
   {
     OB_Browser* ob = new OB_Browser( desktop() );
     ob->setAutoUpdate( true );
-    ob->setAutoOpenLevel( 1 );
+    //ob->setAutoOpenLevel( 1 ); // commented by ASV as a fix to bug IPAL10107
     ob->setCaption( tr( "OBJECT_BROWSER" ) );
 
     OB_ListView* ob_list = dynamic_cast<OB_ListView*>( const_cast<QListView*>( ob->listView() ) );
