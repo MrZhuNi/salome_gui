@@ -73,5 +73,11 @@ ifneq ($(GUI_DISABLE_CORBA),yes)
 	  Event Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT
 endif
 
+ifeq (@cppunit_ok@,yes)
+ifneq ($(GUI_DISABLE_CORBA),yes)
+ SUBDIRS+= \
+ SalomeApp/Test 
+endif
+endif
 
 @MODULE@
