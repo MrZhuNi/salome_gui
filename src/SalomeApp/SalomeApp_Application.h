@@ -27,6 +27,7 @@ class QDockWindow;
 
 class LightApp_Preferences;
 class SalomeApp_Module;
+class SalomeApp_Study;
 
 class SALOME_LifeCycleCORBA;
 
@@ -78,6 +79,7 @@ public slots:
 
 protected slots:
   void                                onStudySaved( SUIT_Study* );
+  void                                onStudyOpened( SUIT_Study* );
 
 protected:
   virtual void                        createActions();
@@ -89,7 +91,8 @@ protected:
 
   virtual void                        createPreferences( LightApp_Preferences* );
   virtual void                        updateDesktopTitle();
-  
+  void                                updateSavePointDataObjects( SalomeApp_Study* );
+
 private slots:
   void                                onDeleteInvalidReferences();
   void                                onDblClick( QListViewItem* );

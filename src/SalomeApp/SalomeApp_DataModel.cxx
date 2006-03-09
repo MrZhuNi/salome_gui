@@ -72,7 +72,7 @@ bool SalomeApp_DataModelSync::isCorrect( const kerPtr& so ) const
 suitPtr SalomeApp_DataModelSync::createItem( const kerPtr& so,
 					     const suitPtr& parent,
 					     const suitPtr& after,
-					     const bool asFirst ) const
+					     const bool prepend ) const
 {
   if( !isCorrect( so ) )
     return 0;
@@ -91,9 +91,9 @@ suitPtr SalomeApp_DataModelSync::createItem( const kerPtr& so,
       else
 	parent->appendChild( nitem );
     }
-    else if( asFirst )
+    else if( prepend )
       parent->insertChild( nitem, 0 );
-    else
+    else // append
       parent->appendChild( nitem );
   else if( myRoot )
     myRoot->appendChild( nitem );

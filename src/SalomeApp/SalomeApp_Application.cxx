@@ -816,59 +816,6 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QPopupMenu* t
   thePopup->insertItem( tr( "MEN_OPENWITH" ), this, SLOT( onOpenWith() ) );
 }
 
-/*! updateSavePointDataObjects: syncronize data objects that correspond to save points (gui states)*/
-void updateSavePointDataObjects( OB_Browser* ob, SalomeApp_Study* study )
-{
-  if ( !study || !ob )
-    return;
-
-  // find GUI states root object
-  SUIT_DataObject* guiRootObj = 0;
-  DataObjectList ch; 
-  study->root()->children( ch ); 
-  DataObjectList::const_iterator it = ch.begin(), last = ch.end();
-  for ( ; it != last ; ++it ) {
-    if ( dynamic_cast<SalomeApp_SavePointRootObject*>( *it ) )
-      guiRootObj = *it;
-  }
-  std::vector<int> savePoints = study->getSavePoints();
-  // case 1: no more save points but they existed in study's tree
-  if ( savePoints.empty() && guiRootObj ) {
-    delete guiRootObj;
-    return;
-  }
-  // case 2: no more save points but root does not exist either
-  if ( savePoints.empty() && !guiRootObj )
-    return;
-  // case 3: save points but no root for them - create it
-  if ( !savePoints.empty() && !guiRootObj )
-    guiRootObj = new SalomeApp_SavePointRootObject( study->root() );
-  // case 4: everything already exists..  nothing to do..
-
-  // store data objects in a map id-to-DataObject
-  QMap<int,SalomeApp_SavePointObject*> mapDO;
-  ch.clear(); 
-  guiRootObj->children( ch ); 
-  for( it = ch.begin(), last = ch.end(); it != last ; ++it ) {
-    SalomeApp_SavePointObject* dobj = dynamic_cast<SalomeApp_SavePointObject*>( *it );
-    if ( dobj )
-      mapDO[dobj->getId()] = dobj;
-  }
-
-  // iterate new save points.  if DataObject with such ID not found in map - create DataObject
-  // if in the map - remove it from map.  
-  for ( int i = 0; i < savePoints.size(); i++ )
-    if ( !mapDO.contains( savePoints[i] ) )
-      new SalomeApp_SavePointObject( guiRootObj, savePoints[i], study );
-    else {
-      ob->updateTree( mapDO[ savePoints[i] ] );
-      mapDO.remove( savePoints[i] );
-    }
-  // delete DataObjects that are still in the map -- their IDs were not found in data model
-  for ( QMap<int,SalomeApp_SavePointObject*>::Iterator it = mapDO.begin(); it != mapDO.end(); ++it )
-    delete it.data();
-}
-
 /*!Update obect browser:
  1.if 'updateModels' true, update existing data models;
  2. update "non-existing" (not loaded yet) data models;
@@ -898,7 +845,7 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
       }
     }
     // create data objects that correspond to GUI state save points
-    ::updateSavePointDataObjects( objectBrowser(), study );
+    updateSavePointDataObjects( study );
   }
 
   // update existing data models (already loaded SComponents)
@@ -1012,7 +959,7 @@ void SalomeApp_Application::onRenameGUIState()
   QString newName = LightApp_NameDlg::getName( desktop(), study->getNameOfSavePoint( savePoint ) );
   if ( !newName.isNull() && !newName.isEmpty() ) {
     study->setNameOfSavePoint( savePoint, newName );
-    updateSavePointDataObjects( objectBrowser(), study );
+    updateSavePointDataObjects( study );
   }
 }
 
@@ -1028,13 +975,93 @@ void SalomeApp_Application::onDeleteGUIState()
     return;
   
   study->removeSavePoint( savePoint );
-  updateSavePointDataObjects( objectBrowser(), study );
+  updateSavePointDataObjects( study );
 }
 
 /*!Called on Save study operation*/
 void SalomeApp_Application::onStudySaved( SUIT_Study* study )
 {
-  updateObjectBrowser( false );
   LightApp_Application::onStudySaved( study );
+
+  if ( objectBrowser() ) {
+    updateSavePointDataObjects( dynamic_cast<SalomeApp_Study*>( study ) );
+    objectBrowser()->updateTree( study->root() );
+  }
+}
+
+/*!Called on Open study operation*/
+void SalomeApp_Application::onStudyOpened( SUIT_Study* study )
+{
+  LightApp_Application::onStudyOpened( study );
+
+  if ( objectBrowser() ) {
+    updateSavePointDataObjects( dynamic_cast<SalomeApp_Study*>( study ) );
+    objectBrowser()->updateTree( study->root() );
+  }
+}
+
+/*! updateSavePointDataObjects: syncronize data objects that correspond to save points (gui states)*/
+void SalomeApp_Application::updateSavePointDataObjects( SalomeApp_Study* study )
+{
+  OB_Browser* ob = objectBrowser();
+
+  if ( !study || !ob )
+    return;
+
+  // find GUI states root object
+  SUIT_DataObject* guiRootObj = 0;
+  DataObjectList ch; 
+  study->root()->children( ch ); 
+  DataObjectList::const_iterator it = ch.begin(), last = ch.end();
+  for ( ; it != last ; ++it ) {
+    if ( dynamic_cast<SalomeApp_SavePointRootObject*>( *it ) ) {
+      guiRootObj = *it;
+      break;
+    }
+  }
+  std::vector<int> savePoints = study->getSavePoints();
+  // case 1: no more save points but they existed in study's tree
+  if ( savePoints.empty() && guiRootObj ) {
+    delete guiRootObj;
+    return;
+  }
+  // case 2: no more save points but root does not exist either
+  if ( savePoints.empty() && !guiRootObj )
+    return;
+  // case 3: save points but no root for them - create it
+  if ( !savePoints.empty() && !guiRootObj )
+    guiRootObj = new SalomeApp_SavePointRootObject( study->root() );
+  // case 4: everything already exists.. here may be a problem: we want "GUI states" root object
+  // to be always the last one in the tree.  Here we check - if it is not the last one - remove and
+  // re-create it.
+  //  if ( guiRootObj->nextBrother() ) {
+  //    bool isOpen = guiRootObj->isOpen();
+  //    delete guiRootObj;
+  //    guiRootObj = new SalomeApp_SavePointRootObject( study->root() );
+  //    guiRootObj->setOpen( isOpen );
+  //  }
+
+  // store data objects in a map id-to-DataObject
+  QMap<int,SalomeApp_SavePointObject*> mapDO;
+  ch.clear(); 
+  guiRootObj->children( ch ); 
+  for( it = ch.begin(), last = ch.end(); it != last ; ++it ) {
+    SalomeApp_SavePointObject* dobj = dynamic_cast<SalomeApp_SavePointObject*>( *it );
+    if ( dobj )
+      mapDO[dobj->getId()] = dobj;
+  }
+
+  // iterate new save points.  if DataObject with such ID not found in map - create DataObject
+  // if in the map - remove it from map.  
+  for ( int i = 0; i < savePoints.size(); i++ )
+    if ( !mapDO.contains( savePoints[i] ) )
+      new SalomeApp_SavePointObject( guiRootObj, savePoints[i], study );
+    else {
+      ob->updateTree( mapDO[ savePoints[i] ] );
+      mapDO.remove( savePoints[i] );
+    }
+  // delete DataObjects that are still in the map -- their IDs were not found in data model
+  for ( QMap<int,SalomeApp_SavePointObject*>::Iterator it = mapDO.begin(); it != mapDO.end(); ++it )
+    delete it.data();
 }
 
