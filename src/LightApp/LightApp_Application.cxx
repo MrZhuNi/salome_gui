@@ -3,7 +3,10 @@
 // Author:    Natalia Donis
 // Copyright (C) CEA 2005
 
-#include "PythonConsole_PyInterp.h" // WARNING! This include must be the first!
+#ifndef DISABLE_PYCONSOLE
+  #include "PythonConsole_PyInterp.h" // WARNING! This include must be the first!
+  #include <PythonConsole_PyConsole.h>
+#endif
 
 #include "LightApp_Application.h"
 #include "LightApp_WidgetContainer.h"
@@ -17,10 +20,7 @@
 
 #include "LightApp_OBFilter.h"
 
-#include "LightApp_GLSelector.h"
 #include "LightApp_OBSelector.h"
-#include "LightApp_OCCSelector.h"
-#include "LightApp_VTKSelector.h"
 #include "LightApp_SelectionMgr.h"
 
 #include <CAM_Module.h>
@@ -42,25 +42,50 @@
 #include <LogWindow.h>
 #include <OB_Browser.h>
 #include <OB_ListView.h>
-#include <PythonConsole_PyConsole.h>
 
-#include <GLViewer_Viewer.h>
-#include <GLViewer_ViewManager.h>
+#ifndef DISABLE_GLVIEWER
+  #include <GLViewer_Viewer.h>
+  #include <GLViewer_ViewManager.h>
+  #include "LightApp_GLSelector.h"
+#endif
 
-#include <Plot2d_ViewManager.h>
-#include <Plot2d_ViewModel.h>
-#include <SPlot2d_ViewModel.h>
+#ifndef DISABLE_PLOT2DVIEWER
+  #include <Plot2d_ViewManager.h>
+  #include <Plot2d_ViewModel.h>
+#ifndef DISABLE_SALOMEOBJECT
+  #include <SPlot2d_ViewModel.h>
+#else
+  #include <Plot2d_ViewModel.h>
+#endif
+#endif
 
-#include <OCCViewer_ViewManager.h>
-#include <SOCC_ViewModel.h>
+#ifndef DISABLE_OCCVIEWER
+  #include <OCCViewer_ViewManager.h>
+#ifndef DISABLE_SALOMEOBJECT
+  #include <SOCC_ViewModel.h>
+#else
+  #include <OCCViewer_ViewModel.h>
+#endif
+  #include "LightApp_OCCSelector.h"
+#endif
 
-#include <SVTK_ViewModel.h>
-#include <SVTK_ViewManager.h>
-#include <VTKViewer_ViewModel.h>
+#ifndef DISABLE_VTKVIEWER
+#ifndef DISABLE_SALOMEOBJECT
+  #include <SVTK_ViewModel.h>
+  #include <SVTK_ViewManager.h>
+  #include "LightApp_VTKSelector.h"
+#else
+  #include <VTKViewer_ViewModel.h>
+  #include <VTKViewer_ViewManager.h>
+#endif
+  #include <VTKViewer_ViewModel.h>
+#endif
 
-#include <SUPERVGraph_ViewModel.h>
-#include <SUPERVGraph_ViewFrame.h>
-#include <SUPERVGraph_ViewManager.h>
+#ifndef DISABLE_SUPERVGRAPHVIEWER
+  #include <SUPERVGraph_ViewModel.h>
+  #include <SUPERVGraph_ViewFrame.h>
+  #include <SUPERVGraph_ViewManager.h>
+#endif
 
 #include <QtxWorkstack.h>
 
@@ -81,8 +106,10 @@
 
 #define FIRST_HELP_ID 1000000
 
-#include "SALOME_InteractiveObject.hxx"
-#include "SALOME_ListIO.hxx"
+#ifndef DISABLE_SALOMEOBJECT
+  #include "SALOME_InteractiveObject.hxx"
+  #include "SALOME_ListIO.hxx"
+#endif
 
 static const char* imageEmptyIcon[] = {
 "20 20 1 1",
@@ -147,6 +174,7 @@ myPrefs( 0 )
   mySelMgr = new LightApp_SelectionMgr( this );
 
   myAccel = new SUIT_Accel( desktop() );
+#ifndef DISABLE_OCCVIEWER
   myAccel->setActionKey( SUIT_Accel::PanLeft,     CTRL+Key_Left,     OCCViewer_Viewer::Type() );
   myAccel->setActionKey( SUIT_Accel::PanRight,    CTRL+Key_Right,    OCCViewer_Viewer::Type() );
   myAccel->setActionKey( SUIT_Accel::PanUp,       CTRL+Key_Up,       OCCViewer_Viewer::Type() );
@@ -158,6 +186,8 @@ myPrefs( 0 )
   myAccel->setActionKey( SUIT_Accel::RotateRight, ALT+Key_Right,     OCCViewer_Viewer::Type() );
   myAccel->setActionKey( SUIT_Accel::RotateUp,    ALT+Key_Up,        OCCViewer_Viewer::Type() );
   myAccel->setActionKey( SUIT_Accel::RotateDown,  ALT+Key_Down,      OCCViewer_Viewer::Type() );
+#endif
+#ifndef DISABLE_VTKVIEWER
   myAccel->setActionKey( SUIT_Accel::PanLeft,     CTRL+Key_Left,     VTKViewer_Viewer::Type() );
   myAccel->setActionKey( SUIT_Accel::PanRight,    CTRL+Key_Right,    VTKViewer_Viewer::Type() );
   myAccel->setActionKey( SUIT_Accel::PanUp,       CTRL+Key_Up,       VTKViewer_Viewer::Type() );
@@ -169,6 +199,7 @@ myPrefs( 0 )
   myAccel->setActionKey( SUIT_Accel::RotateRight, ALT+Key_Right,     VTKViewer_Viewer::Type() );
   myAccel->setActionKey( SUIT_Accel::RotateUp,    ALT+Key_Up,        VTKViewer_Viewer::Type() );
   myAccel->setActionKey( SUIT_Accel::RotateDown,  ALT+Key_Down,      VTKViewer_Viewer::Type() );
+#endif
 
   connect( mySelMgr, SIGNAL( selectionChanged() ), this, SLOT( onSelection() ) );
 }
@@ -310,6 +341,19 @@ bool LightApp_Application::useStudy(const QString& theName)
 LightApp_SelectionMgr* LightApp_Application::selectionMgr() const
 {
   return mySelMgr;
+}
+
+/*!Creat action "New window" for certain type of viewer:*/
+void LightApp_Application::createActionForViewer( const int id,
+                                                  const int parentId,
+                                                  const QString& suffix,
+                                                  const int accel )
+{
+  QAction* a = createAction( id, tr( QString( "NEW_WINDOW_%1" ).arg( suffix ) ), QIconSet(),
+			       tr( QString( "NEW_WINDOW_%1" ).arg( suffix ) ),
+			       tr( QString( "NEW_WINDOW_%1" ).arg( suffix ) ),
+			       accel, desktop(), false, this, SLOT( onNewWindow() ) );
+  createMenu( a, parentId, -1 );
 }
 
 /*!Create actions:*/
@@ -455,20 +499,20 @@ void LightApp_Application::createActions()
   int newWinMenu = createMenu( tr( "MEN_DESK_NEWWINDOW" ), windowMenu, -1, 0 );
   createMenu( separator(), windowMenu, -1, 1 );
 
-  QMap<int, int> accelMap;
-  accelMap[NewGLViewId]  = ALT+Key_G;
-  accelMap[NewPlot2dId]  = ALT+Key_P;
-  accelMap[NewOCCViewId] = ALT+Key_O;
-  accelMap[NewVTKViewId] = ALT+Key_K;
 
-  for ( id = NewGLViewId; id <= NewVTKViewId; id++ )
-  {
-    QAction* a = createAction( id, tr( QString( "NEW_WINDOW_%1" ).arg( id - NewGLViewId ) ), QIconSet(),
-			       tr( QString( "NEW_WINDOW_%1" ).arg( id - NewGLViewId ) ),
-			       tr( QString( "NEW_WINDOW_%1" ).arg( id - NewGLViewId ) ),
-			       accelMap.contains( id ) ? accelMap[id] : 0, desk, false, this, SLOT( onNewWindow() ) );
-    createMenu( a, newWinMenu, -1 );
-  }
+#ifndef DISABLE_GLVIEWER
+  createActionForViewer( NewGLViewId, newWinMenu, QString::number( 0 ), ALT+Key_G );
+#endif
+#ifndef DISABLE_PLOT2DVIEWER
+  createActionForViewer( NewPlot2dId, newWinMenu, QString::number( 1 ), ALT+Key_P );
+#endif
+#ifndef DISABLE_OCCVIEWER
+  createActionForViewer( NewOCCViewId, newWinMenu, QString::number( 2 ), ALT+Key_O );
+#endif
+#ifndef DISABLE_VTKVIEWER
+  createActionForViewer( NewVTKViewId, newWinMenu, QString::number( 3 ), ALT+Key_K );
+#endif
+
 
   createAction( RenameId, tr( "TOT_RENAME" ), QIconSet(), tr( "MEN_DESK_RENAME" ), tr( "PRP_RENAME" ),
 		SHIFT+Key_R, desk, false, this, SLOT( onRenameWindow() ) );
@@ -552,18 +596,26 @@ void LightApp_Application::onNewWindow()
   int id = actionId( (QAction*)obj );
   switch ( id )
   {
+#ifndef DISABLE_GLVIEWER
   case NewGLViewId:
     type = GLViewer_Viewer::Type();
     break;
+#endif
+#ifndef DISABLE_PLOT2DVIEWER
   case NewPlot2dId:
     type = Plot2d_Viewer::Type();
     break;
+#endif
+#ifndef DISABLE_OCCVIEWER
   case NewOCCViewId:
     type = OCCViewer_Viewer::Type();
     break;
+#endif
+#ifndef DISABLE_VTKVIEWER
   case NewVTKViewId:
     type = VTKViewer_Viewer::Type();
     break;
+#endif
   }
 
   if ( !type.isEmpty() )
@@ -729,13 +781,31 @@ void LightApp_Application::setActiveStudy( SUIT_Study* study )
 void LightApp_Application::updateCommandsStatus()
 {
   CAM_Application::updateCommandsStatus();
+  QAction* a = 0;
 
-  for ( int id = NewGLViewId; id <= NewVTKViewId; id++ )
-  {
-    QAction* a = action( id );
-    if ( a )
-      a->setEnabled( activeStudy() );
-  }
+#ifndef DISABLE_GLVIEWER
+  a = action( NewGLViewId );
+  if( a )
+    a->setEnabled( activeStudy() );
+#endif
+
+#ifndef DISABLE_PLOT2DVIEWER
+  a = action( NewPlot2dId );
+  if( a )
+    a->setEnabled( activeStudy() );
+#endif
+
+#ifndef DISABLE_OCCVIEWER
+  a = action( NewOCCViewId );
+  if( a )
+    a->setEnabled( activeStudy() );
+#endif
+
+#ifndef DISABLE_VTKVIEWER
+  a = action( NewVTKViewId );
+  if( a )
+    a->setEnabled( activeStudy() );
+#endif
 }
 
 // Helps to execute command
@@ -881,6 +951,7 @@ void LightApp_Application::addWindow( QWidget* wid, const int flag, const int st
   }
 
   QFont f;
+#ifndef DISABLE_PYCONSOLE
   if( wid->inherits( "PythonConsole" ) )
   {
     if( resourceMgr()->hasValue( "PyConsole", "font" ) )
@@ -892,6 +963,7 @@ void LightApp_Application::addWindow( QWidget* wid, const int flag, const int st
     }
   }
   else
+#endif
     f = wid->font();
 
   myWindows[flag]->insert( sId, wid );
@@ -986,6 +1058,7 @@ LogWindow* LightApp_Application::logWindow()
   return lw;
 }
 
+#ifndef DISABLE_PYCONSOLE
 /*!Get "PythonConsole"*/
 PythonConsole* LightApp_Application::pythonConsole()
 {
@@ -995,6 +1068,7 @@ PythonConsole* LightApp_Application::pythonConsole()
     console = (PythonConsole*)wid;
   return console;
 }
+#endif
 
 /*!Update obect browser*/
 void LightApp_Application::updateObjectBrowser( const bool updateModels )
@@ -1054,15 +1128,23 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
   SUIT_ResourceMgr* resMgr = resourceMgr();
 
   SUIT_ViewManager* viewMgr = 0;
+#ifndef DISABLE_GLVIEWER
   if( vmType == GLViewer_Viewer::Type() )
   {
     viewMgr = new GLViewer_ViewManager( activeStudy(), desktop() );
     new LightApp_GLSelector( (GLViewer_Viewer2d*)viewMgr->getViewModel(), mySelMgr );
   }
-  else if( vmType == Plot2d_Viewer::Type() )
+#endif
+#ifndef DISABLE_PLOT2DVIEWER
+  if( vmType == Plot2d_Viewer::Type() )
   {
     viewMgr = new Plot2d_ViewManager( activeStudy(), desktop() );
-    SPlot2d_Viewer* vm = new SPlot2d_Viewer();
+    Plot2d_Viewer* vm;
+#ifndef DISABLE_SALOMEOBJECT
+    vm = new SPlot2d_Viewer();
+#else
+    vm = new Plot2d_Viewer();
+#endif
     viewMgr->setViewModel( vm  );// custom view model, which extends SALOME_View interface 
     Plot2d_ViewWindow* wnd = dynamic_cast<Plot2d_ViewWindow*>( viewMgr->getActiveView() );
     if( wnd )
@@ -1071,7 +1153,9 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
       frame->setBackgroundColor( resMgr->colorValue( "Plot2d", "Background", frame->backgroundColor() ) );
     }
   }
-  else if( vmType == SUPERVGraph_Viewer::Type() )
+#endif
+#ifndef DISABLE_SUPERVGRAPHVIEWER
+  if( vmType == SUPERVGraph_Viewer::Type() )
   {
     viewMgr = new SUPERVGraph_ViewManager( activeStudy(), desktop() );
     SUPERVGraph_Viewer* vm = new SUPERVGraph_Viewer();
@@ -1079,10 +1163,17 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     if( view )
       view->setBackgroundColor( resMgr->colorValue( "SUPERVGraph", "Background", view->backgroundColor() ) );
   }
-  else if( vmType == OCCViewer_Viewer::Type() )
+#endif
+#ifndef DISABLE_OCCVIEWER
+  if( vmType == OCCViewer_Viewer::Type() )
   {
     viewMgr = new OCCViewer_ViewManager( activeStudy(), desktop() );
-    SOCC_Viewer* vm = new SOCC_Viewer();
+    OCCViewer_Viewer* vm;
+#ifndef DISABLE_SALOMEOBJECT
+    vm = new SOCC_Viewer();
+#else
+    vm = new OCCViewer_Viewer();
+#endif
     vm->setBackgroundColor( resMgr->colorValue( "OCCViewer", "background", vm->backgroundColor() ) );
     vm->setTrihedronSize( resMgr->integerValue( "OCCViewer", "trihedron_size", vm->trihedronSize() ) );
     int u( 1 ), v( 1 );
@@ -1093,8 +1184,15 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     viewMgr->setViewModel( vm );// custom view model, which extends SALOME_View interface
     new LightApp_OCCSelector( (OCCViewer_Viewer*)viewMgr->getViewModel(), mySelMgr );
   }
-  else if ( vmType == SVTK_Viewer::Type() )
+#endif
+#ifndef DISABLE_VTKVIEWER
+#ifndef DISABLE_SALOMEOBJECT
+  if ( vmType == SVTK_Viewer::Type() )
+#else
+  if ( vmType == VTKViewer_Viewer::Type() )
+#endif
   {
+#ifndef DISABLE_SALOMEOBJECT
     viewMgr = new SVTK_ViewManager( activeStudy(), desktop() );
     SVTK_Viewer* vm = dynamic_cast<SVTK_Viewer*>( viewMgr->getViewModel() );
     if( vm )
@@ -1104,7 +1202,14 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
 			    resMgr->booleanValue( "VTKViewer", "relative_size", vm->trihedronRelative() ) );
       new LightApp_VTKSelector( vm, mySelMgr );
     }
+#else
+    viewMgr = new VTKViewer_ViewManager( activeStudy(), desktop() );
+    VTKViewer_Viewer* vm = dynamic_cast<VTKViewer_Viewer*>( viewMgr->getViewModel() );
+    if ( vm )
+      vm->setBackgroundColor( resMgr->colorValue( "VTKViewer", "background", vm->backgroundColor() ) );
+#endif
   }
+#endif
 
   if ( !viewMgr )
     return 0;
@@ -1339,6 +1444,7 @@ QWidget* LightApp_Application::createWindow( const int flag )
 
     ob->connectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
   }
+#ifndef DISABLE_PYCONSOLE
   else  if ( flag == WT_PyConsole )
   {
     PythonConsole* pyCons = new PythonConsole( desktop() );
@@ -1346,6 +1452,7 @@ QWidget* LightApp_Application::createWindow( const int flag )
     wid = pyCons;
     //    pyCons->connectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
   }
+#endif
   else if ( flag == WT_LogWindow )
   {
     LogWindow* logWin = new LogWindow( desktop() );
@@ -1362,7 +1469,9 @@ QWidget* LightApp_Application::createWindow( const int flag )
 void LightApp_Application::defaultWindows( QMap<int, int>& aMap ) const
 {  
   aMap.insert( WT_ObjectBrowser, Qt::DockLeft );
+#ifndef DISABLE_PYCONSOLE
   aMap.insert( WT_PyConsole, Qt::DockBottom );
+#endif
   //  aMap.insert( WT_LogWindow, Qt::DockBottom );
 }
 
@@ -1614,6 +1723,7 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
   if ( !resMgr )
     return;
 
+#ifndef DISABLE_OCCVIEWER
   if ( sec == QString( "OCCViewer" ) && param == QString( "trihedron_size" ) )
   {
     int sz = resMgr->integerValue( sec, param, -1 );
@@ -1630,12 +1740,15 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
       occVM->getAISContext()->UpdateCurrentViewer();
     }
   }
+#endif
 
+#ifndef DISABLE_VTKVIEWER
   if ( sec == QString( "VTKViewer" ) && (param == QString( "trihedron_size" ) || param == QString( "relative_size" )) )
   {
     int sz = resMgr->integerValue( "VTKViewer", "trihedron_size", -1 );
     bool isRelative = resMgr->booleanValue( "VTKViewer", "relative_size", true );
     QPtrList<SUIT_ViewManager> lst;
+#ifndef DISABLE_SALOMEOBJECT
     viewManagers( SVTK_Viewer::Type(), lst );
     for ( QPtrListIterator<SUIT_ViewManager> it( lst ); it.current() && sz >= 0; ++it )
     {
@@ -1650,8 +1763,11 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
 	vtkVM->Repaint();
       }
     }
+#endif
   }
+#endif
 
+#ifndef DISABLE_OCCVIEWER
   if ( sec == QString( "OCCViewer" ) && ( param == QString( "iso_number_u" ) || param == QString( "iso_number_v" ) ) )
   {
     QPtrList<SUIT_ViewManager> lst;
@@ -1665,6 +1781,7 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
 	mgr->getOCCViewer()->setIsos( u, v );
     }
   }
+#endif
 
   if( sec=="ObjectBrowser" )
   {
@@ -1688,12 +1805,14 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
       updateWindows();
   }
 
+#ifndef DISABLE_PYCONSOLE
   if( sec=="PyConsole" )
   {
     if( param=="font" )
       if( pythonConsole() )
 	pythonConsole()->setFont( resMgr->fontValue( "PyConsole", "font" ) );
   }
+#endif
 }
 
 /*!Save preferences */
