@@ -445,6 +445,14 @@ fi
 
 echo
 echo ---------------------------------------------
+echo Testing CPPUNIT only required for unit testing
+echo ---------------------------------------------
+echo
+
+CHECK_CPPUNIT
+
+echo
+echo ---------------------------------------------
 echo Summary
 echo ---------------------------------------------
 echo
@@ -466,6 +474,18 @@ for var in $variables
 do
    printf "   %10s : " `echo \$var | sed -e "s,_ok,,"`
    eval echo \$$var
+done
+
+echo "---Optional:"
+variables="cppunit_ok"
+ 
+for var in $variables
+do
+   eval toto=\$$var
+   if test x$toto != "x"; then
+     printf "   %10s : " `echo \$var | sed -e "s,_ok,,"`
+     eval echo \$$var
+   fi
 done
 
 if test "$GUI_DISABLE_CORBA" != "yes"; then 
