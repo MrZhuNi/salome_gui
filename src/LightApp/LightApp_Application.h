@@ -52,6 +52,8 @@ public:
                  WT_User }
   WindowTypes;
 
+  enum { MenuWindowId = 6 };
+
   enum { RenameId = CAM_Application::UserID,
 
 #ifndef DISABLE_GLVIEWER
