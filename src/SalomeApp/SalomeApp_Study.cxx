@@ -736,3 +736,15 @@ std::string SalomeApp_Study::getVisualComponentName()
   return "Interface Applicative";
 }
 
+//================================================================
+// Function : updateModelRoot
+/*! Purpose : slot called on change of a root of a data model. redefined from CAM_Study*/
+//================================================================
+void SalomeApp_Study::updateModelRoot( const CAM_DataModel* dm )
+{
+  LightApp_Study::updateModelRoot( dm );
+
+  // calling updateSavePointDataObjects in order to set correct order of "Gui states" object
+  // it must always be the last one.
+  ((SalomeApp_Application*)application())->updateSavePointDataObjects( this );
+}

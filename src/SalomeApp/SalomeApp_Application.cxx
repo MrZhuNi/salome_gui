@@ -582,11 +582,12 @@ void SalomeApp_Application::onLoadScript( )
 /*!Private SLOT. On save GUI state.*/
 void SalomeApp_Application::onSaveGUIState()
 {
-  SalomeApp_Study* appStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
-  if ( !appStudy ) return;
-
-  SalomeApp_VisualState( this ).storeState();
-  updateObjectBrowser( false );
+  SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( activeStudy() );
+  if ( study ) {
+    SalomeApp_VisualState( this ).storeState();
+    updateSavePointDataObjects( study );
+    objectBrowser()->updateTree( study->root() );
+  }
 }
 
 /*!Gets file filter.
@@ -1000,6 +1001,23 @@ void SalomeApp_Application::onStudyOpened( SUIT_Study* study )
   }
 }
 
+/*! utility function.  returns true if list view item that correspond to given SUIT_DataObject is open.
+ only first level items are traversed */
+bool isListViewItemOpen( QListView* lv, const SUIT_DataObject* dobj )
+{
+  if ( !lv || !dobj )
+    return false;
+
+  QListViewItem* item = lv->firstChild();
+  while ( item ) {
+    OB_ListItem* ob_item = dynamic_cast<OB_ListItem*>( item );
+    if ( ob_item && ob_item->dataObject() == dobj )
+      return ob_item->isOpen();
+    item = item->nextSibling();
+  }
+  return false;
+}
+
 /*! updateSavePointDataObjects: syncronize data objects that correspond to save points (gui states)*/
 void SalomeApp_Application::updateSavePointDataObjects( SalomeApp_Study* study )
 {
@@ -1034,12 +1052,12 @@ void SalomeApp_Application::updateSavePointDataObjects( SalomeApp_Study* study )
   // case 4: everything already exists.. here may be a problem: we want "GUI states" root object
   // to be always the last one in the tree.  Here we check - if it is not the last one - remove and
   // re-create it.
-  //  if ( guiRootObj->nextBrother() ) {
-  //    bool isOpen = guiRootObj->isOpen();
-  //    delete guiRootObj;
-  //    guiRootObj = new SalomeApp_SavePointRootObject( study->root() );
-  //    guiRootObj->setOpen( isOpen );
-  //  }
+  bool isOpen( false );
+  if ( guiRootObj->nextBrother() ) {
+    isOpen = isListViewItemOpen( ob->listView(), guiRootObj );
+    delete guiRootObj;
+    guiRootObj = new SalomeApp_SavePointRootObject( study->root() );
+  }
 
   // store data objects in a map id-to-DataObject
   QMap<int,SalomeApp_SavePointObject*> mapDO;
@@ -1063,5 +1081,8 @@ void SalomeApp_Application::updateSavePointDataObjects( SalomeApp_Study* study )
   // delete DataObjects that are still in the map -- their IDs were not found in data model
   for ( QMap<int,SalomeApp_SavePointObject*>::Iterator it = mapDO.begin(); it != mapDO.end(); ++it )
     delete it.data();
+
+  if ( isOpen ) // set open if we recreated guiRootObj and it was previously open..
+    guiRootObj->setOpen( true );
 }
 

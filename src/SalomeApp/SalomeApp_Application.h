@@ -69,6 +69,7 @@ public:
   static QString                      defaultEngineIOR();
 
   SUIT_ViewManager*                   newViewManager(const QString&);
+  void                                updateSavePointDataObjects( SalomeApp_Study* );
 
 public slots:
   virtual bool                        onOpenDoc( const QString& );
@@ -91,7 +92,6 @@ protected:
 
   virtual void                        createPreferences( LightApp_Preferences* );
   virtual void                        updateDesktopTitle();
-  void                                updateSavePointDataObjects( SalomeApp_Study* );
 
 private slots:
   void                                onDeleteInvalidReferences();
