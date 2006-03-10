@@ -125,6 +125,10 @@ public:
 
   SUIT_Accel*                         accel() const;
 
+  void                                setDefaultStudyName( const QString& theName );
+
+  static int                          studyId();
+
 signals:
   void                                studyOpened();
   void                                studySaved();
@@ -218,6 +222,8 @@ protected:
   SUIT_Accel*                         myAccel;
 
   static LightApp_Preferences*        _prefs_;
+
+  static int                          lastStudyId;
 };
 
 #ifdef WIN32
