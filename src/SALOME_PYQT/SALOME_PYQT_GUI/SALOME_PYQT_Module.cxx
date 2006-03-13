@@ -120,10 +120,16 @@ private:
 // While the SalomePyQtGUI library is not imported in Python it's initialization function
 // should be called manually (and only once) in order to initialize global sip data
 // and to get C API from sip : sipBuildResult for example
+#if defined(SIP_VERS_v4_old) || defined(SIP_VERS_v4_new)
+#define INIT_FUNCTION initSalomePyQtGUI
 #if defined(SIP_STATIC_MODULE)
-extern "C" void initSalomePyQtGUI();
+extern "C" void INIT_FUNCTION();
 #else
-PyMODINIT_FUNC initSalomePyQtGUI();
+PyMODINIT_FUNC INIT_FUNCTION();
+#endif
+#else
+#define INIT_FUNCTION initlibSalomePyQtGUIc
+extern "C" void INIT_FUNCTION();
 #endif
 
 /*!
@@ -136,7 +142,7 @@ extern "C" {
     if ( !alreadyInitialized ) {
       // call only once (see above) !
       PyEval_RestoreThread( KERNEL_PYTHON::_gtstate );
-      initSalomePyQtGUI();
+      INIT_FUNCTION();
       PyEval_ReleaseThread( KERNEL_PYTHON::_gtstate );
       alreadyInitialized = !alreadyInitialized;
     }
