@@ -1905,17 +1905,18 @@ void LightApp_Application::currentViewManagers( QStringList& lst ) const
 /*!Update windows.*/
 void LightApp_Application::updateWindows()
 {
-  if ( !activeStudy() )
-    return;
-
   QMap<int, int> winMap;
   currentWindows( winMap );
 
-  for ( QMap<int, int>::ConstIterator it = winMap.begin(); it != winMap.end(); ++it )
-    getWindow( it.key() );
+  if ( activeStudy() ) {
+    for ( QMap<int, int>::ConstIterator it = winMap.begin(); it != winMap.end(); ++it )
+      getWindow( it.key() );
 
-  loadWindowsGeometry();
+    loadWindowsGeometry();
+  }
 
+  // setWindowShown should be done even if no study is active (open). in this case all open windows
+  // will be hidden, which is neccessary in this case.
   for ( WindowMap::ConstIterator itr = myWindows.begin(); itr != myWindows.end(); ++itr )
     setWindowShown( itr.key(), !itr.data()->isEmpty() && winMap.contains( itr.key() ) );
 }
