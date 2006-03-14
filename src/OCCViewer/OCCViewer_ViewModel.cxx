@@ -36,6 +36,8 @@
 #include <AIS_Drawer.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 
+#include <SelectMgr_SelectionManager.hxx>
+
 #include <Geom_Axis2Placement.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -83,8 +85,8 @@ myBgColor( Qt::black )
         daspect->ThirdAxisAspect()->SetColor(Quantity_Color(0.0, 0.0, 1.0, Quantity_TOC_RGB));
     }
 
-    myAISContext->Display(myTrihedron);
-    myAISContext->Deactivate(myTrihedron);
+    myTrihedron->SetSelectionMode( -1 );
+    myAISContext->Display( myTrihedron, 0, -1 );
   }
 
   // selection
@@ -458,9 +460,18 @@ void OCCViewer_Viewer::setTrihedronShown( const bool on )
     return;
 
   if ( on )
-    myAISContext->Display( myTrihedron );
+  {
+    myTrihedron->SetToUpdate();
+    myAISContext->Display( myTrihedron, 0, -1, false );
+    myAISContext->KeepTemporary( myTrihedron );
+  }
   else
-    myAISContext->Erase( myTrihedron );
+  {
+    myAISContext->Erase( myTrihedron, false, false );
+    myAISContext->Remove( myTrihedron );
+    myAISContext->SelectionManager()->Remove( myTrihedron );
+  }
+  myAISContext->UpdateCurrentViewer();
 }
 
 int OCCViewer_Viewer::trihedronSize() const
