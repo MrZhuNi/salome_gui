@@ -147,9 +147,6 @@ msgstr "Cannot save file"
 msgid "ERROR"
 msgstr "Error"
 
-msgid "BUT_OK"
-msgstr "Ok"
-
 #-------------------------------------
 # Plot2d_SetupViewDlg
 # ------------------------------------

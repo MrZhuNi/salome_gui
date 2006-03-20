@@ -60,15 +60,6 @@ msgstr "The file \"%1\" does not exist!"
 msgid "ERR_PERMISSION_DENIED"
 msgstr "Can't save file \"%1\".\nPermission denied."
 
-msgid "BUT_OK"
-msgstr "&OK"
-
-msgid "BUT_YES"
-msgstr "&Yes"
-
-msgid "BUT_NO"
-msgstr "&No"
-
 msgid "INF_DIRECTORIES_FILTER"
 msgstr "Directories"
 
