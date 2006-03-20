@@ -44,7 +44,8 @@
 
 #include "SALOMEDS_Tool.hxx"
 
-#include "SALOMEDS_IParameters.hxx"
+#include "SALOMEDSClient_ClientFactory.hxx"
+#include "SALOMEDSClient_IParameters.hxx"
 
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Exception)
@@ -709,8 +710,8 @@ void SalomeApp_Study::removeSavePoint(int savePoint)
 QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 {
   _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters(getVisualComponentName(), savePoint);
-  SALOMEDS_IParameters ip(AP);
-  return ip.getProperty("AP_SAVEPOINT_NAME").c_str();
+  _PTR(IParameters) ip = ClientFactory::getIParameters(AP);
+  return ip->getProperty("AP_SAVEPOINT_NAME");
 }
 
 //================================================================
@@ -721,8 +722,8 @@ QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 void SalomeApp_Study::setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint)
 {
   _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters(getVisualComponentName(), savePoint);
-  SALOMEDS_IParameters ip(AP);
-  ip.setProperty("AP_SAVEPOINT_NAME", nameOfSavePoint.latin1());
+  _PTR(IParameters) ip = ClientFactory::getIParameters(AP);
+  ip->setProperty("AP_SAVEPOINT_NAME", nameOfSavePoint.latin1());
 }
 
 //================================================================
