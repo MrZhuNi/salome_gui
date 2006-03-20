@@ -339,6 +339,14 @@ void SalomeApp_Application::onPaste()
   _PTR(Study) stdDS = study->studyDS();
   if(!stdDS) return;
 
+  if ( stdDS->GetProperties()->IsLocked() ) {
+    SUIT_MessageBox::warn1 ( desktop(),
+			     QObject::tr("WRN_WARNING"),
+			     QObject::tr("WRN_STUDY_LOCKED"),
+			     QObject::tr("BUT_OK") );
+    return;
+  }
+
   SALOME_ListIteratorOfListIO it( list );
   if(it.More())
     {
