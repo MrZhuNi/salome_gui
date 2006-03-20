@@ -909,13 +909,15 @@ SVTK_InteractorStyle
 	  //
 	  SALOME_Actor* anActor = GetFirstSALOMEActor(myPicker.GetPointer());
 	  aSelectionEvent->myIsRectangle = false;
+
+	  if(!myShiftState)
+	    GetSelector()->ClearIObjects();
+
 	  if(anActor){
 	    anActor->Highlight( this, aSelectionEvent, true );
 	  }else{
 	    if(myLastHighlitedActor.GetPointer() && myLastHighlitedActor.GetPointer() != anActor)
 	      myLastHighlitedActor->Highlight( this, aSelectionEvent, false );
-	    if(!myShiftState)
-	      GetSelector()->ClearIObjects();
 	  }
 	  myLastHighlitedActor = anActor;
 	} 

@@ -515,9 +515,12 @@ SALOME_Actor
   //
   Selection_Mode aSelectionMode = theSelectionEvent->mySelectionMode;
   bool anIsShift = theSelectionEvent->myIsShift;
-  if( !anIsShift ) {
+  if( !anIsShift || !theIsHighlight ) {
     mySelector->RemoveIObject( this );
   }
+
+  if ( !theIsHighlight )
+    return true;
 
   float x = theSelectionEvent->myX;
   float y = theSelectionEvent->myY;
