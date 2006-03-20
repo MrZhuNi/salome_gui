@@ -22,8 +22,6 @@
 #include <SALOME_InteractiveObject.hxx>
 //#include <SALOME_Actor.h>
 
-//#include "SALOMEDS_IParameters.hxx"
-
 #include <SUIT_Session.h>
 #include <SUIT_ViewModel.h>
 

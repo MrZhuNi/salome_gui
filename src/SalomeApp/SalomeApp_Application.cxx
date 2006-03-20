@@ -52,9 +52,8 @@
 #include <qpushbutton.h>
 #include <qlabel.h>
 
-#include "SALOMEDS_StudyManager.hxx"
-#include "SALOMEDS_SObject.hxx"
-#include "SALOMEDS_IParameters.hxx"
+#include "SALOMEDSClient_ClientFactory.hxx"
+#include "SALOMEDSClient_IParameters.hxx"
 
 #include "SALOME_ListIteratorOfListIO.hxx"
 #include "SALOME_ListIO.hxx"
@@ -382,12 +381,8 @@ void SalomeApp_Application::onSelectionChanged()
          _PTR(SObject) so = stdDS->FindObjectID(it.Value()->getEntry());
 
          if ( so ) {
-           SALOMEDS_SObject* aSO = dynamic_cast<SALOMEDS_SObject*>(so.get());
-
-           if ( aSO ) {
              canCopy = studyMgr()->CanCopy(so);
              canPaste = studyMgr()->CanPaste(so);
-           }
          }
        }
      }
@@ -539,10 +534,10 @@ void SalomeApp_Application::onDumpStudy( )
     QFileInfo aFileInfo(aFileName);
     int savePoint;
     if ( toSaveGUI ) { //SRN: Store a visual state of the study at the save point for DumpStudy method
-      SALOMEDS_IParameters::setDumpPython(appStudy->studyDS());
-      savePoint = SalomeApp_VisualState( this ).storeState(); //SRN: create a temporary save point
-      //prefix = SALOMEDS_IParameters::getStudyScript(appStudy->studyDS(), appStudy->getVisualComponentName(), savePoint);
-      
+      _PTR(AttributeParameter) ap;
+      _PTR(IParameters) ip = ClientFactory::getIParameters(ap);
+      ip->setDumpPython(appStudy->studyDS());
+      savePoint = SalomeApp_VisualState( this ).storeState(); //SRN: create a temporary save point      
     }
     bool res = aStudy->DumpStudy( aFileInfo.dirPath( true ).latin1(), aFileInfo.baseName().latin1(), toPublish);
     if ( toSaveGUI ) 
