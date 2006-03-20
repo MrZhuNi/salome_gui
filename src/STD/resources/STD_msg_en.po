@@ -13,25 +13,25 @@ msgid "INF_READY"
 msgstr "Ready"
 
 msgid "BUT_OK"
-msgstr "OK"
+msgstr "&Ok"
 
 msgid "BUT_CANCEL"
-msgstr "Cancel"
+msgstr "&Cancel"
 
 msgid "BUT_CLOSE"
-msgstr "Close"
+msgstr "&Close"
 
 msgid "BUT_HELP"
-msgstr "Help"
+msgstr "&Help"
 
 msgid "BUT_YES"
-msgstr "Yes"
+msgstr "&Yes"
 
 msgid "BUT_NO"
-msgstr "No"
+msgstr "&No"
 
 msgid "BUT_APPLY"
-msgstr "Apply"
+msgstr "&Apply"
 
 msgid "ERR_ERROR"
 msgstr "Error"
@@ -330,7 +330,7 @@ msgid "CLOSE_DLG_SAVE_CLOSE"
 msgstr "&Save&&Close"
 
 msgid "CLOSE_DLG_CLOSE"
-msgstr "&Close w/o saving"
+msgstr "Close &w/o saving"
 
 msgid "CLOSE_DLG_UNLOAD"
 msgstr "&Unload"
