@@ -103,6 +103,7 @@
 #include <qcombobox.h>
 #include <qinputdialog.h>
 #include <qmessagebox.h>
+#include <qfontdatabase.h>
 
 #define FIRST_HELP_ID 1000000
 
@@ -965,10 +966,32 @@ void LightApp_Application::addWindow( QWidget* wid, const int flag, const int st
     if( resourceMgr()->hasValue( "PyConsole", "font" ) )
       f = resourceMgr()->fontValue( "PyConsole", "font" );
     else
-    {
-      f = ( ( PythonConsole* )wid )->font();
-      resourceMgr()->setValue( "PyConsole", "font", f );
-    }
+      {
+	f = ( ( PythonConsole* )wid )->font();
+	resourceMgr()->setValue( "PyConsole", "font", f );
+      }
+    
+    // Try to set one of additional families (if it exists in the font database)
+    QFontDatabase fdb;
+    QStringList aDatabaseFamilies = fdb.families();
+    
+    if ( !aDatabaseFamilies.contains(f.family()) && 
+	 resourceMgr()->hasValue( "PyConsole", "additional_families" ) )
+      {
+	QStringList anAddFamilies = QStringList::split( ";", resourceMgr()->stringValue( "PyConsole", "additional_families" ) );
+	
+	QString aFamily;
+	for ( QStringList::Iterator it = anAddFamilies.begin(); it != anAddFamilies.end(); ++it )
+	  {
+	    aFamily = *it;
+	    if ( !aDatabaseFamilies.contains(aFamily) )
+	      continue;
+	    
+	    f.setFamily( aFamily );
+	    resourceMgr()->setValue( "PyConsole", "font", f );
+	    break;
+	  }
+      }
   }
   else
 #endif

@@ -57,6 +57,7 @@
   </section>
   <section name="PyConsole">
     <parameter name="font" value="Helvetic,12" />
+    <parameter name="additional_families" value="Helvetic;Helvetica;Helvetica[Adobe];Times;Times[Adobe];Sans Serif;Serif;Monospace;Lucida"/>
   </section>
   <section name="Study">
     <parameter name="store_positions" 		value="false" />

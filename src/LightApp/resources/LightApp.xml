@@ -38,6 +38,10 @@
     <parameter name="name"       value="Light"/>
     <parameter name="icon"       value="LIGHT.png"/>
   </section>
+  <section name="PyConsole">
+    <parameter name="font" value="Helvetic,12" />
+    <parameter name="additional_families" value="Helvetic;Helvetica;Helvetica[Adobe];Times;Times[Adobe];Sans Serif;Serif;Monospace;Lucida"/>
+  </section>
 
 <!-- values below this line are just an example, they are not used  -->
   <section name="application">
