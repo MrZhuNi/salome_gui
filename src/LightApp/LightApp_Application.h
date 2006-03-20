@@ -189,6 +189,7 @@ private slots:
   void                                onMRUActivated( QString );
   void                                onPreferenceChanged( QString&, QString&, QString& );
   void                                onRenameWindow();
+  void                                onVisibilityChanged( bool );
 
 protected:
   void                                updateWindows();
@@ -212,12 +213,14 @@ protected:
 protected:
   typedef QMap<QString, QAction*>              ActionMap;
   typedef QMap<int, LightApp_WidgetContainer*> WindowMap;
+  typedef QMap<int, bool>                      WindowVisibilityMap;
 
 protected:
   LightApp_Preferences*               myPrefs;
   LightApp_SelectionMgr*              mySelMgr;
   ActionMap                           myActions;
   WindowMap                           myWindows;
+  WindowVisibilityMap                 myWindowsVisible;
 
   SUIT_Accel*                         myAccel;
 

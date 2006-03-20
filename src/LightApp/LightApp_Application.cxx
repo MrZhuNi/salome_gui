@@ -81,11 +81,11 @@
   #include <VTKViewer_ViewModel.h>
 #endif
 
-#ifndef DISABLE_SUPERVGRAPHVIEWER
-  #include <SUPERVGraph_ViewModel.h>
-  #include <SUPERVGraph_ViewFrame.h>
-  #include <SUPERVGraph_ViewManager.h>
-#endif
+//#ifndef DISABLE_SUPERVGRAPHVIEWER
+//  #include <SUPERVGraph_ViewModel.h>
+//  #include <SUPERVGraph_ViewFrame.h>
+//  #include <SUPERVGraph_ViewManager.h>
+//#endif
 
 #include <QtxWorkstack.h>
 
@@ -948,6 +948,8 @@ void LightApp_Application::addWindow( QWidget* wid, const int flag, const int st
 
     LightApp_WidgetContainer* newWC = new LightApp_WidgetContainer( flag, desktop() );
     connect( newWC, SIGNAL(  destroyed ( QObject* ) ), this, SLOT( onWCDestroyed( QObject* ) ) );
+    // asv: connecting a slot for storing visibility flag of a window 
+    connect( newWC, SIGNAL( visibilityChanged ( bool ) ), SLOT( onVisibilityChanged( bool ) ) );
     myWindows.insert( flag, newWC );
     if ( winMap.contains( flag ) )
       desktop()->moveDockWindow( myWindows[flag], (Dock)winMap[flag] );
@@ -1185,16 +1187,12 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     }
   }
 #endif
-#ifndef DISABLE_SUPERVGRAPHVIEWER
-  if( vmType == SUPERVGraph_Viewer::Type() )
-  {
-    viewMgr = new SUPERVGraph_ViewManager( activeStudy(), desktop() );
-    SUPERVGraph_Viewer* vm = new SUPERVGraph_Viewer();
-    SUPERVGraph_ViewFrame* view = dynamic_cast<SUPERVGraph_ViewFrame*>( vm->getViewManager()->getActiveView() );
-    if( view )
-      view->setBackgroundColor( resMgr->colorValue( "SUPERVGraph", "Background", view->backgroundColor() ) );
-  }
-#endif
+  //#ifndef DISABLE_SUPERVGRAPHVIEWER
+  //  if( vmType == SUPERVGraph_Viewer::Type() )
+  //  {
+  //    viewMgr = new SUPERVGraph_ViewManager( activeStudy(), desktop(), new SUPERVGraph_Viewer() );
+  //  }
+  //#endif
 #ifndef DISABLE_OCCVIEWER
   if( vmType == OCCViewer_Viewer::Type() )
   {
@@ -1940,8 +1938,14 @@ void LightApp_Application::updateWindows()
 
   // setWindowShown should be done even if no study is active (open). in this case all open windows
   // will be hidden, which is neccessary in this case.
-  for ( WindowMap::ConstIterator itr = myWindows.begin(); itr != myWindows.end(); ++itr )
+  for ( WindowMap::ConstIterator itr = myWindows.begin(); itr != myWindows.end(); ++itr ) {
+    
+    if ( myWindowsVisible.contains( itr.key() ) && 
+	 !myWindowsVisible[ itr.key() ] )
+      continue;
+
     setWindowShown( itr.key(), !itr.data()->isEmpty() && winMap.contains( itr.key() ) );
+  }
 }
 
 /*!Update view managers.*/
@@ -2160,4 +2164,17 @@ void LightApp_Application::setDefaultStudyName( const QString& theName )
     aStudy->setStudyName( theName );
     updateDesktopTitle();
   }
+}
+
+/*! slot, called on show/hide of a dock window */
+void LightApp_Application::onVisibilityChanged( bool visible )
+{
+  const QObject* win = sender();
+ 
+  for ( WindowMap::ConstIterator itr = myWindows.begin(); itr != myWindows.end(); ++itr )
+    if ( itr.data() == win ) 
+    {
+      myWindowsVisible[ itr.key() ] = visible;
+      return;
+    }
 }
