@@ -182,7 +182,7 @@ void OB_ListItem::paintCell( QPainter* p, const QColorGroup& cg, int c, int w, i
   if ( listView() && !listView()->allColumnsShowFocus() )
     W = width( p->fontMetrics(), listView(), c );
 
-	QListViewItem::paintCell( p, col_group, c, W, align );
+	QListViewItem::paintCell( p, col_group, c, min( W, w ), align );
 }
 
 int OB_ListItem::RTTI()
@@ -278,7 +278,7 @@ void OB_CheckListItem::paintCell( QPainter* p, const QColorGroup& cg, int c, int
   if ( listView() && !listView()->allColumnsShowFocus() )
     W = width( p->fontMetrics(), listView(), c );
 
-  QCheckListItem::paintCell( p, col_group, c, W, align );
+  QCheckListItem::paintCell( p, col_group, c, min( W, w ), align );
 }
 
 int OB_CheckListItem::RTTI()
