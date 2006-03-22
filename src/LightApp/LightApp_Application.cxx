@@ -1826,6 +1826,10 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
            autoSizeFirst = resMgr->booleanValue( "ObjectBrowser", "auto_size_first", true );
       ob->setWidthMode( autoSize ? QListView::Maximum : QListView::Manual );
       ob->listView()->setColumnWidthMode( 0, autoSizeFirst ? QListView::Maximum : QListView::Manual );
+      if( autoSize )
+	for( int i=1; i<ob->listView()->columns(); i++ )
+	  if( ob->listView()->columnWidth( i )>0 )
+	    ob->listView()->adjustColumn( i );
       updateObjectBrowser( false );
     }
   }
