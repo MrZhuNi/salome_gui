@@ -1068,7 +1068,13 @@ void LightApp_Application::setWindowShown( const int type, const bool on )
 
   QDockWindow* dw = myWindows[type];
   desktop()->setAppropriate( dw, on );
-  on ? dw->show() : dw->hide();
+  if( on )
+    dw->show();
+  else if( dw->isShown() )
+  {
+    dw->hide();
+    myWindowsVisible[ type ] = true;
+  }
 }
 
 /*!Gets "ObjectBrowser".*/
