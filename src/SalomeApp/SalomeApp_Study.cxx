@@ -224,13 +224,14 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
   if( !resMgr )
     return false;
 
-  bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false ),
-       isAscii = resMgr->booleanValue( "Study", "ascii_file", false ),
-       res = isAscii ? 
-	 SalomeApp_Application::studyMgr()->SaveAsASCII( theFileName.latin1(), studyDS(), isMultiFile ) :
-	 SalomeApp_Application::studyMgr()->SaveAs     ( theFileName.latin1(), studyDS(), isMultiFile ) &&
-    CAM_Study::saveDocumentAs( theFileName ) &&  //SRN: BugID IPAL9377, removed usage of uninitialized variable <res>
-    saveStudyData(theFileName);
+  bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false );
+  bool isAscii = resMgr->booleanValue( "Study", "ascii_file", false );
+  bool res = (isAscii ? 
+    SalomeApp_Application::studyMgr()->SaveAsASCII( theFileName.latin1(), studyDS(), isMultiFile ) :
+    SalomeApp_Application::studyMgr()->SaveAs     ( theFileName.latin1(), studyDS(), isMultiFile ))
+    && CAM_Study::saveDocumentAs( theFileName );
+  
+  res = res && saveStudyData(theFileName);
 
   if ( res )
     emit saved( this );
@@ -264,11 +265,11 @@ bool SalomeApp_Study::saveDocument()
   if( !resMgr )
     return false;
 
-  bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false ),
-       isAscii = resMgr->booleanValue( "Study", "ascii_file", false ),
-       res = isAscii ? 
-	 SalomeApp_Application::studyMgr()->SaveASCII( studyDS(), isMultiFile ) :
-         SalomeApp_Application::studyMgr()->Save     ( studyDS(), isMultiFile ) && CAM_Study::saveDocument();
+  bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false );
+  bool isAscii = resMgr->booleanValue( "Study", "ascii_file", false );
+  bool res = (isAscii ? 
+    SalomeApp_Application::studyMgr()->SaveASCII( studyDS(), isMultiFile ) :
+    SalomeApp_Application::studyMgr()->Save     ( studyDS(), isMultiFile )) && CAM_Study::saveDocument();
 
   res = res && saveStudyData(studyName());
   if ( res )
