@@ -330,7 +330,7 @@ msgid "CLOSE_DLG_SAVE_CLOSE"
 msgstr "&Save&&Close"
 
 msgid "CLOSE_DLG_CLOSE"
-msgstr "Close &w/o saving"
+msgstr "C&lose w/o saving"
 
 msgid "CLOSE_DLG_UNLOAD"
 msgstr "&Unload"
