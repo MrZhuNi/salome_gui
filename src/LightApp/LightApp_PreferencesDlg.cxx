@@ -34,7 +34,7 @@
   Constructor.
 */
 LightApp_PreferencesDlg::LightApp_PreferencesDlg( LightApp_Preferences* prefs, QWidget* parent )
-: QtxDialog( parent, 0, true, false, OK | Close | Apply ),
+: QtxDialog( parent, 0, true, true, OK | Close | Apply ),
 myPrefs( prefs ), mySaved ( false )
 {
   setCaption( tr( "CAPTION" ) );
