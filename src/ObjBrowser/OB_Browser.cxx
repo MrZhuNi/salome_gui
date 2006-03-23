@@ -124,7 +124,8 @@ bool OB_BrowserSync::needUpdate( const ItemPtr& item ) const
     SUIT_DataObject* obj = item->dataObject();
     if ( obj ) {
       // 1. check text
-      update = ( item->text( 0 ) != obj->name() );
+      update = ( item->text( 0 ) != obj->name() ) || myBrowser->needToUpdateTexts( item );
+
       if ( !update ) { 
 	// 2. check pixmap (compare serialNumber()-s)
 	QPixmap objPix = obj->icon();
@@ -151,6 +152,7 @@ void OB_BrowserSync::updateItem( const ItemPtr& p ) const
 {
   if ( p && needUpdate( p ) ) { 
     //    printf( "--- needUpdate for %s = true ---\n", p->text( 0 ).latin1() );
+    myBrowser->updateText( p );
     p->update();
   }
 }
@@ -1114,6 +1116,18 @@ void OB_Browser::updateText()
     for( QMap<int, int>::iterator itr = myColumnIds.begin(); itr != myColumnIds.end(); ++itr )
       it.current()->setText( itr.data(), obj->text( itr.key() ) );
   }
+}
+
+bool OB_Browser::needToUpdateTexts( QListViewItem* item ) const
+{
+  SUIT_DataObject* obj = dataObject( item );
+  if ( !obj )
+    return false;
+
+  for( QMap<int, int>::const_iterator it = myColumnIds.begin(); it != myColumnIds.end(); ++it )
+    if( item->text( it.data() ) != obj->text( it.key() ) )
+      return true;
+  return false;
 }
 
 void OB_Browser::updateText( QListViewItem* item )

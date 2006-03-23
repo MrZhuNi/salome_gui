@@ -162,6 +162,7 @@ private:
   void              removeObject( SUIT_DataObject*, const bool = true );
 
   void              updateText( QListViewItem* );
+  bool              needToUpdateTexts( QListViewItem* ) const;
 
   DataObjectKey     objectKey( QListViewItem* ) const;
   DataObjectKey     objectKey( SUIT_DataObject* ) const;
