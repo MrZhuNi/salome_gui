@@ -892,6 +892,31 @@ void LightApp_Application::onHelpContentsModule()
   }
 }
 
+//=======================================================================
+// name    : onHelpContextModule
+/*! Purpose : SLOT. Display help contents for choosen dialog*/
+//=======================================================================
+void LightApp_Application::onHelpContextModule(const QString& theComponentName, const QString& theFileName)
+{
+  QCString dir = getenv( theComponentName + "_ROOT_DIR");
+  QString homeDir = Qtx::addSlash(Qtx::addSlash(dir)+Qtx::addSlash("doc")+Qtx::addSlash("salome")+Qtx::addSlash("gui")+Qtx::addSlash(theComponentName));
+
+  QString helpFile = QFileInfo( homeDir + theFileName ).absFilePath();
+  SUIT_ResourceMgr* resMgr = resourceMgr();
+  QString anApp = resMgr->stringValue("ExternalBrowser", "application");
+  QString aParams = resMgr->stringValue("ExternalBrowser", "parameters");
+
+  if (!anApp.isEmpty()) {
+    RunBrowser* rs = new RunBrowser(anApp, aParams, helpFile);
+    rs->start();
+  }
+  else {
+    SUIT_MessageBox::warn1(desktop(), tr("WRN_WARNING"), 
+			   tr("DEFINE_EXTERNAL_BROWSER"), 
+			   tr("BUT_OK"));
+  }
+}
+
 /*!Sets enable or disable some actions on selection changed.*/
 void LightApp_Application::onSelectionChanged()
 {

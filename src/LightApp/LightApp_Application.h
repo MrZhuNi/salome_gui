@@ -136,6 +136,7 @@ signals:
 
 public slots:
   virtual void                        onHelpContentsModule();
+  virtual void                        onHelpContextModule( const QString&, const QString& );
   virtual void                        onNewDoc();
   virtual void                        onOpenDoc();
   virtual void                        onHelpAbout();
