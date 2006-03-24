@@ -317,7 +317,7 @@ bool SalomeApp_Study::isSaved() const
 {
   bool isAllSaved = studyDS() && studyDS()->GetPersistentReference().size();
   if (!isAllSaved)
-    isAllSaved = LightApp_Study::isModified();
+    isAllSaved = LightApp_Study::isSaved();
 
   return isAllSaved; 
 }
