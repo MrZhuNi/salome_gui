@@ -428,3 +428,13 @@ void LightApp_Module::onShowHide()
   if( id!=-1 )
     startOperation( id );
 }
+
+/*!
+ * \brief Virtual public method called to custom update of the desktop title
+  * \param theTitle - current desktop title
+  * \return Modified desktop title
+*/
+QString LightApp_Module::updateDesktopTitle( const QString& theTitle )
+{
+  return theTitle;
+}

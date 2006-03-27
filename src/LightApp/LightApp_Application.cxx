@@ -1690,6 +1690,13 @@ void LightApp_Application::updateDesktopTitle() {
 	  aTitle += QString( " - [%1]" ).arg( sName );
   }
 
+  QStringList anInfoList;
+  modules( anInfoList, false );
+
+  LightApp_Module* aModule = ( LightApp_Module* )activeModule();
+  if( aModule && anInfoList.count() == 1 ) // to avoid a conflict between different modules
+    aTitle = aModule->updateDesktopTitle( aTitle );
+
   desktop()->setCaption( aTitle );
 }
 
