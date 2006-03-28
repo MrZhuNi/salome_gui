@@ -348,6 +348,8 @@ void OCCViewer_ViewPort3d::endRotation()
 		if ( !myDegenerated )
       activeView()->SetDegenerateModeOff();
     activeView()->ZFitAll(1.);
+    activeView()->SetZSize(0.);
+    activeView()->Update();
 	}
 }
 
@@ -400,6 +402,7 @@ void OCCViewer_ViewPort3d::fitAll( bool keepScale, bool withZ, bool upd )
 
   Standard_Real margin = 0.01;
   activeView()->FitAll( margin, withZ, upd );
+  activeView()->SetZSize(0.);
 }
 
 /*!
