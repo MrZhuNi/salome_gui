@@ -850,15 +850,11 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
     }
   }
 
-  // update existing data models (already loaded SComponents)
-  LightApp_Application::updateObjectBrowser( updateModels );
-
   // create data objects that correspond to GUI state save points
   if ( study ) updateSavePointDataObjects( study );
 
-  // -- debug -- 
-  //  if ( study && study->root() )
-  //    study->root()->dump();
+  // update existing data models (already loaded SComponents)
+  LightApp_Application::updateObjectBrowser( updateModels );
 }
 
 /*!Display Catalog Genenerator dialog */
@@ -1077,14 +1073,12 @@ void SalomeApp_Application::updateSavePointDataObjects( SalomeApp_Study* study )
   for ( int i = 0; i < savePoints.size(); i++ )
     if ( !mapDO.contains( savePoints[i] ) )
       new SalomeApp_SavePointObject( guiRootObj, savePoints[i], study );
-    else {
-      ob->updateTree( mapDO[ savePoints[i] ] );
+    else
       mapDO.remove( savePoints[i] );
-    }
+
   // delete DataObjects that are still in the map -- their IDs were not found in data model
   for ( QMap<int,SalomeApp_SavePointObject*>::Iterator it = mapDO.begin(); it != mapDO.end(); ++it )
     delete it.data();
 
-  ob->updateTree(study->root(), false);
 }
 

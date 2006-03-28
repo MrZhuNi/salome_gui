@@ -48,7 +48,6 @@ TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
     diffSiblings( r1, r2, d, td );
 
     typename QValueList< DiffItem< SrcItem, TrgItem > >::const_iterator anIt = d.begin(), aLast = d.end();
-    bool isFirst = true;
     TrgItem lastItem = td.nullTrg();
     //    TrgItem tail = td.nullTrg();
     for( ; anIt!=aLast; anIt++ )
@@ -64,7 +63,7 @@ TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
 	if( item.myTrg==td.nullTrg() )
 	{
 	  //to add
-	  lastItem = createSubTree( item.mySrc, r2, lastItem, isFirst, td );
+	  lastItem = createSubTree( item.mySrc, r2, lastItem, lastItem==td.nullTrg(), td );
 	}
         else
 	{
@@ -73,7 +72,6 @@ TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
 	  synchronize( item.mySrc, item.myTrg, td );
 	  lastItem = item.myTrg;
 	}
-	isFirst = false;
       }
     }
       
@@ -81,7 +79,7 @@ TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
   }
   else
   {
-    TrgItem new_r2 = createSubTree( r1, td.parent( r2 ), r2, false, td );
+    TrgItem new_r2 = createSubTree( r1, td.parent( r2 ), r2, r2==td.nullTrg(), td );
     if( r2!=td.nullTrg() )
       td.deleteItemWithChildren( r2 );
     return new_r2;
