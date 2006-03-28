@@ -848,12 +848,13 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
         //SalomeApp_DataModel::BuildTree( aComponent, study->root(), study, /*skipExisitng=*/true );
       }
     }
-    // create data objects that correspond to GUI state save points
-    updateSavePointDataObjects( study );
   }
 
   // update existing data models (already loaded SComponents)
   LightApp_Application::updateObjectBrowser( updateModels );
+
+  // create data objects that correspond to GUI state save points
+  if ( study ) updateSavePointDataObjects( study );
 
   // -- debug -- 
   //  if ( study && study->root() )
@@ -1055,11 +1056,10 @@ void SalomeApp_Application::updateSavePointDataObjects( SalomeApp_Study* study )
   // case 4: everything already exists.. here may be a problem: we want "GUI states" root object
   // to be always the last one in the tree.  Here we check - if it is not the last one - remove and
   // re-create it.
-  bool isOpen( false );
   if ( guiRootObj->nextBrother() ) {
-    isOpen = isListViewItemOpen( ob->listView(), guiRootObj );
-    delete guiRootObj;
-    guiRootObj = new SalomeApp_SavePointRootObject( study->root() );
+    study->root()->removeChild(guiRootObj);
+    study->root()->appendChild(guiRootObj);
+    //study->root()->dump();
   }
 
   // store data objects in a map id-to-DataObject
@@ -1085,7 +1085,6 @@ void SalomeApp_Application::updateSavePointDataObjects( SalomeApp_Study* study )
   for ( QMap<int,SalomeApp_SavePointObject*>::Iterator it = mapDO.begin(); it != mapDO.end(); ++it )
     delete it.data();
 
-  if ( isOpen ) // set open if we recreated guiRootObj and it was previously open..
-    guiRootObj->setOpen( true );
+  ob->updateTree(study->root(), false);
 }
 
