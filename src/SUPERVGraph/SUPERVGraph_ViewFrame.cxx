@@ -133,7 +133,6 @@ SUPERVGraph_View* SUPERVGraph_ViewFrame::getViewWidget()
 void SUPERVGraph_ViewFrame::setViewWidget( SUPERVGraph_View* theView )
 {
   myView = theView;
-  setFocusProxy( myView ); // mkr : IPAL11388
 }
 
 
