@@ -55,6 +55,9 @@
     <parameter name="GHS3DPlugin"  value="${GHS3DPLUGIN_ROOT_DIR}/share/salome/resources"/>
     <parameter name="ToolsGUI"     value="${SUITRoot}/resources"/>
   </section>
+  <section name="FileDlg" >
+    <parameter name="QuickDirList" value="${DATA_DIR}" />
+  </section>
   <section name="PyConsole">
     <parameter name="font" value="Helvetic,12" />
     <parameter name="additional_families" value="Helvetic;Helvetica;Helvetica[Adobe];Times;Times[Adobe];Sans Serif;Serif;Monospace;Lucida"/>
