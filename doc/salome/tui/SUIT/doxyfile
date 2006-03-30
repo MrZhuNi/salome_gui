@@ -71,8 +71,9 @@ WARN_LOGFILE           = log.txt
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ../../../share/salome/src \
-			 ../../../share/salome/idl
-FILE_PATTERNS          = *.idl *.h *.hh *.hxx *.c *.cc *.cxx *.ixx *.jxx
+			 ../../../share/salome/bin \
+			 ../../../build/salome/bin
+FILE_PATTERNS          = *.idl *.hxx *.cxx *.h *.c *.hh *.cc python_extension_must_be_here
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
