@@ -46,6 +46,7 @@
 #define INCLUDE_MENUITEM_DEF
 #endif
 
+#include <qpixmap.h>
 #include <qnamespace.h>
 
 #ifndef QT_VERSION
@@ -68,6 +69,7 @@
 #endif
 #endif
 
+class QImage;
 class QObject;
 class QString;
 class QWidget;
@@ -127,6 +129,11 @@ public:
 
   static QColor  scaleColor( const int, const int, const int );
   static void    scaleColors( const int, QValueList<QColor>& );
+
+  static QImage  grayscale( const QImage& );
+  static QPixmap grayscale( const QPixmap& );
+  static QPixmap composite( const QPixmap&, const int, const int,
+                            const QPixmap& = QPixmap() );
 };
 
 #endif

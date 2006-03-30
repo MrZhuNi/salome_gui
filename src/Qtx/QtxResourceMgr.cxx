@@ -175,16 +175,19 @@ QString QtxResourceMgr::Resources::fileName( const QString& sect, const QString&
 
 QPixmap QtxResourceMgr::Resources::loadPixmap( const QString& sect, const QString& prefix, const QString& name ) const
 {
-  QString fname = fileName( sect, prefix, name );
-  bool toCache = resMgr() ? resMgr()->isPixmapCached() : false;
   QPixmap p;
-  if( toCache && myPixmapCache.contains( fname ) )
+  QString fname = fileName( sect, prefix, name );
+  bool toCache = resMgr() && resMgr()->isPixmapCached();
+  if ( toCache && myPixmapCache.contains( fname ) )
     p = myPixmapCache[fname];
   else
   {
     p.load( fname );
-    if( toCache )
-      ( ( QMap<QString,QPixmap>& )myPixmapCache ).insert( fname, p );
+    if ( toCache )
+    {
+      Resources* that = (Resources*)this;
+      that->myPixmapCache.insert( fname, p );
+    }
   }
   return p;
 }
