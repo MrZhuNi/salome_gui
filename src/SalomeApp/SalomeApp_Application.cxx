@@ -591,6 +591,7 @@ void SalomeApp_Application::onSaveGUIState()
     updateSavePointDataObjects( study );
     objectBrowser()->updateTree( study->root() );
   }
+  updateActions();
 }
 
 /*!Gets file filter.
