@@ -1633,9 +1633,6 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 
   pref->addPreference( tr( "PREF_MULTI_FILE" ), studyGroup, LightApp_Preferences::Bool, "Study", "multi_file" );
   pref->addPreference( tr( "PREF_ASCII_FILE" ), studyGroup, LightApp_Preferences::Bool, "Study", "ascii_file" );
-  int undoPref = pref->addPreference( tr( "PREF_UNDO_LEVEL" ), studyGroup, LightApp_Preferences::IntSpin, "Study", "undo_level" );
-  pref->setItemProperty( undoPref, "min", 1 );
-  pref->setItemProperty( undoPref, "max", 100 );
   pref->addPreference( tr( "PREF_STORE_POS" ), studyGroup, LightApp_Preferences::Bool, "Study", "store_positions" );
 
   int extgroup = pref->addPreference( tr( "PREF_GROUP_EXT_BROWSER" ), genTab );
