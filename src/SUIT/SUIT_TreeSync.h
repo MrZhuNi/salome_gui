@@ -104,8 +104,8 @@ void diffSiblings( const SrcItem& src, const TrgItem& trg,
 		   QValueList < DiffItem < SrcItem,TrgItem > >& d,
 		   const TreeData& td )
 {
-  if( src==td.nullSrc() || trg==td.nullTrg() )
-    return;
+  //  if( src==td.nullSrc() || trg==td.nullTrg() )
+  //  return;
 
   QValueList<SrcItem> src_ch;
   QValueList<TrgItem> trg_ch;
