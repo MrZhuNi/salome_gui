@@ -51,6 +51,8 @@ public:
 //   void         setActive( V3d_TypeOfView );
   virtual bool syncronize( const OCCViewer_ViewPort3d* );
 
+  void setRotationAxis( const double, const double, const double );
+
   double getZSize() const;
   void   setZSize( double );
 
@@ -86,7 +88,8 @@ private:
   Handle(V3d_View)		myActiveView;
 	bool		myDegenerated;
   bool    myAnimate;
-	double	myScale;
+	double	myScale, myXRot, myYRot, myZRot;
+  int     myX0, myY0, myXc, myYc;
 };
 
 #endif

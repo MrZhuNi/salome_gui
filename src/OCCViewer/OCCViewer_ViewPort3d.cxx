@@ -48,7 +48,10 @@ OCCViewer_ViewPort3d::OCCViewer_ViewPort3d( QWidget* parent, const Handle( V3d_V
 : OCCViewer_ViewPort( parent ),
 myScale( 1.0 ),
 myDegenerated( true ),
-myAnimate( false )
+myAnimate( false ),
+myXRot( 0.0 ),
+myYRot( 0.0 ),
+myZRot( 0.0 )
 {
   selectVisualId();
 
@@ -323,7 +326,20 @@ void OCCViewer_ViewPort3d::startRotation( int x, int y )
 		myDegenerated = activeView()->DegenerateModeIsOn();
 		activeView()->SetDegenerateModeOn();
     if (myAnimate) activeView()->SetAnimationModeOn();
-		activeView()->StartRotation( x, y, 0.45 );
+    if( myXRot==0.0 && myYRot==0.0 && myZRot==0.0 )
+		  activeView()->StartRotation( x, y, 0.45 );
+    else
+    {
+      myX0 = x; myY0 = y;
+
+      V3d_Coordinate exx, eyy;
+      activeView()->Project( 0.0, 0.0, 0.0, exx, eyy );
+      activeView()->Convert( exx, eyy, myXc, myYc );
+
+      //cout << myXc << "; " << myYc << endl;
+
+      activeView()->Rotate( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Standard_True );
+    }
 	}
 }
 
@@ -333,8 +349,25 @@ void OCCViewer_ViewPort3d::startRotation( int x, int y )
 void OCCViewer_ViewPort3d::rotate( int x, int y )
 {
 	if ( !activeView().IsNull() )
+    if( myXRot==0.0 && myYRot==0.0 && myZRot==0.0 )
 	    activeView()->Rotation( x, y );
-//  setZSize( getZSize() );
+    else
+    {
+      double angle = 0.0, c, s;
+      gp_Vec v1, v2;
+      if( ( x!=myXc || y!=myYc ) && ( myX0!=myXc || myY0!=myYc ) )
+      {
+        v1 = gp_Vec( myX0-myXc, myY0-myYc, 0.0 );
+        v2 = gp_Vec( x-myXc, y-myYc, 0.0 );
+        c = v1.Dot( v2 ) / v1.Magnitude() / v2.Magnitude();
+        s = v1.Crossed( v2 ).Z() / v1.Magnitude() / v2.Magnitude();
+
+        angle = acos( c );
+        if( s<0 )
+          angle = -angle;
+      }
+      activeView()->Rotate( 0.0, 0.0, angle, 0.0, 0.0, 0.0, Standard_False );
+    }
 }
 
 /*!
@@ -348,8 +381,6 @@ void OCCViewer_ViewPort3d::endRotation()
 		if ( !myDegenerated )
       activeView()->SetDegenerateModeOff();
     activeView()->ZFitAll(1.);
-    activeView()->SetZSize(0.);
-    activeView()->Update();
 	}
 }
 
@@ -402,7 +433,6 @@ void OCCViewer_ViewPort3d::fitAll( bool keepScale, bool withZ, bool upd )
 
   Standard_Real margin = 0.01;
   activeView()->FitAll( margin, withZ, upd );
-  activeView()->SetZSize(0.);
 }
 
 /*!
@@ -461,4 +491,16 @@ Handle(V3d_View) OCCViewer_ViewPort3d::activeView() const
 bool OCCViewer_ViewPort3d::mapped( const Handle(V3d_View)& view ) const
 {
 	return ( !view.IsNull() && view->View()->IsDefined() );
+}
+
+void OCCViewer_ViewPort3d::setRotationAxis( const double x, const double y, const double z )
+{
+  myXRot = x;
+  myYRot = y;
+  myZRot = z;
+  if( x!=0.0 || y!=0.0 || z!=0.0 )
+  {
+    activeView()->SetProj( x, y, z );
+    fitAll();
+  }
 }
