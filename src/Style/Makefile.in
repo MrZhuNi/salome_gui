@@ -11,7 +11,7 @@ VPATH=.:@srcdir@:@srcdir@/resources
 @COMMENCE@
 
 # header files 
-EXPORT_HEADERS=
+EXPORT_HEADERS= SalomeStyle.h
 
 # .po files to transform in .qm
 PO_FILES =
@@ -22,8 +22,6 @@ LIB = libSalomeStyle.la
 LIB_SRC= SalomeStyle.cxx
 
 LIB_MOC =
-
-LIB_CLIENT_IDL =
 
 RESOURCES_FILES =
 
