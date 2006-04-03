@@ -730,10 +730,10 @@ void OB_Browser::updateView( SUIT_DataObject* startObj )
   if ( !lv )
     return;
 
-  if ( !startObj || startObj->root() != getRootObject() )
+  if ( !startObj || startObj->root() != getRootObject()->root() )
     return;
 
-  if ( startObj == myRoot )
+  if( startObj==myRoot->root() )
   {
     DataObjectList ch;
     myRoot->children( ch );
