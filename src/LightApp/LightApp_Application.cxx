@@ -445,63 +445,68 @@ void LightApp_Application::createActions()
   if ( modIcon.isNull() )
     modIcon = QPixmap( imageEmptyIcon );
 
-  QToolBar* modTBar = new QtxToolBar( true, desk );
-  modTBar->setLabel( tr( "INF_TOOLBAR_MODULES" ) );
-
-  QActionGroup* modGroup = new QActionGroup( this );
-  modGroup->setExclusive( true );
-  modGroup->setUsesDropDown( true );
-
-  a = createAction( -1, tr( "APP_NAME" ), defIcon, tr( "APP_NAME" ),
-                    tr( "PRP_APP_MODULE" ), 0, desk, true );
-  modGroup->add( a );
-  myActions.insert( QString(), a );
-
-  QMap<QString, QString> iconMap;
-  moduleIconNames( iconMap );
-
-  const int iconSize = 20;
-
-  modGroup->addTo( modTBar );
-  QObjectList *l = modTBar->queryList( "QComboBox" );
-  QObjectListIt oit( *l );
-  while ( QObject* obj = oit.current() ) {
-    QComboBox* cb = (QComboBox*)obj;
-    if ( cb ) cb->setFocusPolicy( QWidget::NoFocus );
-    ++oit;
-  }
-  delete l;
-  
-   modTBar->addSeparator();
-
-  QStringList modList;
-  modules( modList, false );
-
-  for ( it = modList.begin(); it != modList.end(); ++it )
+  if( aModuleList.count()>1 )
   {
-    if ( !isLibExists( *it ) )
-      continue;
+    QToolBar* modTBar = new QtxToolBar( true, desk );
+    modTBar->setLabel( tr( "INF_TOOLBAR_MODULES" ) );
 
-    QString iconName;
-    if ( iconMap.contains( *it ) )
-      iconName = iconMap[*it];
+    QActionGroup* modGroup = new QActionGroup( this );
+    modGroup->setExclusive( true );
+    modGroup->setUsesDropDown( true );
 
-    QString modName = moduleName( *it );
-
-    QPixmap icon = resMgr->loadPixmap( modName, iconName, false );
-    if ( icon.isNull() )
-      icon = modIcon;
-
-    icon.convertFromImage( icon.convertToImage().smoothScale( iconSize, iconSize, QImage::ScaleMin ) );
-
-    QAction* a = createAction( -1, *it, icon, *it, tr( "PRP_MODULE" ).arg( *it ), 0, desk, true );
-    a->addTo( modTBar );
+    a = createAction( -1, tr( "APP_NAME" ), defIcon, tr( "APP_NAME" ),
+		      tr( "PRP_APP_MODULE" ), 0, desk, true );
     modGroup->add( a );
+    myActions.insert( QString(), a );
 
-    myActions.insert( *it, a );
+    QMap<QString, QString> iconMap;
+    moduleIconNames( iconMap );
+
+    const int iconSize = 20;
+
+    modGroup->addTo( modTBar );
+    QObjectList *l = modTBar->queryList( "QComboBox" );
+    QObjectListIt oit( *l );
+    while ( QObject* obj = oit.current() ) {
+      QComboBox* cb = (QComboBox*)obj;
+      if ( cb ) cb->setFocusPolicy( QWidget::NoFocus );
+      ++oit;
+    }
+
+    delete l;
+  
+    modTBar->addSeparator();
+
+    QStringList modList;
+    modules( modList, false );
+
+    for ( it = modList.begin(); it != modList.end(); ++it )
+    {
+      if ( !isLibExists( *it ) )
+	continue;
+
+      QString iconName;
+      if ( iconMap.contains( *it ) )
+	iconName = iconMap[*it];
+
+      QString modName = moduleName( *it );
+
+      QPixmap icon = resMgr->loadPixmap( modName, iconName, false );
+      if ( icon.isNull() )
+	icon = modIcon;
+
+      icon.convertFromImage( icon.convertToImage().smoothScale( iconSize, iconSize, QImage::ScaleMin ) );
+
+      QAction* a = createAction( -1, *it, icon, *it, tr( "PRP_MODULE" ).arg( *it ), 0, desk, true );
+      a->addTo( modTBar );
+      modGroup->add( a );
+
+      myActions.insert( *it, a );
+    }
+
+    SUIT_Tools::simplifySeparators( modTBar );
+    connect( modGroup, SIGNAL( selected( QAction* ) ), this, SLOT( onModuleActivation( QAction* ) ) );
   }
-
-  SUIT_Tools::simplifySeparators( modTBar );
 
   // New window
   int windowMenu = createMenu( tr( "MEN_DESK_WINDOW" ), -1, MenuWindowId, 100 );
@@ -526,8 +531,6 @@ void LightApp_Application::createActions()
   createAction( RenameId, tr( "TOT_RENAME" ), QIconSet(), tr( "MEN_DESK_RENAME" ), tr( "PRP_RENAME" ),
 		SHIFT+Key_R, desk, false, this, SLOT( onRenameWindow() ) );
   createMenu( RenameId, windowMenu, -1 );
-
-  connect( modGroup, SIGNAL( selected( QAction* ) ), this, SLOT( onModuleActivation( QAction* ) ) );
 
   int fileMenu = createMenu( tr( "MEN_DESK_FILE" ), -1 );
   createMenu( PreferencesId, fileMenu, 15, -1 );
@@ -1367,9 +1370,7 @@ void LightApp_Application::onDesktopActivated()
  */
 QString LightApp_Application::getFileFilter() const
 {
-  //return "(*.bin)";
-  // HDF persistence
-  return "(*.hdf)";
+  return "(*.xml)";
 }
 
 /*! Gets file name*/
@@ -2093,8 +2094,8 @@ void LightApp_Application::contextMenuPopup( const QString& type, QPopupMenu* th
   if ( !ob || type != ob->popupClientType() )
     return;
 
-  thePopup->insertSeparator();
-  thePopup->insertItem( tr( "MEN_REFRESH" ), this, SLOT( onRefresh() ) );
+  //thePopup->insertSeparator();
+  //thePopup->insertItem( tr( "MEN_REFRESH" ), this, SLOT( onRefresh() ) );
 }
 
 /*!Create empty study.*/
