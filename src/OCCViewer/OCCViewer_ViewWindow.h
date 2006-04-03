@@ -93,11 +93,14 @@ signals:
   void vpTransformationFinished(OCCViewer_ViewWindow::OperationType type);
   void cloneView();
 
-protected:
+public:
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, CloneId, ClippingId, MemId, RestoreId,
          TrihedronShowId };
+	 
+  void  setActionState( const int, const bool );
 
+protected:
   typedef QMap<int, QtxAction*> ActionsMap;
 
   QImage dumpView();

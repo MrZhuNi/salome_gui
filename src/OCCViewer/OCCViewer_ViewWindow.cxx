@@ -1024,3 +1024,9 @@ void OCCViewer_ViewWindow::setVisualParameters( const QString& parameters )
     performRestoring( params );
   }
 }
+
+void OCCViewer_ViewWindow::setActionState( const int id, const bool on )
+{
+  if( myActionsMap.contains( id ) )
+    myActionsMap[ id ]->setEnabled( on );
+}
