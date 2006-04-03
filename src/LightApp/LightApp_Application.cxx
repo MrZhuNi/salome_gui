@@ -1645,24 +1645,31 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 
   pref->addPreference( tr( "PREF_PARAM" ), extgroup, LightApp_Preferences::String, "ExternalBrowser", "parameters" );
 
+#ifndef DISABLE_PYCONSOLE
   int pythonConsoleGroup = pref->addPreference( tr( "PREF_GROUP_PY_CONSOLE" ), genTab );
   pref->setItemProperty( pythonConsoleGroup, "columns", 1 );
   pref->addPreference( tr( "PREF_FONT" ), pythonConsoleGroup, LightApp_Preferences::Font, "PyConsole", "font" );
+#endif
 
   int viewTab = pref->addPreference( tr( "PREF_TAB_VIEWERS" ), salomeCat );
 
+#ifndef DISABLE_OCCVIEWER
   int occGroup = pref->addPreference( tr( "PREF_GROUP_OCCVIEWER" ), viewTab );
-
-  int vtkGroup = pref->addPreference( tr( "PREF_GROUP_VTKVIEWER" ), viewTab );
-
-  int plot2dGroup = pref->addPreference( tr( "PREF_GROUP_PLOT2DVIEWER" ), viewTab );
-
-  int supervGroup = pref->addPreference( tr( "PREF_GROUP_SUPERV" ), viewTab );
-
   pref->setItemProperty( occGroup, "columns", 1 );
+#endif
+#ifndef DISABLE_VTKVIEWER
+  int vtkGroup = pref->addPreference( tr( "PREF_GROUP_VTKVIEWER" ), viewTab );
   pref->setItemProperty( vtkGroup, "columns", 1 );
+#endif
+#ifndef DISABLE_PLOT2DVIEWER
+  int plot2dGroup = pref->addPreference( tr( "PREF_GROUP_PLOT2DVIEWER" ), viewTab );
   pref->setItemProperty( plot2dGroup, "columns", 1 );
+#endif
+#ifndef DISABLE_SUPERVGRAPHVIEWER
+  int supervGroup = pref->addPreference( tr( "PREF_GROUP_SUPERV" ), viewTab );
+#endif
 
+#ifndef DISABLE_OCCVIEWER
   int occTS = pref->addPreference( tr( "PREF_TRIHEDRON_SIZE" ), occGroup,
 				   LightApp_Preferences::IntSpin, "OCCViewer", "trihedron_size" );
   pref->addPreference( tr( "PREF_VIEWER_BACKGROUND" ), occGroup,
@@ -1681,7 +1688,8 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 
   pref->setItemProperty( isoV, "min", 0 );
   pref->setItemProperty( isoV, "max", 100000 );
-
+#endif
+#ifndef DISABLE_VTKVIEWER
   int vtkTS = pref->addPreference( tr( "PREF_TRIHEDRON_SIZE" ), vtkGroup,
 				   LightApp_Preferences::IntSpin, "VTKViewer", "trihedron_size" );
   pref->addPreference( tr( "PREF_RELATIVE_SIZE" ), vtkGroup, LightApp_Preferences::Bool, "VTKViewer", "relative_size" );
@@ -1690,7 +1698,8 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 
   pref->setItemProperty( vtkTS, "min", 1 );
   pref->setItemProperty( vtkTS, "max", 150 );
-
+#endif
+#ifndef DISABLE_PLOT2DVIEWER
   pref->addPreference( tr( "PREF_SHOW_LEGEND" ), plot2dGroup,
 		       LightApp_Preferences::Bool, "Plot2d", "ShowLegend" );
 
@@ -1754,6 +1763,7 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 
   pref->addPreference( tr( "PREF_VIEWER_BACKGROUND" ), plot2dGroup,
 		       LightApp_Preferences::Color, "Plot2d", "Background" );
+#endif
 
   int dirTab = pref->addPreference( tr( "PREF_TAB_DIRECTORIES" ), salomeCat );
   int dirGroup = pref->addPreference( tr( "PREF_GROUP_DIRECTORIES" ), dirTab );
@@ -1761,12 +1771,14 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->addPreference( tr( "" ), dirGroup,
 		       LightApp_Preferences::DirList, "FileDlg", "QuickDirList" );
 
+#ifndef DISABLE_SUPERVGRAPHVIEWER
   pref->addPreference( tr( "PREF_VIEWER_BACKGROUND" ), supervGroup,
 		       LightApp_Preferences::Color, "SUPERVGraph", "Background" );
   pref->addPreference( tr( "PREF_SUPERV_TITLE_COLOR" ), supervGroup,
 		       LightApp_Preferences::Color, "SUPERVGraph", "Title" );
 //  pref->addPreference( tr( "PREF_SUPERV_CTRL_COLOR" ), supervGroup,
 //		       LightApp_Preferences::Color, "SUPERVGraph", "Ctrl" );
+#endif
 
   int obTab = pref->addPreference( tr( "PREF_TAB_OBJBROWSER" ), salomeCat );
   int objSetGroup = pref->addPreference( tr( "PREF_OBJ_BROWSER_SETTINGS" ), obTab );
