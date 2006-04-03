@@ -29,7 +29,7 @@
   custom data model root object class should be derived from both CAM_RootObject
   and application-specific DataObject implementation using virtual inheritance.
  */
-class CAM_EXPORT CAM_RootObject : public virtual CAM_DataObject
+class CAM_EXPORT CAM_RootObject : public CAM_DataObject
 {
 public:
   CAM_RootObject( SUIT_DataObject* = 0 );
