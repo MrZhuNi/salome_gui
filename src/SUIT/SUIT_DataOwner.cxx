@@ -41,6 +41,7 @@ SUIT_DataOwner::~SUIT_DataOwner()
 {
 }
 
+
 /*! operator== : compares two owners*/
 bool operator==( const SUIT_DataOwnerPtr& p1, const SUIT_DataOwnerPtr& p2 )
 {
@@ -158,8 +159,8 @@ void SUIT_DataOwnerPtrList::clear()
 //====================================================================
 uint SUIT_DataOwnerPtrList::remove(const SUIT_DataOwnerPtr& x )
 {
-  if( mySkipEqual && myMap.contains(x) )
-    myMap.remove(x);
+  if( mySkipEqual && myMap.contains( x ) )
+    myMap.remove( x );
   return QValueList<SUIT_DataOwnerPtr>::remove( x );
 }
 
@@ -168,5 +169,6 @@ uint SUIT_DataOwnerPtrList::remove(const SUIT_DataOwnerPtr& x )
 //====================================================================
 bool operator<( const SUIT_DataOwnerPtr& p1, const SUIT_DataOwnerPtr& p2 )
 {
-  return p1.get()<p2.get();
+  return p1->operator<( *p2 );
 }
+
