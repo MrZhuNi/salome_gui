@@ -184,7 +184,7 @@ class QTX_EXPORT QtxResourceMgr::Format
 {
 public:
   Format( const QString& );
-  ~Format();
+  virtual ~Format();
 
   QString                format() const;
 
