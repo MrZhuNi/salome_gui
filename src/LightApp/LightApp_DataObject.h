@@ -22,14 +22,14 @@
 #include "LightApp.h"
 
 #include "CAM_DataObject.h"
-#include "CAM_DataModel.h"
 #include "CAM_RootObject.h"
 
 class LightApp_Study;
+class CAM_DataModel;
 
 /*!Description : Data Object has empty entry so it's children must redefine metod entry() and return some unique string*/
 // to do : decomment virtual inheritance 
-class LIGHTAPP_EXPORT LightApp_DataObject : public virtual CAM_DataObject
+class LIGHTAPP_EXPORT LightApp_DataObject : public CAM_DataObject
 {
   class Key;
 

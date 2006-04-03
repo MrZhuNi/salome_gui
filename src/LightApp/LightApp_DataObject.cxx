@@ -149,15 +149,15 @@ QString LightApp_DataObject::componentDataType() const
 
 /*!Constructor.Initialize by \a parent.*/
 LightApp_ModuleObject::LightApp_ModuleObject( SUIT_DataObject* parent )
-: CAM_RootObject( parent ),
-  CAM_DataObject( parent )
+: CAM_RootObject( parent )//,
+  //CAM_DataObject( parent )
 {
 }
 
 /*!Constructor.Initialize by \a module and parent.*/
 LightApp_ModuleObject::LightApp_ModuleObject( CAM_DataModel* dm, SUIT_DataObject* parent )
-: CAM_RootObject( dm, parent ),
-  CAM_DataObject( parent )
+: CAM_RootObject( dm, parent )//,
+  //CAM_DataObject( parent )
 {
 }
 
