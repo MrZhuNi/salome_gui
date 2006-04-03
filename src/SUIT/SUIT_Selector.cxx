@@ -93,7 +93,8 @@ void SUIT_Selector::setAutoBlock( const bool on )
 void SUIT_Selector::selected( SUIT_DataOwnerPtrList& lst ) const
 {
   lst.clear();
-  getSelection( lst );
+  if( isEnabled() )
+    getSelection( lst );
 }
 
 /*!
