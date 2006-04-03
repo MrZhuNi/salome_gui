@@ -119,7 +119,7 @@ public slots:
 private slots:
   virtual void          onViewManagerActivated( SUIT_ViewManager* );
 
-protected:
+public:
   enum {  MenuFileId = 1,
           MenuViewId = 2,
           MenuEditId = 3,
