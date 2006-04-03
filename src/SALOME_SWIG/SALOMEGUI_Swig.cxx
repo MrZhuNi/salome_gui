@@ -190,20 +190,28 @@ const char* SALOMEGUI_Swig::getActiveStudyName()
   SALOMEGUI_Swig::getComponentName
   Returns the name of the component by its user name.
 */
+class TGetModulCatalogEvent: public SALOME_Event {
+public:
+  typedef CORBA::Object_var TResult;
+  TResult myResult;
+  TGetModulCatalogEvent() : myResult(CORBA::Object::_nil()) {}
+  virtual void Execute() {
+    if (SalomeApp_Application* anApp = getApplication())
+      myResult = anApp->namingService()->Resolve("/Kernel/ModulCatalog");
+  }
+};
 const char* SALOMEGUI_Swig::getComponentName( const char* componentUserName )
 {
-  if ( SalomeApp_Application* anApp = getApplication() ) { 
-    CORBA::Object_var anObject = anApp->namingService()->Resolve("/Kernel/ModulCatalog");
-    if ( !CORBA::is_nil( anObject ) ) {
-      SALOME_ModuleCatalog::ModuleCatalog_var aCatalogue =
-        SALOME_ModuleCatalog::ModuleCatalog::_narrow( anObject );
-      SALOME_ModuleCatalog::ListOfIAPP_Affich_var aModules = aCatalogue->GetComponentIconeList();
-      for ( unsigned int ind = 0; ind < aModules->length(); ind++ ) {
-	CORBA::String_var aModuleName     = aModules[ ind ].modulename;
-	CORBA::String_var aModuleUserName = aModules[ ind ].moduleusername;
-	if ( strcmp(componentUserName, aModuleUserName.in()) == 0 )
-	  return aModuleName._retn();
-      }
+  CORBA::Object_var anObject = ProcessEvent(new TGetModulCatalogEvent());
+  if (!CORBA::is_nil(anObject)) {
+    SALOME_ModuleCatalog::ModuleCatalog_var aCatalogue =
+      SALOME_ModuleCatalog::ModuleCatalog::_narrow( anObject );
+    SALOME_ModuleCatalog::ListOfIAPP_Affich_var aModules = aCatalogue->GetComponentIconeList();
+    for ( unsigned int ind = 0; ind < aModules->length(); ind++ ) {
+      CORBA::String_var aModuleName     = aModules[ ind ].modulename;
+      CORBA::String_var aModuleUserName = aModules[ ind ].moduleusername;
+      if ( strcmp(componentUserName, aModuleUserName.in()) == 0 )
+        return aModuleName._retn();
     }
   }
   return 0;
@@ -215,18 +223,16 @@ const char* SALOMEGUI_Swig::getComponentName( const char* componentUserName )
 */
 const char* SALOMEGUI_Swig::getComponentUserName( const char* componentName )
 {
-  if ( SalomeApp_Application* anApp = getApplication() ) { 
-    CORBA::Object_var anObject = anApp->namingService()->Resolve("/Kernel/ModulCatalog");
-    if ( !CORBA::is_nil( anObject ) ) {
-      SALOME_ModuleCatalog::ModuleCatalog_var aCatalogue =
-        SALOME_ModuleCatalog::ModuleCatalog::_narrow( anObject );
-      SALOME_ModuleCatalog::ListOfIAPP_Affich_var aModules = aCatalogue->GetComponentIconeList();
-      for ( unsigned int ind = 0; ind < aModules->length(); ind++ ) {
-	CORBA::String_var aModuleName     = aModules[ ind ].modulename;
-	CORBA::String_var aModuleUserName = aModules[ ind ].moduleusername;
-	if ( strcmp(componentName, aModuleName.in()) == 0 )
-	  return aModuleUserName._retn();
-      }
+  CORBA::Object_var anObject = ProcessEvent(new TGetModulCatalogEvent());
+  if (!CORBA::is_nil(anObject)) {
+    SALOME_ModuleCatalog::ModuleCatalog_var aCatalogue =
+      SALOME_ModuleCatalog::ModuleCatalog::_narrow( anObject );
+    SALOME_ModuleCatalog::ListOfIAPP_Affich_var aModules = aCatalogue->GetComponentIconeList();
+    for ( unsigned int ind = 0; ind < aModules->length(); ind++ ) {
+      CORBA::String_var aModuleName     = aModules[ ind ].modulename;
+      CORBA::String_var aModuleUserName = aModules[ ind ].moduleusername;
+      if ( strcmp(componentName, aModuleName.in()) == 0 )
+        return aModuleUserName._retn();
     }
   }
   return 0;
