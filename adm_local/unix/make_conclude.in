@@ -89,7 +89,7 @@ $(LIB_BUILD_SO): $(top_builddir)/lib/salome/%.so: %.so
 	ln -sf $(CURDIR)/$< $@ || true
 
 $(LIB): $(LIB_OBJ)
-	@$(LT) --mode=link $(CXX) -shared -rpath $(libdir) -o $@ $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS)
+	$(LT) --mode=link $(CXX) -shared -rpath $(libdir) -o $@ $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS)
 
 # transform idl reference in appropriate obj file
 ifneq ($(GUI_DISABLE_CORBA),yes)
@@ -111,10 +111,10 @@ BIN_CLIENT_OBJ =
 BIN_SERVER_OBJ = 
 endif
 # transform c file in appropriate libtool obj file (.c)
-BIN_OBJ_C =  $(patsubst %.c,  %.o, $(filter %.c, $(BIN_SRC)))
+BIN_OBJ_C =  $(patsubst %.c,  %.lo, $(filter %.c, $(BIN_SRC)))
 # transform c++ file in appropriate libtool obj file (.cc and .cxx)
-BIN_OBJ_CC = $(patsubst %.cc,  %.o, $(filter %.cc, $(BIN_SRC)))
-BIN_OBJ_CXX = $(patsubst %.cxx,  %.o, $(filter %.cxx, $(BIN_SRC)))
+BIN_OBJ_CC = $(patsubst %.cc,  %.lo, $(filter %.cc, $(BIN_SRC)))
+BIN_OBJ_CXX = $(patsubst %.cxx,  %.lo, $(filter %.cxx, $(BIN_SRC)))
 # all obj file in bin target
 BIN_OBJ = $(BIN_OBJ_CC) $(BIN_OBJ_CXX) $(BIN_OBJ_C) $(BIN_CLIENT_OBJ) $(BIN_SERVER_OBJ) 
 
@@ -127,7 +127,7 @@ $(BIN:%=$(top_builddir)/bin/salome/%) $(TEST_PROGS:%=$(top_builddir)/bin/salome/
 	ln -sf $(CURDIR)/$< $@
 
 $(BIN) $(TEST_PROGS): %: %.lo $(BIN_OBJ)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(BIN_LIB) $(LDFLAGSFORBIN) $(LIBSFORBIN)
+	$(LT) --mode=link $(CXX) -rpath $(libdir) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(BIN_LIB) $(LDFLAGSFORBIN) $(LIBSFORBIN)
 
 # copy python scripts in $(top_builddir)/bin/salome
 #
@@ -205,7 +205,8 @@ $(libdir) $(includedir) $(bindir) $(datadir) $(idldir) $(sharedpydir):
 install: $(LIB) $(BIN) $(TEST_PROGS) $(libdir) $(includedir) $(bindir) $(datadir) $(idldir) install-python install-sharedpyqt install-qm install-res
 	@for f in X $(LIB); do						      \
 	   if test $$f != X; then					      \
-	      ($(LT_INSTALL_LIB) $$f $(libdir)/. || exit 1);		      \
+	      echo "($(LT_INSTALL_LIB) '$$f' '$(libdir)/$$f' || exit 1)";     \
+	      ($(LT_INSTALL_LIB) "$$f" "$(libdir)/$$f" || exit 1);            \
 	   fi;								      \
 	done
 	@if ! test -z $(LIB_SWIG) ; then				      \
@@ -213,13 +214,15 @@ install: $(LIB) $(BIN) $(TEST_PROGS) $(libdir) $(includedir) $(bindir) $(datadir
         fi;								      
 	@for f in X $(BIN); do						      \
 	   if test $$f != X; then					      \
-	     ($(LT_INSTALL_PROG) $$f $(bindir)/. || exit 1);		      \
+	     echo "($(LT_INSTALL_PROG) '$$f' '$(bindir)/$f' || exit 1)";      \
+	     ($(LT_INSTALL_PROG) "$$f" "$(bindir)/$f" || exit 1);             \
 	   fi;							              \
 	done
 # Install tests programmes in bindir
 	@for f in X $(TEST_PROGS); do  					      \
 	   if test $$f != X; then					      \
-	     ($(LT_INSTALL_PROG) $$f $(bindir)/. || exit 1);		      \
+	     echo "($(LT_INSTALL_PROG) '$$f' '$(bindir)/$$f' || exit 1)";     \
+	     ($(LT_INSTALL_PROG) "$$f" "$(bindir)/$$f" || exit 1);            \
 	   fi;							              \
 	done
 # Install exported includes in includedir

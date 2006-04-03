@@ -32,7 +32,7 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkObjectFactory.h>
 #include <vtkCellArray.h>
-#include <vtkIntArray.h>
+#include <vtkIdTypeArray.h>
 #include <vtkIdList.h>
 #include <vtkCell.h>
 
@@ -234,7 +234,7 @@ void VTKViewer_ExtractUnstructuredGrid::Execute(){
 	}
       }
       if((aNbElems = aConnectivity->GetNumberOfCells())){
-	vtkIntArray* aCellLocationsArray = vtkIntArray::New();
+	vtkIdTypeArray* aCellLocationsArray = vtkIdTypeArray::New();
 	aCellLocationsArray->SetNumberOfComponents(1);
 	aCellLocationsArray->SetNumberOfTuples(aNbElems);
 	aConnectivity->InitTraversal();
@@ -323,7 +323,7 @@ void VTKViewer_ExtractUnstructuredGrid::Execute(){
       }
     }
     if((aNbElems = aConnectivity->GetNumberOfCells())){
-      vtkIntArray* aCellLocationsArray = vtkIntArray::New();
+      vtkIdTypeArray* aCellLocationsArray = vtkIdTypeArray::New();
       aCellLocationsArray->SetNumberOfComponents(1);
       aCellLocationsArray->SetNumberOfTuples(aNbElems);
       aConnectivity->InitTraversal();

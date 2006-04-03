@@ -13,7 +13,6 @@ VPATH=.:@srcdir@:@srcdir@/resources
 
 # header files 
 EXPORT_HEADERS= VTKViewer_Actor.h \
-	 	VTKViewer_CellRectPicker.h \
 		VTKViewer_ExtractUnstructuredGrid.h \
 		VTKViewer_ConvexTool.h \
 	        VTKViewer_Filter.h \
@@ -23,7 +22,6 @@ EXPORT_HEADERS= VTKViewer_Actor.h \
 		VTKViewer.h \
 		VTKViewer_InteractorStyle.h \
 		VTKViewer_PassThroughFilter.h \
-		VTKViewer_RectPicker.h \
 		VTKViewer_RenderWindow.h \
 		VTKViewer_RenderWindowInteractor.h \
 		VTKViewer_ShrinkFilter.h \
@@ -47,14 +45,12 @@ PO_FILES = \
 LIB = libVTKViewer.la
 
 LIB_SRC= VTKViewer_Actor.cxx \
-	 VTKViewer_CellRectPicker.cxx \
 	 VTKViewer_ExtractUnstructuredGrid.cxx \
 	 VTKViewer_Filter.cxx \
 	 VTKViewer_GeometryFilter.cxx \
 	 VTKViewer_AppendFilter.cxx \
 	 VTKViewer_InteractorStyle.cxx \
 	 VTKViewer_PassThroughFilter.cxx \
-	 VTKViewer_RectPicker.cxx \
 	 VTKViewer_RenderWindow.cxx \
 	 VTKViewer_RenderWindowInteractor.cxx \
 	 VTKViewer_ShrinkFilter.cxx \

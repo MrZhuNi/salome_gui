@@ -80,7 +80,7 @@ class VTKVIEWER_EXPORT VTKViewer_Triangulator
   GetPointId(vtkIdType thePointId) = 0;
 
   virtual
-  float 
+  vtkFloatingPointType 
   GetCellLength() = 0;
 
   virtual
@@ -127,7 +127,7 @@ class VTKVIEWER_EXPORT VTKViewer_OrderedTriangulator : public VTKViewer_Triangul
   GetPointId(vtkIdType thePointId);
 
   virtual
-  float 
+  vtkFloatingPointType 
   GetCellLength();
 
   virtual
@@ -180,7 +180,7 @@ class VTKVIEWER_EXPORT VTKViewer_DelaunayTriangulator : public VTKViewer_Triangu
   GetPointId(vtkIdType thePointId);
 
   virtual
-  float 
+  vtkFloatingPointType 
   GetCellLength();
 
   virtual

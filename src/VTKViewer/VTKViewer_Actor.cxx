@@ -200,7 +200,7 @@ VTKViewer_Actor
 {
   if(myIsResolveCoincidentTopology){
     int aResolveCoincidentTopology = vtkMapper::GetResolveCoincidentTopology();
-    float aFactor, aUnit; 
+    vtkFloatingPointType aFactor, aUnit; 
     vtkMapper::GetResolveCoincidentTopologyPolygonOffsetParameters(aFactor,aUnit);
     
     vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
@@ -225,7 +225,8 @@ VTKViewer_Actor
 
 void
 VTKViewer_Actor
-::SetPolygonOffsetParameters(float factor, float units)
+::SetPolygonOffsetParameters(vtkFloatingPointType factor, 
+			     vtkFloatingPointType units)
 {
   myPolygonOffsetFactor = factor;
   myPolygonOffsetUnits = units;
@@ -233,7 +234,8 @@ VTKViewer_Actor
 
 void
 VTKViewer_Actor
-::GetPolygonOffsetParameters(float& factor, float& units)
+::GetPolygonOffsetParameters(vtkFloatingPointType& factor, 
+			     vtkFloatingPointType& units)
 {
   factor = myPolygonOffsetFactor;
   units = myPolygonOffsetUnits;
@@ -241,7 +243,7 @@ VTKViewer_Actor
 
 
 //----------------------------------------------------------------------------
-float
+vtkFloatingPointType
 VTKViewer_Actor
 ::GetShrinkFactor() 
 { 
@@ -359,7 +361,7 @@ VTKViewer_Actor
   return theVtkID;
 }
 
-float* 
+vtkFloatingPointType* 
 VTKViewer_Actor
 ::GetNodeCoord(int theObjID)
 {
@@ -408,7 +410,7 @@ bool
 VTKViewer_Actor
 ::IsInfinitive()
 { 
-  static float MIN_DISTANCE = 1.0 / VTK_LARGE_FLOAT;
+  static vtkFloatingPointType MIN_DISTANCE = 1.0 / VTK_LARGE_FLOAT;
 
   if(myIsInfinite || GetLength() < MIN_DISTANCE)
     return true;
@@ -417,7 +419,7 @@ VTKViewer_Actor
 }
 
 
-float* 
+vtkFloatingPointType* 
 VTKViewer_Actor
 ::GetBounds()
 {
@@ -427,7 +429,7 @@ VTKViewer_Actor
 
 void
 VTKViewer_Actor
-::GetBounds(float theBounds[6])
+::GetBounds(vtkFloatingPointType theBounds[6])
 {
   Superclass::GetBounds(theBounds);
 }
@@ -450,7 +452,7 @@ VTKViewer_Actor
 
 void
 VTKViewer_Actor
-::SetSize( const float ) 
+::SetSize( const vtkFloatingPointType ) 
 {}
 
 
@@ -462,13 +464,13 @@ VTKViewer_Actor
 //----------------------------------------------------------------------------
 void
 VTKViewer_Actor
-::SetOpacity(float theOpacity)
+::SetOpacity(vtkFloatingPointType theOpacity)
 { 
   myOpacity = theOpacity;
   GetProperty()->SetOpacity(theOpacity);
 }
 
-float
+vtkFloatingPointType
 VTKViewer_Actor
 ::GetOpacity()
 {
@@ -478,23 +480,27 @@ VTKViewer_Actor
 
 void
 VTKViewer_Actor
-::SetColor(float r,float g,float b)
+::SetColor(vtkFloatingPointType r,
+	   vtkFloatingPointType g,
+	   vtkFloatingPointType b)
 {
   GetProperty()->SetColor(r,g,b);
 }
 
 void
 VTKViewer_Actor
-::SetColor(const float theRGB[3])
+::SetColor(const vtkFloatingPointType theRGB[3])
 { 
   SetColor(theRGB[0],theRGB[1],theRGB[2]);
 }
 
 void
 VTKViewer_Actor
-::GetColor(float& r,float& g,float& b)
+::GetColor(vtkFloatingPointType& r,
+	   vtkFloatingPointType& g,
+	   vtkFloatingPointType& b)
 {
-  float aColor[3];
+  vtkFloatingPointType aColor[3];
   GetProperty()->GetColor(aColor);
   r = aColor[0];
   g = aColor[1];

@@ -207,7 +207,7 @@ QColor
 SVTK_MainWindow
 ::BackgroundColor()
 {
-  float aBackgroundColor[3];
+  vtkFloatingPointType aBackgroundColor[3];
   getRenderer()->GetBackground(aBackgroundColor);
   return QColor(int(aBackgroundColor[0]*255), 
 		int(aBackgroundColor[1]*255), 

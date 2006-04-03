@@ -334,7 +334,7 @@ SVTK_Renderer
 
 inline
 bool
-CheckBndBox(const float theBounds[6])
+CheckBndBox(const vtkFloatingPointType theBounds[6])
 {
   if(theBounds[0] > -VTK_LARGE_FLOAT && theBounds[1] < VTK_LARGE_FLOAT &&
      theBounds[2] > -VTK_LARGE_FLOAT && theBounds[3] < VTK_LARGE_FLOAT &&
@@ -350,7 +350,7 @@ SVTK_Renderer
   bool aTDisplayed = IsTrihedronDisplayed();
   bool aCDisplayed = IsCubeAxesDisplayed();
 
-  float aNewBndBox[6];
+  vtkFloatingPointType aNewBndBox[6];
   aNewBndBox[ 0 ] = aNewBndBox[ 2 ] = aNewBndBox[ 4 ] = VTK_LARGE_FLOAT;
   aNewBndBox[ 1 ] = aNewBndBox[ 3 ] = aNewBndBox[ 5 ] = -VTK_LARGE_FLOAT;
 
@@ -380,7 +380,7 @@ SVTK_Renderer
 	if(anActor->IsResizable())
 	  anActor->SetSize(0.5*aSize);
         if(anActor->GetVisibility() && !anActor->IsInfinitive()){
-	  float *aBounds = anActor->GetBounds();
+	  vtkFloatingPointType *aBounds = anActor->GetBounds();
           if(CheckBndBox(aBounds))
 	    for(int i = 0; i < 5; i = i + 2){
 	      if(aBounds[i] < aNewBndBox[i]) 
@@ -540,7 +540,7 @@ SVTK_Renderer
   else
     myCubeAxes->VisibilityOff();
 
-  static float aCoeff = 3.0;
+  static vtkFloatingPointType aCoeff = 3.0;
   aCamera->SetParallelScale(aCoeff*aCamera->GetParallelScale());
 }
 

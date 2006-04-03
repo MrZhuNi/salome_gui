@@ -246,7 +246,7 @@ void QtxMainWindow::customEvent( QCustomEvent* e )
 {
   QMainWindow::customEvent( e );
 
-  int mode = (int)e->data();
+  size_t mode = size_t(e->data());
   switch ( mode )
   {
   case WS_Normal:
