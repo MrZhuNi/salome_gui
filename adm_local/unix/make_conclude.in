@@ -58,7 +58,7 @@ else
 LIB_SWIG = 
 endif
 
-lib: $(LIB)
+lib: $(LIB) $(LIB_CLIENT_PY)
 
 LIB_BUILDDIR=$(shell cd $(CURDIR)/$(top_builddir); pwd)/lib/salome
 
