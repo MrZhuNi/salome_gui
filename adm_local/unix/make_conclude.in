@@ -361,25 +361,31 @@ distclean: clean
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
 
 .cc.lo:
-	$(LT) --mode=compile $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
+	$(LT) --mode=compile --tag=CXX $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
 
 .cxx.o:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
 
 .cxx.lo:
-	$(LT) --mode=compile $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
+	$(LT) --mode=compile --tag=CXX $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
 
 .c.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 .c.lo:
-	$(LT_COMPILE) $(CFLAGS) $(CPPFLAGS) -c $<
+	$(LT) --mode=compile --tag=CC $(CFLAGS) $(CPPFLAGS) -c $<
 
 .f.o:
 	$(FC) $(FFLAGS) -c $< -o $@
 
 .f.lo:
-	$(LT) --mode=compile $(FC) $(FFLAGS) -c $<
+	$(LT) --mode=compile --tag=F77 $(FC) $(FFLAGS) -c $<
+
+.f90.o:
+	$(FC) $(FFLAGS) -c $< -o $@
+
+.f90.lo:
+	$(LT) --mode=compile --tag=F90 $(FC) $(FFLAGS) -c $<
 
 .ui.h:
 	$(UIC) -o $@  $<
