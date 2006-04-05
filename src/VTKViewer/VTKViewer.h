@@ -17,11 +17,18 @@
 // See http://www.salome-platform.org/
 //
 #ifdef WNT
-#ifdef VTKVIEWER_EXPORTS
-#define VTKVIEWER_EXPORT __declspec( dllexport )
+#  ifdef VTKVIEWER_EXPORTS
+#    define VTKVIEWER_EXPORT __declspec( dllexport )
+#  else
+#    define VTKVIEWER_EXPORT __declspec( dllimport )
+#  endif
 #else
-#define VTKVIEWER_EXPORT __declspec( dllimport )
+#  define VTKVIEWER_EXPORT
 #endif
-#else
-#define VTKVIEWER_EXPORT
+
+#include <vtkSystemIncludes.h>
+
+#if !defined(vtkFloatingPointType)
+#define vtkFloatingPointType vtkFloatingPointType;
+typedef float vtkFloatingPointType;
 #endif
