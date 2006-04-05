@@ -63,7 +63,9 @@ TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
 	if( item.myTrg==td.nullTrg() )
 	{
 	  //to add
-	  lastItem = createSubTree( item.mySrc, r2, lastItem, lastItem==td.nullTrg(), td );
+	  TrgItem nitem = createSubTree( item.mySrc, r2, lastItem, lastItem==td.nullTrg(), td );
+	  if( nitem!=td.nullTrg() )
+	    lastItem = nitem;
 	}
         else
 	{
@@ -74,12 +76,12 @@ TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
 	}
       }
     }
-      
+
     return r2;
   }
   else
   {
-    TrgItem new_r2 = createSubTree( r1, td.parent( r2 ), r2, r2==td.nullTrg(), td );
+    TrgItem new_r2 = createSubTree( r1, td.parent( r2 ), r2, false, td );
     if( r2!=td.nullTrg() )
       td.deleteItemWithChildren( r2 );
     return new_r2;
@@ -104,8 +106,8 @@ void diffSiblings( const SrcItem& src, const TrgItem& trg,
 		   QValueList < DiffItem < SrcItem,TrgItem > >& d,
 		   const TreeData& td )
 {
-  if( src==td.nullSrc() || trg==td.nullTrg() )
-    return;
+  //if( src==td.nullSrc() || trg==td.nullTrg() )
+  //  return;
 
   QValueList<SrcItem> src_ch;
   QValueList<TrgItem> trg_ch;
