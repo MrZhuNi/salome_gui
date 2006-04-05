@@ -6,10 +6,11 @@
 #include "LightApp_DataModel.h"
 #include "LightApp_Study.h"
 #include "LightApp_RootObject.h"
+#include "LightApp_DataObject.h"
 #include "LightApp_Module.h"
 #include "LightApp_Application.h"
 
-#include <CAM_DataObject.h>
+#include <OB_Browser.h>
 
 #include <SUIT_Application.h>
 #include <SUIT_ResourceMgr.h>
@@ -74,11 +75,43 @@ bool LightApp_DataModel::close()
 }
 
 //================================================================
+// Function : build
+/*! Purpose  : Build whole data model tree */
+//================================================================
+void LightApp_DataModel::build()
+{
+}
+
+//================================================================
+// Function : updateWidgets
+/*! Purpose  : Update data model presentation in some widgets
+ * (for example, in object browser*/
+//================================================================
+void LightApp_DataModel::updateWidgets()
+{
+  LightApp_Application* app = dynamic_cast<LightApp_Application*>( module()->application() );
+  if( app )
+    app->objectBrowser()->updateTree( 0, false );
+}
+
+//================================================================
 // Function : update
 /*! Purpose  : Update application (empty virtual function).*/
 //================================================================
-void LightApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
+void LightApp_DataModel::update( LightApp_DataObject*, LightApp_Study* )
 {
+  LightApp_ModuleObject* modelRoot = dynamic_cast<LightApp_ModuleObject*>( root() );
+  DataObjectList ch;
+  if( modelRoot )
+  {
+    ch = modelRoot->children();
+    for ( DataObjectListIterator it( ch ); it.current(); ++it )
+      it.current()->setParent( 0 );
+  }
+  build();
+  updateWidgets();
+  for( DataObjectListIterator it( ch ); it.current(); ++it )
+    delete it.current();
 }
 
 //================================================================
