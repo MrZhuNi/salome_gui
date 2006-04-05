@@ -63,7 +63,9 @@ TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
 	if( item.myTrg==td.nullTrg() )
 	{
 	  //to add
-	  lastItem = createSubTree( item.mySrc, r2, lastItem, lastItem==td.nullTrg(), td );
+	  TrgItem nitem = createSubTree( item.mySrc, r2, lastItem, lastItem==td.nullTrg(), td );
+	  if( nitem!=td.nullTrg() )
+	    lastItem = nitem;
 	}
         else
 	{
