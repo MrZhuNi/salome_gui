@@ -480,7 +480,10 @@ void LightApp_Application::createActions()
   for ( it = modList.begin(); it != modList.end(); ++it )
   {
     if ( !isLibExists( *it ) )
+    {
+      qDebug( QString( "Library '%1' cannot be found" ).arg( *it ) );
       continue;
+    }
 
     QString iconName;
     if ( iconMap.contains( *it ) )
@@ -1140,6 +1143,10 @@ void LightApp_Application::updateObjectBrowser( const bool updateModels )
   // update existing data models
   if ( updateModels ) 
   {
+    const bool isAutoUpdate = objectBrowser() ? objectBrowser()->isAutoUpdate() : true;
+    if( objectBrowser() )
+      objectBrowser()->setAutoUpdate( false );
+
     LightApp_Study* study = dynamic_cast<LightApp_Study*>(activeStudy());
     if ( study ) {
       CAM_Study::ModelList dm_list;
@@ -1150,6 +1157,9 @@ void LightApp_Application::updateObjectBrowser( const bool updateModels )
           ((LightApp_DataModel*)camDM)->update();
       }
     }
+
+    if( objectBrowser() )
+      objectBrowser()->setAutoUpdate( true );
   }
   if ( objectBrowser() )
   {
