@@ -115,8 +115,13 @@ void SalomeApp_DataModelSync::deleteItemWithChildren( const suitPtr& p ) const
 
 bool SalomeApp_DataModelSync::isEqual( const kerPtr& p, const suitPtr& q ) const
 {
-  LightApp_DataObject* obj = dynamic_cast<LightApp_DataObject*>( q );
-  return ( !p && !q ) || ( obj && isCorrect( p ) && p->GetID().c_str()==obj->entry() );
+  LightApp_ModuleObject* lobj = dynamic_cast<LightApp_ModuleObject*>( q );
+  SalomeApp_DataObject* sobj = dynamic_cast<SalomeApp_DataObject*>( q );
+  _PTR( SComponent ) aComp( p );
+  bool res = ( !p && !q ) ||
+             ( lobj && !sobj && aComp ) ||
+	     ( sobj && isCorrect( p ) && p->GetID().c_str()==sobj->entry() );
+  return res;
 }
 
 kerPtr SalomeApp_DataModelSync::nullSrc() const
@@ -272,11 +277,11 @@ SUIT_DataObject* SalomeApp_DataModel::synchronize( const _PTR( SComponent )& sob
 
   DataObjectList ch; study->root()->children( ch );
   DataObjectList::const_iterator anIt = ch.begin(), aLast = ch.end();
-  SalomeApp_DataObject* suitObj = 0;
+  SUIT_DataObject* suitObj = 0;
   for( ; anIt!=aLast; anIt++ )
   {
-    SalomeApp_DataObject* dobj = dynamic_cast<SalomeApp_DataObject*>( *anIt );
-    if( dobj && dobj->name()==sobj->GetName().c_str() )
+    LightApp_DataObject* dobj = dynamic_cast<LightApp_DataObject*>( *anIt );
+    if( dobj && dobj->name() == sobj->GetName().c_str() )
     {
       suitObj = dobj;
       break;
@@ -285,7 +290,10 @@ SUIT_DataObject* SalomeApp_DataModel::synchronize( const _PTR( SComponent )& sob
 
   SalomeApp_DataModelSync sync( study->studyDS(), study->root() );
 
-  return ::synchronize<kerPtr,suitPtr,SalomeApp_DataModelSync>( sobj, suitObj, sync );
+  if( !suitObj || dynamic_cast<SalomeApp_DataObject*>( suitObj ) )
+    return ::synchronize<kerPtr,suitPtr,SalomeApp_DataModelSync>( sobj, suitObj, sync );
+  else
+    return 0;
 }
 
 //================================================================
