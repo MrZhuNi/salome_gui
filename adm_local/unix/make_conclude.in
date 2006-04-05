@@ -177,17 +177,14 @@ $(RESOURCES_FILES:%=$(top_builddir)/share/salome/resources/%): $(top_builddir)/s
 $(libdir) $(includedir) $(bindir) $(datadir) $(idldir) $(sharedpydir):
 	$(INSTALL) -d $@ && chmod 755 $@
 
-LIB_INSTALLDIR=$(shell cd $(CURDIR)/$(top_builddir); pwd)/lib
-BIN_INSTALLDIR=$(shell cd $(CURDIR)/$(top_builddir); pwd)/bin
-
 # Install the library, the public header files, and programs.
 install: $(LIB) $(BIN) $(TEST_PROGS) $(libdir) $(includedir) $(bindir) $(datadir) $(idldir) install-python install-sharedpyqt install-qm install-res
 	@for f in X $(LIB); do \
 	   if test $$f != X; then \
-	      echo "($(LT) --mode=link $(CXX) -shared -rpath $(libdir) -o  $(LIB_INSTALLDIR)/$$f $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1)"; \
-	      ($(LT) --mode=link $(CXX) -shared -rpath $(libdir) -o $(LIB_INSTALLDIR)/$$f $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1); \
-	      echo "($(LT_INSTALL_LIB) '$(LIB_INSTALLDIR)/$$f' '$(libdir)/$$f' || exit 1)"; \
-	      ($(LT_INSTALL_LIB) "$(LIB_INSTALLDIR)/$$f" "$(libdir)/$$f" || exit 1); \
+	      echo "($(LT) --mode=link $(CXX) -shared -rpath '$(libdir)' -o '$$f' $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1)"; \
+	      ($(LT) --mode=link $(CXX) -shared -rpath "$(libdir)" -o "$$f" $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1); \
+	      echo "($(LT_INSTALL_LIB) '$$f' '$(libdir)/$$f' || exit 1)"; \
+	      ($(LT_INSTALL_LIB) "$$f" "$(libdir)/$$f" || exit 1); \
 	   fi; \
 	done
 	@if ! test -z $(LIB_SWIG) ; then \
@@ -195,26 +192,26 @@ install: $(LIB) $(BIN) $(TEST_PROGS) $(libdir) $(includedir) $(bindir) $(datadir
         fi;								      
 	@for f in X $(BIN); do \
 	   if test $$f != X; then \
-	      echo "($(LT) --mode=link $(CXX) -shared -rpath $(bindir) -o $(BIN_INSTALLDIR)/$$f $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1)"; \
-	      ($(LT) --mode=link $(CXX) -shared -rpath $(bindir) -o $(BIN_INSTALLDIR)/$$f $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1); \
-	      echo "($(LT_INSTALL_PROG) '$(BIN_INSTALLDIR)/$$f' '$(bindir)/$$f' || exit 1)"; \
-	      ($(LT_INSTALL_PROG) "$(BIN_INSTALLDIR)/$$f" "$(bindir)/$$f" || exit 1); \
+	      echo "($(LT) --mode=link $(CXX) -shared -rpath '$(bindir)' -o '$$f' $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1)"; \
+	      ($(LT) --mode=link $(CXX) -shared -rpath "$(bindir)" -o "$$f" $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1); \
+	      echo "($(LT_INSTALL_PROG) '$$f' '$(bindir)/$$f' || exit 1)"; \
+	      ($(LT_INSTALL_PROG) "$$f" "$(bindir)/$$f" || exit 1); \
  	   fi; \
 	done
         # Install tests programmes in bindir
 	@for f in X $(TEST_PROGS); do \
 	   if test $$f != X; then \
-	      echo "($(LT) --mode=link $(CXX) -shared -rpath $(bindir) -o $(BIN_INSTALLDIR)/$$f $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1)"; \
-	      ($(LT) --mode=link $(CXX) -shared -rpath $(bindir) -o $(BIN_INSTALLDIR)/$$f $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1); \
-	      echo "($(LT_INSTALL_PROG) '$(BIN_INSTALLDIR)/$$f' '$(bindir)/$$f' || exit 1)"; \
-	      ($(LT_INSTALL_PROG) "$(BIN_INSTALLDIR)/$$f" "$(bindir)/$$f" || exit 1); \
+	      echo "($(LT) --mode=link $(CXX) -shared -rpath '$(bindir)' -o '$$f' $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1)"; \
+	      ($(LT) --mode=link $(CXX) -shared -rpath "$(bindir)" -o "$$f" $(CXXFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS) || exit 1); \
+	      echo "($(LT_INSTALL_PROG) '$$f' '$(bindir)/$$f' || exit 1)"; \
+	      ($(LT_INSTALL_PROG) "$$f" "$(bindir)/$$f" || exit 1); \
  	   fi; \
 	done
         # Install exported includes in includedir
-	@for f in X $(EXPORT_HEADERS:%=$(srcdir)/%); do			      \
-	   if test $$f != X; then					      \
-	     (cp -p -f $$f $(includedir) || exit 1);			      \
-	   fi;							              \
+	@for f in X $(EXPORT_HEADERS:%=$(srcdir)/%); do	\
+	   if test $$f != X; then \
+	     (cp -p -f $$f $(includedir) || exit 1); \
+	   fi; \
 	done
 
 # Install python script in $(bindir)
