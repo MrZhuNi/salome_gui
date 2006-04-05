@@ -178,7 +178,9 @@ void OB_BrowserSync::deleteItemWithChildren( const ItemPtr& i ) const
 
 bool OB_BrowserSync::isEqual( const ObjPtr& p, const ItemPtr& q ) const
 {
-  return ( !p && !q ) || ( p && q && q->dataObject()==p );
+  bool isRoot = p==myBrowser->getRootObject() && !q,
+       isEq = p && q && q->dataObject()==p;
+  return isRoot || ( !p && !q ) || isEq;
 }
 
 ObjPtr OB_BrowserSync::nullSrc() const
@@ -205,7 +207,7 @@ void OB_BrowserSync::children( const ObjPtr& p, QValueList<ObjPtr>& ch ) const
 
 void OB_BrowserSync::children( const ItemPtr& p, QValueList<ItemPtr>& ch ) const
 {
-  for( QListViewItem* item = p->firstChild(); item; item = item->nextSibling() )
+  for( QListViewItem* item = p ? p->firstChild() : myBrowser->listView()->firstChild(); item; item = item->nextSibling() )
   {
     ItemPtr p = dynamic_cast<ItemPtr>( item );
     if( p )
@@ -733,39 +735,13 @@ void OB_Browser::updateView( SUIT_DataObject* startObj )
   if ( !startObj || startObj->root() != getRootObject() )
     return;
 
+  //qDebug( "updateView:" );
+  //startObj->dump();
+
   if ( startObj == myRoot )
   {
-    DataObjectList ch;
-    myRoot->children( ch );
-
-    ItemMap exist;
-    QListViewItem* st = lv->firstChild();
-    for( ; st; st =  st->nextSibling() )
-    {
-      OB_ListItem* ob_item = dynamic_cast<OB_ListItem*>( st );
-      exist.insert( ob_item->dataObject(), ob_item );
-    }
-
-    SUIT_DataObject* local_root = ch.first();
-    for( ; local_root; local_root = ch.next() )
-    {
-      OB_BrowserSync sync( this );
-      OB_ListItem* local_item = dynamic_cast<OB_ListItem*>( listViewItem( local_root ) );
-      synchronize<ObjPtr,ItemPtr,OB_BrowserSync>( local_root, local_item, sync );
-      exist[local_root] = 0;
-    }
-
-    ItemMap::const_iterator anIt = exist.begin(), aLast = exist.end();
-    for( ; anIt!=aLast; anIt++ )
-    {
-      if( anIt.data() ) // exist[local_root]==1 -> this local root was NOT in data model, should be removed
-      {
-	removeReferences( anIt.data() );
-	OB_ListItem* item = dynamic_cast<OB_ListItem*>( anIt.data() );
-	if( item && myItems.contains( item->dataObject() ) )
-	  delete anIt.data();
-      }
-    }
+    OB_BrowserSync sync( this );
+    synchronize<ObjPtr,ItemPtr,OB_BrowserSync>( myRoot, 0, sync );
   }
   else
   {
