@@ -26,13 +26,12 @@
 
 
 #include "VTKViewer_ExtractUnstructuredGrid.h"
-//#include "utilities.h"
+#include "VTKViewer_CellLocationsArray.h"
 
 #include <vtkUnsignedCharArray.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkObjectFactory.h>
 #include <vtkCellArray.h>
-#include <vtkIdTypeArray.h>
 #include <vtkIdList.h>
 #include <vtkCell.h>
 
@@ -234,7 +233,7 @@ void VTKViewer_ExtractUnstructuredGrid::Execute(){
 	}
       }
       if((aNbElems = aConnectivity->GetNumberOfCells())){
-	vtkIdTypeArray* aCellLocationsArray = vtkIdTypeArray::New();
+	VTKViewer_CellLocationsArray* aCellLocationsArray = VTKViewer_CellLocationsArray::New();
 	aCellLocationsArray->SetNumberOfComponents(1);
 	aCellLocationsArray->SetNumberOfTuples(aNbElems);
 	aConnectivity->InitTraversal();
@@ -323,7 +322,7 @@ void VTKViewer_ExtractUnstructuredGrid::Execute(){
       }
     }
     if((aNbElems = aConnectivity->GetNumberOfCells())){
-      vtkIdTypeArray* aCellLocationsArray = vtkIdTypeArray::New();
+      VTKViewer_CellLocationsArray* aCellLocationsArray = VTKViewer_CellLocationsArray::New();
       aCellLocationsArray->SetNumberOfComponents(1);
       aCellLocationsArray->SetNumberOfTuples(aNbElems);
       aConnectivity->InitTraversal();

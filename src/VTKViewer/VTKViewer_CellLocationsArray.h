@@ -17,17 +17,26 @@
 // See http://www.salome-platform.org/
 //
 
-#ifndef VTKVIEWER_H
-#define VTKVIEWER_H
+#ifndef VTKVIEWER_CELLLOCATIONS_H
+#define VTKVIEWER_CELLLOCATIONS_H
 
-#ifdef WNT
-#  ifdef VTKVIEWER_EXPORTS
-#    define VTKVIEWER_EXPORT __declspec( dllexport )
-#  else
-#    define VTKVIEWER_EXPORT __declspec( dllimport )
-#  endif
+#include "VTKViewer.h"
+
+#if (VTK_MAJOR_VERSION >= 4) &&  (VTK_MINOR_VERSION >= 4)
+#  include <vtkIdTypeArray.h>
+#  define TCellLocationsArray vtkIdTypeArray
 #else
-#  define VTKVIEWER_EXPORT
+#  include <vtkIntArray.h>
+#  define TCellLocationsArray vtkIntArray
 #endif
+
+struct VTKVIEWER_EXPORT VTKViewer_CellLocationsArray : TCellLocationsArray
+{
+  static VTKViewer_CellLocationsArray* New();
+  
+  vtkTypeMacro(VTKViewer_CellLocationsArray,TCellLocationsArray);
+};
+
+#undef TCellLocationsArray
 
 #endif
