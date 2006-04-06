@@ -363,7 +363,7 @@ SVTK_Renderer
       myCubeAxes->VisibilityOff();
 
     // if the new trihedron size have sufficient difference, then apply the value
-    double aSize = myTrihedron->GetSize();
+    vtkFloatingPointType aSize = myTrihedron->GetSize();
     if ( IsTrihedronRelative() )
       {
 	ComputeTrihedronSize(GetDevice(),aSize,aSize,myTrihedronSize);
