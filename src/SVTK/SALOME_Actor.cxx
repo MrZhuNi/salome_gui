@@ -83,12 +83,13 @@ namespace
   {
     int anEdgeId = 0;
     if (vtkCell* aPickedCell = theActor->GetElemCell(theObjId)) {
-      float aPickPosition[3];
+      vtkFloatingPointType aPickPosition[3];
       thePicker->GetPickPosition(aPickPosition);
-      float aMinDist = 1000000.0, aDist = 0;
+      vtkFloatingPointType aMinDist = 1000000.0, aDist = 0;
       for (int i = 0, iEnd = aPickedCell->GetNumberOfEdges(); i < iEnd; i++){
 	if(vtkLine* aLine = vtkLine::SafeDownCast(aPickedCell->GetEdge(i))){
-	  int subId;  float pcoords[3], closestPoint[3], weights[3];
+	  int subId;  
+	  vtkFloatingPointType pcoords[3], closestPoint[3], weights[3];
 	  aLine->EvaluatePosition(aPickPosition,closestPoint,subId,pcoords,aDist,weights);
 	  if (aDist < aMinDist) {
 	    aMinDist = aDist;
@@ -267,7 +268,9 @@ SALOME_Actor
 
 void
 SALOME_Actor
-::SetPosition(float _arg1, float _arg2, float _arg3)
+::SetPosition(vtkFloatingPointType _arg1, 
+	      vtkFloatingPointType _arg2, 
+	      vtkFloatingPointType _arg3)
 {
   Superclass::SetPosition(_arg1,_arg2,_arg3);
 
@@ -279,7 +282,7 @@ SALOME_Actor
 
 void
 SALOME_Actor
-::SetPosition(float _arg[3])
+::SetPosition(vtkFloatingPointType _arg[3])
 {
   SetPosition(_arg[0],_arg[1],_arg[2]);
 }
@@ -353,7 +356,7 @@ void
 SALOME_Actor
 ::highlight(bool theIsHighlight)
 {
-  float aBounds[6];
+  vtkFloatingPointType aBounds[6];
   GetInput()->GetBounds(aBounds);
   myOutline->SetBounds(aBounds);
   myOutlineActor->SetVisibility( GetVisibility() && theIsHighlight );
@@ -377,9 +380,9 @@ SALOME_Actor
   Selection_Mode aSelectionMode = theSelectionEvent->mySelectionMode;
   bool anIsChanged = (mySelectionMode != aSelectionMode);
 
-  float x = theSelectionEvent->myX;
-  float y = theSelectionEvent->myY;
-  float z = 0.0;
+  vtkFloatingPointType x = theSelectionEvent->myX;
+  vtkFloatingPointType y = theSelectionEvent->myY;
+  vtkFloatingPointType z = 0.0;
 
   if( !theIsHighlight ) {
     SetPreSelected( false );
@@ -522,9 +525,9 @@ SALOME_Actor
   if ( !theIsHighlight )
     return true;
 
-  float x = theSelectionEvent->myX;
-  float y = theSelectionEvent->myY;
-  float z = 0.0;
+  vtkFloatingPointType x = theSelectionEvent->myX;
+  vtkFloatingPointType y = theSelectionEvent->myY;
+  vtkFloatingPointType z = 0.0;
 
   if( !theSelectionEvent->myIsRectangle ) {
     switch(aSelectionMode){
@@ -591,16 +594,16 @@ SALOME_Actor
       break;
     }
   }else{
-    float xLast = theSelectionEvent->myLastX;
-    float yLast = theSelectionEvent->myLastY;
-    float zLast = 0.0;
+    vtkFloatingPointType xLast = theSelectionEvent->myLastX;
+    vtkFloatingPointType yLast = theSelectionEvent->myLastY;
+    vtkFloatingPointType zLast = 0.0;
 
-    float x1 = x < xLast ? x : xLast;
-    float y1 = y < yLast ? y : yLast;
-    float z1 = z < zLast ? z : zLast;
-    float x2 = x > xLast ? x : xLast;
-    float y2 = y > yLast ? y : yLast;
-    float z2 = z > zLast ? z : zLast;
+    vtkFloatingPointType x1 = x < xLast ? x : xLast;
+    vtkFloatingPointType y1 = y < yLast ? y : yLast;
+    vtkFloatingPointType z1 = z < zLast ? z : zLast;
+    vtkFloatingPointType x2 = x > xLast ? x : xLast;
+    vtkFloatingPointType y2 = y > yLast ? y : yLast;
+    vtkFloatingPointType z2 = z > zLast ? z : zLast;
 
     switch(aSelectionMode){
     case NodeSelection: {
@@ -636,8 +639,8 @@ SALOME_Actor
     }
     case ActorSelection :
     {
-      float aPnt[3];
-      float* aBounds = GetBounds();
+      vtkFloatingPointType aPnt[3];
+      vtkFloatingPointType* aBounds = GetBounds();
 
       bool anIsPicked = true;
       for( int i = 0; i <= 1; i++ ) {

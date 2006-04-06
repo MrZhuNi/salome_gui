@@ -209,7 +209,7 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
 
   //----------------------------------------------------------------------------
   // Priority at which events are processed
-  float myPriority;
+  vtkFloatingPointType myPriority;
 
   // Used to process events
   vtkSmartPointer<vtkCallbackCommand> myEventCallbackCommand;
@@ -244,7 +244,7 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
   vtkSmartPointer<VTKViewer_Trihedron> myTrihedron;  
   int  myTrihedronSize;
   bool myIsTrihedronRelative;
-  float myBndBox[6];
+  vtkFloatingPointType myBndBox[6];
 };
 
 #endif

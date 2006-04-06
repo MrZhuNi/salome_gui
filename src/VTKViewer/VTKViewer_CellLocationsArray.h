@@ -16,29 +16,27 @@
 //
 // See http://www.salome-platform.org/
 //
-#ifndef VTKVIEWER_UTILITIES_H
-#define VTKVIEWER_UTILITIES_H
 
-#include <VTKViewer.h>
+#ifndef VTKVIEWER_CELLLOCATIONS_H
+#define VTKVIEWER_CELLLOCATIONS_H
 
-class vtkRenderer;
+#include "VTKViewer.h"
 
-VTKVIEWER_EXPORT extern void  ResetCamera(vtkRenderer* theRenderer, 
-					  int theUsingZeroFocalPoint = false);
-VTKVIEWER_EXPORT extern int   ComputeVisiblePropBounds(vtkRenderer* theRenderer, 
-						       vtkFloatingPointType theBounds[6]);
-VTKVIEWER_EXPORT extern void  ResetCameraClippingRange(vtkRenderer* theRenderer);
-VTKVIEWER_EXPORT extern bool  ComputeTrihedronSize(vtkRenderer* theRenderer, 
-						   vtkFloatingPointType& theNewSize, 
-						   const vtkFloatingPointType theSize, 
-						   const vtkFloatingPointType theSizeInPercents);
-
-#ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#if (VTK_MAJOR_VERSION >= 4) &&  (VTK_MINOR_VERSION >= 4)
+#  include <vtkIdTypeArray.h>
+#  define TCellLocationsArray vtkIdTypeArray
+#else
+#  include <vtkIntArray.h>
+#  define TCellLocationsArray vtkIntArray
 #endif
 
-#ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
-#endif
+struct VTKVIEWER_EXPORT VTKViewer_CellLocationsArray : TCellLocationsArray
+{
+  static VTKViewer_CellLocationsArray* New();
+  
+  vtkTypeMacro(VTKViewer_CellLocationsArray,TCellLocationsArray);
+};
+
+#undef TCellLocationsArray
 
 #endif

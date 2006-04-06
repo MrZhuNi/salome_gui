@@ -151,7 +151,7 @@ SVTK_Actor
     aPoints->SetNumberOfPoints(aNbOfParts);
     for(int i = 0; i < aNbOfParts; i++){
       int aPartId = theMapIndex( i+1 );
-      if(float* aCoord = theMapActor->GetNodeCoord(aPartId)){
+      if(vtkFloatingPointType* aCoord = theMapActor->GetNodeCoord(aPartId)){
 	aPoints->SetPoint(i,aCoord);
 	myUnstructuredGrid->InsertNextCell(VTK_VERTEX,1,&i);
       }
