@@ -962,6 +962,7 @@ void SalomeApp_Application::onRenameGUIState()
   if ( !newName.isNull() && !newName.isEmpty() ) {
     study->setNameOfSavePoint( savePoint, newName );
     updateSavePointDataObjects( study );
+    objectBrowser()->updateTree( study->root() );
   }
 }
 
@@ -1080,6 +1081,5 @@ void SalomeApp_Application::updateSavePointDataObjects( SalomeApp_Study* study )
   // delete DataObjects that are still in the map -- their IDs were not found in data model
   for ( QMap<int,SalomeApp_SavePointObject*>::Iterator it = mapDO.begin(); it != mapDO.end(); ++it )
     delete it.data();
-
 }
 
