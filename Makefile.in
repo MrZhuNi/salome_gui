@@ -14,13 +14,7 @@ VPATH=.:@srcdir@:@top_srcdir@/bin:./bin/salome:@top_srcdir@/resources:./bin:@top
 
 @COMMENCE@
 
-SUBDIRS = src
-
-ifeq ($(GUI_DISABLE_CORBA),no)
-  SUBDIRS+= idl
-endif
-
-SUBDIRS+= doc adm_local
+SUBDIRS = src doc adm_local
 
 RESOURCES_FILES = \
 back.xpm \
@@ -124,10 +118,10 @@ include/salome/sstream: salome_adm/unix/sstream
 	-$(RM) $@
 	$(LN_S) ../../$< $@
 
-depend: depend_idl
-
-depend_idl:
-	(cd idl ; $(MAKE) $@) || exit 1
+depend:
+#depend: depend_idl
+#depend_idl:
+#	(cd idl ; $(MAKE) $@) || exit 1
 
 # doc is already build : if you want to had documents, go manually to doc and run 'make doc'
 #doc:
@@ -156,10 +150,10 @@ install-bin: $(BIN_SCRIPT)
 	$(INSTALL) -d  $(bindir)
 	$(INSTALL_PROGRAM) $^ $(bindir)
 
-uninstall: uninstall-idl
-
-uninstall-idl:
-	$(RM) $(idldir)/*.idl
+uninstall:
+#uninstall: uninstall-idl
+#uninstall-idl:
+#	$(RM) $(idldir)/*.idl
 
 distclean: distclean-other
 
