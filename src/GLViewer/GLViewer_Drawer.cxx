@@ -160,7 +160,7 @@ bool GLViewer_TexFont::generateTexture()
     aFindFont.myIsItal = myQFont.italic();
     aFindFont.myIsUndl = myQFont.underline();
     aFindFont.myPointSize = myQFont.pointSize();
-    aFindFont.myViewPortId = (int)QGLContext::currentContext();
+    aFindFont.myViewPortId = size_t(QGLContext::currentContext());
         
     if( TexFontBase.contains( aFindFont ) )
     {
@@ -421,7 +421,7 @@ static GLuint displayListBase( QFont* theFont )
     return aList;
   }
 
-  aFindFont.myViewPortId = (int)aCont;
+  aFindFont.myViewPortId = size_t(aCont);
 
   if ( GLViewer_TexFont::BitmapFontCache.contains( aFindFont ) )
     aList = GLViewer_TexFont::BitmapFontCache[aFindFont];
@@ -431,7 +431,7 @@ static GLuint displayListBase( QFont* theFont )
     QMap<GLViewer_TexFindId, GLuint>::iterator it = GLViewer_TexFont::BitmapFontCache.begin();
     for ( ; it != GLViewer_TexFont::BitmapFontCache.end(); ++it )
     {
-      if ( it.key().myViewPortId == (int)aCont && it.data() > listBase )
+      if ( it.key().myViewPortId == size_t(aCont) && it.data() > listBase )
         listBase = it.data();
     }
     listBase += 256;
@@ -810,7 +810,7 @@ void GLViewer_Drawer::drawGLText( QString text, float x, float y,
 {
   QFont aFont( myFont );
   if( smallFont )
-    aFont.setPointSize( aFont.pointSize() * 0.8 );
+    aFont.setPointSize( int(aFont.pointSize() * 0.8) );
 
   GLfloat scale = textScale() > 0. ? textScale() : 1.;
 

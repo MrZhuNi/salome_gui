@@ -243,7 +243,7 @@ SVTK_DeviceActor
   }
 }
 
-float
+vtkFloatingPointType
 SVTK_DeviceActor
 ::GetShrinkFactor()
 {
@@ -252,7 +252,7 @@ SVTK_DeviceActor
 
 void 
 SVTK_DeviceActor
-::SetShrinkFactor(float theValue)
+::SetShrinkFactor(vtkFloatingPointType theValue)
 {
   myShrinkFilter->SetShrinkFactor(theValue);
 }
@@ -318,14 +318,14 @@ SVTK_DeviceActor
   return myRepresentation;
 }
 
-float
+vtkFloatingPointType
 SVTK_DeviceActor
 ::GetDefaultPointSize()
 {
   return 5;
 }
 
-float
+vtkFloatingPointType
 SVTK_DeviceActor
 ::GetDefaultLineWidth()
 {
@@ -356,7 +356,7 @@ SVTK_DeviceActor
   return theVtkID;
 }
 
-float* 
+vtkFloatingPointType* 
 SVTK_DeviceActor
 ::GetNodeCoord(int theObjID)
 {
@@ -386,7 +386,7 @@ SVTK_DeviceActor
 {
   if(myIsResolveCoincidentTopology){
     int aResolveCoincidentTopology = vtkMapper::GetResolveCoincidentTopology();
-    float aFactor, aUnit; 
+    vtkFloatingPointType aFactor, aUnit; 
     vtkMapper::GetResolveCoincidentTopologyPolygonOffsetParameters(aFactor,aUnit);
     
     vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
@@ -404,7 +404,8 @@ SVTK_DeviceActor
 
 void
 SVTK_DeviceActor
-::SetPolygonOffsetParameters(float factor, float units)
+::SetPolygonOffsetParameters(vtkFloatingPointType factor, 
+			     vtkFloatingPointType units)
 {
   myPolygonOffsetFactor = factor;
   myPolygonOffsetUnits = units;
@@ -412,7 +413,8 @@ SVTK_DeviceActor
 
 void
 SVTK_DeviceActor
-::GetPolygonOffsetParameters(float& factor, float& units)
+::GetPolygonOffsetParameters(vtkFloatingPointType& factor, 
+			     vtkFloatingPointType& units)
 {
   factor = myPolygonOffsetFactor;
   units = myPolygonOffsetUnits;

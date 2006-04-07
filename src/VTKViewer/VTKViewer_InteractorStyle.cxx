@@ -30,10 +30,8 @@
 #include "VTKViewer_Actor.h"
 #include "VTKViewer_Utilities.h"
 #include "VTKViewer_Trihedron.h"
-#include "VTKViewer_RectPicker.h"
 #include "VTKViewer_ViewWindow.h"
 #include "VTKViewer_RenderWindow.h"
-#include "VTKViewer_CellRectPicker.h"
 #include "VTKViewer_RenderWindowInteractor.h"
 
 //#include "SALOME_Actor.h"
@@ -1366,17 +1364,17 @@ void VTKViewer_InteractorStyle::Place(const int theX, const int theY)
 void VTKViewer_InteractorStyle::TranslateView(int toX, int toY, int fromX, int fromY)
 {
   vtkCamera *cam = this->CurrentRenderer->GetActiveCamera();
-  double viewFocus[4], focalDepth, viewPoint[3];
-  float newPickPoint[4], oldPickPoint[4], motionVector[3];
+  vtkFloatingPointType viewFocus[4], focalDepth, viewPoint[3];
+  vtkFloatingPointType newPickPoint[4], oldPickPoint[4], motionVector[3];
   cam->GetFocalPoint(viewFocus);
 
   this->ComputeWorldToDisplay(viewFocus[0], viewFocus[1],
 			      viewFocus[2], viewFocus);
   focalDepth = viewFocus[2];
 
-  this->ComputeDisplayToWorld(double(toX), double(toY),
+  this->ComputeDisplayToWorld(vtkFloatingPointType(toX), vtkFloatingPointType(toY),
 			      focalDepth, newPickPoint);
-  this->ComputeDisplayToWorld(double(fromX),double(fromY),
+  this->ComputeDisplayToWorld(vtkFloatingPointType(fromX),vtkFloatingPointType(fromY),
 			      focalDepth, oldPickPoint);
   
   // camera motion is reversed
@@ -1400,17 +1398,17 @@ bool VTKViewer_InteractorStyle::IsInRect(vtkActor* theActor,
 					       const int left, const int top, 
 					       const int right, const int bottom)
 {
-  float* aBounds = theActor->GetBounds();
-  float aMin[3], aMax[3];
+  vtkFloatingPointType* aBounds = theActor->GetBounds();
+  vtkFloatingPointType aMin[3], aMax[3];
   ComputeWorldToDisplay(aBounds[0], aBounds[2], aBounds[4], aMin);
   ComputeWorldToDisplay(aBounds[1], aBounds[3], aBounds[5], aMax);
   if (aMin[0] > aMax[0]) {
-    float aBuf = aMin[0];
+    vtkFloatingPointType aBuf = aMin[0];
     aMin[0] = aMax[0];
     aMax[0] = aBuf;
   }
   if (aMin[1] > aMax[1]) {
-    float aBuf = aMin[1];
+    vtkFloatingPointType aBuf = aMin[1];
     aMin[1] = aMax[1];
     aMax[1] = aBuf;    
   }
@@ -1424,17 +1422,17 @@ bool VTKViewer_InteractorStyle::IsInRect(vtkCell* theCell,
 					       const int left, const int top, 
 					       const int right, const int bottom)
 {
-  float* aBounds = theCell->GetBounds();
-  float aMin[3], aMax[3];
+  vtkFloatingPointType* aBounds = theCell->GetBounds();
+  vtkFloatingPointType aMin[3], aMax[3];
   ComputeWorldToDisplay(aBounds[0], aBounds[2], aBounds[4], aMin);
   ComputeWorldToDisplay(aBounds[1], aBounds[3], aBounds[5], aMax);
   if (aMin[0] > aMax[0]) {
-    float aBuf = aMin[0];
+    vtkFloatingPointType aBuf = aMin[0];
     aMin[0] = aMax[0];
     aMax[0] = aBuf;
   }
   if (aMin[1] > aMax[1]) {
-    float aBuf = aMin[1];
+    vtkFloatingPointType aBuf = aMin[1];
     aMin[1] = aMax[1];
     aMax[1] = aBuf;    
   }
@@ -1443,11 +1441,11 @@ bool VTKViewer_InteractorStyle::IsInRect(vtkCell* theCell,
 }
 
 /*!Checks: is given point \a thePoint in rectangle*/
-bool VTKViewer_InteractorStyle::IsInRect(float* thePoint, 
-					       const int left, const int top, 
-					       const int right, const int bottom)
+bool VTKViewer_InteractorStyle::IsInRect(vtkFloatingPointType* thePoint, 
+					 const int left, const int top, 
+					 const int right, const int bottom)
 {
-  float aPnt[3];
+  vtkFloatingPointType aPnt[3];
   ComputeWorldToDisplay(thePoint[0], thePoint[1], thePoint[2], aPnt);
 
   return ((aPnt[0]>left) && (aPnt[0]<right) && (aPnt[1]>bottom) && (aPnt[1]<top));

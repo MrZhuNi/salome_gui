@@ -698,7 +698,7 @@ void VTKViewer_RenderWindowInteractor::setActorData(const TColStd_IndexedMapOfIn
 						    TUpdateActor theFun)
 {
   (*theFun)(theMapIndex,theMapActor,theActor);
-  float aPos[3];
+  vtkFloatingPointType aPos[3];
   theMapActor->GetPosition(aPos);
   theActor->SetPosition(aPos);
 }

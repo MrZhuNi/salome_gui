@@ -1089,7 +1089,7 @@ SVTK_InteractorStyle
 {
   vtkCamera *cam = GetCurrentRenderer()->GetActiveCamera();
   double viewFocus[4], focalDepth, viewPoint[3];
-  float newPickPoint[4], oldPickPoint[4], motionVector[3];
+  vtkFloatingPointType newPickPoint[4], oldPickPoint[4], motionVector[3];
   cam->GetFocalPoint(viewFocus);
 
   this->ComputeWorldToDisplay(viewFocus[0], viewFocus[1],
