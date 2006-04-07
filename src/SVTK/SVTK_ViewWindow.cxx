@@ -617,7 +617,7 @@ QString getGradAxisVisualParams( vtkAxisActor2D* actor )
   // Name
   bool isVisible = actor->GetTitleVisibility();
   QString title ( actor->GetTitle() );
-  float color[ 3 ];
+  vtkFloatingPointType color[ 3 ];
   int font = VTK_ARIAL;
   int bold = 0;
   int italic = 0;
@@ -679,7 +679,7 @@ void setGradAxisVisualParams( vtkAxisActor2D* actor, const QString& params )
     // retrieve and set name parameters
     bool isVisible = paramsLst[2].toUShort();
     QString title = paramsLst[3];
-    float color[3];
+    vtkFloatingPointType color[3];
     color[0] = paramsLst[4].toDouble();
     color[1] = paramsLst[5].toDouble();
     color[2] = paramsLst[6].toDouble();
