@@ -129,6 +129,8 @@ public:
 
   static int                          studyId();
 
+  virtual bool                        event( QEvent* );
+
 signals:
   void                                studyOpened();
   void                                studySaved();

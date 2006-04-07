@@ -824,14 +824,17 @@ void LightApp_Application::updateCommandsStatus()
 class RunBrowser: public QThread {
 public:
 
-  RunBrowser(QString theApp, QString theParams, QString theHelpFile, QString theContext=NULL):
+  RunBrowser( LightApp_Application* app, QString theApp, QString theParams, QString theHelpFile, QString theContext=NULL):
     myApp(theApp), myParams(theParams), 
 #ifdef WIN32
       myHelpFile("file://" + theHelpFile + theContext), 
 #else
       myHelpFile("file:" + theHelpFile + theContext),
 #endif
-      myStatus(0) {};
+      myStatus(0),
+      myLApp( app )
+{
+};
 
   virtual void run()
   {
@@ -843,17 +846,11 @@ public:
 	myStatus = system(aCommand);
 	if(myStatus != 0)
 	  {
-	    QCustomEvent* ce2000 = new QCustomEvent (2000);
-	    postEvent (qApp, ce2000);
+	    QCustomEvent* ce2000 = new QCustomEvent( 2000 );
+	    QString* msg = new QString( QObject::tr("EXTERNAL_BROWSER_CANNOT_SHOW_PAGE").arg(myApp).arg(myHelpFile) );
+	    ce2000->setData( msg );
+	    postEvent( myLApp, ce2000 );
 	  }
-      }
-      if( myStatus != 0)
-      {
-        qApp->lock();
-        SUIT_MessageBox::warn1(0, QObject::tr("WRN_WARNING"),
-                               QObject::tr("EXTERNAL_BROWSER_CANNOT_SHOW_PAGE").arg(myApp).arg(myHelpFile),
-                               QObject::tr("BUT_OK"));
-        qApp->unlock();
       }
   }
 
@@ -862,7 +859,7 @@ private:
   QString myParams;
   QString myHelpFile;
   int myStatus;
-
+  LightApp_Application* myLApp;
 };
 
 //=======================================================================
@@ -885,13 +882,14 @@ void LightApp_Application::onHelpContentsModule()
   QString aParams = resMgr->stringValue("ExternalBrowser", "parameters");
 
   if (!anApp.isEmpty()) {
-    RunBrowser* rs = new RunBrowser(anApp, aParams, helpFile);
+    RunBrowser* rs = new RunBrowser( this, anApp, aParams, helpFile );
     rs->start();
   }
   else {
-    SUIT_MessageBox::warn1(desktop(), tr("WRN_WARNING"),
+    if( SUIT_MessageBox::warn2(desktop(), tr("WRN_WARNING"),
                            tr("DEFINE_EXTERNAL_BROWSER"),
-                           tr("BUT_OK"));
+                           tr("BUT_OK"),tr("BUT_CANCEL"),0,1,0 )==0 )
+      onPreferences();
   }
 }
 
@@ -910,13 +908,14 @@ void LightApp_Application::onHelpContextModule(const QString& theComponentName, 
   QString aParams = resMgr->stringValue("ExternalBrowser", "parameters");
 
   if (!anApp.isEmpty()) {
-    RunBrowser* rs = new RunBrowser(anApp, aParams, helpFile);
+    RunBrowser* rs = new RunBrowser( this, anApp, aParams, helpFile );
     rs->start();
   }
   else {
-    SUIT_MessageBox::warn1(desktop(), tr("WRN_WARNING"), 
-			   tr("DEFINE_EXTERNAL_BROWSER"), 
-			   tr("BUT_OK"));
+    if( SUIT_MessageBox::warn2(desktop(), tr("WRN_WARNING"),
+                           tr("DEFINE_EXTERNAL_BROWSER"),
+                           tr("BUT_OK"), tr("BUT_CANCEL"),0,1,0)==0 )
+      onPreferences();
   }
 }
 
@@ -1159,7 +1158,7 @@ void LightApp_Application::updateObjectBrowser( const bool updateModels )
     }
 
     if( objectBrowser() )
-      objectBrowser()->setAutoUpdate( true );
+      objectBrowser()->setAutoUpdate( isAutoUpdate );
   }
   if ( objectBrowser() )
   {
@@ -2219,4 +2218,21 @@ void LightApp_Application::onVisibilityChanged( bool visible )
       myWindowsVisible[ itr.key() ] = visible;
       return;
     }
+}
+
+bool LightApp_Application::event( QEvent* e )
+{
+  if( e && e->type()==2000 )
+  {
+    QCustomEvent* ce = ( QCustomEvent* )e;
+    QString* d = ( QString* )ce->data();
+    if( SUIT_MessageBox::warn2(0, tr("WRN_WARNING"),
+			   d ? *d : "",
+			   tr("BUT_OK"), tr("BUT_CANCEL"), 0, 1, 0 )==0 )
+       onPreferences();
+    if( d )
+      delete d;
+    return true;
+  }
+  return CAM_Application::event( e );
 }
