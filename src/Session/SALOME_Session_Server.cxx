@@ -271,26 +271,6 @@ int main( int argc, char **argv )
 
   int result = -1;
 
-  InquireServersGUI splash;
-  bool isSplash = false;
-
-  //SRN: Show a splash ASAP 
-  if ( isFound( "SPLASH", argc, argv ) ) {
-    isSplash = true;
-    // create temporary resource manager just to load splash icon
-    SUIT_ResourceMgr resMgr( "SalomeApp", QString( "%1Config" ) );
-    resMgr.setCurrentFormat( "xml" );
-    resMgr.loadLanguage( "LightApp", "en" );
-    
-  // create splash object: widget ( splash with progress bar ) and "pinging" thread  
-    splash.setPixmap( resMgr.loadPixmap( "LightApp", QObject::tr( "ABOUT_SPLASH" ) ) );
-    SUIT_Tools::centerWidget( &splash, _qappl.desktop() );
-  
-    _qappl.setMainWidget( &splash );
-    QObject::connect( &_qappl, SIGNAL( lastWindowClosed() ), &_qappl, SLOT( quit() ) );
-    splash.show(); // display splash with running progress bar
-  }
-
   CORBA::ORB_var orb;
   PortableServer::POA_var poa;
 
@@ -372,8 +352,23 @@ int main( int argc, char **argv )
     _ServerLaunch.wait( &_GUIMutex ); // to be reseased by Launch server thread when ready:
     
     // show splash screen if "SPLASH" parameter was passed ( default )
-    if ( isSplash )
-    {
+
+
+    if ( isFound( "SPLASH", argc, argv ) ) {
+      InquireServersGUI splash;
+
+      // create temporary resource manager just to load splash icon
+      SUIT_ResourceMgr resMgr( "SalomeApp", QString( "%1Config" ) );
+      resMgr.setCurrentFormat( "xml" );
+      resMgr.loadLanguage( "LightApp", "en" );
+      
+      // create splash object: widget ( splash with progress bar ) and "pinging" thread  
+      splash.setPixmap( resMgr.loadPixmap( "LightApp", QObject::tr( "ABOUT_SPLASH" ) ) );
+      SUIT_Tools::centerWidget( &splash, _qappl.desktop() );
+      
+      _qappl.setMainWidget( &splash );
+      QObject::connect( &_qappl, SIGNAL( lastWindowClosed() ), &_qappl, SLOT( quit() ) );
+      splash.show(); // display splash with running progress bar
       _qappl.exec(); // wait untill splash closes ( progress runs till end or Cancel is pressed ) 
       result = splash.getExitStatus(); // 1 is error
     }
