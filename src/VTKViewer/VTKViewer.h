@@ -30,4 +30,11 @@
 #  define VTKVIEWER_EXPORT
 #endif
 
+#include <vtkSystemIncludes.h>
+
+#if !defined(vtkFloatingPointType)
+# define vtkFloatingPointType vtkFloatingPointType
+  typedef float vtkFloatingPointType;
+#endif
+
 #endif
