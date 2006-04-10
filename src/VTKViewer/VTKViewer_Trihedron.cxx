@@ -74,6 +74,7 @@ void VTKViewer_UnScaledActor::Render(vtkRenderer *theRenderer)
     int* aSize = theRenderer->GetRenderWindow()->GetSize();
     vtkFloatingPointType aWinDiag = sqrt(vtkFloatingPointType(aSize[0]*aSize[0]+aSize[1]*aSize[1]));
     vtkDataSet* aDataSet = GetMapper()->GetInput();
+    aDataSet->Update();
     vtkFloatingPointType aLength = aDataSet->GetLength();
     vtkFloatingPointType aPrecision = 1.0E-3;
     vtkFloatingPointType anOldScale = GetScale()[0];
