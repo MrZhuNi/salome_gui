@@ -115,9 +115,9 @@ AC_CHECK_HEADER(vtkPlane.h,vtk_ok="yes",vtk_ok="no")
 
    AC_CACHE_VAL(salome_cv_lib_vtk,[
      AC_TRY_LINK([#include "vtkPlane.h"],
-		 vtkPlane::New(),
-		 salome_cv_lib_vtk=yes,
-		 salome_cv_lib_vtk=no)
+		 [vtkPlane::New()],
+		 [salome_cv_lib_vtk=yes],
+		 [salome_cv_lib_vtk=no])
   ])
   vtk_ok="$salome_cv_lib_vtk"
   LIBS="$LIBS_old"
@@ -127,10 +127,10 @@ fi
 
 if  test "x$vtk_ok" = "xno"
 then
-  AC_MSG_RESULT("no")
+  AC_MSG_RESULT(no)
   AC_MSG_WARN(unable to link with vtk library)
 else
-  AC_MSG_RESULT("yes")
+  AC_MSG_RESULT(yes)
   VTK_LIBS="$LOCAL_LIBS"
   VTK_MT_LIBS="$LOCAL_LIBS"
 fi
