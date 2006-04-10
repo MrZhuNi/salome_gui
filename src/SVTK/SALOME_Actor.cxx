@@ -617,7 +617,6 @@ SALOME_Actor
       if(aMapIter != aVectorIdsMap.end()){
 	const SVTK_RectPicker::TVectorIds& aVectorIds = aMapIter->second;
 	vtkIdType anEnd = aVectorIds.size();
-	SVTK_RectPicker::TVectorIds::const_iterator anIdIter = aVectorIds.begin();
 	for(vtkIdType anId = 0; anId < anEnd; anId++ ) {
 	  int aPointId = aVectorIds[anId];
 	  if( aPointId >= 0 && mySelector->IsValid( this, aPointId, true ) ) {
@@ -678,7 +677,6 @@ SALOME_Actor
       if(aMapIter != aVectorIdsMap.end()){
 	const SVTK_RectPicker::TVectorIds& aVectorIds = aMapIter->second;
 	vtkIdType anEnd = aVectorIds.size();
-	SVTK_RectPicker::TVectorIds::const_iterator anIdIter = aVectorIds.begin();
 	for(vtkIdType anId = 0; anId < anEnd; anId++ ) {
 	  int aCellId = aVectorIds[anId];
 	  if ( !mySelector->IsValid( this, aCellId ) )

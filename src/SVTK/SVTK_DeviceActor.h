@@ -29,6 +29,9 @@
 #ifndef SVTK_DEVICE_ACTOR_H
 #define SVTK_DEVICE_ACTOR_H
 
+#include "SVTK.h"
+#include "VTKViewer.h"
+
 #include <vector>
 
 #include <vtkLODActor.h>
@@ -59,7 +62,7 @@ namespace SVTK
 
 
 //----------------------------------------------------------------------------
-class SVTK_DeviceActor: public vtkLODActor
+class SVTK_EXPORT SVTK_DeviceActor: public vtkLODActor
 {
  public:
   vtkTypeMacro(SVTK_DeviceActor,vtkLODActor);

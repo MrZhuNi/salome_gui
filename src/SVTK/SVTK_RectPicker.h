@@ -29,6 +29,7 @@
 #define __SVTK_RectPicker_h
 
 #include "SVTK.h"
+#include "VTKViewer.h"
 
 #include <map>
 #include <vector>

@@ -30,6 +30,7 @@
 #define SVTK_Renderer_h
 
 #include "SVTK.h"
+#include "VTKViewer.h"
 
 #include <vtkObject.h>
 #include <vtkSmartPointer.h>
