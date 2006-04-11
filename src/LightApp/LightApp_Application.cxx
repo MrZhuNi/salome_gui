@@ -211,6 +211,30 @@ myPrefs( 0 )
 #endif
 
   connect( mySelMgr, SIGNAL( selectionChanged() ), this, SLOT( onSelection() ) );
+
+  // Set existing font for the python console in resources
+  if( !aResMgr->hasValue( "PyConsole", "font" ) )
+    return;
+  
+  QFont f = aResMgr->fontValue( "PyConsole", "font" );
+  QFontDatabase fdb;
+  QStringList famdb = fdb.families();
+  
+  if ( famdb.contains(f.family()) || !aResMgr->hasValue( "PyConsole", "additional_families" ) )
+    return;
+  
+  QStringList anAddFamilies = QStringList::split( ";", aResMgr->stringValue( "PyConsole", "additional_families" ) );
+  QString aFamily;
+  for ( QStringList::Iterator it = anAddFamilies.begin(); it != anAddFamilies.end(); ++it )
+    {
+      aFamily = *it;
+      if ( famdb.contains(aFamily) )
+	{
+	  f.setFamily( aFamily );
+	  aResMgr->setValue( "PyConsole", "font", f );
+	  break;
+	}
+    }
 }
 
 /*!Destructor.
@@ -998,28 +1022,6 @@ void LightApp_Application::addWindow( QWidget* wid, const int flag, const int st
       {
 	f = ( ( PythonConsole* )wid )->font();
 	resourceMgr()->setValue( "PyConsole", "font", f );
-      }
-    
-    // Try to set one of additional families (if it exists in the font database)
-    QFontDatabase fdb;
-    QStringList aDatabaseFamilies = fdb.families();
-    
-    if ( !aDatabaseFamilies.contains(f.family()) && 
-	 resourceMgr()->hasValue( "PyConsole", "additional_families" ) )
-      {
-	QStringList anAddFamilies = QStringList::split( ";", resourceMgr()->stringValue( "PyConsole", "additional_families" ) );
-	
-	QString aFamily;
-	for ( QStringList::Iterator it = anAddFamilies.begin(); it != anAddFamilies.end(); ++it )
-	  {
-	    aFamily = *it;
-	    if ( !aDatabaseFamilies.contains(aFamily) )
-	      continue;
-	    
-	    f.setFamily( aFamily );
-	    resourceMgr()->setValue( "PyConsole", "font", f );
-	    break;
-	  }
       }
   }
   else
