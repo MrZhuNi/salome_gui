@@ -16,18 +16,24 @@
 //
 // See http://www.salome-platform.org/
 //
+
+#include "VTKViewer_Utilities.h"
 #include "VTKViewer_Actor.h"
+
+#include <algorithm>
 
 // VTK Includes
 #include <vtkMath.h>
 #include <vtkCamera.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
-#include "VTKViewer_Utilities.h"
 
+using namespace std;
 
 /*!@see vtkRenderer::ResetCamera(vtkFloatingPointType bounds[6]) method*/
-void ResetCamera(vtkRenderer* theRenderer, int theUsingZeroFocalPoint)
+void 
+ResetCamera(vtkRenderer* theRenderer, 
+	    int theUsingZeroFocalPoint)
 {  
   if(!theRenderer)
     return;
@@ -97,10 +103,11 @@ void ResetCamera(vtkRenderer* theRenderer, int theUsingZeroFocalPoint)
 }
 
 /*! Compute the bounds of the visible props*/
-int ComputeVisiblePropBounds(vtkRenderer* theRenderer, vtkFloatingPointType theBounds[6])
+int
+ComputeVisiblePropBounds(vtkRenderer* theRenderer, 
+			 vtkFloatingPointType theBounds[6])
 {
-  vtkFloatingPointType      *bounds;
-  int        aCount=0;
+  int aCount = 0;
   
   theBounds[0] = theBounds[2] = theBounds[4] = VTK_LARGE_FLOAT;
   theBounds[1] = theBounds[3] = theBounds[5] = -VTK_LARGE_FLOAT;
@@ -108,53 +115,40 @@ int ComputeVisiblePropBounds(vtkRenderer* theRenderer, vtkFloatingPointType theB
   // loop through all props
   vtkActorCollection* aCollection = theRenderer->GetActors();
   aCollection->InitTraversal();
-  while (vtkActor* prop = aCollection->GetNextActor()) {
+  while (vtkActor* aProp = aCollection->GetNextActor()) {
     // if it's invisible, or has no geometry, we can skip the rest 
-    if ( prop->GetVisibility() )
-    {
-      if(VTKViewer_Actor* anActor = VTKViewer_Actor::SafeDownCast(prop))
-        if(anActor->IsInfinitive()) continue;
-        bounds = prop->GetBounds();
-        // make sure we haven't got bogus bounds
-        if ( bounds != NULL &&
-          bounds[0] > -VTK_LARGE_FLOAT && bounds[1] < VTK_LARGE_FLOAT &&
-          bounds[2] > -VTK_LARGE_FLOAT && bounds[3] < VTK_LARGE_FLOAT &&
-          bounds[4] > -VTK_LARGE_FLOAT && bounds[5] < VTK_LARGE_FLOAT )
-        {
-          aCount++;
-          
-          if (bounds[0] < theBounds[0])
-          {
-            theBounds[0] = bounds[0]; 
-          }
-          if (bounds[1] > theBounds[1])
-          {
-            theBounds[1] = bounds[1]; 
-          }
-          if (bounds[2] < theBounds[2])
-          {
-            theBounds[2] = bounds[2]; 
-          }
-          if (bounds[3] > theBounds[3])
-          {
-            theBounds[3] = bounds[3]; 
-          }
-          if (bounds[4] < theBounds[4])
-          {
-            theBounds[4] = bounds[4]; 
-          }
-          if (bounds[5] > theBounds[5])
-          {
-            theBounds[5] = bounds[5]; 
-          }
-        }//not bogus
+    if(aProp->GetVisibility() && aProp->GetMapper()){
+      if(VTKViewer_Actor* anActor = VTKViewer_Actor::SafeDownCast(aProp))
+        if(anActor->IsInfinitive())
+	  continue;
+	
+      vtkFloatingPointType *aBounds = aProp->GetBounds();
+      static vtkFloatingPointType MAX_DISTANCE = 0.9*VTK_LARGE_FLOAT;
+      // make sure we haven't got bogus bounds
+      if ( aBounds != NULL &&
+	   aBounds[0] > -MAX_DISTANCE && aBounds[1] < MAX_DISTANCE &&
+	   aBounds[2] > -MAX_DISTANCE && aBounds[3] < MAX_DISTANCE &&
+	   aBounds[4] > -MAX_DISTANCE && aBounds[5] < MAX_DISTANCE )
+      {
+	aCount++;
+
+	theBounds[0] = min(aBounds[0],theBounds[0]);
+	theBounds[2] = min(aBounds[2],theBounds[2]);
+	theBounds[4] = min(aBounds[4],theBounds[4]);
+
+	theBounds[1] = max(aBounds[1],theBounds[1]);
+	theBounds[3] = max(aBounds[3],theBounds[3]);
+	theBounds[5] = max(aBounds[5],theBounds[5]);
+
+      }//not bogus
     }
   }
   return aCount;
 }
 
 /*!@see vtkRenderer::ResetCameraClippingRange(vtkFloatingPointType bounds[6]) method*/
-void ResetCameraClippingRange(vtkRenderer* theRenderer)
+void
+ResetCameraClippingRange(vtkRenderer* theRenderer)
 {
   if(!theRenderer || !theRenderer->VisibleActorCount()) return;
   
@@ -194,10 +188,11 @@ void ResetCameraClippingRange(vtkRenderer* theRenderer)
 }
 
 /*!Compute trihedron size.*/
-bool ComputeTrihedronSize( vtkRenderer* theRenderer,
-			   vtkFloatingPointType& theNewSize,
-			   const vtkFloatingPointType theSize, 
-			   const vtkFloatingPointType theSizeInPercents )
+bool
+ComputeTrihedronSize( vtkRenderer* theRenderer,
+		      vtkFloatingPointType& theNewSize,
+		      const vtkFloatingPointType theSize, 
+		      const vtkFloatingPointType theSizeInPercents )
 {
   // calculating diagonal of visible props of the renderer
   vtkFloatingPointType bnd[ 6 ];

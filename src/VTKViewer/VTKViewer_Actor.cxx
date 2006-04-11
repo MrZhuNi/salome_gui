@@ -410,12 +410,21 @@ bool
 VTKViewer_Actor
 ::IsInfinitive()
 { 
-  static vtkFloatingPointType MIN_DISTANCE = 1.0 / VTK_LARGE_FLOAT;
-
-  if(myIsInfinite || GetLength() < MIN_DISTANCE)
+  if(myIsInfinite)
     return true;
-  else
-    return false;
+
+  static float MAX_DISTANCE = 0.9*VTK_LARGE_FLOAT;
+  float aBounds[6];
+  GetBounds(aBounds);
+  for(int i = 0; i < 6; i++)
+    if(fabs(aBounds[i]) > MAX_DISTANCE)
+      return true;
+  
+  static float MIN_DISTANCE = 1.0/VTK_LARGE_FLOAT;
+  if(GetLength() < MIN_DISTANCE)
+    return true;
+  
+  return false;
 }
 
 
