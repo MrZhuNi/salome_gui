@@ -1291,9 +1291,6 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
   if ( viewWin && desktop() )
     viewWin->resize( (int)( desktop()->width() * 0.6 ), (int)( desktop()->height() * 0.6 ) );
 
-  connect( viewMgr, SIGNAL( lastViewClosed( SUIT_ViewManager* ) ),
-           this, SLOT( onCloseView( SUIT_ViewManager* ) ) );
-
   return viewMgr;
 }
 
@@ -2144,6 +2141,14 @@ void LightApp_Application::onWCDestroyed( QObject* ob )
     myWindows.remove( key );
     break;
   }
+}
+
+/*! redefined to connect  */
+void LightApp_Application::addViewManager( SUIT_ViewManager* vm )
+{
+  connect( vm, SIGNAL( lastViewClosed( SUIT_ViewManager* ) ),
+           this, SLOT( onCloseView( SUIT_ViewManager* ) ) );
+  STD_Application::addViewManager( vm );
 }
 
 /*! redefined to remove view manager from memory */
