@@ -69,9 +69,8 @@ QImage SUIT_ViewWindow::dumpView()
   return QImage();
 }
 
-bool SUIT_ViewWindow::dumpViewToFormat( const QString& fileName, const QString& format )
+bool SUIT_ViewWindow::dumpViewToFormat( const QImage& img, const QString& fileName, const QString& format )
 {
-  QImage img = dumpView();
   if( img.isNull() )
     return false; 
 
@@ -107,8 +106,12 @@ void SUIT_ViewWindow::contextMenuEvent ( QContextMenuEvent * e )
 */
 void SUIT_ViewWindow::onDumpView()
 {
-  qApp->postEvent( this, new QPaintEvent( QRect( 0, 0, width(), height() ), TRUE ) );
-  qApp->postEvent( this, new QCustomEvent( DUMP_EVENT ) );
+  qApp->processEvents();
+  qApp->sendEvent( this, new QPaintEvent( QRect( 0, 0, width(), height() ), TRUE ) );
+  QImage im = dumpView();
+  QCustomEvent* e = new QCustomEvent( DUMP_EVENT );
+  e->setData( &im );
+  qApp->sendEvent( this, e );
 }
 
 QString SUIT_ViewWindow::filter() const
@@ -131,7 +134,9 @@ bool SUIT_ViewWindow::event( QEvent* e )
       if( !fileName.isEmpty() )
       {
 	QString fmt = SUIT_Tools::extension( fileName ).upper();
-	bOk = dumpViewToFormat( fileName, fmt );
+	QCustomEvent* ce = ( QCustomEvent* )e;
+	QImage* im = ( QImage* )ce->data();
+	bOk = dumpViewToFormat( *im, fileName, fmt );
       }
       else
       {

@@ -452,11 +452,11 @@ QImage Plot2d_ViewWindow::dumpView()
   return px.convertToImage();
 }
 
-bool Plot2d_ViewWindow::dumpViewToFormat( const QString& fileName, const QString& format )
+bool Plot2d_ViewWindow::dumpViewToFormat( const QImage& im, const QString& fileName, const QString& format )
 {
   bool res = myViewFrame ? myViewFrame->print( fileName, format ) : false;
   if( !res )
-    res = SUIT_ViewWindow::dumpViewToFormat( fileName, format );
+    res = SUIT_ViewWindow::dumpViewToFormat( im, fileName, format );
 
   return res;
 }
