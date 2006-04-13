@@ -413,14 +413,14 @@ VTKViewer_Actor
   if(myIsInfinite)
     return true;
 
-  static float MAX_DISTANCE = 0.9*VTK_LARGE_FLOAT;
-  float aBounds[6];
+  static vtkFloatingPointType MAX_DISTANCE = 0.9*VTK_LARGE_FLOAT;
+  vtkFloatingPointType aBounds[6];
   GetBounds(aBounds);
   for(int i = 0; i < 6; i++)
     if(fabs(aBounds[i]) > MAX_DISTANCE)
       return true;
   
-  static float MIN_DISTANCE = 1.0/VTK_LARGE_FLOAT;
+  static vtkFloatingPointType MIN_DISTANCE = 1.0/VTK_LARGE_FLOAT;
   if(GetLength() < MIN_DISTANCE)
     return true;
   
