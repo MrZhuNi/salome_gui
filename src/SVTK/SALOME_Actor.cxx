@@ -372,6 +372,9 @@ SALOME_Actor
 	       SVTK_SelectionEvent* theSelectionEvent,
 	       bool theIsHighlight)
 {
+  if ( !GetPickable() )
+    return false;
+
   vtkRenderer *aRenderer = theInteractorStyle->GetCurrentRenderer();
   //
   myPreHighlightActor->SetVisibility( false );
@@ -511,6 +514,9 @@ SALOME_Actor
 	    SVTK_SelectionEvent* theSelectionEvent,
 	    bool theIsHighlight)
 {
+  if ( !GetPickable() )
+    return false;
+
   myOutlineActor->SetVisibility( false );
   myHighlightActor->SetVisibility( false );
 
