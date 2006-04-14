@@ -115,6 +115,9 @@ int QtxActionToolMgr::insert( const int id, const int tid, const int idx )
   if ( !contains( id ) || !hasToolBar( tid ) )
     return -1;
 
+  if ( containsAction( id, tid ) )
+    remove( id, tid );
+
   ToolNode node;
   node.id = id;
 
