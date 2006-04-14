@@ -1676,7 +1676,7 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 		       LightApp_Preferences::Color, "OCCViewer", "background" );
 
   pref->setItemProperty( occTS, "min", 1 );
-  pref->setItemProperty( occTS, "max", 150 );
+  pref->setItemProperty( occTS, "max", 1000 );
 
   int isoU = pref->addPreference( tr( "PREF_ISOS_U" ), occGroup,
 				  LightApp_Preferences::IntSpin, "OCCViewer", "iso_number_u" );
