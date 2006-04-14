@@ -152,6 +152,8 @@ public:
   int                    actionId( const QAction* ) const;
   QAction*               createAction( const int, const QString&, const QString&, const QString&,
                                        const QString&, const int, const bool = false );
+  /* load icon from resource file */
+  QIconSet               loadIcon( const QString& fileName );
 
   /* Show/hide menus/toolbars */
   void                   setMenuShown( const bool );
@@ -190,6 +192,8 @@ private:
   void            activate    ( SUIT_Study* );
   /* internal deactivation */ 
   void            deactivate  ( SUIT_Study* );
+  /* customization */ 
+  void            customize   ( SUIT_Study* );
   /* study activation */ 
   void            studyChanged( SUIT_Study* );
   /* context popup menu processing */
