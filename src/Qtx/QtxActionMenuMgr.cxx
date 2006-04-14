@@ -31,6 +31,58 @@
 #include <qmainwindow.h>
 #include <qfile.h>
 #include <qdom.h>
+#include <qvaluelist.h>
+
+// VSR: Uncomment this #define in order to allow dynamic menus support
+// (emit signals when popup menu is pre-activated)
+// Currently this support is disabled.
+//#define ENABLE_DYNAMIC_MENU
+ 
+/*!
+	Service functions
+	Level: Internal
+*/
+namespace {
+  QValueList<int> prepareIds( const QWidget* w )
+  {
+    QValueList<int> l;
+    const QMenuData* md = 0;
+    if ( w->inherits( "QMenuBar" ) )
+      md = dynamic_cast<const QMenuData*>( w );
+    else if ( w->inherits( "QPopupMenu" ) )
+      md = dynamic_cast<const QMenuData*>( w );
+    if ( md ) {
+      for ( int i=0; i < md->count(); i++ )
+	l.append( md->idAt( i ) );
+    }
+    return l;
+  }
+
+  int getNewId( const QWidget* w, const QValueList<int>& l, bool retId = true )
+  {
+    const QMenuData* md = 0;
+    if ( w->inherits( "QMenuBar" ) )
+      md = dynamic_cast<const QMenuData*>( w );
+    else if ( w->inherits( "QPopupMenu" ) )
+      md = dynamic_cast<const QMenuData*>( w );
+    if ( md ) {
+      for ( int i=0, j=0; i < md->count() && j < l.count(); i++, j++ )
+	if ( md->idAt( i ) != l[ j ] ) return retId ? md->idAt( i ) : i;
+      if ( md->count() > l.count() ) return retId ? md->idAt( md->count()-1 ) : md->count()-1;
+    }
+    return -1;
+  }
+
+  void dumpMenu( QWidget* w, bool before )
+  {
+    QMenuData* md = dynamic_cast<QMenuData*>( w );
+    if ( !w ) return;
+    printf(">>> start dump menu (%s) >>>\n", before ? "before" : "after" );
+    for( int i = 0; i < md->count(); i++ )
+      printf("%d: %d: %s\n",i,md->idAt(i),md->text(md->idAt(i)).latin1() );
+    printf("<<< end dump menu (%s) <<<\n", before ? "before" : "after" );
+  }
+};
 
 /*!
 	Class: QtxActionMenuMgr::MenuAction
@@ -40,7 +92,7 @@
 class QtxActionMenuMgr::MenuAction : public QtxAction
 {
 public:
-  MenuAction( const QString&, const QString&, QObject*, const bool = false );
+  MenuAction( const QString&, const QString&, QObject*, const int = -1, const bool = false );
   virtual ~MenuAction();
 
   virtual bool addTo( QWidget* );
@@ -50,17 +102,19 @@ public:
   QPopupMenu*  popup() const;
 
 private:
-  int          myId;
-  QPopupMenu*  myPopup;
-  bool         myEmptyEnabled;
+  int                myId;
+  QPopupMenu*        myPopup;
+  bool               myEmptyEnabled;
+  QMap<QWidget*,int> myIds;
 };
 
 QtxActionMenuMgr::MenuAction::MenuAction( const QString& text,
 					  const QString& menuText,
 					  QObject*       parent,
+					  const int      id,
 					  const bool     allowEmpty )
 : QtxAction( text, menuText, 0, parent ),
-  myId( -1 ),
+  myId( id ),
   myPopup( 0 ),
   myEmptyEnabled( allowEmpty )
 {
@@ -74,30 +128,42 @@ QtxActionMenuMgr::MenuAction::~MenuAction()
 
 bool QtxActionMenuMgr::MenuAction::addTo( QWidget* w )
 {
-  if ( myId != -1 || !w )
-    return false;
+  if ( !w ) 
+    return false;  // bad widget
 
   if ( !w->inherits( "QPopupMenu" ) && !w->inherits( "QMenuBar" ) )
-    return false;
+    return false;  // not allowed widget type
+
+  if ( myIds.find( w ) != myIds.end() )
+    return false;  // already added
 
   if ( !myPopup )
-    return false;
+    return false;  // bad own popup menu
 
   if ( !myEmptyEnabled && !myPopup->count() )
-    return false;
+    return false;  // not allowed empty menu
 
-  if ( w->inherits( "QPopupMenu" ) && QAction::addTo( w ) )
-  {
-    QPopupMenu* pm = (QPopupMenu*)w;
-    myId = pm->idAt( pm->count() - 1 );
-    setPopup( pm, myId, myPopup );
+  if ( w->inherits( "QPopupMenu" )  ) {
+    QValueList<int> l = prepareIds( w );
+    int idx;
+    if ( QtxAction::addTo( w ) && ( idx = getNewId( w, l, false ) ) != -1 ) {
+      QPopupMenu* pm = (QPopupMenu*)w;
+      myIds[ w ] = pm->idAt( idx );
+      if ( myId != -1 ) 
+	pm->setId( idx, myId );
+      setPopup( pm, myId != -1 ? myId : myIds[ w ], myPopup );
+    }
   }
-  else if ( w->inherits( "QMenuBar" ) )
-  {
-    QMenuBar* mb = (QMenuBar*)w;
-    myId = iconSet().isNull() ? mb->insertItem( menuText(), myPopup ) :
-                                mb->insertItem( iconSet(), menuText(), myPopup );
-    mb->setItemEnabled( myId, isEnabled() );
+  else if ( w->inherits( "QMenuBar" ) ) {
+    QValueList<int> l = prepareIds( w );
+    int idx;
+    if ( QtxAction::addTo( w ) && ( idx = getNewId( w, l, false ) ) != -1 ) {
+      QMenuBar* mb = (QMenuBar*)w;
+      myIds[ w ] = mb->idAt( idx );
+      if ( myId != -1 ) 
+	mb->setId( idx, myId );
+      setPopup( mb, myId != -1 ? myId : myIds[ w ], myPopup );
+    }
   }
   else
     return false;
@@ -107,16 +173,35 @@ bool QtxActionMenuMgr::MenuAction::addTo( QWidget* w )
 
 bool QtxActionMenuMgr::MenuAction::removeFrom( QWidget* w )
 {
-  if ( w->inherits( "QPopupMenu" ) && QAction::removeFrom( w ) )
-    myId = -1;
+  if ( !w ) 
+    return false;  // bad widget
+
+  if ( !w->inherits( "QPopupMenu" ) && !w->inherits( "QMenuBar" ) )
+    return false;  // not allowed widget type
+
+  if ( myIds.find( w ) == myIds.end() )
+    return false;  // not yet added
+
+  if ( w->inherits( "QPopupMenu" ) ) {
+    if ( myId != -1 ) {
+      QPopupMenu* pm = (QPopupMenu*)w;
+      int idx = pm->indexOf( myId );
+      if ( idx != -1 ) pm->setId( idx, myIds[ w ] );
+    }
+    myIds.remove( w );
+    return QtxAction::removeFrom( w );;
+  }
   else if ( w->inherits( "QMenuBar" ) )
   {
-    QMenuBar* mb = (QMenuBar*)w;
-    mb->removeItem( myId );
-    myId = -1;
+    if ( myId != -1 ) {
+      QMenuBar* mb = (QMenuBar*)w;
+      int idx = mb->indexOf( myId );
+      if ( idx != -1 ) mb->setId( idx, myIds[ w ] );
+    }
+    myIds.remove( w );
+    return QtxAction::removeFrom( w );
   }
-
-  return myId == -1;
+  return false;
 }
 
 QPopupMenu* QtxActionMenuMgr::MenuAction::popup() const
@@ -132,21 +217,23 @@ QPopupMenu* QtxActionMenuMgr::MenuAction::popup() const
 
 QtxActionMenuMgr::QtxActionMenuMgr( QMainWindow* p )
 : QtxActionMgr( p ),
-myMenu( p ? p->menuBar() : 0 )
+  myMenu( p ? p->menuBar() : 0 )
 {
   myRoot.id = -1;
   myRoot.group = -1;
 
   if ( myMenu ) {
     connect( myMenu, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
+#ifdef ENABLE_DYNAMIC_MENU
     if ( myMenu->inherits( "QMenuBar" ) )
       connect( myMenu, SIGNAL( highlighted( int ) ), this, SLOT( onHighlighted( int ) ) );
+#endif
   }
 }
 
 QtxActionMenuMgr::QtxActionMenuMgr( QWidget* mw, QObject* p )
 : QtxActionMgr( p ),
-myMenu( mw )
+  myMenu( mw )
 {
   myRoot.id = -1;
   myRoot.group = -1;
@@ -257,13 +344,17 @@ int QtxActionMenuMgr::insert( const QString& title, const int pId, const int gro
   if ( fid != -1 )
     return fid;
 
-  MenuAction* ma = new MenuAction( clearTitle( title ), title, this, allowEmpty );
+  int gid = (id == -1 || eNode ) ? generateId() : id;
+
+  MenuAction* ma = new MenuAction( clearTitle( title ), title, this, gid, allowEmpty );
+#ifdef ENABLE_DYNAMIC_MENU
   connect( ma->popup(), SIGNAL( highlighted( int ) ), this, SLOT( onHighlighted( int ) ) );
+#endif
 
   MenuNode* node = new MenuNode( pNode );
   node->group = group;
   node->idx = idx;
-  node->id = myMenus.insert( (id == -1 || eNode ) ? generateId() : id, ma ).key();
+  node->id = myMenus.insert( gid, ma ).key();
 
   pNode->children.append( node );
 
@@ -550,12 +641,12 @@ void QtxActionMenuMgr::updateMenu( MenuNode* startNode, const bool rec, const bo
     if ( a )
       a->removeFrom( mw );
   }
-
+  /* VSR: commented to allow direct creating of menus by calling insertItem() methods
   if ( mw->inherits( "QMenuBar" ) )
     ((QMenuBar*)mw)->clear();
   else if ( mw->inherits( "QPopupMenu" ) )
     ((QPopupMenu*)mw)->clear();
-
+  */
   QMap<int, NodeList> idMap;
   for ( NodeListIterator it2( node->children ); it2.current(); ++it2 )
   {
@@ -591,18 +682,8 @@ void QtxActionMenuMgr::updateMenu( MenuNode* startNode, const bool rec, const bo
       QAction* a = itemAction( iter.current()->id );
       if ( !a )
         a = menuAction( iter.current()->id );
-      if ( a ) {
-	QMenuData* md = dynamic_cast<QMenuData*>( mw );
-	int cnt = 0;
-	if ( md ) cnt = md->count();
+      if ( a )
 	a->addTo( mw );
-	if ( md && md->count() - cnt == 1 ) { //&& iter.current()->id > 0
-	  int lid = md->idAt( cnt ); 
-	  QMenuItem* mi = md->findItem( lid );
-	  if ( mi && !mi->isSeparator() )
-	    md->setId( cnt, iter.current()->id );
-	}
-      }
     }
   }
 
@@ -629,7 +710,7 @@ bool QtxActionMenuMgr::checkWidget( QWidget* wid ) const
   else if ( wid->inherits( "QMenuBar" ) )
     md = (QMenuBar*)wid;
 
-  return md->count();
+  return md ? md->count() : false;
 }
 
 QWidget* QtxActionMenuMgr::menuWidget( MenuNode* node) const
