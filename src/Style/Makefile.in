@@ -55,7 +55,7 @@ $(INSTALL_PLUGINDIR):
 	mkdir -p $@
 
 $(INSTALL_COPYLIB):
-	(cd $(bindir)/styles; ln -sf $(patsubst %.la, ../../../lib/salome/%.so, $(filter %.la, $(LIB))) $@) || true
+	(cd $(bindir)/styles; ln -sf $(patsubst %.la, ../../../lib@LIB_LOCATION_SUFFIX@/salome/%.so, $(filter %.la, $(LIB))) $@) || true
 
 @CONCLUDE@
 

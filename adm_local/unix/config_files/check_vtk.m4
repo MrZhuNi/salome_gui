@@ -135,7 +135,7 @@ else
   VTK_MT_LIBS="$LOCAL_LIBS"
 fi
 
-AC_MSG_RESULT(for vtk: $vtk_ok)
+AC_MSG_RESULT(for VTK: $vtk_ok)
 
 AC_LANG_RESTORE
 

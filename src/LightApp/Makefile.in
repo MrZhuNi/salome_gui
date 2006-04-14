@@ -135,7 +135,7 @@ RESOURCES_FILES = icon_about.png \
 		  LightApp.xml
 
 CPPFLAGS+=$(PYTHON_INCLUDES) $(QT_INCLUDES) $(OCC_INCLUDES) \
-	$(HDF5_INCLUDES) -I${KERNEL_ROOT_DIR}/include/salome
+	$(HDF5_INCLUDES) $(KERNEL_CXXFLAGS)
 
 ifneq ($(DISABLE_VTKVIEWER),yes)
   CPPFLAGS+= $(VTK_INCLUDES)
@@ -171,7 +171,7 @@ ifneq ($(DISABLE_PYCONSOLE),yes)
 endif
 
 LIBS+= -lsuit -lstd -lCAM -lObjBrowser -lLogWindow $(CAS_KERNEL) -lSalomePrs \
-	$(HDF5_LIBS) -L$(KERNEL_ROOT_DIR)/lib/salome -lSalomeHDFPersist
+	$(HDF5_LIBS) $(KERNEL_LDFLAGS) -lSalomeHDFPersist
 
 ifneq ($(DISABLE_SALOMEOBJECT),yes)
   LIBS+= -lSalomeObject
