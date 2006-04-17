@@ -15,7 +15,7 @@ if (navigator.appName !="Netscape")
 <style type="text/css">
 <!--
 p.whs1 { font-weight:bold; }
-img_whs2 { border:none; border-style:none; width:668px; height:646px; float:none; }
+img_whs2 { border:none; width:668px; height:646px; float:none; border-style:none; }
 ul.whs3 { list-style:disc; }
 p.whs4 { font-weight:normal; }
 p.whs5 { font-weight:bold; margin-left:57px; }
@@ -29,11 +29,11 @@ p.whs12 { font-weight:bold; margin-left:36px; }
 p.whs13 { margin-left:0px; text-align:justify; font-weight:bold; }
 p.whs14 { margin-left:0px; text-align:justify; font-weight:normal; }
 p.whs15 { text-align:justify; font-weight:bold; margin-left:38px; }
-ul.whs16 { list-style:square; }
-p.whs17 { font-style:normal; }
-p.whs18 { margin-left:76px; }
-p.whs19 { text-align:justify; font-weight:bold; margin-left:0px; }
-img_whs20 { border:none; border-style:none; width:668px; height:646px; float:none; }
+ol.whs16 { list-style:disc; }
+ul.whs17 { list-style:square; }
+p.whs18 { font-style:normal; }
+p.whs19 { margin-left:76px; }
+p.whs20 { text-align:justify; font-weight:bold; margin-left:0px; }
 p.whs21 { margin-left:38px; text-align:justify; font-weight:bold; }
 p.whs22 { text-align:justify; font-weight:bold; margin-left:76px; }
 -->
@@ -47,7 +47,7 @@ if ((navigator.appName == "Netscape") && (parseInt(navigator.appVersion) == 4))
   strNSS += "p.whs10 {margin-left:1pt; }";
   strNSS += "p.whs13 {margin-left:1pt; }";
   strNSS += "p.whs14 {margin-left:1pt; }";
-  strNSS += "p.whs19 {margin-left:1pt; }";
+  strNSS += "p.whs20 {margin-left:1pt; }";
   strNSS +="</style>";
   document.write(strNSS);
 }
@@ -203,8 +203,7 @@ else
 
 <ul type="disc" class="whs3">
 	
-	<li class=kadov-p><p class="whs1">Sweeping preference<span 
- style="margin-left: 40px; text-align: justify;">s</span></p></li>
+	<li class=kadov-p><p class="whs1">Sweeping preferences</p></li>
 	
 	<ul type="disc" class="whs3">
 		
@@ -286,12 +285,10 @@ else
 
 <ul type="disc" class="whs3">
 	
-	<li class=kadov-p><p class="whs1">Primitive <span style="margin-left: 40px; text-align: justify;">-</span><span 
- style="margin-left: 40px;
-		text-align: justify;
-		font-weight: normal;"> this menu allows user to choose the graphic 
- primitive to use to present the results at Gauss points in the viewer.</span><span 
- style="margin-left: 40px; text-align: justify;"> </span></p></li>
+	<li class=kadov-p><p class="whs1">Primitive - <span style="font-weight: normal;">this 
+ menu allows user to choose the graphic primitive to use to present the 
+ results at Gauss points in the viewer.</span><span style="margin-left: 40px; text-align: justify;"> 
+ </span></p></li>
 	
 	<ul type="disc" class="whs3">
 		
@@ -346,7 +343,7 @@ else
  cells of the mesh) to define the range for minimum and maximum size of 
  a point during rendering (at magnification = 100%). Default values are:</span></p></li>
 	
-	<ul type="disc" class="whs3">
+	<ol type="disc" class="whs16">
 		
 		<ul type="disc" class="whs3">
 			
@@ -356,12 +353,12 @@ else
  scale: <span style="font-weight: bold;"><B>min = 10%</B></span>, <span style="font-weight: bold;"><B>max 
  = 33%</B></span></p></li>
 			
-			<ul type="square" class="whs16">
+			<ul type="square" class="whs17">
 				
-				<li class=kadov-p><p class="whs17">Min size 
+				<li class=kadov-p><p class="whs18">Min size 
  is associated to the smallest real value (including negative values).</p></li>
 				
-				<li class=kadov-p><p class="whs17">Max size 
+				<li class=kadov-p><p class="whs18">Max size 
  is associated to the largest real value.</p></li>
 			</ul>
 			
@@ -371,19 +368,19 @@ else
  scale: <span style="font-weight: bold;"><B>min = 0</B></span> (not editable), 
  <span style="font-weight: bold;"><B>max = 33%</B></span></p></li>
 			
-			<ul type="square" class="whs16">
+			<ul type="square" class="whs17">
 				
-				<li class=kadov-p><p class="whs17">Null size 
+				<li class=kadov-p><p class="whs18">Null size 
  is associated to the 0 scalar value.</p></li>
 				
-				<li class=kadov-p><p class="whs17">Max size 
+				<li class=kadov-p><p class="whs18">Max size 
  is associated to the largest absolute value.</p></li>
 			</ul>
 		</ul>
-	</ul>
+	</ol>
 </ul>
 
-<p class="whs18">Both values are dynamically updated by the 
+<p class="whs19">Both values are dynamically updated by the 
  system according to the selected scalar bar. In the case of a <span style="font-weight: bold;"><B>Bicolor</B></span> 
  scale, the minimum value is set to 0 in the dialog and the control is 
  disabled.</p>
@@ -457,11 +454,11 @@ else
 
 <p class="whs6">&nbsp;</p>
 
-<p class="whs19">Picking Preferences</p>
+<p class="whs20">Picking Preferences</p>
 
-<p class="whs19">&nbsp;</p>
+<p class="whs20">&nbsp;</p>
 
-<p class="whs19"><img src="pics/propp6.png" x-maintain-ratio="TRUE" width="668px" height="646px" border="0" class="img_whs20"></p>
+<p class="whs20"><img src="pics/propp6.png" x-maintain-ratio="TRUE" width="668px" height="646px" border="0" class="img_whs2"></p>
 
 <p class="whs5">&nbsp;</p>
 
@@ -510,11 +507,11 @@ else
 
 <p class="whs15">&nbsp;</p>
 
-<p class="whs19">Navigation Preferences</p>
+<p class="whs20">Navigation Preferences</p>
 
 <p class="whs15">&nbsp;</p>
 
-<p class="whs19"><img src="pics/propp7.png" x-maintain-ratio="TRUE" width="668px" height="646px" border="0" class="img_whs20"></p>
+<p class="whs20"><img src="pics/propp7.png" x-maintain-ratio="TRUE" width="668px" height="646px" border="0" class="img_whs2"></p>
 
 <p class="whs21">&nbsp;</p>
 
@@ -598,11 +595,11 @@ else
 
 <p class="whs15">&nbsp;</p>
 
-<p class="whs19">Recorder Preferences</p>
+<p class="whs20">Recorder Preferences</p>
 
-<p class="whs19">&nbsp;</p>
+<p class="whs20">&nbsp;</p>
 
-<p class="whs19"><img src="pics/propp8.png" x-maintain-ratio="TRUE" width="668px" height="646px" border="0" class="img_whs20"></p>
+<p class="whs20"><img src="pics/propp8.png" x-maintain-ratio="TRUE" width="668px" height="646px" border="0" class="img_whs2"></p>
 
 <p class="whs1">&nbsp;</p>
 
