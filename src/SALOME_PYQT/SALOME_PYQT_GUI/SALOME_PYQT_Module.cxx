@@ -1429,9 +1429,14 @@ static bool checkBool( const QString& value, const int check = -1 ) {
 
 // checks the given value for the integer value [ static ]
 // returns -1 if item is empty or presents and invalid number
-static int checkInt( const QString& value, const int def = -1 )
+static int checkInt( const QString& value, const int def = -1, const int shift = -1 )
 {
-  return value.isEmpty() ? def : value.toInt();
+  bool bOk;
+  int val = value.toInt( &bOk );
+  if ( !bOk ) val = def;
+  if ( shift > 0 && bOk && val < 0 )
+    val += shift;
+  return val;
 }
 
 /*!
@@ -1573,6 +1578,7 @@ void SALOME_PYQT_XmlHandler::createMenu( QDomNode&   parentNode,
 	  if ( mi ) popup = mi->popup();
 	  if ( !popup ) {
 	    popup = new QPopupMenu( desktop );
+	    ppos = checkInt( attribute( parentElement, "pos-id" ), -1, mb->count() );
 	    menuId = mb->insertItem( plabel, popup, pid, ppos );
 	    myCurrentMenu.push_back( QString::number( menuId ) );
 	    myMenuItems.append( myCurrentMenu.join( ":" ) );
@@ -1588,6 +1594,7 @@ void SALOME_PYQT_XmlHandler::createMenu( QDomNode&   parentNode,
 	  if ( mi ) popup = mi->popup();
 	  if ( !popup ) {
 	    popup = new QPopupMenu( desktop );
+	    ppos = checkInt( attribute( parentElement, "pos-id" ), -1, popup->count() );
 	    menuId = parentPopup->insertItem( plabel, popup, pid, ppos );
 	    myCurrentMenu.push_back( QString::number( menuId ) );
 	    myMenuItems.append( myCurrentMenu.join( ":" ) );
@@ -1628,6 +1635,7 @@ void SALOME_PYQT_XmlHandler::createMenu( QDomNode&   parentNode,
 	    if ( id != -1 ) {
 	      if ( IsCallOldMethods ) { // __CALL_OLD_METHODS__
 		QIconSet iconSet = myModule->loadIcon( icon );
+		pos = checkInt( attribute( elem, "pos-id" ), -1, popup->count() );
 		int aid = iconSet.isNull() ? popup->insertItem( label, 
 								myModule,
 								SLOT( onGUIEvent(int) ),
@@ -1676,6 +1684,7 @@ void SALOME_PYQT_XmlHandler::createMenu( QDomNode&   parentNode,
 	    int group = checkInt( attribute( elem, "group-id" ), 
 				  myModule->defaultMenuGroup() );
 	    if ( IsCallOldMethods ) { // __CALL_OLD_METHODS__
+	      pos = checkInt( attribute( elem, "pos-id" ), -1, popup->count() );
 	      int sid = popup->insertSeparator( pos );
 	      myCurrentMenu.push_back( QString::number( sid ) );
 	      myMenuItems.append( myCurrentMenu.join( ":" ) );
