@@ -36,6 +36,12 @@ SVTK_ViewManager::~SVTK_ViewManager()
 }
 
 //***************************************************************
+SUIT_Desktop* SVTK_ViewManager::getDesktop()
+{
+  return myDesktop;
+}
+
+//***************************************************************
 void SVTK_ViewManager::setViewName(SUIT_ViewWindow* theView)
 {
   int aPos = myViews.find(theView);
