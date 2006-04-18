@@ -994,7 +994,8 @@ void SALOME_PYQT_Module::initInterp( int theStudyId )
     return;
   }
   // ... then call a method
-  PyObjWrapper aRes( PyObject_CallMethod( aMod, "salome_init", "" ) );
+  int embedded = 1;
+  PyObjWrapper aRes( PyObject_CallMethod( aMod, "salome_init", "ii", theStudyId, embedded ) );
   if( !aRes ) {
     // Error!
     PyErr_Print();
