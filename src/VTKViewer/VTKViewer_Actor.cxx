@@ -307,18 +307,25 @@ VTKViewer_Actor
   switch(myRepresentation){
   case VTK_POINTS : 
   case VTK_SURFACE : 
-    myProperty->DeepCopy(GetProperty());
+    myProperty->SetAmbient(GetProperty()->GetAmbient());
+    myProperty->SetDiffuse(GetProperty()->GetDiffuse());
+    myProperty->SetSpecular(GetProperty()->GetSpecular());
+    break;
   }    
+
   switch(theMode){
   case VTK_POINTS : 
   case VTK_SURFACE : 
-    GetProperty()->DeepCopy(myProperty);
+    GetProperty()->SetAmbient(myProperty->GetAmbient());
+    GetProperty()->SetDiffuse(myProperty->GetDiffuse());
+    GetProperty()->SetSpecular(myProperty->GetSpecular());
     break;
   default:
     GetProperty()->SetAmbient(1.0);
     GetProperty()->SetDiffuse(0.0);
     GetProperty()->SetSpecular(0.0);
   }
+
   switch(theMode){
   case 3 : 
     myGeomFilter->SetInside(true);
@@ -342,6 +349,7 @@ VTKViewer_Actor
     myGeomFilter->SetInside(false);
     break;
   }
+
   myRepresentation = theMode;
 }
 
