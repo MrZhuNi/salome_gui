@@ -408,7 +408,10 @@ bool QtxResourceMgr::XmlFormat::load( const QString& fname, QMap<QString, Sectio
 
   QFile file( fname );
   if ( !file.open( IO_ReadOnly ) )
+  {
+    qDebug( "File cannot be opened" );
     return false;
+  }
 
   QDomDocument doc;
 
@@ -416,11 +419,17 @@ bool QtxResourceMgr::XmlFormat::load( const QString& fname, QMap<QString, Sectio
   file.close();
 
   if ( !res )
+  {
+    qDebug( "File is empty" );
     return false;
+  }
 
   QDomElement root = doc.documentElement();
   if ( root.isNull() || root.tagName() != docTag() )
+  {
+    qDebug( "Invalid root" );
     return false;
+  }
 
   QDomNode sectNode = root.firstChild();
   while ( res && !sectNode.isNull() )
@@ -448,25 +457,41 @@ bool QtxResourceMgr::XmlFormat::load( const QString& fname, QMap<QString, Sectio
               secMap[section].insert( paramName, paramValue );
             }
             else
+	    {
+	      qDebug( "Invalid parameter element" );
               res = false;
+	    }
           }
 	  else
+	  {
 	    res = paramNode.isComment();
+	    if( !res )
+	      qDebug( "Node isn't element nor comment" );
+	  }
 
           paramNode = paramNode.nextSibling();
         }
       }
       else
+      {
+	qDebug( "Invalid section" );
         res = false;
+      }
     }
     else
+    {
       res = sectNode.isComment(); // if it's a comment -- let it be, pass it..
+      if( !res )
+	qDebug( "Node isn't element nor comment" );
+    }
 
     sectNode = sectNode.nextSibling();
   }
 
 #endif
 
+  if( res )
+    qDebug( QString( "File '%1' is loaded successfully" ).arg( fname ) );
   return res;
 }
 
@@ -637,7 +662,9 @@ bool QtxResourceMgr::Format::save( Resources* res )
 
   Qtx::mkDir( Qtx::dir( res->myFileName ) );
 
-  return save( res->myFileName, res->mySections );
+  QtxResourceMgr* mgr = res->resMgr();
+  QString name = mgr ? mgr->userFileName( mgr->appName(), false ) : res->myFileName;
+  return save( name, res->mySections );
 }
 
 /*!
@@ -1344,6 +1371,26 @@ bool QtxResourceMgr::load()
 }
 
 /*!
+  \brief Import some file with resources
+*/
+bool QtxResourceMgr::import( const QString& fname )
+{
+  Format* fmt = format( currentFormat() );
+  if ( !fmt )
+    return false;
+
+  Resources* r = myResources.getFirst();
+  if( !r )
+    return false;
+
+  QString old = r->file();
+  r->setFile( fname );
+  bool res = fmt->load( r );
+  r->setFile( old );
+  return res;
+}
+
+/*!
   \brief Save the changed resources in to the user resource file.
 */
 bool QtxResourceMgr::save()
@@ -1618,7 +1665,7 @@ void QtxResourceMgr::setResource( const QString& sect, const QString& name, cons
     myResources.first()->setValue( sect, name, val );
 }
 
-QString QtxResourceMgr::userFileName( const QString& appName ) const
+QString QtxResourceMgr::userFileName( const QString& appName, const bool /*for_load*/ ) const
 {
   QString fileName;
   QString pathName = QDir::homeDirPath();
