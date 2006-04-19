@@ -42,6 +42,7 @@
 #include <qfile.h>
 #include <qapplication.h>
 #include <qwaitcondition.h>
+#include <qregexp.h>
 
 #include "Utils_SALOME_Exception.hxx"
 #include "Utils_CorbaException.hxx"
@@ -180,10 +181,38 @@ public:
   QString version() const { return myExtAppVersion; }
 
 protected:
-  QString userFileName( const QString& appName ) const
+  QString userFileName( const QString& appName, const bool for_load ) const
   { 
     if ( version().isNull()  ) return ""; 
-    return SUIT_ResourceMgr::userFileName( myExtAppName );
+    return SUIT_ResourceMgr::userFileName( myExtAppName, for_load );
+  }
+
+  virtual int userFileId( const QString& _fname ) const
+  {
+    QRegExp exp( "\\.SalomeApprc\\.([a-zA-Z0-9.]+)$" );
+    QRegExp vers_exp( "^([0-9]+)([A-Za-z]?)([0-9]*)" );
+
+    QString fname = QFileInfo( _fname ).fileName();
+    if( exp.exactMatch( fname ) )
+    {
+      QStringList vers = QStringList::split( ".", exp.cap( 1 ) );
+      int major=0, minor=0;
+      major = vers[0].toInt();
+      minor = vers[1].toInt();
+      vers_exp.search( vers[2] );
+      int release = 0, dev1 = 0, dev2 = 0;
+      release = vers_exp.cap( 1 ).toInt();
+      dev1 = vers_exp.cap( 2 )[ 0 ].latin1();
+      dev2 = vers_exp.cap( 3 ).toInt();
+
+      int dev = dev1*100+dev2, id = major;
+      id*=100; id+=minor;
+      id*=100; id+=release;
+      id*=10000; id+=dev;
+      return id;
+    }
+
+    return -1;
   }
 
 public:
