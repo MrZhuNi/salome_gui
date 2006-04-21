@@ -485,7 +485,7 @@ void CAM_Application::readModuleList()
   }
 
   if ( myInfoList.isEmpty() )
-    SUIT_MessageBox::error1( 0, tr( "Error" ), tr( "Can not load modules configuration file " ), tr( "Ok" ) );
+    SUIT_MessageBox::warn1( 0, tr( "Warning" ), tr( "Modules list is empty" ), tr( "&OK" ) );
 }
 
 /*!Add common items for popup menu ( if they are exist )
