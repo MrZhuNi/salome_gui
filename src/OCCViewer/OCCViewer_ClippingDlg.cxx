@@ -1,17 +1,15 @@
 #include "OCCViewer_ClippingDlg.h"
 
 #include <QtxDblSpinBox.h>
+#include <QtxAction.h>
 
 #include "SUIT_Session.h"
 #include "SUIT_ViewWindow.h"
 #include "OCCViewer_ViewWindow.h"
 #include "OCCViewer_ViewPort3d.h"
 
-//#include "utilities.h"
-
 #include <V3d_View.hxx>
-#include <V3d.hxx>
-#include <V3d_Plane.hxx>
+//#include <V3d.hxx>
 #include <Geom_Plane.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
@@ -210,6 +208,15 @@ OCCViewer_ClippingDlg::~ OCCViewer_ClippingDlg()
 void OCCViewer_ClippingDlg::closeEvent( QCloseEvent* e )
 {
   erasePreview();
+  
+  // Set the clipping plane back
+  Handle(V3d_View) aView3d = myView->getViewPort()->getView();
+  if ( !aView3d.IsNull() && !myClippingPlane.IsNull() )
+    aView3d->SetPlaneOn( myClippingPlane );
+  
+  if (!myView->isCuttingPlane())
+    myAction->setOn( false );
+  
   QDialog::closeEvent( e );
 }
 
@@ -220,6 +227,8 @@ void OCCViewer_ClippingDlg::closeEvent( QCloseEvent* e )
 //=================================================================================
 void OCCViewer_ClippingDlg::showEvent( QShowEvent* e )
 {
+  ReserveClippingPlane();
+  
   QDialog::showEvent( e );
   onPreview( PreviewChB->isChecked() );
 }
@@ -243,6 +252,15 @@ void OCCViewer_ClippingDlg::hideEvent( QHideEvent* e )
 void OCCViewer_ClippingDlg::ClickOnClose()
 {
   erasePreview();
+
+  // Set the clipping plane back
+  Handle(V3d_View) aView3d = myView->getViewPort()->getView();
+  if ( !aView3d.IsNull() && !myClippingPlane.IsNull() )
+    aView3d->SetPlaneOn( myClippingPlane );
+
+  if (!myView->isCuttingPlane())
+    myAction->setOn( false );
+  
   reject();
 }
 
@@ -261,8 +279,10 @@ void OCCViewer_ClippingDlg::ClickOnApply()
 	                         SpinBox_Dx->value(), SpinBox_Dy->value(), SpinBox_Dz->value() );
   
   QApplication::restoreOverrideCursor(); 
-
+  
   erasePreview();
+  
+  ReserveClippingPlane();
 }
 
 
@@ -440,6 +460,9 @@ void OCCViewer_ClippingDlg::displayPreview()
   myPreviewPlane = new AIS_Plane( new Geom_Plane( aBasePnt, aNormal ) );
   myPreviewPlane->SetSize( aSize, aSize );
   
+  // Deactivate clipping planes
+  myView->getViewPort()->getView()->SetPlaneOff();
+
   ic->Display( myPreviewPlane, 1, -1, false );
   ic->SetWidth( myPreviewPlane, 10, false );
   ic->SetMaterial( myPreviewPlane, Graphic3d_NOM_PLASTIC, false );
@@ -506,4 +529,19 @@ void OCCViewer_ClippingDlg::onPreview( bool on )
 bool OCCViewer_ClippingDlg::isValid()
 {
   return ( SpinBox_Dx->value()!=0 || SpinBox_Dy->value()!=0 || SpinBox_Dz->value()!=0 );
+}
+
+//================================================================
+// Function : ReserveClippingPlane
+// Purpose  : Remember the current clipping plane
+//================================================================
+void OCCViewer_ClippingDlg::ReserveClippingPlane()
+{
+  Handle(V3d_View) aView3d = myView->getViewPort()->getView();
+  if ( !aView3d.IsNull() )
+    {
+      aView3d->InitActivePlanes();
+      if ( aView3d->MoreActivePlanes() )
+	myClippingPlane = aView3d->ActivePlane();
+    }
 }

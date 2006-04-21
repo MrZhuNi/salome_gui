@@ -6,6 +6,7 @@
 #include <qdialog.h>
 
 #include <AIS_Plane.hxx>
+#include <V3d_Plane.hxx>
 
 class QGroupBox;
 class QLabel;
@@ -13,6 +14,7 @@ class QPushButton;
 class QComboBox;
 class QCheckBox;
 class QtxDblSpinBox;
+class QtxAction;
 
 class OCCViewer_ViewWindow;
 
@@ -28,6 +30,8 @@ class OCCViewer_ClippingDlg : public QDialog
     public:
     OCCViewer_ClippingDlg(OCCViewer_ViewWindow* , QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0);
     ~OCCViewer_ClippingDlg();
+
+    void SetAction( QtxAction* theAction ) { myAction = theAction; }
     
 private :
 
@@ -36,6 +40,7 @@ private :
     virtual void hideEvent ( QHideEvent * );
     void displayPreview();
     void erasePreview();
+    void ReserveClippingPlane();
 
     bool isValid();
      
@@ -67,8 +72,11 @@ private :
     OCCViewer_ViewWindow* myView;
 
     Handle(AIS_Plane) myPreviewPlane;
+    Handle(V3d_Plane) myClippingPlane;
     
     bool myBusy;
+
+    QtxAction* myAction;
     
 private slots:
   void ClickOnApply();

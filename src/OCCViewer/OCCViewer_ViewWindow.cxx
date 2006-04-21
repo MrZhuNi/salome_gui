@@ -671,12 +671,12 @@ void OCCViewer_ViewWindow::createActions()
   connect(aAction, SIGNAL(activated()), this, SLOT(onCloneView()));
 	myActionsMap[ CloneId ] = aAction;
 
-  aAction = new QtxAction(tr("MNU_CLIPPING"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_CLIPPING" ) ),
+  myClippingAction = new QtxAction(tr("MNU_CLIPPING"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_CLIPPING" ) ),
                            tr( "MNU_CLIPPING" ), 0, this);
-  aAction->setStatusTip(tr("DSC_CLIPPING"));
-  aAction->setToggleAction( true );
-  connect(aAction, SIGNAL(toggled( bool )), this, SLOT(onClipping( bool )));
-	myActionsMap[ ClippingId ] = aAction;
+  myClippingAction->setStatusTip(tr("DSC_CLIPPING"));
+  myClippingAction->setToggleAction( true );
+  connect(myClippingAction, SIGNAL(toggled( bool )), this, SLOT(onClipping( bool )));
+	myActionsMap[ ClippingId ] = myClippingAction;
 
   aAction = new QtxAction(tr("MNU_SHOOT_VIEW"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_SHOOT_VIEW" ) ),
                            tr( "MNU_SHOOT_VIEW" ), 0, this);
@@ -835,7 +835,10 @@ void OCCViewer_ViewWindow::onClipping( bool on )
   if ( on )
     {
       if ( !myClippingDlg )
-	myClippingDlg = new OCCViewer_ClippingDlg( this, myDesktop );
+	{
+	  myClippingDlg = new OCCViewer_ClippingDlg( this, myDesktop );
+	  myClippingDlg->SetAction( myClippingAction );
+	}
 
       if ( !myClippingDlg->isShown() )
 	myClippingDlg->show();
@@ -904,9 +907,12 @@ QImage OCCViewer_ViewWindow::dumpView()
 void  OCCViewer_ViewWindow::setCuttingPlane( bool on, const double x,  const double y,  const double z,
                 				      const double dx, const double dy, const double dz )
 {
+  Handle(V3d_View) view = myViewPort->getView();
+  if ( view.IsNull() )
+    return;
+
   if ( on ) {
     Handle(V3d_Viewer) viewer = myViewPort->getViewer();
-    Handle(V3d_View) view = myViewPort->getView();
     
     // try to use already existing plane or create a new one
     Handle(V3d_Plane) clipPlane;
@@ -922,33 +928,20 @@ void  OCCViewer_ViewWindow::setCuttingPlane( bool on, const double x,  const dou
     pln.Coefficients( a, b, c, d );
     clipPlane->SetPlane( a, b, c, d );
     
-    Handle(V3d_View) v = myViewPort->getView();
-    v->SetPlaneOn( clipPlane );
-    v->Update();
-    v->Redraw();
+    view->SetPlaneOn( clipPlane );
   } 
-  else {
-    Handle(V3d_View) view = myViewPort->getView();
+  else
+    view->SetPlaneOff();
+  
+  view->Update();
+  view->Redraw();
+}
 
-    // try to use already existing plane 
-    Handle(V3d_Plane) clipPlane;
-    view->InitActivePlanes();
-    if ( view->MoreActivePlanes() )
-      clipPlane = view->ActivePlane();
-    
-    Handle(V3d_View) v =  myViewPort->getView();
-    if ( !clipPlane.IsNull() )
-      v->SetPlaneOff( clipPlane );
-    else 
-      v->SetPlaneOff();
-    
-    v->Update();
-    v->Redraw();
-  }
- 
-  Handle(V3d_View) v = myViewPort->getView();
-  v->Update();
-  v->Redraw();
+bool OCCViewer_ViewWindow::isCuttingPlane()
+{
+  Handle(V3d_View) view = myViewPort->getView();
+  view->InitActivePlanes();
+  return (view->MoreActivePlanes());
 }
 
 /*! The method returns the visual parameters of this view as a viewAspect object
