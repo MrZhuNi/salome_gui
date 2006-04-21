@@ -26,45 +26,68 @@
 //  Module : SALOME
 //  $Header$
 
-#ifndef SVTK_NONISOMETRICDLG_H
-#define SVTK_NONISOMETRICDLG_H
+#ifndef SVTK_UPDATERATEDLG_H
+#define SVTK_UPDATERATEDLG_H
 
 #include "SVTK_DialogBase.h"
 
+#include <vtkSmartPointer.h>
+
 class SVTK_MainWindow;
+class SVTK_RenderWindowInteractor;
 
 class QtxDblSpinBox;
 class QtxAction;
 
-class QPushButton;
+class QGroupBox;
+class QLineEdit;
+
+class vtkCallbackCommand;
+class vtkObject;
 
 
-class SVTK_NonIsometricDlg : public SVTK_DialogBase
+class SVTK_UpdateRateDlg : public SVTK_DialogBase
 {
   Q_OBJECT;
 
 public:
-  SVTK_NonIsometricDlg(QtxAction* theAction,
-		       SVTK_MainWindow* theParent,
-		       const char* theName);
+  SVTK_UpdateRateDlg(QtxAction* theAction,
+		     SVTK_MainWindow* theParent,
+		     const char* theName);
 
-  ~SVTK_NonIsometricDlg();
+  ~SVTK_UpdateRateDlg();
 
   void Update();
 
 protected:
-  SVTK_MainWindow *m_MainWindow;
+  SVTK_RenderWindowInteractor* myRWInteractor;
+  QtxDblSpinBox* myDesiredUpdateRateSblSpinBox;
+  QtxDblSpinBox* myStillUpdateRateSblSpinBox;
+  QGroupBox* myIsEnableUpdateRateGroupBox;
 
-  QtxDblSpinBox* m_sbXcoeff;
-  QtxDblSpinBox* m_sbYcoeff;
-  QtxDblSpinBox* m_sbZcoeff;
-  QPushButton* m_bReset;
+  QLineEdit* myCurrentUpdateRateLineEdit;
+  QLineEdit* myNumberOfCellsLineEdit;
 
+  QtxAction* myAction;
+
+  //----------------------------------------------------------------------------
+  // Priority at which events are processed
+  vtkFloatingPointType myPriority;
+
+  // Used to process events
+  vtkSmartPointer<vtkCallbackCommand> myEventCallbackCommand;
+
+  // Description:
+  // Main process event method
+  static void ProcessEvents(vtkObject* object, 
+                            unsigned long event,
+                            void* clientdata, 
+                            void* calldata);
+  
 protected slots:
-  void onClickApply();
-  void onClickReset();
   void onClickOk();
+  void onClickApply();
   void onClickClose();
 };
 
-#endif // SVTK_NONISOMETRICDLG_H
+#endif // SVTK_UPDATERATEDLG_H

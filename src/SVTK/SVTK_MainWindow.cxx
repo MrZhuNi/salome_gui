@@ -40,6 +40,7 @@
 #include "SUIT_Tools.h"
 #include "SUIT_ResourceMgr.h"
 #include "SVTK_NonIsometricDlg.h"
+#include "SVTK_UpdateRateDlg.h"
 #include "SVTK_CubeAxesDlg.h"
 
 #include "SVTK_MainWindow.h"
@@ -82,6 +83,10 @@ SVTK_MainWindow
   myInteractor->setFocusPolicy(StrongFocus);
   myInteractor->setFocus();
   setFocusProxy(myInteractor);
+
+  myUpdateRateDlg = new SVTK_UpdateRateDlg(myActionsMap[UpdateRate],this,"SVTK_UpdateRateDlg");
+  myNonIsometricDlg = new SVTK_NonIsometricDlg(myActionsMap[NonIsometric],this,"SVTK_NonIsometricDlg");
+  myCubeAxesDlg = new SVTK_CubeAxesDlg(myActionsMap[GraduatedAxes],this,"SVTK_CubeAxesDlg");
 }
 
 
@@ -471,8 +476,6 @@ SVTK_MainWindow
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onNonIsometric(bool)));
   myActionsMap[ NonIsometric ] = anAction;
 
-  myNonIsometricDlg = new SVTK_NonIsometricDlg(this,"SVTK_NonIsometricDlg",anAction);
-
   // onGraduatedAxes: Manage graduated axes params
   anAction = new QtxAction(tr("MNU_SVTK_GRADUATED_AXES"), 
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_GRADUATED_AXES" ) ),
@@ -482,7 +485,14 @@ SVTK_MainWindow
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onGraduatedAxes(bool)));
   myActionsMap[ GraduatedAxes ] = anAction;
 
-  myCubeAxesDlg = new SVTK_CubeAxesDlg(this,"SVTK_CubeAxesDlg",anAction);
+  // onGraduatedAxes: Manage graduated axes params
+  anAction = new QtxAction(tr("MNU_SVTK_UPDATE_RATE"), 
+			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_UPDATE_RATE" ) ),
+			   tr( "MNU_SVTK_UPDATE_RATE" ), 0, this);
+  anAction->setStatusTip(tr("DSC_SVTK_UPDATE_RATE"));
+  anAction->setToggleAction(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onUpdateRate(bool)));
+  myActionsMap[ UpdateRate ] = anAction;
 }
 
 #if defined(WIN32) && !defined(_DEBUG)
@@ -518,9 +528,26 @@ SVTK_MainWindow
 
   myActionsMap[ResetId]->addTo(myToolBar);
 
+  myActionsMap[UpdateRate]->addTo(myToolBar);
   myActionsMap[NonIsometric]->addTo(myToolBar);
   myActionsMap[GraduatedAxes]->addTo(myToolBar);
 }
+
+//----------------------------------------------------------------------------
+void
+SVTK_MainWindow
+::showEvent( QShowEvent * theEvent ) 
+{
+  emit Show( theEvent );
+}
+
+void
+SVTK_MainWindow
+::hideEvent( QHideEvent * theEvent ) 
+{
+  emit Hide( theEvent );
+}
+
 
 //----------------------------------------------------------------------------
 void
@@ -653,6 +680,17 @@ SVTK_MainWindow
 }
 
 //----------------------------------------------------------------------------
+void
+SVTK_MainWindow
+::onUpdateRate(bool theIsActivate)
+{
+  if(theIsActivate){
+    myUpdateRateDlg->Update();
+    myUpdateRateDlg->show();
+  }else
+    myUpdateRateDlg->hide();
+}
+
 void
 SVTK_MainWindow
 ::onNonIsometric(bool theIsActivate)

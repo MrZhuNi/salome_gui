@@ -838,9 +838,13 @@ void
 SVTK_InteractorStyle
 ::onStartOperation()
 {
-  if (!GetRenderWidget()) return;
-  // VSV: LOD actor activisation
-  //  this->Interactor->GetRenderWindow()->SetDesiredUpdateRate(this->Interactor->GetDesiredUpdateRate());
+  if (!GetRenderWidget()) 
+    return;
+
+  vtkRenderWindowInteractor *aRWI = this->Interactor;
+  vtkRenderWindow *aRenWin = aRWI->GetRenderWindow();
+  aRenWin->SetDesiredUpdateRate(aRWI->GetDesiredUpdateRate());
+
   switch (State) {
     case VTK_INTERACTOR_STYLE_CAMERA_SELECT:
     case VTK_INTERACTOR_STYLE_CAMERA_FIT:
@@ -870,8 +874,9 @@ SVTK_InteractorStyle
   if (!GetRenderWidget()) 
     return;
 
-  // VSV: LOD actor activisation
-  //  rwi->GetRenderWindow()->SetDesiredUpdateRate(rwi->GetStillUpdateRate());
+  vtkRenderWindowInteractor *aRWI = this->Interactor;
+  vtkRenderWindow *aRenWin = aRWI->GetRenderWindow();
+  aRenWin->SetDesiredUpdateRate(aRWI->GetStillUpdateRate());
 
   SVTK_SelectionEvent* aSelectionEvent = GetSelectionEventFlipY();
 

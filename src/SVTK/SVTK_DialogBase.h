@@ -26,45 +26,35 @@
 //  Module : SALOME
 //  $Header$
 
-#ifndef SVTK_NONISOMETRICDLG_H
-#define SVTK_NONISOMETRICDLG_H
+#ifndef SVTK_DIALOGBASE_H
+#define SVTK_DIALOGBASE_H
 
-#include "SVTK_DialogBase.h"
+#include "SVTK.h"
 
-class SVTK_MainWindow;
+#include <qdialog.h>
 
-class QtxDblSpinBox;
 class QtxAction;
 
-class QPushButton;
-
-
-class SVTK_NonIsometricDlg : public SVTK_DialogBase
+class SVTK_EXPORT SVTK_DialogBase : public QDialog
 {
   Q_OBJECT;
 
 public:
-  SVTK_NonIsometricDlg(QtxAction* theAction,
-		       SVTK_MainWindow* theParent,
-		       const char* theName);
+  SVTK_DialogBase(QtxAction* theAction,
+		  QWidget* theParent,
+		  const char* theName = "", 
+		  bool theModal = FALSE, 
+		  WFlags theWFalgs = 0);
 
-  ~SVTK_NonIsometricDlg();
-
-  void Update();
-
-protected:
-  SVTK_MainWindow *m_MainWindow;
-
-  QtxDblSpinBox* m_sbXcoeff;
-  QtxDblSpinBox* m_sbYcoeff;
-  QtxDblSpinBox* m_sbZcoeff;
-  QPushButton* m_bReset;
+  ~SVTK_DialogBase();
 
 protected slots:
-  void onClickApply();
-  void onClickReset();
-  void onClickOk();
-  void onClickClose();
+  void onParentShow();
+  void onParentHide();
+  virtual void done( int );
+
+protected:
+  QtxAction* myAction;
 };
 
-#endif // SVTK_NONISOMETRICDLG_H
+#endif // SVTK_DIALOGBASE_H

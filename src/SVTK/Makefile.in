@@ -19,6 +19,7 @@ EXPORT_HEADERS= \
 	SALOME_Actor.h \
 	SVTK_RectPicker.h \
 	SVTK_DeviceActor.h \
+	SVTK_DialogBase.h \
 	SVTK_FontWidget.h \
 	SVTK_CubeAxesActor2D.h \
 	SVTK_Functor.h \
@@ -38,7 +39,9 @@ EXPORT_HEADERS= \
 	SVTK_Event.h \
 	SVTK_ViewModelBase.h
 
-PO_FILES = SVTK_msg_en.po
+PO_FILES = \
+	SVTK_msg_en.po \
+	SVTK_images.po
 
 # Libraries targets
 LIB = libSVTK.la
@@ -51,7 +54,9 @@ LIB_SRC= \
 	SVTK_DeviceActor.cxx \
 	SVTK_CubeAxesActor2D.cxx \
 	SVTK_NonIsometricDlg.cxx \
+	SVTK_UpdateRateDlg.cxx \
 	SVTK_CubeAxesDlg.cxx \
+	SVTK_DialogBase.cxx \
 	SVTK_FontWidget.cxx \
 	SVTK_Trihedron.cxx \
 	SVTK_MainWindow.cxx \
@@ -70,8 +75,10 @@ LIB_MOC = \
 	SVTK_GenericRenderWindowInteractor.h \
 	SVTK_RenderWindowInteractor.h \
 	SVTK_NonIsometricDlg.h \
+	SVTK_UpdateRateDlg.h \
 	SVTK_CubeAxesDlg.h \
 	SVTK_FontWidget.h \
+	SVTK_DialogBase.h \
 	SVTK_ViewModelBase.h \
 	SVTK_ViewManager.h \
 	SVTK_ViewWindow.h \
@@ -85,11 +92,13 @@ CPPFLAGS+= \
 	$(QT_INCLUDES) \
 	$(OCC_INCLUDES) \
 	$(VTK_INCLUDES) \
+	$(QWT_INCLUDES) \
 	$(BOOST_CPPFLAGS)
 
 LDFLAGS+= \
 	$(QT_MT_LIBS) \
 	$(OCC_LIBS) \
+	$(QWT_LIBS) \
 	$(VTK_LIBS)
 
 LIBS+= -lqtx -lsuit -lstd -lCAM -lSalomeObject -lSalomePrs -lVTKViewer

@@ -26,45 +26,59 @@
 //  Module : SALOME
 //  $Header$
 
-#ifndef SVTK_NONISOMETRICDLG_H
-#define SVTK_NONISOMETRICDLG_H
-
 #include "SVTK_DialogBase.h"
 
-class SVTK_MainWindow;
+#include "QtxAction.h"
 
-class QtxDblSpinBox;
-class QtxAction;
-
-class QPushButton;
-
-
-class SVTK_NonIsometricDlg : public SVTK_DialogBase
+/*!
+  Constructor
+*/
+SVTK_DialogBase
+::SVTK_DialogBase(QtxAction* theAction,
+		  QWidget* theParent,
+		  const char* theName, 
+		  bool theModal, 
+		  WFlags theWFalgs):
+  QDialog(theParent, 
+	  theName, 
+	  theModal, 
+	  theWFalgs | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu),
+  myAction(theAction)
 {
-  Q_OBJECT;
+  connect(theParent, SIGNAL(Show( QShowEvent * )), this, SLOT(onParentShow()));
+  connect(theParent, SIGNAL(Hide( QHideEvent * )), this, SLOT(onParentHide()));
+}
 
-public:
-  SVTK_NonIsometricDlg(QtxAction* theAction,
-		       SVTK_MainWindow* theParent,
-		       const char* theName);
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+SVTK_DialogBase
+::~SVTK_DialogBase()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
 
-  ~SVTK_NonIsometricDlg();
+void 
+SVTK_DialogBase
+::onParentShow()
+{
+  if(myAction->isOn())
+    show();
+  else
+    hide();
+}
 
-  void Update();
+void 
+SVTK_DialogBase
+::onParentHide()
+{
+  hide();
+}
 
-protected:
-  SVTK_MainWindow *m_MainWindow;
-
-  QtxDblSpinBox* m_sbXcoeff;
-  QtxDblSpinBox* m_sbYcoeff;
-  QtxDblSpinBox* m_sbZcoeff;
-  QPushButton* m_bReset;
-
-protected slots:
-  void onClickApply();
-  void onClickReset();
-  void onClickOk();
-  void onClickClose();
-};
-
-#endif // SVTK_NONISOMETRICDLG_H
+void 
+SVTK_DialogBase
+::done( int r )
+{
+  myAction->setOn( false );
+  QDialog::done( r );
+}

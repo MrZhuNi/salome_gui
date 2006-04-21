@@ -25,6 +25,7 @@ class SUIT_ViewWindow;
 
 class SVTK_RenderWindowInteractor;
 class SVTK_NonIsometricDlg;
+class SVTK_UpdateRateDlg;
 class SVTK_CubeAxesActor2D;
 class SVTK_CubeAxesDlg;
 
@@ -175,7 +176,14 @@ public:
   //----------------------------------------------------------------------------
   QToolBar* getToolBar();
 
+ signals:
+  void Show( QShowEvent * );
+  void Hide( QHideEvent * );
+  
  public slots:
+  virtual void showEvent( QShowEvent * );
+  virtual void hideEvent( QHideEvent * );
+
   void activateZoom();
   void activateWindowFit();
   void activateRotation();
@@ -195,6 +203,7 @@ public:
   void onViewTrihedron(); 
   void onViewCubeAxes();
 
+  void onUpdateRate(bool theIsActivate);
   void onNonIsometric(bool theIsActivate);
   void onGraduatedAxes(bool theIsActivate);
 
@@ -216,12 +225,13 @@ public:
 
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
-	 ViewTrihedronId, NonIsometric, GraduatedAxes};
+	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate};
   typedef QMap<int, QtxAction*> TActionsMap;
 
   SUIT_ViewWindow* myViewWindow;
 
   SVTK_NonIsometricDlg* myNonIsometricDlg;
+  SVTK_UpdateRateDlg* myUpdateRateDlg;
   SVTK_CubeAxesDlg* myCubeAxesDlg;
 
   vtkSmartPointer<vtkObject> myEventDispatcher;

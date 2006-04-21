@@ -198,6 +198,9 @@ void
 VTKViewer_Actor
 ::Render(vtkRenderer *ren, vtkMapper* m)
 {
+  static vtkFloatingPointType PERCENTS_OF_DETAILS = 0.50;
+  SetNumberOfCloudPoints(vtkIdType(GetInput()->GetNumberOfPoints()*PERCENTS_OF_DETAILS));
+
   if(myIsResolveCoincidentTopology){
     int aResolveCoincidentTopology = vtkMapper::GetResolveCoincidentTopology();
     vtkFloatingPointType aFactor, aUnit; 

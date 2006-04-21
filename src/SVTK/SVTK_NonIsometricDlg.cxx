@@ -44,15 +44,13 @@ using namespace std;
   Constructor
 */
 SVTK_NonIsometricDlg
-::SVTK_NonIsometricDlg(SVTK_MainWindow* theParent,
-		       const char* theName,
-		       QtxAction* theAction):
-  QDialog(theParent, 
-	  theName, 
-	  false, 
-	  WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu ),
-  m_MainWindow(theParent),
-  m_Action(theAction)
+::SVTK_NonIsometricDlg(QtxAction* theAction,
+		       SVTK_MainWindow* theParent,
+		       const char* theName):
+  SVTK_DialogBase(theAction,
+		  theParent, 
+		  theName),
+  m_MainWindow(theParent)
 {
   setCaption(tr("DLG_TITLE"));
   setSizeGripEnabled(TRUE);
@@ -191,14 +189,4 @@ SVTK_NonIsometricDlg
 ::onClickClose()
 {
   reject();
-
-  m_Action->setOn( false );
-}
-
-void 
-SVTK_NonIsometricDlg
-::done( int r )
-{
-  m_Action->setOn( false );
-  QDialog::done( r );
 }

@@ -38,3 +38,6 @@ msgstr "view_scaling.png"
 
 msgid "ICON_GRADUATED_AXES"
 msgstr "view_graduated_axes.png"
+
+msgid "ICON_UPDATE_RATE"
+msgstr "view_update_rate.png"

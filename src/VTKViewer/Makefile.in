@@ -39,10 +39,8 @@ EXPORT_HEADERS= \
 
 PO_FILES = \
 	VTKViewer_images.po \
-	VTKViewer_msg_en.po \
-	VTKViewerM_images.po \
-	VTKViewerM_msg_en.po 
-
+	VTKViewer_msg_en.po
+	
 # Libraries targets
 LIB = libVTKViewer.la
 

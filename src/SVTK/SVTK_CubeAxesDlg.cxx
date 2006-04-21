@@ -387,21 +387,22 @@ bool SVTK_AxisWidget::Apply(vtkAxisActor2D* theActor)
 // name    : SVTK_CubeAxesDlg::SVTK_CubeAxesDlg
 // Purpose : Constructor
 //=======================================================================
-SVTK_CubeAxesDlg::SVTK_CubeAxesDlg(SVTK_MainWindow* theParent,
-				   const char* theName,
-				   QtxAction* theAction):
-  QDialog(theParent, 
-	  theName, 
-	  false,
-	  WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu),
-  myMainWindow(theParent),
-  myAction(theAction)
+SVTK_CubeAxesDlg::SVTK_CubeAxesDlg(QtxAction* theAction,
+				   SVTK_MainWindow* theParent,
+				   const char* theName):
+  SVTK_DialogBase(theAction,
+		  theParent, 
+		  theName),
+  myMainWindow(theParent)
 {
   setCaption(tr("CAPTION"));
 
   QVBoxLayout* aLay = new QVBoxLayout(this, 5, 5);
   aLay->addWidget(createMainFrame(this));
   aLay->addWidget(createButtonFrame(this));
+
+  connect(theParent, SIGNAL(Show( QShowEvent * )), this, SLOT(onParentShow()));
+  connect(theParent, SIGNAL(Hide( QHideEvent * )), this, SLOT(onParentHide()));
 }
 
 //=======================================================================
@@ -551,12 +552,4 @@ void SVTK_CubeAxesDlg::onOk()
 void SVTK_CubeAxesDlg::onClose()
 {
   reject();
-
-  myAction->setOn( false );
-}
-
-void SVTK_CubeAxesDlg::done( int r )
-{
-  myAction->setOn( false );
-  QDialog::done( r );
 }
