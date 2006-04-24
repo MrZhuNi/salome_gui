@@ -319,6 +319,7 @@ SVTK_UpdateRateDlg
   if(theEvent == vtkCommand::EndEvent){
     self->myCurrentUpdateRateLineEdit->setText( GetUpdateRate(self->myRWInteractor) );
     self->myNumberOfCellsLineEdit->setText( GetNumberOfCells(self->myRWInteractor) );
+    self->Update();
   }
 }
 
