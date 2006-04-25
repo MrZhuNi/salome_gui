@@ -190,7 +190,7 @@ protected:
   virtual int userFileId( const QString& _fname ) const
   {
     QRegExp exp( "\\.SalomeApprc\\.([a-zA-Z0-9.]+)$" );
-    QRegExp vers_exp( "^([0-9]+)([A-Za-z]?)([0-9]*)" );
+    QRegExp vers_exp( "^([0-9]+)([A-Za-z]?)([0-9]*)$" );
 
     QString fname = QFileInfo( _fname ).fileName();
     if( exp.exactMatch( fname ) )
@@ -199,7 +199,8 @@ protected:
       int major=0, minor=0;
       major = vers[0].toInt();
       minor = vers[1].toInt();
-      vers_exp.search( vers[2] );
+      if( vers_exp.search( vers[2] )==-1 )
+	return -1;
       int release = 0, dev1 = 0, dev2 = 0;
       release = vers_exp.cap( 1 ).toInt();
       dev1 = vers_exp.cap( 2 )[ 0 ].latin1();
