@@ -95,11 +95,6 @@
     <parameter name="Title"      value="63, 213, 255"  />
     <parameter name="NodeBody"   value="255, 249, 147" />
   </section>
-  <section name="Geometry" >
-    <parameter value="10" name="SettingsGeomStep" />
-    <parameter value="0"  name="display_mode" />
-    <parameter value="255, 255, 0" name="shading_color" />
-  </section>
   <section name="FileDlg" >
     <!-- "Open/Save File" dialog box preferences-->
     <parameter name="QuickDirList" value="${DATA_DIR}" />
