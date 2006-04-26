@@ -313,7 +313,7 @@ QString SUIT_Session::applicationName( const QString& str ) const
 */
 SUIT_ResourceMgr* SUIT_Session::createResourceMgr( const QString& appName ) const
 {
-  return new SUIT_ResourceMgr( appName );
+  return new SUIT_ResourceMgr( applicationName( appName ) );
 }
 
 /*!
