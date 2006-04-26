@@ -166,9 +166,9 @@ int main( int args, char* argv[] )
       if ( resMgr ) {
 	resMgr->loadLanguage();
 	QString splashIcon, splashInfo, splashTextColors;
-	resMgr->value( "about", "splash",             splashIcon );
-	resMgr->value( "about", "splash_info",        splashInfo, false );
-	resMgr->value( "about", "splash_text_colors", splashTextColors );
+	resMgr->value( "splash", "image",       splashIcon );
+	resMgr->value( "splash", "info",        splashInfo, false );
+	resMgr->value( "splash", "text_colors", splashTextColors );
 	QPixmap px( splashIcon );
 	if ( !px.isNull() ) {
 	  splash = QtxSplash::splash( px );
