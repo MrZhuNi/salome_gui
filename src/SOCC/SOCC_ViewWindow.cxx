@@ -22,7 +22,9 @@
 
 #include "SUIT_Accel.h"
 
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 SOCC_ViewWindow
 ::SOCC_ViewWindow( SUIT_Desktop* theDesktop, 
 		   OCCViewer_Viewer* theModel)
@@ -30,13 +32,18 @@ SOCC_ViewWindow
 {
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Destructor
+*/
 SOCC_ViewWindow
 ::~SOCC_ViewWindow()
 {
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Performs action
+  \param theAction - type of action
+*/
 void 
 SOCC_ViewWindow
 ::action( const int theAction  )

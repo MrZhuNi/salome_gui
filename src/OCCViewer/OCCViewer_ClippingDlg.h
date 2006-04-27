@@ -19,10 +19,10 @@ class QtxAction;
 class OCCViewer_ViewWindow;
 
 
-//=================================================================================
-// class    : OCCViewer_ClippingDlg
-// purpose  :
-//=================================================================================
+/*!
+  \class OCCViewer_ClippingDlg
+  \brief Dialog allowing to assign parameters of clipping plane
+*/
 class OCCViewer_ClippingDlg : public QDialog
 {
     Q_OBJECT

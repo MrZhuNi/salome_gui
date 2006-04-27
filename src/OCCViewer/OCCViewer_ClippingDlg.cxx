@@ -29,12 +29,17 @@
 #include <qcombobox.h>
 #include <qcheckbox.h>
 
-//=================================================================================
-// class    : OCCViewer_ClippingDlg()
-// purpose  : 
-//=================================================================================
+/*!
+  Constructor
+  \param view - view window
+  \param parent - parent widget
+  \param name - dialog name
+  \param modal - is this dialog modal
+  \param fl - flags
+*/
 OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidget* parent, const char* name, bool modal, WFlags fl )
-  : QDialog( parent, "OCCViewer_ClippingDlg", modal, WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu ), myView( view )
+: QDialog( parent, "OCCViewer_ClippingDlg", modal, WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu ),
+  myView( view )
 {
   setCaption( tr( "Clipping" ) );
   
@@ -191,20 +196,19 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   myBusy = false;
 }
 
-//=================================================================================
-// function : ~ OCCViewer_ClippingDlg()
-// purpose  : Destroys the object and frees any allocated resources
-//=================================================================================
+/*!
+  Destructor
+  Destroys the object and frees any allocated resources
+*/
 OCCViewer_ClippingDlg::~ OCCViewer_ClippingDlg()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
 
-//=================================================================================
-// function : closeEvent
-// purpose  :
-//=================================================================================
+/*!
+  Custom handling of close event: erases preview
+*/
 void OCCViewer_ClippingDlg::closeEvent( QCloseEvent* e )
 {
   erasePreview();
@@ -221,10 +225,9 @@ void OCCViewer_ClippingDlg::closeEvent( QCloseEvent* e )
 }
 
 
-//=================================================================================
-// function : showEvent
-// purpose  :
-//=================================================================================
+/*!
+  Custom handling of show event: displays preview
+*/
 void OCCViewer_ClippingDlg::showEvent( QShowEvent* e )
 {
   ReserveClippingPlane();
@@ -234,10 +237,9 @@ void OCCViewer_ClippingDlg::showEvent( QShowEvent* e )
 }
 
 
-//=================================================================================
-// function : hideEvent
-// purpose  :
-//=================================================================================
+/*!
+  Custom handling of hide event: erases preview
+*/
 void OCCViewer_ClippingDlg::hideEvent( QHideEvent* e )
 {
   erasePreview();
@@ -245,10 +247,9 @@ void OCCViewer_ClippingDlg::hideEvent( QHideEvent* e )
 }
 
 
-//=================================================================================
-// function : ClickOnClose()
-// purpose  :
-//=================================================================================
+/*!
+  SLOT on close button click: erases preview and rejects dialog
+*/
 void OCCViewer_ClippingDlg::ClickOnClose()
 {
   erasePreview();
@@ -265,10 +266,9 @@ void OCCViewer_ClippingDlg::ClickOnClose()
 }
 
 
-//=================================================================================
-// function : ClickOnApply()
-// purpose  :
-//=================================================================================
+/*!
+  SLOT on apply button click: sets cutting plane
+*/
 void OCCViewer_ClippingDlg::ClickOnApply()
 {
   qApp->processEvents();
@@ -285,11 +285,9 @@ void OCCViewer_ClippingDlg::ClickOnApply()
   ReserveClippingPlane();
 }
 
-
-//=================================================================================
-// function : onReset()
-// purpose  :
-//=================================================================================
+/*!
+  SLOT on reset button click: sets default values
+*/
 void OCCViewer_ClippingDlg::onReset()
 {
   myBusy = true;
@@ -305,11 +303,9 @@ void OCCViewer_ClippingDlg::onReset()
     }
 }
 
-
-//=================================================================================
-// function : onInvert()
-// purpose  :
-//=================================================================================
+/*!
+  SLOT on invert button click: inverts normal of cutting plane
+*/
 void OCCViewer_ClippingDlg::onInvert()
 {
   double Dx = SpinBox_Dx->value();
@@ -329,11 +325,9 @@ void OCCViewer_ClippingDlg::onInvert()
     }
 }
 
-
-//=================================================================================
-// function : onModeChanged()
-// purpose  :
-//=================================================================================
+/*!
+  SLOT: called on mode changed
+*/
 void OCCViewer_ClippingDlg::onModeChanged( int mode )
 {
   bool isUserMode = (mode==0);
@@ -395,10 +389,9 @@ void OCCViewer_ClippingDlg::onModeChanged( int mode )
 }
 
 
-//================================================================
-// Function : displayPreview
-// Purpose  : 
-//================================================================
+/*!
+  Displays preview of clipping plane
+*/
 void OCCViewer_ClippingDlg::displayPreview()
 {
   if ( myBusy || !isValid() )
@@ -473,10 +466,9 @@ void OCCViewer_ClippingDlg::displayPreview()
 }
 
 
-//================================================================
-// Function : erasePreview
-// Purpose  : 
-//================================================================
+/*!
+  Erases preview of clipping plane
+*/
 void OCCViewer_ClippingDlg::erasePreview ()
 {
   OCCViewer_Viewer* anOCCViewer = (OCCViewer_Viewer*)myView->getViewManager()->getViewModel();
@@ -496,10 +488,9 @@ void OCCViewer_ClippingDlg::erasePreview ()
 }
 
 
-//================================================================
-// Function : onValueChanged
-// Purpose  : 
-//================================================================
+/*!
+  SLOT: called on value changes (co-ordinates of point or normal)
+*/
 void OCCViewer_ClippingDlg::onValueChanged()
 {
   if ( PreviewChB->isChecked() )
@@ -510,10 +501,9 @@ void OCCViewer_ClippingDlg::onValueChanged()
 }
 
 
-//================================================================
-// Function : onPreview
-// Purpose  : 
-//================================================================
+/*!
+  SLOT: called on preview check box toggled
+*/
 void OCCViewer_ClippingDlg::onPreview( bool on )
 {
   erasePreview();
@@ -522,19 +512,17 @@ void OCCViewer_ClippingDlg::onPreview( bool on )
     displayPreview();
 }
 
-//================================================================
-// Function : onPreview
-// Purpose  : 
-//================================================================
+/*!
+  \return true if plane parameters are valid
+*/
 bool OCCViewer_ClippingDlg::isValid()
 {
   return ( SpinBox_Dx->value()!=0 || SpinBox_Dy->value()!=0 || SpinBox_Dz->value()!=0 );
 }
 
-//================================================================
-// Function : ReserveClippingPlane
-// Purpose  : Remember the current clipping plane
-//================================================================
+/*!
+  Remember the current clipping plane
+*/
 void OCCViewer_ClippingDlg::ReserveClippingPlane()
 {
   Handle(V3d_View) aView3d = myView->getViewPort()->getView();
