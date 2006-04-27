@@ -17,8 +17,6 @@
 // See http://www.salome-platform.org/
 //
 // SUIT_Accel.h: interface for the SUIT_Accel class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef SUIT_Accel_h 
 #define SUIT_Accel_h

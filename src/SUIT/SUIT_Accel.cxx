@@ -17,8 +17,6 @@
 // See http://www.salome-platform.org/
 //
 // SUIT_Accel.cxx: implementation of the SUIT_Accel class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #include "SUIT_Accel.h"
 #include "SUIT_ViewWindow.h"

@@ -37,8 +37,8 @@
 #include <time.h>
 
 /*!
-    Class: OB_Browser::ToolTip
-    Descr: Tool tip for OB_Browser.
+  \class  OB_Browser::ToolTip
+  Tool tip for OB_Browser.
 */
 
 class OB_Browser::ToolTip : public QToolTip
@@ -53,16 +53,28 @@ private:
   OB_Browser* myBrowser;
 };
 
+/*!
+  Constructor
+*/
 OB_Browser::ToolTip::ToolTip( OB_Browser* b, QWidget* p )
 : QToolTip( p ),
 myBrowser( b )
 {
 }
 
+/*!
+  Destructor
+*/
 OB_Browser::ToolTip::~ToolTip()
 {
 }
 
+/*!
+  It is called when there is a possibility that a tool tip
+  should be shown and must decide whether there is a tool tip for the point
+  in the widget that this QToolTip object relates to.
+  \param pos - point co-ordinates
+*/
 void OB_Browser::ToolTip::maybeTip( const QPoint& pos )
 {
   if ( !parentWidget() || !myBrowser || !myBrowser->isShowToolTips() )
@@ -88,11 +100,11 @@ void OB_Browser::ToolTip::maybeTip( const QPoint& pos )
 
 typedef SUIT_DataObject*   ObjPtr;
 typedef OB_ListItem*       ItemPtr;
-/*!
-    Class: OB_BrowserSync
-    Descr: Auxiliary class for synchronizing tree of SUIT_DataObjects and list view items
-*/
 
+/*!
+   \class  OB_BrowserSync
+   Auxiliary class for synchronizing tree of SUIT_DataObjects and list view items
+*/
 class OB_BrowserSync
 {
 public:
@@ -112,11 +124,18 @@ private:
 };
 
 
+/*!
+  Constructor
+*/
 OB_BrowserSync::OB_BrowserSync( OB_Browser* ob )
 : myBrowser( ob )
 {
 }
 
+/*!
+  \return true if item must be updated
+  \param item - item to be checked
+*/
 bool OB_BrowserSync::needUpdate( const ItemPtr& item ) const
 {
   bool update = false;
@@ -148,6 +167,10 @@ bool OB_BrowserSync::needUpdate( const ItemPtr& item ) const
   return update;
 }
 
+/*!
+  Updates item
+  \param p - item
+*/
 void OB_BrowserSync::updateItem( const ItemPtr& p ) const
 {
   if ( p && needUpdate( p ) ) { 
@@ -157,6 +180,13 @@ void OB_BrowserSync::updateItem( const ItemPtr& p ) const
   }
 }
 
+/*!
+  Creates item by SUIT object
+  \param src - corresponding SUIT object
+  \param parent - parent for item
+  \param after - previous sibling for item
+  \param prepend - item must be added to start of children list
+*/
 ItemPtr OB_BrowserSync::createItem( const ObjPtr& src,
 				    const ItemPtr& parent, const ItemPtr& after,
 				    const bool prepend ) const
@@ -167,6 +197,10 @@ ItemPtr OB_BrowserSync::createItem( const ObjPtr& src,
   return i;
 }
 
+/*!
+  Deletes object with all children
+  \param i - item
+*/
 void OB_BrowserSync::deleteItemWithChildren( const ItemPtr& i ) const
 {
   if( myBrowser && myBrowser->myItems.contains( i->dataObject() ) )
@@ -176,6 +210,11 @@ void OB_BrowserSync::deleteItemWithChildren( const ItemPtr& i ) const
   }
 }
 
+/*!
+  \return true if objects correspond each other at all
+  \param p - suit object
+  \param q - object browser item
+*/
 bool OB_BrowserSync::isEqual( const ObjPtr& p, const ItemPtr& q ) const
 {
   bool isRoot = p==myBrowser->getRootObject() && !q,
@@ -183,16 +222,27 @@ bool OB_BrowserSync::isEqual( const ObjPtr& p, const ItemPtr& q ) const
   return isRoot || ( !p && !q ) || isEq;
 }
 
+/*!
+  \return null suit object
+*/
 ObjPtr OB_BrowserSync::nullSrc() const
 {
   return 0;
 }
 
+/*!
+  \return null item
+*/
 ItemPtr OB_BrowserSync::nullTrg() const
 {
   return 0;
 }
 
+/*!
+  Fills list with children of SUIT object
+  \param p - SUIT object
+  \param ch - list to be filled
+*/
 void OB_BrowserSync::children( const ObjPtr& p, QValueList<ObjPtr>& ch ) const
 {
   DataObjectList l;
@@ -205,6 +255,11 @@ void OB_BrowserSync::children( const ObjPtr& p, QValueList<ObjPtr>& ch ) const
   }
 }
 
+/*!
+  Fills list with children of item
+  \param p - item
+  \param ch - list to be filled
+*/
 void OB_BrowserSync::children( const ItemPtr& p, QValueList<ItemPtr>& ch ) const
 {
   for( QListViewItem* item = p ? p->firstChild() : myBrowser->listView()->firstChild(); item; item = item->nextSibling() )
@@ -215,6 +270,10 @@ void OB_BrowserSync::children( const ItemPtr& p, QValueList<ItemPtr>& ch ) const
   }
 }
 
+/*!
+  \return parent of item
+  \param p - item
+*/
 ItemPtr OB_BrowserSync::parent( const ItemPtr& p ) const
 {
   return p ? dynamic_cast<ItemPtr>( p->parent() ) : 0;
@@ -222,10 +281,8 @@ ItemPtr OB_BrowserSync::parent( const ItemPtr& p ) const
 
 
 /*!
-    Class: OB_Browser
-    Descr: Hierarchical tree object browser.
+  Constructor
 */
-
 OB_Browser::OB_Browser( QWidget* parent, SUIT_DataObject* root )
 : QFrame( parent ),
 
@@ -261,17 +318,27 @@ myRootDecorated( true )
   setModified();
 }
 
+/*!
+  Destructor
+*/
 OB_Browser::~OB_Browser()
 {
   myItems.clear();
   delete myTooltip;
 }
 
+/*!
+  \return true if root is decorated by +
+*/
 bool OB_Browser::rootIsDecorated() const
 {
   return myRootDecorated;
 }
 
+/*!
+  Sets state "root is recorated"
+  \param decor - new value of state
+*/
 void OB_Browser::setRootIsDecorated( const bool decor )
 {
   if ( decor == rootIsDecorated() ) 
@@ -281,11 +348,18 @@ void OB_Browser::setRootIsDecorated( const bool decor )
   updateTree( 0, false );
 }
 
+/*!
+  \return number of levels to be auto opened on update tree
+*/
 int OB_Browser::autoOpenLevel() const
 {
   return myAutoOpenLevel;
 }
 
+/*!
+  Changes number of levels to be auto opened on update tree
+  \param level - new number of levels
+*/
 void OB_Browser::setAutoOpenLevel( const int level )
 {
   if ( myAutoOpenLevel == level )
@@ -296,41 +370,69 @@ void OB_Browser::setAutoOpenLevel( const int level )
   autoOpenBranches();
 }
 
+/*!
+  \return state "are tooltips shown"
+*/
 bool OB_Browser::isShowToolTips()
 {
   return myShowToolTips;
 }
 
+/*!
+  Sets new value of state "are tooltips shown"
+  \param theDisplay - new value
+*/
 void OB_Browser::setShowToolTips( const bool theDisplay )
 {
   myShowToolTips = theDisplay;
 }
 
+/*!
+  \return true if object browser automatically updates tree after SUIT object removing
+*/
 bool OB_Browser::isAutoUpdate() const
 {
   return myAutoUpdate;
 }
 
+/*!
+  Sets new value of "auto update": whether object browser automatically updates tree after SUIT object removing
+*/
 void OB_Browser::setAutoUpdate( const bool on )
 {
   myAutoUpdate = on;
 }
 
+/*!
+  \return true if object browser must delete old tree on setRootObject(), replaceTree()
+  \sa setRootObject(), replaceTree()
+*/
 bool OB_Browser::isAutoDeleteObjects() const
 {
   return myAutoDelObjs;
 }
 
+/*!
+  Sets whether object browser must delete old tree on setRootObject(), replaceTree()
+  \sa setRootObject(), replaceTree()
+*/
 void OB_Browser::setAutoDeleteObjects( const bool on )
 {
   myAutoDelObjs = on;
 }
 
+/*!
+  \return root SUIT object of browser
+*/
 SUIT_DataObject* OB_Browser::getRootObject() const
 {
   return myRoot;
 }
 
+/*!
+  Sets new root SUIT object of browser
+  \param theRoot - new root object
+*/
 void OB_Browser::setRootObject( SUIT_DataObject* theRoot )
 {
   DataObjectKey curKey;
@@ -369,6 +471,9 @@ void OB_Browser::setRootObject( SUIT_DataObject* theRoot )
     emit selectionChanged();
 }
 
+/*!
+  \return number of selected items
+*/
 int OB_Browser::numberOfSelected() const
 {
   int count = 0;
@@ -381,6 +486,9 @@ int OB_Browser::numberOfSelected() const
   return count;
 }
 
+/*!
+  \return list of selected objects
+*/
 DataObjectList OB_Browser::getSelected() const
 {
   DataObjectList lst;
@@ -388,6 +496,9 @@ DataObjectList OB_Browser::getSelected() const
   return lst;
 }
 
+/*!
+  Fills list with selected objects
+*/
 void OB_Browser::getSelected( DataObjectList& theObjList ) const
 {
   theObjList.clear();
@@ -406,6 +517,12 @@ void OB_Browser::getSelected( DataObjectList& theObjList ) const
   }
 }
 
+/*!
+  Sets selected object
+  \param theObject - new selected object
+  \param append - if it is true, then other selected objects are left as selected,
+  otherwise only 'theObject' will be selected
+*/
 void OB_Browser::setSelected( const SUIT_DataObject* theObject, const bool append )
 {
   DataObjectList lst;
@@ -413,6 +530,12 @@ void OB_Browser::setSelected( const SUIT_DataObject* theObject, const bool appen
   setSelected( lst, append );
 }
 
+/*!
+  Sets selected objects
+  \param theObjLst - new selected objects
+  \param append - if it is true, then other selected objects are left as selected,
+  otherwise only 'theObjLst' will be selected
+*/
 void OB_Browser::setSelected( const DataObjectList& theObjLst, const bool append )
 {
   QListView* lv = listView();
@@ -472,6 +595,10 @@ void OB_Browser::setSelected( const DataObjectList& theObjLst, const bool append
   }
 }
 
+/*!
+  \return true if item corresponding to object is opened
+  \param theObject - object to be checked
+*/
 bool OB_Browser::isOpen( SUIT_DataObject* theObject ) const
 {
   bool res = false;
@@ -480,12 +607,21 @@ bool OB_Browser::isOpen( SUIT_DataObject* theObject ) const
   return res;
 }
 
+/*!
+  Sets opened state of item
+  \param theObject - object corresponding to item
+  \param theOpen - new opened state
+*/
 void OB_Browser::setOpen( SUIT_DataObject* theObject, const bool theOpen )
 {
   if ( listView() )
     listView()->setOpen( listViewItem( theObject ), theOpen );
 }
 
+/*!
+  \return SUIT object correspondint to item at position 'pos'
+  \param pos - position
+*/
 SUIT_DataObject* OB_Browser::dataObjectAt( const QPoint& pos ) const
 {
   SUIT_DataObject* obj = 0;
@@ -497,21 +633,41 @@ SUIT_DataObject* OB_Browser::dataObjectAt( const QPoint& pos ) const
   return obj;
 }
 
+/*!
+  \return filter of list view
+*/
 OB_Filter* OB_Browser::filter() const
 {
   return myView->filter();
 }
 
+/*!
+  Changes filter of list view
+  \param f - new filter
+*/
 void OB_Browser::setFilter( OB_Filter* f )
 {
   myView->setFilter( f );
 }
 
+/*!
+  Adds new column to list view
+  \param label - title of column
+  \param id - id of column
+  \param width - width of column
+*/
 int OB_Browser::addColumn( const QString& label, const int id, const int width )
 {
   return addColumn( QIconSet(), label, id, width );
 }
 
+/*!
+  Adds new column to list view
+  \param icon - icon of column
+  \param label - title of column
+  \param id - id of column
+  \param width - width of column
+*/
 int OB_Browser::addColumn( const QIconSet& icon, const QString& label, const int id, const int width )
 {
   QListView* lv = listView();
@@ -543,6 +699,10 @@ int OB_Browser::addColumn( const QIconSet& icon, const QString& label, const int
   return theId;
 }
 
+/*!
+  Removes column
+  \param id - id of column
+*/
 void OB_Browser::removeColumn( const int id )
 {
   QListView* lv = listView();
@@ -562,11 +722,20 @@ void OB_Browser::removeColumn( const int id )
   updateText();
 }
 
+/*!
+  Sets title of first column (name column)
+  \param label - new title
+*/
 void OB_Browser::setNameTitle( const QString& label )
 {
   setNameTitle( QIconSet(), label );
 }
 
+/*!
+  Sets title and icon of first column (name column)
+  \param icon - new icon
+  \param label - new title
+*/
 void OB_Browser::setNameTitle( const QIconSet& icon, const QString& label )
 {
   QListView* lv = listView();
@@ -579,11 +748,22 @@ void OB_Browser::setNameTitle( const QIconSet& icon, const QString& label )
     lv->setColumnText( 0, icon, label );
 }
 
+/*!
+  Sets title of column
+  \param id - column id
+  \param label - new column title
+*/
 void OB_Browser::setColumnTitle( const int id, const QString& label )
 {
   setColumnTitle( id, QIconSet(), label );
 }
 
+/*!
+  Sets title and icon of column
+  \param id - column id
+  \param icon - new column icon
+  \param label - new column title
+*/
 void OB_Browser::setColumnTitle( const int id, const QIconSet& icon, const QString& label )
 {
   QListView* lv = listView();
@@ -596,11 +776,18 @@ void OB_Browser::setColumnTitle( const int id, const QIconSet& icon, const QStri
     lv->setColumnText( myColumnIds[id], icon, label );
 }
 
+/*!
+  \return title of first column (name column)
+*/
 QString OB_Browser::nameTitle() const
 {
   return myView->columnText( 0 );
 }
 
+/*!
+  \return title of first column (name column)
+  \param id - column id
+*/
 QString OB_Browser::columnTitle( const int id ) const
 {
   QString txt;
@@ -609,11 +796,20 @@ QString OB_Browser::columnTitle( const int id ) const
   return txt;
 }
 
+/*!
+  \return true if column is visible
+  \param id - column id
+*/
 bool OB_Browser::isColumnVisible( const int id ) const
 {
   return myColumnIds.contains( id ) && myView->isShown( myColumnIds[id] );
 }
 
+/*!
+  Sets visibility of column
+  \param id - column id
+  \param on - new visibility state
+*/
 void OB_Browser::setColumnShown( const int id, const bool on )
 {
   if ( !myColumnIds.contains( id ) )
@@ -624,6 +820,10 @@ void OB_Browser::setColumnShown( const int id, const bool on )
     myView->setColumnWidthMode( myColumnIds[id], QListView::Manual );
 }
 
+/*!
+  Sets global width mode
+  \param mode - new width mode
+*/
 void OB_Browser::setWidthMode( QListView::WidthMode mode )
 {
   for ( int i = 0, n = myView->columns(); i < n; i++ )
@@ -631,6 +831,9 @@ void OB_Browser::setWidthMode( QListView::WidthMode mode )
       myView->setColumnWidthMode( i, mode );
 }
 
+/*!
+  \return list of columns ids
+*/
 QValueList<int> OB_Browser::columns() const
 {
   QValueList<int> lst;
@@ -639,6 +842,10 @@ QValueList<int> OB_Browser::columns() const
   return lst;
 }
 
+/*!
+  \return true if it is possible to show/hide column by popup
+  \param id - column id
+*/
 bool OB_Browser::appropriateColumn( const int id ) const
 {
   bool res = false;
@@ -647,6 +854,11 @@ bool OB_Browser::appropriateColumn( const int id ) const
   return res;
 }
 
+/*!
+  Sets "appropriate state": is it possible to show/hide column by popup
+  \param id - column id
+  \param on - new state
+*/
 void OB_Browser::setAppropriateColumn( const int id, const bool on )
 {
   if ( !myColumnIds.contains( id ) )
@@ -655,6 +867,12 @@ void OB_Browser::setAppropriateColumn( const int id, const bool on )
   myView->setAppropriate( myColumnIds[id], on );
 }
 
+/*!
+  Updates tree
+  \param obj - start object
+  \param autoOpen - to open automatically branches of autoOpenLevel()
+  \sa autoOpenLevel()
+*/
 void OB_Browser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
 {
 //  QTime t1 = QTime::currentTime();
@@ -686,6 +904,9 @@ void OB_Browser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
 //  qDebug( QString( "update tree time = %1 msecs" ).arg( t1.msecsTo( t2 ) ) );
 }
 
+/*!
+  Replaces part of tree starting at object 'src' by tree starting at object 'trg'
+*/
 void OB_Browser::replaceTree( SUIT_DataObject* src, SUIT_DataObject* trg )
 {
   if ( !src || !trg || src == trg || src->root() != getRootObject() )
@@ -726,6 +947,10 @@ void OB_Browser::replaceTree( SUIT_DataObject* src, SUIT_DataObject* trg )
     emit selectionChanged();
 }
 
+/*!
+  Updates view
+  \param startObj - start object
+*/
 void OB_Browser::updateView( SUIT_DataObject* startObj )
 {
   QListView* lv = listView();
@@ -751,6 +976,14 @@ void OB_Browser::updateView( SUIT_DataObject* startObj )
   }
 }
 
+/*!
+  Creates new list item
+  \return new item
+  \param o - corresponding SUIT object
+  \param parent - parent item
+  \param after - item after that new item must be added
+  \param prepend - new item must be added as first
+*/
 QListViewItem* OB_Browser::createItem( const SUIT_DataObject* o, QListViewItem* parent,
 				       QListViewItem* after, const bool prepend )
 {
@@ -836,6 +1069,9 @@ QListViewItem* OB_Browser::createItem( const SUIT_DataObject* o, QListViewItem* 
   return item;
 }
 
+/*!
+  Adjusts width by root item
+*/
 void OB_Browser::adjustWidth()
 {
   if ( !listView() )
@@ -846,6 +1082,10 @@ void OB_Browser::adjustWidth()
     adjustWidth( listView()->firstChild() );
 }
 
+/*!
+  Adjusts width by item
+  \param item
+*/
 void OB_Browser::adjustWidth( QListViewItem* item )
 {
   while ( item )
@@ -857,6 +1097,10 @@ void OB_Browser::adjustWidth( QListViewItem* item )
   }
 }
 
+/*!
+  \return SUIT object corresponding to item
+  \param item
+*/
 SUIT_DataObject* OB_Browser::dataObject( const QListViewItem* item ) const
 {
   SUIT_DataObject* obj = 0;
@@ -869,6 +1113,10 @@ SUIT_DataObject* OB_Browser::dataObject( const QListViewItem* item ) const
   return obj;
 }
 
+/*!
+  \return item corresponding to SUIT object
+  \param obj - SUIT object
+*/
 QListViewItem* OB_Browser::listViewItem( const SUIT_DataObject* obj ) const
 {
   QListViewItem* item = 0;
@@ -879,11 +1127,17 @@ QListViewItem* OB_Browser::listViewItem( const SUIT_DataObject* obj ) const
   return item;
 }
 
+/*!
+  \return list view of object browser
+*/
 QListView* OB_Browser::listView() const
 {
   return myView;
 }
 
+/*!
+  \remove all items referencing current (through data objects)
+*/
 void OB_Browser::removeReferences( QListViewItem* item )
 {
   if ( !item )
@@ -901,6 +1155,9 @@ void OB_Browser::removeReferences( QListViewItem* item )
   }
 }
 
+/*!
+  Connects all children to SLOT onDestroyed
+*/
 void OB_Browser::createConnections( SUIT_DataObject* obj )
 {
   if ( !obj )
@@ -915,6 +1172,9 @@ void OB_Browser::createConnections( SUIT_DataObject* obj )
     it.current()->connect( this, SLOT( onDestroyed( SUIT_DataObject* ) ) );
 }
 
+/*!
+  Disconnects all children from SLOT onDestroyed
+*/
 void OB_Browser::removeConnections( SUIT_DataObject* obj )
 {
   if ( !obj )
@@ -929,6 +1189,13 @@ void OB_Browser::removeConnections( SUIT_DataObject* obj )
     it.current()->disconnect( this, SLOT( onDestroyed( SUIT_DataObject* ) ) );
 }
 
+/*!
+  Stores states (opened, selected) of current tree items
+  \return current item
+  \param selObjs, selKeys - maps of selected objects
+  \param openObjs, openKeys - maps of opened objects
+  \param curKey - map of current objects
+*/
 SUIT_DataObject* OB_Browser::storeState( DataObjectMap& selObjs, DataObjectMap& openObjs,
                                          DataObjectKeyMap& selKeys, DataObjectKeyMap& openKeys,
                                          DataObjectKey& curKey ) const
@@ -958,6 +1225,12 @@ SUIT_DataObject* OB_Browser::storeState( DataObjectMap& selObjs, DataObjectMap& 
   return curObj;
 }
 
+/*!
+  Restores states (opened, selected) of current tree items
+  \param selObjs, selKeys - maps of selected objects
+  \param openObjs, openKeys - maps of opened objects
+  \param curKey - map of current objects
+*/
 void OB_Browser::restoreState( const DataObjectMap& selObjs, const DataObjectMap& openObjs,
                                const SUIT_DataObject* curObj, const DataObjectKeyMap& selKeys,
                                const DataObjectKeyMap& openKeys, const DataObjectKey& curKey )
@@ -1017,11 +1290,17 @@ void OB_Browser::restoreState( const DataObjectMap& selObjs, const DataObjectMap
   lv->blockSignals( block );
 }
 
+/*!
+  Creates object key by tree item
+*/
 OB_Browser::DataObjectKey OB_Browser::objectKey( QListViewItem* i ) const
 {
   return objectKey( dataObject( i ) );
 }
 
+/*!
+  Creates object key by SUIT object
+*/
 OB_Browser::DataObjectKey OB_Browser::objectKey( SUIT_DataObject* obj ) const
 {
   if ( !obj )
@@ -1030,6 +1309,9 @@ OB_Browser::DataObjectKey OB_Browser::objectKey( SUIT_DataObject* obj ) const
   return DataObjectKey( obj->key() );
 }
 
+/*!
+  Custom key press event handler, updates tree by F5
+*/
 void OB_Browser::keyPressEvent( QKeyEvent* e )
 {
   if ( e->key() == Qt::Key_F5 )
@@ -1038,6 +1320,9 @@ void OB_Browser::keyPressEvent( QKeyEvent* e )
   QFrame::keyPressEvent( e );
 }
 
+/*!
+  SLOT: called if action "Expand all" is activated
+*/
 void OB_Browser::onExpand()
 {
   DataObjectList selected;
@@ -1046,16 +1331,27 @@ void OB_Browser::onExpand()
     expand( listViewItem( itr.current() ) );
 }
 
+/*!
+  SLOT: called if action "Show/hide column" is activated by popup
 void OB_Browser::onColumnVisible( int id )
 {
   setColumnShown( id, !isColumnVisible( id ) );
 }
 
+/*!
+  SLOT: called if SUIT object is destroyed
+*/
 void OB_Browser::onDestroyed( SUIT_DataObject* obj )
 {
   removeObject( obj );
 }
 
+/*!
+  SLOT: called on finish of drag-n-drop operation
+  \param items - dragged items
+  \param item - destination (item on that they were dropped)
+  \param action - QDropEvent::Action
+*/
 void OB_Browser::onDropped( QPtrList<QListViewItem> items, QListViewItem* item, int action )
 {
   SUIT_DataObject* obj = dataObject( item );
@@ -1074,6 +1370,9 @@ void OB_Browser::onDropped( QPtrList<QListViewItem> items, QListViewItem* item, 
     emit dropped( lst, obj, action );
 }
 
+/*!
+  Updates texts of items
+*/
 void OB_Browser::updateText()
 {
   if ( myColumnIds.isEmpty() )
@@ -1094,6 +1393,10 @@ void OB_Browser::updateText()
   }
 }
 
+/*!
+  \return true if item must be updated
+  \param item - item to be checked
+*/
 bool OB_Browser::needToUpdateTexts( QListViewItem* item ) const
 {
   SUIT_DataObject* obj = dataObject( item );
@@ -1106,6 +1409,10 @@ bool OB_Browser::needToUpdateTexts( QListViewItem* item ) const
   return false;
 }
 
+/*!
+  Updates texts of item
+  \param item - item to be updated
+*/
 void OB_Browser::updateText( QListViewItem* item )
 {
   SUIT_DataObject* obj = dataObject( item );
@@ -1116,6 +1423,9 @@ void OB_Browser::updateText( QListViewItem* item )
     item->setText( it.data(), obj->text( it.key() ) );
 }
 
+/*!
+  Custom event filter
+*/
 bool OB_Browser::eventFilter( QObject* o, QEvent* e )
 {
   if ( o == myView && e->type() == QEvent::ContextMenu )
@@ -1139,6 +1449,10 @@ bool OB_Browser::eventFilter( QObject* o, QEvent* e )
   return QFrame::eventFilter( o, e );
 }
 
+/*!
+  Adds custom actions to popup
+  \param menu - popup menu
+*/
 void OB_Browser::contextMenuPopup( QPopupMenu* menu )
 {
 /*  QValueList<int> cols;
@@ -1177,6 +1491,9 @@ void OB_Browser::contextMenuPopup( QPopupMenu* menu )
   }
 }
 
+/*!
+  Expands item with all it's children
+*/
 void OB_Browser::expand( QListViewItem* item )
 {
   if ( !item )
@@ -1187,6 +1504,9 @@ void OB_Browser::expand( QListViewItem* item )
     expand( child );
 }
 
+/*!
+  \return true if item or one of it's children isn't opened
+*/
 bool OB_Browser::hasClosed( QListViewItem* item ) const
 {
   if ( !item )
@@ -1202,6 +1522,11 @@ bool OB_Browser::hasClosed( QListViewItem* item ) const
   return has;
 }
 
+/*!
+  Removes SUIT object
+  \param obj - SUIT object to be removed
+  \param autoUpd - auto tree updating
+*/
 void OB_Browser::removeObject( SUIT_DataObject* obj, const bool autoUpd )
 {
   if ( !obj )
@@ -1242,6 +1567,10 @@ void OB_Browser::removeObject( SUIT_DataObject* obj, const bool autoUpd )
   delete item;
 }
 
+/*!
+  Opens branches from 1 to autoOpenLevel()
+  \sa autoOpenLevel()
+*/
 void OB_Browser::autoOpenBranches()
 {
   int level = autoOpenLevel();
@@ -1257,6 +1586,11 @@ void OB_Browser::autoOpenBranches()
   }
 }
 
+/*!
+  Opens branch
+  \param item
+  \param level
+*/
 void OB_Browser::openBranch( QListViewItem* item, const int level )
 {
   if ( level < 1 )
@@ -1270,12 +1604,18 @@ void OB_Browser::openBranch( QListViewItem* item, const int level )
   }
 }
 
+/*!
+  SLOT: called on double click on item, emits signal
+*/
 void OB_Browser::onDoubleClicked( QListViewItem* item )
 {
   if ( item )
     emit doubleClicked( dataObject( item ) );
 }
 
+/*!
+  Stores time of last modification
+*/
 void OB_Browser::setModified()
 {
   myModifiedTime = clock();

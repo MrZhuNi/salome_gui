@@ -29,10 +29,8 @@
 using namespace std;
 
 /*!
-    Class: ListItem
-    Descr: base template class
+  Constructor
 */
-
 template<class T>
 ListItemF<T>::ListItemF( T* theT, SUIT_DataObject* obj ) :
 myT( theT ),
@@ -119,10 +117,8 @@ void ListItemF<T>::update()
 }
 
 /*!
-    Class: OB_ListItem
-    Descr: List view item for OB_Browser.
+  Constructor
 */
-
 OB_ListItem::OB_ListItem( SUIT_DataObject* obj, QListView* parent )
 : ListItemF<QListViewItem>( this, obj ),
  QListViewItem(parent)
@@ -130,6 +126,9 @@ OB_ListItem::OB_ListItem( SUIT_DataObject* obj, QListView* parent )
   update();
 }
 
+/*!
+  Constructor
+*/
 OB_ListItem::OB_ListItem( SUIT_DataObject* obj, QListViewItem* parent )
 : ListItemF<QListViewItem>( this, obj ),
  QListViewItem(parent)
@@ -137,6 +136,9 @@ OB_ListItem::OB_ListItem( SUIT_DataObject* obj, QListViewItem* parent )
   update();
 }
 
+/*!
+  Constructor
+*/
 OB_ListItem::OB_ListItem( SUIT_DataObject* obj, QListView* parent, QListViewItem* after )
 : ListItemF<QListViewItem>( this, obj),
 QListViewItem(parent, after )
@@ -144,6 +146,9 @@ QListViewItem(parent, after )
   update();
 }
 
+/*!
+  Constructor
+*/
 OB_ListItem::OB_ListItem( SUIT_DataObject* obj, QListViewItem* parent, QListViewItem* after )
 : ListItemF<QListViewItem>( this,obj),
 QListViewItem(parent, after )
@@ -151,16 +156,29 @@ QListViewItem(parent, after )
   update();
 }
 
+/*!
+  Destructor
+*/
 OB_ListItem::~OB_ListItem()
 {
 }
 
+/*!
+  Sets selection state of item
+  \param s - new state
+*/
 void OB_ListItem::setSelected( bool s )
 {
   setSel( s );
   QListViewItem::setSelected( s );
 }
 
+/*!
+  Paints focus
+  \param p - painter
+  \param cg - color group
+  \param r - focus rectangle 
+*/
 void OB_ListItem::paintFocus( QPainter* p, const QColorGroup& cg, const QRect& r )
 {
   QColorGroup col_group( cg );
@@ -173,6 +191,14 @@ void OB_ListItem::paintFocus( QPainter* p, const QColorGroup& cg, const QRect& r
   QListViewItem::paintFocus( p, col_group, R );
 }
 
+/*!
+  Paints item
+  \param p - painter
+  \param cg - color group
+  \param c - not used
+  \param w - width of item
+  \param align - alignment
+*/
 void OB_ListItem::paintCell( QPainter* p, const QColorGroup& cg, int c, int w, int align )
 {
   QColorGroup col_group( cg );
@@ -185,16 +211,27 @@ void OB_ListItem::paintCell( QPainter* p, const QColorGroup& cg, int c, int w, i
 	QListViewItem::paintCell( p, col_group, c, min( W, w ), align );
 }
 
+/*!
+  \return custom RTTI info
+*/
 int OB_ListItem::RTTI()
 {
   return 1000;
 }
 
+/*!
+  \return custom RTTI info
+*/
 int OB_ListItem::rtti() const
 {
   return RTTI();
 }
 
+/*!
+  Sets item text
+  \param column - column index
+  \param text - new text
+*/
 void OB_ListItem::setText( int column, const QString& text )
 {
   QListViewItem::setText( column, text );
@@ -207,10 +244,8 @@ void OB_ListItem::setText( int column, const QString& text )
 }
 
 /*!
-    Class: OB_CheckListItem
-    Descr: Check list view item for OB_Browser.
+  Constructor
 */
-
 OB_CheckListItem::OB_CheckListItem( SUIT_DataObject* obj, QListView* parent, Type type )
 : ListItemF<QCheckListItem>( this, obj),
 QCheckListItem( parent, "", type )
@@ -218,6 +253,9 @@ QCheckListItem( parent, "", type )
   update();
 }
 
+/*!
+  Constructor
+*/
 OB_CheckListItem::OB_CheckListItem( SUIT_DataObject* obj, QListViewItem* parent, Type type )
 : ListItemF<QCheckListItem>( this, obj),
 QCheckListItem( parent, "", type )
@@ -225,6 +263,9 @@ QCheckListItem( parent, "", type )
   update();
 }
 
+/*!
+  Constructor
+*/
 OB_CheckListItem::OB_CheckListItem( SUIT_DataObject* obj, QListView* parent, QListViewItem* after, Type type )
 : ListItemF<QCheckListItem>( this, obj),
 #if defined(QT_VERSION) && QT_VERSION >= 0x030101
@@ -236,6 +277,9 @@ OB_CheckListItem::OB_CheckListItem( SUIT_DataObject* obj, QListView* parent, QLi
   update();
 }
 
+/*!
+  Constructor
+*/
 OB_CheckListItem::OB_CheckListItem( SUIT_DataObject* obj, QListViewItem* parent, QListViewItem* after, Type type )
 : ListItemF<QCheckListItem>( this, obj),
 #if defined(QT_VERSION) && QT_VERSION >= 0x030101
@@ -247,16 +291,29 @@ OB_CheckListItem::OB_CheckListItem( SUIT_DataObject* obj, QListViewItem* parent,
   update();
 }
 
+/*!
+  Destructor
+*/
 OB_CheckListItem::~OB_CheckListItem()
 {
 }
 
+/*!
+  Sets selection state of item
+  \param s - new state
+*/
 void OB_CheckListItem::setSelected( bool s )
 {
 	setSel( s );
 	QCheckListItem::setSelected( s );
 }
 
+/*!
+  Paints focus
+  \param p - painter
+  \param cg - color group
+  \param r - focus rectangle 
+*/
 void OB_CheckListItem::paintFocus( QPainter* p, const QColorGroup& cg, const QRect& r )
 {
   QColorGroup col_group( cg );
@@ -269,6 +326,14 @@ void OB_CheckListItem::paintFocus( QPainter* p, const QColorGroup& cg, const QRe
 	QCheckListItem::paintFocus( p, col_group, R );
 }
 
+/*!
+  Paints item
+  \param p - painter
+  \param cg - color group
+  \param c - not used
+  \param w - width of item
+  \param align - alignment
+*/
 void OB_CheckListItem::paintCell( QPainter* p, const QColorGroup& cg, int c, int w, int align )
 {
   QColorGroup col_group( cg );
@@ -281,16 +346,25 @@ void OB_CheckListItem::paintCell( QPainter* p, const QColorGroup& cg, int c, int
   QCheckListItem::paintCell( p, col_group, c, min( W, w ), align );
 }
 
+/*!
+  \return custom RTTI info
+*/
 int OB_CheckListItem::RTTI()
 {
   return OB_ListItem::RTTI() + 1;
 }
 
+/*!
+  \return custom RTTI info
+*/
 int OB_CheckListItem::rtti() const
 {
   return RTTI();
 }
 
+/*!
+  SLOT: called if checked state is changed, changes corresponding state of SUIT object
+*/
 void OB_CheckListItem::stateChange( bool on )
 {
   QCheckListItem::stateChange( on );

@@ -18,7 +18,6 @@
 //
 // SUIT_ViewWindow.cxx: implementation of the SUIT_ViewWindow class.
 //
-//////////////////////////////////////////////////////////////////////
 
 #include "SUIT_ViewWindow.h"
 #include "SUIT_Desktop.h"
