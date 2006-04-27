@@ -64,6 +64,7 @@ QString SUIT_ResourceMgr::loadDoc( const QString& prefix, const QString& id ) co
   return path( docSection, prefix, id );
 }
 
+#include <unistd.h>
 /*!
     Returns the user file name for specified application
 */

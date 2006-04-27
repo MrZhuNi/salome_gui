@@ -57,6 +57,9 @@ LightApp_SVTKDataOwner
 {
 }
 
+/*!
+  \return active SVTK view window
+*/
 SVTK_ViewWindow* 
 LightApp_SVTKDataOwner
 ::GetActiveViewWindow() const

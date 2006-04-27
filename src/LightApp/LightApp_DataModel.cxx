@@ -17,76 +17,67 @@
 #include <SUIT_Session.h>
 #include <SUIT_DataObject.h>
 
-//=======================================================================
-// name    : LightApp_DataModel::LightApp_DataModel
-/*!Purpose : Constructor*/
-//=======================================================================
+/*!
+  Constructor
+*/
 LightApp_DataModel::LightApp_DataModel( CAM_Module* theModule )
 : CAM_DataModel( theModule )
 {
 }
 
-//=======================================================================
-// name    : LightApp_DataModel::~LightApp_DataModel
-/*! Purpose : Destructor*/
-//=======================================================================
+/*!
+  Destructor
+*/
 LightApp_DataModel::~LightApp_DataModel()
 {
 }
 
-//================================================================
-// Function : open
-/*! Purpose  : Emit opened()*/
-//================================================================
+/*!
+  Emit opened()
+*/
 bool LightApp_DataModel::open( const QString&, CAM_Study* study, QStringList )
 {
   emit opened(); //TODO: is it really needed? to be removed maybe...
   return true;
 }
 
-//================================================================
-// Function : save
-/*! Purpose  : Emit saved()*/
-//================================================================
+/*!
+  Emit saved()
+*/
 bool LightApp_DataModel::save( QStringList& )
 {
   emit saved();
   return true;
 }
 
-//================================================================
-// Function : saveAs
-/*! Purpose  : Emit saved()*/
-//================================================================
+/*!
+  Emit saved()
+*/
 bool LightApp_DataModel::saveAs( const QString&, CAM_Study*, QStringList& )
 {
   emit saved();
   return true;
 }
 
-//================================================================
-// Function : close
-/*! Purpose  : Emit closed()*/
-//================================================================
+/*!
+  Emit closed()
+*/
 bool LightApp_DataModel::close()
 {
   emit closed();
   return true;
 }
 
-//================================================================
-// Function : build
-/*! Purpose  : Build whole data model tree */
-//================================================================
+/*!
+  Build whole data model tree
+*/
 void LightApp_DataModel::build()
 {
 }
 
-//================================================================
-// Function : updateWidgets
-/*! Purpose  : Update data model presentation in some widgets
- * (for example, in object browser*/
-//================================================================
+/*!
+  Updates data model presentation in some widgets (for example, in object browser
+*/
 void LightApp_DataModel::updateWidgets()
 {
   LightApp_Application* app = dynamic_cast<LightApp_Application*>( module()->application() );
@@ -94,10 +85,9 @@ void LightApp_DataModel::updateWidgets()
     app->objectBrowser()->updateTree( 0, false );
 }
 
-//================================================================
-// Function : update
-/*! Purpose  : Update application (empty virtual function).*/
-//================================================================
+/*!
+  Default behaviour of data model update for light modules
+*/
 void LightApp_DataModel::update( LightApp_DataObject*, LightApp_Study* )
 {
   LightApp_ModuleObject* modelRoot = dynamic_cast<LightApp_ModuleObject*>( root() );
@@ -114,20 +104,17 @@ void LightApp_DataModel::update( LightApp_DataObject*, LightApp_Study* )
     delete it.current();
 }
 
-//================================================================
-// Function : getModule
-/*! Purpose  : gets module*/
-//================================================================
-
+/*!
+  \return corresponding module 
+*/
 LightApp_Module* LightApp_DataModel::getModule() const
 {
   return dynamic_cast<LightApp_Module*>( module() );
 }
 
-//================================================================
-// Function : getStudy
-/*! Purpose  : gets study */
-//================================================================
+/*!
+  \return corresponding  study
+*/
 LightApp_Study* LightApp_DataModel::getStudy() const
 {
   LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root()->root() );
@@ -136,19 +123,17 @@ LightApp_Study* LightApp_DataModel::getStudy() const
   return aRoot->study();
 }
 
-//================================================================
-// Function : isModified
-/*! Purpose  : default implementation, always returns false so as not to mask study's isModified()*/
-//================================================================
+/*!
+  default implementation, always returns false so as not to mask study's isModified()
+*/
 bool LightApp_DataModel::isModified() const
 {
   return false;
 }
 
-//================================================================
-// Function : isSaved
-/*! Purpose  : default implementation, always returns true so as not to mask study's isSaved()*/
-//================================================================
+/*!
+  default implementation, always returns true so as not to mask study's isSaved()
+*/
 bool LightApp_DataModel::isSaved() const
 {
   return true;

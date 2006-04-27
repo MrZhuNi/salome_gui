@@ -54,21 +54,36 @@ SUIT_ViewWindow::~SUIT_ViewWindow()
 {
 }
 
+/*!
+  Sets new view manager for window
+  \param theManager - new view manager
+*/
 void SUIT_ViewWindow::setViewManager( SUIT_ViewManager* theManager )
 {
   myManager = theManager;
 }
 
+/*!
+  \return view manager of window
+*/
 SUIT_ViewManager* SUIT_ViewWindow::getViewManager() const
 {
   return myManager;
 }
 
+/*!
+  \return QImage, containing all scene rendering in window
+*/
 QImage SUIT_ViewWindow::dumpView()
 {
   return QImage();
 }
 
+/*!
+  Saves scene rendering in window to file
+  \param fileName - name of file
+  \param format - string contains name of format (for example, "BMP"(default) or "JPEG", "JPG")
+*/
 bool SUIT_ViewWindow::dumpViewToFormat( const QString& fileName, const QString& format )
 {
   QImage img = dumpView();
@@ -111,6 +126,9 @@ void SUIT_ViewWindow::onDumpView()
   qApp->postEvent( this, new QCustomEvent( DUMP_EVENT ) );
 }
 
+/*!
+  \return filters for image files
+*/
 QString SUIT_ViewWindow::filter() const
 {
   return tr( "TLT_IMAGE_FILES" );
@@ -159,11 +177,18 @@ void SUIT_ViewWindow::action( const int  )
 {
 }
 
+/*!
+  \return string containing visual parameters of window
+*/
 QString   SUIT_ViewWindow::getVisualParameters()
 {
   return "empty";
 }
- 
+
+/*!
+  Sets visual parameters of window by its string representation
+  \param parameters - string with visual parameters
+*/ 
 void SUIT_ViewWindow::setVisualParameters( const QString& parameters )
 {
 }

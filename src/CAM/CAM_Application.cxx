@@ -256,7 +256,7 @@ CAM_Module* CAM_Application::loadModule( const QString& modName )
   return module;
 }
 
-/**@name Activate module group.*/
+/*! @name Activate module group. */
 //@{
 /*!Activate module with name \a modName.
  *\param modName - module name.
@@ -503,7 +503,6 @@ void CAM_Application::contextMenuPopup( const QString& type, QPopupMenu* thePopu
 /*!Create empty study.*/
 void CAM_Application::createEmptyStudy()
 {
-  SUIT_Study* study = activeStudy();
-
+  /*SUIT_Study* study = */activeStudy();
   STD_Application::createEmptyStudy();
 }
