@@ -317,7 +317,8 @@ bool LightApp_Application::activateModule( const QString& modName )
 
   putInfo( tr( "ACTIVATING_MODULE" ).arg( modName ) );  
 
-  saveWindowsGeometry();
+  if( !modName.isEmpty() )
+    saveWindowsGeometry();
 
   bool status = CAM_Application::activateModule( modName );
 
@@ -1451,6 +1452,7 @@ void LightApp_Application::onMRUActivated( QString aName )
 /*!Remove all windows from study.*/
 void LightApp_Application::beforeCloseDoc( SUIT_Study* s )
 {
+  saveWindowsGeometry();
   CAM_Application::beforeCloseDoc( s );
 
   for ( WindowMap::ConstIterator itr = myWindows.begin(); s && itr != myWindows.end(); ++itr )
