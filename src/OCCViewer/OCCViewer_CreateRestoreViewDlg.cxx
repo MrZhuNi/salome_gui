@@ -215,6 +215,7 @@ void OCCViewer_CreateRestoreViewDlg::clearList()
 
 /*!
   \return const reference to all view aspects
+*/
 const viewAspectList& OCCViewer_CreateRestoreViewDlg::parameters() const
 {
 	return myParametersMap;

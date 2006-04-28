@@ -1333,6 +1333,7 @@ void OB_Browser::onExpand()
 
 /*!
   SLOT: called if action "Show/hide column" is activated by popup
+*/
 void OB_Browser::onColumnVisible( int id )
 {
   setColumnShown( id, !isColumnVisible( id ) );
