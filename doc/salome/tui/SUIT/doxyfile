@@ -4,7 +4,6 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "SALOME - GUI - v.version"
-#3.2.0b1 "
 PROJECT_NUMBER         = 
 OUTPUT_DIRECTORY       = ../
 CREATE_SUBDIRS         = NO
