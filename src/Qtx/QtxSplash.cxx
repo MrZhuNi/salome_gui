@@ -24,22 +24,25 @@
 #include <qapplication.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <qmessagebox.h>
 
-#define PROGRESS_EVENT  QEvent::User + 10
+const int _PROGRESS_EVENT = QEvent::User + 10;
+const int _PROGRESS_WIDTH = 10;
 
 /*!
-  Class ProgressEvent [internal].
+  Class ProgressEvent [ internal ].
 */
 class ProgressEvent: public QCustomEvent
 {
 public:
   ProgressEvent( const QString& msg, const int progress = 0 )
-    : QCustomEvent( PROGRESS_EVENT ),
+    : QCustomEvent( id() ),
       myMessage( msg ),
       myProgress( progress )
   {}
-  QString message()  const { return myMessage;  } 
-  int     progress() const { return myProgress; }
+  QString    message()  const { return myMessage;       } 
+  int        progress() const { return myProgress;      }
+  static int id()             { return _PROGRESS_EVENT; }
 
 private:
   QString myMessage;
@@ -53,7 +56,7 @@ QtxSplash* QtxSplash::mySplash = 0;
   Construct a splash screen that will display the \a pixmap.
 */
 QtxSplash::QtxSplash( const QPixmap& pixmap )
-  : QWidget( 0, 0, WStyle_Customize | WStyle_StaysOnTop )
+  : QWidget( 0, 0, WStyle_Customize | WStyle_StaysOnTop | WX11BypassWM | WStyle_NoBorder )
 {
   myAlignment    = AlignBottom | AlignRight;
   myColor        = white;
@@ -61,7 +64,7 @@ QtxSplash::QtxSplash( const QPixmap& pixmap )
   myProgress     = 0;
   myTotal        = 0;
   myGradientType = Vertical;
-  
+  myError        = 0;
   myStartColor   = red;
 
   setPixmap( pixmap );
@@ -98,6 +101,21 @@ void QtxSplash::setStatus( const QString& msg,
   if ( mySplash ) {
     QApplication::postEvent( mySplash, new ProgressEvent( msg, progress ) );
     qApp->processEvents();
+  }
+}
+
+/*!
+  Sets error status and shows error message box to the user.
+*/
+void QtxSplash::error( const QString& error, const QString& title, const int code )
+{
+  printf("QtxSplash::error: %s\n",error.latin1());
+  if ( mySplash ) {
+    mySplash->setError( code );
+    QMessageBox::critical( mySplash, 
+			   title.isEmpty() ? tr( "Error" ) : title,
+			   error,
+			   tr( "&OK" ) );
   }
 }
 
@@ -281,6 +299,23 @@ void QtxSplash::textColors( QColor& color, QColor& shadow ) const
 }
 
 /*!
+  Returns current status message.
+*/
+QString QtxSplash::message() const
+{
+  return myMessage;
+}
+
+/*!
+  Return error code. If no errors were occured returns 0.
+  Error code can be set by error( QString&, QString, int ).
+*/
+int QtxSplash::error() const
+{
+  return myError;
+}
+
+/*!
     Makes the splash screen wait until the widget \a mainWin is displayed
     before calling close() on itself.
 */
@@ -348,48 +383,71 @@ void QtxSplash::drawContents( QPainter* painter )
 {
   QRect r = rect();
   if ( myTotal > 0 ) {
+    // draw progress bar outline rectangle
     painter->setPen( palette().active().dark() );
-    painter->drawLine( r.x()+5, r.height()-15, r.width()-5, r.height()-15 );
-    painter->drawLine( r.x()+5, r.height()-15, r.x()+5, r.height()-5 );
+    painter->drawLine( r.x()+5, 
+		       r.height()-5-_PROGRESS_WIDTH,
+		       r.width()-5,
+		       r.height()-5-_PROGRESS_WIDTH );
+    painter->drawLine( r.x()+5,
+		       r.height()-5-_PROGRESS_WIDTH,
+		       r.x()+5,
+		       r.height()-5 );
     painter->setPen( palette().active().light() );
-    painter->drawLine( r.x()+5, r.height()-5, r.width()-5, r.height()-5 );
-    painter->drawLine( r.width()-5, r.height()-15, r.width()-5, r.height()-5 );
+    painter->drawLine( r.x()+5,
+		       r.height()-5,
+		       r.width()-5,
+		       r.height()-5 );
+    painter->drawLine( r.width()-5,
+		       r.height()-5-_PROGRESS_WIDTH,
+		       r.width()-5,
+		       r.height()-5 );
+    // draw progress bar
     if ( myGradientType == Horizontal ) {
       int tng = r.width() - r.x() - 11;
-      int ng = (int) ( 1.0 * (r.width() - r.x() - 11) * ( myProgress > 0 ? myProgress : 0 ) / myTotal ); 
+      int ng = (int) ( 1.0 * tng * ( myProgress > 0 ? myProgress : 0 ) / myTotal ); 
       int h1, h2, s1, s2, v1, v2;
       myStartColor.hsv( &h1, &s1, &v1 );
-      myEndColor.isValid() ? myEndColor.hsv( &h2, &s2, &v2 ) : myStartColor.hsv( &h2, &s2, &v2 );
+      myEndColor.isValid() ? myEndColor.hsv( &h2, &s2, &v2 ) :
+	                     myStartColor.hsv( &h2, &s2, &v2 );
       for ( int i = 0; i < ng; i++ ) {
 	painter->setPen( QColor( h1 + ((h2-h1)*i)/(tng-1),
 				 s1 + ((s2-s1)*i)/(tng-1),
 				 v1 + ((v2-v1)*i)/(tng-1), 
 				 QColor::Hsv ) );
-	painter->drawLine( r.x()+6+i, r.height()-14, r.x()+6+i, r.height()-6 );
+	painter->drawLine( r.x()+6+i,
+			   r.height()-5-_PROGRESS_WIDTH+1,
+			   r.x()+6+i,
+			   r.height()-6 );
       }
     }
     else {
       int ng = (int) ( 1.0 * (r.width() - r.x() - 11) * ( myProgress > 0 ? myProgress : 0 ) / myTotal ); 
       int h1, h2, s1, s2, v1, v2;
       myStartColor.hsv( &h1, &s1, &v1 );
-      myEndColor.isValid() ? myEndColor.hsv( &h2, &s2, &v2 ) : myStartColor.hsv( &h2, &s2, &v2 );
-      for ( int i = 0; i < 9; i++ ) {
-	painter->setPen( QColor( h1 + ((h2-h1)*i)/8,
-				 s1 + ((s2-s1)*i)/8,
-				 v1 + ((v2-v1)*i)/8, 
+      myEndColor.isValid() ? myEndColor.hsv( &h2, &s2, &v2 ) :
+	                     myStartColor.hsv( &h2, &s2, &v2 );
+      for ( int i = 0; i < _PROGRESS_WIDTH-1; i++ ) {
+	painter->setPen( QColor( h1 + ((h2-h1)*i)/(_PROGRESS_WIDTH-2),
+				 s1 + ((s2-s1)*i)/(_PROGRESS_WIDTH-2),
+				 v1 + ((v2-v1)*i)/(_PROGRESS_WIDTH-2), 
 				 QColor::Hsv ) );
-	painter->drawLine( r.x()+6, r.height()-14+i, r.x()+6+ng, r.height()-14+i );
+	painter->drawLine( r.x()+6,
+			   r.height()-5-_PROGRESS_WIDTH+1+i,
+			   r.x()+6+ng-1,
+			   r.height()-5-_PROGRESS_WIDTH+1+i );
       }
     }
   }
+  // draw status
   if ( !myMessage.isEmpty() ) {
-    int shift = myTotal > 0 ? 12 : 0;
-    int bottom = 0;
     QFontMetrics f( font() );
+    int spacing = f.lineSpacing();
+    int shift = myTotal > 0 ? _PROGRESS_WIDTH : _PROGRESS_WIDTH; // : 0
     int i = myMessage.length() - 1;
     while( i >= 0 && myMessage[ i-- ] == '\n' )
-      bottom += f.lineSpacing();
-    QRect r1( r.x() + 5, r.y() + 5, r.width() - 10, r.height() - 10 - shift - bottom );
+      shift += spacing;
+    QRect r1( r.x() + 5, r.y() + 5, r.width() - 10, r.height() - 10 - shift );
     QRect r2 = r1;
     if ( myAlignment & Qt::AlignLeft   ) r2.setLeft  ( r2.left()   + 1 );
     if ( myAlignment & Qt::AlignTop    ) r2.setTop   ( r2.top()    + 1 );
@@ -421,7 +479,7 @@ void QtxSplash::mousePressEvent( QMouseEvent* )
 */
 void QtxSplash::customEvent( QCustomEvent* ce )
 {
-  if ( ce->type() == PROGRESS_EVENT ) {
+  if ( ce->type() == ProgressEvent::id() ) {
     ProgressEvent* pe = (ProgressEvent*)ce;
     pe->message().isEmpty() ? clear() : message( pe->message() );
     setProgress( pe->progress() );
@@ -430,7 +488,7 @@ void QtxSplash::customEvent( QCustomEvent* ce )
 }
 
 /*!
-  Draws the splash screen window.
+  Draws the splash screen window [ internal ].
 */
 void QtxSplash::drawContents()
 {
@@ -438,4 +496,12 @@ void QtxSplash::drawContents()
   QPainter painter( &textPix, this );
   drawContents( &painter );
   setErasePixmap( textPix );
+}
+
+/*!
+  Sets error code [ internal ].
+*/
+void QtxSplash::setError( const int code )
+{
+  myError = code;
 }

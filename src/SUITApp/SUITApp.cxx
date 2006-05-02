@@ -169,6 +169,14 @@ int main( int args, char* argv[] )
 	resMgr->value( "splash", "image",       splashIcon );
 	resMgr->value( "splash", "info",        splashInfo, false );
 	resMgr->value( "splash", "text_colors", splashTextColors );
+	QString appName    = QObject::tr( "APP_NAME" ).stripWhiteSpace();
+	QString appVersion = QObject::tr( "APP_VERSION" ).stripWhiteSpace();
+	if ( appVersion == "APP_VERSION" ) {
+	  if ( appName == "APP_NAME" || appName.lower() == "salome" )
+	    appVersion = salomeVersion();
+	  else
+	    appVersion = "";
+	}
 	QPixmap px( splashIcon );
 	if ( !px.isNull() ) {
 	  splash = QtxSplash::splash( px );
@@ -189,8 +197,8 @@ int main( int args, char* argv[] )
 	  f.setBold( true );
 	  splash->setFont( f );
 	  if ( !splashInfo.isEmpty() ) {
-	    splashInfo.replace( QRegExp( "%A" ),  QObject::tr( "APP_NAME" ) );
-	    splashInfo.replace( QRegExp( "%V" ),  QObject::tr( "ABOUT_VERSION" ).arg( salomeVersion() ) );
+	    splashInfo.replace( QRegExp( "%A" ),  appName );
+	    splashInfo.replace( QRegExp( "%V" ),  QObject::tr( "ABOUT_VERSION" ).arg( appVersion ) );
 	    splashInfo.replace( QRegExp( "%L" ),  QObject::tr( "ABOUT_LICENSE" ) );
 	    splashInfo.replace( QRegExp( "%C" ),  QObject::tr( "ABOUT_COPYRIGHT" ) );
 	    splashInfo.replace( QRegExp( "\\\\n" ), "\n" );

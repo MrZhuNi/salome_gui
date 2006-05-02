@@ -44,7 +44,8 @@ public:
     virtual ~QtxSplash();
 
     static QtxSplash* splash( const QPixmap& = QPixmap() );
-    static void       setStatus( const QString& msg, const int progress = 0 );
+    static void       setStatus( const QString&, const int = 0 );
+    static void       error( const QString&, const QString& = QString::null, const int = -1 );
 
     void              setPixmap( const QPixmap& );
     QPixmap           pixmap() const;
@@ -69,6 +70,10 @@ public:
     QColor            textColor() const;
     void              setTextColors( const QColor&, const QColor& = QColor() );
     void              textColors( QColor&, QColor& ) const;
+    
+    QString           message() const;
+
+    int               error() const;
 
     void              finish( QWidget* );
     void              repaint();
@@ -87,6 +92,7 @@ protected:
 
 private:
     void              drawContents();
+    void              setError( const int );
 
 private:
     static QtxSplash* mySplash;
@@ -102,6 +108,7 @@ private:
     QColor            myStartColor;
     QColor            myEndColor;
     int               myGradientType;
+    int               myError;
 };
 
 #endif
