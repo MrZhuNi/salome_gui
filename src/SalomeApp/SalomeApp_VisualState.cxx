@@ -234,7 +234,7 @@ void SalomeApp_VisualState::restoreState(int savePoint)
       
       viewWin->setCaption(ip->getValue(viewerEntry, j).c_str());
       
-      printf ( "VP for viewWin \"%s\": %s\n", viewerEntry.c_str(), ip->getValue(viewerEntry, j+1).c_str() );
+      //      printf ( "VP for viewWin \"%s\": %s\n", viewerEntry.c_str(), ip->getValue(viewerEntry, j+1).c_str() );
       viewersParameters[ viewWin ] = ip->getValue(viewerEntry, j+1).c_str();
       //viewWin->setVisualParameters(ip->getValue(viewerEntry, j+1).c_str());
     }
@@ -259,7 +259,7 @@ void SalomeApp_VisualState::restoreState(int savePoint)
     for ( int i = 0; i < view_count; i++ ) {
       if ( !viewersParameters.contains( views[i] ) ) {
 	viewersParameters[ views[i] ] = views[i]->getVisualParameters();
-	printf ( "store VP for viewWin \"%s\": %s\n", views[i]->name(), views[i]->getVisualParameters().latin1() );
+	//	printf ( "store VP for viewWin \"%s\": %s\n", views[i]->name(), views[i]->getVisualParameters().latin1() );
       }
     }
   }  
