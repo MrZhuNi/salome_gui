@@ -105,10 +105,11 @@ void SalomeApp_Application::createActions()
   SUIT_Desktop* desk = desktop();
   
   //! Save GUI state
-  createAction( SaveGUIStateId, tr( "TOT_DESK_FILE_SAVE_GUI_STATE" ), QIconSet(),
-		tr( "MEN_DESK_FILE_SAVE_GUI_STATE" ), tr( "PRP_DESK_FILE_SAVE_GUI_STATE" ),
-		0, desk, false, this, SLOT( onSaveGUIState() ) );
-
+  // "Save GUI State" command is moved to VISU module
+  //  createAction( SaveGUIStateId, tr( "TOT_DESK_FILE_SAVE_GUI_STATE" ), QIconSet(),
+  //  		tr( "MEN_DESK_FILE_SAVE_GUI_STATE" ), tr( "PRP_DESK_FILE_SAVE_GUI_STATE" ),
+  //  		0, desk, false, this, SLOT( onSaveGUIState() ) );
+  
   //! Dump study
   createAction( DumpStudyId, tr( "TOT_DESK_FILE_DUMP_STUDY" ), QIconSet(),
 		tr( "MEN_DESK_FILE_DUMP_STUDY" ), tr( "PRP_DESK_FILE_DUMP_STUDY" ),
@@ -136,7 +137,10 @@ void SalomeApp_Application::createActions()
 
   int fileMenu = createMenu( tr( "MEN_DESK_FILE" ), -1 );
 
-  createMenu( SaveGUIStateId, fileMenu, 10, -1 );
+  // "Save GUI State" command is renamed to "Save VISU State" and 
+  // creation of menu item is moved to VISU
+  //  createMenu( SaveGUIStateId, fileMenu, 10, -1 ); 
+
   createMenu( DumpStudyId, fileMenu, 10, -1 );
   createMenu( separator(), fileMenu, -1, 15, -1 );
   createMenu( LoadScriptId, fileMenu, 10, -1 );
