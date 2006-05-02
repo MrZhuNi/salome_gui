@@ -82,15 +82,13 @@ Session_ServerThread::Session_ServerThread()
 Session_ServerThread::Session_ServerThread(int argc,
 					   char ** argv, 
 					   CORBA::ORB_ptr orb, 
-					   PortableServer::POA_ptr poa,
-					   QMutex *GUIMutex)
+					   PortableServer::POA_ptr poa)
 {
   //MESSAGE("Session_ServerThread Constructor " << argv[0]);
   _argc = argc;
   _argv = argv;
   _orb = CORBA::ORB::_duplicate(orb);
   _root_poa = PortableServer::POA::_duplicate(poa);
-  _GUIMutex = GUIMutex;
   _servType =-1;
   _NS = new SALOME_NamingService(_orb); // one instance per server to limit
                                         // multi thread coherence problems
@@ -511,7 +509,8 @@ Session_SessionThread::Session_SessionThread(int argc,
 					     PortableServer::POA_ptr poa,
 					     QMutex* GUIMutex,
 					     QWaitCondition* GUILauncher)
-: Session_ServerThread(argc, argv, orb, poa, GUIMutex),
+: Session_ServerThread(argc, argv, orb, poa),
+  _GUIMutex( GUIMutex ),
   _GUILauncher( GUILauncher )
 {
 }

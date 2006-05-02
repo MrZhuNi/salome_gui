@@ -38,6 +38,7 @@ VPATH=.:@srcdir@:@top_srcdir@/idl
 EXPORT_HEADERS= Session_Session_i.hxx \
 		Session_ServerLauncher.hxx \
 		Session_ServerThread.hxx \
+		Session_ServerCheck.hxx \
 		SalomeApp_Engine_i.hxx
 
 # Libraries targets
@@ -46,10 +47,10 @@ LIB = libSalomeSession.la
 LIB_SRC=Session_Session_i.cxx \
 	Session_ServerThread.cxx \
 	Session_ServerLauncher.cxx \
+	Session_ServerCheck.cxx \
 	SalomeApp_Engine_i.cxx \
-	InquireServersQThread.cxx
 
-LIB_MOC = InquireServersQThread.h
+LIB_MOC = 
 
 # Executables targets
 BIN = SALOME_Session_Server
