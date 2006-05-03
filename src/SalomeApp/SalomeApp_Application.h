@@ -38,7 +38,8 @@ class QListViewItem;
 #endif
 
 /*!
-  Description : Application containing SalomeApp module or LightApp module
+  \class SalomeApp_Application
+  \brief Application containing SalomeApp module or LightApp module
 */
 
 class SALOMEAPP_EXPORT SalomeApp_Application : public LightApp_Application

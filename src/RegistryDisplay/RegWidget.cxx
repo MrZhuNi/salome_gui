@@ -573,6 +573,9 @@ void RegWidget::slotSelectRefresh()
   END_OF("slotSelectRefresh");
 }
 
+/*!
+  SLOT: called when button OK is clicked in interval window
+*/
 void RegWidget::slotIntervalOk()
 {
   BEGIN_OF("slotIntervalOk");

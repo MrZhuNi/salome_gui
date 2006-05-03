@@ -52,18 +52,16 @@ SalomeApp_VisualState::~SalomeApp_VisualState()
 {
 }
 
-//================================================================
-// Function : nameViewWindows
-/*! Purpose : set names of all view windows in given list.  This is used
-//  in order to apply the same naming algorithm when saving and restoring
-//  view windows.  Names of view windows must be the same before saving
-//  workstack (splitters) information, and before its restoring! 
-//  Naming rule: ViewerType_IndexOfViewerOfThisType_IndexOfViewInThisViewer
-//               VTKViewer_0_0
-//               OCCViewer_0_0  OCCViewer_0_1  OCCViewer_0_2
-//               VTKViewer_1_0
+/*!
+  Sets names of all view windows in given list.  This is used
+  in order to apply the same naming algorithm when saving and restoring
+  view windows.  Names of view windows must be the same before saving
+  workstack (splitters) information, and before its restoring! 
+  Naming rule: ViewerType_IndexOfViewerOfThisType_IndexOfViewInThisViewer
+               VTKViewer_0_0
+               OCCViewer_0_0  OCCViewer_0_1  OCCViewer_0_2
+               VTKViewer_1_0
 */
-//================================================================
 void nameViewWindows( const ViewManagerList& lst )
 {
   QDict<int> viewersCounter; // map viewerType - to - index_of_this_viewer_type
@@ -90,11 +88,9 @@ void nameViewWindows( const ViewManagerList& lst )
   }
 }
 
-//================================================================
-// Function : storeState
-/*! Purpose : store the visual parameters of the viewers
+/*!
+  Stores the visual parameters of the viewers
 */
-//================================================================
 int SalomeApp_VisualState::storeState()
 {
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( myApp->activeStudy() );
@@ -170,11 +166,9 @@ int SalomeApp_VisualState::storeState()
   return savePoint;
 }
 
-//================================================================
-// Function : restoreState
-/*! Purpose : restore the visual parameters of the viewers
+/*!
+  Restores the visual parameters of the viewers
 */
-//================================================================
 void SalomeApp_VisualState::restoreState(int savePoint)
 {
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( myApp->activeStudy() );

@@ -46,11 +46,11 @@
 
 using namespace std;
 
-//----------------------------------------------------------------------------
 vtkStandardNewMacro(SVTK_DeviceActor);
 
-
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 SVTK_DeviceActor
 ::SVTK_DeviceActor()
 {
@@ -77,8 +77,9 @@ SVTK_DeviceActor
     myPassFilter.push_back(VTKViewer_PassThroughFilter::New());
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Destructor
+*/
 SVTK_DeviceActor
 ::~SVTK_DeviceActor()
 {
@@ -96,8 +97,9 @@ SVTK_DeviceActor
     myPassFilter[i]->Delete();
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  To insert some additional filters and then sets the given vtkMapper
+*/
 void
 SVTK_DeviceActor
 ::SetMapper(vtkMapper* theMapper)
@@ -105,6 +107,9 @@ SVTK_DeviceActor
   InitPipeLine(theMapper);
 }
 
+/*!
+  To initialize internal pipeline
+*/
 void
 SVTK_DeviceActor
 ::InitPipeLine(vtkMapper* theMapper)
@@ -139,7 +144,9 @@ SVTK_DeviceActor
   Superclass::SetMapper(theMapper);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Allows to get initial vtkDataSet
+*/
 vtkDataSet* 
 SVTK_DeviceActor
 ::GetInput()
@@ -147,6 +154,9 @@ SVTK_DeviceActor
   return myPassFilter.front()->GetOutput();
 }
 
+/*!
+  Allows to set initial vtkDataSet
+*/
 void
 SVTK_DeviceActor
 ::SetInput(vtkDataSet* theDataSet)
@@ -155,7 +165,9 @@ SVTK_DeviceActor
   InitPipeLine(myMapper);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  To provide VTK to Object and backward mapping
+*/
 void
 SVTK_DeviceActor::
 SetStoreMapping(bool theStoreMapping)
@@ -165,7 +177,6 @@ SetStoreMapping(bool theStoreMapping)
 
 
 
-//----------------------------------------------------------------------------
 unsigned long int 
 SVTK_DeviceActor
 ::GetMTime()
@@ -185,8 +196,10 @@ SVTK_DeviceActor
   return mTime;
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Apply a view transformation
+  \param theTransform - transformation
+*/
 void 
 SVTK_DeviceActor
 ::SetTransform(VTKViewer_Transform* theTransform)
@@ -195,7 +208,6 @@ SVTK_DeviceActor
 }
 
 
-//----------------------------------------------------------------------------
 bool
 SVTK_DeviceActor
 ::IsShrunkable() 
@@ -259,7 +271,6 @@ SVTK_DeviceActor
 
 
 
-//----------------------------------------------------------------------------
 void
 SVTK_DeviceActor
 ::SetRepresentation(SVTK::Representation::Type theMode)
@@ -348,7 +359,6 @@ SVTK_DeviceActor
 }
 
 
-//----------------------------------------------------------------------------
 int
 SVTK_DeviceActor
 ::GetNodeObjId(int theVtkID)
@@ -379,7 +389,6 @@ SVTK_DeviceActor
 }
 
 
-//----------------------------------------------------------------------------
 void
 SVTK_DeviceActor
 ::Render(vtkRenderer *ren, vtkMapper* m)

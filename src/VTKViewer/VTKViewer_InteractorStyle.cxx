@@ -84,10 +84,10 @@ static int GetEdgeId(vtkPicker *thePicker, SALOME_Actor *theActor, int theObjId)
   return anEdgeId;
 }
 */
-//----------------------------------------------------------------------------
+
 vtkStandardNewMacro(VTKViewer_InteractorStyle);
 
-//----------------------------------------------------------------------------
+
 /*!Constructor.*/
 VTKViewer_InteractorStyle::VTKViewer_InteractorStyle()
 {
@@ -106,14 +106,14 @@ VTKViewer_InteractorStyle::VTKViewer_InteractorStyle()
   OnSelectionModeChanged();
 }
 
-//----------------------------------------------------------------------------
+
 /*!Destructor.*/
 VTKViewer_InteractorStyle::~VTKViewer_InteractorStyle() 
 {
   m_ViewWnd->RemoveActor(myPreSelectionActor);
 }
 
-//----------------------------------------------------------------------------
+
 /*!Set preselection properties.
  *\param theRed   - red color.
  *\param theGreen - green color.
@@ -130,7 +130,7 @@ void VTKViewer_InteractorStyle::setPreselectionProp(const double& theRed, const 
   myPreSelectionActor->GetProperty()->SetPointSize(theWidth);
 }
 
-//----------------------------------------------------------------------------
+
 /*!Set render window interactor
  *\param theInteractor - interactor.
  */
@@ -139,7 +139,7 @@ void VTKViewer_InteractorStyle::SetInteractor(vtkRenderWindowInteractor *theInte
   Superclass::SetInteractor(theInteractor);
 }
 
-//----------------------------------------------------------------------------
+
 /*!Set view window.
  *\param theViewWnd - SALOME VTKViewer_ViewWindow
  */
@@ -149,7 +149,7 @@ void VTKViewer_InteractorStyle::setViewWnd(VTKViewer_ViewWindow* theViewWnd ){
   myPreSelectionActor->Delete();
 }
 
-//----------------------------------------------------------------------------
+
 /*!Set GUI window.
  *\param theWindow - QWidget window.
  */
@@ -157,15 +157,14 @@ void VTKViewer_InteractorStyle::setGUIWindow(QWidget* theWindow){
   myGUIWindow = theWindow;
 }
 
-//----------------------------------------------------------------------------
-/*!Set triedron.
+
+/*!Set trihedron.
  *\param theTrihedron - SALOME VTKViewer_Trihedron
  */
 void VTKViewer_InteractorStyle::setTriedron(VTKViewer_Trihedron* theTrihedron){
   m_Trihedron = theTrihedron;
 }
 
-//----------------------------------------------------------------------------
 /*!Rotate camera.
  *\param dx - 
  *\param dy - 
@@ -197,7 +196,6 @@ void VTKViewer_InteractorStyle::RotateXY(int dx, int dy)
   myGUIWindow->update();
 }
 
-//----------------------------------------------------------------------------
 void VTKViewer_InteractorStyle::PanXY(int x, int y, int oldX, int oldY)
 {
   TranslateView(x, y, oldX, oldY);   
@@ -206,7 +204,6 @@ void VTKViewer_InteractorStyle::PanXY(int x, int y, int oldX, int oldY)
 }
 
 
-//----------------------------------------------------------------------------
 /*! Move the position of the camera along the direction of projection. (dx,dy)*/
 void VTKViewer_InteractorStyle::DollyXY(int dx, int dy)
 {
@@ -229,8 +226,6 @@ void VTKViewer_InteractorStyle::DollyXY(int dx, int dy)
   myGUIWindow->update();
 }
 
-//----------------------------------------------------------------------------
-/*!*/
 void VTKViewer_InteractorStyle::SpinXY(int x, int y, int oldX, int oldY)
 {
   vtkCamera *cam;
@@ -257,7 +252,6 @@ void VTKViewer_InteractorStyle::SpinXY(int x, int y, int oldX, int oldY)
 }
 
 
-//----------------------------------------------------------------------------
 /*!On mouse move event.
  *\param ctrl  - CTRL (not used)
  *\param shift - SHIFT (on/off - integer 0/1)
@@ -276,7 +270,6 @@ void VTKViewer_InteractorStyle::OnMouseMove(int vtkNotUsed(ctrl),
 }
 
 
-//----------------------------------------------------------------------------
 /*!On Left button down event.
  *\param ctrl  - CTRL  (on/off - integer 0/1)
  *\param shift - SHIFT (on/off - integer 0/1)
@@ -313,7 +306,6 @@ void VTKViewer_InteractorStyle::OnLeftButtonDown(int ctrl, int shift,
 }
 
 
-//----------------------------------------------------------------------------
 /*!On left button up event.
  *\param ctrl  - CTRL  (not used)
  *\param shift - SHIFT (on/off - integer 0/1)
@@ -334,7 +326,6 @@ void VTKViewer_InteractorStyle::OnLeftButtonUp(int vtkNotUsed(ctrl),
 }
 
 
-//----------------------------------------------------------------------------
 /*!On left button up event.
  *\param ctrl  - CTRL  (on/off - integer 0/1)
  *\param shift - SHIFT (on/off - integer 0/1)
@@ -372,7 +363,6 @@ void VTKViewer_InteractorStyle::OnMiddleButtonDown(int ctrl,
 }
 
 
-//----------------------------------------------------------------------------
 /*!On middle button up event.
  *\param ctrl  - CTRL  (not used)
  *\param shift - SHIFT (on/off - integer 0/1)
@@ -393,7 +383,6 @@ void VTKViewer_InteractorStyle::OnMiddleButtonUp(int vtkNotUsed(ctrl),
 }
 
 
-//----------------------------------------------------------------------------
 /*!On right button down event.
  *\param ctrl  - CTRL  (on/off - integer 0/1)
  *\param shift - SHIFT (on/off - integer 0/1)
@@ -430,7 +419,6 @@ void VTKViewer_InteractorStyle::OnRightButtonDown(int ctrl,
   }
 }
 
-//----------------------------------------------------------------------------
 /*!On right button up event.
  *\param ctrl  - CTRL  (not used)
  *\param shift - SHIFT (on/off - integer 0/1)
@@ -450,8 +438,7 @@ void VTKViewer_InteractorStyle::OnRightButtonUp(int vtkNotUsed(ctrl),
   }
 }
 
-//----------------------------------------------------------------------------
-/** @name XPM - x pixmaps. */
+/*! @name XPM - x pixmaps. */
 //@{
 /*!Image Zoom cursor*/
 const char* imageZoomCursor[] = { 
@@ -532,7 +519,6 @@ const char* imageRotateCursor[] = {
 "................................"};
 //@}
 
-//----------------------------------------------------------------------------
 /*! Loads cursors for viewer operations - zoom, pan, etc...*/
 void VTKViewer_InteractorStyle::loadCursors()
 {
@@ -547,7 +533,6 @@ void VTKViewer_InteractorStyle::loadCursors()
 }
 
 
-//----------------------------------------------------------------------------
 /*! event filter - controls mouse and keyboard events during viewer operations*/
 bool VTKViewer_InteractorStyle::eventFilter(QObject* object, QEvent* event)
 {
@@ -561,7 +546,6 @@ bool VTKViewer_InteractorStyle::eventFilter(QObject* object, QEvent* event)
 }
 
 
-//----------------------------------------------------------------------------
 /*! starts Zoom operation (e.g. through menu command)*/
 void VTKViewer_InteractorStyle::startZoom()
 {
@@ -576,7 +560,6 @@ void VTKViewer_InteractorStyle::startZoom()
 }
 
 
-//----------------------------------------------------------------------------
 /*! starts Pan operation (e.g. through menu command)*/
 void VTKViewer_InteractorStyle::startPan()
 {
@@ -590,7 +573,6 @@ void VTKViewer_InteractorStyle::startPan()
   qApp->installEventFilter(this);
 }
 
-//----------------------------------------------------------------------------
 /*! starts Rotate operation (e.g. through menu command)*/
 void VTKViewer_InteractorStyle::startRotate()
 {
@@ -605,7 +587,6 @@ void VTKViewer_InteractorStyle::startRotate()
 }
 
 
-//----------------------------------------------------------------------------
 /*! starts Spin operation (e.g. through menu command)*/
 void VTKViewer_InteractorStyle::startSpin()
 {
@@ -621,7 +602,6 @@ void VTKViewer_InteractorStyle::startSpin()
 
 
 
-//----------------------------------------------------------------------------
 /*! starts Fit Area operation (e.g. through menu command)*/
 void VTKViewer_InteractorStyle::startFitArea()
 {
@@ -636,7 +616,6 @@ void VTKViewer_InteractorStyle::startFitArea()
 }
 
 
-//----------------------------------------------------------------------------
 /*!View fit all.*/
 void  VTKViewer_InteractorStyle::ViewFitAll() {
   int aTriedronWasVisible = false;
@@ -658,7 +637,6 @@ void  VTKViewer_InteractorStyle::ViewFitAll() {
 }
 
 
-//----------------------------------------------------------------------------
 /*! starts Global Panning operation (e.g. through menu command)*/
 void VTKViewer_InteractorStyle::startGlobalPan()
 {
@@ -682,7 +660,6 @@ void VTKViewer_InteractorStyle::startGlobalPan()
 }
 
 
-//----------------------------------------------------------------------------
 /*!\retval TRUE if needs redrawing*/
 bool VTKViewer_InteractorStyle::needsRedrawing()
 {
@@ -694,7 +671,6 @@ bool VTKViewer_InteractorStyle::needsRedrawing()
 }
 
 
-//----------------------------------------------------------------------------
 /*! fits viewer contents to rectangle
  *\param left - left side
  *\param top  - top side
@@ -733,7 +709,6 @@ void VTKViewer_InteractorStyle::fitRect(const int left,
 }
 
 
-//----------------------------------------------------------------------------
 /*! starts viewer operation (!internal usage!)*/
 void VTKViewer_InteractorStyle::startOperation(int operation)
 {
@@ -762,7 +737,6 @@ void VTKViewer_InteractorStyle::startOperation(int operation)
 }
 
 
-//----------------------------------------------------------------------------
 /*! sets proper cursor for window when viewer operation is activated*/
 void VTKViewer_InteractorStyle::setCursor(const int operation)
 {
@@ -803,7 +777,6 @@ void VTKViewer_InteractorStyle::setCursor(const int operation)
 }
 
 
-//----------------------------------------------------------------------------
 /*! called when viewer operation started (!put necessary initialization here!)*/
 void VTKViewer_InteractorStyle::onStartOperation()
 {
@@ -830,7 +803,6 @@ void VTKViewer_InteractorStyle::onStartOperation()
 }
 
 
-//----------------------------------------------------------------------------
 /*! called when viewer operation finished (!put necessary post-processing here!)*/
 void VTKViewer_InteractorStyle::onFinishOperation() 
 {

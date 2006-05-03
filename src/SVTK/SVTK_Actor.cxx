@@ -46,10 +46,11 @@ CopyPoints(vtkUnstructuredGrid* theGrid, vtkDataSet *theSourceDataSet)
   aPoints->Delete();
 }
 
-//=======================================================================
-
 vtkStandardNewMacro(SVTK_Actor);
 
+/*!
+  Constructor
+*/
 SVTK_Actor
 ::SVTK_Actor():
   myUnstructuredGrid(vtkUnstructuredGrid::New())
@@ -62,7 +63,6 @@ SVTK_Actor
   myUnstructuredGrid->Allocate();
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_Actor
 ::Initialize()
@@ -70,8 +70,6 @@ SVTK_Actor
   SetInput(GetSource());
 }
 
-
-//----------------------------------------------------------------------------
 void
 SVTK_Actor
 ::SetSource(vtkUnstructuredGrid* theUnstructuredGrid)
@@ -91,15 +89,14 @@ SVTK_Actor
   return myUnstructuredGrid.GetPointer();
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Destructor
+*/
 SVTK_Actor
 ::~SVTK_Actor()
 {
 }
 
-
-//----------------------------------------------------------------------------
 const TColStd_IndexedMapOfInteger&
 SVTK_Actor
 ::GetMapIndex() const
@@ -107,8 +104,6 @@ SVTK_Actor
   return myMapIndex;
 }
 
-
-//----------------------------------------------------------------------------
 void
 SVTK_Actor
 ::MapCells(SALOME_Actor* theMapActor,
@@ -136,8 +131,6 @@ SVTK_Actor
   myMapIndex = theMapIndex;
 }
 
-
-//----------------------------------------------------------------------------
 void 
 SVTK_Actor
 ::MapPoints(SALOME_Actor* theMapActor,
@@ -165,8 +158,6 @@ SVTK_Actor
   myMapIndex = theMapIndex;
 }
 
-
-//----------------------------------------------------------------------------
 void
 SVTK_Actor
 ::MapEdge(SALOME_Actor* theMapActor,
@@ -205,5 +196,3 @@ SVTK_Actor
 
   myMapIndex = theMapIndex;
 }
-
-//----------------------------------------------------------------------------

@@ -47,7 +47,6 @@
 #include <vtkCamera.h>
 #include <vtkCell.h>
 
-//----------------------------------------------------------------------------
 namespace
 {
   //----------------------------------------------------------------------------
@@ -324,10 +323,8 @@ namespace
   }
 }
 
-//----------------------------------------------------------------------------
 vtkStandardNewMacro(SVTK_RectPicker);
 
-//----------------------------------------------------------------------------
 SVTK_RectPicker
 ::SVTK_RectPicker()
 {
@@ -349,7 +346,6 @@ SVTK_RectPicker
   return 0;
 }
 
-//----------------------------------------------------------------------------
 int
 SVTK_RectPicker
 ::Pick(vtkFloatingPointType theSelection[3], 
@@ -361,7 +357,6 @@ SVTK_RectPicker
 	      theRenderer);
 }
 
-//----------------------------------------------------------------------------
 int 
 SVTK_RectPicker
 ::Pick(vtkFloatingPointType theSelectionX, 
@@ -481,7 +476,6 @@ SVTK_RectPicker
 }
 
 
-//----------------------------------------------------------------------------
 const SVTK_RectPicker::TVectorIdsMap& 
 SVTK_RectPicker
 ::GetPointIdsMap() const

@@ -28,9 +28,6 @@
 #include <qnamespace.h>
 
 
-/*!\class SUIT_Accel
- * Class handles keyboard accelerator bindings.
- */
 SUIT_Accel* SUIT_Accel::myself = 0;
 
 /*! Constructor [private].*/

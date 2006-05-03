@@ -47,7 +47,6 @@ class vtkDataSet;
 class vtkShrinkFilter;
 class vtkDataSetMapper;
 
-//----------------------------------------------------------------------------
 namespace SVTK
 {
   namespace Representation
@@ -61,7 +60,6 @@ namespace SVTK
 }
 
 
-//----------------------------------------------------------------------------
 class SVTK_EXPORT SVTK_DeviceActor: public vtkLODActor
 {
  public:

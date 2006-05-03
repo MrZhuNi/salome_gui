@@ -27,6 +27,10 @@
 #include <qstring.h>
 #include <qmap.h>
 
+/*!
+  \class SUIT_Accel
+  Manager of keyboard accelerator bindings
+*/
 class SUIT_EXPORT SUIT_Accel: public QObject
 {
   Q_OBJECT

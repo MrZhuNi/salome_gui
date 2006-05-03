@@ -40,8 +40,9 @@
 #include <vtkActorCollection.h>
 #include <vtkRenderer.h>
 
-
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 SVTK_SignalHandler
 ::SVTK_SignalHandler(SVTK_MainWindow* theMainWindow):
   QObject(theMainWindow),
@@ -67,11 +68,17 @@ SVTK_SignalHandler
 	  this,SIGNAL(selectionChanged()));
 }
 
+/*!
+  Destructor
+*/
 SVTK_SignalHandler
 ::~SVTK_SignalHandler()
 {
 }
 
+/*!
+  \return corresponding svtk main window
+*/
 SVTK_MainWindow*
 SVTK_SignalHandler
 ::GetMainWindow()
@@ -80,7 +87,9 @@ SVTK_SignalHandler
 }
 
 
-//----------------------------------------------------------------
+/*!
+  Redirect the request to #SVTK_MainWindow::Repaint (just for flexibility)
+*/
 void
 SVTK_SignalHandler
 ::Repaint(bool theUpdateTrihedron)
@@ -88,7 +97,9 @@ SVTK_SignalHandler
   myMainWindow->Repaint(theUpdateTrihedron);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to #SVTK_MainWindow::GetRenderer (just for flexibility)
+*/
 SVTK_Renderer* 
 SVTK_SignalHandler
 ::GetRenderer()
@@ -96,6 +107,9 @@ SVTK_SignalHandler
   return myMainWindow->GetRenderer();
 }
 
+/*!
+  Redirect the request to #SVTK_MainWindow::getRenderer (just for flexibility)
+*/
 vtkRenderer* 
 SVTK_SignalHandler
 ::getRenderer()
@@ -103,7 +117,6 @@ SVTK_SignalHandler
   return myMainWindow->getRenderer();
 }
 
-//----------------------------------------------------------------
 namespace SVTK
 {
   struct THighlightAction
@@ -123,6 +136,9 @@ namespace SVTK
   };
 }
 
+/*!
+  SLOT: called on selection change
+*/
 void
 SVTK_SignalHandler
 ::onSelectionChanged()
@@ -144,21 +160,26 @@ SVTK_SignalHandler
   myMainWindow->Repaint(false);
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 SVTK_View
 ::SVTK_View(SVTK_MainWindow* theMainWindow) :
   SVTK_SignalHandler(theMainWindow)
 {
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Destructor
+*/
 SVTK_View
 ::~SVTK_View()
 {
 }
 
-//----------------------------------------------------------------
+/*!
+  Unhilights all objects in viewer
+*/
 void 
 SVTK_View
 ::unHighlightAll() 
@@ -169,7 +190,12 @@ SVTK_View
   Repaint();
 }
 
-//----------------------------------------------------------------
+/*!
+  Hilights/unhilights object in viewer
+  \param theIO - object to be updated
+  \param theIsHighlight - if it is true, object will be hilighted, otherwise it will be unhilighted
+  \param theIsUpdate - update current viewer
+*/
 void
 SVTK_View
 ::highlight( const Handle(SALOME_InteractiveObject)& theIO, 
@@ -183,7 +209,9 @@ SVTK_View
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+   Redirect the request to #SVTK_Renderer::SetPreselectionProp
+*/
 void
 SVTK_View
 ::SetSelectionProp(const double& theRed, 
@@ -194,7 +222,9 @@ SVTK_View
   GetRenderer()->SetSelectionProp(theRed,theGreen,theBlue,theWidth);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to #SVTK_Renderer::SetPreselectionProp
+*/
 void
 SVTK_View
 ::SetPreselectionProp(const double& theRed, 
@@ -205,7 +235,9 @@ SVTK_View
   GetRenderer()->SetPreselectionProp(theRed,theGreen,theBlue,theWidth);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to #SVTK_Renderer::SetPreselectionProp
+*/
 void
 SVTK_View
 ::SetSelectionTolerance(const double& theTolNodes, 
@@ -214,7 +246,10 @@ SVTK_View
   GetRenderer()->SetSelectionTolerance(theTolNodes,theTolCell);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  \return true if object is in viewer or in collector
+  \param theIO - object to be checked
+*/
 bool
 SVTK_View
 ::isInViewer(const Handle(SALOME_InteractiveObject)& theIObject)
@@ -226,7 +261,10 @@ SVTK_View
   return anActor != NULL;
 }
 
-//----------------------------------------------------------------------------
+/*!
+  \return true if object is displayed in viewer
+  \param theIO - object to be checked
+*/
 bool
 SVTK_View
 ::isVisible(const Handle(SALOME_InteractiveObject)& theIObject)
@@ -238,7 +276,11 @@ SVTK_View
   return anActor != NULL && anActor->GetVisibility();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Changes name of object
+  \param theIObject - object to be renamed
+  \param theName - new name
+*/
 void
 SVTK_View
 ::rename(const Handle(SALOME_InteractiveObject)& theIObject, 
@@ -251,7 +293,9 @@ SVTK_View
 			  (&SALOME_Actor::setName,theName.latin1()));
 }
 
-//----------------------------------------------------------------------------
+/*!
+  \return current display mode (obsolete)
+*/
 int
 SVTK_View
 ::GetDisplayMode() 
@@ -259,6 +303,10 @@ SVTK_View
   return myDisplayMode; 
 }
 
+/*!
+  Set current display mode
+  \param theMode - new display mode
+*/
 void
 SVTK_View
 ::SetDisplayMode(int theMode)
@@ -270,6 +318,11 @@ SVTK_View
   myDisplayMode = theMode;
 }
 
+/*!
+  Set current display mode
+  \param theIObject - object
+  \param theMode - new display mode
+*/
 void
 SVTK_View
 ::SetDisplayMode(const Handle(SALOME_InteractiveObject)& theIObject, 
@@ -282,7 +335,9 @@ SVTK_View
 			  (&SALOME_Actor::setDisplayMode,theMode));
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Change all actors to wireframe
+*/
 void
 SVTK_View
 ::ChangeRepresentationToWireframe()
@@ -290,6 +345,9 @@ SVTK_View
   ChangeRepresentationToWireframe(getRenderer()->GetActors());
 }
 
+/*!
+  Change all actors to shading
+*/
 void
 SVTK_View
 ::ChangeRepresentationToSurface()
@@ -297,7 +355,10 @@ SVTK_View
   ChangeRepresentationToSurface(getRenderer()->GetActors());
 }
 
-
+/*!
+  Change to wireframe a list of vtkactor
+  theCollection - list of vtkactor
+*/
 void
 SVTK_View
 ::ChangeRepresentationToWireframe(vtkActorCollection* theCollection)
@@ -309,6 +370,10 @@ SVTK_View
   Repaint();
 }
 
+/*!
+  Change to shading a list of vtkactor
+  theCollection - list of vtkactor
+*/
 void
 SVTK_View
 ::ChangeRepresentationToSurface(vtkActorCollection* theCollection)
@@ -320,7 +385,6 @@ SVTK_View
   Repaint();
 }
 
-//----------------------------------------------------------------------------
 namespace SVTK
 {
   struct TErase
@@ -342,6 +406,9 @@ namespace SVTK
   };
 }
 
+/*!
+  To erase all existing VTK presentations
+*/
 void
 SVTK_View
 ::EraseAll()
@@ -352,6 +419,9 @@ SVTK_View
   Repaint();
 }
 
+/*!
+  To display all existing VTK presentations
+*/
 void
 SVTK_View
 ::DisplayAll()
@@ -362,7 +432,11 @@ SVTK_View
   Repaint();
 }
 
-
+/*!
+  To erase VTK presentation
+  \param theActor - actor
+  \param theIsUpdate - updates current viewer
+*/
 void
 SVTK_View
 ::Erase(SALOME_Actor* theActor, 
@@ -375,6 +449,11 @@ SVTK_View
 }
 
 
+/*!
+  To erase VTK presentation
+  \param theIObject - object
+  \param theIsUpdate - updates current viewer
+*/
 void
 SVTK_View
 ::Erase(const Handle(SALOME_InteractiveObject)& theIObject, 
@@ -388,7 +467,9 @@ SVTK_View
     Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  To display the VTK presentation
+*/
 void
 SVTK_View
 ::Display(SALOME_Actor* theActor, 
@@ -401,6 +482,9 @@ SVTK_View
     Repaint();
 }
 
+/*!
+  To display the VTK presentation
+*/
 void
 SVTK_View
 ::Display(const Handle(SALOME_InteractiveObject)& theIObject, 
@@ -415,6 +499,9 @@ SVTK_View
     Repaint();
 }
 
+/*!
+  To display VTK presentation with defined #SALOME_InteractiveObject and erase all others
+*/
 void
 SVTK_View
 ::DisplayOnly(const Handle(SALOME_InteractiveObject)& theIObject)
@@ -424,7 +511,6 @@ SVTK_View
 }
 
 
-//----------------------------------------------------------------------------
 namespace SVTK
 {
   struct TRemoveAction
@@ -441,6 +527,9 @@ namespace SVTK
   };
 }
 
+/*!
+  To remove the VTK presentation
+*/
 void
 SVTK_View
 ::Remove(const Handle(SALOME_InteractiveObject)& theIObject, 
@@ -454,6 +543,9 @@ SVTK_View
     Repaint();
 }
 
+/*!
+  To remove the VTK presentation
+*/
 void
 SVTK_View
 ::Remove(SALOME_Actor* theActor, 
@@ -464,6 +556,9 @@ SVTK_View
     Repaint();
 }
 
+/*!
+  To remove all VTK presentations
+*/
 void
 SVTK_View
 ::RemoveAll(bool theIsUpdate)
@@ -483,7 +578,10 @@ SVTK_View
   }
 }
 
-//----------------------------------------------------------------------------
+/*!
+  \return current transparency
+  \param theIObject - object
+*/
 float
 SVTK_View
 ::GetTransparency(const Handle(SALOME_InteractiveObject)& theIObject) 
@@ -498,6 +596,11 @@ SVTK_View
 }
 
 
+/*!
+  Sets current transparency
+  \param theIObject - object
+  \param theTrans - new transparency
+*/
 void
 SVTK_View
 ::SetTransparency(const Handle(SALOME_InteractiveObject)& theIObject, 
@@ -511,7 +614,11 @@ SVTK_View
 			  (&SALOME_Actor::SetOpacity,anOpacity));
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Change color
+  \param theIObject - object
+  \param theColor - new color
+*/
 void
 SVTK_View
 ::SetColor(const Handle(SALOME_InteractiveObject)& theIObject,
@@ -527,6 +634,10 @@ SVTK_View
 }
 
 
+/*!
+  \return object color
+  \param theIObject - object
+*/
 QColor
 SVTK_View
 ::GetColor(const Handle(SALOME_InteractiveObject)& theIObject) 

@@ -49,6 +49,9 @@ using namespace std;
 #define MARGIN_SIZE  5
 #define SPACING_SIZE 3
 
+/*!
+  Constructor
+*/
 InquireServersGUI::InquireServersGUI()
      : QVBox(0, "SFA splash", Qt::WDestructiveClose | Qt::WStyle_Customize | Qt::WStyle_NoBorder | WType_TopLevel | WStyle_StaysOnTop | WX11BypassWM  )
 {
@@ -148,6 +151,9 @@ void InquireServersGUI::setPixmap( QPixmap pix )
   }
 }
 
+/*!
+  Destructor
+*/
 InquireServersGUI::~InquireServersGUI()
 {
   delete myThread;
@@ -159,10 +165,9 @@ void InquireServersGUI::getArgs( int& _argc, char *** _argv)
   *_argv = qApp->argv();
 }
 
-//=================================================================================
-// function : ClickOnCancel()
-// purpose  : cancel loading of SALOME
-//=================================================================================
+/*!
+  Cancel loading of SALOME
+*/
 void InquireServersGUI::ClickOnCancel()
 {
   myThread->stop(); //it's necessary to stop asking servers
@@ -209,6 +214,9 @@ int InquireServersGUI::getExitStatus()
   return myThread->getExitStatus();
 }
 
+/*!
+  Constructor
+*/
 InquireServersQThread::InquireServersQThread( InquireServersGUI* r )
      : receiver(r),  myExitStatus(0)
 {
@@ -311,6 +319,9 @@ void InquireServersQThread::stop()
   myExitStatus = 1;
 }
 
+/*!
+  Destructor
+*/
 InquireServersQThread::~InquireServersQThread()
 {
 }

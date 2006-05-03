@@ -38,6 +38,9 @@ myObject( obj )
 {
 }
 
+/*!
+  Paints item
+*/
 template<class T>
 void ListItemF<T>::paintC( QPainter* p, QColorGroup& cg, int c, int w, int align )
 { 
@@ -65,6 +68,9 @@ void ListItemF<T>::paintC( QPainter* p, QColorGroup& cg, int c, int w, int align
   //myT.paintCell( p, colorGrp, c, itemW,  align );
 }
 
+/*!
+  Paints focused item
+*/
 template<class T>
 void ListItemF<T>::paintFoc( QPainter* p, QColorGroup& cg, const QRect& r )
 {
@@ -73,6 +79,10 @@ void ListItemF<T>::paintFoc( QPainter* p, QColorGroup& cg, const QRect& r )
   //myT.paintFocus( p, cg, rect );
 }
 
+/*!
+  Set selection of item
+  \param s - selected state
+*/
 template<class T>
 void ListItemF<T>::setSel( bool s )
 {
@@ -86,6 +96,9 @@ void ListItemF<T>::setSel( bool s )
   //myT.setSelected( s );
 }
 
+/*!
+  Updates name and pixmap of item
+*/
 template<class T>
 void ListItemF<T>::update()
 {

@@ -69,11 +69,6 @@ extern "C" SALOMEAPP_EXPORT SUIT_Application* createApplication()
   return new SalomeApp_Application();
 }
 
-/*
-  Class       : SalomeApp_Application
-  Description : Application containing SalomeApp module or LightApp module
-*/
-
 /*!Constructor.*/
 SalomeApp_Application::SalomeApp_Application()
 : LightApp_Application()
@@ -443,10 +438,9 @@ void SalomeApp_Application::onOpenWith()
   QApplication::restoreOverrideCursor();
 }
 
-//=======================================================================
-// name    : createNewStudy
-/*! Purpose : Create new study*/
-//=======================================================================
+/*!
+  Creates new study
+*/
 SUIT_Study* SalomeApp_Application::createNewStudy()
 {
   SalomeApp_Study* aStudy = new SalomeApp_Study( this );
@@ -460,10 +454,9 @@ SUIT_Study* SalomeApp_Application::createNewStudy()
   return aStudy;
 }
 
-//=======================================================================
-// name    : updateCommandsStatus
-/*! Purpose : Enable/Disable menu items and toolbar buttons. Rebuild menu*/
-//=======================================================================
+/*!
+  Enable/Disable menu items and toolbar buttons. Rebuild menu
+*/
 void SalomeApp_Application::updateCommandsStatus()
 {
   LightApp_Application::updateCommandsStatus();
@@ -492,10 +485,10 @@ void SalomeApp_Application::updateCommandsStatus()
   onSelectionChanged();
 }
 
-/*
-  Class       : DumpStudyFileDlg
-  Description : Private class used in Dump Study operation.  Consists 2 check boxes: 
-                "Publish in study" and "Save GUI parameters"
+/*!
+  \class DumpStudyFileDlg
+  Private class used in Dump Study operation.  Consists 2 check boxes: 
+  "Publish in study" and "Save GUI parameters"
 */
 class DumpStudyFileDlg : public SUIT_FileDlg
 {
@@ -922,6 +915,10 @@ void SalomeApp_Application::onDblClick( QListViewItem* it )
   }
 }
 
+/*!
+  Creates new view manager
+  \param type - type of view manager
+*/
 SUIT_ViewManager* SalomeApp_Application::newViewManager(const QString& type)
 {
   return createViewManager(type);

@@ -60,7 +60,6 @@
 
 //#define USE_ROBUST_TRIANGULATION
 
-//----------------------------------------------------------------------------
 vtkCxxRevisionMacro(VTKViewer_GeometryFilter, "$Revision$");
 vtkStandardNewMacro(VTKViewer_GeometryFilter);
 
@@ -77,7 +76,6 @@ VTKViewer_GeometryFilter
 {}
 
 
-//----------------------------------------------------------------------------
 void
 VTKViewer_GeometryFilter
 ::Execute()
@@ -98,7 +96,6 @@ VTKViewer_GeometryFilter
 }
 
 
-//----------------------------------------------------------------------------
 void
 VTKViewer_GeometryFilter
 ::UnstructuredGridExecute()
@@ -759,7 +756,6 @@ VTKViewer_GeometryFilter
 }
 
 
-//----------------------------------------------------------------------------
 void
 VTKViewer_GeometryFilter
 ::SetInside(int theShowInside)
@@ -779,7 +775,6 @@ VTKViewer_GeometryFilter
 }
 
 
-//----------------------------------------------------------------------------
 void 
 VTKViewer_GeometryFilter
 ::SetWireframeMode(int theIsWireframeMode)
@@ -799,7 +794,6 @@ VTKViewer_GeometryFilter
 }
 
 
-//----------------------------------------------------------------------------
 void
 VTKViewer_GeometryFilter
 ::SetStoreMapping(int theStoreMapping)
@@ -819,7 +813,6 @@ VTKViewer_GeometryFilter
 }
 
 
-//----------------------------------------------------------------------------
 vtkIdType VTKViewer_GeometryFilter::GetElemObjId(int theVtkID){
   if(myVTK2ObjIds.empty() || theVtkID > myVTK2ObjIds.size()) return -1;
 #if defined __GNUC_2__

@@ -60,11 +60,11 @@ int VTKViewer_POINT_SIZE = 5;
 int VTKViewer_LINE_WIDTH = 3;
 
 
-//----------------------------------------------------------------------------
 vtkStandardNewMacro(VTKViewer_Actor);
 
-
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 VTKViewer_Actor
 ::VTKViewer_Actor():
   myIsHighlighted(false),
@@ -86,8 +86,9 @@ VTKViewer_Actor
     myPassFilter.push_back(VTKViewer_PassThroughFilter::New());
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Destructor
+*/
 VTKViewer_Actor
 ::~VTKViewer_Actor()
 {
@@ -104,8 +105,9 @@ VTKViewer_Actor
   myProperty->Delete();
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  \return name
+*/
 const char* 
 VTKViewer_Actor
 ::getName() 
@@ -113,6 +115,10 @@ VTKViewer_Actor
   return myName.c_str(); 
 }
 
+/*!
+  Sets name
+  \param theName - new name
+*/
 void
 VTKViewer_Actor
 ::setName(const char* theName)
@@ -120,8 +126,9 @@ VTKViewer_Actor
   myName = theName;
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  To publish the actor an all its internal devices
+*/
 void
 VTKViewer_Actor
 ::AddToRender(vtkRenderer* theRenderer)
@@ -129,6 +136,9 @@ VTKViewer_Actor
   theRenderer->AddActor(this);
 }
 
+/*!
+  To remove the actor an all its internal devices
+*/
 void 
 VTKViewer_Actor
 ::RemoveFromRender(vtkRenderer* theRenderer)
@@ -136,13 +146,18 @@ VTKViewer_Actor
   theRenderer->RemoveActor(this);
 }
 
+/*!
+  Used to obtain all dependent actors
+*/
 void
 VTKViewer_Actor
 ::GetChildActors(vtkActorCollection*) 
 {}
 
-
-//----------------------------------------------------------------------------
+/*!
+  Apply view transformation
+  \param theTransform - view transformation
+*/
 void
 VTKViewer_Actor
 ::SetTransform(VTKViewer_Transform* theTransform)
@@ -151,6 +166,9 @@ VTKViewer_Actor
 }
 
 
+/*!
+  To insert some additional filters and then sets the given #vtkMapper
+*/
 void
 VTKViewer_Actor
 ::SetMapper(vtkMapper* theMapper)
@@ -158,6 +176,9 @@ VTKViewer_Actor
   InitPipeLine(theMapper);
 }
 
+/*!
+  Initialization
+*/
 void
 VTKViewer_Actor
 ::InitPipeLine(vtkMapper* theMapper)
@@ -192,8 +213,9 @@ VTKViewer_Actor
   Superclass::SetMapper(theMapper);
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Renders actor
+*/
 void
 VTKViewer_Actor
 ::Render(vtkRenderer *ren, vtkMapper* m)
@@ -222,7 +244,10 @@ VTKViewer_Actor
   }
 }
 
-
+/*!
+  Set ResolveCoincidentTopology flag
+  \param theIsResolve - new flag value
+*/
 void
 VTKViewer_Actor
 ::SetResolveCoincidentTopology(bool theIsResolve) 
@@ -230,6 +255,10 @@ VTKViewer_Actor
   myIsResolveCoincidentTopology = theIsResolve;
 }
 
+/*!
+  Set polygon offset parameters
+  \param factor, units  - Opengl polygon offset parameters
+*/
 void
 VTKViewer_Actor
 ::SetPolygonOffsetParameters(vtkFloatingPointType factor, 
@@ -239,6 +268,10 @@ VTKViewer_Actor
   myPolygonOffsetUnits = units;
 }
 
+/*!
+  Get polygon offset parameters
+  \param factor, units  - Opengl polygon offset parameters
+*/
 void
 VTKViewer_Actor
 ::GetPolygonOffsetParameters(vtkFloatingPointType& factor, 
@@ -248,8 +281,9 @@ VTKViewer_Actor
   units = myPolygonOffsetUnits;
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  \return shrink factor
+*/
 vtkFloatingPointType
 VTKViewer_Actor
 ::GetShrinkFactor() 
@@ -257,6 +291,9 @@ VTKViewer_Actor
   return 1.0;
 }
 
+/*!
+  \return true if the actor is shrunkable
+*/
 bool
 VTKViewer_Actor
 ::IsShrunkable() 
@@ -264,6 +301,9 @@ VTKViewer_Actor
   return false;
 }
 
+/*!
+  \return true if the actor is shrunk
+*/
 bool
 VTKViewer_Actor
 ::IsShrunk() 
@@ -271,18 +311,25 @@ VTKViewer_Actor
   return false;
 }
 
+/*!
+  Insert shrink filter into pipeline
+*/
 void
 VTKViewer_Actor
 ::SetShrink() 
 {} 
 
+/*!
+  Remove shrink filter from pipeline
+*/
 void
 VTKViewer_Actor
 ::UnShrink() 
 {}
 
-
-//----------------------------------------------------------------------------
+/*!
+  Allows to get initial #vtkDataSet
+*/
 vtkDataSet* 
 VTKViewer_Actor
 ::GetInput()
@@ -290,7 +337,9 @@ VTKViewer_Actor
   return myPassFilter.front()->GetOutput();
 }
 
-
+/*!
+  To calculatate last modified time
+*/
 unsigned long int
 VTKViewer_Actor
 ::GetMTime()
@@ -305,8 +354,10 @@ VTKViewer_Actor
   return mTime;
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Set representation (VTK_SURFACE, VTK_POINTS, VTK_WIREFRAME and so on)
+  param theMode - new mode
+*/
 void
 VTKViewer_Actor
 ::SetRepresentation(int theMode) 
@@ -360,6 +411,9 @@ VTKViewer_Actor
   myRepresentation = theMode;
 }
 
+/*!
+  \return current representation mode
+*/
 int
 VTKViewer_Actor
 ::GetRepresentation()
@@ -367,8 +421,9 @@ VTKViewer_Actor
   return myRepresentation;
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Maps VTK index of a node to corresponding object index
+*/
 int 
 VTKViewer_Actor
 ::GetNodeObjId(int theVtkID)
@@ -376,6 +431,9 @@ VTKViewer_Actor
   return theVtkID;
 }
 
+/*!
+  Get coordinates of a node for given object index
+*/
 vtkFloatingPointType* 
 VTKViewer_Actor
 ::GetNodeCoord(int theObjID)
@@ -383,6 +441,9 @@ VTKViewer_Actor
   return GetInput()->GetPoint(theObjID);
 }
 
+/*!
+  Get corresponding #vtkCell for given object index
+*/
 vtkCell* 
 VTKViewer_Actor
 ::GetElemCell(int theObjID)
@@ -390,6 +451,9 @@ VTKViewer_Actor
   return GetInput()->GetCell(theObjID);
 }
 
+/*!
+  Maps VTK index of a cell to corresponding object index
+*/
 int
 VTKViewer_Actor
 ::GetElemObjId(int theVtkID) 
@@ -398,11 +462,9 @@ VTKViewer_Actor
 }
 
 
-//=================================================================================
-// function : GetObjDimension
-// purpose  : Return object dimension.
-//            Virtual method shoulb be redifined by derived classes
-//=================================================================================
+/*!
+  \return object dimension. Virtual method should be redifined by derived classes
+*/
 int
 VTKViewer_Actor
 ::GetObjDimension( const int theObjId )
@@ -412,7 +474,10 @@ VTKViewer_Actor
   return 0;
 }
 
-
+/*!
+  Infinitive means actor without size (point for example),
+  which is not taken into account in calculation of boundaries of the scene
+*/
 void
 VTKViewer_Actor
 ::SetInfinitive(bool theIsInfinite)
@@ -420,7 +485,9 @@ VTKViewer_Actor
   myIsInfinite = theIsInfinite;
 }
 
-
+/*!
+  \return infinive flag
+*/
 bool
 VTKViewer_Actor
 ::IsInfinitive()
@@ -442,7 +509,9 @@ VTKViewer_Actor
   return false;
 }
 
-
+/*!
+  \return current bounding box
+*/
 vtkFloatingPointType* 
 VTKViewer_Actor
 ::GetBounds()
@@ -451,6 +520,9 @@ VTKViewer_Actor
 }
 
 
+/*!
+  \return current bounding box
+*/
 void
 VTKViewer_Actor
 ::GetBounds(vtkFloatingPointType theBounds[6])
@@ -459,7 +531,6 @@ VTKViewer_Actor
 }
 
 
-//----------------------------------------------------------------------------
 bool
 VTKViewer_Actor
 ::IsSetCamera() const 
@@ -485,7 +556,7 @@ VTKViewer_Actor
 ::SetCamera( vtkCamera* ) 
 {}
 
-//----------------------------------------------------------------------------
+
 void
 VTKViewer_Actor
 ::SetOpacity(vtkFloatingPointType theOpacity)
@@ -502,6 +573,9 @@ VTKViewer_Actor
 }
 
 
+/*!
+  Change color
+*/
 void
 VTKViewer_Actor
 ::SetColor(vtkFloatingPointType r,
@@ -511,6 +585,9 @@ VTKViewer_Actor
   GetProperty()->SetColor(r,g,b);
 }
 
+/*!
+  Change color
+*/
 void
 VTKViewer_Actor
 ::SetColor(const vtkFloatingPointType theRGB[3])
@@ -518,6 +595,9 @@ VTKViewer_Actor
   SetColor(theRGB[0],theRGB[1],theRGB[2]);
 }
 
+/*!
+  Get color
+*/
 void
 VTKViewer_Actor
 ::GetColor(vtkFloatingPointType& r,
@@ -532,7 +612,9 @@ VTKViewer_Actor
 }
 
 
-//----------------------------------------------------------------------------
+/*!
+  \return display mode
+*/
 int
 VTKViewer_Actor
 ::getDisplayMode()
@@ -540,6 +622,9 @@ VTKViewer_Actor
   return myDisplayMode; 
 }
 
+/*!
+  Change display mode
+*/
 void
 VTKViewer_Actor
 ::setDisplayMode(int theMode)
@@ -549,7 +634,9 @@ VTKViewer_Actor
 }
 
 
-//----------------------------------------------------------------------------
+/*!
+  \return true if the descendant of the VTKViewer_Actor will implement its own highlight or not
+*/
 bool
 VTKViewer_Actor
 ::hasHighlight() 
@@ -557,6 +644,9 @@ VTKViewer_Actor
   return false; 
 } 
 
+/*!
+  \return true if the VTKViewer_Actor is already highlighted
+*/
 bool
 VTKViewer_Actor
 ::isHighlighted() 
@@ -564,6 +654,9 @@ VTKViewer_Actor
   return myIsHighlighted; 
 }
 
+/*!
+  Set preselection mode
+*/
 void
 VTKViewer_Actor
 ::SetPreSelected(bool thePreselect) 
@@ -571,8 +664,9 @@ VTKViewer_Actor
   myIsPreselected = thePreselect;
 }
 
-
-//----------------------------------------------------------------
+/*!
+  Just to update visibility of the highlight devices
+*/
 void
 VTKViewer_Actor
 ::highlight(bool theIsHighlight)

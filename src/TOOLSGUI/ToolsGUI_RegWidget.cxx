@@ -577,6 +577,9 @@ void ToolsGUI_RegWidget::slotSelectRefresh()
   END_OF("slotSelectRefresh");
 }
 
+/*!
+  SLOT: called when IntervalWindow's OK button is clicked
+*/
 void ToolsGUI_RegWidget::slotIntervalOk()
 {
   BEGIN_OF("slotIntervalOk");

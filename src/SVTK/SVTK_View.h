@@ -18,7 +18,6 @@ class SVTK_Renderer;
 
 class SALOME_Actor;
 
-//----------------------------------------------------------------------------
 //! Main purpose of the class is to provide a way to customize #SVTK_MainWindow.
 /*!
   This class is initialized by #SVTK_MainWindow and just pass Qt signals from 
@@ -78,7 +77,6 @@ public:
 };
 
 
-//----------------------------------------------------------------------------
 //! This class is introduced just for compatibility with old code.
 /*!
   This class contains frequantly used functionality in old code.

@@ -307,6 +307,7 @@ void SOCC_Viewer::rename( const Handle(SALOME_InteractiveObject)& obj,
 
 /*!
   Display presentation
+  \param prs - presentation
 */
 void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
 {
@@ -427,6 +428,8 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
 
 /*!
   Erase presentation
+  \param prs - presentation
+  \param forced - removes object from context
 */
 void SOCC_Viewer::Erase( const SALOME_OCCPrs* prs, const bool forced )
 {
@@ -476,6 +479,7 @@ void SOCC_Viewer::Erase( const SALOME_OCCPrs* prs, const bool forced )
 
 /*!
   Erase all presentations
+  \param forced - removes all objects from context
 */
 void SOCC_Viewer::EraseAll( const bool forced )
 {
@@ -527,6 +531,7 @@ void SOCC_Viewer::EraseAll( const bool forced )
 
 /*!
   Create presentation corresponding to the entry
+  \param entry - entry
 */
 SALOME_Prs* SOCC_Viewer::CreatePrs( const char* entry )
 {

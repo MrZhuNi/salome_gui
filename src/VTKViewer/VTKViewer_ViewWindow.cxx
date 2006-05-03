@@ -580,7 +580,7 @@ QString VTKViewer_ViewWindow::getVisualParameters()
   return retStr;
 }
 
-/* The method restors visual parameters of this view from a formated string
+/*! The method restors visual parameters of this view from a formated string
  */
 void VTKViewer_ViewWindow::setVisualParameters( const QString& parameters )
 {

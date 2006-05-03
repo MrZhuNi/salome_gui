@@ -44,7 +44,6 @@
 #include <vtkPlane.h>
 #include <vtkMath.h>
 
-//----------------------------------------------------------------------------
 namespace
 {
   typedef std::vector<vtkIdType> TConnectivities;
@@ -72,7 +71,9 @@ namespace
   typedef std::vector<TPolygon> TPolygons;
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 VTKViewer_Triangulator
 ::VTKViewer_Triangulator():
   myInput(NULL),
@@ -84,7 +85,9 @@ VTKViewer_Triangulator
 {}
 
 
-//----------------------------------------------------------------------------
+/*!
+  Destructor
+*/
 VTKViewer_Triangulator
 ::~VTKViewer_Triangulator()
 {
@@ -92,7 +95,7 @@ VTKViewer_Triangulator
 }
 
 
-//----------------------------------------------------------------------------
+
 bool 
 VTKViewer_Triangulator
 ::Execute(vtkUnstructuredGrid *theInput,
@@ -391,21 +394,23 @@ VTKViewer_Triangulator
   return true;
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 VTKViewer_OrderedTriangulator
 ::VTKViewer_OrderedTriangulator():
   myCell(vtkGenericCell::New())
 {}
 
-
-//----------------------------------------------------------------------------
+/*!
+  Destructor
+*/
 VTKViewer_OrderedTriangulator
 ::~VTKViewer_OrderedTriangulator()
 {
   myCell->Delete();
 }
 
-//----------------------------------------------------------------------------
 vtkPoints*
 VTKViewer_OrderedTriangulator
 ::InitPoints()
@@ -466,7 +471,9 @@ VTKViewer_OrderedTriangulator
   return thePntId;
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 VTKViewer_DelaunayTriangulator
 ::VTKViewer_DelaunayTriangulator():
   myUnstructuredGrid(vtkUnstructuredGrid::New()),
@@ -482,7 +489,10 @@ VTKViewer_DelaunayTriangulator
 }
 
 
-//----------------------------------------------------------------------------
+
+/*!
+  Destructor
+*/
 VTKViewer_DelaunayTriangulator
 ::~VTKViewer_DelaunayTriangulator()
 {
@@ -494,7 +504,6 @@ VTKViewer_DelaunayTriangulator
 }
 
 
-//----------------------------------------------------------------------------
 vtkPoints* 
 VTKViewer_DelaunayTriangulator
 ::InitPoints()

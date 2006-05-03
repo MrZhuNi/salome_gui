@@ -38,11 +38,17 @@ using namespace std;
 
 SalomeApp_Engine_i* SalomeApp_Engine_i::myInstance = NULL;
 
+/*!
+  Constructor
+*/
 SalomeApp_Engine_i::SalomeApp_Engine_i()
 {
   myInstance = this;
 }
 
+/*!
+  Destructor
+*/
 SalomeApp_Engine_i::~SalomeApp_Engine_i()
 {
 }

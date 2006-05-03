@@ -298,8 +298,8 @@ SVTK_UpdateRateDlg
 			 myPriority);
 }
 
-/*
- *  Destroys the object and frees any allocated resources
+/*!
+  Destroys the object and frees any allocated resources
  */
 SVTK_UpdateRateDlg
 ::~SVTK_UpdateRateDlg()
@@ -307,6 +307,9 @@ SVTK_UpdateRateDlg
   // no need to delete child widgets, Qt does it all for us
 }
 
+/*!
+  Processes events
+*/
 void 
 SVTK_UpdateRateDlg
 ::ProcessEvents(vtkObject* vtkNotUsed(theObject), 
@@ -322,6 +325,9 @@ SVTK_UpdateRateDlg
   }
 }
 
+/*!
+  Update
+*/
 void 
 SVTK_UpdateRateDlg
 ::Update()
@@ -342,6 +348,9 @@ SVTK_UpdateRateDlg
   myRWInteractor->getRenderWindow()->Render();
 }
 
+/*!
+  SLOT on OK clicked
+*/
 void 
 SVTK_UpdateRateDlg
 ::onClickOk()
@@ -350,6 +359,9 @@ SVTK_UpdateRateDlg
   onClickClose();
 }
 
+/*!
+  SLOT on Apply clicked
+*/
 void
 SVTK_UpdateRateDlg
 ::onClickApply()
@@ -357,6 +369,9 @@ SVTK_UpdateRateDlg
   Update();
 }
 
+/*!
+  SLOT on Close clicked
+*/
 void 
 SVTK_UpdateRateDlg
 ::onClickClose()

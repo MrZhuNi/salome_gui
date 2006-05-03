@@ -16,14 +16,6 @@
 //
 // See http://www.salome-platform.org/
 //
-//=============================================================================
-// File      : SALOME_PYQT_Module.h
-// Created   : 25/04/05
-// Author    : Vadim SANDLER
-// Project   : SALOME
-// Copyright : 2003-2005 CEA/DEN, EDF R&D
-// $Header   : $
-//=============================================================================
 
 #ifndef SALOME_PYQT_MODULE_H
 #define SALOME_PYQT_MODULE_H

@@ -16,14 +16,6 @@
 //
 // See http://www.salome-platform.org/
 //
-//=============================================================================
-// File      : SALOME_PYQT_Module.cxx
-// Created   : 25/04/05
-// Author    : Vadim SANDLER
-// Project   : SALOME
-// Copyright : 2003-2005 CEA/DEN, EDF R&D
-// $Header   : $
-//=============================================================================
 
 #include "SALOME_PYQT_Module.h"
 
@@ -60,15 +52,16 @@
 
 using namespace std;
 
-///////////////////////////////////////////////////////////////////////////////
-// Default name of the module, replaced at the moment of module creation
+/*!
+  \var __DEFAULT_NAME__ - Default name of the module, replaced at the moment of module creation
+*/
 const char* __DEFAULT_NAME__  = "SALOME_PYQT_Module";
 
-///////////////////////////////////////////////////////////////////////////////
-// Default menu group number
+/*!
+  \var __DEFAULT_GROUP__ - Default menu group number
+*/
 const int   __DEFAULT_GROUP__ = 40;
 
-///////////////////////////////////////////////////////////////////////////////
 // If __CALL_OLD_METHODS__ macro is not defined the invoking of obsolete Python
 // module's methods like setSetting(), definePopup(), etc. is blocked.
 // This macro is defined by default (in Makefile)
@@ -78,18 +71,17 @@ const bool IsCallOldMethods = true;
 const bool IsCallOldMethods = false;
 #endif
 
-///////////////////////////////////////////////////////////////////////////////
 // NB: Python requests.
 // General rule for Python requests created by SALOME_PYQT_Module:
 // all requests should be executed SYNCHRONOUSLY within the main GUI thread.
 // However, it is obligatory that ANY Python call is wrapped with a request object,
 // so that ALL Python API calls are serialized with PyInterp_Dispatcher.
-///////////////////////////////////////////////////////////////////////////////
 
-//=============================================================================
-// The class for parsing of the XML resource files.
-// Used for backward compatibility with existing Python modules.
-//=============================================================================
+/*!
+  \class SALOME_PYQT_XmlHandler
+  The class for parsing of the XML resource files.
+  Used for backward compatibility with existing Python modules.
+*/
 class SALOME_PYQT_XmlHandler
 {
 public:
@@ -118,10 +110,8 @@ private:
   bool                myMenuCreated;
 };
 
-//=============================================================================
 // SALOME_PYQT_Module class implementation (implements CAM_Module API for
 // all Python-based SALOME module
-//=============================================================================
 
 // While the SalomePyQtGUI library is not imported in Python it's initialization function
 // should be called manually (and only once) in order to initialize global sip data
@@ -1091,26 +1081,66 @@ int SALOME_PYQT_Module::defaultMenuGroup()
  * Also these methods are used to register created from outside menus
  * in order to enable dynamic menus handling.
  */
+
+
+/*! Create tool bar with name \a name, if it was't created before.
+ * \retval -1 - if tool manager was't be created.
+ */
 int SALOME_PYQT_Module::createTool( const QString& name )
 {
   return SalomeApp_Module::createTool( name );
 }
+/*! Create tool.
+ * Insert QAction with id \a id from action map(myActionMap) to tool manager.
+ *\param id   - integer
+ *\param tBar - integer
+ *\param idx  - integer
+ *\retval integer id of new action in tool manager.
+ *\retval Return -1 if something wrong.
+ */
 int SALOME_PYQT_Module::createTool( const int id, const int tBar, const int idx )
 {
   return SalomeApp_Module::createTool( id, tBar, idx );
 }
+/*! Create tool.
+ * Insert QAction with id \a id from action map(myActionMap) to tool manager.
+ *\param id   - integer
+ *\param tBar - QString&
+ *\param idx  - integer
+ *\retval integer id of new action in tool manager.
+ *\retval Return -1 if something wrong.
+ */
 int SALOME_PYQT_Module::createTool( const int id, const QString& tBar, const int idx )
 {
   return SalomeApp_Module::createTool( id, tBar, idx );
 }
+/*! Create tool. Register action \a a with id \a id.
+ * Insert QAction to tool manager.
+ *\param a - QAction
+ *\param tBar - integer
+ *\param id   - integer
+ *\param idx  - integer
+ *\retval integer id of new action in tool manager.
+ *\retval Return -1 if something wrong.
+ */
 int SALOME_PYQT_Module::createTool( QAction* a, const int tBar, const int id, const int idx )
 {
   return SalomeApp_Module::createTool( a, tBar, id, idx );
 }
+/*! Create tool. Register action \a a with id \a id.
+ * Insert QAction to tool manager.
+ *\param a - QAction
+ *\param tBar - QString&
+ *\param id   - integer
+ *\param idx  - integer
+ *\retval integer id of new action in tool manager.
+ *\retval Return -1 if something wrong.
+ */
 int SALOME_PYQT_Module::createTool( QAction* a, const QString& tBar, const int id, const int idx )
 {
   return SalomeApp_Module::createTool( a, tBar, id, idx );
 }
+
 int SALOME_PYQT_Module::createMenu( const QString& subMenu, const int menu, const int id, const int group, const int idx, const bool constantMenu )
 {
   bool exists = hasMenu( subMenu, menu );
@@ -1119,6 +1149,7 @@ int SALOME_PYQT_Module::createMenu( const QString& subMenu, const int menu, cons
     registerMenu( regId, menu, constantMenu );
   return regId;
 }
+
 int SALOME_PYQT_Module::createMenu( const QString& subMenu, const QString& menu, const int id, const int group, const int idx, const bool constantMenu )
 {
   QStringList menus = QStringList::split( "|", menu, false );
@@ -1131,6 +1162,7 @@ int SALOME_PYQT_Module::createMenu( const QString& subMenu, const QString& menu,
     pid = createMenu( subMenu, pid, id, group, idx, constantMenu );
   return pid;
 }
+
 int SALOME_PYQT_Module::createMenu( const int id, const int menu, const int group, const int idx, const bool constantMenu )
 {
   int regId = SalomeApp_Module::createMenu( id, menu, group, idx );
@@ -1138,6 +1170,7 @@ int SALOME_PYQT_Module::createMenu( const int id, const int menu, const int grou
     registerMenu( regId, menu, constantMenu );
   return regId;
 }
+
 int SALOME_PYQT_Module::createMenu( const int id, const QString& menu, const int group, const int idx, const bool constantMenu )
 {
   QStringList menus = QStringList::split( "|", menu, false );
@@ -1150,6 +1183,7 @@ int SALOME_PYQT_Module::createMenu( const int id, const QString& menu, const int
     pid = createMenu( id, pid, group, idx, constantMenu );
   return pid;
 }
+
 int SALOME_PYQT_Module::createMenu( QAction* a, const int menu, const int id, const int group, const int idx, const bool constantMenu )
 {
   int regId = SalomeApp_Module::createMenu( a, menu, id, group, idx );
@@ -1157,6 +1191,7 @@ int SALOME_PYQT_Module::createMenu( QAction* a, const int menu, const int id, co
     registerMenu( regId, menu, constantMenu );
   return regId;
 }
+
 int SALOME_PYQT_Module::createMenu( QAction* a, const QString& menu, const int id, const int group, const int idx, const bool constantMenu )
 {
   QStringList menus = QStringList::split( "|", menu, false );
@@ -1169,18 +1204,22 @@ int SALOME_PYQT_Module::createMenu( QAction* a, const QString& menu, const int i
     pid = createMenu( a, pid, id, group, idx, constantMenu );
   return pid;
 }
+
 QAction* SALOME_PYQT_Module::createSeparator()
 {
   return SalomeApp_Module::separator();
 }
+
 QAction* SALOME_PYQT_Module::action( const int id ) const
 {
   return SalomeApp_Module::action( id );
 }
+
 int SALOME_PYQT_Module::actionId( const QAction* a ) const
 {
   return SalomeApp_Module::actionId( a );
 }
+
 QAction* SALOME_PYQT_Module::createAction( const int id, const QString& text, const QString& icon,
 					   const QString& menu, const QString& tip, const int key,
 					   const bool toggle )
@@ -1395,9 +1434,7 @@ bool SALOME_PYQT_Module::clearMenu( const int id, const int menu, const bool rem
   return false;
 }
 
-//=============================================================================
 // SALOME_PYQT_XmlHandler class implementation
-//=============================================================================
 
 // gets an tag name for the dom element [ static ]
 // returns an empty string if the element does not have tag name

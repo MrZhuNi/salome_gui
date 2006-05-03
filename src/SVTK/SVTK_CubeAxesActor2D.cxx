@@ -48,7 +48,6 @@
 vtkCxxRevisionMacro(SVTK_CubeAxesActor2D, "$Revision$");
 vtkStandardNewMacro(SVTK_CubeAxesActor2D);
 
-//----------------------------------------------------------------------------
 // Instantiate this object.
 SVTK_CubeAxesActor2D::SVTK_CubeAxesActor2D()
 {
@@ -130,7 +129,6 @@ SVTK_CubeAxesActor2D::SVTK_CubeAxesActor2D()
   
 }
 
-//----------------------------------------------------------------------------
 SVTK_CubeAxesActor2D::~SVTK_CubeAxesActor2D()
 {
   this->wireActorXY->Delete();
@@ -146,12 +144,10 @@ SVTK_CubeAxesActor2D::~SVTK_CubeAxesActor2D()
   this->rgridMapperXZ->Delete();
 }
 
-//----------------------------------------------------------------------------
 // Static variable describes connections in cube.
 static int Conn[8][3] = {{1,2,4}, {0,3,5}, {3,0,6}, {2,1,7},
                          {5,6,0}, {4,7,1}, {7,4,2}, {6,5,3}};
 
-//----------------------------------------------------------------------------
 // Project the bounding box and compute edges on the border of the bounding
 // cube. Determine which parts of the edges are visible via intersection 
 // with the boundary of the viewport (minus borders).
@@ -254,7 +250,6 @@ static void ChangeArrays(vtkFloatingPointType* xCoords,
     ChangeValues(zCoords,xCoords,zRange,xRange,false);
 }
 
-//----------------------------------------------------------------------------
 // Project the bounding box and compute edges on the border of the bounding
 // cube. Determine which parts of the edges are visible via intersection 
 // with the boundary of the viewport (minus borders).
@@ -655,7 +650,6 @@ int SVTK_CubeAxesActor2D::RenderOpaqueGeometry(vtkViewport *viewport)
   return renderedSomething;
 }
 
-//----------------------------------------------------------------------------
 // Release any graphics resources that are being consumed by this actor.
 // The parameter window could be used to determine which graphic
 // resources to release.

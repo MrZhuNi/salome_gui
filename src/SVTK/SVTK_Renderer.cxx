@@ -55,10 +55,11 @@
 #undef max
 
 
-//----------------------------------------------------------------------------
 vtkStandardNewMacro(SVTK_Renderer);
 
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 SVTK_Renderer
 ::SVTK_Renderer():
   myDevice(vtkRenderer::New()),
@@ -152,6 +153,9 @@ SVTK_Renderer
 			   myPriority);
 }
 
+/*!
+  Destructor
+*/
 SVTK_Renderer
 ::~SVTK_Renderer()
 {
@@ -176,6 +180,9 @@ SVTK_Renderer
 }
 
 
+/*!
+  Main process event method
+*/
 void 
 SVTK_Renderer
 ::ProcessEvents(vtkObject* vtkNotUsed(theObject), 
@@ -198,7 +205,9 @@ SVTK_Renderer
   }
 }
 
-//----------------------------------------------------------------------------
+/*!
+  \return renderer's device
+*/
 vtkRenderer* 
 SVTK_Renderer
 ::GetDevice()
@@ -206,6 +215,9 @@ SVTK_Renderer
   return myDevice.GetPointer();
 }
 
+/*!
+  Initialize renderer
+*/
 void 
 SVTK_Renderer
 ::Initialize(vtkRenderWindowInteractor* theInteractor,
@@ -215,7 +227,9 @@ SVTK_Renderer
   mySelector = theSelector;
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Publishes pointed actor into the renderer
+*/
 void
 SVTK_Renderer
 ::AddActor(VTKViewer_Actor* theActor)
@@ -239,6 +253,9 @@ SVTK_Renderer
   }
 }
 
+/*!
+  Removes pointed actor from the renderer
+*/
 void
 SVTK_Renderer
 ::RemoveActor(VTKViewer_Actor* theActor)
@@ -264,6 +281,9 @@ SVTK_Renderer
   }
 }
 
+/*!
+  Get special container that keeps scaling of the scene
+*/
 VTKViewer_Transform* 
 SVTK_Renderer
 ::GetTransform()
@@ -271,6 +291,9 @@ SVTK_Renderer
   return myTransform.GetPointer();
 }
 
+/*!
+  Allows to get a scale that is applied on the whole scene
+*/
 void
 SVTK_Renderer
 ::GetScale( double theScale[3] ) 
@@ -278,6 +301,9 @@ SVTK_Renderer
   myTransform->GetMatrixScale( theScale );
 }
 
+/*!
+  Allows to apply a scale on the whole scene
+*/
 void
 SVTK_Renderer
 ::SetScale( double theScale[3] ) 
@@ -286,8 +312,9 @@ SVTK_Renderer
   AdjustActors();
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Applies color and size (PointSize and LineWidth) of primitives in selection mode
+*/
 void
 SVTK_Renderer
 ::SetSelectionProp(const double& theRed, 
@@ -300,7 +327,9 @@ SVTK_Renderer
   myHighlightProperty->SetPointSize( theWidth );
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Applies color and size (PointSize and LineWidth) of primitives in preselection mode
+*/
 void
 SVTK_Renderer
 ::SetPreselectionProp(const double& theRed, 
@@ -313,7 +342,9 @@ SVTK_Renderer
   myPreHighlightProperty->SetPointSize( theWidth );
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Setup requested tolerance for the picking
+*/
 void
 SVTK_Renderer
 ::SetSelectionTolerance(const double& theTolNodes, 
@@ -327,7 +358,6 @@ SVTK_Renderer
 }
 
 
-//----------------------------------------------------------------------------
 /*! If parameter theIsForcedUpdate is true, recalculate parameters for
  *  trihedron and cube axes, even if trihedron and cube axes is invisible.
  */
@@ -447,7 +477,6 @@ SVTK_Renderer
   return myIsTrihedronRelative;
 }
 
-//----------------------------------------------------------------------------
 VTKViewer_Trihedron* 
 SVTK_Renderer
 ::GetTrihedron()
@@ -480,7 +509,6 @@ SVTK_Renderer
 }
 
 
-//----------------------------------------------------------------------------
 SVTK_CubeAxesActor2D* 
 SVTK_Renderer
 ::GetCubeAxes()
@@ -513,7 +541,6 @@ SVTK_Renderer
 }
 
 
-//----------------------------------------------------------------------------
 void
 SVTK_Renderer
 ::OnResetView()
@@ -545,7 +572,6 @@ SVTK_Renderer
 }
 
 
-//----------------------------------------------------------------------------
 void
 SVTK_Renderer
 ::OnFitAll()
@@ -585,7 +611,6 @@ SVTK_Renderer
 }
 
 
-//----------------------------------------------------------------------------
 void
 SVTK_Renderer
 ::OnResetClippingRange()
@@ -595,7 +620,6 @@ SVTK_Renderer
 }
 
 
-//----------------------------------------------------------------------------
 void
 SVTK_Renderer
 ::OnFrontView()
@@ -607,7 +631,6 @@ SVTK_Renderer
   this->OnFitAll();
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_Renderer
 ::OnBackView()
@@ -619,7 +642,6 @@ SVTK_Renderer
   this->OnFitAll();
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_Renderer
 ::OnTopView()
@@ -631,7 +653,6 @@ SVTK_Renderer
   this->OnFitAll();
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_Renderer
 ::OnBottomView()
@@ -643,7 +664,6 @@ SVTK_Renderer
   this->OnFitAll();
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_Renderer
 ::OnLeftView()
@@ -655,7 +675,6 @@ SVTK_Renderer
   this->OnFitAll();
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_Renderer
 ::OnRightView()

@@ -43,7 +43,6 @@ SVTK_Selector
   return new SVTK_SelectorDef();
 }
 
-//----------------------------------------------------------------------------
 SVTK_SelectorDef
 ::SVTK_SelectorDef()
 {
@@ -55,7 +54,6 @@ SVTK_SelectorDef
 {
 }
 
-//----------------------------------------------------------------------------
 void 
 SVTK_SelectorDef
 ::StartPickCallback()
@@ -63,7 +61,6 @@ SVTK_SelectorDef
   this->InvokeEvent(vtkCommand::StartPickEvent,NULL);
 }
 
-//----------------------------------------------------------------------------
 void 
 SVTK_SelectorDef
 ::EndPickCallback()
@@ -71,7 +68,6 @@ SVTK_SelectorDef
   this->InvokeEvent(vtkCommand::EndPickEvent,NULL);
 }
 
-//----------------------------------------------------------------------------
 void 
 SVTK_SelectorDef
 ::SetSelectionMode(Selection_Mode theMode)
@@ -92,7 +88,6 @@ SVTK_SelectorDef
   myMapIOSubIndex.clear();
 }
 
-//----------------------------------------------------------------------------
 bool
 SVTK_SelectorDef
 ::IsSelected(const Handle(SALOME_InteractiveObject)& theIO) const
@@ -118,7 +113,6 @@ SVTK_SelectorDef
   return NULL;
 }
 
-//----------------------------------------------------------------------------
 bool 
 SVTK_SelectorDef
 ::AddIObject(const Handle(SALOME_InteractiveObject)& theIO) 
@@ -147,7 +141,6 @@ SVTK_SelectorDef
   return !anIsIOBound || !anIsActorBound;
 }
 
-//----------------------------------------------------------------------------
 bool 
 SVTK_SelectorDef
 ::RemoveIObject(const Handle(SALOME_InteractiveObject)& theIO) 
@@ -174,7 +167,6 @@ SVTK_SelectorDef
   return RemoveIObject(anIO) || anIsActorBound;
 }
 
-//----------------------------------------------------------------------------
 const SALOME_ListIO& 
 SVTK_SelectorDef
 ::StoredIObjects() const
@@ -363,7 +355,6 @@ SVTK_SelectorDef
   myMapIOSubIndex.clear();  
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_SelectorDef
 ::SetFilter(const Handle(VTKViewer_Filter)& theFilter)
@@ -371,7 +362,6 @@ SVTK_SelectorDef
   myFilters.insert(TFilters::value_type(theFilter->GetId(),theFilter));
 }
 
-//----------------------------------------------------------------------------
 bool
 SVTK_SelectorDef
 ::IsFilterPresent(const TFilterID theId) const
@@ -379,7 +369,6 @@ SVTK_SelectorDef
   return myFilters.find(theId) != myFilters.end();
 }
 
-//----------------------------------------------------------------------------
 void  
 SVTK_SelectorDef
 ::RemoveFilter(const TFilterID theId)
@@ -388,7 +377,6 @@ SVTK_SelectorDef
     myFilters.erase(theId);
 }
 
-//----------------------------------------------------------------------------
 bool
 SVTK_SelectorDef
 ::IsValid(SALOME_Actor* theActor,
@@ -405,7 +393,6 @@ SVTK_SelectorDef
   return true;
 }
 
-//----------------------------------------------------------------------------
 Handle(VTKViewer_Filter) 
 SVTK_SelectorDef
 ::GetFilter(const TFilterID theId) const

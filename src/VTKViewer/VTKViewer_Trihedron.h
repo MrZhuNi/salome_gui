@@ -111,7 +111,6 @@ protected:
   VTKViewer_UnScaledActor* ArrowActor;
 };
 
-//****************************************************************
 /*!This class provide support trihedron object in vtk viewer.*/
 class VTKVIEWER_EXPORT VTKVIEWER_EXPORT VTKViewer_Trihedron : public vtkObject
 {
@@ -185,7 +184,6 @@ protected:
   vtkFloatingPointType mySize;
 };
 
-//****************************************************************
 /*!The base class for concreate Axis.
  * Its only duty is to give correct initialization and destruction
  * of its pipe-lines

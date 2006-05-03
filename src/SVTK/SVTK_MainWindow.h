@@ -37,7 +37,6 @@ class SVTK_Renderer;
 class SVTK_Selector;
 
 
-//----------------------------------------------------------------------------
 //! The class is a container for #SVTK_RenderWindowInteractor.
 /*!
   The class contains #SVTK_RenderWindowInteractor instance and

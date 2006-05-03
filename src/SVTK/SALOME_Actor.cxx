@@ -73,7 +73,6 @@ using namespace std;
 int SALOME_POINT_SIZE = 5;
 int SALOME_LINE_WIDTH = 3;
 
-//----------------------------------------------------------------------------
 namespace
 {
   int
@@ -123,11 +122,11 @@ namespace
 }
 
 
-//----------------------------------------------------------------------------
 vtkStandardNewMacro(SALOME_Actor);
 
-
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 SALOME_Actor
 ::SALOME_Actor():
   myRenderer(NULL),
@@ -165,14 +164,17 @@ SALOME_Actor
   myOutlineActor->SetVisibility( false );
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Destructor
+*/
 SALOME_Actor
 ::~SALOME_Actor()
 {}
 
 
-//----------------------------------------------------------------------------
+/*!
+  \return true if the SALOME_Actor has a reference to SALOME_InteractiveObject
+*/
 Standard_Boolean 
 SALOME_Actor
 ::hasIO() 
@@ -180,6 +182,9 @@ SALOME_Actor
   return !myIO.IsNull(); 
 }
 
+/*!
+  \return correspoinding reference to SALOME_InteractiveObject
+*/
 const Handle(SALOME_InteractiveObject)& 
 SALOME_Actor
 ::getIO()
@@ -187,6 +192,10 @@ SALOME_Actor
   return myIO; 
 }
 
+/*!
+  Sets reference to SALOME_InteractiveObject
+  \param theIO - new SALOME_InteractiveObject
+*/
 void
 SALOME_Actor
 ::setIO(const Handle(SALOME_InteractiveObject)& theIO) 
@@ -194,6 +203,10 @@ SALOME_Actor
   myIO = theIO; 
 }
 
+/*!
+  Sets name the SALOME_Actor
+  \param theName - new name
+*/
 void
 SALOME_Actor
 ::setName(const char* theName)
@@ -204,7 +217,9 @@ SALOME_Actor
 }
 
 
-//----------------------------------------------------------------------------
+/*!
+  Publishes the actor in all its internal devices
+*/
 void
 SALOME_Actor
 ::AddToRender(vtkRenderer* theRenderer)
@@ -218,6 +233,9 @@ SALOME_Actor
   theRenderer->AddActor( myOutlineActor.GetPointer() );
 }
 
+/*!
+  Removes the actor from all its internal devices
+*/
 void 
 SALOME_Actor
 ::RemoveFromRender(vtkRenderer* theRenderer)
@@ -229,6 +247,9 @@ SALOME_Actor
   theRenderer->RemoveActor( myOutlineActor.GetPointer() );
 }
 
+/*!
+  \return reference on renderer where it is published
+*/
 vtkRenderer*
 SALOME_Actor
 ::GetRenderer()
@@ -236,8 +257,10 @@ SALOME_Actor
   return myRenderer;
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Sets interactor in order to use vtkInteractorObserver devices
+  \param theInteractor - new interactor
+*/
 void
 SALOME_Actor
 ::SetInteractor(vtkRenderWindowInteractor* theInteractor)
@@ -245,6 +268,9 @@ SALOME_Actor
   myInteractor = theInteractor;
 }
 
+/*!
+  Put a request to redraw the view 
+*/
 void
 SALOME_Actor
 ::Update()
@@ -252,8 +278,10 @@ SALOME_Actor
   myInteractor->CreateTimer(VTKI_TIMER_UPDATE);    
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Apply view transformation
+  \param theTransform - transformation
+*/
 void
 SALOME_Actor
 ::SetTransform(VTKViewer_Transform* theTransform)
@@ -265,7 +293,9 @@ SALOME_Actor
   myOutlineActor->SetTransform(theTransform);
 }
 
-
+/*!
+  Apply additional position
+*/
 void
 SALOME_Actor
 ::SetPosition(vtkFloatingPointType _arg1, 
@@ -279,7 +309,9 @@ SALOME_Actor
   myOutlineActor->SetPosition(_arg1,_arg2,_arg3);
 }
 
-
+/*!
+  Apply additional position
+*/
 void
 SALOME_Actor
 ::SetPosition(vtkFloatingPointType _arg[3])
@@ -287,8 +319,10 @@ SALOME_Actor
   SetPosition(_arg[0],_arg[1],_arg[2]);
 }
 
-
-//----------------------------------------------------------------
+/*!
+  Shows/hides actor
+  \param theVisibility - new visibility state
+*/
 void
 SALOME_Actor
 ::SetVisibility( int theVisibility )
@@ -307,8 +341,10 @@ SALOME_Actor
   }
 }
 
-
-//----------------------------------------------------------------
+/*!
+  Set selector in order to the actor at any time can restore current selection
+  \param theSelector - new selector
+*/
 void
 SALOME_Actor
 ::SetSelector(SVTK_Selector* theSelector)
@@ -316,6 +352,9 @@ SALOME_Actor
   mySelector = theSelector;
 }
 
+/*!
+  To map current selection to VTK representation
+*/
 void
 SALOME_Actor
 ::Highlight(bool theIsHighlight)
@@ -352,6 +391,9 @@ SALOME_Actor
   highlight(theIsHighlight);
 }
 
+/*!
+  Updates visibility of the highlight devices  
+*/
 void
 SALOME_Actor
 ::highlight(bool theIsHighlight)
@@ -365,7 +407,9 @@ SALOME_Actor
 }
 
 
-//----------------------------------------------------------------
+/*!
+  To process prehighlight (called from SVTK_InteractorStyle)
+*/
 bool
 SALOME_Actor
 ::PreHighlight(vtkInteractorStyle *theInteractorStyle, 
@@ -506,8 +550,9 @@ SALOME_Actor
   return anIsChanged;
 }
 
-
-//----------------------------------------------------------------
+/*!
+  To process highlight (called from SVTK_InteractorStyle)
+*/
 bool
 SALOME_Actor
 ::Highlight(vtkInteractorStyle *theInteractorStyle, 
@@ -708,7 +753,10 @@ SALOME_Actor
   return true;
 }
 
-//----------------------------------------------------------------------------
+/*!
+  To set up a picker for nodal selection (initialized by SVTK_Renderer::AddActor)
+  \param thePointPicker - new picker
+*/
 void
 SALOME_Actor
 ::SetPointPicker(vtkPointPicker* thePointPicker) 
@@ -716,6 +764,10 @@ SALOME_Actor
   myPointPicker = thePointPicker;
 }
 
+/*!
+  To set up a picker for cell selection (initialized by SVTK_Renderer::AddActor)
+  \param theCellPicker - new picker
+*/
 void
 SALOME_Actor
 ::SetCellPicker(vtkCellPicker* theCellPicker) 
@@ -723,6 +775,10 @@ SALOME_Actor
   myCellPicker = theCellPicker;
 }
 
+/*!
+  To set up a picker for point rectangle selection (initialized by SVTK_Renderer::AddActor)
+  \param theRectPicker - new picker
+*/
 void
 SALOME_Actor
 ::SetPointRectPicker(SVTK_RectPicker* theRectPicker) 
@@ -730,6 +786,10 @@ SALOME_Actor
   myPointRectPicker = theRectPicker;
 }
 
+/*!
+  To set up a picker for cell rectangle selection (initialized by SVTK_Renderer::AddActor)
+  \param theRectPicker - new picker
+*/
 void
 SALOME_Actor
 ::SetCellRectPicker(SVTK_RectPicker* theRectPicker) 
@@ -737,7 +797,9 @@ SALOME_Actor
   myCellRectPicker = theRectPicker;
 }
 
-//----------------------------------------------------------------------------
+/*!
+  To set up a prehighlight property (initialized by SVTK_Renderer::AddActor)
+*/
 void
 SALOME_Actor
 ::SetPreHighlightProperty(vtkProperty* theProperty) 
@@ -745,6 +807,9 @@ SALOME_Actor
   myPreHighlightActor->SetProperty(theProperty);
 }
 
+/*!
+  To set up a highlight property (initialized by SVTK_Renderer::AddActor)
+*/
 void
 SALOME_Actor
 ::SetHighlightProperty(vtkProperty* theProperty) 

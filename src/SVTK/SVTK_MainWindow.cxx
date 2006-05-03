@@ -52,8 +52,9 @@
 
 #include <qimage.h>
 
-
-//----------------------------------------------------------------------------
+/*!
+  Constructor
+*/
 SVTK_MainWindow
 ::SVTK_MainWindow(QWidget* theParent, 
 		  const char* theName,
@@ -70,6 +71,9 @@ SVTK_MainWindow
   createToolBar();
 }
 
+/*!
+  To initialize the class
+*/
 void
 SVTK_MainWindow
 ::Initialize(SVTK_RenderWindowInteractor* theInteractor)
@@ -89,15 +93,17 @@ SVTK_MainWindow
   myCubeAxesDlg = new SVTK_CubeAxesDlg(myActionsMap[GraduatedAxes],this,"SVTK_CubeAxesDlg");
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Destructor
+*/
 SVTK_MainWindow
 ::~SVTK_MainWindow()
 {
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  \return used SVTK_RenderWindowInteractor
+*/
 SVTK_RenderWindowInteractor*
 SVTK_MainWindow
 ::GetInteractor()
@@ -105,6 +111,9 @@ SVTK_MainWindow
   return myInteractor;
 }
 
+/*!
+  \return used #vtkRenderWindowInteractor (obsolete)
+*/
 vtkRenderWindowInteractor*
 SVTK_MainWindow
 ::getInteractor()
@@ -112,6 +121,9 @@ SVTK_MainWindow
   return GetInteractor()->GetDevice();
 }
 
+/*!
+  \return used vtkRenderWindow (obsolete)
+*/
 vtkRenderWindow*
 SVTK_MainWindow
 ::getRenderWindow()
@@ -119,7 +131,10 @@ SVTK_MainWindow
   return GetInteractor()->getRenderWindow();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  To repaint the view
+  \param theUpdateTrihedron - adjust trihedron
+*/
 void
 SVTK_MainWindow
 ::Repaint(bool theUpdateTrihedron)
@@ -130,7 +145,9 @@ SVTK_MainWindow
   GetInteractor()->update();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  To invoke a VTK event on SVTK_RenderWindowInteractor instance
+*/
 void
 SVTK_MainWindow
 ::InvokeEvent(unsigned long theEvent, void* theCallData)
@@ -138,7 +155,9 @@ SVTK_MainWindow
   GetInteractor()->InvokeEvent(theEvent,theCallData);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::GetInteractorStyle
+*/
 vtkInteractorStyle*
 SVTK_MainWindow
 ::GetInteractorStyle()
@@ -146,6 +165,9 @@ SVTK_MainWindow
   return GetInteractor()->GetInteractorStyle();
 }
 
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::PushInteractorStyle
+*/
 void
 SVTK_MainWindow
 ::PushInteractorStyle(vtkInteractorStyle* theStyle)
@@ -153,6 +175,9 @@ SVTK_MainWindow
   GetInteractor()->PushInteractorStyle(theStyle);
 }
 
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::PopInteractorStyle
+*/
 void
 SVTK_MainWindow
 ::PopInteractorStyle()
@@ -160,7 +185,9 @@ SVTK_MainWindow
   GetInteractor()->PopInteractorStyle();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::GetSelector
+*/
 SVTK_Selector*
 SVTK_MainWindow
 ::GetSelector()
@@ -168,6 +195,9 @@ SVTK_MainWindow
   return GetInteractor()->GetSelector();
 }
 
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::SelectionMode
+*/
 Selection_Mode
 SVTK_MainWindow
 ::SelectionMode()
@@ -175,6 +205,9 @@ SVTK_MainWindow
   return GetSelector()->SelectionMode();
 }
 
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::SetSelectionMode
+*/
 void
 SVTK_MainWindow
 ::SetSelectionMode(Selection_Mode theMode)
@@ -182,8 +215,9 @@ SVTK_MainWindow
   GetSelector()->SetSelectionMode(theMode);
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::GetRenderer
+*/
 SVTK_Renderer* 
 SVTK_MainWindow
 ::GetRenderer()
@@ -191,6 +225,9 @@ SVTK_MainWindow
   return GetInteractor()->GetRenderer();
 }
 
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::getRenderer
+*/
 vtkRenderer* 
 SVTK_MainWindow
 ::getRenderer()
@@ -198,7 +235,10 @@ SVTK_MainWindow
   return GetInteractor()->getRenderer();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Sets background color of the view
+  \param theColor - new background color
+*/
 void
 SVTK_MainWindow
 ::SetBackgroundColor(const QColor& theColor)
@@ -208,6 +248,9 @@ SVTK_MainWindow
 			       theColor.blue()/255.0);
 }
 
+/*!
+  \return background color of the view
+*/
 QColor
 SVTK_MainWindow
 ::BackgroundColor()
@@ -219,7 +262,9 @@ SVTK_MainWindow
 		int(aBackgroundColor[2]*255));
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_Renderer::GetScale
+*/
 void
 SVTK_MainWindow
 ::GetScale( double theScale[3] ) 
@@ -227,6 +272,9 @@ SVTK_MainWindow
   GetRenderer()->GetScale( theScale );
 }
 
+/*!
+  Redirect the request to SVTK_Renderer::SetScale
+*/
 void
 SVTK_MainWindow
 ::SetScale( double theScale[3] ) 
@@ -235,8 +283,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_Renderer::AddActor
+*/
 void
 SVTK_MainWindow
 ::AddActor(VTKViewer_Actor* theActor, 
@@ -247,7 +296,9 @@ SVTK_MainWindow
     Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_Renderer::RemoveActor
+*/
 void
 SVTK_MainWindow
 ::RemoveActor(VTKViewer_Actor* theActor, 
@@ -258,8 +309,9 @@ SVTK_MainWindow
     Repaint();
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_Renderer::GetTrihedronSize
+*/
 int
 SVTK_MainWindow
 ::GetTrihedronSize()
@@ -267,7 +319,9 @@ SVTK_MainWindow
   return GetRenderer()->GetTrihedronSize();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_Renderer::SetTrihedronSize
+*/
 void 
 SVTK_MainWindow
 ::SetTrihedronSize( const int theSize, const bool theRelative )
@@ -277,7 +331,6 @@ SVTK_MainWindow
 }
 
 
-//----------------------------------------------------------------------------
 /*! If parameter theIsForcedUpdate is true, recalculate parameters for
  *  trihedron and cube axes, even if trihedron and cube axes is invisible.
  */
@@ -289,7 +342,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_Renderer::IsTrihedronDisplayed
+*/
 bool
 SVTK_MainWindow
 ::IsTrihedronDisplayed()
@@ -297,7 +352,9 @@ SVTK_MainWindow
   return GetRenderer()->IsTrihedronDisplayed();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_Renderer::IsCubeAxesDisplayed
+*/
 bool
 SVTK_MainWindow
 ::IsCubeAxesDisplayed()
@@ -305,7 +362,9 @@ SVTK_MainWindow
   return GetRenderer()->IsCubeAxesDisplayed();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_Renderer::GetTrihedron
+*/
 VTKViewer_Trihedron*  
 SVTK_MainWindow
 ::GetTrihedron() 
@@ -313,7 +372,9 @@ SVTK_MainWindow
   return GetRenderer()->GetTrihedron(); 
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Redirect the request to SVTK_Renderer::GetCubeAxes
+*/
 SVTK_CubeAxesActor2D* 
 SVTK_MainWindow
 ::GetCubeAxes() 
@@ -321,8 +382,9 @@ SVTK_MainWindow
   return GetRenderer()->GetCubeAxes(); 
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  \return toolbar of svtk main window
+*/
 QToolBar* 
 SVTK_MainWindow
 ::getToolBar()
@@ -330,7 +392,6 @@ SVTK_MainWindow
   return myToolBar;
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_MainWindow
 ::SetEventDispatcher(vtkObject* theDispatcher)
@@ -338,11 +399,13 @@ SVTK_MainWindow
   myEventDispatcher = theDispatcher;
 }
 
-//----------------------------------------------------------------------------
 #if defined(WIN32) && !defined(_DEBUG)
 #pragma optimize( "", off )
 #endif
 
+/*!
+  Creates all actions of svtk main window
+*/
 void
 SVTK_MainWindow
 ::createActions(SUIT_ResourceMgr* theResourceMgr)
@@ -499,7 +562,9 @@ SVTK_MainWindow
 #pragma optimize( "", on )
 #endif
 
-//----------------------------------------------------------------------------
+/*!
+  Creates toolbar of svtk main window
+*/
 void
 SVTK_MainWindow
 ::createToolBar()
@@ -533,7 +598,9 @@ SVTK_MainWindow
   myActionsMap[GraduatedAxes]->addTo(myToolBar);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Custom show event handler
+*/
 void
 SVTK_MainWindow
 ::showEvent( QShowEvent * theEvent ) 
@@ -541,6 +608,9 @@ SVTK_MainWindow
   emit Show( theEvent );
 }
 
+/*!
+  Custom hide event handler
+*/
 void
 SVTK_MainWindow
 ::hideEvent( QHideEvent * theEvent ) 
@@ -548,8 +618,9 @@ SVTK_MainWindow
   emit Hide( theEvent );
 }
 
-
-//----------------------------------------------------------------------------
+/*!
+  Starts zoom transformation
+*/
 void
 SVTK_MainWindow
 ::activateZoom()
@@ -557,7 +628,9 @@ SVTK_MainWindow
   myEventDispatcher->InvokeEvent(SVTK::StartZoom,0);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Starts panning transformation
+*/
 void
 SVTK_MainWindow
 ::activatePanning()
@@ -565,7 +638,9 @@ SVTK_MainWindow
   myEventDispatcher->InvokeEvent(SVTK::StartPan,0);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Starts rotation transformation
+*/
 void
 SVTK_MainWindow
 ::activateRotation()
@@ -573,7 +648,9 @@ SVTK_MainWindow
   myEventDispatcher->InvokeEvent(SVTK::StartRotate,0);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Starts global panning transformation
+*/
 void
 SVTK_MainWindow
 ::activateGlobalPanning()
@@ -581,7 +658,9 @@ SVTK_MainWindow
   myEventDispatcher->InvokeEvent(SVTK::StartGlobalPan,0);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Starts window fit transformation
+*/
 void
 SVTK_MainWindow
 ::activateWindowFit()
@@ -589,7 +668,9 @@ SVTK_MainWindow
   myEventDispatcher->InvokeEvent(SVTK::StartFitArea,0);
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Processes transformation "front view"
+*/
 void
 SVTK_MainWindow
 ::onFrontView()
@@ -598,7 +679,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Processes transformation "back view"
+*/
 void
 SVTK_MainWindow
 ::onBackView()
@@ -607,7 +690,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Processes transformation "top view"
+*/
 void
 SVTK_MainWindow
 ::onTopView()
@@ -616,7 +701,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Processes transformation "bottom view"
+*/
 void
 SVTK_MainWindow
 ::onBottomView()
@@ -625,7 +712,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Processes transformation "left view"
+*/
 void
 SVTK_MainWindow
 ::onLeftView()
@@ -634,7 +723,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Processes transformation "right view"
+*/
 void
 SVTK_MainWindow
 ::onRightView()
@@ -643,7 +734,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Processes transformation "reset view": sets default orientation of viewport camera
+*/
 void
 SVTK_MainWindow
 ::onResetView()
@@ -652,7 +745,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Processes transformation "fit all"
+*/
 void
 SVTK_MainWindow
 ::onFitAll()
@@ -661,7 +756,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Shows trihedron
+*/
 void 
 SVTK_MainWindow
 ::onViewTrihedron()
@@ -670,7 +767,9 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  Shows cube axes
+*/
 void
 SVTK_MainWindow
 ::onViewCubeAxes()
@@ -679,7 +778,6 @@ SVTK_MainWindow
   Repaint();
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_MainWindow
 ::onUpdateRate(bool theIsActivate)
@@ -713,7 +811,6 @@ SVTK_MainWindow
     myCubeAxesDlg->hide();
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_MainWindow
 ::onAdjustTrihedron()
@@ -721,7 +818,6 @@ SVTK_MainWindow
   GetRenderer()->OnAdjustTrihedron();
 }
 
-//----------------------------------------------------------------------------
 void
 SVTK_MainWindow
 ::onAdjustCubeAxes()
@@ -729,7 +825,9 @@ SVTK_MainWindow
   GetRenderer()->OnAdjustCubeAxes();
 }
 
-//----------------------------------------------------------------------------
+/*!
+  \return QImage, containing all scene rendering in window
+*/
 QImage
 SVTK_MainWindow
 ::dumpView()

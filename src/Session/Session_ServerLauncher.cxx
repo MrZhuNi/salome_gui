@@ -31,23 +31,17 @@
 #include "Utils_SALOME_Exception.hxx"
 #include "utilities.h"
 using namespace std;
-//=============================================================================
 /*! 
- *  default constructor not for use
+   default constructor not for use
  */
-//=============================================================================
-
 Session_ServerLauncher::Session_ServerLauncher()
 {
   ASSERT(0); // must not be called
 }
 
-//=============================================================================
 /*! 
- *  constructor
- */
-//=============================================================================
-
+  constructor
+*/
 Session_ServerLauncher::Session_ServerLauncher(int argc,
 					       char ** argv, 
 					       CORBA::ORB_ptr orb, 
@@ -70,22 +64,16 @@ Session_ServerLauncher::Session_ServerLauncher(int argc,
   start();
 }
 
-//=============================================================================
 /*! 
- *  destructor
- */
-//=============================================================================
-
+  destructor
+*/
 Session_ServerLauncher::~Session_ServerLauncher()
 {
 }
 
-//=============================================================================
 /*! 
- *  Check args and activate servers
- */
-//=============================================================================
-
+  Check args and activate servers
+*/
 void Session_ServerLauncher::run()
 {
   // wait until main thread is ready
@@ -111,12 +99,9 @@ void Session_ServerLauncher::run()
   _orb->run(); // this thread waits, during omniORB process events
 }
 
-//=============================================================================
 /*! 
- *  controls and dispatchs arguments given with command
- */
-//=============================================================================
-
+  controls and dispatchs arguments given with command
+*/
 void Session_ServerLauncher::CheckArgs()
 {
   int argState = 0;
@@ -191,12 +176,6 @@ void Session_ServerLauncher::CheckArgs()
     throw SALOME_Exception(LOCALIZED("Error in command arguments, missing parenthesis ')'"));
 }
 
-//=============================================================================
-/*! 
- *  
- */
-//=============================================================================
-
 void Session_ServerLauncher::ActivateAll()
 {
   list<ServArg>::iterator itServ;
@@ -236,12 +215,9 @@ void Session_ServerLauncher::ActivateAll()
   aServerThread->Init();
 }
 
-//=============================================================================
 /*! 
- *  Destruction des classes serveur dans l'ordre inverse de creation
- */
-//=============================================================================
-
+  Destruction des classes serveur dans l'ordre inverse de creation
+*/
 void Session_ServerLauncher::KillAll()
 {
   MESSAGE("Session_ServerLauncher::KillAll()");

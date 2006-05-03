@@ -37,7 +37,6 @@ class vtkPoints;
 class vtkIdList;
 class vtkCell;
 
-//----------------------------------------------------------------------------
 class VTKVIEWER_EXPORT VTKViewer_Triangulator
 {
  public:
@@ -103,7 +102,6 @@ class VTKVIEWER_EXPORT VTKViewer_Triangulator
 };
 
 
-//----------------------------------------------------------------------------
 class VTKVIEWER_EXPORT VTKViewer_OrderedTriangulator : public VTKViewer_Triangulator
 {
  public:
@@ -150,7 +148,6 @@ class VTKVIEWER_EXPORT VTKViewer_OrderedTriangulator : public VTKViewer_Triangul
 };
 
 
-//----------------------------------------------------------------------------
 class VTKVIEWER_EXPORT VTKViewer_DelaunayTriangulator : public VTKViewer_Triangulator
 {
  public:

@@ -839,6 +839,10 @@ QString STD_Application::getDirectory( const QString& initial, const QString& ca
   return QFileDialog::getExistingDirectory( initial, parent, 0, caption, true );
 }
 
+/*!
+  Changes desktop
+  \param desk - new desktop
+*/
 void STD_Application::setDesktop( SUIT_Desktop* desk )
 {
   SUIT_Desktop* prev = desktop();
@@ -864,18 +868,30 @@ void STD_Application::savePreferences()
 {
 }
 
+/*!
+  Custom activity after study is created
+  Updates desktop and actions
+*/
 void STD_Application::studyCreated( SUIT_Study* )
 {
   updateDesktopTitle();
   updateCommandsStatus();
 }
 
+/*!
+  Custom activity after study is opened
+  Updates desktop and actions
+*/
 void STD_Application::studyOpened( SUIT_Study* )
 {
   updateDesktopTitle();
   updateCommandsStatus();
 }
 
+/*!
+  Custom activity after study is opened
+  Updates desktop and actions
+*/
 void STD_Application::studySaved( SUIT_Study* )
 {
   updateDesktopTitle();
