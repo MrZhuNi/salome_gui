@@ -165,15 +165,16 @@ bool SUIT_ViewWindow::event( QEvent* e )
 
 /*! Called by SUIT_Accel::onActivated() when a key accelerator was activated and this window was active
 */
-void SUIT_ViewWindow::onAccelAction( int _action )
+bool SUIT_ViewWindow::onAccelAction( int _action )
 {
-  action( _action );
+  return action( _action );
 }
 
 /*! action  handle standard action (zoom, pan) or custom action.  to be redefined in successors.
 */
-void SUIT_ViewWindow::action( const int  )
+bool SUIT_ViewWindow::action( const int  )
 {
+  return true;
 }
 
 /*!

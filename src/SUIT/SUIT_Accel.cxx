@@ -120,8 +120,7 @@ bool SUIT_Accel::eventFilter( QObject *obj, QEvent *event )
       if ( myMap.contains( type ) ) {
 	IdActionMap idActionMap = myMap[type];
 	if ( idActionMap.contains( key ) ) {
-	  vw->onAccelAction( idActionMap[key] );
-	  return true;
+	  return vw->onAccelAction( idActionMap[key] );
 	}
       }
     }
