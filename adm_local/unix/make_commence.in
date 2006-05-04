@@ -245,7 +245,13 @@ all:
 Makefile: $(top_builddir)/config.status $(srcdir)/Makefile.in
 	cd $(top_builddir) ; ./config.status
 
-$(top_builddir)/config.status: $(top_srcdir)/configure
+LOCAL_MAKE = make_commence make_conclude make_omniorb
+
+KERNEL_MAKE = make_module depend SALOMEconfig.h F77config.h sstream envScript
+
+$(top_builddir)/config.status: $(top_srcdir)/configure \
+			       $(LOCAL_MAKE:%=$(top_srcdir)/adm_local/unix/%.in) \
+			       $(KERNEL_MAKE:%=$(KERNEL_ROOT_DIR)/salome_adm/unix/%.in)
 	cd $(top_builddir) ; ./config.status --recheck
 
 # VPATH contain $(srcdir), so make configure is good in top_srcdir and we must add target configure otherwise :-)
