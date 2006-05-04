@@ -140,6 +140,10 @@ InquireServersGUI::InquireServersGUI()
   myThread->start();
 }
 
+/*!
+  Sets pixmap of splash screen
+  \param pix - new pixmap
+*/
 void InquireServersGUI::setPixmap( QPixmap pix )
 {
   if ( !pix.isNull() ) 
@@ -159,6 +163,11 @@ InquireServersGUI::~InquireServersGUI()
   delete myThread;
 }
 
+/*!
+  Gets parameters from qApp
+  \param _argc - variable to return number of arguments
+  \param _argv - variable to return array of arguments
+*/
 void InquireServersGUI::getArgs( int& _argc, char *** _argv)
 {
   _argc = qApp->argc();
@@ -175,6 +184,9 @@ void InquireServersGUI::ClickOnCancel()
   qApp->exit( 1 );
 }
 
+/*!
+  Custom event filter
+*/
 void InquireServersGUI::customEvent( QCustomEvent* pe )
 {
   switch( pe->type() )
@@ -209,6 +221,9 @@ void InquireServersGUI::customEvent( QCustomEvent* pe )
     }
 }
 
+/*!
+  \return status of thread exit
+*/
 int InquireServersGUI::getExitStatus()
 {
   return myThread->getExitStatus();
@@ -266,6 +281,9 @@ InquireServersQThread::InquireServersQThread( InquireServersGUI* r )
   }
 }
 
+/*!
+  The main loop of this thread
+*/
 void InquireServersQThread::run()
 {
   while ( IsChecking && receiver )
@@ -313,6 +331,9 @@ void InquireServersQThread::run()
   qApp->exit( myExitStatus );
 }
 
+/*!
+  Stops this thread
+*/
 void InquireServersQThread::stop()
 {
   IsChecking = false;

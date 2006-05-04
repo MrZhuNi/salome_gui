@@ -169,6 +169,9 @@ void SalomeApp_Engine_i::SetListOfFiles (const ListOfFiles theListOfFiles,
   mapOfListOfFiles[componentName] = theListOfFiles;
 }
 
+/*!
+  \return shared instance of engine
+*/
 SalomeApp_Engine_i* SalomeApp_Engine_i::GetInstance()
 {
   return myInstance;

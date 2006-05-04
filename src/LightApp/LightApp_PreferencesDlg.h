@@ -28,6 +28,10 @@
 
 class LightApp_Preferences;
 
+/*!
+  \class LightApp_PreferencesDlg
+  Dialog for preferences edition
+*/
 class LIGHTAPP_EXPORT LightApp_PreferencesDlg : public QtxDialog
 {
   Q_OBJECT

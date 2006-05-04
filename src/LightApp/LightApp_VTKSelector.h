@@ -72,7 +72,8 @@ class LIGHTAPP_EXPORT LightApp_SVTKDataOwner : public LightApp_DataOwner
 
 
 /*!
-  Provide vtk selection of data owners.
+  \class LightApp_VTKSelector
+  Custom selector to get/set selection from object browser
 */
 class LIGHTAPP_EXPORT LightApp_VTKSelector : public SUIT_Selector
 {
