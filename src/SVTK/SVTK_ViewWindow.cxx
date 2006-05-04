@@ -735,16 +735,19 @@ int convertAction( const int accelAction )
   Performs action
   \param accelAction - action
 */
-void 
+bool 
 SVTK_ViewWindow
 ::action( const int accelAction  )
 {
+  if ( !myMainWindow->hasFocus() )
+    return false;
   if ( accelAction == SUIT_Accel::ZoomFit )
     onFitAll();
   else {
     int anEvent = convertAction( accelAction );
     myMainWindow->InvokeEvent( anEvent, 0 );
   }
+  return true;
 }
 
 // old visual parameters had 13 values.  New format added additional 

@@ -44,7 +44,7 @@ SOCC_ViewWindow
   Performs action
   \param theAction - type of action
 */
-void 
+bool 
 SOCC_ViewWindow
 ::action( const int theAction  )
 {
@@ -98,5 +98,6 @@ SOCC_ViewWindow
     myViewPort->rotate( cx, cy + inc );
     myViewPort->endRotation();
     break;
-  } 
+  }
+  return true;
 }

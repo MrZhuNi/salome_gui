@@ -343,7 +343,7 @@ protected:
   doSetVisualParameters( const QString& );
 
   QImage dumpView();
-  virtual void action( const int );
+  virtual bool action( const int );
 
   SVTK_View* myView;
   SVTK_MainWindow* myMainWindow;
