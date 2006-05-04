@@ -109,6 +109,9 @@ QVTK_RenderWindowInteractor
 }
 
 
+/*!
+  \return corresponding render window interactor
+*/
 vtkGenericRenderWindowInteractor* 
 QVTK_RenderWindowInteractor
 ::GetDevice()
@@ -116,6 +119,9 @@ QVTK_RenderWindowInteractor
   return myDevice.GetPointer();
 }
 
+/*!
+  \return corresponding render window
+*/
 vtkRenderWindow*
 QVTK_RenderWindowInteractor
 ::getRenderWindow()
@@ -169,6 +175,9 @@ QVTK_RenderWindowInteractor
   GetDevice()->UpdateSize(w,h);
 }
 
+/*!
+  Custom paint event handler
+*/
 void
 QVTK_RenderWindowInteractor
 ::paintEvent( QPaintEvent* theEvent ) 
@@ -177,6 +186,9 @@ QVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom resize event handler
+*/
 void
 QVTK_RenderWindowInteractor
 ::resizeEvent( QResizeEvent* theEvent )
@@ -208,12 +220,18 @@ QVTK_RenderWindowInteractor
 }
 
 
+
+/*!
+  Custom context menu event handler
+*/
 void
 QVTK_RenderWindowInteractor
 ::contextMenuEvent( QContextMenuEvent* event )
 {}
 
-
+/*!
+  Custom mouse move event handler
+*/
 void
 QVTK_RenderWindowInteractor
 ::mouseMoveEvent( QMouseEvent* event ) 
@@ -226,6 +244,9 @@ QVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom mouse press event handler
+*/
 void
 QVTK_RenderWindowInteractor
 ::mousePressEvent( QMouseEvent* event ) 
@@ -243,6 +264,9 @@ QVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom mouse release event handler
+*/
 void
 QVTK_RenderWindowInteractor
 ::mouseReleaseEvent( QMouseEvent *event )
@@ -261,12 +285,18 @@ QVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom mouse double click event handler
+*/
 void
 QVTK_RenderWindowInteractor
 ::mouseDoubleClickEvent( QMouseEvent* event )
 {}
 
 
+/*!
+  Custom mouse wheel event handler
+*/
 void
 QVTK_RenderWindowInteractor
 ::wheelEvent( QWheelEvent* event )
@@ -276,6 +306,9 @@ QVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom key press event handler
+*/
 void
 QVTK_RenderWindowInteractor
 ::keyPressEvent( QKeyEvent* event ) 
@@ -287,6 +320,9 @@ QVTK_RenderWindowInteractor
   GetDevice()->CharEvent();
 }
 
+/*!
+  Custom key release event handler
+*/
 void
 QVTK_RenderWindowInteractor
 ::keyReleaseEvent( QKeyEvent * event ) 
@@ -298,6 +334,9 @@ QVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom enter event handler
+*/
 void  
 QVTK_RenderWindowInteractor
 ::enterEvent( QEvent* event )
@@ -309,6 +348,9 @@ QVTK_RenderWindowInteractor
   GetDevice()->EnterEvent();
 }
 
+/*!
+  Custom leave event handler
+*/
 void  
 QVTK_RenderWindowInteractor
 ::leaveEvent( QEvent * )
@@ -454,6 +496,10 @@ SVTK_RenderWindowInteractor
   return GetRenderer()->GetDevice();
 }
 
+/*!
+  Changes renderer
+  \param theRenderer - new renderer
+*/
 void
 SVTK_RenderWindowInteractor
 ::SetRenderer(SVTK_Renderer* theRenderer)
@@ -471,6 +517,10 @@ SVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Changes interactor style
+  \param theStyle - new interactor style
+*/
 void
 SVTK_RenderWindowInteractor
 ::InitInteractorStyle(vtkInteractorStyle* theStyle)
@@ -525,6 +575,10 @@ SVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Changes selector
+  \param theSelector - new selector
+*/
 void
 SVTK_RenderWindowInteractor
 ::SetSelector(SVTK_Selector* theSelector)
@@ -580,6 +634,9 @@ SVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Emits signal selectionChanged()
+*/
 void
 SVTK_RenderWindowInteractor
 ::onEmitSelectionChanged()
@@ -588,6 +645,9 @@ SVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom mouse move event handler
+*/
 void
 SVTK_RenderWindowInteractor
 ::mouseMoveEvent( QMouseEvent* event ) 
@@ -599,6 +659,9 @@ SVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom mouse press event handler
+*/
 void
 SVTK_RenderWindowInteractor
 ::mousePressEvent( QMouseEvent* event ) 
@@ -610,6 +673,9 @@ SVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom mouse release event handler
+*/
 void
 SVTK_RenderWindowInteractor
 ::mouseReleaseEvent( QMouseEvent *event )
@@ -621,6 +687,9 @@ SVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom mouse double click event handler
+*/
 void
 SVTK_RenderWindowInteractor
 ::mouseDoubleClickEvent( QMouseEvent* event )
@@ -632,6 +701,9 @@ SVTK_RenderWindowInteractor
 }
 
 
+/*!
+  Custom mouse wheel event handler
+*/
 void
 SVTK_RenderWindowInteractor
 ::wheelEvent( QWheelEvent* event )
@@ -647,7 +719,9 @@ SVTK_RenderWindowInteractor
     emit WheelMoved( event );
 }
 
-
+/*!
+  Custom key press event handler
+*/
 void
 SVTK_RenderWindowInteractor
 ::keyPressEvent( QKeyEvent* event ) 
@@ -658,6 +732,9 @@ SVTK_RenderWindowInteractor
     emit KeyPressed( event );
 }
 
+/*!
+  Custom key release event handler
+*/
 void
 SVTK_RenderWindowInteractor
 ::keyReleaseEvent( QKeyEvent * event ) 
@@ -668,6 +745,9 @@ SVTK_RenderWindowInteractor
     emit KeyReleased( event );
 }
 
+/*!
+  Custom context menu event handler
+*/
 void
 SVTK_RenderWindowInteractor
 ::contextMenuEvent( QContextMenuEvent* event )

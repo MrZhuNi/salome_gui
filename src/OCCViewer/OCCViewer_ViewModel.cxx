@@ -438,7 +438,7 @@ bool OCCViewer_Viewer::highlight( const Handle(AIS_InteractiveObject)& obj,
 }
 
 /*!
-  Unhilights all object in viewer
+  Unhilights all objects in viewer
   \param updateviewer - update current viewer
 */
 bool OCCViewer_Viewer::unHighlightAll( bool updateviewer )
