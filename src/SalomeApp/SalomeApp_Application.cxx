@@ -530,9 +530,10 @@ void SalomeApp_Application::onDumpStudy( )
   if ( !aFileName.isEmpty() ) {
     QFileInfo aFileInfo(aFileName);
     int savePoint;
+    _PTR(AttributeParameter) ap;
+    _PTR(IParameters) ip = ClientFactory::getIParameters(ap);
+    if(ip->isDumpPython(appStudy->studyDS())) ip->setDumpPython(appStudy->studyDS()); //Unset DumpPython flag.
     if ( toSaveGUI ) { //SRN: Store a visual state of the study at the save point for DumpStudy method
-      _PTR(AttributeParameter) ap;
-      _PTR(IParameters) ip = ClientFactory::getIParameters(ap);
       ip->setDumpPython(appStudy->studyDS());
       savePoint = SalomeApp_VisualState( this ).storeState(); //SRN: create a temporary save point      
     }
