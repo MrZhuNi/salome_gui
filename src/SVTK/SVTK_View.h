@@ -122,7 +122,7 @@ public:
   void
   unHighlightAll();
 
-  /* Selection Management */
+  //! Try to find a SALOME_InteractiveObject in the view that corresponds to the entry
   Handle(SALOME_InteractiveObject) 
   FindIObject(const char* Entry);
 

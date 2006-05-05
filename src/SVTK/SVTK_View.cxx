@@ -210,6 +210,24 @@ SVTK_View
 }
 
 /*!
+  Display object
+  \param theEntry - entry that corresponds to intractive objects
+*/
+Handle(SALOME_InteractiveObject)
+SVTK_View
+::FindIObject(const char* theEntry) 
+{
+  using namespace SVTK;
+  SALOME_Actor* anActor = 
+    Find<SALOME_Actor>(getRenderer()->GetActors(),
+		       TIsSameEntry<SALOME_Actor>(theEntry));
+  if(anActor != NULL)
+    return anActor->getIO();
+ 
+  return NULL;
+}
+
+/*!
    Redirect the request to #SVTK_Renderer::SetPreselectionProp
 */
 void

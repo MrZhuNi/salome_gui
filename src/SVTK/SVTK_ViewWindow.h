@@ -136,7 +136,7 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   bool
   isVisible(const Handle(SALOME_InteractiveObject)& theIObject);
 
-  /* selection */
+  //! Redirect the request to #SVTK_View::FindIObject (to support old code)
   //----------------------------------------------------------------------------
   Handle(SALOME_InteractiveObject) 
   FindIObject(const char* theEntry);

@@ -367,6 +367,17 @@ SVTK_ViewWindow
 
 /*!
   Display object
+  \param theEntry - entry that corresponds to intractive objects
+*/
+Handle(SALOME_InteractiveObject)
+SVTK_ViewWindow
+::FindIObject(const char* theEntry) 
+{
+  return myView->FindIObject(theEntry);
+}
+
+/*!
+  Display object
   \param theIO - object
   \param theImmediatly - update viewer
 */
