@@ -1505,6 +1505,7 @@ QtxWorkstack& QtxWorkstack::operator<<( const QString& parameters )
   Example of string produced by operator>> :
   "(splitter orientation=0 sizes=186:624 (views active='OCCViewer_0_0' 'OCCViewer_0_0')
 / (views active='VTKViewer_0_0' 'VTKViewer_0_0'))"
+*/
 QtxWorkstack& QtxWorkstack::operator>>( QString& outParameters )
 {
   splitterInfo( mySplit, outParameters );
