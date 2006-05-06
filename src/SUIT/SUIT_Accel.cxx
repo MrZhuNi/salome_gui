@@ -115,7 +115,7 @@ bool SUIT_Accel::eventFilter( QObject *obj, QEvent *event )
   const int key = getAccelKey( event );
   if ( key ) {
     SUIT_ViewWindow* vw = ::getParentViewWindow( obj ); 
-    if ( vw && vw->hasFocus() ) {
+    if ( vw ) {
       QString type = vw->getViewManager()->getViewModel()->getType();
       if ( myMap.contains( type ) ) {
 	IdActionMap idActionMap = myMap[type];
