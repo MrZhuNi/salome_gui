@@ -848,7 +848,7 @@ void SALOME_PYQT_Module::contextMenu( const QString& theContext, QPopupMenu* the
   if ( !myInterp || !myModule )
     return;
 
-  QString aContext( theContext ), aObject( "" ), aParent( "" );
+  QString aContext( "" ), aObject( "" ), aParent( theContext );
 
   if ( IsCallOldMethods && PyObject_HasAttrString(myModule , "definePopup") ) { //__CALL_OLD_METHODS__
     // call definePopup() Python module's function
