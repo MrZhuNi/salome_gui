@@ -92,12 +92,12 @@ void LightApp_SelectionMgr::selectedObjects( SALOME_ListIO& theList, const QStri
           QString component = study->componentDataType( refEntry );
           theList.Append( new SALOME_InteractiveObject( refEntry, component, ""/*refobj->Name().c_str()*/ ) );
         }
-        else
+        else if( !owner->IO().IsNull() )
           theList.Append( owner->IO() );
       }
     }
     else {
-      if( !entryMap.contains( entry ) )
+      if( !entryMap.contains( entry ) && !owner->IO().IsNull() )
 	theList.Append( owner->IO() );
     }
 
