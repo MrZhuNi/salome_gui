@@ -43,6 +43,8 @@ docs:
 	cp -fr $(srcdir)/SUIT/sources/ SUIT ; \
 	rm -fr INPUT
 
+dev_docs: docs
+
 clean:
 	rm -fr SUIT
 

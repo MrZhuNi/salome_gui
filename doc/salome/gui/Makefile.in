@@ -15,19 +15,21 @@ VPATH=.:@srcdir@
 @COMMENCE@
 
 docs:
-	cp -fr $(srcdir)/KERNEL ./
+	cp -fr $(srcdir)/GUI ./
 	-find $(PWD) -name CVS -prune -exec rm -rf {} \;
+
+usr_docs: docs
 
 clean:
 	rm -fr `ls | grep -v "Makefile"`
 
 distclean: clean
-	rm -fr KERNEL
+	rm -fr GUI
 
 install:
 	mkdir -p $(docdir)/gui
-	cp -rf KERNEL $(docdir)/gui
+	cp -rf GUI $(docdir)/gui
 	-find $(PWD) -name CVS -prune -exec rm -rf {} \;
 
 uninstall:
-	rm -rf $(docdir)/gui/KERNEL
+	rm -rf $(docdir)/gui/GUI
