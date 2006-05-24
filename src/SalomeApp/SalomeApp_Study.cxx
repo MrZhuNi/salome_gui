@@ -704,7 +704,7 @@ QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 {
   _PTR(AttributeParameter) AP = studyDS()->GetCommonParameters(getVisualComponentName(), savePoint);
   _PTR(IParameters) ip = ClientFactory::getIParameters(AP);
-  return ip->getProperty("AP_SAVEPOINT_NAME");
+  return ip->getProperty("AP_SAVEPOINT_NAME").c_str();
 }
 
 /*!

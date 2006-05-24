@@ -362,7 +362,7 @@ void Session_ServerCheck::run()
 	SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
 	ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
 	NS.init_orb( orb );
-	QString containerName = QString( "/Containers/%1/FactoryServer" ).arg( GetHostname() );
+	QString containerName = QString( "/Containers/%1/FactoryServer" ).arg( GetHostname().c_str() );
 	CORBA::Object_var obj = NS.Resolve( containerName.latin1() );
 	Engines::Container_var FScontainer = Engines::Container::_narrow( obj );
 	if ( !CORBA::is_nil( FScontainer ) ) {
@@ -413,7 +413,7 @@ void Session_ServerCheck::run()
 	SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
 	ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
 	NS.init_orb( orb );
-	QString containerName = QString( "/Containers/%1/FactoryServerPy" ).arg( GetHostname() );
+	QString containerName = QString( "/Containers/%1/FactoryServerPy" ).arg( GetHostname().c_str() );
 	CORBA::Object_var obj = NS.Resolve( containerName.latin1() );
 	Engines::Container_var FSPcontainer = Engines::Container::_narrow( obj );
 	if ( !CORBA::is_nil( FSPcontainer ) ) {
@@ -464,7 +464,7 @@ void Session_ServerCheck::run()
 	SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
 	ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
 	NS.init_orb( orb );
-	QString containerName = QString( "/Containers/%1/SuperVisionContainer" ).arg( GetHostname() );
+	QString containerName = QString( "/Containers/%1/SuperVisionContainer" ).arg( GetHostname().c_str() );
 	CORBA::Object_var obj = NS.Resolve( containerName.latin1() );
 	Engines::Container_var SVcontainer = Engines::Container::_narrow( obj );
 	if ( !CORBA::is_nil( SVcontainer ) ) {
