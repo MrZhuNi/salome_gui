@@ -500,11 +500,11 @@ QImage Plot2d_ViewWindow::dumpView()
   \param fileName - name of file
   \param format - string contains name of format (for example, "BMP"(default) or "JPEG", "JPG")
 */
-bool Plot2d_ViewWindow::dumpViewToFormat( const QString& fileName, const QString& format )
+bool Plot2d_ViewWindow::dumpViewToFormat( const QImage& img, const QString& fileName, const QString& format )
 {
   bool res = myViewFrame ? myViewFrame->print( fileName, format ) : false;
   if( !res )
-    res = SUIT_ViewWindow::dumpViewToFormat( fileName, format );
+    res = SUIT_ViewWindow::dumpViewToFormat( img, fileName, format );
 
   return res;
 }

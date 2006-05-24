@@ -47,7 +47,7 @@ public:
   bool              event(QEvent*);
 
   virtual QImage    dumpView();
-  virtual bool      dumpViewToFormat( const QString& fileName, const QString& format );
+  virtual bool      dumpViewToFormat( const QImage&, const QString& fileName, const QString& format );
 
   bool              onAccelAction( int );
 

@@ -52,7 +52,7 @@ public:
 protected:
   virtual QImage    dumpView();
   virtual QString   filter() const;
-  virtual bool      dumpViewToFormat( const QString& fileName, const QString& format );
+  virtual bool      dumpViewToFormat( const QImage&, const QString& fileName, const QString& format );
 
 private:
   bool eventFilter(QObject* watched, QEvent* e);
