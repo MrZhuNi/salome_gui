@@ -91,7 +91,7 @@ bool SUIT_ViewWindow::dumpViewToFormat( const QString& fileName, const QString& 
 */
 void SUIT_ViewWindow::closeEvent(QCloseEvent* theEvent)
 {
-  QMainWindow::closeEvent( theEvent );
+//  QMainWindow::closeEvent( theEvent );
   emit closing( this );
 }
 

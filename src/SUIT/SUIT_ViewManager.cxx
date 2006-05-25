@@ -131,7 +131,7 @@ bool SUIT_ViewManager::insertView(SUIT_ViewWindow* theView)
   }
   
   connect(theView, SIGNAL(closing(SUIT_ViewWindow*)),
-          this,    SLOT(onDeleteView(SUIT_ViewWindow*)));
+          this,    SLOT(onClosingView(SUIT_ViewWindow*)));
 
   connect(theView, SIGNAL(mousePressed(SUIT_ViewWindow*, QMouseEvent*)),
           this,    SLOT(onMousePressed(SUIT_ViewWindow*, QMouseEvent*)));
@@ -168,24 +168,37 @@ bool SUIT_ViewManager::insertView(SUIT_ViewWindow* theView)
 
 /*!Emit delete view. Remove view window \a theView from view manager.
 */
-void SUIT_ViewManager::onDeleteView(SUIT_ViewWindow* theView)
+void SUIT_ViewManager::onClosingView( SUIT_ViewWindow* theView )
 {
-  emit deleteView(theView);
-  removeView(theView);
+  closeView( theView );
+}
+
+/*!
+  Remove the view window \a theView from view manager and destroy it.
+*/
+void SUIT_ViewManager::closeView( SUIT_ViewWindow* theView )
+{
+  QGuardedPtr<SUIT_ViewWindow> view( theView );
+
+  emit deleteView( view );
+  removeView( view );
+
+  if ( view )
+    delete view;
 }
 
 /*!Remove view window \a theView from view manager.
  *And close the last view, if it has \a theView.
 */
-void SUIT_ViewManager::removeView(SUIT_ViewWindow* theView) 
+void SUIT_ViewManager::removeView( SUIT_ViewWindow* theView )
 {
   theView->disconnect(this);
-  myViews.remove(myViews.find(theView));
-  if (myActiveView == theView)
+  myViews.remove( myViews.find( theView ) );
+  if ( myActiveView == theView )
     myActiveView = 0;
   int aNumItems = myViews.count();
-  if (aNumItems == 0)
-    emit lastViewClosed(this);
+  if ( aNumItems == 0 )
+    emit lastViewClosed( this );
 }
 
 /*!
@@ -223,11 +236,9 @@ void SUIT_ViewManager::onWindowActivated(SUIT_ViewWindow* view)
 */
 void SUIT_ViewManager::closeAllViews()
 {
-  unsigned int aSize = myViews.size();
-  for (uint i = 0; i < aSize; i++) {
-    if (myViews[i])
-      myViews[i]->close();
-  }
+  for ( uint i = 0; i < myViews.size(); i++ )
+    delete myViews[i];
+  myViews.clear();
 }
 
 /*!

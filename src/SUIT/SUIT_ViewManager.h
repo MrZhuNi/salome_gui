@@ -84,9 +84,9 @@ signals:
   void             activated(SUIT_ViewManager*);
   
 protected slots:
-  void             onWindowActivated(SUIT_ViewWindow*);
-  void             onDeleteView(SUIT_ViewWindow* theView);
-  void             onMousePressed(SUIT_ViewWindow* theView, QMouseEvent* theEvent);
+  void             onWindowActivated( SUIT_ViewWindow* );
+  void             onClosingView( SUIT_ViewWindow* );
+  void             onMousePressed(SUIT_ViewWindow*, QMouseEvent* );
   void             onDeleteStudy();
 
 private slots:
@@ -100,6 +100,9 @@ protected:
   
   /*! Removes the View from internal Views Vector.*/
   virtual void     removeView(SUIT_ViewWindow* theView);
+
+  /*! Close the specified View.*/
+  virtual void     closeView(SUIT_ViewWindow* theView);
   
   /*! Used to set unique name for the view.*/
   virtual void     setViewName(SUIT_ViewWindow* theView);

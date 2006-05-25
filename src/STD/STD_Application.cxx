@@ -676,7 +676,8 @@ void STD_Application::removeViewManager( SUIT_ViewManager* vm )
   emit viewManagerRemoved( vm );
 
   vm->disconnectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
-  vm->disconnect();
+  disconnect( vm, SIGNAL( activated( SUIT_ViewManager* ) ),
+              this, SLOT( onViewManagerActivated( SUIT_ViewManager* ) ) );
   myViewMgrs.removeRef( vm );
 
   if ( myActiveViewMgr == vm )
@@ -690,7 +691,10 @@ void STD_Application::clearViewManagers()
   viewManagers( lst );
 
   for ( QPtrListIterator<SUIT_ViewManager> it( lst ); it.current(); ++it )
+  {
     removeViewManager( it.current() );
+    delete it.current();
+  }
 }
 
 /*!\retval TRUE, if view manager \a vm, already in view manager list (\a myViewMgrs).*/
