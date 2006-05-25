@@ -18,6 +18,7 @@ doxygen=@DOXYGEN@
 
 docs:
 	cp -fr $(srcdir)/SUIT ./INPUT; \
+	cp -f ./SUIT/doxyfile ./INPUT; \
 	cd INPUT; \
 	sed 's|../../../share/salome|$(root_srcdir)|' ./doxyfile > ./doxyfile1; \
 	sed 's|../../build/salome|$(top_builddir)|' ./doxyfile1 > ./doxyfile2; \
