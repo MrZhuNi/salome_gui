@@ -66,8 +66,8 @@ protected:
 
   virtual SUIT_Study*         createNewStudy();
 
-  bool				                undo( CAF_Study* doc );
-  bool				                redo( CAF_Study* doc );
+  virtual bool				        undo( CAF_Study* doc );
+  virtual bool				        redo( CAF_Study* doc );
 
   virtual void                setStdApp( const Handle(TDocStd_Application)& );
 
