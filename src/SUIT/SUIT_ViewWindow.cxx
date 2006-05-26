@@ -79,7 +79,8 @@ QImage SUIT_ViewWindow::dumpView()
 }
 
 /*!
-  Saves scene rendering in window to file
+  Saves image to file according to the format
+  \param image - image
   \param fileName - name of file
   \param format - string contains name of format (for example, "BMP"(default) or "JPEG", "JPG")
 */
@@ -98,6 +99,16 @@ bool SUIT_ViewWindow::dumpViewToFormat( const QImage& img, const QString& fileNa
   bool res = img.save( fileName, fmt.latin1() );
   QApplication::restoreOverrideCursor();
   return res;
+}
+
+/*!
+  Saves scene rendering in window to file
+  \param fileName - name of file
+  \param format - string contains name of format (for example, "BMP"(default) or "JPEG", "JPG")
+*/
+bool SUIT_ViewWindow::dumpViewToFormat( const QString& fileName, const QString& format )
+{
+  return dumpViewToFormat( dumpView(), fileName, format );
 }
 
 /*! Close event \a theEvent.

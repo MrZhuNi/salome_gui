@@ -47,7 +47,7 @@ public:
   bool              event(QEvent*);
 
   virtual QImage    dumpView();
-  virtual bool      dumpViewToFormat( const QImage&, const QString& fileName, const QString& format );
+  bool              dumpViewToFormat( const QString& fileName, const QString& format );
 
   bool              onAccelAction( int );
 
@@ -73,6 +73,7 @@ protected:
   virtual void      contextMenuEvent( QContextMenuEvent* );
   virtual QString   filter() const;
   virtual bool      action( const int );
+  virtual bool      dumpViewToFormat( const QImage&, const QString& fileName, const QString& format );
 
   SUIT_Desktop*     myDesktop;
   SUIT_ViewManager* myManager;
