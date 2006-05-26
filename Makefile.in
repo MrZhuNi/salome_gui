@@ -112,6 +112,12 @@ endif
 
 inc: idl $(include_list)
 
+bin: bin/salome/VERSION
+
+bin/salome/VERSION : bin/VERSION
+	-$(RM) $@
+	$(LN_S) ../../$< $@
+
 include/salome/SALOMEconfig.h: salome_adm/unix/SALOMEconfig.ref
 	-$(RM) $@
 	$(LN_S) ../../$< $@
@@ -134,7 +140,8 @@ include/salome/sstream: salome_adm/unix/sstream
 	$(LN_S) ../../$< $@
 
 include/salome/GUI_version.h: GUI_version.h
-	cp $< $@
+	-$(RM) $@
+	$(LN_S) ../../$< $@
 
 depend:
 #depend: depend_idl
