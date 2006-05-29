@@ -16,9 +16,9 @@ doxygen=@DOXYGEN@
 
 @COMMENCE@
 
-docs:
-	cp -fr $(srcdir)/SUIT ./INPUT; \
-	cp -f ./SUIT/doxyfile ./INPUT; \
+dev_docs:
+	cp -fr $(srcdir)/GUI ./INPUT; \
+	cp -f ./GUI/doxyfile ./INPUT; \
 	cd INPUT; \
 	sed 's|../../../share/salome|$(root_srcdir)|' ./doxyfile > ./doxyfile1; \
 	sed 's|../../build/salome|$(top_builddir)|' ./doxyfile1 > ./doxyfile2; \
@@ -40,13 +40,11 @@ docs:
 	echo "Running doxygen in directory:"`pwd`; \
 	$(doxygen) ./doxyfile; \
 	cd ../; \
-	cp -fr $(srcdir)/SUIT/sources/ SUIT ; \
+	cp -fr $(srcdir)/GUI/sources/ GUI ; \
 	rm -fr INPUT
 
-dev_docs: docs
-
 clean:
-	rm -fr SUIT
+	rm -fr GUI
 
 distclean: clean
 	rm -fr INPUT
@@ -54,7 +52,7 @@ distclean: clean
 install:
 	$(INSTALL) -d $(docdir); \
 	mkdir -p $(docdir)/tui
-	cp -fr SUIT $(docdir)/tui
+	cp -fr GUI $(docdir)/tui
 
 uninstall:
-	rm -fr $(docdir)/tui/SUIT
+	rm -fr $(docdir)/tui/GUI
