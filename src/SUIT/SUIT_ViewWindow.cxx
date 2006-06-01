@@ -131,12 +131,8 @@ void SUIT_ViewWindow::contextMenuEvent ( QContextMenuEvent * e )
 */
 void SUIT_ViewWindow::onDumpView()
 {
-  qApp->processEvents();
-  qApp->sendEvent( this, new QPaintEvent( QRect( 0, 0, width(), height() ), TRUE ) );
-  QImage im = dumpView();
-  QCustomEvent* e = new QCustomEvent( DUMP_EVENT );
-  e->setData( &im );
-  qApp->sendEvent( this, e );
+  qApp->postEvent( this, new QPaintEvent( QRect( 0, 0, width(), height() ), TRUE ) );
+  qApp->postEvent( this, new QCustomEvent( DUMP_EVENT ) );
 }
 
 /*!
@@ -156,15 +152,15 @@ bool SUIT_ViewWindow::event( QEvent* e )
     bool bOk = false;
     if ( myManager && myManager->study() && myManager->study()->application() )
     {
+      QImage im = dumpView();
+
       // get file name
       SUIT_Application* app = myManager->study()->application();
       QString fileName = app->getFileName( false, QString::null, filter(), tr( "TLT_DUMP_VIEW" ), 0 );
       if( !fileName.isEmpty() )
       {
 	QString fmt = SUIT_Tools::extension( fileName ).upper();
-	QCustomEvent* ce = ( QCustomEvent* )e;
-	QImage* im = ( QImage* )ce->data();
-	bOk = dumpViewToFormat( *im, fileName, fmt );
+	bOk = dumpViewToFormat( im, fileName, fmt );
       }
       else
       {
