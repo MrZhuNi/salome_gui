@@ -26,6 +26,9 @@
 #include <QtxActionMenuMgr.h>
 #include <QtxActionToolMgr.h>
 
+#include <SUIT_Session.h>
+#include <SUIT_Application.h>
+
 /*!Icon.*/
 static const char* ModuleIcon[] = {
 "20 20 2 1",
@@ -84,6 +87,11 @@ CAM_Module::~CAM_Module()
 void CAM_Module::initialize( CAM_Application* app )
 {
   myApp = app;
+  if (myApp) {
+    SUIT_Session* aSession = SUIT_Session::session();
+    connect(aSession, SIGNAL( applicationClosed( SUIT_Application* ) ),
+            this, SLOT( onApplicationClosed( SUIT_Application* ) ));
+  }
 }
 
 /*!\retval Module icon.*/
@@ -157,6 +165,13 @@ void CAM_Module::studyClosed( SUIT_Study* study )
 /*!Public slot, do nothing.*/
 void CAM_Module::studyChanged( SUIT_Study* , SUIT_Study* )
 {
+}
+
+/*!Public slot, nullify application pointer if the application was closed.*/
+void CAM_Module::onApplicationClosed( SUIT_Application* theApp )
+{
+  if (myApp == theApp)
+    myApp = NULL;
 }
 
 /*!Create and return new instance of CAM_DataModel.*/

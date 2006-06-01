@@ -28,6 +28,7 @@
 
 class QAction;
 class SUIT_Study;
+class SUIT_Application;
 class CAM_Study;
 class CAM_DataModel;
 class CAM_Application;
@@ -85,6 +86,8 @@ public slots:
 
   virtual void           studyClosed( SUIT_Study* );
   virtual void           studyChanged( SUIT_Study*, SUIT_Study* );
+
+  virtual void           onApplicationClosed( SUIT_Application* );
 
 protected: 
   virtual CAM_DataModel* createDataModel();
