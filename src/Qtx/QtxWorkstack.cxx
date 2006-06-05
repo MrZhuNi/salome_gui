@@ -1186,7 +1186,7 @@ void QtxWorkstack::splitterInfo( QSplitter* split, QString& info ) const
 // cuts starting '(' symbol and ending '(' symbol
 void cutBrackets( QString& parameters )
 {
-  if ( !parameters.isEmpty() && parameters[0] == '(' && parameters[parameters.length()-1] == ')' )
+  if ( !parameters.isEmpty() && parameters.at(0) == '(' && parameters.at(parameters.length()-1) == ')' )
     parameters = parameters.mid( 1, parameters.length()-2 );
 }
 
@@ -1212,7 +1212,7 @@ bool checkFormat( const QString& parameters )
 {
   QString params( parameters );
   // 1. begins and ends with brackets
-  bool ok = ( params[0] == '(' && params[params.length()-1] == ')' );
+  bool ok = ( params.at(0) == '(' && params.at(params.length()-1) == ')' );
   if ( !ok ) return ok;
   ::cutBrackets( params );
   // 2. has splitter word

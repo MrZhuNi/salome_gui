@@ -26,6 +26,8 @@
 #include <SUIT_DataObjectIterator.h>
 #include <qdatetime.h>
 
+#include <time.h>
+
 /*!
   Constructor
 */
