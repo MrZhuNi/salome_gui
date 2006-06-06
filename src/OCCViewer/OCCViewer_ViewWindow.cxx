@@ -927,8 +927,9 @@ void OCCViewer_ViewWindow::onTrihedronShow()
 //****************************************************************
 QImage OCCViewer_ViewWindow::dumpView()
 {
-  QPixmap px = QPixmap::grabWindow( myViewPort->winId() );
-  return px.convertToImage();
+  myViewPort->repaint();
+
+  return QPixmap::grabWindow( myViewPort->winId() ).convertToImage();
 }
                                                                               
 void  OCCViewer_ViewWindow::setCuttingPlane( bool on, const double x,  const double y,  const double z,
