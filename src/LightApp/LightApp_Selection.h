@@ -37,13 +37,7 @@ class LightApp_DataOwner;
 class LightApp_Study;
 class SUIT_ViewWindow;
 
-/*!
-  \class LightApp_Selection 
-  Custom selection class, allowing to build popup with rules on the base
-  of owners selected in all selectors (popup client has more priority).
-  It is able to return values of standard object properties
-  (isVisible,isComponent,canBeDisplayed,isReference, etc)
-*/
+
 class LIGHTAPP_EXPORT LightApp_Selection : public QtxPopupMgr::Selection
 {
 public:
@@ -65,6 +59,7 @@ protected:
   LightApp_Study*                study() const { return myStudy; }
   QString                        activeViewType() const;
   SUIT_ViewWindow*               activeVW() const;
+  virtual QString                referencedToEntry( const QString& ) const;
 
 private:
   QString                        myPopupClient;

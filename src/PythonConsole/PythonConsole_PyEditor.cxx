@@ -101,7 +101,8 @@ private:
 */
 PythonConsole_PyEditor::PythonConsole_PyEditor(PyInterp_base* theInterp, QWidget *theParent, const char* theName): 
   QTextEdit(theParent,theName),
-  myInterp( 0 )
+  myInterp( 0 ),
+  myIsInLoop( false )
 {
   QString fntSet( "" );
   QFont aFont = SUIT_Tools::stringToFont( fntSet );
@@ -155,6 +156,17 @@ void PythonConsole_PyEditor::exec( const QString& command )
   setText( "\n" + _currentPrompt); 
   setText( command + "\n" ); 
   handleReturn();
+}
+
+void PythonConsole_PyEditor::execAndWait( const QString& command )
+{
+  if( myIsInLoop )
+    return;
+
+  myIsInLoop = true;
+  exec( command );
+  qApp->enter_loop();
+  myIsInLoop = false;
 }
 
 /*!
@@ -659,6 +671,8 @@ void PythonConsole_PyEditor::customEvent(QCustomEvent* e)
       _currentPrompt = READY_PROMPT;
       setText(_currentPrompt);
       viewport()->unsetCursor();
+      if( myIsInLoop )
+	qApp->exit_loop();
       break;
     }
   case PyInterp_Event::INCOMPLETE:
@@ -667,6 +681,8 @@ void PythonConsole_PyEditor::customEvent(QCustomEvent* e)
       _currentPrompt = DOTS_PROMPT;
       setText(_currentPrompt);
       viewport()->unsetCursor();
+      if( myIsInLoop )
+	qApp->exit_loop();
       break;
     }
   default:
@@ -694,6 +710,8 @@ void PythonConsole_PyEditor::onPyInterpChanged( PyInterp_base* interp )
       _isInHistory = false;
       setText(_currentPrompt);
       viewport()->unsetCursor();
+      if( myIsInLoop )
+	qApp->exit_loop();
     }
     else {
       clear();

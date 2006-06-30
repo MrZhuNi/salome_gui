@@ -491,6 +491,7 @@ void Plot2d_ViewWindow::onDumpView()
 */
 QImage Plot2d_ViewWindow::dumpView()
 {
+  myViewFrame->repaint( true );
   QPixmap px = QPixmap::grabWindow( myViewFrame->winId() );
   return px.convertToImage();
 }
