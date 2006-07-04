@@ -1,0 +1,1226 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="Qtx"
+	SccProjectName="GUI_WNT/adm/win32"
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Jalindi Igloo">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(QTINC)"
+				PreprocessorDefinitions="NDEBUG;WIN32;WNT;_WINDOWS;_USRDLL;QTX_EXPORTS;QT_DLL;QT_THREAD_SUPPORT"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib"
+				OutputFile="$(OutDir)/Qtx.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTLIB)"
+				ImportLibrary="$(OutDir)/Qtx.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\lib/Qtx.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(QTINC)"
+				PreprocessorDefinitions="_DEBUG;WIN32;WNT;_WINDOWS;_USRDLL;QTX_EXPORTS;QT_DLL;QT_THREAD_SUPPORT"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib"
+				OutputFile="$(OutDir)/Qtx.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTLIBD)"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/Qtx.pdb"
+				ImportLibrary="$(OutDir)/Qtx.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\libd/Qtx.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\..\src\Qtx\Qtx.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxAction.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o $(GUI_SRC_DIR)\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);$(GUI_SRC_DIR)\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxActionMenuMgr.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxActionMgr.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxActionToolMgr.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxColorScale.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxComboBox.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDblSpinBox.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDblValidator.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDialog.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDirListEditor.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDockAction.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDockWindow.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxGroupBox.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxIntSpinBox.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxListAction.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxListBox.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxListOfOperations.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxListResourceEdit.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxListView.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxLogoMgr.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxMainWindow.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxMenuButton.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxMRUAction.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxOperations.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxParser.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxPathDialog.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxPopupMenu.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxPopupMgr.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxResourceEdit.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxResourceMgr.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxStdOperations.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxTable.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxToolBar.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxToolTip.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxWorkspaceAction.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxWorkstack.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxWorkstackAction.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\..\src\Qtx\Qtx.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxAction.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxActionMenuMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxActionMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxActionToolMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxColorScale.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxComboBox.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDblSpinBox.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDblValidator.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDirListEditor.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDockAction.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxDockWindow.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxGroupBox.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxIntSpinBox.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxListAction.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxListBox.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxListOfOperations.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxListResourceEdit.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxListView.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxLogoMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxMainWindow.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxMenuButton.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxMRUAction.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxOperations.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxParser.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxPathDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxPopupMenu.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxPopupMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxResourceEdit.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxResourceMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxStdOperations.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxTable.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxToolBar.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxToolTip.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxWorkspaceAction.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxWorkstack.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Qtx\QtxWorkstackAction.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="Meta Object Files"
+			Filter="cpp;c;cxx">
+			<File
+				RelativePath="..\..\moc\moc_QtxAction.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxActionMenuMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxActionMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxActionToolMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxColorScale.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxComboBox.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxDblSpinBox.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxDblValidator.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxDirListEditor.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxDockAction.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxDockWindow.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxGroupBox.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxIntSpinBox.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxListAction.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxListBox.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxListResourceEdit.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxListView.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxLogoMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxMainWindow.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxMenuButton.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxMRUAction.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxPathDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxPopupMenu.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxPopupMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxTable.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxToolBar.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxToolTip.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxWorkspaceAction.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxWorkstack.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QtxWorkstackAction.cxx">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="SUITApp"
+	SccProjectName="GUI_WNT/adm/win32"
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Jalindi Igloo">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\bin\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,$(QTINC)"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;WNT;QT_DLL;QT_THREAD_SUPPORT"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib qtmain.lib"
+				OutputFile="$(OutDir)\SuitApp.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTLIBD)"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)\SuitApp.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\libd/SUITApp.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\bin\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,$(QTINC)"
+				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;WNT;QT_DLL;QT_THREAD_SUPPORT"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib qtmain.lib"
+				OutputFile="$(OutDir)\SuitApp.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTLIB)"
+				SubSystem="2"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\lib/SUITApp.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\..\src\SUITApp\SUITApp_Application.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\..\src\SUITApp\SUITApp.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\SUITApp\SUITApp_Application.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath="..\..\src\SUITApp\resources\SUITApp_msg_en.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Meta Object Files"
+			Filter="">
+			<File
+				RelativePath="..\..\moc\moc_SUITApp_Application.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

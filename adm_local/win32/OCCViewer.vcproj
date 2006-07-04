@@ -1,0 +1,906 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="OCCViewer"
+	SccProjectName="GUI_WNT/adm/win32"
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Jalindi Igloo">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,$(QTINC),$(OCCINC)"
+				PreprocessorDefinitions="NDEBUG;WNT;WIN32;_WINDOWS;_USRDLL;OCCVIEWER_EXPORTS"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib TKernel.lib TKV3d.lib TKService.lib TKG3d.lib TKMath.lib TKGeomBase.lib"
+				OutputFile="$(OutDir)/OCCViewer.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTLIB),$(OCCLIB)"
+				IgnoreAllDefaultLibraries="FALSE"
+				IgnoreDefaultLibraryNames=""
+				ProgramDatabaseFile=""
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/OCCViewer.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\lib/OCCViewer.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,$(QTINC),$(OCCINC)"
+				PreprocessorDefinitions="WNT;_DEBUG;WIN32;_WINDOWS;_USRDLL;OCCVIEWER_EXPORTS"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib TKernel.lib TKV3d.lib TKService.lib TKG3d.lib TKMath.lib TKGeomBase.lib"
+				OutputFile="$(OutDir)/OCCViewer.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTLIBD),$(OCCLIBD)"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/OCCViewer.pdb"
+				ImportLibrary="$(OutDir)/OCCViewer.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\libd/OCCViewer.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_AISSelector.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ClippingDlg.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_CreateRestoreViewDlg.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ViewManager.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ViewModel.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ViewPort.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ViewPort3d.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ViewWindow.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_VService.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_AISSelector.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ClippingDlg.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_CreateRestoreViewDlg.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ViewManager.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ViewModel.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ViewPort.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ViewPort3d.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_ViewWindow.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\OCCViewer_VService.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\OCCViewer_images.po">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\OCCViewer_msg_en.po">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_back.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_bottom.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_camera_dump.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_clipping.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_clipping_pressed.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_clone.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_fitall.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_fitarea.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_front.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_glpan.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_left.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_pan.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_presets.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_reset.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_right.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_rotate.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_shoot.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_top.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_triedre.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\OCCViewer\resources\view_zoom.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Meta Object Files"
+			Filter="cxx">
+			<File
+				RelativePath="..\..\moc\moc_OCCViewer_AISSelector.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_OCCViewer_ClippingDlg.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_OCCViewer_CreateRestoreViewDlg.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_OCCViewer_ViewManager.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_OCCViewer_ViewModel.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_OCCViewer_ViewPort.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_OCCViewer_ViewPort3d.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_OCCViewer_ViewWindow.cxx">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="QDS"
+	ProjectGUID="{450F05A8-106A-496D-BB04-F0B0F530617F}"
+	SccProjectName="GUI_WNT/adm/win32"
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Jalindi Igloo">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,$(QTINC),$(OCCINC)"
+				PreprocessorDefinitions="_DEBUG;WNT;WIN32;_WINDOWS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;QDS_EXPORTS"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib TKernel.lib"
+				OutputFile="$(OutDir)/QDS.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTLIBD),$(OCCLIBD)"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/QDS.pdb"
+				ImportLibrary="$(OutDir)/QDS.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\libd/QDS.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="4"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,$(QTINC),$(OCCINC)"
+				PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib TKernel.lib"
+				OutputFile="$(OutDir)/QDS.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTLIB),$(OCCLIB)"
+				ProgramDatabaseFile=""
+				ImportLibrary="$(OutDir)/QDS.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\lib/QDS.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\..\src\QDS\QDS.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_CheckBox.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_ComboBox.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_Datum.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_LineEdit.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_RadioBox.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_SpinBox.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_SpinBoxDbl.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_TextEdit.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_Validator.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\..\src\QDS\QDS.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_CheckBox.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_ComboBox.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_Datum.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_LineEdit.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_RadioBox.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_SpinBox.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_SpinBoxDbl.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_TextEdit.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\QDS\QDS_Validator.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="*.po *.png">
+			<File
+				RelativePath="..\..\src\QDS\resources\QDS_msg_en.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Meta Object Files"
+			Filter="*.cxx">
+			<File
+				RelativePath="..\..\moc\moc_QDS_CheckBox.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QDS_ComboBox.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QDS_Datum.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QDS_LineEdit.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QDS_RadioBox.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QDS_SpinBox.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QDS_SpinBoxDbl.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_QDS_TextEdit.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;QDS_EXPORTS;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

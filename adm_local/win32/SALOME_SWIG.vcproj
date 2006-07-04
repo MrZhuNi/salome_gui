@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="SALOME_SWIG"
+	SccProjectName="GUI_WNT/adm/win32"
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Jalindi Igloo">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="&quot;$(GUI_SRC_DIR)\$(ConfigurationName)\include&quot;;../../stub;&quot;$(QTINC)&quot;;&quot;$(OCCINC)&quot;;&quot;$(BOOSTINC)&quot;;&quot;$(PYTHONINC)&quot;;&quot;$(PTHREADSINC)&quot;;&quot;$(OMNIINC)&quot;;&quot;$(OMNIINC)\omniORB4&quot;;&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\include&quot;;&quot;$(KERNEL_SRC_DIR)\include&quot;"
+				PreprocessorDefinitions="NDEBUG;_OMNITHREAD_DLL;__x86__;__WIN32__;WNT;WIN32;_WINDOWS;_USRDLL;SALOME_SWIG_EXPORTS"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib omniORB$(OMNIVER)_rt.lib omnithread$(OMNITHRVER)_rt.lib omniDynamic$(OMNIVER)_rt.lib COS$(OMNIVER)_rt.lib COSDynamic$(OMNIVER)_rt.lib SalomeNS.lib SalomeCatalog.lib TKMath.lib TKV3d.lib TKernel.lib ws2_32.lib wsock32.lib"
+				OutputFile="$(OutDir)/_libSALOME_Swig.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\lib\salome&quot;;&quot;$(KERNEL_SRC_DIR)\lib\salome&quot;;&quot;$(QTLIB)&quot;;&quot;$(OCCLIB)&quot;;&quot;$(OMNILIB)&quot;;&quot;$(PYTHONLIB)&quot;"
+				ProgramDatabaseFile=""
+				ImportLibrary="$(OutDir)/_libSALOME_Swig.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\lib/SALOME_SWIG.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(GUI_SRC_DIR)\$(ConfigurationName)\include&quot;;../../stub;&quot;$(QTINC)&quot;;&quot;$(OCCINC)&quot;;&quot;$(BOOSTINC)&quot;;&quot;$(PYTHONINC)&quot;;&quot;$(PTHREADSINC)&quot;;&quot;$(OMNIINC)&quot;;&quot;$(OMNIINC)\omniORB4&quot;;&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\include&quot;;&quot;$(KERNEL_SRC_DIR)\include&quot;"
+				PreprocessorDefinitions="_DEBUG;_OMNITHREAD_DLL;__x86__;__WIN32__;WNT;WIN32;_WINDOWS;_USRDLL;SALOME_SWIG_EXPORTS"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib omniORB$(OMNIVER)_rtd.lib omnithread$(OMNITHRVER)_rtd.lib omniDynamic$(OMNIVER)_rtd.lib COS$(OMNIVER)_rtd.lib COSDynamic$(OMNIVER)_rtd.lib SalomeNS.lib SalomeCatalog.lib TKMath.lib TKV3d.lib TKernel.lib ws2_32.lib wsock32.lib"
+				OutputFile="$(OutDir)/_libSALOME_Swig_d.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\lib\salome&quot;;&quot;$(KERNEL_SRC_DIR)\lib\salome&quot;;&quot;$(QTLIBD)&quot;;&quot;$(OMNILIB)&quot;;&quot;$(OCCLIBD)&quot;;&quot;$(PYTHONLIB)&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/_libSALOME_Swig_d.pdb"
+				ImportLibrary="$(OutDir)/_libSALOME_Swig_d.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\libd/SALOME_SWIG.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="SWIG Wrapper Files"
+			Filter="swig_*.cxx">
+			<File
+				RelativePath="..\..\swig\swig_libSALOME_Swig.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\SALOMEGUI_Swig.hxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\SALOMEGUI_Swig.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="Python Files"
+			Filter="*.py*">
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\examplevtk1.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\Help.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\PyInterp.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\salome_test.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\SALOMEGUI_shared_modules.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\supervisionexample.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\supervisiongeomexample.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\test_big_table.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\test_many_objects.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\test_remove_ref.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\test_table.py">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Interface Files"
+			Filter="*.idl">
+			<File
+				RelativePath="$(KERNEL_SRC_DIR)\idl\SALOME_ModuleCatalog.idl">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(inputName)$(InputExt)..."
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -I$(KERNEL_SRC_DIR)\idl -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(inputName)$(InputExt)..."
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -I$(KERNEL_SRC_DIR)\idl -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Skeleton Files"
+			Filter="*SK.cxx">
+			<File
+				RelativePath="..\..\stub\SALOME_ModuleCatalogSK.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="SWIG Interface Files"
+			Filter="*.i">
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\libSALOME_Swig.i">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate swig_$(InputName).cxx..."
+						CommandLine="$(SWIGBIN)\swig -python  -c++ -I..\..\$(ConfigurationName)\include -I$(InputDir) -outdir ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome -o ..\..\swig\swig_$(InputName).cxx $(InputPath)
+"
+						Outputs="..\..\swig\swig_$(InputName).cxx;..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\lib$(InputName).py"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate swig_$(InputName).cxx..."
+						CommandLine="$(SWIGBIN)\swig -python  -c++ -I..\..\$(ConfigurationName)\include -I$(InputDir) -outdir ..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome -o ..\..\swig\swig_$(InputName).cxx $(InputPath)
+"
+						Outputs="..\..\swig\swig_$(InputName).cxx;..\..\$(ConfigurationName)\lib\python$(PYVERSION)\site-packages\salome\lib$(InputName).py"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SALOME_SWIG\SALOMEGUI_Swig.i">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description=""
+						CommandLine=""
+						Outputs=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description=""
+						CommandLine=""
+						Outputs=""/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

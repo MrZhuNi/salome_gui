@@ -1,0 +1,1774 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="SUIT"
+	SccProjectName="GUI_WNT/adm/win32"
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Jalindi Igloo">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,$(QTINC)"
+				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib odbc32.lib odbccp32.lib"
+				OutputFile="$(OutDir)/Suit.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTLIB)"
+				ImportLibrary="$(OutDir)/Suit.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\lib/SUIT.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,$(QTINC)"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib odbc32.lib odbccp32.lib"
+				OutputFile="$(OutDir)/Suit.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTLIBD)"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/Suit.pdb"
+				ImportLibrary="$(OutDir)/Suit.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\libd/SUIT.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\..\src\Suit\SUIT.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_Accel.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_ActionOperation.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_Application.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_DataObject.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_DataObjectIterator.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_DataObjectKey.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_DataOwner.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_Desktop.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_ExceptionHandler.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_FileDlg.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_FileValidator.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_MessageBox.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_Operation.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_OverrideCursor.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_ParserSettings.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_PopupClient.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_ResourceMgr.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_SelectionFilter.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_SelectionMgr.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_Selector.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_Session.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_SmartPtr.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_Study.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_ToolButton.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_Tools.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_TreeSync.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_ViewManager.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_ViewModel.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\SUIT_ViewWindow.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\..\src\Suit\SUIT_Accel.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_ActionOperation.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_Application.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_DataObject.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_DataObjectIterator.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_DataObjectKey.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_DataOwner.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_Desktop.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_ExceptionHandler.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_FileDlg.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_FileValidator.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_MessageBox.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_Operation.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_OverrideCursor.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_ParserSettings.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_PopupClient.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_ResourceMgr.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_SelectionFilter.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_SelectionMgr.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_Selector.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_Session.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_Study.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_ToolButton.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_Tools.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_ViewManager.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_ViewModel.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SUIT\SUIT_ViewWindow.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath="..\..\src\Suit\resources\cascade.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\resources\htile.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\resources\SUIT_images.po">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\resources\SUIT_msg_en.po">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Suit\resources\vtile.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Meta Object Files"
+			Filter="">
+			<File
+				RelativePath="..\..\moc\moc_SUIT_Accel.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_ActionOperation.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_Application.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_DataObject.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_Desktop.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_FileDlg.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_Operation.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_PopupClient.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_SelectionMgr.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_Selector.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_Session.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_Study.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_ToolButton.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_ViewManager.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_ViewModel.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_SUIT_ViewWindow.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;SUIT_EXPORTS;WNT;QT_DLL;QT_THREAD_SUPPORT;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="SALOME_PYQT_GUI"
+	SccProjectName="GUI_WNT/adm/win32"
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Jalindi Igloo">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="&quot;$(GUI_SRC_DIR)\$(ConfigurationName)\include&quot;;&quot;$(PYQTINC)&quot;;&quot;$(SIPINC)&quot;;&quot;$(QTINC)&quot;;&quot;$(PYTHONINC)&quot;;&quot;$(OMNIINC)&quot;;&quot;$(OMNIINC)\omniORB4&quot;;&quot;$(BOOSTINC)&quot;;&quot;$(PTHREADSINC)&quot;;&quot;$(GUI_SRC_DIR)\stub&quot;;&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\include&quot;;&quot;$(KERNEL_SRC_DIR)\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;QT_THREAD_SUPPORT;_OMNITHREAD_DLL;__x86__;__WIN32__;WNT;SALOME_PYQT_EXPORTS"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DisableSpecificWarnings="4251;4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="SalomeContainer.lib SalomeLifeCycleCORBA.lib qt$(QTVER).lib omniORB$(OMNIVER)_rt.lib omnithread$(OMNITHRVER)_rt.lib omniDynamic$(OMNIVER)_rt.lib"
+				OutputFile="$(OutDir)/SalomePyQtGUI.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\lib\salome&quot;;&quot;$(KERNEL_SRC_DIR)\lib\salome&quot;;&quot;$(PYTHONLIB)&quot;;&quot;$(QTLIB)&quot;;&quot;$(OMNILIB)&quot;"
+				ProgramDatabaseFile=""
+				ImportLibrary="$(OutDir)/SalomePyQtGUI.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\lib/SALOME_PYQT_GUI.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(GUI_SRC_DIR)\$(ConfigurationName)\include&quot;;&quot;$(PYQTINC)&quot;;&quot;$(SIPINC)&quot;;&quot;$(QTINC)&quot;;&quot;$(PYTHONINC)&quot;;&quot;$(OMNIINC)&quot;;&quot;$(OMNIINC)\omniORB4&quot;;&quot;$(BOOSTINC)&quot;;&quot;$(PTHREADSINC)&quot;;&quot;$(GUI_SRC_DIR)\stub&quot;;&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\include&quot;;&quot;$(KERNEL_SRC_DIR)\include&quot;"
+				PreprocessorDefinitions="HAVE_DEBUG_PYTHON;WIN32;_DEBUG;_WINDOWS;_USRDLL;QT_THREAD_SUPPORT;_OMNITHREAD_DLL;__x86__;__WIN32__;WNT;SALOME_PYQT_EXPORTS"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				DisableSpecificWarnings="4251;4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="SalomeContainer.lib SalomeLifeCycleCORBA.lib qt$(QTVER).lib omniORB$(OMNIVER)_rtd.lib omnithread$(OMNITHRVER)_rtd.lib omniDynamic$(OMNIVER)_rtd.lib"
+				OutputFile="$(OutDir)/SalomePyQtGUI.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\lib\salome&quot;;&quot;$(KERNEL_SRC_DIR)\lib\salome&quot;;&quot;$(PYTHONLIBD)&quot;;&quot;$(QTLIBD)&quot;;&quot;$(OMNILIB)&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/SalomePyQtGUI.pdb"
+				ImportLibrary="$(OutDir)/SalomePyQtGUI.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\libd/SALOME_PYQT_GUI.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="type $(OutDir)/SalomePyQtGUI.dll &gt; $(OutDir)/SalomePyQtGUI_d.dll
+type $(OutDir)/SalomePyQtGUI.lib &gt; $(OutDir)/SalomePyQtGUI_d.lib"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\..\src\Salome_pyqt\Salome_pyqt_gui\SALOME_PYQT_GUI.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Salome_pyqt\Salome_pyqt_gui\SALOME_PYQT_Module.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTBIN)\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTBIN)\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Salome_pyqt\Salome_pyqt_gui\SALOME_PYQT_PyInterp.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\..\src\Salome_pyqt\Salome_pyqt_gui\SALOME_PYQT_Module.cxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						GeneratePreprocessedFile="0"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Salome_pyqt\Salome_pyqt_gui\SALOME_PYQT_PyInterp.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="Sip Interface Files"
+			Filter="">
+			<File
+				RelativePath="..\..\src\SALOME_PYQT\SALOME_PYQT_GUI\SALOME_PYQT_GUI.sip">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step $(InputFileName)"
+						CommandLine="$(SIPDIR)/sipgen/sip -c $(InputDir) -I $(PYQTDIR)/sip/qt -t WS_WIN -t Qt_3_3_0 -s .cxx $(InputPath)
+"
+						Outputs="$(InputDir)sipSalomePyQtGUIcmodule.cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step $(InputFileName)"
+						CommandLine="$(SIPDIR)/sipgen/sip -c $(InputDir) -I $(PYQTDIR)/sip/qt -t WS_WIN -t Qt_3_3_0 -s .cxx $(InputPath)
+"
+						Outputs="$(InputDir)sipSalomePyQtGUIcmodule.cxx"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Interface Files"
+			Filter="">
+			<File
+				RelativePath="$(KERNEL_SRC_DIR)\idl\SALOME_Component.idl">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(inputName)$(InputExt)..."
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -I$(KERNEL_SRC_DIR)\idl -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(inputName)$(InputExt)..."
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -I$(KERNEL_SRC_DIR)\idl -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="$(KERNEL_SRC_DIR)\idl\SALOME_ContainerManager.idl">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(inputName)$(InputExt)..."
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -I$(KERNEL_SRC_DIR)\idl -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(inputName)$(InputExt)..."
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -I$(KERNEL_SRC_DIR)\idl -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="$(KERNEL_SRC_DIR)\idl\SALOME_Exception.idl">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(inputName)$(InputExt)..."
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -I$(KERNEL_SRC_DIR)\idl -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(inputName)$(InputExt)..."
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -I$(KERNEL_SRC_DIR)\idl -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="$(KERNEL_SRC_DIR)\idl\SALOME_GenericObj.idl">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(inputName)$(InputExt)..."
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -I$(KERNEL_SRC_DIR)\idl -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(inputName)$(InputExt)..."
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -I$(KERNEL_SRC_DIR)\idl -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Skeleton Files"
+			Filter="">
+			<File
+				RelativePath="..\..\stub\SALOME_ComponentSK.cxx">
+			</File>
+			<File
+				RelativePath="..\..\stub\SALOME_ContainerManagerSK.cxx">
+			</File>
+			<File
+				RelativePath="..\..\stub\SALOME_ExceptionSK.cxx">
+			</File>
+			<File
+				RelativePath="..\..\stub\SALOME_GenericObjSK.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="Meta Object Files"
+			Filter="">
+			<File
+				RelativePath="..\..\moc\moc_SALOME_PYQT_Module.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="Sip Wrappers"
+			Filter="">
+			<File
+				RelativePath="..\..\src\Salome_pyqt\Salome_pyqt_gui\sipSalomePyQtGUIcmodule.cxx">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

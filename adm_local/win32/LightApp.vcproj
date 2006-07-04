@@ -1,0 +1,1568 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="LightApp"
+	ProjectGUID="{C8FB7D64-0A82-4588-8D27-2B7CC6C2EA85}"
+	SccProjectName="GUI_WNT/adm/win32"
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Jalindi Igloo">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\include&quot;,$(QTINC),$(QWTINC),$(OCCINC);&quot;$(HDFINC)&quot;"
+				PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="hdf$(HDFVER).lib qt$(QTVER).lib TKMath.lib TKernel.lib TKV3d.lib vtkCommon.lib vtkRendering.lib SalomeHDFPersist.lib"
+				OutputFile="$(OutDir)/LightApp.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(KERNEL_ROOT_DIR)\lib\salome&quot;,&quot;$(HDFLIB)&quot;,&quot;$(QTLIB)&quot;;&quot;$(VTKLIB)&quot;;&quot;$(OCCLIB)&quot;;&quot;$(PYTHONLIB)&quot;"
+				ProgramDatabaseFile=""
+				ImportLibrary="$(OutDir)/LightApp.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\lib/LightApp.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(GUI_SRC_DIR)\$(ConfigurationName)\include&quot;;&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\include&quot;;&quot;$(QTINC)&quot;;&quot;$(QWTINC)&quot;;&quot;$(OCCINC)&quot;;&quot;$(HDFINC)&quot;"
+				PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="hdf$(HDFVER).lib qt$(QTVER).lib TKMath.lib TKernel.lib TKV3d.lib vtkCommon.lib vtkRendering.lib SalomeHDFPersist.lib"
+				OutputFile="$(OutDir)/LightApp.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(KERNEL_ROOT_DIR)\lib\salome&quot;,&quot;$(HDFLIB)&quot;,&quot;$(QTLIBD)&quot;;&quot;$(VTKLIBD)&quot;;&quot;$(OCCLIBD)&quot;;&quot;$(PYTHONLIB)&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/LightApp.pdb"
+				ImportLibrary="$(OutDir)/LightApp.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\libd/LightApp.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\..\src\LightApp\LightApp.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_AboutDlg.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Application.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_DataModel.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_DataObject.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_DataOwner.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_DataSubOwner.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Dialog.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Displayer.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Driver.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_HDFDriver.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Module.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_ModuleDlg.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_NameDlg.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_OBFilter.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_OBSelector.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_OCCSelector.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Operation.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Preferences.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_PreferencesDlg.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_RootObject.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Selection.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_SelectionMgr.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_ShowHideOp.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Study.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_SwitchOp.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_UpdateFlags.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_WidgetContainer.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_AboutDlg.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Application.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_DataModel.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_DataObject.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_DataOwner.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_DataSubOwner.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Dialog.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Displayer.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Driver.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_HDFDriver.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Module.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_ModuleDlg.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_NameDlg.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_OBFilter.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_OBSelector.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_OCCSelector.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Operation.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Preferences.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_PreferencesDlg.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Selection.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_SelectionMgr.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_ShowHideOp.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_Study.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_SwitchOp.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\LightApp_WidgetContainer.cxx">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;NDEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="LIGHTAPP_EXPORTS;_DEBUG;WNT;WIN32;_WINDOWS;_MBCS;_USRDLL;QT_DLL;QT_THREAD_SUPPORT;DISABLE_VTKVIEWER;DISABLE_PLOT2DVIEWER;DISABLE_PYCONSOLE;DISABLE_GLVIEWER;DISABLE_SUPERVGRAPHVIEWER;DISABLE_SALOMEOBJECT;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath="..\..\src\LightApp\resources\icon_about.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\resources\icon_applogo.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\resources\icon_default.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\resources\icon_module.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\resources\icon_module_big.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\resources\icon_select.png">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\resources\LightApp.ini">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\resources\LightApp.xml">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\resources\LightApp_images.po">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\LightApp\resources\LightApp_msg_en.po">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Meta Object Files"
+			Filter="moc_*.cxx">
+			<File
+				RelativePath="..\..\moc\moc_LightApp_AboutDlg.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_Application.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_DataModel.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_Dialog.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_Module.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_ModuleDlg.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_NameDlg.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_OBSelector.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_OCCSelector.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_Operation.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_Preferences.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_PreferencesDlg.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_SelectionMgr.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_ShowHideOp.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_Study.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_SwitchOp.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_LightApp_WidgetContainer.cxx">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

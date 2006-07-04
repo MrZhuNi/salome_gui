@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="ToolsGUI"
+	SccProjectName="GUI_WNT/adm/win32"
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Jalindi Igloo">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="&quot;$(GUI_SRC_DIR)\$(ConfigurationName)\include&quot;;..\..\stub;&quot;$(QTINC)&quot;;&quot;$(OCCINC)&quot;;&quot;$(PTHREADSINC)&quot;;&quot;$(BOOSTINC)&quot;;&quot;$(OMNIINC)&quot;;&quot;$(OMNIINC)\omniORB4&quot;;&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\include&quot;;&quot;$(KERNEL_SRC_DIR)\include&quot;"
+				PreprocessorDefinitions="NDEBUG;_OMNITHREAD_DLL;__x86__;__WIN32__;WNT;WIN32;_WINDOWS;_USRDLL;TOOLSGUI_EXPORTS;SALOME_WNT_EXPORTS"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib tkernel.lib SalomeNS.lib OpUtil.lib WS2_32.lib omniORB$(OMNIVER)_rt.lib omnithread$(OMNITHRVER)_rt.lib omniDynamic$(OMNIVER)_rt.lib COS$(OMNIVER)_rt.lib COSDynamic$(OMNIVER)_rt.lib odbc32.lib odbccp32.lib"
+				OutputFile="$(OutDir)/ToolsGUI.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(QTLIB)&quot;;&quot;$(OCCLIB)&quot;;&quot;$(OMNILIB)&quot;;&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\lib\salome&quot;;&quot;$(KERNEL_SRC_DIR)\lib\salome&quot;"
+				ProgramDatabaseFile=""
+				ImportLibrary="$(OutDir)/ToolsGUI.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\lib/TOOLSGUI.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(GUI_SRC_DIR)\$(ConfigurationName)\include&quot;;..\..\stub;&quot;$(QTINC)&quot;;&quot;$(OCCINC)&quot;;&quot;$(PTHREADSINC)&quot;;&quot;$(BOOSTINC)&quot;;&quot;$(OMNIINC)&quot;;&quot;$(OMNIINC)\omniORB4&quot;;&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\include&quot;;&quot;$(KERNEL_SRC_DIR)\include&quot;"
+				PreprocessorDefinitions="_DEBUG;_OMNITHREAD_DLL;__x86__;__WIN32__;WNT;WIN32;_WINDOWS;_USRDLL;TOOLSGUI_EXPORTS;SALOME_WNT_EXPORTS"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt$(QTVER).lib tkernel.lib SalomeNS.lib OpUtil.lib WS2_32.lib omniORB$(OMNIVER)_rtd.lib omnithread$(OMNITHRVER)_rtd.lib omniDynamic$(OMNIVER)_rtd.lib COS$(OMNIVER)_rtd.lib COSDynamic$(OMNIVER)_rtd.lib odbc32.lib odbccp32.lib"
+				OutputFile="$(OutDir)/ToolsGUI.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(QTLIBD)&quot;;&quot;$(OCCLIBD)&quot;;&quot;$(OMNILIB)&quot;;&quot;$(KERNEL_SRC_DIR)\$(ConfigurationName)\lib\salome&quot;;&quot;$(KERNEL_SRC_DIR)\lib\salome&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/ToolsGUI.pdb"
+				ImportLibrary="$(OutDir)/ToolsGUI.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\win32\libd/TOOLSGUI.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1049"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\..\src\Toolsgui\ToolsGUI.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\TOOLSGUI\ToolsGUI_CatalogGeneratorDlg.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Toolsgui\ToolsGUI_HelpWindow.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Toolsgui\ToolsGUI_IntervalWindow.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Toolsgui\ToolsGUI_RegWidget.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)
+$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx
+"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\..\src\Toolsgui\ToolsGUI.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Toolsgui\ToolsGUI_CatalogGeneratorDlg.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Toolsgui\ToolsGUI_HelpWindow.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Toolsgui\ToolsGUI_IntervalWindow.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\Toolsgui\ToolsGUI_RegWidget.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath="..\..\src\Toolsgui\resources\ToolsGUI_images.po">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Toolsgui\resources\ToolsGUI_msg_en.po">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTDIR)\bin\msg2qm.exe $(InputPath) ..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm
+"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputName).qm"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Interface Files"
+			Filter="*.idl">
+			<File
+				RelativePath="$(KERNEL_SRC_DIR)\idl\SALOME_Component.idl">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="$(KERNEL_SRC_DIR)\idl\SALOME_ContainerManager.idl">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(InputFileName)"
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(InputFileName)"
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="$(KERNEL_SRC_DIR)\idl\SALOME_Exception.idl">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="$(KERNEL_SRC_DIR)\idl\SALOME_Registry.idl">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(InputFileName)"
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Mapping $(InputFileName)"
+						CommandLine="set PATH=$(PYTHONDIR)\libs
+$(OMNIBIN)\omniidl -bcxx -Wbs=SK.cxx -I..\..\idl -I$(InputDir). -C..\..\stub $(InputPath)
+"
+						Outputs="..\..\stub\$(inputName).hh;..\..\stub\$(inputName)SK.cxx"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Skeleton Files"
+			Filter="*SK.cxx">
+			<File
+				RelativePath="..\..\stub\SALOME_ComponentSK.cxx">
+			</File>
+			<File
+				RelativePath="..\..\stub\SALOME_ContainerManagerSK.cxx">
+			</File>
+			<File
+				RelativePath="..\..\stub\SALOME_ExceptionSK.cxx">
+			</File>
+			<File
+				RelativePath="..\..\stub\SALOME_RegistrySK.cxx">
+			</File>
+		</Filter>
+		<Filter
+			Name="Meta Object Files"
+			Filter="moc_*.cxx">
+			<File
+				RelativePath="..\..\moc\moc_ToolsGUI_CatalogGeneratorDlg.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_ToolsGUI_HelpWindow.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_ToolsGUI_IntervalWindow.cxx">
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_ToolsGUI_RegWidget.cxx">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
