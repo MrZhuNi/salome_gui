@@ -40,11 +40,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="hdf$(HDFVER).lib qt$(QTVER).lib TKMath.lib TKernel.lib TKV3d.lib vtkCommon.lib vtkRendering.lib SalomeHDFPersist.lib"
+				AdditionalDependencies="hdf$(HDFVER).lib qt$(QTVER).lib TKMath.lib TKernel.lib TKV3d.lib SalomeHDFPersist.lib"
 				OutputFile="$(OutDir)/LightApp.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(KERNEL_ROOT_DIR)\lib\salome&quot;,&quot;$(HDFLIB)&quot;,&quot;$(QTLIB)&quot;;&quot;$(VTKLIB)&quot;;&quot;$(OCCLIB)&quot;;&quot;$(PYTHONLIB)&quot;"
+				AdditionalLibraryDirectories="&quot;$(KERNEL_ROOT_DIR)\lib\salome&quot;;&quot;$(HDFLIB)&quot;;&quot;$(QTLIB)&quot;;&quot;$(OCCLIB)&quot;"
 				ProgramDatabaseFile=""
 				ImportLibrary="$(OutDir)/LightApp.lib"
 				TargetMachine="1"/>
@@ -102,11 +102,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="hdf$(HDFVER).lib qt$(QTVER).lib TKMath.lib TKernel.lib TKV3d.lib vtkCommon.lib vtkRendering.lib SalomeHDFPersist.lib"
+				AdditionalDependencies="hdf$(HDFVER).lib qt$(QTVER).lib TKMath.lib TKernel.lib TKV3d.lib SalomeHDFPersist.lib"
 				OutputFile="$(OutDir)/LightApp.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(KERNEL_ROOT_DIR)\lib\salome&quot;,&quot;$(HDFLIB)&quot;,&quot;$(QTLIBD)&quot;;&quot;$(VTKLIBD)&quot;;&quot;$(OCCLIBD)&quot;;&quot;$(PYTHONLIB)&quot;"
+				AdditionalLibraryDirectories="&quot;$(KERNEL_ROOT_DIR)\lib\salome&quot;;&quot;$(HDFLIB)&quot;;&quot;$(QTLIBD)&quot;;&quot;$(OCCLIBD)&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/LightApp.pdb"
 				ImportLibrary="$(OutDir)/LightApp.lib"
