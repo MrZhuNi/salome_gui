@@ -986,45 +986,9 @@
 			</File>
 			<File
 				RelativePath="..\..\resources\view_shoot.png">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
-"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
-"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\resources\vtile.png">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
-"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)
-"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\$(InputFileName)"/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>
