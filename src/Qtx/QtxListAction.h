@@ -97,12 +97,16 @@ private:
     QPopupMenu*             listPopup( QWidget* ) const;
     QToolButton*            mainButton( QWidget* ) const;
     QToolButton*            dropButton( QWidget* ) const;
-
+    
     void                    controlDeleted( QWidget* );
-
+    
 private:
     typedef struct { int id; QPopupMenu* popup; } Popups;
-    typedef struct { QToolButton* main; QToolButton* drop; } Buttons;
+    struct Buttons { 
+      QToolButton* main;
+      QToolButton* drop;
+      Buttons(): main(0),drop(0){}
+    };
     typedef QMap<QWidget*, Popups>  PopupsMap;
     typedef QMap<QWidget*, Buttons> ButtonsMap;
     
