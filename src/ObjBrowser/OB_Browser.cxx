@@ -1103,7 +1103,7 @@ void OB_Browser::autoOpenBranches()
 
 void OB_Browser::openBranch( QListViewItem* item, const int level )
 {
-  if ( level < 1 )
+  if ( !item || level < 1 || !item->childCount() )
     return;
 
   while ( item )
