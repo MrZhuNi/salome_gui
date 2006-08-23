@@ -17,7 +17,7 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 #include "SalomeApp_ExceptionHandler.h"
-#include "CASCatch.hxx"
+//#include "CASCatch.hxx"
 
 #include <OSD.hxx>
 
@@ -25,6 +25,9 @@
 #include <exception>
 
 #include <qstring.h>
+
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 
 /*!Constructor. Initialize by \a floatSignal.*/
 SalomeApp_ExceptionHandler::SalomeApp_ExceptionHandler( const bool floatSignal )
@@ -36,14 +39,17 @@ SalomeApp_ExceptionHandler::SalomeApp_ExceptionHandler( const bool floatSignal )
 /*!Try to call SUIT_ExceptionHandler::internalHandle(o, e), catch if failure.*/
 bool SalomeApp_ExceptionHandler::handleSignals( QObject* o, QEvent* e )
 {
-  CASCatch_TRY {   
+//CASCatch_TRY {
+  try {
+    OCC_CATCH_SIGNALS;
     SUIT_ExceptionHandler::internalHandle( o, e );
   }
-  CASCatch_CATCH(Standard_Failure) {
-    Handle(Standard_Failure) aFail = Standard_Failure::Caught();          
+//CASCatch_CATCH(Standard_Failure) {
+  catch(Standard_Failure) {
+    Handle(Standard_Failure) aFail = Standard_Failure::Caught();
     throw Standard_Failure( aFail->GetMessageString() );
   }
-  
+
   return true;
 }
 

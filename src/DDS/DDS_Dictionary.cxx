@@ -221,6 +221,7 @@ Standard_Real DDS_Dictionary::ToSI( const Standard_Real theValue, const Standard
   if ( theUnits && *theUnits && strcmp( theUnits, "%" ) )
   {
     try {
+      OCC_CATCH_SIGNALS;
       aRetValue = UnitsAPI::AnyToSI( theValue, theUnits );
     }
     catch( Standard_Failure ) {
@@ -238,6 +239,7 @@ Standard_Real DDS_Dictionary::FromSI( const Standard_Real theValue, const Standa
   if ( theUnits && *theUnits && strcmp( theUnits, "%" ) )
   {
     try {
+      OCC_CATCH_SIGNALS;
       aRetValue = UnitsAPI::AnyFromSI( theValue, theUnits );
     }
     catch( Standard_Failure ) {

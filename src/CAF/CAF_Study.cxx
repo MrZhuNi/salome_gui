@@ -31,6 +31,7 @@
 #include <TDF_Delta.hxx>
 #include <TDF_ListIteratorOfDeltaList.hxx>
 
+#include <Standard_Failure.hxx>
 #include <Standard_ErrorHandler.hxx>
 
 /*!
@@ -87,8 +88,9 @@ void CAF_Study::createDocument()
   if ( app && !app->stdApp().IsNull() )
   {
     try {
+      OCC_CATCH_SIGNALS;
       TColStd_SequenceOfExtendedString formats;
-	    app->stdApp()->Formats( formats );
+      app->stdApp()->Formats( formats );
       if ( !formats.IsEmpty() )
         app->stdApp()->NewDocument( formats.First(), myStdDoc );
     }
@@ -121,6 +123,7 @@ bool CAF_Study::openDocument( const QString& fname )
 
   bool status = false;
   try {
+    OCC_CATCH_SIGNALS;
     status = app->Open( CAF_Tools::toExtString( fname ), myStdDoc ) == CDF_RS_OK;
   }
   catch ( Standard_Failure ) {
@@ -149,6 +152,7 @@ bool CAF_Study::saveDocumentAs( const QString& fname )
 
   bool status = false;
   try {
+    OCC_CATCH_SIGNALS;
     if ( save )
       status = app->Save( stdDoc() ) == CDF_SS_OK;
     else
@@ -185,6 +189,7 @@ bool CAF_Study::openTransaction()
 
   bool res = true;
   try {
+    OCC_CATCH_SIGNALS;
     if ( myStdDoc->HasOpenCommand() )
       myStdDoc->AbortCommand();
 
@@ -207,8 +212,9 @@ bool CAF_Study::abortTransaction()
 
   bool res = true;
   try {
+    OCC_CATCH_SIGNALS;
     myStdDoc->AbortCommand();
-		update();
+    update();
   }
   catch ( Standard_Failure ) {
     res = false;
@@ -226,12 +232,13 @@ bool CAF_Study::commitTransaction( const QString& name )
 
   bool res = true;
   try {
+    OCC_CATCH_SIGNALS;
     myStdDoc->CommitCommand();
 
     if ( canUndo() )
     {
       Handle(TDF_Delta) d = myStdDoc->GetUndos().Last();
-			if ( !d.IsNull() )
+      if ( !d.IsNull() )
         d->SetName( CAF_Tools::toExtString( name ) );
     }
   }
@@ -313,18 +320,19 @@ void CAF_Study::clearModified()
 */
 bool CAF_Study::undo()
 {
-	if ( myStdDoc.IsNull() )
+  if ( myStdDoc.IsNull() )
     return false;
 
   try {
+    OCC_CATCH_SIGNALS;
     myStdDoc->Undo();
     undoModified();     /* decrement modification counter */
   }
   catch ( Standard_Failure ) {
-		SUIT_MessageBox::error1( application()->desktop(), tr( "ERR_ERROR" ),
-                             tr( "ERR_DOC_UNDO" ), tr ( "BUT_OK" ) );
-		return false;
-	}
+    SUIT_MessageBox::error1(application()->desktop(), tr( "ERR_ERROR" ),
+                            tr( "ERR_DOC_UNDO" ), tr ( "BUT_OK" ));
+    return false;
+  }
   return true;
 }
 
@@ -333,10 +341,11 @@ bool CAF_Study::undo()
 */
 bool CAF_Study::redo()
 {
-	if ( myStdDoc.IsNull() )
+  if ( myStdDoc.IsNull() )
     return false;
 
   try {
+    OCC_CATCH_SIGNALS;
     myStdDoc->Redo();
     doModified();      /* increment modification counter */
   }
