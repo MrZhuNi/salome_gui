@@ -88,7 +88,9 @@ void CAF_Study::createDocument()
   if ( app && !app->stdApp().IsNull() )
   {
     try {
+#if (OCC_VERSION_MAJOR << 16 | OCC_VERSION_MINOR << 8 | OCC_VERSION_MAINTENANCE) > 0x060100
       OCC_CATCH_SIGNALS;
+#endif
       TColStd_SequenceOfExtendedString formats;
       app->stdApp()->Formats( formats );
       if ( !formats.IsEmpty() )
@@ -123,7 +125,9 @@ bool CAF_Study::openDocument( const QString& fname )
 
   bool status = false;
   try {
+#if (OCC_VERSION_MAJOR << 16 | OCC_VERSION_MINOR << 8 | OCC_VERSION_MAINTENANCE) > 0x060100
     OCC_CATCH_SIGNALS;
+#endif
     status = app->Open( CAF_Tools::toExtString( fname ), myStdDoc ) == CDF_RS_OK;
   }
   catch ( Standard_Failure ) {
@@ -152,7 +156,9 @@ bool CAF_Study::saveDocumentAs( const QString& fname )
 
   bool status = false;
   try {
+#if (OCC_VERSION_MAJOR << 16 | OCC_VERSION_MINOR << 8 | OCC_VERSION_MAINTENANCE) > 0x060100
     OCC_CATCH_SIGNALS;
+#endif
     if ( save )
       status = app->Save( stdDoc() ) == CDF_SS_OK;
     else
@@ -189,7 +195,9 @@ bool CAF_Study::openTransaction()
 
   bool res = true;
   try {
+#if (OCC_VERSION_MAJOR << 16 | OCC_VERSION_MINOR << 8 | OCC_VERSION_MAINTENANCE) > 0x060100
     OCC_CATCH_SIGNALS;
+#endif
     if ( myStdDoc->HasOpenCommand() )
       myStdDoc->AbortCommand();
 
@@ -212,7 +220,9 @@ bool CAF_Study::abortTransaction()
 
   bool res = true;
   try {
+#if (OCC_VERSION_MAJOR << 16 | OCC_VERSION_MINOR << 8 | OCC_VERSION_MAINTENANCE) > 0x060100
     OCC_CATCH_SIGNALS;
+#endif
     myStdDoc->AbortCommand();
     update();
   }
@@ -232,7 +242,9 @@ bool CAF_Study::commitTransaction( const QString& name )
 
   bool res = true;
   try {
+#if (OCC_VERSION_MAJOR << 16 | OCC_VERSION_MINOR << 8 | OCC_VERSION_MAINTENANCE) > 0x060100
     OCC_CATCH_SIGNALS;
+#endif
     myStdDoc->CommitCommand();
 
     if ( canUndo() )
@@ -324,7 +336,9 @@ bool CAF_Study::undo()
     return false;
 
   try {
+#if (OCC_VERSION_MAJOR << 16 | OCC_VERSION_MINOR << 8 | OCC_VERSION_MAINTENANCE) > 0x060100
     OCC_CATCH_SIGNALS;
+#endif
     myStdDoc->Undo();
     undoModified();     /* decrement modification counter */
   }
@@ -345,7 +359,9 @@ bool CAF_Study::redo()
     return false;
 
   try {
+#if (OCC_VERSION_MAJOR << 16 | OCC_VERSION_MINOR << 8 | OCC_VERSION_MAINTENANCE) > 0x060100
     OCC_CATCH_SIGNALS;
+#endif
     myStdDoc->Redo();
     doModified();      /* increment modification counter */
   }
