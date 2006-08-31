@@ -1308,7 +1308,7 @@ QtxListResourceEdit::FileItem::FileItem( const QString& title, QtxResourceEdit* 
   new QLabel( title, this );
   myFile = new QLineEdit( this );
   myFile->setValidator( new FileValidator( this, myFile ) );
-  myFile->setReadOnly( true );
+  myFile->setReadOnly( false );
   myOpenFile = new QToolButton( this );
   myOpenFile->setText( "..." );
   connect( myOpenFile, SIGNAL( clicked() ), this, SLOT( onOpenFile() ) );
