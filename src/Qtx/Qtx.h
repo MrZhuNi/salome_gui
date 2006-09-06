@@ -119,6 +119,7 @@ public:
   static bool    mkDir( const QString& );
   static bool    rmDir( const QString& );
   static bool    dos2unix( const QString& );
+  static bool    unix2dos( const QString& );
   static QString addSlash( const QString& );
 
   static int     rgbSet( const QColor& );

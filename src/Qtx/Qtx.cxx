@@ -414,7 +414,7 @@ QString Qtx::addSlash( const QString& path )
 
 /*!
 	Name: dos2unix [static public]
-	Desc: Convert text file. Replace symbols "LF/CR" by symbol "LF".
+	Desc: Convert text file. Replace symbols "CR/LF" by symbol "LF".
 */
 bool Qtx::dos2unix( const QString& absName )
 {
@@ -459,6 +459,65 @@ bool Qtx::dos2unix( const QString& absName )
 
     /* check last sym in buffer */
     waitingLF = ( inbuf[nbread - 1] == CR );
+
+    /* write converted buffer to temp file */
+    int nbwri = ::fwrite( outbuf, 1, outcnt, tgt );
+    if ( nbwri != outcnt )
+    {
+      ::fclose( src );
+			::fclose( tgt );
+      QFile::remove( QString( temp ) );
+      return false;
+    }
+    if ( nbread != sizeof( inbuf ) )
+      break;              /* converted ok */
+  }
+  ::fclose( src );
+	::fclose( tgt );
+
+  /* rename temp -> src */
+  if ( !QFile::remove( absName ) )
+    return false;
+
+  return QDir().rename( QString( temp ), absName );
+}
+
+/*!
+	Name: unix2dos [static public]
+	Desc: Convert text file. Replace symbol "LF" by symbols "CR/LF".
+*/
+bool Qtx::unix2dos( const QString& absName )
+{
+  FILE* src = ::fopen( absName, "rb" );
+  if ( !src )
+		return false;
+
+  /* we'll use temporary file */
+  char temp[512] = { '\0' };
+  QString dir = Qtx::dir( absName );
+  FILE* tgt = ::fopen( strcpy( temp, ::tempnam( dir, "__x" ) ), "wb" );
+  if ( !tgt )
+		return false;
+
+  /* temp -> result of conversion */
+  const char CR = 0x0d;
+  const char LF = 0x0a;
+  bool prefCR = false;
+
+  while( true )
+  {
+    int  outcnt = 0;
+    char inbuf[512], outbuf[1024];
+
+    /* convert buffer */
+    int nbread = ::fread( inbuf, 1, sizeof( inbuf ), src );
+    for ( int incnt = 0; incnt < nbread; incnt++  )
+    {
+      if ( inbuf[incnt] == LF && !prefCR )
+        outbuf[outcnt++] = CR;
+      outbuf[outcnt++] = inbuf[incnt];
+      prefCR = inbuf[incnt] == CR;
+      }
 
     /* write converted buffer to temp file */
     int nbwri = ::fwrite( outbuf, 1, outcnt, tgt );
