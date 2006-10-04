@@ -71,6 +71,8 @@
 #ifndef DISABLE_PLOT2DVIEWER
   #include <Plot2d_ViewManager.h>
   #include <Plot2d_ViewModel.h>
+  #include <Plot2d_ViewWindow.h>
+  #include <Plot2d_ViewFrame.h>
 #ifndef DISABLE_SALOMEOBJECT
   #include <SPlot2d_ViewModel.h>
 #else

@@ -19,10 +19,10 @@
 #ifndef LIGHTAPP_OBSELECTOR_H
 #define LIGHTAPP_OBSELECTOR_H
 
-#include "LightApp.h"
-
 #include <SUIT_Selector.h>
 #include <SUIT_DataOwner.h>
+
+#include "LightApp.h"
 
 class OB_Browser;
 class LightApp_DataObject;

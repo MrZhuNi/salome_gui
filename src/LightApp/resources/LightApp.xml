@@ -15,25 +15,25 @@
   </section>
   <section name="splash" >
     <!-- Splash screen settings -->
-    <parameter name="image"       value="${SUITRoot}/resources/icon_about.png" />
+    <parameter name="image"       value="${SUITRoot}/share/salome/resources/icon_about.png" />
     <parameter name="info"        value="%A : %V" />
     <parameter name="text_colors" value="#543AA9|#FFFFFF" />
   </section>
   <section name="resources">
     <!-- Resource directories (resource manager)-->
-    <parameter name="SUIT"         value="${SUITRoot}/resources"/>
-    <parameter name="STD"          value="${SUITRoot}/resources"/>
-    <parameter name="Plot2d"       value="${SUITRoot}/resources"/>
-    <parameter name="SPlot2d"      value="${SUITRoot}/resources"/>
-    <parameter name="GLViewer"     value="${SUITRoot}/resources"/>
-    <parameter name="OCCViewer"    value="${SUITRoot}/resources"/>
-    <parameter name="VTKViewer"    value="${SUITRoot}/resources"/>
-    <parameter name="SalomeApp"    value="${SUITRoot}/resources"/>
-    <parameter name="OB"           value="${SUITRoot}/resources"/>
-    <parameter name="CAM"          value="${SUITRoot}/resources"/>
-    <parameter name="LightApp"     value="${SUITRoot}/resources"/>
-    <parameter name="SVTK"         value="${SUITRoot}/resources"/>
-    <parameter name="ToolsGUI"     value="${SUITRoot}/resources"/>
+    <parameter name="SUIT"         value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="STD"          value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="Plot2d"       value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="SPlot2d"      value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="GLViewer"     value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="OCCViewer"    value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="VTKViewer"    value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="SalomeApp"    value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="OB"           value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="CAM"          value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="LightApp"     value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="SVTK"         value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="ToolsGUI"     value="${SUITRoot}/share/salome/resources"/>
     <parameter name="LIGHT"        value="${LIGHT_ROOT_DIR}/share/salome/resources"/>
   </section>
   <section name="desktop" >

@@ -107,6 +107,8 @@ public:
 
   virtual QString   operationName() const;
 
+  int               execStatus() const;
+
 signals:
   void              started( SUIT_Operation* );
   void              aborted( SUIT_Operation* );
@@ -140,7 +142,6 @@ protected:
   virtual bool      hasTransaction() const;
   virtual bool      commitTransaction( const QString& = QString::null );
 
-  int               execStatus() const;
   void              setExecStatus( const int );
 
   void              setState( const OperationState );

@@ -29,6 +29,7 @@
 /*!
   Constructor
 */
+#ifndef DISABLE_OCCVIEWER
 LightApp_OCCSelector::LightApp_OCCSelector( OCCViewer_Viewer* viewer, SUIT_SelectionMgr* mgr )
 : SUIT_Selector( mgr, viewer ),
   myViewer( viewer )
@@ -36,6 +37,11 @@ LightApp_OCCSelector::LightApp_OCCSelector( OCCViewer_Viewer* viewer, SUIT_Selec
   if ( myViewer )
     connect( myViewer, SIGNAL( selectionChanged() ), this, SLOT( onSelectionChanged() ) );
 }
+#else
+LightApp_OCCSelector::LightApp_OCCSelector(  SUIT_SelectionMgr* mgr )
+: SUIT_Selector( mgr )
+{}
+#endif
 
 /*!
   Destructor.
@@ -47,10 +53,12 @@ LightApp_OCCSelector::~LightApp_OCCSelector()
 /*!
   Gets viewer.
 */
+#ifndef DISABLE_OCCVIEWER
 OCCViewer_Viewer* LightApp_OCCSelector::viewer() const
 {
   return myViewer;
 }
+#endif
 
 /*!On selection changed.*/
 void LightApp_OCCSelector::onSelectionChanged()
@@ -61,6 +69,7 @@ void LightApp_OCCSelector::onSelectionChanged()
 /*!Gets selection list.*/
 void LightApp_OCCSelector::getSelection( SUIT_DataOwnerPtrList& aList ) const
 {
+#ifndef DISABLE_OCCVIEWER
   if ( !myViewer )
     return;
 
@@ -77,11 +86,13 @@ void LightApp_OCCSelector::getSelection( SUIT_DataOwnerPtrList& aList ) const
       aList.append( SUIT_DataOwnerPtr( new LightApp_DataOwner( entry( anIt.Value() ) ) ) );
 #endif
     }
+#endif
 }
 
 /*!Sets selection list.*/
 void LightApp_OCCSelector::setSelection( const SUIT_DataOwnerPtrList& aList )
 {
+#ifndef DISABLE_OCCVIEWER
   if ( !myViewer )
     return;
 
@@ -109,8 +120,10 @@ void LightApp_OCCSelector::setSelection( const SUIT_DataOwnerPtrList& aList )
 
   myViewer->unHighlightAll( false );
   myViewer->setObjectsSelected( aSelList );
+#endif
 }
 
+#ifndef DISABLE_OCCVIEWER
 /*!Gets entry ob object.*/
 QString LightApp_OCCSelector::entry( const Handle(AIS_InteractiveObject)& anAIS ) const
 {
@@ -127,3 +140,5 @@ QString LightApp_OCCSelector::entry( const Handle(AIS_InteractiveObject)& anAIS 
 
   return res;
 }
+#endif
+
