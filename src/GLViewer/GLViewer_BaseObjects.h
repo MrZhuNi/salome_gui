@@ -59,7 +59,7 @@ public:
     GLboolean isCircle = GL_FALSE, GLboolean isShift = GL_FALSE );
   virtual GLboolean        unselect();
   
-  virtual GLViewer_Rect*   getUpdateRect();
+  virtual GLViewer_Rect    getUpdateRect();
   
   virtual void             moveObject( float, float, bool fromGroup = false );
   
@@ -138,7 +138,7 @@ public:
     GLboolean isCircle = GL_FALSE, GLboolean isShift = GL_FALSE );
   virtual GLboolean       unselect();
   
-  virtual GLViewer_Rect*  getUpdateRect();
+  virtual GLViewer_Rect   getUpdateRect();
   
   virtual void            moveObject( float, float, bool fromGroup = false );
   
@@ -223,7 +223,7 @@ public:
     GLboolean isCircle = GL_FALSE, GLboolean isShift = GL_FALSE );
   virtual GLboolean         unselect();
   
-  virtual GLViewer_Rect*    getUpdateRect();
+  virtual GLViewer_Rect     getUpdateRect();
   
   virtual void              moveObject( float, float, bool fromGroup = false );
   

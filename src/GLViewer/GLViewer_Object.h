@@ -131,7 +131,7 @@ public:
   virtual GLViewer_Rect*    getRect() const { return myRect; }
   //! Returns update object rectangle
   /*! Does not equal getRect() if object have a persistence to some viewer transformations*/
-  virtual GLViewer_Rect*    getUpdateRect() = 0;
+  virtual GLViewer_Rect     getUpdateRect() = 0;
   
   //! Installs scale factors
   virtual void              setScale( GLfloat xScale, GLfloat yScale ) { myXScale = xScale; myYScale = yScale; }

@@ -101,8 +101,8 @@ int GLViewer_Context::MoveTo( int xi, int yi, bool byCircle )
     {
         GLViewer_Object* object = *it;
 
-        GLViewer_Rect* rect = object->getUpdateRect();
-        if( rect->contains( GLViewer_Pnt( x, y ) ) )
+        GLViewer_Rect rect = object->getUpdateRect();
+        if( rect.contains( GLViewer_Pnt( x, y ) ) )
         {
             onObject = GL_TRUE;
             object->highlight( x, y, myTolerance, GL_FALSE );
@@ -302,9 +302,9 @@ int GLViewer_Context::Select( bool Append, bool byCircle )
         for( oit = myActiveObjects.begin(), oitEnd = myActiveObjects.end(); oit != oitEnd; ++oit )
         {
             (*oit)->setScale( aXScale, aYScale );
-            GLViewer_Rect* rect = (*oit)->getUpdateRect();
+            GLViewer_Rect rect = (*oit)->getUpdateRect();
 
-            if( rect->contains( GLViewer_Pnt( myXhigh, myXhigh ) ) )
+            if( rect.contains( GLViewer_Pnt( myXhigh, myXhigh ) ) )
             {
                 (*oit)->select( myXhigh, myYhigh, myTolerance, GLViewer_Rect(), false, byCircle, Append );
                 isSel = (*oit)->isSelected();

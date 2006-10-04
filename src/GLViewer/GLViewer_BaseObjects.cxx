@@ -568,14 +568,14 @@ GLboolean GLViewer_MarkerSet::unselect()
   \return update object rectangle
   Does not equal getRect() if object have a persistence to some viewer transformations
 */
-GLViewer_Rect* GLViewer_MarkerSet::getUpdateRect()
+GLViewer_Rect  GLViewer_MarkerSet::getUpdateRect()
 {
-  GLViewer_Rect* rect = new GLViewer_Rect();
+  GLViewer_Rect rect;
   
-  rect->setLeft( myRect->left() + myXGap - myMarkerSize / myXScale );
-  rect->setTop( myRect->top() + myYGap + myMarkerSize / myYScale ); 
-  rect->setRight( myRect->right() - myXGap + myMarkerSize / myXScale );
-  rect->setBottom( myRect->bottom() - myYGap - myMarkerSize / myYScale );
+  rect.setLeft( myRect->left() + myXGap - myMarkerSize / myXScale );
+  rect.setTop( myRect->top() + myYGap + myMarkerSize / myYScale ); 
+  rect.setRight( myRect->right() - myXGap + myMarkerSize / myXScale );
+  rect.setBottom( myRect->bottom() - myYGap - myMarkerSize / myYScale );
   //cout << " Additional tolerance " << myMarkerSize / myYScale << endl;
   //rect->setLeft( myRect->left() - myMarkerSize / myXScale );
   //rect->setTop( myRect->top() - myMarkerSize / myYScale ); 
@@ -977,14 +977,14 @@ void GLViewer_Polyline::compute()
   \return update object rectangle
   Does not equal getRect() if object have a persistence to some viewer transformations
 */
-GLViewer_Rect* GLViewer_Polyline::getUpdateRect()
+GLViewer_Rect GLViewer_Polyline::getUpdateRect()
 {
-    GLViewer_Rect* rect = new GLViewer_Rect();
+    GLViewer_Rect rect;
 
-    rect->setLeft( myRect->left() - myXGap );
-    rect->setTop( myRect->top() + myYGap ); 
-    rect->setRight( myRect->right() + myXGap );
-    rect->setBottom( myRect->bottom() - myYGap );
+    rect.setLeft( myRect->left() - myXGap );
+    rect.setTop( myRect->top() + myYGap ); 
+    rect.setRight( myRect->right() + myXGap );
+    rect.setBottom( myRect->bottom() - myYGap );
 
     return rect;
 }
@@ -1519,18 +1519,18 @@ void GLViewer_TextObject::setDrawer( GLViewer_Drawer* theDrawer )
   \return update object rectangle
   Does not equal getRect() if object have a persistence to some viewer transformations
 */
-GLViewer_Rect* GLViewer_TextObject::getUpdateRect()
+GLViewer_Rect GLViewer_TextObject::getUpdateRect()
 {    
-    GLViewer_Rect* rect = new GLViewer_Rect();
+    GLViewer_Rect rect;
 
     float xPos, yPos;
     QString aStr = myGLText->getText();
     myGLText->getPosition( xPos, yPos );
 
-    rect->setLeft( myRect->left() + myXGap - myWidth / myXScale );
-    rect->setTop( myRect->top() + myYGap + myHeight / myYScale );
-    rect->setRight( myRect->right() - myXGap + myWidth / myXScale );
-    rect->setBottom( myRect->bottom() - myYGap - myHeight / myYScale );
+    rect.setLeft( myRect->left() + myXGap - myWidth / myXScale );
+    rect.setTop( myRect->top() + myYGap + myHeight / myYScale );
+    rect.setRight( myRect->right() - myXGap + myWidth / myXScale );
+    rect.setBottom( myRect->bottom() - myYGap - myHeight / myYScale );
 
     return rect;
 }
