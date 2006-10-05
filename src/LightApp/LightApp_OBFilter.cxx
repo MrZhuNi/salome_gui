@@ -40,7 +40,7 @@ bool LightApp_OBFilter::isOk( const SUIT_DataObject* theDataObj ) const
 {
   const LightApp_DataObject* obj = dynamic_cast<const LightApp_DataObject*>( theDataObj );
   if ( obj )
-    return mySelMgr->isOk( new LightApp_DataOwner( obj->entry() ) );
+    return mySelMgr->isOk( SUIT_DataOwnerPtr( new LightApp_DataOwner( obj->entry() ) ) );
 
   return true;
 }

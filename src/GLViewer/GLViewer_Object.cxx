@@ -66,17 +66,20 @@ GLViewer_Object::GLViewer_Object()
 */
 GLViewer_Object::~GLViewer_Object()
 {
-  if( myRect )
+  if ( myRect )
     delete myRect;
 
-  if( myUpdateRect )
+  if ( myUpdateRect )
     delete myUpdateRect;
 
-  if( myGLText )
+  if ( myGLText )
     delete myGLText;
 
-  if( myAspectLine )
+  if ( myAspectLine )
     delete myAspectLine;
+
+  if ( myOwner )
+    delete myOwner;
 }
 
 /*!
@@ -85,6 +88,16 @@ GLViewer_Object::~GLViewer_Object()
 int GLViewer_Object::getPriority() const
 {
     return myDrawer ? myDrawer->getPriority() : 0;
+}
+
+void GLViewer_Object::setOwner( SUIT_DataOwner* owner )
+{
+  if ( myOwner == owner )
+    return;
+
+  if ( myOwner )
+    delete myOwner;
+  myOwner = owner;
 }
 
 /*!

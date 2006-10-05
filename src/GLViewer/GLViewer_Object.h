@@ -235,7 +235,7 @@ public:
   //!\warning It is for ouv
   SUIT_DataOwner*           owner() const { return myOwner; }
   //!\warning It is for ouv
-  void                      setOwner( SUIT_DataOwner* owner ) { myOwner = owner; }
+  void                      setOwner( SUIT_DataOwner* owner );
   
   //! Adds object to group theGroup
   void                      setGroup( GLViewer_Group* theGroup );
