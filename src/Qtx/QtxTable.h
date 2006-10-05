@@ -46,6 +46,8 @@ public:
   bool             editHeader( Orientation, const int );
   void             endEditHeader( const bool = true );
 
+  void             removeSelected( const bool row = true );
+
   virtual bool     eventFilter( QObject*, QEvent* );
 
   virtual void     setNumRows( int );

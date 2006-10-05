@@ -24,6 +24,7 @@
 #ifndef QT_NO_TABLE
 
 #include <qlineedit.h>
+#include <qmemarray.h>
 
 /*!
   Constructor
@@ -473,6 +474,42 @@ void QtxTable::updateHeaderEditor()
 
   myHeaderEditor->resize( r.size() );
   myHeaderEditor->move( r.topLeft() );
+}
+
+/*!
+  Remove selected rows or columns if any of cell selected in it
+*/
+void QtxTable::removeSelected( const bool row )
+{
+  QValueList<int> idsList;
+  QMap<int, int> idMap;
+  int i = 0;
+  for ( int nb = numSelections(); i < nb; i++ )
+  {
+    QTableSelection sel = selection( i );
+    int minId = row ? sel.topRow() : sel.leftCol();
+    int maxId = row ? sel.bottomRow() : sel.rightCol();
+    for ( ; minId <= maxId; minId++ )
+      if ( !idMap.contains( minId ) )
+      {
+        idMap[ minId ] = 1;
+        idsList.append( minId );
+      }
+  }
+  if ( idMap.isEmpty() )
+    return;
+
+  qHeapSort( idsList );
+  QMemArray<int> idsArr( idsList.count() );
+  QValueList<int>::const_iterator it = idsList.begin();
+  QValueList<int>::const_iterator itEnd = idsList.end();
+  for ( i = 0; it != itEnd; ++it, ++i )
+    idsArr[ i ] = *it;
+
+  if ( row )
+    removeRows ( idsArr );
+  else
+    removeColumns ( idsArr );
 }
 
 #endif
