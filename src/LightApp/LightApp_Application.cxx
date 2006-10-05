@@ -380,6 +380,9 @@ bool LightApp_Application::activateModule( const QString& modName )
   updateWindows();
   updateViewManagers();
 
+  if ( resourceMgr() )
+    resourceMgr()->raiseTranslators( activeModule() ? activeModule()->moduleName() : "LightApp" );
+
   return true;
 }
 
@@ -2298,6 +2301,10 @@ bool LightApp_Application::activateModule( CAM_Module* mod )
   bool res = CAM_Application::activateModule( mod );
   if ( objectBrowser() )
     objectBrowser()->updateTree();
+
+  if ( resourceMgr() )
+    resourceMgr()->raiseTranslators( activeModule() ? activeModule()->moduleName() : "LightApp" );
+
   return res;
 }
 
