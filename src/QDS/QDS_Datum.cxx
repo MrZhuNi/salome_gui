@@ -30,6 +30,7 @@
 #include <qwhatsthis.h>
 #include <qvalidator.h>
 #include <qmessagebox.h>
+#include <qapplication.h>
 
 #include <TColStd_SequenceOfAsciiString.hxx>
 
@@ -49,6 +50,8 @@ public:
 
   virtual void  setGeometry( int x, int y, int w, int h );
   virtual void  setSizePolicy( QSizePolicy );
+
+  virtual bool  eventFilter( QObject*, QEvent* );
 
 private:
   QWidget*      myWid;
@@ -77,6 +80,9 @@ void QDS_Datum::Wrapper::setWidget( QWidget* wid )
   if ( myWid == wid )
     return;
 
+  if ( myWid )
+    myWid->removeEventFilter( this );
+
   myWid = wid;
 
   if ( !myWid )
@@ -85,11 +91,21 @@ void QDS_Datum::Wrapper::setWidget( QWidget* wid )
   if ( myWid->parent() != this )
     myWid->reparent( this, QPoint( 0, 0 ) );
 
+  myWid->installEventFilter( this );
+
   setTabOrder( this, myWid );
   setFocusProxy( myWid );
 
   myWid->updateGeometry();
   updateGeometry();
+}
+
+bool QDS_Datum::Wrapper::eventFilter( QObject* o, QEvent* e )
+{
+  if ( o == widget() && ( e->type() == QEvent::FocusIn || e->type() == QEvent::FocusOut ) )
+    QApplication::sendEvent( this, e );
+
+  return false;
 }
 
 void QDS_Datum::Wrapper::setSizePolicy( QSizePolicy sp )

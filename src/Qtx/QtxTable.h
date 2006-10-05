@@ -48,19 +48,29 @@ public:
 
   virtual bool     eventFilter( QObject*, QEvent* );
 
+  virtual void     setNumRows( int );
+  virtual void     setNumCols( int );
+
 signals:
   void             headerEdited( QHeader*, int );
   void             headerEdited( Orientation, int );
 
 public slots:
-  virtual void     hide();
   virtual void     setHeaderEditable( Orientation, bool );
+
+  virtual void     insertRows( int, int = 1 );
+  virtual void     insertColumns( int, int = 1 );
+  virtual void     removeRow( int );
+  virtual void     removeRows( const QMemArray<int>& );
+  virtual void     removeColumn( int );
+  virtual void     removeColumns( const QMemArray<int>& );
 
 private slots:
   void             onScrollBarMoved( int );
   void             onHeaderSizeChange( int, int, int );
 
 protected:
+  virtual void     hideEvent( QHideEvent* );
   virtual void     resizeEvent( QResizeEvent* );
 
   virtual bool     beginHeaderEdit( Orientation, const int );

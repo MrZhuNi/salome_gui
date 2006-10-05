@@ -118,16 +118,6 @@ void QtxTable::endEditHeader( const bool accept )
 }
 
 /*!
-  Finishes edition and hides table
-*/
-void QtxTable::hide()
-{
-  endHeaderEdit();
-
-  QTable::hide();
-}
-
-/*!
   Custom event filter
   Starts edition of header by double click
   Finishes edition by escape/return/enter pressing
@@ -168,16 +158,96 @@ bool QtxTable::eventFilter( QObject* o, QEvent* e )
   }
 
   if ( o == myHeaderEditor && e->type() == QEvent::FocusOut &&
-       isHeaderEditing() && ((QFocusEvent*)e)->reason() != QFocusEvent::Popup )
+       ((QFocusEvent*)e)->reason() != QFocusEvent::Popup )
   {
-		endHeaderEdit();
-		return true;
+		  endHeaderEdit();
+		  return true;
   }
 
   if ( e->type() == QEvent::Wheel && isHeaderEditing() )
     return true;
 
   return QTable::eventFilter( o, e );
+}
+
+/*!
+  Reimplemented for internal reasons.
+  Firstly end the edition of header.
+*/
+void QtxTable::setNumRows( int rows )
+{
+  endHeaderEdit();
+  QTable::setNumRows( rows );
+}
+
+/*!
+  Reimplemented for internal reasons.
+  Firstly end the edition of header.
+*/
+void QtxTable::setNumCols( int cols )
+{
+  endHeaderEdit();
+  QTable::setNumCols( cols );
+}
+
+/*!
+  Reimplemented for internal reasons.
+  Firstly end the edition of header.
+*/
+void QtxTable::insertRows( int row, int count )
+{
+  endHeaderEdit();
+  QTable::insertRows( row, count );
+}
+
+/*!
+  Reimplemented for internal reasons.
+  Firstly end the edition of header.
+*/
+void QtxTable::insertColumns( int col, int count )
+{
+  endHeaderEdit();
+  QTable::insertColumns( col, count );
+}
+
+/*!
+  Reimplemented for internal reasons.
+  Firstly end the edition of header.
+*/
+void QtxTable::removeRow( int row )
+{
+  endHeaderEdit();
+  QTable::removeRow( row );
+}
+
+/*!
+  Reimplemented for internal reasons.
+  Firstly end the edition of header.
+*/
+void QtxTable::removeRows( const QMemArray<int>& rows )
+{
+  endHeaderEdit();
+  QTable::removeRows( rows );
+}
+
+/*!
+  Reimplemented for internal reasons.
+  Firstly end the edition of header.
+*/
+void QtxTable::removeColumn( int col )
+{
+  endHeaderEdit();
+  QTable::removeColumn( col );
+}
+
+/*!
+  Reimplemented for internal reasons.
+  Firstly end the edition of header.
+*/
+void QtxTable::removeColumns( const QMemArray<int>& cols )
+{
+  endHeaderEdit();
+  QTable::removeColumns( cols );
 }
 
 /*!
@@ -195,6 +265,16 @@ void QtxTable::onHeaderSizeChange( int, int, int )
 {
   if ( sender() == myEditedHeader )
     updateHeaderEditor();
+}
+
+/*!
+  Custom hide event handler
+*/
+void QtxTable::hideEvent( QHideEvent* e )
+{
+  endHeaderEdit();
+
+  QTable::hideEvent( e );
 }
 
 /*!
