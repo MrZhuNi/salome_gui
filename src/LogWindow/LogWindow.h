@@ -60,7 +60,15 @@ class LOGWINDOW_EXPORT LogWindow : public QFrame, public SUIT_PopupClient
 {
   Q_OBJECT
 
-  enum { CopyId, ClearId, SelectAllId, SaveToFileId };
+public:
+  //! popup operation flags
+  enum {
+    CopyId = 0x01,
+    ClearId = 0x02,
+    SelectAllId = 0x04,
+    SaveToFileId = 0x08,
+    All = CopyId | ClearId | SelectAllId | SaveToFileId,
+  };
 
 public:
 	LogWindow( QWidget* theParent );
@@ -79,6 +87,8 @@ public:
 
   bool                saveLog( const QString& fileName );
 
+  void                setOperationsFlags( int flags );
+
 protected slots:
   void                onSaveToFile();
   void                onSelectAll();
@@ -96,6 +106,7 @@ private:
   QStringList         myHistory;
   int                 myBannerSize;
   QMap<int, QAction*> myActions;
+  int                 myOpFlags;
 };
 
 #ifdef WIN32

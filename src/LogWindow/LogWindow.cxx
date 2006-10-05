@@ -60,7 +60,8 @@ static QString plainText( const QString& richText )
 */
 LogWindow::LogWindow( QWidget* parent )
 : QFrame( parent ),
-SUIT_PopupClient()
+SUIT_PopupClient(),
+myOpFlags( All )
 {
   SUIT_ResourceMgr* resMgr = SUIT_Session::session()->resourceMgr();
 
@@ -221,17 +222,22 @@ void LogWindow::createActions()
 */
 void LogWindow::contextMenuPopup( QPopupMenu* popup )
 {
-  myActions[ CopyId ]->addTo( popup );
-  myActions[ ClearId ]->addTo( popup );
+  if ( myOpFlags & CopyId )
+    myActions[ CopyId ]->addTo( popup );
+  if ( myOpFlags & ClearId )
+    myActions[ ClearId ]->addTo( popup );
   
   popup->insertSeparator();
   
-  myActions[ SelectAllId ]->addTo( popup );
+  if ( myOpFlags & SelectAllId )
+    myActions[ SelectAllId ]->addTo( popup );
   
   popup->insertSeparator();
   
-  myActions[ SaveToFileId ]->addTo( popup );
+  if ( myOpFlags & SaveToFileId )
+    myActions[ SaveToFileId ]->addTo( popup );
 
+  Qtx::simplifySeparators( popup );
   updateActions();
 }
 
@@ -245,10 +251,10 @@ void LogWindow::updateActions()
   bool allSelected = myView->hasSelectedText() &&
                      !paraFrom && paraTo == myView->paragraphs() - 1 && 
                      !indexFrom && indexTo == myView->paragraphLength( paraTo );
-  myActions[ CopyId ]->setEnabled( myView->hasSelectedText() );
-  myActions[ ClearId ]->setEnabled( myView->paragraphs() > myBannerSize );
-  myActions[ SelectAllId ]->setEnabled( !allSelected );
-  myActions[ SaveToFileId ]->setEnabled( myHistory.count() > 0 );
+  myActions[ CopyId ]->setEnabled( ( myOpFlags & CopyId )&& myView->hasSelectedText() );
+  myActions[ ClearId ]->setEnabled( ( myOpFlags & ClearId ) && myView->paragraphs() > myBannerSize );
+  myActions[ SelectAllId ]->setEnabled( ( myOpFlags & SelectAllId ) && !allSelected );
+  myActions[ SaveToFileId ]->setEnabled( ( myOpFlags & SaveToFileId ) && myHistory.count() > 0 );
 }
 
 /*!
@@ -300,3 +306,6 @@ void LogWindow::onCopy()
   if ( myView )
     myView->copy();
 }
+
+void LogWindow::setOperationsFlags( int flags )
+{ myOpFlags = flags; }
