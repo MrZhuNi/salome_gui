@@ -356,6 +356,7 @@ void QtxTable::endHeaderEdit( const bool accept )
 
   myHeaderEditor->hide();
   myHeaderEditor->deleteLater();
+  myHeaderEditor->removeEventFilter( this );
   myHeaderEditor = 0;
 
   if ( oldTxt != newTxt )
