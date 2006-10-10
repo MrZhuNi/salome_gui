@@ -37,7 +37,8 @@ EXPORT_HEADERS= QDS.h \
 	QDS_SpinBox.h \
 	QDS_SpinBoxDbl.h \
 	QDS_TextEdit.h \
-	QDS_Validator.h
+	QDS_Validator.h \
+	QDS_Table.h
 		     
 # Libraries targets
 LIB = libQDS.la
@@ -50,7 +51,8 @@ LIB_SRC= QDS.cxx \
 	QDS_SpinBox.cxx \
 	QDS_SpinBoxDbl.cxx \
 	QDS_TextEdit.cxx \
-	QDS_Validator.cxx
+	QDS_Validator.cxx \
+	QDS_Table.cxx
  
 LIB_MOC = QDS_CheckBox.h \
 	QDS_ComboBox.h \
@@ -58,7 +60,8 @@ LIB_MOC = QDS_CheckBox.h \
 	QDS_LineEdit.h \
 	QDS_SpinBox.h \
 	QDS_SpinBoxDbl.h \
-	QDS_TextEdit.h
+	QDS_TextEdit.h \
+	QDS_Table.h
 
 CPPFLAGS+=$(QT_INCLUDES) $(OCC_INCLUDES)
 
