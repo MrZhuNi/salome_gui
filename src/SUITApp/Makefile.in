@@ -51,7 +51,10 @@ CPPFLAGS+=$(QT_INCLUDES) $(PYTHON_INCLUDES)
 
 LDFLAGS+=$(QT_MT_LIBS) 
 
-LIBS+= -Xlinker -export-dynamic $(PYTHON_LIBS)
+LIBS+= -Xlinker -export-dynamic
+ifneq ($(DISABLE_PYCONSOLE),yes)
+ LIBS+= $(PYTHON_LIBS)
+endif
 LIBS+= -lsuit -lqtx
 LIBSFORBIN+= -lsuit -lqtx
 
