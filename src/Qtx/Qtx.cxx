@@ -606,7 +606,7 @@ QPixmap Qtx::grayscale( const QPixmap& pix )
 QImage Qtx::transparentImage( const int w, const int h, const int d )
 {
   QImage img;
-  if ( img.create( w, h, d < 0 ? QPixmap::defaultDepth() : d ) )
+  if ( img.create( w, h, d < 0 ? /*QPixmap::defaultDepth()*/32 : d ) )
   {
     img.setAlphaBuffer( true );
     for ( int i = 0; i < img.height(); i++ )
