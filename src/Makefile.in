@@ -32,7 +32,7 @@ VPATH=.:@srcdir@
 
 @COMMENCE@
 
-SUBDIRS = Qtx DDS QDS SUIT STD CAF CAM SUITApp LogWindow ObjBrowser Prs
+SUBDIRS = Qtx DDS QDS SUIT STD CAM SUITApp LogWindow ObjBrowser Prs
 
 ifneq ($(DISABLE_SALOMEOBJECT),yes)
   SUBDIRS += OBJECT
