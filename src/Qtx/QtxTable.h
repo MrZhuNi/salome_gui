@@ -24,17 +24,32 @@
 
 #include "Qtx.h"
 
+#include <qmap.h>
 #include <qtable.h>
+#include <qvariant.h>
+#include <qptrvector.h>
 
 #ifndef QT_NO_TABLE
 
 class QHeader;
+class QToolButton;
+class QtxStyleWrap;
+
+#ifdef WIN32
+#pragma warning( disable : 4251 )
+#endif
 
 class QTX_EXPORT QtxTable : public QTable
 {
   Q_OBJECT
 
-  class HeaderEditor;
+  Q_PROPERTY( bool selectAllEnabled READ isSelectAllEnabled WRITE setSelectAllEnabled )
+
+  class Header;
+  class StyleItem;
+
+protected:
+  enum { FgColor, BgColor, User };
 
 public:
   QtxTable( QWidget* = 0, const char* = 0 );
@@ -46,6 +61,8 @@ public:
   bool             editHeader( Orientation, const int );
   void             endEditHeader( const bool = true );
 
+  virtual void     setSelectionMode( SelectionMode );
+
   void             removeSelected( const bool row = true );
 
   virtual bool     eventFilter( QObject*, QEvent* );
@@ -53,11 +70,33 @@ public:
   virtual void     setNumRows( int );
   virtual void     setNumCols( int );
 
+  bool             isSelectAllEnabled() const;
+  virtual void     setSelectAllEnabled( const bool );
+
+  QHeader*         header( const Orientation, const int ) const;
+  int              numHeaders( const Orientation ) const;
+  void             setNumHeaders( const Orientation, const int );
+
+  int              verticalSpan( const Orientation, const int, const int ) const;
+  int              horizontalSpan( const Orientation, const int, const int ) const;
+  void             setVerticalSpan( const Orientation, const int, const int, const int );
+  void             setHorizontalSpan( const Orientation, const int, const int, const int );
+
+  QColor           cellForegroundColor( const int, const int ) const;
+  QColor           cellBackgroundColor( const int, const int ) const;
+  void             setCellForegroundColor( const int, const int, const QColor& );
+  void             setCellBackgroundColor( const int, const int, const QColor& );
+
+  virtual void     paintCell( QPainter*, int, int, const QRect&, bool, const QColorGroup& );
+
 signals:
   void             headerEdited( QHeader*, int );
   void             headerEdited( Orientation, int );
 
 public slots:
+  virtual void     selectAll();
+  virtual void     setTopMargin( int );
+  virtual void     setLeftMargin( int );
   virtual void     setHeaderEditable( Orientation, bool );
 
   virtual void     insertRows( int, int = 1 );
@@ -75,25 +114,59 @@ protected:
   virtual void     hideEvent( QHideEvent* );
   virtual void     resizeEvent( QResizeEvent* );
 
-  virtual bool     beginHeaderEdit( Orientation, const int );
+  virtual bool     beginHeaderEdit( Orientation, const int, const int = -1 );
   virtual void     endHeaderEdit( const bool = true );
   bool             isHeaderEditing() const;
   virtual QWidget* createHeaderEditor( QHeader*, const int, const bool = true );
   virtual void     setHeaderContentFromEditor( QHeader*, const int, QWidget* );
 
   QHeader*         header( Orientation o ) const;
+  virtual QRect    headerSectionRect( QHeader*, const int, int* = 0 ) const;
+
+  QVariant         cellProperty( const int, const int, const int ) const;
+  void             setCellProperty( const int, const int, const int, const QVariant& );
+
+private:
+  typedef QMap<int, QVariant>   Properties;
+  typedef QMap<int, Properties> PropsMap;
+  typedef QMap<int, PropsMap>   CellMap;
+  typedef QPtrVector<QHeader>   HeaderVector;
 
 private:
   void             updateHeaderEditor();
-  void             beginHeaderEdit( Orientation, const QPoint& );
-  QRect            headerSectionRect( QHeader*, const int ) const;
+  bool             beginHeaderEdit( QHeader*, const int );
+  void             beginHeaderEdit( QHeader*, const QPoint& );
+
+  QtxStyleWrap*    styleWrapper();
+  HeaderVector*    headerVector( const Orientation ) const;
+
+  void             updateGeometries();
+  void             updateSelectAllButton();
+
+  void             updateHeaders( const Orientation );
+  void             updateHeaderSizes( const Orientation );
+  void             updateHeaderSpace( const Orientation );
+  void             updateHeaderGeometries( const Orientation );
 
 private:
+  CellMap          myCellProps;
+  HeaderVector     myVerHeaders;
+  HeaderVector     myHorHeaders;
+  QtxStyleWrap*    myStyleWrapper;
+
   QWidget*         myHeaderEditor;
   QHeader*         myEditedHeader;
   int              myEditedSection;
   QMap<int, bool>  myHeaderEditable;
+
+  QToolButton*     mySelectAll;
+
+  friend class QtxTable::Header;
 };
+
+#ifdef WIN32
+#pragma warning( default: 4251 )
+#endif
 
 #endif
 
