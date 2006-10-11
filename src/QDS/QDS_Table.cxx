@@ -141,11 +141,11 @@ QDS_Datum* QDS_Table::columnEditor( const int col ) const
 
 QDS_Datum* QDS_Table::cellEditor( const int row, const int col ) const
 {
-  if ( !myCellEdit.contains( row ) )
+  QVariant res = cellProperty( row, col, Datum );
+  if  ( !res.canCast( QVariant::LongLong ) )
     return 0;
 
-  const DatumMap& map = myCellEdit[row];
-  return map.contains( col ) ? map[col] : 0;
+  return (QDS_Datum*)res.toLongLong();
 }
 
 void QDS_Table::setTableEditor( QDS_Datum* dat )
@@ -195,10 +195,7 @@ void QDS_Table::setCellEditor( const int row, const int col, QDS_Datum* dat )
   if ( isEditing() && currEditRow() == row && currEditCol() == col && actualCellEditor( row, col ) != dat )
     endEdit( currEditRow(), currEditCol(), false, false );
 
-  if ( !myCellEdit.contains( row ) )
-    myCellEdit.insert( row, DatumMap() );
-
-  myCellEdit[row].insert( col, dat );
+  setCellProperty( row, col, Datum, (Q_LLONG)dat );
   initEditor( dat );
 }
 
@@ -222,11 +219,7 @@ void QDS_Table::setNumRows( int r )
   if ( isKeepEditors() )
     myRowEdit.resize( QMAX( (int)myRowEdit.size(), r ) );
   else
-  {
     myRowEdit.resize( r );
-    for ( int i = r + 1; i <= old; i++ )
-      myCellEdit.remove( i );
-  }
 }
 
 void QDS_Table::setNumCols( int c )
@@ -237,15 +230,7 @@ void QDS_Table::setNumCols( int c )
   if ( isKeepEditors() )
     myColEdit.resize( QMAX( (int)myColEdit.size(), c ) );
   else
-  {
     myColEdit.resize( c );
-    for ( CellMap::Iterator it = myCellEdit.begin(); it != myCellEdit.end(); ++it )
-    {
-      DatumMap& map = it.data();
-      for ( int i = c + 1; i <= old; i++ )
-        map.remove( i );
-    }
-  }
 }
 
 void QDS_Table::clearCellWidget( int row, int col )

@@ -26,6 +26,10 @@
 #include <qmap.h>
 #include <qptrvector.h>
 
+#ifdef WIN32
+#pragma warning( disable : 4251 )
+#endif
+
 class QDS_EXPORT QDS_Table : public QtxTable
 {
   class DeleteFilter;
@@ -71,6 +75,9 @@ public:
   void             setKeepEditors( const bool );
 
 protected:
+  enum { Datum = QtxTable::User, User };
+
+protected:
   virtual QWidget* createHeaderEditor( QHeader*, const int, const bool = true );
   virtual QWidget* createEditor( int, int, bool ) const;
   virtual void     endEdit( int, int, bool, bool );
@@ -83,17 +90,18 @@ private:
 
 private:
   typedef QPtrVector<QDS_Datum>       DatumVector;
-  typedef QMap<int, QDS_Datum*>       DatumMap;
-  typedef QMap<int, DatumMap>         CellMap;
 
 private:
   QDS_Datum*       myHorEdit;
   QDS_Datum*       myVerEdit;
   DatumVector      myRowEdit;
   DatumVector      myColEdit;
-  CellMap          myCellEdit;
   QDS_Datum*       myTableEdit;
   bool             myKeepEdits;
 };
+
+#ifdef WIN32
+#pragma warning( default: 4251 )
+#endif
 
 #endif 
