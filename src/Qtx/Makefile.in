@@ -69,7 +69,8 @@ EXPORT_HEADERS= Qtx.h \
 		QtxListView.h \
 		QtxDirListEditor.h \
 		QtxDblValidator.h \
-		QtxSplash.h
+		QtxSplash.h \
+                QtxStyleWrap.h 
 
 # .po files to transform in .qm
 
@@ -118,7 +119,8 @@ LIB_SRC= \
 	QtxListView.cxx \
 	QtxDirListEditor.cxx \
 	QtxDblValidator.cxx \
-	QtxSplash.cxx
+	QtxSplash.cxx \
+        QtxStyleWrap.cxx
 
 LIB_MOC = \
 	QtxAction.h \
@@ -152,7 +154,8 @@ LIB_MOC = \
 	QtxListResourceEdit.h \
 	QtxDirListEditor.h \
 	QtxDblValidator.h \
-	QtxSplash.h
+	QtxSplash.h \
+        QtxStyleWrap.h
 
 RESOURCES_FILES = \
 
