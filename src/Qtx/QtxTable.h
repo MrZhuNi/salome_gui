@@ -49,7 +49,7 @@ class QTX_EXPORT QtxTable : public QTable
   class StyleItem;
 
 protected:
-  enum { FgColor, BgColor, User };
+  enum { FgColor, BgColor, Font, User };
 
 public:
   QtxTable( QWidget* = 0, const char* = 0 );
@@ -82,12 +82,22 @@ public:
   void             setVerticalSpan( const Orientation, const int, const int, const int );
   void             setHorizontalSpan( const Orientation, const int, const int, const int );
 
+  QColor           headerForegroundColor( const Orientation, const int, const int ) const;
+  QColor           headerBackgroundColor( const Orientation, const int, const int ) const;
+  void             setHeaderForegroundColor( const Orientation, const int, const int, const QColor& );
+  void             setHeaderBackgroundColor( const Orientation, const int, const int, const QColor& );
+
+  QFont            cellFont( const int, const int ) const;
   QColor           cellForegroundColor( const int, const int ) const;
   QColor           cellBackgroundColor( const int, const int ) const;
+
+  void             setCellFont( const int, const int, QFont& );
   void             setCellForegroundColor( const int, const int, const QColor& );
   void             setCellBackgroundColor( const int, const int, const QColor& );
 
   virtual void     paintCell( QPainter*, int, int, const QRect&, bool, const QColorGroup& );
+
+  virtual void     clear( const bool = true );
 
 signals:
   void             headerEdited( QHeader*, int );
@@ -125,6 +135,8 @@ protected:
 
   QVariant         cellProperty( const int, const int, const int ) const;
   void             setCellProperty( const int, const int, const int, const QVariant& );
+  void             unsetCellProperty( const int, const int, const int );
+  void             clearCellProperties( const int, const int );
 
 private:
   typedef QMap<int, QVariant>   Properties;

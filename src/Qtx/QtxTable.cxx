@@ -26,6 +26,7 @@
 #include "QtxStyleWrap.h"
 
 #include <qstyle.h>
+#include <qpainter.h>
 #include <qtextedit.h>
 #include <qlineedit.h>
 #include <qmemarray.h>
@@ -33,71 +34,6 @@
 #include <qstylesheet.h>
 #include <qapplication.h>
 #include <qsimplerichtext.h>
-
-/*!
-  Class QtxTable::StyleItem
-*/
-
-class QtxTable::StyleItem : public QtxStyleWrapItem
-{
-public:
-  StyleItem( QtxStyleWrap* );
-  ~StyleItem();
-
-  virtual bool drawControl( QStyle::ControlElement, QPainter*, const QWidget*, const QRect&,
-                            const QColorGroup&, QStyle::SFlags, const QStyleOption& ) const;
-};
-
-QtxTable::StyleItem::StyleItem( QtxStyleWrap* wrap )
-: QtxStyleWrapItem( wrap )
-{
-}
-
-QtxTable::StyleItem::~StyleItem()
-{
-}
-
-bool QtxTable::StyleItem::drawControl( QStyle::ControlElement element, QPainter* p, const QWidget* widget,
-                                       const QRect& r, const QColorGroup& cg, QStyle::SFlags flags,
-                                       const QStyleOption& opt ) const
-{
-  if ( element != QStyle::CE_HeaderLabel )
-    return false;
-
-	const QHeader* header = (const QHeader*)widget;
-	int section = opt.headerSection();
-
-  QString lab = header->label( section );
-  if ( !QStyleSheet::mightBeRichText( lab ) )
-    return false;
-
-  QRect rect = r;
-  QIconSet* icon = header->iconSet( section );
-  if ( icon )
-  {
-	  QPixmap pixmap = icon->pixmap( QIconSet::Small, flags & QStyle::Style_Enabled ? QIconSet::Normal :
-                                                                                    QIconSet::Disabled );
-    int pixw = pixmap.width();
-		int pixh = pixmap.height();
-
-		QRect pixRect = rect;
-		pixRect.setY( rect.center().y() - (pixh - 1) / 2 );
-    if ( style() )
-		  style()->drawItem( p, pixRect, AlignVCenter, cg, flags & QStyle::Style_Enabled, &pixmap, QString::null );
-    rect.setLeft( rect.left() + pixw + 2 );
-  }
-
-  QStyleSheet sheet;
-  QStyleSheetItem* i = sheet.item( "p" );
-  if ( i )
-    i->setMargin( QStyleSheetItem::MarginAll, 0 );
-
-  QSimpleRichText rt( lab, header->font(), QString::null, &sheet );
-  rt.setWidth( rect.width() );
-  rt.draw( p, rect.x(), rect.y() + ( rect.height() - rt.height() ) / 2, rect, cg );
-
-  return true;
-}
 
 /*!
   Class QtxTable::Header
@@ -112,11 +48,18 @@ public:
 
   QtxTable*     table() const;
 
+  void          clear();
+
   int           horizontalSpan( const int ) const;
   void          setHorizontalSpan( const int, const int );
 
   int           verticalSpan( const int ) const;
   void          setVerticalSpan( const int, const int );
+
+  QColor        foregroundColor( const int ) const;
+  QColor        backgroundColor( const int ) const;
+  void          setForegroundColor( const int, const QColor& );
+  void          setBackgroundColor( const int, const QColor& );
 
   void          removeSection( const int );
   virtual void  setLabel( int, const QString&, int = -1 );
@@ -134,6 +77,7 @@ protected:
 
 private:
   typedef QMap<int, int>        SpanMap;
+  typedef QMap<int, QColor>     ColorMap;
   typedef QPair<int, int>       SpanRange;
   typedef QValueList<SpanRange> SpanRangeList;
 
@@ -150,6 +94,8 @@ private:
   SpanMap       myHSpan;
   SpanMap       myVSpan;
   QtxTable*     myTable;
+  ColorMap      myFgColor;
+  ColorMap      myBgColor;
   int           myPressed;
 };
 
@@ -167,6 +113,16 @@ QtxTable::Header::~Header()
 QtxTable* QtxTable::Header::table() const
 {
   return myTable;
+}
+
+void QtxTable::Header::clear()
+{
+  for ( int i = 0; i < (int)count(); i++ )
+    setLabel( i, orientation() == Horizontal ? QString( "" ) : QString::null );
+  myHSpan.clear();
+  myVSpan.clear();
+  myFgColor.clear();
+  myBgColor.clear();
 }
 
 QSize QtxTable::Header::sizeHint() const
@@ -235,6 +191,23 @@ void QtxTable::Header::removeSection( const int section )
     newVMap.insert( vIt.key() < section ? vIt.key() : vIt.key() - 1, vIt.data() );
   }
   myVSpan = newVMap;
+
+  ColorMap newFMap, newBMap;
+  for ( ColorMap::ConstIterator fIt = myFgColor.begin(); fIt != myFgColor.end(); ++fIt )
+  {
+    if ( fIt.key() == section )
+      continue;
+    newFMap.insert( fIt.key() < section ? fIt.key() : fIt.key() - 1, fIt.data() );
+  }
+  myFgColor = newFMap;
+
+  for ( ColorMap::ConstIterator bIt = myBgColor.begin(); bIt != myBgColor.end(); ++bIt )
+  {
+    if ( bIt.key() == section )
+      continue;
+    newBMap.insert( bIt.key() < section ? bIt.key() : bIt.key() - 1, bIt.data() );
+  }
+  myBgColor = newBMap;
 }
 
 void QtxTable::Header::setLabel( int section, const QString& s, int size )
@@ -272,6 +245,34 @@ void QtxTable::Header::setVerticalSpan( const int section, const int sp )
   repaint( indexRect( mapToIndex( section ) ) );
 }
 
+QColor QtxTable::Header::foregroundColor( const int section ) const
+{
+  return myFgColor.contains( section ) ? myFgColor[section] : QColor();
+}
+
+QColor QtxTable::Header::backgroundColor( const int section ) const
+{
+  return myBgColor.contains( section ) ? myBgColor[section] : QColor();
+}
+
+void QtxTable::Header::setForegroundColor( const int section, const QColor& c )
+{
+  if ( foregroundColor( section ) == c )
+    return;
+
+  myFgColor.insert( section, c );
+  repaint( indexRect( mapToIndex( section ) ) );
+}
+
+void QtxTable::Header::setBackgroundColor( const int section, const QColor& c )
+{
+  if ( backgroundColor( section ) == c )
+    return;
+
+  myBgColor.insert( section, c );
+  repaint( indexRect( mapToIndex( section ) ) );
+}
+
 void QtxTable::Header::swapSections( const int oldIdx, const int newIdx )
 {
   QIconSet oldIconSet, newIconSet;
@@ -293,6 +294,16 @@ void QtxTable::Header::swapSections( const int oldIdx, const int newIdx )
   int newVSpan = verticalSpan( newIdx );
   setVerticalSpan( oldIdx, newVSpan );
   setVerticalSpan( newIdx, oldVSpan );
+
+  QColor oldFg = foregroundColor( oldIdx );
+  QColor newFg = foregroundColor( newIdx );
+  setForegroundColor( oldIdx, newFg );
+  setForegroundColor( newIdx, oldFg );
+
+  QColor oldBg = backgroundColor( oldIdx );
+  QColor newBg = backgroundColor( newIdx );
+  setBackgroundColor( oldIdx, newBg );
+  setBackgroundColor( newIdx, oldBg );
 }
 
 void QtxTable::Header::mouseMoveEvent( QMouseEvent* e )
@@ -417,6 +428,7 @@ void QtxTable::Header::spanRanges( SpanRangeList& lst ) const
   for ( int i = 0; i < (int)count(); i++ )
   {
     int sp = horizontalSpan( mapToSection( i ) );
+    sp = QMAX( sp, 1 );
     SpanRange range( i, QMIN( i + sp - 1, count() - 1 ) );
     lst.append( range );
     i += sp - 1;
@@ -457,6 +469,126 @@ QHeader* QtxTable::Header::mainHeader() const
 
   return orientation() == Horizontal ? table()->horizontalHeader() :
                                        table()->verticalHeader();
+}
+
+/*!
+  Class QtxTable::StyleItem
+*/
+
+class QtxTable::StyleItem : public QtxStyleWrapItem
+{
+public:
+  StyleItem( QtxStyleWrap* );
+  ~StyleItem();
+
+  virtual bool drawControl( QStyle::ControlElement, QPainter*, const QWidget*, const QRect&,
+                            const QColorGroup&, QStyle::SFlags, const QStyleOption& ) const;
+  virtual bool drawPrimitive( QStyle::PrimitiveElement, QPainter*, const QRect&,
+                              const QColorGroup&, QStyle::SFlags, const QStyleOption& ) const;
+};
+
+QtxTable::StyleItem::StyleItem( QtxStyleWrap* wrap )
+: QtxStyleWrapItem( wrap )
+{
+}
+
+QtxTable::StyleItem::~StyleItem()
+{
+}
+
+bool QtxTable::StyleItem::drawControl( QStyle::ControlElement element, QPainter* p, const QWidget* widget,
+                                       const QRect& r, const QColorGroup& cg, QStyle::SFlags flags,
+                                       const QStyleOption& opt ) const
+{
+  if ( element != QStyle::CE_HeaderLabel )
+    return false;
+
+	const QHeader* header = (const QHeader*)widget;
+	int section = opt.headerSection();
+
+  QColor fc;
+  QTable* table = ::qt_cast<QTable*>( header->parent() );
+  if ( table && table->verticalHeader() != header && table->horizontalHeader() != header )
+    fc = ((Header*)header)->foregroundColor( section );
+
+  QColorGroup grp( cg );
+  if ( fc.isValid() )
+    grp.setColor( QColorGroup::ButtonText, fc );
+  grp.setColor( QColorGroup::Text, grp.buttonText() );
+
+  QString lab = header->label( section );
+  if ( !QStyleSheet::mightBeRichText( lab ) )
+  {
+    if ( style() )
+		  style()->drawControl( element, p, widget, r, grp, flags, opt );
+  }
+  else
+  {
+    QRect rect = r;
+    QIconSet* icon = header->iconSet( section );
+    if ( icon )
+    {
+	    QPixmap pixmap = icon->pixmap( QIconSet::Small, flags & QStyle::Style_Enabled ? QIconSet::Normal :
+                                                                                      QIconSet::Disabled );
+      int pixw = pixmap.width();
+		  int pixh = pixmap.height();
+
+		  QRect pixRect = rect;
+		  pixRect.setY( rect.center().y() - (pixh - 1) / 2 );
+      if ( style() )
+		    style()->drawItem( p, pixRect, AlignVCenter, cg, flags & QStyle::Style_Enabled, &pixmap, QString::null );
+      rect.setLeft( rect.left() + pixw + 2 );
+    }
+
+    QStyleSheet sheet;
+    QStyleSheetItem* i = sheet.item( "p" );
+    if ( i )
+      i->setMargin( QStyleSheetItem::MarginAll, 0 );
+
+    QSimpleRichText rt( lab, header->font(), QString::null, &sheet );
+    rt.setWidth( rect.width() );
+    rt.draw( p, rect.x(), rect.y() + ( rect.height() - rt.height() ) / 2, rect, grp );
+  }
+
+  return true;
+}
+
+bool QtxTable::StyleItem::drawPrimitive( QStyle::PrimitiveElement pe, QPainter* p, const QRect& r,
+                                         const QColorGroup& cg, QStyle::SFlags flags, const QStyleOption& opt ) const
+{
+  if ( pe != QStyle::PE_HeaderSection )
+    return false;
+
+  if ( opt.isDefault() )
+    return false;
+
+  QHeader* hdr = ::qt_cast<QHeader*>( opt.widget() );
+  if ( !hdr )
+    return false;
+
+  QTable* table = ::qt_cast<QTable*>( hdr->parent() );
+  if ( table && ( table->verticalHeader() == hdr || table->horizontalHeader() == hdr ) )
+    return false;
+
+  Header* h = (Header*)hdr;
+  int section = -1;
+  for ( int i = 0; i < (int)h->count() && section < 0; i++ )
+  {
+    if ( r.contains( h->indexRect( i ) ) )
+      section = h->mapToSection( i );
+  }
+
+  if ( section < 0 )
+    return false;
+
+  QColorGroup grp( cg );
+  QColor c = h->backgroundColor( section );
+  if ( c.isValid() )
+    grp.setColor( QColorGroup::Button, c );
+  if ( style() )
+    style()->drawPrimitive( pe, p, r, grp, flags, opt );
+
+  return true;
 }
 
 /*!
@@ -981,6 +1113,47 @@ void QtxTable::setHorizontalSpan( const Orientation o, const int idx, const int 
     hdr->setHorizontalSpan( section, span );
 }
 
+QColor QtxTable::headerForegroundColor( const Orientation o, const int idx, const int section ) const
+{
+  Header* hdr = (Header*)header( o, idx );
+  if ( !hdr )
+    return QColor();
+
+  return hdr->foregroundColor( section );
+}
+
+QColor QtxTable::headerBackgroundColor( const Orientation o, const int idx, const int section ) const
+{
+  Header* hdr = (Header*)header( o, idx );
+  if ( !hdr )
+    return QColor();
+
+  return hdr->backgroundColor( section );
+}
+
+void QtxTable::setHeaderForegroundColor( const Orientation o, const int idx, const int section, const QColor& c )
+{
+  Header* hdr = (Header*)header( o, idx );
+  if ( hdr )
+    hdr->setForegroundColor( section, c );
+}
+
+void QtxTable::setHeaderBackgroundColor( const Orientation o, const int idx, const int section, const QColor& c )
+{
+  Header* hdr = (Header*)header( o, idx );
+  if ( hdr )
+    hdr->setBackgroundColor( section, c );
+}
+
+QFont QtxTable::cellFont( const int row, const int col ) const
+{
+  QFont res = font();
+  QVariant val = cellProperty( row, col, Font );
+  if ( val.canCast( QVariant::Font ) )
+    res = val.toFont();
+  return res;
+}
+
 QColor QtxTable::cellForegroundColor( const int row, const int col ) const
 {
   QColor res;
@@ -997,6 +1170,11 @@ QColor QtxTable::cellBackgroundColor( const int row, const int col ) const
   if ( val.canCast( QVariant::Color ) )
     res = val.toColor();
   return res;
+}
+
+void QtxTable::setCellFont( const int row, const int col, QFont& f )
+{
+  setCellProperty( row, col, Font, f );
 }
 
 void QtxTable::setCellForegroundColor( const int row, const int col, const QColor& c )
@@ -1021,7 +1199,38 @@ void QtxTable::paintCell( QPainter* p, int row, int col, const QRect& cr,
   if ( bg.isValid() )
     cGroup.setColor( QColorGroup::Base, bg );
 
+  p->save();
+  p->setFont( cellFont( row, col ) );
+
   QTable::paintCell( p, row, col, cr, selected, cGroup );
+
+  p->restore();
+}
+
+void QtxTable::clear( const bool withHeaders )
+{
+  for ( int r = 0; r < numRows(); r++ )
+  {
+    for ( int c = 0; c < numCols(); c++ )
+    {
+      clearCell( r, c );
+      clearCellProperties( r, c );
+    }
+  }
+  if ( !withHeaders )
+    return;
+
+  QHeader* hh = horizontalHeader();
+  for ( int hi = 0; hi < hh->count(); hi++ )
+    hh->setLabel( hi, QString( "" ) );
+  QHeader* vh = verticalHeader();
+  for ( int vi = 0; vi < vh->count(); vi++ )
+    vh->setLabel( vi, QString( "" ) );
+
+  for ( int h = 0; h < (int)myHorHeaders.size(); h++ )
+    ((Header*)myHorHeaders.at( h ))->clear();
+  for ( int v = 0; v < (int)myVerHeaders.size(); v++ )
+    ((Header*)myVerHeaders.at( v ))->clear();
 }
 
 /*!
@@ -1118,6 +1327,45 @@ void QtxTable::setCellProperty( const int row, const int col, const int name, co
 
   Properties& props = map[col];
   props.insert( name, val );
+}
+
+/*!
+  Removes the specified property value of the cell.
+  \param row - row number of cell
+  \param col - column number of cell
+  \param name - property name
+*/
+void QtxTable::unsetCellProperty( const int row, const int col, const int name )
+{
+  if ( !myCellProps.contains( row ) )
+    return;
+
+  PropsMap& map = myCellProps[row];
+  if ( !map.contains( col ) )
+    return;
+
+  map[col].remove( name );
+
+  if ( map[col].isEmpty() )
+    map.remove( col );
+
+  if ( myCellProps[row].isEmpty() )
+    myCellProps.remove( row );
+}
+
+/*!
+  Removes the all properties of the cell.
+  \param row - row number of cell
+  \param col - column number of cell
+*/
+void QtxTable::clearCellProperties( const int row, const int col )
+{
+  if ( !myCellProps.contains( row ) )
+    return;
+
+  myCellProps[row].remove( col );
+  if ( myCellProps[row].isEmpty() )
+    myCellProps.remove( row );
 }
 
 /*!
