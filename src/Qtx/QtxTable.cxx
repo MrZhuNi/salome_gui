@@ -584,7 +584,10 @@ bool QtxTable::StyleItem::drawPrimitive( QStyle::PrimitiveElement pe, QPainter* 
   QColorGroup grp( cg );
   QColor c = h->backgroundColor( section );
   if ( c.isValid() )
+  {
     grp.setColor( QColorGroup::Button, c );
+    grp.setColor( QColorGroup::Light, c );
+  }
   if ( style() )
     style()->drawPrimitive( pe, p, r, grp, flags, opt );
 
