@@ -29,9 +29,14 @@
 
 class LightApp_DataObject;
 
+#ifdef WIN32
+#pragma warning( disable:4251 )
+#endif
+
 /*!
   This class provide data owner objects.
 */
+
 class LIGHTAPP_EXPORT LightApp_DataOwner : public SUIT_DataOwner
 {
 public:
@@ -58,5 +63,9 @@ private:
 };
 
 typedef SMART(LightApp_DataOwner) LightApp_DataOwnerPtr;
+
+#ifdef WIN32
+#pragma warning( default:4251 )
+#endif
 
 #endif
