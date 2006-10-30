@@ -502,11 +502,11 @@ int Qtx::rgbSet( const int r, const int g, const int b )
 	Name: rgbSet [static public]
 	Desc: Unpack the specified integer RGB set into the color.
 */
-void Qtx::rgbSet( const int rgb, QColor& c )
+QColor Qtx::rgbSet( const int rgb )
 {
   int r, g, b;
   rgbSet( rgb, r, g, b );
-  c = QColor( r, g, b );
+  return QColor( r, g, b );
 }
 
 /*!

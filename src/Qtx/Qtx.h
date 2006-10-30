@@ -46,6 +46,7 @@
 #define INCLUDE_MENUITEM_DEF
 #endif
 
+#include <qcolor.h>
 #include <qnamespace.h>
 
 #ifndef QT_VERSION
@@ -129,7 +130,7 @@ public:
   static int     rgbSet( const QColor& );
   static int     rgbSet( const int, const int, const int );
 
-  static void    rgbSet( const int, QColor& );
+  static QColor  rgbSet( const int );
   static void    rgbSet( const int, int&, int&, int& );
 
   static QColor  scaleColor( const int, const int, const int );
