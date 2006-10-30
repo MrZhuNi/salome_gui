@@ -59,6 +59,10 @@ myAutoLoad( autoLoad )
 /*!Destructor. Do nothing.*/
 CAM_Application::~CAM_Application()
 {
+  // delete all modules (or switch on autoDelete property of QPtrList in constructor )
+  for ( ModuleListIterator it( myModules ); it.current(); ++it )
+    delete it.current();
+  myModules.clear();
 }
 
 /*! Load modules, if \a myAutoLoad flag is true.\n
