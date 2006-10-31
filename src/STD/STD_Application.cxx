@@ -677,8 +677,6 @@ void STD_Application::removeViewManager( SUIT_ViewManager* vm )
 
   vm->closeAllViews();
 
-  emit viewManagerRemoved( vm );
-
   vm->disconnectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
   disconnect( vm, SIGNAL( activated( SUIT_ViewManager* ) ),
              this, SLOT( onViewManagerActivated( SUIT_ViewManager* ) ) );
@@ -686,6 +684,8 @@ void STD_Application::removeViewManager( SUIT_ViewManager* vm )
 
   if ( myActiveViewMgr == vm )
     myActiveViewMgr = 0;
+  
+  emit viewManagerRemoved( vm );
 }
 
 /*!Remove all view managers from view managers list.*/
