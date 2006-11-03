@@ -256,10 +256,11 @@ QtxActionToolMgr* CAM_Module::toolMgr() const
  */
 int CAM_Module::createTool( const QString& name )
 {
-  if ( !toolMgr() )
+  QtxActionToolMgr* tMgr = toolMgr();
+  if ( !tMgr )
     return -1;
 
-  return toolMgr()->createToolBar( name );
+  return tMgr->createToolBar( name );
 }
 
 /*! Create tool. Register action \a a with id \a id.
@@ -273,11 +274,12 @@ int CAM_Module::createTool( const QString& name )
  */
 int CAM_Module::createTool( QAction* a, const int tBar, const int id, const int idx )
 {
-  if ( !toolMgr() )
+  QtxActionToolMgr* tMgr = toolMgr();
+  if ( !tMgr )
     return -1;
 
   int regId = registerAction( id, a );
-  int intId = toolMgr()->insert( a, tBar, idx );
+  int intId = tMgr->insert( a, tBar, idx );
   return intId != -1 ? regId : -1;
 }
 
@@ -292,11 +294,12 @@ int CAM_Module::createTool( QAction* a, const int tBar, const int id, const int 
  */
 int CAM_Module::createTool( QAction* a, const QString& tBar, const int id, const int idx )
 {
-  if ( !toolMgr() )
+  QtxActionToolMgr* tMgr = toolMgr();
+  if ( !tMgr )
     return -1;
 
   int regId = registerAction( id, a );
-  int intId = toolMgr()->insert( a, tBar, idx );
+  int intId = tMgr->insert( a, tBar, idx );
   return intId != -1 ? regId : -1;
 }
 
@@ -310,10 +313,11 @@ int CAM_Module::createTool( QAction* a, const QString& tBar, const int id, const
  */
 int CAM_Module::createTool( const int id, const int tBar, const int idx )
 {
-  if ( !toolMgr() )
+  QtxActionToolMgr* tMgr = toolMgr();
+  if ( !tMgr )
     return -1;
 
-  int intId = toolMgr()->insert( action( id ), tBar, idx );
+  int intId = tMgr->insert( action( id ), tBar, idx );
   return intId != -1 ? id : -1;
 }
 
@@ -327,10 +331,11 @@ int CAM_Module::createTool( const int id, const int tBar, const int idx )
  */
 int CAM_Module::createTool( const int id, const QString& tBar, const int idx )
 {
-  if ( !toolMgr() )
+  QtxActionToolMgr* tMgr = toolMgr();
+  if ( !tMgr )
     return -1;
 
-  int intId = toolMgr()->insert( action( id ), tBar, idx );
+  int intId = tMgr->insert( action( id ), tBar, idx );
   return intId != -1 ? id : -1;
 }
 
@@ -348,10 +353,11 @@ int CAM_Module::createMenu( const QString& subMenu, const int menu,
                             const int id, const int group, const int index,
 			    const bool enableEmpty )
 {
-  if ( !menuMgr() )
+  QtxActionMenuMgr* mMgr = menuMgr();
+  if ( !mMgr )
     return -1;
 
-  return menuMgr()->insert( subMenu, menu, group, id, index, enableEmpty );
+  return mMgr->insert( subMenu, menu, group, id, index, enableEmpty );
 }
 
 /*! Create menu.
@@ -368,10 +374,11 @@ int CAM_Module::createMenu( const QString& subMenu, const QString& menu,
                             const int id, const int group, const int index,
 			    const bool enableEmpty )
 {
-  if ( !menuMgr() )
+  QtxActionMenuMgr* mMgr = menuMgr();
+  if ( !mMgr )
     return -1;
 
-  return menuMgr()->insert( subMenu, menu, group, id, index, enableEmpty );
+  return mMgr->insert( subMenu, menu, group, id, index, enableEmpty );
 }
 
 
@@ -387,11 +394,12 @@ int CAM_Module::createMenu( const QString& subMenu, const QString& menu,
  */
 int CAM_Module::createMenu( QAction* a, const int menu, const int id, const int group, const int index )
 {
-  if ( !a || !menuMgr() )
+  QtxActionMenuMgr* mMgr = menuMgr();
+  if ( !a || !mMgr )
     return -1;
 
   int regId = registerAction( id, a );
-  int intId = menuMgr()->insert( a, menu, group, index );
+  int intId = mMgr->insert( a, menu, group, index );
   return intId != -1 ? regId : -1;
 }
 
@@ -407,11 +415,12 @@ int CAM_Module::createMenu( QAction* a, const int menu, const int id, const int 
  */
 int CAM_Module::createMenu( QAction* a, const QString& menu, const int id, const int group, const int index )
 {
-  if ( !a || !menuMgr() )
+  QtxActionMenuMgr* mMgr = menuMgr();
+  if ( !a || !mMgr )
     return -1;
 
   int regId = registerAction( id, a );
-  int intId = menuMgr()->insert( a, menu, group, index );
+  int intId = mMgr->insert( a, menu, group, index );
   return intId != -1 ? regId : -1;
 }
 
@@ -426,10 +435,11 @@ int CAM_Module::createMenu( QAction* a, const QString& menu, const int id, const
  */
 int CAM_Module::createMenu( const int id, const int menu, const int group, const int index )
 {
-  if ( !menuMgr() )
+  QtxActionMenuMgr* mMgr = menuMgr();
+  if ( !mMgr )
     return -1;
 
-  int intId = menuMgr()->insert( action( id ), menu, group, index );
+  int intId = mMgr->insert( action( id ), menu, group, index );
   return intId != -1 ? id : -1;
 }
 
@@ -444,10 +454,11 @@ int CAM_Module::createMenu( const int id, const int menu, const int group, const
  */
 int CAM_Module::createMenu( const int id, const QString& menu, const int group, const int index )
 {
-  if ( !menuMgr() )
+  QtxActionMenuMgr* mMgr = menuMgr();
+  if ( !mMgr )
     return -1;
 
-  int intId = menuMgr()->insert( action( id ), menu, group, index );
+  int intId = mMgr->insert( action( id ), menu, group, index );
   return intId != -1 ? id : -1;
 }
 
@@ -481,8 +492,9 @@ void CAM_Module::setMenuShown( const bool on )
  */
 void CAM_Module::setMenuShown( QAction* a, const bool on )
 {
-  if ( menuMgr() )
-    menuMgr()->setShown( menuMgr()->actionId( a ), on );
+  QtxActionMenuMgr* mMgr = menuMgr();
+  if ( mMgr )
+    mMgr->setShown( mMgr->actionId( a ), on );
 }
 
 /*!Sets menu shown for action with id=\a id to \a on flag.
@@ -524,8 +536,10 @@ void CAM_Module::setToolShown( const bool on )
  */
 void CAM_Module::setToolShown( QAction* a, const bool on )
 {
-  if ( toolMgr() )
-    toolMgr()->setShown( toolMgr()->actionId( a ), on );
+  QtxActionToolMgr* tMgr = toolMgr();
+  if ( !tMgr )
+    return;
+  tMgr->setShown( tMgr->actionId( a ), on );
 }
 
 /*!Set tools shown for action with id=\a id to \a on flag.
@@ -611,11 +625,13 @@ int CAM_Module::registerAction( const int id, QAction* a )
 
   myActionMap.insert( ident, a );
 
-  if ( menuMgr() )
-    menuMgr()->registerAction( a );
+  QtxActionMenuMgr* mMgr = menuMgr();
+  if ( mMgr )
+    mMgr->registerAction( a );
 
-  if ( toolMgr() )
-    toolMgr()->registerAction( a );
+  QtxActionToolMgr* tMgr = toolMgr();
+  if ( tMgr )
+    tMgr->registerAction( a );
 
   return ident;
 }
@@ -637,20 +653,22 @@ bool CAM_Module::unregisterAction( QAction* a )
 {
   if ( !a )
     return false;
-  if ( menuMgr() ) {
-    int id = menuMgr()->actionId( a );
-    if ( id != -1 && menuMgr()->containsMenu( id, -1 ) )
+  QtxActionMenuMgr* mMgr = menuMgr();
+  if ( mMgr ) {
+    int id = mMgr->actionId( a );
+    if ( id != -1 && mMgr->containsMenu( id, -1 ) )
       return false;
   }
-  if ( toolMgr() ) {
-    int id = toolMgr()->actionId( a );
-    if ( id != -1 && toolMgr()->containsAction( id ) )
+  QtxActionToolMgr* tMgr = toolMgr();
+  if ( tMgr ) {
+    int id = tMgr->actionId( a );
+    if ( id != -1 && tMgr->containsAction( id ) )
       return false;
   }
-  if ( menuMgr() )
-    menuMgr()->unRegisterAction( menuMgr()->actionId( a ) );
-  if ( toolMgr() )
-    toolMgr()->unRegisterAction( toolMgr()->actionId( a ) );
+  if ( mMgr )
+    mMgr->unRegisterAction( mMgr->actionId( a ) );
+  if ( tMgr )
+    tMgr->unRegisterAction( tMgr->actionId( a ) );
   return true;
 }
 
