@@ -180,27 +180,34 @@ void Qtx::simplifySeparators( QToolBar* toolbar )
   QObjectList delList;
 
   bool isPrevSep = true;
+  QObject* lastVis = 0; // last visible
   for ( QObjectListIt it( *objList ); it.current(); ++it )
   {
     QObject* obj = it.current();
+    /*/
     if ( !obj || !obj->isWidgetType() || !((QWidget*)obj)->isVisibleTo( toolbar ) )
       continue;
     bool isSep = obj->isA( "QToolBarSeparator" );
+    */
+    if ( !obj || !obj->isWidgetType() )
+      continue;
+    bool isSep = obj->isA( "QToolBarSeparator" );
+    if ( !isSep && !((QWidget*)obj)->isVisibleTo( toolbar ) )
+      continue;
     if ( isPrevSep && isSep )
       delList.append( obj );
-    isPrevSep = isSep;
+    else
+    {
+      isPrevSep = isSep;
+      lastVis = obj;
+    }
   }
+  // remove last visible separator
+  if ( lastVis && lastVis->isA( "QToolBarSeparator" ) )
+      delList.append( lastVis );
 
   for ( QObjectListIt itr( delList ); itr.current(); ++itr )
     delete itr.current();
-
-  if ( toolbar->children() && !toolbar->children()->isEmpty() &&
-       toolbar->children()->getFirst()->isA( "QToolBarSeparator" ) )
-    delete toolbar->children()->getFirst();
-
-  if ( toolbar->children() && !toolbar->children()->isEmpty() &&
-       toolbar->children()->getLast()->isA( "QToolBarSeparator" ) )
-    delete toolbar->children()->getLast();
 }
 
 /*!

@@ -23,13 +23,14 @@
 #include "QtxActionMgr.h"
 #include "QtxAction.h"
 
+#include <qdom.h>
+#include <qfile.h>
+#include <qtimer.h>
 #include <qwidget.h>
 #include <qtoolbar.h>
 #include <qpopupmenu.h>
 #include <qwidgetlist.h>
 #include <qobjectlist.h>
-#include <qfile.h>
-#include <qdom.h>
 
 static QAction* qtx_separator_action = 0;
 
@@ -159,7 +160,8 @@ bool QtxActionMgr::SeparatorAction::removeFrom( QWidget* wid )
 */
 QtxActionMgr::QtxActionMgr( QObject* parent )
 : QObject( parent ),
-myUpdate( true )
+myUpdate( true ),
+myUpdTimer( 0 )
 {
 }
 
@@ -373,6 +375,40 @@ QAction* QtxActionMgr::separator( const bool individual )
     qAddPostRoutine( qtxSeparatorActionCleanup );
   }
   return qtx_separator_action;
+}
+
+/*!
+  \initialise timer for delayed update
+*/
+void QtxActionMgr::triggerUpdate()
+{
+  if ( !isUpdatesEnabled() )
+    return;
+
+  if ( !myUpdTimer )
+  {
+    myUpdTimer = new QTimer( this );
+    connect( myUpdTimer, SIGNAL( timeout() ), this, SLOT( onUpdateContent() ) );
+  }
+  myUpdTimer->stop();
+  // add timer event to event list
+  myUpdTimer->start( 0, true );
+}
+
+/*!
+  \perform delayed update
+  \default implementation is empty
+*/
+void QtxActionMgr::updateContent()
+{}
+
+/*!
+  \perform delayed update
+  \default implementation is empty
+*/
+void QtxActionMgr::onUpdateContent()
+{
+  updateContent();
 }
 
 /*!

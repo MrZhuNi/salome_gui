@@ -24,6 +24,7 @@
 
 #include "Qtx.h"
 
+#include <qmap.h>
 #include <qaction.h>
 
 #include "QtxActionMgr.h"
@@ -122,8 +123,11 @@ protected:
   virtual void    internalUpdate();
   void            updateToolBar( const int );
 
+  virtual void    updateContent();
+
 private:
   void            simplifySeparators( QToolBar* );
+  void            triggerUpdate( const int );
 
 private:
   typedef struct { NodeList nodes; QToolBar* toolBar; } ToolBarInfo;
@@ -132,6 +136,7 @@ private:
 private:
   ToolBarMap      myToolBars;
   QMainWindow*    myMainWindow;
+  QMap<int,int>   myUpdateIds;
 };
 
 /*!

@@ -28,9 +28,9 @@
 #include <qobject.h>
 #include <qguardedptr.h>
 
+class QTimer;
 class QAction;
 class QDomNode;
-
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -87,6 +87,13 @@ protected:
   virtual void     internalUpdate();
   int              generateId() const;
 
+  //! initialise timer for delayed update
+  void             triggerUpdate();
+  virtual void     updateContent();
+
+private slots:
+  void             onUpdateContent();
+
 private:
   typedef QGuardedPtr<QAction> ActionPtr;
   typedef QMap<int, ActionPtr> ActionMap;
@@ -94,6 +101,7 @@ private:
 private:
   bool             myUpdate;
   ActionMap        myActions;
+  QTimer*          myUpdTimer;
 };
 
 

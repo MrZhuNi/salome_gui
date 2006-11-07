@@ -404,7 +404,8 @@ int QtxActionMenuMgr::insert( const int id, const int pId, const int group, cons
 
   pNode->children.append( node );
 
-  updateMenu( pNode, false );
+  triggerUpdate( pNode->id, false );
+
 
   return node->id;
 }
@@ -464,7 +465,7 @@ int QtxActionMenuMgr::insert( const QString& title, const int pId, const int gro
 
   pNode->children.append( node );
 
-  updateMenu( pNode, false );
+  triggerUpdate( pNode->id, false );
 
   return node->id;
 }
@@ -608,7 +609,7 @@ void QtxActionMenuMgr::remove( const int id, const int pId, const int group )
   for ( NodeListIterator itr( delNodes ); itr.current(); ++itr )
     pNode->children.remove( itr.current() );
 
-  updateMenu( pNode, false );
+  triggerUpdate( pNode->id, false );
 }
 
 /*!
@@ -652,18 +653,14 @@ void QtxActionMenuMgr::setShown( const int id, const bool on )
   NodeList aNodes;
   find( id, aNodes );
 
-  QMap<MenuNode*, int> updMap;
   for ( NodeListIterator it( aNodes ); it.current(); ++it )
   {
     if ( it.current()->visible != on )
     {
       it.current()->visible = on;
-      updMap.insert( it.current()->parent, 0 );
+      triggerUpdate( it.current()->parent ? it.current()->parent->id : myRoot.id, false );
     }
   }
-
-  for ( QMap<MenuNode*, int>::ConstIterator itr = updMap.begin(); itr != updMap.end(); ++itr )
-    updateMenu( itr.key(), false );
 }
 
 /*!
@@ -697,7 +694,7 @@ void QtxActionMenuMgr::onHighlighted( int id )
       setUpdatesEnabled( false );
       emit menuHighlighted( pid, realId );
       setUpdatesEnabled( updatesEnabled );
-      updateMenu( find( realId ) );
+      triggerUpdate( realId );
     }
   }
 }
@@ -949,7 +946,7 @@ void QtxActionMenuMgr::updateMenu( MenuNode* startNode, const bool rec, const bo
     {
       MenuNode* par = iter.current()->parent;
       if ( !isVisible( iter.current()->id, par ? par->id : -1 ) )
-	continue;
+        continue;
 
       if ( rec )
         updateMenu( iter.current(), rec, false );
@@ -1090,6 +1087,31 @@ bool QtxActionMenuMgr::containsMenu( const int id, const int pid ) const
   return (bool)find( id, pid, false );
 }
 
+/*!
+  \Sets trigger for delayed update
+*/
+void QtxActionMenuMgr::triggerUpdate( const int id, const bool rec )
+{
+  bool isRec = rec;
+  if ( myUpdateIds.contains( id ) )
+    isRec = isRec || myUpdateIds[ id ];
+  myUpdateIds.insert( id, isRec );
+  QtxActionMgr::triggerUpdate();
+}
+
+/*!
+  \Sets trigger for delayed update
+*/
+void QtxActionMenuMgr::updateContent()
+{
+  for ( QMap<int, bool>::const_iterator it = myUpdateIds.constBegin(); it != myUpdateIds.constEnd(); ++it )
+  {
+    MenuNode* node = find( it.key(), 0 );
+    if ( node )
+      updateMenu( node, it.data() );
+  }
+  myUpdateIds.clear();
+}
 
 /*!
   Constructor

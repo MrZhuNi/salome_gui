@@ -158,7 +158,7 @@ int QtxActionToolMgr::insert( const int id, const int tid, const int idx )
   NodeList& list = myToolBars[tid].nodes;
   int index = idx < 0 ? list.count() : QMIN( idx, (int)list.count() );
   list.insert( list.at( index ), node );
-  updateToolBar( tid );
+  triggerUpdate( tid );
 
   return id;
 }
@@ -296,7 +296,7 @@ void QtxActionToolMgr::remove( const int id, const int tid )
 
   myToolBars[tid].nodes = newList;
 
-  updateToolBar( tid );
+  triggerUpdate( tid );
 }
 
 /*!
@@ -562,7 +562,7 @@ void QtxActionToolMgr::setVisible( const int id, const int tId, const bool on )
   }
 
   if ( changed )
-    updateToolBar( tId );
+    triggerUpdate( tId );
 }
 
 /*!
@@ -576,6 +576,27 @@ bool QtxActionToolMgr::load( const QString& fname, QtxActionMgr::Reader& r )
   return r.read( fname, cr );
 }
 
+/*!
+  \Perform delayed update
+*/
+void QtxActionToolMgr::updateContent()
+{
+  if ( !isUpdatesEnabled() )
+    return;
+
+  for ( QMap<int,int>::const_iterator it = myUpdateIds.constBegin(); it != myUpdateIds.constEnd(); ++it )
+    updateToolBar( it.key() );
+  myUpdateIds.clear();
+}
+
+/*!
+  \ Sets trigger to update
+*/
+void QtxActionToolMgr::triggerUpdate( const int id )
+{
+  myUpdateIds.insert( id, 0 );
+  QtxActionMgr::triggerUpdate();
+}
 
 /*!
   Constructor
@@ -644,5 +665,3 @@ int QtxActionToolMgr::ToolCreator::append( const QString& tag, const bool subMen
 
   return res;
 }
-
-

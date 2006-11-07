@@ -148,6 +148,7 @@ protected:
 
   void         updateMenu( MenuNode* = 0, const bool = true, const bool = true );
   virtual void internalUpdate();  
+  virtual void updateContent();
 
 private:
   bool         checkWidget( QWidget* ) const;
@@ -156,6 +157,8 @@ private:
   QString      clearTitle( const QString& ) const;
   int          createMenu( const QStringList&, const int );
 
+  void         triggerUpdate( const int, const bool rec = true );
+
 private:
   typedef QMap<int, MenuAction*> MenuMap;
 
@@ -163,6 +166,7 @@ private:
   MenuNode     myRoot;
   QWidget*     myMenu;
   MenuMap      myMenus;
+  QMap<int, bool> myUpdateIds;
 };
 
 /*!
