@@ -1,24 +1,19 @@
 #
-#  PLEASE DO NOT MODIFY configure.in FILE
-#
-#  ALL CHANGES WILL BE DISCARDED BY THE NEXT
-#  build_configure COMMAND
-#
-#  CHANGES MUST BE MADE IN configure.in.base FILE
-#
-#
 # Author : Marc Tajchman (CEA)
 # Date : 28/06/2001
 # Modified by : Patrick GOLDBRONN (CEA)
 # Modified by : Marc Tajchman (CEA)
+# Modified by : Mikhail PONIKAROV (OCN) - autotools usage
 #
 # Created from configure.in.base
 #
 
 
-AC_INIT(src)
-AC_CONFIG_AUX_DIR(${KERNEL_ROOT_DIR}/salome_adm/unix/config_files)
+AC_INIT([Salome2 Project GUI module], [3.2.2], [gboulant@CS], [salome])
+AC_CONFIG_AUX_DIR(salome_adm/unix/config_files)
 AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+AM_INIT_AUTOMAKE
 
 PACKAGE=salome
 AC_SUBST(PACKAGE)
@@ -32,40 +27,63 @@ AC_SUBST(XVERSION)
 MODULE_NAME=gui
 AC_SUBST(MODULE_NAME)
 
+echo
+echo ---------------------------------------------
+echo Initialize source and build root directories
+echo ---------------------------------------------
+echo
+
 ########################################################################
 # Check --disable-corba-gen and other --disable-* options
 
-GUI_DISABLE_CORBA="no"
-DISABLE_PYCONSOLE="no"
-DISABLE_GLVIEWER="no"
-DISABLE_PLOT2DVIEWER="no"
-DISABLE_SUPERVGRAPHVIEWER="no"
-DISABLE_OCCVIEWER="no"
-DISABLE_VTKVIEWER="no"
-DISABLE_SALOMEOBJECT="no"
+if test "x${enable_corba_gen}" != "xno" ; then
+    GUI_DISABLE_CORBA="no"
+else 
+    GUI_DISABLE_CORBA="yes"
+fi
 
-for option
-do
-  case $option in
-      -disable-corba-gen=yes | --disable-corba-gen=yes | -disable-corba-gen | --disable-corba-gen)
-          GUI_DISABLE_CORBA="yes";;
-      -disable-pyConsole=yes | --disable-pyConsole=yes | -disable-pyConsole | --disable-pyConsole)
-          DISABLE_PYCONSOLE="yes";;
-      -disable-glViewer=yes | --disable-glViewer=yes | -disable-glViewer | --disable-glViewer)
-          DISABLE_GLVIEWER="yes";;
-      -disable-plot2dViewer=yes | --disable-plot2dViewer=yes | -disable-plot2dViewer | --disable-plot2dViewer)
-          DISABLE_PLOT2DVIEWER="yes";;
-      -disable-supervGraphViewer=yes | --disable-supervGraphViewer=yes | \
-      -disable-supervGraphViewer | --disable-supervGraphViewer)
-          DISABLE_SUPERVGRAPHVIEWER="yes";;
-      -disable-occViewer=yes | --disable-occViewer=yes | -disable-occViewer | --disable-occViewer)
-          DISABLE_OCCVIEWER="yes";;
-      -disable-vtkViewer=yes | --disable-vtkViewer=yes | -disable-vtkViewer | --disable-vtkViewer)
-          DISABLE_VTKVIEWER="yes";;
-      -disable-salomeObject=yes | --disable-salomeObject=yes | -disable-salomeObject | --disable-salomeObject)
-          DISABLE_SALOMEOBJECT="yes";;
-  esac
-done
+if test "x${enable_pyConsole}" != "xno" ; then
+    DISABLE_PYCONSOLE="no"
+else 
+    DISABLE_PYCONSOLE="yes"
+fi
+
+if test "x${enable_glViewer}" != "xno" ; then
+    DISABLE_GLVIEWER="no"
+else 
+    DISABLE_GLVIEWER="yes"
+fi
+
+if test "x${enable_plot2dViewer}" != "xno" ; then
+    DISABLE_PLOT2DVIEWER="no"
+else 
+    DISABLE_PLOT2DVIEWER="yes"
+fi
+
+if test "x${enable_supervGraphViewer}" != "xno" ; then
+    DISABLE_SUPERVGRAPHVIEWER="no"
+else 
+    DISABLE_SUPERVGRAPHVIEWER="yes"
+fi
+
+if test "x${enable_occViewer}" != "xno" ; then
+    DISABLE_OCCVIEWER="no"
+else 
+    DISABLE_OCCVIEWER="yes"
+fi
+
+if test "x${enable_vtkViewer}" != "xno" ; then
+    DISABLE_VTKVIEWER="no"
+else 
+    DISABLE_VTKVIEWER="yes"
+fi
+
+if test "x${enable_salomeObject}" != "xno" ; then
+    DISABLE_SALOMEOBJECT="no"
+else 
+    DISABLE_SALOMEOBJECT="yes"
+fi
+
 
 dnl
 dnl Initialize source and build root directories
@@ -103,9 +121,14 @@ echo
 
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
-dnl 
+dnl
 dnl libtool macro check for CC, LD, NM, LN_S, RANLIB, STRIP + pour les librairies dynamiques !
 
+echo
+echo ---------------------------------------------
+echo Coniguring production
+echo ---------------------------------------------
+echo
 AC_ENABLE_DEBUG(yes)
 AC_DISABLE_PRODUCTION
 
@@ -124,7 +147,7 @@ dnl Fix up the INSTALL macro if it s a relative path. We want the
 dnl full-path to the binary instead.
 case "$INSTALL" in
    *install-sh*)
-      INSTALL='\${KERNEL_ROOT_DIR}'/salome_adm/unix/config_files/install-sh
+      INSTALL='\${ROOT_BUILDDIR}'/salome_adm/unix/config_files/install-sh
       ;;
 esac
 
@@ -150,7 +173,7 @@ AC_CHECK_LIB(dl,dlopen)
 dnl add library libm :
 AC_CHECK_LIB(m,ceil)
 
-dnl 
+dnl
 dnl Well we use sstream which is not in gcc pre-2.95.3
 dnl We must test if it exists. If not, add it in include !
 dnl
@@ -209,6 +232,7 @@ echo testing swig
 echo ---------------------------------------------
 echo
 
+AM_PATH_PYTHON(2.3)
 CHECK_SWIG
 fi
 
@@ -336,7 +360,7 @@ echo Testing qwt
 echo ---------------------------------------------
 echo
 
-CHECK_QWT 
+CHECK_QWT
 
 echo
 echo ---------------------------------------------
@@ -436,7 +460,7 @@ echo
 echo ---------------------------------------------
 echo Testing html generators
 echo ---------------------------------------------
-echo 
+echo
 
 CHECK_HTML_GENERATORS
 
@@ -461,17 +485,19 @@ echo Summary
 echo ---------------------------------------------
 echo
 
-if test "$GUI_DISABLE_CORBA" == "yes"; then 
+if test "$GUI_DISABLE_CORBA" == "yes"; then
    echo "Configure (without Corba)"
 else
    echo Configure
 fi
 
 
-if test "$GUI_DISABLE_CORBA" != "yes"; then 
-variables="cc_ok lex_yacc_ok python_ok swig_ok threads_ok OpenGL_ok qt_ok msg2qm_ok vtk_ok hdf5_ok omniORB_ok boost_ok occ_ok sip_ok pyqt_ok qwt_ok doxygen_ok graphviz_ok Kernel_ok"
+if test "$GUI_DISABLE_CORBA" != "yes"; then
+variables="cc_ok lex_yacc_ok python_ok swig_ok threads_ok OpenGL_ok qt_ok msg2qm_ok vtk_ok hdf5_ok
+omniORB_ok boost_ok occ_ok sip_ok pyqt_ok qwt_ok doxygen_ok graphviz_ok Kernel_ok"
 else
-variables="cc_ok lex_yacc_ok python_ok threads_ok OpenGL_ok qt_ok msg2qm_ok vtk_ok hdf5_ok boost_ok occ_ok sip_ok pyqt_ok qwt_ok doxygen_ok graphviz_ok Kernel_ok"
+variables="cc_ok lex_yacc_ok python_ok threads_ok OpenGL_ok qt_ok msg2qm_ok vtk_ok hdf5_ok boost_ok
+occ_ok sip_ok pyqt_ok qwt_ok doxygen_ok graphviz_ok Kernel_ok"
 fi
 
 for var in $variables
@@ -482,7 +508,7 @@ done
 
 echo "---Optional:"
 variables="cppunit_ok"
- 
+
 for var in $variables
 do
    eval toto=\$$var
@@ -492,19 +518,11 @@ do
    fi
 done
 
-if test "$GUI_DISABLE_CORBA" != "yes"; then 
+if test "$GUI_DISABLE_CORBA" != "yes"; then
 echo
 echo "Default ORB   : $DEFAULT_ORB"
 echo
 fi
-dnl generals files which could be included in every makefile
-
-AC_SUBST_FILE(COMMENCE) COMMENCE=adm_local/unix/make_commence
-AC_SUBST_FILE(CONCLUDE) CONCLUDE=adm_local/unix/make_conclude
-AC_SUBST_FILE(MODULE) MODULE=salome_adm/unix/make_module
-
-dnl les dependences
-AC_SUBST_FILE(DEPEND) DEPEND=salome_adm/unix/depend
 
 dnl We don t need to say when we re entering directories if we re using
 dnl GNU make becuase make does it for us.
@@ -514,44 +532,25 @@ else
    AC_SUBST(SETX) SETX="set -x"
 fi
 
-# make other build directories
-if test "$GUI_DISABLE_CORBA" == "yes"; then 
-  dir_variables="salome_adm adm_local doc bin/salome include/salome lib${LIB_LOCATION_SUFFIX}/salome share/salome/resources/${MODULE_NAME} idl"
-else
-  dir_variables="salome_adm adm_local doc bin/salome include/salome lib${LIB_LOCATION_SUFFIX}/salome share/salome/resources/${MODULE_NAME}"
-fi
+AM_CONDITIONAL(GUI_ENABLE_CORBA, [test "$GUI_DISABLE_CORBA" = no])
+AM_CONDITIONAL(ENABLE_PYCONSOLE, [test "$DISABLE_PYCONSOLE" = no])
+AM_CONDITIONAL(ENABLE_GLVIEWER, [test "$DISABLE_GLVIEWER" = no])
+AM_CONDITIONAL(ENABLE_PLOT2DVIEWER, [test "$DISABLE_PLOT2DVIEWER" = no])
+AM_CONDITIONAL(ENABLE_SUPERVGRAPHVIEWER, [test "$DISABLE_SUPERVGRAPHVIEWER" = no])
+AM_CONDITIONAL(ENABLE_OCCVIEWER, [test "$DISABLE_OCCVIEWER" = no])
+AM_CONDITIONAL(ENABLE_VTKVIEWER, [test "$DISABLE_VTKVIEWER" = no])
+AM_CONDITIONAL(ENABLE_SALOMEOBJECT, [test "$DISABLE_SALOMEOBJECT" = no])
 
-for rep in $dir_variables
-do
-#   if test ! -d $rep ; then
-#      eval mkdir $rep
-#   fi
-    $INSTALL -d $rep
-done
-
-echo 
+echo
 echo ---------------------------------------------
-echo copying resource files, shell scripts, and 
+echo copying resource files, shell scripts, and
 echo xml files
 echo ---------------------------------------------
 echo
 
 
-dnl copy resources directories
-
-#for i in `find $ROOT_SRCDIR -name 'resources' -print`
-#do
-#  local_res=`echo $i | sed -e "s,$ROOT_SRCDIR,.,"`
-#  local_res_dir=`echo $local_res | sed -e "s,[[^/]]*$,,;s,/$,,;s,^$,.,"`
-#  mkdir -p $local_res_dir
-#  cd $local_res_dir
-#  ln -fs $i
-#  echo $local_res
-#  cd $ROOT_BUILDDIR
-#done
-
 dnl copy shells and utilities contained in the bin directory
-dnl excluding .in files (treated in AC-OUTPUT below) and CVS 
+dnl excluding .in files (treated in AC-OUTPUT below) and CVS
 dnl directory
 
 mkdir -p bin/salome
@@ -568,20 +567,6 @@ do
 done
 cd $ROOT_BUILDDIR
 
-AC_SUBST_FILE(ENVSCRIPT) ENVSCRIPT=salome_adm/unix/envScript
-
-dnl copy xml files to the build tree (lib directory)
-dnl pourquoi ????
-
-#cd lib
-#for i in `find $ROOT_SRCDIR -name "*.xml" -print`
-#do
-#  ln -fs $i
-#  echo `echo $i | sed -e "s,$ROOT_SRCDIR,.,"`
-#done
-#cd $ROOT_BUILDDIR
-
-
 echo
 echo ---------------------------------------------
 echo generating Makefiles and configure files
@@ -589,7 +574,68 @@ echo ---------------------------------------------
 echo
 
 AC_OUTPUT_COMMANDS([ \
-	chmod +x ./bin/* \
+  chmod +x ./bin/*; \
+  chmod +x ./bin/salome/*; \
 ])
 
-## do not delete this line
+# This list is initiated using autoscan and must be updated manually
+# when adding a new file <filename>.in to manage. When you execute
+# autoscan, the Makefile list is generated in the output file configure.scan.
+# This could be helpfull to update de configuration.
+AC_OUTPUT([ \
+  ./salome_adm/unix/SALOMEconfig.h \
+  ./adm_local/Makefile \
+  ./adm_local/unix/Makefile \
+  ./adm_local/unix/config_files/Makefile \
+  ./bin/VERSION \
+  ./bin/Makefile \
+  ./GUI_version.h \
+  ./doc/Makefile \
+  ./doc/salome/Makefile \
+  ./doc/salome/gui/Makefile \
+  ./doc/salome/tui/Makefile \
+  ./doc/salome/tui/GUI/doxyfile \
+  ./src/Makefile \
+  ./src/Qtx/Makefile \
+  ./src/Style/Makefile \
+  ./src/DDS/Makefile \
+  ./src/QDS/Makefile \
+  ./src/SUIT/Makefile \
+  ./src/STD/Makefile \
+  ./src/CAF/Makefile \
+  ./src/CAM/Makefile \
+  ./src/SUITApp/Makefile \
+  ./src/LogWindow/Makefile \
+  ./src/ObjBrowser/Makefile \
+  ./src/Prs/Makefile \
+  ./src/OBJECT/Makefile \
+  ./src/GLViewer/Makefile \
+  ./src/VTKViewer/Makefile \
+  ./src/SVTK/Makefile \
+  ./src/OCCViewer/Makefile \
+  ./src/SOCC/Makefile \
+  ./src/PyInterp/Makefile \
+  ./src/PythonConsole/Makefile \
+  ./src/Plot2d/Makefile \
+  ./src/SPlot2d/Makefile \
+  ./src/SUPERVGraph/Makefile \
+  ./src/LightApp/Makefile \
+  ./src/ResExporter/Makefile \
+  ./src/RegistryDisplay/Makefile \
+  ./src/TOOLSGUI/Makefile \
+  ./src/Event/Makefile \
+  ./src/Session/Makefile \
+  ./src/SalomeApp/Makefile \
+  ./src/SalomeApp/Test/Makefile \
+  ./src/SALOME_SWIG/Makefile \
+  ./src/SALOME_SWIG/supervisionexample.py \
+  ./src/SALOME_SWIG/supervisiongeomexample.py \
+  ./src/SALOME_PY/Makefile \
+  ./src/SALOME_PYQT/Makefile \
+  ./src/SALOME_PYQT/SALOME_PYQT_GUI/Makefile \
+  ./src/SALOME_PYQT/SALOME_PYQT_GUI/SALOME_PYQT_SipDefs.h \
+  ./src/SALOME_PYQT/SalomePyQt/Makefile \
+  ./resources/Makefile \
+  ./idl/Makefile \
+  Makefile
+])

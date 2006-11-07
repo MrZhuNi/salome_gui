@@ -21,51 +21,39 @@
 #  Module : caf
 #  $Header$
 
-top_srcdir=@top_srcdir@
-top_builddir=../..
-srcdir=@srcdir@
-VPATH=.:@srcdir@:@srcdir@/resources
+include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
+lib_LTLIBRARIES = libcaf.la
 
-@COMMENCE@
-
-# header files 
-EXPORT_HEADERS= CAF.h \
-		CAF_Application.h \
-		CAF_Operation.h \
-		CAF_Study.h \
-		CAF_Tools.h
-		     
-# .po files to transform in .qm
-PO_FILES = CAF_images.po \
-	   CAF_msg_en.po 
-
-# Libraries targets
-LIB = libcaf.la
-
-LIB_SRC= CAF_Application.cxx \
-	 CAF_Operation.cxx \
-	 CAF_Study.cxx \
-	 CAF_Tools.cxx 		
-
-LIB_MOC = \
+salomeinclude_HEADERS= \
+	CAF.h \
 	CAF_Application.h \
 	CAF_Operation.h \
-	CAF_Study.h
+	CAF_Study.h \
+	CAF_Tools.h
 
-RESOURCES_FILES = \
-redo.png \
-undo.png
+dist_libcaf_la_SOURCES= \
+	CAF_Application.cxx \
+	CAF_Operation.cxx \
+	CAF_Study.cxx \
+	CAF_Tools.cxx 		
 
+MOC_FILES= \
+	CAF_Application_moc.cxx \
+	CAF_Operation_moc.cxx \
+	CAF_Study_moc.cxx
+nodist_libcaf_la_SOURCES= $(MOC_FILES)
 
-CPPFLAGS+=$(QT_INCLUDES) $(OCC_INCLUDES) -I${QTDIR}/src/kernel -I$(QTDIR)/mkspecs/linux-g++
+dist_salomeres_DATA = \
+	resources/redo.png \
+	resources/undo.png
 
-LDFLAGS+=$(QT_MT_LIBS) $(CAS_OCAF) $(CAS_OCAFVIS)
-LIBS+= -lstd -lsuit
+nodist_salomeres_DATA = \
+	CAF_images.qm \
+	CAF_msg_en.qm
 
-@CONCLUDE@
-
-
-
-
+libcaf_la_CPPFLAGS=$(QT_INCLUDES) $(CAS_CPPFLAGS) -I${QTDIR}/src/kernel -I$(QTDIR)/mkspecs/linux-g++ \
+                   -I$(srcdir)/../STD -I$(srcdir)/../SUIT -I$(srcdir)/../Qtx
+libcaf_la_LDFLAGS=$(QT_MT_LIBS) $(CAS_OCAF) $(CAS_OCAFVIS)
+libcaf_la_LIBADD=../STD/libstd.la ../SUIT/libsuit.la
 

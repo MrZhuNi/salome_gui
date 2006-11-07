@@ -16,46 +16,29 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# source path
-top_srcdir=@top_srcdir@
-top_builddir=..
-srcdir=@srcdir@
-VPATH=.:$(srcdir)/adm_local
+#  File   : Makefile.in
+#  Author : Alexander SOLOVYOV (OCN)
+#  Module : DDS
+#  $Header: /home/server/cvs/GUI/GUI_SRC/src/DDS/Makefile.in
+
+include $(top_srcdir)/adm_local/unix/make_common_starter.am
+
+lib_LTLIBRARIES = libDDS.la
+
+salomeinclude_HEADERS = DDS.h \
+	DDS_DicGroup.h \
+	DDS_DicItem.h \
+	DDS_Dictionary.h \
+	DDS_KeyWords.h
+
+dist_libDDS_la_SOURCES = DDS_DicGroup.cxx \
+	DDS_DicItem.cxx \
+	DDS_Dictionary.cxx \
+	DDS_KeyWords.cxx
+
+libDDS_la_CPPFLAGS=$(CAS_CPPFLAGS)
+
+libDDS_la_LDFLAGS= $(CAS_KERNEL) $(CAS_OCAF)
 
 
-all: resources
-
-install:
-	cp -rf @top_srcdir@/adm_local @prefix@
-
-bin:
-
-resources :
-	cp -rf @top_srcdir@/adm_local $(top_builddir)
-
-inc:
-
-lib:
-
-depend:
-
-depend_idl:
-
-install-end:
-
-install-include:
-
-install-bin:
-
-uninstall:
-
-uninstall-idl:
-
-distclean:
-
-clean:
-
-tests:
-
-distclean-other:
 

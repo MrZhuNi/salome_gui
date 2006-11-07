@@ -16,54 +16,41 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-
-# -* Makefile *- 
+# -* Makefile *-
 #
 # Author : Patrick GOLDBRONN (CEA)
-# Date : 30/11/2001
+# Date : 28/06/2001
 # $Header$
 #
-# source path
-top_srcdir=@top_srcdir@
-top_builddir=..
-srcdir=@srcdir@
-VPATH=.:@srcdir@
 
-SUBDIRS= salome
+include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-@COMMENCE@
+if GUI_ENABLE_CORBA
+    IDLDIR = idl
+else !GUI_ENABLE_CORBA
+    IDLDIR =
+endif
 
-docs:
-	@@SETX@; for d in $(SUBDIRS); do 	\
-	   (cd $$d && $(MAKE) $@) || exit 1; 	\
-	done
+SUBDIRS = $(IDLDIR) adm_local resources src doc bin 
+
+DIST_SUBDIRS = idl adm_local resources src doc bin 
+
+DISTCLEANFILES = a.out aclocal.m4 configure
+
+salomeinclude_DATA=GUI_version.h
+
+EXTRA_DIST+= \
+	build_configure \
+	clean_configure \
+	LICENCE
+
+dist-hook:
+	rm -rf `find $(distdir) -name CVS`
 
 usr_docs:
-	@@SETX@; for d in $(SUBDIRS); do 	\
-	   (cd $$d && $(MAKE) $@) || exit 1; 	\
-	done
+	(cd doc && $(MAKE) $(AM_MAKEFLAGS) usr_docs)
+
+docs:usr_docs
 
 dev_docs:
-	@@SETX@; for d in $(SUBDIRS); do 	\
-	   (cd $$d && $(MAKE) $@) || exit 1; 	\
-	done
-
-clean:
-	@@SETX@; for d in $(SUBDIRS); do 	\
-	   (cd $$d && $(MAKE) $@) || exit 1; 	\
-	done
-
-distclean: clean
-	@@SETX@; for d in $(SUBDIRS); do 	\
-	   (cd $$d && $(MAKE) $@) || exit 1; 	\
-	done
-
-install:
-	@@SETX@; for d in $(SUBDIRS); do 	\
-	   (cd $$d && $(MAKE) $@) || exit 1; 	\
-	done
-
-uninstall:
-	@@SETX@; for d in $(SUBDIRS); do 	\
-	   (cd $$d && $(MAKE) $@) || exit 1; 	\
-	done
+	(cd doc && $(MAKE) $(AM_MAKEFLAGS) dev_docs)

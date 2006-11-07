@@ -26,28 +26,17 @@
 #  Module : SALOME
 #  $Header$
 
-top_srcdir=@top_srcdir@
-top_builddir=../..
-srcdir=@srcdir@
-VPATH=.:@srcdir@:@top_srcdir@/idl
+include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
+lib_LTLIBRARIES = libEvent.la 
 
-@COMMENCE@
-
-# header files  
-EXPORT_HEADERS= \
-        Event.h \
+salomeinclude_HEADERS= \
+	Event.h \
 	SALOME_Event.hxx 
 
-EXPORT_PYSCRIPTS = 
-# Libraries targets
+dist_libEvent_la_SOURCES = SALOME_Event.cxx 
 
-LIB = libEvent.la 
-LIB_SRC = SALOME_Event.cxx 
-
-CPPFLAGS+=$(QT_INCLUDES) $(KERNEL_CXXFLAGS)
-LDFLAGS+=$(QT_MT_LIBS)
-
-@CONCLUDE@
+libEvent_la_CPPFLAGS=$(QT_INCLUDES) @KERNEL_CXXFLAGS@
+libEvent_la_LDFLAGS=$(QT_MT_LIBS)
 
 

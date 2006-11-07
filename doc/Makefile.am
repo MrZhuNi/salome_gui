@@ -14,35 +14,14 @@
 #  License along with this library; if not, write to the Free Software
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-#  See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
+# See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-#  File   : Makefile.in
-#  Author : Vasily Rusyaev (Open Cascade NN)
-#  Module : doc
 
-top_srcdir=@top_srcdir@
-top_builddir=../../..
-srcdir=@srcdir@
-VPATH=.:@srcdir@
+# -* Makefile *- 
+#
+# Author : Patrick GOLDBRONN (CEA)
+# Date : 30/11/2001
+# $Header$
+#
 
-@COMMENCE@
-
-usr_docs:
-	cp -fr $(srcdir)/GUI ./
-	-find $(PWD) -name CVS -prune -exec rm -rf {} \;
-
-docs: usr_docs
-
-clean:
-	rm -fr `ls | grep -v "Makefile"`
-
-distclean: clean
-	rm -fr GUI
-
-install:
-	mkdir -p $(docdir)/gui
-	cp -rf GUI $(docdir)/gui
-	-find $(PWD) -name CVS -prune -exec rm -rf {} \;
-
-uninstall:
-	rm -rf $(docdir)/gui/GUI
+SUBDIRS= salome

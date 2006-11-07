@@ -21,45 +21,39 @@
 #  Module : CAM
 #  $Header$
 
-top_srcdir=@top_srcdir@
-top_builddir=../..
-srcdir=@srcdir@
-VPATH=.:@srcdir@:@srcdir@/resources
+include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
+lib_LTLIBRARIES = libCAM.la
 
-@COMMENCE@
+salomeinclude_HEADERS= \
+	CAM_Application.h \
+	CAM_DataModel.h \
+	CAM_DataObject.h \
+	CAM.h \
+	CAM_Module.h \
+	CAM_Study.h \
+	CAM_RootObject.h
 
-EXPORT_HEADERS= CAM_Application.h \
-	 	CAM_DataModel.h \
-		CAM_DataObject.h \
-	        CAM.h \
-		CAM_Module.h \
-		CAM_Study.h \
-		CAM_RootObject.h
-		     
-PO_FILES = CAM_msg_en.po
+dist_libCAM_la_SOURCES= \
+	CAM_Application.cxx \
+	CAM_DataModel.cxx \
+	CAM_DataObject.cxx \
+	CAM_Module.cxx \
+	CAM_Study.cxx \
+	CAM_RootObject.cxx
 
-LIB = libCAM.la
+MOC_FILES= \
+	CAM_Application_moc.cxx \
+	CAM_Module_moc.cxx \
+	CAM_Study_moc.cxx \
+	CAM_DataModel_moc.cxx
+nodist_libCAM_la_SOURCES= $(MOC_FILES)
 
-LIB_SRC= CAM_Application.cxx \
-	 CAM_DataModel.cxx \
-	 CAM_DataObject.cxx \
-	 CAM_Module.cxx \
-	 CAM_Study.cxx \
-	 CAM_RootObject.cxx
+nodist_salomeres_DATA=CAM_msg_en.qm
 
-LIB_MOC = CAM_Application.h \
-	  CAM_Module.h \
-	  CAM_Study.h \
-	  CAM_DataModel.h
+libCAM_la_CPPFLAGS=$(QT_INCLUDES) -I$(srcdir)/../SUIT -I$(srcdir)/../STD -I$(srcdir)/../Qtx
+libCAM_la_LDFLAGS=$(QT_MT_LIBS)
+libCAM_la_LIBS=../SUIT/libsuit.la ../STD/libstd.la
 
-CPPFLAGS+=$(QT_INCLUDES) 
-
-LDFLAGS+=$(QT_MT_LIBS)
-
-LIBS+= -lsuit -lstd
-LDFLAGSFORBIN= -lSUITApp
-
-@CONCLUDE@
-
-
+# what is that?
+#LDFLAGSFORBIN= -lSUITApp

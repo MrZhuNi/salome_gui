@@ -16,37 +16,26 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-#  File   : Makefile.in
-#  Author : Alexander SOLOVYOV (OCN)
-#  Module : DDS
-#  $Header: /home/server/cvs/GUI/GUI_SRC/src/DDS/Makefile.in
 
-top_srcdir=@top_srcdir@
-top_builddir=../..
-srcdir=@srcdir@
-VPATH=.:@srcdir@
+# -* Makefile *- 
+#
+# Author : Patrick GOLDBRONN (CEA)
+# Date : 30/11/2001
+# $Header$
+#
 
-@COMMENCE@
+SUBDIRS= tui gui
+SUBDIRSTUI= tui
+SUBDIRSGUI= gui
 
-# header files 
-EXPORT_HEADERS= DDS.h \
-	DDS_DicGroup.h \
-	DDS_DicItem.h \
-	DDS_Dictionary.h \
-	DDS_KeyWords.h
-		     
-# Libraries targets
-LIB = libDDS.la
+usr_docs:
+	@@SETX@; for d in $(SUBDIRSGUI); do 	\
+	   (cd $$d && $(MAKE) $@) || exit 1; 	\
+	done;
 
-LIB_SRC= DDS_DicGroup.cxx \
-	DDS_DicItem.cxx \
-	DDS_Dictionary.cxx \
-	DDS_KeyWords.cxx
+docs: usr_docs
 
-CPPFLAGS+= $(OCC_INCLUDES)
-
-LDFLAGS+= $(CAS_KERNEL) $(CAS_OCAF)
-
-@CONCLUDE@
-
-
+dev_docs:
+	@@SETX@; for d in $(SUBDIRSTUI); do 	\
+	   (cd $$d && $(MAKE) $@) || exit 1; 	\
+	done;
