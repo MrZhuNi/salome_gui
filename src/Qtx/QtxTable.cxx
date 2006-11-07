@@ -97,12 +97,16 @@ private:
   ColorMap      myFgColor;
   ColorMap      myBgColor;
   int           myPressed;
+  int           mySection;
+
+  friend class QtxTable::StyleItem;
 };
 
 QtxTable::Header::Header( int n, QtxTable* table, const char* name )
 : QHeader( n, table, name ),
 myTable( table ),
-myPressed( -1 )
+myPressed( -1 ),
+mySection( -1 )
 {
 }
 
@@ -228,7 +232,8 @@ void QtxTable::Header::setHorizontalSpan( const int section, const int sp )
     return;
 
   myHSpan.insert( section, sp );
-  repaint( indexRect( mapToIndex( section ) ) );
+  if ( isUpdatesEnabled() )
+    repaint( indexRect( mapToIndex( section ) ) );
 }
 
 int QtxTable::Header::verticalSpan( const int section ) const
@@ -242,7 +247,8 @@ void QtxTable::Header::setVerticalSpan( const int section, const int sp )
     return;
 
   myVSpan.insert( section, sp );
-  repaint( indexRect( mapToIndex( section ) ) );
+  if ( isUpdatesEnabled() )
+    repaint( indexRect( mapToIndex( section ) ) );
 }
 
 QColor QtxTable::Header::foregroundColor( const int section ) const
@@ -261,7 +267,8 @@ void QtxTable::Header::setForegroundColor( const int section, const QColor& c )
     return;
 
   myFgColor.insert( section, c );
-  repaint( indexRect( mapToIndex( section ) ) );
+  if ( isUpdatesEnabled() )
+    repaint( indexRect( mapToIndex( section ) ) );
 }
 
 void QtxTable::Header::setBackgroundColor( const int section, const QColor& c )
@@ -270,7 +277,8 @@ void QtxTable::Header::setBackgroundColor( const int section, const QColor& c )
     return;
 
   myBgColor.insert( section, c );
-  repaint( indexRect( mapToIndex( section ) ) );
+  if ( isUpdatesEnabled() )
+    repaint( indexRect( mapToIndex( section ) ) );
 }
 
 void QtxTable::Header::swapSections( const int oldIdx, const int newIdx )
@@ -365,7 +373,14 @@ void QtxTable::Header::paintSection( QPainter* p, int index, const QRect& fr )
   QRect r = fr;
   if ( index < count() )
     r = indexRect( index, &idx );
+
+  // Currently painted section number. This number will be used in the drawing style.
+  // Because QHeader::paintSection() implementation doesn't send section id through style options :(
+  mySection = mapToSection( index );
+
   QHeader::paintSection( p, idx, r );
+
+  mySection = -1;
 }
 
 bool QtxTable::Header::filterEvent( QMouseEvent* e ) const
@@ -571,12 +586,7 @@ bool QtxTable::StyleItem::drawPrimitive( QStyle::PrimitiveElement pe, QPainter* 
     return false;
 
   Header* h = (Header*)hdr;
-  int section = -1;
-  for ( int i = 0; i < (int)h->count() && section < 0; i++ )
-  {
-    if ( r.contains( h->indexRect( i ) ) )
-      section = h->mapToSection( i );
-  }
+  int section = h->mySection;
 
   if ( section < 0 )
     return false;
@@ -1055,6 +1065,17 @@ void QtxTable::removeColumns( const QMemArray<int>& cols )
       if ( indexes.contains( it.key() ) )
         itr.data().insert( indexes[it.key()], it.data() );
     }
+  }
+}
+
+void QtxTable::setUpdatesEnabled( bool enable )
+{
+  QTable::setUpdatesEnabled( enable );
+
+  if ( enable )
+  {
+    updateHeaderGeometries( Horizontal );
+    updateHeaderGeometries( Vertical );
   }
 }
 
@@ -1759,6 +1780,9 @@ void QtxTable::updateGeometries()
 
 void QtxTable::updateHeaderGeometries( const Orientation o )
 {
+  if ( !isUpdatesEnabled() )
+    return;
+
   updateHeaderSizes( o );
   updateHeaderSpace( o );
   updateGeometries();

@@ -116,6 +116,8 @@ public slots:
   virtual void     removeColumn( int );
   virtual void     removeColumns( const QMemArray<int>& );
 
+  virtual void     setUpdatesEnabled( bool enable );
+
 private slots:
   void             onScrollBarMoved( int );
   void             onHeaderSizeChange( int, int, int );
