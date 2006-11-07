@@ -1174,7 +1174,9 @@ void QtxListResourceEdit::ColorItem::retrieve()
 */
 QtxListResourceEdit::FontItem::FontItem( const QString& title, QtxResourceEdit* edit,
                                          Item* pItem, QWidget* parent )
-: PrefItem( Font, edit, pItem, parent )
+: PrefItem( Font, edit, pItem, parent ),
+myIsSystem( true ),
+myFlags( ( int )All )
 {
   new QLabel( title, this );
   myFamilies = new QtxComboBox( false, this );
