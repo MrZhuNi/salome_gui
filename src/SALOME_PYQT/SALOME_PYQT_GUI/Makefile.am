@@ -80,4 +80,6 @@ libSalomePyQtGUI_la_LIBADD= $(PYTHON_LIBS) $(SIP_LIBS) $(PYQT_LIBS) $(VTK_LIBS) 
 $(SIP_SRC): $(SIP_FILES)
 	$(SIP) $(SIP_FLAGS) $<
 
+$(dist_libSalomePyQtGUI_la_SOURCES): $(SIP_SRC)
+
 ###################################
