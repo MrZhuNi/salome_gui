@@ -1289,7 +1289,10 @@ QString SalomeStyle::titleText( const QString& txt, const int W, const int H, QF
   QFontMetrics fm( f );
   while( fm.height() > H )
   {
-    f.setPointSize( f.pointSize()-1 );
+    int aPointSize = f.pointSize() - 1;
+    if ( aPointSize < 1 )
+      break;
+    f.setPointSize( aPointSize );
     fm = QFontMetrics( f );
   }
 
