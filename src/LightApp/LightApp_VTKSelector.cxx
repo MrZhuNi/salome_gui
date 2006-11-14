@@ -32,6 +32,7 @@
 #ifndef DISABLE_SALOMEOBJECT
   #include "SALOME_Actor.h"
   #include "SALOME_ListIteratorOfListIO.hxx"
+#include <LightApp_DataSubOwner.h>
 #endif
 
 
@@ -79,8 +80,15 @@ LightApp_SVTKDataOwner
       aSelector->GetIndex(IO(),myIds);
     }
   }
-
   return myIds;
+}
+
+/*!
+  Sets dataowners ids list.
+*/
+void LightApp_SVTKDataOwner::SetIds( const TColStd_IndexedMapOfInteger& theIds )
+{
+  myIds = theIds;
 }
 
 /*!
@@ -189,7 +197,14 @@ LightApp_VTKSelector
 	    for(; anIter.More(); anIter.Next()){
 	      Handle(SALOME_InteractiveObject) anIO = anIter.Value();
 	      if(anIO->hasEntry())
-		aList.append(new LightApp_SVTKDataOwner(anIO,aViewMgr->getDesktop()));
+              {
+                LightApp_SVTKDataOwner* anOwner = 
+                  new LightApp_SVTKDataOwner( anIO, aViewMgr->getDesktop() );
+                TColStd_IndexedMapOfInteger anIndex;
+                aSelector->GetIndex( anIO, anIndex );
+                anOwner->SetIds( anIndex );
+		aList.append( anOwner );
+              }
 	    }
 	  }
 	}
@@ -205,7 +220,8 @@ void
 LightApp_VTKSelector
 ::setSelection( const SUIT_DataOwnerPtrList& theList )
 {
-  if(myViewer){
+  if ( myViewer )
+  {
     if(SUIT_ViewManager* aViewMgr = myViewer->getViewManager()){
       if(SVTK_ViewWindow* aView = dynamic_cast<SVTK_ViewWindow*>(aViewMgr->getActiveView())){
 	if(SVTK_Selector* aSelector = aView->GetSelector()){
@@ -215,6 +231,7 @@ LightApp_VTKSelector
 	  for(; anIter != theList.end(); ++anIter){
 	    const SUIT_DataOwner* aDataOwner = (*anIter).get();
 	    if(const LightApp_SVTKDataOwner* anOwner = dynamic_cast<const LightApp_SVTKDataOwner*>(aDataOwner)){
+            //if(const LightApp_DataSubOwner* anOwner = dynamic_cast<const LightApp_DataSubOwner*>(aDataOwner)){
 	      aSelector->SetSelectionMode(anOwner->GetMode());
 	      Handle(SALOME_InteractiveObject) anIO = anOwner->IO();
 
@@ -222,11 +239,17 @@ LightApp_VTKSelector
 
 	      anAppendList.Append(anIO);
 	      aSelector->AddOrRemoveIndex(anIO,anOwner->GetIds(),false);
-	    }else if(const LightApp_DataOwner* anOwner = dynamic_cast<const LightApp_DataOwner*>(aDataOwner)){
+	    }
+            else if ( const LightApp_DataSubOwner* anOwner = 
+              dynamic_cast<const LightApp_DataSubOwner*>( aDataOwner))
+            {
 	      Handle(SALOME_InteractiveObject) anIO = 
-		new SALOME_InteractiveObject(anOwner->entry().latin1(),"");
+		new SALOME_InteractiveObject( anOwner->entry().latin1(),"" ); 
 	      aSelector->AddIObject(anIO);
 	      anAppendList.Append(anIO);
+              TColStd_IndexedMapOfInteger aMap;
+              aMap.Add( anOwner->index() );
+              aSelector->AddOrRemoveIndex( anIO,aMap, false );
 	    }
 	  }
 	  // To remove IOs, which is not selected.
