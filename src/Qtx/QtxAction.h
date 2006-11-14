@@ -24,8 +24,8 @@
 
 #include "Qtx.h"
 
-#include <qaction.h>
 #include <qmap.h>
+#include <qaction.h>
 
 #ifdef WIN32
 #pragma warning ( disable:4251 )
@@ -43,6 +43,7 @@ public:
 
     virtual bool addTo( QWidget* );
     virtual bool addTo( QWidget*, const int );
+
     virtual bool removeFrom( QWidget* );
 
 protected:

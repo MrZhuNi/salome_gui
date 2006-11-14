@@ -115,12 +115,11 @@ public:
   QPopupMenu*  popup() const;
 
 private:
-  int                myId;
-  QPopupMenu*        myPopup;
-  bool               myEmptyEnabled;
-  QMap<QWidget*,int> myIds;
+  int          myId;
+  QPopupMenu*  myPopup;
+  bool         myEmptyEnabled;
+  QMap<QWidget*, int> myIds;
 };
-
 
 /*!
   Constructor for menu action
@@ -131,15 +130,12 @@ private:
   \param allowEmpty - if it is true, it makes possible to add this action with empty popup to menu
 */
 
-QtxActionMenuMgr::MenuAction::MenuAction( const QString& text,
-					  const QString& menuText,
-					  QObject*       parent,
-					  const int      id,
-					  const bool     allowEmpty )
+QtxActionMenuMgr::MenuAction::MenuAction( const QString& text, const QString& menuText,
+					                                QObject* parent, const int id, const bool allowEmpty )
 : QtxAction( text, menuText, 0, parent ),
-  myId( id ),
-  myPopup( 0 ),
-  myEmptyEnabled( allowEmpty )
+myId( id ),
+myPopup( 0 ),
+myEmptyEnabled( allowEmpty )
 {
   myPopup = new QPopupMenu();
 }
@@ -172,25 +168,29 @@ bool QtxActionMenuMgr::MenuAction::addTo( QWidget* w )
   if ( !myEmptyEnabled && !myPopup->count() )
     return false;  // not allowed empty menu
 
-  if ( w->inherits( "QPopupMenu" )  ) {
+  if ( w->inherits( "QPopupMenu" )  )
+  {
     QValueList<int> l = prepareIds( w );
     int idx;
-    if ( QtxAction::addTo( w ) && ( idx = getNewId( w, l, false ) ) != -1 ) {
+    if ( QtxAction::addTo( w ) && ( idx = getNewId( w, l, false ) ) != -1 )
+    {
       QPopupMenu* pm = (QPopupMenu*)w;
       myIds[ w ] = pm->idAt( idx );
       if ( myId != -1 ) 
-	pm->setId( idx, myId );
+	      pm->setId( idx, myId );
       setPopup( pm, myId != -1 ? myId : myIds[ w ], myPopup );
     }
   }
-  else if ( w->inherits( "QMenuBar" ) ) {
+  else if ( w->inherits( "QMenuBar" ) )
+  {
     QValueList<int> l = prepareIds( w );
     int idx;
-    if ( QtxAction::addTo( w ) && ( idx = getNewId( w, l, false ) ) != -1 ) {
+    if ( QtxAction::addTo( w ) && ( idx = getNewId( w, l, false ) ) != -1 )
+    {
       QMenuBar* mb = (QMenuBar*)w;
       myIds[ w ] = mb->idAt( idx );
       if ( myId != -1 ) 
-	mb->setId( idx, myId );
+    	  mb->setId( idx, myId );
       setPopup( mb, myId != -1 ? myId : myIds[ w ], myPopup );
     }
   }
@@ -214,21 +214,26 @@ bool QtxActionMenuMgr::MenuAction::removeFrom( QWidget* w )
   if ( myIds.find( w ) == myIds.end() )
     return false;  // not yet added
 
-  if ( w->inherits( "QPopupMenu" ) ) {
-    if ( myId != -1 ) {
+  if ( w->inherits( "QPopupMenu" ) )
+  {
+    if ( myId != -1 )
+    {
       QPopupMenu* pm = (QPopupMenu*)w;
       int idx = pm->indexOf( myId );
-      if ( idx != -1 ) pm->setId( idx, myIds[ w ] );
+      if ( idx != -1 )
+        pm->setId( idx, myIds[ w ] );
     }
     myIds.remove( w );
     return QtxAction::removeFrom( w );;
   }
   else if ( w->inherits( "QMenuBar" ) )
   {
-    if ( myId != -1 ) {
+    if ( myId != -1 )
+    {
       QMenuBar* mb = (QMenuBar*)w;
       int idx = mb->indexOf( myId );
-      if ( idx != -1 ) mb->setId( idx, myIds[ w ] );
+      if ( idx != -1 )
+        mb->setId( idx, myIds[ w ] );
     }
     myIds.remove( w );
     return QtxAction::removeFrom( w );
@@ -250,7 +255,7 @@ QPopupMenu* QtxActionMenuMgr::MenuAction::popup() const
 */
 QtxActionMenuMgr::QtxActionMenuMgr( QMainWindow* p )
 : QtxActionMgr( p ),
-  myMenu( p ? p->menuBar() : 0 )
+myMenu( p ? p->menuBar() : 0 )
 {
   myRoot.id = -1;
   myRoot.group = -1;
@@ -269,7 +274,7 @@ QtxActionMenuMgr::QtxActionMenuMgr( QMainWindow* p )
 */
 QtxActionMenuMgr::QtxActionMenuMgr( QWidget* mw, QObject* p )
 : QtxActionMgr( p ),
-  myMenu( mw )
+myMenu( mw )
 {
   myRoot.id = -1;
   myRoot.group = -1;
@@ -402,7 +407,7 @@ int QtxActionMenuMgr::insert( const int id, const int pId, const int group, cons
   node->idx = idx;
   node->group = group;
 
-  pNode->children.append( node );
+    pNode->children.append( node );
 
   triggerUpdate( pNode->id, false );
 
@@ -463,7 +468,7 @@ int QtxActionMenuMgr::insert( const QString& title, const int pId, const int gro
   node->idx = idx;
   node->id = myMenus.insert( gid, ma ).key();
 
-  pNode->children.append( node );
+    pNode->children.append( node );
 
   triggerUpdate( pNode->id, false );
 
@@ -914,15 +919,15 @@ void QtxActionMenuMgr::updateMenu( MenuNode* startNode, const bool rec, const bo
       a->removeFrom( mw );
   }
   /* VSR: commented to allow direct creating of menus by calling insertItem() methods
-  if ( mw->inherits( "QMenuBar" ) )
-    ((QMenuBar*)mw)->clear();
-  else if ( mw->inherits( "QPopupMenu" ) )
-    ((QPopupMenu*)mw)->clear();
+    if ( mw->inherits( "QMenuBar" ) )
+      ((QMenuBar*)mw)->clear();
+    else if ( mw->inherits( "QPopupMenu" ) )
+      ((QPopupMenu*)mw)->clear();
   */
   QMap<int, NodeList> idMap;
   for ( NodeListIterator it2( node->children ); it2.current(); ++it2 )
   {
-    NodeList& lst = idMap[it2.current()->group];
+      NodeList& lst = idMap[it2.current()->group];
     int idx = it2.current()->idx;
     if ( idx < 0 || idx >= (int)lst.count() )
       lst.append( it2.current() );
@@ -944,18 +949,18 @@ void QtxActionMenuMgr::updateMenu( MenuNode* startNode, const bool rec, const bo
     const NodeList& lst = idMap[*gIt];
     for ( NodeListIterator iter( lst ); iter.current(); ++iter )
     {
+      if ( rec )
+        updateMenu( iter.current(), rec, false );
+
       MenuNode* par = iter.current()->parent;
       if ( !isVisible( iter.current()->id, par ? par->id : -1 ) )
         continue;
-
-      if ( rec )
-        updateMenu( iter.current(), rec, false );
 
       QAction* a = itemAction( iter.current()->id );
       if ( !a )
         a = menuAction( iter.current()->id );
       if ( a )
-	a->addTo( mw );
+        a->addTo( mw );
     }
   }
 
@@ -970,8 +975,11 @@ void QtxActionMenuMgr::updateMenu( MenuNode* startNode, const bool rec, const bo
 */
 void QtxActionMenuMgr::internalUpdate()
 {
-  if ( isUpdatesEnabled() )
-    updateMenu();
+  if ( !isUpdatesEnabled() )
+    return;
+
+  updateMenu();
+  myUpdateIds.clear();
 }
 
 /*!
@@ -1096,6 +1104,7 @@ void QtxActionMenuMgr::triggerUpdate( const int id, const bool rec )
   if ( myUpdateIds.contains( id ) )
     isRec = isRec || myUpdateIds[ id ];
   myUpdateIds.insert( id, isRec );
+
   QtxActionMgr::triggerUpdate();
 }
 
@@ -1104,9 +1113,16 @@ void QtxActionMenuMgr::triggerUpdate( const int id, const bool rec )
 */
 void QtxActionMenuMgr::updateContent()
 {
+  // Warning: For correct updating it is necessary to update the most enclosed submenu firstly
+  //          because not updated empty submenu will be skipped. Now the submenu are iterated in
+  //          ascending order their identifiers. For a submenu with automatically generated identifiers
+  //          will work correctly as the uppermost submenu have the biggest number (identifiers generated
+  //          reduction from -1). Generally when any submenu will have positive identifiers are obviously
+  //          appropriated can to work not truly. In this case it is required to improve the given method
+  //          and to add preliminary sorting a submenu on depth of an enclosure.
   for ( QMap<int, bool>::const_iterator it = myUpdateIds.constBegin(); it != myUpdateIds.constEnd(); ++it )
   {
-    MenuNode* node = find( it.key(), 0 );
+    MenuNode* node = it.key() == -1 ? &myRoot : find( it.key() );
     if ( node )
       updateMenu( node, it.data() );
   }
@@ -1118,10 +1134,9 @@ void QtxActionMenuMgr::updateContent()
   \param r - menu reader
   \param mgr - menu manager
 */
-QtxActionMenuMgr::MenuCreator::MenuCreator( QtxActionMgr::Reader* r,
-                                            QtxActionMenuMgr* mgr )
+QtxActionMenuMgr::MenuCreator::MenuCreator( QtxActionMgr::Reader* r, QtxActionMenuMgr* mgr )
 : QtxActionMgr::Creator( r ),
-  myMgr( mgr )
+myMgr( mgr )
 {
 }
 

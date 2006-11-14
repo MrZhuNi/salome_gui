@@ -14,7 +14,7 @@
 // License along with this library; if not, write to the Free Software 
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
-// See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
+// See http://www.salome-platform.org/
 //
 #include "QtxLogoMgr.h"
 
@@ -27,9 +27,6 @@
 #include <qmenubar.h>
 #include <qapplication.h>
 
-/*!
-  Constructor
-*/
 QtxLogoMgr::QtxLogoMgr( QMenuBar* mb )
 : QObject( mb ),
 myMenus( mb ),
@@ -37,9 +34,6 @@ myId( 0 )
 {
 }
 
-/*!
-  Destructor
-*/
 QtxLogoMgr::~QtxLogoMgr()
 {
 }
@@ -112,9 +106,6 @@ void QtxLogoMgr::clear()
   generate();
 }
 
-/*!
-  Inserts logo to menu bar
-*/
 void QtxLogoMgr::generate()
 {
   if ( !menuBar() )
@@ -178,16 +169,12 @@ void QtxLogoMgr::generate()
   QApplication::sendPostedEvents( cnt, QEvent::ChildInserted );
   cnt->addSpacing( 2 );
 
-  myId = menuBar()->insertItem( cnt );
+  myId = menuBar()->insertItem( cnt, INT_MAX );
 
   QApplication::sendPostedEvents( menuBar()->parentWidget(), QEvent::LayoutHint );
   QApplication::postEvent( menuBar()->parentWidget(), new QEvent( QEvent::LayoutHint ) );
 }
 
-/*!
-  \return index of found logo
-  \param id - logo id
-*/
 int QtxLogoMgr::find( const QString& id ) const
 {
   int idx = -1;
