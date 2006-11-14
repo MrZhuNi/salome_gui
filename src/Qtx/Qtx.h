@@ -14,7 +14,7 @@
 // License along with this library; if not, write to the Free Software 
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
-// See http://www.salome-platform.org/
+// See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 // File:      Qtx.h
 // Author:    Sergey TELKOV
@@ -46,7 +46,6 @@
 #define INCLUDE_MENUITEM_DEF
 #endif
 
-#include <qpixmap.h>
 #include <qnamespace.h>
 
 #ifndef QT_VERSION
@@ -69,7 +68,11 @@
 #endif
 #endif
 
-class QImage;
+#include <qcolor.h>
+#include <qimage.h>
+#include <qpixmap.h>
+#include <qpixmap.h>
+
 class QObject;
 class QString;
 class QWidget;
@@ -89,6 +92,10 @@ typedef QValueList<int>    QIntList;
 typedef QValueList<short>  QShortList;
 typedef QValueList<double> QDoubleList;
 
+/*!
+  \class Qtx
+  \brief Set of auxiliary static methods
+*/
 class QTX_EXPORT Qtx : public Qt
 {
 public:
@@ -125,7 +132,7 @@ public:
   static int     rgbSet( const QColor& );
   static int     rgbSet( const int, const int, const int );
 
-  static void    rgbSet( const int, QColor& );
+  static QColor  rgbSet( const int );
   static void    rgbSet( const int, int&, int&, int& );
 
   static QColor  scaleColor( const int, const int, const int );
@@ -133,8 +140,9 @@ public:
 
   static QImage  grayscale( const QImage& );
   static QPixmap grayscale( const QPixmap& );
-  static QPixmap composite( const QPixmap&, const int, const int,
-                            const QPixmap& = QPixmap() );
+  static QImage  transparentImage( const int, const int, const int = -1 );
+  static QPixmap transparentPixmap( const int, const int, const int = -1 );
+  static QPixmap composite( const QPixmap&, const int, const int, const QPixmap& = QPixmap() );
 };
 
 #endif

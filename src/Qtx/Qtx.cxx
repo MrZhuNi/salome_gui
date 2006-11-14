@@ -14,7 +14,7 @@
 // License along with this library; if not, write to the Free Software 
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
-// See http://www.salome-platform.org/
+// See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 // File:      Qtx.cxx
 // Author:    Sergey TELKOV
@@ -182,24 +182,34 @@ void Qtx::simplifySeparators( QToolBar* toolbar )
   QObjectList delList;
 
   bool isPrevSep = true;
+  QObject* lastVis = 0; // last visible
   for ( QObjectListIt it( *objList ); it.current(); ++it )
   {
-    bool isSep = it.current()->isA( "QToolBarSeparator" );
+    QObject* obj = it.current();
+    /*/
+    if ( !obj || !obj->isWidgetType() || !((QWidget*)obj)->isVisibleTo( toolbar ) )
+      continue;
+    bool isSep = obj->isA( "QToolBarSeparator" );
+    */
+    if ( !obj || !obj->isWidgetType() )
+      continue;
+    bool isSep = obj->isA( "QToolBarSeparator" );
+    if ( !isSep && !((QWidget*)obj)->isVisibleTo( toolbar ) )
+      continue;
     if ( isPrevSep && isSep )
-      delList.append( it.current() );
+      delList.append( obj );
+    else
+    {
     isPrevSep = isSep;
+      lastVis = obj;
+    }
   }
+  // remove last visible separator
+  if ( lastVis && lastVis->isA( "QToolBarSeparator" ) )
+      delList.append( lastVis );
 
   for ( QObjectListIt itr( delList ); itr.current(); ++itr )
     delete itr.current();
-
-  if ( toolbar->children() && !toolbar->children()->isEmpty() &&
-       toolbar->children()->getFirst()->isA( "QToolBarSeparator" ) )
-    delete toolbar->children()->getFirst();
-
-  if ( toolbar->children() && !toolbar->children()->isEmpty() &&
-       toolbar->children()->getLast()->isA( "QToolBarSeparator" ) )
-    delete toolbar->children()->getLast();
 }
 
 /*!
@@ -563,11 +573,11 @@ int Qtx::rgbSet( const int r, const int g, const int b )
 	Name: rgbSet [static public]
 	Desc: Unpack the specified integer RGB set into the color.
 */
-void Qtx::rgbSet( const int rgb, QColor& c )
+QColor Qtx::rgbSet( const int rgb )
 {
   int r, g, b;
   rgbSet( rgb, r, g, b );
-  c = QColor( r, g, b );
+  return QColor( r, g, b );
 }
 
 /*!
@@ -661,6 +671,36 @@ QPixmap Qtx::grayscale( const QPixmap& pix )
 }
 
 /*!
+	Name: transparentImage [static public]
+	Desc: Create transparent image with specified width \aw, height \ah and color depth \ad.
+*/
+QImage Qtx::transparentImage( const int w, const int h, const int d )
+{
+  QImage img;
+  if ( img.create( w, h, d < 0 ? /*QPixmap::defaultDepth()*/32 : d ) )
+  {
+    img.setAlphaBuffer( true );
+    for ( int i = 0; i < img.height(); i++ )
+      for ( int j = 0; j < img.width(); j++ )
+        img.setPixel( j, i, qRgba( 0, 0, 0, 0 ) );
+  }
+  return img;
+}
+
+/*!
+	Name: transparentPixmap [static public]
+	Desc: Create transparent pixmap with specified width \aw, height \ah and color depth \ad.
+*/
+QPixmap Qtx::transparentPixmap( const int w, const int h, const int d )
+{
+  QPixmap pix;
+  QImage img = transparentImage( w, h, d );
+  if ( !img.isNull() )
+    pix.convertFromImage( img );
+  return pix;
+}
+
+/*!
 	Name: composite [static public]
 	Desc: Create composite pixmap. Pixmap 'pix' draws over pixmap 'dest' with coordinates
         specified relative upper left corner of 'dest'. If 'dest' not given then new empty
@@ -675,12 +715,7 @@ QPixmap Qtx::composite( const QPixmap& pix, const int x, const int y, const QPix
   int height = QMAX( pix.height() + y, dest.height() );
 
   QPixmap res( width, height );
-
-  QImage img( width, height, 32 );
-  img.setAlphaBuffer( true );
-  for ( int i = 0; i < img.height(); i++ )
-    for ( int j = 0; j < img.width(); j++ )
-      img.setPixel( j, i, qRgba( 0, 0, 0, 0 ) );
+  QImage img = transparentImage( width, height, 32 );
 
   QPainter p;
   p.begin( &res );

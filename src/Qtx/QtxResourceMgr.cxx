@@ -885,7 +885,7 @@ bool QtxResourceMgr::value( const QString& sect, const QString& name, QColor& cV
   {
     int pack = val.toInt( &res );
     if ( res )
-      Qtx::rgbSet( pack, cVal );
+      cVal = Qtx::rgbSet( pack );
   }
 
   return res;

@@ -14,13 +14,14 @@
 // License along with this library; if not, write to the Free Software 
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
-// See http://www.salome-platform.org/
+// See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 // File:      QtxAction.cxx
 // Author:    Sergey TELKOV
 
 #include "QtxAction.h"
 
+#include <qmenubar.h>
 #include <qpopupmenu.h>
 
 /*!
@@ -81,7 +82,41 @@ QtxAction::~QtxAction()
 
 bool QtxAction::addTo( QWidget* w )
 {
-  return QAction::addTo( w );
+  if ( !w->inherits( "QMenuBar" ) )
+    return QAction::addTo( w );
+
+  // --- Add action to the QMenuBar ---
+  // n.b. currently for the actions inserted to the menu bar 
+  // the following properties are not supported:
+  // * tooltips
+  // * what's this info
+  // * toggle mode
+  QMenuBar* mb = (QMenuBar*)w;
+  if ( myMenuIds.contains( w ) )
+      return false;                        // already added
+
+  QMenuData* mData = mb;
+  int idx = mData->count();
+  while ( idx > 0 )
+  {
+    QMenuData* md = 0;
+    QMenuItem* mItem = mb->findItem( mb->idAt( idx - 1 ), &md );
+    if ( md == mData && mItem && mItem->isSeparator() && mItem->widget() && qstrcmp( mItem->widget()->name(), "qt_maxtools" ) )
+      idx--;
+    else
+      break;
+  }
+
+  if ( name() == "qt_separator_action" ) // separator
+    myMenuIds.insert( w, mb->insertSeparator( idx ) );
+  else if ( iconSet().isNull() )         // has no icon
+    myMenuIds.insert( w, mb->insertItem( menuText(), this, SIGNAL( activated() ), accel(), -1, idx ) );
+  else                                   // has icon
+    myMenuIds.insert( w, mb->insertItem( iconSet(), menuText(), this, SIGNAL( activated() ), accel(), -1, idx ) );
+  
+  mb->setItemEnabled( myMenuIds[w], isEnabled() );
+  mb->setItemVisible( myMenuIds[w], isVisible() );
+  return true;
 }
 
 /*!
@@ -91,30 +126,33 @@ bool QtxAction::addTo( QWidget* w )
 		  successfully and false otherwise.
 */
 
-bool QtxAction::addTo( QWidget* w, int index )
+bool QtxAction::addTo( QWidget* w, const int index )
 {
   if ( !addTo( w ) )
     return false;
 
   if ( w->inherits( "QPopupMenu" ) )
   {
+    // --- Add action to the QPopupMenu ---
     QPopupMenu* popup = (QPopupMenu*)w;
-    if ( index < (int)popup->count() - 1 )
+    if ( index >= 0 && index < (int)popup->count() - 1 )
     {
       int id = popup->idAt( popup->count() - 1 );
       if ( id != -1 )
       {
 			  QMenuItem* item = popup->findItem( id );
-				if ( item && item->isSeparator() )
-				{
+	      if ( item && item->isSeparator() )
+        {
 					popup->removeItem( id );
           popup->insertSeparator( index );
 				}
-				else
-				{
+	      else
+        {
 					QPopupMenu* p = item ? item->popup() : 0;
 					int accel = popup->accel( id );
 					bool isOn = popup->isItemEnabled( id );
+	        bool isVisible = popup->isItemVisible( id );
+	        bool isChecked = popup->isItemChecked( id );
 					QString text = popup->text( id );
 					QIconSet icon;
 					if ( popup->iconSet( id ) )
@@ -122,26 +160,109 @@ bool QtxAction::addTo( QWidget* w, int index )
 					popup->removeItem( id );
 					int pos;
 					if ( icon.isNull() )
-						if ( p )
+          {
+				    if ( p )
 							pos = popup->indexOf( popup->insertItem( text, p, id, index ) );
 						else
 							pos = popup->indexOf( popup->insertItem( text, id, index ) );
+          }
 					else
+          {
 						if ( p )
 							pos = popup->indexOf( popup->insertItem( icon, text, p, id, index ) );
 						else
 							pos = popup->indexOf( popup->insertItem( icon, text, p, id, index ) );
+          }
 					popup->setId( pos, id );
 					popup->setAccel( accel, id );
 					popup->setItemEnabled( id, isOn );
+	        popup->setItemVisible( id, isVisible );
+	        popup->setItemChecked( id, isChecked );
+	        if ( !whatsThis().isEmpty() )
+	          popup->setWhatsThis( id, whatsThis() );
 					if ( !p )
 						popup->connectItem( id, this, SLOT( internalActivation() ) );
 				}
       }
     }
   }
-
+  else if ( w->inherits( "QMenuBar" ) )
+  {
+    // --- Add action to the QMenuBar ---
+    QMenuBar* mb = (QMenuBar*)w;
+    if ( index >= 0 && index < (int)mb->count() - 1 )
+    {
+      int id = mb->idAt( mb->count() - 1 );
+      if ( id != -1 )
+      {
+	      QMenuItem* item = mb->findItem( id );
+	      if ( item && item->isSeparator() )
+        {
+	        mb->removeItem( id );
+	        mb->insertSeparator( index );
+	      }
+	      else
+        {
+	        QPopupMenu* p = item ? item->popup() : 0;
+	        int accel = mb->accel( id );
+	        bool isOn = mb->isItemEnabled( id );
+	        bool isVisible = mb->isItemVisible( id );
+	        QString text = mb->text( id );
+	        QIconSet icon;
+	        if ( mb->iconSet( id ) )
+	          icon = *mb->iconSet( id );
+	        mb->removeItem( id );
+	        int pos;
+	        if ( icon.isNull() )
+          {
+	          if ( p )
+	            pos = mb->indexOf( mb->insertItem( text, p, id, index ) );
+	          else
+	            pos = mb->indexOf( mb->insertItem( text, id, index ) );
+          }
+	        else
+          {
+	          if ( p )
+	            pos = mb->indexOf( mb->insertItem( icon, text, p, id, index ) );
+	          else
+	            pos = mb->indexOf( mb->insertItem( icon, text, p, id, index ) );
+          }
+	        mb->setId( pos, id );
+	        mb->setAccel( accel, id );
+	        mb->setItemEnabled( id, isOn );
+	        mb->setItemVisible( id, isVisible );
+	        if ( !p )
+	          mb->connectItem( id, this, SIGNAL( activated() ) );
+	      }
+      }
+    }
+  }
   return true;
+}
+
+/*!
+	Name: removeFrom [virtual public]
+	Desc: Removes this action from widget. Returns true if the action was removed
+		  successfully and false otherwise.
+*/
+
+bool QtxAction::removeFrom( QWidget* w )
+{
+  bool res = false;
+  // check if widget is QMenuBar
+  if ( w->inherits( "QMenuBar" ) )
+  {
+    QMenuBar* mb = (QMenuBar*)w;
+    if ( myMenuIds.find( w ) != myMenuIds.end() )
+    {
+      mb->removeItem( myMenuIds[ w ] );
+      myMenuIds.remove( w );
+      res = true;
+    }
+  }
+  else
+    res = QAction::removeFrom( w );
+  return res;
 }
 
 /*!
@@ -149,38 +270,73 @@ bool QtxAction::addTo( QWidget* w, int index )
 	Desc: Set or unset the sub popup menu for item with specified id in the given popup.
 */
 
-void QtxAction::setPopup( QPopupMenu* popup, const int id, QPopupMenu* subPopup ) const
+void QtxAction::setPopup( QWidget* w, const int id, QPopupMenu* subPopup ) const
 {
-  if ( !popup )
+  if ( !w )
     return;
 
+  QMenuData* pmd = 0;
+
+  if ( w->inherits( "QPopupMenu" ) )
+    pmd = ::qt_cast<QPopupMenu*>( w );
+  else if ( w->inherits( "QMenuBar" ) )
+    pmd = ::qt_cast<QMenuBar*>( w );
+
+  if ( !pmd )
+    return;  // bad widget
+
   QMenuData* md = 0;
-  const QMenuData* pmd = popup;
-  QMenuItem* item = popup->findItem( id, &md );
+  QMenuItem* item = pmd->findItem( id, &md );
   if ( !item || md != pmd )
-    return;
+    return;  // item is not found
 
   QPopupMenu* oldPopup = item->popup();
   if ( oldPopup == subPopup )
-    return;
+    return;  // popup is not changed
 
-  int accel = popup->accel( id );
-  bool isOn = popup->isItemEnabled( id );
-  QString text = popup->text( id );
+  // get properties
+  int accel = pmd->accel( id );
+  bool isOn = pmd->isItemEnabled( id );
+  bool isVisible = pmd->isItemVisible( id );
+  int pos = pmd->indexOf( id );
+  QString text = pmd->text( id );
   QIconSet icon;
-	if ( popup->iconSet( id ) )
-    icon = *popup->iconSet( id );
-  popup->removeItem( id );
+  if ( pmd->iconSet( id ) )
+    icon = *pmd->iconSet( id );
 
-  int pos;
-  if ( icon.isNull() )
-    pos = popup->indexOf( subPopup ? popup->insertItem( text, subPopup ) : popup->insertItem( text ) );
+  // remove previous item
+  pmd->removeItem( id );
+
+  // add new item
+  if ( w->inherits( "QPopupMenu" ) )
+  {
+    // --- QPopupMenu ---
+    QPopupMenu* popup = (QPopupMenu*)w;
+    if ( icon.isNull() )
+      pos = popup->indexOf( subPopup ? popup->insertItem( text, subPopup, id, pos ) :
+			                                 popup->insertItem( text, id, pos ) );
+    else
+      pos = popup->indexOf( subPopup ? popup->insertItem( icon, text, subPopup, id, pos ) : 
+			                                 popup->insertItem( icon, text, id, pos ) );
+  }
   else
-    pos = popup->indexOf( subPopup ? popup->insertItem( icon, text, subPopup ) : popup->insertItem( icon, text ) );
+  {
+    // --- QMenuBar ---
+    QMenuBar* mb = (QMenuBar*)w;
+    if ( icon.isNull() )
+      pos = mb->indexOf( subPopup ? mb->insertItem( text, subPopup, id, pos ) : 
+ 			                              mb->insertItem( text, id, pos ) );
+    else
+      pos = mb->indexOf( subPopup ? mb->insertItem( icon, text, subPopup, id, pos ) : 
+ 			                              mb->insertItem( icon, text, id, pos ) );
+  }
 
-  popup->setId( pos, id );
-  popup->setAccel( accel, id );
-  popup->setItemEnabled( id, isOn );
+  // restore properties
+  pmd->setId( pos, id ); // for sure (if id < 0)
+  pmd->setAccel( accel, id );
+  pmd->setItemEnabled( id, isOn );
+  pmd->setItemVisible( id, isVisible );
 
+  // delete old popup
   delete oldPopup;
 }

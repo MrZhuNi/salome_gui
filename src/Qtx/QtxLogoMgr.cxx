@@ -169,7 +169,7 @@ void QtxLogoMgr::generate()
   QApplication::sendPostedEvents( cnt, QEvent::ChildInserted );
   cnt->addSpacing( 2 );
 
-  myId = menuBar()->insertItem( cnt );
+  myId = menuBar()->insertItem( cnt, INT_MAX );
 
   QApplication::sendPostedEvents( menuBar()->parentWidget(), QEvent::LayoutHint );
   QApplication::postEvent( menuBar()->parentWidget(), new QEvent( QEvent::LayoutHint ) );
