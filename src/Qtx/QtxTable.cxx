@@ -74,6 +74,7 @@ protected:
   virtual void  mousePressEvent( QMouseEvent* );
   virtual void  mouseReleaseEvent( QMouseEvent* );
   virtual void  paintSection( QPainter*, int, const QRect& );
+  virtual void  paintEvent( QPaintEvent * );
 
 private:
   typedef QMap<int, int>        SpanMap;
@@ -108,6 +109,7 @@ myTable( table ),
 myPressed( -1 ),
 mySection( -1 )
 {
+  setWFlags( WRepaintNoErase );
 }
 
 QtxTable::Header::~Header()
@@ -381,6 +383,19 @@ void QtxTable::Header::paintSection( QPainter* p, int index, const QRect& fr )
   QHeader::paintSection( p, idx, r );
 
   mySection = -1;
+}
+
+void QtxTable::Header::paintEvent( QPaintEvent *pe )
+{
+  //const QRect& r = pe->rect();
+  QRect r = rect();
+  QPixmap pix( r.width(), r.height() );
+  QPainter::redirect( this, &pix );
+  QHeader::paintEvent( pe );
+  QPainter::redirect( this, 0 );
+  QPainter painter( this );
+  painter.drawPixmap( r, pix );
+  //QHeader::paintEvent( pe );
 }
 
 bool QtxTable::Header::filterEvent( QMouseEvent* e ) const

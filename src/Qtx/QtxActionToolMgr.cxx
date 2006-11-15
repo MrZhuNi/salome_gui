@@ -447,13 +447,13 @@ void QtxActionToolMgr::updateToolBar( const int tId )
 */
 void QtxActionToolMgr::internalUpdate()
 {
-  if ( !isUpdatesEnabled() )
-    return;
+
+
 
   for ( ToolBarMap::ConstIterator it1 = myToolBars.begin(); it1 != myToolBars.end(); ++it1 )
     updateToolBar( it1.key() );
 
-  myUpdateIds.clear();
+
 }
 
 /*!
@@ -604,8 +604,8 @@ void QtxActionToolMgr::triggerUpdate( const int id )
 }
 
 /*!
-	Class: QtxActionToolMgr::ToolCreator
-	Level: Public
+  Constructor
+
 */
 QtxActionToolMgr::ToolCreator::ToolCreator( QtxActionMgr::Reader* r,
                                             QtxActionToolMgr* mgr )

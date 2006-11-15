@@ -314,12 +314,12 @@ void QtxActionMgr::setVisible( const int, const int, const bool )
 */
 void QtxActionMgr::update()
 {
-  if ( !isUpdatesEnabled() )
-    return;
+  if ( isUpdatesEnabled() )
 
-  internalUpdate();
-  if ( myUpdTimer )
-    myUpdTimer->stop();
+
+    internalUpdate();
+
+
 }
 
 /*!
@@ -467,8 +467,8 @@ void QtxActionMgr::Reader::setOption( const QString& name, const QString& value 
 
 
 /*!
-	Class: QtxActionMgr::XMLReader
-	Level: Public
+  Constructor
+
 */
 QtxActionMgr::XMLReader::XMLReader( const QString& root,
                                     const QString& item,
@@ -609,11 +609,11 @@ bool QtxActionMgr::XMLReader::isNodeSimilar( const QDomNode& node,
 
 
 /*!
-	Class: QtxActionMgr::Creator
-	Level: Public
-*/
 
-/*!
+
+
+
+
   \return integer value by attributes
   \param attrs - attributes
   \param name - name of attribute
@@ -697,3 +697,4 @@ bool QtxActionMgr::Creator::loadPixmap( const QString& fname, QPixmap& pix ) con
 
   return res;
 }
+
