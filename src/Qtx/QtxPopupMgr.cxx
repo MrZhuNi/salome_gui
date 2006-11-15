@@ -637,6 +637,7 @@ void QtxPopupMgr::updatePopup( QPopupMenu* p, Selection* sel )
   qDebug( QString( "number of objects = %1" ).arg( myCurrentSelection->count() ) );
 
   delete myCurrentSelection;
+  myCurrentSelection = 0;
 }
 
 /*!
