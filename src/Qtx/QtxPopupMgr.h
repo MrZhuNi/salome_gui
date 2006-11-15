@@ -98,6 +98,7 @@ protected:
     typedef QMap< QAction*, QtxParser* > RulesMap;
 
 protected:
+    void    setSelection( Selection* );
     virtual bool      isSatisfied( QAction*, bool visibility ) const;
             void      setParams( QtxParser*, QStringList& ) const;
             RulesMap& map( bool visibility ) const;

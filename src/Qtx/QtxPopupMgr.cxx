@@ -553,19 +553,27 @@ bool QtxPopupMgr::isSatisfied( QAction* act, bool visibility ) const
     QMap<QValueList<QtxValue>,int> aCorteges;
     QValueList<QtxValue> c;
 
-    if( specific.count()>0 )
-      if( myCurrentSelection )
+    if ( specific.count() )
+    {
+      if ( myCurrentSelection )
       {
-	res = false;
-
-	for( int i=0, n=myCurrentSelection->count(); i<n && !res; i++ )
-	{
-	  QStringList::const_iterator anIt1 = specific.begin(), aLast1 = specific.end();
-	  c.clear();
-	  for( ; anIt1!=aLast1; anIt1++ )
-	    c.append( myCurrentSelection->param( i, *anIt1 ) );
-	  aCorteges.insert( c, 0 );
-	}
+	      res = false;
+        if ( myCurrentSelection->count() )
+        {
+	        for( int i = 0, n = myCurrentSelection->count(); i < n && !res; i++ )
+	        {
+	          c.clear();
+	          for ( QStringList::const_iterator anIt1 = specific.begin(); anIt1 != specific.end(); anIt1++ )
+	            c.append( myCurrentSelection->param( i, *anIt1 ) );
+            aCorteges.insert( c, 0 );
+          }
+        }
+        else
+        {
+          for ( QStringList::const_iterator anIt1 = specific.begin(); anIt1 != specific.end(); anIt1++ )
+	          c.append( QtxValue() );
+          aCorteges.insert( c, 0 );
+       }
 	
 	//qDebug( QString( "%1 corteges" ).arg( aCorteges.count() ) );
 	QMap<QValueList<QtxValue>,int>::const_iterator anIt = aCorteges.begin(), aLast = aCorteges.end();
@@ -589,7 +597,8 @@ bool QtxPopupMgr::isSatisfied( QAction* act, bool visibility ) const
 	}*/
       }
       else
-	res = false;
+	      res = false;
+    }
     else
       res = result( p );
   }
@@ -623,12 +632,13 @@ void QtxPopupMgr::updatePopup( QPopupMenu* p, Selection* sel )
   if( !p || !sel )
     return;
 
-  myCurrentSelection = new QtxCacheSelection( sel );
-  RulesMap::iterator anIt = myToggle.begin(),
-                            aLast = myToggle.end();
-  for( ; anIt!=aLast; anIt++ )
-    if( anIt.key()->isToggleAction() && hasRule( anIt.key(), false ) )
+  setSelection( sel );
+
+  for ( RulesMap::iterator anIt = myToggle.begin(); anIt != myToggle.end(); anIt++ )
+  {
+    if ( anIt.key()->isToggleAction() && hasRule( anIt.key(), false ) )
       anIt.key()->setOn( isSatisfied( anIt.key(), false ) );
+  }
 
   setWidget( ( QWidget* )p );
   updateMenu();
@@ -636,8 +646,19 @@ void QtxPopupMgr::updatePopup( QPopupMenu* p, Selection* sel )
   qDebug( QString( "update popup time = %1 msecs" ).arg( t1.msecsTo( t2 ) ) );
   qDebug( QString( "number of objects = %1" ).arg( myCurrentSelection->count() ) );
 
+  setSelection( 0 );
+}
+
+void QtxPopupMgr::setSelection( Selection* s )
+{
+  if ( myCurrentSelection == s )
+    return;
+
   delete myCurrentSelection;
   myCurrentSelection = 0;
+
+  if ( s )
+    myCurrentSelection = new QtxCacheSelection( s );
 }
 
 /*!
