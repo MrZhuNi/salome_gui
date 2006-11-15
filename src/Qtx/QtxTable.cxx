@@ -80,14 +80,13 @@ private:
   typedef QMap<int, int>        SpanMap;
   typedef QMap<int, QColor>     ColorMap;
   typedef QPair<int, int>       SpanRange;
-  typedef QValueList<SpanRange> SpanRangeList;
+  typedef QMap<int, SpanRange>  SpanRangeMap;
 
 private:
   QHeader*      mainHeader() const;
-  bool          filterEvent( QMouseEvent* ) const;
+  bool          filterEvent( QMouseEvent* );
 
-  SpanRange     findSpanRange( const int ) const;
-  void          spanRanges( SpanRangeList& ) const;
+  SpanRange     findSpanRange( const int );
 
   QPoint        sectionCenter( const int, const QPoint& = QPoint() ) const;
 
@@ -99,7 +98,7 @@ private:
   ColorMap      myBgColor;
   int           myPressed;
   int           mySection;
-
+  SpanRangeMap  mySpanRanges;
   friend class QtxTable::StyleItem;
 };
 
@@ -233,6 +232,7 @@ void QtxTable::Header::setHorizontalSpan( const int section, const int sp )
   if ( horizontalSpan( section ) == sp )
     return;
 
+  mySpanRanges.clear();
   myHSpan.insert( section, sp );
   if ( isUpdatesEnabled() )
     repaint( indexRect( mapToIndex( section ) ) );
@@ -248,6 +248,7 @@ void QtxTable::Header::setVerticalSpan( const int section, const int sp )
   if ( verticalSpan( section ) == sp )
     return;
 
+  mySpanRanges.clear();
   myVSpan.insert( section, sp );
   if ( isUpdatesEnabled() )
     repaint( indexRect( mapToIndex( section ) ) );
@@ -387,7 +388,6 @@ void QtxTable::Header::paintSection( QPainter* p, int index, const QRect& fr )
 
 void QtxTable::Header::paintEvent( QPaintEvent *pe )
 {
-  //const QRect& r = pe->rect();
   QRect r = rect();
   QPixmap pix( r.width(), r.height() );
   QPainter::redirect( this, &pix );
@@ -398,7 +398,7 @@ void QtxTable::Header::paintEvent( QPaintEvent *pe )
   //QHeader::paintEvent( pe );
 }
 
-bool QtxTable::Header::filterEvent( QMouseEvent* e ) const
+bool QtxTable::Header::filterEvent( QMouseEvent* e )
 {
   int c = orientation() == Horizontal ? e->pos().x() : e->pos().y();
   c += offset();
@@ -425,13 +425,7 @@ bool QtxTable::Header::filterEvent( QMouseEvent* e ) const
   if ( handleIdx == -1 )
     return false;
 
-  bool ok = false;
-  SpanRangeList ranges;
-  spanRanges( ranges );
-  for ( SpanRangeList::const_iterator it = ranges.begin(); it != ranges.end() && !ok; ++it )
-    ok = (*it).second == handleIdx;
-
-  return !ok;
+  return findSpanRange( handleIdx ).second != handleIdx;
 }
 
 QPoint QtxTable::Header::sectionCenter( const int index, const QPoint& p ) const
@@ -452,29 +446,49 @@ QPoint QtxTable::Header::sectionCenter( const int index, const QPoint& p ) const
   return pos;
 }
 
-void QtxTable::Header::spanRanges( SpanRangeList& lst ) const
+QtxTable::Header::SpanRange QtxTable::Header::findSpanRange( const int index )
 {
-  lst.clear();
-  for ( int i = 0; i < (int)count(); i++ )
+  SpanRange res( index, index );
+  if ( mySpanRanges.isEmpty() )
   {
-    int sp = horizontalSpan( mapToSection( i ) );
-    sp = QMAX( sp, 1 );
-    SpanRange range( i, QMIN( i + sp - 1, count() - 1 ) );
-    lst.append( range );
-    i += sp - 1;
+    // no span sections and no first simple sections stored in map
+    // so we have to fill it.
+    for ( int i = 0; i < (int)count(); i++ )
+    {
+      int sp = horizontalSpan( mapToSection( i ) );
+      sp = QMAX( sp, 1 );
+      SpanRange range( i, QMIN( i + sp - 1, count() - 1 ) );
+      if ( range.first == range.second && !mySpanRanges.isEmpty() )
+        continue; // do not store simple section without span (store only first)
+      mySpanRanges.insert( i, range );
+      for ( int j = i + 1; j < i + sp; j++ )
+        mySpanRanges.insert( j, range );
+      i += sp - 1;
+    }
   }
-}
+  
+  if ( mySpanRanges.contains( index ) )
+    res = mySpanRanges[ index ];
 
-QtxTable::Header::SpanRange QtxTable::Header::findSpanRange( const int index ) const
-{
+
+  /* try to optimise by checking range during step from one to next
   SpanRangeList ranges;
   spanRanges( ranges );
 
-  SpanRange res( -1, -1 );
   for ( SpanRangeList::const_iterator it = ranges.begin(); it != ranges.end() && res.first < 0; ++it )
   {
     if ( (*it).first <= index && index <= (*it).second )
       res = *it;
+  }
+  */
+  for ( int i = 0; i < (int)count() && res.first < 0; i++ )
+  {
+    int sp = horizontalSpan( mapToSection( i ) );
+    sp = QMAX( sp, 1 );
+    SpanRange range( i, QMIN( i + sp - 1, count() - 1 ) );
+    if ( range.first <= index && index <= range.second )
+      res = range;
+    i += sp - 1;
   }
   return res;
 }
