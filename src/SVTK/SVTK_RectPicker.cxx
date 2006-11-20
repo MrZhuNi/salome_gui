@@ -91,13 +91,21 @@ namespace
 
 
   //----------------------------------------------------------------------------
+/* RKV  void
+  SelectVisiblePoints(int theSelection[4],
+		      vtkRenderer *theRenderer,
+		      vtkDataSet *theInput,
+		      SVTK_RectPicker::TVectorIds& theVisibleIds,
+		      SVTK_RectPicker::TVectorIds& theInVisibleIds,
+		      vtkFloatingPointType theTolerance) */
   void
   SelectVisiblePoints(int theSelection[4],
 		      vtkRenderer *theRenderer,
 		      vtkDataSet *theInput,
 		      SVTK_RectPicker::TVectorIds& theVisibleIds,
 		      SVTK_RectPicker::TVectorIds& theInVisibleIds,
-		      vtkFloatingPointType theTolerance)
+		      vtkFloatingPointType theTolerance, 
+          bool isThrough) // RKV
   {
     theVisibleIds.clear();
     theInVisibleIds.clear();
@@ -119,8 +127,14 @@ namespace
 		      GetCompositePerspectiveTransformMatrix(1,0,1));
 
     // We grab the z-buffer for the selection region all at once and probe the resulting array.
-    float *aZPtr = theRenderer->GetRenderWindow()->
-      GetZbufferData(theSelection[0], theSelection[1], theSelection[2], theSelection[3]);
+// RKV    float *aZPtr = theRenderer->GetRenderWindow()->
+// RKV      GetZbufferData(theSelection[0], theSelection[1], theSelection[2], theSelection[3]);
+    // RKV : Begin
+    float *aZPtr = 0;
+    if (!isThrough) // Use Z-Buffer if only visible points should be taken
+      aZPtr = theRenderer->GetRenderWindow()->
+        GetZbufferData(theSelection[0], theSelection[1], theSelection[2], theSelection[3]);
+    // RKV : End
 
     //cout<<"theSelection = {"<<theSelection[0]<<", "<<theSelection[1]<<", "<<theSelection[2]<<", "<<theSelection[3]<<"}\n";
     /*
@@ -153,6 +167,8 @@ namespace
          aDX[1] >= theSelection[1] && aDX[1] <= theSelection[3])
       {
 	//cout<<"aPntId "<<aPntId<<"; aDX = {"<<aDX[0]<<", "<<aDX[1]<<", "<<aDX[2]<<"}\n";
+        if (isThrough) goto ADD_VISIBLE; // RKV
+
 	int aDX0 = int(aDX[0]);
 	int aDX1 = int(aDX[1]);
 
@@ -224,7 +240,8 @@ namespace
 		     vtkRenderer *theRenderer,
 		     vtkDataSet *theInput,
 		     SVTK_RectPicker::TVectorIds& theVectorIds,
-		     vtkFloatingPointType theTolerance)
+// RKV		     vtkFloatingPointType theTolerance)
+		     vtkFloatingPointType theTolerance, bool isThrough) // RKV
   {
     theVectorIds.clear();
 
@@ -241,7 +258,8 @@ namespace
 			theInput,
 			aVisiblePntIds,
 			anInVisiblePntIds,
-			theTolerance);
+// RKV			theTolerance);
+			theTolerance, isThrough); // RKV
 
     typedef std::set<vtkIdType> TIdsSet;
     TIdsSet aVisibleIds(aVisiblePntIds.begin(),aVisiblePntIds.end());
@@ -330,6 +348,7 @@ SVTK_RectPicker
 {
   this->Tolerance = 0.005;
   this->PickPoints = 1;
+  this->myIsThrough = false; // RKV : The old behaviour by default
 }
 
 SVTK_RectPicker
@@ -450,7 +469,8 @@ SVTK_RectPicker
 			      aMapper->GetInput(),
 			      aVisibleIds,
 			      anInVisibleIds,
-			      this->Tolerance);
+// RKV			      this->Tolerance);
+			      this->Tolerance, IsThrough()); // RKV
 	  if ( aVisibleIds.empty() ) {
 	    myPointIdsMap.erase(myPointIdsMap.find(anActor));
 	  }
@@ -460,7 +480,8 @@ SVTK_RectPicker
 			     theRenderer,
 			     aMapper->GetInput(),
 			     aVectorIds,
-			     this->Tolerance);
+// RKV			     this->Tolerance);
+			     this->Tolerance, IsThrough()); // RKV
 	  if ( aVectorIds.empty() ) {
 	    myCellIdsMap.erase(myCellIdsMap.find(anActor));
 	  }
