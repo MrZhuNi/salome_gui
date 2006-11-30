@@ -422,7 +422,12 @@ QtxDialog::QtxDialog( QWidget* parent, const char* name,
 #else
            WStyle_NormalBorder |
 #endif
-           ( allowResize ? WStyle_Maximize : 0 ) ),
+           ( ( allowResize 
+#ifdef WIN32 
+           // in qwidget_win.cpp flag WStyle_ContextHelp will be unset in WStyle_MinMax in switched ON
+           && !( wf & WStyle_ContextHelp )
+#endif
+             ) ? WStyle_Maximize : 0 ) ),
 mySender( 0 ),
 myAlignment( 0 ),
 myInited( false ),
