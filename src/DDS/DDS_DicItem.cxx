@@ -466,10 +466,10 @@ void DDS_DicItem::FillDataMap( TCollection_AsciiString theID, const LDOM_Element
                                const LDOM_Element& theCompElement, const LDOM_Element& theDocElement,
                                const TColStd_SequenceOfAsciiString& theSystems )
 {
-  TCollection_AsciiString aLabel    = theDatum.getAttribute( DDS_Dictionary::KeyWord( "DATUM_LABEL" ) );
-  TCollection_AsciiString aFormat   = theDatum.getAttribute( DDS_Dictionary::KeyWord( "DATUM_FORMAT" ) );
-  TCollection_AsciiString aFilter   = theDatum.getAttribute( DDS_Dictionary::KeyWord( "DATUM_FILTER" ) );
-  TCollection_AsciiString aRequired = theDatum.getAttribute( DDS_Dictionary::KeyWord( "DATUM_REQUIRED" ) );
+  TCollection_ExtendedString aLabel    = theDatum.getAttribute( DDS_Dictionary::KeyWord( "DATUM_LABEL" ) );
+  TCollection_AsciiString    aFormat   = theDatum.getAttribute( DDS_Dictionary::KeyWord( "DATUM_FORMAT" ) );
+  TCollection_ExtendedString aFilter   = theDatum.getAttribute( DDS_Dictionary::KeyWord( "DATUM_FILTER" ) );
+  TCollection_ExtendedString aRequired = theDatum.getAttribute( DDS_Dictionary::KeyWord( "DATUM_REQUIRED" ) );
 
   TCollection_AsciiString aBaseKeyWord = DDS_Dictionary::KeyWord( "DATUM_UNITS" );
 
@@ -520,10 +520,10 @@ void DDS_DicItem::FillDataMap( TCollection_AsciiString theID, const LDOM_Element
   TCollection_AsciiString aMinV;
   TCollection_AsciiString aMaxV;
   TCollection_AsciiString aDefV;
-  TCollection_AsciiString aListName;
+  TCollection_ExtendedString aListName;
 
-  TCollection_AsciiString aLongD;
-  TCollection_AsciiString aShortD;
+  TCollection_ExtendedString aLongD;
+  TCollection_ExtendedString aShortD;
 
   TColStd_SequenceOfInteger aSeqOfValueID;
   TColStd_SequenceOfExtendedString aSeqOfValue;
@@ -653,9 +653,9 @@ void DDS_DicItem::FillDataMap( TCollection_AsciiString theID, const LDOM_Element
             {
               //  Read the text in the element "value"
               //LDOM_Text aListItemTxt = (const LDOM_Text&)aListItemValue.getFirstChild();
-	      LDOM_Node aNode = aListItemValue.getFirstChild();
-	      const LDOM_Text& aText = (const LDOM_Text&) aNode;
-	      LDOM_Text aListItemTxt(aText);
+              LDOM_Node aNode = aListItemValue.getFirstChild();
+              const LDOM_Text& aText = (const LDOM_Text&) aNode;
+              LDOM_Text aListItemTxt(aText);
               if ( !aListItemTxt.isNull() )
               {
                 // adding ID and text value to sequence
@@ -778,16 +778,16 @@ void DDS_DicItem::FillDataMap( TCollection_AsciiString theID, const LDOM_Element
   myId                = theID;
   myType              = aEnumType;
   myWarnLevel         = aWrongValue;
-  myLabel             = aLabel.ToCString();
-  myFilter            = aFilter.ToCString();
-  myLongDescr         = aLongD.ToCString();
-  myShortDescr        = aShortD.ToCString();
+  myLabel             = aLabel;
+  myFilter            = aFilter;
+  myLongDescr         = aLongD;
+  myShortDescr        = aShortD;
   myMin               = aRealMinV;
   myMax               = aRealMaxV;
   myDefValue          = aRealDefV;
   myDefString         = aDefV.ToCString();
-  myRequired          = aRequired.ToCString();
-  myListName          = aListName.ToCString();
+  myRequired          = aRequired;
+  myListName          = aListName;
   myMinZoom           = aMinZoom;
   myMaxZoom           = aMaxZoom;
   myZoomOrder         = aZoomOrder;
