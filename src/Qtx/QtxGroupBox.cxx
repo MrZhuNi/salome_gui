@@ -241,9 +241,9 @@ QSize QtxGroupBox::sizeHint() const
   if ( myContainer )
   {
     if ( alignment() == AlignCenter )
-      sw += 2 * ( myContainer->width() + 5 );
+      sw += 2 * ( myContainer->sizeHint().width() + 5 );
     else
-      sw += 1 * ( myContainer->width() + 5 );
+      sw += 1 * ( myContainer->sizeHint().width() + 5 );
   }
 
   sw += frameRect().left();
@@ -258,14 +258,13 @@ QSize QtxGroupBox::minimumSizeHint() const
 {
   QSize sz = QGroupBox::minimumSizeHint();
 
-  int sw = titleSize().width() + myContainer ? myContainer->width() + 5 : 0;
-
+  int sw = titleSize().width();
   if ( myContainer )
   {
     if ( alignment() == AlignCenter )
-      sw += 2 * ( myContainer->width() + 5 );
+      sw += 2 * ( myContainer->minimumSizeHint().width() + 5 );
     else
-      sw += 1 * ( myContainer->width() + 5 );
+      sw += 1 * ( myContainer->minimumSizeHint().width() + 5 );
   }
 
   sw += frameRect().left();
