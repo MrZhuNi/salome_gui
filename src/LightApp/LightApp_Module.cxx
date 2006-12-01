@@ -563,3 +563,13 @@ void LightApp_Module::onViewManagerAdded( SUIT_ViewManager* )
 void LightApp_Module::onViewManagerRemoved( SUIT_ViewManager* )
 {
 }
+
+/*!
+ * \brief Virtual public method called to custom update of the desktop title
+  * \param theTitle - current desktop title
+  * \return Modified desktop title
+*/
+QString LightApp_Module::updateDesktopTitle( const QString& theTitle )
+{
+  return theTitle;
+}
