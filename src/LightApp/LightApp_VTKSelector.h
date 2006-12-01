@@ -37,6 +37,10 @@ class SUIT_Desktop;
   class SVTK_ViewModelBase;
 #endif
 
+#if defined WNT
+#pragma warning ( disable:4251 )
+#endif
+
 /*!
   Provide salome vtk data owner list.
 */
