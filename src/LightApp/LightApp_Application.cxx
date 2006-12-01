@@ -931,12 +931,12 @@ public:
       {
 	aCommand.sprintf("%s %s %s",myApp.latin1(),myParams.latin1(),myHelpFile.latin1());
 
-	QProcess* proc = new QProcess();
-  proc->addArgument( aCommand );
-	//myStatus = system(aCommand);
+	//QProcess* proc = new QProcess();
+	//proc->addArgument( aCommand );
+	myStatus = system(aCommand);
 
-	//if(myStatus != 0)
-	if(!proc->start())
+	if(myStatus != 0)
+	//if(!proc->start())
 	  {
 	    QCustomEvent* ce2000 = new QCustomEvent( 2000 );
 	    QString* msg = new QString( QObject::tr("EXTERNAL_BROWSER_CANNOT_SHOW_PAGE").arg(myApp).arg(myHelpFile) );
