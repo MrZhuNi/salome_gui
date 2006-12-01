@@ -64,6 +64,12 @@
 #include <OB_Browser.h>
 #include <OB_ListView.h>
 
+#ifdef WIN32
+#define DEFAULT_BROWSER "start iexplore.exe"
+#else
+#define DEFAULT_BROWSER "mozilla"
+#endif
+
 #ifndef DISABLE_GLVIEWER
   #include <GLViewer_Viewer.h>
   #include <GLViewer_ViewManager.h>
@@ -526,7 +532,7 @@ void LightApp_Application::createActions()
   QStringList modList;
   modules( modList, false );
 
-  if( modList.count()>1 )
+  // if( modList.count()>1 )
   {
     QToolBar* modTBar = new QtxToolBar( true, desk );
     modTBar->setLabel( tr( "INF_TOOLBAR_MODULES" ) );
@@ -928,25 +934,53 @@ public:
 {
 };
 
-  virtual void run()
+ // virtual void run()
+ // {
+ //   QString aCommand;
+
+ //   if ( !myApp.isEmpty())
+ //     {
+	//aCommand.sprintf("%s %s %s",myApp.latin1(),myParams.latin1(),myHelpFile.latin1());
+
+	//QProcess* proc = new QProcess();
+ // proc->addArgument( aCommand );
+	////myStatus = system(aCommand);
+
+	////if(myStatus != 0)
+	//if(!proc->start())
+	//  {
+	//    QCustomEvent* ce2000 = new QCustomEvent( 2000 );
+	//    QString* msg = new QString( QObject::tr("EXTERNAL_BROWSER_CANNOT_SHOW_PAGE").arg(myApp).arg(myHelpFile) );
+	//    ce2000->setData( msg );
+	//    postEvent( myLApp, ce2000 );
+	//  }
+ //     }
+ // }
+
+    virtual void run()
   {
     QString aCommand;
 
     if ( !myApp.isEmpty())
       {
 	aCommand.sprintf("%s %s %s",myApp.latin1(),myParams.latin1(),myHelpFile.latin1());
-
-	QProcess* proc = new QProcess();
-  proc->addArgument( aCommand );
-	//myStatus = system(aCommand);
-
-	//if(myStatus != 0)
-	if(!proc->start())
+	myStatus = system(aCommand);
+	if(myStatus != 0)
 	  {
-	    QCustomEvent* ce2000 = new QCustomEvent( 2000 );
-	    QString* msg = new QString( QObject::tr("EXTERNAL_BROWSER_CANNOT_SHOW_PAGE").arg(myApp).arg(myHelpFile) );
-	    ce2000->setData( msg );
-	    postEvent( myLApp, ce2000 );
+	    QCustomEvent* ce2000 = new QCustomEvent (2000);
+	    postEvent (qApp, ce2000);
+	  }
+      }
+
+    if( myStatus != 0 || myApp.isEmpty())
+      {
+	myParams = "";
+	aCommand.sprintf("%s %s %s", QString(DEFAULT_BROWSER).latin1(),myParams.latin1(), myHelpFile.latin1());
+	myStatus = system(aCommand);
+	if(myStatus != 0)
+	  {
+	    QCustomEvent* ce2001 = new QCustomEvent (2001);
+	    postEvent (qApp, ce2001);
 	  }
       }
   }
@@ -984,6 +1018,7 @@ void LightApp_Application::onHelpContentsModule()
 	platform = "application";
 #endif
 	QString anApp = resMgr->stringValue("ExternalBrowser", platform);
+        //QString anApp = resMgr->stringValue("ExternalBrowser", "application");
 #ifdef WIN32
 	QString quote("\""); 
 	anApp.prepend( quote ); 
@@ -2059,16 +2094,25 @@ void LightApp_Application::savePreferences()
 /*!
   Updates desktop title
 */
-void LightApp_Application::updateDesktopTitle() {
+void LightApp_Application::updateDesktopTitle() 
+{
   QString aTitle = applicationName();
   QString aVer = applicationVersion();
   if ( !aVer.isEmpty() )
     aTitle += QString( " " ) + aVer;
 
-  if ( activeStudy() ) {
+  if ( activeStudy() )
+  {
     QString sName = SUIT_Tools::file( activeStudy()->studyName().stripWhiteSpace(), false );
-    aTitle += QString( " - [%1]" ).arg( sName );
+	  aTitle += QString( " - [%1]" ).arg( sName );
   }
+
+  QStringList anInfoList;
+  modules( anInfoList, false );
+
+  LightApp_Module* aModule = ( LightApp_Module* )activeModule();
+  if( aModule && anInfoList.count() == 1 ) // to avoid a conflict between different modules
+    aTitle = aModule->updateDesktopTitle( aTitle );
 
   desktop()->setCaption( aTitle );
 }
