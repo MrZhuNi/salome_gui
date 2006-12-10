@@ -187,12 +187,12 @@ void STD_Application::createActions()
                 tr( "MEN_DESK_HELP_ABOUT" ), tr( "PRP_DESK_HELP_ABOUT" ),
                 SHIFT+Key_A, desk, false, this, SLOT( onHelpAbout() ) );
 
-  //SRN: BugID IPAL9021, add an action "Load"
-  createAction( FileLoadId, tr( "TOT_DESK_FILE_LOAD" ),
-                resMgr->loadPixmap( "STD", tr( "ICON_FILE_OPEN" ) ),
-		tr( "MEN_DESK_FILE_LOAD" ), tr( "PRP_DESK_FILE_LOAD" ),
-		CTRL+Key_L, desk, false, this, SLOT( onLoadDoc() ) );
-  //SRN: BugID IPAL9021: End
+  ////SRN: BugID IPAL9021, add an action "Load"
+  //createAction( FileLoadId, tr( "TOT_DESK_FILE_LOAD" ),
+  //              resMgr->loadPixmap( "STD", tr( "ICON_FILE_OPEN" ) ),
+		//tr( "MEN_DESK_FILE_LOAD" ), tr( "PRP_DESK_FILE_LOAD" ),
+		//CTRL+Key_L, desk, false, this, SLOT( onLoadDoc() ) );
+  ////SRN: BugID IPAL9021: End
 
   QtxDockAction* da = new QtxDockAction( tr( "TOT_DOCK_WINDOWS" ), tr( "MEN_DOCK_WINDOWS" ), desk );
   registerAction( ViewWindowsId, da );

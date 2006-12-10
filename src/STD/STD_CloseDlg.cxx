@@ -64,14 +64,14 @@ STD_CloseDlg::STD_CloseDlg( QWidget* parent, bool modal, WFlags f )
 
   m_pb1 = new QPushButton( tr ("CLOSE_DLG_SAVE_CLOSE"), this );
   m_pb2 = new QPushButton( tr ("CLOSE_DLG_CLOSE"),      this );
-  m_pb3 = new QPushButton( tr ("CLOSE_DLG_UNLOAD"),     this );
+  //m_pb3 = new QPushButton( tr ("CLOSE_DLG_UNLOAD"),     this );
   m_pb4 = new QPushButton( tr ("BUT_CANCEL"), this );
 
   QGridLayout* m_hl2 = new QGridLayout();
   m_hl2->setMargin( 0 ); m_hl2->setSpacing( 6 );
   m_hl2->addWidget( m_pb1, 0, 0 );
   m_hl2->addWidget( m_pb2, 0, 1 );
-  m_hl2->addWidget( m_pb3, 0, 2 );
+  //m_hl2->addWidget( m_pb3, 0, 2 );
   m_hl2->addColSpacing( 3, 10 );
   m_hl2->setColStretch( 3, 5 );
   m_hl2->addWidget( m_pb4, 0, 4 );
@@ -81,7 +81,7 @@ STD_CloseDlg::STD_CloseDlg( QWidget* parent, bool modal, WFlags f )
 
   connect( m_pb1, SIGNAL( clicked() ), this, SLOT( onButtonClicked() ) );
   connect( m_pb2, SIGNAL( clicked() ), this, SLOT( onButtonClicked() ) );
-  connect( m_pb3, SIGNAL( clicked() ), this, SLOT( onButtonClicked() ) );
+  //connect( m_pb3, SIGNAL( clicked() ), this, SLOT( onButtonClicked() ) );
   connect( m_pb4, SIGNAL( clicked() ), this, SLOT( reject() ) );
 }
 
@@ -95,6 +95,6 @@ void STD_CloseDlg::onButtonClicked()
     done( 1 );
   if ( btn == m_pb2 )
     done( 2 );
-  if ( btn == m_pb3 )
-    done( 3 );
+  //if ( btn == m_pb3 )
+  //  done( 3 );
 }
