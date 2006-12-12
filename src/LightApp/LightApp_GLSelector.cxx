@@ -63,7 +63,7 @@ void LightApp_GLSelector::getSelection( SUIT_DataOwnerPtrList& aList ) const
   for ( cont->InitSelected(); cont->MoreSelected(); cont->NextSelected() )
   {
     GLViewer_Object* obj = cont->SelectedObject();
-    if ( obj )
+    if ( obj && obj->getVisible() ) // get only visible obejct as selected from GL-viewer
     {
       LightApp_DataOwner* owner = dynamic_cast<LightApp_DataOwner*>( obj->owner() );
       if ( owner )
@@ -96,15 +96,19 @@ void LightApp_GLSelector::setSelection( const SUIT_DataOwnerPtrList& aList )
   for ( ObjList::const_iterator it = displayed.begin(); it != displayed.end(); ++it )
   {
     GLViewer_Object* obj = *it;
-    if ( obj && obj->getVisible() )
+    if ( obj )
     {
       LightApp_DataOwner* owner = dynamic_cast<LightApp_DataOwner*>( obj->owner() );
       bool sel = owner && aSelected.contains( owner->entry() );
-      changed = changed || sel != (bool)obj->isSelected();
-      if ( sel && !obj->isSelected() )
-        cont->setSelected( obj, false );
-      else if ( !sel && obj->isSelected() )
-        cont->remSelected( obj, false );
+      if ( !sel || obj->getVisible() )
+      {
+        // select only visible object. deselect any
+        changed = changed || sel != (bool)obj->isSelected();
+        if ( sel && !obj->isSelected() )
+          cont->setSelected( obj, false );
+        else if ( !sel && obj->isSelected() )
+          cont->remSelected( obj, false );
+      }
     }
   }
 
