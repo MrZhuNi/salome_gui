@@ -26,6 +26,10 @@
 
 class SUIT_DataObject;
 
+#if defined WIN32
+#pragma warning ( disable:4661 )
+#endif
+
 /*!
   \class ListItemF
   Base template class for ListViewItems and CheckListItems
