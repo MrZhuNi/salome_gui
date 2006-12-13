@@ -106,7 +106,7 @@ void LightApp_GLSelector::setSelection( const SUIT_DataOwnerPtrList& aList )
         changed = changed || sel != (bool)obj->isSelected();
         if ( sel && !obj->isSelected() )
           cont->setSelected( obj, false );
-        else if ( !sel && obj->isSelected() )
+        if ( !sel && obj->isSelected() )
           cont->remSelected( obj, false );
       }
     }

@@ -643,7 +643,7 @@ void GLViewer_Context::eraseObject( GLViewer_Object* theObject, bool theUpdateVi
         return;
 
     theObject->unhighlight();
-    theObject->unselect();
+    remSelected( theObject, false );
     theObject->setVisible( false );
 
     if( theUpdateViewer )
