@@ -128,6 +128,8 @@ public:
   void              setModified();
   unsigned long     getModifiedTime() { return myModifiedTime; }
 
+  void              ensureItemVisible( const SUIT_DataObject* );
+
 signals:
   void              selectionChanged();
   void              doubleClicked( SUIT_DataObject* );

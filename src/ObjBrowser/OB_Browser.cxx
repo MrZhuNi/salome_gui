@@ -1627,3 +1627,17 @@ void OB_Browser::setModified()
   myModifiedTime = clock();
 }
 
+/*!
+  Ensures that object obj is visible, scrolling the list view vertically 
+  if necessary and opening (expanding) any parent items if this is required to show the item. 
+*/
+void OB_Browser::ensureItemVisible( const SUIT_DataObject* obj )
+{
+  QListViewItem* item = listViewItem( obj );
+  if ( item )
+    listView()->ensureItemVisible( item );
+}
+
+
+
+
