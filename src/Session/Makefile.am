@@ -55,7 +55,7 @@ libSalomeSession_la_CPPFLAGS= $(QT_MT_INCLUDES) $(PYTHON_INCLUDES) \
 libSalomeSession_la_LDFLAGS= $(QT_MT_LIBS) $(KERNEL_LDFLAGS) -lSalomeNS \
 	-lSalomeLifeCycleCORBA -lOpUtil -lSALOMELocalTrace -lSalomeCatalog \
 	-lSalomeDSClient $(CAS_KERNEL) -lwith_loggerTraceCollector \
-	../SUIT/libsuit.la ../Event/libEvent.la
+	../SUIT/libsuit.la ../Event/libEvent.la ../../idl/libSalomeIDLGUI.la
 
 # Executable
 bin_PROGRAMS= SALOME_Session_Server
