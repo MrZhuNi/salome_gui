@@ -60,6 +60,7 @@ libSALOME_Swig.py: swig_wrap.cpp
 # library
 lib_LTLIBRARIES = libSALOME_Swigcmodule.la
 libSALOME_Swigcmodule_la_SOURCES  = $(BUILT_SOURCES) $(SWIG_SOURCES) SALOMEGUI_Swig.cxx
+nodist_libSALOME_Swigcmodule_la_SOURCES = swig_wrap.cpp
 salomeinclude_HEADERS= SALOMEGUI_Swig.hxx SALOMEGUI_Swig.i
 
 libSALOME_Swigcmodule_la_CPPFLAGS =\
