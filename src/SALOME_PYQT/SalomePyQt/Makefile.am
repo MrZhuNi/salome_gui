@@ -116,6 +116,9 @@ endif
 $(SIP_SRC): $(SIP_FILES)
 	$(SIP) $(SIP_FLAGS) $<
 
+$(MOC_H): $(SIP_FILES)
+	$(SIP) $(SIP_FLAGS) $<
+
 if IS_SIP_V4
 install-exec-hook: $(libdir)/SalomePyQt.so
 $(libdir)/SalomePyQt.so:
@@ -125,3 +128,5 @@ install-exec-hook: $(libdir)/SalomePyQtcmodule.so
 $(libdir)/SalomePyQt.so:
 	ln -sf $(libdir)/libSalomePyQtcmodule.so $@
 endif
+
+$(SIP_SRC): $(MOC_SRC)
