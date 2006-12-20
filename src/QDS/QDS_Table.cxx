@@ -288,6 +288,9 @@ QWidget* QDS_Table::createEditor( int row, int col, bool init ) const
   else
     wid = QtxTable::createEditor( row, col, init );
 
+  if ( wid )
+    wid->setMinimumSize( 0, 0 );
+
   return wid;
 }
 
