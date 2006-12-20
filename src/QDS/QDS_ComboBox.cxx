@@ -206,15 +206,39 @@ void QDS_ComboBox::setState( const bool on, const QValueList<int>& ids, const bo
 /*!
   Sets the user items into the combo box.
 */
-void QDS_ComboBox::setValues( const QValueList<int>& ids, const QStringList& names )
+void QDS_ComboBox::setValues( const QValueList<int>& ids, const QStringList& names,
+                              const QValueList<QPixmap>& pixes )
 {
   initDatum();
 
-  if ( ids.count() != names.count() )
+  if ( ids.count() != names.count() || ids.count() != pixes.count() )
     return;
 
   myUserIds = ids;
   myUserNames = names;
+
+  QValueList<int>::const_iterator it = ids.begin();
+  QValueList<QPixmap>::const_iterator itr = pixes.begin();
+  for ( ; it != ids.end() && itr != pixes.end(); ++it, ++itr )
+  {
+    if ( (*itr).isNull() )
+      myUserIcons.remove( *it );
+    else
+      myUserIcons.insert( *it, *itr );
+  }
+  updateComboData();
+}
+
+/*!
+  Sets the user items into the combo box.
+*/
+void QDS_ComboBox::setValues( const QValueList<int>& ids, const QStringList& names )
+{
+  QValueList<QPixmap> pixList;
+  for ( int i = 0, n = names.count(); i < n; i++ )
+    pixList.append( QPixmap() );
+
+  setValues( ids, names, pixList );
 }
 
 /*!
@@ -226,10 +250,21 @@ void QDS_ComboBox::setValues( const QStringList& names )
 {
   initDatum();
 
-  QValueList< int > ids;
+  QValueList<int> ids;
   for ( int i = 0, n = names.count(); i < n; i++ )
     ids.append( i );
   setValues( ids, names );
+}
+
+/*!
+  Sets the user pixmap for specified item into the combo box.
+*/
+void QDS_ComboBox::setIcon( const int id, const QPixmap& pix )
+{
+  initDatum();
+
+  myUserIcons.insert( id, pix );
+  updateComboBox();
 }
 
 /*!
@@ -346,10 +381,21 @@ QWidget* QDS_ComboBox::createControl( QWidget* parent )
   return cb;
 }
 
+/*!
+  Notify about unit system changes.
+*/
 void QDS_ComboBox::unitSystemChanged( const QString& system )
 {
   QDS_Datum::unitSystemChanged( system );
 
+  updateComboData();
+}
+
+/*!
+  Updates the internal data structures.
+*/
+void QDS_ComboBox::updateComboData()
+{
   Handle(TColStd_HArray1OfInteger) anIds;
   Handle(TColStd_HArray1OfExtendedString) aValues, anIcons;
 
@@ -486,8 +532,14 @@ void QDS_ComboBox::updateComboBox()
     myIndex.insert( id, idx++ );
     if ( cb )
     {
-      if ( myIcons.contains( id ) )
-        cb->insertItem( myIcons[id], myValue[id] );
+      QPixmap pix;
+      if ( myUserIcons.contains( id ) )
+        pix = myUserIcons[id];
+      else if ( myIcons.contains( id ) )
+        pix = myIcons[id];
+
+      if ( !pix.isNull() )
+        cb->insertItem( pix, myValue[id] );
       else
         cb->insertItem( myValue[id] );
     }

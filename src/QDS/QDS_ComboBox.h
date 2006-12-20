@@ -35,8 +35,10 @@ public:
   bool                       state( const int ) const;
   void                       setState( const bool, const int, const bool = true );
   void                       setState( const bool, const QValueList<int>&, const bool = true );
+  void                       setValues( const QValueList<int>&, const QStringList&, const QValueList<QPixmap>& );
   void                       setValues( const QValueList<int>&, const QStringList& );
   void                       setValues( const QStringList& );
+  void                       setIcon( const int, const QPixmap& );
 
   virtual void               reset();
 
@@ -67,6 +69,7 @@ private:
   int                        getIndex( const QString& ) const;
 
   void                       updateComboBox();
+  void                       updateComboData();
 
 private:
   typedef QMap<int, QPixmap> IdIconsMap;
@@ -83,6 +86,7 @@ private:
   QIntList                   myDataIds;
   QIntList                   myUserIds;
   QStringList                myUserNames;
+  IdIconsMap                 myUserIcons;
 };
 
 #ifdef WNT
