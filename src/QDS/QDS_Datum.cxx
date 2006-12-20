@@ -4,6 +4,8 @@
 
 #include <DDS_Dictionary.h>
 
+#include <Qtx.h>
+
 #include <qtimer.h>
 #include <qlabel.h>
 #include <qwidget.h>
@@ -71,7 +73,12 @@ void QDS_Datum::Wrapper::setWidget( QWidget* wid )
   if ( myWid->parent() != this )
     myWid->reparent( this, QPoint( 0, 0 ) );
 
-  myWid->installEventFilter( this );
+  QWidget* w = myWid;
+  while ( w )
+  {
+    w->installEventFilter( this );
+    w = w->focusProxy();
+  }
 
   setTabOrder( this, myWid );
   setFocusProxy( myWid );
@@ -82,7 +89,7 @@ void QDS_Datum::Wrapper::setWidget( QWidget* wid )
 
 bool QDS_Datum::Wrapper::eventFilter( QObject* o, QEvent* e )
 {
-  if ( o == widget() && ( e->type() == QEvent::FocusIn || e->type() == QEvent::FocusOut ) )
+  if ( Qtx::isParent( o, this ) && ( e->type() == QEvent::FocusIn || e->type() == QEvent::FocusOut ) )
     QApplication::sendEvent( this, e );
 
   return false;
