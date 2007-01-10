@@ -276,7 +276,12 @@ void QDS_ComboBox::reset()
   int id = -1;
   QString aDefValue = defaultValue();
   if ( !aDefValue.isEmpty() )
-    id = aDefValue.toInt();
+  {
+    bool ok = false;
+    id = aDefValue.toInt( &ok );
+    if ( !ok )
+      id = -1;
+  }
 
   if ( id == -1 )
     id = getId( 0 );
@@ -345,7 +350,7 @@ void QDS_ComboBox::setString( const QString& txt )
   else if ( txt.isEmpty() )
   {
     if ( !cb->editable() )
-      cb->setCurrentText( txt );
+      cb->setCleared( true );
     else
       cb->lineEdit()->setText( txt );
   }
@@ -551,7 +556,7 @@ void QDS_ComboBox::updateComboBox()
     cb->updateGeometry();
 
     if ( isClear )
-      cb->setCurrentText( "" );
+      cb->setCleared( true );
     else
     {
       if ( getIndex( curId ) != -1 )

@@ -93,7 +93,7 @@ bool QDS_Datum::Wrapper::eventFilter( QObject* o, QEvent* e )
     QApplication::sendEvent( this, e );
 
   return false;
-  }
+}
 
 void QDS_Datum::Wrapper::setSizePolicy( QSizePolicy sp )
 {
