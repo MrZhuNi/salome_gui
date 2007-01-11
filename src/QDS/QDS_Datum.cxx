@@ -30,8 +30,9 @@ public:
   QWidget*      widget() const;
   void          setWidget( QWidget* );
 
-  virtual void  setGeometry( int x, int y, int w, int h );
+  virtual void  resize( int, int );
   virtual void  setSizePolicy( QSizePolicy );
+  virtual void  setGeometry( int x, int y, int w, int h );
 
   virtual bool  eventFilter( QObject*, QEvent* );
 
@@ -101,6 +102,14 @@ void QDS_Datum::Wrapper::setSizePolicy( QSizePolicy sp )
 
   if ( widget() )
     widget()->setSizePolicy( sp );
+}
+
+void QDS_Datum::Wrapper::resize( int w, int h )
+{
+  QWidget::resize( w, h );
+
+  if ( widget() && widget()->size() != size() )
+    widget()->resize( width(), height() );
 }
 
 void QDS_Datum::Wrapper::setGeometry( int x, int y, int w, int h )
