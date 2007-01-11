@@ -283,10 +283,13 @@ void QDS_ComboBox::reset()
       id = -1;
   }
 
+  updateComboData();
+
   if ( id == -1 )
     id = getId( 0 );
 
-  setIntegerValue( id );
+  if ( id >= 0 )
+    setIntegerValue( id );
 }
 
 /*!
