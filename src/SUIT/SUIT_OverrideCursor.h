@@ -24,6 +24,10 @@
 
 #include "SUIT.h"
 
+#ifdef WIN32
+#pragma warning ( disable:4251 )
+#endif
+
 /*! \brief Class used for management cursors.*/
 class SUIT_EXPORT SUIT_OverrideCursor
 {
