@@ -22,11 +22,12 @@
  * Provide selection manager. Manipulate by selection filters, modes, data owners.
  */
 
-/*!constructor. initialize myIterations and myIsSelChangeEnabled.*/
+/*!constructor. initialize myIterations, myIsSelChangeEnabled and myIsSynchronizationEnabled.*/
 SUIT_SelectionMgr::SUIT_SelectionMgr( const bool Feedback, QObject* p )
 : QObject( p ),
 myIterations( Feedback ? 1 : 0 ),
-myIsSelChangeEnabled( true )
+myIsSelChangeEnabled( true ),
+myIsSynchronizationEnabled( true )
 {
 }
 
@@ -138,23 +139,31 @@ void SUIT_SelectionMgr::selectionChanged( SUIT_Selector* sel )
   SUIT_DataOwnerPtrList newOwners;
   filterOwners( owners, newOwners );
 
-  for ( int i = 0; i < myIterations; i++ )
+  if ( myIsSynchronizationEnabled )
   {
-    for ( SUIT_Selector* aSel = mySelectors.first(); aSel; aSel = mySelectors.next() )
+    for ( int i = 0; i < myIterations; i++ )
     {
-      // Temporary action(to avoid selection of the objects which don't pass the filters):
-      //if ( aSel != sel )
-	    aSel->setSelected( newOwners );
+      for ( SUIT_Selector* aSel = mySelectors.first(); aSel; aSel = mySelectors.next() )
+      {
+        // Temporary action(to avoid selection of the objects which don't pass the filters):
+        //if ( aSel != sel )
+        aSel->setSelected( newOwners );
+      }
     }
   }
+  else
+    sel->setSelected( newOwners );
+
   myIsSelChangeEnabled = true;
+
+  myLastSelectionSource = sel->type();
 
   emit selectionChanged();
 }
 
 /*!
-  Returns true if selection manger is in synchronising mode
-  (during synchonisation of the selectors selection).
+Returns true if selection manger is in synchronising mode
+(during synchonisation of the selectors selection).
 */
 bool SUIT_SelectionMgr::isSynchronizing() const
 {
@@ -326,4 +335,25 @@ void SUIT_SelectionMgr::filterOwners( const SUIT_DataOwnerPtrList& in, SUIT_Data
     if ( isOk( *it ) )
       out.append( *it );
   }
+}
+
+/*! Gets type of last selector where selection has been changed.
+*/
+QString SUIT_SelectionMgr::lastSelectionSource() const
+{
+  return myLastSelectionSource;
+}
+
+/*! Verifies whether synchronization between selectors is enabled.
+*/
+bool SUIT_SelectionMgr::isSynchronizationEnabled() const
+{
+  return myIsSynchronizationEnabled;
+}
+
+/*! Enable or disable synchronization between selectors.
+*/
+void SUIT_SelectionMgr::setSynchronizationEnabled( const bool on )
+{
+  myIsSynchronizationEnabled = on;
 }
