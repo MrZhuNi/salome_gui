@@ -77,7 +77,8 @@ VTKViewer_Actor
   myIsResolveCoincidentTopology(true),
   myStoreMapping(false),
   myGeomFilter(VTKViewer_GeometryFilter::New()),
-  myTransformFilter(VTKViewer_TransformFilter::New())
+  myTransformFilter(VTKViewer_TransformFilter::New()),
+  myOpacity( 1. )
 {
   vtkMapper::GetResolveCoincidentTopologyPolygonOffsetParameters(myPolygonOffsetFactor,
 								 myPolygonOffsetUnits);
