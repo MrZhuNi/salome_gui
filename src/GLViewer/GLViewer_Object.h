@@ -139,11 +139,18 @@ public:
   virtual void              getScale( GLfloat& xScale, GLfloat& yScale ) const { xScale = myXScale; yScale = myYScale;}
 
   //!\warning It is for ouv
-  virtual GLboolean         setZoom( GLfloat zoom, bool recompute, bool fromGroup = false );
+  virtual GLboolean         setXZoom( GLfloat zoom, bool recompute, bool fromGroup = false );
   //!\warning It is for ouv
-  virtual GLfloat           getZoom() const { return myZoom; }
+  virtual GLfloat           getXZoom() const { return myXZoom; }
   //!\warning It is for ouv
-  virtual GLboolean         updateZoom( bool zoomIn );
+  virtual GLboolean         updateXZoom( bool zoomIn );
+
+  //!\warning It is for ouv
+  virtual GLboolean         setYZoom( GLfloat yoom, bool recompute, bool fromGroup = false );
+  //!\warning It is for ouv
+  virtual GLfloat           getYZoom() const { return myYZoom; }
+  //!\warning It is for ouv
+  virtual GLboolean         updateYZoom( bool zoomIn );
   
   //! Returns true if object is highlighted
   virtual GLboolean         isHighlighted() const { return myIsHigh; }
@@ -273,7 +280,9 @@ protected:
   GLfloat                   myYGap;
 
   //!\warning It is for ouv
-  GLfloat                   myZoom;
+  GLfloat                   myXZoom;
+  //!\warning It is for ouv
+  GLfloat                   myYZoom;
 
   //! Highlight status
   /*! = true after right highlighting*/

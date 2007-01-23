@@ -64,7 +64,9 @@ public:
   /*! Once = true, if this operation calls only one time for all object*/
   void    dragingObjects( float x, float y, bool once = false );
   //!\warning it is for ouv
-  void    updateZoom( GLViewer_Object* sender, float zoom );
+  void    updateXZoom( GLViewer_Object* sender, float zoom );
+  //!\warning it is for ouv
+  void    updateYZoom( GLViewer_Object* sender, float zoom );
 
 private:
   //! List of objects
