@@ -440,6 +440,8 @@ void GLViewer_ViewFrame::onViewDump()
                                 tr( "DUMP_VIEW_ERROR_DLG_TEXT" ),
                                 tr( "BUT_OK" ) );
     }
+    else
+        emit vfViewDumped( aFileName );
 }
 
 /*!

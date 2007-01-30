@@ -74,6 +74,7 @@ public:
 signals:
   void                    vfDrawExternal( QPainter* );
   void                    vfViewClosing( QCloseEvent* );
+  void                    vfViewDumped( QString );
   
 protected:
   GLViewer_Viewer*        myViewer;
