@@ -35,10 +35,12 @@
 #include <SUIT_MessageBox.h>
 
 #include <qcolor.h>
-#include <qfiledialog.h>
 #include <qimage.h>
 #include <qlayout.h>
 #include <qstring.h>
+#include <qclipboard.h>
+#include <qfiledialog.h>
+#include <qapplication.h>
 
 /*!
     Constructor
@@ -252,12 +254,22 @@ void GLViewer_ViewFrame::onUpdate( int )
 {
 }
 
+/*!
+   Copy view content to clipboard [ virtual public ]
+*/
+void GLViewer_ViewFrame::copyView()
+{
+    //QImage anImage = dumpView();
+    //QClipboard* aClipboard = QApplication::clipboard();
+    //aClipboard->setImage( anImage, QClipboard::Clipboard );
+}
+
 //#include <windows.h>
 
 /*!
-  SLOT: called on dump view operation is activated, stores scene to raster file
+    Return view content as QImage [ virtual public ]
 */
-void GLViewer_ViewFrame::onViewDump()
+QImage GLViewer_ViewFrame::dumpView()
 {
     GLViewer_Widget* aWidget = ((GLViewer_ViewPort2d*)myVP)->getGLWidget();
     int width, height;
@@ -271,9 +283,7 @@ void GLViewer_ViewFrame::onViewDump()
     imageSize = (width+reserve_bytes)*height*3;
     imageBits = new unsigned char[imageSize];
 
-    
 #ifdef WNT
-
     int num;
     HBITMAP hBmp;
     HDC hdc_old, hdc;
@@ -288,7 +298,7 @@ void GLViewer_ViewFrame::onViewDump()
     if( !hdc )
     {
         cout << "Can't create compatible DC. Last Error Code: " << GetLastError() << endl;
-        return;
+        return QImage();
     }
 
     int sizeBmi = Standard_Integer( sizeof(BITMAPINFO) + sizeof(RGBQUAD)*3 );
@@ -334,12 +344,12 @@ void GLViewer_ViewFrame::onViewDump()
     if( !hglrc )
     {
         cout << "Can't create new GL Context. Last Error Code: " << GetLastError() << endl;
-        return;
+        return QImage();
     }
     if( !wglMakeCurrent( hdc, hglrc) )
     {
         cout << "Can't make current new context!" << endl;
-        return;
+        return QImage();
     }
     
     glViewport( 0, 0, width, height );
@@ -374,13 +384,10 @@ void GLViewer_ViewFrame::onViewDump()
 
     wglMakeCurrent( hdc_old, hglrc_old );
     wglDeleteContext( hglrc );
-    
-
-#else //XWindows
 #endif
 
     unsigned int* aPix = NULL;
-    QImage  anImage( width, height, 32 );
+    QImage anImage( width, height, 32 );
     for( int i = 0; i < height; i++ )
     {
         memset( anImage.scanLine( i ), 0, sizeof(unsigned int)*width );
@@ -395,6 +402,18 @@ void GLViewer_ViewFrame::onViewDump()
 
     delete [] imageBits;
 
+//#ifdef WNT
+//    return anImage;
+//#else
+    return aWidget->grabFrameBuffer();
+//#endif
+}
+
+/*!
+  SLOT: called on dump view operation is activated, stores scene to raster file
+*/
+void GLViewer_ViewFrame::onViewDump()
+{
     QString aFilter( "*.bmp\n*.png" );
 
     QFileDialog aFileDlg( QDir::current().absPath(), aFilter, this );
@@ -429,11 +448,8 @@ void GLViewer_ViewFrame::onViewDump()
             aFileName += ".png";
         aSaveOp = "PNG";
 
-//#ifdef WNT
-//    if( !anImage.save( aFileName, aSaveOp ) )
-//#else
-    if( !aWidget->grabFrameBuffer().save( aFileName, aSaveOp ) )
-//#endif
+    QImage anImage = dumpView();
+    if( !anImage.save( aFileName, aSaveOp ) )
     {
         SUIT_MessageBox::error1( this,
                                 tr( "DUMP_VIEW_ERROR_DLG_CAPTION" ),

@@ -116,6 +116,7 @@ protected slots:
     virtual void                 onChangeBgColor();
 
 private:
+    void                         handleKeyRelease( QKeyEvent* );
     void                         handleMouseMove( QMouseEvent* );
     void                         handleMousePress( QMouseEvent* );
     void                         handleMouseRelease( QMouseEvent* );

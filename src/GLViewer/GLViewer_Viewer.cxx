@@ -68,6 +68,9 @@ void GLViewer_Viewer::setViewManager(SUIT_ViewManager* theViewManager)
   SUIT_ViewModel::setViewManager(theViewManager);
   if (theViewManager) 
   {
+    connect(theViewManager, SIGNAL(keyRelease(SUIT_ViewWindow*, QKeyEvent*)), 
+            this, SLOT(onKeyEvent(SUIT_ViewWindow*, QKeyEvent*)));
+
     connect(theViewManager, SIGNAL(mousePress(SUIT_ViewWindow*, QMouseEvent*)), 
             this, SLOT(onMouseEvent(SUIT_ViewWindow*, QMouseEvent*)));
 
@@ -319,7 +322,6 @@ bool GLViewer_Viewer::eventFilter( QObject* o, QEvent* e )
     {   /* terminate all */
         activateTransform( NoTransform );
         activateSketching( NoSketching );
-        //cout << "mouseClickedOutside || anyKeyPressed" << endl;
     }
     return QObject::eventFilter( o, e );
 }
@@ -343,8 +345,15 @@ void GLViewer_Viewer::onSelectionCancel()
 /*!
     Listens to key events of the active view. [ virtual protected slot ]
 */
-void GLViewer_Viewer::onKeyEvent( SUIT_ViewWindow*, QKeyEvent* )
+void GLViewer_Viewer::onKeyEvent( SUIT_ViewWindow*, QKeyEvent* e )
 {
+    switch( e->type() )
+    {
+        case QEvent::KeyRelease:
+            handleKeyRelease( e );
+            break;
+        default: break;
+    }
 }
 
 /*!
@@ -352,7 +361,6 @@ void GLViewer_Viewer::onKeyEvent( SUIT_ViewWindow*, QKeyEvent* )
 */
 void GLViewer_Viewer::onMouseEvent( SUIT_ViewWindow*, QMouseEvent* e )
 {
-    //cout << "GLViewer_Viewer::onMouseEvent" << endl;
     switch( e->type() )
     {
         case QEvent::MouseButtonPress:
@@ -373,7 +381,6 @@ void GLViewer_Viewer::onMouseEvent( SUIT_ViewWindow*, QMouseEvent* e )
 */
 void GLViewer_Viewer::onWheelEvent( SUIT_ViewWindow*, QWheelEvent* e )
 {
-    //cout << "GLViewer_Viewer::onMouseEvent" << endl;
     switch( e->type() )
     {
         case QEvent::Wheel:
@@ -415,6 +422,13 @@ void GLViewer_Viewer::unhilightDetected()
 {
     if ( getSelector() )
         getSelector()->undetectAll();
+}
+
+/*!
+    Key release handler
+*/
+void GLViewer_Viewer::handleKeyRelease( QKeyEvent* e )
+{
 }
 
 /*!

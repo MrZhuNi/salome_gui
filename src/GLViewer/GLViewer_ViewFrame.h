@@ -69,7 +69,11 @@ public:
   virtual void            onUpdate( int );
 
   virtual QString         getVisualParameters();
-  virtual void            setVisualParameters( const QString& parameters );  
+  virtual void            setVisualParameters( const QString& parameters );
+
+  virtual QImage          dumpView();
+
+  virtual void            copyView();
   
 signals:
   void                    vfDrawExternal( QPainter* );
