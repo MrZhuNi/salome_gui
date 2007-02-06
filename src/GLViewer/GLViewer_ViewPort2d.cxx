@@ -41,6 +41,7 @@
 #include <qpopupmenu.h>
 #include <qtooltip.h>
 #include <qapplication.h>
+#include <qdesktopwidget.h>
 #include <qclipboard.h>
 #include <qpainter.h>
 #include <qbitmap.h>
@@ -1388,6 +1389,13 @@ void GLViewer_ViewPort2d::onMaybeTip( QPoint thePoint, QString& theText, QFont& 
       theTextReg = QRect( thePoint.x(), thePoint.y() + cur_height,
                           aSize.width(), aSize.height() );
       theRegion = QRect( thePoint.x(), thePoint.y(), 1, 1 );
+
+      QPoint aBottomRightGlobal = mapToGlobal( theTextReg.bottomRight() );
+      int dx = aBottomRightGlobal.x() - QApplication::desktop()->screenGeometry().width();
+      int dy = aBottomRightGlobal.y() - QApplication::desktop()->screenGeometry().height();
+      dx = dx < 0 ? 0 : -dx;
+      dy = dy < 0 ? 0 : -dy;
+      theTextReg.moveBy( dx, dy );
     }
   }
 }
