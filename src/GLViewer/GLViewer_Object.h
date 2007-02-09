@@ -139,11 +139,11 @@ public:
   virtual void              getScale( GLfloat& xScale, GLfloat& yScale ) const { xScale = myXScale; yScale = myYScale;}
 
   //!\warning It is for ouv
-  virtual GLboolean         setXZoom( GLfloat zoom, bool recompute, bool fromGroup = false );
+  virtual GLboolean         setZoom( GLfloat zoom, bool recompute, bool fromGroup = false );
   //!\warning It is for ouv
-  virtual GLfloat           getXZoom() const { return myXZoom; }
+  virtual GLfloat           getZoom() const { return myZoom; }
   //!\warning It is for ouv
-  virtual GLboolean         updateXZoom( bool zoomIn );
+  virtual GLboolean         updateZoom( bool zoomIn );
 
   //!\warning It is for ouv
   virtual GLboolean         setYZoom( GLfloat yoom, bool recompute, bool fromGroup = false );
@@ -280,7 +280,7 @@ protected:
   GLfloat                   myYGap;
 
   //!\warning It is for ouv
-  GLfloat                   myXZoom;
+  GLfloat                   myZoom;
   //!\warning It is for ouv
   GLfloat                   myYZoom;
 

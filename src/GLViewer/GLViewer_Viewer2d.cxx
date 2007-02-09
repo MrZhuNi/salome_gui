@@ -1008,7 +1008,7 @@ void GLViewer_Viewer2d::startOperations( QWheelEvent* e )
     {
         GLViewer_Object* anObject = myGLContext->SelectedObject();
         if( e->state() & ControlButton )
-          update = anObject->updateXZoom( zoomIn ) || update;
+          update = anObject->updateZoom( zoomIn ) || update;
         else
           update = anObject->updateYZoom( zoomIn ) || update;
     }
