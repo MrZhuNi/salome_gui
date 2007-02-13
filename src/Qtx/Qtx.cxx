@@ -182,9 +182,12 @@ void Qtx::simplifySeparators( QToolBar* toolbar )
   bool isPrevSep = true;
   for ( QObjectListIt it( *objList ); it.current(); ++it )
   {
-    bool isSep = it.current()->isA( "QToolBarSeparator" );
+    QObject* obj = it.current();
+    if ( !obj || !obj->isWidgetType() || !((QWidget*)obj)->isVisibleTo( toolbar ) )
+      continue;
+    bool isSep = obj->isA( "QToolBarSeparator" );
     if ( isPrevSep && isSep )
-      delList.append( it.current() );
+      delList.append( obj );
     isPrevSep = isSep;
   }
 
