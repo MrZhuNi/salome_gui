@@ -170,5 +170,5 @@ vtkIdType VTKViewer_ShrinkFilter::GetNodeObjId(int theVtkID)
 {
   if ( myVTK2ObjIds.empty() || theVtkID > (int)myVTK2ObjIds.size() )
     return -1;
-  return myVTK2ObjIds.at(theVtkID);
+  return myVTK2ObjIds[theVtkID];
 }

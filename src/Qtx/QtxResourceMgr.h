@@ -271,7 +271,7 @@ template <class Key, class Value> class QtxResourceMgr::IMapIterator
 {
 public:
   IMapIterator()                           : myMap( 0 ), myIndex( 0 )                                   { init(); }
-  IMapIterator( const IMap<Key,Value>* m ) : myMap( const_cast< IMap<Key,Value>* >( m ) ), myIndex( 0 ) { init(); }
+  IMapIterator( const QtxResourceMgr::IMap<Key,Value>* m ) : myMap( const_cast< QtxResourceMgr::IMap<Key,Value>* >( m ) ), myIndex( 0 ) { init(); }
   IMapIterator( const IMapIterator& i )    : myMap( i.myMap ), myIndex( i.myIndex )                     { init(); }
 
   bool operator==( const IMapIterator& i ) { return !operator!=( i );                                   }
@@ -291,15 +291,15 @@ public:
   IMapIterator  operator--( int ) { IMapIterator i = *this; myIndex--; init(); return i; }
 
 private:
-  IMapIterator( const IMap<Key,Value>* m, const int index ) : myMap( const_cast< IMap<Key,Value>* >( m ) ), myIndex( index ) { init(); }
+  IMapIterator( const QtxResourceMgr::IMap<Key,Value>* m, const int index ) : myMap( const_cast< QtxResourceMgr::IMap<Key,Value>* >( m ) ), myIndex( index ) { init(); }
   void init() { if ( !myMap || myIndex >= myMap->count() ) myIndex = -1; }
 
 private:
-  IMap<Key,Value>* myMap;
+  QtxResourceMgr::IMap<Key,Value>* myMap;
   int              myIndex;
 
-  friend class IMap<Key, Value>;
-  friend class IMapConstIterator<Key, Value>;
+  friend class QtxResourceMgr::IMap<Key, Value>;
+  friend class QtxResourceMgr::IMapConstIterator<Key, Value>;
 };
 
 /*!
@@ -310,9 +310,9 @@ template <class Key, class Value> class QtxResourceMgr::IMapConstIterator
 {
 public:
   IMapConstIterator()                                    : myMap( 0 ), myIndex( 0 )                                    { init(); }
-  IMapConstIterator( const IMap<Key,Value>* m )          : myMap( const_cast< IMap<Key,Value>* >( m )  ), myIndex( 0 ) { init(); }
+  IMapConstIterator( const QtxResourceMgr::IMap<Key,Value>* m )          : myMap( const_cast< QtxResourceMgr::IMap<Key,Value>* >( m )  ), myIndex( 0 ) { init(); }
   IMapConstIterator( const IMapConstIterator& i )        : myMap( i.myMap ), myIndex( i.myIndex )                      { init(); }
-  IMapConstIterator( const IMapIterator<Key, Value>& i ) : myMap( i.myMap ), myIndex( i.myIndex )                      { init(); }
+  IMapConstIterator( const QtxResourceMgr::IMapIterator<Key, Value>& i ) : myMap( i.myMap ), myIndex( i.myIndex )                      { init(); }
   
   bool operator==( const IMapConstIterator& i ) { return !operator!=( i );                                   }
   bool operator!=( const IMapConstIterator& i ) { return !myMap || myMap != i.myMap || myIndex != i.myIndex; }
@@ -330,14 +330,14 @@ public:
   IMapConstIterator  operator--( int ) { IMapConstIterator i = *this; myIndex--; init(); return i; }
   
 private:
-  IMapConstIterator( const IMap<Key,Value>* m, const int index ): myMap( const_cast< IMap<Key,Value>* >( m ) ), myIndex( index ) { init(); }
+  IMapConstIterator( const QtxResourceMgr::IMap<Key,Value>* m, const int index ): myMap( const_cast< QtxResourceMgr::IMap<Key,Value>* >( m ) ), myIndex( index ) { init(); }
   void init() { if ( !myMap || myIndex >= myMap->count() ) myIndex = -1; }
   
 private:
-  IMap<Key,Value>* myMap;
+  QtxResourceMgr::IMap<Key,Value>* myMap;
   int              myIndex;
   
-  friend class IMap<Key,Value>;
+  friend class QtxResourceMgr::IMap<Key,Value>;
 };
 
 /*!
@@ -347,8 +347,8 @@ private:
 template <class Key, class Value> class QtxResourceMgr::IMap
 {
 public:
-  typedef IMapIterator<Key,Value>      Iterator;
-  typedef IMapConstIterator<Key,Value> ConstIterator;
+  typedef QtxResourceMgr::IMapIterator<Key,Value>      Iterator;
+  typedef QtxResourceMgr::IMapConstIterator<Key,Value> ConstIterator;
 
 public:
   IMap() {}
@@ -443,8 +443,8 @@ private:
   Key             dummyKey;
   Value           dummyValue;
 
-  friend class IMapIterator<Key,Value>;
-  friend class IMapConstIterator<Key,Value>;
+  friend class QtxResourceMgr::IMapIterator<Key,Value>;
+  friend class QtxResourceMgr::IMapConstIterator<Key,Value>;
 };
 
 #endif

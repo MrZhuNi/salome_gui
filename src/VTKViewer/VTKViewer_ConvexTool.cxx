@@ -32,9 +32,9 @@
 #include <set>
 #include <map>
 
-#ifdef WNT
+//#ifdef WNT
 #include <algorithm>
-#endif
+//#endif
 
 #include <vtkUnstructuredGrid.h>
 #include <vtkGeometryFilter.h>

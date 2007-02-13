@@ -682,7 +682,7 @@ QString LightApp_Application::defaultModule() const
   modules( aModuleNames, false ); // obtain a complete list of module names for the current configuration
   //! If there's the one and only module --> activate it automatically
   //! TODO: Possible improvement - default module can be taken from preferences
-  return aModuleNames.count() > 1 ? "" : ( aModuleNames.count() ? aModuleNames.first() : "" );
+  return aModuleNames.count() > 1 ? QString( "" ) : ( aModuleNames.count() ? aModuleNames.first() : QString( "" ) );
 }
 
 /*!On new window slot.*/
@@ -2538,7 +2538,7 @@ bool LightApp_Application::event( QEvent* e )
     QCustomEvent* ce = ( QCustomEvent* )e;
     QString* d = ( QString* )ce->data();
     if( SUIT_MessageBox::warn2(0, tr("WRN_WARNING"),
-			   d ? *d : "",
+			   d ? *d : QString( "" ),
 			   tr("BUT_OK"), tr("BUT_CANCEL"), 0, 1, 0 )==0 )
        onPreferences();
     if( d )

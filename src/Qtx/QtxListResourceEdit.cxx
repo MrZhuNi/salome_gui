@@ -1419,7 +1419,7 @@ void QtxListResourceEdit::FontItem::setSize( const int s )
       cursize = defsize.toInt();
   }
 
-  mySizes->setCurrentText( cursize>0 ? QString( "%1" ).arg( cursize ) : "" );
+  mySizes->setCurrentText( cursize>0 ? QString( "%1" ).arg( cursize ) : QString( "" ) );
 }
 
 /*!

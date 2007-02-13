@@ -167,19 +167,24 @@ namespace
          aDX[1] >= theSelection[1] && aDX[1] <= theSelection[3])
       {
 	//cout<<"aPntId "<<aPntId<<"; aDX = {"<<aDX[0]<<", "<<aDX[1]<<", "<<aDX[2]<<"}\n";
+        static int aMaxRadius = 5;
+        int aDX0 = 0;
+        int aDX1 = 0;
+        int aRet = 0;
+        int aRadius = 1;
+        
         if (isThrough) goto ADD_VISIBLE; // RKV
 
-	int aDX0 = int(aDX[0]);
-	int aDX1 = int(aDX[1]);
+	aDX0 = int(aDX[0]);
+	aDX1 = int(aDX[1]);
 
-	int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aDX0,aDX1);
+	aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aDX0,aDX1);
 	if(aRet > 0)
 	  goto ADD_VISIBLE;
 	if(aRet < 0)
 	  goto ADD_INVISIBLE;
 
-	static int aMaxRadius = 5;
-	for(int aRadius = 1; aRadius < aMaxRadius; aRadius++){
+	for(aRadius = 1; aRadius < aMaxRadius; aRadius++){
 	  int aStartDX[2] = {aDX0 - aRadius, aDX1 - aRadius};
 	  for(int i = 0; i <= aRadius; i++){
 	    int aRet = Check(aZPtr,theSelection,theTolerance,aDX[2],aStartDX[0]++,aStartDX[1]);

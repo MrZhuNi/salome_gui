@@ -264,7 +264,7 @@ QWidget* LightApp_Dialog::objectWg( const int theId, const int theWgId ) const
 */
 QString LightApp_Dialog::objectText( const int theId ) const
 {
-  return myObjects.contains( theId ) ? myObjects[ theId ].myEdit->text() : "";
+  return myObjects.contains( theId ) ? myObjects[ theId ].myEdit->text() : QString( "" );
 }
 
 /*!

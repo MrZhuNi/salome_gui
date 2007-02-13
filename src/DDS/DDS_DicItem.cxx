@@ -32,6 +32,8 @@
 #include <TColStd_MapOfReal.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 
+#include <stdio.h>
+
 IMPLEMENT_STANDARD_HANDLE(DDS_DicItem, MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(DDS_DicItem, MMgt_TShared)
 

@@ -496,7 +496,7 @@ bool STD_Application::onSaveAsDoc()
     putInfo( tr( "INF_DOC_SAVING" ) + aName );
     isOk = study->saveDocumentAs( aName );
 
-    putInfo( isOk ? tr( "INF_DOC_SAVED" ).arg( aName ) : "" );
+    putInfo( isOk ? tr( "INF_DOC_SAVED" ).arg( aName ) : QString( "" ) );
 
     QApplication::restoreOverrideCursor();
 

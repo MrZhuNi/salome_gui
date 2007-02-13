@@ -321,7 +321,7 @@ void SUIT_ViewManager::closeAllViews()
  */
 QString SUIT_ViewManager::getType() const
 { 
-  return (!myViewModel)? "": myViewModel->getType(); 
+  return (!myViewModel)? QString( "" ): myViewModel->getType(); 
 }
 
 /*!

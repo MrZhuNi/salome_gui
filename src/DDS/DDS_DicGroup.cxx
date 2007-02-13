@@ -30,6 +30,8 @@
 #include <Standard_Failure.hxx>
 #include <Standard_ErrorHandler.hxx>
 
+#include <stdio.h>
+
 IMPLEMENT_STANDARD_HANDLE(DDS_DicGroup, MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(DDS_DicGroup, MMgt_TShared)
 
