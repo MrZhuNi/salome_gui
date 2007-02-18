@@ -2265,7 +2265,8 @@ QtxWorkstackChild::~QtxWorkstackChild()
 
   widget()->removeEventFilter( this );
   widget()->reparent( 0, QPoint( 0, 0 ), false );
-  disconnect( widget(), SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
+  if ( widget() )
+    disconnect( widget(), SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
 }
 
 /*!
