@@ -58,6 +58,7 @@ class QtxToolTip;
 class GLViewer_ViewPort2d: public GLViewer_ViewPort
 {
   Q_OBJECT
+  friend class GLViewer_Widget;
 
   //! Dragging states
   enum vpDragState{ noDrag, initDrag, inDrag };
