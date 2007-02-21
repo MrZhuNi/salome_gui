@@ -121,6 +121,13 @@ namespace
 
 }
 
+bool IsThisActorPicked(SALOME_Actor *theActor, vtkActor *anAct) {
+  if( anAct == theActor ) return true;
+	if( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( anAct ) )
+    return ( anActor->hasIO() && theActor->hasIO() &&
+      theActor->getIO()->isSame( anActor->getIO() ) );
+  return false;
+}
 
 vtkStandardNewMacro(SALOME_Actor);
 
@@ -447,7 +454,8 @@ SALOME_Actor
       myPointPicker->Pick( x, y, z, aRenderer );
       
       int aVtkId = myPointPicker->GetPointId();
-      if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId, true ) ) {
+      if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId, true ) 
+        && IsThisActorPicked(this, myPointPicker->GetActor())) { // RKV
 	int anObjId = GetNodeObjId( aVtkId );
 	myIsPreselected = (anObjId >= 0);
 	if(myIsPreselected){
@@ -474,7 +482,8 @@ SALOME_Actor
       myCellPicker->Pick( x, y, z, aRenderer );
       
       int aVtkId = myCellPicker->GetCellId();
-      if ( aVtkId >= 0 && mySelector->IsValid( this, aVtkId ) && hasIO() ) {
+      if ( aVtkId >= 0 && mySelector->IsValid( this, aVtkId ) && hasIO()
+        && IsThisActorPicked(this, myCellPicker->GetActor())) { // RKV
 	int anObjId = GetElemObjId (aVtkId );
 	if ( anObjId >= 0 ) {
 	  myIsPreselected = CheckDimensionId(aSelectionMode,this,anObjId);
@@ -500,7 +509,8 @@ SALOME_Actor
       myCellPicker->Pick( x, y, z, aRenderer );
       
       int aVtkId = myCellPicker->GetCellId();
-      if ( aVtkId >= 0 && mySelector->IsValid( this, aVtkId )) {
+      if ( aVtkId >= 0 && mySelector->IsValid( this, aVtkId )
+        && IsThisActorPicked(this, myCellPicker->GetActor())) { // RKV
 	int anObjId = GetElemObjId( aVtkId );
 	if ( anObjId >= 0 ) {
 	  int anEdgeId = GetEdgeId(this,myCellPicker.GetPointer(),anObjId);
@@ -586,7 +596,8 @@ SALOME_Actor
       myPointPicker->Pick( x, y, z, aRenderer );
 
       int aVtkId = myPointPicker->GetPointId();
-      if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId, true ) ) {
+      if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId, true ) 
+        && IsThisActorPicked(this, myPointPicker->GetActor())) { // RKV
 	int anObjId = GetNodeObjId( aVtkId );
 	if( anObjId >= 0 ) {
 	  mySelector->AddOrRemoveIndex( myIO, anObjId, anIsShift );
@@ -603,7 +614,8 @@ SALOME_Actor
       myCellPicker->Pick( x, y, z, aRenderer );
     
       int aVtkId = myCellPicker->GetCellId();
-      if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId ) ) {
+      if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId ) 
+        && IsThisActorPicked(this, myCellPicker->GetActor())) { // RKV
 	int anObjId = GetElemObjId( aVtkId );
 	if( anObjId >= 0 ) {
 	  if ( CheckDimensionId(aSelectionMode,this,anObjId) ) {
@@ -619,7 +631,8 @@ SALOME_Actor
       myCellPicker->Pick( x, y, z, aRenderer );
     
       int aVtkId = myCellPicker->GetCellId();
-      if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId ) ) {
+      if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId ) 
+        && IsThisActorPicked(this, myCellPicker->GetActor())) { // RKV
 	int anObjId = GetElemObjId( aVtkId );
 	if( anObjId >= 0 ) {
 	  int anEdgeId = GetEdgeId(this,myCellPicker.GetPointer(),anObjId);
@@ -670,7 +683,8 @@ SALOME_Actor
 	vtkIdType anEnd = aVectorIds.size();
 	for(vtkIdType anId = 0; anId < anEnd; anId++ ) {
 	  int aPointId = aVectorIds[anId];
-	  if( aPointId >= 0 && mySelector->IsValid( this, aPointId, true ) ) {
+	  if( aPointId >= 0 && mySelector->IsValid( this, aPointId, true ) 
+        && IsThisActorPicked(this, myPointRectPicker->GetActor())) { // RKV
 	    int anObjId = GetNodeObjId( aPointId );
 	    anIndexes.Add( anObjId );
 	  }
@@ -730,7 +744,8 @@ SALOME_Actor
 	vtkIdType anEnd = aVectorIds.size();
 	for(vtkIdType anId = 0; anId < anEnd; anId++ ) {
 	  int aCellId = aVectorIds[anId];
-	  if ( !mySelector->IsValid( this, aCellId ) )
+	  if ( !mySelector->IsValid( this, aCellId ) 
+        && !IsThisActorPicked(this, myCellRectPicker->GetActor())) // RKV
 	    continue;
 
 	  int anObjId = GetElemObjId( aCellId );
