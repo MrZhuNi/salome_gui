@@ -66,6 +66,9 @@ endif
 ifneq ($(DISABLE_SUPERVGRAPHVIEWER),yes)
   SUBDIRS += SUPERVGraph
 endif
+ifneq ($(DISABLE_QXGRAPHVIEWER),yes)
+SUBDIRS += QxGraph
+endif
 SUBDIRS += LightApp ResExporter
 
 ifneq ($(GUI_DISABLE_CORBA),yes)
