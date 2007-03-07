@@ -40,6 +40,7 @@ DISABLE_PYCONSOLE="no"
 DISABLE_GLVIEWER="no"
 DISABLE_PLOT2DVIEWER="no"
 DISABLE_SUPERVGRAPHVIEWER="no"
+DISABLE_QXGRAPHVIEWER="no"
 DISABLE_OCCVIEWER="no"
 DISABLE_VTKVIEWER="no"
 DISABLE_SALOMEOBJECT="no"
@@ -58,6 +59,9 @@ do
       -disable-supervGraphViewer=yes | --disable-supervGraphViewer=yes | \
       -disable-supervGraphViewer | --disable-supervGraphViewer)
           DISABLE_SUPERVGRAPHVIEWER="yes";;
+      -disable-qxGraphViewer=yes | --disable-qxGraphViewer=yes | \
+      -disable-qxGraphViewer | --disable-qxGraphViewer)
+          DISABLE_QXGRAPHVIEWER="yes";;	  
       -disable-occViewer=yes | --disable-occViewer=yes | -disable-occViewer | --disable-occViewer)
           DISABLE_OCCVIEWER="yes";;
       -disable-vtkViewer=yes | --disable-vtkViewer=yes | -disable-vtkViewer | --disable-vtkViewer)
@@ -376,6 +380,15 @@ echo "DISABLE_SUPERVGRAPHVIEWER = "$DISABLE_SUPERVGRAPHVIEWER
 
 echo
 echo ---------------------------------------------
+echo Testing QxGraphViewer
+echo ---------------------------------------------
+echo
+
+CHECK_QXGRAPHVIEWER
+echo "DISABLE_QXGRAPHVIEWER = "$DISABLE_QXGRAPHVIEWER
+
+echo
+echo ---------------------------------------------
 echo Testing OCCViewer
 echo ---------------------------------------------
 echo
@@ -416,6 +429,10 @@ if test "x${GUI_DISABLE_CORBA}" != "xyes" ; then
   fi
   if test "x${DISABLE_SUPERVGRAPHVIEWER}" == "xyes" ; then
     echo "failed : for full configuration of GUI module necessary enable SupervGraphViewer !"
+    exit
+  fi
+  if test "x${DISABLE_QXGRAPHVIEWER}" == "xyes" ; then
+    echo "failed : for full configuration of GUI module necessary enable QxGraphViewer !"
     exit
   fi
   if test "x${DISABLE_OCCVIEWER}" == "xyes" ; then
