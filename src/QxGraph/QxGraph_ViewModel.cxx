@@ -21,6 +21,7 @@
 #include "QxGraph_Canvas.h"
 #include "QxGraph_CanvasView.h"
 #include "QxGraph_Def.h"
+#include "QxGraph_Prs.h"
 
 #include "SUIT_Desktop.h"
 #include "SUIT_ViewWindow.h"
@@ -35,11 +36,11 @@
 */
 QxGraph_Viewer::QxGraph_Viewer()
   :SUIT_ViewModel(),
-   //   myCanvas(0),
+   myCanvas(0),
    myCurrentView(0)
 {
   printf("Construct QxGraph_Viewer\n");
-  myCanvases.setAutoDelete(true);
+  //myCanvases.setAutoDelete(true);
   myCanvasViews.setAutoDelete(true);
 }
 
@@ -48,8 +49,8 @@ QxGraph_Viewer::QxGraph_Viewer()
 */
 QxGraph_Viewer::~QxGraph_Viewer() 
 {
-  //if ( myCanvas ) delete myCanvas;
-  if ( !myCanvases.isEmpty() ) myCanvases.clear();
+  if ( myCanvas ) delete myCanvas;
+  //if ( !myCanvases.isEmpty() ) myCanvases.clear();
   if ( !myCanvasViews.isEmpty() ) myCanvasViews.clear();
   myCurrentView = 0;
 }
@@ -64,29 +65,35 @@ void QxGraph_Viewer::initView( QxGraph_ViewWindow* view )
   {
     view->initLayout();
     
+    // for debug only (CreatePrs() must be called from YACSGui_Displayer) --->
+    QxGraph_Prs* aPrs = CreatePrs();
+    //aPrs->setDMode(YACSGui_Displayer::Full); from enumeration in Displayer
+
+    /*
     // test add items into the current canvas view
     QRect aRect(100,200,200,100);
-    QCanvasItem* aRectItem = addRectangleItem(aRect);
+    QCanvasItem* aRectItem = aPrs->addRectangleItem(aRect);
     //delete aRectItem;
 
     QPointArray aPA(6);
     aPA.putPoints(0, 6, 400,100, 500,70, 600,100, 600,200, 500,230, 400,200);
-    QCanvasItem* aPolyItem = addPolygonItem(aPA);
+    QCanvasItem* aPolyItem = aPrs->addPolygonItem(aPA);
     //delete aPolyItem;
 
     QPoint aStart(500,300), aEnd(700,250);
-    QCanvasItem* aLineItem = addLineItem(aStart, aEnd);
+    QCanvasItem* aLineItem = aPrs->addLineItem(aStart, aEnd);
     //delete aLineItem;
 
-    QCanvasItem* aEllipseItem = addEllipseItem(200, 100, 30*16, 120*16);
+    QCanvasItem* aEllipseItem = aPrs->addEllipseItem(200, 100, 30*16, 120*16);
     aEllipseItem->setX(400);
     aEllipseItem->setY(400);
     //delete aEllipseItem;
 
-    QCanvasItem* aTextItem = addTextItem("This is a QCanvasText item");
+    QCanvasItem* aTextItem = aPrs->addTextItem("This is a QCanvasText item");
     aTextItem->setX(100);
-    aTextItem->setY(100);
+    aTextItem->setY(500);
     //delete aTextItem;
+    */
   }
 }
 
@@ -154,147 +161,9 @@ void QxGraph_Viewer::onShowToolbar() {
 }
 
 /*!
-  Add a QCanvasRectangle item into canvas (canvas view) with index theIndex
+  Create QxGraph_Prs object for the myCanvas
 */
-QCanvasItem* QxGraph_Viewer::addRectangleItem(QRect theRect, int theIndex)
+QxGraph_Prs* QxGraph_Viewer::CreatePrs()
 {
-  QCanvasRectangle* aRectItem;
-
-  QCanvas* aCanvas = 0;
-  if ( theIndex == -1 ) // add item into the current canvas (canvas view)
-    aCanvas = myCurrentView->canvas();
-  else if ( theIndex >= 0 & theIndex < myCanvasViews.count() )
-    aCanvas = myCanvases.at(theIndex);
-
-  if ( aCanvas )
-  {
-    QCanvasRectangle* aRectItem = new QCanvasRectangle(theRect, aCanvas);
-    aRectItem->setZ(0);
-    aRectItem->show();
-    aCanvas->update();
-    
-    // test drawing features: brush, pen ...
-    QBrush aBr(SUIT_Session::session()->resourceMgr()->colorValue( "SUPERVGraph", "NodeBody", RECTANGLE_BODY ));
-    aRectItem->setBrush(aBr);
-  }
-
-  return aRectItem;
-}
-
-/*!
-  Add a QCanvasPolygon item into canvas (canvas view) with index theIndex
-*/
-QCanvasItem* QxGraph_Viewer::addPolygonItem(QPointArray thePA, int theIndex)
-{
-  QCanvasPolygon* aPolyItem;
-  
-  QCanvas* aCanvas = 0;
-  if ( theIndex == -1 ) // add item into the current canvas (canvas view)
-    aCanvas = myCurrentView->canvas();
-  else if ( theIndex >= 0 & theIndex < myCanvasViews.count() )
-    aCanvas = myCanvases.at(theIndex);
-
-  if ( aCanvas )
-  {
-    aPolyItem = new QCanvasPolygon(aCanvas);
-    aPolyItem->setZ(0);
-    aPolyItem->setPoints(thePA);
-    aPolyItem->show();
-    aCanvas->update();
-    
-    // test drawing features: brush, pen ...
-    QBrush aBr(SUIT_Session::session()->resourceMgr()->colorValue( "SUPERVGraph", "NodeBody", RECTANGLE_BODY ));
-    aPolyItem->setBrush(aBr);
-    QPen aPen(Qt::black,2);
-    aPolyItem->setPen(aPen);
-  }
-
-  return aPolyItem;
-}
-
-/*!
-  Add a QCanvasLine item into canvas (canvas view) with index theIndex
-*/
-QCanvasItem* QxGraph_Viewer::addLineItem(QPoint theStart, QPoint theEnd, int theIndex)
-{
-  QCanvasLine* aLineItem;
-
-  QCanvas* aCanvas = 0;
-  if ( theIndex == -1 ) // add item into the current canvas (canvas view)
-    aCanvas = myCurrentView->canvas();
-  else if ( theIndex >= 0 & theIndex < myCanvasViews.count() )
-    aCanvas = myCanvases.at(theIndex);
-
-  if ( aCanvas )
-  {
-    aLineItem = new QCanvasLine(aCanvas);
-    aLineItem->setZ(0);
-    aLineItem->setPoints(theStart.x(), theStart.y(), theEnd.x(), theEnd.y());
-    aLineItem->show();
-    aCanvas->update();
-  
-    // test drawing features: brush, pen ...
-    QPen aPen(Qt::black,2);
-    aLineItem->setPen(aPen);
-  }
-  
-  return aLineItem;
-}
-
-/*!
-  Add a QCanvasEllipse item into canvas (canvas view) with index theIndex
-*/
-QCanvasItem* QxGraph_Viewer::addEllipseItem(int theW, int theH, int theStartAngle, int theAngle, int theIndex)
-{
-  QCanvasEllipse* aEllipseItem;
-  
-  QCanvas* aCanvas = 0;
-  if ( theIndex == -1 ) // add item into the current canvas (canvas view)
-    aCanvas = myCurrentView->canvas();
-  else if ( theIndex >= 0 & theIndex < myCanvasViews.count() )
-    aCanvas = myCanvases.at(theIndex);
-
-  if ( aCanvas )
-  {
-    aEllipseItem = new QCanvasEllipse(theW, theH, theStartAngle, theAngle, aCanvas);
-    aEllipseItem->setZ(0);
-    aEllipseItem->show();
-    aCanvas->update();
-    
-    // test drawing features: brush, pen ...
-    QBrush aBr(SUIT_Session::session()->resourceMgr()->colorValue( "SUPERVGraph", "NodeBody", RECTANGLE_BODY ));
-    aEllipseItem->setBrush(aBr);
-    QPen aPen(Qt::black,2);
-    aEllipseItem->setPen(aPen);
-  }
-
-  return aEllipseItem;
-}
-
-/*!
-  Add a QCanvasText item into canvas (canvas view) with index theIndex
-*/
-QCanvasItem* QxGraph_Viewer::addTextItem(QString theText, int theIndex)
-{
-  QCanvasText* aTextItem;
-  
-  QCanvas* aCanvas = 0;
-  if ( theIndex == -1 ) // add item into the current canvas (canvas view)
-    aCanvas = myCurrentView->canvas();
-  else if ( theIndex >= 0 & theIndex < myCanvasViews.count() )
-    aCanvas = myCanvases.at(theIndex);
-
-  if ( aCanvas )
-  {
-    aTextItem = new QCanvasText(theText, aCanvas);
-    aTextItem->setZ(0);
-    aTextItem->show();
-    aCanvas->update();
-    
-    // test drawing features: font, color, text flags ...
-    aTextItem->setColor(Qt::darkBlue);
-    aTextItem->setFont(QFont("Times"/*"Helvetica"*/, 14, QFont::Normal, true));
-  }
-
-  return aTextItem;
+  return new QxGraph_Prs(myCanvas);
 }

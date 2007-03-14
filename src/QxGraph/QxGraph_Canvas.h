@@ -26,8 +26,10 @@
 #include "QxGraph.h"
 
 #include <qcanvas.h>
+#include <qptrlist.h>
 
 class SUIT_ResourceMgr;
+class QxGraph_Prs;
 
 class QXGRAPH_EXPORT QxGraph_Canvas : public QCanvas {
   Q_OBJECT
@@ -38,7 +40,12 @@ class QXGRAPH_EXPORT QxGraph_Canvas : public QCanvas {
 
   void addView(QCanvasView* theView);
 
+  QPtrList<QxGraph_Prs> getPrsList() const { return myPrsList; }
+  QxGraph_Prs*          getPrs(int theIndex = 0);
+  void                  addPrs(QxGraph_Prs* thePrs) { myPrsList.append(thePrs); }
+
  private:
+  QPtrList<QxGraph_Prs> myPrsList;
 
 };
 

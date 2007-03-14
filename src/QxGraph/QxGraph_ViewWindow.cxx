@@ -51,7 +51,7 @@ QxGraph_ViewWindow::QxGraph_ViewWindow( SUIT_Desktop* theDesktop, QxGraph_Viewer
 */
 void QxGraph_ViewWindow::initLayout()
 {
-  //initCanvas();
+  initCanvas();
   initCanvasViews();
 
   myToolBar = new QToolBar(this);
@@ -67,8 +67,8 @@ void QxGraph_ViewWindow::initLayout()
 void QxGraph_ViewWindow::initCanvas()
 {
   if ( myViewModel )
-    //myViewModel->setCanvas( new QxGraph_Canvas(resMgr()) );
-    myViewModel->addCanvas( new QxGraph_Canvas(resMgr()) );
+    myViewModel->setCanvas( new QxGraph_Canvas(resMgr()) );
+    //myViewModel->addCanvas( new QxGraph_Canvas(resMgr()) );
 }
 
 /*!
@@ -80,11 +80,11 @@ void QxGraph_ViewWindow::initCanvasViews()
   {
     for (int i = 0; i < 2; i++)
     {
-      QxGraph_Canvas* aCanvas = new QxGraph_Canvas(resMgr());
-      myViewModel->addCanvas( aCanvas );
+      //QxGraph_Canvas* aCanvas = new QxGraph_Canvas(resMgr());
+      //myViewModel->addCanvas( aCanvas );
 
-      //QxGraph_CanvasView* aCanvasView = new QxGraph_CanvasView( myViewModel->getCanvas(), this );
-      QxGraph_CanvasView* aCanvasView = new QxGraph_CanvasView( aCanvas, this );
+      QxGraph_CanvasView* aCanvasView = new QxGraph_CanvasView( myViewModel->getCanvas(), this );
+      //QxGraph_CanvasView* aCanvasView = new QxGraph_CanvasView( aCanvas, this );
       myViewModel->addView(aCanvasView);
 
       aCanvasView->hide();

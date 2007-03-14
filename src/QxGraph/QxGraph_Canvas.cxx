@@ -22,6 +22,7 @@
 
 #include "QxGraph_Canvas.h"
 #include "QxGraph_Def.h"
+#include "QxGraph_Prs.h"
 
 #include <SUIT_ResourceMgr.h>
 
@@ -54,4 +55,15 @@ void QxGraph_Canvas::addView(QCanvasView* theView)
 {
   QCanvas::addView(theView);
   theView->setPaletteBackgroundColor(backgroundColor().light(120));
+}
+
+/*!
+  Get Prs object with index theIndex
+*/
+QxGraph_Prs* QxGraph_Canvas::getPrs(int theIndex)
+{
+  QxGraph_Prs* aRetPrs = 0;
+  if ( theIndex >= 0 && theIndex < myPrsList.count() )
+    aRetPrs = myPrsList.at(theIndex);
+  return aRetPrs;
 }

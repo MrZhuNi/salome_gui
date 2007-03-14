@@ -25,7 +25,9 @@ VPATH=.:@srcdir@:@top_srcdir@/idl:@srcdir@/resources
 
 @COMMENCE@
 
-EXPORT_HEADERS = QxGraph_Canvas.h \
+EXPORT_HEADERS = QxGraph_ActiveItem.h \
+		 QxGraph_Prs.h \
+		 QxGraph_Canvas.h \
 		 QxGraph_CanvasView.h \
 		 QxGraph_ViewWindow.h \
 		 QxGraph_ViewManager.h \
@@ -40,11 +42,12 @@ PO_FILES = QxGraph_images.po \
 # Libraries targets
 
 LIB = libQxGraph.la
-LIB_SRC = 	  QxGraph_Canvas.cxx \
+LIB_SRC = 	  QxGraph_Prs.cxx \
+		  QxGraph_Canvas.cxx \
 		  QxGraph_CanvasView.cxx \
 		  QxGraph_ViewWindow.cxx \
 		  QxGraph_ViewManager.cxx \
-		  QxGraph_ViewModel.cxx 
+		  QxGraph_ViewModel.cxx
 
 LIB_MOC = 	  QxGraph_Canvas_moc.cxx \
 		  QxGraph_CanvasView_moc.cxx \

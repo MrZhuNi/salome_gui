@@ -28,6 +28,7 @@ class QCanvasItem; // for addRectangleItem(...) method (can be removed in the fu
 class QxGraph_Canvas;
 class QxGraph_CanvasView;
 class QxGraph_ViewWindow;
+class QxGraph_Prs;
 
 class QXGRAPH_EXPORT QxGraph_Viewer: public SUIT_ViewModel
 {
@@ -44,13 +45,13 @@ class QXGRAPH_EXPORT QxGraph_Viewer: public SUIT_ViewModel
 
   virtual void             contextMenuPopup(QPopupMenu*);
 
-  //QxGraph_Canvas* getCanvas() { return myCanvas; }
-  //void            setCanvas(QxGraph_Canvas* theCanvas) { myCanvas = theCanvas; }
-  QPtrList<QxGraph_Canvas> getCanvases() { return myCanvases; }
-  void                     setCanvases(QPtrList<QxGraph_Canvas> theCanvases) { myCanvases = theCanvases; }
+  QxGraph_Canvas*          getCanvas() const { return myCanvas; }
+  void                     setCanvas(QxGraph_Canvas* theCanvas) { myCanvas = theCanvas; }
+  //QPtrList<QxGraph_Canvas> getCanvases() { return myCanvases; }
+  //void                     setCanvases(QPtrList<QxGraph_Canvas> theCanvases) { myCanvases = theCanvases; }
 
-  void addCanvas(QxGraph_Canvas* theCanvas) { myCanvases.append(theCanvas); }
-  void removeCanvas(QxGraph_Canvas* theCanvas) { myCanvases.remove(theCanvas); }
+  //void addCanvas(QxGraph_Canvas* theCanvas) { myCanvases.append(theCanvas); }
+  //void removeCanvas(QxGraph_Canvas* theCanvas) { myCanvases.remove(theCanvas); }
 
   QPtrList<QxGraph_CanvasView> getCanvasViews() { return myCanvasViews; }
   void                         setCanvasViews(QPtrList<QxGraph_CanvasView> theViews) { myCanvasViews = theViews; }
@@ -58,17 +59,11 @@ class QXGRAPH_EXPORT QxGraph_Viewer: public SUIT_ViewModel
   void addView(QxGraph_CanvasView* theView) { myCanvasViews.append(theView); }
   void removeView(QxGraph_CanvasView* theView) { myCanvasViews.remove(theView); }
   
-  QxGraph_CanvasView* getCurrentView() { return myCurrentView; }
+  QxGraph_CanvasView* getCurrentView() const { return myCurrentView; }
   void                setCurrentView(QxGraph_CanvasView* theView) { myCurrentView = theView; }
   void                setCurrentView(int theIndex);
 
-  /* add items into canvas (canvas view) with index theIndex
-     if theIndex is equal to -1 add item into current (active) canvas (canvas view) */
-  QCanvasItem*   addRectangleItem(QRect theRect, int theIndex = -1);
-  QCanvasItem*   addPolygonItem(QPointArray thePA, int theIndex = -1);
-  QCanvasItem*   addLineItem(QPoint theStart, QPoint theEnd, int theIndex = -1);
-  QCanvasItem*   addEllipseItem(int theW, int theH, int theStartAngle, int theAngle, int theIndex = -1);
-  QCanvasItem*   addTextItem(QString theText, int theIndex = -1);
+  QxGraph_Prs*        CreatePrs();
 
  protected:
   void initView(QxGraph_ViewWindow* view);
@@ -78,11 +73,12 @@ class QXGRAPH_EXPORT QxGraph_Viewer: public SUIT_ViewModel
   void onChangeBgColor();
 
  private:
-  //QxGraph_Canvas*              myCanvas;
-  QPtrList<QxGraph_Canvas>     myCanvases;
+  QxGraph_Canvas*              myCanvas;
+  //QPtrList<QxGraph_Canvas>     myCanvases;
   QPtrList<QxGraph_CanvasView> myCanvasViews;
 
   QxGraph_CanvasView*          myCurrentView;
+ 
 };
 
 #endif
