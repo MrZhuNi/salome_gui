@@ -26,6 +26,8 @@
 
 #include <SUIT_ResourceMgr.h>
 
+#include <qobjectlist.h>
+
 /*!
   Constructor
 */
@@ -46,6 +48,15 @@ QxGraph_Canvas::QxGraph_Canvas(SUIT_ResourceMgr* theMgr) :
 */
 QxGraph_Canvas::~QxGraph_Canvas()
 {
+  QObjectList* aNodeList = queryList("QObject");
+  QObjectListIt aIt(*aNodeList);
+  QObject* anObj;
+  while ( (anObj = aIt.current()) != 0 ) {
+    ++aIt;
+    aNodeList->removeRef(anObj);
+    delete anObj;
+  }
+  delete aNodeList;
 }
 
 /*!

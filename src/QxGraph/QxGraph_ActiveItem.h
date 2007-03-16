@@ -27,6 +27,10 @@ class QXGRAPH_EXPORT QxGraph_ActiveItem
   QxGraph_ActiveItem() {}
   ~QxGraph_ActiveItem() {}
 
+  virtual bool isMoveable() = 0;
+  virtual void beforeMoving() = 0;
+  virtual void afterMoving() = 0;
+
   virtual void hilight() = 0;
   virtual void select() = 0;
   virtual void showPopup() = 0;

@@ -23,6 +23,7 @@
 #include "QxGraph_CanvasView.h"
 #include "QxGraph_Canvas.h"
 #include "QxGraph_ViewWindow.h"
+#include "QxGraph_ActiveItem.h"
 #include "QxGraph_Def.h"
 
 #include <qwmatrix.h>
@@ -175,9 +176,13 @@ void QxGraph_CanvasView::contentsMousePressEvent(QMouseEvent* theEvent)
     QCanvasItemList aList = canvas()->collisions(myPoint);
     // to move items on canvas view
     for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
-      myCurrentItem = *it;
-      myCurrentItem->setZ(2);
-      return;
+      QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
+      if ( anActItem && anActItem->isMoveable() )
+      { // move itself only active items if it is moveable
+	anActItem->beforeMoving();
+	myCurrentItem = *it;
+	return;
+      }
     }
   }
 }
@@ -272,8 +277,9 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
 
   if (myCurrentItem)
   { // to move items on canvas view    
-    myCurrentItem->setZ(0);
-    canvas()->update();
+    QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( myCurrentItem );
+    if ( anActItem && anActItem->isMoveable() )
+      anActItem->afterMoving();
   }
   myCurrentItem = 0;
 
