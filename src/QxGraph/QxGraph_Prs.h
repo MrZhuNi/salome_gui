@@ -31,7 +31,7 @@ class QXGRAPH_EXPORT QxGraph_Prs
 {
  public:
   QxGraph_Prs(QxGraph_Canvas*);
-  ~QxGraph_Prs();
+  virtual ~QxGraph_Prs();
 
   void addItem(QCanvasItem* theItem, int theDMode = -1);
   
