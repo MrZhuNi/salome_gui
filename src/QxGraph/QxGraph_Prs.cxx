@@ -32,7 +32,8 @@
 */
 QxGraph_Prs::QxGraph_Prs(QxGraph_Canvas* theCanvas):
   myCanvas(theCanvas),
-  myDMode(0)
+  myDMode(0),
+  needUpdate(true)
 {
   myCanvas->addPrs(this);
 }
@@ -51,9 +52,67 @@ QxGraph_Prs::~QxGraph_Prs()
 void QxGraph_Prs::addItem(QCanvasItem* theItem, int theDMode)
 {
   if ( theDMode == -1 ) // add item for the current display mode
-    myDisplayMap[myDMode].append(theItem);
+    myDisplayMap[myDMode].push_back(theItem);
   else
-    myDisplayMap[theDMode].append(theItem);
+    myDisplayMap[theDMode].push_back(theItem);
+}
+
+/*! Adds all the items of this presentation for the current display mode
+ *  to the canvas.
+ */
+void QxGraph_Prs::show()
+{
+  if ( isToUpdate() )
+    update();
+
+  for ( std::list<QCanvasItem*>::iterator it = myDisplayMap[myDMode].begin();
+	it != myDisplayMap[myDMode].end();
+	it++ )
+  {
+    QCanvasItem* anItem = *it;
+    if ( anItem )
+    {
+      anItem->setCanvas( myCanvas );
+      anItem->show();
+    }
+  }
+}
+
+/*! Removes all the items belonging to this presentation from the canvas.
+ */
+void QxGraph_Prs::hide()
+{
+  for ( DMode2ItemList::iterator it1 = myDisplayMap.begin();
+	it1 != myDisplayMap.end();
+	it1++ )
+  {
+    for ( std::list<QCanvasItem*>::iterator it2 = (*it1).second.begin();
+	  it2 != (*it1).second.end();
+	  it2++ )
+    {
+      QCanvasItem* anItem = *it2;
+      if ( anItem )
+      {
+	anItem->setCanvas( 0 );
+      }
+    }
+  }
+}
+
+/*! Prepare for full recomputation of the presentation
+ */
+void QxGraph_Prs::setToUpdate( const bool theFlag )
+{
+  needUpdate = theFlag;
+}
+
+/*! Re-fills the presentation with items.
+ *  Base implementation just resets <needUpdate> flag.
+ *  It should be called at the end by re-implementations.
+ */
+void QxGraph_Prs::update()
+{
+  setToUpdate( false );
 }
 
 /*!

@@ -19,11 +19,11 @@
 #ifndef QXGRAPH_PRS_H
 #define QXGRAPH_PRS_H
 
-#include "QxGraph.h"
+#include <QxGraph.h>
 
 #include <qcanvas.h>
-#include <qmap.h>
-#include <qptrlist.h>
+#include <map>
+#include <list>
 
 class QxGraph_Canvas;
 
@@ -32,6 +32,8 @@ class QXGRAPH_EXPORT QxGraph_Prs
  public:
   QxGraph_Prs(QxGraph_Canvas*);
   virtual ~QxGraph_Prs();
+
+  QxGraph_Canvas* getCanvas() const { return myCanvas; }
 
   void addItem(QCanvasItem* theItem, int theDMode = -1);
   
@@ -43,20 +45,28 @@ class QXGRAPH_EXPORT QxGraph_Prs
   QCanvasItem*   addEllipseItem(int theW, int theH, int theStartAngle, int theAngle, int theDMode = -1);
   QCanvasItem*   addTextItem(QString theText, int theDMode = -1);
 
-  typedef QMap< int, QPtrList<QCanvasItem> > DMode2ItemList;
+  typedef std::map< int, std::list<QCanvasItem*> > DMode2ItemList;
 
   const DMode2ItemList& getDisplayMap() const { return myDisplayMap; }
-  const QPtrList<QCanvasItem>& getItems(int theDMode) { return myDisplayMap[theDMode]; }
+  const std::list<QCanvasItem*>& getItems(int theDMode) { return myDisplayMap[theDMode]; }
   
   void setDMode(int theDMode) { myDMode = theDMode; }
   int  getDMode() const { return myDMode; }
 
- private:
+  virtual void    show();
+  virtual void    hide();
+  virtual void    setToUpdate( const bool );
+  bool            isToUpdate() { return needUpdate; }
+
+protected:
+  virtual void    update();
+
+private:
   QxGraph_Canvas* myCanvas;
   DMode2ItemList  myDisplayMap;
 
   int             myDMode;
-
+  bool            needUpdate;
 };
 
 #endif

@@ -65,10 +65,6 @@ void QxGraph_Viewer::initView( QxGraph_ViewWindow* view )
   {
     view->initLayout();
     
-    // for debug only (CreatePrs() must be called from YACSGui_Displayer) --->
-    QxGraph_Prs* aPrs = CreatePrs();
-    //aPrs->setDMode(YACSGui_Displayer::Full); from enumeration in Displayer
-
     /*
     // test add items into the current canvas view
     QRect aRect(100,200,200,100);
@@ -158,12 +154,4 @@ void QxGraph_Viewer::onShowToolbar() {
   QxGraph_ViewWindow* aView = (QxGraph_ViewWindow*)(myViewManager->getActiveView());
   if ( aView )
     aView->getToolBar()->show();    
-}
-
-/*!
-  Create QxGraph_Prs object for the myCanvas
-*/
-QxGraph_Prs* QxGraph_Viewer::CreatePrs()
-{
-  return new QxGraph_Prs(myCanvas);
 }

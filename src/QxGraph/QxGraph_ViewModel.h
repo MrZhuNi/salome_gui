@@ -63,8 +63,6 @@ class QXGRAPH_EXPORT QxGraph_Viewer: public SUIT_ViewModel
   void                setCurrentView(QxGraph_CanvasView* theView) { myCurrentView = theView; }
   void                setCurrentView(int theIndex);
 
-  QxGraph_Prs*        CreatePrs();
-
  protected:
   void initView(QxGraph_ViewWindow* view);
 
