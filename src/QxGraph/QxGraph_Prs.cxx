@@ -43,7 +43,20 @@ QxGraph_Prs::QxGraph_Prs(QxGraph_Canvas* theCanvas):
 */
 QxGraph_Prs::~QxGraph_Prs()
 {
-
+  for ( DMode2ItemList::iterator it1 = myDisplayMap.begin();
+	it1 != myDisplayMap.end();
+	it1++ )
+  {
+    for ( std::list<QCanvasItem*>::iterator it2 = (*it1).second.begin();
+	  it2 != (*it1).second.end();
+	  it2++ )
+    {
+      QCanvasItem* anItem = *it2;
+      if ( anItem ) delete anItem;
+    }
+  }
+      
+  myDisplayMap.clear();
 }
 
 /*!
@@ -62,7 +75,7 @@ void QxGraph_Prs::addItem(QCanvasItem* theItem, int theDMode)
  */
 void QxGraph_Prs::show()
 {
-  if ( isToUpdate() )
+  if ( isToUpdate() ) 
     update();
 
   for ( std::list<QCanvasItem*>::iterator it = myDisplayMap[myDMode].begin();

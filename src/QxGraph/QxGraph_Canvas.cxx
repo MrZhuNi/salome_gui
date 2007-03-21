@@ -48,7 +48,7 @@ QxGraph_Canvas::QxGraph_Canvas(SUIT_ResourceMgr* theMgr) :
 */
 QxGraph_Canvas::~QxGraph_Canvas()
 {
-  QObjectList* aNodeList = queryList("QObject");
+  /*QObjectList* aNodeList = queryList("QObject");
   QObjectListIt aIt(*aNodeList);
   QObject* anObj;
   while ( (anObj = aIt.current()) != 0 ) {
@@ -56,7 +56,10 @@ QxGraph_Canvas::~QxGraph_Canvas()
     aNodeList->removeRef(anObj);
     delete anObj;
   }
-  delete aNodeList;
+  delete aNodeList;*/
+
+  myPrsList.setAutoDelete(true);
+  myPrsList.clear();
 }
 
 /*!
