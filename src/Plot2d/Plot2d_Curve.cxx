@@ -26,7 +26,7 @@ Plot2d_Curve::Plot2d_Curve()
 : myHorTitle( "" ), myVerTitle( "" ), 
 myHorUnits( "" ), myVerUnits( "" ), 
 myAutoAssign( true ), myColor( 0,0,0 ), myMarker( Circle ), myLine( Solid ), myLineWidth( 0 ),
-myYAxis( QwtPlot::yLeft )
+myYAxis( QwtPlot::yLeft ), myNbMarkers( 1 )
 {
 }
 
@@ -52,6 +52,7 @@ Plot2d_Curve::Plot2d_Curve( const Plot2d_Curve& curve )
   myLine       = curve.getLine();
   myLineWidth  = curve.getLineWidth();
   myPoints     = curve.getPointList();
+  myNbMarkers  = curve.getNbMarkers();
 }
 
 /*!
@@ -69,6 +70,8 @@ Plot2d_Curve& Plot2d_Curve::operator=( const Plot2d_Curve& curve )
   myLine       = curve.getLine();
   myLineWidth  = curve.getLineWidth();
   myPoints     = curve.getPointList();
+  myNbMarkers  = curve.getNbMarkers();
+
   return *this;
 }
 
@@ -311,6 +314,23 @@ void Plot2d_Curve::setMarker( MarkerType marker )
 Plot2d_Curve::MarkerType Plot2d_Curve::getMarker() const
 {
   return myMarker;
+}
+
+/*!
+  Sets number of markers per step ( and resets AutoAssign flag ). 
+*/
+void Plot2d_Curve::setNbMarkers( const int nbMarkers )
+{
+  myNbMarkers = nbMarkers;
+  myAutoAssign = false;
+}
+
+/*!
+  Gets number of markers per step ( and resets AutoAssign flag ). 
+*/
+int Plot2d_Curve::getNbMarkers() const
+{
+  return myNbMarkers;
 }
 
 /*!

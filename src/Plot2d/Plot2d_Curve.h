@@ -41,6 +41,7 @@ public:
   enum MarkerType { None,      Circle,    Rectangle, Diamond,
         DTriangle, UTriangle, LTriangle, RTriangle,
         Cross, XCross };
+
   enum LineType { NoPen, Solid, Dash, Dot, DashDot, DashDotDot };
 
   Plot2d_Curve();
@@ -80,6 +81,8 @@ public:
   QColor      getColor() const;
   void        setMarker( MarkerType marker );
   MarkerType  getMarker() const;
+  void        setNbMarkers( const int );
+  int         getNbMarkers() const;
   void        setLine( LineType line, const int lineWidth = 0 );
   LineType    getLine() const;
   int         getLineWidth() const;
@@ -106,6 +109,7 @@ protected:
   QString     myVerUnits;
   QColor      myColor;
   MarkerType  myMarker;
+  int         myNbMarkers;
   LineType    myLine;
   int         myLineWidth;
   QwtPlot::Axis myYAxis;
