@@ -60,7 +60,7 @@ public:
   QString getTitle() const { return myTitle; }
   void    displayCurve( Plot2d_Curve* curve, bool update = false );
   void    displayCurves( const curveList& curves, bool update = false );
-  void    eraseCurve( Plot2d_Curve* curve, bool update = false );
+  void    eraseCurve ( Plot2d_Curve* curve, bool update = false );
   void    eraseCurves( const curveList& curves, bool update = false );
   int     getCurves( curveList& clist );
   const   CurveDict& getCurves() { return myCurves; }
@@ -138,6 +138,7 @@ public slots:
   void    onViewFitArea();
   void    onViewGlobalPan(); 
   void    onSettings();
+  void    onCurvesSettings();
   void    onFitData();
   void    onChangeBackground();
 
@@ -158,6 +159,9 @@ signals:
   void    vpModeVerChanged();
   void    vpCurveChanged();
   void    contextMenuRequested( QContextMenuEvent *e );
+
+  void    curveDisplayed( Plot2d_Curve* );
+  void    curveErased( Plot2d_Curve* );
 
 protected:
   Plot2d_Plot2d* myPlot;
@@ -199,6 +203,13 @@ public:
   virtual QSizePolicy sizePolicy() const;
   virtual QSize       minimumSizeHint() const;
 
+  long                insertCurve( const QString &title,
+                                   int xAxis = xBottom, 
+                                   int yAxis = yLeft );
+
+  bool                setCurveNbMarkers( long key, const int nb );
+  int                 curveNbMarkers( long key ) const;
+
 protected:
   bool       existMarker( const QwtSymbol::Style typeMarker, const QColor& color, const Qt::PenStyle typeLine );
 
@@ -206,4 +217,44 @@ protected:
   QValueList<QColor> myColors;
 };
 
+//! The class is derived from QwtPlotCurve.
+/*!
+  The class is derived from QwtPlotCurve. Its main purpose is redefining 
+  drawSymbols virtual method in order to provide possibility to change 
+  number of markers between steps.
+*/
+
+class Plot2d_PlotCurve : public QwtPlotCurve
+{
+public: 
+  Plot2d_PlotCurve( QwtPlot* parent, const char *name = 0 );
+  virtual ~Plot2d_PlotCurve();
+
+  void                setNbMarkers( const int );
+  int                 nbMarkers() const;
+
+protected:
+
+  virtual void drawSymbols(QPainter *p, QwtSymbol &,
+        const QwtDiMap &xMap, const QwtDiMap &yMap,
+        int from, int to);
+
+private:
+  int myNbMarkers;
+};
+
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
