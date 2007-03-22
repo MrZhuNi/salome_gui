@@ -74,3 +74,10 @@ msgstr "plot2d_splines.png"
 
 msgid "ICON_PLOT2D_SETTINGS"
 msgstr "plot2d_settings.png"
+
+msgid "ICON_CURVES_SETTINGS"
+msgstr "plot2d_curves_settings.png"
+
+msgid "ICON_MINUS"
+msgstr "plot2d_minus.png"
+

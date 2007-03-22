@@ -110,7 +110,16 @@ msgstr "&Settings"
 
 msgid "PRP_PLOT2D_SETTINGS"
 msgstr "Setups view properties"
+===
+msgid "TOT_CURVES_SETTINGS"
+msgstr "Curves settings"
 
+msgid "MEN_CURVES_SETTINGS"
+msgstr "Curves settings"
+
+msgid "PRP_CURVES_SETTINGS"
+msgstr "Setups curves properties"
+===
 msgid "TOT_PLOT2D_FITDATA"
 msgstr "Fit range"
 
@@ -409,3 +418,35 @@ msgstr "PostScript files (*.ps)"
 
 msgid "Plot2d_ViewManager::PLOT2D_VIEW_TITLE"
 msgstr "Plot2d scene:%M - viewer:%V"
+
+msgid "Plot2d_SetupCurvesDlg::SETUP_CURVES"
+msgstr "Setup curves"
+
+msgid "Plot2d_SetupCurvesDlg::MARKER"
+msgstr "Marker"
+
+msgid "Plot2d_SetupCurvesDlg::TEXT"
+msgstr "Text"
+
+msgid "Plot2d_SetupCurvesDlg::COLOR"
+msgstr "Color"
+
+msgid "Plot2d_SetupCurvesDlg::NB_MARKERS"
+msgstr "Nb markers"
+
+msgid "Plot2d_SetupCurvesDlg::PARAMETERS"
+msgstr "Parameters"
+
+msgid "Plot2d_SetupCurvesDlg::PLOT2D_INSUFFICIENT_DATA"
+msgstr "Insufficient input data"
+
+msgid "Plot2d_SetupCurvesDlg::PLOT2D_ENTER_VALID_DATA"
+msgstr "Number of markers is defined incorrectly\nPlease enter valid data and try again"
+
+
+
+
+
+
+
+
