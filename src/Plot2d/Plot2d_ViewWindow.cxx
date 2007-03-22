@@ -107,6 +107,7 @@ void Plot2d_ViewWindow::contextMenuPopup( QPopupMenu* thePopup )
   myActionsMap[ LegendId ]->addTo(thePopup);
   // settings
   myActionsMap[ CurvSettingsId ]->addTo(thePopup);
+  myActionsMap[ CurvesSettingsId ]->addTo(thePopup);
 }
 
 /*!
@@ -249,6 +250,14 @@ void Plot2d_ViewWindow::createActions()
   connect(aAction, SIGNAL(activated()), myViewFrame, SLOT(onSettings()));
   myActionsMap[ CurvSettingsId ] = aAction;
 
+  // Curves settings
+  aAction = new QtxAction( tr( "TOT_CURVES_SETTINGS"),
+                aResMgr->loadPixmap("Plot2d", tr("ICON_CURVES_SETTINGS")),
+                tr("MEN_CURVES_SETTINGS"), 0, this);
+  aAction->setStatusTip( tr( "PRP_CURVES_SETTINGS") );
+  connect( aAction, SIGNAL( activated() ), myViewFrame, SLOT( onCurvesSettings() ) );
+  myActionsMap[ CurvesSettingsId ] = aAction;
+
   // Clone
   aAction = new QtxAction(tr("MNU_CLONE_VIEW"), aResMgr->loadPixmap( "Plot2d", tr( "ICON_PLOT2D_CLONE_VIEW" ) ),
                            tr( "MNU_CLONE_VIEW" ), 0, this);
@@ -324,6 +333,7 @@ void Plot2d_ViewWindow::createToolBar()
 
   myActionsMap[LegendId]->addTo(myToolBar);
   myActionsMap[CurvSettingsId]->addTo(myToolBar);
+  myActionsMap[CurvesSettingsId]->addTo(myToolBar);
   myActionsMap[CloneId]->addTo(myToolBar);
   onChangeLegendMode();
 }

@@ -87,7 +87,7 @@ signals:
 
 protected:
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, HorId,
-         VerId, LegendId, CurvPointsId, CurvLinesId, CurvSplinesId, CurvSettingsId, CloneId,
+         VerId, LegendId, CurvPointsId, CurvLinesId, CurvSplinesId, CurvSettingsId, CurvesSettingsId, CloneId,
          PModeXLinearId, PModeXLogarithmicId, PModeYLinearId, PModeYLogarithmicId };
   typedef QMap<int, QtxAction*> ActionsMap;
   ActionsMap        myActionsMap;
