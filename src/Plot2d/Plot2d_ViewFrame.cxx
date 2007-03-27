@@ -56,6 +56,9 @@
 #define DEFAULT_MARKER_SIZE    9     // default marker size
 #define MIN_RECT_SIZE          11    // min sensibility area size
 
+#define X11_COORD_MIN -16384
+#define X11_COORD_MAX 16384
+
 const char* imageZoomCursor[] = { 
 "32 32 3 1",
 ". c None",
@@ -1778,8 +1781,8 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *painter, QwtSymbol &symbol,
   // draw marker corresponding to step
   for ( int i = from; i <= to; i++ )
   {
-    int u = xMap.transform( d_x[ i ] );
-    int v = yMap.transform( d_y[ i ] );
+    int u = xMap.transform( x( i ) );
+    int v = yMap.transform( y( i ) );
 #if defined(Q_WS_X11)
     if ( u - w2 > X11_COORD_MIN && u + w2 <= X11_COORD_MAX
       && v - h2 > X11_COORD_MIN && v + h2 <= X11_COORD_MAX )
@@ -1791,8 +1794,8 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *painter, QwtSymbol &symbol,
     // draw markers between current and previous step
     if ( myNbMarkers > 1 && i >= 1 )
     {
-      int u_1 = xMap.transform( d_x[ i - 1 ] );
-      int v_1 = yMap.transform( d_y[ i - 1 ] );
+      int u_1 = xMap.transform( x( i - 1 ) );
+      int v_1 = yMap.transform( y( i - 1 ) );
 
       if ( u_1 == u )
         continue;
@@ -1802,15 +1805,15 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *painter, QwtSymbol &symbol,
       double step = ( (double)( u - u_1 ) ) / myNbMarkers;
       for ( int ind = 1; ind < myNbMarkers; ind++ )
       {
-        int x = (int)( u_1 + step * ind );
-        int y = (int)( k * x + b );
+        int X = (int)( u_1 + step * ind );
+        int Y = (int)( k * X + b );
 
 #if defined(Q_WS_X11)
-        if ( x - w2 > X11_COORD_MIN && x + w2 <= X11_COORD_MAX
-          && y - h2 > X11_COORD_MIN && y + h2 <= X11_COORD_MAX )
+        if ( X - w2 > X11_COORD_MIN && X + w2 <= X11_COORD_MAX
+          && Y - h2 > X11_COORD_MIN && Y + h2 <= X11_COORD_MAX )
 #endif
         {
-          symbol.draw( painter, x - w2, y - h2 );
+          symbol.draw( painter, X - w2, Y - h2 );
         }
       }
     }
@@ -1955,7 +1958,7 @@ void Plot2d_Plot2d::getNextMarker( QwtSymbol::Style& typeMarker, QColor& color, 
 //=============================================================================
 bool Plot2d_Plot2d::setCurveNbMarkers( long key, const int nb )
 {
-  Plot2d_PlotCurve* c = dynamic_cast< Plot2d_PlotCurve* >( d_curves->find(key) );
+  Plot2d_PlotCurve* c = dynamic_cast< Plot2d_PlotCurve* >( curve(key) );
   if ( c )
   {
     c->setNbMarkers( nb );
@@ -1971,7 +1974,8 @@ bool Plot2d_Plot2d::setCurveNbMarkers( long key, const int nb )
 //=============================================================================
 int Plot2d_Plot2d::curveNbMarkers( long key ) const
 {
-  Plot2d_PlotCurve* c = dynamic_cast< Plot2d_PlotCurve* >( d_curves->find(key) );
+  QwtPlotCurve* cc = (QwtPlotCurve*)curve( key );
+  Plot2d_PlotCurve* c = dynamic_cast< Plot2d_PlotCurve* >( cc );
   return c ? c->nbMarkers() : 1;
 }
 
