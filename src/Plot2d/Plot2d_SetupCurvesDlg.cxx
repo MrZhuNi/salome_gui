@@ -37,11 +37,11 @@
 #include <Plot2d_Curve.h>
 #include <SUIT_MessageBox.h>
 
-#define PIXMAP_COL  0
-#define MARKER_COL  2
-#define TEXT_COL    1
-#define COLOR_COL   3
-#define NB_COL      4
+#define PIXMAP_COL      0
+#define MARKER_COL      2
+#define TEXT_COL        1
+#define COLOR_COL       3
+#define NB_MARKERS_COL  4
 
 class Plot2d_SetupCurvesDlg::PixmapItem : public QTableItem
 {
@@ -142,7 +142,7 @@ Plot2d_SetupCurvesDlg::Plot2d_SetupCurvesDlg( QWidget* theParent )
   aHeaders->setLabel( MARKER_COL, tr( "MARKER" ) );
   aHeaders->setLabel( TEXT_COL, tr( "TEXT" ) );
   aHeaders->setLabel( COLOR_COL, tr( "COLOR" ) );
-  aHeaders->setLabel( NB_COL, tr( "NB_MARKERS" ) );
+  aHeaders->setLabel( NB_MARKERS_COL, tr( "NB_MARKERS" ) );
   aHeaders->setResizeEnabled( false );
 
   myTable->verticalHeader()->hide();
@@ -151,7 +151,7 @@ Plot2d_SetupCurvesDlg::Plot2d_SetupCurvesDlg( QWidget* theParent )
   myTable->setColumnStretchable( MARKER_COL, false );
   myTable->setColumnStretchable( TEXT_COL, true );
   myTable->setColumnStretchable( COLOR_COL, false );
-  myTable->setColumnStretchable( NB_COL, false );
+  myTable->setColumnStretchable( NB_MARKERS_COL, false );
 
   // Minus button
   QPixmap minusPix = aResMgr->loadPixmap( "Plot2d", tr( "ICON_MINUS" ) );
@@ -217,12 +217,12 @@ void Plot2d_SetupCurvesDlg::SetParameters( const QValueVector< int >& theMarker,
     connect( aBtn, SIGNAL( clicked() ), SLOT( onColorBtn() ) );
 
     // Nb markers
-    myTable->setText( i, NB_COL, QString( "%1" ).arg( theNbMarkers[ i ] ) );
+    myTable->setText( i, NB_MARKERS_COL, QString( "%1" ).arg( theNbMarkers[ i ] ) );
   }
 
   myTable->setColumnWidth( TEXT_COL, aTextLength + 10 );
   myTable->setColumnWidth( COLOR_COL, fm.width( tr( "COLOR" ) ) + 10 );
-  myTable->setColumnWidth( NB_COL, fm.width( tr( "NB_MARKERS" ) ) + 10 );
+  myTable->setColumnWidth( NB_MARKERS_COL, fm.width( tr( "NB_MARKERS" ) ) + 10 );
 
   myRemovedIndexes.clear();
 
@@ -263,7 +263,7 @@ void Plot2d_SetupCurvesDlg::GetParameters( QValueVector< int >& theMarkers,
     theColors[ i ] = aColor;
     
     // Nb markers
-    QString aStr = myTable->text( i, NB_COL );
+    QString aStr = myTable->text( i, NB_MARKERS_COL );
     bool isOk = false;
     int nbMarkers = aStr.toInt( &isOk );
     if ( isOk )
@@ -288,10 +288,11 @@ const QValueList< int >& Plot2d_SetupCurvesDlg::GetRemovedIndexes() const
 //=============================================================================
 bool Plot2d_SetupCurvesDlg::acceptData() const
 {
+  ((Plot2d_SetupCurvesDlg*)this)->setButtonFocus( OK );
   int nbRows = myTable->numRows();
   for ( int i = 0; i < nbRows; i++ )
   {
-    QString aStr = myTable->text( i, NB_COL );
+    QString aStr = myTable->text( i, NB_MARKERS_COL );
     bool isOk = false;
     int nbMarkers = aStr.toInt( &isOk );
     if ( !isOk || nbMarkers<= 0 )
