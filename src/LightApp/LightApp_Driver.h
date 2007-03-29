@@ -25,6 +25,8 @@
 #include "vector"
 #include "map"
 
+#include <OSD_File.hxx>
+
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
@@ -52,10 +54,26 @@ public:
   virtual void        ClearDriverContents();
 
 protected:
-  void                PutFilesToStream(const std::string& theModuleName, unsigned char*& theBuffer,
+  /*void                PutFilesToStream(const std::string& theModuleName, unsigned char*& theBuffer,
                                        long& theBufferSize, bool theNamesOnly = false);
   ListOfFiles         PutStreamToFiles(const unsigned char* theBuffer,
-                                       const long theBufferSize, bool theNamesOnly = false);
+                                       const long theBufferSize, bool theNamesOnly = false);*/
+
+  // New save
+
+  bool                PutFilesToFirstStream( const std::string& theModuleName, unsigned char*& theBuffer,
+                                             long& theBufferSize, bool theNamesOnly = false );
+  bool                PutFilesToNextStream( const std::string& theModuleName, unsigned char*& theBuffer,
+                                            long& theBufferSize, bool theNamesOnly = false );
+  bool                HasUnsavedData() const;
+
+  // New read
+  void                PutFirstStreamToFiles( ListOfFiles& theListOfFiles, const unsigned char* theBuffer,
+                                             const long theBufferSize, bool theNamesOnly = false);
+  void                PutNextStreamToFiles( ListOfFiles& theListOfFiles, const unsigned char* theBuffer,
+                                            const long theBufferSize, bool theNamesOnly = false);
+
+  inline static size_t GetMaxBuffSize();
 
   std::string GetTmpDir();
   std::string GetDirFromPath(const std::string& thePath);
@@ -70,6 +88,38 @@ protected:
 
 private:
   bool                                       myIsTemp;
+
+  // reading/writing
+  int                                        myCurrFileIndex;
+  
+  // writing
+  size_t                                     myCurrPos;
+  unsigned char*                             myCurrBuff;
+  ifstream*                                  myCurrIFile;
+  size_t                                     mySizeToBeWritten;
+  size_t*                                    myFileSizes;
+  size_t*                                    myFileNameSizes;
+
+  // reading
+  ofstream*                                  myCurrOFile;
+  long                                       myNbFilles;
 };
 
+inline size_t LightApp_Driver::GetMaxBuffSize()
+{
+  static size_t aValue = 0;
+  if ( !aValue )
+  {
+    char* aVar = getenv( "HDF_BUFFER_SIZE" );
+    if ( aVar )
+      aValue = (size_t)atol( aVar );
+    else
+      aValue = 50000000;
+  }
+
+  return aValue;
+}
+
 #endif 
+
+

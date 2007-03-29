@@ -38,13 +38,24 @@
 
 /*! Constructor.*/
 LightApp_Driver::LightApp_Driver()
-: myIsTemp( false )
+: myIsTemp( false ),
+  myCurrPos( 0 ),
+  myCurrBuff( 0 ),
+  myCurrFileIndex( 0 ),
+  myCurrIFile( 0 ), 
+  mySizeToBeWritten( 0 ),
+  myFileSizes( 0 ),
+  myFileNameSizes( 0 ),
+  myCurrOFile( 0 ),
+  myNbFilles( 0 )
 {
 }
  
 /*! Destructor.*/
 LightApp_Driver::~LightApp_Driver()
 {
+  delete myFileSizes;
+  delete myFileNameSizes;
 }
 
 using namespace std;
@@ -73,7 +84,7 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
     aFileBufferSize += 4;                                //Add 4 bytes: a length of the module name
     aFileBufferSize += strlen(aModuleName[i])+1;
     std::string aName(aModuleName[i]);
-    PutFilesToStream(aName, aBuffer[i], aBufferSize[i], isMultiFile);
+//    PutFilesToStream(aName, aBuffer[i], aBufferSize[i], isMultiFile);
     aFileBufferSize += 8;                                //Add 8 bytes: a length of the buffer
     aFileBufferSize += aBufferSize[i];
     i++;
@@ -179,7 +190,8 @@ bool LightApp_Driver::ReadDatasFromFile( const char* theFileName, bool isMultiFi
     aCurrentPos += aBufferSize;
 
     // Put buffer to aListOfFiles and set to myMap
-    ListOfFiles aListOfFiles = PutStreamToFiles(aBuffer, aBufferSize, isMultiFile);
+//    ListOfFiles aListOfFiles = PutStreamToFiles(aBuffer, aBufferSize, isMultiFile);
+    ListOfFiles aListOfFiles;
     SetListOfFiles(aModuleName, aListOfFiles);
 
     delete[] aModuleName;
@@ -223,180 +235,6 @@ void LightApp_Driver::SetListOfFiles( const char* theModuleName, const ListOfFil
 {
   std::string aName (theModuleName);
   myMap[aName] = theListOfFiles;
-}
-
-/*!
-  Converts files which was created from module <theModuleName> into a byte sequence unsigned char
-*/
-void LightApp_Driver::PutFilesToStream( const std::string& theModuleName, unsigned char*& theBuffer,
-                                        long& theBufferSize, bool theNamesOnly )
-{
-  ListOfFiles aFiles = myMap[theModuleName];
-  // aFiles must contain temporary directory name in its first item
-  // and names of files (relatively the temporary directory) in the others
-
-  int i, aLength = aFiles.size() - 1;
-  if(aLength <= 0) {
-    theBufferSize = 0;
-    theBuffer = new unsigned char[theBufferSize];
-    return;
-  }
-  //Get a temporary directory for saved a file
-  TCollection_AsciiString aTmpDir(const_cast<char*>(aFiles[0].c_str()));
-
-  long aBufferSize = 0;
-  long aCurrentPos;
-  int aNbFiles = 0;
-  int* aFileNameSize= new int[aLength];
-  long* aFileSize= new long[aLength];
-
-  //Determine the required size of the buffer
-  TCollection_AsciiString aFileName;
-  for (i = 0; i < aLength; i++) {
-    char* aFName = const_cast<char*>(aFiles[i+1].c_str());
-    aFileName = aFName;
-    //Check if the file exists
-    if (!theNamesOnly) { // mpv 15.01.2003: if only file names must be stroed, then size of files is zero
-      TCollection_AsciiString aFullPath = aTmpDir + aFileName;   
-      OSD_Path anOSDPath(aFullPath);
-      OSD_File anOSDFile(anOSDPath);
-      if(!anOSDFile.Exists()) continue;
-#ifdef WNT
-      ifstream aFile(aFullPath.ToCString(), ios::binary);
-#else
-      ifstream aFile(aFullPath.ToCString());
-#endif
-      aFile.seekg(0, ios::end);
-      aFileSize[i] = aFile.tellg();
-      aBufferSize += aFileSize[i];              //Add a space to store the file
-    }
-    aFileNameSize[i] = strlen(aFName) + 1;
-    aBufferSize += aFileNameSize[i];          //Add a space to store the file name
-    aBufferSize += (theNamesOnly)?4:12;       //Add 4 bytes: a length of the file name,
-                                              //    8 bytes: length of the file itself
-    aNbFiles++;
-  }
-
-  aBufferSize += 4;      //4 bytes for a number of the files that will be written to the stream;
-  theBuffer = new unsigned char[aBufferSize];  
-  if(theBuffer == NULL) {
-    theBufferSize = 0;
-    theBuffer = 0;
-    return;
-  }
-  //Initialize 4 bytes of the buffer by 0
-  memset(theBuffer, 0, 4); 
-  //Copy the number of files that will be written to the stream
-  memcpy(theBuffer, &aNbFiles, ((sizeof(int) > 4) ? 4 : sizeof(int))); 
-
-  aCurrentPos = 4;
-
-  for(i = 0; i < aLength; i++) {
-    ifstream *aFile;
-    if (!theNamesOnly) { // mpv 15.01.2003: we don't open any file if theNamesOnly = true
-      TCollection_AsciiString aName(const_cast<char*>(aFiles[i+1].c_str()));
-      TCollection_AsciiString aFullPath = aTmpDir + aName;
-      OSD_Path anOSDPath(aFullPath);
-      OSD_File anOSDFile(anOSDPath);
-      if(!anOSDFile.Exists()) continue;
-#ifdef WNT
-      aFile = new ifstream(aFullPath.ToCString(), ios::binary);
-#else
-      aFile = new ifstream(aFullPath.ToCString());
-#endif
-    }
-    //Initialize 4 bytes of the buffer by 0
-    memset((theBuffer + aCurrentPos), 0, 4); 
-    //Copy the length of the file name to the buffer
-    memcpy((theBuffer + aCurrentPos), (aFileNameSize + i), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
-    aCurrentPos += 4;
-
-    //Copy the file name to the buffer
-    char* aFName = const_cast<char*>(aFiles[i+1].c_str());
-    memcpy((theBuffer + aCurrentPos), aFName, aFileNameSize[i]);
-    aCurrentPos += aFileNameSize[i];
-    
-    if (!theNamesOnly) { // mpv 15.01.2003: we don't copy file content to the buffer if !theNamesOnly
-      //Initialize 8 bytes of the buffer by 0
-      memset((theBuffer + aCurrentPos), 0, 8); 
-      //Copy the length of the file to the buffer
-      memcpy((theBuffer + aCurrentPos), (aFileSize + i), ((sizeof(long) > 8) ? 8 : sizeof(long)));
-      aCurrentPos += 8;
-      
-      aFile->seekg(0, ios::beg);
-      aFile->read((char *)(theBuffer + aCurrentPos), aFileSize[i]);
-      aFile->close();
-      delete(aFile);
-      aCurrentPos += aFileSize[i];
-    }
-  }
-  delete[] aFileNameSize;
-  delete[] aFileSize;
-
-  theBufferSize = aBufferSize;
-}
-
-/*!
-  Converts a byte sequence <theBuffer> to files and return list of them
-*/
-LightApp_Driver::ListOfFiles LightApp_Driver::PutStreamToFiles( const unsigned char* theBuffer,
-                                                                const long theBufferSize, bool theNamesOnly )
-{
-  if(theBufferSize == 0 || theBuffer == 0)
-    return   ListOfFiles();
-
-  // Create a temporary directory for the component's data files
-  std::string aDir = GetTmpDir();
-
-  // Remember that the files are in a temporary location that should be deleted
-  // when a study is closed
-  SetIsTemporary( true );
-
-  //Get a temporary directory for saving a file
-  TCollection_AsciiString aTmpDir(const_cast<char*>(aDir.c_str()));
-
-  long aFileSize, aCurrentPos = 4;
-  int i, aFileNameSize, aNbFiles = 0;
-
-  //Copy the number of files in the stream
-  memcpy(&aNbFiles, theBuffer, sizeof(int)); 
-
-  const int n = aNbFiles + 1;
-  ListOfFiles aFiles(n);
-  aFiles[0] = aDir;
-
-  for(i = 0; i < aNbFiles; i++) {
-    //Put a length of the file name to aFileNameSize
-    memcpy(&aFileNameSize, (theBuffer + aCurrentPos), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
-    aCurrentPos += 4;
-
-    char *aFileName = new char[aFileNameSize];
-    //Put a file name to aFileName
-    memcpy(aFileName, (theBuffer + aCurrentPos), aFileNameSize); 
-    aCurrentPos += aFileNameSize;
- 
-    //Put a length of the file to aFileSize
-    if (!theNamesOnly) {
-      memcpy(&aFileSize, (theBuffer + aCurrentPos), ((sizeof(long) > 8) ? 8 : sizeof(long)));
-      aCurrentPos += 8;    
-      
-      TCollection_AsciiString aFullPath = aTmpDir + aFileName;
-      
-#ifdef WNT  
-  ofstream aFile(aFullPath.ToCString(), ios::out | ios::binary);
-#else
-  ofstream aFile(aFullPath.ToCString());
-#endif
-
-      aFile.write((char *)(theBuffer+aCurrentPos), aFileSize); 
-      aFile.close();  
-      aCurrentPos += aFileSize;
-    }
-    std::string aStrFileName(aFileName);
-    aFiles[i+1] = aStrFileName;
-    delete[] aFileName;
-  }
-  return aFiles;
 }
 
 /*!
@@ -552,4 +390,483 @@ std::string LightApp_Driver::GetDirFromPath( const std::string& thePath ) {
   aDirString.ChangeAll('|','/');
   return aDirString.ToCString();
 }
+
+//=============================================================================
+// Function : PutFilesToFirstStream
+// Purpose  : 
+//=============================================================================
+bool LightApp_Driver::PutFilesToFirstStream( const std::string& theModuleName, unsigned char*& theBuffer,
+                                             long& theBufferSize, bool theNamesOnly )
+{
+  myCurrPos = 0;
+  myCurrBuff = 0;
+  myCurrFileIndex = 0;
+  myCurrIFile = 0;
+  mySizeToBeWritten = 0;
+  if ( myFileSizes )
+  {
+    delete[] myFileSizes;
+    myFileSizes = 0;
+  }
+  if ( myFileNameSizes )
+  {
+    delete[] myFileNameSizes;
+    myFileNameSizes = 0;
+  }
+
+  ListOfFiles aFiles = myMap[theModuleName];
+  // aFiles must contain temporary directory name in its first item
+  // and names of files (relatively the temporary directory) in the others
+
+  int i, aLength = aFiles.size() - 1;
+  if(aLength <= 0) {
+     theBufferSize = 0;
+     theBuffer = new unsigned char[theBufferSize];
+    return true;
+  }
+  //Get a temporary directory for saved a file
+  TCollection_AsciiString aTmpDir(const_cast<char*>(aFiles[0].c_str()));
+
+  int aNbFiles = 0;
+  myFileNameSizes = new size_t[aLength];
+  myFileSizes = new size_t[aLength];
+
+  //Determine the required size of the buffer
+  TCollection_AsciiString aFileName;
+  for (i = 0; i < aLength; i++) 
+  {
+    char* aFName = const_cast<char*>(aFiles[i+1].c_str());
+    aFileName = aFName;
+    //Check if the file exists
+    if (!theNamesOnly) 
+    { 
+      TCollection_AsciiString aFullPath = aTmpDir + aFileName;   
+      OSD_Path anOSDPath(aFullPath);
+      OSD_File anOSDFile(anOSDPath);
+      if(!anOSDFile.Exists()) 
+        continue;
+#ifdef WNT
+      ifstream aFile(aFullPath.ToCString(), ios::binary);
+#else
+      ifstream aFile(aFullPath.ToCString());
+#endif
+      aFile.seekg(0, ios::end);
+      myFileSizes[i] = aFile.tellg();
+      mySizeToBeWritten += myFileSizes[i];              //Add a space to store the file
+    }
+    myFileNameSizes[i] = strlen(aFName) + 1;
+    mySizeToBeWritten += myFileNameSizes[i];          //Add a space to store the file name
+    mySizeToBeWritten += (theNamesOnly)?4:12;       //Add 4 bytes: a length of the file name,
+                                              //    8 bytes: length of the file itself
+    aNbFiles++;
+  }
+
+  mySizeToBeWritten += 4;      //4 bytes for a number of the files that will be written to the stream;
+
+  size_t aCurrSize = mySizeToBeWritten <= GetMaxBuffSize() ? mySizeToBeWritten : GetMaxBuffSize();
+  theBuffer = new unsigned char[ aCurrSize ];
+  myCurrBuff = theBuffer;
+
+  //Initialize 4 bytes of the buffer by 0
+  memset( theBuffer, 0, 4); 
+  //Copy the number of files that will be written to the stream
+  memcpy( theBuffer, &aNbFiles, ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+
+  myCurrPos = 4;
+  int aCurrnetBuff = 0;
+
+  for ( myCurrFileIndex = 0; myCurrFileIndex < aLength; myCurrFileIndex++ ) 
+  {
+    if (!theNamesOnly) 
+    { // mpv 15.01.2003: we don't open any file if theNamesOnly = true
+      TCollection_AsciiString aName(const_cast<char*>(aFiles[myCurrFileIndex+1].c_str()));
+      TCollection_AsciiString aFullPath = aTmpDir + aName;
+      OSD_Path anOSDPath(aFullPath);
+      OSD_File anOSDFile(anOSDPath);
+      if(!anOSDFile.Exists()) continue;
+#ifdef WNT
+      myCurrIFile = new ifstream(aFullPath.ToCString(), ios::binary);
+#else
+      myCurrIFile = new ifstream(aFullPath.ToCString());
+#endif
+    }
+    
+    //Initialize 4 bytes of the buffer by 0
+    memset( (theBuffer + myCurrPos), 0, 4); 
+        
+    //Copy the length of the file name to the buffer
+    memcpy((theBuffer + myCurrPos), (myFileNameSizes + myCurrFileIndex), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+    myCurrPos += 4;
+    
+    //Copy the file name to the buffer
+    char* aFName = const_cast<char*>(aFiles[myCurrFileIndex+1].c_str());
+    memcpy( myCurrBuff + myCurrPos, aFName, myFileNameSizes[ myCurrFileIndex ] );
+    myCurrPos += myFileNameSizes[myCurrFileIndex];
+    
+    if (!theNamesOnly) // mpv 15.01.2003: we don't copy file content to the buffer if !theNamesOnly
+    { 
+      //Initialize 8 bytes of the buffer by 0
+      memset( myCurrBuff + myCurrPos, 0, 8 ); 
+
+      //Copy the length of the file to the buffer
+      memcpy( myCurrBuff + myCurrPos,  
+              (unsigned char*)(myFileSizes + myCurrFileIndex), ((sizeof(long) > 8) ? 8 : sizeof(long)));
+      myCurrPos += 8;
+      
+      // old code for small files
+      if ( aCurrSize < GetMaxBuffSize() )
+      {
+        myCurrIFile->seekg(0, ios::beg);
+        myCurrIFile->read((char *)(theBuffer + myCurrPos), myFileSizes[myCurrFileIndex]);
+        myCurrIFile->close();
+        delete(myCurrIFile);
+        myCurrIFile = 0;
+        myCurrPos += myFileSizes[myCurrFileIndex];
+        mySizeToBeWritten = 0;
+      }
+      else // new code for big files
+      {
+        myCurrIFile->seekg(0, ios::beg);
+        int aPos = myCurrIFile->tellg();
+        size_t aSizeToRead = GetMaxBuffSize() - myCurrPos;
+        if ( aSizeToRead > myFileSizes[myCurrFileIndex] - myCurrIFile->tellg() )
+          aSizeToRead = myFileSizes[myCurrFileIndex] - myCurrIFile->tellg();
+        myCurrIFile->read((char *)(theBuffer + myCurrPos), aSizeToRead );
+        mySizeToBeWritten -= aSizeToRead - myCurrPos;
+        myCurrPos += aSizeToRead;
+        if ( myCurrPos == GetMaxBuffSize() )
+        {
+          myCurrPos = 0;
+          break;
+        }
+        else // file was saved complitelly
+        {
+          myCurrIFile->close();
+          delete(myCurrIFile);
+          myCurrIFile = 0;
+        }
+        if ( myCurrIFile )
+          aPos = myCurrIFile->tellg();
+      }
+    }
+  }
+  
+  if ( aCurrSize < GetMaxBuffSize() )
+    theBufferSize = myCurrPos - 1;
+  else 
+    theBufferSize = GetMaxBuffSize();
+
+  return aCurrSize < GetMaxBuffSize();
+}
+
+//=============================================================================
+// Function : HasUnsavedData
+// Purpose  : 
+//=============================================================================
+bool LightApp_Driver::HasUnsavedData() const
+{
+  return myCurrIFile && mySizeToBeWritten;
+}
+
+//=============================================================================
+// Function : PutFilesToNextStream
+// Purpose  : 
+//=============================================================================
+bool LightApp_Driver::PutFilesToNextStream( const std::string& theModuleName, unsigned char*& theBuffer,
+                                            long& theBufferSize, bool theNamesOnly )
+{
+  if ( theNamesOnly || !HasUnsavedData() )
+    return true;
+
+  ListOfFiles aFiles = myMap[ theModuleName ];
+  int aLength = aFiles.size() - 1;
+  if ( aLength <= 0 )
+    return true;
+
+  TCollection_AsciiString aTmpDir(const_cast<char*>(aFiles[0].c_str()));
+
+  size_t aCurrSize = mySizeToBeWritten <= GetMaxBuffSize() ? mySizeToBeWritten : GetMaxBuffSize();
+
+  for ( ; myCurrFileIndex < aLength; myCurrFileIndex++ ) 
+  {
+    TCollection_AsciiString aName(const_cast<char*>(aFiles[myCurrFileIndex+1].c_str()));
+    TCollection_AsciiString aFullPath = aTmpDir + aName;
+    OSD_Path anOSDPath(aFullPath);
+    OSD_File anOSDFile(anOSDPath);
+    if(!anOSDFile.Exists()) 
+      continue;
+
+    if ( !myCurrIFile )
+    {
+#ifdef WNT
+      myCurrIFile = new ifstream( aFullPath.ToCString(), ios::binary );
+#else
+      myCurrIFile = new ifstream( aFullPath.ToCString() );
+#endif
+
+      myCurrIFile->seekg(0, ios::beg);
+
+      ////////////
+      //Initialize 4 bytes of the buffer by 0
+      memset( (myCurrBuff + myCurrPos), 0, 4); 
+      //Copy the length of the file name to the buffer
+      memcpy((myCurrBuff + myCurrPos), ( myFileNameSizes + myCurrFileIndex ), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+      myCurrPos += 4;
+
+      //Copy the file name to the buffer
+      char* aFName = const_cast<char*>(aFiles[myCurrFileIndex+1].c_str());
+      memcpy( myCurrBuff + myCurrPos, aFName, myFileNameSizes[ myCurrFileIndex ] );
+      myCurrPos += myFileNameSizes[myCurrFileIndex];
+      /////////////
+
+      //Initialize 8 bytes of the buffer by 0
+      memset( myCurrBuff + myCurrPos, 0, 8 ); 
+      
+      //Copy the length of the file to the buffer
+      memcpy( myCurrBuff + myCurrPos,  
+        (unsigned char*)(myFileSizes + myCurrFileIndex), ((sizeof(long) > 8) ? 8 : sizeof(long)));
+      myCurrPos += 8;
+    }
+
+    // old code for small files
+    if ( aCurrSize < GetMaxBuffSize() )
+    {
+      //myCurrIFile->seekg(0, ios::beg);
+      size_t aSizeToRead = myFileSizes[myCurrFileIndex] - myCurrIFile->tellg();
+      myCurrIFile->read((char *)(theBuffer + myCurrPos), aSizeToRead );
+      myCurrIFile->close();
+      delete(myCurrIFile);
+      myCurrIFile = 0;
+      myCurrPos += aSizeToRead;
+      mySizeToBeWritten = 0;
+    }
+    else // new code for big files
+    {
+      int aPos = myCurrIFile->tellg();
+      size_t aFileSize = myFileSizes[myCurrFileIndex];
+      size_t aSizeToRead = GetMaxBuffSize() - myCurrPos;
+      if ( aSizeToRead > myFileSizes[myCurrFileIndex] - myCurrIFile->tellg() )
+        aSizeToRead = myFileSizes[myCurrFileIndex] - myCurrIFile->tellg();
+      myCurrIFile->read((char *)(theBuffer + myCurrPos), aSizeToRead );
+      mySizeToBeWritten -= aSizeToRead - myCurrPos;
+      myCurrPos += aSizeToRead;
+      if ( myCurrPos == GetMaxBuffSize() )
+      {
+        myCurrPos = 0;
+        break;
+      }
+      else // file was saved complitelly
+      {
+        myCurrIFile->close();
+        delete(myCurrIFile);
+        myCurrIFile = 0;
+      }
+      if ( myCurrIFile )
+        aPos = myCurrIFile->tellg();
+    }
+  }
+  
+  if ( aCurrSize < GetMaxBuffSize() )
+    theBufferSize = myCurrPos - 1;
+  else 
+    theBufferSize = GetMaxBuffSize();
+
+  return aCurrSize < GetMaxBuffSize();
+}
+
+//=============================================================================
+// Function : PutFirstStreamToFiles
+// Purpose  : 
+//=============================================================================
+void LightApp_Driver::PutFirstStreamToFiles( ListOfFiles& theListOfFiles, 
+                                             const unsigned char* theBuffer,
+                                             const long theBufferSize, 
+                                             bool theNamesOnly )
+{
+  theListOfFiles.resize( 0 );
+  myCurrPos = 0;
+  myCurrOFile = 0;
+  mySizeToBeWritten = 0;
+
+  if ( theBufferSize == 0 || theBuffer == 0 )
+    return;
+
+  delete[] myFileSizes;
+  delete[] myFileNameSizes;
+
+  // Create a temporary directory for the component's data files
+  std::string aDir = GetTmpDir();
+
+  // Remember that the files are in a temporary location that should be deleted
+  // when a study is closed
+  SetIsTemporary( true );
+
+  //Get a temporary directory for saving a file
+  TCollection_AsciiString aTmpDir(const_cast<char*>(aDir.c_str()));
+
+  myCurrPos = 4;
+  
+  //Copy the number of files in the stream
+  memcpy(&myNbFilles, theBuffer, sizeof(int)); 
+
+  const int n = myNbFilles + 1;
+  theListOfFiles.resize( n );
+  myFileSizes = new size_t[ n ];
+  myFileNameSizes = new size_t[ n ];
+  theListOfFiles[ 0 ] = aDir;
+  myFileSizes[ 0 ] = 0;
+  myFileNameSizes[ 0 ] = 0;
+
+  for( myCurrFileIndex = 1; myCurrFileIndex <= myNbFilles; myCurrFileIndex++) 
+  {
+    //Put a length of the file name to myFileNameSizes[ myCurrFileIndex ]
+    memcpy(&myFileNameSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+    myCurrPos += 4;
+
+    char *aFileName = new char[ myFileNameSizes[ myCurrFileIndex ] ];
+    //Put a file name to aFileName
+    memcpy(aFileName, (theBuffer + myCurrPos), myFileNameSizes[ myCurrFileIndex ]); 
+    myCurrPos += myFileNameSizes[ myCurrFileIndex ];
+    
+    //Put a length of the file to myFileSizes
+    if (!theNamesOnly) 
+    {
+      memcpy(&myFileSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), ((sizeof(long) > 8) ? 8 : sizeof(long)));
+      myCurrPos += 8;    
+      
+      TCollection_AsciiString aFullPath = aTmpDir + aFileName;
+      
+#ifdef WNT  
+  myCurrOFile  = new ofstream(aFullPath.ToCString(), ios::out | ios::binary);
+#else
+  myCurrOFile  = new ofstream(aFullPath.ToCString());
+#endif
+      
+      std::string aStrFileName( aFileName );
+      theListOfFiles[ myCurrFileIndex ] = aStrFileName;
+      delete[] aFileName;
+
+      if ( myFileSizes[ myCurrFileIndex ] <= theBufferSize - myCurrPos )
+      {
+        // old code 
+        myCurrOFile->write((char *)(theBuffer+myCurrPos), myFileSizes[ myCurrFileIndex ] ); 
+        myCurrOFile->close();  
+        delete myCurrOFile;
+        myCurrOFile = 0;
+        myCurrPos += myFileSizes[ myCurrFileIndex ];
+        myFileSizes[ myCurrFileIndex ] = 0;
+      }
+      else 
+      {
+        // old code for big files
+        size_t aSize = theBufferSize - myCurrPos;
+        myCurrOFile->write((char *)( theBuffer + myCurrPos ), aSize );
+        myFileSizes[ myCurrFileIndex ] -= aSize;
+        myCurrPos = 0;
+        break;
+      }
+    }
+  }
+}
+
+//=============================================================================
+// Function : PutNextStreamToFiles
+// Purpose  : 
+//=============================================================================
+void LightApp_Driver::PutNextStreamToFiles( ListOfFiles& theListOfFiles, 
+                                            const unsigned char* theBuffer,
+                                            const long theBufferSize, 
+                                            bool theNamesOnly )
+{
+  if ( theNamesOnly )
+    return;
+
+  std::string aDir = GetTmpDir();
+
+  //Get a temporary directory for saving a file
+  TCollection_AsciiString aTmpDir(const_cast<char*>(aDir.c_str()));
+
+  if ( !myNbFilles )
+    return;
+
+  for( ; myCurrFileIndex <= myNbFilles; myCurrFileIndex++) 
+  {
+    if ( !myCurrOFile )
+    {
+      //Put a length of the file name to myFileNameSizes
+      //int myFileNameSizes;
+      memcpy(&myFileNameSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+      myCurrPos += 4;
+
+      char *aFileName = new char[ myFileNameSizes[ myCurrFileIndex ] ];
+      //Put a file name to aFileName
+      memcpy(aFileName, (theBuffer + myCurrPos), myFileNameSizes[ myCurrFileIndex ]); 
+      myCurrPos += myFileNameSizes[ myCurrFileIndex ];
+
+      std::string aStrFileName( aFileName );
+      theListOfFiles[ myCurrFileIndex ] = aStrFileName;
+      
+      //Put a length of the file to myFileSizes
+      if ( theNamesOnly )
+      {
+        delete[] aFileName;
+        continue;
+      }
+
+      memcpy(&myFileSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), ((sizeof(long) > 8) ? 8 : sizeof(long)));
+      myCurrPos += 8;    
+
+      TCollection_AsciiString aFullPath = aTmpDir + aFileName;
+
+#ifdef WNT  
+      myCurrOFile  = new ofstream(aFullPath.ToCString(), ios::out | ios::binary);
+#else
+      myCurrOFile  = new ofstream(aFullPath.ToCString());
+#endif
+
+      delete[] aFileName;
+      
+    } //if ( !myCurrOFile )
+
+    if ( myFileSizes[ myCurrFileIndex ] <= theBufferSize - myCurrPos )
+    {
+      // old code 
+      myCurrOFile->write((char *)(theBuffer+myCurrPos), myFileSizes[ myCurrFileIndex ] ); 
+      myCurrOFile->close();  
+      delete myCurrOFile;
+      myCurrOFile = 0;
+      myCurrPos += myFileSizes[ myCurrFileIndex ];
+      myFileSizes[ myCurrFileIndex ] = 0;
+    }
+    else 
+    {
+      // old code for big files
+      size_t aFileSize = myFileSizes[ myCurrFileIndex ];
+      size_t aSize = theBufferSize - myCurrPos;
+      myCurrOFile->write((char *)( theBuffer + myCurrPos ), aSize );
+      myFileSizes[ myCurrFileIndex ] -= aSize;
+      myCurrPos = 0;
+      break;
+    }
+  } // for
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
