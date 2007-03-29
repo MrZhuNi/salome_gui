@@ -58,7 +58,7 @@ LIB_SRC= Plot2d_Curve.cxx \
 	 Plot2d_ViewModel.cxx \
 	 Plot2d_ViewWindow.cxx \
 	 Plot2d_SetupCurveDlg.cxx \
-	 Plot2d_SetupCurveDlg.cxx \
+	 Plot2d_SetupCurvesDlg.cxx \
 	 Plot2d_ToolTip.cxx
 
 LIB_MOC = \
@@ -69,7 +69,7 @@ LIB_MOC = \
 	Plot2d_ViewModel.h \
 	Plot2d_ViewWindow.h \
 	Plot2d_SetupCurveDlg.h \
-	Plot2d_SetupCurveDlg.h \
+	Plot2d_SetupCurvesDlg.h \
 	Plot2d_ToolTip.h
 
 RESOURCES_FILES = \
