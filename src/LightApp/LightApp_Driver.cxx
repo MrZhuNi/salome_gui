@@ -552,7 +552,7 @@ bool LightApp_Driver::PutFilesToFirstStream( const std::string& theModuleName, u
   }
   
   if ( aCurrSize < GetMaxBuffSize() )
-    theBufferSize = myCurrPos - 1;
+    theBufferSize = myCurrPos;
   else 
     theBufferSize = GetMaxBuffSize();
 
