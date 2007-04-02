@@ -1023,7 +1023,11 @@ void LightApp_Application::onHelpContentsModule()
 	QString quote("\""); 
 	anApp.prepend( quote ); 
 	anApp.append( quote ); 
+#else
+	if ( anApp.isEmpty() )
+	  anApp = "mozilla";
 #endif
+
   QString aParams = resMgr->stringValue("ExternalBrowser", "parameters");
 
   if (!anApp.isEmpty()) {
