@@ -820,7 +820,15 @@ void OCCViewer_ViewWindow::onFitAll()
 void OCCViewer_ViewWindow::onCloneView()
 {
   SUIT_ViewWindow* vw = myManager->createViewWindow();
+  if ( !vw )
+    return;
+
+  vw->resize( size() );
   vw->show();
+
+  OCCViewer_ViewWindow* ovw = ::qt_cast<OCCViewer_ViewWindow*>( vw );
+  if ( ovw )
+    ovw->onFitAll();
 }
 
 //****************************************************************
