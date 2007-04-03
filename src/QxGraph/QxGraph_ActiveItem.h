@@ -21,6 +21,8 @@
 
 #include "QxGraph.h"
 
+#include <qpoint.h>
+
 class QXGRAPH_EXPORT QxGraph_ActiveItem
 {
  public:
@@ -30,6 +32,12 @@ class QXGRAPH_EXPORT QxGraph_ActiveItem
   virtual bool isMoveable() = 0;
   virtual void beforeMoving() = 0;
   virtual void afterMoving() = 0;
+
+  virtual bool isResizable(QPoint thePoint, int& theCursorType) { return false; }
+  virtual bool isResizing() { return false; }
+  virtual void beforeResizing(int theCursorType) {}
+  virtual void resize(QPoint thePoint) {}
+  virtual void afterResizing() {}
 
   virtual void hilight() = 0;
   virtual void select() = 0;

@@ -177,7 +177,14 @@ void QxGraph_CanvasView::contentsMousePressEvent(QMouseEvent* theEvent)
     // to move items on canvas view
     for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
       QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
-      if ( anActItem && anActItem->isMoveable() )
+      int aCursorType;
+      if ( anActItem && anActItem->isResizable(myPoint,aCursorType) )
+      { // resize itself only active items if it is resizable
+	anActItem->beforeResizing(aCursorType);
+	myCurrentItem = *it;
+	return;
+      }
+      else if ( anActItem && anActItem->isMoveable() )
       { // move itself only active items if it is moveable
 	anActItem->beforeMoving();
 	myCurrentItem = *it;
@@ -240,11 +247,19 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
   }
 
   if ( myCurrentItem )
-  { // to move items on canvas view
+  {
+    QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( myCurrentItem );
+    if ( anActItem && anActItem->isResizing() )
+    { // to resize items on canvas view
+      anActItem->resize(aPoint);
+      return;
+    }
+
+    // to move items on canvas view
     if ( myCurrentItem->x() && myCurrentItem->y() ) {
       double cx = myCurrentItem->x() - myPoint.x();
       double cy = myCurrentItem->y() - myPoint.y();
-      
+	
       if (aPoint.x()+cx < 0) aPoint.setX(-(int)cx);
       if (aPoint.y()+cy < 0) aPoint.setY(-(int)cy);
     }
@@ -252,7 +267,7 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
 			  aPoint.y() - myPoint.y());
     myPoint = aPoint;
     canvas()->update();
-
+    
     // scroll contents if mouse is outside
     QRect r(contentsX(), contentsY(), visibleWidth(), visibleHeight());
     if (!r.contains(theEvent->pos())) {
@@ -269,6 +284,51 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
     
     return;
   }
+  else
+  {
+    QCanvasItemList aList = canvas()->collisions(aPoint);
+    // to set resize cursor if needed
+    for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
+      QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
+      int aCursorType;
+      if ( anActItem && anActItem->isResizable(aPoint,aCursorType) )
+      { // set resize cursor
+	QCursor resizeCursor;
+	switch (aCursorType)
+	  {
+	  case 1: //left
+	  case 3: //right
+	    resizeCursor = QCursor(Qt::SizeHorCursor);
+	    break;
+	  case 2: //top
+	  case 4: //bottom
+	    resizeCursor = QCursor(Qt::SizeVerCursor); 
+	    break;
+	  case 5: //left-top
+	  case 7: //right-bottom
+	    resizeCursor = QCursor(Qt::SizeFDiagCursor);
+	    break;
+	  case 6: //right-top
+	  case 8: //left-bottom
+	    resizeCursor = QCursor(Qt::SizeBDiagCursor); 
+	    break;
+	  default : 
+	    resizeCursor = QCursor(Qt::ArrowCursor);
+	    break;
+	  }
+	setCursor(resizeCursor);
+	return;
+      }
+      else
+      { // reset old cursor
+	setCursor(QCursor(Qt::ArrowCursor));
+	return;
+      }
+    }
+    if ( cursor().shape() == Qt::SizeVerCursor || cursor().shape() == Qt::SizeHorCursor
+	 || cursor().shape() == Qt::SizeBDiagCursor || cursor().shape() == Qt::SizeFDiagCursor)
+      setCursor(QCursor(Qt::ArrowCursor));
+  }
 }
 
 void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
@@ -278,7 +338,13 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
   if (myCurrentItem)
   { // to move items on canvas view    
     QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( myCurrentItem );
-    if ( anActItem && anActItem->isMoveable() )
+    if ( anActItem && anActItem->isResizing() )
+    {
+      anActItem->afterResizing();
+      // reset old cursor
+      setCursor(QCursor(Qt::ArrowCursor));
+    }
+    else if ( anActItem && anActItem->isMoveable() )
       anActItem->afterMoving();
   }
   myCurrentItem = 0;
