@@ -28,9 +28,11 @@
 #include <qcanvas.h>
 #include <qcursor.h>
 #include <qtimer.h>
+#include <qtooltip.h>
 
 class QxGraph_Canvas;
 class QxGraph_ViewWindow;
+class QxGraph_ActiveItem;
 
 class QXGRAPH_EXPORT QxGraph_CanvasView : public QCanvasView {
   Q_OBJECT
@@ -76,6 +78,20 @@ class QXGRAPH_EXPORT QxGraph_CanvasView : public QCanvasView {
   QTimer*           myTimer;
   int               myDX;
   int               myDY;
+
+  // for hilight
+  QxGraph_ActiveItem* myHilightedItem;
+};
+
+
+class QxGraph_ToolTip: public QToolTip {
+  
+ public:
+  QxGraph_ToolTip(QWidget* theWidget, QToolTipGroup* theGroup = 0):
+    QToolTip(theWidget, theGroup) {}
+  ~QxGraph_ToolTip() { remove(parentWidget()); }
+    
+  virtual void maybeTip(const QPoint& theMousePos);
 };
 
 #endif

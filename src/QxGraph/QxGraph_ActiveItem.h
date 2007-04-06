@@ -39,9 +39,11 @@ class QXGRAPH_EXPORT QxGraph_ActiveItem
   virtual void resize(QPoint thePoint) {}
   virtual void afterResizing() {}
 
-  virtual void hilight() = 0;
+  virtual void hilight(const bool toHilight = true) = 0;
   virtual void select() = 0;
   virtual void showPopup() = 0;
+
+  virtual QString getToolTipText(const QPoint& theMousePos, QRect& theRect) const = 0;
 };
 
 #endif

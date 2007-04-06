@@ -27,7 +27,6 @@
 #include "QxGraph_Def.h"
 
 #include <qwmatrix.h>
-
 #include <math.h>
 
 const char* imageZoomCursor[] = { 
@@ -111,7 +110,8 @@ const char* imageCrossCursor[] = {
 */
 QxGraph_CanvasView::QxGraph_CanvasView(QxGraph_Canvas* theCanvas, QxGraph_ViewWindow* theViewWindow) :
   QCanvasView(theCanvas, theViewWindow),
-  myCurrentItem(0)
+  myCurrentItem(0),
+  myHilightedItem(0)
 {
   printf("Construct QxGraph_CanvasView\n");
   setName("QxGraph_CanvasView");
@@ -287,9 +287,25 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
   else
   {
     QCanvasItemList aList = canvas()->collisions(aPoint);
-    // to set resize cursor if needed
+    // to set hilight and resize cursor if needed
+    bool isHilightPerformed = false;
+
     for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
       QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
+
+      // hilight
+      if (!isHilightPerformed && anActItem) 
+	{
+	  if (anActItem != myHilightedItem) 
+	    {
+	      anActItem->hilight();
+	      if (myHilightedItem)
+		myHilightedItem->hilight(false);
+	      myHilightedItem = anActItem;
+	      isHilightPerformed = true;
+	    }
+	}
+      
       int aCursorType;
       if ( anActItem && anActItem->isResizable(aPoint,aCursorType) )
       { // set resize cursor
@@ -325,10 +341,21 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
 	return;
       }
     }
+    
+    if (!isHilightPerformed && myHilightedItem)
+      {
+	myHilightedItem->hilight(false);
+	myHilightedItem = 0;
+      }
+
     if ( cursor().shape() == Qt::SizeVerCursor || cursor().shape() == Qt::SizeHorCursor
 	 || cursor().shape() == Qt::SizeBDiagCursor || cursor().shape() == Qt::SizeFDiagCursor)
       setCursor(QCursor(Qt::ArrowCursor));
   }
+
+  // show tooltip
+  QxGraph_ToolTip* aToolTip = new QxGraph_ToolTip(this);
+  aToolTip->maybeTip(aPoint);
 }
 
 void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
@@ -508,4 +535,28 @@ void QxGraph_CanvasView::onTimeout()
 QxGraph_ViewWindow* QxGraph_CanvasView::getViewWindow() const
 {
   return dynamic_cast<QxGraph_ViewWindow*>( parent() );
+}
+
+/*!
+  Shows tooltip if necessary
+*/
+void QxGraph_ToolTip::maybeTip(const QPoint& theMousePos) {
+  QCanvasItemList aList = ((QCanvasView*)parentWidget())->canvas()->collisions(theMousePos);
+  
+  for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
+    QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
+    if (anActItem)
+      {
+	QRect aRect;
+	QString aText = anActItem->getToolTipText(theMousePos, aRect);
+	int avX, avY;
+	QWMatrix aWM = ((QCanvasView*)parentWidget())->worldMatrix();
+	((QCanvasView*)parentWidget())->contentsToViewport((int)(aRect.left()*aWM.m11()), 
+							   (int)(aRect.top()*aWM.m22()), 
+							   avX, avY);
+	QRect aTipRect(avX, avY, (int)(aRect.width()*aWM.m11()), (int)(aRect.height()*aWM.m22()));
+	if (!aText.isEmpty())
+	  tip(aTipRect, aText);
+      }
+  }
 }
