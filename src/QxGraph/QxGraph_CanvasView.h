@@ -81,6 +81,9 @@ class QXGRAPH_EXPORT QxGraph_CanvasView : public QCanvasView {
 
   // for hilight
   QxGraph_ActiveItem* myHilightedItem;
+
+  // for selection
+  QxGraph_ActiveItem* mySelectedItem;
 };
 
 

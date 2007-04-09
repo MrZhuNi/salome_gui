@@ -111,7 +111,8 @@ const char* imageCrossCursor[] = {
 QxGraph_CanvasView::QxGraph_CanvasView(QxGraph_Canvas* theCanvas, QxGraph_ViewWindow* theViewWindow) :
   QCanvasView(theCanvas, theViewWindow),
   myCurrentItem(0),
-  myHilightedItem(0)
+  myHilightedItem(0),
+  mySelectedItem(0)
 {
   printf("Construct QxGraph_CanvasView\n");
   setName("QxGraph_CanvasView");
@@ -295,16 +296,16 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
 
       // hilight
       if (!isHilightPerformed && anActItem) 
+      {
+	if (anActItem != myHilightedItem) 
 	{
-	  if (anActItem != myHilightedItem) 
-	    {
-	      anActItem->hilight();
-	      if (myHilightedItem)
-		myHilightedItem->hilight(false);
-	      myHilightedItem = anActItem;
-	      isHilightPerformed = true;
-	    }
+	  anActItem->hilight();
+	  if (myHilightedItem)
+	    myHilightedItem->hilight(false);
+	  myHilightedItem = anActItem;
+	  isHilightPerformed = true;
 	}
+      }
       
       int aCursorType;
       if ( anActItem && anActItem->isResizable(aPoint,aCursorType) )
@@ -343,10 +344,10 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
     }
     
     if (!isHilightPerformed && myHilightedItem)
-      {
-	myHilightedItem->hilight(false);
-	myHilightedItem = 0;
-      }
+    {
+      myHilightedItem->hilight(false);
+      myHilightedItem = 0;
+    }
 
     if ( cursor().shape() == Qt::SizeVerCursor || cursor().shape() == Qt::SizeHorCursor
 	 || cursor().shape() == Qt::SizeBDiagCursor || cursor().shape() == Qt::SizeFDiagCursor)
@@ -360,6 +361,8 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
 
 void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
 {
+  QPoint aPoint = inverseWorldMatrix().map(theEvent->pos());
+
   if (myTimer->isActive()) myTimer->stop();
 
   if (myCurrentItem)
@@ -401,16 +404,15 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
     }
 
     //myPoint is the start point for selecting rectangle now
-    QPoint anEndPoint = inverseWorldMatrix().map(theEvent->pos());
     int aLX, aTY; //left x and top y
-    if (myPoint.x() < anEndPoint.x()) aLX = myPoint.x();
-    else aLX = anEndPoint.x();
-    if (myPoint.y() < anEndPoint.y()) aTY = myPoint.y();
-    else aTY = anEndPoint.y();
+    if (myPoint.x() < aPoint.x()) aLX = myPoint.x();
+    else aLX = aPoint.x();
+    if (myPoint.y() < aPoint.y()) aTY = myPoint.y();
+    else aTY = aPoint.y();
 
     //calculate width and height for new view and new zoom factor
-    double aXzoom = ((double)visibleWidth())/((double)(abs(myPoint.x()-anEndPoint.x())));
-    double aYzoom = ((double)visibleHeight())/((double)(abs(myPoint.y()-anEndPoint.y())));
+    double aXzoom = ((double)visibleWidth())/((double)(abs(myPoint.x()-aPoint.x())));
+    double aYzoom = ((double)visibleHeight())/((double)(abs(myPoint.y()-aPoint.y())));
     if (aXzoom > aYzoom) aXzoom = aYzoom;
     
     QWMatrix m;
@@ -432,13 +434,55 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
   }
 
   if ( theEvent->button() == RightButton )
-  { // Background popup
-    printf("Background popup\n");
-    QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
-			      theEvent->pos(), theEvent->globalPos(),
-			      theEvent->state() );
-    if ( getViewWindow() )
-      getViewWindow()->contextPopupEvent(&aEvent); // => emit contextMenuRequested( &aEvent );
+  { 
+    // Selection mechanism
+    QCanvasItemList aList = canvas()->collisions(aPoint);
+    bool isSelectionPerformed = false;
+
+    for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
+      QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
+      if (!isSelectionPerformed && anActItem) 
+      {
+	anActItem->select(aPoint);
+	if (anActItem != mySelectedItem) 
+	{
+	  if (mySelectedItem)
+	    mySelectedItem->select(aPoint, false);
+	  mySelectedItem = anActItem;
+	}
+	isSelectionPerformed = true;
+      }
+    }
+
+    if (!isSelectionPerformed)
+    { 
+      if ( mySelectedItem )
+      {
+      mySelectedItem->select(aPoint, false);
+      mySelectedItem = 0;
+      }
+      
+      // Background popup
+      printf("Background popup\n");
+      QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
+				theEvent->pos(), theEvent->globalPos(),
+				theEvent->state() );
+      if ( getViewWindow() )
+	getViewWindow()->contextPopupEvent(&aEvent); // => emit contextMenuRequested( &aEvent );
+    }
+    else
+    { // show context popup for the selected item
+      
+    }
+  }
+
+  if ( theEvent->button() == LeftButton )
+  {
+    if ( canvas()->collisions(aPoint).empty() && mySelectedItem )
+    {
+      mySelectedItem->select(aPoint, false);
+      mySelectedItem = 0;
+    }
   }
 }
 
