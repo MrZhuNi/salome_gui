@@ -288,28 +288,28 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
   else
   {
     QCanvasItemList aList = canvas()->collisions(aPoint);
-    // to set hilight and resize cursor if needed
+    // perform actions for active items
     bool isHilightPerformed = false;
 
     for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
       QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
-
-      // hilight
-      if (!isHilightPerformed && anActItem) 
-      {
-	if (anActItem != myHilightedItem) 
-	{
-	  anActItem->hilight();
-	  if (myHilightedItem)
-	    myHilightedItem->hilight(false);
-	  myHilightedItem = anActItem;
-	  isHilightPerformed = true;
-	}
+    
+      if (!isHilightPerformed && anActItem && anActItem != myHilightedItem) {
+	// hilight
+	anActItem->hilight(aPoint);
+	if (myHilightedItem)
+	  myHilightedItem->hilight(aPoint, false);
+	myHilightedItem = anActItem;
+	isHilightPerformed = true;
+	
+	// show tooltip
+	QxGraph_ToolTip* aToolTip = new QxGraph_ToolTip(this);
+	aToolTip->maybeTip(aPoint);
       }
       
       int aCursorType;
-      if ( anActItem && anActItem->isResizable(aPoint,aCursorType) )
-      { // set resize cursor
+      if ( anActItem && anActItem->isResizable(aPoint,aCursorType) ) {
+	// set resize cursor
 	QCursor resizeCursor;
 	switch (aCursorType)
 	  {
@@ -336,27 +336,23 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
 	setCursor(resizeCursor);
 	return;
       }
-      else
-      { // reset old cursor
+      else {
+	// reset old cursor
 	setCursor(QCursor(Qt::ArrowCursor));
 	return;
       }
     }
     
-    if (!isHilightPerformed && myHilightedItem)
-    {
-      myHilightedItem->hilight(false);
+    if (!isHilightPerformed && myHilightedItem) {
+      myHilightedItem->hilight(aPoint, false);
       myHilightedItem = 0;
+      QToolTip::hide(); //@ temporary solution
     }
 
     if ( cursor().shape() == Qt::SizeVerCursor || cursor().shape() == Qt::SizeHorCursor
 	 || cursor().shape() == Qt::SizeBDiagCursor || cursor().shape() == Qt::SizeFDiagCursor)
       setCursor(QCursor(Qt::ArrowCursor));
   }
-
-  // show tooltip
-  QxGraph_ToolTip* aToolTip = new QxGraph_ToolTip(this);
-  aToolTip->maybeTip(aPoint);
 }
 
 void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
