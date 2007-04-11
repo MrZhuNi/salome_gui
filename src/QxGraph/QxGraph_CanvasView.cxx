@@ -294,12 +294,14 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
     for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
       QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
     
-      if (!isHilightPerformed && anActItem && anActItem != myHilightedItem) {
+      if (!isHilightPerformed && anActItem) {
 	// hilight
 	anActItem->hilight(aPoint);
-	if (myHilightedItem)
-	  myHilightedItem->hilight(aPoint, false);
-	myHilightedItem = anActItem;
+	if (anActItem != myHilightedItem) {
+	  if (myHilightedItem)
+	    myHilightedItem->hilight(aPoint, false);
+	  myHilightedItem = anActItem;
+	}
 	isHilightPerformed = true;
 	
 	// show tooltip
@@ -597,6 +599,7 @@ void QxGraph_ToolTip::maybeTip(const QPoint& theMousePos) {
 	QRect aTipRect(avX, avY, (int)(aRect.width()*aWM.m11()), (int)(aRect.height()*aWM.m22()));
 	if (!aText.isEmpty())
 	  tip(aTipRect, aText);
+	return;
       }
   }
 }
