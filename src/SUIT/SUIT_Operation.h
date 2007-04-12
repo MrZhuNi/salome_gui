@@ -135,6 +135,10 @@ public slots:
   void              resume();
   void              suspend();
 
+private slots:
+  void              onDestroyed( QObject* );
+  void              onStopped( SUIT_Operation* );
+
 protected:
   virtual bool      isReadyToStart() const;
 
@@ -158,7 +162,8 @@ protected:
   void              start( SUIT_Operation*, const bool = false );
 
 private:
-  typedef QGuardedPtr<SUIT_Study> StudyPtr;
+  typedef QGuardedPtr<SUIT_Study>  StudyPtr;
+  typedef QPtrList<SUIT_Operation> OpList;
 
 private:
   SUIT_Application* myApp;        //!< application for this operation
@@ -166,6 +171,7 @@ private:
   StudyPtr          myStudy;      //!< study for this operation
   OperationState    myState;      //!< Operation state
   ExecStatus        myExecStatus; //!< Execution status
+  OpList            myChildOperations;
 
   friend class SUIT_Study;
 };

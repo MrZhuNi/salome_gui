@@ -299,6 +299,14 @@ void SUIT_Operation::startOperation()
 */
 void SUIT_Operation::stopOperation()
 {
+  if ( myChildOperations.isEmpty() )
+    return;
+
+  OpList lst = myChildOperations;
+  for ( QPtrListIterator<SUIT_Operation> it( lst ); it.current(); ++it )
+    it.current()->abort();
+
+  myChildOperations.clear();
 }
 
 /*!
@@ -414,14 +422,18 @@ void SUIT_Operation::start( SUIT_Operation* op, const bool check )
 {
   if ( !op )
     return;
-    
+
+  if ( myChildOperations.contains( op ) )
+    return;
+
+  myChildOperations.append( op );
+  connect( op, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
+  connect( op, SIGNAL( stopped( SUIT_Operation* ) ), this, SLOT( onStopped( SUIT_Operation* ) ) );
+
   if ( study() )
     study()->start( op, check );
   else
-  {
-    connect( this, SIGNAL( stopped( SUIT_Operation* ) ), op, SLOT( abort() ) );
     op->start();
-  }
 }
 
 /*!
@@ -488,4 +500,16 @@ bool SUIT_Operation::hasTransaction() const
     return false;
 
   return study()->hasTransaction();
+}
+
+void SUIT_Operation::onDestroyed( QObject* obj )
+{
+  myChildOperations.remove( (SUIT_Operation*)obj );
+}
+
+void SUIT_Operation::onStopped( SUIT_Operation* op )
+{
+  myChildOperations.remove( op );
+  disconnect( op, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
+  disconnect( op, SIGNAL( stopped( SUIT_Operation* ) ), this, SLOT( onStopped( SUIT_Operation* ) ) );
 }
