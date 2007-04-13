@@ -149,6 +149,8 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
        myBackground( white ),
        myTitleEnabled( true ), myXTitleEnabled( true ),
        myYTitleEnabled( true ), myY2TitleEnabled (true),
+       myTitleAutoGeneration( true ), myXTitleAutoGeneration( true ), 
+       myYTitleAutoGeneration( true ),
        myXGridMajorEnabled( true ), myYGridMajorEnabled( true ), myY2GridMajorEnabled( true ), 
        myXGridMinorEnabled( false ), myYGridMinorEnabled( false ), myY2GridMinorEnabled( false ),
        myXGridMaxMajor( 8 ), myYGridMaxMajor( 8 ), myY2GridMaxMajor( 8 ),
@@ -996,14 +998,32 @@ void Plot2d_ViewFrame::onSettings()
          myY2GridMinorEnabled, myPlot->axisMaxMinor( QwtPlot::yRight ) );
   if ( dlg->exec() == QDialog::Accepted ) {
     // horizontal axis title
+    bool isTileChanged = dlg->getXTitle() != myXTitle;
     setTitle( dlg->isXTitleEnabled(), dlg->getXTitle(), XTitle, false );
+    if ( isTileChanged )
+    {
+      myXTitleAutoGeneration = false;
+      emit titleChangedByUser( XTitle );
+    }
     // vertical left axis title
+    isTileChanged = dlg->getYTitle() != myYTitle;
     setTitle( dlg->isYTitleEnabled(), dlg->getYTitle(), YTitle, false );
+    if ( isTileChanged  )
+    {
+      myYTitleAutoGeneration = false;
+      emit titleChangedByUser( YTitle );
+    }
     if (mySecondY) // vertical right axis title
       setTitle( dlg->isY2TitleEnabled(), dlg->getY2Title(), Y2Title, false );
 
     // main title
+    isTileChanged = dlg->getMainTitle() != myTitle;
     setTitle( dlg->isMainTitleEnabled(), dlg->getMainTitle(), MainTitle, true );
+    if ( isTileChanged )
+    {
+      myTitleAutoGeneration = false;
+      emit titleChangedByUser( MainTitle );
+    }
     // curve type
     if ( myCurveType != dlg->getCurveType() ) {
       setCurveType( dlg->getCurveType(), false );
@@ -2150,9 +2170,12 @@ void Plot2d_ViewFrame::updateTitles()
   if ( !yTitle.isEmpty() && !yUnits.isEmpty() )
     yTitle += " ";
 
-  setTitle( myXTitleEnabled, xTitle + xUnits, XTitle, true );
-  setTitle( myYTitleEnabled, yTitle + yUnits, YTitle, true );
-  setTitle( true, aTables.join("; "), MainTitle, true );
+  if ( myXTitleAutoGeneration )
+    setTitle( myXTitleEnabled, xTitle + xUnits, XTitle, true );
+  if ( myYTitleAutoGeneration )
+    setTitle( myYTitleEnabled, yTitle + yUnits, YTitle, true );
+  if ( myTitleAutoGeneration )
+    setTitle( true, aTables.join("; "), MainTitle, true );
 }
 
 /*!
@@ -2330,3 +2353,66 @@ void Plot2d_ViewFrame::onZoomOut()
 {
   this->incrementalZoom( -INCREMENT_FOR_OP, -INCREMENT_FOR_OP );
 }
+
+/*!
+  Specifies whether plot title must be generated automatically using curves titles
+*/
+void Plot2d_ViewFrame::setTitleAutoGeneration( const bool toGenerate, const bool update )
+{
+  setTitleAutoGeneration( toGenerate, MainTitle, update );
+}
+
+/*!
+  Verifies whether plot title must be generated automatically using curves titles
+*/
+bool Plot2d_ViewFrame::getTitleAutoGeneration() const
+{
+  return myTitleAutoGeneration;
+}
+
+/*!
+  Specifies whether plot title must be generated automatically using curves titles
+*/
+void Plot2d_ViewFrame::setTitleAutoGeneration( const bool toGenerate, 
+                                               const ObjectType type, 
+                                               const bool update )
+{
+  switch ( type ) 
+  {
+  case MainTitle:
+    myTitleAutoGeneration = toGenerate;
+    break;
+  case XTitle:
+    myXTitleAutoGeneration = toGenerate;
+    break;
+  case YTitle:
+    myYTitleAutoGeneration = toGenerate;
+    break;
+  default:
+    return;
+  }
+  if ( update )
+    updateTitles();  
+}
+
+/*!
+  Verifies whether plot title must be generated automatically using curves titles
+*/
+bool Plot2d_ViewFrame::getTitleAutoGeneration( const ObjectType type ) const
+{
+  switch ( type ) 
+  {
+  case MainTitle:
+    return myTitleAutoGeneration;
+  case XTitle:
+    return myXTitleAutoGeneration;
+  case YTitle:
+    return myYTitleAutoGeneration;
+  default:
+    return false;
+  }
+}
+
+
+
+

@@ -58,6 +58,8 @@ public:
   void    updateTitles();
   void    setTitle( const QString& title );
   QString getTitle() const { return myTitle; }
+  void    setTitleAutoGeneration( const bool toGenerate, const bool update = true );
+  bool    getTitleAutoGeneration() const;
   void    displayCurve( Plot2d_Curve* curve, bool update = false );
   void    displayCurves( const curveList& curves, bool update = false );
   void    eraseCurve ( Plot2d_Curve* curve, bool update = false );
@@ -99,6 +101,10 @@ public:
                     bool y2MinorEnabled, const int y2MinorMax, bool update = true );
   void    setTitle( bool enabled, const QString& title, ObjectType type, bool update = true );
   QString getTitle( ObjectType type ) const;
+  void    setTitleAutoGeneration( const bool toGenerate, 
+                                  const ObjectType type, 
+                                  const bool update = true );
+  bool    getTitleAutoGeneration( const ObjectType type ) const;
 
   void    setFont( const QFont& font, ObjectType type, bool update = true );
   void    setHorScaleMode( const int mode, bool update = true );
@@ -163,6 +169,8 @@ signals:
   void    curveDisplayed( Plot2d_Curve* );
   void    curveErased( Plot2d_Curve* );
 
+  void    titleChangedByUser( const int theObjectType );
+
 protected:
   Plot2d_Plot2d* myPlot;
   int            myOperation;
@@ -176,6 +184,7 @@ protected:
   QColor         myBackground;
   QString        myTitle, myXTitle, myYTitle, myY2Title;
   bool           myTitleEnabled, myXTitleEnabled, myYTitleEnabled, myY2TitleEnabled;
+  bool           myTitleAutoGeneration, myXTitleAutoGeneration, myYTitleAutoGeneration;
   bool           myXGridMajorEnabled, myYGridMajorEnabled, myY2GridMajorEnabled;
   bool           myXGridMinorEnabled, myYGridMinorEnabled, myY2GridMinorEnabled;
   int            myXGridMaxMajor, myYGridMaxMajor, myY2GridMaxMajor;
