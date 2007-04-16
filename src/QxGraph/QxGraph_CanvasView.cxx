@@ -476,10 +476,30 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
 
   if ( theEvent->button() == LeftButton )
   {
-    if ( canvas()->collisions(aPoint).empty() && mySelectedItem )
+    // Selection mechanism
+    QCanvasItemList aList = canvas()->collisions(aPoint);
+
+    if ( aList.empty() && mySelectedItem )
     {
       mySelectedItem->select(aPoint, false);
       mySelectedItem = 0;
+    }
+    else
+    {
+      for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
+	QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
+	if (anActItem) 
+	{
+	  anActItem->select(aPoint);
+	  if (anActItem != mySelectedItem) 
+	  {
+	    if (mySelectedItem)
+	      mySelectedItem->select(aPoint, false);
+	    mySelectedItem = anActItem;
+	  }
+	  break;
+	}
+      }
     }
   }
 }
