@@ -59,7 +59,7 @@ public:
   void    setTitle( const QString& title );
   QString getTitle() const { return myTitle; }
   void    setTitleAutoGeneration( const bool toGenerate, const bool update = true );
-  bool    getTitleAutoGeneration() const;
+  bool    getTitleAutoGeneration();
   void    displayCurve( Plot2d_Curve* curve, bool update = false );
   void    displayCurves( const curveList& curves, bool update = false );
   void    eraseCurve ( Plot2d_Curve* curve, bool update = false );
@@ -104,7 +104,7 @@ public:
   void    setTitleAutoGeneration( const bool toGenerate, 
                                   const ObjectType type, 
                                   const bool update = true );
-  bool    getTitleAutoGeneration( const ObjectType type ) const;
+  static bool getTitleAutoGeneration( const ObjectType type );
 
   void    setFont( const QFont& font, ObjectType type, bool update = true );
   void    setHorScaleMode( const int mode, bool update = true );
@@ -184,7 +184,6 @@ protected:
   QColor         myBackground;
   QString        myTitle, myXTitle, myYTitle, myY2Title;
   bool           myTitleEnabled, myXTitleEnabled, myYTitleEnabled, myY2TitleEnabled;
-  bool           myTitleAutoGeneration, myXTitleAutoGeneration, myYTitleAutoGeneration;
   bool           myXGridMajorEnabled, myYGridMajorEnabled, myY2GridMajorEnabled;
   bool           myXGridMinorEnabled, myYGridMinorEnabled, myY2GridMinorEnabled;
   int            myXGridMaxMajor, myYGridMaxMajor, myY2GridMaxMajor;
@@ -192,6 +191,14 @@ protected:
   int            myXMode, myYMode;
   double         myXDistance, myYDistance, myYDistance2;
   bool           mySecondY;
+
+  static QString myPrefTitle;
+  static QString myPrefXTitle;
+  static QString myPrefYTitle;
+
+  static bool    myTitleAutoGeneration;
+  static bool    myXTitleAutoGeneration;
+  static bool    myYTitleAutoGeneration;
 };
 
 class Plot2d_Plot2d : public QwtPlot 

@@ -134,6 +134,14 @@ const char* imageCrossCursor[] = {
   "................................",
   "................................",
   "................................"};
+
+QString Plot2d_ViewFrame::myPrefTitle = "";
+QString Plot2d_ViewFrame::myPrefXTitle = "";
+QString Plot2d_ViewFrame::myPrefYTitle = "";
+
+bool Plot2d_ViewFrame::myTitleAutoGeneration = true;
+bool Plot2d_ViewFrame::myXTitleAutoGeneration = true;
+bool Plot2d_ViewFrame::myYTitleAutoGeneration = true;
   
 
 /*!
@@ -149,8 +157,6 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
        myBackground( white ),
        myTitleEnabled( true ), myXTitleEnabled( true ),
        myYTitleEnabled( true ), myY2TitleEnabled (true),
-       myTitleAutoGeneration( true ), myXTitleAutoGeneration( true ), 
-       myYTitleAutoGeneration( true ),
        myXGridMajorEnabled( true ), myYGridMajorEnabled( true ), myY2GridMajorEnabled( true ), 
        myXGridMinorEnabled( false ), myYGridMinorEnabled( false ), myY2GridMinorEnabled( false ),
        myXGridMaxMajor( 8 ), myYGridMaxMajor( 8 ), myY2GridMaxMajor( 8 ),
@@ -346,6 +352,10 @@ void Plot2d_ViewFrame::readPreferences()
 
   myYMode = resMgr->integerValue( "Plot2d", "VerScaleMode", myYMode );
   myYMode = QMAX( 0, QMIN( 1, myYMode ) );
+
+  myTitle = myPrefTitle;
+  myXTitle = myPrefXTitle;
+  myYTitle = myPrefYTitle;
 }
 
 /*!
@@ -388,6 +398,13 @@ void Plot2d_ViewFrame::writePreferences()
   }
 
   resMgr->setValue( "Plot2d", "VerScaleMode", myYMode );
+
+  if ( !myTitleAutoGeneration )
+    myPrefTitle = myTitle;
+  if ( !myXTitleAutoGeneration )
+    myPrefXTitle = myXTitle;
+  if ( !myYTitleAutoGeneration )
+    myPrefYTitle = myYTitle;
 }
 
 /*!
@@ -2365,7 +2382,7 @@ void Plot2d_ViewFrame::setTitleAutoGeneration( const bool toGenerate, const bool
 /*!
   Verifies whether plot title must be generated automatically using curves titles
 */
-bool Plot2d_ViewFrame::getTitleAutoGeneration() const
+bool Plot2d_ViewFrame::getTitleAutoGeneration()
 {
   return myTitleAutoGeneration;
 }
@@ -2398,7 +2415,7 @@ void Plot2d_ViewFrame::setTitleAutoGeneration( const bool toGenerate,
 /*!
   Verifies whether plot title must be generated automatically using curves titles
 */
-bool Plot2d_ViewFrame::getTitleAutoGeneration( const ObjectType type ) const
+bool Plot2d_ViewFrame::getTitleAutoGeneration( const ObjectType type )
 {
   switch ( type ) 
   {
