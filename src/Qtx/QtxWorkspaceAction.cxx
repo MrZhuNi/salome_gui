@@ -24,6 +24,7 @@
 #include <qpopupmenu.h>
 #include <qworkspace.h>
 #include <qwidgetlist.h>
+#include <qapplication.h>
 
 QtxWorkspaceAction::QtxWorkspaceAction( QWorkspace* ws, QObject* parent, const char* name )
 : QtxAction( tr( "Controls windows into workspace" ), tr( "Workspace management" ), 0, parent, name ),
@@ -234,8 +235,10 @@ void QtxWorkspaceAction::tileVertical()
   if ( !count )
     return;
 
-	int y = 0;
+  if ( wrkSpace->activeWindow() && wrkSpace->activeWindow()->testWState( WState_Maximized ) )
+    wrkSpace->activeWindow()->showNormal();
 
+	int y = 0;
 	int heightForEach = wrkSpace->height() / count;
 	for ( QWidgetListIt it( winList ); it.current(); ++it )
 	{
@@ -248,6 +251,9 @@ void QtxWorkspaceAction::tileVertical()
 			win->hide();
 			win->showNormal();
     }
+
+    QApplication::sendPostedEvents( 0, QEvent::ShowNormal );
+
     int prefH = win->minimumHeight() + win->parentWidget()->baseSize().height();
     int actualH = QMAX( heightForEach, prefH );
 
@@ -274,6 +280,9 @@ void QtxWorkspaceAction::tileHorizontal()
   if ( !count )
     return;
 
+  if ( wrkSpace->activeWindow() && wrkSpace->activeWindow()->testWState( WState_Maximized ) )
+    wrkSpace->activeWindow()->showNormal();
+
 	int x = 0;
 	int widthForEach = wrkSpace->width() / count;
 	for ( QWidgetListIt it( winList ); it.current(); ++it )
@@ -287,6 +296,9 @@ void QtxWorkspaceAction::tileHorizontal()
 			win->hide();
 			win->showNormal();
     }
+
+    QApplication::sendPostedEvents( 0, QEvent::ShowNormal );
+
     int prefW = win->minimumWidth();
     int actualW = QMAX( widthForEach, prefW );
         
