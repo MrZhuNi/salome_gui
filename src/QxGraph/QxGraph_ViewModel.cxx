@@ -41,7 +41,7 @@ QxGraph_Viewer::QxGraph_Viewer()
 {
   printf("Construct QxGraph_Viewer\n");
   //myCanvases.setAutoDelete(true);
-  myCanvasViews.setAutoDelete(true);
+  //myCanvasViews.setAutoDelete(true);
 }
 
 /*!
