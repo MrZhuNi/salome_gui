@@ -242,7 +242,14 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
     QWMatrix m = worldMatrix();
     m.scale(s, s);
     setWorldMatrix(m);
-	
+    
+    // remember the canvas view's current transformation matrix in all canvas items
+    QCanvasItemList aList = canvas()->allItems();
+    for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
+      QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
+      if ( anActItem ) anActItem->setTMatrix(m);
+    }
+    	
     myGlobalPoint = aGlobalPoint;
     return;
   }
@@ -416,6 +423,14 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
     QWMatrix m;
     m.scale(aXzoom, aXzoom);
     setWorldMatrix(m);
+
+    // remember the canvas view's current transformation matrix in all canvas items
+    QCanvasItemList aList = canvas()->allItems();
+    for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
+      QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
+      if ( anActItem ) anActItem->setTMatrix(m);
+    }
+
     setContentsPos((int)(aLX*aXzoom), (int)(aTY*aYzoom));
 
     canvas()->update();
@@ -528,6 +543,14 @@ void QxGraph_CanvasView::activateFitAll()
   QWMatrix m;
   m.scale(s, s);
   setWorldMatrix(m);
+
+  // remember the canvas view's current transformation matrix in all canvas items
+  QCanvasItemList aList = canvas()->allItems();
+  for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
+    QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
+    if ( anActItem ) anActItem->setTMatrix(m);
+  }
+  
   canvas()->update();
   //myOperation = NOTHING;
 }
@@ -575,6 +598,14 @@ void QxGraph_CanvasView::activateReset()
   setContentsPos(0,0);
   QWMatrix m;
   setWorldMatrix(m);
+  
+  // remember the canvas view's current transformation matrix in all canvas items
+  QCanvasItemList aList = canvas()->allItems();
+  for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
+    QxGraph_ActiveItem* anActItem = dynamic_cast<QxGraph_ActiveItem*>( *it );
+    if ( anActItem ) anActItem->setTMatrix(m);
+  }
+
   //myOperation = NOTHING;
 }
 

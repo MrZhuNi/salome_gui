@@ -22,6 +22,7 @@
 #include "QxGraph.h"
 
 #include <qpoint.h>
+#include <qwmatrix.h> 
 
 class QXGRAPH_EXPORT QxGraph_ActiveItem
 {
@@ -44,6 +45,12 @@ class QXGRAPH_EXPORT QxGraph_ActiveItem
   virtual void showPopup() = 0;
 
   virtual QString getToolTipText(const QPoint& theMousePos, QRect& theRect) const = 0;
+
+  void setTMatrix(QWMatrix theMatrix) { myTMatrix = theMatrix; }
+  QWMatrix getTMatrix() const { return myTMatrix; }
+
+ private:
+  QWMatrix myTMatrix; // canvas view's current transformation matrix
 };
 
 #endif
