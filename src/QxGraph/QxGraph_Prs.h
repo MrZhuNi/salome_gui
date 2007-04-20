@@ -36,6 +36,7 @@ class QXGRAPH_EXPORT QxGraph_Prs
   QxGraph_Canvas* getCanvas() const { return myCanvas; }
 
   void addItem(QCanvasItem* theItem, int theDMode = -1);
+  void removeItem(QCanvasItem* theItem, int theDMode = -1);
   
   /* add items for display mode theDMode
      if theDMode is equal to -1 add item for the current (active) display mode */

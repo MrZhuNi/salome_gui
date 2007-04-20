@@ -70,6 +70,17 @@ void QxGraph_Prs::addItem(QCanvasItem* theItem, int theDMode)
     myDisplayMap[theDMode].push_back(theItem);
 }
 
+/*!
+  Remove item from the view with index theDMode
+*/
+void QxGraph_Prs::removeItem(QCanvasItem* theItem, int theDMode)
+{
+  if ( theDMode == -1 ) // remove item from the current display mode
+    myDisplayMap[myDMode].remove(theItem);
+  else
+    myDisplayMap[theDMode].remove(theItem);
+}
+
 /*! Adds all the items of this presentation for the current display mode
  *  to the canvas.
  */
