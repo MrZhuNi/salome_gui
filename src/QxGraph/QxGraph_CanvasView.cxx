@@ -109,7 +109,7 @@ const char* imageCrossCursor[] = {
   Constructor
 */
 QxGraph_CanvasView::QxGraph_CanvasView(QxGraph_Canvas* theCanvas, QxGraph_ViewWindow* theViewWindow) :
-  QCanvasView(theCanvas, theViewWindow),
+  QCanvasView(theCanvas, theViewWindow, 0, Qt::WRepaintNoErase),
   myCurrentItem(0),
   myHilightedItem(0),
   mySelectedItem(0)
@@ -242,7 +242,7 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
     QWMatrix m = worldMatrix();
     m.scale(s, s);
     setWorldMatrix(m);
-    
+
     // remember the canvas view's current transformation matrix in all canvas items
     QCanvasItemList aList = canvas()->allItems();
     for (QCanvasItemList::Iterator it = aList.begin(); it != aList.end(); ++it) {
