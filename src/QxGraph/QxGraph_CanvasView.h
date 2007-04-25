@@ -63,6 +63,8 @@ class QXGRAPH_EXPORT QxGraph_CanvasView : public QCanvasView {
   void contentsMouseReleaseEvent(QMouseEvent* theEvent); 
   void contentsMouseDoubleClickEvent(QMouseEvent* theEvent);
 
+  bool isSelectedItemInCanvas();
+
  private:
   // for moving items
   QCanvasItem*      myCurrentItem;

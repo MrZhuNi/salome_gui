@@ -459,9 +459,15 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
 	anActItem->select(aPoint);
 	if (anActItem != mySelectedItem) 
 	{
-	  if (mySelectedItem)
-	    mySelectedItem->select(aPoint, false);
+	  if (mySelectedItem && isSelectedItemInCanvas() &&
+	      !mySelectedItem->arePartsOfOtherItem(anActItem)) mySelectedItem->select(aPoint, false);
 	  mySelectedItem = anActItem;
+
+	  // unhilight hilighted item if selection was performed
+	  if (myHilightedItem) {
+	    myHilightedItem->hilight(aPoint, false);
+	    myHilightedItem = 0;
+	  }
 	}
 	isSelectionPerformed = true;
       }
@@ -471,8 +477,8 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
     { 
       if ( mySelectedItem )
       {
-      mySelectedItem->select(aPoint, false);
-      mySelectedItem = 0;
+	if ( isSelectedItemInCanvas() ) mySelectedItem->select(aPoint, false);
+	mySelectedItem = 0;
       }
       
       // Background popup
@@ -485,7 +491,7 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
     }
     else
     { // show context popup for the selected item
-      
+      mySelectedItem->showPopup(viewport(), theEvent, aPoint);
     }
   }
 
@@ -496,7 +502,7 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
 
     if ( aList.empty() && mySelectedItem )
     {
-      mySelectedItem->select(aPoint, false);
+      if ( isSelectedItemInCanvas() ) mySelectedItem->select(aPoint, false);
       mySelectedItem = 0;
     }
     else
@@ -508,8 +514,8 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
 	  anActItem->select(aPoint);
 	  if (anActItem != mySelectedItem) 
 	  {
-	    if (mySelectedItem)
-	      mySelectedItem->select(aPoint, false);
+	    if (mySelectedItem && isSelectedItemInCanvas() &&
+		!mySelectedItem->arePartsOfOtherItem(anActItem)) mySelectedItem->select(aPoint, false);
 	    mySelectedItem = anActItem;
 	  }
 	  break;
@@ -521,7 +527,24 @@ void QxGraph_CanvasView::contentsMouseReleaseEvent(QMouseEvent* theEvent)
 
 void QxGraph_CanvasView::contentsMouseDoubleClickEvent(QMouseEvent* theEvent)
 {
+  
+}
 
+bool QxGraph_CanvasView::isSelectedItemInCanvas()
+{
+  // check if mySelectedItem is included into the canvas:
+  // if yes => unselect it
+  // if no => do nothing
+  bool anIsInCanvas = false;
+  QCanvasItemList aListC = canvas()->allItems();
+  for (QCanvasItemList::Iterator itC = aListC.begin(); itC != aListC.end(); ++itC) {
+    QxGraph_ActiveItem* anActItemC = dynamic_cast<QxGraph_ActiveItem*>( *itC );
+    if ( anActItemC && anActItemC == mySelectedItem ) {
+      anIsInCanvas = true;
+      break;
+    }
+  }
+  return anIsInCanvas;
 }
 
 void QxGraph_CanvasView::activateFitAll()

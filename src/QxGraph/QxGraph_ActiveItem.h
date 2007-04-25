@@ -22,7 +22,8 @@
 #include "QxGraph.h"
 
 #include <qpoint.h>
-#include <qwmatrix.h> 
+#include <qwmatrix.h>
+#include <qevent.h>
 
 class QXGRAPH_EXPORT QxGraph_ActiveItem
 {
@@ -42,9 +43,11 @@ class QXGRAPH_EXPORT QxGraph_ActiveItem
 
   virtual void hilight(const QPoint& theMousePos, const bool toHilight = true) = 0;
   virtual void select(const QPoint& theMousePos, const bool toSelect = true) = 0;
-  virtual void showPopup() = 0;
+  virtual void showPopup(QWidget* theParent, QMouseEvent* theEvent, const QPoint& theMousePos = QPoint()) = 0;
 
   virtual QString getToolTipText(const QPoint& theMousePos, QRect& theRect) const = 0;
+
+  virtual bool arePartsOfOtherItem(QxGraph_ActiveItem* theSecondItem) { return false; }
 
   void setTMatrix(QWMatrix theMatrix) { myTMatrix = theMatrix; }
   QWMatrix getTMatrix() const { return myTMatrix; }
