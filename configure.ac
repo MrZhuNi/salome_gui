@@ -610,7 +610,7 @@ AC_OUTPUT([ \
   ./src/OCCViewer/Makefile \
   ./src/SOCC/Makefile \
   ./src/PyInterp/Makefile \
-  ./src/PythonConsole/Makefile \
+  ./src/PyConsole/Makefile \
   ./src/Plot2d/Makefile \
   ./src/SPlot2d/Makefile \
   ./src/SUPERVGraph/Makefile \
