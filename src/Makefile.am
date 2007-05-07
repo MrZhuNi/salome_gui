@@ -24,43 +24,82 @@
 #  Module : SALOME
 # $Header$
 
-SUBDIRS = Qtx Style DDS QDS SUIT STD CAF CAM SUITApp LogWindow ObjBrowser Prs
+# VSR: this is the original packages list
+#SUBDIRS = Qtx Style DDS QDS SUIT STD CAF CAM SUITApp LogWindow ObjBrowser Prs
+# VSR: already migrated to Qt4 packages
+SUBDIRS = Qtx SUIT STD SUITApp LogWindow
 
 if ENABLE_SALOMEOBJECT
-  SUBDIRS += OBJECT
+# VSR: this is the original packages list
+#  SUBDIRS += OBJECT
+# VSR: already migrated to Qt4 packages
+  SUBDIRS += 
 endif
 
 if ENABLE_GLVIEWER
-  SUBDIRS += GLViewer
+# VSR: this is the original packages list
+#  SUBDIRS += GLViewer
+# VSR: already migrated to Qt4 packages
+  SUBDIRS += 
 endif
 
 if ENABLE_VTKVIEWER
-  SUBDIRS += VTKViewer
+# VSR: this is the original packages list
+#  SUBDIRS += VTKViewer
+# VSR: already migrated to Qt4 packages
+  SUBDIRS += 
 if ENABLE_SALOMEOBJECT
-  SUBDIRS += SVTK
+# VSR: this is the original packages list
+#    SUBDIRS += SVTK
+# VSR: already migrated to Qt4 packages
+    SUBDIRS += 
 endif
 endif
 if ENABLE_OCCVIEWER
- SUBDIRS += OCCViewer
+# VSR: this is the original packages list
+#  SUBDIRS += OCCViewer
+# VSR: already migrated to Qt4 packages
+  SUBDIRS += 
 if ENABLE_SALOMEOBJECT
-  SUBDIRS += SOCC
+# VSR: this is the original packages list
+#    SUBDIRS += SOCC
+# VSR: already migrated to Qt4 packages
+    SUBDIRS += 
 endif
 endif
 if ENABLE_PYCONSOLE
-  SUBDIRS += PyInterp PythonConsole
+# VSR: this is the original packages list
+#  SUBDIRS += PyInterp PythonConsole
+# VSR: already migrated to Qt4 packages
+  SUBDIRS += PyInterp PyConsole
 endif
 if ENABLE_PLOT2DVIEWER
-  SUBDIRS += Plot2d
+# VSR: this is the original packages list
+#  SUBDIRS += Plot2d
+# VSR: already migrated to Qt4 packages
+  SUBDIRS += 
 if ENABLE_SALOMEOBJECT
-  SUBDIRS += SPlot2d
+# VSR: this is the original packages list
+#    SUBDIRS += SPlot2d
+# VSR: already migrated to Qt4 packages
+    SUBDIRS += 
 endif
 endif
 if ENABLE_SUPERVGRAPHVIEWER
-  SUBDIRS += SUPERVGraph
+# VSR: this is the original packages list
+#  SUBDIRS += SUPERVGraph
+# VSR: already migrated to Qt4 packages
+  SUBDIRS += 
 endif
-SUBDIRS += LightApp ResExporter
+# VSR: this is the original packages list
+#SUBDIRS += LightApp ResExporter
+# VSR: already migrated to Qt4 packages
+SUBDIRS += 
 
 if GUI_ENABLE_CORBA
-  SUBDIRS +=  RegistryDisplay TOOLSGUI \
-          Event Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT
+# VSR: this is the original packages list
+#  SUBDIRS +=  RegistryDisplay TOOLSGUI \
+#          Event Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT
+# VSR: already migrated to Qt4 packages
+  SUBDIRS += 
 endif
