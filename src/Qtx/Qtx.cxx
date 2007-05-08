@@ -39,6 +39,11 @@
 #include <stdarg.h>
 
 /*!
+  \class Qtx
+  \brief Set of helpful utility functions.
+*/
+
+/*!
   \brief Convert character array (ASCII string) to the QString.
   \param str character array
   \param len array length, if < 0, the array should be zero-terminated

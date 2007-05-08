@@ -27,6 +27,11 @@
 #include <QtGui/qapplication.h>
 
 /*!
+  \class QtxAction
+  \brief Generic action class.
+*/
+
+/*!
   \brief Constructor.
 
   Create an action.

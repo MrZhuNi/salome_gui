@@ -57,11 +57,6 @@ typedef QList<short>  QShortList;     //!< list of short int values
 typedef QList<double> QDoubleList;    //!< list of double values
 typedef QList<QColor> QColorList;     //!< list of colors
 
-/*!
-  \class Qtx
-  \brief Set of auxiliary static methods
-*/
-
 class QTX_EXPORT Qtx
 {
 public:
