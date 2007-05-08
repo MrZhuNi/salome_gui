@@ -147,24 +147,11 @@ void Qtx::setTabOrder( const QWidgetList& widgets )
 }
 
 /*!
-  \brief Align widget \a src relative to widget \a ref acording to alignment flags.
-
-  Alignment flags:
-  - Qtx::AlignLeft      : align left side of \a src to the left side of \a ref
-  - Qtx::AlignRight     : align right side of \a src to the right side of \a ref
-  - Qtx::AlignTop       : align top side of \a src to the top side of \a ref
-  - Qtx::AlignBottom    : align bottom side of \a src to the bottom side of \a ref
-  - Qtx::AlignHCenter   : align \a src to the center of \a ref in horizontal dimension
-  - Qtx::AlignVCenter   : align \a src to the center of \a ref in vertical dimension
-  - Qtx::AlignCenter    : align \a src to the center of \a ref in both dimensions
-  - Qtx::AlignOutLeft   : align right side of \a src to the left side of \a ref
-  - Qtx::AlignOutRight  : align left side of \a src to the right side of \a ref
-  - Qtx::AlignOutTop    : align bottom side of \a src to the top side of \a ref
-  - Qtx::AlignOutBottom : align top side of \a src to the bottom side of \a ref
-
+  \brief Align widget \a src relative to widget \a ref acording to the 
+         alignment flags \a alignFlags.
   \param src source widget (being aligned)
-  \param ref reference widget (source widget being to)
-  \param alignFlags alignment flags
+  \param ref reference widget (source widget being aligned to)
+  \param alignFlags alignment flags (Qtx::Alignment)
 */
 void Qtx::alignWidget( QWidget* src, const QWidget* ref, const int alignFlags )
 {

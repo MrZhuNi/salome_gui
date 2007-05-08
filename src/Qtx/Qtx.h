@@ -52,10 +52,10 @@ class QObject;
 class QWidget;
 //class QToolBar;
 
-typedef QList<int>    QIntList;
-typedef QList<short>  QShortList;
-typedef QList<double> QDoubleList;
-typedef QList<QColor> QColorList;
+typedef QList<int>    QIntList;       //!< list of int values
+typedef QList<short>  QShortList;     //!< list of short int values
+typedef QList<double> QDoubleList;    //!< list of double values
+typedef QList<QColor> QColorList;     //!< list of colors
 
 /*!
   \class Qtx
@@ -65,28 +65,29 @@ typedef QList<QColor> QColorList;
 class QTX_EXPORT Qtx
 {
 public:
+  //! Widget alignment flags
   enum AlignmentFlags
   {
-    AlignLeft            = Qt::AlignLeft,
-    AlignLeading         = Qt::AlignLeading,
-    AlignRight           = Qt::AlignRight,
-    AlignTrailing        = Qt::AlignTrailing,
-    AlignHCenter         = Qt::AlignHCenter,
-    AlignJustify         = Qt::AlignJustify,
-    AlignAbsolute        = Qt::AlignAbsolute,
-    AlignHorizontal_Mask = Qt::AlignHorizontal_Mask,
+    AlignLeft            = Qt::AlignLeft,            //!< align left side of one widget to the left side of another widget
+    AlignLeading         = Qt::AlignLeading,         //!< synonim for AlignLeft
+    AlignRight           = Qt::AlignRight,           //!< align right side of one widget to the right side of another widget
+    AlignTrailing        = Qt::AlignTrailing,        //!< synonim for AlignRight
+    AlignHCenter         = Qt::AlignHCenter,         //!< align one widget to the center of another widget in horizontal dimension
+    AlignJustify         = Qt::AlignJustify,         //!< synonym of Qt::AlignJustify
+    AlignAbsolute        = Qt::AlignAbsolute,        //!< synonym of Qt::AlignAbsolute
+    AlignHorizontal_Mask = Qt::AlignHorizontal_Mask, //!< synonym of Qt::AlignHorizontal_Mask
 
-    AlignTop             = Qt::AlignTop,
-    AlignBottom          = Qt::AlignBottom,
-    AlignVCenter         = Qt::AlignVCenter,
-    AlignVertical_Mask   = Qt::AlignVertical_Mask,
+    AlignTop             = Qt::AlignTop,             //!< align top side of one widget to the top side of another widget
+    AlignBottom          = Qt::AlignBottom,          //!< align bottom side of one widget to the bottom side of another widget
+    AlignVCenter         = Qt::AlignVCenter,         //!< align one widget to the center of another widget in vertical dimension
+    AlignVertical_Mask   = Qt::AlignVertical_Mask,   //!< synonym of Qt::AlignVertical_Mask
 
-    AlignCenter          = Qt::AlignCenter,
+    AlignCenter          = Qt::AlignCenter,          //!< align one widget to the center of another widget in both dimensions
 
-    AlignOutLeft         = Qt::AlignVCenter  << 2,
-    AlignOutRight        = AlignOutLeft      << 2,
-    AlignOutTop          = AlignOutRight     << 2,
-    AlignOutBottom       = AlignOutTop       << 2
+    AlignOutLeft         = Qt::AlignVCenter  << 2,   //!< align right side of one widget to the left side of another widget
+    AlignOutRight        = AlignOutLeft      << 2,   //!< align left side of one widget to the right side of another widget
+    AlignOutTop          = AlignOutRight     << 2,   //!< align bottom side of one widget to the top side of another widget
+    AlignOutBottom       = AlignOutTop       << 2    //!< align top side of one widget to the bottom side of another widget
   };
 
   static QString toQString( const char*, const int = -1 );
