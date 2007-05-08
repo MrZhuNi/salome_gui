@@ -156,7 +156,7 @@ void Qtx::setTabOrder( const QWidgetList& widgets )
          alignment flags \a alignFlags.
   \param src source widget (being aligned)
   \param ref reference widget (source widget being aligned to)
-  \param alignFlags alignment flags (Qtx::Alignment)
+  \param alignFlags alignment flags (Qtx::AlignmentFlags)
 */
 void Qtx::alignWidget( QWidget* src, const QWidget* ref, const int alignFlags )
 {
