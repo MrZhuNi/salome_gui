@@ -85,21 +85,21 @@ protected:
   void             triggerUpdate();
   virtual void     updateContent();
 
-private slots:
+private Q_SLOTS:
   void             onUpdateContent();
 
 private:
-  typedef QPointer<QAction>    ActionPtr;
-  typedef QMap<int, ActionPtr> ActionMap;
+  typedef QPointer<QAction>    ActionPtr; //!< Action guarded pointer
+  typedef QMap<int, ActionPtr> ActionMap; //!< Actions map
 
 private:
-  bool             myUpdate;
-  ActionMap        myActions;
-  QTimer*          myUpdTimer;
+  bool             myUpdate;     //!< update flag
+  ActionMap        myActions;    //!< actions map
+  QTimer*          myUpdTimer;   //!< update timer
 };
 
 
-QTX_EXPORT typedef QMap<QString, QString> ItemAttributes;
+QTX_EXPORT typedef QMap<QString, QString> ItemAttributes; //!< attributes map
 
 class QtxActionMgr::Creator
 {
@@ -120,7 +120,7 @@ protected:
   static QString strValue( const ItemAttributes&, const QString&,
 			   const QString& = QString::null );
 private:
-  QtxActionMgr::Reader*  myReader;
+  QtxActionMgr::Reader*  myReader;  //!< actions reader
 };
 
 class QtxActionMgr::Reader
@@ -136,7 +136,7 @@ public:
   QTX_EXPORT virtual bool read( const QString&, Creator& ) const = 0;
 
 private:
-  QMap< QString, QString > myOptions;
+  QMap< QString, QString > myOptions;  //!< options map
 };
 
 class QtxActionMgr::XMLReader : public Reader
