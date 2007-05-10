@@ -103,7 +103,7 @@ public:
 
   virtual bool    load( const QString&, QtxActionMgr::Reader& );
 
-protected Q_SLOTS:
+protected slots:
   void            onToolBarDestroyed();
 
 protected:

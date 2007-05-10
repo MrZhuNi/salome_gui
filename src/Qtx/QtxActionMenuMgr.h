@@ -91,13 +91,13 @@ public:
   bool         containsMenu( const QString&, const int ) const;
   bool         containsMenu( const int, const int ) const;
 
-private Q_SLOTS:
+private slots:
   void         onAboutToShow();
   void         onAboutToHide();
   void         onHighlighted( int );
   void         onDestroyed( QObject* );
 
-Q_SIGNALS:
+signals:
   void         menuAboutToShow( QMenu* );
   void         menuAboutToHide( QMenu* );
 

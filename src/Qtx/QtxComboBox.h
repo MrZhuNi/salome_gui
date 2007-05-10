@@ -49,11 +49,11 @@ public:
   int          currentId() const;
   void         setCurrentId( int );
 
-Q_SIGNALS:
+signals:
   void         activatedId( int );
   void         highlightedId( int );
 
-private Q_SLOTS:
+private slots:
   void         onActivated( int );
   void         onActivated( const QString& );
 
