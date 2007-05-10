@@ -348,11 +348,7 @@ void QtxDblSpinBox::setCleared( const bool on )
 */
 void QtxDblSpinBox::selectAll()
 {
-#if QT_VER >= 3
-	QSpinBox::selectAll();
-#else
-  editor()->selectAll();
-#endif
+    QSpinBox::selectAll();
 }
 
 /*!

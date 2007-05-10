@@ -21,209 +21,200 @@
 
 #include "QtxComboBox.h"
 
-#include <qpixmap.h>
-#include <qlineedit.h>
-#include <qvaluelist.h>
+#include <QtCore/qlist.h>
+#include <QtGui/qpixmap.h>
+#include <QtGui/qlineedit.h>
 
 /*!
-  Constructor
+  \class QtxComboBox
+  \brief Enhanced version of Qt combo box class.
+  \warning The implementation is not yet finished!
+
+  In addition to the QComboBox class, QtxComboBox supports 
+  adding/removing the items with the associated unique identifiers.
+  It also provides a way to set "cleared" state to the combo box -
+  when no item is selected.
+
+  \todo Finalize the implementation: support adding/removing items by ID.
 */
-QtxComboBox::QtxComboBox( QWidget* parent, const char* name )
-: QComboBox( parent, name ),
-myCleared( false )
+
+/*!
+  \brief Constructor.
+  \param parent parent widget
+*/
+QtxComboBox::QtxComboBox( QWidget* parent )
+: QComboBox( parent ),
+  myCleared( false )
 {
-    connect( this, SIGNAL( activated( int ) ), this, SLOT( onActivated( int ) ) );
-    connect( this, SIGNAL( activated( const QString& ) ), this, SLOT( onActivated( const QString& ) ) );
+  connect( this, SIGNAL( activated( int ) ), this, SLOT( onActivated( int ) ) );
+  connect( this, SIGNAL( activated( const QString& ) ), this, SLOT( onActivated( const QString& ) ) );
 }
 
 /*!
-  Constructor
-*/
-QtxComboBox::QtxComboBox( bool rw, QWidget* parent, const char* name )
-: QComboBox( rw, parent, name ),
-myCleared( false )
-{
-    connect( this, SIGNAL( activated( int ) ), this, SLOT( onActivated( int ) ) );
-    connect( this, SIGNAL( activated( const QString& ) ), this, SLOT( onActivated( const QString& ) ) );
-}
+  \brief Destructor.
 
-/*!
-  Destructor
+  Does nothing currently.
 */
 QtxComboBox::~QtxComboBox()
 {
 }
 
 /*!
-  \return true if combobox is cleared
+  \brief Check if the combo box is in the "cleared" state.
+  \return \c true if combobox is in the "cleared" state
 */
 bool QtxComboBox::isCleared() const
 {
-    return myCleared;
+  return myCleared;
 }
 
 /*!
-  Sets cleared status
-  \param isClear - new status
+  \brief Set "cleared" state.
+  \param isClear new "cleared" state
 */
 void QtxComboBox::setCleared( const bool isClear )
 {
-    if ( myCleared == isClear )
-        return;
+  if ( myCleared == isClear )
+    return;
     
-    myCleared = isClear;
+  myCleared = isClear;
     
-    if ( editable() )
-    {
-        if ( myCleared )
-            lineEdit()->setText( "" );
-        else
-            lineEdit()->setText( text( currentItem() ) );
-    }
-    
-    update();
-}
-
-/*!
-  Sets currently selected item
-  \param idx - index of item
-*/
-void QtxComboBox::setCurrentItem( int idx )
-{
-    if ( idx < 0 || idx >= count() )
-        return;
-    
-    myCleared = false;
-    QComboBox::setCurrentItem( idx );
-}
-
-/*!
-  Sets current text
-  \param txt - new current text
-*/
-void QtxComboBox::setCurrentText( const QString& txt )
-{
-    myCleared = false;
-#if QT_VER < 3
-    int i = -1;
-    for ( int j = 0; j < count() && i == -1; j++ )
-        if ( text( j ) == txt )
-            i = j;
-    if ( i >= 0 && i < count() )
-        setCurrentItem( i );
-    else if ( editable() )
-        lineEdit()->setText( txt );
+  if ( isEditable() )
+  {
+    if ( myCleared )
+      lineEdit()->setText( "" );
     else
-        changeItem( txt, currentItem() );
-#else
-    QComboBox::setCurrentText( txt );
-#endif
+      lineEdit()->setText( itemText( currentIndex() ) );
+  }
+    
+  update();
 }
 
 /*!
-  \return current selected id
+  \brief Set current item.
+
+  Does nothing if the item index is out of range.
+
+  \param idx item index
+*/
+void QtxComboBox::setCurrentIndex( int idx )
+{
+  if ( idx < 0 || idx >= count() )
+    return;
+    
+  myCleared = false;
+  QComboBox::setCurrentIndex( idx );
+}
+
+/*!
+  \brief Get current item ID.
+  \return item id
 */
 int QtxComboBox::currentId() const
 {
-    return id( currentItem() );
+  return id( currentIndex() );
 }
 
 /*!
-  Sets current selected id
+  \brief Set current item by ID.
+  \param num item ID
 */
 void QtxComboBox::setCurrentId( int num )
 {
-    setCurrentItem( index( num ) );
+  setCurrentIndex( index( num ) );
 }
 
 /*!
-  Custom paint event handler
+  \brief Customize paint event.
+  \param e paint event
 */
 void QtxComboBox::paintEvent( QPaintEvent* e )
 {
-    if ( !count() || !myCleared || editable() )
-        QComboBox::paintEvent( e );
-    else
-        paintClear( e );
+  if ( !count() || !myCleared || isEditable() )
+    QComboBox::paintEvent( e );
+  else
+    paintClear( e );
 }
 
 /*!
-  SLOT: called if some item is activated
-  \param idx - index of activated item
+  \brief Called when any item is activated by the user.
+  \param idx activated item index (not used)
 */
-void QtxComboBox::onActivated( int idx )
+void QtxComboBox::onActivated( int /*idx*/ )
 {
-    resetClear();
-    
-    if ( myIndexId.contains( idx ) )
-        emit activatedId( myIndexId[idx] );
+  resetClear();
 }
 
 /*!
-  SLOT: called if some item is activated
-*/void QtxComboBox::onActivated( const QString& )
+  \brief Called when any item is activated by the user.
+  \param txt activated item text (not used)
+*/
+void QtxComboBox::onActivated( const QString& /*txt*/ )
 {
-    resetClear();
+  resetClear();
 }
 
 /*!
-  Strips "cleared" state and updates
+  \brief Reset "cleared" state and update the combo box.
 */
 void QtxComboBox::resetClear()
 {
-    if ( !myCleared )
-        return;
-    
-    myCleared = false;
-    update();
+  if ( !myCleared )
+    return;
+  
+  myCleared = false;
+  update();
 }
 
 /*!
-  Draws combobox when it is cleared or isn't editable
+  \brief Draw combobox in the "cleared" state.
+  \param e paint event
 */
 void QtxComboBox::paintClear( QPaintEvent* e )
 {
-    int curIndex = currentItem();
-    QString curText = text( curIndex );
+  int curIndex = currentIndex();
+  QString curText = itemText( curIndex );
+  QIcon curIcon = itemIcon( curIndex );
     
-    QPixmap curPix;
-    if ( pixmap( curIndex ) )
-        curPix = *pixmap( curIndex );
+  bool upd = updatesEnabled();
+  setUpdatesEnabled( false );
     
-    bool upd = isUpdatesEnabled();
-    setUpdatesEnabled( false );
+  setItemIcon( curIndex, QIcon() );
+  setItemText( curIndex, QString::null );
+
+  QComboBox::paintEvent( e );
     
-    changeItem( "", curIndex );
-    QComboBox::paintEvent( e );
+  setItemText( curIndex, curText );
+  setItemIcon( curIndex, curIcon );
     
-    if ( curPix.isNull() )
-        changeItem( curText, curIndex );
-    else
-        changeItem( curPix, curText, curIndex );
-    
-    setUpdatesEnabled( upd );
+  setUpdatesEnabled( upd );
 }
 
 /*!
-  \return id by index
+  \brief Get item ID by the index.
+  \param idx item index
+  \return item ID or -1 if index is invalid.
 */
 int QtxComboBox::id( const int idx ) const
 {
-    int id = -1;
-    if ( myIndexId.contains( idx ) )
-        id = myIndexId[idx];
-    return id;
+  int id = -1;
+  if ( myIndexId.contains( idx ) )
+    id = myIndexId[idx];
+  return id;
 }
 
 /*!
-  \return index by id
+  \brief Get item index by the ID.
+  \param id item ID
+  \return item index or -1 if ID is invalid.
 */
 int QtxComboBox::index( const int id ) const
 {
-    int idx = -1;
-    for ( IndexIdMap::ConstIterator it = myIndexId.begin();
-    it != myIndexId.end() && idx == -1; ++it )
-        if ( it.data() == id )
-            idx = it.key();
-        return idx;
+  int idx = -1;
+  for ( IndexIdMap::ConstIterator it = myIndexId.begin(); it != myIndexId.end() && idx == -1; ++it )
+  {
+    if ( it.value() == id )
+      idx = it.key();
+  }
+  return idx;
 }
