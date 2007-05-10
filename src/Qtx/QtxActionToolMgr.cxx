@@ -27,7 +27,7 @@
 #include <QtGui/qmainwindow.h>
 
 /*!
-  \class ToolNode
+  \class QtxActionToolMgr::ToolNode
   \internal
   \brief Represents a toolbutton inside toolbar structure.
 */
@@ -669,7 +669,7 @@ void QtxActionToolMgr::triggerUpdate( const int tid )
 
 
 /*!
-  \class QtxActionMenuMgr::ToolCreator
+  \class QtxActionToolMgr::ToolCreator
   \brief Toolbars creator.
 
   Used by Reader to create actions by reading descriptions from the file,
