@@ -235,11 +235,12 @@ void QxGraph_CanvasView::contentsMouseMoveEvent(QMouseEvent* theEvent)
 
   if ( myOperation == ZOOMVIEW )
   { // Zoom
+    QWMatrix m = worldMatrix();
+
     double dx = aGlobalPoint.x() - myGlobalPoint.x();
-    double s = 1. + fabs(dx)/10.;
+    double s = 1. + fabs(dx)*( (m.m11() < 1) ? m.m11() : 1. )/70.;
     if (dx < 0) s = 1./s;
     
-    QWMatrix m = worldMatrix();
     m.scale(s, s);
     setWorldMatrix(m);
 

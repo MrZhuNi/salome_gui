@@ -26,8 +26,8 @@
 #define DEF_BACK_COLOR QColor(144, 208, 211)
 #define RECTANGLE_BODY QColor(255,249,147)
 
-#define GRAPH_WIDTH  1050
-#define GRAPH_HEIGHT 750
+#define GRAPH_WIDTH  1250
+#define GRAPH_HEIGHT 950
 
 #define GRAPH_MARGIN 50
 
