@@ -380,11 +380,7 @@ void QtxMenuButton::drawButtonLabel( QPainter* p )
 	if ( hasFocus() )
 		flags |= QStyle::Style_HasFocus;
 */
-#if QT_VER < 3
-    QRect r = rect();
-#else
 	QRect r = style().subRect( QStyle::SR_PushButtonContents, this );
-#endif
 
 	if ( myArrow && myPopup && myPopup->count() )
 	{

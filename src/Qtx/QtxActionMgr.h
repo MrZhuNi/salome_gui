@@ -101,7 +101,7 @@ private:
 
 QTX_EXPORT typedef QMap<QString, QString> ItemAttributes; //!< attributes map
 
-class QtxActionMgr::Creator
+class QTX_EXPORT QtxActionMgr::Creator
 {
 public:
   Creator( QtxActionMgr::Reader* );
@@ -109,11 +109,11 @@ public:
 
   Reader* reader() const;
 
-  virtual int append( const QString&, const bool,
-                      const ItemAttributes&, const int ) = 0;
-  virtual void connect( QAction* ) const;
+  virtual int    append( const QString&, const bool,
+			 const ItemAttributes&, const int ) = 0;
+  virtual void   connect( QAction* ) const;
 
-  virtual bool loadPixmap( const QString&, QPixmap& ) const;
+  virtual bool   loadPixmap( const QString&, QPixmap& ) const;
 
 protected:
   static int     intValue( const ItemAttributes&, const QString&, const int );
@@ -123,33 +123,33 @@ private:
   QtxActionMgr::Reader*  myReader;  //!< actions reader
 };
 
-class QtxActionMgr::Reader
+class QTX_EXPORT QtxActionMgr::Reader
 {
 public:
-  QTX_EXPORT Reader();
-  QTX_EXPORT virtual ~Reader();
+  Reader();
+  virtual ~Reader();
 
-  QTX_EXPORT QStringList  options() const;
-  QTX_EXPORT QString      option( const QString&, const QString& = QString::null ) const;
-  QTX_EXPORT void         setOption( const QString&, const QString& );
+  QStringList    options() const;
+  QString        option( const QString&, const QString& = QString::null ) const;
+  void           setOption( const QString&, const QString& );
 
-  QTX_EXPORT virtual bool read( const QString&, Creator& ) const = 0;
+  virtual bool   read( const QString&, Creator& ) const = 0;
 
 private:
   QMap< QString, QString > myOptions;  //!< options map
 };
 
-class QtxActionMgr::XMLReader : public Reader
+class QTX_EXPORT QtxActionMgr::XMLReader : public Reader
 {
 public:
-  QTX_EXPORT XMLReader( const QString&, const QString&, const QString& );
-  QTX_EXPORT virtual ~XMLReader();
+  XMLReader( const QString&, const QString&, const QString& );
+  virtual ~XMLReader();
 
-  QTX_EXPORT virtual bool read( const QString&, Creator& ) const;
+  virtual bool   read( const QString&, Creator& ) const;
 
 protected:
-  QTX_EXPORT virtual void read( const QDomNode&, const int, Creator& ) const;
-  QTX_EXPORT virtual bool isNodeSimilar( const QDomNode&, const QString& ) const;
+  virtual void   read( const QDomNode&, const int, Creator& ) const;
+  virtual bool   isNodeSimilar( const QDomNode&, const QString& ) const;
 };
 
 
