@@ -85,50 +85,6 @@ void QtxGroupBox::initialize()
   updateTitle();
 }
 
-#if QT_VER < 3
-
-/*!
-  \return the width of the empty space between the items in the group and the frame of the group
-*/
-int QtxGroupBox::insideMargin() const
-{
-  int m = 0;
-  if ( layout() )
-    m = layout()->margin();
-  return m;
-}
-
-/*!
-  \return the width of the empty space between each of the items in the group
-*/
-int QtxGroupBox::insideSpacing() const
-{
-  int s = 0;
-  if ( layout() )
-    s = layout()->spacing();
-  return s;
-}
-
-/*!
-  Sets the width of the empty space between the items in the group and the frame of the group
-*/
-void QtxGroupBox::setInsideMargin( int m )
-{
-  if ( layout() )
-    layout()->setMargin( m );
-}
-
-/*!
-  Sets the width of the empty space between each of the items in the group
-*/
-void QtxGroupBox::setInsideSpacing( int s )
-{
-  if ( layout() )
-    layout()->setSpacing( s );
-}
-
-#endif
-
 /*!
   Inserts title widget
   \param wid - new title widget

@@ -232,11 +232,6 @@ bool QtxListAction::addTo( QWidget* w )
 		if ( !QtxAction::addTo( w ) )
 			return false;
 
-#if QT_VER < 3
-  if ( w->children() )
-    addedTo( (QWidget*)w->children()->getLast(), w );
-#endif
-
   if ( w->inherits( "QToolBar" ) )
   {
 		Buttons& entry = myButtons[w];
@@ -278,9 +273,7 @@ bool QtxListAction::addTo( QWidget* w )
 		connect( entry.popup, SIGNAL( activated( int ) ), this, SLOT( onActivated( int ) ) );
 	}
 
-#if QT_VER >= 3
-	connect( w, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
-#endif
+    connect( w, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
 
     return true;
 }
@@ -325,9 +318,7 @@ bool QtxListAction::removeFrom( QWidget* w )
   else if ( w->inherits( "QPopupMenu" ) )
     myPopups.remove( w );
 
-#if QT_VER >= 3
-	disconnect( w, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
-#endif
+  disconnect( w, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
 
   return true;
 }
@@ -429,9 +420,7 @@ bool QtxListAction::eventFilter( QObject* o, QEvent* e )
 
 void QtxListAction::addedTo( QWidget* actionWidget, QWidget* container )
 {
-#if QT_VER >= 3
 	QtxAction::addedTo( actionWidget, container );
-#endif
 
 	if ( !container->inherits( "QToolBar" ) )
 		return;

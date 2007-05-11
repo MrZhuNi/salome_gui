@@ -38,13 +38,6 @@ public:
   QtxGroupBox( int, Orientation, const QString&, QWidget* = 0, const char* = 0 );
   virtual ~QtxGroupBox();
 
-#if QT_VER < 3
-  int           insideMargin() const;
-  int           insideSpacing() const;
-  void          setInsideMargin( int );
-  void          setInsideSpacing( int );
-#endif
-
   virtual void  setAlignment( int );
   virtual void  setTitle( const QString& );
   virtual void  setColumnLayout( int, Orientation );
