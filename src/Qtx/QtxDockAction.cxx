@@ -21,10 +21,10 @@
 
 #include "QtxDockAction.h"
 
-#include <QtGui/qmenu.h>
-#include <QtGui/qtoolbar.h>
-#include <QtGui/qdockwidget.h>
-#include <QtGui/qmainwindow.h>
+#include <QMenu>
+#include <QToolBar>
+#include <QDockWidget>
+#include <QMainWindow>
 
 /*!
   \class QtxDockAction

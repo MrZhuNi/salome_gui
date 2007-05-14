@@ -24,12 +24,11 @@
 #include "QtxToolBar.h"
 #include "QtxResourceMgr.h"
 
-#include <QtGui/qevent.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qmenubar.h>
-#include <QtGui/qstatusbar.h>
-#include <QtGui/qapplication.h>
-#include <QtGui/qdesktopwidget.h>
+#include <QEvent>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QApplication>
+#include <QDesktopWidget>
 
 /*!
   \class QtxMainWindow::Filter

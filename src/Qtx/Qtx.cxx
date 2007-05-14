@@ -21,18 +21,15 @@
 
 #include "Qtx.h"
 
-#include <QtCore/qdir.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qfileinfo.h>
-
-#include <QtGui/qmenu.h>
-#include <QtGui/qbitmap.h>
-#include <QtGui/qwidget.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qtoolbar.h>
-#include <QtGui/qapplication.h>
-#include <QtGui/qdesktopwidget.h>
+#include <QDir>
+#include <QFileInfo>
+#include <QMenu>
+#include <QBitmap>
+#include <QWidget>
+#include <QLayout>
+#include <QPainter>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,6 +38,17 @@
 /*!
   \class Qtx
   \brief Set of helpful utility functions.
+
+  The class implements set of static functions which can be used for different purpuses:
+  - define tab order for set of widgets: setTabOrder()
+  - align one widget to the other widget: alignWidget()
+  - remove extra separators from menu or toolbar: simplifySeparators()
+  - retrieve directory, file name and extension parts of the path: dir(), file(), extension()
+  - get temporary directory name: tmpDir()
+  - create and remove directory (recursively): mkDir(), rmDir()
+  - convert text file from DOS to UNIX native format: dos2unix()
+  - convert picture to the gray scale: grayscale()
+  - and other
 */
 
 /*!
@@ -223,43 +231,6 @@ void Qtx::alignWidget( QWidget* src, const QWidget* ref, const int alignFlags )
 
   src->move( x, y );
 }
-
-/* VSR: obsolete
-void Qtx::simplifySeparators( QToolBar* toolbar )
-{
-  if ( !toolbar )
-    return;
-
-  const QObjectList& objList = toolbar->children();
-
-  QObjectList delList;
-
-  bool isPrevSep = true;
-  QObject* lastVis = 0; // last visible
-  for ( QObjectList::const_iterator it = objList.begin(); it != objList.end(); ++it )
-  {
-    QObject* obj = *it;
-    if ( !obj || !obj->isWidgetType() )
-      continue;
-    bool isSep = obj->inherits( "QToolBarSeparator" );
-    if ( !isSep && !((QWidget*)obj)->isVisibleTo( toolbar ) )
-      continue;
-    if ( isPrevSep && isSep )
-      delList.append( obj );
-    else
-    {
-      isPrevSep = isSep;
-      lastVis = obj;
-    }
-  }
-  // remove last visible separator
-  if ( lastVis && lastVis->inherits( "QToolBarSeparator" ) )
-      delList.append( lastVis );
-
-  for ( QObjectList::iterator itr = delList.begin(); itr != delList.end(); ++itr )
-    delete *itr;
-}
-*/
 
 /*!
   \brief Remove (recursively) unnecessary separators from the menu or toolbar.

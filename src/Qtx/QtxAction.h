@@ -24,9 +24,9 @@
 
 #include "Qtx.h"
 
-#include <QtCore/qmap.h>
-#include <QtGui/qicon.h>
-#include <QtGui/qaction.h>
+#include <QAction>
+
+class QIcon;
 
 #ifdef WIN32
 #pragma warning ( disable:4251 )

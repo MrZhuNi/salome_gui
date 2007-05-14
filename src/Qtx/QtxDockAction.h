@@ -24,7 +24,7 @@
 
 #include "QtxAction.h"
 
-#include <QtCore/qlist.h>
+#include <QList>
 
 class QIcon;
 class QString;

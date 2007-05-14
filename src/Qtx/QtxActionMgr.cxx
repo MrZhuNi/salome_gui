@@ -22,16 +22,13 @@
 #include "Qtx.h"
 #include "QtxActionMgr.h"
 #include "QtxAction.h"
-
-#include <QtCore/qfile.h>
-#include <QtCore/qtimer.h>
-
-#include <QtGui/qmenu.h>
-#include <QtGui/qwidget.h>
-#include <QtGui/qtoolbar.h>
-#include <QtGui/qapplication.h>
-
-#include <QtXml/qdom.h>
+#include <QFile>
+#include <QTimer>
+#ifndef QT_NO_DOM
+#include <QDomDocument>
+#include <QDomNode>
+#include <QCoreApplication>
+#endif
 
 typedef QList< QPointer<QAction> > qtx_actionlist;
 static qtx_actionlist qtx_separator_actions;

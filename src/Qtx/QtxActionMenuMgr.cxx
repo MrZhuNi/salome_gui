@@ -23,21 +23,15 @@
 
 #include "QtxAction.h"
 
-#include <QtCore/qlist.h>
-#include <QtCore/qfile.h>
-
-#include <QtGui/qmenu.h>
-#include <QtGui/qwidget.h>
-#include <QtGui/qmenubar.h>
-#include <QtGui/qmainwindow.h>
-
-#include <QtXml/qdom.h>
+#include <QMenu>
+#include <QMenuBar>
+#include <QWidget>
+#include <QMainWindow>
 
 // VSR: Uncomment this #define in order to allow dynamic menus support
 // (emit signals when popup menu is pre-activated)
 // Currently this support is disabled.
 //#define ENABLE_DYNAMIC_MENU
-
 
 /*!
   \class QtxActionMenuMgr::MenuNode
@@ -1171,3 +1165,20 @@ int QtxActionMenuMgr::MenuCreator::append( const QString& tag, const bool subMen
 
   return res;
 }
+
+/*!
+  \fn void QtxActionMenuMgr::menuAboutToShow( QMenu* m )
+  \brief Emitted when the menu is about to be shown.
+  \param m menu being shown
+*/
+
+/*!
+  \fn void QtxActionMenuMgr::menuAboutToHide( QMenu* m )
+  \brief Emitted when the menu is about to be hidden.
+  \param m menu being hidden
+*/
+
+/*!
+  \fn void QtxActionMenuMgr::menuHighlighted( int, int )
+  \brief Emitted when the menu is hightlighted [obsolete].
+*/

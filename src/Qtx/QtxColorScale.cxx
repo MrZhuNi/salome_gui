@@ -21,15 +21,12 @@
 
 #include "QtxColorScale.h"
 
-#include <QtCore/qmap.h>
-#include <QtCore/qregexp.h>
-#include <QtCore/qstringlist.h>
-
-#include <QtGui/qimage.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qbitmap.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qtextdocument.h>
+#include <QMap>
+#include <QRegExp>
+#include <QStringList>
+#include <QPixmap>
+#include <QPainter>
+#include <QTextDocument>
 
 #include <math.h>
 

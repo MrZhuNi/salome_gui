@@ -25,11 +25,11 @@
 #include "Qtx.h"
 #include "QtxActionMgr.h"
 
-#include <QtCore/qlist.h>
-#include <QtCore/qstringlist.h>
+#include <QList>
 
 class QMenu;
 class QMainWindow;
+class QStringList;
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

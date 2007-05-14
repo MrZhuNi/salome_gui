@@ -24,8 +24,8 @@
 
 #include "Qtx.h"
 
-#include <QtGui/qframe.h>
-#include <QtCore/qlist.h>
+#include <QFrame>
+#include <QList>
 
 class QTextDocument;
 

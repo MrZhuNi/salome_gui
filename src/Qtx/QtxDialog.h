@@ -24,10 +24,8 @@
 
 #include "Qtx.h"
 
-#include <QtCore/qmap.h>
-#include <QtCore/qlist.h>
-
-#include <QtGui/qdialog.h>
+#include <QDialog>
+#include <QMap>
 
 class QFrame;
 class QLabel;

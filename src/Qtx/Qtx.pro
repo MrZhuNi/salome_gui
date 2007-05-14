@@ -22,6 +22,7 @@ HEADERS += QtxDialog.h
 HEADERS += QtxDockAction.h
 HEADERS += QtxDockWidget.h
 HEADERS += QtxMainWindow.h
+HEADERS += QtxMap.h
 HEADERS += QtxResourceMgr.h
 HEADERS += QtxToolBar.h
 HEADERS += QtxWorkstack.h

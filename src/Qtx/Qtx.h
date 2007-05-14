@@ -42,15 +42,14 @@
 #define true  1
 #endif
 
-#include <QtCore/qstring.h>
-#include <QtCore/qlist.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qpixmap.h>
+#include <QString>
+#include <QList>
+#include <QColor>
+#include <QImage>
+#include <QPixmap>
 
 class QObject;
 class QWidget;
-//class QToolBar;
 
 typedef QList<int>    QIntList;       //!< list of int values
 typedef QList<short>  QShortList;     //!< list of short int values
@@ -94,7 +93,6 @@ public:
   static void    setTabOrder( const QWidgetList& );
   static void    alignWidget( QWidget*, const QWidget*, const int );
 
-//  static void    simplifySeparators( QToolBar* );
   static void    simplifySeparators( QWidget*, const bool = true );
 
   static bool    isParent( QObject*, QObject* );

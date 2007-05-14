@@ -21,13 +21,13 @@
 
 #include "QtxDialog.h"
 
-#include <QtGui/qevent.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qframe.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qtabwidget.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qapplication.h>
+#include <QLabel>
+#include <QLayout>
+#include <QKeyEvent>
+#include <QFrame>
+#include <QTabWidget>
+#include <QPushButton>
+#include <QApplication>
 
 /*!
   \class QtxDialog::Area
@@ -1547,3 +1547,42 @@ void QtxDialog::adjustButtons()
 	(*bItr)->setMinimumWidth( minWidth );
   }
 }
+
+/*!
+  \fn void QtxDialog::dlgButton( int id )
+  \brief Emitted when the user button is clicked.
+  \param id user button identificator
+*/
+/*!
+  \fn void QtxDialog::dlgParamChanged()
+  \brief This signal can be used in successor classes to signalize about
+         some dialog parameter changing.
+*/
+/*!
+  \fn void QtxDialog::dlgHelp()
+  \brief Emitted when the "Help" button is clicked.
+*/
+/*!
+  \fn void QtxDialog::dlgApply()
+  \brief Emitted when the "Apply" button is clicked.
+*/
+/*!
+  \fn void QtxDialog::dlgOk()
+  \brief Emitted when the "OK" button is clicked.
+*/
+/*!
+  \fn void QtxDialog::dlgNo()
+  \brief Emitted when the "No" button is clicked.
+*/
+/*!
+  \fn void QtxDialog::dlgYes()
+  \brief Emitted when the "Yes" button is clicked.
+*/
+/*!
+  \fn void QtxDialog::dlgClose()
+  \brief Emitted when the "Close" button is clicked.
+*/
+/*!
+  \fn void QtxDialog::dlgCancel()
+  \brief Emitted when the "Cancel" button is clicked.
+*/

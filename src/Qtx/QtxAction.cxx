@@ -21,10 +21,9 @@
 
 #include "QtxAction.h"
 
-#include <QtGui/qmenu.h>
-#include <QtGui/qevent.h>
-#include <QtGui/qmenubar.h>
-#include <QtGui/qapplication.h>
+#include <QEvent>
+#include <QActionEvent>
+#include <QApplication>
 
 /*!
   \class QtxAction

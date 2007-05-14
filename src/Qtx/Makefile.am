@@ -38,6 +38,7 @@ salomeinclude_HEADERS=		\
 	QtxDockAction.h		\
 	QtxDockWidget.h		\
 	QtxMainWindow.h 	\
+	QtxMap.h		\
 	QtxResourceMgr.h	\
 	QtxToolBar.h		\
 	QtxWorkstack.h

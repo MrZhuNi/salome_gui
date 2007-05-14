@@ -23,16 +23,14 @@
 #define QTXACTIONTOOLMGR_H
 
 #include "Qtx.h"
-
-#include <QtCore/qmap.h>
-#include <QtCore/qlist.h>
-
-#include <QtGui/qaction.h>
-
 #include "QtxActionMgr.h"
+
+#include <QMap>
+#include <QList>
 
 class QToolBar;
 class QMainWindow;
+class QAction;
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

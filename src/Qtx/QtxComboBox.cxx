@@ -21,9 +21,7 @@
 
 #include "QtxComboBox.h"
 
-#include <QtCore/qlist.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qlineedit.h>
+#include <QLineEdit>
 
 /*!
   \class QtxComboBox
@@ -218,3 +216,15 @@ int QtxComboBox::index( const int id ) const
   }
   return idx;
 }
+
+/*!
+  \fn void QtxComboBox::activatedId( int id )
+  \brief Emitted when the item with identificator \a id is activated.
+  \param id item ID
+*/
+
+/*!
+  \fn void QtxComboBox::highlightedId( int id )
+  \brief Emitted when the item with identificator \a id is highlighted.
+  \param id item ID
+*/

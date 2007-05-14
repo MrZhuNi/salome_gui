@@ -16,46 +16,43 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-// File:      QtxMainWindow.h
+// File:      QtxDockWidget.h
 // Author:    Sergey TELKOV
-
-#ifndef QTXMAINWINDOW_H
-#define QTXMAINWINDOW_H
 
 #include "Qtx.h"
 
-#include <QMainWindow>
+#include <QDockWidget>
 
-class QtxResourceMgr;
-
-class QTX_EXPORT QtxMainWindow : public QMainWindow
+class QTX_EXPORT QtxDockWidget : public QDockWidget
 {
   Q_OBJECT
 
-  class Filter;
+  class Watcher;
 
 public:
-  QtxMainWindow( QWidget* = 0, Qt::WindowFlags = 0 );
-  virtual ~QtxMainWindow();
+  QtxDockWidget( const QString&, QWidget* = 0, Qt::WindowFlags = 0 );
+  QtxDockWidget( const bool, QWidget* = 0, Qt::WindowFlags = 0 );
+  QtxDockWidget( QWidget*, Qt::WindowFlags = 0 );
+  virtual ~QtxDockWidget();
 
-  bool              isDockableMenuBar() const;
-  void              setDockableMenuBar( const bool );
+  virtual QSize   sizeHint() const;
+  virtual QSize   minimumSizeHint() const;
 
-  bool              isDockableStatusBar() const;
-  void              setDockableStatusBar( const bool );
+  Qt::Orientation orientation() const;
 
-  QString           storeGeometry() const;
-  void              retrieveGeometry( const QString& );
+signals:
+  void            orientationChanged( Qt::Orientation );
 
-private slots:
-  void              onDestroyed( QObject* );
+public slots:
+  virtual void    setVisible( bool );
+
+protected:
+  virtual void    resizeEvent( QResizeEvent* );
 
 private:
-  int               geometryValue( const QString&, int&, bool& ) const;
+  void            updateState();
 
 private:
-  QToolBar*         myMenuBar;       //!< dockable menu bar
-  QToolBar*         myStatusBar;     //!< dockable status bar
+  Watcher*        myWatcher;       //!< watcher object
+  Qt::Orientation myOrientation;   //!< dockable window orientation
 };
-
-#endif // QTXMAINWINDOW_H

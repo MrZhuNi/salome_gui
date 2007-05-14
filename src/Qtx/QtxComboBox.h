@@ -24,8 +24,8 @@
 
 #include "Qtx.h"
 
-#include <QtCore/qmap.h>
-#include <QtGui/qcombobox.h>
+#include <QComboBox>
+#include <QMap>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

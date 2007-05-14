@@ -24,7 +24,7 @@
 #include "QtxAction.h"
 #include "QtxToolBar.h"
 
-#include <QtGui/qmainwindow.h>
+#include <QMainWindow>
 
 /*!
   \class QtxActionToolMgr::ToolNode
