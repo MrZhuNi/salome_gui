@@ -23,20 +23,22 @@
 
 #include <SUIT_Application.h>
 
-#include <SUIT_Desktop.h>
-#include <SUIT_ViewManager.h>
+#include <QList>
 
-#include <qmap.h>
-#include <qptrlist.h>
+class QMenu;
+class QCloseEvent;
+class QContextMenuEvent;
 
 class QToolBar;
 class QtxAction;
-class QPopupMenu;
 class SUIT_Operation;
 class SUIT_ViewWindow;
 class SUIT_ToolWindow;
+class SUIT_Desktop;
+class SUIT_ViewManager;
+class SUIT_PopupClient;
 
-typedef QPtrList<SUIT_ViewManager> ViewManagerList;
+typedef QList<SUIT_ViewManager*> ViewManagerList;
 
 #if defined WIN32
 #pragma warning( disable: 4251 )
@@ -45,6 +47,11 @@ typedef QPtrList<SUIT_ViewManager> ViewManagerList;
 class STD_EXPORT STD_Application : public SUIT_Application
 {
   Q_OBJECT
+
+public:
+  enum { FileNewId, FileOpenId, FileCloseId, FileSaveId, FileSaveAsId, FileExitId,
+	       ViewWindowsId, ViewToolBarsId, ViewStatusBarId, NewWindowId,
+         EditCutId, EditCopyId, EditPasteId, HelpAboutId, UserID };
 
 public:
   STD_Application();
@@ -82,7 +89,10 @@ public:
 
   virtual void          closeApplication();
 
-  virtual void          contextMenuPopup( const QString&, QPopupMenu*, QString& ) {}
+  virtual void          contextMenuPopup( const QString&, QMenu*, QString& ) {}
+
+  bool                  exitConfirmation() const;
+  void                  setExitConfirmation( const bool );
 
 signals:
   /*!emit that view manager added*/
@@ -94,6 +104,8 @@ signals:
 
 public slots:
   virtual void          onNewDoc();
+  virtual bool          onNewDoc( const QString& );
+
   virtual void          onCloseDoc( bool ask = true );
   virtual void          onSaveDoc();
   virtual bool          onSaveAsDoc();
@@ -125,14 +137,6 @@ protected:
           MenuHelpId = 7
        };
 
-  enum {  FileNewId,   FileOpenId,   FileCloseId,
-	  FileSaveId,  FileSaveAsId, FileExitId, 
-	  ViewStatusBarId, ViewWindowsId, NewWindowId,
-          EditCutId, EditCopyId, EditPasteId,
-          HelpAboutId,
-	  UserID
-       };
- 
 protected:
   virtual void          createActions();
   virtual void          updateDesktopTitle();
@@ -157,6 +161,7 @@ private:
   SUIT_ViewManager*     myActiveViewMgr;
 
 private:
+  bool                  myExitConfirm;
   bool                  myEditEnabled;
   bool                  myClosePermanently;
 };
