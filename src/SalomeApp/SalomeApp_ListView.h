@@ -32,12 +32,7 @@
 #include <qpixmap.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
-
-//VRV: porting on Qt 3.0.5
-#if QT_VERSION >= 0x030005
 #include <qtoolbutton.h> 
-#endif
-//VRV: porting on Qt 3.0.5
 
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_ListOfReal.hxx>

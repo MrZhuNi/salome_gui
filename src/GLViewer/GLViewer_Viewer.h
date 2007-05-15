@@ -41,7 +41,7 @@ class GLViewer_ViewTransformer;
 class SUIT_Desktop;
 class SUIT_ViewWindow;
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -220,7 +220,7 @@ protected:
     int                          myButtonState;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

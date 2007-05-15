@@ -43,9 +43,7 @@ class QWidget;
 class QTimer;
 class QCloseEvent;
 class QTextView;
-#if QT_VERSION > 300
 class QPushButton;
-#endif
 class HelpWindow;
 class InfoWindow;
 

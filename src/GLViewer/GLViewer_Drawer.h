@@ -25,7 +25,7 @@
 #ifndef GLVIEWER_DRAWER_H
 #define GLVIEWER_DRAWER_H
 
-#ifdef WNT
+#ifdef WIN32
 #include "windows.h"
 #endif
 
@@ -45,7 +45,7 @@ class GLViewer_Object;
 class GLViewer_Rect;
 class GLViewer_CoordSystem;
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 /*! 
@@ -443,7 +443,7 @@ protected:
   GLfloat                         myTextScale;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

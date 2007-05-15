@@ -40,7 +40,7 @@ class QPainter;
 class GLViewer_ViewSketcher;
 class GLViewer_ViewTransformer;
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -170,7 +170,7 @@ private:
     static QCursor*                  sketchCursor;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

@@ -33,7 +33,7 @@
 
 #include <TColStd_SequenceOfInteger.hxx>
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -248,7 +248,7 @@ protected:
   int                       myHeight;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

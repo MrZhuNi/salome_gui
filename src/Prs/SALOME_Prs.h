@@ -19,7 +19,7 @@
 #ifndef SALOME_PRS_H
 #define SALOME_PRS_H
 
-#ifdef WNT
+#ifdef WIN32
 #ifdef PRS_EXPORTS
 #define PRS_EXPORT __declspec(dllexport)
 #else

@@ -129,7 +129,7 @@ QString SalomeApp_DataObject::text( const int id ) const
   switch ( id )
   {
   case CT_Value:
-#ifndef WNT
+#ifndef WIN32
     if ( componentObject() != this )
 #else
     if ( componentObject() != (SUIT_DataObject*)this )

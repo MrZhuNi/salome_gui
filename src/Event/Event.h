@@ -30,7 +30,7 @@
 // that uses this DLL. This way any other project whose source files include this file see 
 // SalomeApp_API functions as being imported from a DLL, wheras this DLL sees symbols
 // defined with this macro as being exported.
-#ifdef WNT
+#ifdef WIN32
 
 #ifdef EVENT_EXPORTS
 #define EVENT_EXPORT __declspec(dllexport)
@@ -40,11 +40,11 @@
 
 #else
 #define EVENT_EXPORT
-#endif               //WNT
+#endif               //WIN32
 
 #define APP_VERSION "0.1"
 
-#if defined WNT
+#if defined WIN32
 #pragma warning ( disable: 4251 )
 #endif
 

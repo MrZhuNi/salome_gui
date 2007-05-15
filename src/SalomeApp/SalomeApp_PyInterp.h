@@ -37,10 +37,14 @@ public:
   SalomeApp_PyInterp();
   virtual ~SalomeApp_PyInterp();
 
-  virtual void init_python();
+  virtual void initPython();
 
 protected:
   virtual bool initContext();
+  virtual bool beforeRun();
+
+private:
+  bool myFirstRun;
 };
 
 #endif

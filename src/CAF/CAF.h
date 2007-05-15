@@ -20,13 +20,13 @@
 #define CAF_H
 
 #if defined CAF_EXPORTS
-#if defined WNT
+#if defined WIN32
 #define CAF_EXPORT __declspec( dllexport )
 #else
 #define CAF_EXPORT
 #endif
 #else
-#if defined WNT
+#if defined WIN32
 #define CAF_EXPORT __declspec( dllimport )
 #else
 #define CAF_EXPORT
@@ -39,7 +39,7 @@
 #define true  1
 #endif
 
-#if defined WNT
+#if defined WIN32
 #pragma warning ( disable: 4251 )
 #endif
 

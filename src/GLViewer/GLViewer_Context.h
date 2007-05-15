@@ -26,7 +26,7 @@
 #ifndef GLVIEWER_CONTEXT_H
 #define GLVIEWER_CONTEXT_H
 
-#ifdef WNT
+#ifdef WIN32
 #include "windows.h"
 #endif
 
@@ -44,7 +44,7 @@
 
 class GLViewer_Viewer2d;
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -201,7 +201,7 @@ protected:
   int                   myTolerance;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

@@ -29,7 +29,7 @@
 
 #include <qcolor.h>
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -113,7 +113,7 @@ protected:
   int                   myLineType;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

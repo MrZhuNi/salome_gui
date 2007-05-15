@@ -808,7 +808,7 @@ QString findFile( QString filename )
 QString addSlash( const QString& path )
 {
   if (!path.isNull()) {
-#ifdef WNT
+#ifdef WIN32
     QChar slash ('\\');
 #else
     QChar slash ('/');

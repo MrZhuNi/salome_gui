@@ -25,7 +25,7 @@
 #ifndef GLVIEWER_VIEWER2D_H
 #define GLVIEWER_VIEWER2D_H
 
-#ifdef WNT
+#ifdef WIN32
 #include <windows.h>
 #endif
 
@@ -58,7 +58,7 @@ const double Sizes[2*5] = {
     /* A5 */ 148.5, 210.0
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -247,7 +247,7 @@ protected:
   static  int          rotateBtn;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

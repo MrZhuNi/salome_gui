@@ -24,10 +24,6 @@
 
 //#include <GLViewerAfx.h>
 
-#if !(defined WNT) && !(defined QT_CLEAN_NAMESPACE)
-#define QT_CLEAN_NAMESPACE         /* avoid definition of INT32 and INT8 */
-#endif
-
 #include "GLViewer_ViewPort.h"
 
 #include "SUIT_ResourceMgr.h"
@@ -43,7 +39,7 @@
 
 #include <stdlib.h>
 
-#if !defined WNT
+#if !defined WIN32
 #include <GL/glx.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -343,7 +339,7 @@ void GLViewer_ViewPort::cleanup()
 */
 void GLViewer_ViewPort::selectVisualId( ViewType type )
 {
-#if !defined WNT
+#if !defined WIN32
     XVisualInfo* pVisualInfo;
     if ( x11Display() )
     {

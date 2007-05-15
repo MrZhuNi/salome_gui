@@ -19,29 +19,26 @@
 // 
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-//
-//
-//  File   : PythonConsole_PyInterp.h
+//  File   : PyConsole_Interp.h
 //  Author : Nicolas REJNERI
 //  Module : SALOME
-//  $Header$
 
-#ifndef _PythonConsole_PYINTERP_H_
-#define _PythonConsole_PYINTERP_H_
+#ifndef PYCONSOLE_INTERP_H
+#define PYCONSOLE_INTERP_H
 
-#include "PythonConsole.h"
+#include "PyConsole.h"
 
-#include <PyInterp_base.h> // this include must be first (see PyInterp_base.h)!
+#include <PyInterp_Interp.h>   /// !!! WARNING !!! THIS INCLUDE MUST BE VERY FIRST !!!
 
-class PYCONSOLE_EXPORT PythonConsole_PyInterp : public PyInterp_base
+class PYCONSOLE_EXPORT PyConsole_Interp : public PyInterp_Interp
 {
 public:
-  PythonConsole_PyInterp();
-  ~PythonConsole_PyInterp();
+  PyConsole_Interp();
+  ~PyConsole_Interp();
 
 protected:
   virtual bool initState();
   virtual bool initContext();  
 };
 
-#endif
+#endif // PYCONSOLE_INTERP_H

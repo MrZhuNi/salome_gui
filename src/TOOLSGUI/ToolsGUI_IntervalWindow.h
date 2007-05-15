@@ -28,7 +28,7 @@
 # include <qpushbutton.h>
 # include <qspinbox.h>
 
-#ifndef WNT
+#ifndef WIN32
 using namespace std;
 #endif
 

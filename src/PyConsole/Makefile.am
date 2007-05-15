@@ -18,33 +18,32 @@
 #
 #  File   : Makefile.in
 #  Author : Vladimir Klyachin (OCN)
-#  Module : PythonConsole
+#  Module : PyConsole
 #  $Header$
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-lib_LTLIBRARIES = libPythonConsole.la
+lib_LTLIBRARIES = libPyConsole.la
 
-salomeinclude_HEADERS= \
-	PythonConsole.h \
-	PythonConsole_PyConsole.h \
-	PythonConsole_PyEditor.h \
-	PythonConsole_PyInterp.h
+salomeinclude_HEADERS=		\
+	PyConsole.h		\
+	PyConsole_Console.h	\
+	PyConsole_Editor.h	\
+	PyConsole_Interp.h
 
-dist_libPythonConsole_la_SOURCES= \
-	PythonConsole_PyConsole.cxx \
-	PythonConsole_PyEditor.cxx \
-	PythonConsole_PyInterp.cxx		
+dist_libPyConsole_la_SOURCES=	\
+	PyConsole_Console.cxx	\
+	PyConsole_Editor.cxx	\
+	PyConsole_Interp.cxx		
 
-MOC_FILES= \
-	PythonConsole_PyEditor_moc.cxx \
-	PythonConsole_PyConsole_moc.cxx
-nodist_libPythonConsole_la_SOURCES= $(MOC_FILES)
+MOC_FILES=				\
+	PyConsole_Editor_moc.cxx	\
+	PyConsole_Console_moc.cxx
 
+nodist_libPyConsole_la_SOURCES= $(MOC_FILES)
 
-libPythonConsole_la_CPPFLAGS= $(PYTHON_INCLUDES) $(QT_INCLUDES) \
+libPyConsole_la_CPPFLAGS= $(PYTHON_INCLUDES) $(QT_INCLUDES) \
 	-I$(srcdir)/../PyInterp -I$(srcdir)/../SUIT -I$(srcdir)/../Qtx
 
-libPythonConsole_la_LDFLAGS= $(PYTHON_LIBS) $(QT_MT_LIBS)
-
-
+libPyConsole_la_LDFLAGS= $(PYTHON_LIBS) $(QT_MT_LIBS)
+libPyConsole_la_LIBADD=../Qtx/libqtx.la ../SUIT/libsuit.la ../PyInterp/libPyInterp.la

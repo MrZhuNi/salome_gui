@@ -116,7 +116,7 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
     aCurrentPos += aBufferSize[i];
   }
 
-#ifdef WNT  
+#ifdef WIN32
   ofstream aFile(theFileName, ios::out | ios::binary);
 #else
   ofstream aFile(theFileName);
@@ -137,7 +137,7 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
 */
 bool LightApp_Driver::ReadDatasFromFile( const char* theFileName, bool isMultiFile )
 {
-#ifdef WNT
+#ifdef WIN32
   ifstream aFile(theFileName, ios::binary);
 #else
   ifstream aFile(theFileName);
@@ -261,7 +261,7 @@ void LightApp_Driver::PutFilesToStream( const std::string& theModuleName, unsign
       OSD_Path anOSDPath(aFullPath);
       OSD_File anOSDFile(anOSDPath);
       if(!anOSDFile.Exists()) continue;
-#ifdef WNT
+#ifdef WIN32
       ifstream aFile(aFullPath.ToCString(), ios::binary);
 #else
       ifstream aFile(aFullPath.ToCString());
@@ -299,7 +299,7 @@ void LightApp_Driver::PutFilesToStream( const std::string& theModuleName, unsign
       OSD_Path anOSDPath(aFullPath);
       OSD_File anOSDFile(anOSDPath);
       if(!anOSDFile.Exists()) continue;
-#ifdef WNT
+#ifdef WIN32
       aFile = new ifstream(aFullPath.ToCString(), ios::binary);
 #else
       aFile = new ifstream(aFullPath.ToCString());
@@ -382,7 +382,7 @@ LightApp_Driver::ListOfFiles LightApp_Driver::PutStreamToFiles( const unsigned c
       
       TCollection_AsciiString aFullPath = aTmpDir + aFileName;
       
-#ifdef WNT  
+#ifdef WIN32
   ofstream aFile(aFullPath.ToCString(), ios::out | ios::binary);
 #else
   ofstream aFile(aFullPath.ToCString());

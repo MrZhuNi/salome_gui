@@ -37,7 +37,7 @@ class GLViewer_ViewPort;
 
 #include <qaction.h>
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -121,7 +121,7 @@ private:
 };
 
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

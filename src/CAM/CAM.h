@@ -20,13 +20,13 @@
 #define CAM_H
 
 #if defined CAM_EXPORTS
-#if defined WNT
+#if defined WIN32
 #define CAM_EXPORT __declspec( dllexport )
 #else
 #define CAM_EXPORT
 #endif
 #else
-#if defined WNT
+#if defined WIN32
 #define CAM_EXPORT __declspec( dllimport )
 #else
 #define CAM_EXPORT
@@ -39,7 +39,7 @@
 #define true  1
 #endif
 
-#if defined WNT
+#if defined WIN32
 #pragma warning ( disable: 4251 )
 #endif
 

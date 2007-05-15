@@ -87,7 +87,7 @@ bool SalomeApp_ExceptionHandler::handle( QObject* o, QEvent* e )
   {
     showMessage( title, QString( e.GetMessageString() ) );
   }
-#ifndef WNT
+#ifndef WIN32
   catch(...)
   {
     showMessage( title, "Unknown Exception" );

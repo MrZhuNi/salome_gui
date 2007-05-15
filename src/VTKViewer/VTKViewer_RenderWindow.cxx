@@ -20,6 +20,7 @@
 
 #include <qcolordialog.h>
 #include <qpopupmenu.h>
+#include <qcursor.h>
 
 #include <stdlib.h>
 #include <math.h>
@@ -27,15 +28,11 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRendererCollection.h>
 #include <vtkCamera.h>
-#ifndef WNT
+#ifndef WIN32
 #include <vtkXOpenGLRenderWindow.h>
 //#include <GL/gl.h>
 //#include <GL/glu.h>
 //#include <qgl.h>
-#endif
-
-#if QT_VERSION > 300
-#include <qcursor.h>
 #endif
 
 /*!Constructor. Create render window with parant \a parent and name \a name.
@@ -48,7 +45,7 @@ QWidget(parent, name,
         Qt::WResizeNoErase | Qt::WRepaintNoErase)
 {
   myRW = vtkRenderWindow::New();
-#ifndef WNT
+#ifndef WIN32
   myRW->SetDisplayId((void*)x11Display());
 #endif
   myRW->SetWindowId((void*)winId());

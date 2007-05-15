@@ -32,7 +32,7 @@
 #include "SALOMETraceCollector.hxx"
 
 #include <iostream>
-#ifndef WNT
+#ifndef WIN32
 #include <unistd.h>
 #endif
 

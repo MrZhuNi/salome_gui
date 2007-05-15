@@ -192,7 +192,7 @@ QtxValue LightApp_Selection::globalParam( const QString& p ) const
   }
   else if ( p == "isActiveView" )  return QtxValue( (bool)activeVW() );
   else if ( p == "activeView" )    return QtxValue( activeViewType() );
-#ifndef WNT
+#ifndef WIN32
   else                             return QtxPopupMgr::Selection::globalParam( p );
 #else
   else                             return Selection::globalParam( p );

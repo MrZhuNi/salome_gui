@@ -33,7 +33,7 @@
 #include <math.h>
 
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -191,7 +191,7 @@ private:
   GLViewer_PntList* myPoints;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

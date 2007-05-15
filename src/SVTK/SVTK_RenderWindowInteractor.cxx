@@ -75,7 +75,7 @@ QVTK_RenderWindowInteractor
   myRenderWindow->Delete();
   myRenderWindow->DoubleBufferOn();
 
-#ifndef WNT
+#ifndef WIN32
   myRenderWindow->SetDisplayId((void*)x11Display());
 #endif
   myRenderWindow->SetWindowId((void*)winId());

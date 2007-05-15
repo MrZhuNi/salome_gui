@@ -25,7 +25,7 @@
 #ifndef GLVIEWER_VIEWPORT2D_H
 #define GLVIEWER_VIEWPORT2D_H
 
-#ifdef WNT
+#ifdef WIN32
 #include <windows.h>
 #endif
 
@@ -41,7 +41,7 @@
 #include <qwidget.h>
 #include <qpaintdevice.h>
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -239,7 +239,7 @@ protected:
   bool                   myIsMouseReleaseBlock;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

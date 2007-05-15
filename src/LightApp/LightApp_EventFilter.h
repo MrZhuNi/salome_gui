@@ -24,7 +24,7 @@
 
 #include <qobject.h>
 
-#if defined WNT
+#if defined WIN32
 #pragma warning( disable: 4251 )
 #endif
 
@@ -49,7 +49,7 @@ private:
   static LightApp_EventFilter* myFilter;
 };
 
-#if defined WNT
+#if defined WIN32
 #pragma warning( default: 4251 )
 #endif
 

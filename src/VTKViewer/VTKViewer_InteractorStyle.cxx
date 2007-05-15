@@ -51,11 +51,8 @@
 #include <vtkProperty.h>
 
 #include <qapplication.h>
-//VRV: porting on Qt 3.0.5
-#if QT_VERSION >= 0x030005
 #include <qpainter.h>
-#endif
-//VRV: porting on Qt 3.0.5
+
 #include <algorithm>
 
 //#include "utilities.h"

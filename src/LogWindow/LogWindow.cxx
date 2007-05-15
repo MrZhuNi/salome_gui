@@ -400,7 +400,7 @@ void LogWindow::onCopy()
   Actions, which IDs are set in \a flags parameter, will be shown in the 
   context popup menu. Other actions will not be shown.
 
-  \param ORed together actions flags
+  \param flags ORed together actions flags
 */
 void LogWindow::setMenuActions( const int flags )
 {

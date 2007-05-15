@@ -414,7 +414,7 @@ void SalomeApp_Application::onLoadDoc()
     return;
 
   name = studyname;
-#ifndef WNT
+#ifndef WIN32
   //this code replace marker of windows drive and path become invalid therefore 
   // defines placed there
   name.replace( QRegExp(":"), "/" );

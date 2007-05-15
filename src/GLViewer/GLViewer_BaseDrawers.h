@@ -36,7 +36,7 @@
 
 class GLViewer_AspectLine;
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -91,7 +91,7 @@ public:
   void                      updateObjects();
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

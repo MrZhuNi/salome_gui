@@ -25,7 +25,7 @@
 #ifndef GLVIEWER_OBJECT_H
 #define GLVIEWER_OBJECT_H
 
-#ifdef WNT
+#ifdef WIN32
 #include <windows.h>
 #endif
 
@@ -41,7 +41,7 @@
 #include <qstring.h>
 #include <qrect.h>
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -303,7 +303,7 @@ protected:
   GLViewer_Group*           myGroup;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning ( default:4251 )
 #endif
 

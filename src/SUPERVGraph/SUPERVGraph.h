@@ -32,7 +32,7 @@
 #include "SUIT_Desktop.h"
 #include "SUIT_ViewWindow.h"
 
-#ifdef WNT
+#ifdef WIN32
 #ifdef SUPERVGRAPH_EXPORTS
 #define SUPERVGRAPH_EXPORT __declspec(dllexport)
 #else
@@ -42,7 +42,7 @@
 #define SUPERVGRAPH_EXPORT
 #endif
 
-#if defined WNT
+#if defined WIN32
 #pragma warning ( disable: 4251 )
 #endif
 

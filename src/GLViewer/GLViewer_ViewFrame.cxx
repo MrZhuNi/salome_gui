@@ -272,7 +272,7 @@ void GLViewer_ViewFrame::onViewDump()
     imageBits = new unsigned char[imageSize];
 
     
-#ifdef WNT
+#ifdef WIN32
 
     int num;
     HBITMAP hBmp;
@@ -429,7 +429,7 @@ void GLViewer_ViewFrame::onViewDump()
             aFileName += ".png";
         aSaveOp = "PNG";
 
-//#ifdef WNT
+//#ifdef WIN32
 //    if( !anImage.save( aFileName, aSaveOp ) )
 //#else
     if( !aWidget->grabFrameBuffer().save( aFileName, aSaveOp ) )

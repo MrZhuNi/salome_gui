@@ -41,9 +41,7 @@ class QWidget;
 class QTimer;
 class QCloseEvent;
 class QTextView;
-#if QT_VERSION > 300
 class QPushButton;
-#endif
 
 #include <Standard_Macro.hxx>
 

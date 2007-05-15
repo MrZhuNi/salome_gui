@@ -34,7 +34,7 @@
 #include <qgroupbox.h>
 #include <qcolordialog.h>
 
-#ifndef WNT
+#ifndef WIN32
 using namespace std;
 #endif
 

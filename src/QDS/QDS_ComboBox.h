@@ -27,7 +27,7 @@
 
 #include <QtxComboBox.h>
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
@@ -103,7 +103,7 @@ private:
   QStringList                myUserNames;
 };
 
-#ifdef WNT
+#ifdef WIN32
 #pragma warning( default:4251 )
 #endif
 
