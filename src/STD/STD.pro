@@ -19,7 +19,7 @@ HEADERS += STD_CloseDlg.h
 HEADERS += STD_MDIDesktop.h
 HEADERS += STD_SDIDesktop.h
 HEADERS += STD_TabDesktop.h
-#SOURCES += STD_LoadStudiesDlg.h
+#HEADERS += STD_LoadStudiesDlg.h
 
 SOURCES  = STD_Application.cxx
 SOURCES += STD_CloseDlg.cxx
