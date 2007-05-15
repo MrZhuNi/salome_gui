@@ -289,23 +289,23 @@ bool LogWindow::saveLog( const QString& fileName )
 */
 void LogWindow::createActions()
 {
-  QAction* a = new QAction( tr( "&Copy" ), this );
-  a->setStatusTip( tr( "&Copy" ) );
+  QAction* a = new QAction( tr( "EDIT_COPY_CMD" ), this );
+  a->setStatusTip( tr( "EDIT_COPY_CMD" ) );
   connect( a, SIGNAL( triggered( bool ) ), SLOT( onCopy() ) );
   myActions.insert( CopyId, a );
 
-  a = new QAction( tr( "Clea&r" ), this );
-  a->setStatusTip( tr( "Clea&r" ) );
+  a = new QAction( tr( "EDIT_CLEAR_CMD" ), this );
+  a->setStatusTip( tr( "EDIT_CLEAR_CMD" ) );
   connect( a, SIGNAL( triggered( bool ) ), SLOT( onClear() ) );
   myActions.insert( ClearId, a );
 
-  a = new QAction( tr( "Select &All" ), this );
-  a->setStatusTip( tr( "Select &All" ) );
+  a = new QAction( tr( "EDIT_SELECTALL_CMD" ), this );
+  a->setStatusTip( tr( "EDIT_SELECTALL_CMD" ) );
   connect( a, SIGNAL( triggered( bool ) ), SLOT( onSelectAll() ) );
   myActions.insert( SelectAllId, a );
 
-  a = new QAction( tr( "&Save log to file..." ), this );
-  a->setStatusTip( tr( "&Save log to file..." ) );
+  a = new QAction( tr( "EDIT_SAVETOFILE_CMD" ), this );
+  a->setStatusTip( tr( "EDIT_SAVETOFILE_CMD" ) );
   connect( a, SIGNAL( triggered( bool ) ), SLOT( onSaveToFile() ) );
   myActions.insert( SaveToFileId, a );
 }
@@ -365,7 +365,7 @@ void LogWindow::onSaveToFile()
   QApplication::restoreOverrideCursor();
 
   if ( !bOk )
-    SUIT_MessageBox::error1( this, tr( "Error" ), tr( "Can't save file" ), tr( "OK" ) );
+    SUIT_MessageBox::error1( this, tr( "ERR_ERROR" ), tr( "ERR_CANT_SAVE_FILE" ), tr( "BUT_OK" ) );
 }
 
 /*!

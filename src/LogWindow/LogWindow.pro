@@ -17,7 +17,12 @@ HEADERS = LogWindow.h
 
 SOURCES = LogWindow.cxx
 
+TRANSLATIONS = resources/LogWindow_msg_en.ts
+
 includes.files = $$HEADERS
 includes.path = ../../include
 
-INSTALLS += includes
+resources.files = resources/*.qm
+resources.path = ../../resources
+
+INSTALLS += includes resources
