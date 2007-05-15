@@ -16,110 +16,103 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-//  SALOME SALOMEGUI : implementation of desktop and GUI kernel
-//
-//  File   : PyInterp_base.cxx
+//  File   : PyInterp_Interp.cxx
 //  Author : Christian CAREMOLI, Paul RASCLE, EDF
 //  Module : SALOME
-//  $Header$
 
+#include "PyInterp_Interp.h"  // !!! WARNING !!! THIS INCLUDE MUST BE THE VERY FIRST !!!
+
+#include <cStringIO.h>
 
 #include <string>
 #include <vector>
 
-#include "PyInterp_base.h" // this include must be first (see PyInterp_base.h)!
-#include <cStringIO.h>
-
 using namespace std;
+
+#define TOP_HISTORY_PY   "--- top of history ---"
+#define BEGIN_HISTORY_PY "--- begin of history ---"
 
 PyLockWrapper::PyLockWrapper(PyThreadState* theThreadState): 
   myThreadState(theThreadState),
   mySaveThreadState(0)
 {
-#if defined(USE_GILSTATE)
-  if (myThreadState->interp == PyInterp_base::_interp) {
+  if (myThreadState->interp == PyInterp_Interp::_interp)
     _savestate = PyGILState_Ensure();
-  } else {
+  else
     PyEval_AcquireThread(myThreadState);
-  }
-#else 
-  PyEval_AcquireThread(myThreadState);
-#endif
 }
 
 PyLockWrapper::~PyLockWrapper()
 {
-#if defined(USE_GILSTATE)
-  if (myThreadState->interp == PyInterp_base::_interp) {
+  if (myThreadState->interp == PyInterp_Interp::_interp)
     PyGILState_Release(_savestate);
-  } else {
+  else
     PyEval_ReleaseThread(myThreadState);
-  }
-#else 
-  PyEval_ReleaseThread(myThreadState);
-#endif
 }
 
-class PyReleaseLock{
-public:
-  ~PyReleaseLock(){
-    PyEval_ReleaseLock();
-  }
-};
-
-
-PyLockWrapper PyInterp_base::GetLockWrapper(){
+PyLockWrapper PyInterp_Interp::GetLockWrapper()
+{
   return _tstate;
 }
 
+/*!
+  \class PyInterp_Interp
+  \brief Generic embedded Python interpreter.
+*/
 
-// main python interpreter (static attributes)
-
-int PyInterp_base::_argc = 1;
-char* PyInterp_base::_argv[] = {""};
-
-PyObject *PyInterp_base::builtinmodule = NULL;
-
-PyThreadState *PyInterp_base::_gtstate = NULL;
-PyInterpreterState *PyInterp_base::_interp = NULL;
-
+int   PyInterp_Interp::_argc   = 1;
+char* PyInterp_Interp::_argv[] = {""};
+PyObject*           PyInterp_Interp::builtinmodule = NULL;
+PyThreadState*      PyInterp_Interp::_gtstate      = NULL;
+PyInterpreterState* PyInterp_Interp::_interp       = NULL;
 
 /*!
- * basic constructor here : herited classes constructors must call initalize() method
- * defined here.
- */
-PyInterp_base::PyInterp_base(): _tstate(0), _vout(0), _verr(0), _g(0), _atFirst(true)
+  \brief Basic constructor.
+  
+  After construction the interpreter instance successor classes 
+  must call virtual method initalize().
+*/
+PyInterp_Interp::PyInterp_Interp(): 
+  _tstate(0), _vout(0), _verr(0), _g(0)
 {
 }
 
-PyInterp_base::~PyInterp_base()
+/*!
+  \brief Destructor.
+*/
+PyInterp_Interp::~PyInterp_Interp()
 {
 }
 
-
 /*!
- * Must be called by herited classes constructors. initialize() calls virtuals methods
- * initstate & initcontext, not defined here in base class. initstate & initcontext methods
- * must be implemented in herited classes, following the Python interpreter policy
- * (mono or multi interpreter...).
- */
-void PyInterp_base::initialize()
+  \brief Initialize embedded interpreter.
+  
+  This method shoud be called after construction of the interpreter.
+  The method initialize() calls virtuals methods
+  - initPython()  to initialize global Python interpreter
+  - initState()   to initialize embedded interpreter state
+  - initContext() to initialize interpreter internal context
+  - initRun()     to prepare interpreter for running commands
+  which should be implemented in the successor classes, according to the
+  embedded Python interpreter policy (mono or multi interpreter, etc).
+*/
+void PyInterp_Interp::initialize()
 {
   _history.clear();       // start a new list of user's commands 
   _ith = _history.begin();
 
-  init_python();
+  initPython();
   // Here the global lock is released
 
   initState();
 
-  PyLockWrapper aLock= GetLockWrapper();
+  PyLockWrapper aLock = GetLockWrapper();
 
   initContext();
 
   // used to interpret & compile commands
   PyObjWrapper m(PyImport_ImportModule("codeop"));
-  if(!m){
+  if(!m) {
     PyErr_Print();
     return;
   }
@@ -135,9 +128,14 @@ void PyInterp_base::initialize()
   initRun();
 }
 
-void PyInterp_base::init_python()
+/*!
+  \brief Initialize Python interpreter.
+
+  Set program name, initialize interpreter, set program arguments,
+  initiaize threads.
+ */
+void PyInterp_Interp::initPython()
 {
-  _atFirst = false;
   if (Py_IsInitialized())
     return;
 
@@ -150,7 +148,11 @@ void PyInterp_base::init_python()
   _gtstate = PyEval_SaveThread(); // Release global thread state
 }
 
-string PyInterp_base::getbanner()
+/*!
+  \brief Get embedded Python interpreter banner.
+  \return banner string
+ */
+string PyInterp_Interp::getbanner()
 {
  // Should we take the lock ?
  // PyEval_RestoreThread(_tstate);
@@ -161,8 +163,15 @@ string PyInterp_base::getbanner()
   return aBanner;
 }
 
-
-int PyInterp_base::initRun()
+/*!
+  \brief Initialize run command.
+ 
+  This method is used to prepare interpreter for running 
+  Python commands.
+  
+  \return \c true on success and \c false on error
+*/
+bool PyInterp_Interp::initRun()
 {
   PySys_SetObject("stderr",_verr);
   PySys_SetObject("stdout",_vout);
@@ -175,27 +184,27 @@ int PyInterp_base::initRun()
   PySys_SetObject("stdout",PySys_GetObject("__stdout__"));
   PySys_SetObject("stderr",PySys_GetObject("__stderr__"));
 
-  return 0;
+  return true;
 }
 
-
 /*!
- * This function compiles a string (command) and then evaluates it in the dictionnary
- * context if possible.
- * Returns :
- * -1 : fatal error 
- *  1 : incomplete text
- *  0 : complete text executed with success
+  \brief Compile Python command and evaluate it in the 
+         python dictionary context if possible.
+  \internal
+  \param command Python command string
+  \param context Python context (dictionary)
+  \return -1 on fatal error, 1 if command is incomplete and 0
+         if command is executed successfully
  */
-int compile_command(const char *command,PyObject *context)
+static int compile_command(const char *command,PyObject *context)
 {
   PyObject *m = PyImport_AddModule("codeop");
-  if(!m){ // Fatal error. No way to go on.
+  if(!m) { // Fatal error. No way to go on.
     PyErr_Print();
     return -1;
   }
   PyObjWrapper v(PyObject_CallMethod(m,"compile_command","s",command));
-  if(!v){
+  if(!v) {
     // Error encountered. It should be SyntaxError,
     //so we don't write out traceback
     PyObjWrapper exception, value, tb;
@@ -203,17 +212,19 @@ int compile_command(const char *command,PyObject *context)
     PyErr_NormalizeException(&exception, &value, &tb);
     PyErr_Display(exception, value, NULL);
     return -1;
-  }else if (v == Py_None){
+  }
+  else if (v == Py_None) {
     // Incomplete text we return 1 : we need a complete text to execute
     return 1;
-  }else{
+  }
+  else {
     // Complete and correct text. We evaluate it.
     //#if PY_VERSION_HEX < 0x02040000 // python version earlier than 2.4.0
     //    PyObjWrapper r(PyEval_EvalCode(v,context,context));
     //#else
     PyObjWrapper r(PyEval_EvalCode((PyCodeObject *)(void *)v,context,context));
     //#endif
-    if(!r){
+    if(!r) {
       // Execution error. We return -1
       PyErr_Print();
       return -1;
@@ -223,35 +234,26 @@ int compile_command(const char *command,PyObject *context)
   }
 }
 
-
-int PyInterp_base::run(const char *command)
+/*!
+  \brief Run Python command.
+  \param command Python command
+  \return command status
+*/
+int PyInterp_Interp::run(const char *command)
 {
-  if(_atFirst){
-    int ret = 0;
-    ret = simpleRun("from Help import *");
-    if (ret) { 
-      _atFirst = false;
-      return ret;
-    }
-    ret = simpleRun("import salome");
-    if (ret) { 
-      _atFirst = false;
-      return ret;
-    }
-    ret = simpleRun("salome.salome_init(0,1)");
-    if (ret) { 
-      _atFirst = false;
-      return ret;
-    }
-    _atFirst = false;
-  }
+  beforeRun();
   return simpleRun(command);
 }
 
-
-int PyInterp_base::simpleRun(const char *command)
+/*!
+  \brief Run Python command (used internally).
+  \param command Python command
+  \param addToHistory if \c true (default), the command is added to the commands history
+  \return command status
+*/
+int PyInterp_Interp::simpleRun(const char *command, const bool addToHistory)
 {
-  if( !_atFirst && strcmp(command,"") != 0 ) {
+  if( addToHistory && strcmp(command,"") != 0 ) {
     _history.push_back(command);
     _ith = _history.end();
   }
@@ -276,8 +278,11 @@ int PyInterp_base::simpleRun(const char *command)
   return ier;
 }
 
-
-const char * PyInterp_base::getPrevious()
+/*!
+  \brief Get previous command in the commands history.
+  \return previous command
+*/
+const char * PyInterp_Interp::getPrevious()
 {
   if(_ith != _history.begin()){
     _ith--;
@@ -287,8 +292,11 @@ const char * PyInterp_base::getPrevious()
     return BEGIN_HISTORY_PY;
 }
 
-
-const char * PyInterp_base::getNext()
+/*!
+  \brief Get next command in the commands history.
+  \return next command
+*/
+const char * PyInterp_Interp::getNext()
 {
   if(_ith != _history.end()){
     _ith++;
@@ -299,16 +307,22 @@ const char * PyInterp_base::getNext()
     return (*_ith).c_str();
 }
 
-
-string PyInterp_base::getverr(){ 
+/*!
+  \brief Get standard error output.
+  \return standard error output
+*/
+string PyInterp_Interp::getverr(){ 
   //PyLockWrapper aLock(_tstate);
   PyObjWrapper v(PycStringIO->cgetvalue(_verr));
   string aRet(PyString_AsString(v));
   return aRet;
 }
 
-
-string PyInterp_base::getvout(){  
+/*!
+  \brief Get standard output.
+  \return standard output
+*/
+string PyInterp_Interp::getvout(){  
   //PyLockWrapper aLock(_tstate);
   PyObjWrapper v(PycStringIO->cgetvalue(_vout));
   string aRet(PyString_AsString(v));
