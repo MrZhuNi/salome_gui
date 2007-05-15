@@ -34,6 +34,7 @@ class QAction;
 class QSplitter;
 class QPushButton;
 class QStackedWidget;
+class QRubberBand;
 
 class QtxWorkstackArea;
 class QtxWorkstackDrag;
@@ -325,6 +326,37 @@ protected:
 private:
   int                 myId;         //!< current tab page index
   bool                myActive;     //!< "active" status
+};
+
+class QtxWorkstackDrag : public QObject
+{
+  Q_OBJECT
+
+public:
+  QtxWorkstackDrag( QtxWorkstack*, QtxWorkstackChild* );
+  virtual ~QtxWorkstackDrag();
+
+  virtual bool        eventFilter( QObject*, QEvent* );
+
+private:
+  void                dropWidget();
+
+  void                updateTarget( const QPoint& );
+  QtxWorkstackArea*   detectTarget( const QPoint&, int& ) const;
+  void                setTarget( QtxWorkstackArea*, const int );
+
+  void                drawRect();
+  void                endDrawRect();
+  void                startDrawRect();
+
+private:
+  QtxWorkstack*       myWS;          //!< parent workstack
+  QtxWorkstackChild*  myChild;       //!< workstack child widget container
+
+  int                 myTab;         //!< workarea tab page index
+  QtxWorkstackArea*   myArea;        //!< workarea
+  QRubberBand*        myTabRect;     //!< tab bar rubber band
+  QRubberBand*        myAreaRect;    //!< workarea rubber band
 };
 
 #ifdef WIN32

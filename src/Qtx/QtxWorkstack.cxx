@@ -61,37 +61,6 @@ private:
   \brief Workstack drag object
 */
 
-class QtxWorkstackDrag : public QObject
-{
-  Q_OBJECT
-
-public:
-  QtxWorkstackDrag( QtxWorkstack*, QtxWorkstackChild* );
-  virtual ~QtxWorkstackDrag();
-
-  virtual bool        eventFilter( QObject*, QEvent* );
-
-private:
-  void                dropWidget();
-
-  void                updateTarget( const QPoint& );
-  QtxWorkstackArea*   detectTarget( const QPoint&, int& ) const;
-  void                setTarget( QtxWorkstackArea*, const int );
-
-  void                drawRect();
-  void                endDrawRect();
-  void                startDrawRect();
-
-private:
-  QtxWorkstack*       myWS;          //!< parent workstack
-  QtxWorkstackChild*  myChild;       //!< workstack child widget container
-
-  int                 myTab;         //!< workarea tab page index
-  QtxWorkstackArea*   myArea;        //!< workarea
-  QRubberBand*        myTabRect;     //!< tab bar rubber band
-  QRubberBand*        myAreaRect;    //!< workarea rubber band
-};
-
 /*!
   \brief Constructor.
   \param ws parent workstack
