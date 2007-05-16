@@ -39,7 +39,12 @@ class QTX_EXPORT QtxMRUAction : public QtxAction
   Q_PROPERTY( int visibleCount READ visibleCount WRITE setVisibleCount )
 
 public:
-  enum { MoveFirst, MoveLast, AddFirst, AddLast };
+  //! Items insertion policy
+  typedef enum { MoveFirst,   //!< put the specified item to the beginning
+		 MoveLast,    //!< put the specified item to the end
+		 AddFirst,    //!< if specified item doesn't exist, add it to the beginning
+		 AddLast      //!< if specified item doesn't exist, add it to the end
+  } InsertionMode;
 
 public:
   QtxMRUAction( QObject* = 0 );
@@ -78,9 +83,9 @@ private:
   void         updateMenu();
 
 private:
-  QStringList  myLinks;
-  int          myVisCount;
-  int          myInsertMode;
+  QStringList  myLinks;        //!< most recent used items
+  int          myVisCount;     //!< number of visible MRU items
+  int          myInsertMode;   //!< items insertion policy
 };
 
 #endif
