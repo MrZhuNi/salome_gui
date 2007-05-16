@@ -68,7 +68,7 @@ public:
   virtual void loadLinks( QtxResourceMgr*, const QString&, const bool = true );
   virtual void saveLinks( QtxResourceMgr*, const QString&, const bool = true ) const;
 
-Q_SIGNALS:
+signals:
   void         activated( const QString& );
 
 private slots:
