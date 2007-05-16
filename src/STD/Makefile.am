@@ -25,7 +25,6 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
 lib_LTLIBRARIES = libstd.la
 
-#VSR: already migrated to Qt4 files
 salomeinclude_HEADERS=		\
 	STD.h			\
 	STD_Application.h	\
@@ -34,11 +33,6 @@ salomeinclude_HEADERS=		\
 	STD_SDIDesktop.h	\
 	STD_TabDesktop.h
 
-#VSR: not yet migrated to Qt4 files
-#				\
-	STD_LoadStudiesDlg.h
-
-#VSR: already migrated to Qt4 files
 dist_libstd_la_SOURCES=		\
 	STD_Application.cxx	\
 	STD_CloseDlg.cxx	\
@@ -46,21 +40,12 @@ dist_libstd_la_SOURCES=		\
 	STD_SDIDesktop.cxx	\
 	STD_TabDesktop.cxx
 
-#VSR: not yet migrated to Qt4 files
-#				\
-	STD_LoadStudiesDlg.cxx
-
-#VSR: already migrated to Qt4 files
 MOC_FILES=				\
 	STD_Application_moc.cxx		\
 	STD_CloseDlg_moc.cxx		\
 	STD_MDIDesktop_moc.cxx		\
 	STD_SDIDesktop_moc.cxx		\
 	STD_TabDesktop_moc.cxx
-
-#VSR: not yet migrated to Qt4 files
-#					\
-	STD_LoadStudiesDlg_moc.cxx
 
 nodist_libstd_la_SOURCES= $(MOC_FILES)
 

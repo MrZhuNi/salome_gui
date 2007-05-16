@@ -19,14 +19,12 @@ HEADERS += STD_CloseDlg.h
 HEADERS += STD_MDIDesktop.h
 HEADERS += STD_SDIDesktop.h
 HEADERS += STD_TabDesktop.h
-#HEADERS += STD_LoadStudiesDlg.h
 
 SOURCES  = STD_Application.cxx
 SOURCES += STD_CloseDlg.cxx
 SOURCES += STD_MDIDesktop.cxx
 SOURCES += STD_SDIDesktop.cxx
 SOURCES += STD_TabDesktop.cxx
-#SOURCES += STD_LoadStudiesDlg.cxx
 
 TRANSLATIONS = resources/STD_images.ts \
                resources/STD_msg_en.ts

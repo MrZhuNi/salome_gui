@@ -25,7 +25,6 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
 lib_LTLIBRARIES = libsuit.la
 
-#VSR: already migrated to Qt4 files
 salomeinclude_HEADERS=			\
 	SUIT.h				\
 	SUIT_Accel.h			\
@@ -57,7 +56,6 @@ salomeinclude_HEADERS=			\
 	SUIT_ViewModel.h		\
 	SUIT_ViewWindow.h
 
-#VSR: already migrated to Qt4 files
 dist_libsuit_la_SOURCES=		\
 	SUIT_Accel.cxx			\
 	SUIT_ActionOperation.cxx	\
