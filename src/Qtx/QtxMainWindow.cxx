@@ -296,7 +296,7 @@ void QtxMainWindow::retrieveGeometry( const QString& str )
       rect.setSize( QSize( w, h ) );
   }
 
-  QRegExp posRx( "([+|-]\\d+\%?)\\s*([+|-]\\d+\%?)" );
+  QRegExp posRx( "([+|-]\\d+%?)\\s*([+|-]\\d+%?)" );
   if ( posRx.indexIn( geom ) != -1 )
   {
     int x = -1;

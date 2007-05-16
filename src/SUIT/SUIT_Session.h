@@ -28,6 +28,10 @@
 #include <QString>
 
 #ifdef WIN32
+#include <windows.h>
+#endif
+
+#ifdef WIN32
 #define LIB_HANDLE HINSTANCE
 #else
 #define LIB_HANDLE void*
@@ -44,7 +48,7 @@ class SUIT_ExceptionHandler;
   by static function "createApplication" in external library. The Library must be loaded with \n
   loadLibrary method and after that application can be started.
 */
-class SUIT_EXPORT SUIT_Session: public QObject
+class SUIT_EXPORT SUIT_Session : public QObject
 {
   Q_OBJECT
 
