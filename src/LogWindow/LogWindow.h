@@ -97,6 +97,7 @@ public:
   bool                saveLog( const QString& );
 
   void                setMenuActions( const int );
+  bool                testMenuActions( const int ) const;
 
 protected slots:
   void                onSaveToFile();

@@ -69,6 +69,7 @@ public:
   virtual void        contextMenuPopup( QMenu* );
 
   void                setMenuActions( const int );
+  bool                testMenuActions( const int ) const;
 
 private:
   void                createActions();

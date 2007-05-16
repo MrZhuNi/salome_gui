@@ -411,6 +411,22 @@ void LogWindow::setMenuActions( const int flags )
 }
 
 /*!
+  \brief Test menu action.
+  \param flags ORed together actions flags
+  \return \c true if all specified actions are visible and
+          \c false if at least one specified action is not visible
+*/
+bool LogWindow::testMenuActions( const int flags ) const
+{
+  bool ret = true;
+  ret = ret && ( !(  flags & CopyId )       || myActions[CopyId]->isVisible() );
+  ret = ret && ( !(  flags & ClearId )      || myActions[ClearId]->isVisible() );
+  ret = ret && ( !(  flags & SelectAllId )  || myActions[SelectAllId]->isVisible() );
+  ret = ret && ( !(  flags & SaveToFileId ) || myActions[SaveToFileId]->isVisible() );
+  return ret;
+}
+
+/*!
   \fn virtual QString LogWindow::popupClientType() const;
   \brief Get popup client symbolic name, used in popup menu management system.
   \return symbolic name

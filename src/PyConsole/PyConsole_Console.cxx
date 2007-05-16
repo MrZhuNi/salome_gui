@@ -206,6 +206,22 @@ void PyConsole_Console::setMenuActions( const int flags )
 }
 
 /*!
+  \brief Test menu action.
+  \param flags ORed together actions flags
+  \return \c true if all specified actions are visible and
+          \c false if at least one specified action is not visible
+*/
+bool PyConsole_Console::testMenuActions( const int flags ) const
+{
+  bool ret = true;
+  ret = ret && ( !(  flags & CopyId )      || myActions[CopyId]->isVisible() );
+  ret = ret && ( !(  flags & PasteId )     || myActions[PasteId]->isVisible() );
+  ret = ret && ( !(  flags & ClearId )     || myActions[ClearId]->isVisible() );
+  ret = ret && ( !(  flags & SelectAllId ) || myActions[SelectAllId]->isVisible() );
+  return ret;
+}
+
+/*!
   \brief Create menu actions.
 
   Create context popup menu actions.

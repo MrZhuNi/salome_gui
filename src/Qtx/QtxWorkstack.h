@@ -51,10 +51,12 @@ class QTX_EXPORT QtxWorkstack : public QWidget
 
 public:
   //! Workstack actions (context menu items)
-  enum { SplitVertical,          //!< "Split vertically" menu item
-	 SplitHorizontal,        //!< "Split horizontally" menu item
-	 Close,                  //!< "Close" menu item
-	 Rename                  //!< "Rename" menu item
+  enum { SplitVertical    = 0x01,  //!< "Split vertically" menu item
+	 SplitHorizontal  = 0x02,  //!< "Split horizontally" menu item
+	 Close            = 0x04,  //!< "Close" menu item
+	 Rename           = 0x08,  //!< "Rename" menu item
+	 All = SplitVertical | SplitHorizontal | 
+	       Close | Rename      //!< all menu items
   };
     
   //! Workstack splitting type
@@ -77,8 +79,8 @@ public:
   int                 accel( const int ) const;
   void                setAccel( const int, const int );
 
-  bool                isActionEnabled( const int ) const;
-  void                setActionEnabled( const int, const bool );
+  void                setMenuActions( const int );
+  bool                testMenuActions( const int ) const;
 
   void                split( const int );
 

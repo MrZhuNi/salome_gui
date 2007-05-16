@@ -1775,27 +1775,35 @@ int QtxWorkstack::accel( const int id ) const
 }
 
 /*!
-  \brief Check if the action is enabled.
-  \param id action ID
-  \return \c true if action is enabled
+  \brief Set actions to be visible in the context popup menu.
+  
+  Actions, which IDs are set in \a flags parameter, will be shown in the 
+  context popup menu. Other actions will not be shown.
+
+  \param flags ORed together actions flags
 */
-bool QtxWorkstack::isActionEnabled( const int id ) const
+void QtxWorkstack::setMenuActions( const int flags )
 {
-  bool res = false;
-  if ( myActionsMap.contains( id ) )
-    res = myActionsMap[id]->isEnabled();
-  return res;
+  myActionsMap[SplitVertical]->setVisible( flags & SplitVertical );
+  myActionsMap[SplitHorizontal]->setVisible( flags & SplitHorizontal );
+  myActionsMap[Close]->setVisible( flags & Close );
+  myActionsMap[Rename]->setVisible( flags & Rename );
 }
 
 /*!
-  \brief Enable/disable action.
-  \param id action ID
-  \param on if \c true, enable the action, else disable it
+  \brief Test menu action.
+  \param flags ORed together actions flags
+  \return \c true if all specified actions are visible and
+          \c false if at least one specified action is not visible
 */
-void QtxWorkstack::setActionEnabled( const int id, const bool on )
+bool QtxWorkstack::testMenuActions( const int flags ) const
 {
-  if ( myActionsMap.contains( id ) )
-    myActionsMap[id]->setEnabled( on );
+  bool ret = true;
+  ret = ret && ( !(  flags & SplitVertical )   || myActionsMap[SplitVertical]->isVisible() );
+  ret = ret && ( !(  flags & SplitHorizontal ) || myActionsMap[SplitHorizontal]->isVisible() );
+  ret = ret && ( !(  flags & Close )           || myActionsMap[Close]->isVisible() );
+  ret = ret && ( !(  flags & Rename )          || myActionsMap[Rename]->isVisible() );
+  return ret;
 }
 
 /*!
