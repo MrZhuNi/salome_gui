@@ -42,8 +42,6 @@ HEADERS += SUIT_TreeSync.h
 HEADERS += SUIT_ViewManager.h
 HEADERS += SUIT_ViewModel.h
 HEADERS += SUIT_ViewWindow.h
-#HEADERS += SUIT_Convertor.h
-#HEADERS += SUIT_ParserSettings.h
 
 SOURCES  = SUIT_Accel.cxx
 SOURCES += SUIT_ActionOperation.cxx
@@ -71,7 +69,6 @@ SOURCES += SUIT_Tools.cxx
 SOURCES += SUIT_ViewManager.cxx
 SOURCES += SUIT_ViewModel.cxx
 SOURCES += SUIT_ViewWindow.cxx
-#SOURCES += SUIT_ParserSettings.cxx
 
 TRANSLATIONS = resources/SUIT_images.ts \
                resources/SUIT_msg_en.ts

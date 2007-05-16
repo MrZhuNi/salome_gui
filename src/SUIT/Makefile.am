@@ -57,11 +57,6 @@ salomeinclude_HEADERS=			\
 	SUIT_ViewModel.h		\
 	SUIT_ViewWindow.h
 
-#VSR: not yet migrated to Qt4 files
-#					\
-	SUIT_Convertor.h		\
-	SUIT_ParserSettings.h
-
 #VSR: already migrated to Qt4 files
 dist_libsuit_la_SOURCES=		\
 	SUIT_Accel.cxx			\
@@ -90,10 +85,6 @@ dist_libsuit_la_SOURCES=		\
 	SUIT_ViewManager.cxx		\
 	SUIT_ViewModel.cxx		\
 	SUIT_ViewWindow.cxx
-
-#VSR: not yet migrated to Qt4 files
-#					\
-	SUIT_ParserSettings.cxx	
 
 MOC_FILES=				\
 	SUIT_Accel_moc.cxx		\
