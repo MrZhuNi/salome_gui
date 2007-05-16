@@ -24,7 +24,6 @@
 
 #include "QtxAction.h"
 
-#include <QMap>
 #include <QStringList>
 
 class QtxResourceMgr;

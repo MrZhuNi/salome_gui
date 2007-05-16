@@ -36,6 +36,7 @@ salomeinclude_HEADERS= \
 	SalomeApp_Application.h \
 	SalomeApp_DataModel.h \
 	SalomeApp_DataObject.h \
+	SalomeApp_LoadStudiesDlg.h \
 	SalomeApp_Module.h \
 	SalomeApp_Study.h \
 	SalomeApp_ExceptionHandler.h \
@@ -53,6 +54,7 @@ dist_libSalomeApp_la_SOURCES= \
 	SalomeApp_Application.cxx \
 	SalomeApp_DataModel.cxx \
 	SalomeApp_DataObject.cxx \
+	SalomeApp_LoadStudiesDlg.cxx \
 	SalomeApp_Study.cxx \
 	SalomeApp_ExceptionHandler.cxx \
 	SalomeApp_EventFilter.cxx \
@@ -70,6 +72,7 @@ MOC_FILES= \
 	SalomeApp_Application_moc.cxx \
 	SalomeApp_DataModel_moc.cxx \
 	SalomeApp_Module_moc.cxx \
+	SalomeApp_LoadStudiesDlg_moc.cxx \
 	SalomeApp_Study_moc.cxx \
 	SalomeApp_StudyPropertiesDlg_moc.cxx \
 	SalomeApp_ListView_moc.cxx \

@@ -39,7 +39,7 @@
 #include "LightApp_SelectionMgr.h"
 #include "LightApp_NameDlg.h"
 
-#include "STD_LoadStudiesDlg.h"
+#include "SalomeApp_LoadStudiesDlg.h"
 
 #include <SUIT_Tools.h>
 #include <SUIT_Session.h>
@@ -382,7 +382,7 @@ void SalomeApp_Application::onLoadDoc()
 {
   QString name, studyname, ext;
 
-  STD_LoadStudiesDlg aDlg( desktop(), TRUE);
+  SalomeApp_LoadStudiesDlg aDlg( desktop(), TRUE);
 
   std::vector<std::string> List = studyMgr()->GetOpenStudies();
 

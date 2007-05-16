@@ -39,6 +39,7 @@ salomeinclude_HEADERS=		\
 	QtxDockWidget.h		\
 	QtxMainWindow.h 	\
 	QtxMap.h		\
+	QtxMRUAction.h		\
 	QtxResourceMgr.h	\
 	QtxToolBar.h		\
 	QtxWorkstack.h
@@ -56,7 +57,6 @@ salomeinclude_HEADERS=		\
 	QtxListResourceEdit.h	\
 	QtxListView.h		\
 	QtxLogoMgr.h		\
-	QtxMRUAction.h		\
 	QtxMenuButton.h		\
 	QtxOperations.h		\
 	QtxParser.h		\
@@ -88,6 +88,7 @@ dist_libqtx_la_SOURCES=		\
 	QtxDockAction.cxx	\
 	QtxDockWidget.cxx	\
 	QtxMainWindow.cxx	\
+	QtxMRUAction.cxx	\
 	QtxResourceMgr.cxx	\
 	QtxToolBar.cxx		\
 	QtxWorkstack.cxx
@@ -105,7 +106,6 @@ dist_libqtx_la_SOURCES=		\
 	QtxListResourceEdit.cxx	\
 	QtxListView.cxx		\
 	QtxLogoMgr.cxx		\
-	QtxMRUAction.cxx	\
 	QtxMenuButton.cxx	\
 	QtxOperations.cxx	\
 	QtxParser.cxx		\
@@ -132,6 +132,7 @@ MOC_FILES=				\
 	QtxDockAction_moc.cxx		\
 	QtxDockWidget_moc.cxx		\
 	QtxMainWindow_moc.cxx		\
+	QtxMRUAction_moc.cxx		\
 	QtxToolBar_moc.cxx		\
 	QtxWorkstack_moc.cxx
 
@@ -147,7 +148,6 @@ MOC_FILES=				\
 	QtxListResourceEdit_moc.cxx	\
 	QtxListView_moc.cxx		\
 	QtxLogoMgr_moc.cxx		\
-	QtxMRUAction_moc.cxx		\
 	QtxMenuButton_moc.cxx		\
 	QtxPathDialog_moc.cxx		\
 	QtxPopupMenu_moc.cxx		\
