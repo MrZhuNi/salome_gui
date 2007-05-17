@@ -36,8 +36,6 @@ class QTX_EXPORT QtxMRUAction : public QtxAction
 {
   Q_OBJECT
 
-  Q_PROPERTY( int visibleCount READ visibleCount WRITE setVisibleCount )
-
 public:
   //! Items insertion policy
   typedef enum { MoveFirst,   //!< put the specified item to the beginning
