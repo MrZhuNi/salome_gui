@@ -25,9 +25,9 @@
 # $Header$
 
 # VSR: this is the original packages list
-#SUBDIRS = Qtx Style DDS QDS SUIT STD CAF CAM SUITApp LogWindow ObjBrowser Prs
+#SUBDIRS = Qtx Style DDS QDS SUIT STD CAF SUITApp LogWindow ObjBrowser Prs
 # VSR: already migrated to Qt4 packages
-SUBDIRS = Qtx SUIT STD SUITApp LogWindow
+SUBDIRS = Qtx SUIT SUITApp STD CAM LogWindow
 
 if ENABLE_SALOMEOBJECT
 # VSR: this is the original packages list

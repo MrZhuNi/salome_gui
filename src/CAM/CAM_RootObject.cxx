@@ -23,7 +23,8 @@
 
 /*!
   \class CAM_RootObject
-
+  \brief CAM data model root object.
+  
   This class is intended for optimized access to CAM_DataModel instance
   from CAM_DataObject instances.
 

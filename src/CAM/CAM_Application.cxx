@@ -182,7 +182,7 @@ void CAM_Application::modules( QStringList& lst, const bool loaded ) const
   is already added. 
   
   \param mod module being added
-  \sa initialize()
+  \sa CAM_Module::initialize()
 */
 void CAM_Application::addModule( CAM_Module* mod )
 {
@@ -224,7 +224,8 @@ void CAM_Application::addModule( CAM_Module* mod )
 
 /*!
   \brief Load modules from the modules information list.
-  \warning If some module can not be loaded, an error message is shown.
+  
+  If some module can not be loaded, an error message is shown.
 */
 void CAM_Application::loadModules()
 {

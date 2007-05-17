@@ -50,7 +50,7 @@ CAM_DataModel::~CAM_DataModel()
 }
 
 /*!
-  \brief Initizize data model.
+  \brief Initialize data model.
 
   This method should be re-implemented in the successor classes 
   and can be used for creation of root data object.

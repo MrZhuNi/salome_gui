@@ -1,10 +1,11 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS = Qtx \
-          SUIT \
-          SUITApp \
-          STD \
-          LogWindow \
-          PyInterp \
-          PyConsole
+SUBDIRS  = Qtx
+SUBDIRS += SUIT
+SUBDIRS += SUITApp
+SUBDIRS += STD
+SUBDIRS += CAM
+SUBDIRS += LogWindow
+SUBDIRS += PyInterp
+SUBDIRS += PyConsole

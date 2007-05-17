@@ -255,7 +255,7 @@ void CAM_Module::studyClosed( SUIT_Study* study )
   }
 }
 
-/*
+/*!
   \brief Called when study is changed (obsolete).
 
   Default implementation does nothing.
@@ -978,3 +978,16 @@ void CAM_Module::connectToStudy( CAM_Study* camStudy )
     prev = dm;
   }
 }
+
+/*!
+  \fn void CAM_Module::contextMenuPopup( const QString& type, QMenu* menu, QString& title );
+  \brief Create context popup menu.
+  \param type popup menu context
+  \param menu popup menu
+  \param title popup menu title, which can be set by the module if required
+*/
+
+/*!
+  \fn void CAM_Module::updateCommandsStatus();
+  \brief Update menu/toolbar actions.
+*/
