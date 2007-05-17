@@ -19,18 +19,14 @@
 #ifndef CAM_H
 #define CAM_H
 
-#if defined CAM_EXPORTS
 #if defined WIN32
-#define CAM_EXPORT __declspec( dllexport )
+#  if defined CAM_EXPORTS
+#    define CAM_EXPORT __declspec( dllexport )
+#  else
+#    define CAM_EXPORT __declspec( dllimport )
+#  endif
 #else
-#define CAM_EXPORT
-#endif
-#else
-#if defined WIN32
-#define CAM_EXPORT __declspec( dllimport )
-#else
-#define CAM_EXPORT
-#endif
+#  define CAM_EXPORT
 #endif
 
 #if defined SOLARIS
