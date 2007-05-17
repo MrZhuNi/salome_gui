@@ -28,7 +28,7 @@
 #include <QMovie>
 
 /*!
-  \class LogoBox
+  \class QtxLogoMgr::LogoBox
   \internal
   \brief Logo images container.
 */

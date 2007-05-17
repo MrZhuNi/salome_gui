@@ -352,9 +352,8 @@ bool CAM_Application::activateModule( const QString& modName )
   return res;
 }
 
-/*
-  \brief Activate module \a modName.
-  \overload
+/*!
+  \brief Activate module \a mod.
 
   Shows error message if module could not be activated in the current study.
 
