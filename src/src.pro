@@ -9,3 +9,5 @@ SUBDIRS += CAM
 SUBDIRS += LogWindow
 SUBDIRS += PyInterp
 SUBDIRS += PyConsole
+SUBDIRS += Prs
+

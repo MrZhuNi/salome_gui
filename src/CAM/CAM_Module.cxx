@@ -213,7 +213,7 @@ CAM_Application* CAM_Module::application() const
   \return \c true if module is activated successfully.
   \sa initialize(), deactivateModule()
  */
-bool CAM_Module::activateModule( SUIT_Study* study )
+bool CAM_Module::activateModule( SUIT_Study* /*study*/ )
 {
   return true;
 }

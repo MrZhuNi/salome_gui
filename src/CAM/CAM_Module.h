@@ -62,7 +62,7 @@ public:
 
   virtual QString        iconName() const;
 
-  virtual void           contextMenuPopup( const QString&, QMenu*, QString& title ) {};
+  virtual void           contextMenuPopup( const QString&, QMenu*, QString& ) {};
   virtual void           updateCommandsStatus() {};
 
   virtual void           putInfo( const QString&, const int = -1 );

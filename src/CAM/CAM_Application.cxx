@@ -449,7 +449,7 @@ void CAM_Application::setActiveStudy( SUIT_Study* study )
 
   \param mod module being added
 */
-void CAM_Application::moduleAdded( CAM_Module* mod )
+void CAM_Application::moduleAdded( CAM_Module* /*mod*/ )
 {
 }
 
@@ -540,7 +540,7 @@ void CAM_Application::readModuleList()
   if ( rx.indexIn( args.join(" ") ) >= 0 && rx.numCaptures() > 0 ) {
     QString modules = rx.cap(1);
     QStringList mods = modules.split( ":", QString::SkipEmptyParts );
-    for ( uint i = 0; i < mods.count(); i++ ) {
+    for ( int i = 0; i < mods.count(); i++ ) {
       if ( !mods[i].trimmed().isEmpty() )
 	modList.append( mods[i].trimmed() );
     }
