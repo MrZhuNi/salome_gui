@@ -26,10 +26,13 @@
 
 #include <QtxMainWindow.h>
 
+class QMovie;
+
 class QtxLogoMgr;
-class SUIT_ViewWindow;
 class QtxActionMenuMgr;
 class QtxActionToolMgr;
+
+class SUIT_ViewWindow;
 
 /*!
   \class SUIT_Desktop
@@ -50,6 +53,7 @@ public:
 
   QtxActionMenuMgr*        menuMgr() const;
   QtxActionToolMgr*        toolMgr() const;
+  QtxLogoMgr*              logoMgr() const;
 
   virtual SUIT_ViewWindow* activeWindow() const = 0;
   virtual QList<SUIT_ViewWindow*> windows() const = 0;
@@ -58,6 +62,7 @@ public:
 
   void                     logoClear();
   void                     logoRemove( const QString& );
+  void                     logoInsert( const QString&, QMovie*, const int = -1 );
   void                     logoInsert( const QString&, const QPixmap&, const int = -1 );
 
   void                     emitActivated();

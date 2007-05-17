@@ -18,23 +18,130 @@
 //
 #include "QtxLogoMgr.h"
 
-#include <qhbox.h>
-#include <qlabel.h>
-#include <qstyle.h>
-#include <qimage.h>
-#include <qbitmap.h>
-#include <qlayout.h>
-#include <qmenubar.h>
-#include <qapplication.h>
+#include <QLabel>
+#include <QImage>
+#include <QBitmap>
+#include <QLayout>
+#include <QMenuBar>
+#include <QPointer>
+#include <QApplication>
+
+/*!
+  class: LogoBox [internal]
+*/
+
+class QtxLogoMgr::LogoBox : public QWidget
+{
+public:
+  LogoBox( QMenuBar* );
+
+  QMenuBar*      menuBar() const;
+  virtual bool   eventFilter( QObject*, QEvent* );
+  void           setLabels( const QList<QLabel*>& );
+
+protected:
+  virtual void   customEvent( QEvent* );
+
+private:
+  void           updateCorner();
+  void           updateContents();
+
+private:
+  typedef QPointer<QWidget> WidgetPtr;
+
+private:
+  QMenuBar*      myMB;
+  QList<QLabel*> myLabels;
+  WidgetPtr      myCornWid;
+};
+
+QtxLogoMgr::LogoBox::LogoBox( QMenuBar* mb )
+: QWidget( mb ),
+myMB( mb ),
+myCornWid( 0 )
+{
+  myMB->installEventFilter( this );
+  updateCorner();
+}
+
+QMenuBar* QtxLogoMgr::LogoBox::menuBar() const
+{
+  return myMB;
+}
+
+bool QtxLogoMgr::LogoBox::eventFilter( QObject* o, QEvent* e )
+{
+  if ( o != menuBar() )
+    return false;
+
+  if ( e->type() == QEvent::MenubarUpdated )
+    updateCorner();
+
+  if ( e->type() == QEvent::ChildAdded || e->type() == QEvent::ChildRemoved )
+  {
+    updateCorner();
+    QApplication::postEvent( this, new QEvent( QEvent::User ) );
+  }
+
+  return false;
+}
+
+void QtxLogoMgr::LogoBox::setLabels( const QList<QLabel*>& labs )
+{
+  for ( QList<QLabel*>::iterator it = myLabels.begin(); it != myLabels.end(); ++it )
+  {
+    if ( !labs.contains( *it ) )
+      delete *it;
+  }
+
+  myLabels = labs;
+  updateContents();
+}
+
+void QtxLogoMgr::LogoBox::customEvent( QEvent* )
+{
+  updateCorner();
+}
+
+void QtxLogoMgr::LogoBox::updateCorner()
+{
+  if ( menuBar()->cornerWidget() == this )
+    return;
+
+  myCornWid = menuBar()->cornerWidget();
+  myMB->setCornerWidget( this );
+  updateContents();
+}
+
+void QtxLogoMgr::LogoBox::updateContents()
+{
+  if ( layout() )
+    delete layout();
+
+  QHBoxLayout* base = new QHBoxLayout( this );
+  base->setMargin( 0 );
+  base->setSpacing( 3 );
+
+  if ( myCornWid )
+    base->addWidget( myCornWid );
+
+  for ( QList<QLabel*>::const_iterator it = myLabels.begin(); it != myLabels.end(); ++it )
+    base->addWidget( *it );
+
+  QApplication::sendPostedEvents();
+}
+
+/*!
+  class: QtxLogoMgr [public]
+*/
 
 /*!
   Constructor
 */
 QtxLogoMgr::QtxLogoMgr( QMenuBar* mb )
-: QObject( mb ),
-myMenus( mb ),
-myId( 0 )
+: QObject( mb )
 {
+  myBox = new LogoBox( mb );
 }
 
 /*!
@@ -49,7 +156,7 @@ QtxLogoMgr::~QtxLogoMgr()
 */
 QMenuBar* QtxLogoMgr::menuBar() const
 {
-  return myMenus;
+  return myBox->menuBar();
 }
 
 /*!
@@ -61,32 +168,63 @@ int QtxLogoMgr::count() const
 }
 
 /*!
-  Insert new logo to the menu bar area
+  Insert new logo pixmap to the menu bar area
 */
 void QtxLogoMgr::insert( const QString& id, const QPixmap& pix, const int index )
 {
   if ( pix.isNull() )
     return;
 
-  LogoInfo* inf = 0;
+  LogoInfo& inf = insert( id, index );
+
+  inf.pix = pix;
+
+  generate();
+}
+
+/*!
+  Insert new logo movie to the menu bar area
+*/
+void QtxLogoMgr::insert( const QString& id, QMovie* movie, const int index )
+{
+  if ( !movie )
+    return;
+
+  LogoInfo& inf = insert( id, index );
+
+  inf.mov = movie;
+  movie->setParent( this );
+  movie->setCacheMode( QMovie::CacheAll );
+  movie->jumpToFrame( 0 );
+
+  generate();
+}
+
+/*!
+  Insert new logo information structure into the logos list
+*/
+QtxLogoMgr::LogoInfo& QtxLogoMgr::insert( const QString& id, const int index )
+{
+  LogoInfo empty;
+  empty.id = id;
+  empty.mov = 0;
 
   int idx = find( id );
   if ( idx < 0 )
   {
     idx = index < (int)myLogos.count() ? index : -1;
     if ( idx < 0 )
-      inf = &( *myLogos.append( LogoInfo() ) );
+    {
+      myLogos.append( empty );
+      idx = myLogos.count() - 1;
+    }
     else
-      inf = &( *myLogos.insert( myLogos.at( idx ), LogoInfo() ) );
+      myLogos.insert( idx, empty );
   }
-  else
-    inf = &( *myLogos.at( idx ) );
 
+  LogoInfo& inf = myLogos[idx];
 
-  inf->id = id;
-  inf->pix = pix;
-
-  generate();
+  return inf;
 }
 
 /*!
@@ -98,7 +236,7 @@ void QtxLogoMgr::remove( const QString& id )
   if ( idx < 0 )
     return;
 
-  myLogos.remove( myLogos.at( idx ) );
+  myLogos.removeAt( idx );
 
   generate();
 }
@@ -113,6 +251,42 @@ void QtxLogoMgr::clear()
 }
 
 /*!
+  Start the animation for specified movie or for all movies if id is empty.
+*/
+void QtxLogoMgr::startAnimation( const QString& id )
+{
+  QList<QMovie*> movList;
+  movies( id, movList );
+
+  for ( QList<QMovie*>::iterator it = movList.begin(); it != movList.end(); ++it )
+    (*it)->start();
+}
+
+/*!
+  Stop the animation for specified movie or for all movies if id is empty.
+*/
+void QtxLogoMgr::stopAnimation( const QString& id )
+{
+  QList<QMovie*> movList;
+  movies( id, movList );
+
+  for ( QList<QMovie*>::iterator it = movList.begin(); it != movList.end(); ++it )
+    (*it)->stop();
+}
+
+/*!
+  Pause/Continue the animation for specified movie or for all movies if id is empty.
+*/
+void QtxLogoMgr::pauseAnimation( const bool pause, const QString& id )
+{
+  QList<QMovie*> movList;
+  movies( id, movList );
+
+  for ( QList<QMovie*>::iterator it = movList.begin(); it != movList.end(); ++it )
+    (*it)->setPaused( pause );
+}
+
+/*!
   Inserts logo to menu bar
 */
 void QtxLogoMgr::generate()
@@ -120,68 +294,39 @@ void QtxLogoMgr::generate()
   if ( !menuBar() )
     return;
 
-  if ( myId ) 
-    menuBar()->removeItem( myId );
-
-  myId = 0;
-
-  if ( myLogos.isEmpty() )
-    return;
-
-  class LogoBox : public QHBox
-  {
-  public:
-    LogoBox( QWidget* parent = 0, const char* name = 0, WFlags f = 0 ) : QHBox( parent, name, f ) {};
-
-    void addSpacing( int spacing )
-    {
-      QApplication::sendPostedEvents( this, QEvent::ChildInserted );
-      ((QHBoxLayout*)layout())->addSpacing( spacing );
-    }
-
-  protected:
-    void drawContents( QPainter* p )
-    {
-      if ( parentWidget()->inherits( "QMenuBar" ) )
-        style().drawControl( QStyle::CE_MenuBarEmptyArea, p, this, contentsRect(), colorGroup() );
-      else
-        QHBox::drawContents( p );
-    }
-  };
-
-  LogoBox* cnt = new LogoBox( menuBar() );
-  cnt->setSpacing( 3 );
-
+  QList<QLabel*> labels;
   for ( LogoList::const_iterator it = myLogos.begin(); it != myLogos.end(); ++it )
   {
     QPixmap pix = (*it).pix;
-    if ( !pix.mask() )
+    QMovie* mov = (*it).mov;
+    if ( !pix.isNull() && !pix.mask() )
     {
-      QImage img = pix.convertToImage();
       QBitmap bm;
-      if ( img.hasAlphaBuffer() )
-        bm = img.createAlphaMask();
+      QImage img = pix.toImage();
+      if ( img.hasAlphaChannel() )
+        bm = QPixmap::fromImage( img.createAlphaMask() );
       else
-        bm = img.createHeuristicMask();
+        bm = QPixmap::fromImage( img.createHeuristicMask() );
       pix.setMask( bm );
     }
 
-    QLabel* logoLab = new QLabel( cnt );
-    logoLab->setPixmap( (*it).pix );
-    logoLab->setScaledContents( false );
-    logoLab->setAlignment( QLabel::AlignCenter ); 
+    QLabel* logoLab = new QLabel( myBox );
+    if ( mov )
+      logoLab->setMovie( mov );
+    else
+    {
+      logoLab->setPixmap( (*it).pix );
+//      if ( !pix.mask().isNull() )
+//  	    logoLab->setMask( pix.mask() );
+    }
 
-    if ( pix.mask() )
-  	  logoLab->setMask( *pix.mask() );
+    logoLab->setScaledContents( false );
+    logoLab->setAlignment( Qt::AlignCenter );
+
+    labels.append( logoLab );
   }
 
-  QApplication::sendPostedEvents( cnt, QEvent::ChildInserted );
-  cnt->addSpacing( 2 );
-
-  myId = menuBar()->insertItem( cnt );
-
-  QApplication::sendPostedEvents( menuBar()->parentWidget(), QEvent::LayoutHint );
-  QApplication::postEvent( menuBar()->parentWidget(), new QEvent( QEvent::LayoutHint ) );
+  myBox->setLabels( labels );
 }
 
 /*!
@@ -193,8 +338,22 @@ int QtxLogoMgr::find( const QString& id ) const
   int idx = -1;
   for ( uint i = 0; i < myLogos.count() && idx < 0; i++ )
   {
-    if ( (*myLogos.at( i ) ).id == id )
+    if ( myLogos.at( i ).id == id )
       idx = i;
   }
   return idx;
+}
+
+/*!
+  \return list of movies according to specified id
+  \param id - logo id
+*/
+void QtxLogoMgr::movies( const QString& id, QList<QMovie*>& lst ) const
+{
+  lst.clear();
+  for ( LogoList::const_iterator it = myLogos.begin(); it != myLogos.end(); ++it )
+  {
+    if ( (*it).mov && ( id.isEmpty() || id == (*it).id ) )
+      lst.append( (*it).mov );
+  }
 }
