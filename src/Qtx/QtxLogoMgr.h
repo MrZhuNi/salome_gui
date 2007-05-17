@@ -21,11 +21,12 @@
 
 #include "Qtx.h"
 
-class QMenuBar;
-
+#include <QObject>
 #include <QList>
-#include <QMovie>
 #include <QPixmap>
+
+class QMenuBar;
+class QMovie;
 
 #ifdef WIN32
 #pragma warning( disable : 4251 )

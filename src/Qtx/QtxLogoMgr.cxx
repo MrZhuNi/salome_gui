@@ -21,13 +21,16 @@
 #include <QLabel>
 #include <QImage>
 #include <QBitmap>
-#include <QLayout>
+#include <QHBoxLayout>
 #include <QMenuBar>
 #include <QPointer>
 #include <QApplication>
+#include <QMovie>
 
 /*!
-  class: LogoBox [internal]
+  \class LogoBox
+  \internal
+  \brief Logo images container.
 */
 
 class QtxLogoMgr::LogoBox : public QWidget
@@ -50,25 +53,39 @@ private:
   typedef QPointer<QWidget> WidgetPtr;
 
 private:
-  QMenuBar*      myMB;
-  QList<QLabel*> myLabels;
-  WidgetPtr      myCornWid;
+  QMenuBar*      myMB;       //!< parent menu bar
+  QList<QLabel*> myLabels;   //!< list of labels containing logo images
+  WidgetPtr      myCornWid;  //!< corner widget
 };
 
+/*!
+  \brief Constructor.
+  \param mb menu bar
+*/
 QtxLogoMgr::LogoBox::LogoBox( QMenuBar* mb )
 : QWidget( mb ),
-myMB( mb ),
-myCornWid( 0 )
+  myMB( mb ),
+  myCornWid( 0 )
 {
   myMB->installEventFilter( this );
   updateCorner();
 }
 
+/*!
+  \brief Get menu bar.
+  \return menu bar
+*/
 QMenuBar* QtxLogoMgr::LogoBox::menuBar() const
 {
   return myMB;
 }
 
+/*!
+  \brief Custom event filter.
+  \param o event receiver object
+  \param e event sent to object
+  \return \c true if further event processing should be stopped
+*/
 bool QtxLogoMgr::LogoBox::eventFilter( QObject* o, QEvent* e )
 {
   if ( o != menuBar() )
@@ -86,6 +103,10 @@ bool QtxLogoMgr::LogoBox::eventFilter( QObject* o, QEvent* e )
   return false;
 }
 
+/*!
+  \brief Set label widgets (logo containers).
+  \param labs list of labels
+*/
 void QtxLogoMgr::LogoBox::setLabels( const QList<QLabel*>& labs )
 {
   for ( QList<QLabel*>::iterator it = myLabels.begin(); it != myLabels.end(); ++it )
@@ -98,11 +119,18 @@ void QtxLogoMgr::LogoBox::setLabels( const QList<QLabel*>& labs )
   updateContents();
 }
 
-void QtxLogoMgr::LogoBox::customEvent( QEvent* )
+/*!
+  \brief Custom event processing (update logo widget).
+  \param e event (not used)
+*/
+void QtxLogoMgr::LogoBox::customEvent( QEvent* /*e*/ )
 {
   updateCorner();
 }
 
+/*!
+  \brief Update menu bar's corner widget.
+*/
 void QtxLogoMgr::LogoBox::updateCorner()
 {
   if ( menuBar()->cornerWidget() == this )
@@ -113,6 +141,9 @@ void QtxLogoMgr::LogoBox::updateCorner()
   updateContents();
 }
 
+/*!
+  \brief Update logo manager contents.
+*/
 void QtxLogoMgr::LogoBox::updateContents()
 {
   if ( layout() )
@@ -132,11 +163,19 @@ void QtxLogoMgr::LogoBox::updateContents()
 }
 
 /*!
-  class: QtxLogoMgr [public]
+  \class QtxLogoMgr
+  \brief Provides a way to install logo pictures to the application main window.
+
+  The class includes the following functionality:
+  - add the logo image
+  - remove logo image
+  - support static images and animated images (QMovie)
+  - start/stop and pause/resume the animated logos
 */
 
 /*!
-  Constructor
+  \brief Constructor.
+  \param mb parent menu bar
 */
 QtxLogoMgr::QtxLogoMgr( QMenuBar* mb )
 : QObject( mb )
@@ -145,14 +184,15 @@ QtxLogoMgr::QtxLogoMgr( QMenuBar* mb )
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxLogoMgr::~QtxLogoMgr()
 {
 }
 
 /*!
-  Returns the menubar.
+  \brief Get menu bar.
+  \return parent menu bar
 */
 QMenuBar* QtxLogoMgr::menuBar() const
 {
@@ -160,7 +200,8 @@ QMenuBar* QtxLogoMgr::menuBar() const
 }
 
 /*!
-  Returns the count of the existed logos.
+  \brief Get number of logo images.
+  \return current number of logo images
 */
 int QtxLogoMgr::count() const
 {
@@ -168,7 +209,10 @@ int QtxLogoMgr::count() const
 }
 
 /*!
-  Insert new logo pixmap to the menu bar area
+  \brief Insert new logo pixmap to the menu bar area.
+  \param id unique string identifier of the logo
+  \param pix logo pixmap
+  \param index logo position (if < 0, logo is added to the end)
 */
 void QtxLogoMgr::insert( const QString& id, const QPixmap& pix, const int index )
 {
@@ -183,7 +227,10 @@ void QtxLogoMgr::insert( const QString& id, const QPixmap& pix, const int index 
 }
 
 /*!
-  Insert new logo movie to the menu bar area
+  \brief Insert new animated logo to the menu bar area.
+  \param id unique string identifier of the logo
+  \param pix logo movie
+  \param index logo position (if < 0, logo is added to the end)
 */
 void QtxLogoMgr::insert( const QString& id, QMovie* movie, const int index )
 {
@@ -201,7 +248,10 @@ void QtxLogoMgr::insert( const QString& id, QMovie* movie, const int index )
 }
 
 /*!
-  Insert new logo information structure into the logos list
+  \brief Insert new logo information structure into the logos list.
+  \param id unique string identifier of the logo
+  \param index logo position (if < 0, logo is added to the end)
+  \return logo information object
 */
 QtxLogoMgr::LogoInfo& QtxLogoMgr::insert( const QString& id, const int index )
 {
@@ -228,7 +278,8 @@ QtxLogoMgr::LogoInfo& QtxLogoMgr::insert( const QString& id, const int index )
 }
 
 /*!
-  Removes a logo
+  \brief Remove a logo.
+  \param id logo identifier
 */
 void QtxLogoMgr::remove( const QString& id )
 {
@@ -242,7 +293,7 @@ void QtxLogoMgr::remove( const QString& id )
 }
 
 /*!
-  Removes all logos 
+  \brief Removes all logos.
 */
 void QtxLogoMgr::clear()
 {
@@ -251,7 +302,11 @@ void QtxLogoMgr::clear()
 }
 
 /*!
-  Start the animation for specified movie or for all movies if id is empty.
+  \brief Start the animation of movie logo.
+
+  If \a id is empty, all movie logos animation are started.
+
+  \param id logo identifier
 */
 void QtxLogoMgr::startAnimation( const QString& id )
 {
@@ -263,7 +318,11 @@ void QtxLogoMgr::startAnimation( const QString& id )
 }
 
 /*!
-  Stop the animation for specified movie or for all movies if id is empty.
+  \brief Stop the animation of movie logo.
+
+  If \a id is empty, all movie logos animation are stopped.
+
+  \param id logo identifier
 */
 void QtxLogoMgr::stopAnimation( const QString& id )
 {
@@ -275,7 +334,15 @@ void QtxLogoMgr::stopAnimation( const QString& id )
 }
 
 /*!
-  Pause/Continue the animation for specified movie or for all movies if id is empty.
+  \brief Pause/resume the animation of movie logo.
+
+  If \a pause is \c true, the animation is paused; otherwise
+  it is resumed.
+  
+  If \a id is empty, the operation is performed for all movis logos.
+
+  \param pause if \c true, pause animation, otherwise resume it
+  \param id logo identifier
 */
 void QtxLogoMgr::pauseAnimation( const bool pause, const QString& id )
 {
@@ -287,7 +354,9 @@ void QtxLogoMgr::pauseAnimation( const bool pause, const QString& id )
 }
 
 /*!
-  Inserts logo to menu bar
+  \brief Regenerate logo manager widget contents.
+  
+  Insert logo to menu bar if it not yet done, layout the widget.
 */
 void QtxLogoMgr::generate()
 {
@@ -330,8 +399,9 @@ void QtxLogoMgr::generate()
 }
 
 /*!
-  \return index of found logo
-  \param id - logo id
+  \brief Search the logo by the specified \a id.
+  \param id logo identifier
+  \return index of logo or -1 if not found
 */
 int QtxLogoMgr::find( const QString& id ) const
 {
@@ -345,8 +415,12 @@ int QtxLogoMgr::find( const QString& id ) const
 }
 
 /*!
-  \return list of movies according to specified id
-  \param id - logo id
+  \brief Get movie logos by specified \a id.
+
+  If \a id is empty, all movie logos are returned.
+
+  \param id logo identifier
+  \param lst list of movies, which satisfy the \a id
 */
 void QtxLogoMgr::movies( const QString& id, QList<QMovie*>& lst ) const
 {
