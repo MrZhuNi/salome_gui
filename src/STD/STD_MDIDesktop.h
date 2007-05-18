@@ -23,7 +23,7 @@
 
 #include <SUIT_Desktop.h>
 
-class QWorkspace;
+class QtxWorkspace;
 //class QtxWorkspaceAction;
 
 #if defined WIN32
@@ -33,8 +33,6 @@ class QWorkspace;
 class STD_EXPORT STD_MDIDesktop: public SUIT_Desktop 
 {
   Q_OBJECT
-
-  class Workspace;
 
 public:
   enum { MenuWindowId = 6 };
@@ -52,7 +50,7 @@ public:
   void                     setWindowOperations( const int, ... );
   void                     setWindowOperations( const QList<int>& );
 
-  QWorkspace*              workspace() const;
+  QtxWorkspace*            workspace() const;
 
 private slots:
   void                     onWindowActivated( QWidget* );
@@ -65,7 +63,7 @@ private:
   int                      operationFlag( const int ) const;
 
 private:
-  QWorkspace*              myWorkspace;
+  QtxWorkspace*            myWorkspace;
 //  QtxWorkspaceAction*      myWorkspaceAction;
 };
 

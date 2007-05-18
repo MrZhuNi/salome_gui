@@ -53,7 +53,7 @@ void SUIT_ActionOperation::setAction( const QString& text, const QIcon& icon,
 				                              const QString& menuText, QKeySequence accel,
                                       QObject* parent, bool toggle )
 {
-  setAction( new QtxAction( text, icon, menuText, accel, parent, 0, toggle ) );
+  setAction( new QtxAction( text, icon, menuText, accel, parent, toggle ) );
 }
 
 /*!Set action.
@@ -62,7 +62,7 @@ void SUIT_ActionOperation::setAction( const QString& text, const QIcon& icon,
 void SUIT_ActionOperation::setAction( const QString& text, const QString& menuText,
 				                              QKeySequence accel, QObject* parent, bool toggle )
 {
-  setAction( new QtxAction( text, menuText, accel, parent, 0, toggle ) );
+  setAction( new QtxAction( text, menuText, accel, parent, toggle ) );
 }
 
 /*!Set action.

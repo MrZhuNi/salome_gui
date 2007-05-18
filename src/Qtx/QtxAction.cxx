@@ -39,10 +39,9 @@
   \param name action name (in terms of QObject)
   \param toggle if \c true the action is a toggle action
 */
-QtxAction::QtxAction( QObject* parent, const char* name, bool toggle )
+QtxAction::QtxAction( QObject* parent, bool toggle )
 : QAction( parent )
 {
-  setObjectName( name );
   setCheckable( toggle );
 
   QApplication::instance()->installEventFilter( this );
@@ -61,14 +60,12 @@ QtxAction::QtxAction( QObject* parent, const char* name, bool toggle )
   \param name action name (in terms of QObject)
   \param toggle if \c true the action is a toggle action
 */
-QtxAction::QtxAction( const QString& text, const QIcon& icon,
-                      const QString& menuText, int accel,
-                      QObject* parent, const char* name, bool toggle )
+QtxAction::QtxAction( const QString& text, const QIcon& icon, const QString& menuText,
+                      int accel, QObject* parent, bool toggle )
 : QAction( icon, menuText, parent )
 {
   setToolTip( text );
   setShortcut( accel );
-  setObjectName( name );
   setCheckable( toggle );
 
   QApplication::instance()->installEventFilter( this );
@@ -86,13 +83,12 @@ QtxAction::QtxAction( const QString& text, const QIcon& icon,
   \param name action name (in terms of QObject)
   \param toggle if \c true the action is a toggle action
 */
-QtxAction::QtxAction( const QString& text, const QString& menuText, int accel,
-                      QObject* parent, const char* name, bool toggle )
+QtxAction::QtxAction( const QString& text, const QString& menuText,
+                      int accel, QObject* parent, bool toggle )
 : QAction( menuText, parent )
 {
   setToolTip( text );
   setShortcut( accel );
-  setObjectName( name );
   setCheckable( toggle );
 
   QApplication::instance()->installEventFilter( this );

@@ -575,7 +575,7 @@ QAction* SUIT_Application::createAction( const int id, const QString& text, cons
                                          const QString& menu, const QString& tip, const int key,
                                          QObject* parent, const bool toggle, QObject* reciever, const char* member )
 {
-  QtxAction* a = new QtxAction( text, icon, menu, key, parent, 0, toggle );
+  QtxAction* a = new QtxAction( text, icon, menu, key, parent, toggle );
   a->setStatusTip( tip );
 
   if ( reciever && member )

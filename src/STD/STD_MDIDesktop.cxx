@@ -22,16 +22,18 @@
 #include <SUIT_ViewWindow.h>
 #include <SUIT_ResourceMgr.h>
 
+#include <QtxWorkspace.h>
 //#include <QtxActionMenuMgr.h>
 //#include <QtxWorkspaceAction.h>
 
 #include <QFrame>
 #include <QVBoxLayout>
-#include <QWorkspace>
 
 #include <stdarg.h>
 
-/*!Constructor.*/
+/*!
+  Constructor.
+*/
 STD_MDIDesktop::STD_MDIDesktop()
 : SUIT_Desktop(),
 myWorkspace( 0 )//,
@@ -44,7 +46,7 @@ myWorkspace( 0 )//,
 
   setCentralWidget( base );
 
-  myWorkspace = new QWorkspace( base );
+  myWorkspace = new QtxWorkspace( base );
   main->addWidget( myWorkspace );
 
   connect( myWorkspace, SIGNAL( windowActivated( QWidget* ) ),
@@ -53,12 +55,16 @@ myWorkspace( 0 )//,
   createActions();
 }
 
-/*!destructor.*/
+/*!
+  Destructor.
+*/
 STD_MDIDesktop::~STD_MDIDesktop()
 {
 }
 
-/*!\retval SUIT_ViewWindow - return const active window.*/
+/*!
+  \retval SUIT_ViewWindow - return const active window.
+*/
 SUIT_ViewWindow* STD_MDIDesktop::activeWindow() const
 {
   SUIT_ViewWindow* wnd = 0;
@@ -70,7 +76,9 @@ SUIT_ViewWindow* STD_MDIDesktop::activeWindow() const
   return wnd;
 }
 
-/*!\retval QPtrList<SUIT_ViewWindow> - return const active window list.*/
+/*!
+  \retval QList<SUIT_ViewWindow> - return const active window list.
+*/
 QList<SUIT_ViewWindow*> STD_MDIDesktop::windows() const
 {
   QList<SUIT_ViewWindow*> winList;
@@ -86,7 +94,9 @@ QList<SUIT_ViewWindow*> STD_MDIDesktop::windows() const
   return winList;
 }
 
-/*! add the new widget into desktop.*/
+/*!
+  Add the new widget into desktop.
+*/
 void STD_MDIDesktop::addWindow( QWidget* w )
 {
   if ( !w || !workspace() )
@@ -130,20 +140,26 @@ void STD_MDIDesktop::setWindowOperations( const QList<int>& opList )
 //  myWorkspaceAction->setItems( flags );
 }
 
-/*!\retval QWorkspace pointer - work space.*/
-QWorkspace* STD_MDIDesktop::workspace() const
+/*!
+  \retval QtxWorkspace pointer - work space.
+*/
+QtxWorkspace* STD_MDIDesktop::workspace() const
 {
   return myWorkspace;
 }
 
-/*!Emit window activated.*/
+/*!
+  Emit window activated.
+*/
 void STD_MDIDesktop::onWindowActivated( QWidget* w )
 {
   if ( w && w->inherits( "SUIT_ViewWindow" ) )
     emit windowActivated( (SUIT_ViewWindow*)w );
 }
 
-/*!Create actions: cascade, Tile, Tile Horizontal, Tile Vertical*/
+/*!
+  Create actions: cascade, Tile, Tile Horizontal, Tile Vertical
+*/
 void STD_MDIDesktop::createActions()
 {
 /*

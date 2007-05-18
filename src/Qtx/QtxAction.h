@@ -37,9 +37,9 @@ class QTX_EXPORT QtxAction : public QAction
   Q_OBJECT
 
 public:
-  QtxAction( QObject* = 0, const char* = 0, bool = false );
-  QtxAction( const QString&, const QString&, int, QObject*, const char* = 0, bool = false );
-  QtxAction( const QString&, const QIcon&, const QString&, int, QObject*, const char* = 0, bool = false );
+  QtxAction( QObject* = 0, bool = false );
+  QtxAction( const QString&, const QString&, int, QObject*, bool = false );
+  QtxAction( const QString&, const QIcon&, const QString&, int, QObject*, bool = false );
   virtual ~QtxAction();
 
   virtual bool eventFilter( QObject*, QEvent* );
