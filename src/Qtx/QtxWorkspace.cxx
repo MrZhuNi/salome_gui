@@ -24,6 +24,15 @@
 #include <QWidgetList>
 
 /*!
+  \class QtxWorkspace
+  \brief A workspace widget which can be used in the MDI application
+         as top-level widget in the application main window.
+
+  Provides methods to tile child windows in horizontal or vertical
+  direction.
+*/
+
+/*!
   \brief Constructor.
   \param parent parent widget
 */
@@ -40,7 +49,7 @@ QtxWorkspace::~QtxWorkspace()
 }
 
 /*!
-  \brief Performs tile vertical action
+  \brief Tiles child windows vertically.
 */
 void QtxWorkspace::tileVertical()
 {
@@ -84,7 +93,7 @@ void QtxWorkspace::tileVertical()
 }
 
 /*!
-  \brief Performs tile horizontal action
+  \brief Tiles child windows horizontally.
 */
 void QtxWorkspace::tileHorizontal()
 {

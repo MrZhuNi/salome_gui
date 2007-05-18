@@ -43,6 +43,7 @@ salomeinclude_HEADERS=		\
 	QtxMRUAction.h		\
 	QtxResourceMgr.h	\
 	QtxToolBar.h		\
+	QtxWorkspace.h		\
 	QtxWorkstack.h
 
 #VSR: not yet migrated to Qt4 files
@@ -92,6 +93,7 @@ dist_libqtx_la_SOURCES=		\
 	QtxMRUAction.cxx	\
 	QtxResourceMgr.cxx	\
 	QtxToolBar.cxx		\
+	QtxWorkspace.cxx	\
 	QtxWorkstack.cxx
 
 #VSR: not yet migrated to Qt4 files
@@ -135,6 +137,7 @@ MOC_FILES=				\
 	QtxMainWindow_moc.cxx		\
 	QtxMRUAction_moc.cxx		\
 	QtxToolBar_moc.cxx		\
+	QtxWorkspace_moc.cxx		\
 	QtxWorkstack_moc.cxx
 
 #VSR: not yet migrated to Qt4 files
