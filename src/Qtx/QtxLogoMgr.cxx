@@ -91,7 +91,7 @@ bool QtxLogoMgr::LogoBox::eventFilter( QObject* o, QEvent* e )
   if ( o != menuBar() )
     return false;
 
-  if ( e->type() == QEvent::MenubarUpdated )
+  if ( e->type() == QEvent::MenubarUpdated || e->type() == QEvent::Resize )
     updateCorner();
 
   if ( e->type() == QEvent::ChildAdded || e->type() == QEvent::ChildRemoved )
