@@ -24,7 +24,7 @@
 #include <SUIT_Desktop.h>
 
 class QtxWorkspace;
-//class QtxWorkspaceAction;
+class QtxWorkspaceAction;
 
 #if defined WIN32
 #pragma warning( disable: 4251 )
@@ -35,7 +35,6 @@ class STD_EXPORT STD_MDIDesktop: public SUIT_Desktop
   Q_OBJECT
 
 public:
-  enum { MenuWindowId = 6 };
   enum { Cascade, Tile, HTile, VTile };
 
 public:
@@ -64,7 +63,7 @@ private:
 
 private:
   QtxWorkspace*            myWorkspace;
-//  QtxWorkspaceAction*      myWorkspaceAction;
+  QtxWorkspaceAction*      myWorkspaceAction;
 };
 
 #if defined WIN32

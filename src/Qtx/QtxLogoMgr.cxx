@@ -153,11 +153,11 @@ void QtxLogoMgr::LogoBox::updateContents()
   base->setMargin( 0 );
   base->setSpacing( 3 );
 
-  if ( myCornWid )
-    base->addWidget( myCornWid );
-
   for ( QList<QLabel*>::const_iterator it = myLabels.begin(); it != myLabels.end(); ++it )
     base->addWidget( *it );
+
+  if ( myCornWid )
+    base->addWidget( myCornWid );
 
   QApplication::sendPostedEvents();
 }
