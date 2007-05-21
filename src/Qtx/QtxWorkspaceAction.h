@@ -24,7 +24,6 @@
 
 #include "QtxActionSet.h"
 
-class QMenu;
 class QtxWorkspace;
 
 #ifdef WIN32

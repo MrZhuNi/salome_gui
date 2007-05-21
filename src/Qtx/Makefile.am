@@ -45,6 +45,7 @@ salomeinclude_HEADERS=		\
 	QtxResourceMgr.h	\
 	QtxToolBar.h		\
 	QtxWorkspace.h		\
+	QtxWorkspaceAction.h	\
 	QtxWorkstack.h
 
 #VSR: not yet migrated to Qt4 files
@@ -70,7 +71,6 @@ salomeinclude_HEADERS=		\
 	QtxStdOperations.h	\
 	QtxTable.h		\
 	QtxToolTip.h		\
-	QtxWorkspaceAction.h	\
 	QtxWorkstackAction.h
 
 # Libraries targets
@@ -96,6 +96,7 @@ dist_libqtx_la_SOURCES=		\
 	QtxResourceMgr.cxx	\
 	QtxToolBar.cxx		\
 	QtxWorkspace.cxx	\
+	QtxWorkspaceAction.cxx	\
 	QtxWorkstack.cxx
 
 #VSR: not yet migrated to Qt4 files
@@ -121,7 +122,6 @@ dist_libqtx_la_SOURCES=		\
 	QtxStdOperations.cxx	\
 	QtxTable.cxx		\
 	QtxToolTip.cxx		\
-	QtxWorkspaceAction.cxx	\
 	QtxWorkstackAction.cxx
 
 #VSR: already migrated to Qt4 files
@@ -141,6 +141,7 @@ MOC_FILES=				\
 	QtxMRUAction_moc.cxx		\
 	QtxToolBar_moc.cxx		\
 	QtxWorkspace_moc.cxx		\
+	QtxWorkspaceAction_moc.cxx	\
 	QtxWorkstack_moc.cxx
 
 #VSR: not yet migrated to Qt4 files
@@ -161,7 +162,6 @@ MOC_FILES=				\
 	QtxSplash_moc.cxx		\
 	QtxTable_moc.cxx		\
 	QtxToolTip_moc.cxx		\
-	QtxWorkspaceAction_moc.cxx	\
 	QtxWorkstackAction_moc.cxx
 
 nodist_libqtx_la_SOURCES= $(MOC_FILES)

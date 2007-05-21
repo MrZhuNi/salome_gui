@@ -23,15 +23,22 @@
 
 #include "QtxWorkspace.h"
 
-#include <QMenu.h>
+#include <QMenu>
 #include <QWidgetList>
-#include <QApplication>
 
 /*!
-  Constructor
+  \class QtxWorkspaceAction
+  \brief Implements actions group for menu Windows with standard operations, like
+         "Cascade", "Tile", "Tile Horizontally", etc.
+*/
+
+/*!
+  \brief Constructor.
+  \param ws parent workspace
+  \param parent parent object (owner of the action)
 */
 QtxWorkspaceAction::QtxWorkspaceAction( QtxWorkspace* ws, QObject* parent )
-: QtxActionSet( parent )
+: QtxActionSet( parent ),
   myWorkspace( ws )
 {
   insertAction( new QtxAction( tr( "Arranges the windows as overlapping tiles" ),
@@ -45,18 +52,19 @@ QtxWorkspaceAction::QtxWorkspaceAction( QtxWorkspace* ws, QObject* parent )
 
   connect( this, SIGNAL( triggered( int ) ), this, SLOT( onTriggered( int ) ) );
 
-  setItems( Standard );
+  setMenuActions( Standard );
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxWorkspaceAction::~QtxWorkspaceAction()
 {
 }
 
 /*!
-  \return corresponding workspace
+  \brief Get workspace.
+  \return parent workspace
 */
 QtxWorkspace* QtxWorkspaceAction::workspace() const
 {
@@ -97,8 +105,9 @@ int QtxWorkspaceAction::menuActions() const
 }
 
 /*!
-  \return accelerator of item
-  \param id - item id
+  \brief Get keyboard accelerator for the specified action.
+  \param id menu action ID
+  \return keyboard accelerator of menu item or 0 if there is no such action
 */
 int QtxWorkspaceAction::accel( const int id ) const
 {
@@ -109,8 +118,12 @@ int QtxWorkspaceAction::accel( const int id ) const
 }
 
 /*!
-  \return icons of item
-  \param id - item id
+  \brief Get icon for the specified action.
+
+  If \a id is invalid, null icon is returned.
+
+  \param id menu action ID
+  \return menu item icon
 */
 QIcon QtxWorkspaceAction::icon( const int id ) const
 {
@@ -121,8 +134,9 @@ QIcon QtxWorkspaceAction::icon( const int id ) const
 }
 
 /*!
-  \return menu text of item
-  \param id - item id
+  \brief Get menu item text for the specified action.
+  \param id menu action ID
+  \return menu item text or null QString if there is no such action
 */
 QString QtxWorkspaceAction::text( const int id ) const
 {
@@ -133,8 +147,9 @@ QString QtxWorkspaceAction::text( const int id ) const
 }
 
 /*!
-  \return status tip of item
-  \param id - item id
+  \brief Get status bar tip for the specified action.
+  \param id menu action ID
+  \return status bar tip menu item or null QString if there is no such action
 */
 QString QtxWorkspaceAction::statusTip( const int id ) const
 {
@@ -145,9 +160,9 @@ QString QtxWorkspaceAction::statusTip( const int id ) const
 }
 
 /*!
-  Changes accelerator of item
-  \param id - item id
-  \param a - new accelerator
+  \brief Set keyboard accelerator for the specified action.
+  \param id menu action ID
+  \param a new keyboard accelerator
 */
 void QtxWorkspaceAction::setAccel( const int id, const int a )
 {
@@ -156,20 +171,20 @@ void QtxWorkspaceAction::setAccel( const int id, const int a )
 }
 
 /*!
-  Changes icons of item
-  \param id - item id
-  \param ico - new icons
+  \brief Set menu item icon for the specified action.
+  \param id menu action ID
+  \param ico new menu item icon
 */
-void QtxWorkspaceAction::setIcon( const int id, const QIcon& ico )
+void QtxWorkspaceAction::setIcon( const int id, const QIcon& icon )
 {
   if ( action( id ) )
-    action( id )->setIcon( ico );
+    action( id )->setIcon( icon );
 }
 
 /*!
-  Changes menu text of item
-  \param id - item id
-  \param txt - new menu text
+  \brief Set menu item text for the specified action.
+  \param id menu action ID
+  \param txt new menu item text
 */
 void QtxWorkspaceAction::setText( const int id, const QString& txt )
 {
@@ -178,9 +193,9 @@ void QtxWorkspaceAction::setText( const int id, const QString& txt )
 }
 
 /*!
-  Changes status tip of item
-  \param id - item id
-  \param txt - new status tip
+  \brief Set menu item status bar tip for the specified action.
+  \param id menu action ID
+  \param txt new menu item status bar tip
 */
 void QtxWorkspaceAction::setStatusTip( const int id, const QString& txt )
 {
@@ -189,8 +204,8 @@ void QtxWorkspaceAction::setStatusTip( const int id, const QString& txt )
 }
 
 /*!
-  Performs action
-  \param type - action type
+  \brief Process action activated by the user.
+  \param type action ID
 */
 void QtxWorkspaceAction::perform( const int type )
 {
@@ -212,7 +227,7 @@ void QtxWorkspaceAction::perform( const int type )
 }
 
 /*!
-  Performs tile action
+  \brief Tile child windows in the workspace.
 */
 void QtxWorkspaceAction::tile()
 {
@@ -222,7 +237,7 @@ void QtxWorkspaceAction::tile()
 }
 
 /*!
-  Performs cascade action
+  \brief Cascade child windows in the workspace.
 */
 void QtxWorkspaceAction::cascade()
 {
@@ -241,7 +256,7 @@ void QtxWorkspaceAction::cascade()
 }
 
 /*!
-  Performs tile vertical action
+  \brief Tile child windows in the workspace in the vertical direction.
 */
 void QtxWorkspaceAction::tileVertical()
 {
@@ -251,7 +266,7 @@ void QtxWorkspaceAction::tileVertical()
 }
 
 /*!
-  Performs tile horizontal action
+  \brief Tile child windows in the workspace in the horizontal direction.
 */
 void QtxWorkspaceAction::tileHorizontal()
 {
@@ -260,6 +275,10 @@ void QtxWorkspaceAction::tileHorizontal()
     ws->tileHorizontal();
 }
 
+/*!
+  \brief Called when action is added to the menu bar.
+  \param w menu bar widget this action is being added to
+*/
 void QtxWorkspaceAction::addedTo( QWidget* w )
 {
   QtxActionSet::addedTo( w );
@@ -269,6 +288,10 @@ void QtxWorkspaceAction::addedTo( QWidget* w )
     connect( pm, SIGNAL( aboutToShow() ), this, SLOT( onAboutToShow() ) );
 }
 
+/*!
+  \brief Called when action is removed from the menu bar.
+  \param w menu bar widget this action is being removed from
+*/
 void QtxWorkspaceAction::removedFrom( QWidget* w )
 {
   QtxActionSet::removedFrom( w );
@@ -279,7 +302,7 @@ void QtxWorkspaceAction::removedFrom( QWidget* w )
 }
 
 /*!
-  Refills actions and updates thier state.
+  \brief Update all menu action state.
 */
 void QtxWorkspaceAction::updateContent()
 {
@@ -292,6 +315,9 @@ void QtxWorkspaceAction::updateContent()
   updateWindows();
 }
 
+/*!
+  \brief Update actions which refer to the opened child windows.
+*/
 void QtxWorkspaceAction::updateWindows()
 {
   QtxWorkspace* ws = workspace();
@@ -311,7 +337,7 @@ void QtxWorkspaceAction::updateWindows()
 
   QList<QAction*> items;
   QMap<QAction*, int> map;
-  if ( hasItems( Windows ) )
+  if ( menuActions() & Windows )
   {
     int index = 1;
     QWidgetList wList = ws->windowList();
@@ -340,6 +366,11 @@ void QtxWorkspaceAction::updateWindows()
     setActionId( itr.key(), itr.value() );
 }
 
+/*!
+  \brief Called when parent menu is about to show.
+
+  Updates all menu items.
+*/
 void QtxWorkspaceAction::onAboutToShow()
 {
   QMenu* pm = ::qobject_cast<QMenu*>( sender() );
@@ -348,7 +379,9 @@ void QtxWorkspaceAction::onAboutToShow()
 }
 
 /*!
-  SLOT: called when popup item corresponding to window is activated, activates window
+  \brief Called when menu item corresponding to some child window is activated.
+
+  Activates correposponding child window.
 */
 void QtxWorkspaceAction::onItemActivated( int idx )
 {
@@ -363,6 +396,11 @@ void QtxWorkspaceAction::onItemActivated( int idx )
   wList.at( idx )->setFocus();
 }
 
+/*!
+  \brief Called when menu item is activated by the user.
+  
+  Perform the corresponding action.
+*/
 void QtxWorkspaceAction::onTriggered( int id )
 {
   if ( id < Windows )
