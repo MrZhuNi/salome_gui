@@ -31,9 +31,8 @@
   Constructor
 */
 QtxWorkspaceAction::QtxWorkspaceAction( QtxWorkspace* ws, QObject* parent )
-: QtxActionSet( parent ),
-myFlags( 0 ),
-myWorkspace( ws )
+: QtxActionSet( parent )
+  myWorkspace( ws )
 {
   insertAction( new QtxAction( tr( "Arranges the windows as overlapping tiles" ),
                                tr( "Cascade" ), 0, this ), Cascade );
@@ -65,40 +64,36 @@ QtxWorkspace* QtxWorkspaceAction::workspace() const
 }
 
 /*!
-  \return set of action flags
+  \brief Set actions to be visible in the menu.
+  
+  Actions, which IDs are set in \a flags parameter, will be shown in the 
+  menu bar. Other actions will not be shown.
+
+  \param flags ORed together actions flags
 */
-int QtxWorkspaceAction::items() const
+void QtxWorkspaceAction::setMenuActions( const int flags )
 {
-  return myFlags;
+  action( Cascade )->setVisible( flags & Cascade );
+  action( Tile )->setVisible( flags & Tile );
+  action( VTile )->setVisible( flags & VTile );
+  action( HTile )->setVisible( flags & HTile );
+  action( Windows )->setVisible( flags & Windows );
 }
 
 /*!
-  Sets action flags
-  \param flags - new set of flags
+  \brief Get menu actions which are currently visible in the menu bar.
+  \return ORed together actions flags
+  \sa setMenuActions()
 */
-void QtxWorkspaceAction::setItems( const int flags )
+int QtxWorkspaceAction::menuActions() const
 {
-  if ( flags == myFlags )
-    return;
-
-  myFlags = flags;
-
-  uint f = Windows;
-  while ( f )
-  {
-    if ( action( f ) )
-      action( f )->setVisible( myFlags & f );
-    f = f >> 1;
-  }
-}
-
-/*!
-  \return true if action contains all flags
-  \param flags - new set of flags
-*/
-bool QtxWorkspaceAction::hasItems( const int flags ) const
-{
-  return ( myFlags & flags ) == flags;
+  int ret = 0;
+  ret = ret | ( action( Cascade )->isVisible() ? Cascade : 0 );
+  ret = ret | ( action( Tile )->isVisible() ? Tile : 0 );
+  ret = ret | ( action( VTile )->isVisible() ? VTile : 0 );
+  ret = ret | ( action( HTile )->isVisible() ? HTile : 0 );
+  ret = ret | ( action( Windows )->isVisible() ? Windows : 0 );
+  return ret;
 }
 
 /*!

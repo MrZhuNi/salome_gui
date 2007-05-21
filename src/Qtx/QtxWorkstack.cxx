@@ -1791,18 +1791,20 @@ void QtxWorkstack::setMenuActions( const int flags )
 }
 
 /*!
-  \brief Test menu action.
+  \brief Set actions to be visible in the context popup menu.
+  
+  Actions, which IDs are set in \a flags parameter, will be shown in the 
+  context popup menu. Other actions will not be shown.
+
   \param flags ORed together actions flags
-  \return \c true if all specified actions are visible and
-          \c false if at least one specified action is not visible
 */
-bool QtxWorkstack::testMenuActions( const int flags ) const
+int QtxWorkstack::menuActions() const
 {
-  bool ret = true;
-  ret = ret && ( !(  flags & SplitVertical )   || myActionsMap[SplitVertical]->isVisible() );
-  ret = ret && ( !(  flags & SplitHorizontal ) || myActionsMap[SplitHorizontal]->isVisible() );
-  ret = ret && ( !(  flags & Close )           || myActionsMap[Close]->isVisible() );
-  ret = ret && ( !(  flags & Rename )          || myActionsMap[Rename]->isVisible() );
+  int ret = 0;
+  ret = ret | ( myActionsMap[SplitVertical]->isVisible() ? SplitVertical : 0 );
+  ret = ret | ( myActionsMap[SplitHorizontal]->isVisible() ? SplitHorizontal : 0 );
+  ret = ret | ( myActionsMap[Close]->isVisible() ? Close : 0 );
+  ret = ret | ( myActionsMap[Rename]->isVisible() ? Rename : 0 );
   return ret;
 }
 

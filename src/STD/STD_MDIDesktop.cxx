@@ -137,7 +137,7 @@ void STD_MDIDesktop::setWindowOperations( const QList<int>& opList )
   for ( QList<int>::const_iterator it = opList.begin(); it != opList.end(); ++it )
     flags = flags | operationFlag( *it );
 
-  myWorkspaceAction->setItems( flags );
+  myWorkspaceAction->setMenuActions( flags );
 }
 
 /*!
@@ -171,9 +171,9 @@ void STD_MDIDesktop::createActions()
 
   myWorkspaceAction = new QtxWorkspaceAction( workspace(), this );
 
-  myWorkspaceAction->setItems( QtxWorkspaceAction::Cascade | QtxWorkspaceAction::Tile |
-                               QtxWorkspaceAction::HTile | QtxWorkspaceAction::VTile |
-                               QtxWorkspaceAction::Windows );
+  myWorkspaceAction->setMenuActions( QtxWorkspaceAction::Cascade | QtxWorkspaceAction::Tile  |
+				     QtxWorkspaceAction::HTile   | QtxWorkspaceAction::VTile |
+				     QtxWorkspaceAction::Windows );
 
   // Cascade
   myWorkspaceAction->setIcon( QtxWorkspaceAction::Cascade,

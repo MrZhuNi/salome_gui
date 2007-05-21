@@ -411,18 +411,17 @@ void LogWindow::setMenuActions( const int flags )
 }
 
 /*!
-  \brief Test menu action.
-  \param flags ORed together actions flags
-  \return \c true if all specified actions are visible and
-          \c false if at least one specified action is not visible
+  \brief Get menu actions which are currently visible in the context popup menu.
+  \return ORed together actions flags
+  \sa setMenuActions()
 */
-bool LogWindow::testMenuActions( const int flags ) const
+int LogWindow::menuActions() const
 {
-  bool ret = true;
-  ret = ret && ( !(  flags & CopyId )       || myActions[CopyId]->isVisible() );
-  ret = ret && ( !(  flags & ClearId )      || myActions[ClearId]->isVisible() );
-  ret = ret && ( !(  flags & SelectAllId )  || myActions[SelectAllId]->isVisible() );
-  ret = ret && ( !(  flags & SaveToFileId ) || myActions[SaveToFileId]->isVisible() );
+  int ret = 0;
+  ret = ret | ( myActions[CopyId]->isVisible() ? CopyId : 0 );
+  ret = ret | ( myActions[ClearId]->isVisible() ? ClearId : 0 );
+  ret = ret | ( myActions[SelectAllId]->isVisible() ? SelectAllId : 0 );
+  ret = ret | ( myActions[SaveToFileId]->isVisible() ? SaveToFileId : 0 );
   return ret;
 }
 

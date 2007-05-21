@@ -80,7 +80,7 @@ public:
   void                setAccel( const int, const int );
 
   void                setMenuActions( const int );
-  bool                testMenuActions( const int ) const;
+  int                 menuActions() const;
 
   void                split( const int );
 

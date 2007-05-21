@@ -51,9 +51,8 @@ public:
 
   QtxWorkspace* workspace() const;
 
-  int           items() const;
-  void          setItems( const int );
-  bool          hasItems( const int ) const;
+  void          setMenuActions( const int );
+  int           menuActions() const;
 
   QIcon         icon( const int ) const;
   QString       text( const int ) const;
@@ -87,7 +86,6 @@ private:
   void          updateWindows();
 
 private:
-  int           myFlags;
   QtxWorkspace* myWorkspace;
 };
 
