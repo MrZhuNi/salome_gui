@@ -21,11 +21,23 @@
 
 #include "QtxActionSet.h"
 
-#include <QMenu>
-#include <QActionGroup>
+/*!
+  \class QtxActionSet
+  \brief An action class which is represented in the menu bar (or toolbar) as
+  a group of items (which can be customized).
+
+  Example: Window menu in the MDI application with menu items:
+  - Cascade
+  - Tile vertically
+  - Tile horizontally
+  - <separator>
+  - Window1
+  - Window2
+*/
 
 /*!
-  Constructor
+  \brief Constructor.
+  \param parent parent object
 */
 QtxActionSet::QtxActionSet( QObject* parent )
 : QtxAction( parent )
@@ -38,17 +50,25 @@ QtxActionSet::QtxActionSet( QObject* parent )
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxActionSet::~QtxActionSet()
 {
 }
 
+/*!
+  \brief Get list of child actions.
+  \return list of assigned actions.
+*/
 QList<QAction*> QtxActionSet::actions() const
 {
   return mySet;
 }
 
+/*!
+  \brief Assign child actions.
+  \param lst list of actions
+*/
 void QtxActionSet::setActions( const QList<QAction*>& lst )
 {
   for ( ActionList::iterator it = mySet.begin(); it != mySet.end(); ++it )
@@ -62,6 +82,11 @@ void QtxActionSet::setActions( const QList<QAction*>& lst )
   insertActions( lst );
 }
 
+/*!
+  \brief Insert actions at the specified position.
+  \param lst list of actions
+  \param index position in the action list (if < 0, items are appended to the end of list)
+*/
 void QtxActionSet::insertActions( const QList<QAction*>& lst, const int index )
 {
   int idx = qMin( index < 0 ? mySet.count() : index, mySet.count() );
@@ -81,6 +106,16 @@ void QtxActionSet::insertActions( const QList<QAction*>& lst, const int index )
   update();
 }
 
+/*!
+  \brief Insert action at the specified position.
+
+  If \a id < 0, it is generated automatically.
+
+  \param a action being inserted
+  \param id action ID
+  \param index position in the action list (if < 0, item is appended to the end of list)
+  \return action identifier
+*/
 int QtxActionSet::insertAction( QAction* a, const int id, const int index )
 {
   if ( !a )
@@ -100,16 +135,44 @@ int QtxActionSet::insertAction( QAction* a, const int id, const int index )
   return ident;
 }
 
+/*!
+  \brief Insert action at the specified position.
+
+  If \a id < 0, it is generated automatically.
+
+  \param txt action text
+  \param id action ID
+  \param index position in the action list (if < 0, item is appended to the end of list)
+  \return action identifier
+*/
 int QtxActionSet::insertAction( const QString& txt, const int id, const int index )
 {
   return insertAction( new QtxAction( txt, txt, 0, this ), id, index );
 }
 
-int QtxActionSet::insertAction( const QString& txt, const QIcon& ico, const int id, const int index )
+/*!
+  \brief Insert action at the specified position.
+
+  If \a id < 0, it is generated automatically.
+
+  \param txt action text
+  \param icon action icon
+  \param id action ID
+  \param index position in the action list (if < 0, item is appended to the end of list)
+  \return action identifier
+*/
+int QtxActionSet::insertAction( const QString& txt, const QIcon& icon, const int id, const int index )
 {
-  return insertAction( new QtxAction( txt, ico, txt, 0, this ), id, index );
+  return insertAction( new QtxAction( txt, icon, txt, 0, this ), id, index );
 }
 
+/*!
+  \brief Remove specified action.
+
+  An action is removed from the action list and destroyed.
+
+  \param a action to be removed.
+*/
 void QtxActionSet::removeAction( QAction* a )
 {
   if ( !mySet.contains( a ) )
@@ -119,11 +182,23 @@ void QtxActionSet::removeAction( QAction* a )
   delete a;
 }
 
+/*!
+  \brief Remove specified action.
+
+  An action is removed from the action list and destroyed.
+
+  \param id action identifier
+*/
 void QtxActionSet::removeAction( const int id )
 {
   removeAction( action( id ) );
 }
 
+/*!
+  \brief Remove all actions.
+
+  An actions list is cleared and all actions are destroyed.
+*/
 void QtxActionSet::clear()
 {
   qDeleteAll( mySet );
@@ -132,6 +207,11 @@ void QtxActionSet::clear()
   update();
 }
 
+/*!
+  \brief Called when action is changed.
+  
+  Update action state.
+*/
 void QtxActionSet::onChanged()
 {
   if ( !isVisible() )
@@ -143,7 +223,11 @@ void QtxActionSet::onChanged()
   blockSignals( block );
 }
 
-void QtxActionSet::onActionTriggered( bool )
+/*!
+  \brief Called when some action is activated by the user.
+  \param on toggled state (not used)
+*/
+void QtxActionSet::onActionTriggered( bool /*on*/ )
 {
   QAction* a = ::qobject_cast<QAction*>( sender() );
   if ( !a )
@@ -155,6 +239,10 @@ void QtxActionSet::onActionTriggered( bool )
   emit triggered( a );
 }
 
+/*!
+  \brief Called when this action set is added to the menu bar (or toolbar).
+  \param w widget this action set is added to
+*/
 void QtxActionSet::addedTo( QWidget* w )
 {
   QtxAction::addedTo( w );
@@ -162,6 +250,10 @@ void QtxActionSet::addedTo( QWidget* w )
   update( w );
 }
 
+/*!
+  \brief Called when this action set is removed from the menu bar (or toolbar).
+  \param w widget this action set is removed from
+*/
 void QtxActionSet::removedFrom( QWidget* w )
 {
   QtxAction::removedFrom( w );
@@ -169,6 +261,11 @@ void QtxActionSet::removedFrom( QWidget* w )
   update( w );
 }
 
+/*!
+  \brief Get action by specified identifier.
+  \param id action ID
+  \return action or 0 if not found
+*/
 QAction* QtxActionSet::action( int id ) const
 {
   QAction* a = 0;
@@ -180,6 +277,11 @@ QAction* QtxActionSet::action( int id ) const
   return a;
 }
 
+/*!
+  \brief Get action identifier for the action.
+  \param a action
+  \return action ID or -1 if not found
+*/
 int QtxActionSet::actionId( QAction* a ) const
 {
   int id = -1;
@@ -188,6 +290,11 @@ int QtxActionSet::actionId( QAction* a ) const
   return id;
 }
 
+/*!
+  \brief Set action identifier for the action.
+  \param a action
+  \param id new action ID
+*/
 void QtxActionSet::setActionId( QAction* a, const int id )
 {
   if ( !a || id == -1 )
@@ -196,6 +303,10 @@ void QtxActionSet::setActionId( QAction* a, const int id )
   a->setData( id );
 }
 
+/*!
+  \brief Getneration unique action identifier
+  \return generation action ID
+*/
 int QtxActionSet::generateId() const
 {
   QMap<int, int> map;
@@ -209,6 +320,9 @@ int QtxActionSet::generateId() const
   return id;
 }
 
+/*!
+  \brief Update action set.
+*/
 void QtxActionSet::update()
 {
   QList<QWidget*> lst = associatedWidgets();
@@ -216,6 +330,10 @@ void QtxActionSet::update()
     update( *it );
 }
 
+/*!
+  \brief Update action set for the specified widget.
+  \param w a widget this action is added to
+*/
 void QtxActionSet::update( QWidget* w )
 {
   if ( !w )

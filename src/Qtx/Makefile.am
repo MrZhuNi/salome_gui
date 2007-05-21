@@ -31,6 +31,7 @@ salomeinclude_HEADERS=		\
 	QtxAction.h		\
 	QtxActionMenuMgr.h	\
 	QtxActionMgr.h		\
+	QtxActionSet.h		\
 	QtxActionToolMgr.h	\
 	QtxColorScale.h		\
 	QtxComboBox.h		\
@@ -82,6 +83,7 @@ dist_libqtx_la_SOURCES=		\
 	QtxAction.cxx		\
 	QtxActionMenuMgr.cxx	\
 	QtxActionMgr.cxx	\
+	QtxActionSet.cxx	\
 	QtxActionToolMgr.cxx	\
 	QtxColorScale.cxx	\
 	QtxComboBox.cxx		\
@@ -127,6 +129,7 @@ MOC_FILES=				\
 	QtxAction_moc.cxx		\
 	QtxActionMenuMgr_moc.cxx	\
 	QtxActionMgr_moc.cxx		\
+	QtxActionSet_moc.cxx		\
 	QtxActionToolMgr_moc.cxx	\
 	QtxColorScale_moc.cxx		\
 	QtxComboBox_moc.cxx		\
