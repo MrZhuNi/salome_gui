@@ -19,18 +19,14 @@
 #ifndef CAF_H
 #define CAF_H
 
-#if defined CAF_EXPORTS
 #if defined WIN32
-#define CAF_EXPORT __declspec( dllexport )
+#  if defined CAF_EXPORTS
+#    define CAF_EXPORT __declspec( dllexport )
+#  else
+#    define CAF_EXPORT __declspec( dllimport )
+#  endif
 #else
-#define CAF_EXPORT
-#endif
-#else
-#if defined WIN32
-#define CAF_EXPORT __declspec( dllimport )
-#else
-#define CAF_EXPORT
-#endif
+#  define CAF_EXPORT
 #endif
 
 #if defined SOLARIS

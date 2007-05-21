@@ -22,31 +22,41 @@
 #include "CAF_Study.h"
 
 #include <SUIT_Desktop.h>
-#include <SUIT_Session.h>
-#include <SUIT_ViewModel.h>
-#include <SUIT_Operation.h>
+//#include <SUIT_Session.h>
+//#include <SUIT_ViewModel.h>
+//#include <SUIT_Operation.h>
 #include <SUIT_MessageBox.h>
 #include <SUIT_ResourceMgr.h>
 
-#include <QtxListAction.h>
+#include <QtxAction.h>
+//#include <QtxListAction.h>
 
-#include <qtoolbar.h>
-#include <qmenubar.h>
-#include <qpopupmenu.h>
-#include <qstatusbar.h>
-#include <qapplication.h>
+#include <QMap>
+#include <QStringList>
 
 #include <Resource_Manager.hxx>
-
 #include <TColStd_SequenceOfExtendedString.hxx>
 
+/*!
+  \brief Create new instance of CAF_Application.
+  \return new instance of CAF_Application class
+*/
 extern "C" CAF_EXPORT SUIT_Application* createApplication()
 {
   return new CAF_Application();
 }
 
 /*!
-  Default constructor
+  \class CAF_Application
+  \brief OCC OCAF-based application.
+
+  Defines application configuration and behaviour for application using 
+  standard OCC OCAF data model. Allows using OCC OCAF serives
+  (for example, undo/redo mechanizm).
+*/
+
+/*!
+  \brief Default constructor.
 */
 CAF_Application::CAF_Application()
 : STD_Application()
@@ -54,23 +64,24 @@ CAF_Application::CAF_Application()
 }
 
 /*!
-  Constructor with OCAF application
-  \param app - OCAF application
+  \brief Constructor.
+  \param app OCAF application
 */
 CAF_Application::CAF_Application( const Handle( TDocStd_Application )& app )
 : STD_Application(),
-myStdApp( app )
+  myStdApp( app )
 {
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 CAF_Application::~CAF_Application()
 {
 }
 
 /*!
+  \brief Get application name.
   \return application name
 */
 QString CAF_Application::applicationName() const
@@ -79,7 +90,8 @@ QString CAF_Application::applicationName() const
 }
 
 /*!
-  \return OCAF application
+  \brief Get OCAF application.
+  \return handle to OCAF application object
 */
 Handle( TDocStd_Application ) CAF_Application::stdApp() const
 {
@@ -87,7 +99,11 @@ Handle( TDocStd_Application ) CAF_Application::stdApp() const
 }
 
 /*!
-  \return file filters for open/save document
+  \brief Get file extension filter.
+
+  The file extension filter is used in Open/Save dialog boxes.
+
+  \return file filters for open/save document dialog box
 */
 QString CAF_Application::getFileFilter() const
 {
@@ -104,13 +120,13 @@ QString CAF_Application::getFileFilter() const
   {
     QString extension;
     QString extResStr = CAF_Tools::toQString( formats.Value( i ) ) + QString( ".FileExtension" );
-    if ( resMgr->Find( (char*)extResStr.latin1() ) )
-      extension = QString( resMgr->Value( (char*)extResStr.latin1() ) );
+    if ( resMgr->Find( extResStr.toLatin1().data() ) )
+      extension = QString( resMgr->Value( extResStr.toLatin1().data() ) );
 
     QString descr;
     QString descrResStr = CAF_Tools::toQString( formats.Value( i ) ) + QString( ".Description" );
-    if ( resMgr->Find( (char*)descrResStr.latin1() ) )
-      descr = QString( resMgr->Value( (char*)descrResStr.latin1() ) );
+    if ( resMgr->Find( (char*)descrResStr.toLatin1().data() ) )
+      descr = QString( resMgr->Value( (char*)descrResStr.toLatin1().data() ) );
 
     if ( !descr.isEmpty() && !extension.isEmpty() )
     {
@@ -126,7 +142,7 @@ QString CAF_Application::getFileFilter() const
 
   QStringList filters;
   for ( QMap<QString, QStringList>::ConstIterator it = wildCards.begin(); it != wildCards.end(); ++it )
-    filters.append( QString( "%1 (%2)" ).arg( it.key() ).arg( it.data().join( "; " ) ) );
+    filters.append( QString( "%1 (%2)" ).arg( it.key() ).arg( it.value().join( "; " ) ) );
 
   if ( wildCards.count() > 1 )
     filters.prepend( QString( "%1 (%2)" ).arg( tr( "INF_ALL_DOCUMENTS_FILTER" ) ).arg( allWC.join( "; " ) ) );
@@ -138,7 +154,7 @@ QString CAF_Application::getFileFilter() const
 }
 
 /*!
-  Creates actions of application
+  \brief Create menu and toolbars actions.
 */
 void CAF_Application::createActions()
 {
@@ -146,40 +162,48 @@ void CAF_Application::createActions()
 
   SUIT_Desktop* desk = desktop();
   SUIT_ResourceMgr* resMgr = resourceMgr();
-
+  /*
   QtxListAction* editUndo =
     new QtxListAction( tr( "TOT_APP_EDIT_UNDO" ), resMgr->loadPixmap( "CAF", tr( "ICON_APP_EDIT_UNDO" ) ),
 			                 tr( "MEN_APP_EDIT_UNDO" ), CTRL+Key_Z, desk );
   registerAction( EditUndoId, editUndo );
-
+  */
+  /*
   QtxListAction* editRedo =
     new QtxListAction( tr( "TOT_APP_EDIT_REDO" ), resMgr->loadPixmap( "CAF", tr( "ICON_APP_EDIT_REDO" ) ),
 			                 tr( "MEN_APP_EDIT_REDO" ), CTRL+Key_Y, desk );
   registerAction( EditRedoId, editRedo );
-
+  */
+  /*
   editUndo->setComment( tr( "INF_APP_UNDOACTIONS" ) );
   editRedo->setComment( tr( "INF_APP_REDOACTIONS" ) );
 
   connect( editUndo, SIGNAL( activated( int ) ), this, SLOT( onUndo( int ) ) );
   connect( editRedo, SIGNAL( activated( int ) ), this, SLOT( onRedo( int ) ) );
-
+  */
 
   int editMenu = createMenu( tr( "MEN_DESK_EDIT" ), -1, -1, 10 );
 
+  /*
   createMenu( EditUndoId, editMenu, 0 );
   createMenu( EditRedoId, editMenu, 0 );
+  */
   createMenu( separator(), editMenu, -1, 0 );
 
   int stdTBar = createTool( tr( "INF_DESK_TOOLBAR_STANDARD" ) );
 
   createTool( separator(), stdTBar );
+  /*
   createTool( EditUndoId, stdTBar );
   createTool( EditRedoId, stdTBar );
+  */
   createTool( separator(), stdTBar );
 }
 
 /*!
-    Undo operation on the given document. [ virtual protected ]
+  \brief Undo latest command operation for specified document.
+  \param doc OCAF document
+  \return \c true on success
 */
 bool CAF_Application::undo( CAF_Study* doc )
 {
@@ -193,7 +217,9 @@ bool CAF_Application::undo( CAF_Study* doc )
 }
 
 /*!
-    Redo operation on the given document. [ virtual protected ]
+  \brief Redo latest command operation undo for specified document.
+  \param doc OCAF document
+  \return \c true on success
 */
 bool CAF_Application::redo(CAF_Study* doc)
 {
@@ -207,57 +233,67 @@ bool CAF_Application::redo(CAF_Study* doc)
 }
 
 /*!
-    Undo operation on the active document. [ virtual protected slot ]
+  \brief Called when user activates "Undo" menu action.
+  
+  Undo operation on the active document.
+
+  \param numActions undo depth (number of commands)
+  \return \c true on success
 */
 bool CAF_Application::onUndo( int numActions )
 {
   bool ok = true;
   while ( numActions > 0 )
   {
-	  CAF_Study* cafStudy = dynamic_cast<CAF_Study*>( activeStudy() );
-		if ( cafStudy )
+    CAF_Study* cafStudy = dynamic_cast<CAF_Study*>( activeStudy() );
+    if ( cafStudy )
     {
-	    if ( !undo( cafStudy ) )
-		  {
-			  ok = false;
-				break;
-			}
-			numActions--;
-		}
+      if ( !undo( cafStudy ) )
+      {
+	ok = false;
+	break;
+      }
+      numActions--;
+    }
   }
   updateCommandsStatus();     /* enable/disable undo/redo */
   return ok;
 }
 
 /*!
-    Redo operation on the active document. [ virtual protected slot ]
+  \brief Called when user activates "Redo" menu action.
+  
+  Redo latest undo commands on the active document.
+
+  \param numActions redo depth (number of commands)
+  \return \c true on success
 */
 bool CAF_Application::onRedo( int numActions )
 {
   bool ok = true;
   while ( numActions > 0 )
   {
-	  CAF_Study* cafStudy = dynamic_cast<CAF_Study*>( activeStudy() );
-		if ( cafStudy )
+    CAF_Study* cafStudy = dynamic_cast<CAF_Study*>( activeStudy() );
+    if ( cafStudy )
     {
-			if ( !redo( cafStudy ) )
-			{
-	      ok = false;
-		    break;
-			}
-			numActions--;
-		}
+      if ( !redo( cafStudy ) )
+      {
+	ok = false;
+	break;
+      }
+      numActions--;
+    }
   }
   updateCommandsStatus();     /* enable/disable undo/redo */
   return ok;
 }
 
 /*!
-  Enables / disables the actions according to the application state. [ virtual protected ]
+  \brief Update actions state (Undo/Redo).
 */
 void CAF_Application::updateCommandsStatus()
 {
-	STD_Application::updateCommandsStatus();
+  STD_Application::updateCommandsStatus();
 
   CAF_Study* cafStudy = 0;
   if ( activeStudy() && activeStudy()->inherits( "CAF_Study" ) )
@@ -278,7 +314,7 @@ void CAF_Application::updateCommandsStatus()
 }
 
 /*!
-  SLOT: called by clicking on Help->About in main menu
+  \brie Called when user activatees Help->About main menu command.
 */
 void CAF_Application::onHelpAbout()
 {
@@ -286,7 +322,8 @@ void CAF_Application::onHelpAbout()
 }
 
 /*!
-  Creates new study
+  \brief Create new empty study.
+  \return new study
 */
 SUIT_Study* CAF_Application::createNewStudy()
 {
@@ -294,7 +331,8 @@ SUIT_Study* CAF_Application::createNewStudy()
 }
 
 /*!
-  Sets OCAF application
+  \brief Set OCAF application.
+  \param app new OCAF application
 */
 void CAF_Application::setStdApp( const Handle(TDocStd_Application)& app )
 {
