@@ -351,3 +351,15 @@ void QtxActionSet::update( QWidget* w )
     w->insertAction( this, a );
   }
 }
+
+/*!
+  \fn void QtxActionSet::triggered( int id );
+  \brief Emitted when some child action is activated by the user.
+  \param action ID
+*/
+
+/*!
+  \fn void QtxActionSet::triggered( QAction* a );
+  \brief Emitted when some child action is activated by the user.
+  \param a action being activated
+*/
