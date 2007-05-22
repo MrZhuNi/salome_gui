@@ -22,70 +22,73 @@
 
 #include "SUIT.h"
 
-class QWidget;
-class QString;
+#include <QMap>
+#include <QList>
+#include <QMessageBox>
 
-#define SUIT_OK                      1
-#define SUIT_CANCEL                  2
-#define SUIT_YES                     3
-#define SUIT_NO                      4
-#define SUIT_HELP                    5
+#include <stdarg.h>
 
 /*!
   \class SUIT_MessageBox
   \brief Message dialog box for SUIT-based application
 */
-class SUIT_EXPORT SUIT_MessageBox
+class SUIT_EXPORT SUIT_MessageBox : public QMessageBox
 {
 public:
-    
-    /** @name One button message boxes.*/
-    //@{
-    static int info1 ( QWidget* parent, const QString& caption, const QString& text,
-                       const QString& textButton0 );
-    static int warn1 ( QWidget* parent, const QString& caption, const QString& text,
-                       const QString& textButton0 );
-    static int error1 ( QWidget* parent, const QString& caption, const QString& text,
-                       const QString& textButton0 );
-    static int question1 ( QWidget* parent, const QString& caption, const QString& text,
-			   const QString& textButton0 );
-    //@}
+  SUIT_MessageBox( QWidget* = 0 );
+  SUIT_MessageBox( Icon, const QString&, const QString&, StandardButtons buttons = NoButton,
+                   QWidget* = 0, Qt::WindowFlags = Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint );
+  ~SUIT_MessageBox();
 
-    /** @name Two buttons message boxes.*/
-    //@{
-    static int info2 ( QWidget* parent, const QString& caption, const QString& text,
-                       const QString& textButton0, const QString& textButton1,
-                       int idButton0, int idButton1, int idDefault );
-    static int warn2 ( QWidget* parent, const QString& caption, const QString& text,
-                       const QString& textButton0, const QString& textButton1,
-                       int idButton0, int idButton1, int idDefault );
-    static int error2 ( QWidget* parent, const QString& caption, const QString& text,
-                       const QString& textButton0, const QString& textButton1,
-                       int idButton0, int idButton1, int idDefault );
-    static int question2 ( QWidget* parent, const QString& caption, const QString& text,
-			   const QString& textButton0, const QString& textButton1,
-			   int idButton0, int idButton1, int idDefault );
-    //@}
+  QString               buttonText( StandardButton ) const;
+  void                  setButtonText( StandardButton, const QString& );
 
-    /** @name Three buttons message boxes.*/
-    //@{
-    static int info3 ( QWidget* parent, const QString& caption, const QString& text,
-                       const QString& textButton0, const QString& textButton1,
-                       const QString& textButton2, int idButton0, int idButton1,
-                       int idButton2, int idDefault );
-    static int warn3 ( QWidget* parent, const QString& caption, const QString& text,
-                       const QString& textButton0, const QString& textButton1,
-                       const QString& textButton2, int idButton0, int idButton1,
-                       int idButton2, int idDefault );
-    static int error3 ( QWidget* parent, const QString& caption, const QString& text,
-                       const QString& textButton0, const QString& textButton1,
-                       const QString& textButton2, int idButton0, int idButton1,
-                       int idButton2, int idDefault );
-    static int question3 ( QWidget* parent, const QString& caption, const QString& text,
-			   const QString& textButton0, const QString& textButton1,
-			   const QString& textButton2, int idButton0, int idButton1,
-			   int idButton2, int idDefault );
-    //@}
+  static StandardButton critical( QWidget* parent, const QString& title, const QString& text,
+                                  StandardButtons buttons = Ok, StandardButton defaultButton = NoButton );
+  static StandardButton information( QWidget* parent, const QString& title, const QString& text,
+                                     StandardButtons buttons = Ok, StandardButton defaultButton = NoButton );
+  static StandardButton question( QWidget* parent, const QString& title, const QString& text,
+                                  StandardButtons buttons = Ok, StandardButton defaultButton = NoButton );
+  static StandardButton warning( QWidget* parent, const QString& title, const QString& text,
+                                 StandardButtons buttons = Ok, StandardButton defaultButton = NoButton );
+
+  static StandardButton critical( QWidget* parent, const QString& title, const QString& text,
+                                  StandardButtons buttons, StandardButton defaultButton, StandardButton, ... );
+  static StandardButton information( QWidget* parent, const QString& title, const QString& text,
+                                     StandardButtons buttons, StandardButton defaultButton, StandardButton, ... );
+  static StandardButton question( QWidget* parent, const QString& title, const QString& text,
+                                  StandardButtons buttons, StandardButton defaultButton, StandardButton, ... );
+  static StandardButton warning( QWidget* parent, const QString& title, const QString& text,
+                                 StandardButtons buttons, StandardButton defaultButton, StandardButton, ... );
+
+  static int            critical( QWidget* parent, const QString& title, const QString& text,
+                                  int defaultButton, int, QString, int, ... );
+  static int            information( QWidget* parent, const QString& title, const QString& text,
+                                     int defaultButton, int, QString, int, ... );
+  static int            question( QWidget* parent, const QString& title, const QString& text,
+                                  int defaultButton, int, QString, int, ... );
+  static int            warning( QWidget* parent, const QString& title, const QString& text,
+                                 int defaultButton, int, QString, int, ... );
+
+  static int            critical( QWidget* parent, const QString& title, const QString& text, char*, ... );
+  static int            information( QWidget* parent, const QString& title, const QString& text, char*, ... );
+  static int            question( QWidget* parent, const QString& title, const QString& text, char*, ... );
+  static int            warning( QWidget* parent, const QString& title, const QString& text, char*, ... );
+
+private:
+  typedef QMap<StandardButton, QString> ButtonMap;
+  typedef QList< QPair<int, QString> > ButtonList;
+
+private:
+  static StandardButton messageBox( Icon icon, QWidget* parent, const QString& title, const QString& text,
+                                    StandardButtons buttons, StandardButton defaultButton, const ButtonMap& );
+
+  static int            messageBox( Icon icon, QWidget* parent, const QString& title, const QString& text,
+                                    const int defaultButton, const ButtonList& );
+
+  static ButtonMap      messageMap( StandardButton, va_list& );
+  static ButtonList     messageList( int, QString, int, va_list& );
+  static ButtonList     messageList( char*, va_list& );
 };
 
 #endif

@@ -53,6 +53,8 @@ public:
 	       ViewWindowsId, ViewToolBarsId, ViewStatusBarId, NewWindowId,
          EditCutId, EditCopyId, EditPasteId, HelpAboutId, UserID };
 
+  enum { CloseSave, CloseDiscard, CloseCancel };
+
 public:
   STD_Application();
   virtual ~STD_Application();
@@ -82,7 +84,7 @@ public:
 
   virtual QString       getFileFilter() const { return QString::null; }
   virtual QString       getFileName( bool open, const QString& initial, const QString& filters, 
-				     const QString& caption, QWidget* parent );
+				                             const QString& caption, QWidget* parent );
   QString               getDirectory( const QString& initial, const QString& caption, QWidget* parent );
 
   virtual void          start();
@@ -156,6 +158,9 @@ protected:
 
   virtual void          setActiveViewManager( SUIT_ViewManager* );
 
+  virtual bool          closeAction( const int );
+  virtual int           closeChoice( const QString& );
+
 private:
   ViewManagerList       myViewMgrs;
   SUIT_ViewManager*     myActiveViewMgr;
@@ -163,7 +168,7 @@ private:
 private:
   bool                  myExitConfirm;
   bool                  myEditEnabled;
-  bool                  myClosePermanently;
+//  bool                  myClosePermanently; TODO: Move into SalomeApp_Application
 };
 
 #if defined WIN32

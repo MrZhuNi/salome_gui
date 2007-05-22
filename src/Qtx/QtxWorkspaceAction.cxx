@@ -39,7 +39,8 @@
 */
 QtxWorkspaceAction::QtxWorkspaceAction( QtxWorkspace* ws, QObject* parent )
 : QtxActionSet( parent ),
-  myWorkspace( ws )
+  myWorkspace( ws ),
+  myWindowsFlag( true )
 {
   insertAction( new QtxAction( tr( "Arranges the windows as overlapping tiles" ),
                                tr( "Cascade" ), 0, this ), Cascade );
@@ -85,7 +86,7 @@ void QtxWorkspaceAction::setMenuActions( const int flags )
   action( Tile )->setVisible( flags & Tile );
   action( VTile )->setVisible( flags & VTile );
   action( HTile )->setVisible( flags & HTile );
-  action( Windows )->setVisible( flags & Windows );
+  myWindowsFlag = flags & Windows;
 }
 
 /*!
@@ -100,7 +101,7 @@ int QtxWorkspaceAction::menuActions() const
   ret = ret | ( action( Tile )->isVisible() ? Tile : 0 );
   ret = ret | ( action( VTile )->isVisible() ? VTile : 0 );
   ret = ret | ( action( HTile )->isVisible() ? HTile : 0 );
-  ret = ret | ( action( Windows )->isVisible() ? Windows : 0 );
+  ret = ret | ( myWindowsFlag ? Windows : 0 );
   return ret;
 }
 
@@ -383,17 +384,15 @@ void QtxWorkspaceAction::onAboutToShow()
 
   Activates correposponding child window.
 */
-void QtxWorkspaceAction::onItemActivated( int idx )
+void QtxWorkspaceAction::activateItem( const int idx )
 {
   QtxWorkspace* ws = workspace();
   if ( !ws )
     return;
 
   QWidgetList wList = ws->windowList();
-  if ( idx < 0 || idx >= (int)wList.count() )
-    return;
-
-  wList.at( idx )->setFocus();
+  if ( idx >= 0 && idx < (int)wList.count() )
+    wList.at( idx )->setFocus();
 }
 
 /*!
@@ -406,15 +405,5 @@ void QtxWorkspaceAction::onTriggered( int id )
   if ( id < Windows )
     perform( id );
   else
-  {
-    int idx = id - Windows - 1;
-
-    QtxWorkspace* ws = workspace();
-    if ( ws )
-    {
-      QWidgetList wList = ws->windowList();
-      if ( idx >= 0 && idx < (int)wList.count() )
-        wList.at( idx )->setFocus();
-    }
-  }
+    activateItem( id - Windows - 1 );
 }

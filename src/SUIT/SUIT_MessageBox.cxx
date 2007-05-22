@@ -29,321 +29,374 @@
 #include "SUIT_OverrideCursor.h"
 
 #include <QMessageBox>
+#include <QPushButton>
 #include <QApplication>
 
 /*!
-    Shows info message box with one button [ static ]
+  Constructor
 */
-int SUIT_MessageBox::info1( QWidget* parent, const QString& caption, 
-			                      const QString& text, const QString& textButton0 )
+SUIT_MessageBox::SUIT_MessageBox( QWidget* parent )
+: QMessageBox( parent )
 {
-  SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  int ret = QMessageBox::information( parent, caption, text, textButton0,
-				      QString::null, QString::null, 0, 0 );
-  QApplication::processEvents();
-  return ret;
 }
 
 /*!
-    Shows warning message box with one button [ static ]
+  Constructor
 */
-int SUIT_MessageBox::warn1( QWidget* parent, 
-			    const QString& caption, 
-			    const QString& text,
-			    const QString& textButton0 )
+SUIT_MessageBox::SUIT_MessageBox( Icon icon, const QString& title, const QString& text,
+                                  StandardButtons buttons, QWidget* parent, Qt::WindowFlags f )
+: QMessageBox( icon, title, text, buttons, parent, f )
 {
-  SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  int ret = QMessageBox::warning( parent, caption, text, textButton0,
-				  QString::null, QString::null, 0, 0 );
-  QApplication::processEvents();
-  return ret;
 }
 
 /*!
-    Shows error message box with one button [ static ]
+  Destructor
 */
-int SUIT_MessageBox::error1( QWidget* parent, 
-			     const QString& caption,
-			     const QString& text,
-			     const QString& textButton0 )
+SUIT_MessageBox::~SUIT_MessageBox()
 {
-  SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  int ret = QMessageBox::critical( parent, caption, text, textButton0,
-				   QString::null, QString::null, 0, 0 );
-  QApplication::processEvents();
-  return ret;
 }
 
 /*!
-    Shows question message box with one button [ static ]
+  Returns the text of the specified button
 */
-int SUIT_MessageBox::question1( QWidget* parent, 
-				const QString& caption,
-				const QString& text, 
-				const QString& textButton0 )
+QString SUIT_MessageBox::buttonText( StandardButton btn ) const
 {
-  SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  int ret = QMessageBox::question( parent, caption, text, textButton0,
-				   QString::null, QString::null, 0, 0 );
-  QApplication::processEvents();
-  return ret;
+  QString res;
+  QAbstractButton* b = button( btn );
+  if ( b )
+    res = b->text();
+  return res;
 }
 
 /*!
-    Shows info message box with two buttons.
-    Returns id of the pressed button or -1 if escaped [ static ]
+  Set the text of the specified button
 */
-int SUIT_MessageBox::info2( QWidget* parent, 
-			    const QString& caption,
-			    const QString& text, 
-			    const QString& textButton0,
-			    const QString& textButton1, 
-			    int idButton0, int idButton1, int idDefault )
+void SUIT_MessageBox::setButtonText( StandardButton btn, const QString& text )
 {
+  QAbstractButton* b = button( btn );
+  if ( b )
+    b->setText( text );
+}
+
+/*!
+  Shows critical message box with specified standard buttons. [ static ]
+*/
+SUIT_MessageBox::StandardButton SUIT_MessageBox::critical( QWidget* parent, const QString& title, const QString& text,
+                                                           StandardButtons buttons, StandardButton defaultButton )
+{
+  return QMessageBox::critical( parent, title, text, buttons, defaultButton );
+}
+
+/*!
+  Shows information message box with specified standard buttons. [ static ]
+*/
+SUIT_MessageBox::StandardButton SUIT_MessageBox::information( QWidget* parent, const QString& title, const QString& text,
+                                                              StandardButtons buttons, StandardButton defaultButton )
+{
+  return QMessageBox::information( parent, title, text, buttons, defaultButton );
+}
+
+/*!
+  Shows question message box with specified standard buttons. [ static ]
+*/
+SUIT_MessageBox::StandardButton SUIT_MessageBox::question( QWidget* parent, const QString& title, const QString& text,
+                                                           StandardButtons buttons, StandardButton defaultButton )
+{
+  return QMessageBox::question( parent, title, text,buttons, defaultButton );
+}
+
+/*!
+  Shows warning message box with specified standard buttons. [ static ]
+*/
+SUIT_MessageBox::StandardButton SUIT_MessageBox::warning( QWidget* parent, const QString& title, const QString& text,
+                                                          SUIT_MessageBox::StandardButtons buttons, StandardButton defaultButton )
+{
+  return QMessageBox::warning( parent, title, text, buttons, defaultButton );
+}
+
+/*!
+  Shows critical message box. Some buttons can be renamed. Variable number of arguments
+  should be specified starting from \param btn as pairs of StandardButton and QString.
+  After the last pair 0 (zero) value should be specified. [ static ]
+*/
+SUIT_MessageBox::StandardButton SUIT_MessageBox::critical( QWidget* parent, const QString& title,
+                                                           const QString& text, StandardButtons buttons,
+                                                           StandardButton defaultButton, StandardButton btn, ... )
+{
+  va_list args;
+  va_start( args, btn );
+  return messageBox( SUIT_MessageBox::Critical, parent, title, text,
+                     buttons, defaultButton, messageMap( btn, args ) );
+}
+
+/*!
+  Shows information message box. Some buttons can be renamed. Variable number of arguments
+  should be specified starting from \param btn as pairs of StandardButton and QString.
+  After the last pair 0 (zero) value should be specified. [ static ]
+*/
+SUIT_MessageBox::StandardButton SUIT_MessageBox::information( QWidget* parent, const QString& title,
+                                                              const QString& text,
+                                                              SUIT_MessageBox::StandardButtons buttons,
+                                                              SUIT_MessageBox::StandardButton defaultButton,
+                                                              SUIT_MessageBox::StandardButton btn, ... )
+{
+  va_list args;
+  va_start( args, btn );
+  return messageBox( SUIT_MessageBox::Information, parent, title, text,
+                     buttons, defaultButton, messageMap( btn, args ) );
+}
+
+/*!
+  Shows question message box. Some buttons can be renamed. Variable number of arguments
+  should be specified starting from \param btn as pairs of StandardButton and QString.
+  After the last pair 0 (zero) value should be specified. [ static ]
+*/
+SUIT_MessageBox::StandardButton SUIT_MessageBox::question( QWidget* parent, const QString& title,
+                                                           const QString& text, StandardButtons buttons,
+                                                           StandardButton defaultButton, StandardButton btn, ... )
+{
+  va_list args;
+  va_start( args, btn );
+  return messageBox( SUIT_MessageBox::Question, parent, title, text,
+                     buttons, defaultButton, messageMap( btn, args ) );
+}
+
+/*!
+  Shows warning message box. Some buttons can be renamed. Variable number of arguments
+  should be specified starting from \param btn as pairs of StandardButton and QString.
+  After the last pair 0 (zero) value should be specified. [ static ]
+*/
+SUIT_MessageBox::StandardButton SUIT_MessageBox::warning( QWidget* parent, const QString& title,
+                                                          const QString& text, StandardButtons buttons,
+                                                          StandardButton defaultButton, StandardButton btn, ... )
+{
+  va_list args;
+  va_start( args, btn );
+  return messageBox( SUIT_MessageBox::Warning, parent, title, text,
+                     buttons, defaultButton, messageMap( btn, args ) );
+}
+
+/*!
+  Shows critical message box with user specified buttons. Each button decribed by two
+  parameters: int - button id and QString - button text. First button specified by \param btn0
+  and \param txt0, following buttons specified as variable number of arguments which 
+  should be started from \param btn as pairs of int and QString.
+  After the last pair 0 (zero) value should be specified. [ static ]
+*/
+int SUIT_MessageBox::critical( QWidget* parent, const QString& title, const QString& text,
+                               int defaultButton, int btn0, QString txt0, int btn, ... )
+{
+  va_list args;
+  va_start( args, btn );
+  return messageBox( SUIT_MessageBox::Critical, parent, title, text,
+                     defaultButton, messageList( btn0, txt0, btn, args ) );
+}
+
+/*!
+  Shows information message box with user specified buttons. Each button decribed by two
+  parameters: int - button id and QString - button text. First button specified by \param btn0
+  and \param txt0, following buttons specified as variable number of arguments which 
+  should be started from \param btn as pairs of int and QString.
+  After the last pair 0 (zero) value should be specified. [ static ]
+*/
+int SUIT_MessageBox::information( QWidget* parent, const QString& title, const QString& text,
+                                  int defaultButton, int btn0, QString txt0, int btn, ... )
+{
+  va_list args;
+  va_start( args, btn );
+  return messageBox( SUIT_MessageBox::Information, parent, title, text,
+                     defaultButton, messageList( btn0, txt0, btn, args ) );
+}
+
+/*!
+  Shows question message box with user specified buttons. Each button decribed by two
+  parameters: int - button id and QString - button text. First button specified by \param btn0
+  and \param txt0, following buttons specified as variable number of arguments which 
+  should be started from \param btn as pairs of int and QString.
+  After the last pair 0 (zero) value should be specified. [ static ]
+*/
+int SUIT_MessageBox::question( QWidget* parent, const QString& title, const QString& text,
+                               int defaultButton, int btn0, QString txt0, int btn, ... )
+{
+  va_list args;
+  va_start( args, btn );
+  return messageBox( SUIT_MessageBox::Question, parent, title, text,
+                     defaultButton, messageList( btn0, txt0, btn, args ) );
+}
+
+/*!
+  Shows warning message box with user specified buttons. Each button decribed by two
+  parameters: int - button id and QString - button text. First button specified by \param btn0
+  and \param txt0, following buttons specified as variable number of arguments which 
+  should be started from \param btn as pairs of int and QString.
+  After the last pair 0 (zero) value should be specified. [ static ]
+*/
+int SUIT_MessageBox::warning( QWidget* parent, const QString& title, const QString& text,
+                              int defaultButton, int btn0, QString txt0, int btn, ... )
+{
+  va_list args;
+  va_start( args, btn );
+  return messageBox( SUIT_MessageBox::Warning, parent, title, text,
+                     defaultButton, messageList( btn0, txt0, btn, args ) );
+}
+
+/*!
+  Shows critical message box with user specified buttons. Each button decribed by button text.
+  Variable number of arguments should be started from \param txt. After the last text 0 (zero)
+  value should be specified. [ static ]
+*/
+int SUIT_MessageBox::critical( QWidget* parent, const QString& title, const QString& text, char* txt, ... )
+{
+  va_list args;
+  va_start( args, txt );
+  return messageBox( SUIT_MessageBox::Critical, parent, title, text,
+                     0, messageList( txt, args ) );
+}
+
+/*!
+  Shows information message box with user specified buttons. Each button decribed by button text.
+  Variable number of arguments should be started from \param txt. After the last text 0 (zero)
+  value should be specified. [ static ]
+*/
+int SUIT_MessageBox::information( QWidget* parent, const QString& title, const QString& text, char* txt, ... )
+{
+  va_list args;
+  va_start( args, txt );
+  return messageBox( SUIT_MessageBox::Information, parent, title, text,
+                     0, messageList( txt, args ) );
+}
+
+/*!
+  Shows question message box with user specified buttons. Each button decribed by button text.
+  Variable number of arguments should be started from \param txt. After the last text 0 (zero)
+  value should be specified. [ static ]
+*/
+int SUIT_MessageBox::question( QWidget* parent, const QString& title, const QString& text, char* txt, ... )
+{
+  va_list args;
+  va_start( args, txt );
+  return messageBox( SUIT_MessageBox::Question, parent, title, text,
+                     0, messageList( txt, args ) );
+}
+
+/*!
+  Shows warning message box with user specified buttons. Each button decribed by button text.
+  Variable number of arguments should be started from \param txt. After the last text 0 (zero)
+  value should be specified. [ static ]
+*/
+int SUIT_MessageBox::warning( QWidget* parent, const QString& title, const QString& text, char* txt, ... )
+{
+  va_list args;
+  va_start( args, txt );
+  return messageBox( SUIT_MessageBox::Warning, parent, title, text,
+                     0, messageList( txt, args ) );
+}
+
+SUIT_MessageBox::StandardButton SUIT_MessageBox::messageBox( SUIT_MessageBox::Icon icon, QWidget* parent,
+                                                             const QString& title, const QString& text,
+                                                             StandardButtons buttons, StandardButton defaultButton,
+                                                             const ButtonMap& map )
+{
+  SUIT_MessageBox msgBox( icon, title, text, buttons, parent );
+  for ( ButtonMap::const_iterator it = map.begin(); it != map.end(); ++it )
+    msgBox.setButtonText( it.key(), it.value() );
+
+  if ( defaultButton != NoButton )
+    msgBox.setDefaultButton( ::qobject_cast<QPushButton*>( msgBox.button( defaultButton ) ) );
+
   SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  if ( idDefault == idButton0 )
-    idDefault = 0;
-  else if ( idDefault == idButton1 )
-    idDefault = 1;
+
+  StandardButton res = NoButton;
+  if ( msgBox.exec() == -1 )
+    res = QMessageBox::Cancel;
   else
-    idDefault = 0;
-  
-  int ret = QMessageBox::information( parent, caption, text, textButton0,
-				      textButton1, QString::null, idDefault );
+    res = msgBox.standardButton( msgBox.clickedButton() );
+
   QApplication::processEvents();
-  return ( ret == 0 ? idButton0 : idButton1 );
+
+  return res;
 }
 
-/*!
-  Shows warning message box with two buttons.
-    Returns id of the pressed button or -1 if escaped [ static ]
-*/
-int SUIT_MessageBox::warn2( QWidget* parent, 
-			    const QString& caption,
-			    const QString& text,
-			    const QString& textButton0, 
-			    const QString& textButton1,
-			    int idButton0, int idButton1, int idDefault )
+int SUIT_MessageBox::messageBox( Icon icon, QWidget* parent, const QString& title, const QString& text,
+                                 const int defaultButton, const ButtonList& lst )
 {
+  SUIT_MessageBox msgBox( icon, title, text, NoButton, parent );
+
+  QMap<QAbstractButton*, int> map;
+  for ( ButtonList::const_iterator it = lst.begin(); it != lst.end(); ++it )
+  {
+    int btn = (*it).first;
+    QString txt = (*it).second;
+    ButtonRole role = InvalidRole;
+
+    if ( btn == defaultButton )
+      role = AcceptRole;
+
+    QPushButton* pb = msgBox.addButton( txt, role );
+    map.insert( pb, btn );
+
+    if ( btn == defaultButton )
+      msgBox.setDefaultButton( pb );
+  }
+
   SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  
-  if ( idDefault == idButton0 )
-    idDefault = 0;
-  else if ( idDefault == idButton1 )
-    idDefault = 1;
+
+  int res = NoButton;
+  if ( msgBox.exec() == -1 )
+    res = Cancel;
   else
-    idDefault = 0;
-  
-  int ret = QMessageBox::warning( parent, caption, text, textButton0,
-				  textButton1, QString::null, idDefault );
+    res = map[msgBox.clickedButton()];
+
   QApplication::processEvents();
-  return ( ret == 0 ? idButton0 : idButton1 );
+
+  return res;
 }
 
-/*!
-    Shows error message box with two buttons
-    Returns id of the pressed button or -1 if escaped [ static ]
-*/
-int SUIT_MessageBox::error2( QWidget* parent, 
-			     const QString& caption, 
-			     const QString& text,
-			     const QString& textButton0, 
-			     const QString& textButton1,
-			     int idButton0, int idButton1, int idDefault )
+SUIT_MessageBox::ButtonMap SUIT_MessageBox::messageMap( StandardButton btn, va_list& args )
 {
-  SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  
-  if ( idDefault == idButton0 )
-    idDefault = 0;
-  else if ( idDefault == idButton1 )
-    idDefault = 1;
-  else
-    idDefault = 0;
-  
-  int ret = QMessageBox::critical( parent, caption, text, textButton0,
-				   textButton1, QString::null, idDefault );
-  QApplication::processEvents();
-  return ( ret == 0 ? idButton0 : idButton1 );
+  ButtonMap map;
+  StandardButton cur = btn;
+  while ( !cur )
+  {
+    QString name = va_arg( args, QString );
+    map.insert( cur, name );
+    cur = va_arg( args, StandardButton );
+  }
+
+  va_end( args );
+
+  return map;
 }
 
-/*!
-    Shows question message box with two buttons
-    Returns id of the pressed button or -1 if escaped [ static ]
-*/
-int SUIT_MessageBox::question2( QWidget* parent, 
-				const QString& caption, 
-				const QString& text,
-				const QString& textButton0, 
-				const QString& textButton1,
-				int idButton0, int idButton1, int idDefault )
+SUIT_MessageBox::ButtonList SUIT_MessageBox::messageList( int btn0, QString txt0, int btn, va_list& args )
 {
-  SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  
-  if ( idDefault == idButton0 )
-    idDefault = 0;
-  else if ( idDefault == idButton1 )
-    idDefault = 1;
-  else
-    idDefault = 0;
-  
-  int ret = QMessageBox::question( parent, caption, text, textButton0,
-				   textButton1, QString::null, idDefault );
-  QApplication::processEvents();
-  return ( ret == 0 ? idButton0 : idButton1 );
+  ButtonList lst;
+  lst.append( QPair<int, QString>( btn0, txt0 ) );
+  int cur = btn;
+  while ( !cur )
+  {
+    QString name = va_arg( args, QString );
+    lst.append( QPair<int, QString>( cur, name ) );
+    cur = va_arg( args, int );
+  }
+
+  va_end( args );
+
+  return lst;
 }
 
-/*!
-    Shows info message box with three buttons.
-    Returns id of the pressed button or -1 if escaped [ static ]
-*/
-int SUIT_MessageBox::info3( QWidget* parent, 
-			    const QString& caption,
-			    const QString& text,
-			    const QString& textButton0, 
-			    const QString& textButton1,
-			    const QString& textButton2, 
-			    int idButton0, int idButton1,
-			    int idButton2, int idDefault )
+SUIT_MessageBox::ButtonList SUIT_MessageBox::messageList( char* txt, va_list& args )
 {
-  SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  
-  if ( idDefault == idButton0 )
-    idDefault = 0;
-  else if ( idDefault == idButton1 )
-    idDefault = 1;
-  else if ( idDefault == idButton2 )
-    idDefault = 2;
-  else
-    idDefault = 0;
-  
-  int ret = QMessageBox::information( parent, caption, text, textButton0,
-				      textButton1, textButton2, idDefault );
-  QApplication::processEvents();
-  switch ( ret )
-    {
-    case 0:
-      return idButton0;
-    case 1:
-      return idButton1;
-    case 2:
-      return idButton2;
-    }
-  return -1;
-}
+  int i = 0;
+  ButtonList lst;
+  char* cur = txt;
+  while ( cur )
+  {
+    lst.append( QPair<int, QString>( i++, cur ) );
+    cur = va_arg( args, char* );
+  }
 
-/*!
-    Shows warning message box with three buttons.
-    Returns id of the pressed button or -1 if escaped [ static ]
-*/
-int SUIT_MessageBox::warn3( QWidget* parent, 
-			    const QString& caption, 
-			    const QString& text,
-			    const QString& textButton0, 
-			    const QString& textButton1,
-			    const QString& textButton2, 
-			    int idButton0, int idButton1,
-			    int idButton2, int idDefault )
-{
-  SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  
-  if ( idDefault == idButton0 )
-    idDefault = 0;
-  else if ( idDefault == idButton1 )
-    idDefault = 1;
-  else if ( idDefault == idButton2 )
-    idDefault = 2;
-  else
-    idDefault = 0;
-  
-  int ret = QMessageBox::warning( parent, caption, text, textButton0,
-				  textButton1, textButton2, idDefault );
-  QApplication::processEvents();
-  switch ( ret )
-    {
-    case 0:
-      return idButton0;
-    case 1:
-      return idButton1;
-    case 2:
-      return idButton2;
-    }
-  return -1;
-}
+  va_end( args );
 
-/*!
-    Shows error message box with three buttons.
-    Returns id of the pressed button or -1 if escaped [ static ]
-*/
-int SUIT_MessageBox::error3( QWidget* parent, 
-			     const QString& caption, 
-			     const QString& text,
-			     const QString& textButton0, 
-			     const QString& textButton1,
-			     const QString& textButton2, 
-			     int idButton0, int idButton1,
-			     int idButton2, int idDefault )
-{
-  SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  
-  if ( idDefault == idButton0 )
-    idDefault = 0;
-  else if ( idDefault == idButton1 )
-    idDefault = 1;
-  else if ( idDefault == idButton2 )
-    idDefault = 2;
-  else
-    idDefault = 0;
-  
-  int ret = QMessageBox::critical( parent, caption, text, textButton0,
-				   textButton1, textButton2, idDefault );
-  QApplication::processEvents();
-  switch ( ret )
-    {
-    case 0:
-      return idButton0;
-    case 1:
-      return idButton1;
-    case 2:
-      return idButton2;
-    }
-  return -1;
-}
-
-/*!
-    Shows question message box with three buttons.
-    Returns id of the pressed button or -1 if escaped [ static ]
-*/
-int SUIT_MessageBox::question3( QWidget* parent, 
-				const QString& caption, 
-				const QString& text,
-				const QString& textButton0, 
-				const QString& textButton1,
-				const QString& textButton2, 
-				int idButton0, int idButton1,
-				int idButton2, int idDefault )
-{
-  SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
-  
-  if ( idDefault == idButton0 )
-    idDefault = 0;
-  else if ( idDefault == idButton1 )
-    idDefault = 1;
-  else if ( idDefault == idButton2 )
-    idDefault = 2;
-  else
-    idDefault = 0;
-  
-  int ret = QMessageBox::question( parent, caption, text, textButton0,
-				   textButton1, textButton2, idDefault );
-  QApplication::processEvents();
-  switch ( ret )
-    {
-    case 0:
-      return idButton0;
-    case 1:
-      return idButton1;
-    case 2:
-      return idButton2;
-    }
-  return -1;
+  return lst;
 }

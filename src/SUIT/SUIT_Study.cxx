@@ -271,11 +271,12 @@ bool SUIT_Study::start( SUIT_Operation* theOp, const bool toCheck )
 
   if ( toCheck )
   {
-    while( SUIT_Operation* anOp = blockingOperation( theOp ) )
+    while ( SUIT_Operation* anOp = blockingOperation( theOp ) )
     {
-      int anAnsw = SUIT_MessageBox::warn2( application()->desktop(),
-                                           tr( "OPERATION_LAUNCH" ), tr( "PREVIOUS_NOT_FINISHED" ),
-                                           tr( "CONTINUE" ), tr( "CANCEL" ), 0, 1, 1 );
+      int anAnsw = SUIT_MessageBox::question( application()->desktop(),
+                                              tr( "OPERATION_LAUNCH" ), tr( "PREVIOUS_NOT_FINISHED" ),
+                                              SUIT_MessageBox::Ok | SUIT_MessageBox::Cancel, SUIT_MessageBox::Ok,
+                                              SUIT_MessageBox::Ok, tr( "CONTINUE" ), 0 );
 
       if ( anAnsw == 1 )
         return false;

@@ -80,10 +80,6 @@
 ( %1 )</translation>
     </message>
     <message>
-        <source>CLOSE_DLG_UNLOAD</source>
-        <translation>&amp;Unload</translation>
-    </message>
-    <message>
         <source>TOT_DESK_NEWWINDOW</source>
         <translation>Create new Window</translation>
     </message>
@@ -197,10 +193,6 @@ Directory with this name exist on disc. Try to use another name</translation>
         <translation>No applications registered</translation>
     </message>
     <message>
-        <source>CLOSE_DLG_CLOSE</source>
-        <translation>C&amp;lose w/o saving</translation>
-    </message>
-    <message>
         <source>INF_DESK_DOC_CREATE</source>
         <translation>Create a new document</translation>
     </message>
@@ -266,8 +258,8 @@ Do you want to reload it ?</translation>
         <translation>Load Study</translation>
     </message>
     <message>
-        <source>CLOSE_DLG_CAPTION</source>
-        <translation>Close active study</translation>
+        <source>CLOSE_STUDY</source>
+        <translation>Close study</translation>
     </message>
     <message>
         <source>PRP_DESK_HELP_SEARCH</source>
@@ -284,10 +276,6 @@ Do you want to reload it ?</translation>
     <message>
         <source>INF_CANCELLED</source>
         <translation>Cancelled</translation>
-    </message>
-    <message>
-        <source>CLOSE_DLG_SAVE_CLOSE</source>
-        <translation>&amp;Save&amp;&amp;Close</translation>
     </message>
     <message>
         <source>PRP_DESK_WINDOW_VSPLIT</source>
@@ -382,8 +370,8 @@ Do you want to overwrite it ?</translation>
         <translation>Open document</translation>
     </message>
     <message>
-        <source>CLOSE_DLG_DESCRIPTION</source>
-        <translation>Do you want to close or only unload the study</translation>
+        <source>CLOSE_QUESTION</source>
+        <translation>Document %1 modified. Do you want to save or discard the modification and close the document?</translation>
     </message>
     <message>
         <source>PRP_DESK_FILE_EXIT</source>

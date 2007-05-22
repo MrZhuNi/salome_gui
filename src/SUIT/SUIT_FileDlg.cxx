@@ -423,13 +423,10 @@ void SUIT_FileDlg::quickDir(const QString& dirPath)
   if ( !QDir(aPath).exists() )
   {
     aPath = QDir::homePath();
-    SUIT_MessageBox::error1(this, 
-		   tr("ERR_ERROR"),
-		   tr("ERR_DIR_NOT_EXIST").arg(dirPath), 
-		   tr("BUT_OK"));    
+    SUIT_MessageBox::critical( this, tr( "ERR_ERROR" ), tr( "ERR_DIR_NOT_EXIST" ).arg( dirPath ) );
   }
   else
-  processPath(aPath);
+    processPath( aPath );
 }
 /*!
   Called when user presses "Add" button - adds current directory to quick directory

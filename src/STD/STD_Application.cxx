@@ -20,16 +20,12 @@
 
 #include "STD_MDIDesktop.h"
 
-#include "STD_CloseDlg.h"
-
 #include <SUIT_Tools.h>
+#include <SUIT_Study.h>
 #include <SUIT_Desktop.h>
 #include <SUIT_Session.h>
-#include <SUIT_Study.h>
-//#include <SUIT_ViewModel.h>
-#include <SUIT_ViewManager.h>
-//#include <SUIT_Operation.h>
 #include <SUIT_MessageBox.h>
+#include <SUIT_ViewManager.h>
 #include <SUIT_ResourceMgr.h>
 
 #include <QtxDockAction.h>
@@ -37,12 +33,10 @@
 #include <QtxActionToolMgr.h>
 
 #include <QMenu>
+#include <QStatusBar>
+#include <QCloseEvent>
 #include <QFileDialog>
 #include <QApplication>
-#include <QCloseEvent>
-#include <QStatusBar>
-
-#include <iostream>
 
 /*!Create and return new instance of STD_Application*/
 extern "C" STD_EXPORT SUIT_Application* createApplication()
@@ -410,7 +404,9 @@ void STD_Application::onCloseDoc( bool ask )
   beforeCloseDoc( study );
 
   if ( study )
-    study->closeDocument(myClosePermanently);
+    study->closeDocument();
+//                          TODO: myClosePermanently move to SalomeApp
+//    study->closeDocument( myClosePermanently );
 
   clearViewManagers();
 
@@ -422,8 +418,6 @@ void STD_Application::onCloseDoc( bool ask )
   for ( int i = 0; i < apps.count(); i++ )
     aNbStudies += apps.at( i )->getNbStudies();
 
-  // STV: aNbStudies - number of currently existing studies (exclude currently closed)
-  // STV: aNbStudies should be compared with 0.
   if ( aNbStudies )
   {
     savePreferences();
@@ -446,38 +440,59 @@ void STD_Application::onCloseDoc( bool ask )
  */
 bool STD_Application::isPossibleToClose()
 {
-  myClosePermanently = true; //SRN: BugID: IPAL9021
+//  TODO: myClosePermanently move to SalomeApp
+//  myClosePermanently = true;
   if ( activeStudy() )
   {
     activeStudy()->abortAllOperations();
     if ( activeStudy()->isModified() )
     {
       QString sName = activeStudy()->studyName().trimmed();
-      QString msg = sName.isEmpty() ? tr( "INF_DOC_MODIFIED" ) : tr ( "INF_DOCUMENT_MODIFIED" ).arg( sName );
-
-      //SRN: BugID: IPAL9021: Begin
-      STD_CloseDlg dlg(desktop());
-      switch( dlg.exec() )
-      {
-      case 1:
-        if ( activeStudy()->isSaved() )
-          onSaveDoc();
-        else if ( !onSaveAsDoc() )
-          return false;
-        break;
-      case 2:
-        break;
-      case 3:
-	      myClosePermanently = false;
-        break;
-      case 4:
-      default:
-        return false;
-      }
-     //SRN: BugID: IPAL9021: End
+      return closeAction( closeChoice( sName ) );
     }
   }
   return true;
+}
+
+int STD_Application::closeChoice( const QString& docName )
+{
+  int answer = SUIT_MessageBox::question( desktop(), tr( "CLOSE_STUDY" ), tr( "CLOSE_QUESTION" ).arg( docName ),
+                                          SUIT_MessageBox::Save | SUIT_MessageBox::Discard | SUIT_MessageBox::Cancel,
+                                          SUIT_MessageBox::Save );
+
+  int res = CloseCancel;
+  if ( answer == SUIT_MessageBox::Save )
+    res = CloseSave;
+  else if ( answer == SUIT_MessageBox::Discard )
+    res = CloseDiscard;
+
+  return res;
+}
+
+bool STD_Application::closeAction( const int choice )
+{
+  bool res = true;
+  switch( choice )
+  {
+  case CloseSave:
+    if ( activeStudy()->isSaved() )
+      onSaveDoc();
+    else if ( !onSaveAsDoc() )
+      res = false;
+    break;
+  case CloseDiscard:
+    break;
+/*
+  case 3:
+	      myClosePermanently = false;
+        break;
+*/
+  case CloseCancel:
+  default:
+    res = false;
+  }
+
+  return res;
 }
 
 /*!Save document if all ok, else error message.*/
@@ -501,10 +516,8 @@ void STD_Application::onSaveDoc()
     {
       putInfo( "" );
       // displaying a message box as SUIT_Validator in case file can't be written (the most frequent case)
-      SUIT_MessageBox::error1( desktop(), 
-			       tr( "ERR_ERROR" ),
-			       tr( "ERR_PERMISSION_DENIED" ).arg( activeStudy()->studyName() ),
-			       tr( "BUT_OK" ) );
+      SUIT_MessageBox::critical( desktop(), tr( "ERR_ERROR" ),
+                                 tr( "ERR_PERMISSION_DENIED" ).arg( activeStudy()->studyName() ) );
     }
     else
       putInfo( tr( "INF_DOC_SAVED" ).arg( "" ) );
@@ -540,9 +553,7 @@ bool STD_Application::onSaveAsDoc()
     QApplication::restoreOverrideCursor();
 
     if ( !isOk )
-      SUIT_MessageBox::error1( desktop(), tr( "ERROR" ),
-			       tr( "INF_DOC_SAVING_FAILS" ).arg( aName ), 
-			       tr( "BUT_OK" ) );
+      SUIT_MessageBox::critical( desktop(), tr( "ERROR" ), tr( "INF_DOC_SAVING_FAILS" ).arg( aName ) );
   }
 
   studySaved( activeStudy() );
@@ -555,9 +566,9 @@ void STD_Application::onExit()
 {
   int aAnswer = 1;
   if ( exitConfirmation() )
-    aAnswer = SUIT_MessageBox::info2( desktop(), tr( "INF_DESK_EXIT" ), tr( "QUE_DESK_EXIT" ),
-				      tr( "BUT_OK" ), tr( "BUT_CANCEL" ), 1, 2, 2 );
-  if ( aAnswer == 1 )
+    aAnswer = SUIT_MessageBox::question( desktop(), tr( "INF_DESK_EXIT" ), tr( "QUE_DESK_EXIT" ),
+                                         SUIT_MessageBox::Ok | SUIT_MessageBox::Cancel, SUIT_MessageBox::Cancel );
+  if ( aAnswer == SUIT_MessageBox::Ok )
     SUIT_Session::session()->closeSession();
 }
 
@@ -756,7 +767,7 @@ void STD_Application::onViewStatusBar( bool on )
 /*!Call SUIT_MessageBox::info1(...) with about information.*/
 void STD_Application::onHelpAbout()
 {
-  SUIT_MessageBox::info1( desktop(), tr( "About" ), tr( "ABOUT_INFO" ), "&OK" );
+  SUIT_MessageBox::information( desktop(), tr( "About" ), tr( "ABOUT_INFO" ) );
 }
 
 /*!Create empty study. \n
@@ -839,15 +850,15 @@ QString STD_Application::getFileName( bool open, const QString& initial, const Q
 
 	      if ( QFileInfo( aName ).exists() )
         {
-	        int aAnswer = SUIT_MessageBox::warn3( desktop(), tr( "TIT_FILE_SAVEAS" ),
-					                                      tr( "MSG_FILE_EXISTS" ).arg( aName ),
-					                                      tr( "BUT_YES" ), tr( "BUT_NO" ), tr( "BUT_CANCEL" ), 1, 2, 3, 1 );
-	        if ( aAnswer == 3 )
+	        int aAnswer = SUIT_MessageBox::question( desktop(), tr( "TIT_FILE_SAVEAS" ),
+					                                         tr( "MSG_FILE_EXISTS" ).arg( aName ),
+					                                         SUIT_MessageBox::Yes | SUIT_MessageBox::No | SUIT_MessageBox::Cancel, SUIT_MessageBox::Yes );
+	        if ( aAnswer == SUIT_MessageBox::Cancel )
           {     // cancelled
             aName = QString::null;
 	          isOk = true;
           }
-	        else if ( aAnswer == 2 ) // not save to this file
+	        else if ( aAnswer == SUIT_MessageBox::No ) // not save to this file
 	          anOldPath = aName;             // not to return to the same initial dir at each "while" step
 	        else                     // overwrite the existing file
 	          isOk = true;

@@ -88,8 +88,8 @@ SUIT_Application* SUIT_Session::startApplication( const QString& name, int /*arg
 
   if ( !libHandle )
   {
-    SUIT_MessageBox::warn1( 0, tr( "Error" ),
-                            tr( "Can not load application library \"%1\": %2").arg( lib ).arg( lastError() ), tr( "Ok" ) );
+    SUIT_MessageBox::warning( 0, tr( "Error" ),
+                              tr( "Can not load application library \"%1\": %2").arg( lib ).arg( lastError() ) );
     return 0;
   }
 
@@ -106,8 +106,8 @@ SUIT_Application* SUIT_Session::startApplication( const QString& name, int /*arg
 
   if ( !crtInst )
   {
-    SUIT_MessageBox::warn1( 0, tr( "Error" ),
-                            tr( "Can not find function \"%1\": %2" ).arg( APP_CREATE_NAME ).arg( lastError() ), tr( "Ok" ) );
+    SUIT_MessageBox::warning( 0, tr( "Error" ),
+                              tr( "Can not find function \"%1\": %2" ).arg( APP_CREATE_NAME ).arg( lastError() ) );
     return 0;
   }
 
@@ -122,7 +122,7 @@ SUIT_Application* SUIT_Session::startApplication( const QString& name, int /*arg
   SUIT_Application* anApp = crtInst();
   if ( !anApp )
   {
-    SUIT_MessageBox::warn1( 0, tr( "Error" ), tr( "Can not create application \"%1\": %2").arg( appName ).arg( lastError() ), tr( "Ok" ) );
+    SUIT_MessageBox::warning( 0, tr( "Error" ), tr( "Can not create application \"%1\": %2").arg( appName ).arg( lastError() ) );
     return 0;
   }
 

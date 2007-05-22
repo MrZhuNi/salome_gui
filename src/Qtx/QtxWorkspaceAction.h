@@ -50,8 +50,8 @@ public:
 
   QtxWorkspace* workspace() const;
 
-  void          setMenuActions( const int );
   int           menuActions() const;
+  void          setMenuActions( const int );
 
   QIcon         icon( const int ) const;
   QString       text( const int ) const;
@@ -72,9 +72,8 @@ public slots:
   void          tileHorizontal();
 
 private slots:
-  void          onTriggered( int );
   void          onAboutToShow();
-  void          onItemActivated( int );
+  void          onTriggered( int );
 
 protected:
   virtual void  addedTo( QWidget* );
@@ -83,9 +82,11 @@ protected:
 private:
   void          updateContent();
   void          updateWindows();
+  void          activateItem( const int );
 
 private:
   QtxWorkspace* myWorkspace;
+  bool          myWindowsFlag;
 };
 
 #ifdef WIN32

@@ -177,7 +177,7 @@ bool SUIT_ViewWindow::event( QEvent* e )
 	      bOk = true; // cancelled
     }
     if ( !bOk )
-      SUIT_MessageBox::error1( this, tr( "ERROR" ), tr( "ERR_CANT_DUMP_VIEW" ), tr( "BUT_OK" ) );
+      SUIT_MessageBox::critical( this, tr( "ERROR" ), tr( "ERR_CANT_DUMP_VIEW" ) );
 
     return true;
   }
