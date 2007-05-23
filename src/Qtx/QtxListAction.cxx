@@ -1,103 +1,515 @@
 // Copyright (C) 2005  OPEN CASCADE, CEA/DEN, EDF R&D, PRINCIPIA R&D
-// 
+//
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either 
+// License as published by the Free Software Foundation; either
 // version 2.1 of the License.
-// 
-// This library is distributed in the hope that it will be useful 
-// but WITHOUT ANY WARRANTY; without even the implied warranty of 
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+//
+// This library is distributed in the hope that it will be useful
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public  
-// License along with this library; if not, write to the Free Software 
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 // File:      QtxListAction.cxx
-// Author:    Sergey TELKOV (Based on code by Eugene AKSENOV)
+// Author:    Sergey TELKOV
 
 #include "QtxListAction.h"
 
-#include <qvbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qlistbox.h>
-#include <qtoolbar.h>
-#include <qwmatrix.h>
-#include <qpopupmenu.h>
-#include <qtoolbutton.h>
-#include <qobjectlist.h>
-#include <qapplication.h>
+#include <QMenu>
+#include <QLabel>
+#include <QLayout>
+#include <QToolTip>
+#include <QToolbar>
+#include <QWMatrix>
+#include <QMouseEvent>
+#include <QListWidget>
+#include <QToolButton>
+#include <QObjectList>
+#include <QApplication>
 
-static const char* list_arrow_icon[] = {
-"10 6 2 1",
-"# c #000000",
-"  c none",
-"          ",
-" #######  ",
-"  #####   ",
-"   ###    ",
-"    #     ",
-"          "
+/*!
+  \class QtxListAction::ScrollEvent
+  Event for the scrolling in the list of actions
+*/
+class QtxListAction::ScrollEvent : public QEvent
+{
+public:
+  enum { Scroll = User + 1 };
+
+  ScrollEvent( bool down ) : QEvent( (QEvent::Type)Scroll ), myDown( down ) {}
+  virtual ~ScrollEvent() {}
+
+  bool isDown() const { return myDown; }
+
+private:
+  bool myDown;
 };
 
 /*!
-  \class QtxListAction::ToolButton
-  Custom tool button
+  \class QtxListAction::ListWidget
+  List of actions
 */
-class QtxListAction::ToolButton : public QToolButton
+class QtxListAction::ListWidget : public QListWidget
 {
 public:
-  ToolButton( QtxListAction*, QWidget* = 0, const char* = 0 );
-  virtual ~ToolButton();
+  ListWidget( QWidget* parent = 0 ) : QListWidget( parent ) {}
+  virtual ~ListWidget() {}
 
-  virtual QSize sizeHint() const;
+protected:
+  virtual void scrollContentsBy( int dx, int dy )
+  {
+    QListWidget::scrollContentsBy( dx, dy );
+    if ( dy != 0 )
+      QApplication::postEvent( viewport(), new ScrollEvent( dy <= 0 ) );
+  }
+};
+
+/*!
+  \class QtxListAction::ListFrame
+  Expanding frame with action list and comment
+*/
+class QtxListAction::ListFrame: public QMenu
+{
+public:
+  ListFrame( QtxListAction*, QWidget* parent );
+  virtual ~ListFrame();
+
+  void                    clear();
+  const QStringList       names() const;
+  void                    addNames( const QStringList& );
+
+  void                    setSingleComment( const QString& );
+  void                    setMultipleComment( const QString& );
+
+  int                     selected() const;
+  void                    setSelected( const int );
+
+  int                     linesNumber() const;
+  int                     charsNumber() const;
+
+  void                    setLinesNumber( const int );
+  void                    setCharsNumber( const int );
+
+  virtual QSize           sizeHint() const;
+  virtual QSize           minimumSizeHint() const;
+
+  virtual bool            eventFilter( QObject*, QEvent* );
+
+  virtual void            setVisible( bool );
+
+protected:
+  virtual void            keyPressEvent( QKeyEvent* );
 
 private:
-  QtxListAction* myAction;
+  void                    accept();
+  void                    updateComment();
+  void                    setNames( const QStringList& );
+  void                    removePostedEvens( QObject*, int );
+
+private:
+  QListWidget*            myList;
+  QStringList             myNames;
+  QtxListAction*          myAction;
+  QLabel*                 myComment;
+
+  int                     myLines;
+  int                     myChars;
+
+  QString                 mySingleComment;
+  QString                 myMultipleComment;
 };
 
 /*!
   Constructor
 */
-QtxListAction::ToolButton::ToolButton( QtxListAction* a, QWidget* parent, const char* name )
-: QToolButton( parent, name ),
-myAction( a )
+QtxListAction::ListFrame::ListFrame( QtxListAction* a, QWidget* parent )
+: QMenu( parent ),
+myList( 0 ),
+myLines( 5 ),
+myChars( 5 ),
+myAction( a ),
+myComment( 0 )
 {
-  setIconSet( QPixmap( list_arrow_icon ) );
+  QVBoxLayout* top = new QVBoxLayout( this );
+  top->setMargin( 0 );
+  QFrame* main = new QFrame( this );
+  main->setFrameStyle( QFrame::Panel | QFrame::Raised );
+  top->addWidget( main );
+
+  QVBoxLayout* base = new QVBoxLayout( main );
+  base->setMargin( 3 );
+  base->setSpacing( 2 );
+
+  myList = new ListWidget( main );
+  myList->setSelectionMode( QListWidget::MultiSelection );
+  myList->setVerticalScrollMode( QListWidget::ScrollPerItem );
+  myList->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+  myList->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  myList->viewport()->installEventFilter( this );
+  myList->viewport()->setMouseTracking( true );
+  myList->setFocusPolicy( Qt::NoFocus );
+
+  myComment = new QLabel( main );
+  myComment->setFrameStyle( QFrame::Panel | QFrame::Sunken );
+  myComment->setAlignment( Qt::AlignCenter );
+  myMultipleComment = "%1";
+
+  base->addWidget( myList );
+  base->addWidget( myComment );
 }
 
 /*!
   Destructor
 */
-QtxListAction::ToolButton::~ToolButton()
+QtxListAction::ListFrame::~ListFrame()
 {
-  if ( myAction )
-    myAction->controlDeleted( this );
 }
 
 /*!
-  \return the recommended size for the widget
+  Clears list of names [ public ]
 */
-QSize QtxListAction::ToolButton::sizeHint() const
+void QtxListAction::ListFrame::clear()
 {
-  QSize sz = iconSet().pixmap().size();
-  return QSize( sz.width() + 2, sz.height() + 2 );
+	myNames.clear();
+	setNames( myNames );
 }
+
+/*!
+  Adds a names to the list. Truncates the name to fit to the frame width.
+  Use QtxListAction::setCharsNumber( int ) to set the width in characters. [ public ]
+*/
+void QtxListAction::ListFrame::addNames( const QStringList& names )
+{
+	for ( QStringList::ConstIterator it = names.begin(); it != names.end(); ++it )
+		myNames.append( *it );
+	setNames( myNames );
+}
+
+/*!
+  Sets a names to the list. Truncates the name to fit to the frame width.
+  Use QtxListAction::setCharsNumber( int ) to set the width in characters. [ public ]
+*/
+void QtxListAction::ListFrame::setNames( const QStringList& names )
+{
+  if ( !myList )
+		return;
+
+	myList->clear();
+  QStringList strList;
+	for ( QStringList::const_iterator it = names.begin(); it != names.end(); ++it )
+	{
+		QString s = *it;
+    QFontMetrics fm = myList->fontMetrics();
+    int maxW = charsNumber() * fm.maxWidth();
+    int w = fm.width( s );
+    if ( w > maxW )
+    {
+      QString extra( "..." );
+      int len = s.length();
+      int extraLen = fm.width( extra ) + 1;
+      while ( true )
+      {
+        w = fm.width( s, --len );
+        if ( w + extraLen < maxW )
+        {
+          s = s.left( len );
+          break;
+        }
+      }
+      s += extra;
+    }
+    strList.append( s );
+  }
+  myList->addItems( strList );
+}
+
+/*!
+  \return list of names
+*/
+const QStringList QtxListAction::ListFrame::names() const
+{
+	return myNames;
+}
+
+/*!
+    Returns max number of lines shown without activation of vertical scroll bar. [ public ]
+*/
+int QtxListAction::ListFrame::linesNumber() const
+{
+  return myLines;
+}
+
+/*!
+    Returns max number of chars in line (the rest will be truncated). [ public ]
+*/
+int QtxListAction::ListFrame::charsNumber() const
+{
+  return myChars;
+}
+
+/*!
+    Sets max number of lines shown without activation of vertical scroll bar. [ public ]
+*/
+void QtxListAction::ListFrame::setLinesNumber( const int maxLines )
+{
+  myLines = maxLines;
+}
+
+/*!
+    Sets max number of chars in line ( the rest will be truncated ). [ public ]
+*/
+void QtxListAction::ListFrame::setCharsNumber( const int maxChars )
+{
+	if ( myChars == maxChars )
+		return;
+
+  myChars = maxChars;
+	setNames( myNames );
+}
+
+/*!
+    Sets the format of single comment. [ public ]
+*/
+void QtxListAction::ListFrame::setSingleComment( const QString& comment )
+{
+  mySingleComment = comment;
+	setNames( myNames );
+  updateComment();
+}
+
+/*!
+    Sets the format of multiple comment. [ public ]
+*/
+void QtxListAction::ListFrame::setMultipleComment( const QString& comment )
+{
+  myMultipleComment = comment;
+	setNames( myNames );
+  updateComment();
+}
+
+/*!
+    Updates comment display. [ public ]
+*/
+void QtxListAction::ListFrame::updateComment()
+{
+	QString com;
+	int selNum = selected();
+	if ( selNum > 1 )
+		com = myMultipleComment;
+	else if ( selNum > 0 && !mySingleComment.isEmpty() )
+		com = mySingleComment;
+
+	if ( !com.isEmpty() )
+		com = com.arg( selNum );
+
+  myComment->setText( com );
+}
+
+QSize QtxListAction::ListFrame::sizeHint() const
+{
+  return QSize( myList->fontMetrics().maxWidth() * charsNumber() + 10,
+                qMax( 1, linesNumber() ) * ( myList->fontMetrics().height() + 2 ) +
+                myComment->sizeHint().height() );
+}
+
+QSize QtxListAction::ListFrame::minimumSizeHint() const
+{
+  return QSize( myList->fontMetrics().maxWidth() * charsNumber() + 10,
+                qMax( 1, linesNumber() ) * ( myList->fontMetrics().height() + 2 ) +
+                myComment->sizeHint().height() );
+}
+
+/*!
+  Validates the action. [ private slot ]
+*/
+void QtxListAction::ListFrame::accept()
+{
+  int sel = selected();
+  if ( sel && myAction )
+    myAction->onMultiple( sel );
+}
+
+/*!
+  Initializes / shows the frame. [ virtual public slot ]
+*/
+void QtxListAction::ListFrame::setVisible( bool on )
+{
+  if ( on )
+  {
+    myList->setFocus();
+    myList->scrollToItem( myList->item( 0 ), QListWidget::PositionAtTop );
+    setSelected( 0 );
+    updateComment();
+  }
+
+  QMenu::setVisible( on );
+}
+
+/*!
+    Processes KeyUp/KeyDown, PageUp/PageDown, CR and Esc keys.
+    Returns 'true' if event is eaten, 'false' otherwise. [ private ]
+*/
+void QtxListAction::ListFrame::keyPressEvent( QKeyEvent* e )
+{
+  if ( e->type() == QEvent::KeyRelease )
+    return;
+
+  e->accept();
+
+  int selNum = selected();
+  switch( e->key() )
+  {
+  case Qt::Key_Up:
+    setSelected( qMax( 1, selNum - 1 ) );
+    break;
+  case Qt::Key_Down:
+    setSelected( qMax( 1, selNum + 1 ) );
+    break;
+  case Qt::Key_PageUp:
+    setSelected( qMax( 1, selNum - linesNumber() ) );
+    break;
+  case Qt::Key_PageDown:
+	  setSelected( selNum += linesNumber() );
+    break;
+  case Qt::Key_Home:
+	  setSelected( 1 );
+		break;
+  case Qt::Key_End:
+	  setSelected( myList->count() );
+		break;
+  case Qt::Key_Return:
+    accept();
+    break;
+  case Qt::Key_Escape:
+    hide();
+    break;
+  }
+}
+
+/*!
+  Watches mouse events on the viewport of the list. [virtual public]
+*/
+bool QtxListAction::ListFrame::eventFilter( QObject* o, QEvent* e )
+{
+  bool res = true;
+
+  switch( e->type() )
+  {
+  case QEvent::MouseMove:
+    {
+      QMouseEvent* me = (QMouseEvent*)e;
+      if ( !myList->viewport()->rect().contains( me->pos() ) )
+        setSelected( 0 );
+      else if ( myList->itemAt( me->pos() ) )
+        setSelected( myList->row( myList->itemAt( me->pos() ) ) + 1 );
+    }
+    break;
+  case QEvent::MouseButtonRelease:
+    accept();
+  case QEvent::MouseButtonPress:
+  case QEvent::MouseButtonDblClick:
+    break;
+  case ScrollEvent::Scroll:
+    {
+      ScrollEvent* se = (ScrollEvent*)e;
+      QPoint pos = myList->viewport()->mapFromGlobal( QCursor::pos() );
+      if ( myList->viewport()->rect().contains( pos ) )
+      {
+        if ( myList->itemAt( pos ) )
+          setSelected( myList->row( myList->itemAt( pos ) ) + 1 );
+      }
+      else if ( se->isDown() )
+        setSelected( myList->row( myList->itemAt( myList->viewport()->rect().bottomLeft() -
+                                                  QPoint( 0, myList->fontMetrics().height() / 2 ) ) ) + 1 );
+      else
+        setSelected( myList->row( myList->itemAt( myList->viewport()->rect().topLeft() +
+                                                  QPoint( 0, myList->fontMetrics().height() / 2 ) ) ) + 1 );
+    }
+    break;
+  default:
+    res = false;
+    break;
+  }
+
+  if ( res )
+    return true;
+  else
+    return QMenu::eventFilter( o, e );
+}
+
+/*!
+  return number of selected items
+*/
+int QtxListAction::ListFrame::selected() const
+{
+	int sel = 0;
+  QModelIndexList indexes = myList->selectionModel()->selectedRows();
+  for ( QModelIndexList::const_iterator it = indexes.begin(); it != indexes.end(); ++it )
+    sel = qMax( sel, (*it).row() + 1 );
+
+	return sel;
+}
+
+/*!
+    Selects the actions [ 0 - lastSel ]. [ public ]
+*/
+void QtxListAction::ListFrame::setSelected( const int lastSel )
+{
+	int last = qMin( lastSel, (int)myList->count() );
+
+  QItemSelection selection;
+  QItemSelectionModel* selModel = myList->selectionModel();
+
+	for ( int i = 0; i < last; i++ )
+    selection.select( selModel->model()->index( i, 0 ), selModel->model()->index( i, 0 ) );
+
+  selModel->select( selection, QItemSelectionModel::ClearAndSelect );
+
+	int item = last - 1;
+
+  myList->scrollToItem( myList->item( item ) );
+  myList->clearFocus();
+
+  removePostedEvens( myList->viewport(), ScrollEvent::Scroll );
+
+  updateComment();
+}
+
+void QtxListAction::ListFrame::removePostedEvens( QObject* o, int type )
+{
+  class Filter : public QObject
+  {
+  public:
+    Filter() : QObject( 0 ) {}
+    virtual bool eventFilter( QObject*, QEvent* )
+    {
+      return true;
+    }
+  };
+
+  Filter f;
+  o->installEventFilter( &f );
+  QApplication::sendPostedEvents( o, type );
+}
+
+/*!
+  \class QtxListAction
+  Action with list of items
+*/
 
 /*!
   Constructs an list action with given parent and name. If toggle is true the
   action will be a toggle action, otherwise it will be a command action.
 */
-QtxListAction::QtxListAction( QObject* parent, const char* name, bool toggle )
-: QtxAction( parent, name, toggle ),
-myFrame( 0 ),
-myMode( Item ),
-myRaise( false )
+QtxListAction::QtxListAction( QObject* parent )
+: QWidgetAction( parent ),
+myFrame( 0 )
 {
   initialize();
 }
@@ -109,15 +521,14 @@ myRaise( false )
   If toggle is true the action will be a toggle action, otherwise it will
   be a command action.
 */
-
-QtxListAction::QtxListAction( const QString& text, const QIconSet& icon,
-                              const QString& menuText, int accel,
-                              QObject* parent, const char* name, bool toggle )
-: QtxAction( text, icon, menuText, accel, parent, name, toggle ),
-myFrame( 0 ),
-myMode( Item ),
-myRaise( false )
+QtxListAction::QtxListAction( const QIcon& icon, const QString& text, int accel, QObject* parent )
+: QWidgetAction( parent ),
+myFrame( 0 )
 {
+  setIcon( icon );
+  setText( text );
+  setShortcut( accel );
+
   initialize();
 }
 
@@ -127,28 +538,23 @@ myRaise( false )
   of given parent and named specified name. If toggle is true the action
   will be a toggle action, otherwise it will be a command action.
 */
-
-QtxListAction::QtxListAction( const QString& text, const QString& menuText,
-                              int accel, QObject* parent, const char* name, bool toggle )
-: QtxAction( text, menuText, accel, parent, name, toggle ),
-myFrame( 0 ),
-myMode( Item ),
-myRaise( false )
+QtxListAction::QtxListAction( const QString& text, int accel, QObject* parent )
+: QWidgetAction( parent ),
+myFrame( 0 )
 {
+  setText( text );
+  setShortcut( accel );
+
   initialize();
 }
 
 /*!
   Destructor.
 */
-
 QtxListAction::~QtxListAction()
 {
-  if ( myFrame ) {
-    myFrame->myAction = 0;
-    delete myFrame;
-    myFrame = 0;
-  }
+  delete myFrame;
+  myFrame = 0;
 }
 
 /*!
@@ -157,10 +563,9 @@ QtxListAction::~QtxListAction()
 	      be added into popup menu as menu item. If popup mode "SubMenu" then
 		    action will be added into popup menu as sub menu with list of items.
 */
-
 int QtxListAction::popupMode() const
 {
-  return myMode;
+  return menu() ? SubMenu : Item;
 }
 
 /*!
@@ -168,10 +573,20 @@ int QtxListAction::popupMode() const
 	Desc: Set the popup mode. Popup mode define way in this action will be
 	      added into popup menu. This function should be used before addTo.
 */
-
 void QtxListAction::setPopupMode( const int mode )
 {
-  myMode = mode;
+  if ( mode == popupMode() )
+    return;
+
+  if ( mode == Item )
+  {
+    delete menu();
+    setMenu( 0 );
+  }
+  else
+    setMenu( new QMenu( 0 ) );
+
+  onChanged();
 }
 
 /*!
@@ -190,7 +605,6 @@ QStringList QtxListAction::names() const
 	Desc: Fills the list of actions. Removes the old contents from
 	      the list if 'clear' is true.
 */
-
 void QtxListAction::addNames( const QStringList& names, bool clear )
 {
   if ( !myFrame )
@@ -201,172 +615,41 @@ void QtxListAction::addNames( const QStringList& names, bool clear )
 
 	myFrame->addNames( names );
 
-	QStringList lst = myFrame->names();
-	for ( PopupsMap::Iterator pit = myPopups.begin(); pit != myPopups.end(); ++pit )
-	{
-		int i = 1;
-		QPopupMenu* pm = (QPopupMenu*)pit.key();
-		for ( QStringList::ConstIterator it = lst.begin(); it != lst.end(); ++it )
-			pit.data().popup->insertItem( *it, i++ );
-		pm->setItemEnabled( pit.data().id, isEnabled() && pit.data().popup->count() );
-  }
-
-	for ( ButtonsMap::Iterator bit = myButtons.begin(); bit != myButtons.end(); ++bit )
-	{
-		bit.data().drop->setEnabled( isEnabled() && !lst.isEmpty() );
-		bit.data().main->setEnabled( isEnabled() && !lst.isEmpty() );
-	}
+  onChanged();
 }
 
 /*!
-	Name: addTo [virtual public]
-	Desc: Adds this control to 'popup' or 'toolbar'.
+  Returns the number of lines wich will be visible in list frame.
 */
-
-bool QtxListAction::addTo( QWidget* w )
+int QtxListAction::linesNumber() const
 {
-	if ( myButtons.contains( w ) || myPopups.contains( w ) )
-		return false;
-
-	if ( !w->inherits( "QPopupMenu" ) || popupMode() != SubMenu )
-		if ( !QtxAction::addTo( w ) )
-			return false;
-
-  if ( w->inherits( "QToolBar" ) )
-  {
-		Buttons& entry = myButtons[w];
-		QHBox* dropWrap = new QHBox( w );
-    entry.drop = new ToolButton( this, dropWrap, "qt_dockwidget_internal" );
-
-    entry.drop->setTextLabel( text() );
-    entry.drop->setToggleButton( true );
-    entry.drop->setAutoRaise( entry.main->autoRaise() );
-
-    entry.main->setEnabled( isEnabled() && !myFrame->names().isEmpty() );
-    entry.drop->setEnabled( isEnabled() && !myFrame->names().isEmpty() );
-
-		entry.main->installEventFilter( this );
-    entry.drop->installEventFilter( this );
-
-		QToolTip::add( entry.drop, toolTip(), myTipGroup, statusTip() );
-
-    connect( entry.drop, SIGNAL( toggled( bool ) ), this, SLOT( onExpand( bool ) ) );
-  }
-	else if ( w->inherits( "QPopupMenu" ) && popupMode() == SubMenu )
-	{
-		Popups entry;
-		QPopupMenu* pm = (QPopupMenu*)w;
-
-		entry.popup = new QPopupMenu( pm );
-		entry.id = pm->insertItem( text(), entry.popup );
-
-		int i = 1;
-		QStringList lst = myFrame->names();
-		for ( QStringList::ConstIterator it = lst.begin(); it != lst.end(); ++it )
-		{
-			int id = entry.popup->insertItem( *it );
-			entry.popup->setItemParameter( id, i++ );
-		}
-		pm->setItemEnabled( entry.id, isEnabled() && entry.popup->count() );
-		myPopups.insert( w, entry );
-
-		connect( entry.popup, SIGNAL( activated( int ) ), this, SLOT( onActivated( int ) ) );
-	}
-
-    connect( w, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
-
-    return true;
+  return myFrame->linesNumber();
 }
 
 /*!
-	Name: addTo [virtual public]
-	Desc: Adds this control to 'popup' or 'toolbar'. Allow to specify index
-	      for adding into 'popup'.
+  Returns the number of chars wich will be visible in the each line.
 */
-
-bool QtxListAction::addTo( QWidget* w, const int idx )
+int QtxListAction::charsNumber() const
 {
-  return QtxAction::addTo( w, idx );
+  return myFrame->charsNumber();
 }
 
 /*!
-	Name: removeFrom [virtual public]
-	Desc: Removes this control from 'popup' or 'toolbar'.
+	Sets max number of lines that list frame shows without vertical scroll bar. Default value is 7.
 */
-
-bool QtxListAction::removeFrom( QWidget* w )
+void QtxListAction::setLinesNumber( const int nlines )
 {
-  if ( !QtxAction::removeFrom( w ) )
-    return false;
-
-  if ( w->inherits( "QToolBar" ) )
-  {
-    if ( myFrame )
-      myFrame->hide();
-
-    if ( myButtons.contains( w ) )
-    {
-      Buttons& entry = myButtons[w];
-
-      if ( entry.drop->parent() && entry.drop->parent()->parent() == w )
-        delete entry.drop->parent();
-      else
-        delete entry.drop;
-    }
-    myButtons.remove( w );
-  }
-  else if ( w->inherits( "QPopupMenu" ) )
-    myPopups.remove( w );
-
-  disconnect( w, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
-
-  return true;
+  myFrame->setLinesNumber( nlines );
 }
 
 /*!
-	Name: setEnabled [virtual public slot]
-	Desc: Enables/disables this control.
+	Sets max number of characters in a line which list frame shows without truncation.
+  Default value is 5 (the widest char size is used).
 */
 
-void QtxListAction::setEnabled( bool enable )
+void QtxListAction::setCharsNumber( const int nchars )
 {
-  QtxAction::setEnabled( enable );
-
-	bool isOn = enable && !myFrame->names().isEmpty();
-
-	for ( ButtonsMap::Iterator bit = myButtons.begin(); bit != myButtons.end(); ++bit )
-	{
-		bit.data().drop->setEnabled( isOn );
-		bit.data().main->setEnabled( isOn );
-	}
-
-	for ( PopupsMap::Iterator pit = myPopups.begin(); pit != myPopups.end(); ++pit )
-	{
-		QPopupMenu* cont = (QPopupMenu*)pit.key();
-		cont->setItemEnabled( pit.data().id, isOn );
-  }
-}
-
-/*!
-	Name: setMaxLines [public]
-	Desc: Sets max number of lines that list frame shows
-		  without vertical scroll bar. Default value is 5.
-*/
-
-void QtxListAction::setMaxLines( int nlines )
-{
-  myFrame->setMaxLines( nlines );
-}
-
-/*!
-	Name: setMaxLineChars [public]
-	Desc: Sets max number of characters in a line which list frame shows
-	      without truncation. Default value is 12 (the widest char size is used).
-*/
-
-void QtxListAction::setMaxLineChars( int nchars )
-{
-  myFrame->setMaxLineChars( nchars );
+  myFrame->setCharsNumber( nchars );
 }
 
 /*!
@@ -376,7 +659,6 @@ void QtxListAction::setMaxLineChars( int nchars )
 		    Ex. "Undo %1 actions" format string will work as "Undo 3 actions"
 		    when 3 actions are selected. The default format string is "%1".
 */
-
 void QtxListAction::setComment( const QString& c, const QString& sc )
 {
   if ( !myFrame )
@@ -386,49 +668,26 @@ void QtxListAction::setComment( const QString& c, const QString& sc )
 	myFrame->setMultipleComment( c );
 }
 
-/*!
-	Name: eventFilter [virtual public]
-	Desc: Reimplemented to paint the tool buttons in 2D/3D.
-*/
-
-bool QtxListAction::eventFilter( QObject* o, QEvent* e )
+QWidget* QtxListAction::createWidget( QWidget* parent )
 {
-  if ( !myRaise && ( e->type() == QEvent::Enter || e->type() == QEvent::Leave ) )
-  {
-		QWidget* obj = 0;
-		QWidget* wid = widget( (QWidget*)o );
-		if ( o == mainButton( wid ) )
-			obj = dropButton( wid );
-		else if ( o == dropButton( wid ) )
-			obj = mainButton( wid );
+  if ( parent && parent->inherits( "QMenu" ) )
+    return 0;
 
-		if ( obj )
-		{
-			myRaise = true;
-			QApplication::sendEvent( obj, e );
-            obj->repaint();
-			myRaise = false;
-		}
-  }
-  return QObject::eventFilter( o, e );
+  QToolButton* tb = new QToolButton( parent );
+  tb->setText( text() );
+  tb->setIcon( icon() );
+  tb->setPopupMode( QToolButton::MenuButtonPopup );
+  tb->setMenu( myFrame );
+  tb->setEnabled( isEnabled() && !names().isEmpty() );
+  tb->setToolTip( toolTip() );
+  connect( tb, SIGNAL( clicked( bool ) ), this, SLOT( onSingle( bool ) ) );
+
+  return tb;
 }
 
-/*!
-	Name: addedTo [protected]
-	Desc: Reimplemented for internal reasons.
-*/
-
-void QtxListAction::addedTo( QWidget* actionWidget, QWidget* container )
+void QtxListAction::deleteWidget( QWidget* widget )
 {
-	QtxAction::addedTo( actionWidget, container );
-
-	if ( !container->inherits( "QToolBar" ) )
-		return;
-
-	Buttons entry;
-	entry.main = (QToolButton*)actionWidget;
-
-	myButtons.insert( container, entry );
+  delete widget;
 }
 
 /*!
@@ -438,20 +697,45 @@ void QtxListAction::addedTo( QWidget* actionWidget, QWidget* container )
 
 void QtxListAction::initialize()
 {
-	myTipGroup = new QToolTipGroup( this );
+  setPopupMode( Item );
 
-	myFrame = new QtxListFrame( this, qApp->mainWidget() );
-  myFrame->setMaxLines( 5 );
-  myFrame->setMaxLineChars( 7 );
+	myFrame = new QtxListAction::ListFrame( this, 0 );
+  myFrame->setLinesNumber( 7 );
+  myFrame->setCharsNumber( 5 );
 
 	myFrame->hide();
 
-	connect( myFrame, SIGNAL( hided() ), this, SLOT( onHided() ) );
-  connect( this, SIGNAL( activated() ), this, SLOT( onSingle() ) );
-	connect( myFrame, SIGNAL( selected( int ) ), this, SLOT( onMultiple( int ) ) );
+  connect( this, SIGNAL( changed() ), this, SLOT( onChanged() ) );
+  connect( this, SIGNAL( triggered( bool ) ), this, SLOT( onSingle( bool ) ) );
+}
 
-	connect( myTipGroup, SIGNAL( removeTip() ), this, SLOT( clearStatusText() ) );
-	connect( myTipGroup, SIGNAL( showTip( const QString& ) ), this, SLOT( showStatusText( const QString& ) ) );
+void QtxListAction::onChanged()
+{
+	QStringList lst = myFrame->names();
+
+  if ( menu() )
+  {
+    menu()->clear();
+    for ( QStringList::iterator iter = lst.begin(); iter != lst.end(); ++iter )
+    {
+      QAction* a = new QAction( *iter, menu() );
+      menu()->addAction( a );
+      connect( a, SIGNAL( triggered( bool ) ), this, SLOT( onTriggered( bool ) ) );
+    }
+  }
+
+  QList<QWidget*> widList = createdWidgets();
+	for ( QList<QWidget*>::iterator it = widList.begin(); it != widList.end(); ++it )
+  {
+		(*it)->setEnabled( isEnabled() && !lst.isEmpty() );
+    QToolButton* tb = ::qobject_cast<QToolButton*>( *it );
+    if ( tb )
+    {
+      tb->setText( text() );
+      tb->setIcon( icon() );
+      tb->setToolTip( toolTip() );
+    }
+  }
 }
 
 /*!
@@ -459,9 +743,9 @@ void QtxListAction::initialize()
 	Desc: Called when a single action is selected.
 */
 
-void QtxListAction::onSingle()
+void QtxListAction::onSingle( bool )
 {
-  emit activated( 1 );
+  onMultiple( 1 );
 }
 
 /*!
@@ -469,7 +753,7 @@ void QtxListAction::onSingle()
 	Desc: Called when multiple actions are selected.
 */
 
-void QtxListAction::onMultiple( int numActions )
+void QtxListAction::onMultiple( const int numActions )
 {
   if ( myFrame )
     myFrame->hide();
@@ -479,635 +763,19 @@ void QtxListAction::onMultiple( int numActions )
 }
 
 /*!
-	Name: onExpand [private slot]
-	Desc: Activates the list of actions.
-*/
-
-void QtxListAction::onExpand( bool on )
-{
-	const QObject* obj = sender();
-  if ( on )
-  {
-    QWidget* wid = widget( (QToolButton*)obj );
-		QToolButton* main = mainButton( wid );
-    myFrame->setOwner( main );
-		if ( main )
-			myFrame->show();
-  }
-  else
-    myFrame->hide();
-}
-
-/*!
-  SLOT: called when frame is hidden
-*/
-void QtxListAction::onHided()
-{
-  for ( ButtonsMap::Iterator bit = myButtons.begin(); bit != myButtons.end(); ++bit )
-	{
-    bool block = bit.data().drop->signalsBlocked();
-    bit.data().drop->blockSignals( true );
-    bit.data().drop->setOn( false );
-    bit.data().drop->blockSignals( block );
-  }
-}
-
-/*!
-	Name: onActivated [private slot]
+	Name: onTriggered [private slot]
 	Desc: Called when a sub menu item is activated.
 */
 
-void QtxListAction::onActivated( int id )
+void QtxListAction::onTriggered( bool )
 {
-	QPopupMenu* pm = (QPopupMenu*)sender();
-	int num = pm->itemParameter( id );
-	if ( num > 0 )
-		emit activated( num );
-}
-
-/*!
-	Name: onDestroyed [private slot]
-	Desc: Called when a container widget is destroyed.
-*/
-
-void QtxListAction::onDestroyed( QObject* obj )
-{
-	if ( !obj->isWidgetType() )
-		return;
-
-	myPopups.remove( (QWidget*)obj );
-	myButtons.remove( (QWidget*)obj );
-}
-
-/*!
-	Name: widget [private]
-	Desc: Returns container widget for specified control.
-*/
-
-QWidget* QtxListAction::widget( QWidget* obj ) const
-{
-	QWidget* wid = 0;
-	for ( PopupsMap::ConstIterator pit = myPopups.begin(); pit != myPopups.end() && !wid; ++pit )
-		if ( pit.data().popup == obj )
-			wid = pit.key();
-
-	for ( ButtonsMap::ConstIterator bit = myButtons.begin(); bit != myButtons.end() && !wid; ++bit )
-		if ( bit.data().main == obj || bit.data().drop == obj )
-			wid = bit.key();
-
-	return wid;
-}
-
-/*!
-	Name: listPopup [private]
-	Desc: Returns sub popup menu widget for specified container.
-*/
-
-QPopupMenu* QtxListAction::listPopup( QWidget* wid ) const
-{
-	QPopupMenu* p = 0;
-	if ( myPopups.contains( wid ) )
-		p = myPopups[wid].popup;
-	return p;
-}
-
-/*!
-	Name: mainButton [private]
-	Desc: Returns main tool button for specified container.
-*/
-
-QToolButton* QtxListAction::mainButton( QWidget* wid ) const
-{
-	QToolButton* mb = 0;
-	if ( myButtons.contains( wid ) )
-		mb = myButtons[wid].main;
-	return mb;
-}
-
-/*!
-	Name: dropButton [private]
-	Desc: Returns drop tool button for specified container.
-*/
-
-QToolButton* QtxListAction::dropButton( QWidget* wid ) const
-{
-	QToolButton* db = 0;
-	if ( myButtons.contains( wid ) )
-		db = myButtons[wid].drop;
-	return db;
-}
-
-/*!
-	Name: controlDeleted [private]
-	Desc: Called when action child controls deleted.
-*/
-
-void QtxListAction::controlDeleted( QWidget* wid )
-{
-  QWidget* w = 0;
-  for ( ButtonsMap::Iterator it = myButtons.begin(); it != myButtons.end() && !w; ++it )
-  {
-    if ( it.data().main == wid || it.data().drop == wid )
-      w = it.key();
-  }
-
-  if ( w )
-  {
-    if ( myFrame )
-      myFrame->hide();
-
-    myButtons.remove( w );
-  }
-}
-
-/*!
-  \class QtxListFrame
-  Frame for the list of actions
-*/
-class QtxListFrame::ScrollEvent : public QCustomEvent
-{
-public:
-	enum { Scroll = User + 1 };
-
-	ScrollEvent( bool down ) : QCustomEvent( Scroll ), myDown( down ) {};
-	virtual ~ScrollEvent() {};
-
-	bool isDown() const { return myDown; };
-
-private:
-	bool myDown;
-};
-
-/*!
-	Class: QtxListAction
-	Level: Public
-*/
-
-/*!
-    Constructor
-*/
-QtxListFrame::QtxListFrame( QtxListAction* a, QWidget* parent, WFlags f )
-: QFrame( parent, 0, WStyle_Customize | WStyle_NoBorderEx | WType_Popup | WStyle_Tool | WStyle_StaysOnTop ),
-myList( 0 ),
-myOwner( 0 ),
-myAction( a ),
-myComment( 0 ),
-myMaxLines( 5 ),
-myMaxLineChars( 10 ),
-myScrollVal( 0 ),
-myScrollBlock( false )
-{
-  QVBoxLayout* theLayout = new QVBoxLayout( this, 3 );
-	theLayout->setResizeMode( QLayout::FreeResize );
-
-  myList = new QListBox( this );
-  myList->setSelectionMode( QListBox::Multi );
-  myList->setHScrollBarMode( QScrollView::AlwaysOff );
-	myList->setFocusPolicy( NoFocus );
-
-	QPalette p = myList->palette();
-	p.setColor( QPalette::Inactive, QColorGroup::Highlight,
-				      p.color( QPalette::Active, QColorGroup::Highlight ) );
-	p.setColor( QPalette::Inactive, QColorGroup::HighlightedText,
-				      p.color( QPalette::Active, QColorGroup::HighlightedText ) );
-	myList->setPalette( p );
-
-  /*  We'll have the vertical scroll bar only and
-      truncate the names which are too wide */
-  connect( myList, SIGNAL( contentsMoving( int, int ) ), this, SLOT( onScroll( int, int ) ) );
-
-  myComment = new QLabel( this );
-  myComment->setFrameStyle( Panel | Sunken );
-  myComment->setAlignment( AlignCenter );
-  myMultipleComment = "%1";
-
-  theLayout->addWidget( myList );
-  theLayout->addWidget( myComment );
-
-  setFrameStyle( Panel | Raised );
-}
-
-/*!
-  Destructor
-*/
-QtxListFrame::~QtxListFrame()
-{
-  if ( myAction )
-    myAction->myFrame = 0;
-}
-
-/*!
-    Clears list of names [ public ]
-*/
-
-void QtxListFrame::clear()
-{
-	myNames.clear();
-	setNames( myNames );
-}
-
-/*!
-    Adds a names to the list. Truncates the name to fit to the frame width.
-    Use QtxListAction::setMaxLineChar( int ) to set the width in characters. [ public ]
-*/
-  
-void QtxListFrame::addNames( const QStringList& names )
-{
-	for ( QStringList::ConstIterator it = names.begin(); it != names.end(); ++it )
-		myNames.append( *it );
-	setNames( myNames );
-}
-
-/*!
-    Sets a names to the list. Truncates the name to fit to the frame width.
-    Use QtxListAction::setMaxLineChar( int ) to set the width in characters. [ public ]
-*/
-
-void QtxListFrame::setNames( const QStringList& names )
-{
-  if ( !myList )
-		return;
-
-	myList->clear();
-
-	for ( QStringList::ConstIterator it = names.begin(); it != names.end(); ++it )
-	{
-		QString s = *it;
-    QFontMetrics fm = myList->fontMetrics();
-    int maxW = myMaxLineChars * fm.maxWidth();
-    int w = fm.width( s );
-    if ( w > maxW )
-    {
-      QString extra( "..." );
-      int len = s.length();
-      int extraLen = fm.width( extra ) + 1;
-      while ( true )
-      {
-        w = fm.width( s, --len );
-        if ( w + extraLen < maxW )
-        {
-          s = s.left( len );
-          break;
-        }
-      }
-      s += extra;
-    }
-    myList->insertItem( s );
-  }
-}
-
-/*!
-  \return list of names
-*/
-const QStringList QtxListFrame::names() const
-{
-	return myNames;
-}
-
-/*!
-    Sets max number of lines shown without activation of vertical scroll bar. [ public ]
-*/
-
-void QtxListFrame::setMaxLines( int maxLines )
-{
-  myMaxLines = maxLines;
-}
-
-/*!
-    Sets max number of chars in line ( the rest will be truncated ). [ public ]
-*/
-
-void QtxListFrame::setMaxLineChars( int maxChars )
-{
-	if ( myMaxLineChars == maxChars )
-		return;
-
-  myMaxLineChars = maxChars;
-	setNames( myNames );
-}
-
-/*!
-    Sets the format of single comment. [ public ]
-*/
-
-void QtxListFrame::setSingleComment( const QString& comment )
-{
-  mySingleComment = comment;
-	setNames( myNames );
-  updateComment();
-}
-
-/*!
-    Sets the format of multiple comment. [ public ]
-*/
-
-void QtxListFrame::setMultipleComment( const QString& comment )
-{
-  myMultipleComment = comment;
-	setNames( myNames );
-  updateComment();
-}
-
-/*!
-    Updates comment display. [ public ]
-*/
-
-void QtxListFrame::updateComment()
-{
-	QString com;
-	int selNum = selected();
-	if ( selNum > 1 )
-		com = myMultipleComment;
-	else if ( selNum > 0 && !mySingleComment.isEmpty() )
-		com = mySingleComment;
-
-	if ( !com.isEmpty() )
-		com = com.arg( selNum );
-
-  myComment->setText( com );
-}
-
-/*!
-  Sets owner
-  \param wo - new owner
-*/
-void QtxListFrame::setOwner( QWidget* wo )
-{
-  myOwner = wo;
-  if ( myOwner )
-  {
-    QPoint lpos;
-    if ( myOwner->parentWidget() && myOwner->parentWidget()->inherits( "QToolBar" ) &&
-         ((QToolBar*)myOwner->parentWidget())->orientation() == Qt::Vertical )
-      lpos = QPoint( myOwner->x() + myOwner->width() + 2, myOwner->y() );
-    else
-		  lpos = QPoint( myOwner->x(), myOwner->y() + myOwner->height() + 2 );
-      QPoint gpos = myOwner->parentWidget() ? myOwner->parentWidget()->mapToGlobal( lpos )
-                                            : myOwner->mapToGlobal( lpos );
-    if ( parentWidget() )
-			move( parentWidget()->mapFromGlobal( gpos ) );
-    else
-		  move( gpos );
-  }
-}
-
-/*!
-    Validates the action. [ private slot ]
-*/
-
-void QtxListFrame::accept()
-{
-  emit selected( selected() );
-}
-
-/*!
-    Cancels the action. [ private slot ]
-*/
-
-void QtxListFrame::reject()
-{
-  emit selected( 0 );
-}
-
-/*!
-    Initializes / shows the frame. [ virtual public slot ]
-*/
-
-void QtxListFrame::show()
-{
-  int cnt = (int)myList->count();
-  if ( cnt )
-  {
-    myScrollVal = 0;
-		myList->setTopItem( 0 );
-    myList->clearSelection();
-		myList->setMinimumSize( 0, ( QMIN( cnt + 1, myMaxLines ) ) * myList->itemHeight() + 1 );
-    setSelected( 1 );
-
-    int linstep = myList->itemHeight();
-    myList->verticalScrollBar()->setLineStep( linstep );
-    myList->verticalScrollBar()->setPageStep( myMaxLines * linstep );
-
-    QFontMetrics fm = myList->fontMetrics();
-    layout()->invalidate();
-    int maxHeight = layout()->minimumSize().height() + layout()->margin();
-    int maxWidth = myMaxLineChars * fm.maxWidth();
-		for ( uint i = 0; i <= myList->count(); i++ )
-			maxWidth = QMAX( maxWidth, fm.width( myList->text( i ) ) );
-
-		resize( width(), maxHeight );
-
-		myList->updateGeometry();
-
-		QApplication::sendPostedEvents();
-
-    myList->resizeContents( myList->contentsWidth(),
-                            myList->itemHeight() * cnt );
-    if ( myList->contentsHeight() > myList->visibleHeight() )
-         maxWidth += myList->verticalScrollBar()->width();
-
-		QString single = mySingleComment.arg( cnt );
-		QString multi = myMultipleComment.arg( cnt );
-		int comWidth = QMAX( myComment->fontMetrics().width( single ), myComment->fontMetrics().width( multi ) );
-		if ( myComment->frameWidth() )
-			comWidth += myComment->fontMetrics().width( "x" );
-
-		maxWidth = QMAX( maxWidth, comWidth );
-
-		resize( maxWidth, maxHeight );
-    updateComment();
-
-    qApp->installEventFilter( this );
-
-    QFrame::show();
-  }
-}
-
-/*!
-    Cleanup. [ virtual public slot ]
-*/
-
-void QtxListFrame::hide()
-{
-  qApp->removeEventFilter( this );
-  QFrame::hide();
-  emit hided();
-}
-
-/*!
-    Processes KeyUp/KeyDown, PageUp/PageDown, CR and Esc keys.
-    Returns 'true' if event is eaten, 'false' otherwise. [ private ]
-*/
-
-bool QtxListFrame::handleKeyEvent( QObject* , QKeyEvent* e )
-{
-  if ( e->type() == QEvent::KeyRelease )
-    return true;
-
-  int selNum = selected();
-  switch( e->key() )
-  {
-  case Key_Up:
-    setSelected( QMAX( 1, selNum - 1 ) );
-    break;
-  case Key_Down:
-    setSelected( QMAX( 1, selNum + 1 ) );
-    break;
-  case Key_PageUp:
-    setSelected( QMAX( 1, selNum - myMaxLines ) );
-    break;
-  case Key_PageDown:
-	  setSelected( selNum += myMaxLines );
-    break;
-  case Key_Home:
-	  setSelected( 1 );
-		break;
-  case Key_End:
-	  setSelected( myList->count() );
-		break;
-  case Key_Return:
-    accept();
-    break;
-  case Key_Escape:
-    reject();
-    break;
-  }
-  return true;
-}
-
-/*!
-    Selects items on move, validates on button release. If object 'o' is not our name list,
-    we close the frame. Returns 'true' if event is eaten, 'false' otherwise. [ private ]
-*/
-
-bool QtxListFrame::handleMouseEvent( QObject* o, QMouseEvent* e )
-{
-  switch( e->type() )
-  {
-  case QEvent::MouseButtonPress:
-  {
-	  if ( o != myList->viewport() && !isPopup() )
-		  reject();
-    return true;
-  }
-  case QEvent::MouseMove:
-  {
-    if ( o == myList->viewport() )
-    {
-      QListBoxItem* lbi = myList->itemAt( e->pos() );
-      if ( lbi )
-        setSelected( myList->index( lbi ) + 1 );
-    }
-    break;
-  }
-  case QEvent::MouseButtonRelease:
-  {
-    if ( o == myList->viewport() )
-      accept();
-    else
-		  reject();
-    break;
-  }
-  default:
-    break;
-  }
-  return true;
-}
-
-/*!
-  Custom event filter
-*/
-bool QtxListFrame::event( QEvent* e )
-{
-  if ( e->type() != (int)ScrollEvent::Scroll )
-    return QFrame::event( e );
-
-  ScrollEvent* se = (ScrollEvent*)e;
-  if ( se->isDown() )
-    setSelected( myList->topItem() + myList->numItemsVisible() );
-  else
-    setSelected( myList->topItem() + 1 );
-  
-  return true;
-}
-
-/*!
-    Watches mouse events on the viewport of the list. [ virtual public ]
-*/
-
-bool QtxListFrame::eventFilter( QObject* o, QEvent* e )
-{
-  bool isKeyEvent = ( e->type() == QEvent::KeyPress ||
-                      e->type() == QEvent::KeyRelease );
-  bool isMouseEvent = ( e->type() == QEvent::MouseMove ||
-                        e->type() == QEvent::MouseButtonPress ||
-                        e->type() == QEvent::MouseButtonRelease ||
-                        e->type() == QEvent::MouseButtonDblClick );
-
-  if ( isKeyEvent )
-  {
-    if ( handleKeyEvent( o, ( QKeyEvent* )e ) )
-      return true;
-  }
-  else if ( isMouseEvent && o != myList->verticalScrollBar() )
-  {
-    if ( handleMouseEvent( o, ( QMouseEvent*)e ) )
-      return true;
-  }
-
-  if ( o != this && ( e->type() == QEvent::Resize || e->type() == QEvent::Move ) )
-    setOwner( myOwner );
-
-  return QFrame::eventFilter( o, e );
-}
-
-/*!
-    Selects operations while scrolling the list. [ private slot ]
-*/
-
-void QtxListFrame::onScroll( int x, int y )
-{
-  int dx = y - myScrollVal;
-	if ( !myScrollBlock )
-		QApplication::postEvent( this, new ScrollEvent( dx > 0 ) );
-  myScrollVal = y;
-}
-
-/*!
-    Selects the actions [ 0 - lastSel ]. [ public ]
-*/
-
-void QtxListFrame::setSelected( const int lastSel )
-{
-	int last = QMIN( lastSel, (int)myList->count() );
-
-	for ( int i = 0; i < (int)myList->count(); i++ )
-		myList->setSelected( i, i < last );
-
-	int item = last - 1;
-
-	myScrollBlock = true;
-
-	if ( item < myList->topItem() )
-		myList->setTopItem( item );
-
-	if ( item >= myList->topItem() + myList->numItemsVisible() )
-		myList->setTopItem( item - myList->numItemsVisible() + 1 );
-
-	myScrollBlock = false;
-
-  myList->clearFocus();
-
-  updateComment();
-}
-
-/*!
-  return number of selected items
-*/
-int QtxListFrame::selected() const
-{
-	uint sel = 0;
-	while ( sel < myList->count() && myList->isSelected( sel ) )
-		sel++;
-	return sel;
+  if ( !menu() )
+    return;
+
+  QList<QAction*> actionList = menu()->actions();
+  int idx = actionList.indexOf( ::qobject_cast<QAction*>( sender() ) );
+  if ( idx < 0 )
+    return;
+
+  emit activated( idx + 1 );
 }
