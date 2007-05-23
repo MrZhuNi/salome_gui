@@ -18,7 +18,7 @@
 //
 #include "QDS_TextEdit.h"
 
-#include <qtextedit.h>
+#include <QTextEdit>
 
 /*
   \class QDS_TextEdit
@@ -51,7 +51,7 @@ QString QDS_TextEdit::getString() const
 {
   QString res;
   if ( textEdit() )
-    res = textEdit()->text();
+    res = textEdit()->toPlainText();
   return res;
 }
 
@@ -69,7 +69,7 @@ void QDS_TextEdit::setString( const QString& txt )
 */
 QTextEdit* QDS_TextEdit::textEdit() const
 {
-  return ::qt_cast<QTextEdit*>( controlWidget() );
+  return ::qobject_cast<QTextEdit*>( controlWidget() );
 }
 
 /*!

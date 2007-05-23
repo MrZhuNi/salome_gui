@@ -20,7 +20,7 @@
 
 #include <QtxIntSpinBox.h>
 
-#include <qvalidator.h>
+//#include <QValidator>
 
 /*
   \class QDS_SpinBox
@@ -58,9 +58,9 @@ QString QDS_SpinBox::getString() const
   {
     res = aSpinBox->text();
     if ( !aSpinBox->suffix().isEmpty() )
-      res.remove( res.find( aSpinBox->suffix() ), aSpinBox->suffix().length() );
+      res.remove( res.indexOf( aSpinBox->suffix() ), aSpinBox->suffix().length() );
     if ( !aSpinBox->prefix().isEmpty() )
-      res.remove( res.find( aSpinBox->prefix() ), aSpinBox->prefix().length() );
+      res.remove( res.indexOf( aSpinBox->prefix() ), aSpinBox->prefix().length() );
   }
   return res;
 }
@@ -83,7 +83,7 @@ void QDS_SpinBox::setString( const QString& txt )
 */
 QtxIntSpinBox* QDS_SpinBox::spinBox() const
 {
-  return ::qt_cast<QtxIntSpinBox*>( controlWidget() );
+  return ::qobject_cast<QtxIntSpinBox*>( controlWidget() );
 }
 
 /*!
@@ -114,7 +114,7 @@ void QDS_SpinBox::onValueChanged( int val )
 void QDS_SpinBox::setStep( const int step )
 {
   if ( spinBox() )
-    spinBox()->setLineStep( step );
+    spinBox()->setSingleStep( step );
 }
 
 /*!
@@ -124,7 +124,7 @@ int QDS_SpinBox::step() const
 {
   int s = 0;
   if ( spinBox() )
-    s = spinBox()->lineStep();
+    s = spinBox()->singleStep();
   return s;
 }
 
@@ -139,13 +139,15 @@ void QDS_SpinBox::unitSystemChanged( const QString& system )
   QSpinBox* sb = spinBox();
   if ( sb )
   {
-    delete sb->validator();
-    QValidator* valid = validator();
-    sb->setValidator( valid );
+    // not porting this code to qt4, only commented, since from the task context
+    // the new setted validator accepts all integers
+    //delete sb->validator();
+    //QValidator* valid = validator();
+    //sb->setValidator( valid );
 
     sb->setSuffix( suffix() );
     sb->setPrefix( prefix() );
-    sb->setMinValue( minValue().toInt() );
-    sb->setMaxValue( maxValue().toInt() );
+    sb->setMinimum( minValue().toInt() );
+    sb->setMaximum( maxValue().toInt() );
   }
 }

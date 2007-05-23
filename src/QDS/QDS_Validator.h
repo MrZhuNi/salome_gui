@@ -21,7 +21,7 @@
 
 #include "QDS.h"
 
-#include <qvalidator.h>
+#include <QValidator>
 
 /*!
   class QDS_IntegerValidator

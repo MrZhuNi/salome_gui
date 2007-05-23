@@ -18,7 +18,7 @@
 //
 #include "QDS_CheckBox.h"
 
-#include <qcheckbox.h>
+#include <QCheckBox>
 
 /*
   \class QDS_CheckBox
@@ -68,7 +68,7 @@ void QDS_CheckBox::clear()
 QString QDS_CheckBox::getString() const
 {
   QString val;
-  if ( checkBox() && checkBox()->state() != QButton::NoChange )
+  if ( checkBox() && checkBox()->checkState() != Qt::PartiallyChecked )
     val = checkBox()->isChecked() ? "1" : "0";
   return val;
 }
@@ -88,7 +88,7 @@ void QDS_CheckBox::setString( const QString& txt )
   if ( isOk && val < 0 )
   {
     checkBox()->setTristate();
-    checkBox()->setNoChange();
+    checkBox()->setCheckState(Qt::PartiallyChecked);
   }
   else
     checkBox()->setChecked( isOk && val != 0 );
@@ -99,7 +99,7 @@ void QDS_CheckBox::setString( const QString& txt )
 */
 QCheckBox* QDS_CheckBox::checkBox() const
 {
-  return ::qt_cast<QCheckBox*>( controlWidget() );
+  return ::qobject_cast<QCheckBox*>( controlWidget() );
 }
 
 /*!
@@ -128,7 +128,7 @@ void QDS_CheckBox::onParamChanged()
 */
 void QDS_CheckBox::onStateChanged( int state )
 {
-  if ( state != QButton::NoChange && checkBox() )
+  if ( state != Qt::PartiallyChecked && checkBox() )
     checkBox()->setTristate( false );
 }
 

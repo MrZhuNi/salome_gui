@@ -21,10 +21,10 @@
 
 #include "QDS.h"
 
-#include <qwidget.h>
-#include <qstring.h>
-#include <qvariant.h>
-#include <qguardedptr.h>
+#include <QWidget>
+#include <QString>
+#include <QVariant>
+#include <QPointer>
 
 #include <DDS_DicItem.h>
 
@@ -183,8 +183,8 @@ private:
   static QString            canonicalFormat( const QString&, QString& );
 
 private:
-  typedef QGuardedPtr<QLabel>  GuardedLabel;
-  typedef QGuardedPtr<QWidget> GuardedWidget;
+  typedef QPointer<QLabel>  GuardedLabel;
+  typedef QPointer<QWidget> GuardedWidget;
 
 private:
   QString                   myId;

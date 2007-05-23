@@ -22,14 +22,15 @@
 
 #include <DDS_Dictionary.h>
 
-#include <qtimer.h>
-#include <qlabel.h>
-#include <qwidget.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qvalidator.h>
-#include <qmessagebox.h>
+#include <QTimer>
+#include <QLabel>
+#include <QWidget>
+#include <QLayout>
+#include <QToolTip>
+#include <QWhatsThis>
+#include <QValidator>
+#include <QMessageBox>
+#include <QEvent>
 
 #include <TColStd_SequenceOfAsciiString.hxx>
 
@@ -52,15 +53,17 @@ public:
 
 private:
   QWidget*      myWid;
+  QHBoxLayout*  myBase;
 };
 
 QDS_Datum::Wrapper::Wrapper( QWidget* parent )
 : QWidget( parent ),
 myWid( 0 )
 {
-  QHBoxLayout* base = new QHBoxLayout( this );
-  base->setAutoAdd( true );
-  setFocusPolicy( StrongFocus );
+  //QHBoxLayout* base = new QHBoxLayout( this );
+  //base->setAutoAdd( true );
+  myBase = new QHBoxLayout( this );
+  setFocusPolicy( Qt::StrongFocus );
 }
 
 QDS_Datum::Wrapper::~Wrapper()
@@ -82,8 +85,12 @@ void QDS_Datum::Wrapper::setWidget( QWidget* wid )
   if ( !myWid )
     return;
 
-  if ( myWid->parent() != this )
-    myWid->reparent( this, QPoint( 0, 0 ) );
+  if ( myWid->parent() != this ) {
+    myWid->setParent( this );
+    myWid->move( QPoint( 0, 0 ) );
+    myWid->hide();
+    myBase->addWidget( myWid );
+  }
 
   setTabOrder( this, myWid );
   setFocusProxy( myWid );
@@ -168,7 +175,7 @@ myInitialised( false )
     myWrapper.insert( Units, new Wrapper( parent ) );
 
   for ( QMap<int, Wrapper*>::Iterator it = myWrapper.begin(); it != myWrapper.end(); ++it )
-    connect( it.data(), SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
+    connect( it.value(), SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
 
   Handle(DDS_Dictionary) aDict = DDS_Dictionary::Get();
   if ( aDict.IsNull() )
@@ -308,7 +315,7 @@ QString QDS_Datum::defaultValue() const
   if ( !myDicItem.IsNull() )
     def = toQString( myDicItem->GetDefaultValue() );
 
-  QString aDef = def.stripWhiteSpace();
+  QString aDef = def.trimmed();
   if ( !pref.isEmpty() && aDef.left( pref.length() ) == pref )
     aDef = aDef.mid( pref.length() );
 
@@ -418,7 +425,7 @@ double QDS_Datum::optionDouble( const QString& name ) const
 {
   double res = 0;
   QVariant opt = option( name );
-  if ( opt.isValid() && opt.canCast( QVariant::Double ) )
+  if ( opt.isValid() && opt.canConvert( QVariant::Double ) )
     res = opt.toDouble();
   return res;
 }
@@ -431,7 +438,7 @@ int QDS_Datum::optionInteger( const QString& name ) const
 {
   int res = 0;
   QVariant opt = option( name );
-  if ( opt.isValid() && opt.canCast( QVariant::Int ) )
+  if ( opt.isValid() && opt.canConvert( QVariant::Int ) )
     res = opt.toInt();
   return res;
 }
@@ -574,7 +581,7 @@ void QDS_Datum::clear()
 */
 void QDS_Datum::setValue( const QVariant& val )
 {
-  if ( val.isValid() && val.canCast( QVariant::String ) )
+  if ( val.isValid() && val.canConvert( QVariant::String ) )
     setStringValue( val.toString() );
   else
     clear();
@@ -897,9 +904,9 @@ void QDS_Datum::setAlignment( const int align, const int type )
   initDatum();
 
   if ( ( type & Label ) && labelWidget() )
-    labelWidget()->setAlignment( align );
+    labelWidget()->setAlignment( Qt::Alignment(align) );
   if ( ( type & Units ) && unitsWidget() )
-    unitsWidget()->setAlignment( align );
+    unitsWidget()->setAlignment( Qt::Alignment(align) );
 }
 
 /*!
@@ -910,7 +917,7 @@ bool QDS_Datum::eventFilter( QObject* o, QEvent* e )
   if ( o == parent() )
   {
     if ( e->type() == QEvent::Show || e->type() == QEvent::ShowToParent ||
-         ( e->type() == QEvent::ChildInserted && ((QChildEvent*)e)->child() == this ) )
+         ( e->type() == QEvent::ChildAdded && ((QChildEvent*)e)->child() == this ) )
       initDatum();
   }
   return QObject::eventFilter( o, e );
@@ -1013,7 +1020,7 @@ QValidator* QDS_Datum::validator( const bool limits ) const
     QString aFormat = canonicalFormat( format(), aFlags );
 
     int len = -1;
-    int pos = aFormat.find( "." );
+    int pos = aFormat.indexOf( "." );
     if ( pos != -1 )
     {
       QString numStr = aFormat.mid( pos + 1, aFormat.length() - pos - 2 );
@@ -1118,9 +1125,9 @@ void QDS_Datum::initialize()
     QString lDescr = longDescription();
     QString sDescr = shortDescription();
     if ( !sDescr.isEmpty() )
-      QToolTip::add( ctrl, sDescr );
+      ctrl->setToolTip( sDescr );
     if ( !lDescr.isEmpty() )
-      QWhatsThis::add( ctrl, lDescr );
+      ctrl->setWhatsThis( lDescr );
   }
 
   if ( labelWidget() && ctrl && !( flags() & NotAccel ) )
@@ -1160,7 +1167,7 @@ QString QDS_Datum::unitsToText( const QString& uni )
 {
   int pos = -1;
   QString aUnits = uni;
-  while ( ( pos = aUnits.find( "**" ) ) != -1 )
+  while ( ( pos = aUnits.indexOf( "**" ) ) != -1 )
   {
     aUnits = aUnits.mid( 0, pos ) + QString( "<tt><font size=+2><sup>" ) +
              aUnits.mid( pos + 2, 1 ) + QString( "</sup></font></tt>" ) +
@@ -1176,12 +1183,12 @@ QString QDS_Datum::textToUnits( const QString& txt )
 {
   int pos = -1;
   QString aUnits = txt;
-  while ( ( pos = aUnits.find( "<sup>" ) ) != -1 )
+  while ( ( pos = aUnits.indexOf( "<sup>" ) ) != -1 )
   {
     aUnits.remove( pos, 5 );
     aUnits.insert( pos, "**" );
   }
-  while ( ( pos = aUnits.find( "</sup>" ) ) != -1 )
+  while ( ( pos = aUnits.indexOf( "</sup>" ) ) != -1 )
     aUnits.remove( pos, 6 );
   return aUnits;
 }
@@ -1280,11 +1287,11 @@ QString QDS_Datum::format( const QString& aFormat, const int aType, const int aV
     {
     case DDS_DicItem::Float:
       txt = sprintf( aFormat, (double)aValue );
-      txt = txt.stripWhiteSpace();
+      txt = txt.trimmed();
       break;
     case DDS_DicItem::Integer:
       txt = sprintf( aFormat, aValue );
-      txt = txt.stripWhiteSpace();
+      txt = txt.trimmed();
       break;
     case DDS_DicItem::String:
     default:
@@ -1310,16 +1317,16 @@ QString QDS_Datum::format( const QString& aFormat, const int aType, const double
     switch ( aType )
     {
     case DDS_DicItem::Float:
-      txt = QString().sprintf( aFormat, aValue );
-      txt = txt.stripWhiteSpace();
+      txt = QString().sprintf( aFormat.toLatin1().constData(), aValue );
+      txt = txt.trimmed();
       break;
     case DDS_DicItem::Integer:
-      txt = QString().sprintf( aFormat, (int)aValue );
-      txt = txt.stripWhiteSpace();
+      txt = QString().sprintf( aFormat.toLatin1().constData(), (int)aValue );
+      txt = txt.trimmed();
       break;
     case DDS_DicItem::String:
     default:
-      txt = QString().sprintf( aFormat, aValue );
+      txt = QString().sprintf( aFormat.toLatin1().constData(), aValue );
       break;
     }
   }
@@ -1337,7 +1344,7 @@ QString QDS_Datum::format( const QString& aFormat, const int aType, const QStrin
   QString txt = aValue;
 
   if ( aType != DDS_DicItem::String )
-    txt = txt.stripWhiteSpace();
+    txt = txt.trimmed();
 
   if ( aFormat.isEmpty() || txt.isEmpty() )
     return txt;
@@ -1347,11 +1354,11 @@ QString QDS_Datum::format( const QString& aFormat, const int aType, const QStrin
   case DDS_DicItem::Float:
     txt = txt.replace( 'd', 'e' ).replace( 'D', 'E' );
     txt = sprintf( aFormat, txt.toDouble() );
-    txt = txt.stripWhiteSpace();
+    txt = txt.trimmed();
     break;
   case DDS_DicItem::Integer:
     txt = sprintf( aFormat, txt.toInt() );
-    txt = txt.stripWhiteSpace();
+    txt = txt.trimmed();
     break;
   case DDS_DicItem::String:
     txt = sprintf( aFormat, txt );
@@ -1367,7 +1374,7 @@ QString QDS_Datum::format( const QString& aFormat, const int aType, const QStrin
 */
 QString QDS_Datum::sprintf( const QString& fmt, const int val )
 {
-  return QString().sprintf( canonicalFormat( fmt ), val );
+  return QString().sprintf( canonicalFormat( fmt ).toLatin1().constData(), val );
 }
 
 /*!
@@ -1376,7 +1383,7 @@ QString QDS_Datum::sprintf( const QString& fmt, const int val )
 */
 QString QDS_Datum::sprintf( const QString& fmt, const double val )
 {
-  return QString().sprintf( canonicalFormat( fmt ), val );
+  return QString().sprintf( canonicalFormat( fmt ).toLatin1().constData(), val );
 }
 
 /*!
@@ -1391,11 +1398,11 @@ QString QDS_Datum::sprintf( const QString& fmt, const QString& val )
   QString txt = val;
 
   QRegExp rx( "^(%[0-9]*.?[0-9]*s)$" );
-  if ( aFormat.find( rx ) != -1 )
+  if ( aFormat.indexOf( rx ) != -1 )
   {
     // QString().sprintf() always expects string in UTF8 encoding, so we cannot use it here
     char* buf = new char[txt.length() + 1];
-    ::sprintf( buf, aFormat.latin1(), (const char*)(txt.local8Bit()) );
+    ::sprintf( buf, aFormat.toLatin1().constData(), (const char*)(txt.toLocal8Bit()) );
     txt = QString::fromLocal8Bit( buf );
 
     delete[] buf;
@@ -1412,10 +1419,10 @@ QString QDS_Datum::sprintf( const QString& fmt, const QString& val )
     }*/
   }
 
-  if ( aFlags.contains( "u", false ) )
-    txt = txt.upper();
-  if ( aFlags.contains( "l", false ) )
-    txt = txt.lower();
+  if ( aFlags.contains( "u", Qt::CaseInsensitive ) )
+    txt = txt.toUpper();
+  if ( aFlags.contains( "l", Qt::CaseInsensitive ) )
+    txt = txt.toLower();
 
   return txt;
 }
@@ -1438,7 +1445,7 @@ QString QDS_Datum::canonicalFormat( const QString& fmt, QString& flags )
   flags = QString::null;
 
   QRegExp rx( "^(%[0-9]*.?[0-9]*)([a-z,A-Z]+)[g|c|d|i|o|u|x|e|f|n|p|s|X|E|G]$" );
-  if ( rx.search( newFmt ) >= 0 )
+  if ( rx.indexIn( newFmt ) >= 0 )
   {
     flags = rx.cap( 2 );
     newFmt.remove( rx.pos( 2 ), flags.length() );
@@ -1488,7 +1495,7 @@ QString QDS_Datum::minValue() const
   QString pref = prefix();
   QString suff = suffix();
 
-  QString aMin = minimumValue().stripWhiteSpace();
+  QString aMin = minimumValue().trimmed();
 
   if ( !pref.isEmpty() && aMin.left( pref.length() ) == pref )
     aMin = aMin.mid( pref.length() );
@@ -1507,7 +1514,7 @@ QString QDS_Datum::maxValue() const
   QString pref = prefix();
   QString suff = suffix();
 
-  QString aMax = maximumValue().stripWhiteSpace();
+  QString aMax = maximumValue().trimmed();
 
   if ( !pref.isEmpty() && aMax.left( pref.length() ) == pref )
     aMax = aMax.mid( pref.length() );
@@ -1580,7 +1587,7 @@ void QDS_Datum::initDatum() const
   that->initialize();
 
   if ( parent() )
-    parent()->removeEventFilter( this );
+    parent()->removeEventFilter( (QObject*)this );
 }
 
 /*!
@@ -1594,8 +1601,8 @@ QDS_Datum::Wrapper* QDS_Datum::wrapper( QWidget* wid ) const
   Wrapper* wrap = 0;
   for ( QMap<int, Wrapper*>::ConstIterator it = myWrapper.begin(); it != myWrapper.end() && !wrap; ++it )
   {
-    if ( it.data() && it.data()->widget() == wid )
-      wrap = it.data();
+    if ( it.value() && it.value()->widget() == wid )
+      wrap = it.value();
   }
   return wrap;
 }
@@ -1619,7 +1626,7 @@ int QDS_Datum::wrapperType( QDS_Datum::Wrapper* wrap ) const
   int id = -1;
   for ( QMap<int, Wrapper*>::ConstIterator it = myWrapper.begin(); it != myWrapper.end() && id == -1; ++it )
   {
-    if ( it.data() == wrap )
+    if ( it.value() == wrap )
       id = it.key();
   }
   return id;

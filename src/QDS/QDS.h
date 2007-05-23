@@ -34,10 +34,8 @@
 #pragma warning ( disable:4786 )
 #endif
 
-#include <qstring.h>
-#include <qvaluelist.h>
-
-#include <TCollection_AsciiString.hxx>
+#include <QString>
+#include <QList>
 
 #include <TCollection_ExtendedString.hxx>
 
@@ -87,7 +85,7 @@ protected:
   static void                       removeDatum( QDS_Datum* );
 
 private:
-  static QValueList<QDS_Datum*>     _datumList;
+  static QList<QDS_Datum*>     _datumList;
 };
 
 #endif

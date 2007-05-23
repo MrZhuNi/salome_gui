@@ -20,11 +20,10 @@
 
 #include <DDS_Dictionary.h>
 
-#include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfExtendedString.hxx>
 
-#include <qlineedit.h>
+#include <QLineEdit>
 
 /*
   \class QDS_ComboBox
@@ -73,7 +72,7 @@ void QDS_ComboBox::setEditable( const bool on )
   if ( aCombo && aCombo->lineEdit() )
   {
     aCombo->lineEdit()->setReadOnly( !on );
-    aCombo->clearValidator();
+    aCombo->setValidator(0);
     if ( on )
       aCombo->setValidator( validator() );
   }
@@ -97,7 +96,7 @@ int QDS_ComboBox::count( bool total ) const
   Returns list of list item identifiers \aids. If \atotal is 'false' then only visible items
   are taken into account otherwise all items.
 */
-void QDS_ComboBox::values( QValueList<int>& ids, bool total ) const
+void QDS_ComboBox::values( QList<int>& ids, bool total ) const
 {
   ids.clear();
   for ( QIntList::const_iterator it = myDataIds.begin(); it != myDataIds.end(); ++it )
@@ -112,11 +111,11 @@ int QDS_ComboBox::integerValue() const
 {
   QComboBox* cb = comboBox();
   QString cur = getString();
-  if ( cb && cb->count() > 0 && cb->currentItem() >= 0 )
-    cur = cb->text( cb->currentItem() );
+  if ( cb && cb->count() > 0 && cb->currentIndex() >= 0 )
+    cur = cb->itemText( cb->currentIndex() );
 
   if ( cb && cur == getString() )
-    return getId( cb->currentItem() );
+    return getId( cb->currentIndex() );
   else
     return getId( getString() );
 }
@@ -130,11 +129,11 @@ double QDS_ComboBox::doubleValue() const
 
   QComboBox* cb = comboBox();
   QString cur = getString();
-  if ( cb && cb->count() > 0 && cb->currentItem() >= 0 )
-    cur = cb->text( cb->currentItem() );
+  if ( cb && cb->count() > 0 && cb->currentIndex() >= 0 )
+    cur = cb->itemText( cb->currentIndex() );
 
   if ( cb && cur == getString() )
-    return getId( cb->currentItem() );
+    return getId( cb->currentIndex() );
   else
     return getId( getString() );
 }
@@ -184,7 +183,7 @@ bool QDS_ComboBox::state( const int id ) const
 */
 void QDS_ComboBox::setState( const bool on, const int id, const bool append )
 {
-  QValueList<int> lst;
+  QList<int> lst;
   if ( id < 0 )
   {
     for ( IdStateMap::Iterator it = myState.begin(); it != myState.end(); ++it )
@@ -201,7 +200,7 @@ void QDS_ComboBox::setState( const bool on, const int id, const bool append )
   If \aappend is set then keep status for other items otherwise status of other
   items will be cleared.
 */
-void QDS_ComboBox::setState( const bool on, const QValueList<int>& ids, const bool append )
+void QDS_ComboBox::setState( const bool on, const QList<int>& ids, const bool append )
 {
   initDatum();
 
@@ -212,21 +211,21 @@ void QDS_ComboBox::setState( const bool on, const QValueList<int>& ids, const bo
 
   QMap<int, int> aMap;
   for ( uint i = 0; i < ids.count(); i++ )
-    aMap.insert( *ids.at( i ), 0 );
+    aMap.insert( ids.at( i ), 0 );
 
   for ( IdStateMap::Iterator it = myState.begin(); it != myState.end(); ++it )
   {
     if ( aMap.contains( it.key() ) )
     {
-      if ( it.data() != on )
+      if ( it.value() != on )
       {
-        it.data() = on;
+        it.value() = on;
         changed = true;
       }
     }
-    else if ( !append && it.data() == on )
+    else if ( !append && it.value() == on )
     {
-      it.data() = !on;
+      it.value() = !on;
       changed = true;
     }
   }
@@ -239,7 +238,7 @@ void QDS_ComboBox::setState( const bool on, const QValueList<int>& ids, const bo
   list items will be added into the combobox. This functionality allow to user override
   items.
 */
-void QDS_ComboBox::setValues( const QValueList<int>& ids, const QStringList& names )
+void QDS_ComboBox::setValues( const QList<int>& ids, const QStringList& names )
 {
   initDatum();
 
@@ -253,13 +252,13 @@ void QDS_ComboBox::setValues( const QValueList<int>& ids, const QStringList& nam
 /*!
   This is an overloaded member function, provided for convenience.
   It behaves essentially like the above function. It creates
-  QValueList (0, 1, 2 ... ) and call previous method.
+  QList (0, 1, 2 ... ) and call previous method.
 */
 void QDS_ComboBox::setValues( const QStringList& names )
 {
   initDatum();
 
-  QValueList< int > ids;
+  QList< int > ids;
   for ( int i = 0, n = names.count(); i < n; i++ )
     ids.append( i );
   setValues( ids, names );
@@ -310,7 +309,7 @@ QString QDS_ComboBox::getString() const
   QtxComboBox* cb = comboBox();
   if ( cb )
   {
-    if ( !cb->editable() )
+    if ( !cb->isEditable() )
     {
       if ( !cb->isCleared() )
         res = cb->currentText(); 
@@ -334,20 +333,20 @@ void QDS_ComboBox::setString( const QString& txt )
   
   int idx = -1;
   for ( int i = 0; i < cb->count() && idx == -1; i++ )
-    if ( cb->text( i ) == txt )
+    if ( cb->itemText( i ) == txt )
       idx = i;
 
-  int old = cb->currentItem();
+  int old = cb->currentIndex();
   if ( idx != -1 )
-    cb->setCurrentItem( idx );
+    cb->setCurrentIndex( idx );
   else if ( txt.isEmpty() )
   {
-    if ( !cb->editable() )
-      cb->setCurrentText( txt );
+    if ( !cb->isEditable() )
+      cb->setItemText( cb->currentIndex(), txt );
     else
       cb->lineEdit()->setText( txt );
   }
-  if ( isClear != txt.isEmpty() || ( !isClear && old != cb->currentItem() ) )
+  if ( isClear != txt.isEmpty() || ( !isClear && old != cb->currentIndex() ) )
   {
     onParamChanged();
     QString str = getString();
@@ -363,7 +362,7 @@ void QDS_ComboBox::setString( const QString& txt )
 */
 QtxComboBox* QDS_ComboBox::comboBox() const
 {
-  return ::qt_cast<QtxComboBox*>( controlWidget() );
+  return ::qobject_cast<QtxComboBox*>( controlWidget() );
 }
 
 /*!
@@ -478,7 +477,7 @@ void QDS_ComboBox::onTextChanged( const QString& )
 void QDS_ComboBox::onActivated( int idx )
 {
   if ( comboBox() )
-    comboBox()->setCurrentItem( comboBox()->currentItem() );
+    comboBox()->setCurrentIndex( comboBox()->currentIndex() );
 
   int id = getId( idx );
   if ( id != -1 )
@@ -507,7 +506,7 @@ void QDS_ComboBox::updateComboBox()
   {
     isClear = cb->isCleared();
 
-    curId = getId( cb->currentItem() );
+    curId = getId( cb->currentIndex() );
     cb->clear();
   }
 
@@ -524,9 +523,9 @@ void QDS_ComboBox::updateComboBox()
     if ( cb )
     {
       if ( myIcons.contains( id ) )
-        cb->insertItem( myIcons[id], myValue[id] );
+        cb->insertItem( -1, QIcon(myIcons[id]), myValue[id] );
       else
-        cb->insertItem( myValue[id] );
+        cb->insertItem( -1, myValue[id] );
     }
   }
 
@@ -536,13 +535,13 @@ void QDS_ComboBox::updateComboBox()
     cb->updateGeometry();
 
     if ( isClear )
-      cb->setCurrentText( "" );
+      cb->setItemText( cb->currentIndex(), "" );
     else
     {
       if ( getIndex( curId ) != -1 )
-        cb->setCurrentItem( getIndex( curId ) );
-      if ( curId != getId( cb->currentItem() ) )
-        onActivated( cb->currentItem() );
+        cb->setCurrentIndex( getIndex( curId ) );
+      if ( curId != getId( cb->currentIndex() ) )
+        onActivated( cb->currentIndex() );
     }
   }
 }
@@ -568,7 +567,7 @@ int QDS_ComboBox::getIndex( const QString& str ) const
   if ( cb )
   {
     for ( int i = 0; i < cb->count() && idx == -1; i++ )
-      if ( cb->text( i ) == str )
+      if ( cb->itemText( i ) == str )
         idx = i;
   }
   return idx;
@@ -582,7 +581,7 @@ int QDS_ComboBox::getId( const int idx ) const
   int id = -1;
   IdIndexMap::ConstIterator it = myIndex.begin();
   for (; it != myIndex.end() && id == -1; ++it )
-    if ( it.data() == idx )
+    if ( it.value() == idx )
       id = it.key();
   return id;
 }
@@ -597,7 +596,7 @@ int QDS_ComboBox::getId( const QString& str ) const
   IdValueMap::ConstIterator it = myValue.begin();
   for (; it != myValue.end() && id == -1; ++it )
   {
-    if ( it.data() == str )
+    if ( it.value() == str )
     {
       if ( state( it.key() ) )
         id = it.key();

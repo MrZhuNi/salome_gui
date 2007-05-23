@@ -23,8 +23,8 @@
 
 #include <QtxTable.h>
 
-#include <qmap.h>
-#include <qptrvector.h>
+#include <QMap>
+#include <QPtrVector>
 
 class QDS_EXPORT QDS_Table : public QtxTable
 {

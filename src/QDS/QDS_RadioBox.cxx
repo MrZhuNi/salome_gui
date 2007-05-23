@@ -20,13 +20,13 @@
 
 #include <DDS_Dictionary.h>
 
-#include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfExtendedString.hxx>
 
-#include <qobjectlist.h>
-#include <qbuttongroup.h>
-#include <qradiobutton.h>
+#include <QButtonGroup>
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QRadioButton>
 
 /*
   \class QDS_RadioBox
@@ -46,7 +46,8 @@
   search of dictionary item.
 */
 QDS_RadioBox::QDS_RadioBox( const QString& id, QWidget* parent, const int flags, const QString& comp )
-: QDS_Datum( id, parent, flags & ~( Label | Units ), comp )
+  : QDS_Datum( id, parent, flags & ~( Label | Units ), comp ),
+    myButtonGroup( 0 )
 {
 }
 
@@ -67,7 +68,7 @@ int QDS_RadioBox::count( bool total ) const
     return myValue.count();
   else
   {
-    QPtrList<QRadioButton> bList;
+    QList<QRadioButton*> bList;
     buttons( bList );
     return bList.count();
   }
@@ -77,7 +78,7 @@ int QDS_RadioBox::count( bool total ) const
   Returns list of button identifiers \aids. If \atotal is 'false' then only visible
   buttons are taken into account otherwise all buttons.
 */
-void QDS_RadioBox::values( QValueList<int>& ids, bool total ) const
+void QDS_RadioBox::values( QList<int>& ids, bool total ) const
 {
   ids.clear();
   for ( QIntList::const_iterator it = myDataIds.begin(); it != myDataIds.end(); ++it )
@@ -103,7 +104,7 @@ bool QDS_RadioBox::state( const int id ) const
 */
 void QDS_RadioBox::setState( const bool on, const int id, const bool append )
 {
-  QValueList<int> lst;
+  QList<int> lst;
   if ( id < 0 )
   {
     for ( IdStateMap::Iterator it = myState.begin(); it != myState.end(); ++it )
@@ -120,7 +121,7 @@ void QDS_RadioBox::setState( const bool on, const int id, const bool append )
   If \aappend is set then keep status for other buttons otherwise status of other
   buttons will be cleared.
 */
-void QDS_RadioBox::setState( const bool on, const QValueList<int>& ids, const bool append )
+void QDS_RadioBox::setState( const bool on, const QList<int>& ids, const bool append )
 {
   if ( ids.isEmpty() && append )
     return;
@@ -129,21 +130,21 @@ void QDS_RadioBox::setState( const bool on, const QValueList<int>& ids, const bo
 
   QMap<int, int> aMap;
   for ( uint i = 0; i < ids.count(); i++ )
-    aMap.insert( *ids.at( i ), 0 );
+    aMap.insert( ids.at( i ), 0 );
 
   for ( IdStateMap::Iterator it = myState.begin(); it != myState.end(); ++it )
   {
     if ( aMap.contains( it.key() ) )
     {
-      if ( it.data() != on )
+      if ( it.value() != on )
       {
-        it.data() = on;
+        it.value() = on;
         changed = true;
       }
     }
-    else if ( !append && it.data() == on )
+    else if ( !append && it.value() == on )
     {
-      it.data() = !on;
+      it.value() = !on;
       changed = true;
     }
   }
@@ -156,7 +157,7 @@ void QDS_RadioBox::setState( const bool on, const QValueList<int>& ids, const bo
   button from list will be added into the radio box. This functionality allow to user override
   buttons.
 */
-void QDS_RadioBox::setValues( const QValueList<int>& ids, const QStringList& names )
+void QDS_RadioBox::setValues( const QList<int>& ids, const QStringList& names )
 {
   if ( ids.count() != names.count() )
     return;
@@ -172,7 +173,7 @@ void QDS_RadioBox::setValues( const QValueList<int>& ids, const QStringList& nam
 */
 void QDS_RadioBox::setValues( const QStringList& names )
 {
-  QValueList< int > ids;
+  QList< int > ids;
   for ( int i = 0, n = names.count(); i < n; i++ )
     ids.append( i );
   setValues( ids, names );
@@ -188,7 +189,7 @@ QString QDS_RadioBox::getString() const
   QButtonGroup* bg = buttonGroup();
   if ( bg )
   {
-    int id = bg->selectedId();
+    int id = bg->checkedId();
     if ( id != -1 )
       res = QString::number( id );
   }
@@ -205,14 +206,15 @@ void QDS_RadioBox::setString( const QString& txt )
   if ( !bg )
     return;
 
-  int oldId = bg->selectedId();
+  int oldId = bg->checkedId();
 
   if ( txt.isEmpty() )
   {
-    QPtrList<QRadioButton> bList;
+    QList<QRadioButton*> bList;
     buttons( bList );
-    for ( QPtrListIterator<QRadioButton> it( bList ); it.current(); ++it )
-      it.current()->setChecked( false );
+    QListIterator<QRadioButton*> it( bList );
+    while ( it.hasNext() )
+      it.next()->setChecked( false );
   }
   else
   {
@@ -223,11 +225,11 @@ void QDS_RadioBox::setString( const QString& txt )
 
     bool block = signalsBlocked();
     blockSignals( true );
-    bg->setButton( id );
+    bg->button(id)->setChecked(true);
     blockSignals( block );
   }
 
-  int newId = bg->selectedId();
+  int newId = bg->checkedId();
 
   if ( oldId != newId )
   {
@@ -244,7 +246,15 @@ void QDS_RadioBox::setString( const QString& txt )
 */
 QButtonGroup* QDS_RadioBox::buttonGroup() const
 {
-  return ::qt_cast<QButtonGroup*>( controlWidget() );
+  return myButtonGroup;
+}
+
+/*!
+  Returns pointer to QGroupBox widget.
+*/
+QGroupBox* QDS_RadioBox::groupBox() const
+{
+  return ::qobject_cast<QGroupBox*>( controlWidget() );
 }
 
 /*!
@@ -252,10 +262,14 @@ QButtonGroup* QDS_RadioBox::buttonGroup() const
 */
 QWidget* QDS_RadioBox::createControl( QWidget* parent )
 {
-  QButtonGroup* bg = new QButtonGroup( 1, Qt::Vertical, "", parent );
-  bg->setExclusive( true );
-  bg->setRadioButtonExclusive( true );
-  return bg;
+  myButtonGroup = new QButtonGroup( parent );
+  myButtonGroup->setExclusive( true );
+
+  QGroupBox *gb = new QGroupBox( "", parent );
+  QVBoxLayout *vbox = new QVBoxLayout;
+  vbox->addStretch(1);
+  gb->setLayout(vbox);
+  return gb;
 }
 
 /*!
@@ -325,9 +339,8 @@ void QDS_RadioBox::unitSystemChanged( const QString& system )
   for ( QIntList::iterator iter2 = add.begin(); iter2 != add.end(); ++iter2 )
     myState.insert( *iter2, true );
 
-  QButtonGroup* bg = buttonGroup();
-  if ( bg )
-    bg->setTitle( label() );
+  QGroupBox* gb = groupBox();
+  if ( gb ) gb->setTitle( label() );
 
   updateRadioBox();
 }
@@ -355,12 +368,20 @@ void QDS_RadioBox::updateRadioBox()
   if ( !bg )
     return;
 
-  int curId = bg->selectedId();
+  QGroupBox* gb = groupBox();
+  if ( !gb )
+    return;
 
-  QPtrList<QRadioButton> bList;
+  int curId = bg->checkedId();
+
+  QList<QRadioButton*> bList;
   buttons( bList );
-  for ( QPtrListIterator<QRadioButton> itr( bList ); itr.current(); ++itr )
-    delete itr.current();
+  QListIterator<QRadioButton*> itr( bList );
+  while ( itr.hasNext() ) {
+    QRadioButton* aButton = itr.next();
+    if ( gb->layout() ) gb->layout()->removeWidget(aButton);
+    delete aButton;
+  }
 
   for ( QIntList::const_iterator it = myDataIds.begin(); it != myDataIds.end(); ++it )
   {
@@ -368,8 +389,10 @@ void QDS_RadioBox::updateRadioBox()
     if ( !myValue.contains( id ) || !myState.contains( id ) || !myState[id] )
       continue;
 
-    QRadioButton* rb = new QRadioButton( myValue[id], bg );
-    bg->insert( rb, id );
+    QRadioButton* rb = new QRadioButton( myValue[id] );
+    ((QObject*)rb)->setParent( bg );
+    bg->addButton( rb, id );
+    if ( gb->layout() ) gb->layout()->addWidget(rb);
 
     connect( rb, SIGNAL( toggled( bool ) ), this, SLOT( onToggled( bool ) ) );
   }
@@ -377,49 +400,42 @@ void QDS_RadioBox::updateRadioBox()
   if ( curId != -1 )
   {
     int id = curId;
-    if ( !bg->find( id ) )
+    if ( !bg->button( id ) )
     {
-      QPtrList<QRadioButton> bList;
+      QList<QRadioButton*> bList;
       buttons( bList );
       if ( !bList.isEmpty() )
-        id = bg->id( bList.getFirst() );
+        id = bg->id( bList.empty() ? 0 : bList.first() );
     }
 
     bool block = signalsBlocked();
     blockSignals( true );
-    bg->setButton( id );
+    bg->button(id)->setChecked(true);
     blockSignals( block );
   }
 
-  if ( curId != bg->selectedId() )
+  if ( curId != bg->checkedId() )
   {
     onParamChanged();
     emit paramChanged();
-    emit paramChanged( getString() );
+    QString str = getString();
+    emit paramChanged( str );
   }
 }
 
 /*!
   Returns the list of the radio buttons from the button group.
 */
-void QDS_RadioBox::buttons( QPtrList<QRadioButton>& lst ) const
+void QDS_RadioBox::buttons( QList<QRadioButton*>& lst ) const
 {
-  lst.setAutoDelete( false );
   lst.clear();
 
   QButtonGroup* bg = buttonGroup();
   if ( !bg )
     return;
 
-  QObjectList* objs = bg->queryList( "QRadioButton" );
-  if ( objs )
-  {
-    for ( QObjectListIt it( *objs ); it.current(); ++it )
-    {
-      QRadioButton* rb = ::qt_cast<QRadioButton*>( it.current() );
-      if ( rb )
-        lst.append( rb );
-    }
-  }
-  delete objs;
+  QList<QRadioButton*> objs = bg->findChildren<QRadioButton*>();
+  QListIterator<QRadioButton*> it( objs );
+  while ( it.hasNext() )
+    lst.append( it.next() );
 }

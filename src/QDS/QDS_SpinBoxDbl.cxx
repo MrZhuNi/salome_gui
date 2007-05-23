@@ -20,7 +20,7 @@
 
 #include <DDS_Dictionary.h>
 
-#include <qvalidator.h>
+//#include <QValidator>
 
 #include <QtxDblSpinBox.h>
 
@@ -64,9 +64,9 @@ QString QDS_SpinBoxDbl::getString() const
     
     res = sb->text();
     if ( !sb->suffix().isEmpty() )
-      res.remove( res.find( sb->suffix() ), sb->suffix().length() );
+      res.remove( res.indexOf( sb->suffix() ), sb->suffix().length() );
     if ( !sb->prefix().isEmpty() )
-      res.remove( res.find( sb->prefix() ), sb->prefix().length() );
+      res.remove( res.indexOf( sb->prefix() ), sb->prefix().length() );
     
     if ( hasFocus )
       sb->setFocus();
@@ -93,7 +93,7 @@ void QDS_SpinBoxDbl::setString( const QString& txt )
 */
 QtxDblSpinBox* QDS_SpinBoxDbl::spinBox() const
 {
-  return ::qt_cast<QtxDblSpinBox*>( controlWidget() );
+  return ::qobject_cast<QtxDblSpinBox*>( controlWidget() );
 }
 
 /*!
@@ -151,9 +151,11 @@ void QDS_SpinBoxDbl::unitSystemChanged( const QString& system )
   if ( !sb )
     return;
 
-  delete sb->validator();
-  QValidator* valid = validator();
-  sb->setValidator( valid );
+  // not porting this code to qt4, only commented, since from the task context
+  // the new setted validator accepts any double
+  //delete sb->validator();
+  //QValidator* valid = validator();
+  //sb->setValidator( valid );
 
   sb->setSuffix( suffix() );
   sb->setPrefix( prefix() );

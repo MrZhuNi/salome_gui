@@ -18,8 +18,8 @@
 //
 #include "QDS_LineEdit.h"
 
-#include <qlineedit.h>
-#include <qvalidator.h>
+#include <QLineEdit>
+#include <QValidator>
 
 /*
   class: QDS_LineEdit::Editor
@@ -88,14 +88,14 @@ void QDS_LineEdit::unitSystemChanged( const QString& system )
     return;
   
   delete le->validator();
-  le->clearValidator();
+  le->setValidator(0);
   QValidator* valid = validator();
   if ( valid )
     le->setValidator( valid );
 
   QString aFormat = format();
   int num = 0;
-  int pos = aFormat.find( '%' );
+  int pos = aFormat.indexOf( '%' );
   if ( pos != -1 )
   {
     pos++;
@@ -112,7 +112,7 @@ void QDS_LineEdit::unitSystemChanged( const QString& system )
   int minLen  = format( format(), type(), minValue() ).length();
   int maxLen  = format( format(), type(), maxValue() ).length();
 
-  num = QMAX( QMAX( num, zeroLen ), QMAX( minLen, maxLen ) );
+  num = qMax( qMax( num, zeroLen ), qMax( minLen, maxLen ) );
   ((Editor*)le)->setNumber( num );
 }
 
@@ -159,7 +159,7 @@ bool QDS_LineEdit::hasSelection() const
 void QDS_LineEdit::setAlignment( const int align, const int type )
 {
   if ( ( type & Control ) && lineEdit() )
-    lineEdit()->setAlignment( align );
+    lineEdit()->setAlignment( Qt::Alignment(align) );
 
   QDS_Datum::setAlignment( align, type );
 }
@@ -189,7 +189,7 @@ void QDS_LineEdit::setString( const QString& txt )
 */
 QLineEdit* QDS_LineEdit::lineEdit() const
 {
-  return ::qt_cast<QLineEdit*>( controlWidget() );
+  return ::qobject_cast<QLineEdit*>( controlWidget() );
 }
 
 /*!
@@ -229,9 +229,9 @@ void QDS_LineEdit::onParamChanged()
 
   QPalette aPal = anEdit->palette();
   if ( !aValid )
-    aPal.setColor( QPalette::Active, QColorGroup::Text, QColor( 255, 0, 0 ) );
+    aPal.setColor( QPalette::Active, QPalette::Text, QColor( 255, 0, 0 ) );
   else
-    aPal.setColor( QPalette::Active, QColorGroup::Text, QColor( 0, 0, 0 ) );
+    aPal.setColor( QPalette::Active, QPalette::Text, QColor( 0, 0, 0 ) );
 
   anEdit->setPalette( aPal );
 }

@@ -67,7 +67,7 @@ QValidator::State QDS_IntegerValidator::validate( QString& input, int& pos ) con
   if ( ivState != Invalid && !myFilter.isEmpty() )
     rgState = QRegExpValidator( QRegExp( myFilter ), 0 ).validate( input, pos );
 
-  ivState = QMIN( ivState, rgState );
+  ivState = qMin( ivState, rgState );
 
   return ivState;
 }
@@ -121,7 +121,7 @@ QValidator::State QDS_DoubleValidator::validate( QString& input, int& pos ) cons
   if ( dvState != Invalid && !myFilter.isEmpty() )
     rgState = QRegExpValidator( QRegExp( myFilter ), 0 ).validate( input, pos );
 
-  dvState = QMIN( dvState, rgState );
+  dvState = qMin( dvState, rgState );
 
   return dvState;
 }
@@ -205,10 +205,10 @@ QValidator::State QDS_StringValidator::validate( QString& input, int& pos ) cons
     return Acceptable;
 
   QString orig = input;
-  if ( myFlags.contains( 'u', false ) )
-    input = input.upper();
-  if ( myFlags.contains( 'l', false ) )
-    input = input.lower();
+  if ( myFlags.contains( 'u', Qt::CaseInsensitive ) )
+    input = input.toUpper();
+  if ( myFlags.contains( 'l', Qt::CaseInsensitive ) )
+    input = input.toLower();
 
   State rgState = Acceptable;
   State svState = orig == input ? Acceptable : Intermediate;
@@ -219,7 +219,7 @@ QValidator::State QDS_StringValidator::validate( QString& input, int& pos ) cons
   if ( !myFilter.isEmpty() )
     rgState = QRegExpValidator( QRegExp( myFilter ), 0 ).validate( input, pos );
 
-  svState = QMIN( svState, rgState );
+  svState = qMin( svState, rgState );
 
   return svState;
 }

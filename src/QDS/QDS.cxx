@@ -20,7 +20,7 @@
 
 #include "QDS_Datum.h"
 
-#include <qtextcodec.h>
+#include <QTextCodec>
 
 #include <DDS_DicItem.h>
 #include <DDS_Dictionary.h>
@@ -28,7 +28,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 
-QValueList<QDS_Datum*> QDS::_datumList;
+QList<QDS_Datum*> QDS::_datumList;
 
 /*!
   Convert the OpenCascade ascii string to Qt string.
@@ -82,17 +82,16 @@ QString QDS::toQString( const Handle(TCollection_HExtendedString)& src )
 TCollection_AsciiString QDS::toAsciiString( const QString& src )
 {
   TCollection_AsciiString res;
-  if ( src.latin1() )
+  if ( src.toLatin1().constData() )
   {
     QTextCodec* codec = QTextCodec::codecForLocale();
     if ( codec )
     {
-      int len = -1;
-      QCString str = codec->fromUnicode( src, len );
-      res = TCollection_AsciiString( (Standard_CString)(const char*)str, len );
+      QByteArray str = codec->fromUnicode( src );
+      res = TCollection_AsciiString( (Standard_CString)(const char*)str, str.size() );
     }
     else
-      res = TCollection_AsciiString( (char*)src.latin1() );
+      res = TCollection_AsciiString( (char*)src.toLatin1().constData() );
   }
   return res;
 }
@@ -209,7 +208,7 @@ void QDS::setActiveUnitSystem( const QString& sys, const QString& comp )
     return;
 
   TCollection_AsciiString aComp = toAsciiString( comp );
-  for ( QValueList<QDS_Datum*>::iterator it = _datumList.begin(); it != _datumList.end(); ++it )
+  for ( QList<QDS_Datum*>::iterator it = _datumList.begin(); it != _datumList.end(); ++it )
   {
     QDS_Datum* datum = *it;
     if ( !datum )
@@ -248,5 +247,5 @@ void QDS::removeDatum( QDS_Datum* datum )
   if ( !datum )
     return;
 
-  _datumList.remove( datum );
+  _datumList.removeAt( _datumList.indexOf(datum) );
 }

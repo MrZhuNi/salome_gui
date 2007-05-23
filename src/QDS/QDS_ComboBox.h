@@ -21,9 +21,9 @@
 
 #include "QDS_Datum.h"
 
-#include <qmap.h>
-#include <qpixmap.h>
-#include <qstringlist.h>
+#include <QMap>
+#include <QPixmap>
+#include <QStringList>
 
 #include <QtxComboBox.h>
 
@@ -43,7 +43,7 @@ public:
   void                       setEditable( const bool );
 
   int                        count( bool = false ) const;
-  void                       values( QValueList<int>&, bool = false ) const;
+  void                       values( QList<int>&, bool = false ) const;
 
   virtual int                integerValue() const;
   virtual double             doubleValue() const;
@@ -52,8 +52,8 @@ public:
 
   bool                       state( const int ) const;
   void                       setState( const bool, const int, const bool = true );
-  void                       setState( const bool, const QValueList<int>&, const bool = true );
-  void                       setValues( const QValueList<int>&, const QStringList& );
+  void                       setState( const bool, const QList<int>&, const bool = true );
+  void                       setValues( const QList<int>&, const QStringList& );
   void                       setValues( const QStringList& );
 
   virtual void               reset();
