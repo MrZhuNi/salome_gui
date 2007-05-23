@@ -28,21 +28,18 @@ lib_LTLIBRARIES = libstd.la
 salomeinclude_HEADERS=		\
 	STD.h			\
 	STD_Application.h	\
-	STD_CloseDlg.h		\
 	STD_MDIDesktop.h	\
 	STD_SDIDesktop.h	\
 	STD_TabDesktop.h
 
 dist_libstd_la_SOURCES=		\
 	STD_Application.cxx	\
-	STD_CloseDlg.cxx	\
 	STD_MDIDesktop.cxx	\
 	STD_SDIDesktop.cxx	\
 	STD_TabDesktop.cxx
 
 MOC_FILES=				\
 	STD_Application_moc.cxx		\
-	STD_CloseDlg_moc.cxx		\
 	STD_MDIDesktop_moc.cxx		\
 	STD_SDIDesktop_moc.cxx		\
 	STD_TabDesktop_moc.cxx
