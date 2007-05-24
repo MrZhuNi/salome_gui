@@ -13,4 +13,6 @@ SUBDIRS += LogWindow
 SUBDIRS += PyInterp
 SUBDIRS += PyConsole
 SUBDIRS += Prs
+SUBDIRS += OBJECT
+SUBDIRS += Event
 

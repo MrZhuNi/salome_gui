@@ -30,9 +30,30 @@
 #ifndef SALOME_Event_HeaderFile
 #define SALOME_Event_HeaderFile
 
-#include <qevent.h>
+#include <QEvent>
+
+#include <Event.h>
 
 #define SALOME_EVENT QEvent::Type( QEvent::User + 10000 )
+
+/*!
+  \class SALOME_CustomEvent
+  *  Description:
+  *  It is a generic event class for user-defined events.
+  *  This class contains a generic void* data member that may be used
+  *  for transferring event-specific data to the receiver.
+*/
+class EVENT_EXPORT SALOME_CustomEvent : public QEvent {
+public:
+  SALOME_CustomEvent( int type );
+  SALOME_CustomEvent( QEvent::Type type, void *data );
+
+  void *data() const;
+  void setData( void* data );
+
+private:
+  void *d;
+};
 
 class QSemaphore;
 
@@ -65,8 +86,6 @@ class QSemaphore;
  *  Caveats: 
  *    There is no.
  */
-
-#include <Event.h>
 
 class EVENT_EXPORT SALOME_Event{
 public:

@@ -33,7 +33,7 @@ if ENABLE_SALOMEOBJECT
 # VSR: this is the original packages list
 #  SUBDIRS += OBJECT
 # VSR: already migrated to Qt4 packages
-  SUBDIRS += 
+  SUBDIRS += OBJECT
 endif
 
 if ENABLE_GLVIEWER
@@ -101,5 +101,5 @@ if GUI_ENABLE_CORBA
 #  SUBDIRS +=  RegistryDisplay TOOLSGUI \
 #          Event Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT
 # VSR: already migrated to Qt4 packages
-  SUBDIRS += 
+  SUBDIRS += Event
 endif

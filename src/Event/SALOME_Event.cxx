@@ -30,9 +30,8 @@
 
 //#include "utilities.h"
 
-#include <qsemaphore.h>
-#include <qapplication.h>
-#include <qthread.h>
+#include <QSemaphore>
+#include <QApplication>
 
 // asv 21.02.05 : introducing multi-platform approach of thread comparison
 // on Unix using pthread_t type for storing ThreadId
@@ -45,11 +44,32 @@
 
 static DWORD myThread;
 #else
-#include <qthread.h>
 #include <pthread.h>
 
 static pthread_t myThread;
 #endif
+
+SALOME_CustomEvent::SALOME_CustomEvent( int type )
+  : QEvent( (QEvent::Type)type ), d( 0 )
+{
+}
+
+SALOME_CustomEvent::SALOME_CustomEvent( QEvent::Type type, void *data )
+  : QEvent( type ), d( data )
+{
+}
+
+void * SALOME_CustomEvent::data() const
+{
+  return d;
+}
+
+void SALOME_CustomEvent::setData( void* data )
+{
+  d = data;
+}
+
+const int NumberOfResources = 2;
 
 /*!
   \return thread id
@@ -83,8 +103,8 @@ bool SALOME_Event::IsSessionThread(){
 SALOME_Event::SALOME_Event(){
 //  if(MYDEBUG) MESSAGE( "SALOME_Event::SALOME_Event(): this = "<<this );
   // Prepare the semaphore 
-  mySemaphore = new QSemaphore( 2 );
-  *mySemaphore += 2;
+  mySemaphore = new QSemaphore( NumberOfResources );
+  mySemaphore->acquire( NumberOfResources );
 }
 
 /*!
@@ -92,8 +112,8 @@ SALOME_Event::SALOME_Event(){
 */
 SALOME_Event::~SALOME_Event(){
 //  if(MYDEBUG) MESSAGE( "SALOME_Event::~SALOME_Event(): this = "<<this );
-  if ( mySemaphore->available() < mySemaphore->total() )
-    *mySemaphore -= mySemaphore->total() - mySemaphore->available();
+  if ( mySemaphore->available() < NumberOfResources )
+    mySemaphore->release( NumberOfResources - mySemaphore->available() );
   delete mySemaphore;
 }
 
@@ -102,9 +122,9 @@ SALOME_Event::~SALOME_Event(){
 */
 void SALOME_Event::process()
 {
-  QThread::postEvent( qApp, new QCustomEvent( SALOME_EVENT, (void*)this ) );
-//  if(MYDEBUG) MESSAGE( "SALOME_Event::process(): this = "<<this<<", *mySemaphore += 1 " );
-  *mySemaphore += 1;
+  QApplication::postEvent( qApp, new SALOME_CustomEvent( SALOME_EVENT, (void*)this ) );
+//  if(MYDEBUG) MESSAGE( "SALOME_Event::process(): this = "<<this<<", mySemaphore->acquire( 1 )" );
+  mySemaphore->acquire( 1 );
 //  if(MYDEBUG) MESSAGE( "SALOME_Event::process(): this = "<<this<<" - COMPLETED" );
 }
 
@@ -115,5 +135,5 @@ void SALOME_Event::processed()
 {
 //  if(MYDEBUG) MESSAGE( "SALOME_Event::processed(): this = "<<this );
   // process() takes control over mySemaphore after the next line is executed
-  *mySemaphore -= 1;
+  mySemaphore->release( 1 );
 }
