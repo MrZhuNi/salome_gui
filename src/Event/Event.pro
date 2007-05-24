@@ -4,9 +4,7 @@ DESTDIR = ../../lib
 MOC_DIR = ../../moc
 OBJECTS_DIR = ../../obj/$$TARGET
 
-KERNEL_CXXFLAGS = $$(KERNEL_ROOT_DIR)/include/salome
-
-INCLUDEPATH += ../../include $${KERNEL_CXXFLAGS}
+INCLUDEPATH += ../../include
 LIBS += 
 
 CONFIG -= debug release debug_and_release
@@ -16,7 +14,7 @@ win32:DEFINES += WIN32
 DEFINES += EVENT_EXPORTS
 
 HEADERS  = Event.h
-HEADERS += SALOME_Event.hxx
+HEADERS += SALOME_Event.h
 
 SOURCES  = SALOME_Event.cxx
 
