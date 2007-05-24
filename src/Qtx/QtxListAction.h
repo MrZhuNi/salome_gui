@@ -24,16 +24,8 @@
 
 #include "Qtx.h"
 
-#include <QMap>
-#include <QMenu>
 #include <QStringList>
 #include <QWidgetAction>
-
-class QLabel;
-class QToolButton;
-class QListWidget;
-
-class QtxListFrame;
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -43,14 +35,16 @@ class QTX_EXPORT QtxListAction : public QWidgetAction
 {
   Q_OBJECT
 
-  Q_PROPERTY( QStringList names READ names WRITE addNames )
-
   class ListFrame;
   class ListWidget;
   class ScrollEvent;
 
 public:
-  enum { Item, SubMenu } PopupMode;
+  //! Popup mode
+  enum { 
+    Item,         //!< action is added to popup menu as menu item
+    SubMenu       //!< action is added to popup menu as sub menu with list of items
+  } PopupMode;
 
 public:
   QtxListAction( QObject* = 0 );
@@ -88,7 +82,7 @@ private:
   void             initialize();
 
 private:
-  ListFrame*       myFrame;
+  ListFrame*       myFrame;   //!< list of actions shown as submenu
 
   friend class QtxListAction::ListFrame;
 };

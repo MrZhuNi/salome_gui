@@ -35,9 +35,10 @@ class QTX_EXPORT QtxWorkstackAction : public QtxActionSet
   Q_OBJECT
 
 public:
-  enum { SplitVertical   = 0x0001,
-         SplitHorizontal = 0x0002,
-         Windows         = 0x0010,
+  //! Actions (menu items) ID
+  enum { SplitVertical   = 0x0001,   //!< "Split window vertically" operation
+         SplitHorizontal = 0x0002,   //!< "Split window horizontally" operation
+         Windows         = 0x0010,   //!< A list of child windows menu items
          Split           = SplitVertical | SplitHorizontal,
          Standard        = Split | Windows };
 
@@ -77,8 +78,8 @@ private:
   void          activateItem( const int );
 
 private:
-  QtxWorkstack* myWorkstack;
-  bool          myWindowsFlag;
+  QtxWorkstack* myWorkstack;       //!< parent workstack
+  bool          myWindowsFlag;     //!< "show child windows items" flag
 };
 
 #ifdef WIN32

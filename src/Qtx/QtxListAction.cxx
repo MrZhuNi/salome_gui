@@ -23,20 +23,18 @@
 
 #include <QMenu>
 #include <QLabel>
-#include <QLayout>
-#include <QToolTip>
-#include <QToolbar>
-#include <QWMatrix>
+#include <QVBoxLayout>
 #include <QMouseEvent>
 #include <QListWidget>
 #include <QToolButton>
-#include <QObjectList>
 #include <QApplication>
 
 /*!
   \class QtxListAction::ScrollEvent
-  Event for the scrolling in the list of actions
+  \internal
+  \brief Event for the scrolling in the list of actions.
 */
+
 class QtxListAction::ScrollEvent : public QEvent
 {
 public:
@@ -53,8 +51,10 @@ private:
 
 /*!
   \class QtxListAction::ListWidget
-  List of actions
+  \internal
+  \brief List of actions.
 */
+
 class QtxListAction::ListWidget : public QListWidget
 {
 public:
@@ -72,8 +72,10 @@ protected:
 
 /*!
   \class QtxListAction::ListFrame
-  Expanding frame with action list and comment
+  \internal
+  \brief Expanding frame with action list and comment.
 */
+
 class QtxListAction::ListFrame: public QMenu
 {
 public:
@@ -126,15 +128,17 @@ private:
 };
 
 /*!
-  Constructor
+  \brief Constructor.
+  \param a list action
+  \param parent parent widget
 */
 QtxListAction::ListFrame::ListFrame( QtxListAction* a, QWidget* parent )
 : QMenu( parent ),
-myList( 0 ),
-myLines( 5 ),
-myChars( 5 ),
-myAction( a ),
-myComment( 0 )
+  myList( 0 ),
+  myLines( 5 ),
+  myChars( 5 ),
+  myAction( a ),
+  myComment( 0 )
 {
   QVBoxLayout* top = new QVBoxLayout( this );
   top->setMargin( 0 );
@@ -165,46 +169,58 @@ myComment( 0 )
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxListAction::ListFrame::~ListFrame()
 {
 }
 
 /*!
-  Clears list of names [ public ]
+  \brief Clear list of names.
 */
 void QtxListAction::ListFrame::clear()
 {
-	myNames.clear();
-	setNames( myNames );
+  myNames.clear();
+  setNames( myNames );
 }
 
 /*!
-  Adds a names to the list. Truncates the name to fit to the frame width.
-  Use QtxListAction::setCharsNumber( int ) to set the width in characters. [ public ]
+  \brief Add names to the list.
+
+  Truncates each name to fit the frame width.
+  Method QtxListAction::setCharsNumber(int) can be used to change
+  the frame width (in characters).
+
+  \param names list of names to be added
+  \sa setNames(), QtxListAction::setCharsNumber(int)
 */
 void QtxListAction::ListFrame::addNames( const QStringList& names )
 {
-	for ( QStringList::ConstIterator it = names.begin(); it != names.end(); ++it )
-		myNames.append( *it );
-	setNames( myNames );
+  for ( QStringList::ConstIterator it = names.begin(); it != names.end(); ++it )
+    myNames.append( *it );
+  setNames( myNames );
 }
 
 /*!
-  Sets a names to the list. Truncates the name to fit to the frame width.
-  Use QtxListAction::setCharsNumber( int ) to set the width in characters. [ public ]
+  \brief Set names to the list.
+
+  Truncates each name to fit the frame width.
+  Method QtxListAction::setCharsNumber(int) can be used to change
+  the frame width (in characters).
+
+  \param names list of names to be set
+  \sa addNames(), QtxListAction::setCharsNumber(int)
 */
 void QtxListAction::ListFrame::setNames( const QStringList& names )
 {
   if ( !myList )
-		return;
+    return;
 
-	myList->clear();
+  myList->clear();
   QStringList strList;
-	for ( QStringList::const_iterator it = names.begin(); it != names.end(); ++it )
-	{
-		QString s = *it;
+  for ( QStringList::const_iterator it = names.begin(); it != names.end(); ++it )
+  {
+    QString s = *it;
     QFontMetrics fm = myList->fontMetrics();
     int maxW = charsNumber() * fm.maxWidth();
     int w = fm.width( s );
@@ -230,15 +246,18 @@ void QtxListAction::ListFrame::setNames( const QStringList& names )
 }
 
 /*!
+  \brief Get list of names.
   \return list of names
 */
 const QStringList QtxListAction::ListFrame::names() const
 {
-	return myNames;
+  return myNames;
 }
 
 /*!
-    Returns max number of lines shown without activation of vertical scroll bar. [ public ]
+  \brief Get maximum numer of lines shown without activation of vertical scroll bar.
+  \return number of lines
+  \sa setLinesNumber(), charsNumber(), setCharsNumber()
 */
 int QtxListAction::ListFrame::linesNumber() const
 {
@@ -246,7 +265,12 @@ int QtxListAction::ListFrame::linesNumber() const
 }
 
 /*!
-    Returns max number of chars in line (the rest will be truncated). [ public ]
+  \brief Get maximum numer of characters in the line.
+
+  If the name length is greater than this value, it will be truncated.
+
+  \return number of characters
+  \sa setCharsNumber(), linesNumber(), setLinesNumber()
 */
 int QtxListAction::ListFrame::charsNumber() const
 {
@@ -254,7 +278,9 @@ int QtxListAction::ListFrame::charsNumber() const
 }
 
 /*!
-    Sets max number of lines shown without activation of vertical scroll bar. [ public ]
+  \brief Set maximum numer of lines shown without activation of vertical scroll bar.
+  \param maxLines number of lines
+  \sa linesNumber(), charsNumber(), setCharsNumber()
 */
 void QtxListAction::ListFrame::setLinesNumber( const int maxLines )
 {
@@ -262,55 +288,66 @@ void QtxListAction::ListFrame::setLinesNumber( const int maxLines )
 }
 
 /*!
-    Sets max number of chars in line ( the rest will be truncated ). [ public ]
+  \brief Set maximum numer of characters in the line.
+
+  If the name length is greater than this value, it will be truncated.
+
+  \param maxChars number of characters
+  \sa charsNumber(), linesNumber(), setLinesNumber()
 */
 void QtxListAction::ListFrame::setCharsNumber( const int maxChars )
 {
-	if ( myChars == maxChars )
-		return;
+  if ( myChars == maxChars )
+    return;
 
   myChars = maxChars;
-	setNames( myNames );
+  setNames( myNames );
 }
 
 /*!
-    Sets the format of single comment. [ public ]
+  \brief Set comment which is displayed when single name is selected.
+  \param comment comment format
 */
 void QtxListAction::ListFrame::setSingleComment( const QString& comment )
 {
   mySingleComment = comment;
-	setNames( myNames );
+  setNames( myNames );
   updateComment();
 }
 
 /*!
-    Sets the format of multiple comment. [ public ]
+  \brief Set comment which is displayed when multiple names are selected.
+  \param comment comment format
 */
 void QtxListAction::ListFrame::setMultipleComment( const QString& comment )
 {
   myMultipleComment = comment;
-	setNames( myNames );
+  setNames( myNames );
   updateComment();
 }
 
 /*!
-    Updates comment display. [ public ]
+  \brief Update displayed comment.
 */
 void QtxListAction::ListFrame::updateComment()
 {
-	QString com;
-	int selNum = selected();
-	if ( selNum > 1 )
-		com = myMultipleComment;
-	else if ( selNum > 0 && !mySingleComment.isEmpty() )
-		com = mySingleComment;
-
-	if ( !com.isEmpty() )
-		com = com.arg( selNum );
-
+  QString com;
+  int selNum = selected();
+  if ( selNum > 1 )
+    com = myMultipleComment;
+  else if ( selNum > 0 && !mySingleComment.isEmpty() )
+    com = mySingleComment;
+  
+  if ( !com.isEmpty() )
+    com = com.arg( selNum );
+  
   myComment->setText( com );
 }
 
+/*!
+  \brief Get preferable size for the list widget.
+  \return preferable size
+*/
 QSize QtxListAction::ListFrame::sizeHint() const
 {
   return QSize( myList->fontMetrics().maxWidth() * charsNumber() + 10,
@@ -318,6 +355,10 @@ QSize QtxListAction::ListFrame::sizeHint() const
                 myComment->sizeHint().height() );
 }
 
+/*!
+  \brief Get preferable minimum size for the list widget.
+  \return preferable minimum size
+*/
 QSize QtxListAction::ListFrame::minimumSizeHint() const
 {
   return QSize( myList->fontMetrics().maxWidth() * charsNumber() + 10,
@@ -326,7 +367,7 @@ QSize QtxListAction::ListFrame::minimumSizeHint() const
 }
 
 /*!
-  Validates the action. [ private slot ]
+  \brief Validate the action.
 */
 void QtxListAction::ListFrame::accept()
 {
@@ -336,7 +377,8 @@ void QtxListAction::ListFrame::accept()
 }
 
 /*!
-  Initializes / shows the frame. [ virtual public slot ]
+  \brief Called when list widget is shown/hidden.
+  \param on if \c true, widget is shown, otherswise it is hidden
 */
 void QtxListAction::ListFrame::setVisible( bool on )
 {
@@ -352,8 +394,15 @@ void QtxListAction::ListFrame::setVisible( bool on )
 }
 
 /*!
-    Processes KeyUp/KeyDown, PageUp/PageDown, CR and Esc keys.
-    Returns 'true' if event is eaten, 'false' otherwise. [ private ]
+  \brief Process key press event.
+
+  The following keys are supported:
+  - Up/Down
+  - PageUp/PageDown
+  - Enter
+  - Escape
+
+  \param e key press event
 */
 void QtxListAction::ListFrame::keyPressEvent( QKeyEvent* e )
 {
@@ -375,14 +424,14 @@ void QtxListAction::ListFrame::keyPressEvent( QKeyEvent* e )
     setSelected( qMax( 1, selNum - linesNumber() ) );
     break;
   case Qt::Key_PageDown:
-	  setSelected( selNum += linesNumber() );
+    setSelected( selNum += linesNumber() );
     break;
   case Qt::Key_Home:
-	  setSelected( 1 );
-		break;
+    setSelected( 1 );
+    break;
   case Qt::Key_End:
-	  setSelected( myList->count() );
-		break;
+    setSelected( myList->count() );
+    break;
   case Qt::Key_Return:
     accept();
     break;
@@ -393,7 +442,10 @@ void QtxListAction::ListFrame::keyPressEvent( QKeyEvent* e )
 }
 
 /*!
-  Watches mouse events on the viewport of the list. [virtual public]
+  \brief Process mouse events on the viewport of the list widget.
+  \param o object recieving event (viewport)
+  \param e event
+  \return \c true if further event processing should be stopped.
 */
 bool QtxListAction::ListFrame::eventFilter( QObject* o, QEvent* e )
 {
@@ -444,34 +496,36 @@ bool QtxListAction::ListFrame::eventFilter( QObject* o, QEvent* e )
 }
 
 /*!
-  return number of selected items
+  \brief Get number of selected names.
+  \return number of selected items
 */
 int QtxListAction::ListFrame::selected() const
 {
-	int sel = 0;
+  int sel = 0;
   QModelIndexList indexes = myList->selectionModel()->selectedRows();
   for ( QModelIndexList::const_iterator it = indexes.begin(); it != indexes.end(); ++it )
     sel = qMax( sel, (*it).row() + 1 );
-
-	return sel;
+  
+  return sel;
 }
 
 /*!
-    Selects the actions [ 0 - lastSel ]. [ public ]
+  \brief Set number of selected names.
+  \param lastSel number of items to be selected
 */
 void QtxListAction::ListFrame::setSelected( const int lastSel )
 {
-	int last = qMin( lastSel, (int)myList->count() );
+  int last = qMin( lastSel, (int)myList->count() );
 
   QItemSelection selection;
   QItemSelectionModel* selModel = myList->selectionModel();
 
-	for ( int i = 0; i < last; i++ )
+  for ( int i = 0; i < last; i++ )
     selection.select( selModel->model()->index( i, 0 ), selModel->model()->index( i, 0 ) );
 
   selModel->select( selection, QItemSelectionModel::ClearAndSelect );
-
-	int item = last - 1;
+  
+  int item = last - 1;
 
   myList->scrollToItem( myList->item( item ) );
   myList->clearFocus();
@@ -481,6 +535,11 @@ void QtxListAction::ListFrame::setSelected( const int lastSel )
   updateComment();
 }
 
+/*!
+  \brief Filter all events of specified type sent to specified object.
+  \param o object
+  \param type event type to be filtered
+*/
 void QtxListAction::ListFrame::removePostedEvens( QObject* o, int type )
 {
   class Filter : public QObject
@@ -500,30 +559,33 @@ void QtxListAction::ListFrame::removePostedEvens( QObject* o, int type )
 
 /*!
   \class QtxListAction
-  Action with list of items
+  \brief Action with associated list of items.
+  
+  This class can be helpuful, for example, for creation of Undo/Redo
+  toolbar items which show list of available commands in the popup list box.
 */
 
 /*!
-  Constructs an list action with given parent and name. If toggle is true the
-  action will be a toggle action, otherwise it will be a command action.
+  \brief Constructor.
+  \param parent parent object
 */
 QtxListAction::QtxListAction( QObject* parent )
 : QWidgetAction( parent ),
-myFrame( 0 )
+  myFrame( 0 )
 {
   initialize();
 }
 
 /*!
-  This constructor creates an action with the following properties: the
-  description text, the icon or iconset icon, the menu text and keyboard
-  accelerator. It is a child of given parent and named specified name.
-  If toggle is true the action will be a toggle action, otherwise it will
-  be a command action.
+  \brief Constructor.
+  \param icon action icon
+  \param text menu text
+  \param accel key accelerator
+  \param parent parent object
 */
 QtxListAction::QtxListAction( const QIcon& icon, const QString& text, int accel, QObject* parent )
 : QWidgetAction( parent ),
-myFrame( 0 )
+  myFrame( 0 )
 {
   setIcon( icon );
   setText( text );
@@ -533,10 +595,9 @@ myFrame( 0 )
 }
 
 /*!
-  This constructor creates an action with the following properties: the
-  description text, the menu text and keyboard accelerator. It is a child
-  of given parent and named specified name. If toggle is true the action
-  will be a toggle action, otherwise it will be a command action.
+  \brief Constructor.
+  \param text menu text
+  \param parent parent object
 */
 QtxListAction::QtxListAction( const QString& text, int accel, QObject* parent )
 : QWidgetAction( parent ),
@@ -549,7 +610,7 @@ myFrame( 0 )
 }
 
 /*!
-  Destructor.
+  \brief Destructor.
 */
 QtxListAction::~QtxListAction()
 {
@@ -558,10 +619,9 @@ QtxListAction::~QtxListAction()
 }
 
 /*!
-	Name: popupMode [public]
-	Desc: Returns popup mode. If popup mode "Item" (default) then action will
-	      be added into popup menu as menu item. If popup mode "SubMenu" then
-		    action will be added into popup menu as sub menu with list of items.
+  \brief Get popup mode.
+  \return current popup mode (QtxListAction::PopupMode)
+  \sa setPopupMode()
 */
 int QtxListAction::popupMode() const
 {
@@ -569,9 +629,9 @@ int QtxListAction::popupMode() const
 }
 
 /*!
-	Name: setPopupMode [public]
-	Desc: Set the popup mode. Popup mode define way in this action will be
-	      added into popup menu. This function should be used before addTo.
+  \brief Set popup mode.
+  \param mode new popup mode (QtxListAction::PopupMode)
+  \sa popupMode()
 */
 void QtxListAction::setPopupMode( const int mode )
 {
@@ -590,6 +650,7 @@ void QtxListAction::setPopupMode( const int mode )
 }
 
 /*!
+  \brief Get current list of names.
   \return list of names
 */
 QStringList QtxListAction::names() const
@@ -601,9 +662,15 @@ QStringList QtxListAction::names() const
 }
 
 /*!
-	Name: addNames [public]
-	Desc: Fills the list of actions. Removes the old contents from
-	      the list if 'clear' is true.
+  \brief Add names to the list.
+
+  Truncates each name to fit the frame width.
+  Method setCharsNumber() can be used to change
+  the frame width (in characters).
+
+  \param names list of names to be added
+  \param clear if \c true, remove the old contents from the list
+  \sa setCharsNumber()
 */
 void QtxListAction::addNames( const QStringList& names, bool clear )
 {
@@ -613,13 +680,15 @@ void QtxListAction::addNames( const QStringList& names, bool clear )
   if ( clear )
     myFrame->clear();
 
-	myFrame->addNames( names );
+  myFrame->addNames( names );
 
   onChanged();
 }
 
 /*!
-  Returns the number of lines wich will be visible in list frame.
+  \brief Get maximum numer of lines shown without activation of vertical scroll bar.
+  \return number of lines
+  \sa setLinesNumber(), charsNumber(), setCharsNumber()
 */
 int QtxListAction::linesNumber() const
 {
@@ -627,7 +696,12 @@ int QtxListAction::linesNumber() const
 }
 
 /*!
-  Returns the number of chars wich will be visible in the each line.
+  \brief Get maximum numer of characters in the line.
+
+  If the name length is greater than this value, it will be truncated.
+
+  \return number of characters
+  \sa setCharsNumber(), linesNumber(), setLinesNumber()
 */
 int QtxListAction::charsNumber() const
 {
@@ -635,7 +709,9 @@ int QtxListAction::charsNumber() const
 }
 
 /*!
-	Sets max number of lines that list frame shows without vertical scroll bar. Default value is 7.
+  \brief Set maximum numer of lines shown without activation of vertical scroll bar.
+  \param nlines number of lines (5 by default)
+  \sa linesNumber(), charsNumber(), setCharsNumber()
 */
 void QtxListAction::setLinesNumber( const int nlines )
 {
@@ -643,8 +719,12 @@ void QtxListAction::setLinesNumber( const int nlines )
 }
 
 /*!
-	Sets max number of characters in a line which list frame shows without truncation.
-  Default value is 5 (the widest char size is used).
+  \brief Set maximum numer of characters in the line.
+
+  If the name length is greater than this value, it will be truncated.
+
+  \param maxChars number of characters (5 by default)
+  \sa charsNumber(), linesNumber(), setLinesNumber()
 */
 
 void QtxListAction::setCharsNumber( const int nchars )
@@ -653,11 +733,14 @@ void QtxListAction::setCharsNumber( const int nchars )
 }
 
 /*!
-	Name: setComment [public]
-	Desc: Sets the format Qt string for comments displayed under the list
-	      of actions for one action and for several actions.
-		    Ex. "Undo %1 actions" format string will work as "Undo 3 actions"
-		    when 3 actions are selected. The default format string is "%1".
+  \brief Set the format Qt string for comments displayed under the list
+         of actions for one action and for several actions.
+
+  Example: "Undo %1 actions" format string will work as "Undo 3 actions"
+  when 3 actions are selected. The default format string is "%1".
+
+  \param c single action comment format
+  \param c multiple actions comment format
 */
 void QtxListAction::setComment( const QString& c, const QString& sc )
 {
@@ -665,9 +748,18 @@ void QtxListAction::setComment( const QString& c, const QString& sc )
     return;
 
   myFrame->setSingleComment( sc.isEmpty() ? c : sc );
-	myFrame->setMultipleComment( c );
+  myFrame->setMultipleComment( c );
 }
 
+/*!
+  \brief Create action widget.
+
+  This function is called whenever the action is added 
+  to a container widget that supports custom widgets like menu or toolbar.
+  
+  \param parent container widget the action is added to
+  \return tool button for toolbar and 0 otherwise
+*/
 QWidget* QtxListAction::createWidget( QWidget* parent )
 {
   if ( parent && parent->inherits( "QMenu" ) )
@@ -685,33 +777,42 @@ QWidget* QtxListAction::createWidget( QWidget* parent )
   return tb;
 }
 
+/*
+  \brief Destroy action widget.
+
+  This function is called whenever the action is removed
+  from a container widget that supports custom widgets like menu or toolbar.
+  
+  \param widget container widget the action is removed from
+*/
 void QtxListAction::deleteWidget( QWidget* widget )
 {
   delete widget;
 }
 
 /*!
-	Name: initialize [private]
-	Desc: Initialization of object QtxListAction.
+  \brief Initialize the action.
 */
-
 void QtxListAction::initialize()
 {
   setPopupMode( Item );
-
-	myFrame = new QtxListAction::ListFrame( this, 0 );
+  
+  myFrame = new QtxListAction::ListFrame( this, 0 );
   myFrame->setLinesNumber( 7 );
   myFrame->setCharsNumber( 5 );
 
-	myFrame->hide();
+  myFrame->hide();
 
   connect( this, SIGNAL( changed() ), this, SLOT( onChanged() ) );
   connect( this, SIGNAL( triggered( bool ) ), this, SLOT( onSingle( bool ) ) );
 }
 
+/*!
+  \brief Called the action contents is changed.
+*/
 void QtxListAction::onChanged()
 {
-	QStringList lst = myFrame->names();
+  QStringList lst = myFrame->names();
 
   if ( menu() )
   {
@@ -725,9 +826,9 @@ void QtxListAction::onChanged()
   }
 
   QList<QWidget*> widList = createdWidgets();
-	for ( QList<QWidget*>::iterator it = widList.begin(); it != widList.end(); ++it )
+  for ( QList<QWidget*>::iterator it = widList.begin(); it != widList.end(); ++it )
   {
-		(*it)->setEnabled( isEnabled() && !lst.isEmpty() );
+    (*it)->setEnabled( isEnabled() && !lst.isEmpty() );
     QToolButton* tb = ::qobject_cast<QToolButton*>( *it );
     if ( tb )
     {
@@ -739,20 +840,18 @@ void QtxListAction::onChanged()
 }
 
 /*!
-	Name: onSingle [private slot]
-	Desc: Called when a single action is selected.
+  \brief Called when a user click action button.
+  \param on (not used)
 */
 
-void QtxListAction::onSingle( bool )
+void QtxListAction::onSingle( bool /*on*/ )
 {
   onMultiple( 1 );
 }
 
 /*!
-	Name: onMultiple [private slot]
-	Desc: Called when multiple actions are selected.
+  \brief Called when multiple items are selected. 
 */
-
 void QtxListAction::onMultiple( const int numActions )
 {
   if ( myFrame )
@@ -763,11 +862,10 @@ void QtxListAction::onMultiple( const int numActions )
 }
 
 /*!
-	Name: onTriggered [private slot]
-	Desc: Called when a sub menu item is activated.
+  \brief Called when user activates an items in the popup sub menu. 
+  \param on (not used)
 */
-
-void QtxListAction::onTriggered( bool )
+void QtxListAction::onTriggered( bool /*on*/ )
 {
   if ( !menu() )
     return;
@@ -779,3 +877,9 @@ void QtxListAction::onTriggered( bool )
 
   emit activated( idx + 1 );
 }
+
+/*!
+  \fn QtxListAction::activated(int numItems );
+  \brief This signal is emitted when an action is activated.
+  \param numItems number of items being selected in the action list.
+*/

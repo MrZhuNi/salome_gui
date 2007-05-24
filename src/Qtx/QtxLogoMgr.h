@@ -66,8 +66,8 @@ private:
   void       movies( const QString&, QList<QMovie*>& ) const;
 
 private:
-  LogoBox*   myBox;
-  LogoList   myLogos;
+  LogoBox*   myBox;         //!< widget containing logox
+  LogoList   myLogos;       //!< list of logo data
 };
 
 #ifdef WIN32

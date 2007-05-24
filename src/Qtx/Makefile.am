@@ -38,6 +38,7 @@ salomeinclude_HEADERS=		\
 	QtxDialog.h		\
 	QtxDockAction.h		\
 	QtxDockWidget.h		\
+	QtxListAction.h		\
 	QtxLogoMgr.h		\
 	QtxMainWindow.h 	\
 	QtxMap.h		\
@@ -46,7 +47,8 @@ salomeinclude_HEADERS=		\
 	QtxToolBar.h		\
 	QtxWorkspace.h		\
 	QtxWorkspaceAction.h	\
-	QtxWorkstack.h
+	QtxWorkstack.h		\
+	QtxWorkstackAction.h
 
 #VSR: not yet migrated to Qt4 files
 #				\
@@ -55,7 +57,6 @@ salomeinclude_HEADERS=		\
 	QtxDirListEditor.h	\
 	QtxGroupBox.h		\
 	QtxIntSpinBox.h		\
-	QtxListAction.h		\
 	QtxListBox.h		\
 	QtxListOfOperations.h	\
 	QtxListResourceEdit.h	\
@@ -70,8 +71,7 @@ salomeinclude_HEADERS=		\
 	QtxSplash.h		\
 	QtxStdOperations.h	\
 	QtxTable.h		\
-	QtxToolTip.h		\
-	QtxWorkstackAction.h
+	QtxToolTip.h
 
 # Libraries targets
 
@@ -90,6 +90,7 @@ dist_libqtx_la_SOURCES=		\
 	QtxDialog.cxx		\
 	QtxDockAction.cxx	\
 	QtxDockWidget.cxx	\
+	QtxListAction.cxx	\
 	QtxLogoMgr.cxx		\
 	QtxMainWindow.cxx	\
 	QtxMRUAction.cxx	\
@@ -97,7 +98,8 @@ dist_libqtx_la_SOURCES=		\
 	QtxToolBar.cxx		\
 	QtxWorkspace.cxx	\
 	QtxWorkspaceAction.cxx	\
-	QtxWorkstack.cxx
+	QtxWorkstack.cxx	\
+	QtxWorkstackAction.cxx
 
 #VSR: not yet migrated to Qt4 files
 #				\
@@ -106,7 +108,6 @@ dist_libqtx_la_SOURCES=		\
 	QtxDirListEditor.cxx	\
 	QtxGroupBox.cxx		\
 	QtxIntSpinBox.cxx	\
-	QtxListAction.cxx	\
 	QtxListBox.cxx		\
 	QtxListOfOperations.cxx	\
 	QtxListResourceEdit.cxx	\
@@ -121,8 +122,7 @@ dist_libqtx_la_SOURCES=		\
 	QtxSplash.cxx		\
 	QtxStdOperations.cxx	\
 	QtxTable.cxx		\
-	QtxToolTip.cxx		\
-	QtxWorkstackAction.cxx
+	QtxToolTip.cxx
 
 #VSR: already migrated to Qt4 files
 MOC_FILES=				\
@@ -136,13 +136,15 @@ MOC_FILES=				\
 	QtxDialog_moc.cxx		\
 	QtxDockAction_moc.cxx		\
 	QtxDockWidget_moc.cxx		\
+	QtxListAction_moc.cxx		\
 	QtxLogoMgr_moc.cxx		\
 	QtxMainWindow_moc.cxx		\
 	QtxMRUAction_moc.cxx		\
 	QtxToolBar_moc.cxx		\
 	QtxWorkspace_moc.cxx		\
 	QtxWorkspaceAction_moc.cxx	\
-	QtxWorkstack_moc.cxx
+	QtxWorkstack_moc.cxx		\
+	QtxWorkstackAction_moc.cxx
 
 #VSR: not yet migrated to Qt4 files
 #					\
@@ -151,7 +153,6 @@ MOC_FILES=				\
 	QtxDirListEditor_moc.cxx	\
 	QtxGroupBox_moc.cxx		\
 	QtxIntSpinBox_moc.cxx		\
-	QtxListAction_moc.cxx		\
 	QtxListBox_moc.cxx		\
 	QtxListResourceEdit_moc.cxx	\
 	QtxListView_moc.cxx		\
@@ -161,8 +162,7 @@ MOC_FILES=				\
 	QtxPopupMgr_moc.cxx		\
 	QtxSplash_moc.cxx		\
 	QtxTable_moc.cxx		\
-	QtxToolTip_moc.cxx		\
-	QtxWorkstackAction_moc.cxx
+	QtxToolTip_moc.cxx
 
 nodist_libqtx_la_SOURCES= $(MOC_FILES)
 

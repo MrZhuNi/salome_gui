@@ -383,6 +383,8 @@ void QtxWorkspaceAction::onAboutToShow()
   \brief Called when menu item corresponding to some child window is activated.
 
   Activates correposponding child window.
+
+  \param idx menu item index
 */
 void QtxWorkspaceAction::activateItem( const int idx )
 {
@@ -399,6 +401,8 @@ void QtxWorkspaceAction::activateItem( const int idx )
   \brief Called when menu item is activated by the user.
   
   Perform the corresponding action.
+
+  \param id menu item identifier
 */
 void QtxWorkspaceAction::onTriggered( int id )
 {

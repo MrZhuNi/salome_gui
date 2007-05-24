@@ -35,11 +35,12 @@ class QTX_EXPORT QtxWorkspaceAction : public QtxActionSet
   Q_OBJECT
 
 public:
-  enum { Cascade    = 0x0001,
-         Tile       = 0x0002,
-         VTile      = 0x0004,
-         HTile      = 0x0008,
-         Windows    = 0x0010,
+  //! Actions (menu items) ID
+  enum { Cascade    = 0x0001,   //!< "Cascade child windows" operation
+         Tile       = 0x0002,   //!< "Tile child windows" operation
+         VTile      = 0x0004,   //!< "Tile child windows vertically" operation
+         HTile      = 0x0008,   //!< "Tile child windows horizontally" operation
+         Windows    = 0x0010,   //!< A list of child windows menu items
          Standard   = Cascade | Tile | Windows,
          Operations = Cascade | Tile | VTile | HTile,
          All        = Standard | HTile | VTile };
@@ -85,8 +86,8 @@ private:
   void          activateItem( const int );
 
 private:
-  QtxWorkspace* myWorkspace;
-  bool          myWindowsFlag;
+  QtxWorkspace* myWorkspace;       //!< parent workspace
+  bool          myWindowsFlag;     //!< "show child windows items" flag
 };
 
 #ifdef WIN32

@@ -77,7 +77,7 @@ private:
   typedef QList<QAction*>     ActionList;
 
 private:
-  ActionList      mySet;
+  ActionList      mySet;      //!< actions list
 };
 
 #ifdef WIN32
