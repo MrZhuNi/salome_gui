@@ -132,6 +132,16 @@ QtxEvalSet* QtxEvalExpr::operationSet( const QString& name ) const
   return myParser->operationSet( name );
 }
 
+bool QtxEvalExpr::autoDeleteOperationSets() const
+{
+  return myParser->autoDeleteOperationSets();
+}
+
+void QtxEvalExpr::setAutoDeleteOperationSets( const bool on )
+{
+  myParser->setAutoDeleteOperationSets( on );
+}
+
 /*!
   \class QtxEvalParser
   Expression parser.

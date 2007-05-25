@@ -70,6 +70,9 @@ public:
   QtxEvalExpr::Error error() const;
   QtxEvalParser*     parser() const;
 
+  bool               autoDeleteOperationSets() const;
+  void               setAutoDeleteOperationSets( const bool );
+
   QList<QtxEvalSet*> operationSets() const;
   QtxEvalSet*        operationSet( const QString& ) const;
   void               removeOperationSet( QtxEvalSet* );
