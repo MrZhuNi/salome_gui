@@ -29,14 +29,14 @@ DEFINE_STANDARD_HANDLE(DDS_KeyWords, MMgt_TShared)
 
 class TCollection_AsciiString;
 
-class DDS_KeyWords : public MMgt_TShared
+class Standard_EXPORT DDS_KeyWords : public MMgt_TShared
 {
 public:
-  Standard_EXPORT static Handle(DDS_KeyWords) Get();
+  static Handle_DDS_KeyWords  Get();
 
-  Standard_EXPORT TCollection_AsciiString     GetKeyWord( const TCollection_AsciiString& ) const;
-  Standard_EXPORT void                        SetKeyWord( const TCollection_AsciiString&,
-                                                          const TCollection_AsciiString& );
+  TCollection_AsciiString     GetKeyWord( const TCollection_AsciiString& ) const;
+  void                        SetKeyWord( const TCollection_AsciiString&,
+					  const TCollection_AsciiString& );
 
 private:
   DDS_KeyWords();
@@ -46,7 +46,7 @@ private:
                               TCollection_AsciiString> KeyWordMap;
 
 private:
-  KeyWordMap                                  myKeyWord;
+  KeyWordMap                  myKeyWord;
 
 public:
   DEFINE_STANDARD_RTTI(DDS_KeyWords)

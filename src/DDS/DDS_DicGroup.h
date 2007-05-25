@@ -32,45 +32,45 @@
 class LDOM_Element;
 class TColStd_SequenceOfAsciiString;
 
-DEFINE_STANDARD_HANDLE(DDS_DicGroup, MMgt_TShared)
-
-class DDS_DicGroup : public MMgt_TShared
+class Standard_EXPORT DDS_DicGroup : public MMgt_TShared
 {
 public:
   DDS_DicGroup( const TCollection_AsciiString& );
 
-  TCollection_AsciiString                    GetName() const;
+  TCollection_AsciiString    GetName() const;
 
-  Standard_EXPORT Handle(DDS_DicItem)        GetDicItem( const TCollection_AsciiString& ) const;
+  Handle_DDS_DicItem         GetDicItem( const TCollection_AsciiString& ) const;
 
-  Standard_EXPORT void                       GetUnitSystems( TColStd_SequenceOfAsciiString& ) const;
-  Standard_EXPORT TCollection_ExtendedString GetUnitSystemLabel( const TCollection_AsciiString& ) const;
+  void                       GetUnitSystems( TColStd_SequenceOfAsciiString& ) const;
+  TCollection_ExtendedString GetUnitSystemLabel( const TCollection_AsciiString& ) const;
 
-  Standard_EXPORT TCollection_AsciiString    GetActiveUnitSystem() const;
-  Standard_EXPORT void                       SetActiveUnitSystem( const TCollection_AsciiString& );
+  TCollection_AsciiString    GetActiveUnitSystem() const;
+  void                       SetActiveUnitSystem( const TCollection_AsciiString& );
 
 private:
   DDS_DicGroup( const DDS_DicGroup& );
 
-  void                                       operator=( const DDS_DicGroup& );
+  void                       operator=( const DDS_DicGroup& );
 
-  void                                       FillDataMap( const LDOM_Element&, const LDOM_Element& );
+  void                       FillDataMap( const LDOM_Element&, const LDOM_Element& );
 
 private:
   typedef NCollection_DataMap<TCollection_AsciiString,
                               TCollection_ExtendedString> UnitSystemMap;
 
 private:
-  TCollection_AsciiString                    myName;
-  DDS_IndexedDataMapOfDicItems               myDataMap;
-  UnitSystemMap                              myUnitSystem;
-  TCollection_AsciiString                    myActiveSystem;
+  TCollection_AsciiString       myName;
+  DDS_IndexedDataMapOfDicItems  myDataMap;
+  UnitSystemMap                 myUnitSystem;
+  TCollection_AsciiString       myActiveSystem;
 
   friend class DDS_Dictionary;
 
 public:
   DEFINE_STANDARD_RTTI(DDS_DicGroup)
 };
+
+DEFINE_STANDARD_HANDLE(DDS_DicGroup, MMgt_TShared)
 
 DEFINE_BASECOLLECTION(DDS_BaseCollectionOfDicGroups, Handle(DDS_DicGroup))
 DEFINE_INDEXEDDATAMAP(DDS_IndexedDataMapOfDicGroups, DDS_BaseCollectionOfDicGroups,
