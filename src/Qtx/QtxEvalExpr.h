@@ -371,6 +371,13 @@ public:
   virtual QString            name() const;
 
   virtual bool               createValue( const QString&, QVariant& ) const;
+
+  virtual void               operationList( QStringList& ) const;
+  virtual void               bracketsList( QStringList&, bool open ) const;
+  virtual int                priority( const QString&, bool isBin ) const;
+  virtual QtxEvalExpr::Error isValid( const QString&, const QVariant::Type,
+                                      const QVariant::Type ) const;
+  virtual QtxEvalExpr::Error calculate( const QString&, QVariant&, QVariant& ) const;
 };
 
 #endif

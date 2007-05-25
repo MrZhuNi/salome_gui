@@ -61,6 +61,7 @@ void QtxEvalExpr::intialize( const bool stdSets, const QString& expr )
     myParser->insertOperationSet( new QtxEvalSetString() );
     myParser->insertOperationSet( new QtxEvalSetMath() );
     myParser->insertOperationSet( new QtxEvalSetSets() );
+    myParser->insertOperationSet( new QtxEvalSetConst() );
   }
   setExpression( expr );
 }
@@ -1155,7 +1156,7 @@ void QtxEvalSetBase::addTypes( const ListOfTypes& list )
    \param t2 - type of second argument
 */
 QtxEvalExpr::Error QtxEvalSetBase::isValid( const QString& op,
-                                          const QVariant::Type t1, const QVariant::Type t2 ) const
+                                            const QVariant::Type t1, const QVariant::Type t2 ) const
 {
   if ( ( t1 == QVariant::Invalid || myTypes.contains( t1 ) ) &&
        ( t2 == QVariant::Invalid || myTypes.contains( t2 ) ) &&
@@ -1927,4 +1928,27 @@ bool QtxEvalSetConst::createValue( const QString& str, QVariant& val ) const
     ok = false;
 
   return ok;
+}
+
+void QtxEvalSetConst::operationList( QStringList& ) const
+{
+}
+
+void QtxEvalSetConst::bracketsList( QStringList&, bool open ) const
+{
+}
+
+int QtxEvalSetConst::priority( const QString&, bool ) const
+{
+  return 0;
+}
+
+QtxEvalExpr::Error QtxEvalSetConst::isValid( const QString&, const QVariant::Type, const QVariant::Type ) const
+{
+  return QtxEvalExpr::InvalidOperation;
+}
+
+QtxEvalExpr::Error QtxEvalSetConst::calculate( const QString&, QVariant&, QVariant& ) const
+{
+  return QtxEvalExpr::InvalidOperation;
 }
