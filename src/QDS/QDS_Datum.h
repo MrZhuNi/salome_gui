@@ -21,7 +21,6 @@
 
 #include "QDS.h"
 
-#include <QWidget>
 #include <QString>
 #include <QVariant>
 #include <QPointer>
@@ -34,8 +33,6 @@ class QValidator;
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
-
-class Handle(DDS_Dictionary);
 
 class QDS_EXPORT QDS_Datum : public QObject, public QDS
 {

@@ -24,7 +24,7 @@
 #include <QtxTable.h>
 
 #include <QMap>
-#include <QPtrVector>
+#include <QVector>
 
 class QDS_EXPORT QDS_Table : public QtxTable
 {
@@ -82,7 +82,7 @@ private:
   QDS_Datum*       datum( const QWidget* ) const;
 
 private:
-  typedef QPtrVector<QDS_Datum>       DatumVector;
+  typedef QVector<QDS_Datum*>         DatumVector;
   typedef QMap<int, QDS_Datum*>       DatumMap;
   typedef QMap<int, DatumMap>         CellMap;
 

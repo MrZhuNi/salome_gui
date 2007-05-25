@@ -25,7 +25,9 @@
 #include <QPixmap>
 #include <QStringList>
 
-#include <QtxComboBox.h>
+#include <Qtx.h>
+
+class QtxComboBox;
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

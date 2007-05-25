@@ -20,20 +20,29 @@
 
 #include <QtxIntSpinBox.h>
 
-//#include <QValidator>
-
 /*
   \class QDS_SpinBox
-  
-  Datum with control corresponding to spin box. This control used for integer numbers.
-  User can input data directly in spin box or can modify current value with given
-  increment.
+  \brief Datum with control corresponding to spin box.
+
+  This control used for integer numbers. User can input data directly in the spin box
+  or can modify current value by clicking arrow (+/-) buttons.
 */
 
 /*!
-  Constructor. Create spin box datum object with datum identifier \aid under widget \aparent. Parameter \aflags
-  define behaviour of datum and set of created subwidgets. Default value of this parameter is QDS::All.
-  Parameter \acomp specify the component name which will be used during search of dictionary item.
+  \brief Constructor. 
+
+  Create spin box datum object with datum identifier \a id and parent widget \a parent.
+
+  Parameter \a flags defines behaviour of datum and set of created
+  subwidgets. Default value of this parameter is QDS::All.
+
+  Parameter \a comp specifies the component name which will be used
+  when searching the dictionary item.
+
+  \param id datum identifier
+  \param parent parent widget
+  \param flags datum flags
+  \param comp component
 */
 QDS_SpinBox::QDS_SpinBox( const QString& id, QWidget* parent, const int flags, const QString& comp )
 : QDS_Datum( id, parent, flags, comp )
@@ -41,14 +50,15 @@ QDS_SpinBox::QDS_SpinBox( const QString& id, QWidget* parent, const int flags, c
 }
 
 /*!
-  Destructor.
+  \brief Destructor.
 */
 QDS_SpinBox::~QDS_SpinBox()
 {
 }
 
 /*!
-  Returns string from QSpinBox widget. Reimplemented.
+  \brief Get string from the spin box.
+  \return string value
 */
 QString QDS_SpinBox::getString() const
 {
@@ -66,7 +76,8 @@ QString QDS_SpinBox::getString() const
 }
 
 /*!
-  Sets the string into QSpinBox widget. Reimplemented.
+  \brief Set the string value to the spin box widget.
+  \param txt string value
 */
 void QDS_SpinBox::setString( const QString& txt )
 {
@@ -79,7 +90,8 @@ void QDS_SpinBox::setString( const QString& txt )
 }
 
 /*!
-  Returns pointer to QSpinBox widget.
+  \brief Get spin box widget.
+  \return internal spin box widget.
 */
 QtxIntSpinBox* QDS_SpinBox::spinBox() const
 {
@@ -87,7 +99,9 @@ QtxIntSpinBox* QDS_SpinBox::spinBox() const
 }
 
 /*!
-  Create QSpinBox widget as control subwidget. Reimplemented.
+  \brief Create internal spin box as control widget.
+  \param parent parent widget
+  \return created spin box widget
 */
 QWidget* QDS_SpinBox::createControl( QWidget* parent )
 {
@@ -98,7 +112,11 @@ QWidget* QDS_SpinBox::createControl( QWidget* parent )
 }
 
 /*!
-  Notify about value changing in spin box.
+  \brief Called when value in the spin box is changed.
+
+  Emit signals to notify  about value changing in the spin box.
+
+  \param val current spin box value
 */
 void QDS_SpinBox::onValueChanged( int val )
 {
@@ -109,7 +127,8 @@ void QDS_SpinBox::onValueChanged( int val )
 }
 
 /*!
-  Sets the increment step.
+  \brief Set the spin box increment value.
+  \param step new increment value
 */
 void QDS_SpinBox::setStep( const int step )
 {
@@ -118,7 +137,8 @@ void QDS_SpinBox::setStep( const int step )
 }
 
 /*!
-  Returns the increment step.
+  \brief Get the spin box increment value.
+  \return current increment value
 */
 int QDS_SpinBox::step() const
 {
@@ -129,8 +149,11 @@ int QDS_SpinBox::step() const
 }
 
 /*!
-  Notification about active unit system changing. Reimplemented from QDS_Datum.
-  Update validator and spin box parameters: suffix, prefix, minimum, maximum.
+  \brief Process notification about active units system changing.
+
+  Update spin box contents according to the data dictionary item properties: suffix, prefix, minimum, maximum
+  
+  \param system new active units system
 */
 void QDS_SpinBox::unitSystemChanged( const QString& system )
 {

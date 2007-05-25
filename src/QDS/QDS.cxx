@@ -31,7 +31,14 @@
 QList<QDS_Datum*> QDS::_datumList;
 
 /*!
-  Convert the OpenCascade ascii string to Qt string.
+  \class QDS
+  \brief A set of usefull static functions.
+*/
+
+/*!
+  \brief Convert the OpenCascade ASCII string to Qt string.
+  \param src OCC ASCII string
+  \return Qt string
 */
 QString QDS::toQString( const TCollection_AsciiString& src )
 {
@@ -44,7 +51,9 @@ QString QDS::toQString( const TCollection_AsciiString& src )
 }
 
 /*!
-  Convert the OpenCascade unicode string to Qt string.
+  \brief Convert the OpenCascade Unicode string to Qt string.
+  \param src OCC Unicode string
+  \return Qt string
 */
 QString QDS::toQString( const TCollection_ExtendedString& src )
 {
@@ -55,7 +64,9 @@ QString QDS::toQString( const TCollection_ExtendedString& src )
 }
 
 /*!
-  Convert the OpenCascade ascii string to Qt string.
+  \brief Convert the OpenCascade ASCII string to Qt string.
+  \param src handle to OCC ASCII string
+  \return Qt string
 */
 QString QDS::toQString( const Handle(TCollection_HAsciiString)& src )
 {
@@ -66,7 +77,9 @@ QString QDS::toQString( const Handle(TCollection_HAsciiString)& src )
 }
 
 /*!
-  Convert the OpenCascade unicode string to Qt string.
+  \brief Convert the OpenCascade Unicode string to Qt string.
+  \param src handle to OCC Unicode string
+  \return Qt string
 */
 QString QDS::toQString( const Handle(TCollection_HExtendedString)& src )
 {
@@ -77,7 +90,9 @@ QString QDS::toQString( const Handle(TCollection_HExtendedString)& src )
 }
 
 /*!
-  Convert the Qt string to OpenCascade ascii string.
+  \brief Convert the Qt string to OpenCascade ASCII string.
+  \param src Qt string
+  \return OCC ASCII string
 */
 TCollection_AsciiString QDS::toAsciiString( const QString& src )
 {
@@ -97,7 +112,9 @@ TCollection_AsciiString QDS::toAsciiString( const QString& src )
 }
 
 /*!
-  Convert the OpenCascade unicode string to OpenCascade ascii string.
+  \brief Convert the OpenCascade Unicode string to OpenCascade ASCII string.
+  \param src OCC Unicode string
+  \return OCC ASCII string
 */
 TCollection_AsciiString QDS::toAsciiString( const TCollection_ExtendedString& src )
 {
@@ -105,7 +122,9 @@ TCollection_AsciiString QDS::toAsciiString( const TCollection_ExtendedString& sr
 }
 
 /*!
-  Convert the OpenCascade unicode string to OpenCascade ascii string.
+  \brief Convert the OpenCascade Unicode string to OpenCascade ASCII string.
+  \param src handle to OCC Unicode string
+  \return OCC ASCII string
 */
 TCollection_AsciiString QDS::toAsciiString( const Handle(TCollection_HExtendedString)& src )
 {
@@ -116,7 +135,9 @@ TCollection_AsciiString QDS::toAsciiString( const Handle(TCollection_HExtendedSt
 }
 
 /*!
-  Convert the Qt string to OpenCascade unicode string.
+  \brief Convert the Qt string to OpenCascade Unicode string.
+  \param src Qt string
+  \return OCC Unicode string
 */
 TCollection_ExtendedString QDS::toExtString( const QString& src )
 {
@@ -136,7 +157,9 @@ TCollection_ExtendedString QDS::toExtString( const QString& src )
 }
 
 /*!
-  Convert the OpenCascade ascii string to OpenCascade unicode string.
+  \brief Convert the OpenCascade ASCII string to OpenCascade Unicode string.
+  \param src OCC ASCII string
+  \return OCC Unicode string
 */
 TCollection_ExtendedString QDS::toExtString( const TCollection_AsciiString& src )
 {
@@ -144,8 +167,8 @@ TCollection_ExtendedString QDS::toExtString( const TCollection_AsciiString& src 
 }
 
 /*!
-  Load datum definitions in the dictionary from XML file \adictPath.
-  Returns true if load successed or false otherwise.
+  \brief Load datum definitions from XML file \a dictPath to the dictionary.
+  \return \c true if loading is successed or \c false otherwise.
 */
 bool QDS::load( const QString& dictPath )
 {
@@ -156,9 +179,15 @@ bool QDS::load( const QString& dictPath )
 }
 
 /*!
-  Returns the label of unit system \asys. If component \acomp specified and not empty then
-  function find the given unit system in the given component otherwise all components will be searched.
-  If unit system not found then empty string returned.
+  \brief Get the label of unit system \a sys.
+
+  If component \a comp is specified and not empty then the function 
+  searches the given unit system in the specified component, otherwise 
+  all components will be searched.
+
+  \param sys unit system
+  \param comp component
+  \return unit system lavel or empty string if unit system is not found
 */
 QString QDS::unitSystemLabel( const QString& sys, const QString& comp )
 {
@@ -172,9 +201,16 @@ QString QDS::unitSystemLabel( const QString& sys, const QString& comp )
 }
 
 /*!
-  Gets the name of active unit system from the specified component \acomp.
-  If component not specified or component is empty string then first got component will be used.
-  If component exist then active unit system name returned or empty string otherwise.
+  \brief Get the name of active unit system from the specified component \a comp.
+
+  If component is not specified or empty string, then the first found 
+  component will be used.
+  
+  If component exists, then active unit system name is returned. Otherwise, 
+  empty string is returned.
+  
+  \param comp component
+  \return name of the active unit system
 */
 QString QDS::activeUnitSystem( const QString& comp )
 {
@@ -187,11 +223,18 @@ QString QDS::activeUnitSystem( const QString& comp )
 }
 
 /*!
-  Sets the active unit system named \asys. If not empty component name \acomp specified then
-  unit system will be activated in the given component otherwise all components will be processed.
+  \brief Set the active unit system.
 
-  After the changing of active unit system function notify about it to all registered datums
-  from processed components using method QDS_Datum::unitSystemChanged();
+  If not empty component name \a comp is specified, then the unit system
+  will be activated in the given component, otherwise all components 
+  will be processed.
+
+  After the changing of active unit system function notifies about it all
+  registered datums from processed components using method 
+  QDS_Datum::unitSystemChanged()
+
+  \param unit system to be set active
+  \param comp component
 */
 void QDS::setActiveUnitSystem( const QString& sys, const QString& comp )
 {
@@ -227,8 +270,11 @@ void QDS::setActiveUnitSystem( const QString& sys, const QString& comp )
 }
 
 /*!
-  Register given datum \adatum in the static list.
-  This function invoked by QDS_Datum constructor.
+  \brief Register given datum \a datum in the global list.
+  
+  This function is invoked automatically by QDS_Datum constructor.
+  
+  \param datum datum being registered
 */
 void QDS::insertDatum( QDS_Datum* datum )
 {
@@ -239,8 +285,11 @@ void QDS::insertDatum( QDS_Datum* datum )
 }
 
 /*!
-  Remove given datum \adatum from the static list.
-  This function invoked by QDS_Datum destructor.
+  \brief Remove given datum \a datum from the global list.
+
+  This function is invoked automatically by QDS_Datum destructor.
+
+  \param datum datum being unregistered
 */
 void QDS::removeDatum( QDS_Datum* datum )
 {

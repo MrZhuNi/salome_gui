@@ -46,7 +46,7 @@ class Handle(TCollection_HExtendedString);
 class QDS_EXPORT QDS
 {
 public:
-   /*! Enum describes bit flags of the Qt datum view and behaviour */
+  //! Enum describes bit flags of the Qt datum view and behaviour
   typedef enum
   {
     None = 0x00,                   //!< Non specified any flags (Default behaviour)
@@ -85,7 +85,7 @@ protected:
   static void                       removeDatum( QDS_Datum* );
 
 private:
-  static QList<QDS_Datum*>     _datumList;
+  static QList<QDS_Datum*>          _datumList;
 };
 
 #endif

@@ -22,25 +22,41 @@
 
 /*
   \class QDS_CheckBox
-  
-  Datum with control corresponding to check box. This control can have only two states:
-  1 (on/true) or 0 (off/false). QDS_CheckBox don't take into account standard parameter
-  properties (minimum, maximum, filter, etc).
+  \brief Datum with control corresponding to check box.
+
+  This control can have only two states:
+  - 1 (on/true)
+  - 0 (off/false).
+
+  QDS_CheckBox don't take into account standard parameter properties
+  (minimum, maximum, filter, etc).
 
   QDS_CheckBox can set and get following values for access methods (setStringValue(),
   setIntegerValue(), setDoubleValue(), stringValue(), integerValue(), doubleValue()):
-    \li "1"  - check box state is setted as on.
-    \li "0"  - check box state is setted as off.
-    \li "-1" - check box state is setted as "NoChage" (undefined).
+  - "1"  - check box state is switched on.
+  - "0"  - check box state is switched off.
+  - "-1" - check box state is "PartiallyChecked" (undefined).
 
-  User can set and check a state "NoChange" using methods clear() and isEmpty() accordingly.
+  User can set and test "PartiallyChecked" check using methods clear() 
+  and isEmpty() correspondingly.
 */
 
 /*!
-  Constructor. Create check box datum object with datum identifier \aid under widget \aparent.
-  Parameter \aflags define behaviour of datum and set of created subwidgets. Default value of
-  this parameter is QDS::All. Parameter \acomp specify the component name which will be used
-  during search of dictionary item.
+  \brief Constructor. 
+
+  Create check box datum object with datum identifier \a id 
+  and parent widget \a parent.
+
+  Parameter \a flags defines behaviour of datum and set of created
+  subwidgets. Default value of this parameter is QDS::All. 
+  
+  Parameter \a comp specifies the component name which will be used
+  when searching the dictionary item.
+
+  \param id datum identifier
+  \param parent parent widget
+  \param flags datum flags
+  \param comp component
 */
 QDS_CheckBox::QDS_CheckBox( const QString& id, QWidget* parent, const int flags, const QString& comp )
 : QDS_Datum( id, parent, flags, comp )
@@ -48,14 +64,14 @@ QDS_CheckBox::QDS_CheckBox( const QString& id, QWidget* parent, const int flags,
 }
 
 /*!
-  Destructor.
+  \brief Destructor.
 */
 QDS_CheckBox::~QDS_CheckBox()
 {
 }
 
 /*!
-  Sets the state "NoChange" for checkbox.
+  \brief Set the state "PartiallyChecked" (undefined) for checkbox.
 */
 void QDS_CheckBox::clear()
 {
@@ -63,7 +79,8 @@ void QDS_CheckBox::clear()
 }
 
 /*!
-  Returns string from QCheckBox widget. If the check box state is on then 1 returned otherwise 0.
+  \brief Get string value from the widget.
+  \return "1" if check box is checked on and "0" otherwise
 */
 QString QDS_CheckBox::getString() const
 {
@@ -74,9 +91,14 @@ QString QDS_CheckBox::getString() const
 }
 
 /*!
-  Sets the string into QCheckBox widget. If argument \atxt is string with number "1" then check box
-  state is setted as on. If argument \atxt is string with number "0" then state is setted as off.
-  If argument \atxt is string with number "-1" then state is setted as "NoChage" (undefined).
+  \brief Set the string value into the widget.
+
+  If string \a txt contains "1", then check box state is switched on.
+  If string \a txt contains "0", then check box state is switched on.
+  If string \a txt contains "-1", then check box is reset to 
+  "PartiallyChecked" (undefined) state.
+
+  \param txt string value
 */
 void QDS_CheckBox::setString( const QString& txt )
 {
@@ -95,7 +117,8 @@ void QDS_CheckBox::setString( const QString& txt )
 }
 
 /*!
-  Returns pointer to QCheckBox widget.
+  \brief Get internal check box.
+  \return pointer to QCheckBox widget
 */
 QCheckBox* QDS_CheckBox::checkBox() const
 {
@@ -103,7 +126,9 @@ QCheckBox* QDS_CheckBox::checkBox() const
 }
 
 /*!
-  Create QCheckBox widget as control subwidget.
+  \brief Create internal check box as control widget.
+  \param parent parent widget
+  \return created check box widget
 */
 QWidget* QDS_CheckBox::createControl( QWidget* parent )
 {
@@ -115,7 +140,9 @@ QWidget* QDS_CheckBox::createControl( QWidget* parent )
 }
 
 /*!
-  Notify about ñhanging of control state
+  \brief Called when check box is switched.
+
+  Emits signal paramChanged() to notify about changing of the control state.
 */
 void QDS_CheckBox::onParamChanged()
 {
@@ -123,8 +150,11 @@ void QDS_CheckBox::onParamChanged()
 }
 
 /*!
-  Notify about ñhanging of control state. Switch off check box property "tristate" when
-  state changed by user.
+  \brief Called when check box is switched.
+
+  Switch off check box property "tristate" when state is changed by the user.
+
+  \param state new check box state
 */
 void QDS_CheckBox::onStateChanged( int state )
 {
@@ -133,7 +163,8 @@ void QDS_CheckBox::onStateChanged( int state )
 }
 
 /*!
-  Sets the check box state \atheState.
+  \brief Set the check box state to \a theState.
+  \param theState new check box state
 */
 void QDS_CheckBox::setChecked( const bool theState )
 {
@@ -142,9 +173,16 @@ void QDS_CheckBox::setChecked( const bool theState )
 }
 
 /*!
-  Returns current check box state.
+  \brief Get current check box state.
+  \return check box state
 */
 bool QDS_CheckBox::isChecked() const
 {
   return checkBox() ? checkBox()->isChecked() : false;
 }
+
+/*!
+  \fn void QDS_CheckBox::toggled( bool on );
+  \brief Emitted when the check box state is toggled.
+  \param on new check box state
+*/
