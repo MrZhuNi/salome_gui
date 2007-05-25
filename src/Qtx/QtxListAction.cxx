@@ -135,10 +135,10 @@ private:
 QtxListAction::ListFrame::ListFrame( QtxListAction* a, QWidget* parent )
 : QMenu( parent ),
   myList( 0 ),
-  myLines( 5 ),
-  myChars( 5 ),
   myAction( a ),
-  myComment( 0 )
+  myComment( 0 ),
+  myLines( 5 ),
+  myChars( 5 )
 {
   QVBoxLayout* top = new QVBoxLayout( this );
   top->setMargin( 0 );

@@ -709,7 +709,6 @@ QImage Qtx::transparentImage( const int w, const int h, const int d )
 }
 
 /*!
-/*!
   \brief Create transparent pixmap.
   \param w required image width
   \param h required pixmap height

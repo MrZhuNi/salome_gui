@@ -406,7 +406,7 @@ void QtxLogoMgr::generate()
 int QtxLogoMgr::find( const QString& id ) const
 {
   int idx = -1;
-  for ( uint i = 0; i < myLogos.count() && idx < 0; i++ )
+  for ( int i = 0; i < myLogos.count() && idx < 0; i++ )
   {
     if ( myLogos.at( i ).id == id )
       idx = i;
