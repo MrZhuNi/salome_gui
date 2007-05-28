@@ -123,6 +123,16 @@ void QtxComboBox::setCurrentId( int num )
 }
 
 /*!
+  \brief Set the identifier to specified item.
+  \param index - index of the item
+  \param id - identifier of the item
+*/
+void QtxComboBox::setId( const int index, const int id )
+{
+  setItemData( index, QVariant( id ), (Qt::ItemDataRole)IdRole );
+}
+
+/*!
   \brief Customize paint event.
   \param e paint event
 */
@@ -196,8 +206,9 @@ void QtxComboBox::paintClear( QPaintEvent* e )
 int QtxComboBox::id( const int idx ) const
 {
   int id = -1;
-  if ( myIndexId.contains( idx ) )
-    id = myIndexId[idx];
+  QVariant v = itemData( idx, (Qt::ItemDataRole)IdRole );
+  if ( v.canConvert( QVariant::Int ) )
+    id = v.toInt();
   return id;
 }
 
@@ -206,13 +217,13 @@ int QtxComboBox::id( const int idx ) const
   \param id item ID
   \return item index or -1 if ID is invalid.
 */
-int QtxComboBox::index( const int id ) const
+int QtxComboBox::index( const int ident ) const
 {
   int idx = -1;
-  for ( IndexIdMap::ConstIterator it = myIndexId.begin(); it != myIndexId.end() && idx == -1; ++it )
+  for ( int i = 0; i < (int)count() && idx == -1; i++ )
   {
-    if ( it.value() == id )
-      idx = it.key();
+    if ( id( i ) == ident )
+      idx = i;
   }
   return idx;
 }

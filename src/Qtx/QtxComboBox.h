@@ -24,8 +24,8 @@
 
 #include "Qtx.h"
 
-#include <QComboBox>
 #include <QMap>
+#include <QComboBox>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -34,8 +34,6 @@
 class QTX_EXPORT QtxComboBox : public QComboBox
 {
   Q_OBJECT
-
-  typedef QMap<int, int> IndexIdMap;      //!< ID to item index map
 
 public:
   QtxComboBox( QWidget* = 0 );
@@ -49,6 +47,11 @@ public:
   int          currentId() const;
   void         setCurrentId( int );
 
+  int          id( const int ) const;
+  int          index( const int ) const;
+
+  void         setId( const int, const int );
+
 signals:
   void         activatedId( int );
   void         highlightedId( int );
@@ -61,15 +64,14 @@ protected:
   virtual void paintEvent( QPaintEvent* );
 
 private:
-  int          id( const int ) const;
-  int          index( const int ) const;
-
   void         resetClear();
   void         paintClear( QPaintEvent* );
 
 private:
+  enum { IdRole = Qt::UserRole + 10 };
+
+private:
   bool         myCleared;     //!< "cleared" state
-  IndexIdMap   myIndexId;     //!< ID to item index map
 };
 
 #ifdef WIN32
