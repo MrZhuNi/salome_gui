@@ -146,18 +146,11 @@ QtxActionMenuMgr::QtxActionMenuMgr( QWidget* mw, QObject* p )
 */
 QtxActionMenuMgr::~QtxActionMenuMgr()
 {
-  for ( NodeList::iterator it = myRoot->children.begin(); it != myRoot->children.end() && myMenu; ++it )
-  {
-    QAction* a = itemAction( (*it)->id );
-    if ( !a )
-      a = menuAction( (*it)->id );
-
-//    if ( a )
-//      a->removeFrom( myMenu );
-  }
-
   for ( MenuMap::Iterator itr = myMenus.begin(); itr != myMenus.end(); ++itr )
+  {
+    delete itr.value()->menu();
     delete itr.value();
+  }
 
   delete myRoot;
 }
@@ -342,7 +335,7 @@ int QtxActionMenuMgr::insert( const QString& title, const int pId, const int gro
   int gid = (id == -1 || eNode ) ? generateId() : id;
 
   QAction* ma = new QAction( title, this );
-  ma->setMenu( new QMenu( myMenu ) );
+  ma->setMenu( new QMenu( 0 ) );
 
   connect( ma->menu(), SIGNAL( aboutToShow() ), this, SLOT( onAboutToShow() ) );
   connect( ma->menu(), SIGNAL( aboutToHide() ), this, SLOT( onAboutToHide() ) );
@@ -639,10 +632,18 @@ void QtxActionMenuMgr::onHighlighted( int id )
 }
 
 /*!
+  \brief Returns the menu widget.
+*/
+QWidget* QtxActionMenuMgr::menuWidget() const
+{
+  return myMenu;
+}
+
+/*!
   \brief Assign new menu widget to the menu manager.
   \param mw new menu widget
 */
-void QtxActionMenuMgr::setWidget( QWidget* mw )
+void QtxActionMenuMgr::setMenuWidget( QWidget* mw )
 {
   if ( myMenu == mw )
     return;
@@ -654,6 +655,8 @@ void QtxActionMenuMgr::setWidget( QWidget* mw )
 
   if ( myMenu )
     connect( myMenu, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
+
+  triggerUpdate( -1, true );
 }
 
 /*!

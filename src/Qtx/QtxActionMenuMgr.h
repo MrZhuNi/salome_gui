@@ -51,6 +51,8 @@ public:
   QtxActionMenuMgr( QWidget*, QObject* );
   virtual ~QtxActionMenuMgr();
 
+  QWidget*     menuWidget() const;
+
   virtual bool isVisible( const int, const int ) const;
   virtual void setVisible( const int, const int, const bool );
 
@@ -104,7 +106,8 @@ signals:
   void         menuHighlighted( int, int );
 
 protected:
-  void         setWidget( QWidget* );
+  void         setMenuWidget( QWidget* );
+
   MenuNode*    find( const int, const int, const bool = true ) const;
   MenuNode*    find( const int, MenuNode* = 0, const bool = true ) const;
   bool         find( const int, NodeList&, MenuNode* = 0 ) const;
@@ -119,7 +122,7 @@ protected:
   QAction*     menuAction( const int ) const;
 
   void         updateMenu( MenuNode* = 0, const bool = true, const bool = true );
-  virtual void internalUpdate();  
+  virtual void internalUpdate();
   virtual void updateContent();
 
 private:
