@@ -24,9 +24,10 @@
 
 #include "QtxResourceMgr.h"
 
+#include <SUIT_MessageBox.h>
+
 #include <qbutton.h>
 #include <qlayout.h>
-#include <qmessagebox.h>
 #include <qvbox.h>
 #include <qfiledialog.h>
 
@@ -124,7 +125,9 @@ void LightApp_PreferencesDlg::onApply()
 /*! Restore default preferences*/
 void LightApp_PreferencesDlg::onDefault()
 {
-  if( QMessageBox::Ok == QMessageBox::information( this, tr( "WARNING" ), tr( "DEFAULT_QUESTION" ), QMessageBox::Ok, QMessageBox::Cancel ) )
+  if( SUIT_MessageBox::Ok == SUIT_MessageBox::question( this, tr( "WARNING" ), tr( "DEFAULT_QUESTION" ), 
+							SUIT_MessageBox::Ok | SUIT_MessageBox::Cancel,
+							SUIT_MessageBox::Ok ) )
     {
       if ( myPrefs && myPrefs->resourceMgr() )
 	{

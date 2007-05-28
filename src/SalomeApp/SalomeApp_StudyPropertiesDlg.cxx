@@ -301,10 +301,9 @@ void SalomeApp_StudyPropertiesDlg::onOK()
               propAttr->SetUserName(item->getValue().stripWhiteSpace().latin1());
               myChanged = true;
             } else {
-              SUIT_MessageBox::warn1(SUIT_Session::session()->activeApplication()->desktop(),
-                                     QObject::tr("WRN_WARNING"),
-                                     QObject::tr("WRN_STUDY_LOCKED"),
-                                     QObject::tr("BUT_OK"));
+              SUIT_MessageBox::warning(SUIT_Session::session()->activeApplication()->desktop(),
+				       QObject::tr("WRN_WARNING"),
+				       QObject::tr("WRN_STUDY_LOCKED") );
             }
           }
 	  break;

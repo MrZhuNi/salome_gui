@@ -236,8 +236,8 @@ void CAM_Application::loadModules()
       addModule( mod );
     else {
       if ( desktop() && desktop()->isVisible() )
-	SUIT_MessageBox::error1( desktop(), tr( "Loading modules" ),
-				 tr( "Can not load module %1" ).arg( (*it).title ), tr( "Ok" ) );
+	SUIT_MessageBox::critical( desktop(), tr( "Loading modules" ),
+				   tr( "Can not load module %1" ).arg( (*it).title ) );
       else
 	qWarning( tr( "Can not load module %1" ).arg( (*it).title ).toLatin1().data() ); 
     }
@@ -316,7 +316,7 @@ CAM_Module* CAM_Application::loadModule( const QString& modName )
 
   if ( !err.isEmpty() ) {
     if ( desktop() && desktop()->isVisible() )
-      SUIT_MessageBox::warn1( desktop(), tr( "Error" ), err, tr( "Ok" ) );
+      SUIT_MessageBox::warning( desktop(), tr( "Error" ), err );
     else
       qWarning( err.toLatin1().data() ); 
   }
@@ -386,7 +386,7 @@ bool CAM_Application::activateModule( CAM_Module* mod )
       myModule->setMenuShown( false );
       myModule->setToolShown( false );
       if ( desktop() && desktop()->isVisible() )
-	SUIT_MessageBox::error1( desktop(), tr( "ERROR_TLT" ), tr( "ERROR_ACTIVATE_MODULE_MSG" ).arg( myModule->moduleName() ), tr( "BUT_OK" ) );
+	SUIT_MessageBox::critical( desktop(), tr( "ERROR_TLT" ), tr( "ERROR_ACTIVATE_MODULE_MSG" ).arg( myModule->moduleName() ) );
       else
 	qWarning( tr( "ERROR_ACTIVATE_MODULE_MSG" ).arg( myModule->moduleName() ).toLatin1().data() ); 
       myModule = 0;
@@ -595,7 +595,7 @@ void CAM_Application::readModuleList()
 
   if ( myInfoList.isEmpty() ) {
     if ( desktop() && desktop()->isVisible() )
-      SUIT_MessageBox::warn1( desktop(), tr( "Warning" ), tr( "Modules list is empty" ), tr( "&OK" ) );
+      SUIT_MessageBox::warning( desktop(), tr( "Warning" ), tr( "Modules list is empty" ) );
     else
       {
 	printf( "****************************************************************\n" );

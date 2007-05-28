@@ -111,10 +111,10 @@ void SalomeApp_Tools::QtCatchCorbaException( const SALOME::SALOME_Exception& S_e
   }
 
   if ( error )
-    SUIT_MessageBox::error1( SUIT_Session::session()->activeApplication()->desktop(),
-	                           title, message, QObject::tr( "OK" ) );
+    SUIT_MessageBox::critical( SUIT_Session::session()->activeApplication()->desktop(),
+			       title, message );
   else
-    SUIT_MessageBox::warn1( SUIT_Session::session()->activeApplication()->desktop(),
-	                          title, message, QObject::tr( "OK" ) );
+    SUIT_MessageBox::warning( SUIT_Session::session()->activeApplication()->desktop(),
+			      title, message );
 
 }

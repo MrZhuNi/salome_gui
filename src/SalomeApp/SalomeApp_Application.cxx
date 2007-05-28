@@ -300,10 +300,11 @@ bool SalomeApp_Application::onOpenDoc( const QString& aName )
 
         // The document ... is already open.
         // Do you want to reload it?
-        int aAnswer = SUIT_MessageBox::warn2(desktop(), tr("WRN_WARNING"),
-                                             tr("QUE_DOC_ALREADYOPEN").arg(aName),
-                                             tr("BUT_YES"), tr("BUT_NO"), 1, 2, 2);
-        if (aAnswer == 1) { // reload
+        int aAnswer = SUIT_MessageBox::question(desktop(), tr("WRN_WARNING"),
+						tr("QUE_DOC_ALREADYOPEN").arg(aName),
+						SUIT_MessageBox::Yes | SUIT_MessageBox::No,
+						SUIT_MessageBox::No);
+        if (aAnswer == SUIT_MessageBox::Yes) { // reload
           if (activeStudy()->studyName() == aName && aAppList.count() > 1) {
             // Opened in THIS (active) application.
             STD_Application* app1 = (STD_Application*)aAppList.at(0);
@@ -348,10 +349,11 @@ bool SalomeApp_Application::onOpenDoc( const QString& aName )
 
         // The document ... already exists in the study manager.
         // Do you want to reload it?
-        int aAnswer = SUIT_MessageBox::warn2(desktop(), tr("WRN_WARNING"),
-                                             tr("QUE_DOC_ALREADYEXIST").arg(aName),
-                                             tr("BUT_YES"), tr("BUT_NO"), 1, 2, 2);
-        if (aAnswer == 1) {
+        int aAnswer = SUIT_MessageBox::question(desktop(), tr("WRN_WARNING"),
+						tr("QUE_DOC_ALREADYEXIST").arg(aName),
+						SUIT_MessageBox::Yes | SUIT_MessageBox::No,
+						SUIT_MessageBox::No);
+        if (aAnswer == SUIT_MessageBox::Yes) {
           _PTR(Study) aStudy = studyMgr()->GetStudyByName(aName.latin1());
           if (aStudy)
             studyMgr()->Close(aStudy);
@@ -475,10 +477,9 @@ void SalomeApp_Application::onPaste()
   if(!stdDS) return;
 
   if ( stdDS->GetProperties()->IsLocked() ) {
-    SUIT_MessageBox::warn1 ( desktop(),
-			     QObject::tr("WRN_WARNING"),
-			     QObject::tr("WRN_STUDY_LOCKED"),
-			     QObject::tr("BUT_OK") );
+    SUIT_MessageBox::warning( desktop(),
+			      QObject::tr("WRN_WARNING"),
+			      QObject::tr("WRN_STUDY_LOCKED") );
     return;
   }
 
@@ -504,14 +505,11 @@ void SalomeApp_Application::onCloseDoc( bool ask )
   if (study != NULL) {
     _PTR(Study) stdDS = study->studyDS(); 
     if(stdDS && stdDS->IsStudyLocked()) {
-      if ( SUIT_MessageBox::warn2( desktop(),
-				   QObject::tr( "WRN_WARNING" ),
-				   QObject::tr( "CLOSE_LOCKED_STUDY" ),
-				   QObject::tr( "BUT_YES" ), 
-				   QObject::tr( "BUT_NO" ),
-				   SUIT_YES, 
-				   SUIT_NO, 
-				   SUIT_NO ) == SUIT_NO ) return;
+      if ( SUIT_MessageBox::question( desktop(),
+				      QObject::tr( "WRN_WARNING" ),
+				      QObject::tr( "CLOSE_LOCKED_STUDY" ),
+				      SUIT_MessageBox::Yes | SUIT_MessageBox::No,
+				      SUIT_MessageBox::No) == SUIT_MessageBox::No ) return;
 	
     }
   }
@@ -701,10 +699,9 @@ void SalomeApp_Application::onDumpStudy( )
     if ( toSaveGUI ) 
       appStudy->removeSavePoint(savePoint); //SRN: remove the created temporary save point.
     if ( !res )
-      SUIT_MessageBox::warn1 ( desktop(),
-			       QObject::tr("WRN_WARNING"),
-			       tr("WRN_DUMP_STUDY_FAILED"),
-			       QObject::tr("BUT_OK") );
+      SUIT_MessageBox::warning( desktop(),
+				QObject::tr("WRN_WARNING"),
+				tr("WRN_DUMP_STUDY_FAILED") );
   }
 }
 
@@ -716,10 +713,9 @@ void SalomeApp_Application::onLoadScript( )
   _PTR(Study) aStudy = appStudy->studyDS();
 
   if ( aStudy->GetProperties()->IsLocked() ) {
-    SUIT_MessageBox::warn1 ( desktop(),
-			     QObject::tr("WRN_WARNING"),
-			     QObject::tr("WRN_STUDY_LOCKED"),
-			     QObject::tr("BUT_OK") );
+    SUIT_MessageBox::warning( desktop(),
+			      QObject::tr("WRN_WARNING"),
+			      QObject::tr("WRN_STUDY_LOCKED") );
     return;
   }
 

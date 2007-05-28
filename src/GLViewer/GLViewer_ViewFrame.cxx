@@ -409,10 +409,9 @@ void GLViewer_ViewFrame::onViewDump()
 
     if( aFileName.isEmpty() )
     {
-        SUIT_MessageBox::error1( this,
-                                tr( "DUMP_VIEW_ERROR_DLG_CAPTION" ),
-                                tr( "DUMP_VIEW_ERROR_DLG_TEXT" ),
-                                tr( "BUT_OK" ) );
+        SUIT_MessageBox::critical( this,
+				   tr( "DUMP_VIEW_ERROR_DLG_CAPTION" ),
+				   tr( "DUMP_VIEW_ERROR_DLG_TEXT" ) );
     }
 
     QString aSaveOp = "BMP";
@@ -435,10 +434,9 @@ void GLViewer_ViewFrame::onViewDump()
     if( !aWidget->grabFrameBuffer().save( aFileName, aSaveOp ) )
 //#endif
     {
-        SUIT_MessageBox::error1( this,
-                                tr( "DUMP_VIEW_ERROR_DLG_CAPTION" ),
-                                tr( "DUMP_VIEW_ERROR_DLG_TEXT" ),
-                                tr( "BUT_OK" ) );
+      SUIT_MessageBox::critical( this,
+				 tr( "DUMP_VIEW_ERROR_DLG_CAPTION" ),
+				 tr( "DUMP_VIEW_ERROR_DLG_TEXT" ) );
     }
 }
 

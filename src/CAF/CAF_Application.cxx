@@ -318,7 +318,7 @@ void CAF_Application::updateCommandsStatus()
 */
 void CAF_Application::onHelpAbout()
 {
-  SUIT_MessageBox::info1( desktop(), tr( "About" ), tr( "ABOUT_INFO" ), "&OK" );
+  SUIT_MessageBox::information( desktop(), tr( "About" ), tr( "ABOUT_INFO" ) );
 }
 
 /*!

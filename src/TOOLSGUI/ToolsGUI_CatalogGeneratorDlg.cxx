@@ -371,20 +371,18 @@ void ToolsGUI_CatalogGeneratorDlg::onApply()
 
   if ( !XmlFile.isEmpty() && !IdlFile.isEmpty() ) {
     if ( !QFile::exists( IdlFile ) ) {
-      SUIT_MessageBox::error1( this, 
-			      tr("TOOLS_ERR_ERROR"), 
-			      tr("TOOLS_ERR_FILE_NOT_EXIST").arg(IdlFile), 
-			      tr ("TOOLS_BUT_OK") );
+      SUIT_MessageBox::critical( this, 
+				 tr("TOOLS_ERR_ERROR"), 
+				 tr("TOOLS_ERR_FILE_NOT_EXIST").arg(IdlFile) );
     }
     else {
       QString command = "";
       if ( getenv("KERNEL_ROOT_DIR")  )
 	command = QString( getenv( "KERNEL_ROOT_DIR" ) ) + "/bin/salome/runIDLparser -K " + IDLpath + " -Wbcatalog=" + XmlFile;
       else {
-	SUIT_MessageBox::error1( this, 
-				tr("TOOLS_ERR_ERROR"), 
-				tr("KERNEL_ROOT_DIR variable is not defined"), 
-				tr("TOOLS_BUT_OK") );
+	SUIT_MessageBox::critical( this, 
+				   tr("TOOLS_ERR_ERROR"), 
+				   tr("KERNEL_ROOT_DIR variable is not defined") );
       }
 
       if (!Author.isEmpty()) command += ",author=" + Author; 

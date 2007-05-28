@@ -365,7 +365,7 @@ void LogWindow::onSaveToFile()
   QApplication::restoreOverrideCursor();
 
   if ( !bOk )
-    SUIT_MessageBox::error1( this, tr( "ERR_ERROR" ), tr( "ERR_CANT_SAVE_FILE" ), tr( "BUT_OK" ) );
+    SUIT_MessageBox::critical( this, tr( "ERR_ERROR" ), tr( "ERR_CANT_SAVE_FILE" ) );
 }
 
 /*!

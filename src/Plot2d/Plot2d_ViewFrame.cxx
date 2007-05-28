@@ -1339,7 +1339,7 @@ void Plot2d_ViewFrame::setHorScaleMode( const int mode, bool update )
   // it crashes if switched to X/Y logarithmic mode, when one or more points have
   // non-positive X/Y coordinate
   if ( mode && !isXLogEnabled() ){
-    SUIT_MessageBox::warn1(this, tr("WARNING"), tr("WRN_XLOG_NOT_ALLOWED"), tr("BUT_OK"));
+    SUIT_MessageBox::warning(this, tr("WARNING"), tr("WRN_XLOG_NOT_ALLOWED"));
     return;
   }
 
@@ -1360,7 +1360,7 @@ void Plot2d_ViewFrame::setVerScaleMode( const int mode, bool update )
   // it crashes if switched to X/Y logarithmic mode, when one or more points have
   // non-positive X/Y coordinate
   if ( mode && !isYLogEnabled() ){
-    SUIT_MessageBox::warn1(this, tr("WARNING"), tr("WRN_YLOG_NOT_ALLOWED"), tr("BUT_OK"));
+    SUIT_MessageBox::warning(this, tr("WARNING"), tr("WRN_YLOG_NOT_ALLOWED"));
     return;
   }
 

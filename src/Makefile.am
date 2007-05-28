@@ -30,9 +30,6 @@
 SUBDIRS = Qtx DDS QDS SUIT SUITApp STD CAF CAM LogWindow Prs
 
 if ENABLE_SALOMEOBJECT
-# VSR: this is the original packages list
-#  SUBDIRS += OBJECT
-# VSR: already migrated to Qt4 packages
   SUBDIRS += OBJECT
 endif
 
@@ -92,14 +89,14 @@ if ENABLE_SUPERVGRAPHVIEWER
   SUBDIRS += 
 endif
 # VSR: this is the original packages list
-#SUBDIRS += LightApp ResExporter
+#SUBDIRS += Event LightApp ResExporter
 # VSR: already migrated to Qt4 packages
-SUBDIRS += 
+SUBDIRS += Event
 
 if GUI_ENABLE_CORBA
 # VSR: this is the original packages list
-#  SUBDIRS +=  RegistryDisplay TOOLSGUI \
-#          Event Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT
+#  SUBDIRS += RegistryDisplay TOOLSGUI \
+#          Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT
 # VSR: already migrated to Qt4 packages
-  SUBDIRS += Event
+  SUBDIRS += 
 endif

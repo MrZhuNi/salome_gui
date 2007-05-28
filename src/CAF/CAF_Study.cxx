@@ -375,8 +375,8 @@ bool CAF_Study::undo()
     undoModified();     /* decrement modification counter */
   }
   catch ( Standard_Failure ) {
-    SUIT_MessageBox::error1(application()->desktop(), tr( "ERR_ERROR" ),
-                            tr( "ERR_DOC_UNDO" ), tr ( "BUT_OK" ));
+    SUIT_MessageBox::critical(application()->desktop(), tr( "ERR_ERROR" ),
+			      tr( "ERR_DOC_UNDO" ));
     return false;
   }
   return true;
@@ -399,8 +399,8 @@ bool CAF_Study::redo()
     doModified();      /* increment modification counter */
   }
   catch ( Standard_Failure ) {
-    SUIT_MessageBox::error1( application()->desktop(), tr( "ERR_ERROR" ),
-                             tr( "ERR_DOC_REDO" ), tr ( "BUT_OK" ) );
+    SUIT_MessageBox::critical( application()->desktop(), tr( "ERR_ERROR" ),
+			       tr( "ERR_DOC_REDO" ) );
     return false;
   }
   return true;

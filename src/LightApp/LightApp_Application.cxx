@@ -55,6 +55,7 @@
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_Tools.h>
 #include <SUIT_Accel.h>
+#include <SUIT_MessageBox.h>
 
 #include <QtxMRUAction.h>
 #include <QtxDockAction.h>
@@ -124,7 +125,6 @@
 #include <qobjectlist.h>
 #include <qcombobox.h>
 #include <qinputdialog.h>
-#include <qmessagebox.h>
 #include <qfontdatabase.h>
 
 #define FIRST_HELP_ID 1000000
@@ -752,8 +752,6 @@ void LightApp_Application::onOpenDoc()
   }
 }
 
-#include "SUIT_MessageBox.h"
-
 /*!
   SLOT: Opens new document.
   \param aName - name of file
@@ -775,10 +773,11 @@ bool LightApp_Application::onOpenDoc( const QString& aName )
 
         // The document ... is already open.
         // Do you want to reload it?
-        int aAnswer = SUIT_MessageBox::warn2(desktop(), tr("WRN_WARNING"),
-                                             tr("QUE_DOC_ALREADYOPEN").arg(aName),
-                                             tr("BUT_YES"), tr("BUT_NO"), 1, 2, 2);
-        if (aAnswer == 1) { // reload
+        int aAnswer = SUIT_MessageBox::question(desktop(), tr("WRN_WARNING"),
+						tr("QUE_DOC_ALREADYOPEN").arg(aName),
+						SUIT_MessageBox::Yes | SUIT_MessageBox::No,
+						SUIT_MessageBox::No );
+        if (aAnswer == SUIT_MessageBox::Yes) { // reload
           if (activeStudy()->studyName() == aName && aAppList.count() > 1) {
             // Opened in THIS (active) application.
             STD_Application* app1 = (STD_Application*)aAppList.at(0);
@@ -997,9 +996,10 @@ void LightApp_Application::onHelpContentsModule()
     rs->start();
   }
   else {
-    if( SUIT_MessageBox::warn2(desktop(), tr("WRN_WARNING"),
-                           tr("DEFINE_EXTERNAL_BROWSER"),
-                           tr("BUT_OK"),tr("BUT_CANCEL"),0,1,0 )==0 )
+    if( SUIT_MessageBox::question(desktop(), tr("WRN_WARNING"),
+				  tr("DEFINE_EXTERNAL_BROWSER"),
+				  SUIT_MessageBox::Yes | SUIT_MessageBox::No,
+				  SUIT_MessageBox::Yes ) == SUIT_MessageBox::Yes )
       onPreferences();
   }
 }
@@ -1033,9 +1033,10 @@ void LightApp_Application::onHelpContextModule(const QString& theComponentName, 
     rs->start();
   }
   else {
-    if( SUIT_MessageBox::warn2(desktop(), tr("WRN_WARNING"),
-                           tr("DEFINE_EXTERNAL_BROWSER"),
-                           tr("BUT_OK"), tr("BUT_CANCEL"),0,1,0)==0 )
+    if( SUIT_MessageBox::question(desktop(), tr("WRN_WARNING"),
+				  tr("DEFINE_EXTERNAL_BROWSER"),
+				  SUIT_MessageBox::Yes | SUIT_MessageBox::No,
+				  SUIT_MessageBox::Yes ) == SUIT_MessageBox::Yes )
       onPreferences();
   }
 }
@@ -2503,9 +2504,10 @@ bool LightApp_Application::event( QEvent* e )
   {
     QCustomEvent* ce = ( QCustomEvent* )e;
     QString* d = ( QString* )ce->data();
-    if( SUIT_MessageBox::warn2(0, tr("WRN_WARNING"),
-			   d ? *d : "",
-			   tr("BUT_OK"), tr("BUT_CANCEL"), 0, 1, 0 )==0 )
+    if( SUIT_MessageBox::question(0, tr("WRN_WARNING"),
+				  d ? *d : "",
+				  SUIT_MessageBox::Yes | SUIT_MessageBox::No,
+				  SUIT_MessageBox::Yes ) == SUIT_MessageBox::Yes )
        onPreferences();
     if( d )
       delete d;
