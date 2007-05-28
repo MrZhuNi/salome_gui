@@ -26,9 +26,6 @@
 
 #include <QValidator>
 
-/*!
-  \class QtxIntValidator
-*/
 class QTX_EXPORT QtxIntValidator : public QIntValidator
 {
   Q_OBJECT
@@ -41,9 +38,6 @@ public:
   virtual void fixup( QString& ) const;
 };
 
-/*!
-  \class QtxDoubleValidator
-*/
 class QTX_EXPORT QtxDoubleValidator : public QDoubleValidator
 {
   Q_OBJECT

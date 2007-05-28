@@ -38,6 +38,7 @@ salomeinclude_HEADERS=		\
 	QtxDialog.h		\
 	QtxDockAction.h		\
 	QtxDockWidget.h		\
+	QtxEvalExpr.h		\
 	QtxListAction.h		\
 	QtxLogoMgr.h		\
 	QtxMainWindow.h 	\
@@ -45,6 +46,7 @@ salomeinclude_HEADERS=		\
 	QtxMRUAction.h		\
 	QtxResourceMgr.h	\
 	QtxToolBar.h		\
+	QtxValidator.h		\
 	QtxWorkspace.h		\
 	QtxWorkspaceAction.h	\
 	QtxWorkstack.h		\
@@ -53,23 +55,18 @@ salomeinclude_HEADERS=		\
 #VSR: not yet migrated to Qt4 files
 #				\
 	QtxDblSpinBox.h		\
-	QtxDblValidator.h	\
 	QtxDirListEditor.h	\
 	QtxGroupBox.h		\
 	QtxIntSpinBox.h		\
 	QtxListBox.h		\
-	QtxListOfOperations.h	\
 	QtxListResourceEdit.h	\
 	QtxListView.h		\
 	QtxMenuButton.h		\
-	QtxOperations.h		\
-	QtxParser.h		\
 	QtxPathDialog.h		\
 	QtxPopupMenu.h		\
 	QtxPopupMgr.h		\
 	QtxResourceEdit.h	\
 	QtxSplash.h		\
-	QtxStdOperations.h	\
 	QtxTable.h		\
 	QtxToolTip.h
 
@@ -90,12 +87,14 @@ dist_libqtx_la_SOURCES=		\
 	QtxDialog.cxx		\
 	QtxDockAction.cxx	\
 	QtxDockWidget.cxx	\
+	QtxEvalExpr.cxx		\
 	QtxListAction.cxx	\
 	QtxLogoMgr.cxx		\
 	QtxMainWindow.cxx	\
 	QtxMRUAction.cxx	\
 	QtxResourceMgr.cxx	\
 	QtxToolBar.cxx		\
+	QtxValidator.cxx		\
 	QtxWorkspace.cxx	\
 	QtxWorkspaceAction.cxx	\
 	QtxWorkstack.cxx	\
@@ -104,23 +103,18 @@ dist_libqtx_la_SOURCES=		\
 #VSR: not yet migrated to Qt4 files
 #				\
 	QtxDblSpinBox.cxx	\
-	QtxDblValidator.cxx	\
 	QtxDirListEditor.cxx	\
 	QtxGroupBox.cxx		\
 	QtxIntSpinBox.cxx	\
 	QtxListBox.cxx		\
-	QtxListOfOperations.cxx	\
 	QtxListResourceEdit.cxx	\
 	QtxListView.cxx		\
 	QtxMenuButton.cxx	\
-	QtxOperations.cxx	\
-	QtxParser.cxx		\
 	QtxPathDialog.cxx	\
 	QtxPopupMenu.cxx	\
 	QtxPopupMgr.cxx		\
 	QtxResourceEdit.cxx	\
 	QtxSplash.cxx		\
-	QtxStdOperations.cxx	\
 	QtxTable.cxx		\
 	QtxToolTip.cxx
 
@@ -141,6 +135,7 @@ MOC_FILES=				\
 	QtxMainWindow_moc.cxx		\
 	QtxMRUAction_moc.cxx		\
 	QtxToolBar_moc.cxx		\
+	QtxValidator_moc.cxx		\
 	QtxWorkspace_moc.cxx		\
 	QtxWorkspaceAction_moc.cxx	\
 	QtxWorkstack_moc.cxx		\

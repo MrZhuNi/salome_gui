@@ -19,15 +19,22 @@
 
 #include "QtxEvalExpr.h"
 
+#include <QStack>
+
 #include <math.h>
 
 /*!
   \class QtxEvalExpr
-  Evaluate string expression.
+  \brief String expression evaluator.
 */
 
 /*!
-  Constructor
+  \brief Constructor.
+
+  The evaluator is initalized by standard operations. Use another constructor with parameter
+  \a stdSets = \c false to avoid initialization of evaluator with standard operations.
+
+  \param expr expression to be evaluated
 */
 QtxEvalExpr::QtxEvalExpr( const QString& expr )
 {
@@ -35,7 +42,9 @@ QtxEvalExpr::QtxEvalExpr( const QString& expr )
 }
 
 /*!
-  Constructor
+  \brief Constructor.
+  \param stdSets if \c true, the evaluator is initalized by standard operations
+  \param expr expression to be evaluated
 */
 QtxEvalExpr::QtxEvalExpr( const bool stdSets, const QString& expr )
 {
@@ -43,13 +52,18 @@ QtxEvalExpr::QtxEvalExpr( const bool stdSets, const QString& expr )
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxEvalExpr::~QtxEvalExpr()
 {
   delete myParser;
 }
 
+/*!
+  \brief Initialize the evaluator.
+  \param stdSets if \c true, the evaluator is initalized by standard operations
+  \param expr expression to be evaluated
+*/
 void QtxEvalExpr::intialize( const bool stdSets, const QString& expr )
 {
   myParser = new QtxEvalParser();
@@ -67,7 +81,9 @@ void QtxEvalExpr::intialize( const bool stdSets, const QString& expr )
 }
 
 /*!
-  Calculates the expression
+  \brief Evaluate the expression.
+  \param expr expression to be evaluated
+  \return result of the evaluation
 */
 QVariant QtxEvalExpr::calculate( const QString& expr )
 {
@@ -77,7 +93,8 @@ QVariant QtxEvalExpr::calculate( const QString& expr )
 }
 
 /*!
-  Returns the expression string
+  \brief Get the expression.
+  \return expression string
 */
 QString QtxEvalExpr::expression() const
 {
@@ -85,7 +102,8 @@ QString QtxEvalExpr::expression() const
 }
 
 /*!
-  Sets the expression string
+  \brief Set the expression.
+  \param expr expression string
 */
 void QtxEvalExpr::setExpression( const QString& expr )
 {
@@ -97,7 +115,8 @@ void QtxEvalExpr::setExpression( const QString& expr )
 }
 
 /*!
-  Returns the code of the last error
+  \brief Get the code of latest parsing error.
+  \return the code of the last error
 */
 QtxEvalExpr::Error QtxEvalExpr::error() const
 {
@@ -105,38 +124,71 @@ QtxEvalExpr::Error QtxEvalExpr::error() const
 }
 
 /*!
-  Returns parser
+  \brief Get the expression parser.
+  \return expression parser
 */
 QtxEvalParser* QtxEvalExpr::parser() const
 {
   return myParser;
 }
 
+/*!
+  \brief Get current set of operations.
+  \return operations set
+  \sa insertOperationSet(), removeOperationSet(), operationSet()
+*/
 QList<QtxEvalSet*> QtxEvalExpr::operationSets() const
 {
   return myParser->operationSets();
 }
 
+/*!
+  \brief Install the operation.
+  \param operation to be added
+  \param idx index in the list at which the operation shoud be inserted
+  \sa operationSets(), removeOperationSet(), operationSet()
+*/
 void QtxEvalExpr::insertOperationSet( QtxEvalSet* set, const int idx )
 {
   myParser->insertOperationSet( set, idx );
 }
 
+/*!
+  \brief Remove the operation.
+  \param operation to be removed
+  \sa operationSets(), insertOperationSet(), operationSet()
+*/
 void QtxEvalExpr::removeOperationSet( QtxEvalSet* set )
 {
   myParser->removeOperationSet( set );
 }
 
+/*!
+  \brief Get the operation by name.
+  \param name operation name
+  \return operation of 0 if not found
+  \sa operationSets(), insertOperationSet(), removeOperationSet()
+*/
 QtxEvalSet* QtxEvalExpr::operationSet( const QString& name ) const
 {
   return myParser->operationSet( name );
 }
 
+/*!
+  \brief Get the 'auto-delete operations' flag value.
+  \return \c true if all operations shoud be automatically deleted when the evaluator is destroyed
+  \sa setAutoDeleteOperationSets()
+*/
 bool QtxEvalExpr::autoDeleteOperationSets() const
 {
   return myParser->autoDeleteOperationSets();
 }
 
+/*!
+  \brief Set the 'auto-delete operations' flag value.
+  \param on if \c true, all operations shoud be automatically deleted when the evaluator is destroyed
+  \sa autoDeleteOperationSets()
+*/
 void QtxEvalExpr::setAutoDeleteOperationSets( const bool on )
 {
   myParser->setAutoDeleteOperationSets( on );
@@ -144,11 +196,22 @@ void QtxEvalExpr::setAutoDeleteOperationSets( const bool on )
 
 /*!
   \class QtxEvalParser
-  Expression parser.
+  \brief Expression parser.
+
+  This class provides the functionality to calculate value of the expression using defined set of operations.
+  Standard operations (arithmetics, logic, strings, etc) are implemented in the corresponding successors of the
+  QtxEvalSet class: QtxEvalSetArithmetic, QtxEvalSetLogic, QtxEvalSetMath, QtxEvalSetString, ...
+
+  The parser allows using parameters with help of methods has(), set(), remove(), value(). It uses
+  postfix representation of expressions and uses class QtxEvalSet in order to make certain operation.
+
+  Every instance of parser contains only one postfix - thus, if the expression is changed, the postfix
+  must be rebuilt. In order to increase performance of frequent calculations for many of expressions it is 
+  recommended to use different instances of the parser for each expression.
 */
 
 /*!
-  Constructor
+  \brief Constructor.
 */
 QtxEvalParser::QtxEvalParser()
 : myAutoDel( false )
@@ -157,7 +220,7 @@ QtxEvalParser::QtxEvalParser()
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxEvalParser::~QtxEvalParser()
 {
@@ -165,11 +228,20 @@ QtxEvalParser::~QtxEvalParser()
     qDeleteAll( mySets );
 }
 
+/*!
+  \brief Get current operations set.
+  \return current operations set
+*/
 QList<QtxEvalSet*> QtxEvalParser::operationSets() const
 {
   return mySets;
 }
 
+/*!
+  \brief Get the operations set by \a name.
+  \param name the name of the operation set
+  \return operation set or 0 if not found
+*/
 QtxEvalSet* QtxEvalParser::operationSet( const QString& name ) const
 {
   QtxEvalSet* set = 0;
@@ -181,6 +253,12 @@ QtxEvalSet* QtxEvalParser::operationSet( const QString& name ) const
   return set;
 }
 
+/*!
+  \brief Install the operations set.
+  \param operations set to be added
+  \param idx index in the list at which the operations set shoud be inserted
+  \sa operationSets(), removeOperationSet(), operationSet()
+*/
 void QtxEvalParser::insertOperationSet( QtxEvalSet* set, const int idx )
 {
   if ( mySets.contains( set ) )
@@ -191,29 +269,44 @@ void QtxEvalParser::insertOperationSet( QtxEvalSet* set, const int idx )
   mySets.insert( index, set );
 }
 
+/*!
+  \brief Remove the operations set.
+  \param operations set to be removed
+  \sa operationSets(), insertOperationSet(), operationSet()
+*/
 void QtxEvalParser::removeOperationSet( QtxEvalSet* set )
 {
   mySets.removeAll( set );
 }
 
+/*!
+  \brief Get the 'auto-delete operations' flag value.
+  \return \c true if all operations shoud be automatically deleted when the parser is destroyed
+  \sa setAutoDeleteOperationSets()
+*/
 bool QtxEvalParser::autoDeleteOperationSets() const
 {
   return myAutoDel;
 }
 
+/*!
+  \brief Set the 'auto-delete operations' flag value.
+  \param on if \c true, all operations shoud be automatically deleted when the parser is destroyed
+  \sa autoDeleteOperationSets()
+*/
 void QtxEvalParser::setAutoDeleteOperationSets( const bool on )
 {
   myAutoDel = on;
 }
 
 /*!
-  Search elements of list as substrings starting on 'offset'
-  \returns the least position of substrings inside string
-  \param list - list of substrings
-  \param str - string where search
-  \param offset - starting index for search
-  \param matchLen - the length of appropriate substring
-  \param listind - list index of appropriate substring
+  \brief Search elements of the list as substrings starting from \a offset.
+  \param list list of substrings
+  \param str string in which the searching is performed
+  \param offset starting index for search
+  \param matchLen returning matching length of any substring
+  \param listind returning index of the found substring in the \a list
+  \return position of first found substring inside the \a str or -1 if no matches is found
 */
 int QtxEvalParser::search( const QStringList& list, const QString& str,
                            int offset, int& matchLen, int& listind )
@@ -237,10 +330,11 @@ int QtxEvalParser::search( const QStringList& list, const QString& str,
 }
 
 /*!
-  \return substring
-  \param str - string
-  \param pos - start position of substring
-  \param len - length of substring
+  \brief Get the substring field from the string \a str.
+  \param str source string
+  \param pos start position of the substring
+  \param len length of the substring
+  \return substring (leading and trailing spaces are truncated)
 */
 QString QtxEvalParser::note( const QString& str, int pos, int len )
 {
@@ -248,9 +342,16 @@ QString QtxEvalParser::note( const QString& str, int pos, int len )
 }
 
 /*!
-  First step of parsing: finding tokens, determining its types and creating of unsorted pseudo-postfix (with brackets)
-  \param expr - string expression
-  \param post - postfix to be created
+  \brief Prepare to the parsing.
+
+  Performs the first step of the parsing:
+  - find tokens
+  - determine tokens types
+  - create unsorted pseudo-postfix (with brackets)
+
+  \param expr string expression
+  \param post postfix to be created
+  \return \c true on success and \c false if error is found
 */
 bool QtxEvalParser::prepare( const QString& expr, Postfix& post )
 {
@@ -393,8 +494,12 @@ bool QtxEvalParser::prepare( const QString& expr, Postfix& post )
 }
 
 /*!
-  Second step of parsing: determining types of operations
-  \param post - unsorted postfix
+  \brief Analyze the operations used.
+  
+  Second step of the parsing: analyze the types of the operations used in the expression.
+
+  \param post unsorted postfix
+  \return \c true on success and \c false if error is found
 */
 bool QtxEvalParser::setOperationTypes( Postfix& post )
 {
@@ -436,53 +541,61 @@ bool QtxEvalParser::setOperationTypes( Postfix& post )
 }
 
 /*!
-  \return how many global brackets there is (for example '((2+3))' has 2 global brackets)
-  \param post - postfix to be checked
-  \param f - start index to search
-  \param l - last index to search
+  \brief Get the number of the globar brackets pairs.
+
+  For example, the expression '((2+3))' has 2 global brackets pairs.
+
+  \param post postfix to be checked
+  \param f starting position for the search
+  \param l last position for the search
+  \return number of brackets pairs
 */
 int QtxEvalParser::globalBrackets( const QtxEvalParser::Postfix& post, int f, int l )
 {
-    int i,
-        start_br = 0,
-        fin_br = 0,
-        br = 0,
-        br_num = 0,
-        min_br_num = (l-f+1)*5;
+  int i;
+  int start_br = 0;
+  int fin_br = 0;
+  int br = 0;
+  int br_num = 0;
+  int min_br_num = (l-f+1)*5;
     
-    for( i=f; i<=l; i++ )
-        if( post[ i ].myType==QtxEvalParser::Open )
-            start_br++;
-        else
-            break;
-    for( i=l; i>=f; i-- )
-        if( post[ i ].myType==QtxEvalParser::Close )
-            fin_br++;
-        else
-            break;
+  for( i=f; i<=l; i++ )
+    if( post[ i ].myType==QtxEvalParser::Open )
+      start_br++;
+    else
+      break;
+  for( i=l; i>=f; i-- )
+    if( post[ i ].myType==QtxEvalParser::Close )
+      fin_br++;
+    else
+      break;
 
-    br = start_br<fin_br ? start_br : fin_br;
-    for( i=f+br; i<=l-br; i++ )
-    {
-        if( post[i].myType==QtxEvalParser::Open )
-            br_num++;
-        else if( post[i].myType==QtxEvalParser::Close )
-            br_num--;
-        if( br_num<min_br_num )
-            min_br_num = br_num;
-    }
-
-    return br+min_br_num;
+  br = start_br<fin_br ? start_br : fin_br;
+  for( i=f+br; i<=l-br; i++ )
+  {
+    if( post[i].myType==QtxEvalParser::Open )
+      br_num++;
+    else if( post[i].myType==QtxEvalParser::Close )
+      br_num--;
+    if( br_num<min_br_num )
+      min_br_num = br_num;
+  }
+  
+  return br+min_br_num;
 }
 
 /*!
-  Third step of parsing: sorting of postfix in order to convert it to real postfix
-  \param post - source postfix
-  \param res - destination postfix
-  \param anOpen - list of open brackets
-  \param aClose - list of close brackets
-  \param f - start index of postfix to sorting
-  \param l - last index of postfix to sorting
+  \brief Sort the operations in the postfix.
+
+  Third step of parsing: sort the postfix operations in order to convert it to real postfix.
+
+  \param post source postfix
+  \param res returning resulting postfix
+  \param anOpen list of open brackets
+  \param aClose list of close brackets
+  \param f start index of postfix for sorting
+  \param l last index of postfix for sorting
+  \return \c true on success and \c false if error is found
 */
 bool QtxEvalParser::sort( const Postfix& post, Postfix& res, const QStringList& anOpen,
                           const QStringList& aClose, int f, int l )
@@ -645,8 +758,13 @@ bool QtxEvalParser::sort( const Postfix& post, Postfix& res, const QStringList& 
 }
 
 /*!
-  Build posfix by expression
-  \param expr - string expression
+  \brief Parse the expression and build the posfix.
+
+  If by parsing error is found, the function returns \c false. In this case the code of the error
+  can be retrieved with error() method.
+
+  \param expr string expression
+  \return \c true on success and \c false if error is found
 */
 bool QtxEvalParser::parse( const QString& expr )
 {
@@ -666,10 +784,14 @@ bool QtxEvalParser::parse( const QString& expr )
 }
 
 /*!
-  Calculate operation
-  \param op - operation name
-  \param v1 - first argument (it is not valid for unary prefix operations and it is used to store result)
-  \param v2 - second argument (it is not valid for unary postfix operations)
+  \brief Calculate the operation.
+
+  The result of the operation is returned in the parameter \a v1.
+
+  \param op operation name
+  \param v1 first argument (not valid for unary prefix operations)
+  \param v2 second argument (not valid for unary postfix operations)
+  \return \c true on success and \c false if error is found
 */
 bool QtxEvalParser::calculate( const QString& op, QVariant& v1, QVariant& v2 )
 {
@@ -683,7 +805,7 @@ bool QtxEvalParser::calculate( const QString& op, QVariant& v1, QVariant& v2 )
 }
 
 /*!
-  Calculates expression without postfix rebuilding
+  \brief Calculate the expression without postfix rebuilding.
   \return QVariant as result (it is invalid if there were errors during calculation)
 */
 QVariant QtxEvalParser::calculate()
@@ -793,7 +915,8 @@ QVariant QtxEvalParser::calculate()
 }
 
 /*!
-  Change expression, rebuild postfix and calculate it
+  \brief Change the expression, rebuild the postfix and calculate it.
+  \param expr new expression
   \return QVariant as result (it is invalid if there were errors during calculation)
 */
 QVariant QtxEvalParser::calculate( const QString& expr )
@@ -803,7 +926,9 @@ QVariant QtxEvalParser::calculate( const QString& expr )
 }
 
 /*!
-  Change expression and rebuild postfix
+  \brief Change the expression and rebuild the postfix.
+  \param expr new expression
+  \return \c true on success and \c false if error is found
 */
 bool QtxEvalParser::setExpression( const QString& expr )
 {
@@ -811,8 +936,9 @@ bool QtxEvalParser::setExpression( const QString& expr )
 }
 
 /*!
-  \return true, if parser contain parameter
-  \param name - name of parameter
+  \brief Check if the parser contains specified parameter.
+  \param name parameter name
+  \return \c true, if the parser contains parameter
 */
 bool QtxEvalParser::hasParameter( const QString& name ) const
 {
@@ -820,9 +946,9 @@ bool QtxEvalParser::hasParameter( const QString& name ) const
 }
 
 /*!
-  Sets parameter value
-  \param name - name of parameter
-  \param value - value of parameter
+  \brief Set parameters value.
+  \param name parameter name
+  \param value parameter value
 */
 void QtxEvalParser::setParameter( const QString& name, const QVariant& value )
 {
@@ -830,8 +956,9 @@ void QtxEvalParser::setParameter( const QString& name, const QVariant& value )
 }
 
 /*!
-  Removes parameter
-  \param name - name of parameter
+  \brief Remove parameter.
+  \param name parameter name
+  \return \c true on success
 */
 bool QtxEvalParser::removeParameter( const QString& name )
 {
@@ -839,8 +966,9 @@ bool QtxEvalParser::removeParameter( const QString& name )
 }
 
 /*!
-  \return value of parameter (result is invalid if there is no such parameter)
-  \param name - name of parameter
+  \brief Get the parameter value.
+  \param name parameter name
+  \return parameter value or invalud QVariant if there is no such parameter
 */
 QVariant QtxEvalParser::parameter( const QString& name ) const
 {
@@ -851,9 +979,9 @@ QVariant QtxEvalParser::parameter( const QString& name ) const
 }
 
 /*!
-  Searches first parameter with assigned invalid QVariant
-  \return true if it is found
-  \param name - variable to return name of parameter
+  \brief Search first parameter with assigned invalid value.
+  \param name used to retrieve the name of the parameter if it is found
+  \return \c true if parameter is found
 */
 bool QtxEvalParser::firstInvalid( QString& name ) const
 {
@@ -869,7 +997,7 @@ bool QtxEvalParser::firstInvalid( QString& name ) const
 }
 
 /*!
-  Removes all parameters with assigned invalid QVariants
+  \brief Remove all parameters with assigned invalid values.
 */
 void QtxEvalParser::removeInvalids()
 {
@@ -885,7 +1013,8 @@ void QtxEvalParser::removeInvalids()
 }
 
 /*!
-  \return last error occured during parsing
+  \brief Get the code of the latest parsing error.
+  \return last error code
 */
 QtxEvalExpr::Error QtxEvalParser::error() const
 {
@@ -893,7 +1022,9 @@ QtxEvalExpr::Error QtxEvalParser::error() const
 }
 
 /*!
-  Sets last error occured during parsing (for internal using only)
+  \brief Set the error vode.
+  \internal
+  \param err error code
 */
 void QtxEvalParser::setError( QtxEvalExpr::Error err )
 {
@@ -901,7 +1032,8 @@ void QtxEvalParser::setError( QtxEvalExpr::Error err )
 }
 
 /*!
-  \return string dump of internal parser postfix
+  \brief Dump the current postfix contents to the string.
+  \return string representation of the internal parser postfix
 */
 QString QtxEvalParser::dump() const
 {
@@ -909,8 +1041,9 @@ QString QtxEvalParser::dump() const
 }
 
 /*!
-  \return string dump of postfix
-  \param post - postfix to be dumped
+  \brief Dump the postfix contents to the string.
+  \param post postfix to be dumped
+  \return string representation of the postfix
 */
 QString QtxEvalParser::dump( const Postfix& post ) const
 {
@@ -940,7 +1073,8 @@ QString QtxEvalParser::dump( const Postfix& post ) const
 }
 
 /*!
-  Fills and returns list with names of parameters
+  \brief Get the list of the parameters names.
+  \return parameters names
 */
 QStringList QtxEvalParser::parameters() const
 {
@@ -958,7 +1092,7 @@ QStringList QtxEvalParser::parameters() const
 }
 
 /*!
-  Removes all parameters
+  \brief Remove all parameters.
 */
 void QtxEvalParser::clearParameters()
 {
@@ -966,8 +1100,9 @@ void QtxEvalParser::clearParameters()
 }
 
 /*!
-  \return string representation for list of QVariants
-  \param list - list to be converted
+  \brief Get the string representation for the list of QVariant values.
+  \param list list to be converted
+  \return string representation for the list
 */
 QString QtxEvalParser::toString( const QList<QVariant>& list )
 {
@@ -978,6 +1113,10 @@ QString QtxEvalParser::toString( const QList<QVariant>& list )
   return res;
 }
 
+/*!
+  \brief Get names of all operations used in the expression.
+  \param list returning list of the operations names
+*/
 void QtxEvalParser::operationList( QStringList& list ) const
 {
   for ( SetList::const_iterator it = mySets.begin(); it != mySets.end(); ++it )
@@ -993,6 +1132,11 @@ void QtxEvalParser::operationList( QStringList& list ) const
   }
 }
 
+/*!
+  \brief Get list of brackets.
+  \param list returning list of brackets
+  \param open if \c true, collect opening brackets, or closing brackets otherwise
+*/
 void QtxEvalParser::bracketsList( QStringList& list, bool open ) const
 {
   for ( SetList::const_iterator it = mySets.begin(); it != mySets.end(); ++it )
@@ -1008,6 +1152,12 @@ void QtxEvalParser::bracketsList( QStringList& list, bool open ) const
   }
 }
 
+/*!
+  \brief Create value.
+  \param str parsed string
+  \param val returning value
+  \return \c true on success
+*/
 bool QtxEvalParser::createValue( const QString& str, QVariant& val ) const
 {
   bool ok = false;
@@ -1016,6 +1166,12 @@ bool QtxEvalParser::createValue( const QString& str, QVariant& val ) const
   return ok;
 }
 
+/*!
+  \brief Get the operation priority level.
+  \param op operation
+  \param isBin \c true if the operation is binary and \c false if it is unary
+  \return operation priority
+*/
 int QtxEvalParser::priority( const QString& op, bool isBin ) const
 {
   int i = 0;
@@ -1026,6 +1182,16 @@ int QtxEvalParser::priority( const QString& op, bool isBin ) const
   return priority > 0 ? priority + i * 10 : 0;
 }
 
+/*!
+  \brief Check operation validity.
+
+  If the operation is valid, QtxEvalExpr::OK is returned.
+
+  \param op operation
+  \param t1 first operand type
+  \param t2 second operand type
+  \return error code (QtxEvalExpr::Error)
+*/
 QtxEvalExpr::Error QtxEvalParser::isValid( const QString& op,
                                            const QVariant::Type t1, const QVariant::Type t2 ) const
 {
@@ -1039,6 +1205,17 @@ QtxEvalExpr::Error QtxEvalParser::isValid( const QString& op,
   return err;
 }
 
+/*!
+  \brief Perform calculation
+  
+  The result of the operation is returned in the parameter \a v1.
+  If the operation is calculated correctly, the function returns QtxEvalExpr::OK.
+
+  \param op operation name
+  \param v1 first argument (not valid for unary prefix operations)
+  \param v2 second argument (not valid for unary postfix operations)
+  \return error code (QtxEvalExpr::Error)
+*/
 QtxEvalExpr::Error QtxEvalParser::calculation( const QString& op, QVariant& v1, QVariant& v2 ) const
 {
   QVariant nv1, nv2;
@@ -1060,6 +1237,10 @@ QtxEvalExpr::Error QtxEvalParser::calculation( const QString& op, QVariant& v1, 
   return QtxEvalExpr::InvalidOperation;
 }
 
+/*!
+  \brief Check current operations set.
+  \return \c false if current set of operations is empty
+*/
 bool QtxEvalParser::checkOperations() const
 {
   if ( !mySets.isEmpty() )
@@ -1072,55 +1253,121 @@ bool QtxEvalParser::checkOperations() const
 
 /*!
   \class QtxEvalSet
-  Set of operation for expression.
+  \brief Generic class for all the operations sets used in expressions.
 */
 
 /*!
-  Constructor
+  \brief Constructor.
 */
 QtxEvalSet::QtxEvalSet()
 {
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxEvalSet::~QtxEvalSet()
 {
 }
 
 /*!
-  Creates QVariant by it's string representation
+  \fn void QtxEvalSet::operationList( QStringList& list ) const;
+  \brief Get the list of possible operations.
+  \param list returning list of operations supported by the class
 */
-bool QtxEvalSet::createValue( const QString& str, QVariant& v ) const
+
+/*!
+  \fn void QtxEvalSet::bracketsList( QStringList& list, bool open ) const;
+  \brief Get list of brackets.
+  \param list returning list of brackets
+  \param open if \c true, collect opening brackets, or closing brackets otherwise
+*/
+
+/*!
+  \brief Create value from its string representation.
+
+  By default, the string value is set, that corresponds to the parameter.
+  Base implementation always returns \c false (it means that string 
+  is evaluated to the parameter).
+  Successor class can re-implement this method to return \c true 
+  if the argument being parsed can be evaluated as custom value.
+
+  \param str string representration of the value
+  \param val returning value
+  \return \c true if \a str can be evaluated as custom value and \c false
+          otherwise (parameter)
+*/
+bool QtxEvalSet::createValue( const QString& str, QVariant& val ) const
 {
-  v = str;
+  val = str;
   return false;
 }
 
-// ------------------------------- Standard operation sets ------------------------------
-
 /*!
-  \class QtxEvalSetBase
-  Provides base functionality for standard sets of operations for parser
+  \fn int QtxEvalSet::priority( const QString& op, bool isBin ) const;
+  \brief Get the operation priority.
+
+  Operation priority counts from 1.
+  If the operation is impossible, this function should return value <= 0.
+  
+  \param op operation
+  \param isBin \c true if the operation is binary and \c false if it is unary
+  \return operation priority
 */
 
 /*!
-   Default constructor
+  \fn QtxEvalExpr::Error QtxEvalSet::isValid( const QString& op, const QVariant::Type t1, 
+                                              const QVariant::Type t2 ) const;
+  \brief Check operation validity.
+
+  If the operation is valid, QtxEvalExpr::OK is returned.
+  If types of operands are invalid, the function returns QtxEvalExpr::OperandsNotMatch
+  or QtxEvalExpr::InvalidOperation.
+
+  \param op operation
+  \param t1 first operand type
+  \param t2 second operand type
+  \return error code (QtxEvalExpr::Error)
+*/
+
+/*!
+  \fn QtxEvalExpr::Error QtxEvalSet::calculate( const QString& op, QVariant& v1,
+                                                QVariant& v2 ) const;
+  \brief Calculate the operation.
+
+  Process binary operation with values \a v1 and \a v2.
+  For unary operation the \v2 is invalid.
+  The result of the operation is returned in the parameter \a v1.
+
+  \param op operation name
+  \param v1 first argument (not valid for unary prefix operations)
+  \param v2 second argument (not valid for unary postfix operations)
+  \return error code (QtxEvalExpr::Error)
+*/
+
+/*!
+  \class QtxEvalSetBase
+  \brief Generic class. Provides functionality for standard operations sets.
+*/
+
+/*!
+  \brief Constructor.
 */
 QtxEvalSetBase::QtxEvalSetBase()
 {
 }
 
 /*!
-   Destructor
+  \brief Destructor.
 */
 QtxEvalSetBase::~QtxEvalSetBase()
 {
 }
 
 /*!
-   Fills list of brackets treated as open (when 'open' is 'true') or close ('open' is 'false')
+  \brief Get list of brackets.
+  \param list returning list of brackets
+  \param open if \c true, collect opening brackets, or closing brackets otherwise
 */
 void QtxEvalSetBase::bracketsList( QStringList& list, bool open ) const
 {
@@ -1128,7 +1375,8 @@ void QtxEvalSetBase::bracketsList( QStringList& list, bool open ) const
 }
 
 /*!
-   Fills list with operation names by copying of internal list of operations
+  \brief Get the list of possible operations.
+  \param list returning list of operations supported by the class
 */
 void QtxEvalSetBase::operationList( QStringList& list ) const
 {
@@ -1136,7 +1384,8 @@ void QtxEvalSetBase::operationList( QStringList& list ) const
 }
 
 /*!
-   Add operation names from list to internal list of operations
+  \brief Add operation names to the internal list of operations.
+  \param list operations to be added
 */
 void QtxEvalSetBase::addOperations( const QStringList& list )
 {
@@ -1148,7 +1397,8 @@ void QtxEvalSetBase::addOperations( const QStringList& list )
 }
 
 /*!
-   Append operation names from 'list' to internal list of operations
+  \brief Add operand types.
+  \param list operand types to be added
 */
 void QtxEvalSetBase::addTypes( const ListOfTypes& list )
 {
@@ -1160,10 +1410,16 @@ void QtxEvalSetBase::addTypes( const ListOfTypes& list )
 }
 
 /*!
-   \return whether values with passed types are valid for arguments of operation
-   \param op - name of operation
-   \param t1 - type of first argument
-   \param t2 - type of second argument
+  \brief Check operation validity.
+
+  If the operation is valid, QtxEvalExpr::OK is returned.
+  If types of operands are invalid, the function returns QtxEvalExpr::OperandsNotMatch
+  or QtxEvalExpr::InvalidOperation.
+
+  \param op operation
+  \param t1 first operand type
+  \param t2 second operand type
+  \return error code (QtxEvalExpr::Error)
 */
 QtxEvalExpr::Error QtxEvalSetBase::isValid( const QString& op,
                                             const QVariant::Type t1, const QVariant::Type t2 ) const
@@ -1183,11 +1439,11 @@ QtxEvalExpr::Error QtxEvalSetBase::isValid( const QString& op,
 
 /*!
   \class QtxEvalSetArithmetic
-  Provides set of arithmetic operations for parser
+  \brief Provides set of arithmetical operations for the parser.
 */
 
 /*!
-   Default constructor
+  \brief Constructor.
 */
 QtxEvalSetArithmetic::QtxEvalSetArithmetic()
 : QtxEvalSetBase()
@@ -1202,42 +1458,63 @@ QtxEvalSetArithmetic::QtxEvalSetArithmetic()
 }
 
 /*!
-   Destructor
+  \brief Destructor.
 */
 QtxEvalSetArithmetic::~QtxEvalSetArithmetic()
 {
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetArithmetic::Name()
 {
   return "Arithmetic";
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetArithmetic::name() const
 {
   return Name();
 }
 
 /*!
-  Creates numbers by it's string representation [redefined virtual]
+  \brief Create value from its string representation.
+
+  Creates numbers from string representation.
+
+  \param str string representration of the value
+  \param val returning value
+  \return \c true if \a str can be evaluated as custom value and \c false
+          otherwise (parameter)
 */
-bool QtxEvalSetArithmetic::createValue( const QString& str, QVariant& v ) const
+bool QtxEvalSetArithmetic::createValue( const QString& str, QVariant& val ) const
 {
   bool ok = false;
-  v = str.toInt( &ok );
+  val = str.toInt( &ok );
 
   if ( !ok )
   {
-    v = str.toDouble( &ok );
+    val = str.toDouble( &ok );
     if ( !ok )
-      ok = QtxEvalSetBase::createValue( str, v );
+      ok = QtxEvalSetBase::createValue( str, val );
   }
   return ok;
 }
 
 /*!
-  \return priority of arithmetic operation 'op'.
-  \param isBin indicate whether the operation is binary
+  \brief Get the operation priority.
+
+  Operation priority counts from 1.
+  If the operation is impossible, this function returns value <= 0.
+  
+  \param op operation
+  \param isBin \c true if the operation is binary and \c false if it is unary
+  \return operation priority
 */
 int QtxEvalSetArithmetic::priority( const QString& op, bool isBin ) const
 {
@@ -1258,18 +1535,18 @@ int QtxEvalSetArithmetic::priority( const QString& op, bool isBin ) const
   else
     return 0;
 }
-/*
-void set( QVariant& v1, bool v2 )
-{
-  v1 = QVariant( v2 );
-}
-*/
+
 /*!
-  Calculates result of operation
-  \return one of error states
-  \param op - name of operation
-  \param v1 - first operation argument (must be used also to store result)
-  \param v2 - second operation argument
+  \brief Calculate the operation.
+
+  Process binary operation with values \a v1 and \a v2.
+  For unary operation the \v2 is invalid.
+  The result of the operation is returned in the parameter \a v1.
+
+  \param op operation name
+  \param v1 first argument (not valid for unary prefix operations)
+  \param v2 second argument (not valid for unary postfix operations)
+  \return error code (QtxEvalExpr::Error)
 */
 QtxEvalExpr::Error QtxEvalSetArithmetic::calculate( const QString& op, QVariant& v1, QVariant& v2 ) const
 {
@@ -1364,11 +1641,11 @@ QtxEvalExpr::Error QtxEvalSetArithmetic::calculate( const QString& op, QVariant&
 
 /*!
   \class QtxEvalSetLogic
-  Provides set of logic operations for parser
+  \brief Provides set of logical operations for the parser.
 */
 
 /*!
-   Default constructor
+  \brief Constructor.
 */
 QtxEvalSetLogic::QtxEvalSetLogic()
 : QtxEvalSetBase()
@@ -1383,42 +1660,63 @@ QtxEvalSetLogic::QtxEvalSetLogic()
 }
 
 /*!
-   Destructor
+  \brief Destructor.
 */
 QtxEvalSetLogic::~QtxEvalSetLogic()
 {
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetLogic::Name()
 {
   return "Logic";
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetLogic::name() const
 {
   return Name();
 }
 
 /*!
-  Creates value 'true' or 'false' it's string representation [redefined virtual]
+  \brief Create value from its string representation.
+
+  Create \c true or \c false value from string representation.
+
+  \param str string representration of the value
+  \param val returning value
+  \return \c true if \a str can be evaluated as custom value and \c false
+          otherwise (parameter)
 */
-bool QtxEvalSetLogic::createValue( const QString& str, QVariant& v ) const
+bool QtxEvalSetLogic::createValue( const QString& str, QVariant& val ) const
 {
   bool ok = true;
   QString valStr = str.toLower();
   if ( valStr == "true" || valStr == "yes" )
-    v = QVariant( true );
+    val = QVariant( true );
   else if ( valStr == "false" || valStr == "no" )
-    v = QVariant( false );
+    val = QVariant( false );
   else
-    ok = QtxEvalSetBase::createValue( str, v );
+    ok = QtxEvalSetBase::createValue( str, val );
 
   return ok;
 }
 
 /*!
-  \return priority of arithmetic operation 'op'.
-  \param isBin indicate whether the operation is binary
+  \brief Get the operation priority.
+
+  Operation priority counts from 1.
+  If the operation is impossible, this function returns value <= 0.
+  
+  \param op operation
+  \param isBin \c true if the operation is binary and \c false if it is unary
+  \return operation priority
 */
 int QtxEvalSetLogic::priority( const QString& op, bool isBin ) const
 {
@@ -1438,11 +1736,16 @@ int QtxEvalSetLogic::priority( const QString& op, bool isBin ) const
 }
 
 /*!
-  Calculates result of operation
-  \return one of error states
-  \param op - name of operation
-  \param v1 - first operation argument (must be used also to store result)
-  \param v2 - second operation argument
+  \brief Calculate the operation.
+
+  Process binary operation with values \a v1 and \a v2.
+  For unary operation the \v2 is invalid.
+  The result of the operation is returned in the parameter \a v1.
+
+  \param op operation name
+  \param v1 first argument (not valid for unary prefix operations)
+  \param v2 second argument (not valid for unary postfix operations)
+  \return error code (QtxEvalExpr::Error)
 */
 QtxEvalExpr::Error QtxEvalSetLogic::calculate( const QString& op, QVariant& v1, QVariant& v2 ) const
 {
@@ -1468,6 +1771,11 @@ QtxEvalExpr::Error QtxEvalSetLogic::calculate( const QString& op, QVariant& v1, 
   return err;
 }
 
+/*!
+  \brief Convert value to the boolean.
+  \param v value being converted
+  \return converted value
+*/
 bool QtxEvalSetLogic::booleanValue( const QVariant& v ) const
 {
   bool res = false;
@@ -1491,11 +1799,12 @@ bool QtxEvalSetLogic::booleanValue( const QVariant& v ) const
 
 /*!
   \class QtxEvalSetMath
-  Provides set of more complex operations (mathematics functions) for parser (sqrt, sin, cos, etc)
+  \brief Provides a set of more complex operations (mathematical functions)
+         for the parser (sqrt, sin, cos, etc).
 */
 
 /*!
-   Default constructor
+  \brief Constructor.
 */
 QtxEvalSetMath::QtxEvalSetMath()
 : QtxEvalSetBase()
@@ -1509,42 +1818,63 @@ QtxEvalSetMath::QtxEvalSetMath()
 }
 
 /*!
-   Destructor
+  \brief Destructor.
 */
 QtxEvalSetMath::~QtxEvalSetMath()
 {
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetMath::Name()
 {
   return "Math";
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetMath::name() const
 {
   return Name();
 }
 
 /*!
-  Creates numbers by it's string representation [redefined virtual]
+  \brief Create value from its string representation.
+
+  Creates numbers from string representation.
+
+  \param str string representration of the value
+  \param val returning value
+  \return \c true if \a str can be evaluated as custom value and \c false
+          otherwise (parameter)
 */
-bool QtxEvalSetMath::createValue( const QString& str, QVariant& v ) const
+bool QtxEvalSetMath::createValue( const QString& str, QVariant& val ) const
 {
   bool ok = false;
-  v = str.toInt( &ok );
+  val = str.toInt( &ok );
 
   if ( !ok )
   {
-    v = str.toDouble( &ok );
+    val = str.toDouble( &ok );
     if ( !ok )
-      ok = QtxEvalSetBase::createValue( str, v );
+      ok = QtxEvalSetBase::createValue( str, val );
   }
   return ok;
 }
 
 /*!
-  \return priority of arithmetic operation 'op'.
-  \param isBin indicate whether the operation is binary
+  \brief Get the operation priority.
+
+  Operation priority counts from 1.
+  If the operation is impossible, this function returns value <= 0.
+  
+  \param op operation
+  \param isBin \c true if the operation is binary and \c false if it is unary
+  \return operation priority
 */
 int QtxEvalSetMath::priority( const QString& op, bool isBin ) const
 {
@@ -1558,11 +1888,16 @@ int QtxEvalSetMath::priority( const QString& op, bool isBin ) const
 }
 
 /*!
-  Calculates result of operation
-  \return one of error states
-  \param op - name of operation
-  \param v1 - first operation argument (must be used also to store result)
-  \param v2 - second operation argument
+  \brief Calculate the operation.
+
+  Process binary operation with values \a v1 and \a v2.
+  For unary operation the \v2 is invalid.
+  The result of the operation is returned in the parameter \a v1.
+
+  \param op operation name
+  \param v1 first argument (not valid for unary prefix operations)
+  \param v2 second argument (not valid for unary postfix operations)
+  \return error code (QtxEvalExpr::Error)
 */
 QtxEvalExpr::Error QtxEvalSetMath::calculate( const QString& op, QVariant& v1, QVariant& v2 ) const
 {
@@ -1596,11 +1931,11 @@ QtxEvalExpr::Error QtxEvalSetMath::calculate( const QString& op, QVariant& v1, Q
 
 /*!
   \class QtxEvalSetString
-  Provides set of string operations for parser
+  \brief Provides set of string operations for the parser.
 */
 
 /*!
-   Default constructor
+  \brief Constructor.
 */
 QtxEvalSetString::QtxEvalSetString()
 : QtxEvalSetBase()
@@ -1615,41 +1950,62 @@ QtxEvalSetString::QtxEvalSetString()
 }
 
 /*!
-   Destructor
+  \brief Destructor.
 */
 QtxEvalSetString::~QtxEvalSetString()
 {
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetString::Name()
 {
   return "String";
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetString::name() const
 {
   return Name();
 }
 
 /*!
-  Creates string QVariant by it's Qt string representation [redefined virtual]
+  \brief Create value from its string representation.
+
+  Creates string value from Qt string representation.
+
+  \param str string representration of the value
+  \param val returning value
+  \return \c true if \a str can be evaluated as custom value and \c false
+          otherwise (parameter)
 */
-bool QtxEvalSetString::createValue( const QString& str, QVariant& v ) const
+bool QtxEvalSetString::createValue( const QString& str, QVariant& val ) const
 {
   bool ok = false;
   if ( str.length() > 1 && str[0] == '\'' && str[str.length() - 1] == '\'' )
   {
-    v = str.mid( 1, str.length() - 2 );
+    val = str.mid( 1, str.length() - 2 );
     ok = true;
   }
   else
-    ok = QtxEvalSetBase::createValue( str, v );
+    ok = QtxEvalSetBase::createValue( str, val );
   return ok;
 }
 
 /*!
-  \return priority of arithmetic operation 'op'.
-  \param isBin indicate whether the operation is binary
+  \brief Get the operation priority.
+
+  Operation priority counts from 1.
+  If the operation is impossible, this function returns value <= 0.
+  
+  \param op operation
+  \param isBin \c true if the operation is binary and \c false if it is unary
+  \return operation priority
 */
 int QtxEvalSetString::priority( const QString& op, bool isBin ) const
 {
@@ -1670,11 +2026,16 @@ int QtxEvalSetString::priority( const QString& op, bool isBin ) const
 }
 
 /*!
-  Calculates result of operation
-  \return one of error states
-  \param op - name of operation
-  \param v1 - first operation argument (must be used also to store result)
-  \param v2 - second operation argument
+  \brief Calculate the operation.
+
+  Process binary operation with values \a v1 and \a v2.
+  For unary operation the \v2 is invalid.
+  The result of the operation is returned in the parameter \a v1.
+
+  \param op operation name
+  \param v1 first argument (not valid for unary prefix operations)
+  \param v2 second argument (not valid for unary postfix operations)
+  \return error code (QtxEvalExpr::Error)
 */
 QtxEvalExpr::Error QtxEvalSetString::calculate( const QString& op, QVariant& v1, QVariant& v2 ) const
 {
@@ -1713,13 +2074,14 @@ QtxEvalExpr::Error QtxEvalSetString::calculate( const QString& op, QVariant& v1,
 
 /*!
   \class QtxEvalSetSets
-  Provides set of operations with sets for parser
+  \brief Provides set of operations with sequences for the parser.
 */
 
 /*!
-  Default constructor
+  \brief Constructor.
 */
 QtxEvalSetSets::QtxEvalSetSets()
+: QtxEvalSetBase()
 {
   addOperations( QString( "{;};=;<>;!=;+;-;*;in;count" ).split( ";" ) );
 
@@ -1729,24 +2091,34 @@ QtxEvalSetSets::QtxEvalSetSets()
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxEvalSetSets::~QtxEvalSetSets()
 {
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetSets::Name()
 {
   return "Sets";
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetSets::name() const
 {
   return Name();
 }
 
 /*!
-  Fills list of brackets treated as open (when 'open' is 'true') or close ('open' is 'false')
+  \brief Get list of brackets.
+  \param list returning list of brackets
+  \param open if \c true, collect opening brackets, or closing brackets otherwise
 */
 void QtxEvalSetSets::bracketsList( QStringList& list, bool open ) const
 {
@@ -1755,8 +2127,14 @@ void QtxEvalSetSets::bracketsList( QStringList& list, bool open ) const
 }
 
 /*!
-  \return priority of arithmetic operation 'op'.
-  \param isBin indicate whether the operation is binary
+  \brief Get the operation priority.
+
+  Operation priority counts from 1.
+  If the operation is impossible, this function returns value <= 0.
+  
+  \param op operation
+  \param isBin \c true if the operation is binary and \c false if it is unary
+  \return operation priority
 */
 int QtxEvalSetSets::priority( const QString& op, bool isBin ) const
 {
@@ -1780,10 +2158,16 @@ int QtxEvalSetSets::priority( const QString& op, bool isBin ) const
 }
 
 /*!
-  \return whether values with passed types are valid for arguments of operation
-  \param op - name of operation
-  \param t1 - type of first argument
-  \param t2 - type of second argument
+  \brief Check operation validity.
+
+  If the operation is valid, QtxEvalExpr::OK is returned.
+  If types of operands are invalid, the function returns QtxEvalExpr::OperandsNotMatch
+  or QtxEvalExpr::InvalidOperation.
+
+  \param op operation
+  \param t1 first operand type
+  \param t2 second operand type
+  \return error code (QtxEvalExpr::Error)
 */
 QtxEvalExpr::Error QtxEvalSetSets::isValid( const QString& op,
                                             const QVariant::Type t1, const QVariant::Type t2 ) const
@@ -1801,7 +2185,9 @@ QtxEvalExpr::Error QtxEvalSetSets::isValid( const QString& op,
 }
 
 /*!
-  Adds new value 'v' to set 'set' [static]
+  \brief Add new value \a v to the sequence \a set.
+  \param set sequence
+  \param v value to be added
 */
 void QtxEvalSetSets::add( ValueSet& set, const QVariant& v )
 {
@@ -1810,7 +2196,9 @@ void QtxEvalSetSets::add( ValueSet& set, const QVariant& v )
 }
 
 /*!
-   Adds values from set 's2' to set 's1'
+  \brief Add all values from sequence \a s2 to the sequence \a s1.
+  \param s1 destination sequence
+  \param s2 source sequence
 */
 void QtxEvalSetSets::add( ValueSet& s1, const ValueSet& s2 )
 {
@@ -1819,7 +2207,9 @@ void QtxEvalSetSets::add( ValueSet& s1, const ValueSet& s2 )
 }
 
 /*!
-  Removes value 'v' from set 'set'
+  \brief Remove value \a v from sequence \a set.
+  \param set sequence
+  \param v value to be removed
 */
 void QtxEvalSetSets::remove( ValueSet& set, const QVariant& v )
 {
@@ -1827,7 +2217,9 @@ void QtxEvalSetSets::remove( ValueSet& set, const QVariant& v )
 }
 
 /*!
-  Removes values of set 's2' from set 's1'
+  \brief Remove all values listed in the sequence \a s2 from the sequence \a s1.
+  \param s1 sequence from which items are removed
+  \param s2 sequence which items are removed
 */
 void QtxEvalSetSets::remove( ValueSet& s1, const ValueSet& s2 )
 {
@@ -1836,11 +2228,16 @@ void QtxEvalSetSets::remove( ValueSet& s1, const ValueSet& s2 )
 }
 
 /*!
-  Calculates result of operation
-  \return one of error states
-  \param op - name of operation
-  \param v1 - first operation argument (must be used also to store result)
-  \param v2 - second operation argument
+  \brief Calculate the operation.
+
+  Process binary operation with values \a v1 and \a v2.
+  For unary operation the \v2 is invalid.
+  The result of the operation is returned in the parameter \a v1.
+
+  \param op operation name
+  \param v1 first argument (not valid for unary prefix operations)
+  \param v2 second argument (not valid for unary postfix operations)
+  \return error code (QtxEvalExpr::Error)
 */
 QtxEvalExpr::Error QtxEvalSetSets::calculate( const QString& op, QVariant& v1, QVariant& v2 ) const
 {
@@ -1905,34 +2302,56 @@ QtxEvalExpr::Error QtxEvalSetSets::calculate( const QString& op, QVariant& v1, Q
 
 /*!
   \class QtxEvalSetConst
-  Provides different standard constants
+  \brief Provides different standard constants.
 */
 QtxEvalSetConst::QtxEvalSetConst()
+: QtxEvalSet()
 {
 }
 
+/*!
+  \brief Destructor.
+*/
 QtxEvalSetConst::~QtxEvalSetConst()
 {
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetConst::Name()
 {
   return "Const";
 }
 
+/*!
+  \brief Get operations set name.
+  \return operations set name
+*/
 QString QtxEvalSetConst::name() const
 {
   return Name();
 }
 
+/*!
+  \brief Create value from its string representation.
+
+  Convert constant name to its value.
+
+  \param str string representration of the constant
+  \param val returning value
+  \return \c true if \a str can be evaluated as custom value and \c false
+          otherwise (parameter)
+*/
 bool QtxEvalSetConst::createValue( const QString& str, QVariant& val ) const
 {
   bool ok = true;
-  if ( str == "pi" ) // PI number
+  if ( str == "pi" )            // PI number
     val = QVariant( 3.141593 );
-  else if ( str == "exp" ) // Exponent (e)
+  else if ( str == "exp" )      // Exponent value (e)
     val = QVariant( 2.718282 );
-  else if ( str == "g" ) // Free falling acceleration (g)
+  else if ( str == "g" )        // Free fall acceleration (g)
     val = QVariant( 9.80665 );
   else
     ok = false;
@@ -1940,24 +2359,65 @@ bool QtxEvalSetConst::createValue( const QString& str, QVariant& val ) const
   return ok;
 }
 
-void QtxEvalSetConst::operationList( QStringList& ) const
+/*!
+  \brief Get the list of possible operations.
+  \param list returning list of operations supported by the class (not used)
+*/
+void QtxEvalSetConst::operationList( QStringList& /*list*/ ) const
 {
 }
 
-void QtxEvalSetConst::bracketsList( QStringList&, bool open ) const
+/*!
+  \brief Get list of brackets.
+  \param list returning list of brackets (not used)
+  \param open if \c true, collect opening brackets, or closing brackets otherwise (not used)
+*/
+void QtxEvalSetConst::bracketsList( QStringList& /*list*/, bool /*open*/ ) const
 {
 }
 
-int QtxEvalSetConst::priority( const QString&, bool ) const
+/*!
+  \brief Get the operation priority.
+
+  Operation priority counts from 1.
+  If the operation is impossible, this function returns value <= 0.
+  
+  \param op operation (not used)
+  \param isBin \c true if the operation is binary and \c false if it is unary (not used)
+  \return operation priority
+*/
+int QtxEvalSetConst::priority( const QString& /*op*/, bool /*isBin*/ ) const
 {
   return 0;
 }
 
-QtxEvalExpr::Error QtxEvalSetConst::isValid( const QString&, const QVariant::Type, const QVariant::Type ) const
+/*!
+  \brief Check operation validity.
+
+  Always returns QtxEvalExpr::InvalidOperation.
+
+  \param op operation (not used)
+  \param t1 first operand type (not used)
+  \param t2 second operand type (not used)
+  \return error code (QtxEvalExpr::Error)
+*/
+QtxEvalExpr::Error QtxEvalSetConst::isValid( const QString&       /*op*/, 
+					     const QVariant::Type /*t1*/,
+					     const QVariant::Type /*t2*/ ) const
 {
   return QtxEvalExpr::InvalidOperation;
 }
 
+/*!
+  \brief Calculate the operation.
+
+  Always returns QtxEvalExpr::InvalidOperation.
+
+  \param op operation name (not used)
+  \param v1 first argument (not valid for unary prefix operations) (not used)
+  \param v2 second argument (not valid for unary postfix operations) (not used)
+  \return error code (QtxEvalExpr::Error)
+*/
 QtxEvalExpr::Error QtxEvalSetConst::calculate( const QString&, QVariant&, QVariant& ) const
 {
   return QtxEvalExpr::InvalidOperation;

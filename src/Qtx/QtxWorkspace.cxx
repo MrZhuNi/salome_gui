@@ -53,10 +53,10 @@ QtxWorkspace::~QtxWorkspace()
 */
 void QtxWorkspace::tileVertical()
 {
-	QWidgetList winList = windowList();
-	if ( winList.isEmpty() )
+  QWidgetList winList = windowList();
+  if ( winList.isEmpty() )
     return;
-
+  
   int count = 0;
   for ( QWidgetList::const_iterator itr = winList.begin(); itr != winList.end(); ++itr )
     if ( !( (*itr)->windowState() & Qt::WindowMinimized ) )
@@ -68,20 +68,20 @@ void QtxWorkspace::tileVertical()
   if ( activeWindow() && ( activeWindow()->windowState() & Qt::WindowMaximized ) )
     activeWindow()->showNormal();
 
-	int y = 0;
-	int heightForEach = height() / count;
+  int y = 0;
+  int heightForEach = height() / count;
   for ( QWidgetList::iterator it = winList.begin(); it != winList.end(); ++it )
-	{
+  {
     QWidget* win = *it;
     if ( win->windowState() & Qt::WindowMinimized )
       continue;
-
+    
     if ( win->windowState() & Qt::WindowMaximized )
-		{
-			win->hide();
-			win->showNormal();
+    {
+      win->hide();
+      win->showNormal();
     }
-
+    
 //    QApplication::sendPostedEvents( 0, QEvent::ShowNormal );
 
     int prefH = win->minimumHeight() + win->parentWidget()->baseSize().height();
@@ -89,7 +89,7 @@ void QtxWorkspace::tileVertical()
 
     win->parentWidget()->setGeometry( 0, y, width(), actualH );
     y += actualH;
-	}
+  }
 }
 
 /*!
@@ -97,8 +97,8 @@ void QtxWorkspace::tileVertical()
 */
 void QtxWorkspace::tileHorizontal()
 {
-	QWidgetList winList = windowList();
-	if ( winList.isEmpty() )
+  QWidgetList winList = windowList();
+  if ( winList.isEmpty() )
     return;
 
   int count = 0;
@@ -111,27 +111,27 @@ void QtxWorkspace::tileHorizontal()
 
   if ( activeWindow() && activeWindow()->windowState() & Qt::WindowMaximized )
     activeWindow()->showNormal();
-
-	int x = 0;
-	int widthForEach = width() / count;
+  
+  int x = 0;
+  int widthForEach = width() / count;
   for ( QWidgetList::iterator it = winList.begin(); it != winList.end(); ++it )
-	{
+  {
     QWidget* win = *it;
     if ( win->windowState() & Qt::WindowMinimized )
       continue;
-
+    
     if ( win->windowState() & Qt::WindowMaximized )
-		{
-			win->hide();
-			win->showNormal();
+    {
+      win->hide();
+      win->showNormal();
     }
 
 //    QApplication::sendPostedEvents( 0, QEvent::ShowNormal );
 
     int prefW = win->minimumWidth();
     int actualW = qMax( widthForEach, prefW );
-        
-		win->parentWidget()->setGeometry( x, 0, actualW, height() );
+    
+    win->parentWidget()->setGeometry( x, 0, actualW, height() );
     x += actualW;
-	}
+  }
 }

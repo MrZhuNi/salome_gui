@@ -25,7 +25,6 @@
 #include "Qtx.h"
 
 #include <QList>
-#include <QStack>
 #include <QVariant>
 
 #ifdef WIN32
@@ -38,23 +37,20 @@ class QtxEvalParser;
 class QTX_EXPORT QtxEvalExpr
 {
 public:
-  /*!
-    \enum Error
-    \brief Errors during parsing
-  */
+  //! Parsing error type
   typedef enum
   {
-    OK,               /*! \var All right */
-	  OperandsNotMatch, /*! \var Types of arguments are invalid for this operation */
-	  InvalidResult,    /*! \var Operation cannot find result (for example, division by zero) */
-	  InvalidOperation, /*! \var Name of operation is unknown */
-    OperationsNull,   /*! \var Internal operations pointer of parser is null */
-	  InvalidToken,     /*! \var It isn't operation, parameter of value  */
-	  CloseExpected,    /*! \var Close bracket is expected */
-	  ExcessClose,      /*! \var The one of close bracket is excess */
-    BracketsNotMatch, /*! \var Last open and this close bracket are different, for example [) */
-	  StackUnderflow,   /*! \var There is no arguments in stack for operation */
-	  ExcessData        /*! \var The parsing is finished, but there is more then one value in stack */
+    OK,               //!< No errors found
+    OperandsNotMatch, //!< Types of arguments are invalid for this operation
+    InvalidResult,    //!< Operation cannot find result (for example, division by zero)
+    InvalidOperation, //!< Unknown operation
+    OperationsNull,   //!< Internal operations pointer of parser is null
+    InvalidToken,     //!< Invalid token (neither operation, nor parameter of value)
+    CloseExpected,    //!< Closing bracket is expected
+    ExcessClose,      //!< Extra closing bracket is found
+    BracketsNotMatch, //!< Opening and closing brackets are of different type, e.g. [)
+    StackUnderflow,   //!< There are no arguments in the stack for the operation
+    ExcessData        //!< The parsing is finished, but there are more then one value in the stack
   } Error;
 
 public:
@@ -67,7 +63,7 @@ public:
   QString            expression() const;
   void               setExpression( const QString& );
 
-  QtxEvalExpr::Error error() const;
+  Error              error() const;
   QtxEvalParser*     parser() const;
 
   bool               autoDeleteOperationSets() const;
@@ -86,18 +82,6 @@ private:
   QtxEvalParser*     myParser;
 };
 
-/*!
-  \class QtxEvalParser
-
-  This class allows to calculate values of expressions using different set of operations.
-  It is provided some of standard set of operations (arithmetics, logic, strings, etc).
-  This parser allows to use parameters with help of methods has(), set(), remove(), value(). It uses
-  postfix representation of expressions and uses class QtxOperations in order to make certain operation
-  Every instance of parser contains only one postfix, so that if expression has been changed, then postfix
-  must be rebuilt. In order to increase performance of frequent calculation for many of expressions it is 
-  recommended to use different instances of parser for expressions
-
-*/
 class QTX_EXPORT QtxEvalParser
 {
 public:
@@ -132,32 +116,28 @@ public:
   static QString     toString( const QList<QVariant>& );
 
 protected:
-  /*!
-    \enum PostfixItemType
-    \brief Types of postfix representation elements
-  */  
+  //! Types of postfix representation elements
   typedef enum
   {
-    Value, /*! \var Value (number, string, etc.)*/
-    Param, /*! \var Parameter */
-    Open,  /*! \var Open bracket */
-    Close, /*! \var Close bracket */
-    Pre,   /*! \var Unary prefix operation */
-    Post,  /*! \var Unary postfix operation */
-    Binary /*! \var Binary operation */
+    Value, //!< Value (number, string, etc.)
+    Param, //!< Parameter
+    Open,  //!< Open bracket
+    Close, //!< Close bracket
+    Pre,   //!< Unary prefix operation
+    Post,  //!< Unary postfix operation
+    Binary //!< Binary operation
   } PostfixItemType;
 
-  /*! \var postfix representation element */
+  //! Postfix representation element
   typedef struct
   {
     QVariant          myValue;
     PostfixItemType   myType;
   } PostfixItem;
 
-  /*! \var postfix representation */
-  typedef QList<PostfixItem>      Postfix;
-  typedef QList<QtxEvalSet*>      SetList;
-  typedef QMap<QString, QVariant> ParamMap;
+  typedef QList<PostfixItem>      Postfix;   //!< postfix representation
+  typedef QList<QtxEvalSet*>      SetList;   //!< list of operations
+  typedef QMap<QString, QVariant> ParamMap;  //!< parameter-to-value map
 
 protected:
   QString            dump( const Postfix& ) const;
@@ -204,37 +184,19 @@ public:
   virtual QString            name() const = 0;
 
   virtual void               operationList( QStringList& ) const = 0;
-  //list of possible operations
 
   virtual void               bracketsList( QStringList&, bool open ) const = 0;
-  //list of open/close brackets
 
   virtual bool               createValue( const QString&, QVariant& ) const;
-  //by default, the String value will be set, it corresponds to parameter
-  //base method returns false (always parameter)
-  //successor's method returns true if it has created custom value
-  //or call base if it hasn't
 
   virtual int                priority( const QString&, bool isBin ) const = 0;
-  //returns prioritet of operation;
-  //if operation is impossible, it must return 0 or less
 
   virtual QtxEvalExpr::Error isValid( const QString&, const QVariant::Type,
                                       const QVariant::Type ) const = 0;
-  //return OK if this parameter types is valid for operation
-  //return OperandsNotMatch or InvalidOperation otherwise
 
   virtual QtxEvalExpr::Error calculate( const QString&, QVariant&, QVariant& ) const = 0;
-  //process binary operation with values
-  //for unary operation the second QVariant will be passed as invalid
 };
 
-// ------------------------------- Standard operation sets ------------------------------
-
-/*!
-  \class QtxEvalSetBase
-  Provides base functionality for standard sets of operations for parser
-*/
 class QTX_EXPORT QtxEvalSetBase : public QtxEvalSet
 {
 public:
@@ -257,10 +219,6 @@ private:
   ListOfTypes                myTypes;
 };
 
-/*!
-  \class QtxEvalSetArithmetic
-  Provides set of arithmetic operations for parser
-*/
 class QTX_EXPORT QtxEvalSetArithmetic : public QtxEvalSetBase
 {
 public:
@@ -275,10 +233,6 @@ public:
   virtual QString            name() const;
 };
 
-/*!
-  \class QtxEvalSetLogic
-  Provides set of logic operations for parser
-*/
 class QTX_EXPORT QtxEvalSetLogic : public QtxEvalSetBase
 {
 public:
@@ -296,10 +250,6 @@ private:
   bool                       booleanValue( const QVariant& v ) const;
 };
 
-/*!
-  \class QtxEvalSetMath
-  Provides set of more complex operations (mathematics functions) for parser (sqrt, sin, cos, etc)
-*/
 class QTX_EXPORT QtxEvalSetMath : public QtxEvalSetBase
 {
 public:
@@ -314,10 +264,6 @@ public:
   virtual QString            name() const;
 };
 
-/*!
-  \class QtxEvalSetString
-  Provides set of string operations for parser
-*/
 class QTX_EXPORT QtxEvalSetString : public QtxEvalSetBase
 {
 public:
@@ -332,10 +278,6 @@ public:
   virtual QString            name() const;
 };
 
-/*!
-  \class QtxEvalSetSets
-  Provides set of operations with sets for parser
-*/
 class QTX_EXPORT QtxEvalSetSets : public QtxEvalSetBase
 {
 public:
@@ -360,10 +302,6 @@ public:
   virtual QString            name() const;
 };
 
-/*!
-  \class QtxEvalSetConst
-  Provides different standard constants
-*/
 class QTX_EXPORT QtxEvalSetConst : public QtxEvalSet
 {
 public:

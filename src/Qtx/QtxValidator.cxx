@@ -23,11 +23,12 @@
 
 /*!
   \class QtxIntValidator
-  Validator for integer numbers with possibility to fix up the invalid value
+  \brief Validator for integer numbers with possibility to fix up the invalid value.
 */
 
 /*!
-  Constructor
+  \brief Constructor.
+  \param parent parent object
 */
 QtxIntValidator::QtxIntValidator( QObject* parent )
 : QIntValidator( parent )
@@ -35,10 +36,10 @@ QtxIntValidator::QtxIntValidator( QObject* parent )
 }
 
 /*!
-  Constructor
-  \param bot - minimal possible value
-  \param top - maximal possible value
-  \param parent - parent object
+  \brief Constructor.
+  \param bot minimum possible value
+  \param top maximum possible value
+  \param parent parent object
 */
 QtxIntValidator::QtxIntValidator( const int bot, const int top, QObject* parent )
 : QIntValidator( bot, top, parent )
@@ -46,15 +47,20 @@ QtxIntValidator::QtxIntValidator( const int bot, const int top, QObject* parent 
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxIntValidator::~QtxIntValidator()
 {
 }
 
 /*!
-  Corrects string: if it represent integer value less then bottom, it becomes equal to bottom,
-  if it is more then top, it becomes equal to top, if it isn't number is becomes '0'
+  \brief Validate the input and fixup it if necessary.
+
+  If the string represents integer value less then minimum value, it becomes equal to the minimum.
+  if the string represents integer value more then mazimum value, it becomes equal to the maximum.
+  If the string is not evaluated as integer it becomes equal to \c 0.
+
+  \param str the string to be validated
 */
 void QtxIntValidator::fixup( QString& str ) const
 {
@@ -73,12 +79,12 @@ void QtxIntValidator::fixup( QString& str ) const
 
 /*!
   \class QtxDoubleValidator
-  Validator for double numbers with possibility to fix up the invalid value
+  \brief Validator for double numbers with possibility to fix up the invalid value.
 */
 
 /*!
-  Constructor
-  \param parent - parent object
+  \brief Constructor
+  \param parent parent object
 */
 QtxDoubleValidator::QtxDoubleValidator( QObject* parent )
 : QDoubleValidator( parent )
@@ -86,28 +92,33 @@ QtxDoubleValidator::QtxDoubleValidator( QObject* parent )
 }
 
 /*!
-  Constructor
-  \param bot - minimal possible value
-  \param top - maximal possible value
-  \param dec - number of digits
-  \param parent - parent object
+  \brief Constructor.
+  \param bot minimum possible value
+  \param top maximum possible value
+  \param dec precision (number of digits after dot)
+  \param parent parent object
 */
 QtxDoubleValidator::QtxDoubleValidator( const double bot, const double top,
-                                  const int dec, QObject* parent )
+					const int dec, QObject* parent )
 : QDoubleValidator( bot, top, dec, parent )
 {
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxDoubleValidator::~QtxDoubleValidator()
 {
 }
 
 /*!
-  Corrects string: if it represent double value less then bottom, it becomes equal to bottom,
-  if it is more then top, it becomes equal to top, if it isn't number is becomes '0'
+  \brief Validate the input and fixup it if necessary.
+
+  If the string represents double value less then minimum value, it becomes equal to the minimum.
+  if the string represents double value more then mazimum value, it becomes equal to the maximum.
+  If the string is not evaluated as double it becomes equal to \c 0.
+
+  \param str the string to be validated
 */
 void QtxDoubleValidator::fixup( QString& str ) const
 {
