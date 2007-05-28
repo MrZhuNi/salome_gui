@@ -23,6 +23,49 @@
 #include <QMenu>
 
 /*!
+  \return true if 'v1'<'v2'
+  This function can work with many types of values
+*/
+bool operator<( const QVariant& v1, const QVariant& v2 )
+{
+  QVariant::Type t1 = v1.type(), t2 = v2.type();
+  if ( t1 == t2 )
+  {
+    switch( t1 )
+    {
+    case QVariant::Int:
+      return v1.toInt() < v2.toInt();
+      break;      
+    case QVariant::Double:
+      return v1.toDouble() < v2.toDouble();
+      break;      
+    case QVariant::String:
+      return v1.toString() < v2.toString();
+      break;      
+    case QVariant::StringList:
+    case QVariant::List:
+    {
+      const QList<QVariant>& aList1 = v1.toList(), aList2 = v2.toList();
+      QList<QVariant>::const_iterator anIt1 = aList1.begin(), aLast1 = aList1.end(),
+                                           anIt2 = aList2.begin(), aLast2 = aList2.end();
+      for ( ; anIt1 != aLast1 && anIt2 != aLast2;  anIt1++, anIt2++ )
+      {
+	      if ( (*anIt1) != (*anIt2) )
+	        return (*anIt1)<(*anIt2);
+      }
+      return anIt1 == aLast1 && anIt2 != aLast2;
+      break;      
+    }
+    default:
+      return v1.toString() < v2.toString();
+      break;      
+    }
+  }
+  else
+    return t1 < t2;
+}
+
+/*!
   \class QtxPopupMgr::PopupCreator
 */
 class QtxPopupMgr::PopupCreator : public QtxActionMgr::Creator
@@ -336,49 +379,6 @@ void QtxPopupMgr::setParameters( QtxEvalParser* p, QStringList& specific ) const
 }
 
 /*!
-  \return true if 'v1'<'v2'
-  This function can work with many types of values
-*/
-bool operator<( const QVariant& v1, const QVariant& v2 )
-{
-  QVariant::Type t1 = v1.type(), t2 = v2.type();
-  if ( t1 == t2 )
-  {
-    switch( t1 )
-    {
-    case QVariant::Int:
-      return v1.toInt() < v2.toInt();
-      break;      
-    case QVariant::Double:
-      return v1.toDouble() < v2.toDouble();
-      break;      
-    case QVariant::String:
-      return v1.toString() < v2.toString();
-      break;      
-    case QVariant::StringList:
-    case QVariant::List:
-    {
-      const QList<QVariant>& aList1 = v1.toList(), aList2 = v2.toList();
-      QList<QVariant>::const_iterator anIt1 = aList1.begin(), aLast1 = aList1.end(),
-                                           anIt2 = aList2.begin(), aLast2 = aList2.end();
-      for ( ; anIt1 != aLast1 && anIt2 != aLast2;  anIt1++, anIt2++ )
-      {
-	      if ( (*anIt1) != (*anIt2) )
-	        return (*anIt1)<(*anIt2);
-      }
-      return anIt1 == aLast1 && anIt2 != aLast2;
-      break;      
-    }
-    default:
-      return v1.toString() < v2.toString();
-      break;      
-    }
-  }
-  else
-    return t1 < t2;
-}
-
-/*!
   \return true if rule of action is satisfied on current selection
   \param act - action
   \param visibility - what rule is checked: for visibility(true) or for toggle(false)
@@ -460,6 +460,8 @@ void QtxPopupMgr::internalUpdate()
   }
 
   QtxActionMenuMgr::internalUpdate();
+
+  myCache.clear();
 }
 
 /*!
@@ -530,65 +532,6 @@ QVariant QtxPopupMgr::parameter( const QString& name, const int idx ) const
   }
   return val;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*!
   \class QtxPopupSelection
