@@ -189,6 +189,15 @@ OCCViewer_ViewWindow::OCCViewer_ViewWindow(SUIT_Desktop* theDesktop, OCCViewer_V
   updateEnabledDrawMode();
   myClippingDlg = 0;
   mySetRotationPointDlg = 0;
+  myRectBand = 0;
+}
+
+/*!
+  \brief Destructor.
+*/
+OCCViewer_ViewWindow::~OCCViewer_ViewWindow()
+{
+  endDrawRect();
 }
 
 /*!
@@ -754,6 +763,7 @@ void OCCViewer_ViewWindow::vpMouseReleaseEvent(QMouseEvent* theEvent)
   if ( theEvent->button() == Qt::LeftButton && myDrawRect ) {
     myDrawRect = false;
     drawRect();
+    endDrawRect();
     resetState(); 
     myViewPort->update();
   }
@@ -796,17 +806,26 @@ void OCCViewer_ViewWindow::resetState()
 */
 void OCCViewer_ViewWindow::drawRect()
 {
-  QRubberBand* aRB = new QRubberBand( QRubberBand::Rectangle, myViewPort );
+  if ( !myRectBand )
+    myRectBand = new QRubberBand( QRubberBand::Rectangle, myViewPort );
+  
   QRect aRect = SUIT_Tools::makeRect(myStartX, myStartY, myCurrX, myCurrY);
   if ( !myRect.isEmpty() ) {
-    aRB->setGeometry( myRect );
-    aRB->setVisible( myRect.isValid() );
+    myRectBand->setGeometry( myRect );
+    myRectBand->setVisible( myRect.isValid() );
   }
-  aRB->setGeometry( aRect );
-  aRB->setVisible( aRect.isValid() );
+  myRectBand->setGeometry( aRect );
+  myRectBand->setVisible( aRect.isValid() );
   myRect = aRect;
-  
-  delete aRB;
+}
+
+/*!
+  \brief Delete rubber band on the end on the dragging operation.
+*/
+void OCCViewer_ViewWindow::endDrawRect()
+{
+  delete myRectBand;
+  myRectBand = 0;
 }
 
 /*!
