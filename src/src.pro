@@ -14,5 +14,6 @@ SUBDIRS += PyInterp
 SUBDIRS += PyConsole
 SUBDIRS += Prs
 SUBDIRS += OBJECT
+SUBDIRS += OCCViewer
 SUBDIRS += Event
 

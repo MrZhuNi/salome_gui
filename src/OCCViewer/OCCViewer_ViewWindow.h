@@ -25,8 +25,7 @@
 
 #include "QtxAction.h"
 
-#include <qcursor.h>
-#include <qvaluelist.h>
+#include <QCursor>
 
 class SUIT_Desktop;
 class OCCViewer_ViewPort3d;

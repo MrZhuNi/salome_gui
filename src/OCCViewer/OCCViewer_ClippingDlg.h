@@ -21,7 +21,7 @@
 
 #include "OCCViewer.h"
 
-#include <qdialog.h>
+#include <QDialog>
 
 #include <AIS_Plane.hxx>
 #include <V3d_Plane.hxx>
@@ -46,7 +46,7 @@ class OCCViewer_ClippingDlg : public QDialog
     Q_OBJECT
     
     public:
-    OCCViewer_ClippingDlg(OCCViewer_ViewWindow* , QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0);
+    OCCViewer_ClippingDlg(OCCViewer_ViewWindow* , QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0);
     ~OCCViewer_ClippingDlg();
 
     void SetAction( QtxAction* theAction ) { myAction = theAction; }

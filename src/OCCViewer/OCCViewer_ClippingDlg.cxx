@@ -23,11 +23,11 @@
 
 #include "SUIT_Session.h"
 #include "SUIT_ViewWindow.h"
+#include "SUIT_ViewManager.h"
 #include "OCCViewer_ViewWindow.h"
 #include "OCCViewer_ViewPort3d.h"
 
 #include <V3d_View.hxx>
-//#include <V3d.hxx>
 #include <Geom_Plane.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
@@ -39,13 +39,15 @@
 #include <gp_Pln.hxx>
 
 // QT Includes
-#include <qapplication.h>
-#include <qgroupbox.h>
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
+#include <QApplication>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QComboBox>
+#include <QCheckBox>
 
 /*!
   Constructor
@@ -55,22 +57,23 @@
   \param modal - is this dialog modal
   \param fl - flags
 */
-OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidget* parent, const char* name, bool modal, WFlags fl )
-: QDialog( parent, "OCCViewer_ClippingDlg", modal, WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu ),
+OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
+: QDialog( parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint ),
   myView( view )
 {
-  setCaption( tr( "Clipping" ) );
+  setObjectName( "OCCViewer_ClippingDlg" );
+  setModal( modal );
+
+  setWindowTitle( tr( "Clipping" ) );
   
   QVBoxLayout* topLayout = new QVBoxLayout( this );
   topLayout->setMargin( 11 ); topLayout->setSpacing( 6 );
   
   /***************************************************************/
-  GroupPoint = new QGroupBox( this, "GroupPoint" );
+  GroupPoint = new QGroupBox( this );
+  GroupPoint->setObjectName( "GroupPoint" );
   GroupPoint->setTitle( tr("Base point") );
-  GroupPoint->setColumnLayout(0, Qt::Vertical );
-  GroupPoint->layout()->setSpacing( 0 );
-  GroupPoint->layout()->setMargin( 0 );
-  QGridLayout* GroupPointLayout = new QGridLayout( GroupPoint->layout() );
+  QGridLayout* GroupPointLayout = new QGridLayout( GroupPoint );
   GroupPointLayout->setAlignment( Qt::AlignTop );
   GroupPointLayout->setSpacing( 6 );
   GroupPointLayout->setMargin( 11 );
@@ -82,7 +85,8 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   const int precision = -6; // PAL12789. Minus is for using 'g' double->string conversion specifier,
   //                          see QtxDblSpinBox::mapValueToText( double v )
 
-  TextLabelX = new QLabel( GroupPoint, "TextLabelX" );
+  TextLabelX = new QLabel( GroupPoint );
+  TextLabelX->setObjectName( "TextLabelX" );
   TextLabelX->setText( tr("X:") );
   GroupPointLayout->addWidget( TextLabelX, 0, 0 );
   
@@ -90,7 +94,8 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   SpinBox_X->setPrecision( precision );
   GroupPointLayout->addWidget( SpinBox_X, 0, 1 );
 
-  TextLabelY = new QLabel( GroupPoint, "TextLabelY" );
+  TextLabelY = new QLabel( GroupPoint );
+  TextLabelY->setObjectName( "TextLabelY" );
   TextLabelY->setText( tr("Y:") );
   GroupPointLayout->addWidget( TextLabelY, 0, 2 );
 
@@ -98,7 +103,8 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   SpinBox_Y->setPrecision( precision );
   GroupPointLayout->addWidget( SpinBox_Y, 0, 3 );
 
-  TextLabelZ = new QLabel( GroupPoint, "TextLabelZ" );
+  TextLabelZ = new QLabel( GroupPoint );
+  TextLabelZ->setObjectName( "TextLabelZ" );
   TextLabelZ->setText( tr("Z:") );
   GroupPointLayout->addWidget( TextLabelZ, 0, 4 );
 
@@ -106,23 +112,25 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   SpinBox_Z->setPrecision( precision );
   GroupPointLayout->addWidget( SpinBox_Z, 0, 5 );
 
-  resetButton  = new QPushButton( GroupPoint, "resetButton" );
+  resetButton  = new QPushButton( GroupPoint );
+  resetButton->setObjectName( "resetButton" );
   resetButton->setText( tr( "Reset"  ) );
   GroupPointLayout->addWidget( resetButton, 0, 6 );
 
+  GroupPoint->setLayout(GroupPointLayout);
+
   /***************************************************************/
-  GroupDirection = new QGroupBox( this, "GroupDirection" );
+  GroupDirection = new QGroupBox( this );
+  GroupDirection->setObjectName( "GroupDirection" );
   GroupDirection->setTitle( tr("Direction") );
-  GroupDirection->setColumnLayout(0, Qt::Vertical );
-  GroupDirection->layout()->setSpacing( 0 );
-  GroupDirection->layout()->setMargin( 0 );
-  QGridLayout* GroupDirectionLayout = new QGridLayout( GroupDirection->layout() );
+  QGridLayout* GroupDirectionLayout = new QGridLayout( GroupDirection );
   GroupDirectionLayout->setAlignment( Qt::AlignTop );
   GroupDirectionLayout->setSpacing( 6 );
   GroupDirectionLayout->setMargin( 11 );
   
   // Controls
-  TextLabelDx = new QLabel( GroupDirection, "TextLabelDx" );
+  TextLabelDx = new QLabel( GroupDirection );
+  TextLabelDx->setObjectName( "TextLabelDx" );
   TextLabelDx->setText( tr("Dx:") );
   GroupDirectionLayout->addWidget( TextLabelDx, 0, 0 );
   
@@ -130,7 +138,8 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   SpinBox_Dx->setPrecision( precision );
   GroupDirectionLayout->addWidget( SpinBox_Dx, 0, 1 );
 
-  TextLabelDy = new QLabel( GroupDirection, "TextLabelDy" );
+  TextLabelDy = new QLabel( GroupDirection );
+  TextLabelDy->setObjectName( "TextLabelDy" );
   TextLabelDy->setText( tr("Dy:") );
   GroupDirectionLayout->addWidget( TextLabelDy, 0, 2 );
   
@@ -138,7 +147,8 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   SpinBox_Dy->setPrecision( precision );
   GroupDirectionLayout->addWidget( SpinBox_Dy, 0, 3 );
 
-  TextLabelDz = new QLabel( GroupDirection, "TextLabelDz" );
+  TextLabelDz = new QLabel( GroupDirection );
+  TextLabelDz->setObjectName( "TextLabelDz" );
   TextLabelDz->setText( tr("Dz:") );
   GroupDirectionLayout->addWidget( TextLabelDz, 0, 4 );
   
@@ -146,31 +156,36 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   SpinBox_Dz->setPrecision( precision );
   GroupDirectionLayout->addWidget( SpinBox_Dz, 0, 5 );
 
-  invertButton  = new QPushButton( GroupDirection, "invertButton" );
+  invertButton  = new QPushButton( GroupDirection );
+  invertButton->setObjectName( "invertButton" );
   invertButton->setText( tr( "Invert"  ) );
   GroupDirectionLayout->addWidget( invertButton, 0, 6 );
  
-  DirectionCB = new QComboBox( GroupDirection, "DirectionCB" );
-  DirectionCB->insertItem(tr("CUSTOM"));
-  DirectionCB->insertItem(tr("||X-Y"));
-  DirectionCB->insertItem(tr("||Y-Z"));
-  DirectionCB->insertItem(tr("||Z-X"));
-  GroupDirectionLayout->addMultiCellWidget( DirectionCB, 1, 1, 0, 5 );
+  DirectionCB = new QComboBox( GroupDirection );
+  DirectionCB->setObjectName( "DirectionCB" );
+  DirectionCB->insertItem(DirectionCB->count(),tr("CUSTOM"));
+  DirectionCB->insertItem(DirectionCB->count(),tr("||X-Y"));
+  DirectionCB->insertItem(DirectionCB->count(),tr("||Y-Z"));
+  DirectionCB->insertItem(DirectionCB->count(),tr("||Z-X"));
+  GroupDirectionLayout->addWidget( DirectionCB, 1, 0, 1, 6 );
   
+  GroupDirection->setLayout(GroupDirectionLayout);
+
   /***************************************************************/
   
-  PreviewChB = new QCheckBox( tr("Preview") ,this, "PreviewChB" );
+  PreviewChB = new QCheckBox( tr("Preview") ,this );
+  PreviewChB->setObjectName( "PreviewChB" );
   PreviewChB->setChecked( true );
   
   /***************************************************************/
-  QGroupBox* GroupButtons = new QGroupBox( this, "GroupButtons" );
-  GroupButtons->setColumnLayout(0, Qt::Vertical );
-  GroupButtons->layout()->setMargin( 0 ); GroupButtons->layout()->setSpacing( 0 ); 
-  QHBoxLayout* GroupButtonsLayout = new QHBoxLayout( GroupButtons->layout() );
+  QGroupBox* GroupButtons = new QGroupBox( this );
+  GroupButtons->setObjectName( "GroupButtons" );
+  QHBoxLayout* GroupButtonsLayout = new QHBoxLayout( GroupButtons );
   GroupButtonsLayout->setAlignment( Qt::AlignTop );
   GroupButtonsLayout->setMargin( 11 ); GroupButtonsLayout->setSpacing( 6 );
   
-  buttonApply = new QPushButton( GroupButtons, "buttonApply" );
+  buttonApply = new QPushButton( GroupButtons );
+  buttonApply->setObjectName( "buttonApply" );
   buttonApply->setText( tr( "BUT_APPLY"  ) );
   buttonApply->setAutoDefault( TRUE ); 
   buttonApply->setDefault( TRUE );
@@ -178,10 +193,14 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   
   GroupButtonsLayout->addStretch();
   
-  buttonClose = new QPushButton( GroupButtons, "buttonClose" );
+  buttonClose = new QPushButton( GroupButtons );
+  buttonClose->setObjectName( "buttonClose" );
   buttonClose->setText( tr( "BUT_CLOSE"  ) );
   buttonClose->setAutoDefault( TRUE );
   GroupButtonsLayout->addWidget( buttonClose );
+
+  GroupButtons->setLayout(GroupButtonsLayout);
+
   /***************************************************************/
   
   topLayout->addWidget( GroupPoint );
@@ -248,7 +267,7 @@ void OCCViewer_ClippingDlg::closeEvent( QCloseEvent* e )
     aView3d->SetPlaneOn( myClippingPlane );
   
   if (!myView->isCuttingPlane())
-    myAction->setOn( false );
+    myAction->setChecked( false );
   
   QDialog::closeEvent( e );
 }
@@ -289,7 +308,7 @@ void OCCViewer_ClippingDlg::ClickOnClose()
     aView3d->SetPlaneOn( myClippingPlane );
 
   if (!myView->isCuttingPlane())
-    myAction->setOn( false );
+    myAction->setChecked( false );
   
   reject();
 }
@@ -451,9 +470,9 @@ void OCCViewer_ClippingDlg::displayPreview()
         isFound = true;
         double xmin, ymin, zmin, xmax, ymax, zmax;
         aPrs->MinMaxValues( xmin, ymin, zmin, xmax, ymax, zmax );
-        aXMin = QMIN( aXMin, xmin );  aXMax = QMAX( aXMax, xmax );
-        aYMin = QMIN( aYMin, ymin );  aYMax = QMAX( aYMax, ymax );
-        aZMin = QMIN( aZMin, zmin );  aZMax = QMAX( aZMax, zmax );
+        aXMin = qMin( aXMin, xmin );  aXMax = qMax( aXMax, xmax );
+        aYMin = qMin( aYMin, ymin );  aYMax = qMax( aYMax, ymax );
+        aZMin = qMin( aZMin, zmin );  aZMax = qMax( aZMax, zmax );
       }
     }
   }
@@ -565,7 +584,7 @@ void OCCViewer_ClippingDlg::ReserveClippingPlane()
 
 void OCCViewer_ClippingDlg::onViewShow()
 {
-  if(myAction->isOn())
+  if(myAction->isChecked())
     show();
   else
     hide();

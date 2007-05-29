@@ -56,7 +56,7 @@ if ENABLE_OCCVIEWER
 # VSR: this is the original packages list
 #  SUBDIRS += OCCViewer
 # VSR: already migrated to Qt4 packages
-  SUBDIRS += 
+  SUBDIRS += OCCViewer
 if ENABLE_SALOMEOBJECT
 # VSR: this is the original packages list
 #    SUBDIRS += SOCC
