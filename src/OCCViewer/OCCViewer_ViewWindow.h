@@ -169,7 +169,6 @@ protected:
   bool		        myEnableDrawMode;
   bool		        myPaintersRedrawing;  // set to draw with external painters 
  
-  QRect		        myRect;				
   QCursor	        myCursor;
 
   QToolBar*  myToolBar;

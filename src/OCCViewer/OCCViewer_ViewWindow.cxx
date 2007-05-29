@@ -777,10 +777,6 @@ void OCCViewer_ViewWindow::resetState()
 {
   myDrawRect = false;
   
-  /* make rectangle empty (left > right) */
-  myRect.setLeft(2);
-  myRect.setRight(0);
-  
   if ( myRotationPointSelection )
   {
     QCursor handCursor (Qt::PointingHandCursor);
@@ -808,15 +804,11 @@ void OCCViewer_ViewWindow::drawRect()
 {
   if ( !myRectBand )
     myRectBand = new QRubberBand( QRubberBand::Rectangle, myViewPort );
-  
+  myRectBand->hide();
+
   QRect aRect = SUIT_Tools::makeRect(myStartX, myStartY, myCurrX, myCurrY);
-  if ( !myRect.isEmpty() ) {
-    myRectBand->setGeometry( myRect );
-    myRectBand->setVisible( myRect.isValid() );
-  }
   myRectBand->setGeometry( aRect );
   myRectBand->setVisible( aRect.isValid() );
-  myRect = aRect;
 }
 
 /*!
