@@ -44,6 +44,7 @@ salomeinclude_HEADERS=		\
 	QtxMainWindow.h 	\
 	QtxMap.h		\
 	QtxMRUAction.h		\
+	QtxPopupMgr.h		\
 	QtxResourceMgr.h	\
 	QtxToolBar.h		\
 	QtxValidator.h		\
@@ -64,7 +65,6 @@ salomeinclude_HEADERS=		\
 	QtxMenuButton.h		\
 	QtxPathDialog.h		\
 	QtxPopupMenu.h		\
-	QtxPopupMgr.h		\
 	QtxResourceEdit.h	\
 	QtxSplash.h		\
 	QtxTable.h		\
@@ -92,6 +92,7 @@ dist_libqtx_la_SOURCES=		\
 	QtxLogoMgr.cxx		\
 	QtxMainWindow.cxx	\
 	QtxMRUAction.cxx	\
+	QtxPopupMgr.cxx		\
 	QtxResourceMgr.cxx	\
 	QtxToolBar.cxx		\
 	QtxValidator.cxx		\
@@ -112,7 +113,6 @@ dist_libqtx_la_SOURCES=		\
 	QtxMenuButton.cxx	\
 	QtxPathDialog.cxx	\
 	QtxPopupMenu.cxx	\
-	QtxPopupMgr.cxx		\
 	QtxResourceEdit.cxx	\
 	QtxSplash.cxx		\
 	QtxTable.cxx		\
@@ -134,6 +134,7 @@ MOC_FILES=				\
 	QtxLogoMgr_moc.cxx		\
 	QtxMainWindow_moc.cxx		\
 	QtxMRUAction_moc.cxx		\
+	QtxPopupMgr_moc.cxx		\
 	QtxToolBar_moc.cxx		\
 	QtxValidator_moc.cxx		\
 	QtxWorkspace_moc.cxx		\
@@ -154,7 +155,6 @@ MOC_FILES=				\
 	QtxMenuButton_moc.cxx		\
 	QtxPathDialog_moc.cxx		\
 	QtxPopupMenu_moc.cxx		\
-	QtxPopupMgr_moc.cxx		\
 	QtxSplash_moc.cxx		\
 	QtxTable_moc.cxx		\
 	QtxToolTip_moc.cxx

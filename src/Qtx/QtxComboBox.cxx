@@ -26,14 +26,11 @@
 /*!
   \class QtxComboBox
   \brief Enhanced version of Qt combo box class.
-  \warning The implementation is not yet finished!
 
   In addition to the QComboBox class, QtxComboBox supports 
   adding/removing the items with the associated unique identifiers.
   It also provides a way to set "cleared" state to the combo box -
   when no item is selected.
-
-  \todo Finalize the implementation: support adding/removing items by ID.
 */
 
 /*!

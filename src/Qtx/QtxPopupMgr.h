@@ -20,25 +20,27 @@
 #ifndef QTXPOPUPMGR_H
 #define QTXPOPUPMGR_H
 
-#include "QtxEvalExpr.h"
 #include "QtxActionMenuMgr.h"
 
 #include <QMap>
 
 class QtxPopupSelection;
-
-/*!
-  \class QPopupMgr
-*/
+class QtxEvalExpr;
+class QtxEvalParser;
 
 class QTX_EXPORT QtxPopupMgr : public QtxActionMenuMgr
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-  typedef enum { VisibleRule, EnableRule, ToggleRule } RuleType;
+  //! Menu item rule type
+  typedef enum { 
+    VisibleRule,   //!< menu item visibility state
+    EnableRule,    //!< menu item enable state
+    ToggleRule     //!< menu item toggle state
+  } RuleType;
 
-protected:
+private:
   class PopupCreator;
 
 public:
@@ -92,26 +94,28 @@ private:
   QtxPopupSelection* mySelection;
 };
 
-/*!
-  \class QtxPopupSelection
-*/
-
 class QTX_EXPORT QtxPopupSelection
 {
 public:
+  QtxPopupSelection();
+  virtual ~QtxPopupSelection();
+
   virtual int        count() const = 0;
-	virtual QVariant   parameter( const QString& ) const;
+  virtual QVariant   parameter( const QString& ) const;
   virtual QVariant   parameter( const int, const QString& ) const = 0;
 
   QString            option( const QString& ) const;
   void               setOption( const QString&, const QString& );
 
 private:
-	QString            equalityParam() const;
-	QString            selCountParam() const;
+  QString            equalityParam() const;
+  QString            selCountParam() const;
 
 private:
-  QMap<QString, QString> myOptions;
+  typedef QMap<QString, QString> OptionsMap;
+
+private:
+  OptionsMap         myOptions;
 };
 
 #endif

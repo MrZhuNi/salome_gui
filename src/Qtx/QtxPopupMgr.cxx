@@ -19,12 +19,14 @@
 
 #include "QtxPopupMgr.h"
 #include "QtxAction.h"
-
+#include "QtxEvalExpr.h"
 #include <QMenu>
 
 /*!
-  \return true if 'v1'<'v2'
-  This function can work with many types of values
+  \brief Used for comparing of two QVariant values.
+  \param v1 first argument for comparison
+  \param v2 second argument for comparison
+  \return \c true if \a v1 less than \a v2
 */
 bool operator<( const QVariant& v1, const QVariant& v2 )
 {
@@ -47,11 +49,11 @@ bool operator<( const QVariant& v1, const QVariant& v2 )
     {
       const QList<QVariant>& aList1 = v1.toList(), aList2 = v2.toList();
       QList<QVariant>::const_iterator anIt1 = aList1.begin(), aLast1 = aList1.end(),
-                                           anIt2 = aList2.begin(), aLast2 = aList2.end();
+	anIt2 = aList2.begin(), aLast2 = aList2.end();
       for ( ; anIt1 != aLast1 && anIt2 != aLast2;  anIt1++, anIt2++ )
       {
-	      if ( (*anIt1) != (*anIt2) )
-	        return (*anIt1)<(*anIt2);
+	if ( (*anIt1) != (*anIt2) )
+	  return (*anIt1)<(*anIt2);
       }
       return anIt1 == aLast1 && anIt2 != aLast2;
       break;      
@@ -67,7 +69,13 @@ bool operator<( const QVariant& v1, const QVariant& v2 )
 
 /*!
   \class QtxPopupMgr::PopupCreator
+  \internal
+  \brief Popup menu actions creator.
+
+  Used by Reader to create actions by reading descriptions from the file
+  and fill in the action manager with the actions.
 */
+
 class QtxPopupMgr::PopupCreator : public QtxActionMgr::Creator
 {
 public:
@@ -77,17 +85,17 @@ public:
   virtual int     append( const QString&, const bool,
                           const ItemAttributes&, const int );
 
-  virtual QString visibleRule( const ItemAttributes& ) const;
-  virtual QString toggleRule( const ItemAttributes& ) const;
+  virtual QString rule( const ItemAttributes&, 
+			const QtxPopupMgr::RuleType = VisibleRule ) const;
 
 private:
   QtxPopupMgr*    myMgr;
 };
 
 /*!
-  Constructor
-  \param r - menu reader
-  \param mgr - menu manager
+  \brief Constructor.
+  \param r menu action reader
+  \param mgr popup menu manager
 */
 QtxPopupMgr::PopupCreator::PopupCreator( QtxActionMgr::Reader* r,
                                          QtxPopupMgr* mgr )
@@ -97,18 +105,19 @@ QtxPopupMgr::PopupCreator::PopupCreator( QtxActionMgr::Reader* r,
 }
 
 /*!
-  Destructor
-*/QtxPopupMgr::PopupCreator::~PopupCreator()
+  \brief Destructor.
+*/
+QtxPopupMgr::PopupCreator::~PopupCreator()
 {
 }
 
-
 /*!
-  Appends new menu items
-  \param tag - tag of item
-  \param subMenu - it has submenu
-  \param attr - list of attributes
-  \param pId - id of action corresponding to parent item
+  \brief Create and append new action to the action manager.
+  \param tag item tag name
+  \param subMenu \c true if this item is submenu
+  \param attr attributes map
+  \param pId parent action ID
+  \return menu action ID
 */
 int QtxPopupMgr::PopupCreator::append( const QString& tag, const bool subMenu,
                                        const ItemAttributes& attr, const int pId )
@@ -155,9 +164,16 @@ int QtxPopupMgr::PopupCreator::append( const QString& tag, const bool subMenu,
     newAct->setChecked( toggleact.toLower() == "true" );
         
     connect( newAct );
-    int aid = mgr->registerAction( newAct, actId );
-    myMgr->setRule( newAct, visibleRule( attr ), QtxPopupMgr::VisibleRule );
-    myMgr->setRule( newAct, isToggle ? toggleRule( attr ) : QString(), QtxPopupMgr::ToggleRule );
+    int aid = mgr->registerAction( newAct, actId ); 
+    QString arule = rule( attr, QtxPopupMgr::VisibleRule );
+    if ( !arule.isEmpty() )
+      myMgr->setRule( newAct, arule, QtxPopupMgr::VisibleRule );
+    arule = rule( attr, QtxPopupMgr::EnableRule );
+    if ( !arule.isEmpty() )
+      myMgr->setRule( newAct, arule, QtxPopupMgr::EnableRule );
+    arule = rule( attr, QtxPopupMgr::ToggleRule );
+    if ( isToggle && !arule.isEmpty() )
+      myMgr->setRule( newAct, arule, QtxPopupMgr::ToggleRule );
     res = mgr->insert( aid, pId, intValue( attr, group, 0 ), intValue( attr, pos, -1 ) );
   }
 
@@ -165,29 +181,46 @@ int QtxPopupMgr::PopupCreator::append( const QString& tag, const bool subMenu,
 }
 
 /*!
-  \return visibility rule by attributes
-  Default implementation is empty
-*/
-QString QtxPopupMgr::PopupCreator::visibleRule( const ItemAttributes& ) const
-{
-  return QString::null;
-}
+  \brief Get the rule for the menu item.
 
-/*!
-  \return toggle rule by attributes
-  Default implementation is empty
+  Default implementation returns empty rule.
+
+  \param attr attributes map
+  \param ruleType rule type (QtxPopupMgr::RuleType)
+  \return rule for the menu item corresponding to the rule type
 */
-QString QtxPopupMgr::PopupCreator::toggleRule( const ItemAttributes& ) const
+QString QtxPopupMgr::PopupCreator::rule( const ItemAttributes& /*attr*/, 
+					 const QtxPopupMgr::RuleType /*ruleType*/ ) const
 {
-  return QString::null;
+  return QString();
 }
 
 /*!
   \class QPopupMgr
+  \brief Popup menu manager.
+
+  Menu manager allows using of set of action for automatic generating of
+  application context popup menu by reuquest and dynamic update of its
+  contents.
+
+  Use insert() methods to add menu items to the popup menu.
+
+  The visibility, enable and toggle state of the menu item is controlled
+  by the syntaxic rules, which can be set with setRule() methods.
+  The rules are parsed automatically with help of QtxEvalParser class.
+
+  QtxPopupSelection class is used as back-end for getting value of each
+  parameter found in the rule by the expression parser.
+  Use setSelection() and selection() to set/get the selection instance
+  for the popup menu manager.
+  
+  Popup menu manager automatically optimizes the menu by removing 
+  extra separators, hiding empty popup submenus etc.
 */
 
 /*!
-  Constructor
+  \brief Constructor.
+  \param object parent object
 */
 QtxPopupMgr::QtxPopupMgr( QObject* parent )
 : QtxActionMenuMgr( 0, parent ),
@@ -196,7 +229,9 @@ QtxPopupMgr::QtxPopupMgr( QObject* parent )
 }
 
 /*!
-  Constructor
+  \brief Constructor.
+  \param popup popup menu
+  \param object parent object
 */
 QtxPopupMgr::QtxPopupMgr( QMenu* popup, QObject* parent )
 : QtxActionMenuMgr( popup, parent ),
@@ -205,27 +240,43 @@ QtxPopupMgr::QtxPopupMgr( QMenu* popup, QObject* parent )
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxPopupMgr::~QtxPopupMgr()
 {
 }
 
+/*!
+  \brief Get popup menu.
+  \return popup menu
+*/
 QMenu* QtxPopupMgr::menu() const
 {
   return ::qobject_cast<QMenu*>( menuWidget() );
 }
 
+/*!
+  \brief Get popup menu.
+  \param menu popup menu
+*/
 void QtxPopupMgr::setMenu( QMenu* menu )
 {
   setMenuWidget( menu );
 }
 
+/*!
+  \brief Get selection.
+  \return current selection object
+*/
 QtxPopupSelection* QtxPopupMgr::selection() const
 {
   return mySelection;
 }
 
+/*!
+  \brief Set selection.
+  \param sel new selection object
+*/
 void QtxPopupMgr::setSelection( QtxPopupSelection* sel )
 {
   if ( mySelection == sel )
@@ -237,22 +288,29 @@ void QtxPopupMgr::setSelection( QtxPopupSelection* sel )
 }
 
 /*!
-  Additional version of registerAction
-  \param act - action to be registered
-  \param visible - rule for visibility state
-  \param toggle - rule for toggle on state
-  \param id - proposed id (if it is less than 0, then id will be generated automatically)
+  \brief Register an action and return its identifier.
+
+  If \a id is less than 0, the identifier for the action is generated automatically.
+  If action with given \a id is already registered, it will be re-registered.
+  If required \a id is already in use, new identifier is generatied; in this case
+  returning value will different from required one.
+
+  \param act action to be registered
+  \param id action ID
+  \param rule syntax rule
+  \param ruleType rule type (QtxPopupMgr::RuleType)
+  \return action ID (the same as \a id or generated one)
 */
-int QtxPopupMgr::registerAction( QAction* act, const int id, const QString& rule, const QtxPopupMgr::RuleType type )
+int QtxPopupMgr::registerAction( QAction* act, const int id, const QString& rule, const QtxPopupMgr::RuleType ruleType )
 {
   int _id = QtxActionMenuMgr::registerAction( act, id );
-  setRule( act, rule, type );
+  setRule( act, rule, ruleType );
   return _id;
 }
 
 /*!
-  Removes action from internal map
-  \param id - action id
+  \brief Unregister action from internal map.
+  \param id action ID
 */
 void QtxPopupMgr::unRegisterAction( const int id )
 {
@@ -270,9 +328,12 @@ void QtxPopupMgr::unRegisterAction( const int id )
 }
 
 /*!
-  \return true if manager has rule for action
-  \param act - action
-  \param visibility - if it is true, then rule for "visibility" is checked, otherwise - for "toggle"
+  \brief Insert action to the popup menu manager.
+  \param id action ID
+  \param pId parent menu action ID
+  \param rule syntax rule
+  \param ruleType rule type (QtxPopupMgr::RuleType)
+  \return action ID
 */
 int QtxPopupMgr::insert( const int id, const int pId, const QString& rule, const RuleType ruleType )
 {
@@ -281,6 +342,14 @@ int QtxPopupMgr::insert( const int id, const int pId, const QString& rule, const
   return res;
 }
 
+/*!
+  \brief Insert action to the popup menu manager.
+  \param a action
+  \param pId parent menu action ID
+  \param rule syntax rule
+  \param ruleType rule type (QtxPopupMgr::RuleType)
+  \return action ID
+*/
 int QtxPopupMgr::insert( QAction* a, const int pId, const QString& rule, const RuleType ruleType )
 {
   int res = QtxActionMenuMgr::insert( a, pId, -1 );
@@ -289,61 +358,65 @@ int QtxPopupMgr::insert( QAction* a, const int pId, const QString& rule, const R
 }
 
 /*!
-  \return Rule of a specified action
-  \param a - action
-  \param type - type of rule
+  \brief Get rule of type \a type for the action \a a.
+  \param a action
+  \param ruleType rule type (QtxPopupMgr::RuleType)
+  \return rule of required type
 */
-QString QtxPopupMgr::rule( QAction* a, const RuleType type ) const
+QString QtxPopupMgr::rule( QAction* a, const RuleType ruleType ) const
 {
   QString rule;
-  QtxEvalExpr* expr = expression( a, type );
+  QtxEvalExpr* expr = expression( a, ruleType );
   if ( expr )
     rule = expr->expression();
   return rule;
 }
 
 /*!
-  \return Rule of action with a specified id
-  \param id - action id
-  \param type - type of rule
+  \brief Get rule of type \a type for the action \a id.
+  \param id action ID
+  \param ruleType rule type (QtxPopupMgr::RuleType)
+  \return rule of required type
 */
-QString QtxPopupMgr::rule( const int id, const RuleType type ) const
+QString QtxPopupMgr::rule( const int id, const RuleType ruleType ) const
 {
-  return rule( action( id ), type );
+  return rule( action( id ), ruleType );
 }
 
 /*!
-  Sets new rule for action
-  \param act - action
-  \param rule - string expression of rule
-  \param type - type of rule
+  \brief Set rule of type \a type for the action \a a.
+  \param a action
+  \param rule rule
+  \param ruleType rule type (QtxPopupMgr::RuleType)
+  \return rule of required type
 */
-void QtxPopupMgr::setRule( QAction* act, const QString& rule, const RuleType type )
+void QtxPopupMgr::setRule( QAction* a, const QString& rule, const RuleType ruleType )
 {
-  if ( !act )
+  if ( !a )
     return;
 
-  QtxEvalExpr* expr = expression( act, type, true );
+  QtxEvalExpr* expr = expression( a, ruleType, true );
 
   expr->setExpression( rule );
 }
 
 /*!
-  Sets new rule for action
-  \param id - action id
-  \param rule - string expression of rule
-  \param type - type of rule
+  \brief Set rule of type \a type for the action \a id.
+  \param id action ID
+  \param rule rule
+  \param ruleType rule type (QtxPopupMgr::RuleType)
+  \return rule of required type
 */
-void QtxPopupMgr::setRule( const int id, const QString& rule, const RuleType type )
+void QtxPopupMgr::setRule( const int id, const QString& rule, const RuleType ruleType )
 {
-  setRule( action( id ), rule, type );
+  setRule( action( id ), rule, ruleType );
 }
 
 /*!
-  \return true if parser has finished work without errors
-  \param p - parser
+  \brief Calculate an expression.
+  \param p expression parser
+  \return \c true if parser has finished work without errors
 */
-
 bool QtxPopupMgr::result( QtxEvalParser* p ) const
 {
   bool res = false;
@@ -358,9 +431,14 @@ bool QtxPopupMgr::result( QtxEvalParser* p ) const
 }
 
 /*!
-  Fills parser parameters with help of Selection::globalParam() method
-  \param p - parser
-  \param specific - list will be filled with names of parameters depending on selection objects (not global)
+  \brief Fill the parser with parameters of the expression.
+
+  The values of the parameters are given from the selection object
+  (QtxPopupSelection).
+  
+  \param p expression parser
+  \param returning list of parameters names which are not retrieved from the selection
+  \sa selection()
 */
 void QtxPopupMgr::setParameters( QtxEvalParser* p, QStringList& specific ) const
 {
@@ -372,23 +450,24 @@ void QtxPopupMgr::setParameters( QtxEvalParser* p, QStringList& specific ) const
   {
     QVariant v = parameter( *it );
     if ( v.isValid() )
-	    p->setParameter( *it, v );
+      p->setParameter( *it, v );
     else
       specific.append( *it );
   }
 }
 
 /*!
-  \return true if rule of action is satisfied on current selection
-  \param act - action
-  \param visibility - what rule is checked: for visibility(true) or for toggle(false)
+  \brief Check the rule for the action.
+  \param act action
+  \param ruleType rule type (QtxPopupMgr::RuleType)
+  \return \c true if current selection satisfies the action rule
 */
-bool QtxPopupMgr::isSatisfied( QAction* act, const RuleType type ) const
+bool QtxPopupMgr::isSatisfied( QAction* act, const RuleType ruleType ) const
 {
   if ( !act )
     return false;
 
-  QtxEvalExpr* exp = expression( act, type );
+  QtxEvalExpr* exp = expression( act, ruleType );
   if ( !exp )
     return true;
 
@@ -405,26 +484,26 @@ bool QtxPopupMgr::isSatisfied( QAction* act, const RuleType type ) const
   {
     if ( mySelection )
     {
-	    res = false;
+      res = false;
       for ( int i = 0; i < mySelection->count() && !res; i++ )
       {
         QList<QVariant> c;
-	      for ( QStringList::const_iterator anIt1 = specific.begin(); anIt1 != specific.end(); ++anIt1 )
+	for ( QStringList::const_iterator anIt1 = specific.begin(); anIt1 != specific.end(); ++anIt1 )
           c.append( parameter( *anIt1, i ) );
         aCorteges.insert( c, 0 );
-	    }
-	    for ( QMap<QList<QVariant>, int>::const_iterator anIt = aCorteges.begin(); anIt  != aCorteges.end(); ++anIt )
-	    {
-	      const QList<QVariant>& aCortege = anIt.key();
-	      QStringList::const_iterator anIt1 = specific.begin(), aLast1 = specific.end();
-	      QList<QVariant>::const_iterator anIt2 = aCortege.begin();
-	      for ( ; anIt1 != aLast1; anIt1++, anIt2++ )
-	        p->setParameter( *anIt1, *anIt2 );
-	      res = res || result( p );
-	    }
+      }
+      for ( QMap<QList<QVariant>, int>::const_iterator anIt = aCorteges.begin(); anIt  != aCorteges.end(); ++anIt )
+      {
+	const QList<QVariant>& aCortege = anIt.key();
+	QStringList::const_iterator anIt1 = specific.begin(), aLast1 = specific.end();
+	QList<QVariant>::const_iterator anIt2 = aCortege.begin();
+	for ( ; anIt1 != aLast1; anIt1++, anIt2++ )
+	  p->setParameter( *anIt1, *anIt2 );
+	res = res || result( p );
+      }
     }
     else
-	    res = false;
+      res = false;
   }
   else
     res = result( p );
@@ -433,19 +512,19 @@ bool QtxPopupMgr::isSatisfied( QAction* act, const RuleType type ) const
 }
 
 /*!
-  \return true if item corresponding to action is visible
-  \param actId - action id
-  \param place - index of place
+  \brief Check if the menu item is visible.
+  \param id action ID
+  \param place some parent action ID
+  \return \c true if the action is visible
 */
-bool QtxPopupMgr::isVisible( const int actId, const int place ) const
+bool QtxPopupMgr::isVisible( const int id, const int place ) const
 {
-  return QtxActionMenuMgr::isVisible( actId, place ) && isSatisfied( action( actId ) );
+  return QtxActionMenuMgr::isVisible( id, place ) && isSatisfied( action( id ) );
 }
 
 /*!
-  Updates popup according to selection
-  \param p - popup menu
-  \param sel - selection
+  \brief Perform internal update of the popup menu according 
+  to the current selection.
 */
 void QtxPopupMgr::internalUpdate()
 {
@@ -465,9 +544,7 @@ void QtxPopupMgr::internalUpdate()
 }
 
 /*!
-  Updates popup according to selection
-  \param p - popup menu
-  \param sel - selection
+  \brief Update popup according to the current selection.
 */
 void QtxPopupMgr::updateMenu()
 {
@@ -475,12 +552,13 @@ void QtxPopupMgr::updateMenu()
 }
 
 /*!
-  \return reference to eval expression
-  \param a - action
-  \param type - rule type
-  \param create - create eval expression if it doesn't exist
+  \brief Get an syntax expression for the action according to the specified rule type.
+  \param a action
+  \param ruleType rule type (QtxPopupMgr::RuleType)
+  \param create if \c true an expression does not exist, create it
+  \return syntax expression
 */
-QtxEvalExpr* QtxPopupMgr::expression( QAction* a, const RuleType type, const bool create ) const
+QtxEvalExpr* QtxPopupMgr::expression( QAction* a, const RuleType ruleType, const bool create ) const
 {
   QtxEvalExpr* res = 0;
 
@@ -492,20 +570,20 @@ QtxEvalExpr* QtxPopupMgr::expression( QAction* a, const RuleType type, const boo
   if ( ruleMap.contains( a ) )
   {
     ExprMap& exprMap = ruleMap[a];
-    if ( exprMap.contains( type ) )
-      res = exprMap[type];
+    if ( exprMap.contains( ruleType ) )
+      res = exprMap[ruleType];
     else if ( create )
-      exprMap.insert( type, res = new QtxEvalExpr() );
+      exprMap.insert( ruleType, res = new QtxEvalExpr() );
   }
 
   return res;
 }
 
 /*!
-  Loads actions description from file
-  \param fname - name of file
-  \param r - reader of file
-  \return true on success
+  \brief Load actions description from the file.
+  \param fname file name
+  \param r action reader
+  \return \c true on success and \c false on error
 */
 bool QtxPopupMgr::load( const QString& fname, QtxActionMgr::Reader& r )
 {
@@ -513,6 +591,13 @@ bool QtxPopupMgr::load( const QString& fname, QtxActionMgr::Reader& r )
   return r.read( fname, cr );
 }
 
+/*
+  \brief Get the specified parameter value.
+  \param name parameter name
+  \param idx additional index used when used parameters with same names 
+  \return parameter value
+  \sa selection()
+*/
 QVariant QtxPopupMgr::parameter( const QString& name, const int idx ) const
 {
   QVariant val;
@@ -535,8 +620,36 @@ QVariant QtxPopupMgr::parameter( const QString& name, const int idx ) const
 
 /*!
   \class QtxPopupSelection
+  \brief This class is a part of the popup menu management system. 
+
+  The QtxPopupSelection class is used as back-end for getting value
+  of each parameter found in the rule by the expression parser.
+  
+  For example, it can be used for the analyzing of the currently 
+  selected objects and defining the values of the parameters used
+  in the rules syntax expression. Rules, in their turn, define
+  each action state - visibility, enabled and toggled state.
 */
 
+/*!
+  \brief Constructor.
+*/
+QtxPopupSelection::QtxPopupSelection()
+{
+}
+
+/*!
+  \brief Destructor.
+*/
+QtxPopupSelection::~QtxPopupSelection()
+{
+}
+
+/*!
+  \brief Get an option value.
+  \param optName option name
+  \return option value or empty string if option is not found
+*/
 QString QtxPopupSelection::option( const QString& optName ) const
 {
   QString opt;
@@ -545,17 +658,20 @@ QString QtxPopupSelection::option( const QString& optName ) const
   return opt;
 }
 
+/*!
+  \brief Set an option value.
+  \param optName option name
+  \param opt option value
+*/
 void QtxPopupSelection::setOption( const QString& optName, const QString& opt )
 {
   myOptions.insert( optName, opt );
 }
 
 /*!
-  \return value of global parameter (depending on whole selection, but not
-  dependending on one object of selection)
-  \param str - name of parameter
-
-  By default, it returns count of selected objects ("selcount") and list of parameters ("$<name>")
+  \brief Get the parameter value.
+  \param str parameter name
+  \return parameter value
 */
 QVariant QtxPopupSelection::parameter( const QString& str ) const
 {
@@ -569,9 +685,9 @@ QVariant QtxPopupSelection::parameter( const QString& str ) const
     {
       QVariant v = parameter( i, par );
       if ( v.isValid() )
-	      QtxEvalSetSets::add( set, v );
+	QtxEvalSetSets::add( set, v );
       else
-	      return QVariant();
+	return QVariant();
     }
     return set;
   }
@@ -580,7 +696,8 @@ QVariant QtxPopupSelection::parameter( const QString& str ) const
 }
 
 /*!
-  \return symbole to detect name of parameter list
+  \brief Get symbol which detects the name of the parameter list.
+  \return equality symbol (by default, "$")
 */
 QString QtxPopupSelection::equalityParam() const
 {
@@ -591,7 +708,8 @@ QString QtxPopupSelection::equalityParam() const
 }
 
 /*!
-  \return name of parameter for count of selected objects
+  \brief Get name of the parameter, specifing number of selected objects
+  \return parameter name (by default, "selcount")
 */
 QString QtxPopupSelection::selCountParam() const
 {
@@ -600,3 +718,17 @@ QString QtxPopupSelection::selCountParam() const
     str = "selcount";
   return str;
 }
+
+/*
+  \fn int QtxPopupSelection::count() const;
+  \brief Get number of the selected objects.
+  \return nb of selected objects
+*/
+
+/*
+  \fn QVariant QtxPopupSelection::parameter( const int idx, const QString& name ) const;
+  \brief Get number of the selected objects.
+  \param idx parameter index
+  \param name parameter name
+  \return parameter value
+*/
