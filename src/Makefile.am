@@ -61,7 +61,7 @@ if ENABLE_SALOMEOBJECT
 # VSR: this is the original packages list
 #    SUBDIRS += SOCC
 # VSR: already migrated to Qt4 packages
-    SUBDIRS += 
+    SUBDIRS += SOCC
 endif
 endif
 if ENABLE_PYCONSOLE
