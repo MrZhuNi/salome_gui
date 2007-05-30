@@ -23,10 +23,11 @@
 #include "QtxActionMenuMgr.h"
 
 #include <QMap>
+#include <QVariant>
 
-class QtxPopupSelection;
 class QtxEvalExpr;
 class QtxEvalParser;
+class QtxPopupSelection;
 
 class QTX_EXPORT QtxPopupMgr : public QtxActionMenuMgr
 {
