@@ -18,9 +18,9 @@
 //
 #include "VTKViewer_RenderWindow.h"
 
-#include <qcolordialog.h>
-#include <qpopupmenu.h>
-#include <qcursor.h>
+#include <QColorDialog>
+#include <QX11Info>
+#include <QContextMenuEvent>
 
 #include <stdlib.h>
 #include <math.h>
@@ -40,13 +40,14 @@
  *\param name   - render window name.
  */
 VTKViewer_RenderWindow::VTKViewer_RenderWindow(QWidget* parent, const char* name) :
-QWidget(parent, name, 
-        Qt::WStyle_NoBorder | Qt::WDestructiveClose | 
-        Qt::WResizeNoErase | Qt::WRepaintNoErase)
+QWidget(parent, Qt::FramelessWindowHint )
 {
+  setObjectName( name );
+  setAttribute( Qt::WA_DeleteOnClose );
+
   myRW = vtkRenderWindow::New();
 #ifndef WIN32
-  myRW->SetDisplayId((void*)x11Display());
+  myRW->SetDisplayId((void*)(QX11Info::display()));
 #endif
   myRW->SetWindowId((void*)winId());
   myRW->DoubleBufferOn();

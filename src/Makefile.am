@@ -44,7 +44,7 @@ if ENABLE_VTKVIEWER
 # VSR: this is the original packages list
 #  SUBDIRS += VTKViewer
 # VSR: already migrated to Qt4 packages
-  SUBDIRS += 
+  SUBDIRS += VTKViewer
 if ENABLE_SALOMEOBJECT
 # VSR: this is the original packages list
 #    SUBDIRS += SVTK
