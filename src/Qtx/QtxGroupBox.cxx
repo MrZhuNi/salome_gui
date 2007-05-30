@@ -21,26 +21,16 @@
 
 #include "QtxGroupBox.h"
 
-#include <qhbox.h>
-#include <qlayout.h>
-#include <qtoolbutton.h>
-#include <qapplication.h>
-#include <qobjectlist.h>
+#include <QLayout>
+#include <QObjectList>
+#include <QToolButton>
+#include <QApplication>
 
 /*!
   Constructor
 */
-QtxGroupBox::QtxGroupBox( QWidget* parent, const char* name )
-: QGroupBox( parent, name ),
-myContainer( 0 )
-{
-}
-
-/*!
-  Constructor
-*/
-QtxGroupBox::QtxGroupBox( const QString& title, QWidget* parent, const char* name )
-: QGroupBox( title, parent, name ),
+QtxGroupBox::QtxGroupBox( QWidget* parent )
+: QGroupBox( parent ),
 myContainer( 0 )
 {
   initialize();
@@ -49,19 +39,8 @@ myContainer( 0 )
 /*!
   Constructor
 */
-QtxGroupBox::QtxGroupBox( int strips, Orientation o, QWidget* parent, const char* name )
-: QGroupBox( strips, o, parent, name ),
-myContainer( 0 )
-{
-  initialize();
-}
-
-/*!
-  Constructor
-*/
-QtxGroupBox::QtxGroupBox( int strips, Orientation o, const QString& title,
-                                          QWidget* parent, const char* name )
-: QGroupBox( strips, o, title, parent, name ),
+QtxGroupBox::QtxGroupBox( const QString& title, QWidget* parent )
+: QGroupBox( title, parent ),
 myContainer( 0 )
 {
   initialize();
@@ -72,7 +51,6 @@ myContainer( 0 )
 */
 QtxGroupBox::~QtxGroupBox()
 {
-  delete myContainer;
 }
 
 /*!
@@ -80,7 +58,10 @@ QtxGroupBox::~QtxGroupBox()
 */
 void QtxGroupBox::initialize()
 {
-  myContainer = new QHBox( this, 0, WStyle_Customize | WStyle_NoBorderEx | WStyle_Tool );
+  myContainer = new QWidget( this );
+  QHBoxLayout* base = new QHBoxLayout( myContainer );
+  base->setMargin( 0 );
+  base->setSpacing( 0 );
 
   updateTitle();
 }
@@ -94,7 +75,7 @@ void QtxGroupBox::insertTitleWidget( QWidget* wid )
   if ( !myContainer )
     return;
 
-  wid->reparent( myContainer, QPoint( 0, 0 ), true );
+  myContainer->layout()->addWidget( wid );
   wid->installEventFilter( this );
 
   updateTitle();
@@ -109,58 +90,10 @@ void QtxGroupBox::removeTitleWidget( QWidget* wid )
   if ( !myContainer || wid->parentWidget() != myContainer )
     return;
 
-  wid->reparent( 0, QPoint( 0, 0 ), false );
+  myContainer->layout()->removeWidget( wid );
+  wid->setParent( 0 );
   wid->removeEventFilter( this );
-
-  updateTitle();
-}
-
-/*!
-  Calculates margin
-*/
-void QtxGroupBox::adjustInsideMargin()
-{
-  QApplication::sendPostedEvents( myContainer, QEvent::ChildInserted );
-
-  myContainer->resize( myContainer->minimumSizeHint() );
-
-  setInsideMargin( myContainer->height() );
-}
-
-/*!
-  Sets the alignment of the group box title
-*/
-void QtxGroupBox::setAlignment( int align )
-{
-  QGroupBox::setAlignment( align );
-
-  updateTitle();
-}
-
-/*!
-  Sets title of groop box
-*/
-void QtxGroupBox::setTitle( const QString& title )
-{
-  QGroupBox::setTitle( title );
-
-  updateTitle();
-}
-
-/*!
-  Changes the layout of the group box
-  \param strips - number of column/rows
-  \param o - orientation
-*/
-void QtxGroupBox::setColumnLayout( int strips, Orientation o )
-{
-  if ( myContainer )
-    myContainer->reparent( 0, QPoint( 0, 0 ), false );
-
-  QGroupBox::setColumnLayout( strips, o );
-
-  if ( myContainer )
-    myContainer->reparent( this, QPoint( 0, 0 ), false );
+  wid->hide();
 
   updateTitle();
 }
@@ -168,21 +101,12 @@ void QtxGroupBox::setColumnLayout( int strips, Orientation o )
 /*!
   Shows group box
 */
-void QtxGroupBox::show()
+void QtxGroupBox::setVisible( bool on )
 {
-  QGroupBox::show();
+  if ( on )
+    updateTitle();
 
-  updateTitle();
-}
-
-/*!
-  Updates group box
-*/
-void QtxGroupBox::update()
-{
-  QGroupBox::update();
-
-  updateTitle();
+  QGroupBox::setVisible( on );
 }
 
 /*!
@@ -190,21 +114,7 @@ void QtxGroupBox::update()
 */
 QSize QtxGroupBox::sizeHint() const
 {
-  QSize sz = QGroupBox::sizeHint();
-
-  int sw = titleSize().width();
-
-  if ( myContainer )
-  {
-    if ( alignment() == AlignCenter )
-      sw += 2 * ( myContainer->width() + 5 );
-    else
-      sw += 1 * ( myContainer->width() + 5 );
-  }
-
-  sw += frameRect().left();
-
-  return QSize( QMAX( sz.width(), sw ), sz.height() );
+  return expandTo( QGroupBox::sizeHint() );
 }
 
 /*!
@@ -212,21 +122,7 @@ QSize QtxGroupBox::sizeHint() const
 */
 QSize QtxGroupBox::minimumSizeHint() const
 {
-  QSize sz = QGroupBox::minimumSizeHint();
-
-  int sw = titleSize().width() + myContainer ? myContainer->width() + 5 : 0;
-
-  if ( myContainer )
-  {
-    if ( alignment() == AlignCenter )
-      sw += 2 * ( myContainer->width() + 5 );
-    else
-      sw += 1 * ( myContainer->width() + 5 );
-  }
-
-  sw += frameRect().left();
-
-  return QSize( QMAX( sz.width(), sw ), sz.height() );
+  return expandTo( QGroupBox::minimumSizeHint() );
 }
 
 /*!
@@ -238,9 +134,45 @@ bool QtxGroupBox::eventFilter( QObject* obj, QEvent* e )
   if ( myContainer && obj->parent() == myContainer &&
        ( type == QEvent::Show || type == QEvent::ShowToParent ||
          type == QEvent::Hide || type == QEvent::HideToParent ) )
-    QApplication::postEvent( this, new QCustomEvent( QEvent::User ) );
+    QApplication::postEvent( this, new QEvent( QEvent::User ) );
 
   return QGroupBox::eventFilter( obj, e );
+}
+
+QWidget* QtxGroupBox::widget() const
+{
+  if ( !layout() )
+    return 0;
+
+  QWidget* w = 0;
+  for ( int i = 0; i < (int)layout()->count() && !w; i++ )
+    w = layout()->itemAt( i )->widget();
+  return w;
+}
+
+void QtxGroupBox::setWidget( QWidget* wid )
+{
+  QWidget* w = widget();
+  if ( w == wid )
+    return;
+
+  if ( layout() )
+    layout()->removeWidget( w );
+
+  if ( !wid )
+    delete layout();
+  else if ( !layout() )
+  {
+    QLayout* bl = new QVBoxLayout( this );
+    bl->setMargin( 0 );
+    bl->setSpacing( 0 );
+  }
+
+  if ( layout() )
+    layout()->addWidget( wid );
+
+  if ( wid )
+    wid->updateGeometry();
 }
 
 /*!
@@ -258,24 +190,17 @@ void QtxGroupBox::resizeEvent( QResizeEvent* e )
 */
 void QtxGroupBox::childEvent( QChildEvent* e )
 {
-  if ( e->type() == QEvent::ChildInserted && e->child() == myContainer )
+/*
+  if ( e->type() == QEvent::ChildAdded && e->child() == myContainer )
     return;
-
+*/
   QGroupBox::childEvent( e );
 }
 
 /*!
   Event filter of custom items
 */
-void QtxGroupBox::customEvent( QCustomEvent* )
-{
-  updateTitle();
-}
-
-/*!
-  On frame changed
-*/
-void QtxGroupBox::frameChanged()
+void QtxGroupBox::customEvent( QEvent* )
 {
   updateTitle();
 }
@@ -285,21 +210,7 @@ void QtxGroupBox::frameChanged()
 */
 QSize QtxGroupBox::titleSize() const
 {
-  QSize sz( 0, 0 );
-
-  if ( layout() )
-  {
-    QSpacerItem* si = 0;
-    for ( QLayoutIterator it = layout()->iterator(); it.current() && !si; ++it )
-      si = it.current()->spacerItem();
-    if ( si )
-      sz = si->sizeHint();
-  }
-
-  int w = sz.width();
-  int h = sz.height() + insideMargin();
-
-  return QSize( w, h );
+  return QSize( fontMetrics().width( title() ), fontMetrics().height() );
 }
 
 /*!
@@ -311,53 +222,84 @@ void QtxGroupBox::updateTitle()
     return;
 
   int align = alignment();
-  if ( align == AlignAuto )
-    align = QApplication::reverseLayout() ? AlignRight : AlignLeft;
 
   if ( title().isEmpty() )
-    align = AlignRight;
+    align = Qt::AlignRight;
 
   QSize ts = titleSize();
 
   int m = 5;
 
-  int w = frameRect().width() - ts.width();
-  if ( align == AlignCenter )
+  int w = width() - ts.width();
+  if ( align == Qt::AlignCenter )
     w = w / 2;
 
   w -= m;
 
-  QApplication::sendPostedEvents( myContainer, QEvent::ChildInserted );
   myContainer->resize( myContainer->minimumSizeHint() );
 
   bool vis = false;
-  const QObjectList* list = myContainer->children();
-  if ( list )
-  {
-    for ( QObjectListIt it( *list ); it.current() && !vis; ++it )
-      vis = it.current()->isWidgetType() &&
-            ((QWidget*)it.current())->isVisibleTo( myContainer );
-  }
+  const QObjectList list = myContainer->children();
+  for ( QObjectList::const_iterator it = list.begin(); it != list.end() && !vis; ++it )
+    vis = (*it)->isWidgetType() && ((QWidget*)(*it))->isVisibleTo( myContainer );
 
-  if ( myContainer->height() > ts.height() || myContainer->width() > w || !vis )
+  if ( !vis )
     myContainer->hide();
   else
   {
     int x = 0;
-    if ( align == AlignRight )
-      x = frameRect().left() + m;
+    if ( align == Qt::AlignRight )
+      x = rect().left() + m;
     else
-      x = frameRect().right() - myContainer->width() - m;
+      x = rect().right() - myContainer->width() - m;
 
-    int y = frameRect().top() - ( myContainer->height() - frameWidth() ) / 2;
+    int y = rect().top() - ( myContainer->height() - ts.height() ) / 2;
 
-    QPoint pos( x, QMAX( 0, y ) );
-    pos = mapToGlobal( pos );
-    if ( myContainer->parentWidget() )
-      pos = myContainer->parentWidget()->mapFromGlobal( pos );
+    QPoint pos( x, qMax( 0, y ) );
     myContainer->move( pos );
     myContainer->show();
   }
 
+  if ( layout() )
+  {
+    if ( myContainer && myContainer->isVisibleTo( this ) )
+      setInsideMargin( qMax( 0, myContainer->height() - ts.height() ) );
+    else
+      setInsideMargin( 0 );
+  }
+
   updateGeometry();
+}
+
+QSize QtxGroupBox::expandTo( const QSize& sz ) const
+{
+  int sh = 0;
+  int sw = titleSize().width();
+  if ( myContainer && myContainer->isVisibleTo( (QWidget*)this ) )
+  {
+    if ( alignment() == Qt::AlignCenter )
+      sw += 2 * ( myContainer->width() + 5 );
+    else
+      sw += 1 * ( myContainer->width() + 5 );
+    sw += 20;
+    sh = myContainer->height() + 5;
+  }
+  return QSize( qMax( sz.width(), sw ), qMax( sz.height(), sh ) );
+}
+
+void QtxGroupBox::setInsideMargin( const int m )
+{
+  QVBoxLayout* bl = ::qobject_cast<QVBoxLayout*>( layout() );
+
+  if ( !bl )
+    return;
+
+  QSpacerItem* spacer = 0;
+  if ( bl->count() )
+    spacer = bl->itemAt( 0 )->spacerItem();
+
+  if ( !spacer )
+    bl->insertSpacing( 0, m );
+  else
+    spacer->changeSize( 0, m );
 }
