@@ -117,8 +117,6 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   resetButton->setText( tr( "Reset"  ) );
   GroupPointLayout->addWidget( resetButton, 0, 6 );
 
-  GroupPoint->setLayout(GroupPointLayout);
-
   /***************************************************************/
   GroupDirection = new QGroupBox( this );
   GroupDirection->setObjectName( "GroupDirection" );
@@ -169,8 +167,6 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   DirectionCB->insertItem(DirectionCB->count(),tr("||Z-X"));
   GroupDirectionLayout->addWidget( DirectionCB, 1, 0, 1, 6 );
   
-  GroupDirection->setLayout(GroupDirectionLayout);
-
   /***************************************************************/
   
   PreviewChB = new QCheckBox( tr("Preview") ,this );
@@ -198,8 +194,6 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   buttonClose->setText( tr( "BUT_CLOSE"  ) );
   buttonClose->setAutoDefault( TRUE );
   GroupButtonsLayout->addWidget( buttonClose );
-
-  GroupButtons->setLayout(GroupButtonsLayout);
 
   /***************************************************************/
   
