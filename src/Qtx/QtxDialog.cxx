@@ -946,6 +946,8 @@ void QtxDialog::update()
 */
 void QtxDialog::setVisible( bool on )
 {
+  resize( sizeHint() );
+
   QDialog::setVisible( on );
 
   if ( on )

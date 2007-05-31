@@ -72,7 +72,7 @@ QSize QtxGridBox::Space::minimumSizeHint() const
 /*!
   \ class QtxGridBox
 */
-QtxGridBox::QtxGridBox( QWidget* parent )
+QtxGridBox::QtxGridBox( QWidget* parent, const int m, const int s )
 : QWidget( parent ),
 myCols( 1 ),
 myOrient( Qt::Vertical ),
@@ -81,10 +81,11 @@ myCol( 0 ),
 myRow( 0 )
 {
   myLayout = new QGridLayout( this );
-  myLayout->setMargin( 0 );
+  myLayout->setMargin( m );
+  myLayout->setSpacing( s );
 }
 
-QtxGridBox::QtxGridBox( const int cols, Qt::Orientation o, QWidget* parent )
+QtxGridBox::QtxGridBox( const int cols, Qt::Orientation o, QWidget* parent, const int m, const int s )
 : QWidget( parent ),
 myCols( cols ),
 myOrient( o ),
@@ -94,7 +95,8 @@ myCol( 0 ),
 myRow( 0 )
 {
   myLayout = new QGridLayout( this );
-  myLayout->setMargin( 0 );
+  myLayout->setMargin( m );
+  myLayout->setSpacing( s );
 }
 
 QtxGridBox::~QtxGridBox()
@@ -151,6 +153,26 @@ void QtxGridBox::addSpace( const int sp )
   new Space( sp, this );
 }
 
+int QtxGridBox::insideMargin() const
+{
+  return myLayout->margin();
+}
+
+int QtxGridBox::insideSpacing() const
+{
+  return myLayout->spacing();
+}
+
+void QtxGridBox::setInsideMargin( const int m )
+{
+  myLayout->setMargin( m );
+}
+
+void QtxGridBox::setInsideSpacing( const int s )
+{
+  myLayout->setSpacing( s );
+}
+
 bool QtxGridBox::eventFilter( QObject* o, QEvent* e )
 {
   if ( skipInvisible() && ( e->type() == QEvent::Show || e->type() == QEvent::ShowToParent ||
@@ -202,9 +224,11 @@ void QtxGridBox::arrangeWidgets()
 {
   myRow = myCol = 0;
   int m = myLayout ? myLayout->margin() : 0;
+  int s = myLayout ? myLayout->spacing() : 0;
   delete myLayout;
   myLayout = new QGridLayout( this );
-  myLayout->setMargin( 0 );
+  myLayout->setMargin( m );
+  myLayout->setSpacing( s );
 
   QObjectList list = children();
   for ( QObjectList::iterator it = list.begin(); it != list.end(); ++it )

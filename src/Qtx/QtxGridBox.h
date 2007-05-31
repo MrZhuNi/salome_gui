@@ -35,8 +35,8 @@ class QTX_EXPORT QtxGridBox : public QWidget
   class Space;
 
 public:
-  QtxGridBox( QWidget* = 0 );
-  QtxGridBox( const int, Qt::Orientation, QWidget* = 0 );
+  QtxGridBox( QWidget* = 0, const int = 5, const int = 5 );
+  QtxGridBox( const int, Qt::Orientation, QWidget* = 0, const int = 5, const int = 5 );
   virtual ~QtxGridBox();
 
   int             columns() const;
@@ -51,6 +51,11 @@ public:
   void            setSkipInvisible( const bool );
 
   void            addSpace( const int );
+
+  int             insideMargin() const;
+  int             insideSpacing() const;
+  void            setInsideMargin( const int );
+  void            setInsideSpacing( const int );
 
   virtual bool    eventFilter( QObject*, QEvent* );
 

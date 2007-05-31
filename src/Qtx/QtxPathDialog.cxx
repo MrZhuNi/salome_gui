@@ -21,6 +21,7 @@
 
 #include "QtxPathDialog.h"
 
+#include "QtxGridBox.h"
 #include "QtxGroupBox.h"
 
 #include <qdir.h>
@@ -29,7 +30,9 @@
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qfileinfo.h>
-#include <qobjectlist.h>
+
+#include <QObjectList>
+
 #include <qstringlist.h>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
@@ -63,15 +66,16 @@ static const char* open_icon[] = {
 /*!
   Constructor.
 */
-QtxPathDialog::QtxPathDialog( const bool import, QWidget* parent, const bool modal, const bool resize, const int buttons, WFlags f )
-: QtxDialog( parent, 0, modal, resize, buttons, f ),
+QtxPathDialog::QtxPathDialog( const bool import, QWidget* parent, const bool modal,
+                              const bool resize, const int buttons, Qt::WindowFlags f )
+: QtxDialog( parent, modal, resize, buttons, f ),
 myDefault( -1 ),
 myEntriesFrame( 0 ),
 myOptionsFrame( 0 )
 {
 	initialize();
 
-	setCaption( tr( import ? "Open file" : "Save file" ) );
+	setWindowTitle( tr( import ? "Open file" : "Save file" ) );
 
 	setDefaultEntry( createFileEntry( tr( "File name" ), import ? OpenFile : SaveFile ) );
 	QLineEdit* le = fileEntry( defaultEntry() );
@@ -81,18 +85,23 @@ myOptionsFrame( 0 )
 	validate();
 
 	setFocusProxy( le );
+
+  updateVisibility();
 }
 
 /*!
   Constructor.
 */
-QtxPathDialog::QtxPathDialog( QWidget* parent, const bool modal, const bool resize, const int buttons, WFlags f )
-: QtxDialog( parent, 0, modal, resize, buttons, f ),
+QtxPathDialog::QtxPathDialog( QWidget* parent, const bool modal,
+                              const bool resize, const int buttons, Qt::WindowFlags f )
+: QtxDialog( parent, modal, resize, buttons, f ),
 myDefault( -1 ),
 myEntriesFrame( 0 ),
 myOptionsFrame( 0 )
 {
 	initialize();
+
+  updateVisibility();
 }
 
 /*!
@@ -125,7 +134,7 @@ void QtxPathDialog::setFileName( const QString& txt, const bool autoExtension )
 */
 QString QtxPathDialog::filter() const
 {
-	return myFilter;
+	return filter( defaultEntry() );
 }
 
 /*!
@@ -134,25 +143,18 @@ QString QtxPathDialog::filter() const
 */
 void QtxPathDialog::setFilter( const QString& fltr )
 {
-	myFilter = fltr;
+	setFilter( defaultEntry(), fltr );
 }
 
 /*!
-  Shows path dialog
+  Shows/hides path dialog
 */
-void QtxPathDialog::show()
+void QtxPathDialog::setVisible( bool on )
 {
-	if ( hasVisibleChildren( myEntriesFrame ) )
-		myEntriesFrame->show();
-	else
-		myEntriesFrame->hide();
+  if ( on )
+    updateVisibility();
 
-	if ( hasVisibleChildren( myOptionsFrame ) )
-		myOptionsFrame->show();
-	else
-		myOptionsFrame->hide();
-
-	QtxDialog::show();
+	QtxDialog::setVisible( on );
 }
 
 /*!
@@ -165,8 +167,10 @@ void QtxPathDialog::onBrowse()
 	int id = -1;
 
 	for ( FileEntryMap::Iterator it = myEntries.begin(); it != myEntries.end() && id == -1; ++it )
-		if ( it.data().btn == obj )
+  {
+		if ( it.value().btn == obj )
 			id = it.key();
+  }
 
 	if ( id == -1 )
 		return;
@@ -177,39 +181,43 @@ void QtxPathDialog::onBrowse()
 
 	if ( !entry.dlg )
 	{
-		entry.dlg = new QFileDialog( QDir::current().path(), QString::null, this, 0, true );
-		entry.dlg->setCaption( caption() );
+		entry.dlg = new QFileDialog( this, windowTitle(), QDir::current().path() );
 		switch ( entry.mode )
 		{
 		case NewDir:
 		case OpenDir:
 		case SaveDir:
 			isDir = true;
-			entry.dlg->setMode( QFileDialog::DirectoryOnly );
+			entry.dlg->setFileMode( QFileDialog::DirectoryOnly );
 			break;
 		case SaveFile:
-			entry.dlg->setMode( QFileDialog::AnyFile );
+			entry.dlg->setFileMode( QFileDialog::AnyFile );
 			break;
 		case OpenFile:
 		default:
-			entry.dlg->setMode( QFileDialog::ExistingFile );
+			entry.dlg->setFileMode( QFileDialog::ExistingFiles );
 			break;
 		}
 	}
 
 	if ( !isDir )
-		entry.dlg->setFilters( prepareFilters() );
-	entry.dlg->setSelection( fileName( id ) );
+  {
+    QStringList fList = prepareFilters( entry.filter );
+    if ( !fList.isEmpty() )
+		  entry.dlg->setFilters( fList );
+  }
+	entry.dlg->selectFile( fileName( id ) );
 
 	if ( entry.dlg->exec() != Accepted )
 		return;
 
-	QString fName = entry.dlg->selectedFile();
+	QStringList fileList = entry.dlg->selectedFiles();
+  QString fName = !fileList.isEmpty() ? fileList.first() : QString();
 
 	if ( fName.isEmpty() )
 		return;
 
-	if ( QFileInfo( fName ).extension().isEmpty() && !isDir )
+  if ( Qtx::extension( fName ).isEmpty() && !isDir )
 		fName = autoExtension( fName, entry.dlg->selectedFilter() );
 
 	fName = QDir::convertSeparators( fName );
@@ -241,8 +249,10 @@ void QtxPathDialog::onReturnPressed()
 
 	int id = -1;
 	for ( FileEntryMap::Iterator it = myEntries.begin(); it != myEntries.end() && id == -1; ++it )
-		if ( it.data().edit == obj )
+  {
+		if ( it.value().edit == obj )
 			id = it.key();
+  }
 
 	if ( id == -1 )
 		return;
@@ -276,8 +286,10 @@ bool QtxPathDialog::isValid()
 {
 	bool ok = true;
 	for ( FileEntryMap::Iterator it = myEntries.begin(); it != myEntries.end() && ok; ++it )
-		if ( it.data().edit->isEnabled() )
-			ok = !it.data().edit->text().stripWhiteSpace().isEmpty();
+  {
+		if ( it.value().edit->isEnabled() )
+			ok = !it.value().edit->text().trimmed().isEmpty();
+  }
 
 	return ok;
 }
@@ -294,11 +306,11 @@ bool QtxPathDialog::acceptData() const
 	FileEntryMap::ConstIterator it;
 	for ( it = myEntries.begin(); it != myEntries.end() && ok; ++it )
 	{
-		const FileEntry& entry = it.data();
+		const FileEntry& entry = it.value();
 		QFileInfo fileInfo( entry.edit->text() );
 		if ( entry.edit->text().isEmpty() )
 		{
-			QMessageBox::critical( parent, caption(), tr( "File name not specified" ),
+			QMessageBox::critical( parent, windowTitle(), tr( "File name not specified" ),
 								   QMessageBox::Ok, QMessageBox::NoButton );
 			ok = false;
 		}
@@ -307,20 +319,20 @@ bool QtxPathDialog::acceptData() const
 		case OpenFile:
 			if ( !fileInfo.exists() )
 			{
-				QMessageBox::critical( parent, caption(), tr( "File \"%1\" does not exist" ).arg( fileInfo.filePath() ),
+				QMessageBox::critical( parent, windowTitle(), tr( "File \"%1\" does not exist" ).arg( fileInfo.filePath() ),
 									   QMessageBox::Ok, QMessageBox::NoButton );
 				ok = false;
 			}
 			break;
 		case SaveFile:
 			if ( fileInfo.exists() )
-				ok = QMessageBox::warning( parent, caption(), tr( "File \"%1\" already exist. Do you want to overwrite it?" ).arg( fileInfo.filePath() ),
+				ok = QMessageBox::warning( parent, windowTitle(), tr( "File \"%1\" already exist. Do you want to overwrite it?" ).arg( fileInfo.filePath() ),
 										   QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes;
 			break;
 		case OpenDir:
 			if ( !fileInfo.exists() || !fileInfo.isDir() )
 			{
-				QMessageBox::critical( parent, caption(), tr( "Directory \"%1\" does not exist" ).arg( fileInfo.filePath() ),
+				QMessageBox::critical( parent, windowTitle(), tr( "Directory \"%1\" does not exist" ).arg( fileInfo.filePath() ),
 									   QMessageBox::Ok, QMessageBox::NoButton );
 				ok = false;
 			}
@@ -328,7 +340,7 @@ bool QtxPathDialog::acceptData() const
 		case SaveDir:
 			if ( fileInfo.exists() && !fileInfo.isDir() )
 			{
-				QMessageBox::critical( parent, caption(), tr( "Directory \"%1\" can't be created because file with the same name exist" ).arg( fileInfo.filePath() ),
+				QMessageBox::critical( parent, windowTitle(), tr( "Directory \"%1\" can't be created because file with the same name exist" ).arg( fileInfo.filePath() ),
 									   QMessageBox::Ok, QMessageBox::NoButton );
 				ok = false;
 			}
@@ -338,12 +350,12 @@ bool QtxPathDialog::acceptData() const
 			{
 				if ( !fileInfo.isDir() )
 				{
-					QMessageBox::critical( parent, caption(), tr( "Directory \"%1\" can't be created because file with the same name exist" ).arg( fileInfo.filePath() ),
+					QMessageBox::critical( parent, windowTitle(), tr( "Directory \"%1\" can't be created because file with the same name exist" ).arg( fileInfo.filePath() ),
 										   QMessageBox::Ok, QMessageBox::NoButton );
 					ok = false;
 				}
 				else if ( QDir( fileInfo.filePath() ).count() > 2 )
-					ok = QMessageBox::warning( parent, caption(), tr( "Directory \"%1\" not empty. Do you want to remove all files in this directory?" ).arg( fileInfo.filePath() ),
+					ok = QMessageBox::warning( parent, windowTitle(), tr( "Directory \"%1\" not empty. Do you want to remove all files in this directory?" ).arg( fileInfo.filePath() ),
 											   QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes;
 			}
 			break;
@@ -382,7 +394,6 @@ QString QtxPathDialog::fileName( const int id ) const
 	QString res;
 	if ( myEntries.contains( id ) )
 		res = myEntries[id].edit->text();
-
 	return res;
 }
 
@@ -400,10 +411,28 @@ void QtxPathDialog::setFileName( const int id, const QString& txt, const bool au
 	if ( le )
 	{
 		if ( autoExt && ( mode == OpenFile || mode == SaveFile ) )
-			le->setText( autoExtension( txt ) );
+			le->setText( autoExtension( txt, filter( id ) ) );
 		else
 			le->setText( txt );
 	}
+}
+
+/*!
+  \return filter
+  \param id - id of file entry
+*/
+QString QtxPathDialog::filter( const int id ) const
+{
+	QString res;
+	if ( myEntries.contains( id ) )
+		res = myEntries[id].filter;
+	return res;
+}
+
+void QtxPathDialog::setFilter( const int id, const QString& filter )
+{
+	if ( myEntries.contains( id ) )
+		myEntries[id].filter = filter;
 }
 
 /*!
@@ -443,7 +472,7 @@ QLineEdit* QtxPathDialog::fileEntry( const int theId, int& theMode ) const
   \param mode - mode of entry
   \param id - proposed id (if it is -1, then id will be chosen automatically)
 */
-int QtxPathDialog::createFileEntry( const QString& lab, const int mode, const int id )
+int QtxPathDialog::createFileEntry( const QString& lab, const int mode, const QString& filter, const int id )
 {
 	int num = id;
 	if ( num == -1 )
@@ -456,12 +485,13 @@ int QtxPathDialog::createFileEntry( const QString& lab, const int mode, const in
 	FileEntry entry;
 	entry.dlg = 0;
 	entry.mode = mode;
+  entry.filter = filter;
 
 	new QLabel( lab, myEntriesFrame );
 	entry.edit = new QLineEdit( myEntriesFrame );
 	entry.btn = new QPushButton( myEntriesFrame );
 	entry.btn->setAutoDefault( false );
-	entry.btn->setPixmap( QPixmap( open_icon ) );
+	entry.btn->setIcon( QPixmap( open_icon ) );
 
 	connect( entry.btn, SIGNAL( clicked() ), this, SLOT( onBrowse() ) );
 	connect( entry.edit, SIGNAL( returnPressed() ), this, SLOT( onReturnPressed() ) );
@@ -494,37 +524,40 @@ void QtxPathDialog::setDefaultEntry( const int id )
 */
 void QtxPathDialog::initialize()
 {
-	setCaption( tr( "File dialog" ) );
+	setWindowTitle( tr( "File dialog" ) );
 
 	QVBoxLayout* main = new QVBoxLayout( mainFrame() );
-	QtxGroupBox* mainGroup = new QtxGroupBox( 1, Qt::Horizontal, "", mainFrame() );
-	mainGroup->setFrameStyle( QFrame::NoFrame );
-  mainGroup->setInsideMargin( 0 );
-	main->addWidget( mainGroup );
+  main->setMargin( 0 );
 
-	myEntriesFrame = new QGroupBox( 3, Qt::Horizontal, "", mainGroup );
+	QtxGroupBox* base = new QtxGroupBox( "", mainFrame() );
+	main->addWidget( base );
+
+  QtxGridBox*  mainGroup = new QtxGridBox( 1, Qt::Horizontal, base, 0 );
+  base->setWidget( mainGroup );
+
+	myEntriesFrame = new QtxGridBox( 3, Qt::Horizontal, mainGroup );
 	myOptionsFrame = new QFrame( mainGroup );
 }
 
 /*!
   \return list of filters
 */
-QStringList QtxPathDialog::prepareFilters() const
+QStringList QtxPathDialog::prepareFilters( const QString& filter ) const
 {
 	QStringList res;
-	if ( !myFilter.isEmpty() )
+  bool allFilter = false;
+	if ( !filter.isEmpty() )
 	{
-		res = QStringList::split( ";;", myFilter );
-		bool allFilter = false;
+		res = filter.split( ";;" );
 		for ( QStringList::ConstIterator it = res.begin(); it != res.end() && !allFilter; ++it )
 		{
 			QStringList wildCards = filterWildCards( *it );
-			allFilter = wildCards.findIndex( "*.*" ) != -1;
+			allFilter = wildCards.indexOf( "*.*" ) != -1;
 		}
-
-		if ( !allFilter )
-			res.append( tr( "All files (*.*)" ) );
 	}
+
+  if ( !allFilter )
+	  res.append( tr( "All files (*.*)" ) );
 
 	return res;
 }
@@ -536,15 +569,17 @@ QStringList QtxPathDialog::filterWildCards( const QString& theFilter ) const
 {
 	QStringList res;
 
-	int b = theFilter.findRev( "(" );
-	int e = theFilter.findRev( ")" );
+	int b = theFilter.lastIndexOf( "(" );
+	int e = theFilter.lastIndexOf( ")" );
 	if ( b != -1 && e != -1 )
 	{
-		QString content = theFilter.mid( b + 1, e - b - 1 ).stripWhiteSpace();
-		QStringList lst = QStringList::split( " ", content );
+		QString content = theFilter.mid( b + 1, e - b - 1 ).trimmed();
+		QStringList lst = content.split( " " );
 		for ( QStringList::ConstIterator it = lst.begin(); it != lst.end(); ++it )
-			if ( (*it).find( "." ) != -1 )
-				res.append( (*it).stripWhiteSpace() );
+    {
+			if ( (*it).indexOf( "." ) != -1 )
+				res.append( (*it).trimmed() );
+    }
 	}
 	return res;
 }
@@ -561,20 +596,17 @@ QString QtxPathDialog::autoExtension( const QString& theFileName, const QString&
 	if ( fName.isEmpty() )
 		return fName;
 
-	QString filter = theFilter;
-	if ( filter.isEmpty() )
-	{
-		QStringList filters = prepareFilters();
-		if ( !filters.isEmpty() )
-			filter = filters.first();
-	}
+	QString filter;
+  QStringList filters = prepareFilters( theFilter );
+  if ( !filters.isEmpty() )
+    filter = filters.first();
 
 	QStringList wildCards = filterWildCards( filter );
 	if ( !wildCards.isEmpty() )
 	{
 		QString ext = wildCards.first();
-		if ( ext.find( "." ) != -1 )
-			ext = ext.mid( ext.find( "." ) + 1 );
+		if ( ext.indexOf( "." ) != -1 )
+			ext = ext.mid( ext.indexOf( "." ) + 1 );
 
 		if ( !ext.isEmpty() && !ext.contains( "*" ) )
 			fName = QDir::convertSeparators( fName ) + QString( "." ) + ext;
@@ -592,15 +624,25 @@ bool QtxPathDialog::hasVisibleChildren( QWidget* wid ) const
 	bool res = false;
 	if ( wid )
 	{
-		const QObjectList* aChildren = wid->children();
-		if ( aChildren )
+		const QObjectList& aChildren = wid->children();
+    for ( QObjectList::const_iterator it = aChildren.begin(); it != aChildren.end() && !res; ++it )
 		{
-			for ( QObjectListIt it( *aChildren ); it.current() && !res; ++it )
-			{
-				if ( it.current()->isWidgetType() )
-					res = ((QWidget*)it.current())->isVisibleTo( wid );
-			}
-		}
+		  if ( (*it)->isWidgetType() )
+				res = ((QWidget*)(*it))->isVisibleTo( wid );
+    }
 	}
 	return res;
+}
+
+void QtxPathDialog::updateVisibility()
+{
+  if ( hasVisibleChildren( myEntriesFrame ) )
+	  myEntriesFrame->show();
+  else
+	  myEntriesFrame->hide();
+
+  if ( hasVisibleChildren( myOptionsFrame ) )
+	  myOptionsFrame->show();
+  else
+	  myOptionsFrame->hide();
 }
