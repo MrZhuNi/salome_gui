@@ -24,19 +24,16 @@
 #include "QtxGridBox.h"
 #include "QtxGroupBox.h"
 
-#include <qdir.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qfileinfo.h>
-
+#include <QDir>
+#include <QLabel>
+#include <QPixmap>
+#include <QLayout>
+#include <QLineEdit>
 #include <QObjectList>
-
-#include <qstringlist.h>
-#include <qfiledialog.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
+#include <QStringList>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPushButton>
 
 static const char* open_icon[] = {
 "16 16 5 1",
