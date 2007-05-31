@@ -414,7 +414,7 @@ QColor VTKViewer_ViewWindow::backgroundColor() const
     myRenderer->GetBackground( backint );
     return QColor(int(backint[0]*255), int(backint[1]*255), int(backint[2]*255));
   }
-  return palette().color( backgroundRole() );//SUIT_ViewWindow::backgroundColor();
+  return palette().color( backgroundRole() );
 }
 
 /*!Repaint window. If \a theUpdateTrihedron is true - recalculate trihedron.*/
