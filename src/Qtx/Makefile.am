@@ -38,14 +38,20 @@ salomeinclude_HEADERS=		\
 	QtxDialog.h		\
 	QtxDockAction.h		\
 	QtxDockWidget.h		\
+	QtxDoubleSpinBox.h	\
 	QtxEvalExpr.h		\
+	QtxGridBox.h		\
+	QtxGroupBox.h		\
+	QtxIntSpinBox.h		\
 	QtxListAction.h		\
 	QtxLogoMgr.h		\
 	QtxMainWindow.h 	\
 	QtxMap.h		\
 	QtxMRUAction.h		\
+	QtxPathDialog.h		\
 	QtxPopupMgr.h		\
 	QtxResourceMgr.h	\
+	QtxSplash.h		\
 	QtxToolBar.h		\
 	QtxValidator.h		\
 	QtxWorkspace.h		\
@@ -55,18 +61,12 @@ salomeinclude_HEADERS=		\
 
 #VSR: not yet migrated to Qt4 files
 #				\
-	QtxDblSpinBox.h		\
 	QtxDirListEditor.h	\
-	QtxGroupBox.h		\
-	QtxIntSpinBox.h		\
 	QtxListBox.h		\
 	QtxListResourceEdit.h	\
 	QtxListView.h		\
-	QtxMenuButton.h		\
-	QtxPathDialog.h		\
 	QtxPopupMenu.h		\
 	QtxResourceEdit.h	\
-	QtxSplash.h		\
 	QtxTable.h		\
 	QtxToolTip.h
 
@@ -87,15 +87,21 @@ dist_libqtx_la_SOURCES=		\
 	QtxDialog.cxx		\
 	QtxDockAction.cxx	\
 	QtxDockWidget.cxx	\
+	QtxDoubleSpinBox.cxx	\
 	QtxEvalExpr.cxx		\
+	QtxGridBox.cxx		\
+	QtxGroupBox.cxx		\
+	QtxIntSpinBox.cxx	\
 	QtxListAction.cxx	\
 	QtxLogoMgr.cxx		\
 	QtxMainWindow.cxx	\
 	QtxMRUAction.cxx	\
+	QtxPathDialog.cxx	\
 	QtxPopupMgr.cxx		\
 	QtxResourceMgr.cxx	\
+	QtxSplash.cxx		\
 	QtxToolBar.cxx		\
-	QtxValidator.cxx		\
+	QtxValidator.cxx	\
 	QtxWorkspace.cxx	\
 	QtxWorkspaceAction.cxx	\
 	QtxWorkstack.cxx	\
@@ -103,18 +109,12 @@ dist_libqtx_la_SOURCES=		\
 
 #VSR: not yet migrated to Qt4 files
 #				\
-	QtxDblSpinBox.cxx	\
 	QtxDirListEditor.cxx	\
-	QtxGroupBox.cxx		\
-	QtxIntSpinBox.cxx	\
 	QtxListBox.cxx		\
 	QtxListResourceEdit.cxx	\
 	QtxListView.cxx		\
-	QtxMenuButton.cxx	\
-	QtxPathDialog.cxx	\
 	QtxPopupMenu.cxx	\
 	QtxResourceEdit.cxx	\
-	QtxSplash.cxx		\
 	QtxTable.cxx		\
 	QtxToolTip.cxx
 
@@ -130,11 +130,17 @@ MOC_FILES=				\
 	QtxDialog_moc.cxx		\
 	QtxDockAction_moc.cxx		\
 	QtxDockWidget_moc.cxx		\
+	QtxDoubleSpinBox_moc.cxx	\
+	QtxGridBox_moc.cxx		\
+	QtxGroupBox_moc.cxx		\
+	QtxIntSpinBox_moc.cxx		\
 	QtxListAction_moc.cxx		\
 	QtxLogoMgr_moc.cxx		\
 	QtxMainWindow_moc.cxx		\
 	QtxMRUAction_moc.cxx		\
+	QtxPathDialog_moc.cxx		\
 	QtxPopupMgr_moc.cxx		\
+	QtxSplash_moc.cxx		\
 	QtxToolBar_moc.cxx		\
 	QtxValidator_moc.cxx		\
 	QtxWorkspace_moc.cxx		\
@@ -144,18 +150,11 @@ MOC_FILES=				\
 
 #VSR: not yet migrated to Qt4 files
 #					\
-	QtxDblSpinBox_moc.cxx		\
-	QtxDblValidator_moc.cxx		\
 	QtxDirListEditor_moc.cxx	\
-	QtxGroupBox_moc.cxx		\
-	QtxIntSpinBox_moc.cxx		\
 	QtxListBox_moc.cxx		\
 	QtxListResourceEdit_moc.cxx	\
 	QtxListView_moc.cxx		\
-	QtxMenuButton_moc.cxx		\
-	QtxPathDialog_moc.cxx		\
 	QtxPopupMenu_moc.cxx		\
-	QtxSplash_moc.cxx		\
 	QtxTable_moc.cxx		\
 	QtxToolTip_moc.cxx
 

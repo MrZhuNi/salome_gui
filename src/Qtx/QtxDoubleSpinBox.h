@@ -24,12 +24,8 @@
 
 #include "Qtx.h"
 
-#include <QSpinbox>
+#include <QDoubleSpinBox>
 
-/*!
-  \class  QtxDoubleSpinBox
-  Spin box for real numbers.
-*/
 class QTX_EXPORT QtxDoubleSpinBox : public QDoubleSpinBox
 {
   Q_OBJECT

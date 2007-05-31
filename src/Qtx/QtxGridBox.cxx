@@ -21,13 +21,15 @@
 
 #include "QtxGridBox.h"
 
-#include <QLayout>
+#include <QGridLayout>
 #include <QChildEvent>
 
 /*!
-  \ class QtxGridBox::Space
-  Space in the grid box
+  \class QtxGridBox::Space
+  \internal
+  \brief Represents a space in the grid box.
 */
+
 class QtxGridBox::Space : public QWidget
 {
 public:
@@ -42,23 +44,39 @@ private:
   QtxGridBox*   myGrid;
 };
 
+/*!
+  \brief Constructor.
+  \param sz size
+  \param gb parent grid box
+*/
 QtxGridBox::Space::Space( const int sz, QtxGridBox* gb )
 : QWidget( gb ),
-mySize( sz ),
-myGrid( gb )
+  mySize( sz ),
+  myGrid( gb )
 {
   setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 }
 
+/*!
+  \brief Destructor.
+*/
 QtxGridBox::Space::~Space()
 {
 }
 
+/*!
+  \brief Get recommended size for the widget.
+  \return recommended size for the widget
+*/
 QSize QtxGridBox::Space::sizeHint() const
 {
   return minimumSizeHint();
 }
 
+/*!
+  \brief Get recommended minimum size for the widget.
+  \return recommended minimum size for the widget
+*/
 QSize QtxGridBox::Space::minimumSizeHint() const
 {
   QSize sz( 0, 0 );
@@ -70,59 +88,100 @@ QSize QtxGridBox::Space::minimumSizeHint() const
 }
 
 /*!
-  \ class QtxGridBox
+  \class QtxGridBox
+  \brief A container widget with possibility to automatically layout
+         child widgets.
+*/
+
+/*!
+  \brief Constructor.
+  \param parent parent widget
+  \param m grid box margin
+  \param s grid box spacing
 */
 QtxGridBox::QtxGridBox( QWidget* parent, const int m, const int s )
 : QWidget( parent ),
-myCols( 1 ),
-myOrient( Qt::Vertical ),
-mySkip( false ),
-myCol( 0 ),
-myRow( 0 )
+  myCols( 1 ),
+  mySkip( false ),
+  myOrient( Qt::Vertical ),
+  myCol( 0 ),
+  myRow( 0 )
 {
   myLayout = new QGridLayout( this );
   myLayout->setMargin( m );
   myLayout->setSpacing( s );
 }
 
+/*!
+  \brief Constructor.
+  \param cols number of grid box columns or rows (depending on the orientation)
+  \param o grid box orientation
+  \param parent parent widget
+  \param m grid box margin
+  \param s grid box spacing
+*/
 QtxGridBox::QtxGridBox( const int cols, Qt::Orientation o, QWidget* parent, const int m, const int s )
 : QWidget( parent ),
-myCols( cols ),
-myOrient( o ),
-myLayout( 0 ),
-mySkip( false ),
-myCol( 0 ),
-myRow( 0 )
+  myCols( cols ),
+  mySkip( false ),
+  myOrient( o ),
+  myLayout( 0 ),
+  myCol( 0 ),
+  myRow( 0 )
 {
   myLayout = new QGridLayout( this );
   myLayout->setMargin( m );
   myLayout->setSpacing( s );
 }
 
+/*!
+  \brief Destructor.
+*/
 QtxGridBox::~QtxGridBox()
 {
 }
 
+/*!
+  \brief Get number of grid box columns/rows (depending on the orientation).
+  \return number of columns (rows)
+*/
 int QtxGridBox::columns() const
 {
   return myCols;
 }
 
+/*!
+  \brief Get the grid box orientation.
+  \return orientation
+*/
 Qt::Orientation QtxGridBox::orientation() const
 {
   return myOrient;
 }
 
+/*!
+  \brief Set number of grid box columns/rows (depending on the orientation).
+  \param cols number of columns (rows)
+*/
 void QtxGridBox::setColumns( const int cols )
 {
   setLayout( cols, orientation() );
 }
 
+/*!
+  \brief Set the grid box orientation.
+  \param o orientation
+*/
 void QtxGridBox::setOrientation( Qt::Orientation o )
 {
   setLayout( columns(), o );
 }
 
+/*!
+  \brief Initialize internal layout.
+  \param cols number of columns (rows)
+  \param o orientation
+*/
 void QtxGridBox::setLayout( const int cols, Qt::Orientation o )
 {
   if ( myCols == cols && myOrient == o )
@@ -134,11 +193,23 @@ void QtxGridBox::setLayout( const int cols, Qt::Orientation o )
   arrangeWidgets();
 }
 
+/*!
+  \brief Get "skip invisible widgets" flags.
+  \return current flag state
+*/
 bool QtxGridBox::skipInvisible() const
 {
   return mySkip;
 }
 
+/*!
+  \brief Set "skip invisible widgets" flags.
+
+  If this flag is set to \c false, invisible widgets
+  are not taken into account when layouting widgets.
+
+  \param on new flag state
+*/
 void QtxGridBox::setSkipInvisible( const bool on )
 {
   if ( mySkip == on )
@@ -148,31 +219,57 @@ void QtxGridBox::setSkipInvisible( const bool on )
   arrangeWidgets();
 }
 
+/*!
+  \brief Add space (empty cell) to the grid box.
+  \param sp requied space size
+*/
 void QtxGridBox::addSpace( const int sp )
 {
   new Space( sp, this );
 }
 
+/*!
+  \brief Get grid box's inside margin size.
+  \return inside margin size
+*/
 int QtxGridBox::insideMargin() const
 {
   return myLayout->margin();
 }
 
+/*!
+  \brief Get grid box's inside spacing size.
+  \return inside spacing size
+*/
 int QtxGridBox::insideSpacing() const
 {
   return myLayout->spacing();
 }
 
+/*!
+  \brief Set grid box's inside margin size.
+  \param m new inside margin size
+*/
 void QtxGridBox::setInsideMargin( const int m )
 {
   myLayout->setMargin( m );
 }
 
+/*!
+  \brief Set grid box's inside spacing size.
+  \param s new inside spacing size
+*/
 void QtxGridBox::setInsideSpacing( const int s )
 {
   myLayout->setSpacing( s );
 }
 
+/*!
+  \brief Custom event filter.
+  \param o event receiver object.
+  \param e event
+  \return \c true if the event processing should be stopped
+*/
 bool QtxGridBox::eventFilter( QObject* o, QEvent* e )
 {
   if ( skipInvisible() && ( e->type() == QEvent::Show || e->type() == QEvent::ShowToParent ||
@@ -182,6 +279,10 @@ bool QtxGridBox::eventFilter( QObject* o, QEvent* e )
   return QWidget::eventFilter( o, e );
 }
 
+/*!
+  \brief Customize child event.
+  \param e child event
+*/
 void QtxGridBox::childEvent( QChildEvent* e )
 {
   if ( e->child()->isWidgetType() )
@@ -198,6 +299,9 @@ void QtxGridBox::childEvent( QChildEvent* e )
   QWidget::childEvent( e );
 }
 
+/*!
+  \brief Increment the grid box current cell.
+*/
 void QtxGridBox::skip()
 {
   if ( orientation() == Qt::Horizontal )
@@ -220,6 +324,9 @@ void QtxGridBox::skip()
   }
 }
 
+/*!
+  \brief Arrange child widgets.
+*/
 void QtxGridBox::arrangeWidgets()
 {
   myRow = myCol = 0;
@@ -243,6 +350,10 @@ void QtxGridBox::arrangeWidgets()
   updateGeometry();
 }
 
+/*!
+  \brief Place new widget to the current grid box cell.
+  \param wid widget being inserted
+*/
 void QtxGridBox::placeWidget( QWidget* wid )
 {
   myLayout->addWidget( wid, myRow, myCol );

@@ -21,40 +21,55 @@
 
 #include "QtxGroupBox.h"
 
-#include <QLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QEvent>
 #include <QObjectList>
-#include <QToolButton>
 #include <QApplication>
 
 /*!
-  Constructor
+  \brief class QtxGroupBox
+  \brief Enhanced group box widget.
+
+  The QtxGroupBox class allows insereting custom widgets in the 
+  group box title. Use insertTitleWidget() method to add
+  custom widget to the title and removeTitleWidget() to remove it.
+*/
+
+/*!
+  \brief Constructor.
+  \param parent parent widget 
 */
 QtxGroupBox::QtxGroupBox( QWidget* parent )
 : QGroupBox( parent ),
-myContainer( 0 )
+  myContainer( 0 )
 {
   initialize();
 }
 
 /*!
-  Constructor
+  \brief Constructor.
+  \param title group box title text
+  \param parent parent widget 
 */
 QtxGroupBox::QtxGroupBox( const QString& title, QWidget* parent )
 : QGroupBox( title, parent ),
-myContainer( 0 )
+  myContainer( 0 )
 {
   initialize();
 }
 
 /*!
-  Destructor
+  \brief Destructor.
 */
 QtxGroupBox::~QtxGroupBox()
 {
 }
 
 /*!
-  Creates horizontal box as container
+  \brief Initialize the group box.
+
+  Creates horizontal box as container for title widgets.
 */
 void QtxGroupBox::initialize()
 {
@@ -67,8 +82,8 @@ void QtxGroupBox::initialize()
 }
 
 /*!
-  Inserts title widget
-  \param wid - new title widget
+  \brief Add widget to the group box title.
+  \param wid widget being added to the title
 */
 void QtxGroupBox::insertTitleWidget( QWidget* wid )
 {
@@ -82,8 +97,8 @@ void QtxGroupBox::insertTitleWidget( QWidget* wid )
 }
 
 /*!
-  Removes title widget
-  \param wid - title widget
+  \brief Remove widget from the group box title.
+  \param wid widget to be removed from the title
 */
 void QtxGroupBox::removeTitleWidget( QWidget* wid )
 {
@@ -99,7 +114,8 @@ void QtxGroupBox::removeTitleWidget( QWidget* wid )
 }
 
 /*!
-  Shows group box
+  \brief Show/hide group box.
+  \param on if \c true, show group box, otherwise, hide it
 */
 void QtxGroupBox::setVisible( bool on )
 {
@@ -110,7 +126,8 @@ void QtxGroupBox::setVisible( bool on )
 }
 
 /*!
-  \return the recommended size for the widget
+  \brief Get recommended size for the widget.
+  \return recommended size for the widget
 */
 QSize QtxGroupBox::sizeHint() const
 {
@@ -118,7 +135,8 @@ QSize QtxGroupBox::sizeHint() const
 }
 
 /*!
-  \return the recommended minimum size for the widget
+  \brief Get recommended minimum size for the widget.
+  \return recommended minimum size for the widget
 */
 QSize QtxGroupBox::minimumSizeHint() const
 {
@@ -126,7 +144,10 @@ QSize QtxGroupBox::minimumSizeHint() const
 }
 
 /*!
-  Custom event filter
+  \brief Custom event filter.
+  \param obj event receiver
+  \param e event
+  \return \c true if event processing should be stopped
 */
 bool QtxGroupBox::eventFilter( QObject* obj, QEvent* e )
 {
@@ -138,7 +159,10 @@ bool QtxGroupBox::eventFilter( QObject* obj, QEvent* e )
 
   return QGroupBox::eventFilter( obj, e );
 }
-
+/*!
+  \brief Get central widget (or first found one).
+  \return widget
+*/
 QWidget* QtxGroupBox::widget() const
 {
   if ( !layout() )
@@ -150,6 +174,10 @@ QWidget* QtxGroupBox::widget() const
   return w;
 }
 
+/*!
+  \brief Set central widget to the group box.
+  \param wid widget being added to the group box
+*/
 void QtxGroupBox::setWidget( QWidget* wid )
 {
   QWidget* w = widget();
@@ -176,7 +204,8 @@ void QtxGroupBox::setWidget( QWidget* wid )
 }
 
 /*!
-  Custom resize event filter
+  \brief Customize resize event.
+  \param e resize event
 */
 void QtxGroupBox::resizeEvent( QResizeEvent* e )
 {
@@ -186,7 +215,8 @@ void QtxGroupBox::resizeEvent( QResizeEvent* e )
 }
 
 /*!
-  Custom child event filter
+  \brief Customize child event.
+  \param e child event
 */
 void QtxGroupBox::childEvent( QChildEvent* e )
 {
@@ -198,15 +228,17 @@ void QtxGroupBox::childEvent( QChildEvent* e )
 }
 
 /*!
-  Event filter of custom items
+  \brief Process custom events.
+  \param e custom event (not used)
 */
-void QtxGroupBox::customEvent( QEvent* )
+void QtxGroupBox::customEvent( QEvent* /*e*/ )
 {
   updateTitle();
 }
 
 /*!
-  \return size of title
+  \brief Get the group box title size.
+  \return title size
 */
 QSize QtxGroupBox::titleSize() const
 {
@@ -214,7 +246,7 @@ QSize QtxGroupBox::titleSize() const
 }
 
 /*!
-  Updates title
+  \brief Update the group box title.
 */
 void QtxGroupBox::updateTitle()
 {
@@ -271,6 +303,10 @@ void QtxGroupBox::updateTitle()
   updateGeometry();
 }
 
+/*!
+  \brief Expand group box to the specified size.
+  \param sz new size
+*/
 QSize QtxGroupBox::expandTo( const QSize& sz ) const
 {
   int sh = 0;
@@ -287,6 +323,10 @@ QSize QtxGroupBox::expandTo( const QSize& sz ) const
   return QSize( qMax( sz.width(), sw ), qMax( sz.height(), sh ) );
 }
 
+/*!
+  \brief Set group box's inside margin size.
+  \param m new inside margin size
+*/
 void QtxGroupBox::setInsideMargin( const int m )
 {
   QVBoxLayout* bl = ::qobject_cast<QVBoxLayout*>( layout() );
