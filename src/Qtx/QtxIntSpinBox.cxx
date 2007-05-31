@@ -21,29 +21,30 @@
 
 #include "QtxIntSpinBox.h"
 
-#include <qlineedit.h>
-#include <qapplication.h>
+#include <QLineEdit>
+//#include <QApplication>
 
 /*!
   Constructor
 */
-QtxIntSpinBox::QtxIntSpinBox( QWidget* parent, const char* name )
-: QSpinBox( parent, name ),
-myCleared( false ),
-myBlocked( false )
+QtxIntSpinBox::QtxIntSpinBox( QWidget* parent )
+: QSpinBox( parent ),
+myCleared( false )
 {
-  connect( editor(), SIGNAL( textChanged( const QString& ) ), this, SLOT( onTextChanged( const QString& ) ) );
+  connect( lineEdit(), SIGNAL( textChanged( const QString& ) ), this, SLOT( onTextChanged( const QString& ) ) );
 }
 
 /*!
   Constructor
 */
-QtxIntSpinBox::QtxIntSpinBox( int min, int max, int step, QWidget* parent, const char* name )
-: QSpinBox( min, max, step, parent, name ),
-myCleared( false ),
-myBlocked( false )
+QtxIntSpinBox::QtxIntSpinBox( int min, int max, int step, QWidget* parent )
+: QSpinBox( parent ),
+myCleared( false )
 {
-  connect( editor(), SIGNAL( textChanged( const QString& ) ), this, SLOT( onTextChanged( const QString& ) ) );
+  setMinimum( min );
+  setMaximum( max );
+  setSingleStep( step );
+  connect( lineEdit(), SIGNAL( textChanged( const QString& ) ), this, SLOT( onTextChanged( const QString& ) ) );
 }
 
 /*!
@@ -71,96 +72,19 @@ void QtxIntSpinBox::setCleared( const bool on )
     return;
     
   myCleared = on;
-  updateDisplay();
+  setSpecialValueText( specialValueText() );
 }
 
-/*!
-  Changes value of spin box
-  \param val - new value of spin box
-*/
-void QtxIntSpinBox::setValue( int value )
+QString QtxIntSpinBox::textFromValue( int val ) const
+{
+  return myCleared ? QString() : QSpinBox::textFromValue( val );
+}
+
+void QtxIntSpinBox::stepBy( int steps )
 {
   myCleared = false;
 
-  QSpinBox::setValue( value );
-}
-
-/*!
-  Custom event filter
-*/
-bool QtxIntSpinBox::eventFilter( QObject* o, QEvent* e )
-{
-  if ( !myCleared || o != editor() || !editor()->text().stripWhiteSpace().isEmpty() )
-    return QSpinBox::eventFilter( o, e );
-
-  if ( e->type() == QEvent::FocusOut || e->type() == QEvent::Leave || e->type() == QEvent::Hide )
-    return false;
-
-  if ( e->type() == QEvent::KeyPress &&
-	     ( ((QKeyEvent*)e)->key() == Key_Tab || ((QKeyEvent*)e)->key() == Key_BackTab ) )
-  {
-    QApplication::sendEvent( this, e );
-    return true;
-  }
-
-  return QSpinBox::eventFilter( o, e );
-}
-
-/*!
-  Sets integer value by text in editor
-*/
-void QtxIntSpinBox::interpretText()
-{
-  myCleared = false;
-
-  QSpinBox::interpretText();
-}
-
-/*!
-  Updates text of editor
-*/
-void QtxIntSpinBox::updateDisplay()
-{
-  if ( myBlocked )
-    return;
-
-  bool block = myBlocked;
-  myBlocked = true;
-
-  QSpinBox::updateDisplay();
-
-  if ( myCleared )
-    editor()->clear();
-  else if ( editor()->hasFocus() )
-  {
-    if ( editor()->text() == specialValueText() )
-      editor()->selectAll();
-    else
-      editor()->setSelection( prefix().length(), editor()->text().length() - prefix().length() - suffix().length() );
-  }
-
-  myBlocked = block;
-}
-
-/*!
-  Custom handler for leave event
-*/
-void QtxIntSpinBox::leaveEvent( QEvent* e )
-{
-  if ( !myCleared )
-    QSpinBox::leaveEvent( e );
-}
-
-/*!
-  Custom handler for wheel event
-*/
-void QtxIntSpinBox::wheelEvent( QWheelEvent* e )
-{
-  if ( !isEnabled() )
-    return;
-
-  QSpinBox::wheelEvent( e );
-  updateDisplay();
+  QSpinBox::stepBy( steps );
 }
 
 /*!
@@ -168,6 +92,5 @@ void QtxIntSpinBox::wheelEvent( QWheelEvent* e )
 */
 void QtxIntSpinBox::onTextChanged( const QString& )
 {
-  if ( !myBlocked )
-    myCleared = false;
+  myCleared = false;
 }
