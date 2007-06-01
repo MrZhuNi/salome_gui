@@ -108,7 +108,6 @@ libSVTK_la_CPPFLAGS= \
 	$(QT_INCLUDES) \
 	$(CAS_CPPFLAGS) \
 	$(VTK_INCLUDES) \
-	$(QWT_INCLUDES) \
 	$(BOOST_CPPFLAGS) \
 	-I$(srcdir)/../Qtx -I$(srcdir)/../SUIT -I$(srcdir)/../STD \
 	-I$(srcdir)/../CAM -I$(srcdir)/../OBJECT -I$(srcdir)/../Prs \
@@ -117,7 +116,6 @@ libSVTK_la_CPPFLAGS= \
 libSVTK_la_LDFLAGS= \
 	$(QT_MT_LIBS) \
 	$(OCC_LIBS) \
-	$(QWT_LIBS) \
 	$(VTK_LIBS)
 
 libSVTK_la_LIBADD= ../Qtx/libqtx.la ../SUIT/libsuit.la ../STD/libstd.la \

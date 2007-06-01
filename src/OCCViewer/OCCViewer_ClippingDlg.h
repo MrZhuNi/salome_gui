@@ -31,7 +31,7 @@ class QLabel;
 class QPushButton;
 class QComboBox;
 class QCheckBox;
-class QtxDblSpinBox;
+class QtxDoubleSpinBox;
 class QtxAction;
 
 class OCCViewer_ViewWindow;
@@ -66,18 +66,18 @@ private :
     QLabel* TextLabelX;
     QLabel* TextLabelY;
     QLabel* TextLabelZ;
-    QtxDblSpinBox* SpinBox_X;
-    QtxDblSpinBox* SpinBox_Y;
-    QtxDblSpinBox* SpinBox_Z;
+    QtxDoubleSpinBox* SpinBox_X;
+    QtxDoubleSpinBox* SpinBox_Y;
+    QtxDoubleSpinBox* SpinBox_Z;
     QPushButton* resetButton;
     
     QGroupBox* GroupDirection;
     QLabel* TextLabelDx;
     QLabel* TextLabelDy;
     QLabel* TextLabelDz;
-    QtxDblSpinBox* SpinBox_Dx;
-    QtxDblSpinBox* SpinBox_Dy;
-    QtxDblSpinBox* SpinBox_Dz;
+    QtxDoubleSpinBox* SpinBox_Dx;
+    QtxDoubleSpinBox* SpinBox_Dy;
+    QtxDoubleSpinBox* SpinBox_Dz;
     QPushButton* invertButton;
     
     QComboBox* DirectionCB;

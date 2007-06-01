@@ -49,7 +49,7 @@ if ENABLE_SALOMEOBJECT
 # VSR: this is the original packages list
 #    SUBDIRS += SVTK
 # VSR: already migrated to Qt4 packages
-    SUBDIRS += 
+    SUBDIRS += SVTK
 endif
 endif
 if ENABLE_OCCVIEWER

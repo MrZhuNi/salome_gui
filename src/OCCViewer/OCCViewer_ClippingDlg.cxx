@@ -18,7 +18,7 @@
 //
 #include "OCCViewer_ClippingDlg.h"
 
-#include <QtxDblSpinBox.h>
+#include <QtxDoubleSpinBox.h>
 #include <QtxAction.h>
 
 #include "SUIT_Session.h"
@@ -83,15 +83,16 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   const double max =  1e+16;
   const double step = 5;
   const int precision = -6; // PAL12789. Minus is for using 'g' double->string conversion specifier,
-  //                          see QtxDblSpinBox::mapValueToText( double v )
+  //                          see QtxDoubleSpinBox::mapValueToText( double v )
 
   TextLabelX = new QLabel( GroupPoint );
   TextLabelX->setObjectName( "TextLabelX" );
   TextLabelX->setText( tr("X:") );
   GroupPointLayout->addWidget( TextLabelX, 0, 0 );
   
-  SpinBox_X = new QtxDblSpinBox( min, max, step, GroupPoint, "SpinBox_X" );
-  SpinBox_X->setPrecision( precision );
+  SpinBox_X = new QtxDoubleSpinBox( min, max, step, GroupPoint );
+  SpinBox_X->setObjectName("SpinBox_X" );
+  SpinBox_X->setDecimals( precision );
   GroupPointLayout->addWidget( SpinBox_X, 0, 1 );
 
   TextLabelY = new QLabel( GroupPoint );
@@ -99,8 +100,9 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   TextLabelY->setText( tr("Y:") );
   GroupPointLayout->addWidget( TextLabelY, 0, 2 );
 
-  SpinBox_Y = new QtxDblSpinBox( min, max, step, GroupPoint, "SpinBox_Y" );
-  SpinBox_Y->setPrecision( precision );
+  SpinBox_Y = new QtxDoubleSpinBox( min, max, step, GroupPoint );
+  SpinBox_Y->setObjectName("SpinBox_Y" );
+  SpinBox_Y->setDecimals( precision );
   GroupPointLayout->addWidget( SpinBox_Y, 0, 3 );
 
   TextLabelZ = new QLabel( GroupPoint );
@@ -108,8 +110,9 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   TextLabelZ->setText( tr("Z:") );
   GroupPointLayout->addWidget( TextLabelZ, 0, 4 );
 
-  SpinBox_Z = new QtxDblSpinBox( min, max, step, GroupPoint, "SpinBox_Z" );
-  SpinBox_Z->setPrecision( precision );
+  SpinBox_Z = new QtxDoubleSpinBox( min, max, step, GroupPoint );
+  SpinBox_Z->setObjectName("SpinBox_Z" );
+  SpinBox_Z->setDecimals( precision );
   GroupPointLayout->addWidget( SpinBox_Z, 0, 5 );
 
   resetButton  = new QPushButton( GroupPoint );
@@ -132,8 +135,9 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   TextLabelDx->setText( tr("Dx:") );
   GroupDirectionLayout->addWidget( TextLabelDx, 0, 0 );
   
-  SpinBox_Dx = new QtxDblSpinBox( min, max, step, GroupDirection, "SpinBox_Dx" );
-  SpinBox_Dx->setPrecision( precision );
+  SpinBox_Dx = new QtxDoubleSpinBox( min, max, step, GroupDirection );
+  SpinBox_Dx->setObjectName("SpinBox_Dx" );
+  SpinBox_Dx->setDecimals( precision );
   GroupDirectionLayout->addWidget( SpinBox_Dx, 0, 1 );
 
   TextLabelDy = new QLabel( GroupDirection );
@@ -141,8 +145,9 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   TextLabelDy->setText( tr("Dy:") );
   GroupDirectionLayout->addWidget( TextLabelDy, 0, 2 );
   
-  SpinBox_Dy = new QtxDblSpinBox( min, max, step, GroupDirection, "SpinBox_Dy" );
-  SpinBox_Dy->setPrecision( precision );
+  SpinBox_Dy = new QtxDoubleSpinBox( min, max, step, GroupDirection );
+  SpinBox_Dy->setObjectName("SpinBox_Dy" );
+  SpinBox_Dy->setDecimals( precision );
   GroupDirectionLayout->addWidget( SpinBox_Dy, 0, 3 );
 
   TextLabelDz = new QLabel( GroupDirection );
@@ -150,8 +155,9 @@ OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidge
   TextLabelDz->setText( tr("Dz:") );
   GroupDirectionLayout->addWidget( TextLabelDz, 0, 4 );
   
-  SpinBox_Dz = new QtxDblSpinBox( min, max, step, GroupDirection, "SpinBox_Dz" );
-  SpinBox_Dz->setPrecision( precision );
+  SpinBox_Dz = new QtxDoubleSpinBox( min, max, step, GroupDirection );
+  SpinBox_Dz->setObjectName("SpinBox_Dz" );
+  SpinBox_Dz->setDecimals( precision );
   GroupDirectionLayout->addWidget( SpinBox_Dz, 0, 5 );
 
   invertButton  = new QPushButton( GroupDirection );
