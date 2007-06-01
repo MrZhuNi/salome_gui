@@ -10,7 +10,7 @@ CAS_CPPFLAGS = $${CASROOT}/inc
 BOOST_CPPFLAGS = $$(BOOSTDIR)/include
 
 INCLUDEPATH += ../../include $${CAS_CPPFLAGS} $${BOOST_CPPFLAGS} ../Qtx ../SUIT ../OBJECT ../Prs ../OCCViewer
-LIBS += -L../../lib -lsuit -lSalomeObject -lSalomePrs -lOCCViewer
+LIBS += -L../../lib -lqtx -lsuit -lSalomeObject -lSalomePrs -lOCCViewer
 
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared

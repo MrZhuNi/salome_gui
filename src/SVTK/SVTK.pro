@@ -16,8 +16,8 @@ BOOST_CPPFLAGS = $$(BOOSTDIR)/include
 
 OCC_LIBS = 
 
-INCLUDEPATH += ../../include $${CAS_CPPFLAGS} $${VTK_INCLUDES} $${BOOST_CPPFLAGS} ../Qtx ../SUIT ../STD ../CAM ../OBJECT ../Prs ../VTKViewer
-LIBS += -L../../lib -lqtx -lsuit -lstd -lCAM -lSalomeObject -lSalomePrs -lVTKViewer $${OCC_LIBS} $${VTK_LIBS}
+INCLUDEPATH += ../../include $${CAS_CPPFLAGS} $${VTK_INCLUDES} $${BOOST_CPPFLAGS} ../Qtx ../SUIT ../OBJECT ../Prs ../VTKViewer
+LIBS += -L../../lib -lqtx -lsuit -lSalomeObject -lSalomePrs -lVTKViewer $${OCC_LIBS} $${VTK_LIBS}
 
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared

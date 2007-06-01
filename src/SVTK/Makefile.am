@@ -109,8 +109,7 @@ libSVTK_la_CPPFLAGS= \
 	$(CAS_CPPFLAGS) \
 	$(VTK_INCLUDES) \
 	$(BOOST_CPPFLAGS) \
-	-I$(srcdir)/../Qtx -I$(srcdir)/../SUIT -I$(srcdir)/../STD \
-	-I$(srcdir)/../CAM -I$(srcdir)/../OBJECT -I$(srcdir)/../Prs \
+	-I$(srcdir)/../Qtx -I$(srcdir)/../SUIT -I$(srcdir)/../OBJECT -I$(srcdir)/../Prs \
 	-I$(srcdir)/../VTKViewer
 
 libSVTK_la_LDFLAGS= \
