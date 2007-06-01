@@ -118,8 +118,7 @@ libSVTK_la_LDFLAGS= \
 	$(OCC_LIBS) \
 	$(VTK_LIBS)
 
-libSVTK_la_LIBADD= ../Qtx/libqtx.la ../SUIT/libsuit.la ../STD/libstd.la \
-		   ../CAM/libCAM.la ../OBJECT/libSalomeObject.la \
+libSVTK_la_LIBADD= ../Qtx/libqtx.la ../SUIT/libsuit.la ../OBJECT/libSalomeObject.la \
 		   ../Prs/libSalomePrs.la ../VTKViewer/libVTKViewer.la
 
 # Executable

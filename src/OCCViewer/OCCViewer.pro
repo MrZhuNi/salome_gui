@@ -16,7 +16,7 @@ CAS_KERNEL = -L$${CASROOT}/Linux/lib -lTKernel
 CAS_VIEWER = -L$${CASROOT}/Linux/lib -lTKV3d -lTKService
 
 INCLUDEPATH += ../../include $${OGL_INCLUDES} $${CAS_CPPFLAGS} ../Qtx ../SUIT
-LIBS += -L../../lib -lsuit $${OGL_LIBS} $${CAS_KERNEL} $${CAS_VIEWER}
+LIBS += -L../../lib -lqtx -lsuit $${OGL_LIBS} $${CAS_KERNEL} $${CAS_VIEWER}
 
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared
