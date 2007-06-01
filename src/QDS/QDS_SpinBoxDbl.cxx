@@ -18,7 +18,7 @@
 //
 #include "QDS_SpinBoxDbl.h"
 
-#include <QtxDblSpinBox.h>
+#include <QtxDoubleSpinBox.h>
 
 /*
   \class QDS_SpinBoxDbl
@@ -63,7 +63,7 @@ QDS_SpinBoxDbl::~QDS_SpinBoxDbl()
 QString QDS_SpinBoxDbl::getString() const
 {
   QString res;
-  QtxDblSpinBox* sb = spinBox();
+  QtxDoubleSpinBox* sb = spinBox();
   if ( sb && !sb->isCleared() )
   {
     bool hasFocus = sb->hasFocus();
@@ -101,9 +101,9 @@ void QDS_SpinBoxDbl::setString( const QString& txt )
   \brief Get spin box widget.
   \return internal spin box widget.
 */
-QtxDblSpinBox* QDS_SpinBoxDbl::spinBox() const
+QtxDoubleSpinBox* QDS_SpinBoxDbl::spinBox() const
 {
-  return ::qobject_cast<QtxDblSpinBox*>( controlWidget() );
+  return ::qobject_cast<QtxDoubleSpinBox*>( controlWidget() );
 }
 
 /*!
@@ -113,7 +113,7 @@ QtxDblSpinBox* QDS_SpinBoxDbl::spinBox() const
 */
 QWidget* QDS_SpinBoxDbl::createControl( QWidget* parent )
 {
-  QtxDblSpinBox* aSpinBox = new QtxDblSpinBox( parent );
+  QtxDoubleSpinBox* aSpinBox = new QtxDoubleSpinBox( parent );
   aSpinBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
   connect( aSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( onValueChanged( double ) ) );
   return aSpinBox;
@@ -143,7 +143,7 @@ double QDS_SpinBoxDbl::step() const
 {
   double s = 0;
   if ( spinBox() )
-    s = spinBox()->lineStep();
+    s = spinBox()->singleStep();
   return s;
 }
 
@@ -154,7 +154,7 @@ double QDS_SpinBoxDbl::step() const
 void QDS_SpinBoxDbl::setStep( const double step )
 {
   if ( spinBox() )
-    spinBox()->setLineStep( step );
+    spinBox()->setSingleStep( step );
 }
 
 /*!
@@ -168,7 +168,7 @@ void QDS_SpinBoxDbl::unitSystemChanged( const QString& system )
 {
   QDS_Datum::unitSystemChanged( system );
 
-  QtxDblSpinBox* sb = spinBox();
+  QtxDoubleSpinBox* sb = spinBox();
   if ( !sb )
     return;
 
@@ -186,9 +186,9 @@ void QDS_SpinBoxDbl::unitSystemChanged( const QString& system )
   if ( !aDicItem.IsNull() )
     aPreci = aDicItem->GetPrecision();
 
-  sb->setPrecision( aPreci );
+  sb->setDecimals( aPreci );
 
-  sb->setLineStep( .1 );
-  sb->setMinValue( minValue().isEmpty() ? -DBL_MAX : minValue().toDouble() );
-  sb->setMaxValue( maxValue().isEmpty() ? DBL_MAX : maxValue().toDouble() );
+  sb->setSingleStep( .1 );
+  sb->setMinimum( minValue().isEmpty() ? -DBL_MAX : minValue().toDouble() );
+  sb->setMaximum( maxValue().isEmpty() ? DBL_MAX : maxValue().toDouble() );
 }
