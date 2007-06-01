@@ -49,7 +49,9 @@ public:
 public:
   QtxListAction( QObject* = 0 );
   QtxListAction( const QString&, int, QObject* );
+  QtxListAction( const QString&, const QString&, int, QObject* );
   QtxListAction( const QIcon&, const QString&, int, QObject* );
+  QtxListAction( const QString&, const QIcon&, const QString&, int, QObject* );
   virtual ~QtxListAction();
 
   int              popupMode() const;

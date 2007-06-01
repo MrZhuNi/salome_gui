@@ -579,16 +579,17 @@ QtxListAction::QtxListAction( QObject* parent )
 /*!
   \brief Constructor.
   \param icon action icon
-  \param text menu text
+  \param menuText menu text
   \param accel key accelerator
   \param parent parent object
 */
-QtxListAction::QtxListAction( const QIcon& icon, const QString& text, int accel, QObject* parent )
+QtxListAction::QtxListAction( const QIcon& icon, const QString& menuText, 
+			      int accel, QObject* parent )
 : QWidgetAction( parent ),
   myFrame( 0 )
 {
   setIcon( icon );
-  setText( text );
+  setText( menuText );
   setShortcut( accel );
 
   initialize();
@@ -596,15 +597,56 @@ QtxListAction::QtxListAction( const QIcon& icon, const QString& text, int accel,
 
 /*!
   \brief Constructor.
-  \param text menu text
+  \param menuText menu text
+  \param accel key accelerator
   \param parent parent object
 */
-QtxListAction::QtxListAction( const QString& text, int accel, QObject* parent )
+QtxListAction::QtxListAction( const QString& menuText, int accel, QObject* parent )
 : QWidgetAction( parent ),
-myFrame( 0 )
+  myFrame( 0 )
 {
-  setText( text );
+  setText( menuText );
   setShortcut( accel );
+
+  initialize();
+}
+
+/*!
+  \brief Constructor.
+  \param text action description text (tooltip)
+  \param menuText menu text
+  \param accel key accelerator
+  \param parent parent object
+*/
+QtxListAction::QtxListAction( const QString& text, const QString& menuText, 
+			      int accel, QObject* parent )
+: QWidgetAction( parent ),
+  myFrame( 0 )
+{
+  setText( menuText );
+  setShortcut( accel );
+  setToolTip( text );
+
+  initialize();
+}
+
+/*!
+  \brief Constructor.
+  \param text action description text (tooltip)
+  \param icon action icon
+  \param menuText menu text
+  \param accel key accelerator
+  \param parent parent object
+*/
+QtxListAction::QtxListAction( const QString& text, const QIcon& icon, 
+			      const QString& menuText, int accel, QObject* parent )
+: QWidgetAction( parent ),
+  myFrame( 0 )
+{
+  setIcon( icon );
+  setText( menuText );
+  setShortcut( accel );
+  setToolTip( text );
 
   initialize();
 }
