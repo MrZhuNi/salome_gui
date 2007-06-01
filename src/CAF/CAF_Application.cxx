@@ -22,14 +22,11 @@
 #include "CAF_Study.h"
 
 #include <SUIT_Desktop.h>
-//#include <SUIT_Session.h>
-//#include <SUIT_ViewModel.h>
-//#include <SUIT_Operation.h>
 #include <SUIT_MessageBox.h>
 #include <SUIT_ResourceMgr.h>
 
 #include <QtxAction.h>
-//#include <QtxListAction.h>
+#include <QtxListAction.h>
 
 #include <QMap>
 #include <QStringList>
@@ -162,41 +159,38 @@ void CAF_Application::createActions()
 
   SUIT_Desktop* desk = desktop();
   SUIT_ResourceMgr* resMgr = resourceMgr();
-  /*
-  QtxListAction* editUndo =
-    new QtxListAction( tr( "TOT_APP_EDIT_UNDO" ), resMgr->loadPixmap( "CAF", tr( "ICON_APP_EDIT_UNDO" ) ),
-			                 tr( "MEN_APP_EDIT_UNDO" ), CTRL+Key_Z, desk );
+
+  QtxListAction* editUndo = 
+    new QtxListAction( tr( "TOT_APP_EDIT_UNDO" ), 
+		       resMgr->loadPixmap( "CAF", tr( "ICON_APP_EDIT_UNDO" ) ),
+		       tr( "MEN_APP_EDIT_UNDO" ), Qt::CTRL+Qt::Key_Z, desk );
+  editUndo->setStatusTip( tr( "PRP_APP_EDIT_UNDO" ) );
   registerAction( EditUndoId, editUndo );
-  */
-  /*
+
   QtxListAction* editRedo =
-    new QtxListAction( tr( "TOT_APP_EDIT_REDO" ), resMgr->loadPixmap( "CAF", tr( "ICON_APP_EDIT_REDO" ) ),
-			                 tr( "MEN_APP_EDIT_REDO" ), CTRL+Key_Y, desk );
+    new QtxListAction( tr( "TOT_APP_EDIT_REDO" ), 
+		       resMgr->loadPixmap( "CAF", tr( "ICON_APP_EDIT_REDO" ) ),
+		       tr( "MEN_APP_EDIT_REDO" ), Qt::CTRL+Qt::Key_Y, desk );
+  editRedo->setStatusTip( tr( "PRP_APP_EDIT_REDO" ) );
   registerAction( EditRedoId, editRedo );
-  */
-  /*
+
   editUndo->setComment( tr( "INF_APP_UNDOACTIONS" ) );
   editRedo->setComment( tr( "INF_APP_REDOACTIONS" ) );
 
   connect( editUndo, SIGNAL( activated( int ) ), this, SLOT( onUndo( int ) ) );
   connect( editRedo, SIGNAL( activated( int ) ), this, SLOT( onRedo( int ) ) );
-  */
 
   int editMenu = createMenu( tr( "MEN_DESK_EDIT" ), -1, -1, 10 );
 
-  /*
   createMenu( EditUndoId, editMenu, 0 );
   createMenu( EditRedoId, editMenu, 0 );
-  */
   createMenu( separator(), editMenu, -1, 0 );
 
   int stdTBar = createTool( tr( "INF_DESK_TOOLBAR_STANDARD" ) );
 
   createTool( separator(), stdTBar );
-  /*
   createTool( EditUndoId, stdTBar );
   createTool( EditRedoId, stdTBar );
-  */
   createTool( separator(), stdTBar );
 }
 
@@ -299,13 +293,13 @@ void CAF_Application::updateCommandsStatus()
   if ( activeStudy() && activeStudy()->inherits( "CAF_Study" ) )
     cafStudy = (CAF_Study*)activeStudy();
 
-  QAction* undo = action( EditUndoId );
+  QtxListAction* undo = qobject_cast<QtxListAction*>( action( EditUndoId ) );
   if ( cafStudy && undo )
-    undo->setProperty( "names", cafStudy->undoNames() );
+    undo->addNames( cafStudy->undoNames() );
 
-  QAction* redo = action( EditRedoId );
+  QtxListAction* redo = qobject_cast<QtxListAction*>( action( EditRedoId ) );
   if ( cafStudy && redo )
-    redo->setProperty( "names", cafStudy->redoNames() );
+    redo->addNames( cafStudy->redoNames() );
 
   if ( undo )
     undo->setEnabled( cafStudy && cafStudy->canUndo() );
@@ -314,7 +308,7 @@ void CAF_Application::updateCommandsStatus()
 }
 
 /*!
-  \brie Called when user activatees Help->About main menu command.
+  \brief Called when user activatees Help->About main menu command.
 */
 void CAF_Application::onHelpAbout()
 {
