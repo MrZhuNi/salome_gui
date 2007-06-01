@@ -438,7 +438,7 @@ int QtxSplash::progressFlags() const
   The parameter \a gradientType defines the type of gradient 
   to be drawn - horizontal or vertical. Default is vertical.
 
-  Note, that methods setProgressGradient() and setProgresColors() are
+  Note, that methods setProgressGradient() and setProgressColors() are
   alternative. Only the latest used is taken into account.
 
   \param startColor start gradient color (or mono-color)
@@ -490,11 +490,11 @@ QtxSplash::GradientType QtxSplash::progressColors( QColor& startColor,
   the progress bar. The color scale (blue to red) is changed by the 
   progress bar diagonal.
 
-  Note, that methods setProgressGradient() and setProgresColors() are
+  Note, that methods setProgressGradient() and setProgressColors() are
   alternative. Only the latest used is taken into account.
 
   \param gradient color gradient to be used for progress bar coloring
-  \sa progressGradient(), setProgresColors()
+  \sa progressGradient(), setProgressColors()
 */
 void QtxSplash::setProgressGradient( const QLinearGradient& gradient )
 {
@@ -626,8 +626,8 @@ QString QtxSplash::message() const
 /*!
   \brief Get error code.
 
-  This function returns error code, set previoiusly with setError() or
-  error( QString&, QString, int ) methods.
+  This function returns error code, set previoiusly with 
+  error(const QString&, const QString&, const int) method.
   If no error code has been set, 0 is returned.
 
   \return last error code

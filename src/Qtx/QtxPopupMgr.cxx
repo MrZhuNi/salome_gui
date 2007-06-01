@@ -196,7 +196,7 @@ QString QtxPopupMgr::PopupCreator::rule( const ItemAttributes& /*attr*/,
 }
 
 /*!
-  \class QPopupMgr
+  \class QtxPopupMgr
   \brief Popup menu manager.
 
   Menu manager allows using of set of action for automatic generating of
@@ -719,13 +719,13 @@ QString QtxPopupSelection::selCountParam() const
   return str;
 }
 
-/*
+/*!
   \fn int QtxPopupSelection::count() const;
   \brief Get number of the selected objects.
   \return nb of selected objects
 */
 
-/*
+/*!
   \fn QVariant QtxPopupSelection::parameter( const int idx, const QString& name ) const;
   \brief Get number of the selected objects.
   \param idx parameter index

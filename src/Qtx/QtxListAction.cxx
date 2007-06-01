@@ -819,7 +819,7 @@ QWidget* QtxListAction::createWidget( QWidget* parent )
   return tb;
 }
 
-/*
+/*!
   \brief Destroy action widget.
 
   This function is called whenever the action is removed

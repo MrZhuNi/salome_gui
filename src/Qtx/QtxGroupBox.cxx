@@ -28,10 +28,10 @@
 #include <QApplication>
 
 /*!
-  \brief class QtxGroupBox
+  \class QtxGroupBox
   \brief Enhanced group box widget.
 
-  The QtxGroupBox class allows insereting custom widgets in the 
+  The QtxGroupBox class allows inserting custom widgets in the 
   group box title. Use insertTitleWidget() method to add
   custom widget to the title and removeTitleWidget() to remove it.
 */

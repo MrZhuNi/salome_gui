@@ -1346,6 +1346,15 @@ bool QtxEvalSet::createValue( const QString& str, QVariant& val ) const
 */
 
 /*!
+  \fn QString QtxEvalSet::name() const;
+  \brief Get unique operations set name.
+
+  Should be redefined in the successor classes.
+
+  \return operations set name
+*/
+
+/*!
   \class QtxEvalSetBase
   \brief Generic class. Provides functionality for standard operations sets.
 */
