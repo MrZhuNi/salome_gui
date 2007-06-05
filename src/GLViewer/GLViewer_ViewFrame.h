@@ -35,7 +35,7 @@ class SUIT_Desktop;
 class GLViewer_Viewer;
 class GLViewer_ViewPort;
 
-#include <qaction.h>
+#include <QtxAction.h>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -113,7 +113,7 @@ private:
 private:
   //! Actions ID
   enum { DumpId, FitAllId, FitRectId, FitSelectId, ZoomId, PanId, GlobalPanId, ResetId };
-  typedef QMap<int, QAction*> ActionsMap;
+  typedef QMap<int, QtxAction*> ActionsMap;
   
 private:
   ActionsMap       myActionsMap;

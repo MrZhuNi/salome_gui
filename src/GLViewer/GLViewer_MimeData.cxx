@@ -20,7 +20,7 @@
 //
 
 //#include <GLViewerAfx.h>
-#include "GLViewer_MimeSource.h"
+#include "GLViewer_MimeData.h"
 #include "GLViewer_BaseObjects.h"
 
 //#include <cmath>
@@ -29,7 +29,7 @@
 /*!
   Destructor
 */
-GLViewer_MimeSource::~GLViewer_MimeSource()
+GLViewer_MimeData::~GLViewer_MimeData()
 {
 }
 
@@ -37,14 +37,14 @@ GLViewer_MimeSource::~GLViewer_MimeSource()
   Translate objects to byte array
   \param theObjects - list of objects
 */
-bool GLViewer_MimeSource::setObjects( QValueList<GLViewer_Object*> theObjects )
+bool GLViewer_MimeData::setObjects( QList<GLViewer_Object*> theObjects )
 {
     if( !theObjects.empty() )
     {
         QStringList aObjectsType;
-        QValueList<QByteArray> aObjects;
-        QValueList<GLViewer_Object*>::const_iterator anIt = theObjects.begin();
-        QValueList<GLViewer_Object*>::const_iterator anEndIt = theObjects.end();
+        QList<QByteArray> aObjects;
+        QList<GLViewer_Object*>::const_iterator anIt = theObjects.begin();
+        QList<GLViewer_Object*>::const_iterator anEndIt = theObjects.end();
 
         int aObjByteSize = 0;
         for( ; anIt != anEndIt; anIt++ )
@@ -59,7 +59,7 @@ bool GLViewer_MimeSource::setObjects( QValueList<GLViewer_Object*> theObjects )
         int aStrByteSize = aTypes.length();
         int aObjNum = aObjects.count();
 
-        myByteArray = QByteArray( anISize * (1 + 2*aObjNum) + aStrByteSize + aObjByteSize );
+        myByteArray.resize( anISize * (1 + 2*aObjNum) + aStrByteSize + aObjByteSize );
 
         int anIndex = 0, j = 0;
         char* aPointer = (char*)&aObjNum;
@@ -77,14 +77,14 @@ bool GLViewer_MimeSource::setObjects( QValueList<GLViewer_Object*> theObjects )
         }
 
         int aCurIndex = anIndex;
-        const char* aStr = aTypes.data();
+        const char* aStr = aTypes.toLatin1().constData();
 
         for( j = 0 ; anIndex < aCurIndex + aStrByteSize; aPointer++, anIndex++, j++ )
             myByteArray[anIndex] = aStr[j];
 
         aCurIndex = anIndex;
-        QValueList<QByteArray>::iterator anObjIt = aObjects.begin();
-        QValueList<QByteArray>::iterator anEndObjIt = aObjects.end();
+        QList<QByteArray>::iterator anObjIt = aObjects.begin();
+        QList<QByteArray>::iterator anEndObjIt = aObjects.end();
         for( j = 1; anObjIt != anEndObjIt; anObjIt++, j++ )
         {
             int aObjLen = (int)((*anObjIt).size());
@@ -115,7 +115,7 @@ bool GLViewer_MimeSource::setObjects( QValueList<GLViewer_Object*> theObjects )
   \param theArray - byte array
   \param theType - type of object
 */
-GLViewer_Object* GLViewer_MimeSource::getObject( QByteArray theArray, QString theType )
+GLViewer_Object* GLViewer_MimeData::getObject( QByteArray theArray, QString theType )
 {
     if( !theArray.isEmpty() )
     {
@@ -147,7 +147,7 @@ GLViewer_Object* GLViewer_MimeSource::getObject( QByteArray theArray, QString th
   \param theArray - byte array
   \param theType - type of object
 */
-QValueList<GLViewer_Object*> GLViewer_MimeSource::getObjects( QByteArray theArray, QString theType )
+QList<GLViewer_Object*> GLViewer_MimeData::getObjects( QByteArray theArray, QString theType )
 {
     if( !theArray.isEmpty() )
     {
@@ -155,11 +155,11 @@ QValueList<GLViewer_Object*> GLViewer_MimeSource::getObjects( QByteArray theArra
         if( theType == "GLViewer_Objects" )
         {
             QStringList aTypeList;
-            QValueList<QByteArray> aObjects;
-            QValueList<GLViewer_Object*> aObjectList;
+            QList<QByteArray> aObjects;
+            QList<GLViewer_Object*> aObjectList;
 
-            QValueList<int> aTypeSizeList;
-            QValueList<int> aObjSizeList;
+            QList<int> aTypeSizeList;
+            QList<int> aObjSizeList;
             int aObjNum = 0;
             char* aPointer = (char*)&aObjNum;
 
@@ -201,7 +201,8 @@ QValueList<GLViewer_Object*> GLViewer_MimeSource::getObjects( QByteArray theArra
             aCurIndex = anIndex;
             for( j = 0; j < aObjNum; j++ )
             {
-                QByteArray aTempArray(aObjSizeList[j]);
+                QByteArray aTempArray;
+		aTempArray.resize(aObjSizeList[j]);
                 for( ; anIndex < aCurIndex + aObjSizeList[j]; anIndex++ )
                     aTempArray[anIndex-aCurIndex] = theArray[anIndex];
                 aObjects.append( aTempArray );
@@ -215,14 +216,14 @@ QValueList<GLViewer_Object*> GLViewer_MimeSource::getObjects( QByteArray theArra
         }
     }
     
-    return QValueList<GLViewer_Object*>();    
+    return QList<GLViewer_Object*>();    
 }
 
 /*!
   \return format by index
   \param theIndex - index
 */
-const char* GLViewer_MimeSource::format( int theIndex ) const
+const char* GLViewer_MimeData::format( int theIndex ) const
 {
     switch( theIndex )
     {
@@ -238,7 +239,7 @@ const char* GLViewer_MimeSource::format( int theIndex ) const
 /*!
   \return internal byte array
 */
-QByteArray GLViewer_MimeSource::encodedData( const char* theObjectType ) const
+QByteArray GLViewer_MimeData::encodedData( const char* theObjectType ) const
 {
     if( theObjectType == "GLViewer_Objects" )
         return myByteArray;

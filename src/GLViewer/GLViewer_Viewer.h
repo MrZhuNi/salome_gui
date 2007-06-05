@@ -25,20 +25,25 @@
 #ifndef GLVIEWER_VIEWER_H
 #define GLVIEWER_VIEWER_H
 
+#include "GLViewer.h"
 #include "GLViewer_Defs.h"
-#include "GLViewer_ViewFrame.h"
 #include <SUIT_ViewModel.h>
 
-#include <qlist.h>
-#include <qcursor.h>
-#include <qobject.h>
-#include <qpixmap.h>
+#include <QCursor>
+#include <QObject>
+
+class QMouseEvent;
+class QKeyEvent;
+class QWheelEvent;
+class QRect;
+class QRubberBand;
 
 class GLViewer_Selector;
 class GLViewer_ViewSketcher;
 class GLViewer_ViewTransformer;
+class GLViewer_ViewFrame;
 
-class SUIT_Desktop;
+//class SUIT_Desktop;
 class SUIT_ViewWindow;
 
 #ifdef WIN32
@@ -68,7 +73,7 @@ public:
     virtual QString              getType() const { return Type(); }
     static QString               Type() { return "GLViewer_ViewModel";  }
 
-    virtual void                 contextMenuPopup( QPopupMenu* );
+    virtual void                 contextMenuPopup( QMenu* );
 
 public:
     void                         setSelectionMode( SelectionMode );
@@ -166,6 +171,9 @@ protected:
     virtual void                 onTransform( TransformState );
     void                         initTransform( bool );
 
+    void                         drawRect(const QRect& theRect);
+    void                         endDrawRect();
+
 protected:
     static int                   panBtn;
     static int                   zoomBtn;
@@ -180,8 +188,9 @@ protected:
     bool                         mySavedMouseTrack;
     QPoint                       myStart, myCurr;
     int                          myButtonState;
-    QRect                        myDrawRect;
     int                          myMajorBtn;
+
+    QRubberBand*                 myRectBand; //!< selection rectangle rubber band
 };
 
 class GLVIEWER_API GLViewer_ViewSketcher : public QObject
@@ -210,6 +219,9 @@ protected:
     enum SketchState { Debut, EnTrain, Fin };
     virtual void                 onSketch( SketchState );
 
+    void                         drawRect(const QRect& theRect);
+    void                         endDrawRect();
+
 protected:
     static int                   sketchBtn;
     GLViewer_Viewer*             myViewer;
@@ -218,6 +230,8 @@ protected:
     QCursor                      mySavedCursor;
     QPoint                       myStart, myCurr;
     int                          myButtonState;
+
+    QRubberBand*                 myRectBand; //!< selection rectangle rubber band
 };
 
 #ifdef WIN32

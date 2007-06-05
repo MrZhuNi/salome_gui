@@ -27,7 +27,7 @@
 
 #include "GLViewer.h"
 
-#include <qcolor.h>
+#include <QColor>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

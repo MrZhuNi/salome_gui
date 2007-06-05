@@ -30,16 +30,13 @@
 #endif
 
 #include "GLViewer.h"
-#include "GLViewer_Defs.h"
 #include "GLViewer_Geom.h"
-
-#include <SUIT_DataOwner.h>
 
 #include <GL/gl.h>
 
-#include <qfile.h>
-#include <qstring.h>
-#include <qrect.h>
+#include <QString>
+
+class QFile;
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -51,6 +48,8 @@ class GLViewer_Group;
 class GLViewer_CoordSystem;
 class GLViewer_Text;
 //class GLViewer_Owner;
+
+class SUIT_DataOwner;
 
 /*! 
  * Class GLViewer_Object

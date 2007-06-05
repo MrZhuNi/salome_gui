@@ -34,10 +34,9 @@
 
 #include <GL/gl.h>
 
-#include <qfont.h>
-#include <qstring.h>
-#include <qcolor.h>
-#include <qfontmetrics.h>
+#include <QFont>
+#include <QString>
+#include <QColor>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

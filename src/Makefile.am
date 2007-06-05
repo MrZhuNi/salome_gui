@@ -37,7 +37,7 @@ if ENABLE_GLVIEWER
 # VSR: this is the original packages list
 #  SUBDIRS += GLViewer
 # VSR: already migrated to Qt4 packages
-  SUBDIRS += 
+  SUBDIRS += GLViewer
 endif
 
 if ENABLE_VTKVIEWER

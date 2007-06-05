@@ -36,10 +36,9 @@
 #include "GLViewer_Widget.h"
 #include "GLViewer_Geom.h"
 
-#include <qgl.h>
-#include <qcolor.h>
-#include <qwidget.h>
-#include <qpaintdevice.h>
+#include <QtOpenGL>
+#include <QColor>
+#include <QPaintDevice>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -51,6 +50,10 @@ class GLViewer_Object;
 class GLViewer_ViewFrame;
 
 class QtxToolTip;
+
+class QWidget;
+class QRubberBand;
+
 /*! 
  * Class GLViewer_ViewPort
  * 2D visualisation canvas of GLViewer
@@ -237,6 +240,8 @@ protected:
   QtxToolTip*            myObjectTip;
   //! flag to block mouse release event just after mouse double-click
   bool                   myIsMouseReleaseBlock;
+
+  QRubberBand*           myRectBand; //!< selection rectangle rubber band
 };
 
 #ifdef WIN32

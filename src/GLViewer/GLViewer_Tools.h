@@ -30,9 +30,6 @@
 #endif
 
 #include "GLViewer.h"
-#include "GLViewer_Defs.h"
-
-class GLViewer_LineField;
 
 /*!
   \class GLViewer_Tools 

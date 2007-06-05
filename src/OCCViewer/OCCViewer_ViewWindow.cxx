@@ -802,8 +802,12 @@ void OCCViewer_ViewWindow::resetState()
 */
 void OCCViewer_ViewWindow::drawRect()
 {
-  if ( !myRectBand )
+  if ( !myRectBand ) {
     myRectBand = new QRubberBand( QRubberBand::Rectangle, myViewPort );
+    QPalette palette;
+    palette.setColor(myRectBand->foregroundRole(), Qt::white);
+    myRectBand->setPalette(palette);
+  }
   myRectBand->hide();
 
   QRect aRect = SUIT_Tools::makeRect(myStartX, myStartY, myCurrX, myCurrY);

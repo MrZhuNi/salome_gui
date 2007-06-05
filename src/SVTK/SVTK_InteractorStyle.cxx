@@ -1494,8 +1494,12 @@ void
 SVTK_InteractorStyle
 ::drawRect()
 {
-  if ( !myRectBand )
+  if ( !myRectBand ) {
     myRectBand = new QRubberBand( QRubberBand::Rectangle, GetRenderWidget() );
+    QPalette palette;
+    palette.setColor(myRectBand->foregroundRole(), Qt::white);
+    myRectBand->setPalette(palette);
+  }
   myRectBand->hide();
 
   QRect aRect(myPoint, myOtherPoint);

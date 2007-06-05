@@ -29,11 +29,10 @@
 #include "windows.h"
 #endif
 
-#include <qcolor.h>
-#include <qobject.h>
-#include <qfile.h>
-#include <qfont.h>
-#include <qgl.h>
+#include <QColor>
+#include <QFont>
+
+class QFile;
 
 #include <GL/gl.h>
 
@@ -424,7 +423,7 @@ protected:
   float                           myYScale;
   
   //! List of objects
-  QValueList<GLViewer_Object*>    myObjects;
+  QList<GLViewer_Object*>    myObjects;
   //! List generated textures
   GLuint                          myTextList;
   

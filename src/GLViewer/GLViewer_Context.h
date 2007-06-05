@@ -33,9 +33,7 @@
 #include "GLViewer_Defs.h"
 #include "GLViewer_Object.h"
 
-#include <qrect.h>
-#include <qobject.h>
-#include <qregion.h>
+class QRect;
 
 #include <Quantity_NameOfColor.hxx>
 #include <Quantity_Color.hxx>
