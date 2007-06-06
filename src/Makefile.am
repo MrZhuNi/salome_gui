@@ -91,7 +91,7 @@ endif
 # VSR: this is the original packages list
 #SUBDIRS += Event LightApp ResExporter
 # VSR: already migrated to Qt4 packages
-SUBDIRS += Event
+SUBDIRS += Event ResExporter
 
 if GUI_ENABLE_CORBA
 # VSR: this is the original packages list

@@ -20,4 +20,4 @@ SUBDIRS += SVTK
 SUBDIRS += OCCViewer
 SUBDIRS += SOCC
 SUBDIRS += Event
-
+SUBDIRS += ResExporter
