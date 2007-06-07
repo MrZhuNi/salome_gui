@@ -35,7 +35,7 @@
 # include <QTimer>
 # include <QToolBar>
 //# include <QDir>
-# include <QToolTip>
+//# include <QToolTip>
 # include <QEvent>
 # include <QKeyEvent>
 # include <QCloseEvent>

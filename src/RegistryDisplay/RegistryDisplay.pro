@@ -8,10 +8,10 @@ KERNEL_CXXFLAGS = $$(KERNEL_ROOT_DIR)/include/salome
 
 CORBA_INCLUDES = $$(OMNIORBDIR)/include $$(OMNIORBDIR)/include/omniORB4 $$(OMNIORBDIR)/include/COS
 
-KERNEL_LDFLAGS = $$(KERNEL_ROOT_DIR)/lib/salome
+KERNEL_LDFLAGS = -L$$(KERNEL_ROOT_DIR)/lib/salome
 
 INCLUDEPATH += ../../salome_adm/unix ../../idl $${KERNEL_CXXFLAGS} $${CORBA_INCLUDES}
-LIBS += -L$${KERNEL_LDFLAGS} -lSalomeNS -lOpUtil -lSalomeIDLKernel
+LIBS += $${KERNEL_LDFLAGS} -lSalomeNS -lOpUtil -lSalomeIDLKernel
 
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared
