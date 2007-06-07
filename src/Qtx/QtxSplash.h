@@ -121,6 +121,8 @@ public slots:
 protected:
   virtual void      mousePressEvent( QMouseEvent* );
   virtual void      customEvent( QEvent* );
+  virtual void      paintEvent( QPaintEvent* );
+
   virtual void      drawContents( QPainter* );
   
   virtual void      drawProgressBar( QPainter* );

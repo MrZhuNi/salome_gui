@@ -150,7 +150,7 @@ QtxSplash* QtxSplash::mySplash = 0;
   \param pixmap splash screen pixmap
 */
 QtxSplash::QtxSplash( const QPixmap& pixmap )
-: QWidget( 0, Qt::SplashScreen ),
+: QWidget( 0, Qt::SplashScreen | Qt::WindowStaysOnTopHint ),
   myAlignment( Qt::AlignBottom | Qt::AlignRight ),
   myColor( Qt::white ),
   myHideOnClick( false ),
@@ -738,6 +738,22 @@ void QtxSplash::mousePressEvent( QMouseEvent* /*me*/ )
 {
   if ( myHideOnClick )
     hide();
+}
+
+/*!
+  \brief Customize paint event.
+
+  This function is implemented to work-around the Qt bug
+  on some Linux distribututions when the drawing on the 
+  splash screen widget is not allowed.
+
+  \param pe paint event (not used)
+*/
+void QtxSplash::paintEvent( QPaintEvent* /*pe*/ )
+{
+  QPainter p( this );
+  QPixmap pix = palette().brush( backgroundRole() ).texture();
+  p.drawPixmap( 0, 0, pix );
 }
 
 /*!
