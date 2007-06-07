@@ -22,10 +22,12 @@
 
 #include "ToolsGUI_IntervalWindow.h"
 
-#include <qbuttongroup.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qlayout.h>
+#include <QWidget>
+#include <QLabel>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QGridLayout>
+#include <QGroupBox>
 # include "utilities.h"
 
 #define MARGIN_SIZE      11
@@ -36,21 +38,24 @@
   Constructor
 */
 ToolsGUI_IntervalWindow::ToolsGUI_IntervalWindow ( QWidget* parent )
-: QDialog( parent, "ToolsGUI_IntervalWindow" , true, WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu | WDestructiveClose )
+: QDialog( parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint )
 {
   BEGIN_OF("ToolsGUI_IntervalWindow constructor")
-  setCaption( tr( "Refresh Interval"  ) );
+
+  setObjectName( "ToolsGUI_IntervalWindow" );
+  setModal( true );
+  setAttribute( Qt::WA_DeleteOnClose );
+
+  setWindowTitle( tr( "Refresh Interval"  ) );
   setSizeGripEnabled( true );
 
   QGridLayout* topLayout = new QGridLayout( this );
   topLayout->setSpacing( SPACING_SIZE );
   topLayout->setMargin( MARGIN_SIZE );
 
-  QGroupBox* intervalGrp = new QGroupBox( this, "intervalGrp" );
-  intervalGrp->setColumnLayout( 0, Qt::Horizontal );//Vertical
-  intervalGrp->layout()->setSpacing( 0 );
-  intervalGrp->layout()->setMargin( 0 );
-  QGridLayout* intervalGrpLayout = new QGridLayout( intervalGrp->layout() );
+  QGroupBox* intervalGrp = new QGroupBox( this );
+  intervalGrp->setObjectName( "intervalGrp" );
+  QGridLayout* intervalGrpLayout = new QGridLayout( intervalGrp );
   intervalGrpLayout->setAlignment( Qt::AlignTop );
   intervalGrpLayout->setSpacing( SPACING_SIZE );
   intervalGrpLayout->setMargin( MARGIN_SIZE  );  
@@ -59,19 +64,26 @@ ToolsGUI_IntervalWindow::ToolsGUI_IntervalWindow ( QWidget* parent )
   aBtnLayout->setSpacing( SPACING_SIZE );
   aBtnLayout->setMargin( 0 );
 
-  myButtonOk = new QPushButton( this, "buttonOk" );
+  myButtonOk = new QPushButton( this );
+  myButtonOk->setObjectName( "buttonOk" );
   myButtonOk->setText( tr( "BUT_OK"  ) );
   myButtonOk->setAutoDefault( TRUE );
   myButtonOk->setDefault( TRUE );
   
-  myButtonCancel = new QPushButton( this, "buttonCancel" );
+  myButtonCancel = new QPushButton( this );
+  myButtonCancel->setObjectName( "buttonCancel" );
   myButtonCancel->setText( tr( "BUT_CANCEL"  ) );
   myButtonCancel->setAutoDefault( TRUE );
 
-  QLabel* TextLabel = new QLabel( intervalGrp, "TextLabel" );
+  QLabel* TextLabel = new QLabel( intervalGrp );
+  TextLabel->setObjectName( "TextLabel" );
   TextLabel->setText( tr( "Please, enter a number of seconds:"  ) );
 
-  mySpinBox = new QSpinBox( 1, 999999999, 1, intervalGrp, "SpinBox" );
+  mySpinBox = new QSpinBox( intervalGrp );
+  mySpinBox->setMinimum( 1 );
+  mySpinBox->setMaximum( 999999999 );
+  mySpinBox->setSingleStep( 1 );
+  mySpinBox->setObjectName( "SpinBox" );
   mySpinBox->setValue( 100 );
   mySpinBox->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
   mySpinBox->setMinimumWidth(MIN_SPIN_WIDTH);

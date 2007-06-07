@@ -22,3 +22,4 @@ SUBDIRS += SOCC
 SUBDIRS += Event
 SUBDIRS += ResExporter
 SUBDIRS += RegistryDisplay
+SUBDIRS += TOOLSGUI

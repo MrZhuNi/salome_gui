@@ -98,5 +98,5 @@ if GUI_ENABLE_CORBA
 #  SUBDIRS += RegistryDisplay TOOLSGUI \
 #          Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT
 # VSR: already migrated to Qt4 packages
-  SUBDIRS += RegistryDisplay
+  SUBDIRS += RegistryDisplay TOOLSGUI
 endif

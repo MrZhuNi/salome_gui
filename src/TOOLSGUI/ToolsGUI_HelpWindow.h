@@ -29,10 +29,9 @@
 # ifndef __HELPWINDOW_H__
 # define __HELPWINDOW_H__
 
-# include <qapplication.h>
-# include <qmainwindow.h>
+# include <QMainWindow>
 
-class QTextView;
+class QTextEdit;
 
 class ToolsGUI_HelpWindow : public QMainWindow
 {
@@ -43,10 +42,10 @@ public:
   ~ToolsGUI_HelpWindow();
 
   void setText( const QString& text );
-  QTextView* textView() const { return myTextView; }
+  QTextEdit* textView() const { return myTextView; }
 
 private:
-  QTextView* myTextView;
+  QTextEdit* myTextView;
 };
 # endif         /* __HELPWINDOW_H__ */
 

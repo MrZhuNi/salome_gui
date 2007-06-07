@@ -29,7 +29,7 @@
 #ifndef DIALOGBOX_TOOLSGUI_CATALOGGENERATORDLG_H
 #define DIALOGBOX_TOOLSGUI_CATALOGGENERATORDLG_H
 
-#include <qdialog.h>
+#include <QDialog>
 
 #include <Standard_Macro.hxx>
 

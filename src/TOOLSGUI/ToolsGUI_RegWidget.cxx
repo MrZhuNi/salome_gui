@@ -26,16 +26,20 @@
 //  Module : SALOME
 //  $Header$
 
-# include <qpushbutton.h>
-# include <qlistview.h>
-# include <qtabwidget.h> 
-# include <qstatusbar.h>
-# include <qtextview.h>
-# include <qtimer.h>
-# include <qinputdialog.h>
-# include <qtoolbar.h>
-# include <qdir.h>
-# include <qtooltip.h>
+# include <QAction>
+# include <QPushButton>
+# include <QTreeWidget>
+# include <QTabWidget> 
+# include <QStatusBar>
+# include <QTextEdit>
+# include <QTimer>
+# include <QToolBar>
+//# include <QDir>
+//# include <QToolTip>
+# include <QEvent>
+# include <QKeyEvent>
+# include <QCloseEvent>
+# include <QFileInfo>
 
 # include "SALOME_NamingService.hxx"
 # include "ServiceUnreachable.hxx"
@@ -183,15 +187,28 @@ ToolsGUI_RegWidget* ToolsGUI_RegWidget::GetRegWidget( CORBA::ORB_var &orb , QWid
 }
 
 /*!
+  Reimplement this virtual function to disable popup menu on dock areas
+  (instead of QMainWindow::setDockMenuEnabled( false ) method calling in Qt3)  
+*/
+QMenu* ToolsGUI_RegWidget::createPopupMenu()
+{
+  QMenu* aPopup = 0;
+  return aPopup;
+}
+
+/*!
   Constructor  
 */
 ToolsGUI_RegWidget::ToolsGUI_RegWidget(CORBA::ORB_var &orb, QWidget *parent, const char *name ) 
-     : QMainWindow( parent, name, WType_TopLevel | WDestructiveClose ),
+     : QMainWindow( parent, Qt::Window ),
        _VarComponents( MakeRegistry(orb) ),
        _clients(0), _history(0), _parent( parent ),
        _tabWidget(0), _refresh(0), _interval(0),
        myInfoWindow(0), myHelpWindow(0), myIntervalWindow(0)
 {
+  setObjectName( name );
+  setAttribute( Qt::WA_DeleteOnClose );
+
    QString aFile = findFile("default.png");
  /* char* dir = getenv( "CSF_ResourcesDefaults" );
   QString path( "" );
@@ -201,7 +218,7 @@ ToolsGUI_RegWidget::ToolsGUI_RegWidget(CORBA::ORB_var &orb, QWidget *parent, con
   }*/
   QPixmap pm ( aFile );
   if ( !pm.isNull() )
-    setIcon( pm );
+    setWindowIcon( pm );
 
   // pixmap for buttons
   QPixmap image_refresh ( ( const char** ) refresh_data );
@@ -210,14 +227,12 @@ ToolsGUI_RegWidget::ToolsGUI_RegWidget(CORBA::ORB_var &orb, QWidget *parent, con
 
   // Buttons definition
   QToolBar* topbar = new QToolBar( tr("Toolbar"), this );
-  setDockEnabled( topbar, DockTornOff, false );
-  setDockMenuEnabled( false );
+  topbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  addToolBar( Qt::TopToolBarArea, topbar );
 
-  _refresh = new QPushButton( tr( "Refresh" ), topbar );
-  _refresh->setIconSet( image_refresh );
-  _refresh->setFocusPolicy( NoFocus );
-  connect( _refresh, SIGNAL( clicked() ), this, SLOT( slotListeSelect() ) );
-  QToolTip::add( _refresh, "", toolTipGroup(), tr("Immediately updates list of components") );
+  _refresh = topbar->addAction(image_refresh, tr( "Refresh" ), this, SLOT( slotListeSelect() ));
+  _refresh->setToolTip( "" );
+  _refresh->setStatusTip( tr("Immediately updates list of components") );
   
   /* PAL5540 - this button is needless
   QPushButton* help = new QPushButton( tr( "Help" ), topbar );
@@ -225,31 +240,28 @@ ToolsGUI_RegWidget::ToolsGUI_RegWidget(CORBA::ORB_var &orb, QWidget *parent, con
   QToolTip::add( help, "", toolTipGroup(), tr("Opens Help window") );
   */
   
-  _interval = new QPushButton( tr( "Interval" ), topbar );
-  _interval->setIconSet( image_interval );
-  _interval->setFocusPolicy( NoFocus );
-  connect( _interval, SIGNAL( clicked() ), this, SLOT( slotSelectRefresh() ) );
-  QToolTip::add( _interval, "", toolTipGroup(), tr("Changes refresh interval") );
+  _interval = topbar->addAction(image_interval, tr( "Interval" ), this, SLOT( slotSelectRefresh() ));
+  _interval->setToolTip( "" );
+  _interval->setStatusTip( tr("Changes refresh interval") );
   
   topbar->addSeparator();
-  _close = new QPushButton( tr("Close"), topbar );
-  _close->setIconSet( image_close );
-  _close->setFocusPolicy( NoFocus );
-  connect( _close, SIGNAL( clicked() ), this, SLOT( close() ) );
-  QToolTip::add( _close, "", toolTipGroup(), tr("Closes Registry window") );
+
+  _close = topbar->addAction( image_close, tr("Close"), this, SLOT( close() ));
+  _close->setToolTip( "" );
+  _close->setStatusTip( tr("Closes Registry window") );
   
   // Display area and associated slots definition
   _tabWidget = new QTabWidget( this );
-  _clients   = new QListView( _tabWidget );
+  _clients   = new QTreeWidget( _tabWidget );
   SetListe();
-  _history   = new QListView( _tabWidget );
+  _history   = new QTreeWidget( _tabWidget );
   SetListeHistory();
   
   _tabWidget->addTab( _clients, tr( "Running" ) );
   _tabWidget->addTab( _history, tr( "History" ) );
   connect( _tabWidget, SIGNAL( currentChanged( QWidget* )), this, SLOT( slotListeSelect() ) );
-  connect( _clients,   SIGNAL( clicked( QListViewItem* ) ),        this, SLOT( slotClientChanged( QListViewItem* ) ) );
-  connect( _history,   SIGNAL( clicked( QListViewItem* ) ),        this, SLOT( slotHistoryChanged( QListViewItem* ) ) );
+  connect( _clients,   SIGNAL( clicked( QTreeWidgetItem* ) ),        this, SLOT( slotClientChanged( QTreeWidgetItem* ) ) );
+  connect( _history,   SIGNAL( clicked( QTreeWidgetItem* ) ),        this, SLOT( slotHistoryChanged( QTreeWidgetItem* ) ) );
   setCentralWidget( _tabWidget );
   
   // Timer definition (used to automaticaly refresh the display area)
@@ -263,8 +275,8 @@ ToolsGUI_RegWidget::ToolsGUI_RegWidget(CORBA::ORB_var &orb, QWidget *parent, con
   PIXELS largeur = 800 ;
   PIXELS hauteur = 350 ;
   setGeometry( xpos, ypos, largeur, hauteur ) ;
-  setCaption( name ) ;
-  statusBar()->message("    ");
+  setWindowTitle( name ) ;
+  statusBar()->showMessage("    ");
 }
 
 /*!
@@ -294,13 +306,13 @@ bool ToolsGUI_RegWidget::eventFilter( QObject* object, QEvent* event )
     }
     else if ( object == _clients && event->type() == QEvent::KeyPress ) {
       QKeyEvent* ke = (QKeyEvent*)event;
-      if ( ke->key() == Key_Enter || ke->key() == Key_Return ) {
+      if ( ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Return ) {
 	slotClientChanged( _clients->currentItem() );
       }
     }
     else if ( object == _history && event->type() == QEvent::KeyPress ) {
       QKeyEvent* ke = (QKeyEvent*)event;
-      if ( ke->key() == Key_Enter || ke->key() == Key_Return ) {
+      if ( ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Return ) {
 	slotHistoryChanged( _history->currentItem() );
       }
     }
@@ -432,14 +444,12 @@ void ToolsGUI_RegWidget::SetListe()
 {
   BEGIN_OF("SetListe");
   _clients->installEventFilter( this );
+  _clients->setColumnCount(6);
   _clients->setAllColumnsShowFocus( true );
-  _clients->addColumn( tr( "Component" ), -1);
-  _clients->addColumn( tr( "PID" ), -1 );
-  _clients->addColumn( tr( "User Name" ), -1 );
-  _clients->addColumn( tr( "Machine" ), -1 );
-  _clients->addColumn( tr( "begins" ), -1 );
-  _clients->addColumn( tr( "hello" ) , -1 );
-  _clients->setColumnAlignment( 1, Qt::AlignRight );
+  QStringList aLabels;
+  aLabels << tr("Component") << tr("PID") << tr("User Name") << tr("Machine") << tr("begins") << tr("hello");
+  _clients->setHeaderLabels( aLabels );
+  //_clients->setColumnAlignment( 1, Qt::AlignRight );
   END_OF("SetListe");
 }
 
@@ -450,14 +460,12 @@ void ToolsGUI_RegWidget::SetListeHistory()
 {
    BEGIN_OF("SetListeHistory")
   _history->installEventFilter( this );
+   _history->setColumnCount(6);
   _history->setAllColumnsShowFocus( true );
-  _history->addColumn( tr( "Component" ), -1);
-  _history->addColumn( tr( "PID" ), -1 );
-  _history->addColumn( tr( "User Name" ), -1 );
-  _history->addColumn( tr( "Machine" ), -1 );
-  _history->addColumn( tr( "begins" ), -1 );
-  _history->addColumn( tr( "ends" ), -1 );
-  _history->setColumnAlignment( 1, Qt::AlignRight );
+  QStringList aLabels;
+  aLabels << tr("Component") << tr("PID") << tr("User Name") << tr("Machine") << tr("begins") << tr("ends");
+  _history->setHeaderLabels( aLabels );
+  //_history->setColumnAlignment( 1, Qt::AlignRight );
    END_OF("SetListeHistory")
 }
 
@@ -485,9 +493,9 @@ void ToolsGUI_RegWidget::InfoHistory()
 	  aTime = time_t(c_info.tc_end);
 	  char * t2 = (char * )duplicate(ctime(&aTime));
 	  t2 [strlen(t2) -1 ] = ' ';
-	  QListViewItem * item = new QListViewItem(_history, QString(c_info.name),\
-						   a, QString(c_info.pwname), QString(c_info.machine), \
-						   QString(t1), QString(t2));
+	  QStringList anItem;
+	  anItem << QString(c_info.name) << a << QString(c_info.pwname) << QString(c_info.machine) << QString(t1) << QString(t2);
+	  QTreeWidgetItem * item = new QTreeWidgetItem(_history, anItem);
 	  item=0 ;
 	  delete [] t1;
 	  delete [] t2;
@@ -500,7 +508,7 @@ void ToolsGUI_RegWidget::InfoHistory()
       _refresh->setDisabled( TRUE ) ;
       _counter->stop();
       MESSAGE("Sorry, No more Registry Server") ;
-      statusBar()->message( tr( "Sorry, No more Registry Server" ) ) ;
+      statusBar()->showMessage( tr( "Sorry, No more Registry Server" ) ) ;
     }
   END_OF("InfoHistory")
 }
@@ -528,9 +536,9 @@ void ToolsGUI_RegWidget::InfoReg()
 	  aTime = time_t(c_info.tc_hello);
 	  char * t2 = (char * )duplicate(ctime(&aTime));
 	  t2 [strlen(t2) -1 ] = ' ';
-	  QListViewItem * item = new QListViewItem(_clients, QString(c_info.name),\
-						   a, QString(c_info.pwname), QString(c_info.machine), \
-						   QString(t1), QString(t2));
+	  QStringList anItem;
+	  anItem << QString(c_info.name) << a << QString(c_info.pwname) << QString(c_info.machine) << QString(t1) << QString(t2);
+	  QTreeWidgetItem * item = new QTreeWidgetItem(_clients, anItem);
 	  item=0 ;
 	  delete [] t1;
 	  delete [] t2;
@@ -543,7 +551,7 @@ void ToolsGUI_RegWidget::InfoReg()
       _refresh->setDisabled( TRUE ) ;
       _counter->stop();
       MESSAGE("Sorry, No more Registry Server") ;
-      statusBar()->message( tr( "Sorry, No more Registry Server" ) ) ;
+      statusBar()->showMessage( tr( "Sorry, No more Registry Server" ) ) ;
     }
   END_OF("InfoReg")
 }
@@ -555,14 +563,14 @@ void ToolsGUI_RegWidget::slotListeSelect()
 {
   try
     {
-      ASSERT(_tabWidget->currentPage() != NULL);
-      if (_tabWidget->currentPage () == _clients) InfoReg();
-      else if (_tabWidget->currentPage () == _history) InfoHistory();
+      ASSERT(_tabWidget->currentWidget() != NULL);
+      if (_tabWidget->currentWidget () == _clients) InfoReg();
+      else if (_tabWidget->currentWidget () == _history) InfoHistory();
     }
   catch( ... )
     {
       MESSAGE("Sorry, No more Registry Server") ;
-      statusBar()->message( tr( "Sorry, No more Registry Server" ) ) ;
+      statusBar()->showMessage( tr( "Sorry, No more Registry Server" ) ) ;
     }
 }
 
@@ -588,7 +596,7 @@ void ToolsGUI_RegWidget::slotIntervalOk()
 {
   BEGIN_OF("slotIntervalOk");
   myRefreshInterval = myIntervalWindow->getValue();
-  _counter->changeInterval( myRefreshInterval * 1000 );
+  _counter->start( myRefreshInterval * 1000 );
   SCRUTE(myRefreshInterval);
   myIntervalWindow->close();
   END_OF("slotIntervalOk");
@@ -606,7 +614,7 @@ void ToolsGUI_RegWidget::slotHelp()
   }
   myHelpWindow->show();
   myHelpWindow->raise();
-  myHelpWindow->setActiveWindow();
+  myHelpWindow->activateWindow();
   
   END_OF("slotHelp()") ;
 }
@@ -614,7 +622,7 @@ void ToolsGUI_RegWidget::slotHelp()
 /*!
   Called when user clicks on item in <Running> list
 */
-void ToolsGUI_RegWidget::slotClientChanged( QListViewItem* item )
+void ToolsGUI_RegWidget::slotClientChanged( QTreeWidgetItem* item )
 {
   BEGIN_OF("slotClientChanged()") ;
 
@@ -625,7 +633,7 @@ void ToolsGUI_RegWidget::slotClientChanged( QListViewItem* item )
 
   int numeroItem = numitem(item->text(0), item->text(1), item->text(3), _serverclients);
   SCRUTE(numeroItem) ;
-  SCRUTE(item->text(1)) ;
+  SCRUTE(item->text(1).toLatin1().constData()) ;
   
   ASSERT(numeroItem>=0) ;
   ASSERT((size_t)numeroItem<_serverclients->length()) ;
@@ -637,11 +645,11 @@ void ToolsGUI_RegWidget::slotClientChanged( QListViewItem* item )
     myInfoWindow->installEventFilter( this );
   }
   QString a = tr( "More about" ) + QString( " " ) + QString( c_info.name );
-  myInfoWindow->setCaption(a);
+  myInfoWindow->setWindowTitle(a);
   myInfoWindow->setText( ToolsGUI_RegWidget::setlongText( c_info) );
   myInfoWindow->show();
   myInfoWindow->raise();
-  myInfoWindow->setActiveWindow();
+  myInfoWindow->activateWindow();
 
   blockSignals( false ); // enabling signals again
 
@@ -652,7 +660,7 @@ void ToolsGUI_RegWidget::slotClientChanged( QListViewItem* item )
 /*!
   Called when user clicks on item in <History> list
 */
-void ToolsGUI_RegWidget::slotHistoryChanged( QListViewItem* item )
+void ToolsGUI_RegWidget::slotHistoryChanged( QTreeWidgetItem* item )
 {
 
   BEGIN_OF("slotHistoryChanged()") ;
@@ -665,7 +673,7 @@ void ToolsGUI_RegWidget::slotHistoryChanged( QListViewItem* item )
   int numeroItem = numitem(item->text(0), item->text(1), item->text(3), _serverhistory);
   
   SCRUTE(numeroItem) ;
-  SCRUTE(item->text(1)) ;
+  SCRUTE(item->text(1).toLatin1().constData()) ;
   ASSERT(numeroItem>=0) ;
   ASSERT((size_t)numeroItem<_serverhistory->length()) ;
   const Registry::Infos & c_info=(*_serverhistory)[numeroItem];
@@ -676,11 +684,11 @@ void ToolsGUI_RegWidget::slotHistoryChanged( QListViewItem* item )
     myInfoWindow->installEventFilter( this );
   }
   QString a = tr( "More about" ) + QString( " " ) + QString( c_info.name );
-  myInfoWindow->setCaption(a);
+  myInfoWindow->setWindowTitle(a);
   myInfoWindow->setText( ToolsGUI_RegWidget::setlongText( c_info ) );
   myInfoWindow->show();
   myInfoWindow->raise();
-  myInfoWindow->setActiveWindow();
+  myInfoWindow->activateWindow();
 
   blockSignals( false ); // enabling signals again
 
@@ -692,10 +700,16 @@ void ToolsGUI_RegWidget::slotHistoryChanged( QListViewItem* item )
   Constructor
 */
 ToolsGUI_InfoWindow::ToolsGUI_InfoWindow( QWidget* parent, const char* name )
-     : QMainWindow( parent, name, WType_TopLevel | WDestructiveClose )
+     : QMainWindow( parent, Qt::Window )
 {
   BEGIN_OF("InfoWindow");
-  myTextView = new QTextView( this, "myTextView" );
+
+  setObjectName( name );
+  setAttribute( Qt::WA_DeleteOnClose );
+
+  myTextView = new QTextEdit( this );
+  myTextView->setObjectName( "myTextView" );
+  myTextView->setReadOnly( true );
   setCentralWidget( myTextView );
   setMinimumSize( 450, 250 );
   END_OF("InfoWindow");
@@ -715,7 +729,7 @@ void ToolsGUI_InfoWindow::setText( const QString& text )
 void ToolsGUI_InfoWindow::keyPressEvent( QKeyEvent * e )
 {
   QMainWindow::keyPressEvent( e );
-  if ( e->key() == Key_Escape )
+  if ( e->key() == Qt::Key_Escape )
     close();
 }
 
@@ -804,7 +818,7 @@ QString findFile( QString filename )
   dir.sprintf( "%s", cenv );
   if ( !dir.isEmpty() )
   {
-    QStringList dirList = QStringList::split( SEPARATOR, dir, false ); // skip empty entries
+    QStringList dirList = dir.split( SEPARATOR, QString::SkipEmptyParts ); // skip empty entries
     for ( int i = 0; i < (int)dirList.count(); i++ )
     {
 	    QFileInfo fileInfo( addSlash( dirList[ i ] ) + filename );

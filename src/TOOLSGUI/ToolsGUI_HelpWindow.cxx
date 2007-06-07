@@ -29,10 +29,9 @@
 # include "ToolsGUI_HelpWindow.h"
 # include "utilities.h"
 
-# include <qtextview.h>
-# include <qpushbutton.h>
-# include <qtextstream.h> 
-# include <qfile.h> 
+# include <QTextEdit>
+# include <QTextStream> 
+# include <QFile> 
 
 using namespace std;
 
@@ -40,42 +39,45 @@ using namespace std;
   Constructor
 */
 ToolsGUI_HelpWindow::ToolsGUI_HelpWindow(QWidget* parent, const char* name ) 
-     : QMainWindow( parent, name, WType_TopLevel | WDestructiveClose )
+     : QMainWindow( parent, Qt::Window )
 {
   BEGIN_OF("Constructeur ToolsGUI_HelpWindow");
   
-  setCaption( tr( "Help" ) );
+  setObjectName( name );
+  setAttribute( Qt::WA_DeleteOnClose );
 
-  myTextView = new QTextView( this, "myTextView" );
+  setWindowTitle( tr( "Help" ) );
+
+  myTextView = new QTextEdit( this );
+  myTextView->setObjectName( "myTextView" );
+  myTextView->setReadOnly( true );
   QPalette pal = myTextView->palette();
-  QColorGroup cg = pal.active();
-  cg.setColor( QColorGroup::Highlight, QColor( 0, 0, 128) );
-  cg.setColor( QColorGroup::HighlightedText, Qt::white );
-  cg.setColor( QColorGroup::Base, QColor( 255,255,220 )  ); 
-  cg.setColor( QColorGroup::Text, Qt::black );
-  pal.setActive  ( cg );
-  cg = pal.inactive();
-  cg.setColor( QColorGroup::Highlight, QColor( 0, 0, 128) );
-  cg.setColor( QColorGroup::HighlightedText, Qt::white );
-  cg.setColor( QColorGroup::Base, QColor( 255,255,220 )  ); 
-  cg.setColor( QColorGroup::Text, Qt::black );
-  pal.setInactive( cg );
-  cg = pal.disabled();
-  cg.setColor( QColorGroup::Highlight, QColor( 0, 0, 128) );
-  cg.setColor( QColorGroup::HighlightedText, Qt::white );
-  cg.setColor( QColorGroup::Base, QColor( 255,255,220 )  ); 
-  cg.setColor( QColorGroup::Text, Qt::black );
-  pal.setDisabled( cg );
+
+  pal.setBrush( QPalette::Active, QPalette::Highlight,       QBrush( QColor( 0, 0, 128 ) ) );
+  pal.setBrush( QPalette::Active, QPalette::HighlightedText, QBrush( Qt::white ) );
+  pal.setBrush( QPalette::Active, QPalette::Base,            QBrush( QColor( 255,255,220 ) ) );
+  pal.setBrush( QPalette::Active, QPalette::Text,            QBrush( Qt::black ) );
+
+  pal.setBrush( QPalette::Inactive, QPalette::Highlight,       QBrush( QColor( 0, 0, 128 ) ) );
+  pal.setBrush( QPalette::Inactive, QPalette::HighlightedText, QBrush( Qt::white ) );
+  pal.setBrush( QPalette::Inactive, QPalette::Base,            QBrush( QColor( 255,255,220 ) ) );
+  pal.setBrush( QPalette::Inactive, QPalette::Text,            QBrush( Qt::black ) );
+
+  pal.setBrush( QPalette::Disabled, QPalette::Highlight,       QBrush( QColor( 0, 0, 128 ) ) );
+  pal.setBrush( QPalette::Disabled, QPalette::HighlightedText, QBrush( Qt::white ) );
+  pal.setBrush( QPalette::Disabled, QPalette::Base,            QBrush( QColor( 255,255,220 ) ) );
+  pal.setBrush( QPalette::Disabled, QPalette::Text,            QBrush( Qt::black ) );
+
   myTextView->setPalette( pal );
   
   setCentralWidget( myTextView );
   setMinimumSize( 450, 250 );
 
   QFile f ( "tmp.txt" );
-  if ( f.open( IO_ReadOnly ) )   
+  if ( f.open( QIODevice::ReadOnly ) )   
     {
       QTextStream t( &f ); 
-      while ( !t.eof() ) 
+      while ( !t.atEnd() ) 
 	{
 	  myTextView->append(t.readLine());
 	}
