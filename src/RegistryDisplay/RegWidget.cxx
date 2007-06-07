@@ -186,7 +186,7 @@ RegWidget* RegWidget::GetRegWidget( CORBA::ORB_var &orb , QWidget *parent, const
   Reimplement this virtual function to disable popup menu on dock areas
   (instead of QMainWindow::setDockMenuEnabled( false ) method calling in Qt3)  
 */
-QMenu* createPopupMenu()
+QMenu* RegWidget::createPopupMenu()
 {
   QMenu* aPopup = 0;
   return aPopup;
