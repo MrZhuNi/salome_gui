@@ -25,10 +25,11 @@
 #ifndef IntervalWindow_HeaderFile
 #define IntervalWindow_HeaderFile
 
-# include <qwidget.h>
-# include <qdialog.h>
-# include <qpushbutton.h>
-# include <qspinbox.h>
+# include <QDialog>
+
+class QWidget;
+class QPushButton;
+class QSpinBox;
 
 #ifndef WIN32
 using namespace std;

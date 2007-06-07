@@ -21,3 +21,4 @@ SUBDIRS += OCCViewer
 SUBDIRS += SOCC
 SUBDIRS += Event
 SUBDIRS += ResExporter
+SUBDIRS += RegistryDisplay

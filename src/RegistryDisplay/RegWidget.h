@@ -28,24 +28,23 @@
 
 # ifndef __REGWIDGET_H__
 # define __REGWIDGET_H__
-# include <qapplication.h>
-# include <qmainwindow.h>
+
+# include <QMainWindow>
 
 #include <SALOMEconfig.h>
 #include CORBA_CLIENT_HEADER(SALOME_Registry)
 
-#include <IntervalWindow.hxx>
-
 class QTabWidget;
-class QListView;
-class QListViewItem;
+class QTreeWidget;
+class QTreeWidgetItem;
 class QWidget;
 class QTimer;
 class QCloseEvent;
-class QTextView;
-class QPushButton;
+class QTextEdit;
+class QAction;
 class HelpWindow;
 class InfoWindow;
+class IntervalWindow;
 
 class RegWidget : public QMainWindow
 {
@@ -63,11 +62,13 @@ public:
 
   static RegWidget* GetRegWidget( CORBA::ORB_var &orb , QWidget *parent = 0, const char *name = 0 );
 
+  virtual QMenu* createPopupMenu();
+
 public slots:
   void       slotHelp();
   void       slotListeSelect();
-  void       slotClientChanged( QListViewItem* );
-  void       slotHistoryChanged( QListViewItem* );
+  void       slotClientChanged( QTreeWidgetItem* );
+  void       slotHistoryChanged( QTreeWidgetItem* );
   void       slotSelectRefresh();
   void       slotIntervalOk();
 protected:  
@@ -76,13 +77,13 @@ protected:
   void           closeEvent( QCloseEvent *e);
    
 protected :
-  QListView*          _clients;
-  QListView*          _history;
+  QTreeWidget*        _clients;
+  QTreeWidget*        _history;
   QWidget*            _parent;
   QTabWidget*         _tabWidget;
-  QPushButton*        _refresh;
-  QPushButton*        _interval;
-  QPushButton*        _close;
+  QAction*            _refresh;
+  QAction*            _interval;
+  QAction*            _close;
   QTimer*             _counter;
   Registry::AllInfos* _serverhistory;
   Registry::AllInfos* _serverclients;
@@ -101,13 +102,13 @@ public:
   InfoWindow( QWidget* parent = 0, const char* name = 0);
 
   void setText( const QString& text );
-  QTextView* textView() const { return myTextView; }
+  QTextEdit* textView() const { return myTextView; }
 
 protected:
   void keyPressEvent( QKeyEvent * e );
 
 private:
-  QTextView* myTextView;
+  QTextEdit* myTextView;
 
 };
 

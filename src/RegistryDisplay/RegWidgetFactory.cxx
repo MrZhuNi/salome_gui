@@ -41,7 +41,7 @@ void OnGUIEvent( CORBA::ORB_var &orb, QWidget *parent, const char *name )
  //ASSERT ( !ptrRegWidget );
  ptrRegWidget->show();
  ptrRegWidget->raise();
- ptrRegWidget->setActiveWindow();
+ ptrRegWidget->activateWindow();
  return;
 }
 
