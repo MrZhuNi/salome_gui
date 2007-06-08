@@ -95,5 +95,5 @@ bool Plot2d_Prs::isSecondY() const
 */
 void Plot2d_Prs::setAutoDel(bool theDel)
 {
-  myCurves.setAutoDelete(theDel);
+  //myCurves.setAutoDelete(theDel);
 }

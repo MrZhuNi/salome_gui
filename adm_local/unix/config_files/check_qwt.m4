@@ -97,7 +97,7 @@ then
   else
     QT_LIB_DIR="-L$QTDIR/lib${LIB_LOCATION_SUFFIX}"
   fi
-  LIBS="$LIBS $QT_LIB_DIR -lQtCore"
+  LIBS="$LIBS $QT_LIB_DIR -lQtCore -lQtGui"
 
   if test "x$QWTHOME" = "x/usr"
   then
@@ -111,12 +111,14 @@ then
 
   AC_CACHE_VAL(salome_cv_lib_qwt,[
     AC_TRY_LINK(
-#include <qapplication.h>
+#include <QApplication>
 #include <qwt_plot.h>
 ,   int n;
     char **s;
     QApplication a(n, s);
     QwtPlot* p;
+    p.resize( 600, 400 );
+    p.show();
     a.exec();,
     eval "salome_cv_lib_qwt=yes",eval "salome_cv_lib_qwt=no")
   ])
