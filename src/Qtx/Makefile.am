@@ -57,7 +57,8 @@ salomeinclude_HEADERS=		\
 	QtxWorkspace.h		\
 	QtxWorkspaceAction.h	\
 	QtxWorkstack.h		\
-	QtxWorkstackAction.h
+	QtxWorkstackAction.h    \
+	QtxToolTip.h
 
 #VSR: not yet migrated to Qt4 files
 #				\
@@ -67,8 +68,7 @@ salomeinclude_HEADERS=		\
 	QtxListView.h		\
 	QtxPopupMenu.h		\
 	QtxResourceEdit.h	\
-	QtxTable.h		\
-	QtxToolTip.h
+	QtxTable.h
 
 # Libraries targets
 
@@ -105,7 +105,8 @@ dist_libqtx_la_SOURCES=		\
 	QtxWorkspace.cxx	\
 	QtxWorkspaceAction.cxx	\
 	QtxWorkstack.cxx	\
-	QtxWorkstackAction.cxx
+	QtxWorkstackAction.cxx  \
+	QtxToolTip.cxx
 
 #VSR: not yet migrated to Qt4 files
 #				\
@@ -115,8 +116,7 @@ dist_libqtx_la_SOURCES=		\
 	QtxListView.cxx		\
 	QtxPopupMenu.cxx	\
 	QtxResourceEdit.cxx	\
-	QtxTable.cxx		\
-	QtxToolTip.cxx
+	QtxTable.cxx
 
 #VSR: already migrated to Qt4 files
 MOC_FILES=				\
@@ -146,7 +146,8 @@ MOC_FILES=				\
 	QtxWorkspace_moc.cxx		\
 	QtxWorkspaceAction_moc.cxx	\
 	QtxWorkstack_moc.cxx		\
-	QtxWorkstackAction_moc.cxx
+	QtxWorkstackAction_moc.cxx      \
+	QtxToolTip_moc.cxx
 
 #VSR: not yet migrated to Qt4 files
 #					\
@@ -155,8 +156,7 @@ MOC_FILES=				\
 	QtxListResourceEdit_moc.cxx	\
 	QtxListView_moc.cxx		\
 	QtxPopupMenu_moc.cxx		\
-	QtxTable_moc.cxx		\
-	QtxToolTip_moc.cxx
+	QtxTable_moc.cxx
 
 nodist_libqtx_la_SOURCES= $(MOC_FILES)
 
