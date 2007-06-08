@@ -19,7 +19,6 @@
 #include "VTKViewer_RenderWindow.h"
 
 #include <QColorDialog>
-#include <QX11Info>
 #include <QContextMenuEvent>
 
 #include <stdlib.h>
@@ -29,6 +28,7 @@
 #include <vtkRendererCollection.h>
 #include <vtkCamera.h>
 #ifndef WIN32
+#include <QX11Info>
 #include <vtkXOpenGLRenderWindow.h>
 //#include <GL/gl.h>
 //#include <GL/glu.h>

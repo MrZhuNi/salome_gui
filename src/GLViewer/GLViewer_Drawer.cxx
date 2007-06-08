@@ -390,8 +390,8 @@ static GLuint displayListBase( QFont* theFont )
     QMap<GLViewer_TexFindId, GLuint>::iterator it = GLViewer_TexFont::BitmapFontCache.begin();
     for ( ; it != GLViewer_TexFont::BitmapFontCache.end(); ++it )
     {
-      if ( it.key().myViewPortId == (int)ctx && it.data() > listBase )
-        listBase = it.data();
+      if ( it.key().myViewPortId == (int)ctx && it.value() > listBase )
+        listBase = it.value();
     }
     listBase += 256;
 

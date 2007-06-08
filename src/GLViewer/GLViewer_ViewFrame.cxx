@@ -44,6 +44,12 @@
 #include <QKeyEvent>
 #include <QWheelEvent>
 
+#ifdef WIN32
+#include <Standard_Integer.hxx>
+#include <iostream>
+using namespace std;
+#endif
+
 /*!
     Constructor
 */

@@ -38,11 +38,11 @@
 #include <QColormap>
 #include <QMouseEvent>
 #include <QCoreApplication>
-#include <QX11Info>
 
 #include <stdlib.h>
 
 #if !defined WIN32
+#include <QX11Info>
 #include <GL/glx.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
