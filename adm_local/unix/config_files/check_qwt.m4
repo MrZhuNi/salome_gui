@@ -84,16 +84,21 @@ else
      qwt_ok=yes
   fi
 
+#
+# test Qwt libraries
+#
 if  test "x$qwt_ok" = "xyes"
 then
   AC_MSG_CHECKING(linking qwt library)
   LIBS_old=$LIBS
   if test "x$QTDIR" = "x/usr"
   then
-    LIBS="$LIBS -lqt-mt"
+    QT_LIB_DIR=""
   else
-    LIBS="$LIBS -L$QTDIR/lib${LIB_LOCATION_SUFFIX} -lqt-mt"
+    QT_LIB_DIR="-L$QTDIR/lib${LIB_LOCATION_SUFFIX}"
   fi
+  LIBS="$LIBS $QT_LIB_DIR -lQtCore"
+
   if test "x$QWTHOME" = "x/usr"
   then
     LIBS="$LIBS -lqwt"
@@ -112,7 +117,6 @@ then
     char **s;
     QApplication a(n, s);
     QwtPlot* p;
-    a.setMainWidget(p);
     a.exec();,
     eval "salome_cv_lib_qwt=yes",eval "salome_cv_lib_qwt=no")
   ])
