@@ -274,7 +274,7 @@ CAM_Module* CAM_Application::loadModule( const QString& modName )
   GET_MODULE_FUNC crtInst = 0;
 
 #ifdef WIN32
-  HINSTANCE modLib = ::LoadLibrary( libName ); 
+  HINSTANCE modLib = ::LoadLibrary( libName.toLatin1() ); 
   if ( !modLib )
   {
     LPVOID lpMsgBuf;
