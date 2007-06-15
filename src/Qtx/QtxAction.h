@@ -24,7 +24,7 @@
 
 #include "Qtx.h"
 
-#include <QAction>
+#include <QWidgetAction>
 
 class QIcon;
 
@@ -32,9 +32,11 @@ class QIcon;
 #pragma warning ( disable:4251 )
 #endif
 
-class QTX_EXPORT QtxAction : public QAction
+class QTX_EXPORT QtxAction : public QWidgetAction
 {
   Q_OBJECT
+
+  class ActionNotify;
 
 public:
   QtxAction( QObject* = 0, bool = false );
@@ -51,6 +53,8 @@ public:
 protected:
   virtual void addedTo( QWidget* );
   virtual void removedFrom( QWidget* );
+
+  virtual void customEvent( QEvent* );
 };
 
 #ifdef WIN32

@@ -68,6 +68,8 @@ protected:
   int             actionId( QAction* ) const;
   void            setActionId( QAction*, const int );
 
+  virtual bool    isEmptyAction() const;
+
 private:
   void            update();
   void            update( QWidget* );

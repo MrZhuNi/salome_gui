@@ -214,7 +214,7 @@ void QtxActionSet::clear()
 */
 void QtxActionSet::onChanged()
 {
-  if ( !isVisible() )
+  if ( !isVisible() || !isEmptyAction() )
     return;
 
   bool block = signalsBlocked();
@@ -350,6 +350,11 @@ void QtxActionSet::update( QWidget* w )
     QAction* a = mySet.at( i );
     w->insertAction( this, a );
   }
+}
+
+bool QtxActionSet::isEmptyAction() const
+{
+  return true;
 }
 
 /*!

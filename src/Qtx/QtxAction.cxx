@@ -25,6 +25,20 @@
 #include <QActionEvent>
 #include <QApplication>
 
+class QtxAction::ActionNotify : public QEvent
+{
+public:
+  ActionNotify( bool add, QWidget* wid ) : QEvent( QEvent::User ), myAdd( add ), myWidget( wid ) {};
+  ~ActionNotify() {};
+
+  bool     isAdded() const { return myAdd; }
+  QWidget* widget() const { return myWidget; }
+
+private:
+  bool     myAdd;
+  QWidget* myWidget;
+};
+
 /*!
   \class QtxAction
   \brief Generic action class.
@@ -40,7 +54,7 @@
   \param toggle if \c true the action is a toggle action
 */
 QtxAction::QtxAction( QObject* parent, bool toggle )
-: QAction( parent )
+: QWidgetAction( parent )
 {
   setCheckable( toggle );
 
@@ -60,10 +74,12 @@ QtxAction::QtxAction( QObject* parent, bool toggle )
   \param name action name (in terms of QObject)
   \param toggle if \c true the action is a toggle action
 */
-QtxAction::QtxAction( const QString& text, const QIcon& icon, const QString& menuText,
-                      int accel, QObject* parent, bool toggle )
-: QAction( icon, menuText, parent )
+QtxAction::QtxAction( const QString& text, const QIcon& icon,
+                      const QString& menuText, int accel, QObject* parent, bool toggle )
+: QWidgetAction( parent )
 {
+  setIcon( icon );
+  setText( menuText );
   setToolTip( text );
   setShortcut( accel );
   setCheckable( toggle );
@@ -85,8 +101,9 @@ QtxAction::QtxAction( const QString& text, const QIcon& icon, const QString& men
 */
 QtxAction::QtxAction( const QString& text, const QString& menuText,
                       int accel, QObject* parent, bool toggle )
-: QAction( menuText, parent )
+: QWidgetAction( parent )
 {
+  setText( menuText );
   setToolTip( text );
   setShortcut( accel );
   setCheckable( toggle );
@@ -117,11 +134,11 @@ bool QtxAction::eventFilter( QObject* o, QEvent* e )
   if ( o && o->isWidgetType() )
   {
     if ( e->type() == QEvent::ActionAdded && ((QActionEvent*)e)->action() == this )
-      addedTo( (QWidget*)o );
+      QApplication::postEvent( this, new ActionNotify( true, (QWidget*)o ) );
     if ( e->type() == QEvent::ActionRemoved && ((QActionEvent*)e)->action() == this )
-      removedFrom( (QWidget*)o );
+      QApplication::postEvent( this, new ActionNotify( false, (QWidget*)o ) );
   }
-  return QAction::eventFilter( o, e );
+  return QWidgetAction::eventFilter( o, e );
 }
 
 /*!
@@ -185,7 +202,7 @@ bool QtxAction::removeFrom( QWidget* w )
 
   \param w widget (menu or toolbar)
 */
-void QtxAction::addedTo( QWidget* /*w*/ )
+void QtxAction::addedTo( QWidget* )
 {
 }
 
@@ -197,6 +214,15 @@ void QtxAction::addedTo( QWidget* /*w*/ )
 
   \param w widget (menu or toolbar)
 */
-void QtxAction::removedFrom( QWidget* /*w*/ )
+void QtxAction::removedFrom( QWidget* )
 {
+}
+
+void QtxAction::customEvent( QEvent* e )
+{
+  ActionNotify* ae = (ActionNotify*)e;
+  if ( ae->isAdded() )
+    addedTo( ae->widget() );
+  else
+    removedFrom( ae->widget() );
 }
