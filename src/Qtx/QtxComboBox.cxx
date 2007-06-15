@@ -143,7 +143,7 @@ void QtxComboBox::paintEvent( QPaintEvent* e )
 
 /*!
   \brief Called when any item is activated by the user.
-  \param idx activated item index (not used)
+  \param idx activated item index
 */
 void QtxComboBox::onActivated( int idx )
 {

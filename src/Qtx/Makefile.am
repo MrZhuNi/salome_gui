@@ -53,12 +53,12 @@ salomeinclude_HEADERS=		\
 	QtxResourceMgr.h	\
 	QtxSplash.h		\
 	QtxToolBar.h		\
+	QtxToolTip.h		\
 	QtxValidator.h		\
 	QtxWorkspace.h		\
 	QtxWorkspaceAction.h	\
 	QtxWorkstack.h		\
-	QtxWorkstackAction.h    \
-	QtxToolTip.h
+	QtxWorkstackAction.h
 
 #VSR: not yet migrated to Qt4 files
 #				\
@@ -101,12 +101,12 @@ dist_libqtx_la_SOURCES=		\
 	QtxResourceMgr.cxx	\
 	QtxSplash.cxx		\
 	QtxToolBar.cxx		\
+	QtxToolTip.cxx		\
 	QtxValidator.cxx	\
 	QtxWorkspace.cxx	\
 	QtxWorkspaceAction.cxx	\
 	QtxWorkstack.cxx	\
-	QtxWorkstackAction.cxx  \
-	QtxToolTip.cxx
+	QtxWorkstackAction.cxx
 
 #VSR: not yet migrated to Qt4 files
 #				\
@@ -142,12 +142,12 @@ MOC_FILES=				\
 	QtxPopupMgr_moc.cxx		\
 	QtxSplash_moc.cxx		\
 	QtxToolBar_moc.cxx		\
+	QtxToolTip_moc.cxx		\
 	QtxValidator_moc.cxx		\
 	QtxWorkspace_moc.cxx		\
 	QtxWorkspaceAction_moc.cxx	\
 	QtxWorkstack_moc.cxx		\
-	QtxWorkstackAction_moc.cxx      \
-	QtxToolTip_moc.cxx
+	QtxWorkstackAction_moc.cxx
 
 #VSR: not yet migrated to Qt4 files
 #					\

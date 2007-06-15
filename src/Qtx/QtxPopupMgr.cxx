@@ -493,18 +493,18 @@ bool QtxPopupMgr::isSatisfied( QAction* act, const RuleType ruleType ) const
       for ( int i = 0; i < mySelection->count() && !res; i++ )
       {
         QList<QVariant> c;
-	      for ( QStringList::const_iterator anIt1 = specific.begin(); anIt1 != specific.end(); ++anIt1 )
+	for ( QStringList::const_iterator anIt1 = specific.begin(); anIt1 != specific.end(); ++anIt1 )
           c.append( parameter( *anIt1, i ) );
         aCorteges.insert( c, 0 );
       }
       for ( QMap<QList<QVariant>, int>::const_iterator anIt = aCorteges.begin(); anIt  != aCorteges.end(); ++anIt )
       {
-	      const QList<QVariant>& aCortege = anIt.key();
-	      QStringList::const_iterator anIt1 = specific.begin(), aLast1 = specific.end();
-	      QList<QVariant>::const_iterator anIt2 = aCortege.begin();
-	      for ( ; anIt1 != aLast1; anIt1++, anIt2++ )
-	        p->setParameter( *anIt1, *anIt2 );
-	      res = res || result( p );
+	const QList<QVariant>& aCortege = anIt.key();
+	QStringList::const_iterator anIt1 = specific.begin(), aLast1 = specific.end();
+	QList<QVariant>::const_iterator anIt2 = aCortege.begin();
+	for ( ; anIt1 != aLast1; anIt1++, anIt2++ )
+	  p->setParameter( *anIt1, *anIt2 );
+	res = res || result( p );
       }
     }
     else
