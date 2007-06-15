@@ -227,7 +227,7 @@ void QtxActionSet::onChanged()
   \brief Called when some action is activated by the user.
   \param on toggled state (not used)
 */
-void QtxActionSet::onActionTriggered( bool /*on*/ )
+void QtxActionSet::onActionTriggered( bool )
 {
   QAction* a = ::qobject_cast<QAction*>( sender() );
   if ( !a )
