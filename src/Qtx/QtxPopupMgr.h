@@ -95,8 +95,10 @@ private:
   QtxPopupSelection* mySelection;
 };
 
-class QTX_EXPORT QtxPopupSelection
+class QTX_EXPORT QtxPopupSelection : public QObject
 {
+  Q_OBJECT
+
 public:
   QtxPopupSelection();
   virtual ~QtxPopupSelection();
