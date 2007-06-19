@@ -72,12 +72,12 @@ if ENABLE_PYCONSOLE
 endif
 if ENABLE_PLOT2DVIEWER
 # VSR: this is the original packages list
-#  SUBDIRS += Plot2d
+  SUBDIRS += Plot2d
 # VSR: already migrated to Qt4 packages
   SUBDIRS += 
 if ENABLE_SALOMEOBJECT
 # VSR: this is the original packages list
-#    SUBDIRS += SPlot2d
+    SUBDIRS += SPlot2d
 # VSR: already migrated to Qt4 packages
     SUBDIRS += 
 endif
