@@ -35,8 +35,10 @@
 #include "LightApp_PreferencesDlg.h"
 #include "LightApp_ModuleDlg.h"
 #include "LightApp_AboutDlg.h"
+#include "LightApp_ModuleAction.h"
 
-#include "LightApp_OBFilter.h"
+// temporary commented
+//#include "LightApp_OBFilter.h"
 
 #include "LightApp_EventFilter.h"
 
@@ -539,33 +541,12 @@ void LightApp_Application::createActions()
 
   if( modList.count()>1 )
   {
-    QToolBar* modTBar = new QtxToolBar( true, desk );
-    modTBar->setObjectName( "ModuleToolBar" );
-    modTBar->setWindowTitle( tr( "INF_TOOLBAR_MODULES" ) );
-
-    QActionGroup* modGroup = new QActionGroup( this );
-    modGroup->setExclusive( true );
-    //modGroup->setUsesDropDown( true ); // to use a new class for this purpose
-
-    a = createAction( -1, tr( "APP_NAME" ), defIcon, tr( "APP_NAME" ),
-                      tr( "PRP_APP_MODULE" ), 0, desk, true );
-    modGroup->addAction( a );
-    myActions.insert( QString(), a );
+    myModuleAction = new LightApp_ModuleAction( tr( "APP_NAME" ), defIcon, desk );
 
     QMap<QString, QString> iconMap;
     moduleIconNames( iconMap );
 
     const int iconSize = 20;
-
-    modTBar->addActions(modGroup->actions());
-    QList<QComboBox*> l = modTBar->findChildren<QComboBox*>();
-    QListIterator<QComboBox*> oit( l );
-    while ( oit.hasNext() ) {
-      QComboBox* cb = oit.next();
-      if ( cb ) cb->setFocusPolicy( Qt::NoFocus );
-    }
-  
-    modTBar->addSeparator();
 
     for ( it = modList.begin(); it != modList.end(); ++it )
     {
@@ -588,16 +569,11 @@ void LightApp_Application::createActions()
       }
 
       icon.fromImage( icon.toImage().scaled( iconSize, iconSize, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
-
-      QAction* a = createAction( -1, *it, icon, *it, tr( "PRP_MODULE" ).arg( *it ), 0, desk, true );
-      modTBar->addAction( a );
-      modGroup->addAction( a );
-
-      myActions.insert( *it, a );
+      
+      myModuleAction->insertModule( *it, icon );
     }
 
-    SUIT_Tools::simplifySeparators( modTBar );
-    connect( modGroup, SIGNAL( selected( QAction* ) ), this, SLOT( onModuleActivation( QAction* ) ) );
+    connect( myModuleAction, SIGNAL( moduleActivated( const QString& ) ), this, SLOT( onModuleActivation( const QString& ) ) );
   }
 
   // New window
@@ -636,15 +612,8 @@ void LightApp_Application::createActions()
 }
 
 /*!On module activation action.*/
-void LightApp_Application::onModuleActivation( QAction* a )
+void LightApp_Application::onModuleActivation( const QString& modName )
 {
-  if ( !a )
-    return;
-
-  QString modName = a->text();
-  if ( modName == tr( "APP_NAME" ) )
-    modName = QString::null;
-
   // Force user to create/open a study before module activation
   QMap<QString, QString> iconMap;
   moduleIconNames( iconMap );
@@ -670,7 +639,7 @@ void LightApp_Application::onModuleActivation( QAction* a )
     case 0:
     default:
       putInfo( tr("INF_CANCELLED") );
-      myActions[QString()]->setChecked( true );
+      myModuleAction->setActiveModule( QString() );
       cancelled = true;
     }
   }
@@ -1202,8 +1171,9 @@ bool LightApp_Application::isWindowVisible( const int type ) const
   bool res = false;
   if ( myWindows.contains( type ) )
   {
-    SUIT_Desktop* desk = ((LightApp_Application*)this)->desktop();
+    //SUIT_Desktop* desk = ((LightApp_Application*)this)->desktop();
     //res = desk && desk->appropriate( myWindows[type] );
+    res = myWindows[type]->isVisible();
   }
   return res;
 }
@@ -2129,8 +2099,7 @@ void LightApp_Application::updateModuleActions()
   if ( activeModule() )
     modName = activeModule()->moduleName();
 
-  if ( myActions.contains( modName ) )
-    myActions[modName]->setChecked( true );
+  myModuleAction->setActiveModule( modName );
 }
 
 /*!

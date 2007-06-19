@@ -39,6 +39,7 @@ salomeinclude_HEADERS= \
 	LightApp_EventFilter.h \
 	LightApp_HDFDriver.h \
 	LightApp_Module.h \
+	LightApp_ModuleAction.h \
 	LightApp_ModuleDlg.h \
 	LightApp_NameDlg.h \
 	LightApp_OBFilter.h \
@@ -80,6 +81,7 @@ dist_libLightApp_la_SOURCES= \
 	LightApp_EventFilter.cxx \
 	LightApp_HDFDriver.cxx \
 	LightApp_Module.cxx \
+	LightApp_ModuleAction.cxx \
 	LightApp_ModuleDlg.cxx \
 	LightApp_NameDlg.cxx \
 	LightApp_OBFilter.cxx \
@@ -114,6 +116,7 @@ MOC_FILES= \
 	LightApp_OBSelector_moc.cxx \
 	LightApp_Operation_moc.cxx \
 	LightApp_Module_moc.cxx \
+	LightApp_ModuleAction_moc.cxx \
 	LightApp_ModuleDlg_moc.cxx \
 	LightApp_NameDlg_moc.cxx \
 	LightApp_SelectionMgr_moc.cxx \

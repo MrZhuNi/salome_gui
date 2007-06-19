@@ -41,6 +41,7 @@ class LightApp_WidgetContainer;
 class LightApp_Preferences;
 class LightApp_SelectionMgr;
 class LightApp_DataObject;
+class LightApp_ModuleAction;
 class SUIT_Study;
 class SUIT_Accel;
 class CAM_Module;
@@ -200,7 +201,7 @@ protected slots:
   virtual void                        onDesktopActivated();
 
   void                                onNewWindow();
-  void                                onModuleActivation( QAction* );
+  void                                onModuleActivation( const QString& );
   void                                onCloseView( SUIT_ViewManager* );
 
   void                                onStudyCreated( SUIT_Study* );
@@ -238,14 +239,13 @@ protected:
   bool                                isLibExists( const QString& ) const;
 
 protected:
-  typedef QMap<QString, QAction*>              ActionMap;
   typedef QMap<int, LightApp_WidgetContainer*> WindowMap;
   typedef QMap<int, bool>                      WindowVisibilityMap;
 
 protected:
   LightApp_Preferences*               myPrefs;
   LightApp_SelectionMgr*              mySelMgr;
-  ActionMap                           myActions;
+  LightApp_ModuleAction*              myModuleAction;
   WindowMap                           myWindows;
   WindowVisibilityMap                 myWindowsVisible;
 
