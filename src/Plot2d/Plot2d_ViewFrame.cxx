@@ -52,6 +52,8 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include <qwt_scale_engine.h>
+#include <qwt_plot_zoomer.h>
+#include <qwt_curve_fitter.h>
 
 #include <iostream>
 #include <stdlib.h>
@@ -170,14 +172,6 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
   aLayout->addWidget( myPlot );
 
 //  createActions();
-
-  connect( myPlot, SIGNAL( plotMouseMoved( const QMouseEvent& ) ),
-     this,   SLOT( plotMouseMoved( const QMouseEvent& ) ) );
-  connect( myPlot, SIGNAL( plotMousePressed( const QMouseEvent& ) ),
-     this,   SLOT( plotMousePressed( const QMouseEvent& ) ) );
-  connect( myPlot, SIGNAL( plotMouseReleased( const QMouseEvent& ) ),
-     this,   SLOT( plotMouseReleased( const QMouseEvent& ) ) );
-
   //connect( myPlot, SIGNAL( legendClicked( long ) ),
   //   this,   SLOT( onLegendClicked( long ) ) );
 
@@ -208,13 +202,14 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
   }
   QwtScaleMap xMap = myPlot->canvasMap( QwtPlot::xBottom );
   QwtScaleMap yMap = myPlot->canvasMap( QwtPlot::yLeft );
-  myXDistance = xMap.p2() - xMap.p1();
-  myYDistance = yMap.p2() - yMap.p1();
+  myXDistance = xMap.s2() - xMap.s1();
+  myYDistance = yMap.s2() - yMap.s1();
   myYDistance2 = 0;
   if (mySecondY) {
     QwtScaleMap yMap2 = myPlot->canvasMap( QwtPlot::yRight );
-    myYDistance2 = yMap2.p2() - yMap2.p1();
+    myYDistance2 = yMap2.s2() - yMap2.s1();
   }
+  qApp->installEventFilter( this );
 }
 /*!
   Destructor
@@ -293,6 +288,46 @@ void Plot2d_ViewFrame::Erase( const Plot2d_Prs* prs, const bool )
   // erase all curves from presentation
   curveList aCurves = prs->getCurves();
   eraseCurves( aCurves );
+}
+
+bool Plot2d_ViewFrame::eventFilter( QObject* watched, QEvent* e )
+{
+  if ( watched == myPlot->canvas() ) {
+    int aType = e->type();
+    switch( aType ) {
+      case QEvent::MouseMove: {
+        QMouseEvent* me = (QMouseEvent*)e;
+        if ( me && ( me->buttons() != 0 || me->button() != 0 ) ) {
+          QMouseEvent m( QEvent::MouseMove, me->pos(), me->button(),
+                         me->buttons(), me->modifiers() );
+          if ( plotMouseMoved( m ) )
+            return true;
+        }
+	break;
+      }
+      case QEvent::MouseButtonPress: {
+        QMouseEvent* me = (QMouseEvent*)e;
+        if ( me && ( me->buttons() != 0 || me->button() != 0 ) ) {
+          QMouseEvent m( QEvent::MouseButtonPress, me->pos(), me->button(),
+                          me->buttons(), me->modifiers() );
+          plotMousePressed( m );
+          //return true;
+        }
+        break;
+      }
+      case QEvent::MouseButtonRelease: {
+        QMouseEvent* me = (QMouseEvent*)e;
+        if ( me && ( me->buttons() != 0 || me->button() != 0 ) ) {
+          QMouseEvent m( QEvent::MouseButtonRelease, me->pos(), me->button(),
+                         me->buttons(), me->modifiers() );
+          plotMouseReleased( m );
+          //return true;
+        }
+        break;
+      }
+    }
+  }
+  return QWidget::eventFilter( watched, e );
 }
 
 /*!
@@ -530,7 +565,7 @@ static QwtSymbol::Style plot2qwtMarker( Plot2d_Curve::MarkerType m )
 */
 static Plot2d_Curve::MarkerType qwt2plotMarker( QwtSymbol::Style m )
 {
-  Plot2d_Curve::MarkerType ms = Plot2d_Curve::None;
+  Plot2d_Curve::MarkerType ms = Plot2d_Curve::None;  
   switch ( m ) {
   case QwtSymbol::Ellipse:
     ms = Plot2d_Curve::Circle;    break;
@@ -552,7 +587,7 @@ static Plot2d_Curve::MarkerType qwt2plotMarker( QwtSymbol::Style m )
     ms = Plot2d_Curve::XCross;    break;
   case QwtSymbol::NoSymbol:
   default:
-    ms = Plot2d_Curve::None;  break;
+    ms = Plot2d_Curve::None;      break;
   }
   return ms;
 }
@@ -627,10 +662,8 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
   else {
     QwtPlotCurve* aPCurve = new QwtPlotCurve( curve->getVerTitle() );
     aPCurve->attach( myPlot );
-    //long curveKey = myPlot->insertCurve( curve->getVerTitle() );
     //myPlot->setCurveYAxis(curveKey, curve->getYAxis());
 
-    //myCurves.insert( curveKey, curve );
     myPlot->getCurves().insert( aPCurve, curve );
     if ( curve->isAutoAssign() ) {
       QwtSymbol::Style typeMarker;
@@ -639,15 +672,10 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
 
       myPlot->getNextMarker( typeMarker, color, typeLine );
       aPCurve->setPen( QPen( color, DEFAULT_LINE_WIDTH, typeLine ) );
-      //myPlot->setCurvePen( curveKey, QPen( color, DEFAULT_LINE_WIDTH, typeLine ) );
       aPCurve->setSymbol( QwtSymbol( typeMarker, 
                QBrush( color ), 
                QPen( color ), 
                QSize( myMarkerSize, myMarkerSize ) ) );
-      //myPlot->setCurveSymbol( curveKey, QwtSymbol( typeMarker, 
-      //         QBrush( color ), 
-      //         QPen( color ), 
-      //         QSize( myMarkerSize, myMarkerSize ) ) );
       curve->setColor( color );
       curve->setLine( qwt2plotLine( typeLine ) );
       curve->setMarker( qwt2plotMarker( typeMarker ) );
@@ -656,27 +684,13 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
       Qt::PenStyle     ps = plot2qwtLine( curve->getLine() );
       QwtSymbol::Style ms = plot2qwtMarker( curve->getMarker() );
       aPCurve->setPen( QPen( curve->getColor(), curve->getLineWidth(), ps ) );
-      //myPlot->setCurvePen( curveKey, QPen( curve->getColor(), curve->getLineWidth(), ps ) );
       aPCurve->setSymbol( QwtSymbol( ms, 
                QBrush( curve->getColor() ), 
                QPen( curve->getColor() ), 
                QSize( myMarkerSize, myMarkerSize ) ) );
-      //myPlot->setCurveSymbol( curveKey, QwtSymbol( ms, 
-      //         QBrush( curve->getColor() ), 
-      //         QPen( curve->getColor() ), 
-      //         QSize( myMarkerSize, myMarkerSize ) ) );
     }
-    if ( myCurveType == 0 )
-      aPCurve->setStyle( QwtPlotCurve::NoCurve );
-    //myPlot->setCurveStyle( curveKey, QwtCurve::NoCurve );
-    else if ( myCurveType == 1 )
-      aPCurve->setStyle( QwtPlotCurve::Lines );
-    //myPlot->setCurveStyle( curveKey, QwtCurve::Lines );
-    else if ( myCurveType == 2 )
-      aPCurve->setStyle( QwtPlotCurve::Dots );
-    //myPlot->setCurveStyle( curveKey, QwtCurve::Spline );
+    setCurveType( aPCurve, myCurveType );
     aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
-    //myPlot->setCurveData( curveKey, curve->horData(), curve->verData(), curve->nbPoints() );
   }
   updateTitles();
   if ( update )
@@ -688,16 +702,16 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
 */
 void Plot2d_ViewFrame::displayCurves( const curveList& curves, bool update )
 {
-  myPlot->setUpdatesEnabled( false );
+  //myPlot->setUpdatesEnabled( false ); // call this function deprecate update of legend
   QList<Plot2d_Curve*>::const_iterator it = curves.begin();
   Plot2d_Curve* aCurve;
   for (; it != curves.end(); ++it ) {
     aCurve = *it;
     displayCurve( aCurve, false );
   }
-
   fitAll();
-  myPlot->setUpdatesEnabled( true );
+  //myPlot->setUpdatesEnabled( true );
+// update legend
   if ( update )
     myPlot->replot();
 }
@@ -713,10 +727,6 @@ void Plot2d_ViewFrame::eraseCurve( Plot2d_Curve* curve, bool update )
     QwtPlotCurve* aPCurve = getPlotCurve( curve );
     aPCurve->hide();
     aPCurve->detach();
-    //int curveKey = hasCurve( curve );
-    //if ( curveKey ) {
-    //myPlot->removeCurve( curveKey );
-    //myCurves.remove( curveKey );
     myPlot->getCurves().remove( aPCurve );
     updateTitles();
     if ( update )
@@ -747,63 +757,35 @@ void Plot2d_ViewFrame::updateCurve( Plot2d_Curve* curve, bool update )
 {
   if ( !curve )
     return;
-  //int curveKey = hasCurve( curve );
-  //if ( curveKey ) {
   if ( hasPlotCurve( curve ) ) {
   QwtPlotCurve* aPCurve = getPlotCurve( curve );
     if ( !curve->isAutoAssign() ) {
       Qt::PenStyle     ps = plot2qwtLine( curve->getLine() );
       QwtSymbol::Style ms = plot2qwtMarker( curve->getMarker() );
       aPCurve->setPen ( QPen( curve->getColor(), curve->getLineWidth(), ps ) );
-      //myPlot->setCurvePen( curveKey, QPen( curve->getColor(), curve->getLineWidth(), ps ) );
       aPCurve->setSymbol( QwtSymbol( ms, 
                QBrush( curve->getColor() ), 
                QPen( curve->getColor() ), 
                QSize( myMarkerSize, myMarkerSize ) ) );
-      //myPlot->setCurveSymbol( curveKey, QwtSymbol( ms, 
-      //         QBrush( curve->getColor() ), 
-      //         QPen( curve->getColor() ), 
-      //         QSize( myMarkerSize, myMarkerSize ) ) );
       aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
-      //myPlot->setCurveData( curveKey, curve->horData(), curve->verData(), curve->nbPoints() );
     }
     aPCurve->setTitle( curve->getVerTitle() );
-    //myPlot->setCurveTitle( curveKey, curve->getVerTitle() );
     aPCurve->setVisible( true );
-    //myPlot->curve( curveKey )->setEnabled( true );
     if ( update )
       myPlot->replot();
   }
 }
 
 /*!
-  Returns curve key if is is displayed in the viewer and 0 otherwise
-*/
-/*int Plot2d_ViewFrame::hasCurve( Plot2d_Curve* curve )
-{
-  QIntDictIterator<Plot2d_Curve> it( myCurves );
-  for ( ; it.current(); ++it ) {
-    if ( it.current() == curve )
-      return it.currentKey();
-  }
-  return 0;
-}
-*/
-/*!
   Gets lsit of displayed curves
 */
 int Plot2d_ViewFrame::getCurves( curveList& clist )
 {
   clist.clear();
-  //clist.setAutoDelete( false );
 
   CurveDict::iterator it = myPlot->getCurves().begin();
   for ( ; it != myPlot->getCurves().end(); it++ )
     clist.append( it.value() );
-  //QIntDictIterator<Plot2d_Curve> it( myCurves );
-  //for ( ; it.current(); ++it ) {
-  //  clist.append( it.current() );
-  //}
   return clist.count();
 }
 
@@ -821,9 +803,6 @@ bool Plot2d_ViewFrame::isVisible( Plot2d_Curve* curve )
     if ( hasPlotCurve( curve ) ) {
       return getPlotCurve( curve )->isVisible();
     }
-    //int key = hasCurve( curve );
-    //if ( key )
-    //  return myPlot->curve( key )->enabled();
   }
   return false;
 } 
@@ -843,9 +822,6 @@ void Plot2d_ViewFrame::updateLegend( const Plot2d_Prs* prs )
     aCurve = *it;
     if ( hasPlotCurve( aCurve ) )
       getPlotCurve( aCurve )->setTitle( aCurve->getVerTitle() );
-    //int curveKey = hasCurve( aCurve );
-    //if ( curveKey )
-    //  myPlot->setCurveTitle( curveKey, aCurve->getVerTitle() );
   }
 }
 
@@ -869,20 +845,14 @@ void Plot2d_ViewFrame::fitAll()
   QwtScaleMap xMap = myPlot->canvasMap( QwtPlot::xBottom );
   QwtScaleMap yMap = myPlot->canvasMap( QwtPlot::yLeft );
 
-  myPlot->setAxisScale( QwtPlot::xBottom, 
-      myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.p1() ) ), 
-      myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.p2() ) ) );
-  myPlot->setAxisScale( QwtPlot::yLeft, 
-      myPlot->invTransform( QwtPlot::yLeft, yMap.transform( yMap.p1() ) ), 
-      myPlot->invTransform( QwtPlot::yLeft, yMap.transform( yMap.p2() ) ) );
+  myPlot->setAxisScale( QwtPlot::xBottom, xMap.s1(), xMap.s2() );
+  myPlot->setAxisScale( QwtPlot::yLeft, yMap.s1(), yMap.s2() );
 
   if (mySecondY) {
     myPlot->setAxisAutoScale( QwtPlot::yRight );
     myPlot->replot();
     QwtScaleMap yMap2 = myPlot->canvasMap( QwtPlot::yRight );
-    myPlot->setAxisScale( QwtPlot::yRight, 
-        myPlot->invTransform( QwtPlot::yRight, yMap2.transform( yMap2.p1() ) ), 
-        myPlot->invTransform( QwtPlot::yRight, yMap2.transform( yMap2.p2() ) ) );
+    myPlot->setAxisScale( QwtPlot::yRight, yMap2.s1(), yMap2.s2() );
   }
   myPlot->replot();
 }
@@ -923,9 +893,9 @@ void Plot2d_ViewFrame::fitData(const int mode,
 			       double y2Min, double y2Max)
 {
   if ( mode == 0 || mode == 2 ) {
-    myPlot->setAxisScale( QwtPlot::yLeft, yMax, yMin );
+    myPlot->setAxisScale( QwtPlot::yLeft, yMin, yMax );
     if (mySecondY)
-      myPlot->setAxisScale( QwtPlot::yRight, y2Max, y2Min );
+      myPlot->setAxisScale( QwtPlot::yRight, y2Min, y2Max );
   }
   if ( mode == 0 || mode == 1 ) 
     myPlot->setAxisScale( QwtPlot::xBottom, xMin, xMax ); 
@@ -939,15 +909,10 @@ void Plot2d_ViewFrame::getFitRanges(double& xMin,double& xMax,
 				    double& yMin, double& yMax,
 				    double& y2Min, double& y2Max)
 {
-  double aP1 = myPlot->canvasMap( QwtPlot::xBottom ).p1();
-  double aP2 = myPlot->canvasMap( QwtPlot::xBottom ).p2();
-  double aS1 = myPlot->canvasMap( QwtPlot::xBottom ).s1();
-  double aS2 = myPlot->canvasMap( QwtPlot::xBottom ).s2();
-
-  int ixMin = myPlot->canvasMap( QwtPlot::xBottom ).transform( myPlot->canvasMap( QwtPlot::xBottom ).p1() );
-  int ixMax = myPlot->canvasMap( QwtPlot::xBottom ).transform( myPlot->canvasMap( QwtPlot::xBottom ).p2() );
-  int iyMin = myPlot->canvasMap( QwtPlot::yLeft ).transform( myPlot->canvasMap( QwtPlot::yLeft ).p1() );
-  int iyMax = myPlot->canvasMap( QwtPlot::yLeft ).transform( myPlot->canvasMap( QwtPlot::yLeft ).p2() );
+  int ixMin = myPlot->canvasMap( QwtPlot::xBottom ).transform( myPlot->canvasMap( QwtPlot::xBottom ).s1() );
+  int ixMax = myPlot->canvasMap( QwtPlot::xBottom ).transform( myPlot->canvasMap( QwtPlot::xBottom ).s2() );
+  int iyMin = myPlot->canvasMap( QwtPlot::yLeft ).transform( myPlot->canvasMap( QwtPlot::yLeft ).s1() );
+  int iyMax = myPlot->canvasMap( QwtPlot::yLeft ).transform( myPlot->canvasMap( QwtPlot::yLeft ).s2() );
   xMin = myPlot->invTransform(QwtPlot::xBottom, ixMin);
   xMax = myPlot->invTransform(QwtPlot::xBottom, ixMax);
   yMin = myPlot->invTransform(QwtPlot::yLeft, iyMin);
@@ -955,8 +920,8 @@ void Plot2d_ViewFrame::getFitRanges(double& xMin,double& xMax,
   y2Min = 0;
   y2Max = 0;
   if (mySecondY) {
-    int iyMin = myPlot->canvasMap( QwtPlot::yRight ).transform( myPlot->canvasMap( QwtPlot::yRight ).p1() );
-    int iyMax = myPlot->canvasMap( QwtPlot::yRight ).transform( myPlot->canvasMap( QwtPlot::yRight ).p2() );
+    int iyMin = myPlot->canvasMap( QwtPlot::yRight ).transform( myPlot->canvasMap( QwtPlot::yRight ).s1() );
+    int iyMax = myPlot->canvasMap( QwtPlot::yRight ).transform( myPlot->canvasMap( QwtPlot::yRight ).s2() );
     y2Min = myPlot->invTransform(QwtPlot::yRight, iyMin);
     y2Max = myPlot->invTransform(QwtPlot::yRight, iyMax);
   }
@@ -967,7 +932,7 @@ void Plot2d_ViewFrame::getFitRanges(double& xMin,double& xMax,
 */
 int Plot2d_ViewFrame::testOperation( const QMouseEvent& me )
 {
-  int btn = me.buttons(); // | me.state();
+  int btn = me.button() | me.modifiers();
   const int zoomBtn = Qt::ControlModifier | Qt::LeftButton;
   const int panBtn  = Qt::ControlModifier | Qt::MidButton;
   const int fitBtn  = Qt::ControlModifier | Qt::RightButton;
@@ -1147,26 +1112,9 @@ void Plot2d_ViewFrame::setCurveType( int curveType, bool update )
   CurveDict::iterator it = myPlot->getCurves().begin();
   for ( ; it != myPlot->getCurves().end(); it++ ) {
     QwtPlotCurve* crv = it.key();
-    if ( crv ) {
-      if ( myCurveType == 0 )
-        crv->setStyle( QwtPlotCurve::Dots );//QwtCurve::NoCurve
-      else if ( myCurveType == 1 )
-        crv->setStyle( QwtPlotCurve::Lines );
-      else if ( myCurveType == 2 )
-        crv->setStyle( QwtPlotCurve::Dots );//Spline );
-    }
+    if ( crv )
+      setCurveType( crv, myCurveType );
   }
-  /*
-  //QArray<long> keys = myPlot->curveKeys();
-  for ( int i = 0; i < (int)keys.count(); i++ ) {
-    if ( myCurveType == 0 )
-      myPlot->setCurveStyle( keys[i], QwtCurve::Dots );//QwtCurve::NoCurve
-    else if ( myCurveType == 1 )
-      myPlot->setCurveStyle( keys[i], QwtCurve::Lines );
-    else if ( myCurveType == 2 )
-      myPlot->setCurveStyle( keys[i], QwtCurve::Spline );
-  }
-  */
   if ( update )
     myPlot->replot();
   emit vpCurveChanged();
@@ -1181,7 +1129,6 @@ void Plot2d_ViewFrame::setCurveTitle( Plot2d_Curve* curve, const QString& title 
 { 
   if ( curve && hasPlotCurve( curve ) )
     getPlotCurve( curve )->setTitle( title );
-  //if(myPlot) myPlot->setCurveTitle(curveKey, title); 
 }   
 
 /*!
@@ -1192,15 +1139,15 @@ void Plot2d_ViewFrame::showLegend( bool show, bool update )
   myShowLegend = show;
   if ( myShowLegend ) {
     QwtLegend* legend = myPlot->legend();
-    if ( !legend )
-      legend = new QwtLegend();
+    if ( !legend ) {
+      legend = new QwtLegend( myPlot );
+      legend->setFrameStyle( QFrame::Box | QFrame::Sunken );
+    }
     myPlot->insertLegend( legend );
     setLegendPos( myLegendPos );
   }
   else
     myPlot->insertLegend( 0 );
-  //myPlot->setAutoLegend( myShowLegend );
-  //myPlot->enableLegend( myShowLegend );
   if ( update )
     myPlot->replot();
 }
@@ -1246,19 +1193,6 @@ void Plot2d_ViewFrame::setMarkerSize( const int size, bool update )
         crv->setSymbol( aSymbol );
       }
     }
-    /*
-    QArray<long> keys = myPlot->curveKeys();
-    for ( int i = 0; i < (int)keys.count(); i++ )
-    {
-      QwtPlotCurve* crv = myPlot->curve( keys[i] );
-      if ( crv )
-      {
-        QwtSymbol aSymbol = crv->symbol();
-        aSymbol.setSize( myMarkerSize, myMarkerSize );
-        myPlot->setCurveSymbol( keys[i], aSymbol );
-      }
-    }
-    */
     if ( update )
       myPlot->replot();
   }
@@ -1270,7 +1204,6 @@ void Plot2d_ViewFrame::setMarkerSize( const int size, bool update )
 void Plot2d_ViewFrame::setBackgroundColor( const QColor& color )
 {
   myBackground = color;
-  //myPlot->setCanvasBackground( myBackground );
   myPlot->canvas()->setPalette( myBackground );
   myPlot->setPalette( myBackground );
   if ( myPlot->getLegend() ) {
@@ -1345,7 +1278,6 @@ void Plot2d_ViewFrame::setYGrid( bool yMajorEnabled, const int yMajorMax,
   QwtPlotGrid* grid = myPlot->grid();
   if ( myPlot->axisScaleDiv( QwtPlot::yLeft ) )
     grid->setYDiv( *myPlot->axisScaleDiv( QwtPlot::yLeft ) );
-  ///myPlot->setGridYAxis(QwtPlot::yLeft);
 
   if (mySecondY) {
     if (myYGridMajorEnabled) {
@@ -1428,17 +1360,13 @@ void Plot2d_ViewFrame::setFont( const QFont& font, ObjectType type, bool update)
   switch (type) {
     case MainTitle:
       myPlot->title().setFont(font);
-      //myPlot->setTitleFont(font);
       break;
     case XTitle:
        myPlot->axisTitle(QwtPlot::xBottom).setFont(font); break;
-       //myPlot->setAxisTitleFont(QwtPlot::xBottom, font); break;
     case YTitle:
-      myPlot->axisTitle(QwtPlot::yLeft).setFont(font);   break;
-      //myPlot->setAxisTitleFont(QwtPlot::yLeft, font);   break;
+      myPlot->axisTitle(QwtPlot::yLeft).setFont(font);    break;
     case Y2Title:
-      myPlot->axisTitle(QwtPlot::yRight).setFont(font);  break;
-      //myPlot->setAxisTitleFont(QwtPlot::yRight, font);  break;
+      myPlot->axisTitle(QwtPlot::yRight).setFont(font);   break;
     case XAxis:
       myPlot->setAxisFont(QwtPlot::xBottom, font);        break;
     case YAxis:
@@ -1465,7 +1393,6 @@ void Plot2d_ViewFrame::setHorScaleMode( const int mode, bool update )
   myXMode = mode;
 
   myPlot->setLogScale(QwtPlot::xBottom, myXMode != 0);
-  //myPlot->changeAxisOptions( QwtPlot::xBottom, QwtAutoScale::Logarithmic, myXMode != 0 );
 
   if ( update )
     fitAll();
@@ -1485,11 +1412,9 @@ void Plot2d_ViewFrame::setVerScaleMode( const int mode, bool update )
   }
 
   myYMode = mode;
-  myPlot->setLogScale(QwtPlot::yLeft, myXMode != 0);
-  //myPlot->changeAxisOptions( QwtPlot::yLeft, QwtAutoScale::Logarithmic, myYMode != 0 );
+  myPlot->setLogScale(QwtPlot::yLeft, myYMode != 0);
   if (mySecondY)
-    myPlot->setLogScale( QwtPlot::yRight, myXMode != 0 );
-  //myPlot->changeAxisOptions( QwtPlot::yRight, QwtAutoScale::Logarithmic, myYMode != 0 );
+    myPlot->setLogScale( QwtPlot::yRight, myYMode != 0 );
 
   if ( update )
     fitAll();
@@ -1517,16 +1442,13 @@ bool Plot2d_ViewFrame::isModeVerLinear()
 void Plot2d_ViewFrame::plotMousePressed( const QMouseEvent& me )
 {
   Plot2d_ViewWindow* aParent = dynamic_cast<Plot2d_ViewWindow*>(parent());
-   if (aParent)
+  if (aParent)
      aParent->putInfo(getInfo(me.pos()));
   if ( myOperation == NoOpId )
     myOperation = testOperation( me );
   if ( myOperation != NoOpId ) {
     myPnt = me.pos();
-    if ( myOperation == FitAreaId ) {
-      ///myPlot->setOutlineStyle( Qwt::Rect );
-    }
-    else if ( myOperation == GlPanId ) {
+    if ( myOperation == GlPanId ) {
       myPlot->setAxisScale( QwtPlot::yLeft,
           myPlot->invTransform( QwtPlot::yLeft, myPnt.y() ) + myYDistance/2, 
           myPlot->invTransform( QwtPlot::yLeft, myPnt.y() ) - myYDistance/2 );
@@ -1541,10 +1463,10 @@ void Plot2d_ViewFrame::plotMousePressed( const QMouseEvent& me )
     }
   }
   else {
-    int btn = me.buttons();// | me.state();
+    int btn = me.button() | me.modifiers();
     if (btn == Qt::RightButton) {
       QMouseEvent* aEvent = new QMouseEvent(QEvent::MouseButtonPress,
-                                            me.pos(), me.button(), me.buttons(), Qt::KeypadModifier );//state());
+                                            me.pos(), me.button(), me.buttons(), me.modifiers() );
       // QMouseEvent 'me' has the 'MouseButtonDblClick' type. In this case we create new event 'aEvent'.
       parent()->eventFilter(this, aEvent);
     }
@@ -1554,20 +1476,22 @@ void Plot2d_ViewFrame::plotMousePressed( const QMouseEvent& me )
 /*!
   Slot, called when user moves mouse
 */
-
-void Plot2d_ViewFrame::plotMouseMoved( const QMouseEvent& me )
+bool Plot2d_ViewFrame::plotMouseMoved( const QMouseEvent& me )
 {
   int    dx = me.pos().x() - myPnt.x();
   int    dy = me.pos().y() - myPnt.y();
 
+  bool aRes = false;
   if ( myOperation != NoOpId) {
     if ( myOperation == ZoomId ) {
       this->incrementalZoom( dx, dy ); 
       myPnt = me.pos();
+      aRes = true;
     }
     else if ( myOperation == PanId ) {
       this->incrementalPan( dx, dy );
       myPnt = me.pos();
+      aRes = true;
     }
   }
   else {
@@ -1575,25 +1499,21 @@ void Plot2d_ViewFrame::plotMouseMoved( const QMouseEvent& me )
      if (aParent)
        aParent->putInfo(getInfo(me.pos()));
   }
+  return aRes;
 }
 /*!
   Slot, called when user releases mouse
 */
 void Plot2d_ViewFrame::plotMouseReleased( const QMouseEvent& me )
 {
-  if ( myOperation == NoOpId && me.button() == Qt::RightButton )
+  if ( myOperation == NoOpId && me.button() == Qt::RightButton && me.modifiers() != Qt::ControlModifier )
   {
     QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
-                              me.pos(), me.globalPos() );//,
-    //me.buttons());//state() );
+                              me.pos(), me.globalPos() );
     emit contextMenuRequested( &aEvent );
   }
-  if ( myOperation == FitAreaId ) {
-    QRect rect( myPnt, me.pos() );
-    fitArea( rect );
-  }
   myPlot->canvas()->setCursor( QCursor( Qt::CrossCursor ) );
-  ///myPlot->setOutlineStyle( Qwt::Triangle );
+  myPlot->defaultPicker();
 
   Plot2d_ViewWindow* aParent = dynamic_cast<Plot2d_ViewWindow*>(parent());
    if (aParent)
@@ -1611,17 +1531,11 @@ void Plot2d_ViewFrame::wheelEvent(QWheelEvent* event)
   QwtScaleMap xMap = myPlot->canvasMap( QwtPlot::xBottom );
   QwtScaleMap yMap = myPlot->canvasMap( QwtPlot::yLeft );
 
-  myPlot->setAxisScale( QwtPlot::yLeft,
-    myPlot->invTransform( QwtPlot::yLeft, yMap.transform( xMap.p1() ) ), 
-    myPlot->invTransform( QwtPlot::yLeft, yMap.transform( xMap.p2() ) )*aScale );
-  myPlot->setAxisScale( QwtPlot::xBottom, 
-    myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.p1() ) ),
-    myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.p2() ) )*aScale );
+  myPlot->setAxisScale( QwtPlot::yLeft, yMap.s1(), yMap.s2()*aScale );
+  myPlot->setAxisScale( QwtPlot::xBottom, xMap.s1(), xMap.s2()*aScale );
   if (mySecondY) {
     QwtScaleMap y2Map = myPlot->canvasMap( QwtPlot::yRight );
-    myPlot->setAxisScale( QwtPlot::yRight,
-      myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.p1() ) ), 
-      myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.p2() ) )*aScale );
+    myPlot->setAxisScale( QwtPlot::yRight, y2Map.s1(), y2Map.s2()*aScale );
   }
   myPlot->replot();
   myPnt = event->pos();
@@ -1653,6 +1567,28 @@ bool Plot2d_ViewFrame::hasPlotCurve( Plot2d_Curve* curve )
 }
 
 /*!
+  Sets curve type
+*/
+void Plot2d_ViewFrame::setCurveType( QwtPlotCurve* curve, int curveType )
+{
+  if ( !curve )
+    return;
+  if ( myCurveType == 0 )
+    curve->setStyle( QwtPlotCurve::Dots );//QwtCurve::NoCurve
+  else if ( myCurveType == 1 ) {
+    curve->setStyle( QwtPlotCurve::Lines );
+    curve->setCurveAttribute( QwtPlotCurve::Fitted, false );
+  }
+  else if ( myCurveType == 2 ) {
+    curve->setStyle( QwtPlotCurve::Lines );
+    QwtSplineCurveFitter* fitter = new QwtSplineCurveFitter();
+    fitter->setSplineSize( 250 );
+    curve->setCurveAttribute( QwtPlotCurve::Fitted, true );
+    curve->setCurveFitter( fitter );
+  }
+}
+
+/*!
   View operations : Pan view
 */
 void Plot2d_ViewFrame::onViewPan()
@@ -1660,7 +1596,6 @@ void Plot2d_ViewFrame::onViewPan()
   QCursor panCursor (Qt::SizeAllCursor);
   myPlot->canvas()->setCursor( panCursor );
   myOperation = PanId;
-  qApp->installEventFilter( this );
 }
 /*!
   View operations : Zoom view
@@ -1671,7 +1606,6 @@ void Plot2d_ViewFrame::onViewZoom()
   QCursor zoomCursor (zoomPixmap);
   myPlot->canvas()->setCursor( zoomCursor );
   myOperation = ZoomId;
-  qApp->installEventFilter( this );
 }
 /*!
   View operations : Fot All
@@ -1687,7 +1621,7 @@ void Plot2d_ViewFrame::onViewFitArea()
 {
   myPlot->canvas()->setCursor( QCursor( Qt::PointingHandCursor ) );
   myOperation = FitAreaId;
-  qApp->installEventFilter( this );
+  myPlot->setPickerMousePattern( Qt::LeftButton );
 }
 /*!
   View operations : Global panning
@@ -1699,25 +1633,21 @@ void Plot2d_ViewFrame::onViewGlobalPan()
   myPlot->canvas()->setCursor( glPanCursor );
   myPlot->setLogScale(QwtPlot::xBottom, false);
   myPlot->setLogScale(QwtPlot::yLeft, false);
-  //myPlot->changeAxisOptions( QwtPlot::xBottom, QwtAutoScale::Logarithmic, false );
-  //myPlot->changeAxisOptions( QwtPlot::yLeft, QwtAutoScale::Logarithmic, false );
   if (mySecondY)
     myPlot->setLogScale(QwtPlot::yRight, false);
-  //myPlot->changeAxisOptions( QwtPlot::yRight, QwtAutoScale::Logarithmic, false );
   myPlot->replot();
   QwtScaleMap xMap = myPlot->canvasMap( QwtPlot::xBottom );
   QwtScaleMap yMap = myPlot->canvasMap( QwtPlot::yLeft );
 
-  myXDistance = xMap.p2() - xMap.p1();
-  myYDistance = yMap.p2() - yMap.p1();
+  myXDistance = xMap.s2() - xMap.s1();
+  myYDistance = yMap.s2() - yMap.s1();
 
   if (mySecondY) {
     QwtScaleMap yMap2 = myPlot->canvasMap( QwtPlot::yRight );
-    myYDistance2 = yMap2.p2() - yMap2.p1();
+    myYDistance2 = yMap2.s2() - yMap2.s1();
   }
   fitAll();
   myOperation = GlPanId;
-  qApp->installEventFilter( this );
 }
 
 /*!
@@ -1729,10 +1659,6 @@ bool Plot2d_ViewFrame::isXLogEnabled() const
   CurveDict::const_iterator it = myPlot->getCurves().begin();
   for ( ; allPositive && it != myPlot->getCurves().end(); it++ )
     allPositive = ( it.value()->getMinX() > 0. );
-  //QIntDictIterator<Plot2d_Curve> it( myCurves );
-  //for ( ; allPositive && it.current(); ++it ) {
-  //  allPositive = ( it.current()->getMinX() > 0. );
-  //}
   return allPositive;
 }
 
@@ -1745,12 +1671,21 @@ bool Plot2d_ViewFrame::isYLogEnabled() const
   CurveDict::const_iterator it = myPlot->getCurves().begin();
   for ( ; allPositive && it != myPlot->getCurves().end(); it++ )
     allPositive = ( it.value()->getMinY() > 0. );
-  //QIntDictIterator<Plot2d_Curve> it( myCurves );
-  //for ( ; allPositive && it.current(); ++it ) {
-  //  allPositive = ( it.current()->getMinY() > 0. );
-  //}
   return allPositive;
 }
+
+class Plot2d_QwtPlotZoomer : public QwtPlotZoomer
+{
+public:
+  Plot2d_QwtPlotZoomer( int xAxis, int yAxis, QwtPlotCanvas* canvas )
+  : QwtPlotZoomer( xAxis, yAxis, canvas )
+  {
+    qApp->installEventFilter( this );
+    // now picker working after only a button pick.
+    // after click on button FitArea in toolbar of the ViewFrame.
+  };
+  ~Plot2d_QwtPlotZoomer() {};
+};
 
 /*!
   Constructor
@@ -1759,20 +1694,21 @@ Plot2d_Plot2d::Plot2d_Plot2d( QWidget* parent )
   : QwtPlot( parent ),
     myIsPolished( false )
 {
-  // outline
-  ///enableOutline( true );
-  ///setOutlineStyle( Qwt::Triangle );
-  ///setOutlinePen( green );
-  // legend
-  ///setAutoLegend( false );
-  ///setLegendFrameStyle( QFrame::Box | QFrame::Sunken );
-  ///enableLegend( false );
-  
+
+  myPlotZoomer = new Plot2d_QwtPlotZoomer( QwtPlot::xBottom, QwtPlot::yLeft, canvas() );
+  myPlotZoomer->setSelectionFlags( QwtPicker::DragSelection | QwtPicker::CornerToCorner );
+  myPlotZoomer->setTrackerMode( QwtPicker::AlwaysOff );
+  myPlotZoomer->setRubberBand( QwtPicker::RectRubberBand );
+  myPlotZoomer->setRubberBandPen( QColor( Qt::green ) );
+
+  defaultPicker();
+
   // auto scaling by default
   setAxisAutoScale( QwtPlot::yLeft );
   setAxisAutoScale( QwtPlot::yRight );
   setAxisAutoScale( QwtPlot::xBottom );
-  // grid
+
+// grid
   myGrid = new QwtPlotGrid();
   QPen aMajPen = myGrid->majPen();
   aMajPen.setStyle( Qt::DashLine );
@@ -1784,6 +1720,11 @@ Plot2d_Plot2d::Plot2d_Plot2d( QWidget* parent )
   myGrid->enableYMin( false );
 
   myGrid->attach( this );
+
+  setMouseTracking( false );
+  canvas()->setMouseTracking( false );
+
+  myPlotZoomer->setEnabled( true );
 }
 
 /*!
@@ -1792,9 +1733,9 @@ Plot2d_Plot2d::Plot2d_Plot2d( QWidget* parent )
 void Plot2d_Plot2d::setLogScale( int axisId, bool log10 )
 {
   if ( log10 )
-  setAxisScaleEngine( axisId, new QwtLog10ScaleEngine() );
+    setAxisScaleEngine( axisId, new QwtLog10ScaleEngine() );
   else
-  setAxisScaleEngine( axisId, new QwtLinearScaleEngine() );
+    setAxisScaleEngine( axisId, new QwtLinearScaleEngine() );
 }
 
 /*!
@@ -1906,27 +1847,6 @@ void Plot2d_Plot2d::getNextMarker( QwtSymbol::Style& typeMarker, QColor& color, 
 */
 }
 
-void Plot2d_Plot2d::mousePressEvent ( QMouseEvent * me )
-{
-  QMouseEvent m( QEvent::MouseButtonPress, me->pos(), me->button(), me->buttons(), Qt::KeypadModifier );//state());
-  emit plotMousePressed( m );
-  QWidget::mousePressEvent( me );
-}
-
-void Plot2d_Plot2d::mouseMoveEvent( QMouseEvent* me )
-{
-  QMouseEvent m( QEvent::MouseButtonPress, me->pos(), me->button(), me->buttons(), Qt::KeypadModifier );//state());
-  emit plotMouseMoved( m );
-  QWidget::mousePressEvent( me );
-}
-
-void Plot2d_Plot2d::mouseReleaseEvent( QMouseEvent* me )
-{
-  QMouseEvent m( QEvent::MouseButtonPress, me->pos(), me->button(), me->buttons(), Qt::KeypadModifier );//state());
-  emit plotMouseReleased( m );
-  QWidget::mousePressEvent( me );
-}
-
 /*!
   \return the default layout behavior of the widget
 */
@@ -1953,6 +1873,19 @@ QSize Plot2d_Plot2d::minimumSizeHint() const
 //  return QSize(aSize.width()*3/4, aSize.height());
 }
 
+void Plot2d_Plot2d::defaultPicker()
+{
+  myPlotZoomer->setMousePattern( QwtEventPattern::MouseSelect1,
+                                 Qt::RightButton, Qt::ControlModifier ); // zooming button
+  for ( int i = QwtEventPattern::MouseSelect2; i < QwtEventPattern::MouseSelect6; i++ )
+    myPlotZoomer->setMousePattern( i, Qt::NoButton, Qt::NoButton );
+}
+
+void Plot2d_Plot2d::setPickerMousePattern( int button, int state )
+{
+  myPlotZoomer->setMousePattern( QwtEventPattern::MouseSelect1, button, state );
+}
+
 /*!
   return closest curve if it exist, else 0
 */
@@ -1976,9 +1909,6 @@ Plot2d_Curve* Plot2d_Plot2d::getClosestCurve( QPoint p, double& distance, int& i
 */
 bool Plot2d_Plot2d::existMarker( const QwtSymbol::Style typeMarker, const QColor& color, const Qt::PenStyle typeLine ) 
 {
-  // getting all curves
-  ///QArray<long> keys = curveKeys();
-  //QColor aRgbColor;
   QColor aColor = palette().color( QPalette::Background );
   if ( closeColors( color, aColor ) )
       return true;
@@ -1995,18 +1925,6 @@ bool Plot2d_Plot2d::existMarker( const QwtSymbol::Style typeMarker, const QColor
         return true;
     }
   }
-  /*for ( int i = 0; i < (int)keys.count(); i++ )
-  {
-    QwtPlotCurve* crv = curve( keys[i] );
-    if ( crv ) {
-      QwtSymbol::Style aStyle = crv->symbol().style();
-      QColor           aColor = crv->pen().color();
-      Qt::PenStyle     aLine  = crv->pen().style();
-//      if ( aStyle == typeMarker && aColor == color && aLine == typeLine )
-      if ( aStyle == typeMarker && closeColors( aColor,color ) && aLine == typeLine )
-  return true;
-    }
-    }*/
   return false;
 }
 
@@ -2085,7 +2003,6 @@ void Plot2d_ViewFrame::updateTitles()
 
   Plot2d_Curve* aCurve;
   for ( ; it != myPlot->getCurves().end(); it++ ) {
-    //while ( it.current() ) {
     // collect titles and units from all curves...
     aCurve = it.value();
     QString xTitle = aCurve->getHorTitle().trimmed();
@@ -2094,15 +2011,15 @@ void Plot2d_ViewFrame::updateTitles()
     QString yUnits = aCurve->getVerUnits().trimmed();
     
     aYTitles.append( yTitle );
-    if ( !aXTitles.contains( xTitle ) )//aXTitles.find( xTitle ) == aXTitles.end() )
+    if ( !aXTitles.contains( xTitle ) )
       aXTitles.append( xTitle );
-    if ( !aXUnits.contains( xUnits ) )//aXUnits.find( xUnits ) == aXUnits.end() )
+    if ( !aXUnits.contains( xUnits ) )
       aXUnits.append( xUnits );
-    if ( !aYUnits.contains( yUnits ) )//aYUnits.find( yUnits ) == aYUnits.end() )
+    if ( !aYUnits.contains( yUnits ) )
       aYUnits.append( yUnits );
 
     QString aName = aCurve->getTableTitle();
-    if( !aName.isEmpty() && !aTables.contains( aName ) )//aTables.find( aName ) == aTables.end() )
+    if( !aName.isEmpty() && !aTables.contains( aName ) )
       aTables.append( aName );
     ++i;
   }
@@ -2147,7 +2064,6 @@ bool Plot2d_ViewFrame::print( const QString& file, const QString& format ) const
     {
       QPrinter* pr = new QPrinter( QPrinter::HighResolution );
       pr->setPageSize( QPrinter::A4 );
-      ///pr->setOutputToFile( true );
       pr->setOutputFileName( file );
       pr->setPrintProgram( "" );
       pd = pr;
@@ -2183,7 +2099,6 @@ QString Plot2d_ViewFrame::getVisualParameters()
 void Plot2d_ViewFrame::setVisualParameters( const QString& parameters )
 {
   QStringList paramsLst = parameters.split( '*' );
-  //QStringList::split( '*', parameters, true );
   if ( paramsLst.size() == 9 ) {
     double xmin, xmax, ymin, ymax, y2min, y2max;
     myXMode = paramsLst[0].toInt();
@@ -2203,7 +2118,7 @@ void Plot2d_ViewFrame::setVisualParameters( const QString& parameters )
     
     if (mySecondY) {
       QwtScaleMap yMap2 = myPlot->canvasMap( QwtPlot::yRight );
-      myYDistance2 = yMap2.p2() - yMap2.p1();
+      myYDistance2 = yMap2.s2() - yMap2.s1();
     }
 
     fitData( 0, xmin, xmax, ymin, ymax, y2min, y2max );
@@ -2219,16 +2134,16 @@ void Plot2d_ViewFrame::incrementalPan( const int incrX, const int incrY ) {
   QwtScaleMap yMap = myPlot->canvasMap( QwtPlot::yLeft );
   
   myPlot->setAxisScale( QwtPlot::yLeft, 
-			myPlot->invTransform( QwtPlot::yLeft, yMap.transform( yMap.p1() )-incrY ), 
-			myPlot->invTransform( QwtPlot::yLeft, yMap.transform( yMap.p2() )-incrY ) );
+			myPlot->invTransform( QwtPlot::yLeft, yMap.transform( yMap.s1() )-incrY ), 
+			myPlot->invTransform( QwtPlot::yLeft, yMap.transform( yMap.s2() )-incrY ) );
   myPlot->setAxisScale( QwtPlot::xBottom, 
-			myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.p1() )-incrX ),
-			myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.p2() )-incrX ) ); 
+			myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.s1() )-incrX ),
+			myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.s2() )-incrX ) ); 
   if (mySecondY) {
     QwtScaleMap y2Map = myPlot->canvasMap( QwtPlot::yRight );
     myPlot->setAxisScale( QwtPlot::yRight,
-			  myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.p1() )-incrY ), 
-			  myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.p2() )-incrY ) );
+			  myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.s1() )-incrY ), 
+			  myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.s2() )-incrY ) );
   }
   myPlot->replot();
 }
@@ -2240,17 +2155,14 @@ void Plot2d_ViewFrame::incrementalZoom( const int incrX, const int incrY ) {
   QwtScaleMap xMap = myPlot->canvasMap( QwtPlot::xBottom );
   QwtScaleMap yMap = myPlot->canvasMap( QwtPlot::yLeft );
   
-  myPlot->setAxisScale( QwtPlot::yLeft, 
-			myPlot->invTransform( QwtPlot::yLeft, yMap.transform( yMap.p1() ) ), 
-			myPlot->invTransform( QwtPlot::yLeft, yMap.transform( yMap.p2() ) + incrY ) );
-  myPlot->setAxisScale( QwtPlot::xBottom, 
-			myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.p1() ) ), 
-			myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.p2() ) - incrX ) );
+  myPlot->setAxisScale( QwtPlot::yLeft, yMap.s1(), 
+			myPlot->invTransform( QwtPlot::yLeft, yMap.transform( yMap.s2() ) + incrY ) );
+  myPlot->setAxisScale( QwtPlot::xBottom, xMap.s1(), 
+			myPlot->invTransform( QwtPlot::xBottom, xMap.transform( xMap.s2() ) - incrX ) );
   if (mySecondY) {
     QwtScaleMap y2Map = myPlot->canvasMap( QwtPlot::yRight );
-    myPlot->setAxisScale( QwtPlot::yRight, 
-			  myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.p1() ) ), 
-			  myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.p2() ) + incrY ) );
+    myPlot->setAxisScale( QwtPlot::yRight, y2Map.s1(),
+			  myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.s2() ) + incrY ) );
   }
   myPlot->replot();
 }
