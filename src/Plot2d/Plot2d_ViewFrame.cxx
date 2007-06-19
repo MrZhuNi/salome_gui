@@ -209,7 +209,7 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
     QwtScaleMap yMap2 = myPlot->canvasMap( QwtPlot::yRight );
     myYDistance2 = yMap2.s2() - yMap2.s1();
   }
-  qApp->installEventFilter( this );
+  myPlot->canvas()->installEventFilter( this );
 }
 /*!
   Destructor
@@ -311,7 +311,6 @@ bool Plot2d_ViewFrame::eventFilter( QObject* watched, QEvent* e )
           QMouseEvent m( QEvent::MouseButtonPress, me->pos(), me->button(),
                           me->buttons(), me->modifiers() );
           plotMousePressed( m );
-          //return true;
         }
         break;
       }
@@ -321,7 +320,6 @@ bool Plot2d_ViewFrame::eventFilter( QObject* watched, QEvent* e )
           QMouseEvent m( QEvent::MouseButtonRelease, me->pos(), me->button(),
                          me->buttons(), me->modifiers() );
           plotMouseReleased( m );
-          //return true;
         }
         break;
       }
@@ -1694,7 +1692,6 @@ Plot2d_Plot2d::Plot2d_Plot2d( QWidget* parent )
   : QwtPlot( parent ),
     myIsPolished( false )
 {
-
   myPlotZoomer = new Plot2d_QwtPlotZoomer( QwtPlot::xBottom, QwtPlot::yLeft, canvas() );
   myPlotZoomer->setSelectionFlags( QwtPicker::DragSelection | QwtPicker::CornerToCorner );
   myPlotZoomer->setTrackerMode( QwtPicker::AlwaysOff );
@@ -1722,7 +1719,7 @@ Plot2d_Plot2d::Plot2d_Plot2d( QWidget* parent )
   myGrid->attach( this );
 
   setMouseTracking( false );
-  canvas()->setMouseTracking( false );
+  canvas()->setMouseTracking( true );
 
   myPlotZoomer->setEnabled( true );
 }
