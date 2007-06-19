@@ -30,6 +30,7 @@ class Plot2d_Prs;
 class QCustomEvent;
 class QwtPlotCurve;
 class QwtPlotGrid;
+class QwtPlotZoomer;
 
 typedef QMultiHash<QwtPlotCurve*, Plot2d_Curve*> CurveDict;
 
@@ -59,6 +60,8 @@ public:
   void    Erase( const Plot2d_Prs*, const bool = false );
   Plot2d_Prs* CreatePrs( const char* entry = 0 );
 
+  virtual bool eventFilter(QObject* watched, QEvent* e);
+
   /* operations */
   void    updateTitles();
   void    setTitle( const QString& title );
@@ -68,8 +71,7 @@ public:
   void    eraseCurve( Plot2d_Curve* curve, bool update = false );
   void    eraseCurves( const curveList& curves, bool update = false );
   int     getCurves( curveList& clist );
-  const   CurveDict& getCurves();/// { return myPlot->getCurves(); }
-  //int     hasCurve( Plot2d_Curve* curve );
+  const   CurveDict& getCurves();
   bool    isVisible( Plot2d_Curve* curve );
   void    updateCurve( Plot2d_Curve* curve, bool update = false );
   void    updateLegend( const Plot2d_Prs* prs );
@@ -137,6 +139,7 @@ protected:
   virtual void wheelEvent( QWheelEvent* );
   QwtPlotCurve* getPlotCurve( Plot2d_Curve* curve );
   bool    hasPlotCurve( Plot2d_Curve* curve );
+  void    setCurveType( QwtPlotCurve* curve, int curveType );
 
 public slots:
   void    onViewPan(); 
@@ -157,10 +160,8 @@ public slots:
 
 protected:
   virtual void customEvent( QEvent* );
-
-protected slots:
   void    plotMousePressed( const QMouseEvent& );
-  void    plotMouseMoved( const QMouseEvent& );
+  bool    plotMouseMoved( const QMouseEvent& );
   void    plotMouseReleased( const QMouseEvent& );
 
 signals:
@@ -173,7 +174,6 @@ protected:
   Plot2d_Plot2d* myPlot;
   int            myOperation;
   QPoint         myPnt;
-  //CurveDict      myCurves;
 
   int            myCurveType;
   bool           myShowLegend;
@@ -211,31 +211,26 @@ public:
   virtual QSize       sizeHint() const;
   virtual QSizePolicy sizePolicy() const;
   virtual QSize       minimumSizeHint() const;
+  void                defaultPicker();
+  void                setPickerMousePattern( int button, int state = Qt::NoButton );
 
   bool                polished() const { return myIsPolished; }
   QwtPlotGrid*        grid() { return myGrid; };
   CurveDict& getCurves() { return myCurves; }
   Plot2d_Curve*       getClosestCurve( QPoint p, double& distance, int& index );
 
-signals:
-  void plotMouseMoved( const QMouseEvent& );
-  void plotMousePressed( const QMouseEvent& );
-  void plotMouseReleased( const QMouseEvent& );
-
 public slots:
   virtual void polish();
 
 protected:
   bool       existMarker( const QwtSymbol::Style typeMarker, const QColor& color, const Qt::PenStyle typeLine );
-  virtual void mousePressEvent( QMouseEvent* event );
-  virtual void mouseMoveEvent( QMouseEvent* event );
-  virtual void mouseReleaseEvent( QMouseEvent* event );
 
 protected:
   CurveDict          myCurves;
   QwtPlotGrid*       myGrid;
   QList<QColor>      myColors;
   bool               myIsPolished;
+  QwtPlotZoomer*     myPlotZoomer;
 };
 
 #endif

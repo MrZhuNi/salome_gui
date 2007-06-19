@@ -185,17 +185,6 @@ void Plot2d_Curve::deletePoint(int thePos)
 {
   if ( thePos >= 0 && thePos < myPoints.count() )
     myPoints.removeAt( thePos );
-  /*
-  QList<Plot2d_Point>::iterator aIt;
-  int aCurrent = 0;
-  for(aIt = myPoints.begin(); aIt != myPoints.end(); ++aIt) {
-    if (thePos == aCurrent) {
-      myPoints.remove(aIt);
-      return;
-    }
-    aCurrent++;  
-  }
-  */
 }
 
 /*!
