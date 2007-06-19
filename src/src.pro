@@ -20,6 +20,7 @@ SUBDIRS += SVTK
 SUBDIRS += OCCViewer
 SUBDIRS += SOCC
 SUBDIRS += Event
+SUBDIRS += LightApp
 SUBDIRS += ResExporter
 SUBDIRS += RegistryDisplay
 SUBDIRS += TOOLSGUI
