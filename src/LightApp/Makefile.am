@@ -230,9 +230,9 @@ if ENABLE_GLVIEWER
   libLightApp_la_LIBADD+= ../GLViewer/libGLViewer.la
 endif
 if ENABLE_PLOT2DVIEWER
-#  libLightApp_la_LIBADD+= ../Plot2d/libPlot2d.la
+  libLightApp_la_LIBADD+= ../Plot2d/libPlot2d.la
 if ENABLE_SALOMEOBJECT
-#  libLightApp_la_LIBADD+= ../SPlot2d/libSPlot2d.la
+  libLightApp_la_LIBADD+= ../SPlot2d/libSPlot2d.la
 endif
 endif
 if ENABLE_PYCONSOLE
