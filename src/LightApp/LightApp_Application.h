@@ -32,11 +32,11 @@
 #include <CAM_Application.h>
 
 class LogWindow;
-class OB_Browser;
+//class OB_Browser;
 #ifndef DISABLE_PYCONSOLE
-  class PythonConsole;
+  class PyConsole_Console;
 #endif
-class STD_Application;
+//class STD_Application;
 class LightApp_WidgetContainer;
 class LightApp_Preferences;
 class LightApp_SelectionMgr;
@@ -48,7 +48,7 @@ class CAM_Module;
 class QString;
 class QWidget;
 class QStringList;
-class QPixmap;
+//class QPixmap;
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -107,9 +107,9 @@ public:
   LightApp_SelectionMgr*              selectionMgr() const;
   
   LogWindow*                          logWindow();
-  OB_Browser*                         objectBrowser();
+  //OB_Browser*                         objectBrowser();
 #ifndef DISABLE_PYCONSOLE
-  PythonConsole*                      pythonConsole(); 
+  PyConsole_Console*                  pythonConsole(); 
 #endif
 
   virtual void                        updateObjectBrowser( const bool = true );
@@ -141,7 +141,7 @@ public:
 
   virtual void                        start();
 
-  virtual void                        contextMenuPopup( const QString&, QPopupMenu*, QString& );
+  virtual void                        contextMenuPopup( const QString&, QMenu*, QString& );
 
   virtual void                        createEmptyStudy();
 

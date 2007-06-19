@@ -23,14 +23,11 @@
 #include <OSD_Path.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Directory.hxx>
-#include <OSD_Process.hxx>
-#include <OSD_Directory.hxx>
 #include <OSD_Protection.hxx>
-#include <OSD_SingleProtection.hxx>
 #include <OSD_FileIterator.hxx>
 
-#include <qfileinfo.h>
-#include <qdir.h>
+#include <QFileInfo>
+#include <QDir>
 
 #ifdef WIN32
 #include <time.h>
@@ -84,7 +81,7 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
   if(aFileBuffer == NULL)
     return false;
 
-  myTmpDir = QDir::convertSeparators( QFileInfo( theFileName ).dirPath( true ) + "/" ).latin1() ;
+  myTmpDir = QDir::convertSeparators( QFileInfo( theFileName ).absolutePath() + "/" ).toLatin1().constData() ;
 
   int aCurrentPos = 0;
 
@@ -143,7 +140,7 @@ bool LightApp_Driver::ReadDatasFromFile( const char* theFileName, bool isMultiFi
   ifstream aFile(theFileName);
 #endif  
 
-  myTmpDir = QDir::convertSeparators( QFileInfo( theFileName ).dirPath( true ) + "/" ).latin1() ;
+  myTmpDir = QDir::convertSeparators( QFileInfo( theFileName ).absolutePath() + "/" ).toLatin1().constData() ;
 
   aFile.seekg(0, ios::end);
   int aFileBufferSize = aFile.tellg();

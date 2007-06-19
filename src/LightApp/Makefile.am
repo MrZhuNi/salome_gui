@@ -154,7 +154,7 @@ nodist_salomeres_DATA= \
 libLightApp_la_CPPFLAGS=$(PYTHON_INCLUDES) $(QT_INCLUDES) $(CAS_CPPFLAGS) \
 	$(HDF5_INCLUDES) @KERNEL_CXXFLAGS@ -I$(srcdir)/../SUIT -I$(srcdir)/../STD \
 	-I$(srcdir)/../CAM -I$(srcdir)/../ObjBrowser -I$(srcdir)/../LogWindow \
-	-I$(srcdir)/../Prs -I$(srcdir)/../Qtx
+	-I$(srcdir)/../Prs -I$(srcdir)/../Qtx -I$(srcdir)/../Event
 libLightApp_la_LDFLAGS=$(QT_MT_LIBS)
 
 if ENABLE_VTKVIEWER
@@ -173,7 +173,7 @@ else !ENABLE_OCCVIEWER
   libLightApp_la_CPPFLAGS+= -DDISABLE_OCCVIEWER
 endif
 if ENABLE_PYCONSOLE
-  libLightApp_la_CPPFLAGS+= $(PYTHON_INCLUDES) -I$(srcdir)/../PythonConsole -I$(srcdir)/../PyInterp
+  libLightApp_la_CPPFLAGS+= $(PYTHON_INCLUDES) -I$(srcdir)/../PyConsole -I$(srcdir)/../PyInterp
   libLightApp_la_LDFLAGS+= $(PYTHON_LIBS)
 else !ENABLE_PYCONSOLE
   libLightApp_la_CPPFLAGS+= -DDISABLE_PYCONSOLE
@@ -207,8 +207,9 @@ else !ENABLE_SALOMEOBJECT
 endif
 
 libLightApp_la_LIBADD= ../SUIT/libsuit.la ../STD/libstd.la ../CAM/libCAM.la \
-	../ObjBrowser/libObjBrowser.la ../LogWindow/libLogWindow.la $(CAS_KERNEL) \
+	../LogWindow/libLogWindow.la $(CAS_KERNEL) \
 	../Prs/libSalomePrs.la $(HDF5_LIBS) $(KERNEL_LDFLAGS) -lSalomeHDFPersist
+#../ObjBrowser/libObjBrowser.la 
 
 if ENABLE_SALOMEOBJECT
   libLightApp_la_LIBADD+= ../OBJECT/libSalomeObject.la
@@ -229,14 +230,14 @@ if ENABLE_GLVIEWER
   libLightApp_la_LIBADD+= ../GLViewer/libGLViewer.la
 endif
 if ENABLE_PLOT2DVIEWER
-  libLightApp_la_LIBADD+= ../Plot2d/libPlot2d.la
+#  libLightApp_la_LIBADD+= ../Plot2d/libPlot2d.la
 if ENABLE_SALOMEOBJECT
-  libLightApp_la_LIBADD+= ../SPlot2d/libSPlot2d.la
+#  libLightApp_la_LIBADD+= ../SPlot2d/libSPlot2d.la
 endif
 endif
 if ENABLE_PYCONSOLE
-  libLightApp_la_LIBADD+= ../PyInterp/libPyInterp.la ../PythonConsole/libPythonConsole.la
+  libLightApp_la_LIBADD+= ../PyInterp/libPyInterp.la ../PyConsole/libPyConsole.la
 endif
 if ENABLE_SUPERVGRAPHVIEWER
-  libLightApp_la_LIBADD+= ../SUPERVGraph/libSUPERVGraph.la
+#  libLightApp_la_LIBADD+= ../SUPERVGraph/libSUPERVGraph.la
 endif
