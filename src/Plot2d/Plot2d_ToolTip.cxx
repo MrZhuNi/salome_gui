@@ -52,7 +52,7 @@ void Plot2d_ToolTip::onToolTip( QPoint p, QString& str, QFont& f, QRect& txtRect
   double dist;
 
   Plot2d_Curve* c = myPlot->getClosestCurve( p, dist, pInd );
-  if( dist>maxDist || !c )
+  if( !c || dist>maxDist )
     return;
 
   str = c->text( pInd );
