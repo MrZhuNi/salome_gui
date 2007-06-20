@@ -541,6 +541,11 @@ void LightApp_Application::createActions()
 
   if( modList.count()>1 )
   {
+    QToolBar* modTBar = new QtxToolBar( true, desk );
+    modTBar->setObjectName( "ModuleToolBar" );
+    modTBar->setWindowTitle( tr( "INF_TOOLBAR_MODULES" ) );
+    desktop()->addToolBar( Qt::TopToolBarArea, modTBar );
+
     myModuleAction = new LightApp_ModuleAction( tr( "APP_NAME" ), defIcon, desk );
 
     QMap<QString, QString> iconMap;
