@@ -25,7 +25,7 @@
 
 #include "LightApp.h"
 
-#include <QtxActionSet.h>
+#include <QtxAction.h>
 
 #ifdef WIN32
 #pragma warning ( disable:4251 )
@@ -33,9 +33,16 @@
 
 class QtxComboBox;
 
-class LIGHTAPP_EXPORT LightApp_ModuleAction : public QtxActionSet
+class LIGHTAPP_EXPORT LightApp_ModuleAction : public QtxAction
 {
   Q_OBJECT
+
+private:
+  class ActionSet;
+  class ComboAction;
+
+public:
+  enum { None = 0x00, Buttons = 0x01, ComboItem = 0x02, All = Buttons | ComboItem };
 
 public:
   LightApp_ModuleAction( const QString&, QObject* = 0 );
@@ -53,18 +60,20 @@ public:
   QString          activeModule() const;
   void             setActiveModule( const QString& );
 
+  void             setMode( const int );
+  int              mode() const;
+
+  virtual bool     addTo( QWidget* );
+  virtual bool     removeFrom( QWidget* );
+
+protected:
+  virtual void     addedTo( QWidget* );
+
 signals:
   void             moduleActivated( const QString& );
 
-protected:
-  virtual QWidget* createWidget( QWidget* );
-  virtual bool     isEmptyAction() const;
-
 private:
   void             init();
-
-  QAction*         moduleAction( const QString& ) const;
-  int              moduleId( const QString& ) const;
 
   void             update();
   void             update( QtxComboBox* );
@@ -73,8 +82,30 @@ private:
   void             activate( int, bool = true );
 
 private slots:
+  void             onChanged();
   void             onTriggered( int );
   void             onComboActivated( int );
+
+private:
+  ComboAction*     myCombo;
+  ActionSet*       mySet;
+  int              myMode;
+};
+
+class LightApp_ModuleAction::ComboAction : public QtxAction
+{
+  Q_OBJECT
+
+public:
+  ComboAction( QObject* parent );
+
+  QList<QtxComboBox*> widgets() const;
+
+protected:
+  virtual QWidget*    createWidget( QWidget* );
+
+signals:
+  void                activatedId( int );
 };
 
 #endif // LIGHTAPP_MODULEACTION_H
