@@ -25,7 +25,7 @@
 # $Header$
 
 # VSR: this is the original packages list
-#SUBDIRS = Qtx Style DDS QDS SUIT STD CAF SUITApp LogWindow ObjBrowser Prs
+#SUBDIRS = Qtx Style DDS QDS SUIT STD CAF CAM SUITApp LogWindow ObjBrowser Prs
 # VSR: already migrated to Qt4 packages
 SUBDIRS = Qtx DDS QDS SUIT SUITApp STD CAF CAM LogWindow Prs
 
@@ -34,52 +34,28 @@ if ENABLE_SALOMEOBJECT
 endif
 
 if ENABLE_GLVIEWER
-# VSR: this is the original packages list
-#  SUBDIRS += GLViewer
-# VSR: already migrated to Qt4 packages
   SUBDIRS += GLViewer
 endif
 
 if ENABLE_VTKVIEWER
-# VSR: this is the original packages list
-#  SUBDIRS += VTKViewer
-# VSR: already migrated to Qt4 packages
   SUBDIRS += VTKViewer
 if ENABLE_SALOMEOBJECT
-# VSR: this is the original packages list
-#    SUBDIRS += SVTK
-# VSR: already migrated to Qt4 packages
     SUBDIRS += SVTK
 endif
 endif
 if ENABLE_OCCVIEWER
-# VSR: this is the original packages list
-#  SUBDIRS += OCCViewer
-# VSR: already migrated to Qt4 packages
   SUBDIRS += OCCViewer
 if ENABLE_SALOMEOBJECT
-# VSR: this is the original packages list
-#    SUBDIRS += SOCC
-# VSR: already migrated to Qt4 packages
     SUBDIRS += SOCC
 endif
 endif
 if ENABLE_PYCONSOLE
-# VSR: this is the original packages list
-#  SUBDIRS += PyInterp PythonConsole
-# VSR: already migrated to Qt4 packages
   SUBDIRS += PyInterp PyConsole
 endif
 if ENABLE_PLOT2DVIEWER
-# VSR: this is the original packages list
   SUBDIRS += Plot2d
-# VSR: already migrated to Qt4 packages
-  SUBDIRS += 
 if ENABLE_SALOMEOBJECT
-# VSR: this is the original packages list
     SUBDIRS += SPlot2d
-# VSR: already migrated to Qt4 packages
-    SUBDIRS += 
 endif
 endif
 if ENABLE_SUPERVGRAPHVIEWER
@@ -88,9 +64,6 @@ if ENABLE_SUPERVGRAPHVIEWER
 # VSR: already migrated to Qt4 packages
   SUBDIRS += 
 endif
-# VSR: this is the original packages list
-#SUBDIRS += Event LightApp ResExporter
-# VSR: already migrated to Qt4 packages
 SUBDIRS += Event LightApp ResExporter
 
 if GUI_ENABLE_CORBA
