@@ -116,7 +116,7 @@ then
 ,   int n;
     char **s;
     QApplication a(n, s);
-    QwtPlot* p;
+    QwtPlot p;
     p.resize( 600, 400 );
     p.show();
     a.exec();,
