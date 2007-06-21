@@ -1448,15 +1448,15 @@ void Plot2d_ViewFrame::plotMousePressed( const QMouseEvent& me )
     myPnt = me.pos();
     if ( myOperation == GlPanId ) {
       myPlot->setAxisScale( QwtPlot::yLeft,
-          myPlot->invTransform( QwtPlot::yLeft, myPnt.y() ) + myYDistance/2, 
-          myPlot->invTransform( QwtPlot::yLeft, myPnt.y() ) - myYDistance/2 );
+          myPlot->invTransform( QwtPlot::yLeft, myPnt.y() ) - myYDistance/2, 
+          myPlot->invTransform( QwtPlot::yLeft, myPnt.y() ) + myYDistance/2 );
       myPlot->setAxisScale( QwtPlot::xBottom, 
           myPlot->invTransform( QwtPlot::xBottom, myPnt.x() ) - myXDistance/2, 
           myPlot->invTransform( QwtPlot::xBottom, myPnt.x() ) + myXDistance/2 );
       if (mySecondY)
         myPlot->setAxisScale( QwtPlot::yRight,
-          myPlot->invTransform( QwtPlot::yRight, myPnt.y() ) + myYDistance2/2, 
-          myPlot->invTransform( QwtPlot::yRight, myPnt.y() ) - myYDistance2/2 );
+          myPlot->invTransform( QwtPlot::yRight, myPnt.y() ) - myYDistance2/2, 
+          myPlot->invTransform( QwtPlot::yRight, myPnt.y() ) + myYDistance2/2 );
       myPlot->replot();
     }
   }

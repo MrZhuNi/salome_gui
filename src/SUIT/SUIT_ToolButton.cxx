@@ -33,10 +33,9 @@ myChangeItemAfterClick( changeItemAfterClick )
 /*!Initialize tool buttons.*/
 void SUIT_ToolButton::initialize()
 {
-//  mySignal = NULL;
   myPopup = new QMenu( this );
   setMenu( myPopup );
-  connect( myPopup, SIGNAL( activated( int ) ), SLOT( OnSelectAction( int ) ) );
+  connect( myPopup, SIGNAL( triggered( QAction* ) ), SLOT( OnSelectAction( QAction* ) ) );
 }
 
 /*!drawButton is redefined to draw DownArrow*/
@@ -63,8 +62,9 @@ void SUIT_ToolButton::AddAction( QAction* theAction )
     aIsFirst = true;
     setIcon( theAction->icon() );
     setText( theAction->text() );
+    myPopup->setActiveAction( theAction );
   }
-    myPopup->addAction( theAction );
+  myPopup->addAction( theAction );
 }
 
 /*! Sets myPopup item with theIndex as current*/
@@ -75,36 +75,31 @@ void SUIT_ToolButton::SetItem( int theIndex )
   {
     setIcon( a->icon() );
     setText( a->text() );
+    myPopup->setActiveAction( a );
   }
 }
 
 /*!Public SLOT.
- * On select action (icon and text set with id = \a theItemID)
+ * On select action (icon and text set from action = \a theAction)
  */
-void SUIT_ToolButton::OnSelectAction( int /*theItemID*/ )
+void SUIT_ToolButton::OnSelectAction( QAction* theAction )
 {
-/*
-  if ( myChangeItemAfterClick )
+  if ( theAction && myChangeItemAfterClick )
   {
     // Protection against unexpected null pointers returned
-    if ( myPopup->iconSet(theItemID) )
-      setPixmap(myPopup->iconSet(theItemID)->pixmap());
-    setTextLabel(myPopup->text(theItemID));
-    QMenuItem* aItem = myPopup->findItem(theItemID);
-    if (aItem != NULL) 
-    {
-      mySignal = aItem->signal();
-    }
+    QIcon anIcon = theAction->icon();
+    if ( !anIcon.isNull() )
+      setIcon(anIcon);
+    setText(theAction->text());
+    myPopup->setActiveAction( theAction );
   }
-*/
 }
 
 /*!On mouse release event.*/
 void SUIT_ToolButton::mouseReleaseEvent( QMouseEvent* theEvent )
 {
   QToolButton::mouseReleaseEvent( theEvent );
-/*
-  if ( mySignal ) 
-    mySignal->activate();
-*/
+  QAction* anAction = myPopup->activeAction();
+  if ( anAction )
+    anAction->activate( QAction::Trigger );
 }
