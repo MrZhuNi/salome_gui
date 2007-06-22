@@ -628,7 +628,6 @@ AC_OUTPUT([ \
   ./src/SALOME_PY/Makefile \
   ./src/SALOME_PYQT/Makefile \
   ./src/SALOME_PYQT/SALOME_PYQT_GUI/Makefile \
-  ./src/SALOME_PYQT/SALOME_PYQT_GUI/SALOME_PYQT_SipDefs.h \
   ./src/SALOME_PYQT/SalomePyQt/Makefile \
   ./resources/Makefile \
   ./idl/Makefile \
