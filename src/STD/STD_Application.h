@@ -61,7 +61,7 @@ public:
 
   virtual QString       applicationName() const;
 
-  virtual bool          isPossibleToClose();
+  virtual bool          isPossibleToClose( bool& );
   virtual bool          useFile( const QString& );
 
   virtual void          createEmptyStudy();
@@ -158,7 +158,7 @@ protected:
 
   virtual void          setActiveViewManager( SUIT_ViewManager* );
 
-  virtual bool          closeAction( const int );
+  virtual bool          closeAction( const int, bool& );
   virtual int           closeChoice( const QString& );
 
 private:
@@ -168,7 +168,6 @@ private:
 private:
   bool                  myExitConfirm;
   bool                  myEditEnabled;
-//  bool                  myClosePermanently; TODO: Move into SalomeApp_Application
 };
 
 #if defined WIN32

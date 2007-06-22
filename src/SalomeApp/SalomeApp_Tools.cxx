@@ -24,6 +24,11 @@
 
 #include <utilities.h>
 
+#include <QColor>
+#include <QString>
+
+#include <Quantity_Color.hxx>
+
 /*!
   Convert QColor to Quantity_Color, if QColor is valid.
 */

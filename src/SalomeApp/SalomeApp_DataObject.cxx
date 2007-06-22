@@ -25,15 +25,8 @@
 
 #include <SUIT_Application.h>
 #include <SUIT_ResourceMgr.h>
-#include <SUIT_DataObjectKey.h>
 
-#include <qobject.h>
-
-#include <SALOMEDSClient_AttributeReal.hxx>
-#include <SALOMEDSClient_AttributeInteger.hxx>
-#include <SALOMEDSClient_AttributeComment.hxx>
-#include <SALOMEDSClient_AttributeTableOfReal.hxx>
-#include <SALOMEDSClient_AttributeTableOfInteger.hxx>
+#include <QObject>
 
 /*!Constructor. Initialize by \a parent*/
 SalomeApp_DataObject::SalomeApp_DataObject( SUIT_DataObject* parent )

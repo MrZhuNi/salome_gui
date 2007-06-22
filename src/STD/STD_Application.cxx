@@ -127,7 +127,8 @@ void STD_Application::onDesktopClosing( SUIT_Desktop*, QCloseEvent* e )
     return;
   }
 
-  if ( !isPossibleToClose() )
+  bool closePermanently;
+  if ( !isPossibleToClose( closePermanently ) )
   {
     e->ignore();
     return;
@@ -396,7 +397,9 @@ void STD_Application::afterCloseDoc()
 /*!Close document, if it's possible.*/
 void STD_Application::onCloseDoc( bool ask )
 {
-  if ( ask && !isPossibleToClose() )
+  bool closePermanently = true;
+
+  if ( ask && !isPossibleToClose( closePermanently ) )
     return;
 
   SUIT_Study* study = activeStudy();
@@ -404,9 +407,7 @@ void STD_Application::onCloseDoc( bool ask )
   beforeCloseDoc( study );
 
   if ( study )
-    study->closeDocument();
-//                          TODO: myClosePermanently move to SalomeApp
-//    study->closeDocument( myClosePermanently );
+    study->closeDocument( closePermanently );
 
   clearViewManagers();
 
@@ -438,17 +439,15 @@ void STD_Application::onCloseDoc( bool ask )
 /*!Check the application on closing.
  * \retval true if possible, else false
  */
-bool STD_Application::isPossibleToClose()
+bool STD_Application::isPossibleToClose( bool& closePermanently )
 {
-//  TODO: myClosePermanently move to SalomeApp
-//  myClosePermanently = true;
   if ( activeStudy() )
   {
     activeStudy()->abortAllOperations();
     if ( activeStudy()->isModified() )
     {
       QString sName = activeStudy()->studyName().trimmed();
-      return closeAction( closeChoice( sName ) );
+      return closeAction( closeChoice( sName ), closePermanently );
     }
   }
   return true;
@@ -469,7 +468,7 @@ int STD_Application::closeChoice( const QString& docName )
   return res;
 }
 
-bool STD_Application::closeAction( const int choice )
+bool STD_Application::closeAction( const int choice, bool& closePermanently )
 {
   bool res = true;
   switch( choice )
@@ -482,11 +481,6 @@ bool STD_Application::closeAction( const int choice )
     break;
   case CloseDiscard:
     break;
-/*
-  case 3:
-	      myClosePermanently = false;
-        break;
-*/
   case CloseCancel:
   default:
     res = false;

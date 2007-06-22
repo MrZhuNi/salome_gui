@@ -92,17 +92,17 @@ libSalomeApp_la_CPPFLAGS=$(PYTHON_INCLUDES) $(QT_INCLUDES) $(QWT_INCLUDES) \
 	-I$(srcdir)/../LightApp -I$(srcdir)/../CAM -I$(srcdir)/../Qtx \
 	-I$(srcdir)/../SUIT -I$(srcdir)/../OBJECT -I$(srcdir)/../SVTK \
 	-I$(srcdir)/../STD -I$(srcdir)/../VTKViewer -I$(srcdir)/../ObjBrowser \
-	-I$(srcdir)/../PythonConsole -I$(srcdir)/../TOOLSGUI \
+	-I$(srcdir)/../PyConsole -I$(srcdir)/../TOOLSGUI \
 	-I$(srcdir)/../PyInterp -I$(srcdir)/../Session -I$(top_builddir)/idl \
 	-I$(srcdir)/../Event \
 	-I$(top_builddir)/salome_adm/unix @CORBA_CXXFLAGS@ @CORBA_INCLUDES@
 libSalomeApp_la_LDFLAGS=$(PYTHON_LIBS) $(QT_MT_LIBS) 
 libSalomeApp_la_LIBADD= $(KERNEL_LDFLAGS) -lOpUtil -lSALOMELocalTrace -lSalomeDSClient \
-	../SUIT/libsuit.la ../STD/libstd.la ../CAM/libCAM.la ../ObjBrowser/libObjBrowser.la \
+	../SUIT/libsuit.la ../STD/libstd.la ../CAM/libCAM.la \ #../ObjBrowser/libObjBrowser.la \
 	../Prs/libSalomePrs.la ../SPlot2d/libSPlot2d.la ../GLViewer/libGLViewer.la \
 	../OCCViewer/libOCCViewer.la ../VTKViewer/libVTKViewer.la ../OBJECT/libSalomeObject.la \
 	../SVTK/libSVTK.la ../SOCC/libSOCC.la ../PyInterp/libPyInterp.la \
-	../PythonConsole/libPythonConsole.la ../LogWindow/libLogWindow.la \
+	../PyConsole/libPyConsole.la ../LogWindow/libLogWindow.la \
 	../LightApp/libLightApp.la ../TOOLSGUI/libToolsGUI.la $(CAS_KERNEL)
 
 EXTRA_DIST+=SalomeApp_PyInterp.h

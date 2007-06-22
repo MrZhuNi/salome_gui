@@ -20,7 +20,7 @@
 #define SALOMEAPP_EVENTFILTER_H
 
 #include "SalomeApp.h"
-#include <qobject.h>
+#include <QObject>
 
 #if defined WIN32
 #pragma warning( disable: 4251 )

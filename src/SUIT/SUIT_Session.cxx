@@ -243,7 +243,8 @@ void SUIT_Session::closeSession( int mode )
   for ( AppList::const_iterator it = apps.begin(); it != apps.end(); ++it )
   {
     SUIT_Application* app = *it;
-    if ( mode == ASK && !app->isPossibleToClose() )
+    bool closePermanently;
+    if ( mode == ASK && !app->isPossibleToClose( closePermanently ) )
       return;
     else if ( mode == SAVE )
     {

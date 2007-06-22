@@ -67,7 +67,7 @@ SUIT_Desktop* SUIT_Application::desktop()
    \return FALSE if application can not be closed (because of non saved data for example). 
    This method called by SUIT_Session whin closing of application was requested.
 */
-bool SUIT_Application::isPossibleToClose()
+bool SUIT_Application::isPossibleToClose( bool& closePermanently )
 {
   return true;
 }

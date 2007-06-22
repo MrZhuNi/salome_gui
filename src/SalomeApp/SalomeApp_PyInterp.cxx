@@ -31,12 +31,8 @@
 #include <utilities.h>
 #include <Container_init_python.hxx>
 
-#include <string>
-#include <vector>
+#include "PyInterp.h" // this include must be first (see PyInterp_base.h)!
 
-#include "PyInterp_base.h" // this include must be first (see PyInterp_base.h)!
-
-#include <cStringIO.h>
 using namespace std;
 
 /*!
@@ -45,7 +41,7 @@ using namespace std;
  * initstate & initcontext redefined here.
  */
 SalomeApp_PyInterp::SalomeApp_PyInterp(): 
-  PythonConsole_PyInterp(), myFirstRun( true )
+  PyConsole_Interp(), myFirstRun( true )
 {
 }
 
@@ -82,7 +78,7 @@ bool SalomeApp_PyInterp::initContext()
    * It is the caller responsability caller to acquire the GIL
    * It will still be held on initContext output
    */
-  if ( !PythonConsole_PyInterp::initContext() )
+  if ( !PyConsole_Interp::initContext() )
     return false;
 
   // Import special module to change the import mechanism

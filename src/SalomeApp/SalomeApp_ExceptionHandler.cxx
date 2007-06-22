@@ -24,7 +24,7 @@
 #include <stdexcept>
 #include <exception>
 
-#include <qstring.h>
+#include <QString>
 
 #if (OCC_VERSION_MAJOR << 16 | OCC_VERSION_MINOR << 8 | OCC_VERSION_MAINTENANCE) > 0x060100
   #include <Standard_ErrorHandler.hxx>

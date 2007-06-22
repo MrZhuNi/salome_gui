@@ -29,9 +29,9 @@
 #ifndef _SalomeApp_PYINTERP_H_
 #define _SalomeApp_PYINTERP_H_
 
-#include <PythonConsole_PyInterp.h> // this include must be first (see PyInterp_base.h)!
+#include <PyConsole_Interp.h> // this include must be first (see PyInterp_base.h)!
 
-class SalomeApp_PyInterp : public PythonConsole_PyInterp
+class SalomeApp_PyInterp : public PyConsole_Interp
 {
 public:
   SalomeApp_PyInterp();
@@ -41,7 +41,7 @@ public:
 
 protected:
   virtual bool initContext();
-  virtual bool beforeRun();
+  virtual int  beforeRun();
 
 private:
   bool myFirstRun;
