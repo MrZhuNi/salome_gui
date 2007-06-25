@@ -146,7 +146,7 @@ SalomeApp_StudyPropertiesDlg::SalomeApp_StudyPropertiesDlg(QWidget* parent)
   setWindowTitle(tr("TLT_STUDY_PROPERTIES"));
   setSizeGripEnabled( true );
 
-  //clearWFlags(Qt::WindowContextHelpButtonHint);
+  setWindowFlags( windowFlags() ^ QFlags<Qt::WindowType>(!Qt::WindowContextHelpButtonHint) );
 
   QGridLayout* mainLayout = new QGridLayout(this);
   mainLayout->setMargin(DEFAULT_MARGIN);
