@@ -31,9 +31,7 @@ HEADERS += ToolsGUI_RegWidget.h
 HEADERS += ToolsGUI_CatalogGeneratorDlg.h
 
 SOURCES  = ToolsGUI_CatalogGeneratorDlg.cxx
-SOURCES += ToolsGUI_HelpWindow.cxx
 SOURCES += ToolsGUI_RegWidget.cxx
-SOURCES += ToolsGUI_IntervalWindow.cxx
 SOURCES += ToolsGUI.cxx
 
 TRANSLATIONS = resources/ToolsGUI_icons.ts \

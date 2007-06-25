@@ -19,13 +19,9 @@
 // 
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-//
-//
 //  File   : ToolsGUI_CatalogGeneratorDlg.cxx
 //  Author : Nicolas REJNERI
-//  Modified : Marc TAJCHMAN
-//  Module : SALOME
-//  $Header$
+//
 
 #include "ToolsGUI_CatalogGeneratorDlg.h"
 
@@ -60,23 +56,26 @@ using namespace std;
 #define MIN_EDIT_SIZE          250
 
 /*!
-  Constructor
+  \class ToolsGUI_CatalogGeneratorDlg
+  \brief A dialog box which allows converting the IDL files 
+         to the XML description.
 */
-ToolsGUI_CatalogGeneratorDlg::ToolsGUI_CatalogGeneratorDlg( QWidget* parent, const char* name )
-    : QDialog( parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint )
-{
-  setObjectName( name );
-  setModal( TRUE );
 
-  if ( !name )
-    setObjectName( "ToolsGUI_CatalogGeneratorDlg" );
-  resize( 322, 120 ); 
+/*!
+  \brief Constructor.
+  \param parent parent widget
+*/
+ToolsGUI_CatalogGeneratorDlg::ToolsGUI_CatalogGeneratorDlg( QWidget* parent )
+: QDialog( parent )
+{
+  setModal( true );
+
   setWindowTitle( tr( "TOOLS_CATALOG_GENERATOR" ) );
-  setSizeGripEnabled( TRUE );
+  setSizeGripEnabled( true );
 
   QGridLayout* aTopLayout = new QGridLayout(this);
-  aTopLayout->setMargin(MARGIN_SIZE);
-  aTopLayout->setSpacing(SPACING_SIZE);
+  aTopLayout->setMargin( MARGIN_SIZE );
+  aTopLayout->setSpacing( SPACING_SIZE );
 
   QGroupBox* filesGrp = new QGroupBox( tr( "TOOLS_FILES") , this );
   filesGrp->setObjectName( "filesGrp" );
@@ -180,7 +179,6 @@ ToolsGUI_CatalogGeneratorDlg::ToolsGUI_CatalogGeneratorDlg( QWidget* parent, con
   supplGrpLayout->addWidget( new QLabel( tr( "TOOLS_PNG_FILE" ), supplGrp ), 2, 0);
   supplGrpLayout->addWidget( myPngEdit, 2,1,1,4 );
   supplGrpLayout->addWidget( myBrowsePngBtn, 2, 5 );
-  
 
   QHBoxLayout* aBtnLayout = new QHBoxLayout;
   aBtnLayout->setSpacing( SPACING_SIZE );
@@ -215,14 +213,15 @@ ToolsGUI_CatalogGeneratorDlg::ToolsGUI_CatalogGeneratorDlg( QWidget* parent, con
 }
 
 /*!
-  destructor
+  \brief Destructor
 */
 ToolsGUI_CatalogGeneratorDlg::~ToolsGUI_CatalogGeneratorDlg()
 {  
 }
 
 /*!
-  \return IDL file name entered
+  \brief Get IDL file name
+  \return IDL file name entered by the user
 */
 QString ToolsGUI_CatalogGeneratorDlg::getIdlFile()
 {
@@ -230,7 +229,8 @@ QString ToolsGUI_CatalogGeneratorDlg::getIdlFile()
 }
 
 /*!
-  \return  XML file name entered
+  \brief Get XML file name
+  \return XML file name entered by the user
 */
 QString ToolsGUI_CatalogGeneratorDlg::getXmlFile()
 {
@@ -238,7 +238,8 @@ QString ToolsGUI_CatalogGeneratorDlg::getXmlFile()
 }
 
 /*!
-  \return PNG file name entered
+  \brief Get module icon file name
+  \return icon file name entered by the user
 */
 QString ToolsGUI_CatalogGeneratorDlg::getPngFile()
 {
@@ -246,7 +247,8 @@ QString ToolsGUI_CatalogGeneratorDlg::getPngFile()
 }
 
 /*!
-  \return author 
+  \brief Get author name
+  \return author name entered by the user
 */
 QString ToolsGUI_CatalogGeneratorDlg::getAuthor()
 {
@@ -254,7 +256,8 @@ QString ToolsGUI_CatalogGeneratorDlg::getAuthor()
 }
 
 /*!
-  \return version number 
+  \brief Get version number 
+  \return version number entered by the user
 */
 QString ToolsGUI_CatalogGeneratorDlg::getVersion()
 {
@@ -262,7 +265,8 @@ QString ToolsGUI_CatalogGeneratorDlg::getVersion()
 }
 
 /*!
-  \return name of the component
+  \brief Get component name
+  \return name of the component entered by the user
 */
 QString ToolsGUI_CatalogGeneratorDlg::getCompName()
 {
@@ -270,7 +274,8 @@ QString ToolsGUI_CatalogGeneratorDlg::getCompName()
 }
 
 /*!
-  \return username of the component
+  \brief Get component title (user name)
+  \return title of the component entered by the user
 */
 QString ToolsGUI_CatalogGeneratorDlg::getCompUserName()
 {
@@ -278,7 +283,8 @@ QString ToolsGUI_CatalogGeneratorDlg::getCompUserName()
 }
 
 /*!
-  \return type of the component
+  \brief Get multistudy flag
+  \return multistudy flag for the component entered by the user
 */
 QString ToolsGUI_CatalogGeneratorDlg::getCompMultiStd()
 {
@@ -286,7 +292,8 @@ QString ToolsGUI_CatalogGeneratorDlg::getCompMultiStd()
 }
 
 /*!
-  \return type of the component
+  \brief Get component type
+  \return type of the component entered by the user
 */
 QString ToolsGUI_CatalogGeneratorDlg::getCompType()
 {
@@ -294,6 +301,7 @@ QString ToolsGUI_CatalogGeneratorDlg::getCompType()
 }
 
 /*!
+  \brief Get IDL path of the modules
   \return IDL path of modules
 */
 QString ToolsGUI_CatalogGeneratorDlg::getIdlPath()
@@ -328,7 +336,7 @@ QString ToolsGUI_CatalogGeneratorDlg::getIdlPath()
 }
 
 /*!
-  SLOT: called on Browse button click
+  \brief Called when user presses "Browse" button
 */
 void ToolsGUI_CatalogGeneratorDlg::onBrowseBtnClicked()
 {
@@ -358,7 +366,7 @@ void ToolsGUI_CatalogGeneratorDlg::onBrowseBtnClicked()
 }
 
 /*!
-  Updates <OK> button's state
+  \brief Update <OK> button's state.
 */
 void ToolsGUI_CatalogGeneratorDlg::updateButtonState()
 {
@@ -367,7 +375,9 @@ void ToolsGUI_CatalogGeneratorDlg::updateButtonState()
 }
 
 /*!
-  <Apply> button slot, performs IDL->XML conversion
+  \brief Called when user presses <Apply> button
+
+  Performs IDL to XML file conversion using \c runIDLparser SALOME utility.
 */
 void ToolsGUI_CatalogGeneratorDlg::onApply()
 {

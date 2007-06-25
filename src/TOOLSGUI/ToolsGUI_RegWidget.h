@@ -19,15 +19,15 @@
 // 
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-//
-//
-//  File   : RegWidget.h
+//  File   : ToolsGUI_RegWidget.h
 //  Author : Pascale NOYRET, EDF
-//  Module : SALOME
-//  $Header$
+//
 
-#ifndef __REGWIDGET_H__
-#define __REGWIDGET_H__
+#ifndef TOOLSGUI_REGWIDGET_H
+#define TOOLSGUI_REGWIDGET_H
+
+#include "ToolsGUI.h"
+
 #include <QMainWindow>
 
 #include <SALOMEconfig.h>
@@ -39,80 +39,67 @@ class QTreeWidgetItem;
 class QWidget;
 class QTimer;
 class QCloseEvent;
-class QTextEdit;
 class QAction;
 
-#include <Standard_Macro.hxx>
-
-class ToolsGUI_HelpWindow;
-class ToolsGUI_IntervalWindow;
-
-class Standard_EXPORT  ToolsGUI_InfoWindow : public QMainWindow
+class TOOLSGUI_EXPORT ToolsGUI_RegWidget : public QMainWindow
 {
   Q_OBJECT
 
-public:
-  ToolsGUI_InfoWindow( QWidget* parent = 0, const char* name = 0);
-
-  void setText( const QString& text );
-  QTextEdit* textView() const { return myTextView; }
-
-protected:
-  void keyPressEvent( QKeyEvent * e );
-
-private:
-  QTextEdit* myTextView;
-};
-
-class Standard_EXPORT ToolsGUI_RegWidget : public QMainWindow
-{
-  Q_OBJECT
+  class ToolsGUI_HelpWindow;
+  class ToolsGUI_IntervalWindow;
+  class ToolsGUI_InfoWindow;
 
 public:
-  ToolsGUI_RegWidget( CORBA::ORB_var &orb , QWidget *parent = 0, const char *name = 0 );
+  ToolsGUI_RegWidget( CORBA::ORB_var& orb, QWidget* parent = 0 );
   ~ToolsGUI_RegWidget();
-  void       SetListe();
-  void       SetListeHistory();
-  void       InfoReg();
-  void       InfoHistory();
 
-  bool       eventFilter( QObject* object, QEvent* event );
+  void                       SetListe();
+  void                       SetListeHistory();
+  void                       InfoReg();
+  void                       InfoHistory();
 
-  static ToolsGUI_RegWidget* GetRegWidget( CORBA::ORB_var &orb , QWidget *parent = 0, const char *name = 0 );
+  bool                       eventFilter( QObject* object, QEvent* event );
 
-  virtual QMenu* createPopupMenu();
+  static ToolsGUI_RegWidget* GetRegWidget( CORBA::ORB_var& orb, 
+					   QWidget* parent = 0 );
+
+  virtual QMenu*             createPopupMenu();
 
 public slots:
-  void       slotHelp();
-  void       slotListeSelect();
-  void       slotClientChanged( QTreeWidgetItem* );
-  void       slotHistoryChanged( QTreeWidgetItem* );
-  void       slotSelectRefresh();
-  void       slotIntervalOk();
+  void                       slotHelp();
+  void                       slotListeSelect();
+  void                       slotClientChanged( QTreeWidgetItem* );
+  void                       slotHistoryChanged( QTreeWidgetItem* );
+  void                       slotSelectRefresh();
+  void                       slotIntervalOk();
+
 protected:  
-  static QString setlongText( const Registry::Infos &c_info );
-  int            numitem( const QString& name, const QString& pid, const QString& machine, const Registry::AllInfos* c_info );
-  void           closeEvent( QCloseEvent *e);
+  static QString             setlongText( const Registry::Infos& c_info );
+  int                        numitem( const QString& name, 
+				      const QString& pid, 
+				      const QString& machine, 
+				      const Registry::AllInfos* clistclient );
+  void                       closeEvent( QCloseEvent* e );
    
 protected :
-  QTreeWidget*             _clients;
-  QTreeWidget*             _history;
-  QWidget*                 _parent;
-  QTabWidget*              _tabWidget;
-  QAction*                 _refresh;
-  QAction*                 _interval;
-  QAction*                 _close;
-  QTimer*                  _counter;
-  Registry::AllInfos*      _serverhistory;
-  Registry::AllInfos*      _serverclients;
-  ToolsGUI_InfoWindow*     myInfoWindow;
-  ToolsGUI_HelpWindow*     myHelpWindow;
-  ToolsGUI_IntervalWindow* myIntervalWindow;
-  int                      myRefreshInterval;
+  QTreeWidget*               _clients;
+  QTreeWidget*               _history;
+  QWidget*                   _parent;
+  QTabWidget*                _tabWidget;
+  QAction*                   _refresh;
+  QAction*                   _interval;
+  QAction*                   _close;
+  QTimer*                    _counter;
+  Registry::AllInfos*        _serverhistory;
+  Registry::AllInfos*        _serverclients;
+  ToolsGUI_InfoWindow*       myInfoWindow;
+  ToolsGUI_HelpWindow*       myHelpWindow;
+  ToolsGUI_IntervalWindow*   myIntervalWindow;
+  int                        myRefreshInterval;
 
 private:
-  const      Registry::Components_var _VarComponents;
-  static     ToolsGUI_RegWidget* myRegWidgetPtr;
+  const Registry::Components_var _VarComponents;
+  static ToolsGUI_RegWidget*     myRegWidgetPtr;
 };
 
-#endif
+#endif // TOOLSGUI_REGWIDGET_H
