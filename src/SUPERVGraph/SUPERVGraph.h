@@ -29,9 +29,6 @@
 #ifndef SUPERVGraph_HeaderFile
 #define SUPERVGraph_HeaderFile
 
-#include "SUIT_Desktop.h"
-#include "SUIT_ViewWindow.h"
-
 #ifdef WIN32
 #ifdef SUPERVGRAPH_EXPORTS
 #define SUPERVGRAPH_EXPORT __declspec(dllexport)
@@ -46,13 +43,18 @@
 #pragma warning ( disable: 4251 )
 #endif
 
+#include <QObject>
+
+class SUIT_Desktop;
+class SUIT_ViewWindow;
+
 class SUPERVGRAPH_EXPORT SUPERVGraph : public QObject
 {
   Q_OBJECT
 
 public :
 
-    /*Standard_EXPORT*/ static SUIT_ViewWindow* createView ( SUIT_Desktop* parent);
+    static SUIT_ViewWindow* createView ( SUIT_Desktop* parent);
   
 };
 

@@ -242,5 +242,5 @@ if ENABLE_PYCONSOLE
   libLightApp_la_LIBADD+= ../PyInterp/libPyInterp.la ../PyConsole/libPyConsole.la
 endif
 if ENABLE_SUPERVGRAPHVIEWER
-#  libLightApp_la_LIBADD+= ../SUPERVGraph/libSUPERVGraph.la
+  libLightApp_la_LIBADD+= ../SUPERVGraph/libSUPERVGraph.la
 endif

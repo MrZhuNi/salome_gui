@@ -62,7 +62,7 @@ if ENABLE_SUPERVGRAPHVIEWER
 # VSR: this is the original packages list
 #  SUBDIRS += SUPERVGraph
 # VSR: already migrated to Qt4 packages
-  SUBDIRS += 
+  SUBDIRS += SUPERVGraph
 endif
 SUBDIRS += Event LightApp ResExporter
 

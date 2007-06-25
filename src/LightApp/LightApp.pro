@@ -54,7 +54,7 @@ INCLUDEPATH += $${PYTHON_INCLUDES} $${QT_INCLUDES} $${CAS_CPPFLAGS} $${HDF5_INCL
 #endif
 
 #if ENABLE_SUPERVGRAPHVIEWER
-#  INCLUDEPATH += ../SUPERVGraph
+  INCLUDEPATH += ../SUPERVGraph
 #else !ENABLE_SUPERVGRAPHVIEWER
 #  DEFINES += DISABLE_SUPERVGRAPHVIEWER
 #endif
@@ -129,7 +129,7 @@ LIBS += $${QT_MT_LIBS} -L../../lib -lsuit -lstd -lCAM -lLogWindow $${CAS_KERNEL}
 #endif
 
 #if ENABLE_SUPERVGRAPHVIEWER
-#  LIBS += -lSUPERVGraph
+  LIBS += -lSUPERVGraph
 #endif
 
 CONFIG -= debug release debug_and_release
