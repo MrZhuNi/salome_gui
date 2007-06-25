@@ -10,7 +10,7 @@ sip_ok=yes
 AC_ARG_WITH(sip,
     [  --with-sip=EXEC sip executable ],
     [SIP="$withval"
-      AC_MSG_RESULT(Try $withval as sip executable)
+      AC_MSG_RESULT([Try $withval as sip executable])
     ], [
       AC_PATH_PROG(SIP, sip)
     ])
