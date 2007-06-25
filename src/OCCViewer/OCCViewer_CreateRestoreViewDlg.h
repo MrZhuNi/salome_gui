@@ -25,10 +25,10 @@
 #include "OCCViewer_ViewWindow.h"
 
 #include <QtxDialog.h>
-#include <QtxListBox.h> 
 #include <SUIT_Application.h>
 
 #include <QDialog>
+#include <QListWidget>
 
 class OCCViewer_ViewPort3d;
 
@@ -61,8 +61,8 @@ signals:
 	void	                      dlgOk();
 
 private:
-	int								          myKeyFlag;
-	QtxListBox*		      myListBox;
+	int		              myKeyFlag;
+	QListWidget*		      myListBox;
 	OCCViewer_ViewPort3d*	      myCurViewPort;
 	viewAspect                    myCurrentItem;
 	viewAspectList                myParametersMap;
