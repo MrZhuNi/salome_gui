@@ -16,12 +16,15 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
+
 #include "SalomeApp_LoadStudiesDlg.h"
 
 #include <QLabel>
-#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QListWidget>
 #include <QPushButton>
+#include <QStringList>
 
 #define SPACING_SIZE             6
 #define MARGIN_SIZE             11
@@ -29,62 +32,103 @@
 #define MIN_LISTBOX_HEIGHT     100
 
 /*!
-* \brief creates a Load study dialog box
-* \param parent a parent widget
-* \param modal bool argument, if true the dialog box is a modal dialog box
-* \param f style flags
+  \class SalomeApp_LoadStudiesDlg
+  \brief Dialog box which allows selecting study to be loaded 
+  from the list.
 */
 
-SalomeApp_LoadStudiesDlg::SalomeApp_LoadStudiesDlg( QWidget* parent,  bool modal, Qt::WindowFlags fl )
-: QDialog( parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint )
+/*!
+  \brief Constructor
+  \param parent a parent widget
+  \param studies list of study names
+*/
+SalomeApp_LoadStudiesDlg::SalomeApp_LoadStudiesDlg( QWidget* parent, const QStringList& studies )
+: QDialog( parent )
 {
-    setObjectName( "SalomeApp_LoadStudiesDlg" );
-    setModal( modal );
+  setModal( true );
 
-    resize( 321, 181 ); 
-    setWindowTitle( tr("DLG_LOAD_STUDY_CAPTION") );
-    setSizeGripEnabled( TRUE );
+  setWindowTitle( tr("DLG_LOAD_STUDY_CAPTION") );
+  setSizeGripEnabled( true );
 
-    QGridLayout* aTopLayout = new QGridLayout(this);
-    aTopLayout->setMargin(MARGIN_SIZE);
-    aTopLayout->setSpacing(SPACING_SIZE);
-
-    TextLabel1 = new QLabel( this );
-    TextLabel1->setObjectName( "TextLabel1" );
-    TextLabel1->setGeometry( QRect( 11, 12, 297, 16 ) ); 
-    TextLabel1->setText( tr( "MEN_STUDIES_CHOICE"  ) );
-
-    QHBoxLayout* aBtnLayout = new QHBoxLayout;
-    aBtnLayout->setSpacing( SPACING_SIZE );
-    aBtnLayout->setMargin( 0 );
-    
-    buttonOk = new QPushButton( this );
-    buttonOk->setObjectName( "buttonOk" );
-    buttonOk->setText( tr( "BUT_OK"  ) );
-    buttonOk->setAutoDefault( true );
-    buttonOk->setDefault( true );
-    
-    buttonCancel = new QPushButton( this );
-    buttonCancel->setObjectName( "buttonCancel" );
-    buttonCancel->setText( tr( "BUT_CANCEL"  ) );
-    buttonCancel->setAutoDefault( true ); 
+  QVBoxLayout* topLayout = new QVBoxLayout( this );
+  topLayout->setMargin( MARGIN_SIZE );
+  topLayout->setSpacing( SPACING_SIZE );
   
-    aBtnLayout->addWidget( buttonOk );
-    aBtnLayout->addItem( new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-    aBtnLayout->addWidget( buttonCancel );
+  QLabel* lab = new QLabel( tr( "MEN_STUDIES_CHOICE" ), this );
+  
+  myButtonOk = new QPushButton( tr( "BUT_OK" ), this );
+  myButtonOk->setAutoDefault( true );
+  myButtonOk->setDefault( true );
+    
+  QPushButton* buttonCancel = new QPushButton( tr( "BUT_CANCEL" ), this );
+  
+  QHBoxLayout* btnLayout = new QHBoxLayout;
+  btnLayout->setSpacing( SPACING_SIZE );
+  btnLayout->setMargin( 0 );
+  btnLayout->addWidget( myButtonOk );
+  btnLayout->addStretch();
+  btnLayout->addWidget( buttonCancel );
 
-    ListComponent = new QListWidget( this );
-    ListComponent->setObjectName( "ListComponent" );
-    ListComponent->setMinimumSize(MIN_LISTBOX_WIDTH, MIN_LISTBOX_HEIGHT);
-    ListComponent->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-    ListComponent->setSelectionMode(QAbstractItemView::SingleSelection);
+  myList = new QListWidget( this );
+  myList->setMinimumSize( MIN_LISTBOX_WIDTH, MIN_LISTBOX_HEIGHT );
+  myList->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, 
+					       QSizePolicy::Expanding ) );
+  myList->setSelectionMode( QAbstractItemView::SingleSelection );
 
-    aTopLayout->addWidget(TextLabel1,    0, 0);
-    aTopLayout->addWidget(ListComponent, 1, 0);
-    aTopLayout->addLayout(aBtnLayout,    2, 0);
+  topLayout->addWidget( lab );
+  topLayout->addWidget( myList );
+  topLayout->addLayout( btnLayout );
+  
+  connect( myButtonOk,   SIGNAL( clicked() ), this, SLOT( accept() ) );
+  connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
+  connect( myList,       SIGNAL( itemDoubleClicked( QListWidgetItem* ) ),
+	                                      this, SLOT( accept() ) );
+  connect( myList,       SIGNAL( itemSelectionChanged() ),
+	                                      this, SLOT( updateState() ) );
+  myList->addItems( studies );
 
-    // signals and slots connections
-    connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
-    connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
+  updateState();
 }
 
+/*!
+  \brief Destructor
+*/
+SalomeApp_LoadStudiesDlg::~SalomeApp_LoadStudiesDlg()
+{
+}
+
+/*!
+  \brief Updates buttons state.
+*/
+void SalomeApp_LoadStudiesDlg::updateState()
+{
+  myButtonOk->setEnabled( myList->currentItem() != 0 );
+}
+
+/*!
+  \brief Get selected study name
+  \return selected study name or null string if study is not selected
+*/
+QString SalomeApp_LoadStudiesDlg::selectedStudy()
+{
+  QString study;
+  if ( myList->currentItem() )
+    study = myList->currentItem()->text();
+  return study;
+}
+
+/*!
+  \brief Executes dialog box to select study from the list 
+         and returns the study selected.
+  \param parent parent widget
+  \param studies list of study names
+  \return select study (or null string if dialog box is rejected)
+*/
+QString SalomeApp_LoadStudiesDlg::selectStudy( QWidget* parent, const QStringList& studies )
+{
+  SalomeApp_LoadStudiesDlg dlg( parent, studies );
+  QString study;
+  if ( dlg.exec() == QDialog::Accepted )
+    study = dlg.selectedStudy();
+  return study;
+}

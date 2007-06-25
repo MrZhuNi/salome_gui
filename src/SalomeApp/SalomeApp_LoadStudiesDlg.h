@@ -16,49 +16,38 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-#ifndef STD_LOADSTUDIESDLG_H
-#define STD_LOADSTUDIESDLG_H
 
-#include <STD.h>
+#ifndef SALOMEAPP_LOADSTUDIESDLG_H
+#define SALOMEAPP_LOADSTUDIESDLG_H
+
+#include "SalomeApp.h"
 
 #include <QDialog>
 
-class QLabel;
 class QListWidget;
 class QPushButton;
+class QStringList;
 
-/*!\class SalomeApp_LoadStudiesDlg
- * \brief Describes a dialog box that gives a list of opened studies.
- * 
- */
-class STD_EXPORT SalomeApp_LoadStudiesDlg : public QDialog
+class SALOMEAPP_EXPORT SalomeApp_LoadStudiesDlg : public QDialog
 { 
-   Q_OBJECT
+  Q_OBJECT
+
+private:
+  SalomeApp_LoadStudiesDlg( QWidget*, const QStringList& );
 
 public:
-   SalomeApp_LoadStudiesDlg( QWidget* parent = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
-   ~SalomeApp_LoadStudiesDlg() {}
+  ~SalomeApp_LoadStudiesDlg();
 
-  /*!\var TextLabel1
-   * \brief stores a dialog text label
-   */
-  QLabel* TextLabel1;
-  
-  /*!\var buttonOk
-   * \brief stores a dialog button OK
-   */
-  QPushButton* buttonOk;
+  static QString selectStudy( QWidget*, const QStringList& );
 
-  /*!\var buttonCancel
-   * \brief stores a dialog button Cancel
-   */  
-  QPushButton* buttonCancel;
+  QString        selectedStudy();
 
-  /*!\var ListComponent
-   * \brief stores a dialog list compoent
-   */ 
-  QListWidget* ListComponent;
+private slots:
+  void           updateState();
 
+private:
+  QListWidget*   myList;
+  QPushButton*   myButtonOk;
 };
 
 #endif // STD_LOADSTUDIESDLG_H

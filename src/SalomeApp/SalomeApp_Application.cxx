@@ -385,52 +385,46 @@ bool SalomeApp_Application::onOpenDoc( const QString& aName )
 /*!SLOT. Load document.*/
 void SalomeApp_Application::onLoadDoc()
 {
-  QString name, studyname, ext;
-
-  SalomeApp_LoadStudiesDlg aDlg( desktop(), TRUE);
+  QString studyName;
 
   std::vector<std::string> List = studyMgr()->GetOpenStudies();
 
   SUIT_Session* aSession = SUIT_Session::session();
   QList<SUIT_Application*> aAppList = aSession->applications();
-  SUIT_Application* aApp = 0;
 
-  for (unsigned int ind = 0; ind < List.size(); ind++) {
-     studyname = List[ind].c_str();
-     //Add to list only unloaded studies
+  QStringList unloadedStudies;
+
+  for ( unsigned int ind = 0; ind < List.size(); ind++ ) {
+     studyName = List[ind].c_str();
+     // Add to list only unloaded studies
      bool isAlreadyOpen = false;
      QListIterator<SUIT_Application*> it( aAppList );
-     while ( it.hasNext() && !isAlreadyOpen )
-       {
-	 aApp = it.next();
-	 if(!aApp || !aApp->activeStudy()) continue;
-	 if ( aApp->activeStudy()->studyName() == studyname ) isAlreadyOpen = true;
-       }
+     while ( it.hasNext() && !isAlreadyOpen ) {
+       SUIT_Application* aApp = it.next();
+       if( !aApp || !aApp->activeStudy() ) 
+	 continue;
+       if ( aApp->activeStudy()->studyName() == studyName ) 
+	 isAlreadyOpen = true;
+     }
 
-     if ( !isAlreadyOpen ) aDlg.ListComponent->addItem( studyname );
+     if ( !isAlreadyOpen ) 
+       unloadedStudies << studyName;
   }
 
-  int retVal = aDlg.exec();
-  studyname = aDlg.ListComponent->currentItem()->text();
-
-  if (retVal == QDialog::Rejected)
+  studyName = SalomeApp_LoadStudiesDlg::selectStudy( desktop(), unloadedStudies );
+  if ( studyName.isEmpty() )
     return;
 
-  if ( studyname.isNull() || studyname.isEmpty() )
-    return;
-
-  name = studyname;
 #ifndef WIN32
-  //this code replace marker of windows drive and path become invalid therefore 
+  // this code replaces marker of windows drive and path become invalid therefore 
   // defines placed there
-  name.replace( QRegExp(":"), "/" );
+  studyName.replace( QRegExp(":"), "/" );
 #endif
 
-  if( LightApp_Application::onLoadDoc( name ) )
-  {
-     updateWindows();
-     updateViewManagers();
-     updateObjectBrowser(true);
+  if( LightApp_Application::onLoadDoc( studyName ) ) {
+    updateWindows();
+    updateViewManagers();
+    updateObjectBrowser( true );
   }
 }
 
