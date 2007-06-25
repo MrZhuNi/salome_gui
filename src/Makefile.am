@@ -59,17 +59,13 @@ if ENABLE_SALOMEOBJECT
 endif
 endif
 if ENABLE_SUPERVGRAPHVIEWER
-# VSR: this is the original packages list
-#  SUBDIRS += SUPERVGraph
-# VSR: already migrated to Qt4 packages
   SUBDIRS += SUPERVGraph
 endif
 SUBDIRS += Event LightApp ResExporter
 
 if GUI_ENABLE_CORBA
 # VSR: this is the original packages list
-#  SUBDIRS += RegistryDisplay TOOLSGUI \
-#          Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT
+#  SUBDIRS += TOOLSGUI Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT
 # VSR: already migrated to Qt4 packages
-  SUBDIRS += RegistryDisplay TOOLSGUI SalomeApp
+  SUBDIRS += TOOLSGUI SalomeApp
 endif
