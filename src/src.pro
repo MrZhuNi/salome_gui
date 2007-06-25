@@ -26,3 +26,4 @@ SUBDIRS += LightApp
 SUBDIRS += ResExporter
 SUBDIRS += RegistryDisplay
 SUBDIRS += TOOLSGUI
+SUBDIRS += SalomeApp
