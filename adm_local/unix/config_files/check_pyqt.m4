@@ -12,19 +12,19 @@ dnl AC_LANG_CPLUSPLUS
 AC_ARG_WITH(pyqt,
     [  --with-pyqt=DIR      root directory path to PyQt installation ],
     [PYQTDIR="$withval"
-      AC_MSG_RESULT("select $withval as path to PyQt")
+      AC_MSG_RESULT([Try $withval as path to the PyQt])
     ])
 
 AC_ARG_WITH(pyqt_sips,
     [  --with-pyqt_sips=DIR      a directory path to PyQt sips installation ],
     [PYQT_SIPS="$withval"
-      AC_MSG_RESULT("select $withval as path to PyQt sips")
+      AC_MSG_RESULT([Try $withval as path to the PyQt sip files])
     ])
 
 AC_ARG_WITH(pyuic4,
     [  --with-pyuic4=EXEC pyuic4 executable ],
     [PYUIC="$withval"
-      AC_MSG_RESULT("select $withval as pyqt executable")
+      AC_MSG_RESULT([Try $withval as pyuic4 executable])
     ])
 
 AC_CHECKING(for pyqt)
@@ -56,8 +56,10 @@ else
             AC_PATH_PROG(TEMP, pyuic4)
             if test "x${TEMP}" != "x" ; then
                 PYUIC=${TEMP}
-                PYQTDIR=`dirname ${PYUIC}`
-                PYQTDIR=`dirname ${PYQTDIR}`
+                if test "x$PYQTDIR" = "x" ; then
+                    PYQTDIR=`dirname ${PYUIC}`
+                    PYQTDIR=`dirname ${PYQTDIR}`
+                fi
                 pyqt_ok=yes
                 break
             fi
@@ -76,9 +78,17 @@ fi
 dnl check PyQt version
 if test "x$pyqt_ok" == "xyes" ; then
     AC_MSG_CHECKING(whether PyQt version >= 4.2)
-    PYQT_VERSION=`${PYUIC} --version 2>/dev/null`
-    PYQT_VERSION=`echo $PYQT_VERSION | sed -e 's%[[[:alpha:][:space:]]]*\([[[:digit:].]]*\).*%\1%g'`
-    PYQT_VERSION_ID=`echo $PYQT_VERSION | awk -F. '{v=$[1]*10000+$[2]*100+$[3];print v}'`
+    PYQT_VERSION=`${PYUIC} --version 2>&1 | grep "Python User Interface Compiler"`
+    if test "$?" != "0" ; then
+        PYQT_VERSION=`${PYUIC} -version 2>&1 | grep "Python User Interface Compiler"`
+    fi
+    if test "x${PYQT_VERSION}" != "x" ; then
+        PYQT_VERSION=`echo $PYQT_VERSION | sed -e 's%[[[:alpha:][:space:]]]*\([[[:digit:].]]*\).*%\1%g'`
+        PYQT_VERSION_ID=`echo $PYQT_VERSION | awk -F. '{v=$[1]*10000+$[2]*100+$[3];print v}'`
+    else
+        PYQT_VERSION="<unknown>"
+        PYQT_VERSION_ID=0
+    fi
     if test $PYQT_VERSION_ID -ge 40200 ; then 
         AC_MSG_RESULT(yes)
         AC_MSG_RESULT(PyQt version is $PYQT_VERSION)
@@ -96,6 +106,9 @@ if test "x$pyqt_ok" == "xyes" ; then
     TESTSIPFILE=QtCore/QtCoremod.sip
     TEST_LIB_DIRS=""
     TEST_SIPS_DIRS=""
+    if test "x${PYQT_SIPS}" != "x" ; then
+        TEST_SIPS_DIRS="${TEST_SIPS_DIRS} ${PYQT_SIPS}"
+    fi
     if test "x${PYQTDIR}" != "x" ; then
         TEST_LIB_DIRS="${TEST_LIB_DIRS} ${PYQTDIR} ${PYQTDIR}/lib ${PYQTDIR}/PyQt4"
         TEST_LIB_DIRS="${TEST_LIB_DIRS} ${PYQTDIR}/lib${LIB_LOCATION_SUFFIX}/python${PYTHON_VERSION}/site-packages"
