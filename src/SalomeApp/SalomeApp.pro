@@ -29,8 +29,6 @@ QT_MT_LIBS = -L$$(QTDIR)/lib -lQtCore -lQtXml -lQtGui -lQtOpenGL
 
 KERNEL_LDFLAGS = -L$$(KERNEL_ROOT_DIR)/lib/salome
 
-PYTHON_INCLUDES = $$(PYTHONHOME)/include/python2.4
-
 CAS_KERNEL = -L$${CASROOT}/Linux/lib -lTKernel
 
 
