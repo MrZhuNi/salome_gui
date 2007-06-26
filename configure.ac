@@ -15,15 +15,7 @@ AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
 
-#VSR: commented: this auto-variable is set automatically by AC_INIT
-#PACKAGE=salome
-#AC_SUBST(PACKAGE)
-
-#VSR: commented: this auto-variable is set automatically by AC_INIT
-#VERSION=4.0.0
-#VSR: commented: calculate XVERSION from VERSION
-#XVERSION=0x040000
-XVERSION=`echo $VERSION | awk -F. '{if(NF>0){maj=$1}else{maj=0};if(NF>1){min=$2}else{min=0};if(NF>2){rel=$3}else{rel=0};printf("0x%02d%02d%02d",maj,min,rel)}'`
+XVERSION=`echo $VERSION | awk -F. '{printf("0x%02x%02x%02x",$1,$2,$3)}'`
 AC_SUBST(XVERSION)
 
 # set up MODULE_NAME variable for dynamic construction of directories (resources, etc.)
@@ -616,7 +608,6 @@ AC_OUTPUT([ \
   ./src/SUPERVGraph/Makefile \
   ./src/LightApp/Makefile \
   ./src/ResExporter/Makefile \
-  ./src/RegistryDisplay/Makefile \
   ./src/TOOLSGUI/Makefile \
   ./src/Event/Makefile \
   ./src/Session/Makefile \

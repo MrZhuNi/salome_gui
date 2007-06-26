@@ -1098,7 +1098,7 @@ void SalomeApp_Application::onCatalogGen()
 void SalomeApp_Application::onRegDisplay()
 {
   CORBA::ORB_var anOrb = orb();
-  ToolsGUI_RegWidget* regWnd = ToolsGUI_RegWidget::GetRegWidget( anOrb, desktop(), "Registry" );
+  ToolsGUI_RegWidget* regWnd = ToolsGUI_RegWidget::GetRegWidget( anOrb, desktop() );
   regWnd->show();
   regWnd->raise();
   regWnd->activateWindow();
