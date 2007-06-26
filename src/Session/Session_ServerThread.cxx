@@ -32,9 +32,9 @@
 
 #include "Session_ServerThread.hxx"
 
+#include "SALOME_NamingService.hxx"
 #include "SALOME_Container_i.hxx"
 #include "SALOME_ContainerManager.hxx"
-#include <SALOMEDSClient.hxx>
 #include <SALOMEDSClient_ClientFactory.hxx>
 #include "SALOME_ModuleCatalog_impl.hxx"
 #include "RegistryService.hxx"
@@ -50,6 +50,9 @@
 
 #include <cstdlib>
 #include <ctime>
+
+#include <QMutex>
+#include <QWaitCondition>
 
 using namespace std;
 
