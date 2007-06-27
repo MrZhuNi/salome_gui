@@ -508,6 +508,5 @@ void Session_ServerCheck::run()
     QThread::usleep( 30000 );
   }
   // clear splash status
-  splash->setProgress( 0, 0 );
   splash->setStatus( initialInfo );
 }
