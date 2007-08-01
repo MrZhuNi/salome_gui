@@ -46,8 +46,8 @@ myStatusLabel( 0 )
 */
 SUIT_Application::~SUIT_Application() 
 {
+  setActiveStudy( 0 );
   delete myStudy;
-  myStudy = 0;
 
   setDesktop( 0 );
 }
@@ -205,6 +205,12 @@ void SUIT_Application::onInfoClear()
 }
 
 /*!
+  Updates status of the registerd actions
+*/
+void SUIT_Application::updateCommandsStatus()
+{}
+
+/*!
   Initialize with application arguments
   \param argc - number of application arguments
   \param argv - array of application arguments
@@ -263,6 +269,12 @@ void SUIT_Application::setActiveStudy( SUIT_Study* study )
   if ( myStudy == study )
     return;
 
+  if(myStudy)
+    disconnect(myStudy, SIGNAL( studyModified( SUIT_Study* ) ), this, SLOT( updateCommandsStatus() ) );
+
+  if(study)
+    connect(study, SIGNAL( studyModified( SUIT_Study* ) ), this, SLOT( updateCommandsStatus() ) );
+	    
   myStudy = study;
 }
 

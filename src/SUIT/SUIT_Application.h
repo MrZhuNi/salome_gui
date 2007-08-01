@@ -114,6 +114,9 @@ signals:
   void                  activated( SUIT_Application* );
   void                  infoChanged( QString );
 
+public slots:
+  virtual void          updateCommandsStatus();
+
 private slots:
   void                  onInfoClear();
 
