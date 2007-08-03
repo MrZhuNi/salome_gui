@@ -34,6 +34,7 @@
     <parameter name="LightApp"     value="${SUITRoot}/share/salome/resources"/>
     <parameter name="SVTK"         value="${SUITRoot}/share/salome/resources"/>
     <parameter name="ToolsGUI"     value="${SUITRoot}/share/salome/resources"/>
+    <parameter name="QDS"          value="${SUITRoot}/share/salome/resources"/>
     <parameter name="LIGHT"        value="${LIGHT_ROOT_DIR}/share/salome/resources"/>
   </section>
   <section name="desktop" >
