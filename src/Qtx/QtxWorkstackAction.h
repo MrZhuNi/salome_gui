@@ -30,6 +30,15 @@ class QtxWorkstack;
 #pragma warning( disable:4251 )
 #endif
 
+class QTX_EXPORT QtxWorkstackActionFilter
+{
+public:
+  QtxWorkstackActionFilter();
+  virtual ~QtxWorkstackActionFilter();
+
+  virtual bool windowMenu( QWidget*, QStringList& );
+};
+
 class QTX_EXPORT QtxWorkstackAction : public QtxAction
 {
   Q_OBJECT
@@ -67,6 +76,8 @@ public:
 
   void          perform( const int );
 
+  void          setActionFilter( QtxWorkstackActionFilter* );
+
 private slots:
   void          onAboutToShow();
   void          onItemActivated( int );
@@ -79,6 +90,8 @@ private:
   int           clearPopup( QPopupMenu* );
   void          fillPopup( QPopupMenu*, const int );
 
+  QPopupMenu*   findPopup( const QString&, QPopupMenu* ) const;
+
 private:
   typedef QMap<QPopupMenu*, QIntList> MenuMap;
   typedef QMap<int, QtxAction*>       ItemMap;
@@ -88,6 +101,7 @@ private:
   ItemMap       myItem;
   int           myFlags;
   QtxWorkstack* myWorkstack;
+  QtxWorkstackActionFilter* myFilter;
 };
 
 #ifdef WIN32

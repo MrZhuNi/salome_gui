@@ -26,13 +26,27 @@
 #include <qpopupmenu.h>
 #include <qwidgetlist.h>
 
+QtxWorkstackActionFilter::QtxWorkstackActionFilter()
+{
+}
+
+QtxWorkstackActionFilter::~QtxWorkstackActionFilter()
+{
+}
+
+bool QtxWorkstackActionFilter::windowMenu( QWidget*, QStringList& )
+{
+  return true;
+}
+
 /*!
   Constructor
 */
 QtxWorkstackAction::QtxWorkstackAction( QtxWorkstack* ws, QObject* parent, const char* name )
 : QtxAction( tr( "Controls windows into workstack" ), tr( "Workstack management" ), 0, parent, name ),
 myFlags( Standard ),
-myWorkstack( ws )
+myWorkstack( ws ),
+myFilter( 0 )
 {
   myItem.insert( VSplit, new QtxAction( tr( "Split the active window on two vertical parts" ),
                                         tr( "Split vertically" ), 0, this, 0, false ) );
@@ -253,6 +267,15 @@ void QtxWorkstackAction::perform( const int type )
   }
 }
 
+void QtxWorkstackAction::setActionFilter( QtxWorkstackActionFilter* f )
+{
+  if ( myFilter == f )
+    return;
+
+  delete myFilter;
+  myFilter = f;
+}
+
 /*!
   SLOT: called just before the popup menu is displayed, updates popup
 */
@@ -381,13 +404,60 @@ void QtxWorkstackAction::fillPopup( QPopupMenu* pm, const int idx )
 
   int param = 0;
   pm->setCheckable( true );
-  for ( QWidgetListIt it( wList ); it.current(); ++it )
+  for ( QWidgetListIt it( wList ); it.current(); ++it, param++ )
   {
-    int id = pm->insertItem( it.current()->caption(), this, SLOT( onItemActivated( int ) ), 0, -1, index++ );
-    pm->setItemParameter( id, param++ );
-    pm->setItemChecked( id, it.current() == ws->activeWindow() );
-    lst.append( id );
+    QStringList menus;
+    if ( myFilter && !myFilter->windowMenu( it.current(), menus ) )
+      continue;
+
+    QPopupMenu* popup = pm;
+    for ( QStringList::const_iterator menuIt = menus.begin(); menuIt != menus.end(); ++menuIt )
+    {
+      QString menu = *menuIt;
+      QPopupMenu* subMenu = findPopup( menu, popup );
+      if ( !subMenu )
+      {
+        subMenu = new QPopupMenu( popup );
+        if ( popup == pm )
+          lst.append( popup->insertItem( menu, subMenu, -1, index++ ) );
+        else
+          popup->insertItem( menu, subMenu );
+      }
+      popup = subMenu;
+    }
+
+    int id = -1;
+    if ( popup == pm )
+    {
+      id = popup->insertItem( it.current()->caption(), this, SLOT( onItemActivated( int ) ), 0, -1, index++ );
+      lst.append( id );
+    }
+    else
+      id = popup->insertItem( it.current()->caption(), this, SLOT( onItemActivated( int ) ) );
+
+    popup->setItemParameter( id, param );
+    popup->setItemChecked( id, it.current() == ws->activeWindow() );
   }
+}
+
+QPopupMenu* QtxWorkstackAction::findPopup( const QString& name, QPopupMenu* pm ) const
+{
+  if ( !pm )
+    return 0;
+
+  QPopupMenu* res = 0;
+  for ( uint i = 0; i < pm->count() && !res; i++ )
+  {
+    QMenuData* md = 0;
+    int id = pm->idAt( i );
+    QMenuItem* item = pm->findItem( id, &md );
+    if ( !item || md != pm || !item->popup() )
+      continue;
+
+    if ( pm->text( id ) == name )
+      res = item->popup();
+  }
+  return res;
 }
 
 /*!

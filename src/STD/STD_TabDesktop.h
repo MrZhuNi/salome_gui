@@ -28,6 +28,7 @@ class QPopupMenu;
 class QWorkspace;
 class QtxWorkstack;
 class QtxWorkstackAction;
+class QtxWorkstackActionFilter;
 
 #if defined WNT
 #pragma warning( disable: 4251 )
@@ -54,6 +55,8 @@ public:
   void                     setWindowOperations( const QValueList<int>& );
 
   QtxWorkstack*            workstack() const;
+
+  void                     setActionFilter( QtxWorkstackActionFilter* );
 
 private slots:
   void                     onWindowActivated( QWidget* );

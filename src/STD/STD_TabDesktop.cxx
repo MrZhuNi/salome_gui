@@ -140,6 +140,11 @@ QtxWorkstack* STD_TabDesktop::workstack() const
   return myWorkstack;
 }
 
+void STD_TabDesktop::setActionFilter( QtxWorkstackActionFilter* f )
+{
+  myWorkstackAction->setActionFilter( f );
+}
+
 /*!Emit window activated.*/
 void STD_TabDesktop::onWindowActivated( QWidget* w )
 {
