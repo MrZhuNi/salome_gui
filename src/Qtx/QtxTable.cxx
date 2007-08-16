@@ -760,9 +760,10 @@ void QtxTable::setSelectionMode( SelectionMode mode )
   \return true if header is editable
   \param o - header orientation
 */
-bool QtxTable::headerEditable( Orientation o ) const
+bool QtxTable::headerEditable( Orientation o, const int idx ) const
 {
-  return myHeaderEditable.contains( o ) ? myHeaderEditable[o] : false;
+  QHeader* hdr = idx < 0 ? header( o ) : header( o, idx );
+  return myHeaderEditable.contains( hdr ) ? myHeaderEditable[hdr] : false;
 }
 
 /*!
@@ -770,14 +771,13 @@ bool QtxTable::headerEditable( Orientation o ) const
   \param o - header orientation
   \param on - new state
 */
-void QtxTable::setHeaderEditable( Orientation o, const bool on )
+void QtxTable::setHeaderEditable( Orientation o, const bool on, const int idx )
 {
-  if ( headerEditable( o ) == on )
+  if ( headerEditable( o, idx ) == on )
     return;
 
-  myHeaderEditable.insert( o, on );
-
-  QHeader* hdr = header( o );
+  QHeader* hdr = idx < 0 ? header( o ) : header( o, idx );
+  myHeaderEditable.insert( hdr, on );
 
   if ( !on && myEditedHeader == hdr )
     endHeaderEdit( false );
@@ -786,6 +786,13 @@ void QtxTable::setHeaderEditable( Orientation o, const bool on )
     hdr->installEventFilter( this );
   else
     hdr->removeEventFilter( this );
+}
+
+void QtxTable::setHeadersEditable( Orientation o, bool on )
+{
+  setHeaderEditable( o, on );
+  for ( int i = 0; i < numHeaders( o ); i++ )
+    setHeaderEditable( o, on, i );
 }
 
 /*!
@@ -819,10 +826,7 @@ bool QtxTable::eventFilter( QObject* o, QEvent* e )
     QMouseEvent* me = (QMouseEvent*)e;
     QHeader* hdr = ::qt_cast<QHeader*>( o );
     if ( hdr )
-    {
-      beginHeaderEdit( hdr, me->pos() );
-      return true;
-    }
+      return beginHeaderEdit( hdr, me->pos() );
   }
 
   if ( o == myHeaderEditor && e->type() == QEvent::KeyPress && isHeaderEditing() )
@@ -854,6 +858,105 @@ bool QtxTable::eventFilter( QObject* o, QEvent* e )
     return true;
 
   return QTable::eventFilter( o, e );
+}
+
+void QtxTable::adjustRow( int row )
+{
+  QTable::adjustRow( row );
+
+  int size = 0;
+  for ( uint i = 0; i < myVerHeaders.count(); i++ )
+  {
+    QHeader* hdr = myVerHeaders.at( i );
+    QString txt = hdr->label( row );
+    int h = hdr->iconSet( row ) ? hdr->iconSet( row )->pixmap().height() : 0;
+    if ( !QStyleSheet::mightBeRichText( txt ) )
+      h = QMAX( h, hdr->fontMetrics().height() );
+    else
+    {
+      QStyleSheet sheet;
+      QStyleSheetItem* item = sheet.item( "p" );
+      if ( item )
+        item->setMargin( QStyleSheetItem::MarginAll, 0 );
+
+      QSimpleRichText rt( txt, hdr->font(), QString::null, &sheet );
+      rt.setWidth( hdr->width() );
+      h = QMAX( h, rt.height() );
+    }
+    size = QMAX( size, h );
+  }
+
+  size = QMAX( size, rowHeight( row ) );
+  setRowHeight( row, size );
+
+}
+
+void QtxTable::adjustColumn( int col )
+{
+  QTable::adjustColumn( col );
+
+  int size = 0;
+  for ( uint i = 0; i < myHorHeaders.count(); i++ )
+  {
+    Header* hdr = (Header*)myHorHeaders.at( i );
+    QString txt = hdr->label( col );
+    int w = hdr->iconSet( col ) ?
+            hdr->iconSet( col )->pixmap( QIconSet::Automatic, QIconSet::Normal ).width() + 5 : 0;
+    int txtW = 0;
+    if ( !QStyleSheet::mightBeRichText( txt ) )
+      txtW += hdr->fontMetrics().width( txt );
+    else
+    {
+      QStyleSheet sheet;
+      QStyleSheetItem* item = sheet.item( "p" );
+      if ( item )
+        item->setMargin( QStyleSheetItem::MarginAll, 0 );
+
+      QSimpleRichText rt( txt, hdr->font(), QString::null, &sheet );
+      txtW += rt.width();
+    }
+
+    if ( hdr->horizontalSpan( col ) > 1 )
+      txtW = txtW / hdr->horizontalSpan( col );
+
+    w = w + txtW + 10;
+
+    size = QMAX( size, w );
+  }
+
+  for ( int i = 0; i < numRows(); i++ )
+  {
+    QFont fnt = cellFont( i, col );
+    int sz = QFontMetrics( fnt ).width( text( i, col ) ) + 10;
+    size = QMAX( size, sz );
+  }
+
+  size = QMAX( size, columnWidth( col ) );
+  setColumnWidth( col, size );
+}
+
+void QtxTable::rowHeightChanged( int row )
+{
+  QTable::rowHeightChanged( row );
+
+  int h = rowHeight( row );
+  for ( uint i = 0; i < myVerHeaders.count(); i++ )
+  {
+    QHeader* hdr = myVerHeaders.at( i );
+    hdr->resizeSection( row, h );
+  }
+}
+
+void QtxTable::columnWidthChanged( int col )
+{
+  QTable::columnWidthChanged( col );
+
+  int w = columnWidth( col );
+  for ( uint i = 0; i < myHorHeaders.count(); i++ )
+  {
+    QHeader* hdr = myHorHeaders.at( i );
+    hdr->resizeSection( col, w );
+  }
 }
 
 /*!
@@ -1439,7 +1542,7 @@ bool QtxTable::beginHeaderEdit( Orientation o, const int section, const int idx 
 
 bool QtxTable::beginHeaderEdit( QHeader* hdr, const int s )
 {
-  if ( !hdr || !headerEditable( hdr->orientation() ) || !hdr->isVisibleTo( this ) )
+  if ( !hdr || !myHeaderEditable.contains( hdr ) || !myHeaderEditable[hdr] || !hdr->isVisibleTo( this ) )
     return false;
 
   endHeaderEdit();
@@ -1538,6 +1641,8 @@ QWidget* QtxTable::createHeaderEditor( QHeader* hdr, const int sec, const bool i
   else
   {
     QTextEdit* te = new QTextEdit( 0 );
+    te->setVScrollBarMode( QTextEdit::AlwaysOff );
+    te->setHScrollBarMode( QTextEdit::AlwaysOff );
     QStyleSheet* sheet = new QStyleSheet( te );
     QStyleSheetItem* i = sheet->item( "p" );
     if ( i )
@@ -1570,7 +1675,7 @@ void QtxTable::setHeaderContentFromEditor( QHeader* hdr, const int sec, QWidget*
   {
     QTextEdit* te = ::qt_cast<QTextEdit*>( editor );
     if ( te )
-      hdr->setLabel( sec, te->text() );
+      hdr->setLabel( sec, te->text().remove( "\n" ) );
   }
 }
 
@@ -1588,15 +1693,37 @@ QHeader* QtxTable::header( Orientation o ) const
   \param o - header orientation
   \param p - point
 */
-void QtxTable::beginHeaderEdit( QHeader* hdr, const QPoint& p )
+bool QtxTable::beginHeaderEdit( QHeader* hdr, const QPoint& p )
 {
   if ( !hdr )
-    return;
+    return false;
 
   int pos = hdr->orientation() == Horizontal ? p.x() : p.y();
   int sec = hdr->sectionAt( hdr->offset() + pos );
+  if ( sec < 0 )
+    return false;
 
-  beginHeaderEdit( hdr, sec );
+  bool ok = false;
+  QPoint pnt = mapFromGlobal( hdr->mapToGlobal( p ) );
+  int cur = hdr->orientation() == Horizontal ? pnt.x() : pnt.y();
+
+  int bid = 0;
+  QRect sRect = headerSectionRect( hdr, sec, &bid );
+  if ( sRect.isValid() )
+  {
+    int m = 4;
+    int from = hdr->orientation() == Horizontal ? sRect.left() : sRect.top();
+    int to = hdr->orientation() == Horizontal ? sRect.right() - m : sRect.bottom() - m;
+    if ( sec > 0 )
+      from += m;
+
+    ok = from <= cur && cur <= to;
+  }
+
+  if ( ok )
+    beginHeaderEdit( hdr, sec );
+
+  return ok;
 }
 
 /*!
@@ -1721,6 +1848,10 @@ void QtxTable::updateHeaders( const Orientation o )
     hdr->show();
 
     connect( sb, SIGNAL( valueChanged( int ) ), hdr, SLOT( setOffset( int ) ) );
+    if ( o == Horizontal )
+      connect( hdr, SIGNAL( sectionHandleDoubleClicked( int ) ), this, SLOT( adjustColumn( int ) ) );
+    else
+      connect( hdr, SIGNAL( sectionHandleDoubleClicked( int ) ), this, SLOT( adjustRow( int ) ) );
   }
 
   if ( o == Horizontal )

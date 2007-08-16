@@ -56,7 +56,7 @@ public:
   QtxTable( int, int, QWidget* = 0, const char* = 0 );
   virtual ~QtxTable();
 
-  bool             headerEditable( Orientation ) const;
+  bool             headerEditable( Orientation, const int = -1 ) const;
 
   bool             editHeader( Orientation, const int );
   void             endEditHeader( const bool = true );
@@ -107,7 +107,8 @@ public slots:
   virtual void     selectAll();
   virtual void     setTopMargin( int );
   virtual void     setLeftMargin( int );
-  virtual void     setHeaderEditable( Orientation, bool );
+  void             setHeadersEditable( Orientation, bool );
+  virtual void     setHeaderEditable( Orientation, bool, const int = -1 );
 
   virtual void     insertRows( int, int = 1 );
   virtual void     insertColumns( int, int = 1 );
@@ -117,6 +118,13 @@ public slots:
   virtual void     removeColumns( const QMemArray<int>& );
 
   virtual void     setUpdatesEnabled( bool enable );
+
+  virtual void     adjustRow( int );
+  virtual void     adjustColumn( int );
+
+protected slots:
+  virtual void     rowHeightChanged( int );
+  virtual void     columnWidthChanged( int );
 
 private slots:
   void             onScrollBarMoved( int );
@@ -144,12 +152,13 @@ private:
   typedef QMap<int, QVariant>   Properties;
   typedef QMap<int, Properties> PropsMap;
   typedef QMap<int, PropsMap>   CellMap;
+  typedef QMap<QHeader*, bool>  HeaderState;
   typedef QPtrVector<QHeader>   HeaderVector;
 
 private:
   void             updateHeaderEditor();
   bool             beginHeaderEdit( QHeader*, const int );
-  void             beginHeaderEdit( QHeader*, const QPoint& );
+  bool             beginHeaderEdit( QHeader*, const QPoint& );
 
   QtxStyleWrap*    styleWrapper();
   HeaderVector*    headerVector( const Orientation ) const;
@@ -171,7 +180,7 @@ private:
   QWidget*         myHeaderEditor;
   QHeader*         myEditedHeader;
   int              myEditedSection;
-  QMap<int, bool>  myHeaderEditable;
+  HeaderState      myHeaderEditable;
 
   QToolButton*     mySelectAll;
 
