@@ -66,6 +66,7 @@ public:
 
   QRect         indexRect( const int, int* = 0 );
   void          swapSections( const int, const int );
+  int           spanedSection( const int index );
 
   virtual QSize sizeHint() const;
 
@@ -504,6 +505,12 @@ QRect QtxTable::Header::indexRect( const int index, int* start )
   for ( int i = range.first; i <= range.second; i++ )
     r = r.unite( sRect( i ) );
   return r;
+}
+
+int QtxTable::Header::spanedSection( const int index )
+{
+  SpanRange range = findSpanRange( index );
+  return range.first;
 }
 
 QHeader* QtxTable::Header::mainHeader() const
@@ -1956,6 +1963,15 @@ void QtxTable::updateSelectAllButton()
   mySelectAll->setShown( selectionMode() == Multi || selectionMode() == MultiRow );
   if ( mySelectAll->isVisibleTo( this  ) )
     mySelectAll->setGeometry( frameWidth(), frameWidth(), leftMargin(), topMargin() );
+}
+
+int QtxTable::headerSpanedSection( const Orientation o, const int headIdx, const int index )
+{
+  Header* hdr = (Header*)(headIdx < 0 ? header( o ) : header( o, headIdx ));
+  if ( hdr )
+    return hdr->spanedSection( index );
+  else
+    return index;
 }
 
 #endif

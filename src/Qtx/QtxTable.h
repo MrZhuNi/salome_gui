@@ -82,6 +82,8 @@ public:
   void             setVerticalSpan( const Orientation, const int, const int, const int );
   void             setHorizontalSpan( const Orientation, const int, const int, const int );
 
+  int              headerSpanedSection( const Orientation, const int headIdx, const int index );
+
   QColor           headerForegroundColor( const Orientation, const int, const int ) const;
   QColor           headerBackgroundColor( const Orientation, const int, const int ) const;
   void             setHeaderForegroundColor( const Orientation, const int, const int, const QColor& );
