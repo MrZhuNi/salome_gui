@@ -136,7 +136,8 @@ protected:
   virtual void     hideEvent( QHideEvent* );
   virtual void     resizeEvent( QResizeEvent* );
 
-  virtual bool     beginHeaderEdit( Orientation, const int, const int = -1 );
+  virtual bool     beginHeaderEdit( QHeader*, const int );
+  bool             beginHeaderEdit( Orientation, const int, const int = -1 );
   virtual void     endHeaderEdit( const bool = true );
   bool             isHeaderEditing() const;
   virtual QWidget* createHeaderEditor( QHeader*, const int, const bool = true );
@@ -159,7 +160,6 @@ private:
 
 private:
   void             updateHeaderEditor();
-  bool             beginHeaderEdit( QHeader*, const int );
   bool             beginHeaderEdit( QHeader*, const QPoint& );
 
   QtxStyleWrap*    styleWrapper();
