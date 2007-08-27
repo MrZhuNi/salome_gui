@@ -20,6 +20,7 @@
 
 #include "Plot2d_ViewWindow.h"
 #include "Plot2d_ViewFrame.h"
+#include "Plot2d_SetupCurveDlg.h"
 
 #include "SUIT_ViewManager.h"
 #include "SUIT_ResourceMgr.h"
@@ -104,6 +105,8 @@ void Plot2d_ViewWindow::contextMenuPopup( QPopupMenu* thePopup )
 
   // legend
   myActionsMap[ LegendId ]->addTo(thePopup);
+  // edit legend
+  myActionsMap[ EditLegendId ]->addTo(thePopup);
   // settings
   myActionsMap[ CurvSettingsId ]->addTo(thePopup);
 }
@@ -240,6 +243,14 @@ void Plot2d_ViewWindow::createActions()
   aAction->setToggleAction(true);
   myActionsMap[ LegendId ] = aAction;
 
+  aAction = new QtxAction(tr("TOT_PLOT2D_EDIT_LEGEND"),
+                aResMgr->loadPixmap("Plot2d", tr("ICON_PLOT2D_EDIT_LEGEND")),
+                tr("MEN_PLOT2D_EDIT_LEGEND"), 0, this);
+  aAction->setStatusTip(tr("PRP_PLOT2D_EDIT_LEGEND"));
+  connect(aAction, SIGNAL(activated()), this, SLOT(onEditLegend()));
+  aAction->setToggleAction(true);
+  myActionsMap[ EditLegendId ] = aAction;
+
   // Settings
   aAction = new QtxAction(tr( "TOT_PLOT2D_SETTINGS"),
                 aResMgr->loadPixmap("Plot2d", tr("ICON_PLOT2D_SETTINGS")),
@@ -322,6 +333,7 @@ void Plot2d_ViewWindow::createToolBar()
   onChangeVerMode();
 
   myActionsMap[LegendId]->addTo(myToolBar);
+  myActionsMap[EditLegendId]->addTo(myToolBar);
   myActionsMap[CurvSettingsId]->addTo(myToolBar);
   myActionsMap[CloneId]->addTo(myToolBar);
   onChangeLegendMode();
@@ -461,6 +473,32 @@ void Plot2d_ViewWindow::onLegend()
 {
   myViewFrame->showLegend(!myViewFrame->isLegendShow());
   onChangeLegendMode();
+}
+
+/*!
+  SLOT: called if action "Edit legend" is activated
+*/
+void Plot2d_ViewWindow::onEditLegend()
+{
+  Plot2d_SetupCurveDlg aDlg( myViewFrame, this );
+  if ( aDlg.exec() != QDialog::Accepted )
+    return;
+  curveList lst;
+  if ( !myViewFrame->getCurves( lst ) )
+    return;
+  curveList::iterator crvIt = lst.begin();
+  for ( int i = 0, nb = aDlg.getNbCurves(); crvIt != lst.end() && i < nb; ++crvIt, i++ )
+  {
+    Plot2d_Curve* crv = *crvIt;
+    crv->setVerTitle( aDlg.getName( i ) );
+    crv->setLine( (Plot2d_Curve::LineType)aDlg.getLine( i ), aDlg.getLineWidth( i ) );
+    crv->setMarker( (Plot2d_Curve::MarkerType)aDlg.getMarker( i ) );
+    crv->setColor( aDlg.getColor( i ) );
+    myViewFrame->updateCurve( crv, false );
+  }
+  if ( i )
+    myViewFrame->Repaint();
+  emit legendChanged();
 }
 
 /*!

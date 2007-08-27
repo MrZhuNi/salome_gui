@@ -24,6 +24,7 @@
 //  $Header$
 
 #include "Plot2d_SetupCurveDlg.h"
+#include "Plot2d_ViewFrame.h"
 #include "SUIT_Tools.h"
 #include <qlayout.h>
 #include <qlabel.h>
@@ -33,6 +34,8 @@
 #include <qtoolbutton.h>
 #include <qgroupbox.h>
 #include <qcolordialog.h>
+#include <qlineedit.h>
+#include <qlistbox.h>
 
 #ifndef WNT
 using namespace std;
@@ -48,21 +51,69 @@ using namespace std;
   Constructor
 */
 Plot2d_SetupCurveDlg::Plot2d_SetupCurveDlg( QWidget* parent )
-     : QDialog( parent, "Plot2d_SetupCurveDlg", true, WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu )
+: QtxDialog( parent, "Plot2d_SetupCurveDlg", true, true, OK  | Cancel,
+            WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu ),
+ myCurrent( -1 ),
+ myCurveBox( 0 )
+{
+  createControls( 0 );
+}
+
+/*!
+  Constructor
+*/
+Plot2d_SetupCurveDlg::Plot2d_SetupCurveDlg( Plot2d_ViewFrame* vf, QWidget* parent )
+: QtxDialog( parent, "Plot2d_SetupCurveDlg", true, true, OK  | Cancel,
+            WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu ),
+ myCurrent( -1 ),
+ myCurveBox( 0 )
+{
+  createControls( vf );
+}
+
+/*!
+  Destructor
+*/
+Plot2d_SetupCurveDlg::~Plot2d_SetupCurveDlg()
+{
+}
+
+/*!
+  createControls
+*/
+void Plot2d_SetupCurveDlg::createControls( Plot2d_ViewFrame* vf )
 {
   setCaption( tr("TLT_SETUP_CURVE") );
   setSizeGripEnabled( TRUE );
-  QGridLayout* topLayout = new QGridLayout( this ); 
-  topLayout->setSpacing( SPACING_SIZE );
-  topLayout->setMargin( MARGIN_SIZE );
 
-  QGroupBox* TopGroup = new QGroupBox( this );
+  QFrame* main = mainFrame();
+  QVBoxLayout* layout = new QVBoxLayout( main, 0, 5 );
+  QGroupBox* grp = new QGroupBox( 1, Qt::Vertical, "", main );
+  grp->setFrameStyle( QFrame::NoFrame );
+  grp->setInsideMargin( 0 );
+  layout->addWidget( grp );
+
+  if ( vf )
+  {
+    QGroupBox* crvGrp = new QGroupBox( 1, Qt::Horizontal, tr( "CURVES" ), grp );
+    crvGrp->setInsideMargin( MARGIN_SIZE );
+    myCurveBox = new QListBox( crvGrp );
+    myCurveBox->setSelectionMode( QListBox::NoSelection );
+    connect( myCurveBox, SIGNAL( currentChanged( QListBoxItem* ) ), this, SLOT( onCurveChanged() ) );
+  }
+
+  QGroupBox* TopGroup = new QGroupBox( 1, Qt::Horizontal, tr( "CURVE_PROPS" ), grp );
+  TopGroup->setInsideMargin( MARGIN_SIZE );
+
   TopGroup->setColumnLayout( 0, Qt::Vertical );
   TopGroup->layout()->setSpacing( 0 ); TopGroup->layout()->setMargin( 0 );
   QGridLayout* TopGroupLayout = new QGridLayout( TopGroup->layout() );
   TopGroupLayout->setAlignment( Qt::AlignTop );
   TopGroupLayout->setSpacing( SPACING_SIZE ); TopGroupLayout->setMargin( MARGIN_SIZE );
 
+  QLabel* nameLab = new QLabel( tr( "CURVE_NAME" ), TopGroup );
+  myName = new QLineEdit( TopGroup );
+  
   QLabel* aLineTypeLab = new QLabel( tr( "CURVE_LINE_TYPE_LAB" ), TopGroup );
   myLineCombo = new QComboBox( false, TopGroup );
   myLineCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
@@ -101,48 +152,63 @@ Plot2d_SetupCurveDlg::Plot2d_SetupCurveDlg( QWidget* parent )
   myColorBtn = new QToolButton( TopGroup );
   myColorBtn->setMinimumSize(25, 25);
 
-  TopGroupLayout->addWidget( aLineTypeLab, 0, 0 );
-  TopGroupLayout->addMultiCellWidget( myLineCombo, 0, 0, 1, 2 );
-  TopGroupLayout->addWidget( aLineWidthLab, 1, 0 );
-  TopGroupLayout->addMultiCellWidget( myLineSpin, 1, 1, 1, 2 );
-  TopGroupLayout->addWidget( aMarkerLab, 2, 0 );
-  TopGroupLayout->addMultiCellWidget( myMarkerCombo, 2, 2, 1, 2 );
-  TopGroupLayout->addWidget( aColorLab, 3, 0 );
-  TopGroupLayout->addWidget( myColorBtn, 3, 1 );
-  TopGroupLayout->setColStretch( 2, 5 );
+  TopGroupLayout->addWidget( nameLab, 0, 0 );
+  TopGroupLayout->addMultiCellWidget( myName, 0, 0, 1, 2 );
+  TopGroupLayout->addWidget( aLineTypeLab, 1, 0 );
+  TopGroupLayout->addMultiCellWidget( myLineCombo, 1, 1, 1, 2 );
+  TopGroupLayout->addWidget( aLineWidthLab, 2, 0 );
+  TopGroupLayout->addMultiCellWidget( myLineSpin, 2, 2, 1, 2 );
+  TopGroupLayout->addWidget( aMarkerLab, 3, 0 );
+  TopGroupLayout->addMultiCellWidget( myMarkerCombo, 3, 3, 1, 2 );
+  TopGroupLayout->addWidget( aColorLab, 4, 0 );
+  TopGroupLayout->addWidget( myColorBtn, 4, 1 );
+  TopGroupLayout->setColStretch( 2, 6 );
 
-  QGroupBox* GroupButtons = new QGroupBox( this );
-  GroupButtons->setColumnLayout( 0, Qt::Vertical );
-  GroupButtons->layout()->setSpacing( 0 ); GroupButtons->layout()->setMargin( 0 );
-  QHBoxLayout* GroupButtonsLayout = new QHBoxLayout( GroupButtons->layout() );
-  GroupButtonsLayout->setAlignment( Qt::AlignTop );
-  GroupButtonsLayout->setSpacing( SPACING_SIZE ); GroupButtonsLayout->setMargin( MARGIN_SIZE );
+  setBorderEnabled( true, BottomArea );
+	setButtonPosition( Left,  OK  );
+	setButtonPosition( Right, Cancel );
+  ((QPushButton*)(button( Cancel )))->setAutoDefault( true );
 
-  myOkBtn = new QPushButton( tr( "BUT_OK" ), GroupButtons );
-  myOkBtn->setAutoDefault( true ); myOkBtn->setDefault( true );
-  myCancelBtn = new QPushButton( tr( "BUT_CANCEL" ) , GroupButtons );
-  myCancelBtn->setAutoDefault( true );
-
-  GroupButtonsLayout->addWidget( myOkBtn );
-  GroupButtonsLayout->addStretch();
-  GroupButtonsLayout->addWidget( myCancelBtn );
-
+  connect( myName, SIGNAL( textChanged( const QString& ) ), this, SLOT( onNameChanged( const QString& ) ) );
   connect( myColorBtn,  SIGNAL( clicked() ), this, SLOT( onColorChanged() ) );
-  connect( myOkBtn,     SIGNAL( clicked() ), this, SLOT( accept() ) );
-  connect( myCancelBtn, SIGNAL( clicked() ), this, SLOT( reject() ) );
+  connect( this, SIGNAL( dlgOk() ), this, SLOT( onOk() ) ) ;
   setColor( QColor( 0, 0, 0 ) );
 
-  topLayout->addWidget( TopGroup,     0, 0 );
-  topLayout->addWidget( GroupButtons, 1, 0 );
+  SUIT_Tools::centerWidget( this, (QWidget*)parent() );
 
-  SUIT_Tools::centerWidget( this, parent );
+  if ( vf )
+    init( vf );
 }
+
 /*!
-  Destructor
+  onOk
 */
-Plot2d_SetupCurveDlg::~Plot2d_SetupCurveDlg()
+void Plot2d_SetupCurveDlg::onOk()
 {
+  if ( myCurrent != -1 )
+    storeCurveProps( myCurrent );
 }
+
+
+/*!
+  Sets name of curve
+*/
+void Plot2d_SetupCurveDlg::setName( const QString txt )
+{
+  myName->setText( txt );
+}
+
+/*!
+  Returns name of curve
+*/
+QString Plot2d_SetupCurveDlg::getName( const int id ) const
+{
+  if ( id == -1 )
+    return myName->text();
+  else
+    return myCurvesProps[ id ].name;
+}
+
 /*!
   Sets line style and width
 */
@@ -151,20 +217,29 @@ void Plot2d_SetupCurveDlg::setLine( const int line, const int width )
   myLineCombo->setCurrentItem( line );
   myLineSpin->setValue( width );
 }
+
 /*!
   Gets line style
 */
-int Plot2d_SetupCurveDlg::getLine() const
+int Plot2d_SetupCurveDlg::getLine( const int id ) const
 {
-  return myLineCombo->currentItem();
+  if ( id == -1 )
+    return myLineCombo->currentItem();
+  else
+    return myCurvesProps[ id ].line;
 }
+
 /*!
   Gets line width
 */
-int Plot2d_SetupCurveDlg::getLineWidth() const
+int Plot2d_SetupCurveDlg::getLineWidth( const int id ) const
 {
-  return myLineSpin->value();
+  if ( id == -1 )
+    return myLineSpin->value();
+  else
+    return myCurvesProps[ id ].width;
 }
+
 /*!
   Sets marker style
 */
@@ -172,13 +247,18 @@ void Plot2d_SetupCurveDlg::setMarker( const int marker )
 {
   myMarkerCombo->setCurrentItem( marker );
 }
+
 /*!
   Gets marker style
 */
-int Plot2d_SetupCurveDlg::getMarker() const 
+int Plot2d_SetupCurveDlg::getMarker( const int id ) const 
 {
-  return myMarkerCombo->currentItem();
+  if ( id == -1 )
+    return myMarkerCombo->currentItem();
+  else
+    return myCurvesProps[ id ].marker;
 }
+
 /*!
   Sets color
 */
@@ -193,13 +273,18 @@ void Plot2d_SetupCurveDlg::setColor( const QColor& color )
   pal.setInactive( ci );
   myColorBtn->setPalette( pal );
 }
+
 /*!
   Gets color
 */
-QColor Plot2d_SetupCurveDlg::getColor() const 
+QColor Plot2d_SetupCurveDlg::getColor( const int id ) const 
 {
-  return myColorBtn->palette().active().button();
+  if ( id == -1 )
+    return myColorBtn->palette().active().button();
+  else
+    return myCurvesProps[ id ].color;
 }
+
 /*!
   <Color> button slot, invokes color selection dialog box
 */
@@ -211,7 +296,106 @@ void Plot2d_SetupCurveDlg::onColorChanged()
   }
 }
 
+/*!
+  init dialog by several curves
+*/
+void Plot2d_SetupCurveDlg::init( Plot2d_ViewFrame* vf )
+{
+  if ( !vf || !myCurveBox )
+    return;
 
+  curveList lst;
+  if ( !vf->getCurves( lst ) )
+    return;
 
+  curveList::const_iterator crvIt = lst.begin();
+  for ( ; crvIt != lst.end(); ++crvIt )
+  {
+    CurveProp newProp;
+    Plot2d_Curve* crv = *crvIt;
+    newProp.name = crv->getVerTitle();
+    newProp.line = (int)crv->getLine();
+    newProp.width = crv->getLineWidth();
+    newProp.marker = (int)crv->getMarker();
+    newProp.color = crv->getColor();
+    myCurvesProps.insert( myCurvesProps.count(), newProp );
+    // add curve to list box
+    myCurveBox->insertItem( newProp.name );
+  }
+  setCurrentCurve( 0 );
+}
 
+/*!
+  Sets current curve property
+*/
+void Plot2d_SetupCurveDlg::setCurrentCurve( const int id )
+{
+  if ( myCurrent == id ) return;
+  myCurveBox->setCurrentItem( id );
+  //retrieveCurveProps( 0 );
+  //myCurrent = id;
+}
 
+/*!
+  getNbCurves, return number of curves
+*/
+int Plot2d_SetupCurveDlg::getNbCurves() const
+{
+  return myCurvesProps.count();
+}
+
+/*!
+  slot, invokes when current curve changed
+*/
+void Plot2d_SetupCurveDlg::onCurveChanged()
+{
+  int newId = myCurveBox->currentItem();
+  if ( myCurrent == newId )
+    return;
+  if ( myCurrent != -1 )
+    storeCurveProps( myCurrent );
+  myCurrent = newId;
+  retrieveCurveProps( newId );
+}
+
+/*!
+  slot, invokes when current curve name changed
+*/
+void Plot2d_SetupCurveDlg::onNameChanged( const QString& txt )
+{
+  if ( myCurveBox && myCurrent != -1 )
+    myCurveBox->changeItem( txt, myCurrent );
+}
+
+/*!
+  storeCurveProps, stores curve properties
+*/
+bool Plot2d_SetupCurveDlg::storeCurveProps( const int id )
+{
+  if ( id < 0 || id > (int)myCurvesProps.count() - 1 )
+    return false;
+  CurveProp& curProp = myCurvesProps[ id ];
+  curProp.name   = getName();
+  curProp.line   = getLine();
+  curProp.width  = getLineWidth();
+  curProp.marker = getMarker();
+  curProp.color  = getColor();
+  return true;
+}
+
+/*!
+  retrieveCurveProps, retrievs curve properties
+*/
+void Plot2d_SetupCurveDlg::retrieveCurveProps( const id )
+{
+  if ( id < 0 || id > (int)myCurvesProps.count() - 1 )
+    return;
+  const CurveProp& curProp = myCurvesProps[ id ];
+  myName->blockSignals( true );
+  myName->setText( curProp.name );
+  myName->blockSignals( false );
+  //setName( curProp.name );
+  setLine( curProp.line, curProp.width );
+  setMarker( curProp.marker );
+  setColor( curProp.color );
+}

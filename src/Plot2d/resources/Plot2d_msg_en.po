@@ -75,6 +75,15 @@ msgstr "Show &Legend"
 msgid "PRP_PLOT2D_SHOW_LEGEND"
 msgstr "Enables/disables legend"
 
+msgid "TOT_PLOT2D_EDIT_LEGEND"
+msgstr "Edit Legend"
+
+msgid "MEN_PLOT2D_EDIT_LEGEND"
+msgstr "Edit &Legend"
+
+msgid "PRP_PLOT2D_EDIT_LEGEND"
+msgstr "Edit curves legend"
+
 msgid "TOT_PLOT2D_CURVES_POINTS"
 msgstr "Draw points"
 
@@ -409,3 +418,12 @@ msgstr "PostScript files (*.ps)"
 
 msgid "Plot2d_ViewManager::PLOT2D_VIEW_TITLE"
 msgstr "Plot2d scene:%M - viewer:%V"
+
+msgid "CURVES"
+msgstr "Curves"
+
+msgid "CURVE_PROPS"
+msgstr "Properties"
+
+msgid "CURVE_NAME"
+msgstr "Name"

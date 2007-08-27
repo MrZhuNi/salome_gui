@@ -74,16 +74,18 @@ public slots:
   void onViewHorMode();
   void onViewVerMode();
   void onLegend();
+  void onEditLegend();
   void onCurves();
 
   void onDumpView();
 
 signals:
   void cloneView();
+  void legendChanged();
 
 protected:
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, HorId,
-         VerId, LegendId, CurvPointsId, CurvLinesId, CurvSplinesId, CurvSettingsId, CloneId,
+         VerId, LegendId, EditLegendId, CurvPointsId, CurvLinesId, CurvSplinesId, CurvSettingsId, CloneId,
          PModeXLinearId, PModeXLogarithmicId, PModeYLinearId, PModeYLogarithmicId };
   typedef QMap<int, QtxAction*> ActionsMap;
   ActionsMap        myActionsMap;

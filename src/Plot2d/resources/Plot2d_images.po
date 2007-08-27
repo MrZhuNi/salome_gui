@@ -63,6 +63,9 @@ msgstr "plot2d_log_y.png"
 msgid "ICON_PLOT2D_SHOW_LEGEND"
 msgstr "plot2d_legend.png"
 
+msgid "ICON_PLOT2D_EDIT_LEGEND"
+msgstr "plot2d_edit_legend.png"
+
 msgid "ICON_PLOT2D_CURVES_POINTS"
 msgstr "plot2d_points.png"
 

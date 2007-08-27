@@ -25,48 +25,81 @@
 #ifndef Plot2d_SetupCurveDlg_H
 #define Plot2d_SetupCurveDlg_H
 
-#include "Plot2d.h"
+#include <QtxDialog.h>
 
-#include <qdialog.h>
+#include <qmap.h>
+
+#include "Plot2d.h"
 
 /*!
   \class Plot2d_SetupCurveDlg
   Dialog box for setup Plot2d curve
 */
 
+class QListBox;
+class QLineEdit;
 class QPushButton;
 class QComboBox;
 class QSpinBox;
 class QToolButton;
+class Plot2d_ViewFrame;
 
-class PLOT2D_EXPORT Plot2d_SetupCurveDlg : public QDialog
-{ 
+class PLOT2D_EXPORT Plot2d_SetupCurveDlg : public QtxDialog
+{
   Q_OBJECT
 
 public:
   Plot2d_SetupCurveDlg( QWidget* parent = 0 );
+  Plot2d_SetupCurveDlg( Plot2d_ViewFrame* vf, QWidget* parent = 0 );
   ~Plot2d_SetupCurveDlg();
 
 public:
-  void   setLine( const int line, const int width );
-  int    getLine() const;
-  int    getLineWidth() const;
-  void   setMarker( const int marker );
-  int    getMarker() const ;
-  void   setColor( const QColor& color );
-  QColor getColor() const;
+  void    setCurrentCurve( const int );
+
+  void    setName( const QString );
+  QString getName( const int id = -1 ) const;
+  void    setLine( const int line, const int width );
+  int     getLine( const int id = -1 ) const;
+  int     getLineWidth( const int id = -1 ) const;
+  void    setMarker( const int marker );
+  int     getMarker( const int id = -1 ) const;
+  void    setColor( const QColor& color );
+  QColor  getColor( const int id = -1 ) const;
+  int     getNbCurves() const;
   
-protected slots:
+private:
+  void   createControls( Plot2d_ViewFrame* vf );
+  void   init( Plot2d_ViewFrame* vf );
+  bool   storeCurveProps( const int id = -1 );
+  void   retrieveCurveProps( const int id );
+
+private slots:
+  void   onCurveChanged();
   void   onColorChanged();
+  void   onNameChanged( const QString& );
+  void   onOk();
 
 private:
-  QPushButton* myOkBtn;
-  QPushButton* myCancelBtn;
-  QComboBox*   myLineCombo;
-  QSpinBox*    myLineSpin;
-  QComboBox*   myMarkerCombo;
-  QToolButton* myColorBtn;
+
+  struct CurveProp
+  {
+    CurveProp()
+    { line = width = marker = -1; }
+    int     line;
+    int     width;
+    int     marker;
+    QColor  color;
+    QString name;
+  };
+
+  int                  myCurrent;
+  QListBox*            myCurveBox;
+  QMap<int, CurveProp> myCurvesProps;
+  QLineEdit*           myName;
+  QComboBox*           myLineCombo;
+  QSpinBox*            myLineSpin;
+  QComboBox*           myMarkerCombo;
+  QToolButton*         myColorBtn;
 };
 
 #endif // Plot2d_SetupCurveDlg_H
-
