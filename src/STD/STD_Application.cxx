@@ -167,12 +167,12 @@ void STD_Application::createActions()
   createAction( EditCopyId, tr( "TOT_DESK_EDIT_COPY" ),
                 resMgr->loadPixmap( "STD", tr( "ICON_EDIT_COPY" ) ),
                 tr( "MEN_DESK_EDIT_COPY" ), tr( "PRP_DESK_EDIT_COPY" ),
-                CTRL+Key_C, desk, false, this, SLOT( onCopy() ) );
+                /*CTRL+Key_C*/0, desk, false, this, SLOT( onCopy() ) );
 
   createAction( EditPasteId, tr( "TOT_DESK_EDIT_PASTE" ),
                 resMgr->loadPixmap( "STD", tr( "ICON_EDIT_PASTE" ) ),
                 tr( "MEN_DESK_EDIT_PASTE" ), tr( "PRP_DESK_EDIT_PASTE" ),
-                CTRL+Key_V, desk, false, this, SLOT( onPaste() ) );
+                /*CTRL+Key_V*/0, desk, false, this, SLOT( onPaste() ) );
 
   QAction* a = createAction( ViewStatusBarId, tr( "TOT_DESK_VIEW_STATUSBAR" ),
                              QIconSet(), tr( "MEN_DESK_VIEW_STATUSBAR" ),
