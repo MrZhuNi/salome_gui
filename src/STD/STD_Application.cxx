@@ -180,8 +180,8 @@ void STD_Application::createActions()
   a->setOn( desk->statusBar()->isVisibleTo( desk ) );
   connect( a, SIGNAL( toggled( bool ) ), this, SLOT( onViewStatusBar( bool ) ) );
 
-  createAction( NewWindowId, tr( "TOT_DESK_NEWWINDOW" ), QIconSet(),
-                tr( "MEN_DESK_NEWWINDOW" ), tr( "PRP_DESK_NEWWINDOW" ), 0, desk  );
+  //createAction( NewWindowId, tr( "TOT_DESK_NEWWINDOW" ), QIconSet(),
+  //              tr( "MEN_DESK_NEWWINDOW" ), tr( "PRP_DESK_NEWWINDOW" ), 0, desk  );
 
   createAction( HelpAboutId, tr( "TOT_DESK_HELP_ABOUT" ), QIconSet(),
                 tr( "MEN_DESK_HELP_ABOUT" ), tr( "PRP_DESK_HELP_ABOUT" ),
@@ -601,8 +601,8 @@ void STD_Application::updateCommandsStatus()
     action( FileSaveAsId )->setEnabled( aHasStudy );
   if ( action( FileCloseId ) )
     action( FileCloseId )->setEnabled( aHasStudy );
-  if ( action( NewWindowId ) )
-    action( NewWindowId )->setEnabled( aHasStudy );
+  //if ( action( NewWindowId ) )
+  //  action( NewWindowId )->setEnabled( aHasStudy );
 }
 
 /*!\retval SUIT_ViewManager by viewer manager type name.*/

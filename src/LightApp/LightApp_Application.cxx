@@ -585,23 +585,21 @@ void LightApp_Application::createActions()
 
   // New window
   int windowMenu = createMenu( tr( "MEN_DESK_WINDOW" ), -1, MenuWindowId, 100 );
-  int newWinMenu = createMenu( tr( "MEN_DESK_NEWWINDOW" ), windowMenu, -1, 0 );
+  //int newWinMenu = createMenu( tr( "MEN_DESK_NEWWINDOW" ), windowMenu, -1, 0 );
   createMenu( separator(), windowMenu, -1, 1 );
 
-
-#ifndef DISABLE_GLVIEWER
-  createActionForViewer( NewGLViewId, newWinMenu, QString::number( 0 ), ALT+Key_G );
-#endif
-#ifndef DISABLE_PLOT2DVIEWER
-  createActionForViewer( NewPlot2dId, newWinMenu, QString::number( 1 ), ALT+Key_P );
-#endif
-#ifndef DISABLE_OCCVIEWER
-  createActionForViewer( NewOCCViewId, newWinMenu, QString::number( 2 ), ALT+Key_O );
-#endif
-#ifndef DISABLE_VTKVIEWER
-  createActionForViewer( NewVTKViewId, newWinMenu, QString::number( 3 ), ALT+Key_K );
-#endif
-
+//#ifndef DISABLE_GLVIEWER
+//  createActionForViewer( NewGLViewId, newWinMenu, QString::number( 0 ), ALT+Key_G );
+//#endif
+//#ifndef DISABLE_PLOT2DVIEWER
+//  createActionForViewer( NewPlot2dId, newWinMenu, QString::number( 1 ), ALT+Key_P );
+//#endif
+//#ifndef DISABLE_OCCVIEWER
+//  createActionForViewer( NewOCCViewId, newWinMenu, QString::number( 2 ), ALT+Key_O );
+//#endif
+//#ifndef DISABLE_VTKVIEWER
+//  createActionForViewer( NewVTKViewId, newWinMenu, QString::number( 3 ), ALT+Key_K );
+//#endif
 
   createAction( RenameId, tr( "TOT_RENAME" ), QIconSet(), tr( "MEN_DESK_RENAME" ), tr( "PRP_RENAME" ),
 		SHIFT+Key_R, desk, false, this, SLOT( onRenameWindow() ) );
