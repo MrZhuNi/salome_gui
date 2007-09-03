@@ -248,7 +248,6 @@ void Plot2d_ViewWindow::createActions()
                 tr("MEN_PLOT2D_EDIT_LEGEND"), 0, this);
   aAction->setStatusTip(tr("PRP_PLOT2D_EDIT_LEGEND"));
   connect(aAction, SIGNAL(activated()), this, SLOT(onEditLegend()));
-  aAction->setToggleAction(true);
   myActionsMap[ EditLegendId ] = aAction;
 
   // Settings
