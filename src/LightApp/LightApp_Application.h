@@ -49,6 +49,8 @@ class QWidget;
 class QStringList;
 class QPixmap;
 
+#include <qthread.h>
+
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
@@ -250,6 +252,25 @@ protected:
   static LightApp_Preferences*        _prefs_;
 
   static int                          lastStudyId;
+};
+
+/*!
+  \class LightApp_RunBrowser
+  Runs system command in separate thread
+*/
+class LIGHTAPP_EXPORT LightApp_RunBrowser: public QThread {
+public:
+  LightApp_RunBrowser( LightApp_Application*, QString, QString, QString, QString = NULL );
+
+public:
+  virtual void run();
+
+private:
+  QString myApp;
+  QString myParams;
+  QString myHelpFile;
+  int myStatus;
+  LightApp_Application* myLApp;
 };
 
 #ifdef WIN32

@@ -125,7 +125,6 @@
 #include <qapplication.h>
 #include <qmap.h>
 #include <qstatusbar.h>
-#include <qthread.h>
 #include <qobjectlist.h>
 #include <qcombobox.h>
 #include <qinputdialog.h>
@@ -916,82 +915,52 @@ void LightApp_Application::updateCommandsStatus()
 }
 
 /*!
-  \class RunBrowser
-  Runs system command in separate thread
+\class LightApp_RunBrowser
+Runs system command in separate thread
 */
-class RunBrowser: public QThread {
-public:
-
-  RunBrowser( LightApp_Application* app, QString theApp, QString theParams, QString theHelpFile, QString theContext=NULL):
-    myApp(theApp), myParams(theParams), 
+LightApp_RunBrowser::LightApp_RunBrowser( LightApp_Application* app,
+                                          QString theApp,
+                                          QString theParams,
+                                          QString theHelpFile,
+                                          QString theContext ):
+  myApp(theApp), myParams(theParams), 
 #ifdef WIN32
-      myHelpFile("file://" + theHelpFile + theContext), 
+  myHelpFile("file://" + theHelpFile + theContext), 
 #else
-      myHelpFile("file:" + theHelpFile + theContext),
+  myHelpFile("file:" + theHelpFile + theContext),
 #endif
-      myStatus(0),
-      myLApp( app )
+  myStatus(0),
+  myLApp( app )
 {
-};
+}
 
- // virtual void run()
- // {
- //   QString aCommand;
+void LightApp_RunBrowser::run()
+{
+  QString aCommand;
 
- //   if ( !myApp.isEmpty())
- //     {
-	//aCommand.sprintf("%s %s %s",myApp.latin1(),myParams.latin1(),myHelpFile.latin1());
-
-	//QProcess* proc = new QProcess();
- // proc->addArgument( aCommand );
-	////myStatus = system(aCommand);
-
-	////if(myStatus != 0)
-	//if(!proc->start())
-	//  {
-	//    QCustomEvent* ce2000 = new QCustomEvent( 2000 );
-	//    QString* msg = new QString( QObject::tr("EXTERNAL_BROWSER_CANNOT_SHOW_PAGE").arg(myApp).arg(myHelpFile) );
-	//    ce2000->setData( msg );
-	//    postEvent( myLApp, ce2000 );
-	//  }
- //     }
- // }
-
-    virtual void run()
+  if ( !myApp.isEmpty())
   {
-    QString aCommand;
-
-    if ( !myApp.isEmpty())
-      {
-	aCommand.sprintf("%s %s %s",myApp.latin1(),myParams.latin1(),myHelpFile.latin1());
-	myStatus = system(aCommand);
-	if(myStatus != 0)
-	  {
-	    QCustomEvent* ce2000 = new QCustomEvent (2000);
-	    postEvent (qApp, ce2000);
-	  }
-      }
-
-    if( myStatus != 0 || myApp.isEmpty())
-      {
-	myParams = "";
-	aCommand.sprintf("%s %s %s", QString(DEFAULT_BROWSER).latin1(),myParams.latin1(), myHelpFile.latin1());
-	myStatus = system(aCommand);
-	if(myStatus != 0)
-	  {
-	    QCustomEvent* ce2001 = new QCustomEvent (2001);
-	    postEvent (qApp, ce2001);
-	  }
-      }
+    aCommand.sprintf("%s %s %s",myApp.latin1(),myParams.latin1(),myHelpFile.latin1());
+    myStatus = system(aCommand);
+    if(myStatus != 0)
+    {
+      QCustomEvent* ce2000 = new QCustomEvent (2000);
+      postEvent (qApp, ce2000);
+    }
   }
 
-private:
-  QString myApp;
-  QString myParams;
-  QString myHelpFile;
-  int myStatus;
-  LightApp_Application* myLApp;
-};
+  if( myStatus != 0 || myApp.isEmpty())
+  {
+    myParams = "";
+    aCommand.sprintf("%s %s %s", QString(DEFAULT_BROWSER).latin1(),myParams.latin1(), myHelpFile.latin1());
+    myStatus = system(aCommand);
+    if(myStatus != 0)
+    {
+      QCustomEvent* ce2001 = new QCustomEvent (2001);
+      postEvent (qApp, ce2001);
+    }
+  }
+}
 
 /*!
   SLOT: Displays help contents for choosen module
@@ -1031,7 +1000,7 @@ void LightApp_Application::onHelpContentsModule()
   QString aParams = resMgr->stringValue("ExternalBrowser", "parameters");
 
   if (!anApp.isEmpty()) {
-    RunBrowser* rs = new RunBrowser( this, anApp, aParams, helpFile );
+    LightApp_RunBrowser* rs = new LightApp_RunBrowser( this, anApp, aParams, helpFile );
     rs->start();
   }
   else {
@@ -1067,7 +1036,7 @@ void LightApp_Application::onHelpContextModule(const QString& theComponentName, 
   QString aParams = resMgr->stringValue("ExternalBrowser", "parameters");
 
   if (!anApp.isEmpty()) {
-    RunBrowser* rs = new RunBrowser( this, anApp, aParams, helpFile );
+    LightApp_RunBrowser* rs = new LightApp_RunBrowser( this, anApp, aParams, helpFile );
     rs->start();
   }
   else {
