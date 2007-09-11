@@ -198,6 +198,8 @@ void QtxTable::Header::removeSection( const int section )
   }
   myVSpan = newVMap;
 
+  mySpanRanges.clear();
+
   ColorMap newFMap, newBMap;
   for ( ColorMap::ConstIterator fIt = myFgColor.begin(); fIt != myFgColor.end(); ++fIt )
   {
@@ -1081,8 +1083,6 @@ void QtxTable::removeRow( int row )
 {
   endHeaderEdit();
 
-  QTable::removeRow( row );
-
   for ( uint i = 0; i < myVerHeaders.count(); i++ )
   {
     Header* hdr = (Header*)myVerHeaders.at( i );
@@ -1099,6 +1099,8 @@ void QtxTable::removeRow( int row )
     int r = it.key() < row ? it.key() : it.key() - 1;
     myCellProps.insert( r, it.data() );
   }
+
+  QTable::removeRow( row );
 }
 
 /*!
@@ -1119,8 +1121,6 @@ void QtxTable::removeRows( const QMemArray<int>& rows )
       indexes.insert( r, r - decr );
   }
 
-  QTable::removeRows( rows );
-
   for ( uint i = 0; i < myVerHeaders.count(); i++ )
   {
     Header* hdr = (Header*)myVerHeaders.at( i );
@@ -1135,6 +1135,8 @@ void QtxTable::removeRows( const QMemArray<int>& rows )
     if ( indexes.contains( it.key() ) )
       myCellProps.insert( indexes[it.key()], it.data() );
   }
+
+  QTable::removeRows( rows );
 }
 
 /*!
@@ -1144,8 +1146,6 @@ void QtxTable::removeRows( const QMemArray<int>& rows )
 void QtxTable::removeColumn( int col )
 {
   endHeaderEdit();
-
-  QTable::removeColumn( col );
 
   for ( uint i = 0; i < myHorHeaders.count(); i++ )
   {
@@ -1166,6 +1166,8 @@ void QtxTable::removeColumn( int col )
       itr.data().insert( c, it.data() );
     }
   }
+
+  QTable::removeColumn( col );
 }
 
 /*!
@@ -1186,8 +1188,6 @@ void QtxTable::removeColumns( const QMemArray<int>& cols )
       indexes.insert( c, c - decr );
   }
 
-  QTable::removeColumns( cols );
-
   for ( uint i = 0; i < myHorHeaders.count(); i++ )
   {
     Header* hdr = (Header*)myHorHeaders.at( i );
@@ -1205,6 +1205,8 @@ void QtxTable::removeColumns( const QMemArray<int>& cols )
         itr.data().insert( indexes[it.key()], it.data() );
     }
   }
+
+  QTable::removeColumns( cols );
 }
 
 void QtxTable::setUpdatesEnabled( bool enable )
