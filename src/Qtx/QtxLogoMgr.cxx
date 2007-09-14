@@ -30,7 +30,7 @@
 QtxLogoMgr::QtxLogoMgr( QMenuBar* mb )
 : QObject( mb ),
 myMenus( mb ),
-myId( 0 )
+myId( -1 )
 {
 }
 
@@ -111,10 +111,10 @@ void QtxLogoMgr::generate()
   if ( !menuBar() )
     return;
 
-  if ( myId ) 
+  if ( myId != -1 ) 
     menuBar()->removeItem( myId );
 
-  myId = 0;
+  myId = -1;
 
   if ( myLogos.isEmpty() )
     return;
@@ -169,10 +169,10 @@ void QtxLogoMgr::generate()
   QApplication::sendPostedEvents( cnt, QEvent::ChildInserted );
   cnt->addSpacing( 2 );
 
-  myId = menuBar()->insertItem( cnt, INT_MAX );
+  myId = menuBar()->insertItem( cnt );
 
-  QApplication::sendPostedEvents( menuBar()->parentWidget(), QEvent::LayoutHint );
-  QApplication::postEvent( menuBar()->parentWidget(), new QEvent( QEvent::LayoutHint ) );
+//  QApplication::sendPostedEvents( menuBar()->parentWidget(), QEvent::LayoutHint );
+//  QApplication::postEvent( menuBar()->parentWidget(), new QEvent( QEvent::LayoutHint ) );
 }
 
 int QtxLogoMgr::find( const QString& id ) const
