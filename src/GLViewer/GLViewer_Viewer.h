@@ -102,7 +102,7 @@ protected:
 
     virtual void                 startOperations( QMouseEvent* ) {}
     virtual bool                 updateOperations( QMouseEvent* ) { return false; }
-    virtual void                 finishOperations( QMouseEvent* ) {}
+    virtual bool                 finishOperations( QMouseEvent* ) { return false; }
     virtual void                 startOperations( QWheelEvent* ) {}
 
 protected slots:

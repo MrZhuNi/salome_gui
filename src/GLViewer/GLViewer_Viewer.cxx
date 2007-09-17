@@ -507,9 +507,10 @@ void GLViewer_Viewer::handleMouseMove( QMouseEvent* e )
 */
 void GLViewer_Viewer::handleMouseRelease( QMouseEvent* e )
 {
-    /* selection */
-    /* tmp - in handleMousePress*/  
-    if( e->button() == LeftButton && !(getActiveView()->getViewPort()->currentBlock() & BS_Selection) )
+    /* Selection */
+    if( !finishOperations( e ) &&
+        e->button() == LeftButton && 
+        !(getActiveView()->getViewPort()->currentBlock() & BS_Selection) )
     {
         if ( getSelector() )
         {
@@ -517,9 +518,6 @@ void GLViewer_Viewer::handleMouseRelease( QMouseEvent* e )
             getSelector()->select( append );
         }
     }
-
-    //Try to done active operations
-    finishOperations( e );        
 
     if ( l_mbPressEvent )
     {

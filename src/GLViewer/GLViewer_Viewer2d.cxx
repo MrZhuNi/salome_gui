@@ -938,7 +938,7 @@ void GLViewer_Viewer2d::startOperations( QMouseEvent* e )
     transPoint( x, y );
     GLViewer_Pnt point( x, y );
 
-    if( e->button() == Qt::LeftButton && !myGLContext->getCurrentObject() && vp->startPulling( point ) )
+    if( e->button() == Qt::LeftButton && vp->startPulling( point ) )
         return;
 
     if( e->button() == Qt::LeftButton && !(vp->currentBlock() & BS_Selection) && !myGLContext->getCurrentObject() )
@@ -974,7 +974,7 @@ bool GLViewer_Viewer2d::updateOperations( QMouseEvent* e )
 /*!
   Completes started operation on mouse event
 */
-void GLViewer_Viewer2d::finishOperations( QMouseEvent* e )
+bool GLViewer_Viewer2d::finishOperations( QMouseEvent* e )
 {
     GLViewer_ViewPort2d* vp = ( GLViewer_ViewPort2d* )((GLViewer_ViewFrame*)getActiveView())->getViewPort();
 
@@ -982,7 +982,7 @@ void GLViewer_Viewer2d::finishOperations( QMouseEvent* e )
     {
         vp->finishPulling();
         updateAll();
-        return;
+        return true;
     }
 
     if( !myGLContext->getCurrentObject() )
@@ -993,8 +993,11 @@ void GLViewer_Viewer2d::finishOperations( QMouseEvent* e )
         {            
             bool append = bool ( e->state() & GLViewer_Selector::appendKey() );
             getSelector()->select( aSelRect, append );
+            return true;
         }
     }
+
+    return false;
 }
 
 /*!

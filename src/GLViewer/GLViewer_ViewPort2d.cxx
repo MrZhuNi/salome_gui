@@ -344,6 +344,9 @@ void GLViewer_ViewPort2d::mouseMoveEvent( QMouseEvent* e )
 {
     emit vpMouseEvent( e );
     
+    if( isPulling() )
+      return;
+
     if( myIsDragProcess == inDrag )
         onDragObject( e );
 
@@ -390,6 +393,9 @@ void GLViewer_ViewPort2d::mouseReleaseEvent( QMouseEvent* e )
     }
     emit vpMouseEvent( e );
     
+    if( isPulling() )
+      return;
+
     if( myIsDragProcess == inDrag )
     {
       bool isAnyMoved = false;

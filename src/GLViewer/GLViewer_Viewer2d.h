@@ -210,7 +210,7 @@ protected:
   //! Updates started operations on mouse event
   virtual bool         updateOperations( QMouseEvent* );
   //! Completes started operations on mouse event
-  virtual void         finishOperations( QMouseEvent* );
+  virtual bool         finishOperations( QMouseEvent* );
   //! Starts any operations on mouse wheel event
   virtual void         startOperations( QWheelEvent* );
 
