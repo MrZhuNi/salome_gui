@@ -386,7 +386,7 @@ bool Plot2d_SetupCurveDlg::storeCurveProps( const int id )
 /*!
   retrieveCurveProps, retrievs curve properties
 */
-void Plot2d_SetupCurveDlg::retrieveCurveProps( const id )
+void Plot2d_SetupCurveDlg::retrieveCurveProps( const int id )
 {
   if ( id < 0 || id > (int)myCurvesProps.count() - 1 )
     return;

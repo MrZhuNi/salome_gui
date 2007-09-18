@@ -486,7 +486,8 @@ void Plot2d_ViewWindow::onEditLegend()
   if ( !myViewFrame->getCurves( lst ) )
     return;
   curveList::iterator crvIt = lst.begin();
-  for ( int i = 0, nb = aDlg.getNbCurves(); crvIt != lst.end() && i < nb; ++crvIt, i++ )
+  int i = 0, nb = aDlg.getNbCurves();
+  for ( ; crvIt != lst.end() && i < nb; ++crvIt, i++ )
   {
     Plot2d_Curve* crv = *crvIt;
     crv->setVerTitle( aDlg.getName( i ) );
