@@ -154,9 +154,12 @@ QSize QtxTable::Header::sizeHint() const
     QStyleSheet sheet;
     QStyleSheetItem* item = sheet.item( "p" );
     if ( item )
+    {
       item->setMargin( QStyleSheetItem::MarginAll, 0 );
+      item->setWhiteSpaceMode( QStyleSheetItem::WhiteSpaceNoWrap );
+    }
 
-    QSimpleRichText rt( lab, font(), QString::null, &sheet );
+    QSimpleRichText rt( QString( "<p>%1</p>" ).arg( lab ), font(), QString::null, &sheet );
     if ( orientation() == Horizontal )
       rt.setWidth( sectionSize( mapToSection( i ) ) );
     s += orientation() == Horizontal ? rt.height() : rt.width();
@@ -596,9 +599,12 @@ bool QtxTable::StyleItem::drawControl( QStyle::ControlElement element, QPainter*
     QStyleSheet sheet;
     QStyleSheetItem* i = sheet.item( "p" );
     if ( i )
+    {
       i->setMargin( QStyleSheetItem::MarginAll, 0 );
+      i->setWhiteSpaceMode( QStyleSheetItem::WhiteSpaceNoWrap );
+    }
 
-    QSimpleRichText rt( lab, header->font(), QString::null, &sheet );
+    QSimpleRichText rt( QString( "<p>%1</p>" ).arg( lab ), header->font(), QString::null, &sheet );
     rt.setWidth( rect.width() );
     rt.draw( p, rect.x(), rect.y() + ( rect.height() - rt.height() ) / 2, rect, grp );
   }
@@ -919,9 +925,12 @@ void QtxTable::adjustColumn( int col )
       QStyleSheet sheet;
       QStyleSheetItem* item = sheet.item( "p" );
       if ( item )
+      {
         item->setMargin( QStyleSheetItem::MarginAll, 0 );
+        item->setWhiteSpaceMode( QStyleSheetItem::WhiteSpaceNoWrap );
+      }
 
-      QSimpleRichText rt( txt, hdr->font(), QString::null, &sheet );
+      QSimpleRichText rt( QString( "<p>%1</p>" ).arg( txt ), hdr->font(), QString::null, &sheet );
       txtW += rt.width();
     }
 
