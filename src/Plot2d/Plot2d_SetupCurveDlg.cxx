@@ -364,7 +364,11 @@ void Plot2d_SetupCurveDlg::onCurveChanged()
 void Plot2d_SetupCurveDlg::onNameChanged( const QString& txt )
 {
   if ( myCurveBox && myCurrent != -1 )
+  {
+    myCurveBox->blockSignals( true );
     myCurveBox->changeItem( txt, myCurrent );
+    myCurveBox->blockSignals( false );
+  }
 }
 
 /*!
