@@ -557,6 +557,16 @@ int SUIT_Application::actionId( const QAction* a ) const
   return id;
 }
 
+QList<QAction*> SUIT_Application::actions() const
+{
+  return myActionMap.values();
+}
+
+QList<int> SUIT_Application::actionIds() const
+{
+  return myActionMap.keys();
+}
+
 /*!
   Creates action and registers it both in menu manager and tool manager
   \return new instance of action
@@ -572,11 +582,12 @@ int SUIT_Application::actionId( const QAction* a ) const
   \param member - slot to be called when action is activated
 */
 QAction* SUIT_Application::createAction( const int id, const QString& text, const QIcon& icon,
-                                         const QString& menu, const QString& tip, const int key,
+                                         const QString& menu, const QString& tip, const QKeySequence& key,
                                          QObject* parent, const bool toggle, QObject* reciever, const char* member )
 {
-  QtxAction* a = new QtxAction( text, icon, menu, key, parent, toggle );
+  QtxAction* a = new QtxAction( text, icon, menu, 0, parent, toggle );
   a->setStatusTip( tip );
+  a->setShortcut( key );
 
   if ( reciever && member )
     connect( a, SIGNAL( triggered( bool ) ), reciever, member );

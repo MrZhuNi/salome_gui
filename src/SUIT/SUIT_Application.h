@@ -29,11 +29,12 @@ class QLabel;
 class QString;
 class QAction;
 class QWidget;
+class QKeySequence;
 
+class SUIT_Study;
 class SUIT_Desktop;
 class SUIT_ViewModel;
 class SUIT_ResourceMgr;
-class SUIT_Study;
 
 #ifdef WIN32
 #pragma warning ( disable:4251 )
@@ -152,9 +153,13 @@ protected:
   static QAction*       separator();
   QAction*              action( const int ) const;
   int                   actionId( const QAction* ) const;
+
+  QList<QAction*>       actions() const;
+  QList<int>            actionIds() const;
+
   int                   registerAction( const int, QAction* );
   QAction*              createAction( const int, const QString&, const QIcon&, const QString&,
-                                      const QString&, const int, QObject* = 0,
+                                      const QString&, const QKeySequence&, QObject* = 0,
                                       const bool = false, QObject* = 0, const char* = 0 );
 
 protected slots:
