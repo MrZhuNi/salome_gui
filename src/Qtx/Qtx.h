@@ -80,6 +80,7 @@ class QPopupMenu;
 class QWidgetList;
 
 template <class> class QValueList;
+template <class> class QValueVector;
 
 #if QT_VER < 3
 #define QPtrList QList
@@ -89,6 +90,10 @@ template <class> class QValueList;
 typedef QValueList<int>    QIntList;
 typedef QValueList<short>  QShortList;
 typedef QValueList<double> QDoubleList;
+
+typedef QValueVector<int> QIntVector;
+typedef QValueVector<double> QDoubleVector;
+typedef QValueVector<QString> QStringVector;
 
 /*!
   \class Qtx
