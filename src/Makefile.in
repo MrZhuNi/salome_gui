@@ -66,7 +66,8 @@ endif
 ifneq ($(DISABLE_SUPERVGRAPHVIEWER),yes)
   SUBDIRS += SUPERVGraph
 endif
-SUBDIRS += LightApp Style ResExporter
+#SUBDIRS += LightApp Style ResExporter
+SUBDIRS += LightApp Style
 
 ifneq ($(GUI_DISABLE_CORBA),yes)
   SUBDIRS +=  RegistryDisplay TOOLSGUI \
