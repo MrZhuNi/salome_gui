@@ -60,8 +60,9 @@ class GLViewer_ViewPort2d: public GLViewer_ViewPort
   Q_OBJECT
   friend class GLViewer_Widget;
 
+public:
   //! Dragging states
-  enum vpDragState{ noDrag, initDrag, inDrag };
+  enum vpDragState{ noDrag = 0, initDrag, inDrag };
 
 public:
   GLViewer_ViewPort2d( QWidget* parent, GLViewer_ViewFrame* theViewFrame = NULL );
@@ -117,7 +118,7 @@ public:
   void                   endRotation();
   
   //! Checks of dragging process state
-  bool                   isDragProcess(){ return myIsDragProcess; }
+  int                    isDragProcess(){ return myIsDragProcess; }
   
   //! On/off compass
   void                   turnCompass( GLboolean on );

@@ -964,6 +964,10 @@ bool GLViewer_Viewer2d::updateOperations( QMouseEvent* e )
         updateAll();
         return true;
     }
+
+    if( vp->isDragProcess() == GLViewer_ViewPort2d::inDrag )
+        return true;
+
     if( e->state() == Qt::LeftButton && vp->startPulling( point ) )
         return true;
 
