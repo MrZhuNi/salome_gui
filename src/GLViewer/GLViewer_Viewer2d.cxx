@@ -969,7 +969,10 @@ bool GLViewer_Viewer2d::updateOperations( QMouseEvent* e )
         return true;
 
     if( e->state() == Qt::LeftButton && vp->startPulling( point ) )
+    {
+        vp->finishSelectByRect();
         return true;
+    }
 
     if( !myGLContext->getCurrentObject() )
     {
