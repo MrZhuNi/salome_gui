@@ -25,8 +25,6 @@
   \brief Python console widget.
 */  
 
-#include <Python.h>
-
 #include "PyConsole_Console.h"
 #include "PyConsole_Editor.h"
 

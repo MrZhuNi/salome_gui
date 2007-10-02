@@ -123,6 +123,7 @@ static QString DOTS_PROMPT  = "... ";
 class ExecCommand : public PyInterp_LockRequest
 {
 public:
+  enum { ES_PRINT = PyInterp_Event::ES_USER + 1 };
   /*!
     \brief Constructor.
     
@@ -137,7 +138,7 @@ public:
 	       PyConsole_Editor*       theListener, 
 	       bool                    sync = false )
     : PyInterp_LockRequest( theInterp, theListener, sync ),
-      myCommand( theCommand ), myState( PyInterp_Event::OK )
+      myCommand( theCommand ), myState( PyInterp_Event::ES_OK )
   {}
 
 protected:
@@ -153,9 +154,9 @@ protected:
       int ret = getInterp()->run( myCommand.toLatin1() );
 //      SUIT_Session::SetPythonExecuted(false); // enable GUI user actions
       if ( ret < 0 )
-	myState = PyInterp_Event::ERRORS;
+	      myState = PyInterp_Event::ES_ERROR;
       else if ( ret > 0 )
-	myState = PyInterp_Event::INCOMPLETE;
+	      myState = PyInterp_Event::ES_INCOMPLETE;
     } 
   }
 
@@ -165,6 +166,8 @@ protected:
   */
   virtual QEvent* createEvent() const
   {
+    if ( IsSync() )
+      QCoreApplication::sendPostedEvents( listener(), ES_PRINT );
     return new PyInterp_Event( myState, (PyInterp_Request*)this );    
   }
 
@@ -173,12 +176,10 @@ private:
   int     myState;     //!< Python command execution status
 };
 
-#define PRINT_EVENT 65432
-
 class PrintEvent : public QEvent
 {
 public:
-  PrintEvent( const char* c ) : QEvent( (QEvent::Type)PRINT_EVENT ), myText( c ) {}
+  PrintEvent( const char* c ) : QEvent( (QEvent::Type)ExecCommand::ES_PRINT ), myText( c ) {}
   QString text() const { return myText; }
 private:
   QString myText;
@@ -863,32 +864,14 @@ void PyConsole_Editor::customEvent( QEvent* event )
 {
   switch( event->type() )
   {
-  case PRINT_EVENT:
+  case ExecCommand::ES_PRINT:
     {
       PrintEvent* pe=(PrintEvent*)event;
-
-      // [ BEGIN ] workaround for the synchronous mode (1.)
-      if ( isSync() ) {
-	QTextCursor cur = textCursor();
-	cur.movePosition( QTextCursor::End );
-	cur.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor, PROMPT_SIZE );
-	cur.removeSelectedText();
-	setTextCursor( cur );
-      }
-      // [ END ] workaround for the synchronous mode (1.)
-
       addText( pe->text() );
-
-      // [ BEGIN ] workaround for the synchronous mode (2.)
-      if ( isSync() ) {
-	addText( myPrompt );
-      }
-      // [ END ] workaround for the synchronous mode (2.)
-
       return;
     }
-  case PyInterp_Event::OK:
-  case PyInterp_Event::ERRORS:
+  case PyInterp_Event::ES_OK:
+  case PyInterp_Event::ES_ERROR:
   {
     // clear command buffer
     myCommandBuffer.truncate( 0 );
@@ -904,7 +887,7 @@ void PyConsole_Editor::customEvent( QEvent* event )
       myEventLoop->exit();
     break;
   }
-  case PyInterp_Event::INCOMPLETE:
+  case PyInterp_Event::ES_INCOMPLETE:
   {
     // extend command buffer (multi-line command)
     myCommandBuffer.append( "\n" );
@@ -929,7 +912,7 @@ void PyConsole_Editor::customEvent( QEvent* event )
   // unset history browsing mode
   myCmdInHistory = -1;
 
-  if ( (int)event->type() == (int)PyInterp_Event::OK && myQueue.count() > 0 )
+  if ( (int)event->type() == (int)PyInterp_Event::ES_OK && myQueue.count() > 0 )
   {
     // process the next sheduled command from the queue (if there is any)
     QString nextcmd = myQueue[0];
