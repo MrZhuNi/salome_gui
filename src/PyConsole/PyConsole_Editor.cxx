@@ -108,6 +108,8 @@
 #include <QtGui/qapplication.h>
 #include <QtGui/qtextdocument.h>
 
+#include <iostream>
+
 using namespace std;
 
 static QString READY_PROMPT = ">>> ";
@@ -117,7 +119,7 @@ static QString DOTS_PROMPT  = "... ";
 /*!
   \class ExecCommand
   \brief Python command execution request [internal].
- */
+*/
 class ExecCommand : public PyInterp_LockRequest
 {
 public:
@@ -145,23 +147,16 @@ protected:
   */
   virtual void execute()
   {
-    if ( myCommand != "" )
+    if( !myCommand.trimmed().isEmpty() )
     {
 //      SUIT_Session::SetPythonExecuted( true ); // disable GUI user actions
       int ret = getInterp()->run( myCommand.toLatin1() );
 //      SUIT_Session::SetPythonExecuted(false); // enable GUI user actions
       if ( ret < 0 )
-	      myState = PyInterp_Event::ERROR;
+	myState = PyInterp_Event::ERRORS;
       else if ( ret > 0 )
-	      myState = PyInterp_Event::INCOMPLETE;
-      myError  = getInterp()->getverr().c_str();
-      myOutput = getInterp()->getvout().c_str();
+	myState = PyInterp_Event::INCOMPLETE;
     } 
-    else
-    {
-      myError = "";
-      myOutput = "";
-    }
   }
 
   /*!
@@ -173,14 +168,26 @@ protected:
     return new PyInterp_Event( myState, (PyInterp_Request*)this );    
   }
 
-public:
-  QString myError;     //!< Python command error message
-  QString myOutput;    //!< Python command output log
-
 private:
   QString myCommand;   //!< Python command
   int     myState;     //!< Python command execution status
 };
+
+#define PRINT_EVENT 65432
+
+class PrintEvent : public QEvent
+{
+public:
+  PrintEvent( const char* c ) : QEvent( (QEvent::Type)PRINT_EVENT ), myText( c ) {}
+  QString text() const { return myText; }
+private:
+  QString myText;
+};
+
+void staticCallback( void* data, char* c )
+{
+  QApplication::postEvent( (PyConsole_Editor*)data, new PrintEvent( c ) ); 
+}
 
 /*!
   \brief Constructor. 
@@ -203,9 +210,12 @@ PyConsole_Editor::PyConsole_Editor( PyInterp_base* theInterp,
   setUndoRedoEnabled( false );
 
   myPrompt = READY_PROMPT;
-  setLineWrapMode( QTextEdit::NoWrap );
-  setWordWrapMode( QTextOption::NoWrap );
+  setLineWrapMode( QTextEdit::WidgetWidth );
+  setWordWrapMode( QTextOption::WrapAnywhere );
   setAcceptRichText( false );
+
+  theInterp->setvoutcb( staticCallback, this );
+  theInterp->setverrcb( staticCallback, this );
 
   // san - This is necessary for troubleless initialization
   onPyInterpChanged( theInterp );
@@ -236,7 +246,7 @@ void PyConsole_Editor::setIsSync( const bool s )
   \param newBlock if True, then the string is printed on a new line
 */
 void PyConsole_Editor::addText( const QString& str, 
-				      const bool     newBlock )
+				const bool     newBlock )
 {
   moveCursor( QTextCursor::End );
   if ( newBlock )
@@ -297,7 +307,7 @@ PyInterp_Request* PyConsole_Editor::createRequest( const QString& cmd )
   \brief Execute command in the python interpreter
   and wait until it is finished.
   \param command python command to be executed
- */
+*/
 void PyConsole_Editor::execAndWait( const QString& command )
 {
   // already running ?
@@ -333,6 +343,8 @@ void PyConsole_Editor::handleReturn()
   // add command to the history
   if ( !cmd.trimmed().isEmpty() )
     myHistory.push_back( cmd );
+  
+  addText( "", true );
   
   // set read-only mode
   setReadOnly( true );
@@ -851,28 +863,40 @@ void PyConsole_Editor::customEvent( QEvent* event )
 {
   switch( event->type() )
   {
-  case PyInterp_Event::OK:
-  case PyInterp_Event::ERROR:
-  {
-    PyInterp_Event* pe = dynamic_cast<PyInterp_Event*>( event );
-    if ( pe )
+  case PRINT_EVENT:
     {
-      ExecCommand* ec = dynamic_cast<ExecCommand*>( pe->GetRequest() );
-      if ( ec )
-      {
-	// The next line has appeared dangerous in case if
-	// Python command execution has produced very large output.
-	// A more clever approach is needed...
-	// print python output
-	addText( ec->myOutput, true );
-	addText( ec->myError );
+      PrintEvent* pe=(PrintEvent*)event;
+
+      // [ BEGIN ] workaround for the synchronous mode (1.)
+      if ( isSync() ) {
+	QTextCursor cur = textCursor();
+	cur.movePosition( QTextCursor::End );
+	cur.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor, PROMPT_SIZE );
+	cur.removeSelectedText();
+	setTextCursor( cur );
       }
+      // [ END ] workaround for the synchronous mode (1.)
+
+      addText( pe->text() );
+
+      // [ BEGIN ] workaround for the synchronous mode (2.)
+      if ( isSync() ) {
+	addText( myPrompt );
+      }
+      // [ END ] workaround for the synchronous mode (2.)
+
+      return;
     }
+  case PyInterp_Event::OK:
+  case PyInterp_Event::ERRORS:
+  {
     // clear command buffer
     myCommandBuffer.truncate( 0 );
     // set "ready" prompt
     myPrompt = READY_PROMPT;
-    addText( myPrompt );
+    QTextBlock par = document()->end().previous();
+    QString txt = par.text();
+    addText( myPrompt, !txt.isEmpty() );
     // unset busy cursor
     unsetCursor();
     // stop event loop (if running)
@@ -886,7 +910,9 @@ void PyConsole_Editor::customEvent( QEvent* event )
     myCommandBuffer.append( "\n" );
     // set "dot" prompt
     myPrompt = DOTS_PROMPT;
-    addText( myPrompt, true );
+    QTextBlock par = document()->end().previous();
+    QString txt = par.text();
+    addText( myPrompt, !txt.isEmpty() );
     // unset busy cursor
     unsetCursor();
     // stop event loop (if running)
@@ -958,7 +984,7 @@ void PyConsole_Editor::onPyInterpChanged( PyInterp_base* interp )
   
   Reimplemented from Qt.
   Warning! In Qt4 this method is not virtual.
- */
+*/
 void PyConsole_Editor::cut()
 {
   QTextCursor cur = textCursor();
@@ -983,7 +1009,7 @@ void PyConsole_Editor::cut()
 
   Reimplemented from Qt.
   Warning! In Qt4 this method is not virtual.
- */
+*/
 void PyConsole_Editor::paste()
 {
   QTextCursor cur = textCursor();
@@ -1010,7 +1036,7 @@ void PyConsole_Editor::paste()
 
   Reimplemented from Qt.
   Warning! In Qt4 this method is not virtual.
- */
+*/
 void PyConsole_Editor::clear()
 {
   QTextEdit::clear();
