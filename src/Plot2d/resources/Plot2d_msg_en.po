@@ -76,13 +76,13 @@ msgid "PRP_PLOT2D_SHOW_LEGEND"
 msgstr "Enables/disables legend"
 
 msgid "TOT_PLOT2D_EDIT_LEGEND"
-msgstr "Edit Legend"
+msgstr "Set up curves"
 
 msgid "MEN_PLOT2D_EDIT_LEGEND"
-msgstr "Edit &Legend"
+msgstr "Set up curves"
 
 msgid "PRP_PLOT2D_EDIT_LEGEND"
-msgstr "Edit curves legend"
+msgstr "Set up curves"
 
 msgid "TOT_PLOT2D_CURVES_POINTS"
 msgstr "Draw points"

@@ -83,7 +83,10 @@ Plot2d_SetupCurveDlg::~Plot2d_SetupCurveDlg()
 */
 void Plot2d_SetupCurveDlg::createControls( Plot2d_ViewFrame* vf )
 {
-  setCaption( tr("TLT_SETUP_CURVE") );
+  if ( vf )
+    setCaption( tr("TOT_PLOT2D_EDIT_LEGEND") );
+  else
+    setCaption( tr("TLT_SETUP_CURVE") );
   setSizeGripEnabled( TRUE );
 
   QFrame* main = mainFrame();
@@ -167,7 +170,7 @@ void Plot2d_SetupCurveDlg::createControls( Plot2d_ViewFrame* vf )
   setBorderEnabled( true, BottomArea );
 	setButtonPosition( Left,  OK  );
 	setButtonPosition( Right, Cancel );
-  ((QPushButton*)(button( Cancel )))->setAutoDefault( true );
+  ((QPushButton*)(button( OK )))->setAutoDefault( true );
 
   connect( myName, SIGNAL( textChanged( const QString& ) ), this, SLOT( onNameChanged( const QString& ) ) );
   connect( myColorBtn,  SIGNAL( clicked() ), this, SLOT( onColorChanged() ) );
