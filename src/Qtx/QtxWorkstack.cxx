@@ -165,7 +165,7 @@ void QtxWorkstackDrag::setTarget( QtxWorkstackArea* area, const int tab )
 
 /*!
   \brief Called when drop operation is finished.
-  
+
   Inserts dropped widget to the target workarea.
 */
 void QtxWorkstackDrag::dropWidget()
@@ -1029,6 +1029,7 @@ QtxWorkstackChild::QtxWorkstackChild( QWidget* wid, QWidget* parent, Qt::WindowF
   myWidget->setParent( this, f );
   myWidget->installEventFilter( this );
   QVBoxLayout* base = new QVBoxLayout( this );
+  base->setMargin( 0 );
   base->addWidget( myWidget );
 
   connect( myWidget, SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
@@ -1077,10 +1078,10 @@ bool QtxWorkstackChild::eventFilter( QObject* o, QEvent* e )
     if ( e->type() == QEvent::WindowTitleChange || e->type() == QEvent::WindowIconChange )
       emit captionChanged( this );
 
-    if ( !e->spontaneous() && ( e->type() == QEvent::Show || e->type() == QEvent::ShowToParent ) )
+    if ( !e->spontaneous() && e->type() == QEvent::ShowToParent )
       emit shown( this );
 
-    if ( !e->spontaneous() && ( e->type() == QEvent::Hide || e->type() == QEvent::HideToParent ) )
+    if ( !e->spontaneous() && e->type() == QEvent::HideToParent )
       emit hidden( this );
 
     if ( e->type() == QEvent::FocusIn )
@@ -1328,11 +1329,11 @@ void QtxWorkstackTabBar::paintLabel( QPainter* p, const QRect& br, QTab* t, bool
   \brief Workstack widget.
 
   Organizes the child widgets in the tabbed space.
-  Allows splitting the working area to arrange the child widgets in 
+  Allows splitting the working area to arrange the child widgets in
   arbitrary way. Any widgets can be moved to another working area with
   drag-n-drop operation.
 
-  This widget can be used as workspace of the application main window, 
+  This widget can be used as workspace of the application main window,
   for example, as kind of implementation of multi-document interface.
 */
 
@@ -1776,8 +1777,8 @@ int QtxWorkstack::accel( const int id ) const
 
 /*!
   \brief Set actions to be visible in the context popup menu.
-  
-  Actions, which IDs are set in \a flags parameter, will be shown in the 
+
+  Actions, which IDs are set in \a flags parameter, will be shown in the
   context popup menu. Other actions will not be shown.
 
   \param flags ORed together actions flags
@@ -1792,8 +1793,8 @@ void QtxWorkstack::setMenuActions( const int flags )
 
 /*!
   \brief Set actions to be visible in the context popup menu.
-  
-  Actions, which IDs are set in \a flags parameter, will be shown in the 
+
+  Actions, which IDs are set in \a flags parameter, will be shown in the
   context popup menu. Other actions will not be shown.
 
   \param flags ORed together actions flags
@@ -2734,7 +2735,7 @@ static bool checkFormat( const QString& parameters )
 /*!
   \brief Get splitter's children descriptions from the string.
   \internal
-  
+
   Child widgets descriptions are separated by '(' and ')' symbols.
 
   \param str string to be processed
