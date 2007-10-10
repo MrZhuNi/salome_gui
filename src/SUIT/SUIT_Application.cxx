@@ -1,17 +1,17 @@
 // Copyright (C) 2005  OPEN CASCADE, CEA/DEN, EDF R&D, PRINCIPIA R&D
-// 
+//
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either 
+// License as published by the Free Software Foundation; either
 // version 2.1 of the License.
-// 
-// This library is distributed in the hope that it will be useful 
-// but WITHOUT ANY WARRANTY; without even the implied warranty of 
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+//
+// This library is distributed in the hope that it will be useful
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public  
-// License along with this library; if not, write to the Free Software 
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
@@ -25,6 +25,7 @@
 
 #include <QTimer>
 #include <QLabel>
+#include <QShortcut>
 #include <QStatusBar>
 
 #include <QtxAction.h>
@@ -47,7 +48,7 @@ myStatusLabel( 0 )
 /*!
   Destructor
 */
-SUIT_Application::~SUIT_Application() 
+SUIT_Application::~SUIT_Application()
 {
   delete myStudy;
   myStudy = 0;
@@ -64,10 +65,10 @@ SUIT_Desktop* SUIT_Application::desktop()
 }
 
 /*!
-   \return FALSE if application can not be closed (because of non saved data for example). 
+   \return FALSE if application can not be closed (because of non saved data for example).
    This method called by SUIT_Session whin closing of application was requested.
 */
-bool SUIT_Application::isPossibleToClose( bool& closePermanently )
+bool SUIT_Application::isPossibleToClose( bool& )
 {
   return true;
 }
@@ -145,7 +146,7 @@ void SUIT_Application::createEmptyStudy()
 }
 
 /*!
-  \return number of Studies. 
+  \return number of Studies.
   Must be redefined in Applications which support several studies for one Application instance.
 */
 int SUIT_Application::getNbStudies() const
@@ -167,7 +168,7 @@ SUIT_ResourceMgr* SUIT_Application::resourceMgr() const
 #define DEFAULT_MESSAGE_DELAY 3000
 
 /*!
-  Puts the message to the status bar  
+  Puts the message to the status bar
   \param msg - text of message
   \param msec - time in milliseconds, after that the status label will be cleared
 */
@@ -467,7 +468,7 @@ void SUIT_Application::setMenuShown( QAction* a, const bool on )
 {
   if ( !a || !desktop() )
     return;
-  
+
   QtxActionMenuMgr* mMgr = desktop()->menuMgr();
   if ( mMgr )
     mMgr->setShown( mMgr->actionId( a ), on );
@@ -492,7 +493,7 @@ void SUIT_Application::setToolShown( QAction* a, const bool on )
 {
   if ( !a || !desktop() )
     return;
-  
+
   QtxActionToolMgr* tMgr = desktop()->toolMgr();
   if ( tMgr )
     tMgr->setShown( tMgr->actionId( a ), on );
@@ -611,10 +612,14 @@ int SUIT_Application::registerAction( const int id, QAction* a )
   static int generatedId = -1;
   ident = id == -1 ? --generatedId : id;
 
-  if ( action( ident ) ) 
+  if ( action( ident ) )
     qWarning( "Action registration id is already in use: %d", ident );
 
   myActionMap.insert( ident, a );
+
+  connect( a, SIGNAL( changed() ), this, SLOT( onActionChanged() ) );
+
+  actionChanged( a );
 
   if ( desktop() && desktop()->menuMgr() )
     desktop()->menuMgr()->registerAction( a );
@@ -640,4 +645,41 @@ QAction* SUIT_Application::separator()
 void SUIT_Application::onDesktopActivated()
 {
   emit activated( this );
+}
+
+void SUIT_Application::onActionChanged()
+{
+  actionChanged( ::qobject_cast<QAction*>( sender() ) );
+}
+
+void SUIT_Application::actionChanged( QAction* a )
+{
+  if ( !a )
+    return;
+
+  QShortcut* s = myShortcutMap.contains( a ) ? myShortcutMap[a] : 0;
+  if ( s && a->shortcut().isEmpty() )
+  {
+    myShortcutMap.remove( a );
+    delete s;
+    s = 0;
+  }
+
+  if ( !s && !a->shortcut().isEmpty() )
+  {
+    QWidget* wid = ::qobject_cast<QWidget*>( a->parent() );
+    if ( wid )
+    {
+      s = new QShortcut( wid );
+      connect( s, SIGNAL( activated() ), a, SLOT( trigger() ) );
+      connect( s, SIGNAL( activatedAmbiguously() ), a, SLOT( trigger() ) );
+      myShortcutMap.insert( a, s );
+    }
+  }
+
+  if ( !s )
+    return;
+
+  s->setKey( a->shortcut() );
+  s->setEnabled( a->isEnabled() );
 }

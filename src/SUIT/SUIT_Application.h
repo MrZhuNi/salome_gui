@@ -29,6 +29,7 @@ class QLabel;
 class QString;
 class QAction;
 class QWidget;
+class QShortcut;
 class QKeySequence;
 
 class SUIT_Study;
@@ -114,6 +115,7 @@ signals:
 
 private slots:
   void                  onInfoClear();
+  void                  onActionChanged();
 
 protected:
   SUIT_Application*     startApplication( int, char** ) const;
@@ -162,6 +164,9 @@ protected:
                                       const QString&, const QKeySequence&, QObject* = 0,
                                       const bool = false, QObject* = 0, const char* = 0 );
 
+private:
+  void                  actionChanged( QAction* );
+
 protected slots:
   virtual void          onDesktopActivated();
 
@@ -169,6 +174,7 @@ private:
   SUIT_Study*           myStudy;
   SUIT_Desktop*         myDesktop;
   QMap<int, QAction*>   myActionMap;
+  QMap<QAction*, QShortcut*> myShortcutMap;
 
   QLabel*               myStatusLabel;
 };
