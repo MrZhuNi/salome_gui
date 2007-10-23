@@ -33,6 +33,7 @@ VPATH=.:@srcdir@:@srcdir@/resources
 
 EXPORT_HEADERS= Qtx.h \
 	 	QtxAction.h \
+		QtxColorButton.h \
 		QtxColorScale.h \
 		QtxComboBox.h \
 		QtxDblSpinBox.h \
@@ -84,6 +85,7 @@ LIB = libqtx.la
 LIB_SRC= \
         Qtx.cxx \
 	QtxAction.cxx \
+	QtxColorButton.cxx \
 	QtxColorScale.cxx \
 	QtxComboBox.cxx \
 	QtxDblSpinBox.cxx \
@@ -126,6 +128,7 @@ LIB_SRC= \
 
 LIB_MOC = \
 	QtxAction.h \
+	QtxColorButton.h \
         QtxColorScale.h \
         QtxComboBox.h \
         QtxDblSpinBox.h \
