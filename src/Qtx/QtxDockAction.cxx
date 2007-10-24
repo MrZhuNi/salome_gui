@@ -535,7 +535,7 @@ void QtxDockAction::onVisibilityChanged( bool on )
     a->blockSignals( block );
   }
 
-  savePlaceInfo( dw );
+  QApplication::postEvent( this, new QCustomEvent( (QEvent::Type)SaveGeom, dw ) );
 }
 
 /*!
@@ -549,25 +549,27 @@ void QtxDockAction::onDockWindowPositionChanged( QDockWindow* dw )
 }
 
 /*!
-	Name: event [protected]
+	Name: customEvent [protected]
 	Desc: Check consistency the popup content and internal datas.
         Synchronize internal data structures with popup content.
 */
 
-bool QtxDockAction::event( QEvent* e )
+void QtxDockAction::customEvent( QCustomEvent* e )
 {
-  if ( e->type() == (int)AutoAdd )
+  QDockWindow* dw = (QDockWindow*)e->data();
+  switch ( e->type() )
   {
-    QCustomEvent* ce = (QCustomEvent*)e;
-    QDockWindow* dw = (QDockWindow*)ce->data();
+  case AutoAdd:
     if ( !myInfo.contains( dw ) )
     {
       autoAddDockWindow( dw );
       autoLoadPlaceInfo( dw );
     }
+    break;
+  case SaveGeom:
+    savePlaceInfo( dw );
+    break;
   }
-
-  return QtxAction::event( e );
 }
 
 /*!
@@ -780,6 +782,10 @@ void QtxDockAction::updateInfo( QDockWindow* dw )
 
 void QtxDockAction::savePlaceInfo( QDockWindow* dw )
 {
+  QMainWindow* mw = mainWindow();
+  if ( !mw )
+    return;
+
   if ( !myInfo.contains( dw ) )
     return;
 
@@ -789,8 +795,8 @@ void QtxDockAction::savePlaceInfo( QDockWindow* dw )
   GeomInfo& inf = myGeom[myInfo[dw].name];
 
   Dock dock;
-  inf.vis = dw->isVisibleTo( mainWindow() );
-  mainWindow()->getLocation( dw, dock, inf.index, inf.newLine, inf.offset );
+  inf.vis = dw->isVisibleTo( mw );
+  mw->getLocation( dw, dock, inf.index, inf.newLine, inf.offset );
 
   inf.place = dock;
   inf.x = dw->x();
@@ -928,7 +934,17 @@ void QtxDockAction::loadPlaceArea( const int place, QMainWindow* mw, QDockArea* 
   if ( !area )
     return;
 
+  bool aa = myAutoAdd;
+  bool ap = myAutoPlace;
+
+  QtxDockAction* that = (QtxDockAction*)this;
+  
+  that->myAutoPlace = false;
+
   qApp->processEvents();
+
+  that->myAutoAdd = aa;
+  that->myAutoPlace = ap;
 
   for ( QPtrListIterator<QDockWindow> itr( dockList ); itr.current(); ++itr )
   {

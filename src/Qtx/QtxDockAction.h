@@ -27,6 +27,7 @@
 #include <qevent.h>
 #include <qptrlist.h>
 #include <qpopupmenu.h>
+#include <qguardedptr.h>
 
 class QAction;
 class QDockArea;
@@ -88,7 +89,7 @@ private slots:
   void         onDockWindowPositionChanged( QDockWindow* );
 
 protected:
-  virtual bool event( QEvent* );
+  virtual void customEvent( QCustomEvent* );
 
 private:
   QAction*     action( QDockWindow* ) const;
@@ -124,7 +125,8 @@ private:
   bool         dockMainWindow( QMainWindow*, QObject* ) const;
 
 private:
-  enum { AutoAdd = QEvent::User, LoadArea };
+  enum { AutoAdd = QEvent::User, SaveGeom };
+  typedef QGuardedPtr<QMainWindow> MainWindow;
 
   typedef struct { bool vis, newLine;
                    int place, index, offset;
@@ -149,7 +151,7 @@ private:
   InfoMap      myInfo;
   MenuMap      myMenu;
   GeomMap      myGeom;
-  QMainWindow* myMain;
+  MainWindow   myMain;
   QStringList  myNames;
 
   bool         myAutoAdd;
