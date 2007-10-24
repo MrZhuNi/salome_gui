@@ -58,6 +58,7 @@
 
 #include <vtkInteractorStyle.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkUnstructuredGrid.h>
 
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
@@ -830,4 +831,17 @@ SALOME_Actor
 ::SetHighlightProperty(vtkProperty* theProperty) 
 {
   myHighlightActor->SetProperty(theProperty);
+}
+
+void
+SALOME_Actor
+::MapCells(const TColStd_IndexedMapOfInteger& theMapIndex,
+	         vtkUnstructuredGrid* theUG)
+{
+  int aNbOfParts = theMapIndex.Extent();
+  for(int ind = 1; ind <= aNbOfParts; ind++){
+    int aPartId = theMapIndex( ind );
+    if(vtkCell* aCell = GetElemCell(aPartId))
+      theUG->InsertNextCell(aCell->GetCellType(),aCell->GetPointIds());
+  }
 }

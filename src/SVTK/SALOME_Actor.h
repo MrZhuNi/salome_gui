@@ -49,6 +49,7 @@ class vtkCellPicker;
 class vtkOutlineSource;
 class vtkInteractorStyle;
 class vtkRenderWindowInteractor;
+class vtkUnstructuredGrid;
 
 class SVTK_Actor;
 class SVTK_RectPicker;
@@ -201,6 +202,9 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   //! To set up a highlight property (initialized by #SVTK_Renderer::AddActor)
   void
   SetHighlightProperty(vtkProperty* theProperty);
+
+  virtual void MapCells(const TColStd_IndexedMapOfInteger& theMapIndex,
+                        vtkUnstructuredGrid* theUG);
 
  protected:
   //----------------------------------------------------------------------------

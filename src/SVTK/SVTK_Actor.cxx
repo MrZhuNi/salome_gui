@@ -116,12 +116,7 @@ SVTK_Actor
   vtkDataSet *aSourceDataSet = theMapActor->GetInput();
   CopyPoints(GetSource(),aSourceDataSet);
 
-  int aNbOfParts = theMapIndex.Extent();
-  for(int ind = 1; ind <= aNbOfParts; ind++){
-    int aPartId = theMapIndex( ind );
-    if(vtkCell* aCell = theMapActor->GetElemCell(aPartId))
-      myUnstructuredGrid->InsertNextCell(aCell->GetCellType(),aCell->GetPointIds());
-  }
+  theMapActor->MapCells(theMapIndex,myUnstructuredGrid.GetPointer());
 
   UnShrink();
   if(theMapActor->IsShrunk()){
