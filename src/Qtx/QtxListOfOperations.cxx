@@ -146,7 +146,7 @@ QtxParser::Error QtxListOfOperations::calculate( const QString& op,
                                                  QtxValue& v1,
                                                  QtxValue& v2 ) const
 {
-    const char* deb = op.latin1();
+    //const char* deb = op.latin1();
 
     OperationSetsIterator anIt = mySets.begin(),
                           aLast = mySets.end();
@@ -161,7 +161,7 @@ QtxParser::Error QtxListOfOperations::calculate( const QString& op,
             if( err==QtxParser::OK || err==QtxParser::InvalidResult )
             {
                 QString oop = (*anIt).myName;
-                const char* ooo = oop.latin1();
+                //const char* ooo = oop.latin1();
                 v1 = nv1; v2 = nv2; 
                 return err;
             }

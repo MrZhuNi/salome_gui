@@ -364,7 +364,6 @@ double Plot2d_Curve::getMinX() const
 {
   QValueList<Plot2d_Point>::const_iterator aIt;
   double aMinX = 1e150;
-  int aCurrent = 0;
   for(aIt = myPoints.begin(); aIt != myPoints.end(); ++aIt) {
     if ( (*aIt).x < aMinX )
       aMinX = (*aIt).x;
@@ -379,7 +378,6 @@ double Plot2d_Curve::getMinY() const
 {
   QValueList<Plot2d_Point>::const_iterator aIt;
   double aMinY = 1e150;
-  int aCurrent = 0;
   for(aIt = myPoints.begin(); aIt != myPoints.end(); ++aIt) {
     if ( (*aIt).y < aMinY )
       aMinY = (*aIt).y;

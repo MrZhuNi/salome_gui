@@ -213,7 +213,7 @@ QDS_Datum* QDS_Table::actualCellEditor( const int row, const int col ) const
 
 void QDS_Table::setNumRows( int r )
 {
-  int old = numRows();
+  //int old = numRows();
   QtxTable::setNumRows( r );
 
   if ( isKeepEditors() )
@@ -224,7 +224,7 @@ void QDS_Table::setNumRows( int r )
 
 void QDS_Table::setNumCols( int c )
 {
-  int old = numCols();
+  //int old = numCols();
   QtxTable::setNumCols( c );
 
   if ( isKeepEditors() )
