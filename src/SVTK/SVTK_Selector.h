@@ -29,7 +29,6 @@
 #ifndef SVTK_SELECTOR_H
 #define SVTK_SELECTOR_H
 
-#include "SVTK.h"
 #include "SVTK_Selection.h"
 #include "SALOME_ListIO.hxx"
 #include "VTKViewer_Filter.h"
@@ -42,6 +41,11 @@
 
 class SALOME_Actor;
 
+struct SVTK_SelectionEvent;
+
+class vtkRenderer;
+
+
 //! Define an abstract interface for selection in SVTK package
 /*!
   The class implements selection functionality through storing corresponding
@@ -50,7 +54,7 @@ class SALOME_Actor;
   \note
   Also, for each #SALOME_InteractiveObject it tries to keep corresponding refenrence to #SALOME_Actor
  */
-class SVTK_EXPORT SVTK_Selector: public vtkObject
+class SVTK_Selector: public vtkObject
 {
 public:
   static SVTK_Selector* New();
@@ -205,6 +209,15 @@ public:
   virtual
   void 
   EndPickCallback() = 0;
+
+  //----------------------------------------------------------------------------
+  virtual
+  SALOME_Actor*
+  Pick(const SVTK_SelectionEvent* theEvent, vtkRenderer* theRenderer) const =0;
+
+  virtual
+  void
+  SetTolerance(const double& theTolerance) = 0;
 };
 
 

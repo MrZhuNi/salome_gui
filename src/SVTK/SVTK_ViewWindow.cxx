@@ -61,7 +61,6 @@
 #include "VTKViewer_Algorithm.h"
 #include "SVTK_Functor.h"
 
-
 namespace SVTK
 {
   int convertAction( const int accelAction )
@@ -81,10 +80,6 @@ namespace SVTK
     return accelAction;
   }
 }
-
-
-
-
 
 /*!
   Constructor
@@ -758,9 +753,10 @@ SVTK_ViewWindow
 void
 SVTK_ViewWindow
 ::SetSelectionTolerance(const double& theTolNodes, 
-			const double& theTolItems)
+			const double& theTolItems,
+			const double& theTolObjects)
 {
-  myView->SetSelectionTolerance(theTolNodes,theTolItems);
+  myView->SetSelectionTolerance(theTolNodes,theTolItems, theTolObjects);
 }
 
 /*!

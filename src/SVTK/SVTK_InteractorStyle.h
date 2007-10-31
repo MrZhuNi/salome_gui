@@ -104,12 +104,13 @@ class SVTK_EXPORT SVTK_ControllerOnKeyDown : public vtkObject{
 };
 
 class vtkCell;
-class vtkPicker;
+class vtkPointPicker;
 
 class SALOME_Actor;
 
 class SVTK_Selector;
 class SVTK_GenericRenderWindowInteractor;
+class SVTK_Actor;
 
 #define VTK_INTERACTOR_STYLE_CAMERA_NONE    0
 #define VTK_INTERACTOR_STYLE_CAMERA_ROTATE  1
@@ -119,6 +120,7 @@ class SVTK_GenericRenderWindowInteractor;
 #define VTK_INTERACTOR_STYLE_CAMERA_FIT        5
 #define VTK_INTERACTOR_STYLE_CAMERA_SELECT     6
 #define VTK_INTERACTOR_STYLE_CAMERA_GLOBAL_PAN 7
+#define VTK_INTERACTOR_STYLE_CAMERA_SELECT_ROTATION_POINT 8
 
 //! Introduce SALOME way of user interaction
 /*!
@@ -278,6 +280,8 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   void startFitArea();
   void startSpin();
 
+  void startPointSelection();
+
  protected:
   void loadCursors();
   void startOperation(int operation);
@@ -324,7 +328,18 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
 
   PSelectionEvent mySelectionEvent;
 
-  vtkSmartPointer<vtkPicker> myPicker;
+  unsigned long                   myCurrRotationPointType;
+  unsigned long                   myPrevRotationPointType;
+
+  double                          myRotationPointX;
+  double                          myRotationPointY;
+  double                          myRotationPointZ;
+
+  vtkSmartPointer<SVTK_Actor>     myHighlightRotationPointActor;
+  vtkSmartPointer<vtkPointPicker> myPointPicker;
+  
+  vtkFloatingPointType            myBBCenter[3];
+  bool                            myBBFirstCheck;
 };
 
 #ifdef WIN32
