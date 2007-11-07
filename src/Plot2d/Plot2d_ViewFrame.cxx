@@ -16,6 +16,7 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
+
 #include "Plot2d_ViewFrame.h"
 
 #include "Plot2d_Prs.h"
@@ -32,7 +33,7 @@
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_Application.h"
 
-#include "qapplication.h"
+#include <qapplication.h>
 #include <qtoolbar.h>
 #include <qtoolbutton.h>
 #include <qcursor.h>
@@ -57,6 +58,7 @@
 #define MIN_RECT_SIZE          11    // min sensibility area size
 
 #define X11_COORD_MIN -16384
+
 #define X11_COORD_MAX 16384
 
 const char* imageZoomCursor[] = { 
@@ -139,10 +141,9 @@ QString Plot2d_ViewFrame::myPrefTitle = "";
 QString Plot2d_ViewFrame::myPrefXTitle = "";
 QString Plot2d_ViewFrame::myPrefYTitle = "";
 
-bool Plot2d_ViewFrame::myTitleAutoGeneration = true;
-bool Plot2d_ViewFrame::myXTitleAutoGeneration = true;
-bool Plot2d_ViewFrame::myYTitleAutoGeneration = true;
-  
+bool Plot2d_ViewFrame::myPrefTitleChangedByUser = false;
+bool Plot2d_ViewFrame::myXPrefTitleChangedByUser = false;
+bool Plot2d_ViewFrame::myYPrefTitleChangedByUser = false;
 
 /*!
   Constructor
@@ -161,7 +162,9 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
        myXGridMinorEnabled( false ), myYGridMinorEnabled( false ), myY2GridMinorEnabled( false ),
        myXGridMaxMajor( 8 ), myYGridMaxMajor( 8 ), myY2GridMaxMajor( 8 ),
        myXGridMaxMinor( 5 ), myYGridMaxMinor( 5 ), myY2GridMaxMinor( 5 ),
-       myXMode( 0 ), myYMode( 0 ), mySecondY( false )
+       myXMode( 0 ), myYMode( 0 ), mySecondY( false ),
+       myTitleAutoUpdate( true ), myXTitleAutoUpdate( true ), myYTitleAutoUpdate( true ),
+       myTitleChangedByUser( false ), myXTitleChangedByUser( false ), myYTitleChangedByUser( false )
 {
   /* Plot 2d View */
   QVBoxLayout* aLayout = new QVBoxLayout( this ); 
@@ -399,12 +402,21 @@ void Plot2d_ViewFrame::writePreferences()
 
   resMgr->setValue( "Plot2d", "VerScaleMode", myYMode );
 
-  if ( !myTitleAutoGeneration )
+  if ( myTitleChangedByUser )
+  {
     myPrefTitle = myTitle;
-  if ( !myXTitleAutoGeneration )
+    myPrefTitleChangedByUser = true;
+  }
+  if ( myXTitleChangedByUser )
+  {
     myPrefXTitle = myXTitle;
-  if ( !myYTitleAutoGeneration )
+    myXPrefTitleChangedByUser = true;
+  }
+  if ( myYTitleChangedByUser )
+  {
     myPrefYTitle = myYTitle;
+    myYPrefTitleChangedByUser = true;
+  }
 }
 
 /*!
@@ -1018,18 +1030,14 @@ void Plot2d_ViewFrame::onSettings()
     bool isTileChanged = dlg->getXTitle() != myXTitle;
     setTitle( dlg->isXTitleEnabled(), dlg->getXTitle(), XTitle, false );
     if ( isTileChanged )
-    {
-      myXTitleAutoGeneration = false;
-      emit titleChangedByUser( XTitle );
-    }
+      myXTitleChangedByUser = true;
+
     // vertical left axis title
     isTileChanged = dlg->getYTitle() != myYTitle;
     setTitle( dlg->isYTitleEnabled(), dlg->getYTitle(), YTitle, false );
     if ( isTileChanged  )
-    {
-      myYTitleAutoGeneration = false;
-      emit titleChangedByUser( YTitle );
-    }
+      myYTitleChangedByUser = true;
+
     if (mySecondY) // vertical right axis title
       setTitle( dlg->isY2TitleEnabled(), dlg->getY2Title(), Y2Title, false );
 
@@ -1037,10 +1045,8 @@ void Plot2d_ViewFrame::onSettings()
     isTileChanged = dlg->getMainTitle() != myTitle;
     setTitle( dlg->isMainTitleEnabled(), dlg->getMainTitle(), MainTitle, true );
     if ( isTileChanged )
-    {
-      myTitleAutoGeneration = false;
-      emit titleChangedByUser( MainTitle );
-    }
+      myTitleChangedByUser = true;
+
     // curve type
     if ( myCurveType != dlg->getCurveType() ) {
       setCurveType( dlg->getCurveType(), false );
@@ -2187,11 +2193,11 @@ void Plot2d_ViewFrame::updateTitles()
   if ( !yTitle.isEmpty() && !yUnits.isEmpty() )
     yTitle += " ";
 
-  if ( myXTitleAutoGeneration )
+  if ( !isTitleChangedByUser( XTitle ) && myXTitleAutoUpdate )
     setTitle( myXTitleEnabled, xTitle + xUnits, XTitle, true );
-  if ( myYTitleAutoGeneration )
+  if ( !isTitleChangedByUser( YTitle ) && myYTitleAutoUpdate )
     setTitle( myYTitleEnabled, yTitle + yUnits, YTitle, true );
-  if ( myTitleAutoGeneration )
+  if ( !isTitleChangedByUser( MainTitle ) && myTitleAutoUpdate )
     setTitle( true, aTables.join("; "), MainTitle, true );
 }
 
@@ -2372,61 +2378,61 @@ void Plot2d_ViewFrame::onZoomOut()
 }
 
 /*!
-  Specifies whether plot title must be generated automatically using curves titles
-*/
-void Plot2d_ViewFrame::setTitleAutoGeneration( const bool toGenerate, const bool update )
-{
-  setTitleAutoGeneration( toGenerate, MainTitle, update );
-}
-
-/*!
   Verifies whether plot title must be generated automatically using curves titles
 */
-bool Plot2d_ViewFrame::getTitleAutoGeneration()
-{
-  return myTitleAutoGeneration;
-}
-
-/*!
-  Specifies whether plot title must be generated automatically using curves titles
-*/
-void Plot2d_ViewFrame::setTitleAutoGeneration( const bool toGenerate, 
-                                               const ObjectType type, 
-                                               const bool update )
+bool Plot2d_ViewFrame::isTitleChangedByUser( const ObjectType type )
 {
   switch ( type ) 
   {
   case MainTitle:
-    myTitleAutoGeneration = toGenerate;
-    break;
+    return myPrefTitleChangedByUser || myTitleChangedByUser;
   case XTitle:
-    myXTitleAutoGeneration = toGenerate;
-    break;
+    return myXPrefTitleChangedByUser || myXTitleChangedByUser;
   case YTitle:
-    myYTitleAutoGeneration = toGenerate;
-    break;
-  default:
-    return;
-  }
-  if ( update )
-    updateTitles();  
-}
-
-/*!
-  Verifies whether plot title must be generated automatically using curves titles
-*/
-bool Plot2d_ViewFrame::getTitleAutoGeneration( const ObjectType type )
-{
-  switch ( type ) 
-  {
-  case MainTitle:
-    return myTitleAutoGeneration;
-  case XTitle:
-    return myXTitleAutoGeneration;
-  case YTitle:
-    return myYTitleAutoGeneration;
+    return myYPrefTitleChangedByUser || myYTitleChangedByUser;
   default:
     return false;
+  }
+}
+
+/*!
+  Sets flag for automatic updates of titles in accordance with current set of curves
+  ( updateTitles method). You should call setAutoUpdateTitle( ObjType, false ) 
+  if your application set titles itself and they can not be updated automatically.
+  By default titles are updated automatically.
+*/
+
+void Plot2d_ViewFrame::setAutoUpdateTitle( const ObjectType type, const bool upd )
+{
+  switch ( type )
+  {
+  case MainTitle:
+    myTitleAutoUpdate = upd;
+  case XTitle:
+    myXTitleAutoUpdate = upd;
+  case YTitle:
+    myYTitleAutoUpdate = upd;
+  default:
+    break;
+  }
+}
+
+/*!
+  Gets flag for automatic updates of titles in accordance with current set of curves
+  ( updateTitles method)
+*/
+bool Plot2d_ViewFrame::getAutoUpdateTitle( const ObjectType type ) const
+{
+  switch ( type )
+  {
+  case MainTitle:
+    return myTitleAutoUpdate;
+  case XTitle:
+    return myXTitleAutoUpdate;
+  case YTitle:
+    return myYTitleAutoUpdate;
+  default:
+    return true;
   }
 }
 

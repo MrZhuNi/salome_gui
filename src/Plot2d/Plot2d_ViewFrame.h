@@ -58,8 +58,6 @@ public:
   void    updateTitles();
   void    setTitle( const QString& title );
   QString getTitle() const { return myTitle; }
-  void    setTitleAutoGeneration( const bool toGenerate, const bool update = true );
-  bool    getTitleAutoGeneration();
   void    displayCurve( Plot2d_Curve* curve, bool update = false );
   void    displayCurves( const curveList& curves, bool update = false );
   void    eraseCurve ( Plot2d_Curve* curve, bool update = false );
@@ -101,10 +99,8 @@ public:
                     bool y2MinorEnabled, const int y2MinorMax, bool update = true );
   void    setTitle( bool enabled, const QString& title, ObjectType type, bool update = true );
   QString getTitle( ObjectType type ) const;
-  void    setTitleAutoGeneration( const bool toGenerate, 
-                                  const ObjectType type, 
-                                  const bool update = true );
-  static bool getTitleAutoGeneration( const ObjectType type );
+  
+  bool    isTitleChangedByUser( const ObjectType type );
 
   void    setFont( const QFont& font, ObjectType type, bool update = true );
   void    setHorScaleMode( const int mode, bool update = true );
@@ -129,6 +125,9 @@ public:
 
   void    incrementalPan ( const int incrX, const int incrY );
   void    incrementalZoom( const int incrX, const int incrY );
+
+  void    setAutoUpdateTitle( const ObjectType type, const bool upd );
+  bool    getAutoUpdateTitle( const ObjectType type ) const;
 
 protected:
   int     testOperation( const QMouseEvent& );
@@ -169,8 +168,6 @@ signals:
   void    curveDisplayed( Plot2d_Curve* );
   void    curveErased( Plot2d_Curve* );
 
-  void    titleChangedByUser( const int theObjectType );
-
 protected:
   Plot2d_Plot2d* myPlot;
   int            myOperation;
@@ -191,14 +188,17 @@ protected:
   int            myXMode, myYMode;
   double         myXDistance, myYDistance, myYDistance2;
   bool           mySecondY;
+  
+  bool           myTitleAutoUpdate, myXTitleAutoUpdate, myYTitleAutoUpdate;
+  bool           myTitleChangedByUser, myXTitleChangedByUser, myYTitleChangedByUser;
 
   static QString myPrefTitle;
   static QString myPrefXTitle;
   static QString myPrefYTitle;
 
-  static bool    myTitleAutoGeneration;
-  static bool    myXTitleAutoGeneration;
-  static bool    myYTitleAutoGeneration;
+  static bool    myPrefTitleChangedByUser;
+  static bool    myXPrefTitleChangedByUser;
+  static bool    myYPrefTitleChangedByUser;
 };
 
 class Plot2d_Plot2d : public QwtPlot 
