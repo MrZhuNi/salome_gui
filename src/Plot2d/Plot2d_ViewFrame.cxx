@@ -2396,6 +2396,27 @@ bool Plot2d_ViewFrame::isTitleChangedByUser( const ObjectType type )
 }
 
 /*!
+  Verifies whether plot title must be generated automatically using curves titles
+*/
+void Plot2d_ViewFrame::forgetLocalUserChanges( const ObjectType type )
+{
+  switch ( type )
+  {
+  case MainTitle:
+    myTitleChangedByUser = false;
+    break;
+  case XTitle:
+    myXTitleChangedByUser = false;
+    break;
+  case YTitle:
+    myYTitleChangedByUser = false;
+    break;
+  default:
+    break;
+  }
+}
+
+/*!
   Sets flag for automatic updates of titles in accordance with current set of curves
   ( updateTitles method). You should call setAutoUpdateTitle( ObjType, false ) 
   if your application set titles itself and they can not be updated automatically.
@@ -2408,10 +2429,13 @@ void Plot2d_ViewFrame::setAutoUpdateTitle( const ObjectType type, const bool upd
   {
   case MainTitle:
     myTitleAutoUpdate = upd;
+    break;
   case XTitle:
     myXTitleAutoUpdate = upd;
+    break;
   case YTitle:
     myYTitleAutoUpdate = upd;
+    break;
   default:
     break;
   }

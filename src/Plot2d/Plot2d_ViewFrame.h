@@ -101,6 +101,7 @@ public:
   QString getTitle( ObjectType type ) const;
   
   bool    isTitleChangedByUser( const ObjectType type );
+  void    forgetLocalUserChanges( const ObjectType type );
 
   void    setFont( const QFont& font, ObjectType type, bool update = true );
   void    setHorScaleMode( const int mode, bool update = true );
