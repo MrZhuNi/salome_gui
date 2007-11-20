@@ -92,8 +92,8 @@ void STD_Application::start()
 */
 void STD_Application::closeApplication()
 {
-  if ( desktop() )
-    savePreferences();
+  /*if ( desktop() )
+    savePreferences();*/
   SUIT_Study* study = activeStudy();
 
   if ( study ){
@@ -102,6 +102,9 @@ void STD_Application::closeApplication()
     setActiveStudy( 0 );
     delete study;
   }
+
+  if ( desktop() )
+    savePreferences();
 
   setDesktop( 0 );
   
