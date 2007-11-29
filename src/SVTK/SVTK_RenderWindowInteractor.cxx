@@ -238,10 +238,15 @@ void
 QVTK_RenderWindowInteractor
 ::mouseMoveEvent( QMouseEvent* event ) 
 {
+  int keyCode = 0;
+  if ( event->state() & AltButton )
+    keyCode = Qt::Key_Alt;
+  
   GetDevice()->SetEventInformationFlipY(event->x(), 
 					event->y(),
 					event->state() & ControlButton,
-					event->state() & ShiftButton);
+					event->state() & ShiftButton, 
+                                        keyCode );
   GetDevice()->MouseMoveEvent();
 }
 
@@ -253,16 +258,23 @@ void
 QVTK_RenderWindowInteractor
 ::mousePressEvent( QMouseEvent* event ) 
 {
+  int keyCode = 0;
+  if ( event->state() & AltButton )
+    keyCode = Qt::Key_Alt;
+  
   GetDevice()->SetEventInformationFlipY(event->x(), 
 					event->y(),
 					event->state() & ControlButton,
-					event->state() & ShiftButton);
+					event->state() & ShiftButton, 
+                                        keyCode );
   if( event->button() & LeftButton )
     GetDevice()->LeftButtonPressEvent();
   else if( event->button() & MidButton )
     GetDevice()->MiddleButtonPressEvent();
   else if( event->button() & RightButton )
     GetDevice()->RightButtonPressEvent();
+
+  // QKeyEvent
 }
 
 
@@ -273,10 +285,15 @@ void
 QVTK_RenderWindowInteractor
 ::mouseReleaseEvent( QMouseEvent *event )
 {
+  int keyCode = 0;
+  if ( event->state() & AltButton )
+    keyCode = Qt::Key_Alt;
+
   GetDevice()->SetEventInformationFlipY(event->x(), 
 					event->y(),
 					event->state() & ControlButton,
-					event->state() & ShiftButton);
+					event->state() & ShiftButton,
+                                        keyCode);
 
   if( event->button() & LeftButton )
     GetDevice()->LeftButtonReleaseEvent();
