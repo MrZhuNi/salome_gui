@@ -60,9 +60,12 @@ public:
 public slots:
   void                polish();
 
+protected:
+
+  virtual void        addExtension();
+
 private:
   bool                acceptData();
-  void                addExtension();
   bool                processPath( const QString& path );
 
 protected slots:
