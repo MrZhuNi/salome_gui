@@ -87,7 +87,10 @@ public:
   QColor                 backgroundColor() const;
 
   //! Sets borders of scene
-  void                   setBorder( GLViewer_Rect* border ) { myBorder = border; }
+  void                   setBorder( GLViewer_Rect* border );
+  /*{ 
+    myBorder = border; 
+  }*/
   //! Get current borders of scene
   GLViewer_Rect*         getBorder() const { return myBorder; }
   

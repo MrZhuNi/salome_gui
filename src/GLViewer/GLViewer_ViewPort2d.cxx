@@ -1405,3 +1405,8 @@ void GLViewer_ViewPort2d::onMaybeTip( QPoint thePoint, QString& theText, QFont& 
     }
   }
 }
+
+void GLViewer_ViewPort2d::setBorder( GLViewer_Rect* border )
+{
+  myBorder = border; 
+}
