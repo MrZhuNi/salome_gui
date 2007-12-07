@@ -140,6 +140,9 @@ public:
   void                   drawSelectByRect( int x, int y );
   //! Pass rect into selector and update
   void                   finishSelectByRect();
+
+    //! Pass rect into selector and update
+  bool                   isSelectByRect() const;
   
   //! \warnign It is for ouv
   bool                   startPulling( GLViewer_Pnt );

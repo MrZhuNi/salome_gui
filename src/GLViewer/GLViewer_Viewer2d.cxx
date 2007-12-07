@@ -938,11 +938,12 @@ void GLViewer_Viewer2d::startOperations( QMouseEvent* e )
     transPoint( x, y );
     GLViewer_Pnt point( x, y );
 
-    if( e->button() == Qt::LeftButton && vp->startPulling( point ) )
-      return;
+    // moved to updateOperations() - see below
+    //if( e->button() == Qt::LeftButton && vp->startPulling( point ) )
+    //    return;
 
     if( e->button() == Qt::LeftButton && !(vp->currentBlock() & BS_Selection) && !myGLContext->getCurrentObject() )
-      vp->startSelectByRect( e->x(), e->y() );
+        vp->startSelectByRect( e->x(), e->y() );
 }
 
 /*!
@@ -965,13 +966,16 @@ bool GLViewer_Viewer2d::updateOperations( QMouseEvent* e )
     }
 
     /*if( vp->isDragProcess() == GLViewer_ViewPort2d::inDrag )
-        return true;
+        return true;*/
 
-    if( e->state() == Qt::LeftButton && vp->startPulling( point ) )
+    if( e->state() == Qt::LeftButton )
     {
-        vp->finishSelectByRect();
+      if ( !vp->isSelectByRect() && vp->startPulling( point ) )
+      {
+        vp->finishSelectByRect(); //startSelectByRect
         return true;
-    }*/
+      }
+    }
 
     if( !myGLContext->getCurrentObject() )
     {

@@ -1189,6 +1189,14 @@ void GLViewer_ViewPort2d::drawSelectByRect( int x, int y )
 }
 
 /*!
+  Returns tue if selection by rect is preformed
+*/
+bool GLViewer_ViewPort2d::isSelectByRect() const
+{
+  return mypFirstPoint && mypLastPoint;
+}
+
+/*!
   Finishes rectangle selection
 */
 void GLViewer_ViewPort2d::finishSelectByRect()
