@@ -927,23 +927,33 @@ void GLViewer_Viewer2d::repaintView( GLViewer_ViewFrame* theView, bool makeCurre
 }
 
 /*!
-  Starts some operation on mouse event
+Starts some operation on mouse event
 */
 void GLViewer_Viewer2d::startOperations( QMouseEvent* e )
 {
-    GLViewer_ViewPort2d* vp = ( GLViewer_ViewPort2d* )((GLViewer_ViewFrame*)getActiveView())->getViewPort();
+  GLViewer_ViewPort2d* vp = ( GLViewer_ViewPort2d* )((GLViewer_ViewFrame*)getActiveView())->getViewPort();
 
-    float x = e->pos().x();
-    float y = e->pos().y();
-    transPoint( x, y );
-    GLViewer_Pnt point( x, y );
+  float x = e->pos().x();
+  float y = e->pos().y();
+  transPoint( x, y );
+  GLViewer_Pnt point( x, y );
 
-    // moved to updateOperations() - see below
-    //if( e->button() == Qt::LeftButton && vp->startPulling( point ) )
-    //    return;
+  // Try to start pooling if rectangular selection is performed
+  if( e->button() == Qt::LeftButton && !vp->isSelectByRect() && vp->startPulling( point ) )
+  {
+    vp->finishSelectByRect();
+    return;
+  }
 
-    if( e->button() == Qt::LeftButton && !(vp->currentBlock() & BS_Selection) && !myGLContext->getCurrentObject() )
+  // Start rectangular selection if pulling was not started
+  if( e->button() == Qt::LeftButton )
+  {
+    if ( !(vp->currentBlock() & BS_Selection) )
+    {
+      if ( !myGLContext->getCurrentObject() )
         vp->startSelectByRect( e->x(), e->y() );
+    }
+  }
 }
 
 /*!
@@ -972,7 +982,7 @@ bool GLViewer_Viewer2d::updateOperations( QMouseEvent* e )
     {
       if ( !vp->isSelectByRect() && vp->startPulling( point ) )
       {
-        vp->finishSelectByRect(); //startSelectByRect
+        vp->finishSelectByRect();
         return true;
       }
     }
@@ -986,7 +996,9 @@ bool GLViewer_Viewer2d::updateOperations( QMouseEvent* e )
 }
 
 /*!
-  Completes started operation on mouse event
+  Completes started operation on mouse event, Returns true if operation is considered
+  as completely finished and there is no point in performing other actions after finish
+  the operation.
 */
 bool GLViewer_Viewer2d::finishOperations( QMouseEvent* e )
 {
@@ -996,7 +1008,10 @@ bool GLViewer_Viewer2d::finishOperations( QMouseEvent* e )
     {
         vp->finishPulling();
         updateAll();
-        return true;
+        // Although operation is finished, FALSE is returned because base class try to 
+        // perform selection in this case. In the othar case it is impossible to perform
+        // selection of pulled port
+        return false;
     }
 
     if( !myGLContext->getCurrentObject() )
