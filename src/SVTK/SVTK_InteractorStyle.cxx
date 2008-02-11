@@ -1212,13 +1212,7 @@ SVTK_InteractorStyle
   {
     myHighlightRotationPointActor->SetVisibility( false );
 
-    SALOME_Actor *anCurrActor;
-    if ( anActor ) anCurrActor = anActor;
-    else if ( myLastPreHighlitedActor.GetPointer() 
-	      && 
-	      myLastPreHighlitedActor.GetPointer() != anActor )
-      anCurrActor = myLastPreHighlitedActor.GetPointer();
-    if ( anCurrActor )
+    if ( anActor )
     {
       myPointPicker->Pick( aSelectionEvent->myX, aSelectionEvent->myY, 0.0, GetCurrentRenderer() );
       int aVtkId = myPointPicker->GetPointId();
@@ -1228,8 +1222,7 @@ SVTK_InteractorStyle
 	TColStd_IndexedMapOfInteger aMapIndex;
 	aMapIndex.Add( anObjId );
 	myHighlightRotationPointActor->MapPoints( anActor, aMapIndex );
-
-	myHighlightRotationPointActor->SetVisibility( true );
+//	myHighlightRotationPointActor->SetVisibility( true );
 	anIsChanged = true;
       }
     }
