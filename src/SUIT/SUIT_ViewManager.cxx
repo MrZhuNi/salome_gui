@@ -189,6 +189,17 @@ void SUIT_ViewManager::removeView(SUIT_ViewWindow* theView)
 }
 
 /*!
+  Returns 'true' if any of views (view windows) is visible.
+*/
+bool SUIT_ViewManager::isVisible() const
+{
+  bool res = false;
+  for ( uint i = 0; i < myViews.count() && !res; i++ )
+    res = myViews[i]->isVisibleTo( myViews[i]->parentWidget() );
+  return res;
+}
+
+/*!
   Show or hide all views (view windows)
 */
 void SUIT_ViewManager::setShown( const bool on )

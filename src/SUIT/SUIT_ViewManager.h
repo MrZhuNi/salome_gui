@@ -64,6 +64,7 @@ public:
 
   SUIT_ViewWindow* createViewWindow();
 
+  bool             isVisible() const;
   virtual void     setShown( const bool );
 
 public slots:
