@@ -939,7 +939,8 @@ void GLViewer_Viewer2d::startOperations( QMouseEvent* e )
   GLViewer_Pnt point( x, y );
 
   // Try to start pooling if rectangular selection is performed
-  if( e->button() == Qt::LeftButton && !vp->isSelectByRect() && vp->startPulling( point ) )
+  if( e->button() == Qt::LeftButton && !vp->isSelectByRect() && 
+      !vp->isDragProcess() && vp->startPulling( point ) )
   {
     vp->finishSelectByRect();
     return;
@@ -980,7 +981,8 @@ bool GLViewer_Viewer2d::updateOperations( QMouseEvent* e )
 
     if( e->state() == Qt::LeftButton )
     {
-      if ( !vp->isSelectByRect() && vp->startPulling( point ) )
+      if ( !vp->isSelectByRect() && !vp->isDragProcess() &&
+           vp->startPulling( point ) )
       {
         vp->finishSelectByRect();
         return true;
