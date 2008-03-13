@@ -414,6 +414,8 @@ QImage GLViewer_ViewFrame::dumpView()
 */
 void GLViewer_ViewFrame::onViewDump()
 {
+    QImage anImage = dumpView();
+
     QString aFilter( "*.bmp\n*.png\n*.jpeg" );
 
     QFileDialog aFileDlg( QDir::current().absPath(), aFilter, this );
@@ -456,7 +458,7 @@ void GLViewer_ViewFrame::onViewDump()
         aSaveOp = "JPEG";
     }
 
-    QImage anImage = dumpView();
+    //QImage anImage = dumpView();
     if( !anImage.save( aFileName, aSaveOp ) )
     {
         SUIT_MessageBox::error1( this,
