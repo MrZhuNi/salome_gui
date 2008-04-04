@@ -6,14 +6,13 @@
 // Copyright : 2003-2005 CEA/DEN, EDF R&D
 // $Header   : $
 //=============================================================================
-
 %Module SalomePyQt
 
 %Import qtmod.sip
 
-%ExportedHeaderCode
-#include <SalomePyQt.h>
-%End
+//%ExportedHeaderCode
+//#include <SalomePyQt.h>
+//%End
 
 class SALOME_Selection : QObject
 {
