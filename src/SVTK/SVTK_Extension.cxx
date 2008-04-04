@@ -28,6 +28,7 @@
 #include "SVTK_Extension.h"
 
 #ifdef WIN32
+#undef NOGDI
 #include <windows.h>
 #else
 #include <dlfcn.h>

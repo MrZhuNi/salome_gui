@@ -23,6 +23,7 @@
 #ifndef SALOMEAPP_EXITDLG_H
 #define SALOMEAPP_EXITDLG_H
 
+#include "SalomeApp.h"
 #include <qdialog.h> 
 
 class QCheckBox;
@@ -30,7 +31,7 @@ class QCheckBox;
 /*!\class SalomeApp_ExitDlg
  * \brief Describes a dialog box shown on question about quit application
  */
-class SalomeApp_ExitDlg: public QDialog
+class SALOMEAPP_EXPORT SalomeApp_ExitDlg: public QDialog
 {
   Q_OBJECT
 
