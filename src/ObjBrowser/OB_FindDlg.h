@@ -2,6 +2,11 @@
 #ifndef OBJECT_BROWSER_FIND_DIALOG_HEADER
 #define OBJECT_BROWSER_FIND_DIALOG_HEADER
 
+#include "OB.h"
+#ifdef WIN32
+#pragma warning( disable:4251 )
+#endif
+
 #include <qgroupbox.h>
 
 class OB_ObjSearch;
@@ -9,7 +14,7 @@ class QLineEdit;
 class QPushButton;
 class QCheckBox;
 
-class OB_FindDlg : public QGroupBox
+class OB_EXPORT OB_FindDlg : public QGroupBox
 {
   Q_OBJECT
 

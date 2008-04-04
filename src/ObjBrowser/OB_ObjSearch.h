@@ -2,13 +2,18 @@
 #ifndef OBJECT_BROWSER_OBJECT_SEARCH_HEADER
 #define OBJECT_BROWSER_OBJECT_SEARCH_HEADER
 
+#include "OB.h"
+#ifdef WIN32
+#pragma warning( disable:4251 )
+#endif
+
 #include <qstring.h>
 
 class OB_ListItem;
 class OB_Browser;
 class SUIT_DataObject;
 
-class OB_ObjSearch
+class OB_EXPORT OB_ObjSearch
 {
 public:
   OB_ObjSearch( OB_Browser* );
