@@ -359,7 +359,7 @@ void TableViewer_ViewWindow::exportData()
   exportData( fileName );
 }
 
-Handle(HTMLService_HTMLTable) TableViewer_ViewWindow::exportTableData()
+Handle(HTMLService_HTMLTable) TableViewer_ViewWindow::exportToHTML()
 {
   int rows = numRows( Cells );
   int cols = numCols( Cells );
@@ -394,7 +394,7 @@ void TableViewer_ViewWindow::exportData( const QString& theFileName )
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  exportTableData()->GenerateFile( TableViewer_Tool::ToExtString( theFileName ), true );
+  exportToHTML()->GenerateFile( TableViewer_Tool::ToExtString( theFileName ), true );
 
   QApplication::restoreOverrideCursor();
 }
@@ -540,3 +540,4 @@ QtxTable* TableViewer_ViewWindow::createTable()
            this, SLOT( selectionChanged() ) );
   return aTable;
 }
+
