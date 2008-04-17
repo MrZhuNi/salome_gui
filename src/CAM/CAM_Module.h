@@ -90,6 +90,8 @@ public slots:
   virtual void           onApplicationClosed( SUIT_Application* );
 
 protected: 
+  virtual bool           isSelectionCompatible();
+
   virtual CAM_DataModel* createDataModel();
 
   virtual void           setModuleName( const QString& );
