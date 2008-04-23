@@ -1,6 +1,6 @@
 
-#include <OB_FindDlg.h>
-#include <OB_ObjSearch.h>
+#include "OB_FindDlg.h"
+#include "OB_ObjSearch.h"
 #include <OB_Browser.h>
 #include <OB_ListItem.h>
 

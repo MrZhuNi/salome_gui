@@ -2,13 +2,14 @@
 #ifndef OBJECT_BROWSER_OBJECT_SEARCH_HEADER
 #define OBJECT_BROWSER_OBJECT_SEARCH_HEADER
 
+#include <ob.h>
 #include <qstring.h>
 
 class OB_ListItem;
 class OB_Browser;
 class SUIT_DataObject;
 
-class OB_ObjSearch
+class OB_EXPORT OB_ObjSearch
 {
 public:
   OB_ObjSearch( OB_Browser* );

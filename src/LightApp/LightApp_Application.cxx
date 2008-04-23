@@ -63,6 +63,7 @@
 #include <LogWindow.h>
 #include <OB_Browser.h>
 #include <OB_ListView.h>
+#include <OB_ObjSearch.h>
 
 #ifdef WIN32
 #define DEFAULT_BROWSER "start iexplore.exe"
@@ -1643,6 +1644,7 @@ QWidget* LightApp_Application::createWindow( const int flag )
   if ( flag == WT_ObjectBrowser )
   {
     OB_Browser* ob = new OB_Browser( desktop() );
+    ob->setSearch( new OB_ObjSearch( ob ) );
     ob->setAutoUpdate( true );
     //ob->setAutoOpenLevel( 1 ); // commented by ASV as a fix to bug IPAL10107
     ob->setCaption( tr( "OBJECT_BROWSER" ) );
@@ -2299,6 +2301,8 @@ void LightApp_Application::contextMenuPopup( const QString& type, QPopupMenu* th
 
   thePopup->insertSeparator();
   thePopup->insertItem( tr( "MEN_REFRESH" ), this, SLOT( onRefresh() ) );
+  if ( getenv( "GUI_FIND_OB" ) )
+    thePopup->insertItem( tr( "MEN_FIND" ), this, SLOT( onFind() ) );
 }
 
 /*!
@@ -2520,3 +2524,9 @@ bool LightApp_Application::event( QEvent* e )
   }
   return CAM_Application::event( e );
 }
+
+void LightApp_Application::onFind()
+{
+  objectBrowser()->enableSearch( true );
+}
+

@@ -38,6 +38,8 @@ class QToolTip;
 class OB_Filter;
 class OB_ListView;
 class OB_ListItem;
+class OB_FindDlg;
+class OB_ObjSearch;
 
 /*!
   \class OB_Browser
@@ -130,6 +132,10 @@ public:
 
   void              ensureItemVisible( const SUIT_DataObject* );
 
+  OB_ObjSearch*     getSearch() const;
+  void              setSearch( OB_ObjSearch* );
+  void              enableSearch( const bool );
+
 signals:
   void              selectionChanged();
   void              doubleClicked( SUIT_DataObject* );
@@ -201,6 +207,8 @@ private:
   friend class OB_Browser::ToolTip;
 
   unsigned long     myModifiedTime;
+
+  OB_FindDlg*       myFindDlg;
 };
 
 #endif
