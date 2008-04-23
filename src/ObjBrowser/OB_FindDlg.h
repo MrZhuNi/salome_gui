@@ -20,6 +20,10 @@ public:
   OB_ObjSearch* getSearch() const;
   void setSearch( OB_ObjSearch* );
 
+protected:
+
+  virtual void keyPressEvent( QKeyEvent* e );
+
 private slots:
   void onFind();
   void onClose();

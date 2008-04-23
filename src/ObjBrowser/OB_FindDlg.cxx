@@ -31,6 +31,7 @@ OB_FindDlg::OB_FindDlg( QWidget* parent )
   myToLast->setMaximumSize( w, h );
   myNext->setMaximumSize( w, h );
   myPrev->setMaximumSize( w, h );
+  myNext->setDefault( true );
 
   QHBoxLayout* l = new QHBoxLayout( btns, 5, 5 );
   l->addWidget( myToFirst, 0 );
@@ -90,3 +91,23 @@ void OB_FindDlg::setSearch( OB_ObjSearch* s )
 {
   mySearch = s;
 }
+
+void OB_FindDlg::keyPressEvent( QKeyEvent* e )
+{
+  if ( e->key() == Key_Enter || e->key() == Key_Return )
+  {
+    mySearch->setPattern( 
+      myData->text(), myIsRegExp->isChecked(), myIsCaseSens->isChecked() );
+    OB_ListItem* it = mySearch->findNext();
+    if( it )
+    {
+      mySearch->browser()->setSelected( it->dataObject(), false );
+      mySearch->browser()->listView()->ensureItemVisible( it );
+    }
+  }
+
+  QGroupBox::keyPressEvent( e );
+}
+
+
+
