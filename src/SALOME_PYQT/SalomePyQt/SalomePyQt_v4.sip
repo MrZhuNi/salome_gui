@@ -10,9 +10,9 @@
 
 %Import qtmod.sip
 
-//%ExportedHeaderCode
-//#include <SalomePyQt.h>
-//%End
+%ExportedHeaderCode
+#include <SalomePyQt.h>
+%End
 
 class SALOME_Selection : QObject
 {
