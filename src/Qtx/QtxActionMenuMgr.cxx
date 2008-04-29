@@ -139,8 +139,9 @@ QtxActionMenuMgr::~QtxActionMenuMgr()
 {
   for ( MenuMap::Iterator itr = myMenus.begin(); itr != myMenus.end(); ++itr )
   {
-    delete itr.value()->menu();
-    delete itr.value();
+    QPointer<QAction> a = itr.value();
+    delete a->menu();
+    delete a;
   }
 
   delete myRoot;
