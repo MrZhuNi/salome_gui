@@ -327,8 +327,9 @@ int QtxActionMenuMgr::insert( const QString& title, const int pId, const int gro
 
   int gid = (id == -1 || eNode ) ? generateId() : id;
 
-  QAction* ma = new QAction( title, this );
-  ma->setMenu( new QMenu( 0 ) );
+  QMenu* menu = new QMenu( 0 );
+  QAction* ma = menu->menuAction();
+  ma->setText( title );
 
   connect( ma->menu(), SIGNAL( aboutToShow() ), this, SLOT( onAboutToShow() ) );
   connect( ma->menu(), SIGNAL( aboutToHide() ), this, SLOT( onAboutToHide() ) );

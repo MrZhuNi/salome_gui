@@ -652,8 +652,9 @@ void SUIT_Application::onActionChanged()
   actionChanged( ::qobject_cast<QAction*>( sender() ) );
 }
 
-void SUIT_Application::actionChanged( QAction* a )
+void SUIT_Application::actionChanged( QAction* )
 {
+  /*
   if ( !a )
     return;
 
@@ -682,4 +683,5 @@ void SUIT_Application::actionChanged( QAction* a )
 
   s->setKey( a->shortcut() );
   s->setEnabled( a->isEnabled() );
+  */
 }
