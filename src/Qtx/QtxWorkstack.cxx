@@ -1358,6 +1358,13 @@ QtxWorkstack::QtxWorkstack( QWidget* parent )
   connect( myActionsMap[Close], SIGNAL( triggered( bool ) ), this, SLOT( onCloseWindow() ) );
   connect( myActionsMap[Rename], SIGNAL( triggered( bool ) ), this, SLOT( onRename() ) );
 
+  // Action shortcut will work when action added in any widget.
+  for ( QMap<int, QAction*>::iterator it = myActionsMap.begin(); it != myActionsMap.end(); ++it )
+  {
+    addAction( it.value() );
+    it.value()->setShortcutContext( Qt::ApplicationShortcut );
+  }
+
   QVBoxLayout* base = new QVBoxLayout( this );
   base->setMargin( 0 );
 
