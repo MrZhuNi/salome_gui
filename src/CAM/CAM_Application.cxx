@@ -393,9 +393,9 @@ bool CAM_Application::activateModule( CAM_Module* mod )
       return false;
     }
   }
-
   updateCommandsStatus();
 
+  emit moduleActivated(myModule);
   return true;
 }
 

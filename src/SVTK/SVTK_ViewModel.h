@@ -26,10 +26,14 @@
 #include "SALOME_InteractiveObject.hxx"
 
 #include <QColor>
+#include <QMap>
 
 class QMouseEvent;
 
 class SVTK_ViewWindow;
+class CAM_Module;
+class CAM_Application;
+class CAM_Module;
 
 //! Extends two interfaces #SVTK_ViewModelBase and #SALOME_View 
 class SVTK_EXPORT SVTK_Viewer : public SVTK_ViewModelBase, public SALOME_View 
@@ -107,6 +111,10 @@ public:
   //! See #SALOME_View::Repaint()
   virtual void Repaint();
 
+
+  virtual void connectToApplication(CAM_Application* theApp);
+
+
 protected slots:
   void onMousePress(SUIT_ViewWindow*, QMouseEvent*);
   void onMouseMove(SUIT_ViewWindow*, QMouseEvent*);
@@ -115,12 +123,20 @@ protected slots:
   void onDumpView();
   void onChangeBgColor();
 
+  void onModuleActivated( CAM_Module* mod );
+
 private:
+  void updateToolBars();
+
+
   QColor myBgColor;
   vtkFloatingPointType myTrihedronSize;
   bool   myTrihedronRelative;
   bool   mySelectionEnabled;
   bool   myMultiSelectionEnabled;
+
+  CAM_Module* myActiveModule;
+  int myExtToolBarId;
 };
 
 #endif

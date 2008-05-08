@@ -36,11 +36,11 @@ salomeinclude_HEADERS= \
 	SVTK_FontWidget.h \
 	SVTK_CubeAxesActor2D.h \
 	SVTK_Functor.h \
-	SVTK_MainWindow.h \
 	SVTK_View.h \
 	SVTK_ViewManager.h \
 	SVTK_ViewModel.h \
 	SVTK_ViewWindow.h \
+	SVTK_MainWindow.h \
 	SVTK_Renderer.h \
 	SVTK_InteractorStyle.h \
 	SVTK_RenderWindowInteractor.h \
@@ -67,12 +67,12 @@ dist_libSVTK_la_SOURCES= \
 	SVTK_DialogBase.cxx \
 	SVTK_FontWidget.cxx \
 	SVTK_Trihedron.cxx \
-	SVTK_MainWindow.cxx \
 	SVTK_View.cxx \
 	SVTK_ViewManager.cxx \
 	SVTK_ViewModel.cxx \
 	SVTK_Renderer.cxx \
 	SVTK_ViewWindow.cxx \
+	SVTK_MainWindow.cxx \
 	SVTK_InteractorStyle.cxx \
 	SVTK_RenderWindowInteractor.cxx \
 	SVTK_GenericRenderWindowInteractor.cxx \
@@ -116,7 +116,7 @@ libSVTK_la_CPPFLAGS= \
 	$(VTK_INCLUDES) \
 	$(BOOST_CPPFLAGS) \
 	-I$(srcdir)/../Qtx -I$(srcdir)/../SUIT -I$(srcdir)/../OBJECT -I$(srcdir)/../Prs \
-	-I$(srcdir)/../VTKViewer
+	-I$(srcdir)/../VTKViewer -I$(srcdir)/../CAM -I$(srcdir)/../STD
 
 libSVTK_la_LDFLAGS= \
 	$(QT_MT_LIBS) \
@@ -124,7 +124,7 @@ libSVTK_la_LDFLAGS= \
 	$(VTK_LIBS) $(OGL_LIBS)
 
 libSVTK_la_LIBADD= ../Qtx/libqtx.la ../SUIT/libsuit.la ../OBJECT/libSalomeObject.la \
-		   ../Prs/libSalomePrs.la ../VTKViewer/libVTKViewer.la
+		   ../Prs/libSalomePrs.la ../VTKViewer/libVTKViewer.la ../CAM/libCAM.la 
 
 # Executable
 bin_PROGRAMS = SVTK

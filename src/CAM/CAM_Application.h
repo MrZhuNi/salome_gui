@@ -66,6 +66,10 @@ public:
 
   virtual void        createEmptyStudy();
 
+
+signals:
+  void                moduleActivated(CAM_Module*);
+
 protected:
   virtual SUIT_Study* createNewStudy();
   virtual void        updateCommandsStatus();

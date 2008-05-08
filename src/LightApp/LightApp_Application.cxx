@@ -561,6 +561,7 @@ void LightApp_Application::createActions()
       moduleAction->insertModule( *it, icon );
     }
 
+    
     connect( moduleAction, SIGNAL( moduleActivated( const QString& ) ), this, SLOT( onModuleActivation( const QString& ) ) );
     registerAction( ModulesListId, moduleAction );
   }
@@ -1297,6 +1298,7 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
       vm->setTrihedronSize( resMgr->doubleValue( "VTKViewer", "trihedron_size", vm->trihedronSize() ),
 			    resMgr->booleanValue( "VTKViewer", "relative_size", vm->trihedronRelative() ) );
       new LightApp_VTKSelector( vm, mySelMgr );
+      vm->connectToApplication(this);
     }
 #else
     viewMgr = new VTKViewer_ViewManager( activeStudy(), desktop() );
@@ -2551,6 +2553,7 @@ bool LightApp_Application::activateModule( CAM_Module* mod )
   if ( objectBrowser() )
     objectBrowser()->updateTree();
 
+  //emit moduleActivated(mod);
   return res;
 }
 
