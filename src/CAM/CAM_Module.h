@@ -37,6 +37,7 @@ class SUIT_Application;
 class CAM_Study;
 class CAM_DataModel;
 class CAM_Application;
+class CAM_ViewExtender;
 
 #ifdef WIN32
 #pragma warning( disable: 4251 )
@@ -75,6 +76,9 @@ public:
   virtual void           setToolShown( const bool );
   void                   setToolShown( QAction*, const bool );
   void                   setToolShown( const int, const bool );
+
+  //! Returns Module dedicated extension for Viewer. Returns 0 if module has no extension
+  virtual CAM_ViewExtender* getViewExtender() { return 0; }
 
 public slots:
   virtual bool           activateModule( SUIT_Study* );
