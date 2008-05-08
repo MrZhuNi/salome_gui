@@ -10,10 +10,6 @@
 
 %Import qtmod.sip
 
-%ExportedHeaderCode
-#include <SalomePyQt.h>
-%End
-
 class SALOME_Selection : QObject
 {
 %TypeHeaderCode

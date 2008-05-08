@@ -35,7 +35,6 @@
 #include <qapplication.h>
 #include <qdict.h>
 
-#include "utilities.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -43,6 +42,8 @@
 #include <SUIT_Session.h>
 
 #include "SALOMEDS_Tool.hxx"
+#include "utilities.h"
+#include "OpUtil.hxx"
 
 #include "SALOMEDSClient_ClientFactory.hxx"
 #include "SALOMEDSClient_IParameters.hxx"
@@ -565,7 +566,7 @@ void SalomeApp_Study::SetListOfFiles ( const char* theModuleName,
 std::string SalomeApp_Study::GetTmpDir ( const char* theURL, const bool  isMultiFile )
 {
   std::string anURLDir = SALOMEDS_Tool::GetDirFromPath(theURL);
-  std::string aTmpDir = isMultiFile ? anURLDir : SALOMEDS_Tool::GetTmpDir();
+  std::string aTmpDir = isMultiFile ? anURLDir : OpUtil_Dir::GetTmpDirByEnv("SALOME_TMP_DIR");
   return aTmpDir;
 }
 
