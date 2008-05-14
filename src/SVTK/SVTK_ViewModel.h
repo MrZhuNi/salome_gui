@@ -34,6 +34,7 @@ class SVTK_ViewWindow;
 class CAM_Module;
 class CAM_Application;
 class CAM_Module;
+class VTKViewer_Actor;
 
 //! Extends two interfaces #SVTK_ViewModelBase and #SALOME_View 
 class SVTK_EXPORT SVTK_Viewer : public SVTK_ViewModelBase, public SALOME_View 
@@ -114,6 +115,9 @@ public:
 
   virtual void connectToApplication(CAM_Application* theApp);
 
+ signals:
+  void actorAdded(SVTK_ViewWindow*, VTKViewer_Actor*);
+  void actorRemoved(SVTK_ViewWindow*, VTKViewer_Actor*);
 
 protected slots:
   void onMousePress(SUIT_ViewWindow*, QMouseEvent*);
@@ -124,6 +128,8 @@ protected slots:
   void onChangeBgColor();
 
   void onModuleActivated( CAM_Module* mod );
+  void onActorAdded(VTKViewer_Actor*);
+  void onActorRemoved(VTKViewer_Actor*);
 
 private:
   void updateToolBars();

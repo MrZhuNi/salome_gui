@@ -129,7 +129,12 @@ createView( SUIT_Desktop* theDesktop )
 
   aViewWindow->setBackgroundColor( backgroundColor() );
   aViewWindow->SetTrihedronSize( trihedronSize(), trihedronRelative() );
-	
+
+  connect(aViewWindow, SIGNAL( actorAdded(VTKViewer_Actor*) ), 
+	  this,  SLOT(onActorAdded(VTKViewer_Actor*)));
+  connect(aViewWindow, SIGNAL( actorRemoved(VTKViewer_Actor*) ), 
+	  this,  SLOT(onActorRemoved(VTKViewer_Actor*)));
+
   if (myActiveModule) {
     CAM_ViewExtender* aExtender = myActiveModule->getViewExtender();
     if (aExtender) {
@@ -519,21 +524,6 @@ SVTK_Viewer
 void SVTK_Viewer::connectToApplication( CAM_Application* theApp )
 {
   onModuleActivated(theApp->activeModule());
-//   CAM_Module* aModule =  dynamic_cast<CAM_Module*>(theApp->activeModule());
-//   if (aModule) {
-//     if (myActiveModule != aModule) {
-//       CAM_ViewExtender* aExtender = (myActiveModule)? myActiveModule->getViewExtender() : 0;
-//       if (aExtender)
-// 	aExtender->deactivate();
-
-//       myActiveModule = aModule;
-//       aExtender = myActiveModule->getViewExtender();
-//       if (aExtender)
-// 	aExtender->activate();
-
-//       updateToolBars();
-//     }
-//   }
   connect(theApp, SIGNAL(moduleActivated(CAM_Module*)), 
 	  this, SLOT(onModuleActivated(CAM_Module*)));
 }
@@ -546,12 +536,12 @@ void SVTK_Viewer::onModuleActivated( CAM_Module* mod )
     if (myActiveModule != aModule) {
       CAM_ViewExtender* aExtender = (myActiveModule)? myActiveModule->getViewExtender() : 0;
       if (aExtender)
-	aExtender->deactivate();
+	aExtender->deactivate(this);
 
       myActiveModule = aModule;
       aExtender = myActiveModule->getViewExtender();
       if (aExtender)
-	aExtender->activate();
+	aExtender->activate(this);
 
       updateToolBars();
     }
@@ -578,4 +568,14 @@ void SVTK_Viewer::updateToolBars()
     }
   }
   myExtToolBarId = aNewId;
+}
+
+void SVTK_Viewer::onActorAdded(VTKViewer_Actor* theActor)
+{
+  emit actorAdded((SVTK_ViewWindow*)sender(), theActor);
+}
+
+void SVTK_Viewer::onActorRemoved(VTKViewer_Actor* theActor)
+{
+  emit actorRemoved((SVTK_ViewWindow*)sender(), theActor);
 }

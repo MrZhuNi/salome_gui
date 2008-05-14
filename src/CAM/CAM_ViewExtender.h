@@ -23,6 +23,7 @@
 
 class QtxActionToolMgr;
 class QMenu;
+class SUIT_ViewModel;
 /*! 
   An interface which can be used as a module dedicated extension for Viewer
 */
@@ -32,8 +33,8 @@ public:
   //! Creates a New toolbar containing extending actions. Returns New Toolbar Id
   virtual int createToolbar(QtxActionToolMgr* ) = 0;
   virtual void contextMenuPopup(QMenu* ) = 0;
-  virtual void activate() = 0;
-  virtual void deactivate() = 0;
+  virtual void activate(SUIT_ViewModel*) = 0;
+  virtual void deactivate(SUIT_ViewModel*) = 0;
 };
 
 #endif

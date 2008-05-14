@@ -274,6 +274,8 @@ public slots:
 
 signals:
  void selectionChanged();
+ void actorAdded(VTKViewer_Actor*);
+ void actorRemoved(VTKViewer_Actor*);
 
 public slots:
   //! Redirect the request to #SVTK_Renderer::OnFrontView

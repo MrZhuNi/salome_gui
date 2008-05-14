@@ -688,12 +688,11 @@ SVTK_ViewWindow
 /*!
   Redirect the request to #SVTK_Renderer::AddActor
 */
-void
-SVTK_ViewWindow
-::AddActor( VTKViewer_Actor* theActor, 
+void SVTK_ViewWindow::AddActor( VTKViewer_Actor* theActor, 
 	    bool theUpdate )
 {
   myMainWindow->AddActor( theActor, theUpdate );
+  emit actorAdded(theActor);
 }
 
 /*!
@@ -705,6 +704,7 @@ SVTK_ViewWindow
 	       bool theUpdate )
 {
   myMainWindow->RemoveActor( theActor, theUpdate );
+  emit actorRemoved(theActor);
 }
 
 /*!
