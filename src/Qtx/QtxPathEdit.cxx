@@ -1,17 +1,17 @@
 // Copyright (C) 2005  OPEN CASCADE, CEA/DEN, EDF R&D, PRINCIPIA R&D
-// 
+//
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either 
+// License as published by the Free Software Foundation; either
 // version 2.1 of the License.
-// 
-// This library is distributed in the hope that it will be useful 
-// but WITHOUT ANY WARRANTY; without even the implied warranty of 
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+//
+// This library is distributed in the hope that it will be useful
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public  
-// License along with this library; if not, write to the Free Software 
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
@@ -59,14 +59,14 @@ static const char* browse_icon[] = {
   \brief The QtxPathEdit class represents a widget for file or directory
   path preference items editing.
 
-  The path preference item is represented as the line edit box for the 
+  The path preference item is represented as the line edit box for the
   direct path editing and small button clicking on which invokes browse
-  dialog box. The widget can be used in different modes: "Open File", 
+  dialog box. The widget can be used in different modes: "Open File",
   "Save File", "Select Directory". The mode defines the type of the
   standard browse dialog box which is invoked on the button clicking.
 
   Initial path value can be set with setPath() method. Chosen path
-  can be retrieved with the path() method. The widget mode can be set 
+  can be retrieved with the path() method. The widget mode can be set
   with setPathType() and retrieved with pathType() method.
 
   In addition, file/direcrory filters (wildcards) can be set with the
@@ -144,7 +144,7 @@ QString QtxPathEdit::path() const
 
 /*!
   \brief Set path.
-  \param txt file or directory path 
+  \param txt file or directory path
   \sa path()
 */
 void QtxPathEdit::setPath( const QString& txt )
@@ -176,8 +176,19 @@ void QtxPathEdit::setPathFilter( const QString& f )
   updateState();
 }
 
+bool QtxPathEdit::isReadOnly() const
+{
+  return myPath->isReadOnly();
+}
+
+void QtxPathEdit::setReadOnly( const bool on )
+{
+  myPath->setReadOnly( on );
+  myBrowse->setEnabled( !on );
+}
+
 /*!
-  \brief Called when user clicks "Browse" button. 
+  \brief Called when user clicks "Browse" button.
 
   Invokes standard browsng dialog box depending on the used widget mode.
 
@@ -186,9 +197,33 @@ void QtxPathEdit::setPathFilter( const QString& f )
 */
 void QtxPathEdit::onBrowse( bool /*on*/ )
 {
-  QString path;
   QString initial = QFileInfo( myPath->text() ).path();
-  switch ( pathType() )
+  QString path = browsePath( pathType(), initial );
+
+  if ( !path.isEmpty() )
+    myPath->setText( QDir::convertSeparators( path ) );
+
+  myPath->setFocus();
+}
+
+void QtxPathEdit::onTextChanged( const QString& txt )
+{
+  emit pathChanged( txt );
+}
+
+/*!
+  \brief Get internal line edit widget.
+  \return line edit box widget
+*/
+QLineEdit* QtxPathEdit::lineEdit() const
+{
+  return myPath;
+}
+
+QString QtxPathEdit::browsePath( const Qtx::PathType type, const QString& initial )
+{
+  QString path;
+  switch ( type )
   {
   case Qtx::PT_OpenFile:
     path = QFileDialog::getOpenFileName( myPath, QString(), initial, pathFilter() );
@@ -200,20 +235,7 @@ void QtxPathEdit::onBrowse( bool /*on*/ )
     path = QFileDialog::getExistingDirectory( myPath, QString(), initial );
     break;
   }
-
-  if ( !path.isEmpty() )
-    myPath->setText( QDir::convertSeparators( path ) ); 
-
-  myPath->setFocus();
-}
-
-/*!
-  \brief Get internal line edit widget.
-  \return line edit box widget
-*/
-QLineEdit* QtxPathEdit::lineEdit() const
-{
-  return myPath;
+  return path;
 }
 
 /*!
@@ -228,11 +250,12 @@ void QtxPathEdit::initialize()
   base->addWidget( myPath = new QLineEdit( this ) );
   myPath->setValidator( new QRegExpValidator( QRegExp( "^([\\w/]{2}|[A-Z]:)[^:;\\*\\?]*[\\w\\\\/\\.]$" ), myPath ) );
 
-  QToolButton* browse = new QToolButton( this );
-  browse->setIcon( QPixmap( browse_icon ) );
-  base->addWidget( browse );
+  myBrowse = new QToolButton( this );
+  myBrowse->setIcon( QPixmap( browse_icon ) );
+  base->addWidget( myBrowse );
 
-  connect( browse, SIGNAL( clicked( bool ) ), this, SLOT( onBrowse( bool ) ) );
+  connect( myBrowse, SIGNAL( clicked( bool ) ), this, SLOT( onBrowse( bool ) ) );
+  connect( myPath, SIGNAL( textChanged( const QString& ) ), this, SLOT( onTextChanged( const QString& ) ) );
 
   setFocusProxy( myPath );
 
