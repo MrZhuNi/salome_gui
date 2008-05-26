@@ -1082,8 +1082,8 @@ SVTK_InteractorStyle
 	      {
 		if(myLastHighlitedActor.GetPointer() && myLastHighlitedActor.GetPointer() != anActor)
 		  myLastHighlitedActor->Highlight( this, aSelectionEvent, false );
-		myLastHighlitedActor = anActor;
 	      }
+	    myLastHighlitedActor = anActor;
 	  } 
 	else 
 	  {
