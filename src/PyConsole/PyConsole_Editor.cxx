@@ -150,8 +150,14 @@ protected:
 //      SUIT_Session::SetPythonExecuted( true ); // disable GUI user actions
       int ret = getInterp()->run( myCommand.toLatin1() );
 //      SUIT_Session::SetPythonExecuted(false); // enable GUI user actions
-      if ( ret < 0 )
-	      myState = PyInterp_Event::ERROR;
+	  if ( ret < 0 ) {
+        myState = 
+#ifdef WIN32
+        PyInterp_Event::EV_ERROR;
+#else
+        PyInterp_Event::ERROR;
+#endif
+	  }
       else if ( ret > 0 )
 	      myState = PyInterp_Event::INCOMPLETE;
       myError  = getInterp()->getverr().c_str();
@@ -851,8 +857,11 @@ void PyConsole_Editor::customEvent( QEvent* event )
 {
   switch( event->type() )
   {
-  case PyInterp_Event::OK:
+#ifdef WIN32
+  case PyInterp_Event::EV_ERROR:
+#else
   case PyInterp_Event::ERROR:
+#endif
   {
     PyInterp_Event* pe = dynamic_cast<PyInterp_Event*>( event );
     if ( pe )

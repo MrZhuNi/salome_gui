@@ -37,6 +37,7 @@
 
 // ========================================================
 // little trick - we do not have debug python libraries
+#ifndef WIN32
 #ifdef _DEBUG
 
 #undef _DEBUG
@@ -49,6 +50,7 @@
 
 #endif // _DEBUG
 
+#endif  // WIN32
 // ========================================================
 // avoid warning messages
 #ifdef WIN32
