@@ -89,6 +89,7 @@ win32:QMAKE_EXTRA_COMPILERS += copy_hdr
 
 ICONS   = resources/*.png
 
+win32:SOURCES+=$$ICONS
 win32:Resource=$$ICONS
 win32:copy_res.name = Install resources ${QMAKE_FILE_IN}
 win32:copy_res.commands = type ${QMAKE_FILE_IN} > ${QMAKE_FILE_OUT}
