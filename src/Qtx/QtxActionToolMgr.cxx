@@ -121,7 +121,7 @@ int QtxActionToolMgr::createToolBar( const QString& title, const int tid, QMainW
   if ( !tb )
   {
     tb = new QtxToolBar( true, tbw );
-    //mainWindow()->addToolBar( tb );
+    mainWindow()->addToolBar( tb ); /// VSV !!! Has to be removed after VVTK removal
     tb->setWindowTitle( title );
     tb->setObjectName( title );
   }

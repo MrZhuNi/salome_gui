@@ -222,10 +222,12 @@ SVTK_Viewer
       thePopup->addAction( (*it)->toggleViewAction() );
     aView->RefreshDumpImage();
   }
-//   SALOME_ViewExtender* aExtender = myActiveModule->getViewExtender();
-//   if (aExtender) {
-//     aExtender->contextMenuPopup(thePopup);
-//   }
+  if (myActiveModule) {
+    CAM_ViewExtender* aExtender = myActiveModule->getViewExtender();
+    if (aExtender) {
+      aExtender->contextMenuPopup(thePopup);
+    }
+  }
 }
 
 /*!
