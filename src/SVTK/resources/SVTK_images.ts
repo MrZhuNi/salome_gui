@@ -17,5 +17,17 @@
         <source>ICON_SVTK_UPDATE_RATE</source>
         <translation>vtk_view_update_rate.png</translation>
     </message>
+    <message>
+        <source>ICON_SVTK_VIEW_PARAMETERS</source>
+        <translation>vtk_view_parameters.png</translation>
+    </message>
+    <message>
+        <source>ICON_SVTK_VIEW_PARALLEL</source>
+        <translation>vtk_view_parallel.png</translation>
+    </message>
+    <message>
+        <source>ICON_SVTK_VIEW_PERSPECTIVE</source>
+        <translation>vtk_view_perspective.png</translation>
+    </message>
 </context>
 </TS>

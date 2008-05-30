@@ -48,6 +48,7 @@
 #include "SVTK_UpdateRateDlg.h"
 #include "SVTK_CubeAxesDlg.h"
 #include "SVTK_SetRotationPointDlg.h"
+#include "SVTK_ViewParameterDlg.h"
 #include "SVTK_MainWindow.h"
 #include "SVTK_Event.h"
 #include "SVTK_Renderer.h"
@@ -97,6 +98,8 @@ SVTK_MainWindow
   myCubeAxesDlg = new SVTK_CubeAxesDlg( action( GraduatedAxes ), this, "SVTK_CubeAxesDlg" );
   mySetRotationPointDlg = new SVTK_SetRotationPointDlg
     ( action( ChangeRotationPointId ), this, "SVTK_SetRotationPointDlg" );
+  myViewParameterDlg = new SVTK_ViewParameterDlg
+    ( action( ViewParametersId ), this, "SVTK_ViewParameterDlg" );
 }
 
 /*!
@@ -538,6 +541,15 @@ SVTK_MainWindow
   connect(anAction, SIGNAL(activated()), this, SLOT(onRightView()));
   mgr->registerAction( anAction, RightId );
 
+  // View Parameters
+  anAction = new QtxAction(tr("MNU_VIEWPARAMETERS_VIEW"), 
+			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_VIEW_PARAMETERS" ) ),
+			   tr( "MNU_VIEWPARAMETERS_VIEW" ), 0, this);
+  anAction->setStatusTip(tr("DSC_VIEWPARAMETERS_VIEW"));
+  anAction->setCheckable(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onViewParameters(bool)));
+  mgr->registerAction( anAction, ViewParametersId );
+
   // Reset
   anAction = new QtxAction(tr("MNU_RESET_VIEW"), 
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_RESET" ) ),
@@ -623,6 +635,8 @@ SVTK_MainWindow
   mgr->append( aViewsAction, myToolBar );
 
   mgr->append( ResetId, myToolBar );
+
+  mgr->append( ViewParametersId, myToolBar );
 
   mgr->append( UpdateRate, myToolBar );
   mgr->append( NonIsometric, myToolBar );
@@ -723,6 +737,46 @@ SVTK_MainWindow
 ::activateStartPointSelection()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartPointSelection,0);
+}
+
+/*!
+  Modify view parameters
+*/
+void
+SVTK_MainWindow
+::onViewParameters(bool theIsActivate)
+{
+  if(theIsActivate){
+    myViewParameterDlg->addObserver();
+    myViewParameterDlg->show();
+  }else
+    myViewParameterDlg->hide();
+}
+
+/*!
+  Set the gravity center as a focal point
+*/
+void SVTK_MainWindow::activateSetFocalPointGravity()
+{
+  myEventDispatcher->InvokeEvent(SVTK::SetFocalPointGravity, 0);
+}
+
+/*!
+  Set the selected point as a focal point
+*/
+void SVTK_MainWindow::activateSetFocalPointSelected()
+{
+  myEventDispatcher->InvokeEvent(SVTK::SetFocalPointSelected, 0);
+}
+
+/*!
+  Set the point selected by user as a focal point
+*/
+void
+SVTK_MainWindow
+::activateStartFocalPointSelection()
+{
+  myEventDispatcher->InvokeEvent(SVTK::StartFocalPointSelection,0);
 }
 
 /*!

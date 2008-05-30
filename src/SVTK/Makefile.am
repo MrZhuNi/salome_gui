@@ -52,6 +52,7 @@ salomeinclude_HEADERS= \
 	SVTK_Event.h \
 	SVTK_ViewModelBase.h \
 	SVTK_SetRotationPointDlg.h \
+	SVTK_ViewParameterDlg.h \
 	SVTK_Extension.h
 
 dist_libSVTK_la_SOURCES= \
@@ -79,6 +80,7 @@ dist_libSVTK_la_SOURCES= \
 	SVTK_SpaceMouse.cxx \
 	SVTK_Selector.cxx \
 	SVTK_SetRotationPointDlg.cxx \
+	SVTK_ViewParameterDlg.cxx \
 	SVTK_Extension.cxx
 
 EXTRA_DIST+= SVTK_SelectorDef.h SVTK_Trihedron.h
@@ -97,14 +99,18 @@ MOC_FILES= \
 	SVTK_MainWindow_moc.cxx \
 	SVTK_ViewModel_moc.cxx \
 	SVTK_View_moc.cxx \
-	SVTK_SetRotationPointDlg_moc.cxx
+	SVTK_SetRotationPointDlg_moc.cxx \
+	SVTK_ViewParameterDlg_moc.cxx
 nodist_libSVTK_la_SOURCES= $(MOC_FILES)
 
 dist_salomeres_DATA=\
 	resources/vtk_view_graduated_axes.png \
 	resources/vtk_view_scaling.png \
 	resources/vtk_view_update_rate.png \
-	resources/vtk_view_rotation_point.png
+	resources/vtk_view_rotation_point.png \
+	resources/vtk_view_parallel.png \
+	resources/vtk_view_perspective.png \
+	resources/vtk_view_parameters.png
 
 nodist_salomeres_DATA= \
 	SVTK_msg_en.qm \

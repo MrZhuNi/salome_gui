@@ -48,6 +48,7 @@ class SVTK_UpdateRateDlg;
 class SVTK_CubeAxesActor2D;
 class SVTK_CubeAxesDlg;
 class SVTK_SetRotationPointDlg;
+class SVTK_ViewParameterDlg;
 class SVTK_Renderer;
 class SVTK_Selector;
 
@@ -222,6 +223,12 @@ public:
   void onResetView();     
   void onFitAll();
 
+  void onViewParameters(bool theIsActivate);
+
+  void activateSetFocalPointGravity();
+  void activateSetFocalPointSelected();
+  void activateStartFocalPointSelection();
+
   void onViewTrihedron(); 
   void onViewCubeAxes();
 
@@ -252,7 +259,8 @@ public:
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, 
 	 ChangeRotationPointId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
-	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate};
+	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate,
+	 ViewParametersId };
 
   SUIT_ViewWindow* myViewWindow;
 
@@ -260,6 +268,7 @@ public:
   SVTK_UpdateRateDlg* myUpdateRateDlg;
   SVTK_CubeAxesDlg* myCubeAxesDlg;
   SVTK_SetRotationPointDlg* mySetRotationPointDlg;
+  SVTK_ViewParameterDlg* myViewParameterDlg;
 
   vtkSmartPointer<vtkObject> myEventDispatcher;
   int myToolBar;

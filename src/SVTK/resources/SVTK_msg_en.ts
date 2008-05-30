@@ -153,6 +153,14 @@
         <source>SVTK_IMAGE_FILES</source>
         <translation>Images Files (*.bmp *.png *.jpg *.jpeg *.pdf *.ps *.eps)</translation>
     </message>
+    <message>
+        <source>MNU_VIEWPARAMETERS_VIEW</source>
+        <translation>Change View Parameters</translation>
+    </message>
+    <message>
+        <source>DSC_VIEWPARAMETERS_VIEW</source>
+        <translation>Change the parameters of the view</translation>
+    </message>
 </context>
 <context>
     <name>SVTK_AxisWidget</name>
@@ -338,6 +346,105 @@
     <message>
         <source>DLG_TITLE</source>
         <translation>Set Rotation Point</translation>
+    </message>
+</context>
+<context>
+    <name>SVTK_ViewParameterDlg</name>
+    <message>
+        <source>LBL_X</source>
+        <translation>X :</translation>
+    </message>
+    <message>
+        <source>LBL_Y</source>
+        <translation>Y :</translation>
+    </message>
+    <message>
+        <source>LBL_Z</source>
+        <translation>Z :</translation>
+    </message>
+    <message>
+        <source>LBL_DX</source>
+        <translation>DX :</translation>
+    </message>
+    <message>
+        <source>LBL_DY</source>
+        <translation>DY :</translation>
+    </message>
+    <message>
+        <source>LBL_DZ</source>
+        <translation>DZ :</translation>
+    </message>
+    <message>
+        <source>PROJECTION_MODE</source>
+        <translation>Projection Mode</translation>
+    </message>
+    <message>
+        <source>ORTHOGONAL_MODE</source>
+        <translation>Orthogonal</translation>
+    </message>
+    <message>
+        <source>PERSPECTIVE_MODE</source>
+        <translation>Perspective</translation>
+    </message>
+    <message>
+        <source>USE_BBCENTER</source>
+        <translation>Use Bounding Box Center</translation>
+    </message>
+    <message>
+        <source>LBL_TOBBCENTER</source>
+        <translation>Set to Bounding Box Center</translation>
+    </message>
+      <message>
+        <source>LBL_TOORIGIN</source>
+        <translation>Set to Origin</translation>
+    </message>
+  <message>
+        <source>LBL_SELECTPOINT</source>
+        <translation>Select Point from View</translation>
+    </message>
+    <message>
+        <source>FOCAL_POINT</source>
+        <translation>Focal Point</translation>
+    </message>
+    <message>
+        <source>CAMERA_POSITION</source>
+        <translation>Camera Position</translation>
+    </message>
+    <message>
+        <source>WORLD_COORDINATES</source>
+        <translation>World Coordinates</translation>
+    </message>
+    <message>
+        <source>FOCAL_RELATIVE</source>
+        <translation>Relative to Focal Point</translation>
+    </message>
+    <message>
+        <source>PROJECTION_DIRECTION</source>
+        <translation>Projection Direction :</translation>
+    </message>
+    <message>
+        <source>FOCAL_DISTANCE</source>
+        <translation>Focal Distance :</translation>
+    </message>
+    <message>
+        <source>VIEW_UP_DIRECTION</source>
+        <translation>View Up Direction :</translation>
+    </message>
+    <message>
+        <source>ZOOMING</source>
+        <translation>Zooming</translation>
+    </message>
+    <message>
+        <source>LBL_SCALE</source>
+        <translation>Scale</translation>
+    </message>
+    <message>
+        <source>LBL_VIEW_ANGLE</source>
+        <translation>View Angle</translation>
+    </message>
+    <message>
+        <source>DLG_TITLE</source>
+        <translation>View Parameters</translation>
     </message>
 </context>
 <context>

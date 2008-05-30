@@ -283,6 +283,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   void startSpin();
 
   void startPointSelection();
+  void startFocalPointSelection();
 
  protected:
   void loadCursors();
@@ -336,11 +337,14 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   unsigned long                   myCurrRotationPointType;
   unsigned long                   myPrevRotationPointType;
 
+  unsigned long                   myCurrFocalPointType;
+  unsigned long                   myPrevFocalPointType;
+
   double                          myRotationPointX;
   double                          myRotationPointY;
   double                          myRotationPointZ;
 
-  vtkSmartPointer<SVTK_Actor>     myHighlightRotationPointActor;
+  vtkSmartPointer<SVTK_Actor>     myHighlightSelectionPointActor;
   vtkSmartPointer<vtkPointPicker> myPointPicker;
   
   vtkFloatingPointType            myBBCenter[3];
