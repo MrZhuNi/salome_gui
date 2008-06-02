@@ -49,6 +49,7 @@
 #include <vtkCallbackCommand.h>
 #include <vtkRenderer.h>
 #include <vtkCamera.h>
+#include <vtkGenericRenderWindowInteractor.h>
 
 using namespace std;
 
@@ -90,12 +91,6 @@ SVTK_ViewParameterDlg::SVTK_ViewParameterDlg(QtxAction* theAction,
   // Focal point
   QGroupBox* aGroupBoxFocal = new QGroupBox(tr("FOCAL_POINT"), this);
   QVBoxLayout* aLayout2 = new QVBoxLayout(aGroupBoxFocal);
-
-  /*
-  myIsBBCenter = new QCheckBox(tr("USE_BBCENTER"), aGroupBoxFocal);
-  aLayout2->addWidget(myIsBBCenter);
-  connect(myIsBBCenter, SIGNAL(stateChanged(int)), SLOT(onBBCenterChecked()));
-  */
 
   myToBBCenter = new QPushButton(aGroupBoxFocal);
   myToBBCenter->setText(tr("LBL_TOBBCENTER"));
@@ -408,7 +403,6 @@ void SVTK_ViewParameterDlg::addObserver()
 {
   if ( !myIsObserverAdded ) {
     vtkInteractorStyle* aIStyle = myRWInteractor->GetInteractorStyle();
-    aIStyle->AddObserver(SVTK::BBCenterChanged, myEventCallbackCommand.GetPointer(), myPriority);
     aIStyle->AddObserver(SVTK::FocalPointChanged, myEventCallbackCommand.GetPointer(), myPriority);
 
     vtkRenderer *aRenderer = myRWInteractor->getRenderer();
@@ -429,18 +423,6 @@ void SVTK_ViewParameterDlg::ProcessEvents(vtkObject* vtkNotUsed(theObject),
   SVTK_ViewParameterDlg* self = reinterpret_cast<SVTK_ViewParameterDlg*>(theClientData);
   vtkFloatingPointType* aCoord;
   switch ( theEvent ) {
-  case SVTK::BBCenterChanged:
-    if ( theCallData )
-    {
-      aCoord = (vtkFloatingPointType*)theCallData;
-      self->myBusy = true;
-      self->myFocalX->setText( QString::number(aCoord[0]) );
-      self->myFocalY->setText( QString::number(aCoord[1]) );
-      self->myFocalZ->setText( QString::number(aCoord[2]) );
-      self->myBusy = false;
-      self->onFocalCoordChanged();
-    }
-    break;
   case SVTK::FocalPointChanged:
     if ( theCallData )
     {
@@ -524,7 +506,9 @@ void SVTK_ViewParameterDlg::onProjectionModeChanged(int mode)
 
   vtkCamera* aCamera = myRWInteractor->getRenderer()->GetActiveCamera();
   aCamera->SetParallelProjection(aBtn == 0);
-  myRWInteractor->getRenderer()->Render();
+
+  // update view
+  myRWInteractor->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
 
   myScaleBox->setVisible(aBtn == 0);
   myViewAngleBox->setVisible(aBtn == 1);
@@ -576,7 +560,12 @@ void SVTK_ViewParameterDlg::onFocalCoordChanged()
   aCamera->SetFocalPoint(myFocalX->text().toDouble(),
 			 myFocalY->text().toDouble(),
 			 myFocalZ->text().toDouble());
-  myRWInteractor->getRenderer()->Render();
+
+  aCamera->OrthogonalizeViewUp();
+  myRWInteractor->getRenderer()->ResetCameraClippingRange();
+
+  // update view
+  myRWInteractor->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
 
   myMainWindow->activateSetFocalPointSelected();
 
@@ -591,6 +580,12 @@ void SVTK_ViewParameterDlg::onCameraCoordChanged()
   aCamera->SetPosition(myCameraX->text().toDouble(),
 		       myCameraY->text().toDouble(),
 		       myCameraZ->text().toDouble());
+
+  aCamera->OrthogonalizeViewUp();
+  myRWInteractor->getRenderer()->ResetCameraClippingRange();
+
+  // update view
+  myRWInteractor->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
 
   //updateProjection();
 }
@@ -617,7 +612,9 @@ void SVTK_ViewParameterDlg::onViewDirectionChanged()
   aCamera->SetViewUp(myViewDirX->text().toDouble(),
 		     myViewDirY->text().toDouble(),
 		     myViewDirZ->text().toDouble());
-  myRWInteractor->getRenderer()->Render();
+
+  // update view
+  myRWInteractor->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
 }
 
 void SVTK_ViewParameterDlg::onZoomChanged()
@@ -634,7 +631,9 @@ void SVTK_ViewParameterDlg::onZoomChanged()
     aCamera->SetViewAngle(myViewAngle->text().toDouble());
     break;
   }
-  myRWInteractor->getRenderer()->Render();
+
+  // update view
+  myRWInteractor->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
 }
 
 void SVTK_ViewParameterDlg::onClickClose()

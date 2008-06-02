@@ -1561,7 +1561,7 @@ void SVTK_InteractorStyle::ProcessEvents( vtkObject* object,
 	self->myCurrFocalPointType = SVTK::SetFocalPointGravity;
 	if ( ComputeBBCenter(self->GetCurrentRenderer(),aCenter) ) {
 	  // invoke event for update coordinates in SVTK_ViewParameterDlg
-	  self->InvokeEvent(SVTK::BBCenterChanged,(void*)aCenter);
+	  self->InvokeEvent(SVTK::FocalPointChanged,(void*)aCenter);
 	}
 	return;
       case SVTK::StartFocalPointSelection:
