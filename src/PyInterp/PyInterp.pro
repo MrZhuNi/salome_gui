@@ -12,7 +12,7 @@ win32:LIBS  += -L$$(PYTHONLIB) -lpython25_d
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared
 
-win32:DEFINES += WNT WIN32
+win32:DEFINES += WNT WIN32 HAVE_DEBUG_PYTHON
 DEFINES += PYINTERP_EXPORTS
 
 HEADERS = *.h

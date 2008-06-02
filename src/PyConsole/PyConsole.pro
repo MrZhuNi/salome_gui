@@ -7,12 +7,12 @@ OBJECTS_DIR = ../../$(CONFIG_ID)/obj/$$TARGET
 
 INCLUDEPATH += ../../include $$(PYTHONINC)
 unix:LIBS  += -L../../$(CONFIG_ID)/lib -L$$(PYTHONLIB) -lpython2.5 -lSUIT -lPyInterp
-win32:LIBS  += -L../../$(CONFIG_ID)/lib -L$$(PYTHONLIB) -lpython25_d -lSUIT -lPyInterp
+win32:LIBS  += -L../../$(CONFIG_ID)/lib -L$$(PYTHONLIB) -lpython25_d -lSUIT -lPyInterp -lQtx
 
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared
 
-win32:DEFINES += WNT WIN32
+win32:DEFINES += WNT WIN32 HAVE_DEBUG_PYTHON
 DEFINES += PYCONSOLE_EXPORTS
 
 HEADERS = *.h
