@@ -510,8 +510,14 @@ void SVTK_ViewParameterDlg::onProjectionModeChanged(int mode)
   // update view
   myRWInteractor->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
 
-  myScaleBox->setVisible(aBtn == 0);
-  myViewAngleBox->setVisible(aBtn == 1);
+  if ( aBtn == 0 ) {
+    myViewAngleBox->setVisible(false);
+    myScaleBox->setVisible(true);
+  }
+  else {
+    myScaleBox->setVisible(false);
+    myViewAngleBox->setVisible(true);
+  }
 }
 
 void SVTK_ViewParameterDlg::onPositionModeChanged(int mode)
