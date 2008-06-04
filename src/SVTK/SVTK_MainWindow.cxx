@@ -541,15 +541,6 @@ SVTK_MainWindow
   connect(anAction, SIGNAL(activated()), this, SLOT(onRightView()));
   mgr->registerAction( anAction, RightId );
 
-  // View Parameters
-  anAction = new QtxAction(tr("MNU_VIEWPARAMETERS_VIEW"), 
-			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_VIEW_PARAMETERS" ) ),
-			   tr( "MNU_VIEWPARAMETERS_VIEW" ), 0, this);
-  anAction->setStatusTip(tr("DSC_VIEWPARAMETERS_VIEW"));
-  anAction->setCheckable(true);
-  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onViewParameters(bool)));
-  mgr->registerAction( anAction, ViewParametersId );
-
   // Reset
   anAction = new QtxAction(tr("MNU_RESET_VIEW"), 
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_RESET" ) ),
@@ -592,6 +583,15 @@ SVTK_MainWindow
   anAction->setCheckable(true);
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onUpdateRate(bool)));
   mgr->registerAction( anAction, UpdateRate );
+
+  // View Parameters
+  anAction = new QtxAction(tr("MNU_VIEWPARAMETERS_VIEW"), 
+			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_VIEW_PARAMETERS" ) ),
+			   tr( "MNU_VIEWPARAMETERS_VIEW" ), 0, this);
+  anAction->setStatusTip(tr("DSC_VIEWPARAMETERS_VIEW"));
+  anAction->setCheckable(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onViewParameters(bool)));
+  mgr->registerAction( anAction, ViewParametersId );
 }
 
 #if defined(WIN32) && !defined(_DEBUG)
@@ -636,11 +636,11 @@ SVTK_MainWindow
 
   mgr->append( ResetId, myToolBar );
 
-  mgr->append( ViewParametersId, myToolBar );
-
   mgr->append( UpdateRate, myToolBar );
   mgr->append( NonIsometric, myToolBar );
   mgr->append( GraduatedAxes, myToolBar );
+
+  mgr->append( ViewParametersId, myToolBar );
 }
 
 /*!
