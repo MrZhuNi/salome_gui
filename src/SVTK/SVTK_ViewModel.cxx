@@ -139,7 +139,7 @@ createView( SUIT_Desktop* theDesktop )
     CAM_ViewExtender* aExtender = myActiveModule->getViewExtender();
     if (aExtender) {
       QtxActionToolMgr* aMgr = aViewWindow->toolMgr();
-      myExtToolBarId = aExtender->createToolbar(aMgr);
+      myExtToolBarId = aExtender->createToolbar(aViewWindow);
     }
   }
   return aViewWindow;
@@ -565,7 +565,7 @@ void SVTK_Viewer::updateToolBars()
 	if (myExtToolBarId != -1)
 	  aMgr->removeToolBar(myExtToolBarId);
 	if (aExtender)
-	  aNewId = aExtender->createToolbar(aMgr);
+	  aNewId = aExtender->createToolbar(aViewWnd);
       }
     }
   }

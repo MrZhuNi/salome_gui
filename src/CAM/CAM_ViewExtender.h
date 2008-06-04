@@ -24,6 +24,7 @@
 class QtxActionToolMgr;
 class QMenu;
 class SUIT_ViewModel;
+class SUIT_ViewWindow;
 /*! 
   An interface which can be used as a module dedicated extension for Viewer
 */
@@ -31,7 +32,7 @@ class CAM_EXPORT CAM_ViewExtender
 {
 public:
   //! Creates a New toolbar containing extending actions. Returns New Toolbar Id
-  virtual int createToolbar(QtxActionToolMgr* ) = 0;
+  virtual int createToolbar(SUIT_ViewWindow* ) = 0;
   virtual void contextMenuPopup(QMenu* ) = 0;
   virtual void activate(SUIT_ViewModel*) = 0;
   virtual void deactivate(SUIT_ViewModel*) = 0;
