@@ -161,6 +161,14 @@
         <source>DSC_VIEWPARAMETERS_VIEW</source>
         <translation>Change the parameters of the view</translation>
     </message>
+    <message>
+        <source>MNU_SVTK_PROJECTION_MODE</source>
+        <translation>Projection Mode</translation>
+    </message>
+    <message>
+        <source>DSC_SVTK_PROJECTION_MODE</source>
+        <translation>Set orthogonal or perspective projection of the view</translation>
+    </message>
 </context>
 <context>
     <name>SVTK_AxisWidget</name>
