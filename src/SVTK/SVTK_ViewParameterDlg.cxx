@@ -449,6 +449,7 @@ void SVTK_ViewParameterDlg::updateData()
 
   int aParallel = aCamera->GetParallelProjection();
   myProjectionMode->button(aParallel?0:1)->setChecked(true);
+  onProjectionModeChanged( myProjectionMode->checkedId() );
 
   double focal[3], pos[3], vup[3], proj[3], dist, scale, angle;
 
@@ -506,6 +507,8 @@ void SVTK_ViewParameterDlg::onProjectionModeChanged(int mode)
 
   vtkCamera* aCamera = myRWInteractor->getRenderer()->GetActiveCamera();
   aCamera->SetParallelProjection(aBtn == 0);
+
+  myMainWindow->activateProjectionMode(aBtn);
 
   // update view
   myRWInteractor->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);

@@ -225,6 +225,8 @@ public:
 
   void onViewParameters(bool theIsActivate);
 
+  void activateProjectionMode(int);
+
   void activateSetFocalPointGravity();
   void activateSetFocalPointSelected();
   void activateStartFocalPointSelection();
@@ -238,6 +240,8 @@ public:
 
   void onAdjustTrihedron();
   void onAdjustCubeAxes();
+
+  void onProjectionMode(int mode);
 
  public:
   QImage dumpView();
@@ -260,7 +264,7 @@ public:
 	 ChangeRotationPointId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
 	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate,
-	 ViewParametersId };
+	 ProjectionModeId, ViewParametersId };
 
   SUIT_ViewWindow* myViewWindow;
 

@@ -32,6 +32,7 @@
 
 #include <vtkGenericRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkCamera.h>
 
 #include <QtxAction.h>
 #include <QtxMultiAction.h>
@@ -55,6 +56,7 @@
 #include "SVTK_RenderWindowInteractor.h"
 #include "SVTK_InteractorStyle.h"
 #include "SVTK_Selector.h"
+#include "SVTK_ComboAction.h"
 
 /*!
   Constructor
@@ -584,6 +586,14 @@ SVTK_MainWindow
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onUpdateRate(bool)));
   mgr->registerAction( anAction, UpdateRate );
 
+  // Set projection mode
+  SVTK_ComboAction* aModeAction = new SVTK_ComboAction(tr("MNU_SVTK_PROJECTION_MODE"), this);
+  aModeAction->setStatusTip(tr("DSC_SVTK_PROJECTION_MODE"));
+  aModeAction->insertItem(theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_VIEW_PARALLEL" ) ) );
+  aModeAction->insertItem(theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_VIEW_PERSPECTIVE" ) ) );
+  connect(aModeAction, SIGNAL(triggered(int)), this, SLOT(onProjectionMode(int)));
+  mgr->registerAction( aModeAction, ProjectionModeId );
+
   // View Parameters
   anAction = new QtxAction(tr("MNU_VIEWPARAMETERS_VIEW"), 
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_VIEW_PARAMETERS" ) ),
@@ -640,6 +650,7 @@ SVTK_MainWindow
   mgr->append( NonIsometric, myToolBar );
   mgr->append( GraduatedAxes, myToolBar );
 
+  mgr->append( ProjectionModeId, myToolBar );
   mgr->append( ViewParametersId, myToolBar );
 }
 
@@ -740,6 +751,18 @@ SVTK_MainWindow
 }
 
 /*!
+  Set the view projection mode: orthogonal or perspective
+*/
+void
+SVTK_MainWindow
+::onProjectionMode(int mode)
+{
+  vtkCamera* aCamera = getRenderer()->GetActiveCamera();
+  aCamera->SetParallelProjection(mode==0);
+  GetInteractor()->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
+}
+
+/*!
   Modify view parameters
 */
 void
@@ -777,6 +800,12 @@ SVTK_MainWindow
 ::activateStartFocalPointSelection()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartFocalPointSelection,0);
+}
+
+void SVTK_MainWindow::activateProjectionMode(int mode)
+{
+  SVTK_ComboAction* a = ::qobject_cast<SVTK_ComboAction*>( action(ProjectionModeId) );
+  if ( a ) a->setCurrentIndex(mode);
 }
 
 /*!
