@@ -169,6 +169,14 @@
         <source>DSC_SVTK_PROJECTION_MODE</source>
         <translation>Set orthogonal or perspective projection of the view</translation>
     </message>
+    <message>
+        <source>DSC_SVTK_STYLE_SWITCH</source>
+        <translation>Interactiion style switch</translation>
+    </message>
+    <message>
+        <source>MNU_SVTK_STYLE_SWITCH</source>
+        <translation>Interaction Style Switch</translation>
+    </message>
 </context>
 <context>
     <name>SVTK_AxisWidget</name>

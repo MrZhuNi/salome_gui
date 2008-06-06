@@ -61,11 +61,10 @@
 /*!
   Constructor
 */
-SVTK_MainWindow
-::SVTK_MainWindow(QWidget* theParent, 
-		  const char* theName,
-		  SUIT_ResourceMgr* theResourceMgr,
-		  SUIT_ViewWindow* theViewWindow) :
+SVTK_MainWindow::SVTK_MainWindow(QWidget* theParent, 
+				 const char* theName,
+				 SUIT_ResourceMgr* theResourceMgr,
+				 SUIT_ViewWindow* theViewWindow) :
   QMainWindow(theParent),
   myViewWindow(theViewWindow)
 {
@@ -76,9 +75,7 @@ SVTK_MainWindow
 /*!
   To initialize the class
 */
-void
-SVTK_MainWindow
-::Initialize(SVTK_RenderWindowInteractor* theInteractor)
+void SVTK_MainWindow::Initialize(SVTK_RenderWindowInteractor* theInteractor)
 {
   myToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL"), -1, this );
 
@@ -107,8 +104,7 @@ SVTK_MainWindow
 /*!
   Destructor
 */
-SVTK_MainWindow
-::~SVTK_MainWindow()
+SVTK_MainWindow::~SVTK_MainWindow()
 {
 }
 
@@ -123,9 +119,7 @@ QtxActionToolMgr* SVTK_MainWindow::toolMgr() const
 /*!
   \return used SVTK_RenderWindowInteractor
 */
-SVTK_RenderWindowInteractor*
-SVTK_MainWindow
-::GetInteractor()
+SVTK_RenderWindowInteractor* SVTK_MainWindow::GetInteractor()
 {
   return myInteractor;
 }
@@ -133,9 +127,7 @@ SVTK_MainWindow
 /*!
   \return used #vtkRenderWindowInteractor (obsolete)
 */
-vtkRenderWindowInteractor*
-SVTK_MainWindow
-::getInteractor()
+vtkRenderWindowInteractor* SVTK_MainWindow::getInteractor()
 {
   return GetInteractor()->GetDevice();
 }
@@ -143,9 +135,7 @@ SVTK_MainWindow
 /*!
   \return used vtkRenderWindow (obsolete)
 */
-vtkRenderWindow*
-SVTK_MainWindow
-::getRenderWindow()
+vtkRenderWindow* SVTK_MainWindow::getRenderWindow()
 {
   return GetInteractor()->getRenderWindow();
 }
@@ -154,9 +144,7 @@ SVTK_MainWindow
   To repaint the view
   \param theUpdateTrihedron - adjust trihedron
 */
-void
-SVTK_MainWindow
-::Repaint(bool theUpdateTrihedron)
+void SVTK_MainWindow::Repaint(bool theUpdateTrihedron)
 {
   if(theUpdateTrihedron) 
     GetRenderer()->OnAdjustTrihedron();
@@ -170,9 +158,7 @@ SVTK_MainWindow
 /*!
   To invoke a VTK event on SVTK_RenderWindowInteractor instance
 */
-void
-SVTK_MainWindow
-::InvokeEvent(unsigned long theEvent, void* theCallData)
+void SVTK_MainWindow::InvokeEvent(unsigned long theEvent, void* theCallData)
 {
   GetInteractor()->InvokeEvent(theEvent,theCallData);
 }
@@ -180,9 +166,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_RenderWindowInteractor::GetInteractorStyle
 */
-vtkInteractorStyle*
-SVTK_MainWindow
-::GetInteractorStyle()
+vtkInteractorStyle* SVTK_MainWindow::GetInteractorStyle()
 {
   return GetInteractor()->GetInteractorStyle();
 }
@@ -190,9 +174,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_RenderWindowInteractor::PushInteractorStyle
 */
-void
-SVTK_MainWindow
-::PushInteractorStyle(vtkInteractorStyle* theStyle)
+void SVTK_MainWindow::PushInteractorStyle(vtkInteractorStyle* theStyle)
 {
   GetInteractor()->PushInteractorStyle(theStyle);
 }
@@ -200,9 +182,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_RenderWindowInteractor::PopInteractorStyle
 */
-void
-SVTK_MainWindow
-::PopInteractorStyle()
+void SVTK_MainWindow::PopInteractorStyle()
 {
   GetInteractor()->PopInteractorStyle();
 }
@@ -210,9 +190,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_RenderWindowInteractor::GetSelector
 */
-SVTK_Selector*
-SVTK_MainWindow
-::GetSelector()
+SVTK_Selector* SVTK_MainWindow::GetSelector()
 {
   return GetInteractor()->GetSelector();
 }
@@ -220,9 +198,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_RenderWindowInteractor::SelectionMode
 */
-Selection_Mode
-SVTK_MainWindow
-::SelectionMode()
+Selection_Mode SVTK_MainWindow::SelectionMode()
 {
   return GetSelector()->SelectionMode();
 }
@@ -230,9 +206,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_RenderWindowInteractor::SetSelectionMode
 */
-void
-SVTK_MainWindow
-::SetSelectionMode(Selection_Mode theMode)
+void SVTK_MainWindow::SetSelectionMode(Selection_Mode theMode)
 {
   GetSelector()->SetSelectionMode(theMode);
 }
@@ -240,9 +214,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_RenderWindowInteractor::GetRenderer
 */
-SVTK_Renderer* 
-SVTK_MainWindow
-::GetRenderer()
+SVTK_Renderer* SVTK_MainWindow::GetRenderer()
 {
   return GetInteractor()->GetRenderer();
 }
@@ -250,9 +222,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_RenderWindowInteractor::getRenderer
 */
-vtkRenderer* 
-SVTK_MainWindow
-::getRenderer()
+vtkRenderer* SVTK_MainWindow::getRenderer()
 {
   return GetInteractor()->getRenderer();
 }
@@ -261,9 +231,7 @@ SVTK_MainWindow
   Sets background color of the view
   \param theColor - new background color
 */
-void
-SVTK_MainWindow
-::SetBackgroundColor(const QColor& theColor)
+void SVTK_MainWindow::SetBackgroundColor(const QColor& theColor)
 {
   getRenderer()->SetBackground(theColor.red()/255.0, 
 			       theColor.green()/255.0,
@@ -273,9 +241,7 @@ SVTK_MainWindow
 /*!
   \return background color of the view
 */
-QColor
-SVTK_MainWindow
-::BackgroundColor()
+QColor SVTK_MainWindow::BackgroundColor()
 {
   vtkFloatingPointType aBackgroundColor[3];
   getRenderer()->GetBackground(aBackgroundColor);
@@ -287,9 +253,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_Renderer::GetScale
 */
-void
-SVTK_MainWindow
-::GetScale( double theScale[3] ) 
+void SVTK_MainWindow::GetScale( double theScale[3] ) 
 {
   GetRenderer()->GetScale( theScale );
 }
@@ -297,9 +261,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_Renderer::SetScale
 */
-void
-SVTK_MainWindow
-::SetScale( double theScale[3] ) 
+void SVTK_MainWindow::SetScale( double theScale[3] ) 
 {
   GetRenderer()->SetScale( theScale );
   Repaint();
@@ -308,10 +270,8 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_Renderer::AddActor
 */
-void
-SVTK_MainWindow
-::AddActor(VTKViewer_Actor* theActor, 
-	   bool theIsUpdate)
+void SVTK_MainWindow::AddActor(VTKViewer_Actor* theActor, 
+			       bool theIsUpdate)
 {
   GetRenderer()->AddActor(theActor);
   if(theIsUpdate) 
@@ -321,10 +281,8 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_Renderer::RemoveActor
 */
-void
-SVTK_MainWindow
-::RemoveActor(VTKViewer_Actor* theActor, 
-	      bool theIsUpdate)
+void SVTK_MainWindow::RemoveActor(VTKViewer_Actor* theActor, 
+				  bool theIsUpdate)
 {
   GetRenderer()->RemoveActor(theActor);
   if(theIsUpdate) 
@@ -334,9 +292,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_Renderer::GetTrihedronSize
 */
-vtkFloatingPointType
-SVTK_MainWindow
-::GetTrihedronSize()
+vtkFloatingPointType SVTK_MainWindow::GetTrihedronSize()
 {
   return GetRenderer()->GetTrihedronSize();
 }
@@ -344,9 +300,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_Renderer::SetTrihedronSize
 */
-void 
-SVTK_MainWindow
-::SetTrihedronSize( const vtkFloatingPointType theSize, const bool theRelative )
+void SVTK_MainWindow::SetTrihedronSize( const vtkFloatingPointType theSize, const bool theRelative )
 {
   GetRenderer()->SetTrihedronSize(theSize, theRelative);
   Repaint();
@@ -356,9 +310,7 @@ SVTK_MainWindow
 /*! If parameter theIsForcedUpdate is true, recalculate parameters for
  *  trihedron and cube axes, even if trihedron and cube axes is invisible.
  */
-void
-SVTK_MainWindow
-::AdjustActors()
+void SVTK_MainWindow::AdjustActors()
 {
   GetRenderer()->AdjustActors();
   Repaint();
@@ -367,9 +319,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_Renderer::IsTrihedronDisplayed
 */
-bool
-SVTK_MainWindow
-::IsTrihedronDisplayed()
+bool SVTK_MainWindow::IsTrihedronDisplayed()
 {
   return GetRenderer()->IsTrihedronDisplayed();
 }
@@ -377,9 +327,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_Renderer::IsCubeAxesDisplayed
 */
-bool
-SVTK_MainWindow
-::IsCubeAxesDisplayed()
+bool SVTK_MainWindow::IsCubeAxesDisplayed()
 {
   return GetRenderer()->IsCubeAxesDisplayed();
 }
@@ -387,9 +335,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_Renderer::GetTrihedron
 */
-VTKViewer_Trihedron*  
-SVTK_MainWindow
-::GetTrihedron() 
+VTKViewer_Trihedron* SVTK_MainWindow::GetTrihedron() 
 { 
   return GetRenderer()->GetTrihedron(); 
 }
@@ -397,9 +343,7 @@ SVTK_MainWindow
 /*!
   Redirect the request to SVTK_Renderer::GetCubeAxes
 */
-SVTK_CubeAxesActor2D* 
-SVTK_MainWindow
-::GetCubeAxes() 
+SVTK_CubeAxesActor2D* SVTK_MainWindow::GetCubeAxes() 
 { 
   return GetRenderer()->GetCubeAxes(); 
 }
@@ -407,16 +351,12 @@ SVTK_MainWindow
 /*!
   \return toolbar of svtk main window
 */
-QToolBar* 
-SVTK_MainWindow
-::getToolBar()
+QToolBar* SVTK_MainWindow::getToolBar()
 {
   return toolMgr()->toolBar( myToolBar );
 }
 
-void
-SVTK_MainWindow
-::SetEventDispatcher(vtkObject* theDispatcher)
+void SVTK_MainWindow::SetEventDispatcher(vtkObject* theDispatcher)
 {
   myEventDispatcher = theDispatcher;
 }
@@ -428,9 +368,7 @@ SVTK_MainWindow
 /*!
   Creates all actions of svtk main window
 */
-void
-SVTK_MainWindow
-::createActions(SUIT_ResourceMgr* theResourceMgr)
+void SVTK_MainWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 {
   QtxAction* anAction;
   QtxActionToolMgr* mgr = toolMgr();
@@ -602,6 +540,15 @@ SVTK_MainWindow
   anAction->setCheckable(true);
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onViewParameters(bool)));
   mgr->registerAction( anAction, ViewParametersId );
+
+  // Switch between interaction styles
+  anAction = new QtxAction(tr("MNU_SVTK_STYLE_SWITCH"), 
+			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_STYLE_SWITCH" ) ),
+			   tr( "MNU_SVTK_STYLE_SWITCH" ), 0, this);
+  anAction->setStatusTip(tr("DSC_SVTK_STYLE_SWITCH"));
+  anAction->setCheckable(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchInteractionStyle(bool)));
+  mgr->registerAction( anAction, SwitchInteractionStyleId );
 }
 
 #if defined(WIN32) && !defined(_DEBUG)
@@ -611,9 +558,7 @@ SVTK_MainWindow
 /*!
   Creates toolbar of svtk main window
 */
-void
-SVTK_MainWindow
-::createToolBar()
+void SVTK_MainWindow::createToolBar()
 {
   QtxActionToolMgr* mgr = toolMgr();
   
@@ -652,14 +597,14 @@ SVTK_MainWindow
 
   mgr->append( ProjectionModeId, myToolBar );
   mgr->append( ViewParametersId, myToolBar );
+
+  mgr->append( SwitchInteractionStyleId, myToolBar );
 }
 
 /*!
   Custom show event handler
 */
-void
-SVTK_MainWindow
-::showEvent( QShowEvent * theEvent ) 
+void SVTK_MainWindow::showEvent( QShowEvent * theEvent ) 
 {
   emit Show( theEvent );
 }
@@ -667,9 +612,7 @@ SVTK_MainWindow
 /*!
   Custom hide event handler
 */
-void
-SVTK_MainWindow
-::hideEvent( QHideEvent * theEvent ) 
+void SVTK_MainWindow::hideEvent( QHideEvent * theEvent ) 
 {
   emit Hide( theEvent );
 }
@@ -677,9 +620,7 @@ SVTK_MainWindow
 /*!
   Starts zoom transformation
 */
-void
-SVTK_MainWindow
-::activateZoom()
+void SVTK_MainWindow::activateZoom()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartZoom,0);
 }
@@ -687,9 +628,7 @@ SVTK_MainWindow
 /*!
   Starts panning transformation
 */
-void
-SVTK_MainWindow
-::activatePanning()
+void SVTK_MainWindow::activatePanning()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartPan,0);
 }
@@ -697,9 +636,7 @@ SVTK_MainWindow
 /*!
   Starts rotation transformation
 */
-void
-SVTK_MainWindow
-::activateRotation()
+void SVTK_MainWindow::activateRotation()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartRotate,0);
 }
@@ -707,9 +644,7 @@ SVTK_MainWindow
 /*!
   Change rotation point
 */
-void
-SVTK_MainWindow
-::onChangeRotationPoint(bool theIsActivate)
+void SVTK_MainWindow::onChangeRotationPoint(bool theIsActivate)
 {
   if(theIsActivate){
     mySetRotationPointDlg->addObserver();
@@ -723,9 +658,7 @@ SVTK_MainWindow
 /*!
   Set the gravity center as a rotation point
 */
-void
-SVTK_MainWindow
-::activateSetRotationGravity()
+void SVTK_MainWindow::activateSetRotationGravity()
 {
   myEventDispatcher->InvokeEvent(SVTK::SetRotateGravity,0);
 }
@@ -733,9 +666,7 @@ SVTK_MainWindow
 /*!
   Set the selected point as a rotation point
 */
-void
-SVTK_MainWindow
-::activateSetRotationSelected(void* theData)
+void SVTK_MainWindow::activateSetRotationSelected(void* theData)
 {
   myEventDispatcher->InvokeEvent(SVTK::ChangeRotationPoint,theData);
 }
@@ -743,9 +674,7 @@ SVTK_MainWindow
 /*!
   Set the point selected by user as a rotation point
 */
-void
-SVTK_MainWindow
-::activateStartPointSelection()
+void SVTK_MainWindow::activateStartPointSelection()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartPointSelection,0);
 }
@@ -753,9 +682,7 @@ SVTK_MainWindow
 /*!
   Set the view projection mode: orthogonal or perspective
 */
-void
-SVTK_MainWindow
-::onProjectionMode(int mode)
+void SVTK_MainWindow::onProjectionMode(int mode)
 {
   vtkCamera* aCamera = getRenderer()->GetActiveCamera();
   aCamera->SetParallelProjection(mode==0);
@@ -765,9 +692,7 @@ SVTK_MainWindow
 /*!
   Modify view parameters
 */
-void
-SVTK_MainWindow
-::onViewParameters(bool theIsActivate)
+void SVTK_MainWindow::onViewParameters(bool theIsActivate)
 {
   if(theIsActivate){
     myViewParameterDlg->addObserver();
@@ -811,9 +736,7 @@ void SVTK_MainWindow::activateProjectionMode(int mode)
 /*!
   Starts global panning transformation
 */
-void
-SVTK_MainWindow
-::activateGlobalPanning()
+void SVTK_MainWindow::activateGlobalPanning()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartGlobalPan,0);
 }
@@ -821,19 +744,22 @@ SVTK_MainWindow
 /*!
   Starts window fit transformation
 */
-void
-SVTK_MainWindow
-::activateWindowFit()
+void SVTK_MainWindow::activateWindowFit()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartFitArea,0);
 }
 
 /*!
+  Switches "keyboard free" interaction style on/off
+*/
+void SVTK_MainWindow::onSwitchInteractionStyle(bool theOn)
+{
+}
+
+/*!
   Processes transformation "front view"
 */
-void
-SVTK_MainWindow
-::onFrontView()
+void SVTK_MainWindow::onFrontView()
 {
   GetRenderer()->OnFrontView();
   Repaint();
@@ -842,9 +768,7 @@ SVTK_MainWindow
 /*!
   Processes transformation "back view"
 */
-void
-SVTK_MainWindow
-::onBackView()
+void SVTK_MainWindow::onBackView()
 {
   GetRenderer()->OnBackView();
   Repaint();
@@ -853,9 +777,7 @@ SVTK_MainWindow
 /*!
   Processes transformation "top view"
 */
-void
-SVTK_MainWindow
-::onTopView()
+void SVTK_MainWindow::onTopView()
 {
   GetRenderer()->OnTopView();
   Repaint();
@@ -864,9 +786,7 @@ SVTK_MainWindow
 /*!
   Processes transformation "bottom view"
 */
-void
-SVTK_MainWindow
-::onBottomView()
+void SVTK_MainWindow::onBottomView()
 {
   GetRenderer()->OnBottomView();
   Repaint();
@@ -875,9 +795,7 @@ SVTK_MainWindow
 /*!
   Processes transformation "left view"
 */
-void
-SVTK_MainWindow
-::onLeftView()
+void SVTK_MainWindow::onLeftView()
 {
   GetRenderer()->OnLeftView();
   Repaint();
@@ -886,9 +804,7 @@ SVTK_MainWindow
 /*!
   Processes transformation "right view"
 */
-void
-SVTK_MainWindow
-::onRightView()
+void SVTK_MainWindow::onRightView()
 {
   GetRenderer()->OnRightView();
   Repaint();
@@ -897,9 +813,7 @@ SVTK_MainWindow
 /*!
   Processes transformation "reset view": sets default orientation of viewport camera
 */
-void
-SVTK_MainWindow
-::onResetView()
+void SVTK_MainWindow::onResetView()
 {
   GetRenderer()->OnResetView();
   Repaint();
@@ -908,9 +822,7 @@ SVTK_MainWindow
 /*!
   Processes transformation "fit all"
 */
-void
-SVTK_MainWindow
-::onFitAll()
+void SVTK_MainWindow::onFitAll()
 {
   GetRenderer()->OnFitAll();
   Repaint();
@@ -919,9 +831,7 @@ SVTK_MainWindow
 /*!
   Shows trihedron
 */
-void 
-SVTK_MainWindow
-::onViewTrihedron()
+void SVTK_MainWindow::onViewTrihedron()
 {
   GetRenderer()->OnViewTrihedron();
   Repaint();
@@ -930,17 +840,13 @@ SVTK_MainWindow
 /*!
   Shows cube axes
 */
-void
-SVTK_MainWindow
-::onViewCubeAxes()
+void SVTK_MainWindow::onViewCubeAxes()
 {
   GetRenderer()->OnViewCubeAxes();
   Repaint();
 }
 
-void
-SVTK_MainWindow
-::onUpdateRate(bool theIsActivate)
+void SVTK_MainWindow::onUpdateRate(bool theIsActivate)
 {
   if(theIsActivate){
     myUpdateRateDlg->Update();
@@ -949,9 +855,7 @@ SVTK_MainWindow
     myUpdateRateDlg->hide();
 }
 
-void
-SVTK_MainWindow
-::onNonIsometric(bool theIsActivate)
+void SVTK_MainWindow::onNonIsometric(bool theIsActivate)
 {
   if(theIsActivate){
     myNonIsometricDlg->Update();
@@ -960,9 +864,7 @@ SVTK_MainWindow
     myNonIsometricDlg->hide();
 }
 
-void
-SVTK_MainWindow
-::onGraduatedAxes(bool theIsActivate)
+void SVTK_MainWindow::onGraduatedAxes(bool theIsActivate)
 {
   if(theIsActivate){
     myCubeAxesDlg->Update();
@@ -971,16 +873,12 @@ SVTK_MainWindow
     myCubeAxesDlg->hide();
 }
 
-void
-SVTK_MainWindow
-::onAdjustTrihedron()
+void SVTK_MainWindow::onAdjustTrihedron()
 {   
   GetRenderer()->OnAdjustTrihedron();
 }
 
-void
-SVTK_MainWindow
-::onAdjustCubeAxes()
+void SVTK_MainWindow::onAdjustCubeAxes()
 {   
   GetRenderer()->OnAdjustCubeAxes();
 }
@@ -988,9 +886,7 @@ SVTK_MainWindow
 /*!
   \return QImage, containing all scene rendering in window
 */
-QImage
-SVTK_MainWindow
-::dumpView()
+QImage SVTK_MainWindow::dumpView()
 {
   QPixmap px = QPixmap::grabWindow( GetInteractor()->winId() );
   return px.toImage();
