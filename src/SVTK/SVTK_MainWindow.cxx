@@ -804,7 +804,7 @@ SVTK_MainWindow
 
 void SVTK_MainWindow::activateProjectionMode(int mode)
 {
-  SVTK_ComboAction* a = ::qobject_cast<SVTK_ComboAction*>( action(ProjectionModeId) );
+  SVTK_ComboAction* a = ::qobject_cast<SVTK_ComboAction*>( toolMgr()->action( ProjectionModeId ) );
   if ( a ) a->setCurrentIndex(mode);
 }
 
