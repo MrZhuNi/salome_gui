@@ -1591,6 +1591,11 @@ void SVTK_InteractorStyle::ProcessEvents( vtkObject* object,
 */
 void SVTK_InteractorStyle::OnChar()
 {
+  char key = GetInteractor()->GetKeyCode();
+  switch ( key ) {
+  case '+': ControllerIncrement()->Increase(); break;
+  case '-': ControllerIncrement()->Decrease(); break;
+  }
 }
 
 /*!
@@ -1677,6 +1682,27 @@ int SVTK_ControllerIncrement::Decrease()
 {
   if (myIncrement>1){
     --myIncrement;
+  }
+  return myIncrement;
+}
+
+vtkStandardNewMacro(SVTK_GeomControllerIncrement);
+SVTK_GeomControllerIncrement::SVTK_GeomControllerIncrement()
+{
+}
+SVTK_GeomControllerIncrement::~SVTK_GeomControllerIncrement()
+{
+}
+int SVTK_GeomControllerIncrement::Increase()
+{
+  myIncrement*=2;
+  return myIncrement;
+}
+int SVTK_GeomControllerIncrement::Decrease()
+{
+  myIncrement/=2;
+  if (myIncrement<1){
+    myIncrement=1;
   }
   return myIncrement;
 }

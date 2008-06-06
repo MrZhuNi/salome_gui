@@ -49,10 +49,10 @@
 #endif
 
 //
-//! Control the value of increment  in SALOME way.
+//! Control the value of increment  in arithmetic progression mode.
 /*!
   This class controls of value of increment,
-  for pan/rotate/zoom operations in SALOME way
+  for pan/rotate/zoom operations in arithmetic progression mode
 */
 class SVTK_EXPORT SVTK_ControllerIncrement : public vtkObject{
  public:
@@ -78,6 +78,30 @@ class SVTK_EXPORT SVTK_ControllerIncrement : public vtkObject{
  private:
   SVTK_ControllerIncrement(const SVTK_ControllerIncrement&);//Not implemented
   void operator=(const SVTK_ControllerIncrement&);          //Not implemented
+};
+
+//
+//! Control the value of increment  in geometric progression mode.
+/*!
+  This class controls of value of increment,
+  for pan/rotate/zoom operations in geometric progression mode.
+*/
+class SVTK_EXPORT SVTK_GeomControllerIncrement : public SVTK_ControllerIncrement{
+ public:
+  vtkTypeMacro(SVTK_GeomControllerIncrement, SVTK_ControllerIncrement);
+  static SVTK_GeomControllerIncrement* New();
+
+  //! Increace the increment value by add 1
+  virtual int Increase();
+
+  //! Decreace the increment value by subtract 1
+  virtual int Decrease();
+ protected:
+  SVTK_GeomControllerIncrement();
+  virtual ~SVTK_GeomControllerIncrement();
+ private:
+  SVTK_GeomControllerIncrement(const SVTK_GeomControllerIncrement&);//Not implemented
+  void operator=(const SVTK_GeomControllerIncrement&);              //Not implemented
 };
 //
 //! Control the behaviour of KeyDown event in SALOME way.

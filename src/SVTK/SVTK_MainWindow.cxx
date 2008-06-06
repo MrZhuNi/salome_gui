@@ -55,6 +55,7 @@
 #include "SVTK_Renderer.h"
 #include "SVTK_RenderWindowInteractor.h"
 #include "SVTK_InteractorStyle.h"
+#include "SVTK_KeyFreeInteractorStyle.h"
 #include "SVTK_Selector.h"
 #include "SVTK_ComboAction.h"
 
@@ -66,10 +67,13 @@ SVTK_MainWindow::SVTK_MainWindow(QWidget* theParent,
 				 SUIT_ResourceMgr* theResourceMgr,
 				 SUIT_ViewWindow* theViewWindow) :
   QMainWindow(theParent),
-  myViewWindow(theViewWindow)
+  myViewWindow(theViewWindow),
+  myKeyFreeInteractorStyle(SVTK_KeyFreeInteractorStyle::New())
 {
   setObjectName(theName);
   setWindowFlags( windowFlags() & ~Qt::Window );
+  // specific of vtkSmartPointer
+  myKeyFreeInteractorStyle->Delete();
 }
 
 /*!
@@ -563,6 +567,7 @@ void SVTK_MainWindow::createToolBar()
   QtxActionToolMgr* mgr = toolMgr();
   
   mgr->append( DumpId, myToolBar );
+  mgr->append( SwitchInteractionStyleId, myToolBar );
   mgr->append( ViewTrihedronId, myToolBar );
 
   QtxMultiAction* aScaleAction = new QtxMultiAction( this );
@@ -597,8 +602,6 @@ void SVTK_MainWindow::createToolBar()
 
   mgr->append( ProjectionModeId, myToolBar );
   mgr->append( ViewParametersId, myToolBar );
-
-  mgr->append( SwitchInteractionStyleId, myToolBar );
 }
 
 /*!
@@ -754,6 +757,19 @@ void SVTK_MainWindow::activateWindowFit()
 */
 void SVTK_MainWindow::onSwitchInteractionStyle(bool theOn)
 {
+  if (theOn) {
+    // keep the same style extensions
+    SVTK_InteractorStyle* aStyle = (SVTK_InteractorStyle*)GetInteractorStyle();
+    if ( aStyle ) {
+      myKeyFreeInteractorStyle->SetControllerIncrement(aStyle->ControllerIncrement());
+      myKeyFreeInteractorStyle->SetControllerOnKeyDown(aStyle->ControllerOnKeyDown());
+    }
+
+    PushInteractorStyle(myKeyFreeInteractorStyle.GetPointer());
+  }
+  else {
+    PopInteractorStyle();
+  }
 }
 
 /*!

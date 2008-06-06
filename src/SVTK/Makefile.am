@@ -43,6 +43,7 @@ salomeinclude_HEADERS= \
 	SVTK_MainWindow.h \
 	SVTK_Renderer.h \
 	SVTK_InteractorStyle.h \
+	SVTK_KeyFreeInteractorStyle.h \
 	SVTK_RenderWindowInteractor.h \
 	SVTK_GenericRenderWindowInteractor.h \
 	SVTK_Selector.h \
@@ -76,6 +77,7 @@ dist_libSVTK_la_SOURCES= \
 	SVTK_ViewWindow.cxx \
 	SVTK_MainWindow.cxx \
 	SVTK_InteractorStyle.cxx \
+	SVTK_KeyFreeInteractorStyle.cxx \
 	SVTK_RenderWindowInteractor.cxx \
 	SVTK_GenericRenderWindowInteractor.cxx \
 	SVTK_SpaceMouse.cxx \
@@ -113,7 +115,8 @@ dist_salomeres_DATA=\
 	resources/vtk_view_rotation_point.png \
 	resources/vtk_view_parallel.png \
 	resources/vtk_view_perspective.png \
-	resources/vtk_view_parameters.png
+	resources/vtk_view_parameters.png \
+	resources/vtk_view_style_switch.png
 
 nodist_salomeres_DATA= \
 	SVTK_msg_en.qm \

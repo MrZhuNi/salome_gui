@@ -51,6 +51,7 @@ class SVTK_SetRotationPointDlg;
 class SVTK_ViewParameterDlg;
 class SVTK_Renderer;
 class SVTK_Selector;
+class SVTK_KeyFreeInteractorStyle;
 
 class VTKViewer_Trihedron;
 class VTKViewer_Actor;
@@ -220,14 +221,11 @@ public:
  protected:  
   virtual QtxActionToolMgr* toolMgr() const;
 
-  void
-  createActions(SUIT_ResourceMgr* theResourceMgr);
+  void createActions(SUIT_ResourceMgr* theResourceMgr);
 
-  void
-  createToolBar();
+  void createToolBar();
 
-  void
-  SetEventDispatcher(vtkObject* theDispatcher);
+  void SetEventDispatcher(vtkObject* theDispatcher);
 
   QtxAction* action( int ) const;
 
@@ -249,6 +247,7 @@ public:
   int myToolBar;
 
   SVTK_RenderWindowInteractor* myInteractor;
+  vtkSmartPointer<SVTK_KeyFreeInteractorStyle> myKeyFreeInteractorStyle;
 };
 
 #ifdef WIN32
