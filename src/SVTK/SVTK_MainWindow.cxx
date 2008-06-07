@@ -600,8 +600,8 @@ void SVTK_MainWindow::createToolBar()
   mgr->append( NonIsometric, myToolBar );
   mgr->append( GraduatedAxes, myToolBar );
 
-  mgr->append( ProjectionModeId, myToolBar );
   mgr->append( ViewParametersId, myToolBar );
+  mgr->append( ProjectionModeId, myToolBar );
 }
 
 /*!
