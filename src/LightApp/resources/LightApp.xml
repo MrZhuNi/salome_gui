@@ -89,7 +89,7 @@
     <parameter name="speed_mode" value="0" />
     <parameter name="spacemouse_func1_btn" value="1" />
     <parameter name="spacemouse_func2_btn" value="2" />
-    <parameter name="spacemouse_func3_btn" value="9" />
+    <parameter name="spacemouse_func5_btn" value="9" />
  </section>
  <section name="Plot2d" >
     <!-- Plot2d viewer preferences -->
