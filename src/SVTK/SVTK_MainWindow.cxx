@@ -294,6 +294,29 @@ void SVTK_MainWindow::RemoveActor(VTKViewer_Actor* theActor,
 }
 
 /*!
+  Redirect the request to SVTK_InteractorStyle::SetTrihedronSize
+*/
+void SVTK_MainWindow::SetIncrementalSpeed( const int theValue, const int theMode )
+{
+  if ( (SVTK_InteractorStyle*)GetInteractorStyle() )
+    ((SVTK_InteractorStyle*)GetInteractorStyle())->SetIncrementSpeed(theValue, theMode);
+}
+
+/*!
+  Redirect the request to SVTK_InteractorStyle
+*/
+void SVTK_MainWindow::SetSMButtons( const int theBtn1, const int theBtn2, const int theBtn3 )
+{
+  int val = theBtn1;
+  myEventDispatcher->InvokeEvent(SVTK::SetSMDecreaseSpeedEvent, &val);
+  val = theBtn2;
+  myEventDispatcher->InvokeEvent(SVTK::SetSMIncreaseSpeedEvent, &val);
+  val = theBtn3;
+  myEventDispatcher->InvokeEvent(SVTK::SetSMDominantCombinedSwitchEvent, &val);
+}
+
+
+/*!
   Redirect the request to SVTK_Renderer::GetTrihedronSize
 */
 vtkFloatingPointType SVTK_MainWindow::GetTrihedronSize()
@@ -770,6 +793,9 @@ void SVTK_MainWindow::onSwitchInteractionStyle(bool theOn)
   else {
     PopInteractorStyle();
   }
+
+  // update action state if method is called outside
+  action(SwitchInteractionStyleId)->setChecked( theOn );
 }
 
 /*!

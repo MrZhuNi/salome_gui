@@ -139,6 +139,12 @@ public:
   virtual void RemoveActor(VTKViewer_Actor* theActor, 
 			   bool theIsUpdate = false);
 
+  //! Redirect the request to #SVTK_InteractorStyle::SetIncrementalSpeed
+  void SetIncrementalSpeed( const int, const int = 0 );
+
+  //! Redirect the request to #SVTK_InteractorStyle::SetIncrementalSpeed
+  void SetSMButtons( const int, const int, const int );
+
   //! Redirect the request to #SVTK_Renderer::GetTrihedronSize
   vtkFloatingPointType GetTrihedronSize();
 

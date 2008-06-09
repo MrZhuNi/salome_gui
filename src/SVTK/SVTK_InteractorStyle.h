@@ -162,77 +162,52 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   
 
   //! Generate special #SVTK_SelectionEvent
-  virtual
-  SVTK_SelectionEvent*
-  GetSelectionEvent();
+  virtual SVTK_SelectionEvent* GetSelectionEvent();
 
   //! Generate special #SVTK_SelectionEvent with flipped Y coordinate
-  virtual
-  SVTK_SelectionEvent*
-  GetSelectionEventFlipY();
+  virtual SVTK_SelectionEvent* GetSelectionEventFlipY();
 
   //! Redefined in order to add an observer (callback) for custom event (space mouse event)
-  virtual
-  void
-  SetInteractor( vtkRenderWindowInteractor* );
+  virtual void SetInteractor( vtkRenderWindowInteractor* );
 
   //! To invoke #vtkRenderWindowInteractor::CreateTimer
-  virtual 
-  void
-  Render();
+  virtual void Render();
 
   //! To implement cached rendering
-  virtual
-  void
-  OnTimer();
+  virtual void OnTimer();
 
   //! To reset reset view
-  virtual
-  void
-  OnConfigure();
+  virtual void OnConfigure();
 
   //! To handle mouse move event
-  virtual 
-  void
-  OnMouseMove();
+  virtual void OnMouseMove();
 
   //! To handle left mouse button down event (reimplemented from #vtkInteractorStyle)
-  virtual
-  void
-  OnLeftButtonDown();
+  virtual void OnLeftButtonDown();
 
   //! To handle left mouse button up event (reimplemented from #vtkInteractorStyle)
-  virtual
-  void
-  OnLeftButtonUp();
+  virtual void OnLeftButtonUp();
 
   //! To handle middle mouse button down event (reimplemented from #vtkInteractorStyle)
-  virtual
-  void
-  OnMiddleButtonDown();
+  virtual void OnMiddleButtonDown();
 
   //! To handle middle mouse button up event (reimplemented from #vtkInteractorStyle)
-  virtual
-  void
-  OnMiddleButtonUp();
+  virtual void OnMiddleButtonUp();
 
   //! To handle right mouse button down event (reimplemented from #vtkInteractorStyle)
-  virtual
-  void
-  OnRightButtonDown();
+  virtual void OnRightButtonDown();
 
   //! To handle right mouse button up event (reimplemented from #vtkInteractorStyle)
-  virtual
-  void
-  OnRightButtonUp();
+  virtual void OnRightButtonUp();
 
   //! To handle keyboard event (reimplemented from #vtkInteractorStyle)
-  virtual
-  void
-  OnChar();
+  virtual void OnChar();
 
   //! To set current increment controller 
   void SetControllerIncrement(SVTK_ControllerIncrement*);
+
+  //! To modify current increment controller 
+  void SetIncrementSpeed(const int, const int = 0);
 
   //! To get current increment controller 
   SVTK_ControllerIncrement* ControllerIncrement();

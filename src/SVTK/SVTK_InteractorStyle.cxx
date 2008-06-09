@@ -1642,11 +1642,27 @@ SVTK_ControllerOnKeyDown* SVTK_InteractorStyle::ControllerOnKeyDown()
 }
 
 /*!
-  To get current increment controller
+  To set current increment controller
 */
 void SVTK_InteractorStyle::SetControllerIncrement(SVTK_ControllerIncrement* theController)
 {
   myControllerIncrement=theController;
+}
+
+/*!
+  To modify current increment controller
+*/
+void SVTK_InteractorStyle::SetIncrementSpeed(const int theValue, const int theMode)
+{
+  SVTK_ControllerIncrement* c = 0;
+  switch (theMode) {
+  case 0: c = SVTK_ControllerIncrement::New(); break;
+  case 1: c = SVTK_GeomControllerIncrement::New(); break;
+  }
+  c->SetStartValue(theValue);
+
+  SetControllerIncrement(c);
+  c->Delete();
 }
 
 /*!

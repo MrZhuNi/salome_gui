@@ -77,6 +77,33 @@ public:
   //! Set size of trihedron of the viewer (see #SVTK_Renderer::SetTrihedronSize)
   void setTrihedronSize( const vtkFloatingPointType, const bool = true );
 
+  //! Gets projection mode
+  int projectionMode() const;
+
+  //! Sets projection mode
+  void setProjectionMode( const int );
+
+  //! Gets interaction style
+  int interactionStyle() const;
+
+  //! Sets interaction style
+  void setInteractionStyle( const int );
+
+  //! Get incremental speed (see #SVTK_InteractorStyle::ControllerIncrement)
+  int incrementalSpeed() const;
+
+  //! Returns modification mode of incremental speed (see #SVTK_InteractorStyle::ControllerIncrement)
+  int incrementalSpeedMode() const;
+
+  //! Set the incremental speed for view operation (see #SVTK_InteractorStyle::ControllerIncrement)
+  void setIncrementalSpeed( const int, const int = 0 );
+
+  //! Gets spacemouse button for specified function
+  int spacemouseBtn( const int ) const;
+
+  //! Sets spacemouse buttons
+  void setSpacemouseButtons( const int, const int, const int );
+
 public:
   void enableSelection(bool isEnabled);
   bool isSelectionEnabled() const { return mySelectionEnabled; }
@@ -140,6 +167,11 @@ private:
   bool   myTrihedronRelative;
   bool   mySelectionEnabled;
   bool   myMultiSelectionEnabled;
+  int    myIncrementSpeed;
+  int    myIncrementMode;
+  int    myProjMode;
+  int    myStyle;
+  int    mySpaceBtn[3];
 
   CAM_Module* myActiveModule;
   int myExtToolBarId;

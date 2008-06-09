@@ -1294,9 +1294,16 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     SVTK_Viewer* vm = dynamic_cast<SVTK_Viewer*>( viewMgr->getViewModel() );
     if( vm )
     {
+      vm->setProjectionMode( resMgr->integerValue( "VTKViewer", "projection_mode", vm->projectionMode() ) );
       vm->setBackgroundColor( resMgr->colorValue( "VTKViewer", "background", vm->backgroundColor() ) );
       vm->setTrihedronSize( resMgr->doubleValue( "VTKViewer", "trihedron_size", vm->trihedronSize() ),
 			    resMgr->booleanValue( "VTKViewer", "relative_size", vm->trihedronRelative() ) );
+      vm->setInteractionStyle( resMgr->integerValue( "VTKViewer", "navigation_mode", vm->interactionStyle() ) );
+      vm->setIncrementalSpeed( resMgr->integerValue( "VTKViewer", "speed_value", vm->incrementalSpeed() ),
+			       resMgr->integerValue( "VTKViewer", "speed_mode", vm->incrementalSpeedMode() ) );
+      vm->setSpacemouseButtons( resMgr->integerValue( "VTKViewer", "spacemouse_func1_btn", vm->spacemouseBtn(1) ),
+				resMgr->integerValue( "VTKViewer", "spacemouse_func2_btn", vm->spacemouseBtn(2) ),
+				resMgr->integerValue( "VTKViewer", "spacemouse_func3_btn", vm->spacemouseBtn(3) ) );
       new LightApp_VTKSelector( vm, mySelMgr );
       vm->connectToApplication(this);
     }
@@ -1757,9 +1764,10 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   int supervGroup = pref->addPreference( tr( "PREF_GROUP_SUPERV" ), viewTab );
 
   pref->setItemProperty( "columns", 4, occGroup );
-  pref->setItemProperty( "columns", 4, vtkGroup );
+  pref->setItemProperty( "columns", 1, vtkGroup );
   pref->setItemProperty( "columns", 4, plot2dGroup );
 
+  // OCC Viewer
   int occTS = pref->addPreference( tr( "PREF_TRIHEDRON_SIZE" ), occGroup,
 				   LightApp_Preferences::DblSpin, "OCCViewer", "trihedron_size" );
   pref->addPreference( tr( "PREF_VIEWER_BACKGROUND" ), occGroup,
@@ -1779,15 +1787,104 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->setItemProperty( "min", 0, isoV );
   pref->setItemProperty( "max", 100000, isoV );
 
-  int vtkTS = pref->addPreference( tr( "PREF_TRIHEDRON_SIZE" ), vtkGroup,
-				   LightApp_Preferences::DblSpin, "VTKViewer", "trihedron_size" );
-  pref->addPreference( tr( "PREF_VIEWER_BACKGROUND" ), vtkGroup,
+  // VTK Viewer
+  int vtkGen = pref->addPreference( "", vtkGroup, LightApp_Preferences::Frame );
+  pref->setItemProperty( "columns", 2, vtkGen );
+
+  int vtkProjMode = pref->addPreference( tr( "PREF_PROJECTION_MODE" ), vtkGen,
+					 LightApp_Preferences::Selector, "VTKViewer", "projection_mode" );
+  QStringList aProjModeList;
+  aProjModeList.append( tr("PREF_ORTHOGRAPHIC") );
+  aProjModeList.append( tr("PREF_PERSPECTIVE") );
+
+  QList<QVariant> aModeIndexesList;
+  aModeIndexesList.append(0);
+  aModeIndexesList.append(1);
+
+  pref->setItemProperty( "strings", aProjModeList, vtkProjMode );
+  pref->setItemProperty( "indexes", aModeIndexesList, vtkProjMode );
+
+  pref->addPreference( tr( "PREF_VIEWER_BACKGROUND" ), vtkGen,
 		       LightApp_Preferences::Color, "VTKViewer", "background" );
-  pref->addPreference( tr( "PREF_RELATIVE_SIZE" ), vtkGroup, LightApp_Preferences::Bool, "VTKViewer", "relative_size" );
+
+  int vtkTS = pref->addPreference( tr( "PREF_TRIHEDRON_SIZE" ), vtkGen,
+				   LightApp_Preferences::DblSpin, "VTKViewer", "trihedron_size" );
 
   pref->setItemProperty( "min", 1.0E-06, vtkTS );
   pref->setItemProperty( "max", 150, vtkTS );
 
+  pref->addPreference( tr( "PREF_RELATIVE_SIZE" ), vtkGen, LightApp_Preferences::Bool, "VTKViewer", "relative_size" );
+
+  int vtkStyleMode = pref->addPreference( tr( "PREF_NAVIGATION" ), vtkGen,
+					  LightApp_Preferences::Selector, "VTKViewer", "navigation_mode" );
+  QStringList aStyleModeList;
+  aStyleModeList.append( tr("PREF_STANDARD_STYLE") );
+  aStyleModeList.append( tr("PREF_KEYFREE_STYLE") );
+
+  pref->setItemProperty( "strings", aStyleModeList, vtkStyleMode );
+  pref->setItemProperty( "indexes", aModeIndexesList, vtkStyleMode );
+
+  pref->addPreference( "", vtkGroup, LightApp_Preferences::Space );
+
+  int vtkSpeed = pref->addPreference( tr( "PREF_INCREMENTAL_SPEED" ), vtkGen,
+				      LightApp_Preferences::IntSpin, "VTKViewer", "speed_value" );
+
+  pref->setItemProperty( "min", 1, vtkSpeed );
+  pref->setItemProperty( "max", 1000, vtkSpeed );
+
+  int vtkSpeedMode = pref->addPreference( tr( "PREF_INCREMENTAL_SPEED_MODE" ), vtkGen,
+					  LightApp_Preferences::Selector, "VTKViewer", "speed_mode" );
+  QStringList aSpeedModeList;
+  aSpeedModeList.append( tr("PREF_ARITHMETIC") );
+  aSpeedModeList.append( tr("PREF_GEOMETRICAL") );
+
+  pref->setItemProperty( "strings", aSpeedModeList, vtkSpeedMode );
+  pref->setItemProperty( "indexes", aModeIndexesList, vtkSpeedMode );
+
+  int vtkSM = pref->addPreference( tr( "PREF_FRAME_SPACEMOUSE" ), vtkGroup, LightApp_Preferences::GroupBox );
+  pref->setItemProperty( "columns", 2, vtkSM );
+  int spacemousePref1 = pref->addPreference( tr( "PREF_SPACEMOUSE_FUNC_1" ), vtkSM,
+					     LightApp_Preferences::Selector, "VTKViewer",
+					     "spacemouse_func1_btn" ); //decrease_speed_increment
+  int spacemousePref2 = pref->addPreference( tr( "PREF_SPACEMOUSE_FUNC_2" ), vtkSM,
+					     LightApp_Preferences::Selector, "VTKViewer",
+					     "spacemouse_func2_btn" ); //increase_speed_increment
+  int spacemousePref3 = pref->addPreference( tr( "PREF_SPACEMOUSE_FUNC_3" ), vtkSM,
+					     LightApp_Preferences::Selector, "VTKViewer",
+					     "spacemouse_func3_btn" ); //dominant_combined_switch
+
+  QStringList values;
+  values.append( tr( "PREF_SPACEMOUSE_BTN_1" ) );
+  values.append( tr( "PREF_SPACEMOUSE_BTN_2" ) );
+  values.append( tr( "PREF_SPACEMOUSE_BTN_3" ) );
+  values.append( tr( "PREF_SPACEMOUSE_BTN_4" ) );
+  values.append( tr( "PREF_SPACEMOUSE_BTN_5" ) );
+  values.append( tr( "PREF_SPACEMOUSE_BTN_6" ) );
+  values.append( tr( "PREF_SPACEMOUSE_BTN_7" ) );
+  values.append( tr( "PREF_SPACEMOUSE_BTN_8" ) );
+  values.append( tr( "PREF_SPACEMOUSE_BTN_*" ) );
+  values.append( tr( "PREF_SPACEMOUSE_BTN_10" ) );
+  values.append( tr( "PREF_SPACEMOUSE_BTN_11" ) );
+  QList<QVariant> indices;
+  indices.append( 1 );
+  indices.append( 2 );
+  indices.append( 3 );
+  indices.append( 4 );
+  indices.append( 5 );
+  indices.append( 6 );
+  indices.append( 7 );
+  indices.append( 8 );
+  indices.append( 9 ); // == button_*
+  indices.append( 10 );
+  indices.append( 11 );
+  pref->setItemProperty( "strings", values, spacemousePref1 );
+  pref->setItemProperty( "indexes", indices, spacemousePref1 );
+  pref->setItemProperty( "strings", values, spacemousePref2 );
+  pref->setItemProperty( "indexes", indices, spacemousePref2 );
+  pref->setItemProperty( "strings", values, spacemousePref3 );
+  pref->setItemProperty( "indexes", indices, spacemousePref3 );
+
+  // Plot2d
   pref->addPreference( tr( "PREF_SHOW_LEGEND" ), plot2dGroup,
 		       LightApp_Preferences::Bool, "Plot2d", "ShowLegend" );
 
@@ -1992,6 +2089,95 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
 	vtkVM->setTrihedronSize( sz, isRelative );
 	vtkVM->Repaint();
       }
+    }
+#endif
+  }
+#endif
+
+#ifndef DISABLE_VTKVIEWER
+  if ( sec == QString( "VTKViewer" ) && (param == QString( "speed_value" ) || param == QString( "speed_mode" )) )
+  {
+    int speed = resMgr->integerValue( "VTKViewer", "speed_value", 10 );
+    int mode = resMgr->integerValue( "VTKViewer", "speed_mode", 0 );
+    QList<SUIT_ViewManager*> lst;
+#ifndef DISABLE_SALOMEOBJECT
+    viewManagers( SVTK_Viewer::Type(), lst );
+    QListIterator<SUIT_ViewManager*> it( lst );
+    while ( it.hasNext() )
+    {
+      SUIT_ViewModel* vm = it.next()->getViewModel();
+      if ( !vm || !vm->inherits( "SVTK_Viewer" ) )
+	continue;
+
+      SVTK_Viewer* vtkVM = dynamic_cast<SVTK_Viewer*>( vm );
+      if( vtkVM ) vtkVM->setIncrementalSpeed( speed, mode );
+    }
+#endif
+  }
+#endif
+
+#ifndef DISABLE_VTKVIEWER
+  if ( sec == QString( "VTKViewer" ) && param == QString( "projection_mode" ) )
+  {
+    int mode = resMgr->integerValue( "VTKViewer", "projection_mode", 0 );
+    QList<SUIT_ViewManager*> lst;
+#ifndef DISABLE_SALOMEOBJECT
+    viewManagers( SVTK_Viewer::Type(), lst );
+    QListIterator<SUIT_ViewManager*> it( lst );
+    while ( it.hasNext() )
+    {
+      SUIT_ViewModel* vm = it.next()->getViewModel();
+      if ( !vm || !vm->inherits( "SVTK_Viewer" ) )
+	continue;
+
+      SVTK_Viewer* vtkVM = dynamic_cast<SVTK_Viewer*>( vm );
+      if( vtkVM ) vtkVM->setProjectionMode( mode );
+    }
+#endif
+  }
+#endif
+
+#ifndef DISABLE_VTKVIEWER
+  if ( sec == QString( "VTKViewer" ) && param == QString( "navigation_mode" ) )
+  {
+    int mode = resMgr->integerValue( "VTKViewer", "navigation_mode", 0 );
+    QList<SUIT_ViewManager*> lst;
+#ifndef DISABLE_SALOMEOBJECT
+    viewManagers( SVTK_Viewer::Type(), lst );
+    QListIterator<SUIT_ViewManager*> it( lst );
+    while ( it.hasNext() )
+    {
+      SUIT_ViewModel* vm = it.next()->getViewModel();
+      if ( !vm || !vm->inherits( "SVTK_Viewer" ) )
+	continue;
+
+      SVTK_Viewer* vtkVM = dynamic_cast<SVTK_Viewer*>( vm );
+      if( vtkVM ) vtkVM->setInteractionStyle( mode );
+    }
+#endif
+  }
+#endif
+
+#ifndef DISABLE_VTKVIEWER
+  if ( sec == QString( "VTKViewer" ) && (param == QString( "spacemouse_func1_btn" ) || 
+					 param == QString( "spacemouse_func2_btn" ) ||
+					 param == QString( "spacemouse_func3_btn" ) ) )
+  {
+    int btn1 = resMgr->integerValue( "VTKViewer", "spacemouse_func1_btn", 1 );
+    int btn2 = resMgr->integerValue( "VTKViewer", "spacemouse_func2_btn", 2 );
+    int btn3 = resMgr->integerValue( "VTKViewer", "spacemouse_func3_btn", 9 );
+    QList<SUIT_ViewManager*> lst;
+#ifndef DISABLE_SALOMEOBJECT
+    viewManagers( SVTK_Viewer::Type(), lst );
+    QListIterator<SUIT_ViewManager*> it( lst );
+    while ( it.hasNext() )
+    {
+      SUIT_ViewModel* vm = it.next()->getViewModel();
+      if ( !vm || !vm->inherits( "SVTK_Viewer" ) )
+	continue;
+
+      SVTK_Viewer* vtkVM = dynamic_cast<SVTK_Viewer*>( vm );
+      if( vtkVM ) vtkVM->setSpacemouseButtons( btn1, btn2, btn3 );
     }
 #endif
   }
