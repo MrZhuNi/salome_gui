@@ -1303,7 +1303,7 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
 			       resMgr->integerValue( "VTKViewer", "speed_mode", vm->incrementalSpeedMode() ) );
       vm->setSpacemouseButtons( resMgr->integerValue( "VTKViewer", "spacemouse_func1_btn", vm->spacemouseBtn(1) ),
 				resMgr->integerValue( "VTKViewer", "spacemouse_func2_btn", vm->spacemouseBtn(2) ),
-				resMgr->integerValue( "VTKViewer", "spacemouse_func3_btn", vm->spacemouseBtn(3) ) );
+				resMgr->integerValue( "VTKViewer", "spacemouse_func5_btn", vm->spacemouseBtn(3) ) );
       new LightApp_VTKSelector( vm, mySelMgr );
       vm->connectToApplication(this);
     }
@@ -1851,7 +1851,7 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 					     "spacemouse_func2_btn" ); //increase_speed_increment
   int spacemousePref3 = pref->addPreference( tr( "PREF_SPACEMOUSE_FUNC_3" ), vtkSM,
 					     LightApp_Preferences::Selector, "VTKViewer",
-					     "spacemouse_func3_btn" ); //dominant_combined_switch
+					     "spacemouse_func5_btn" ); //dominant_combined_switch
 
   QStringList values;
   values.append( tr( "PREF_SPACEMOUSE_BTN_1" ) );
@@ -2161,11 +2161,11 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
 #ifndef DISABLE_VTKVIEWER
   if ( sec == QString( "VTKViewer" ) && (param == QString( "spacemouse_func1_btn" ) || 
 					 param == QString( "spacemouse_func2_btn" ) ||
-					 param == QString( "spacemouse_func3_btn" ) ) )
+					 param == QString( "spacemouse_func5_btn" ) ) )
   {
     int btn1 = resMgr->integerValue( "VTKViewer", "spacemouse_func1_btn", 1 );
     int btn2 = resMgr->integerValue( "VTKViewer", "spacemouse_func2_btn", 2 );
-    int btn3 = resMgr->integerValue( "VTKViewer", "spacemouse_func3_btn", 9 );
+    int btn3 = resMgr->integerValue( "VTKViewer", "spacemouse_func5_btn", 9 );
     QList<SUIT_ViewManager*> lst;
 #ifndef DISABLE_SALOMEOBJECT
     viewManagers( SVTK_Viewer::Type(), lst );

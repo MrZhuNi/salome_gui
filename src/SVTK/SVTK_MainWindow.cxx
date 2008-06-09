@@ -781,21 +781,26 @@ void SVTK_MainWindow::activateWindowFit()
 void SVTK_MainWindow::onSwitchInteractionStyle(bool theOn)
 {
   if (theOn) {
-    // keep the same style extensions
-    SVTK_InteractorStyle* aStyle = (SVTK_InteractorStyle*)GetInteractorStyle();
-    if ( aStyle ) {
-      myKeyFreeInteractorStyle->SetControllerIncrement(aStyle->ControllerIncrement());
-      myKeyFreeInteractorStyle->SetControllerOnKeyDown(aStyle->ControllerOnKeyDown());
-    }
+    // check if style is already set
+    if ( GetInteractorStyle() != myKeyFreeInteractorStyle.GetPointer() )
+    {
+      // keep the same style extensions
+      SVTK_InteractorStyle* aStyle = (SVTK_InteractorStyle*)GetInteractorStyle();
+      if ( aStyle ) {
+	myKeyFreeInteractorStyle->SetControllerIncrement(aStyle->ControllerIncrement());
+	myKeyFreeInteractorStyle->SetControllerOnKeyDown(aStyle->ControllerOnKeyDown());
+      }
 
-    PushInteractorStyle(myKeyFreeInteractorStyle.GetPointer());
+      PushInteractorStyle(myKeyFreeInteractorStyle.GetPointer());
+    }
   }
   else {
     PopInteractorStyle();
   }
 
   // update action state if method is called outside
-  action(SwitchInteractionStyleId)->setChecked( theOn );
+  QtxAction* a = action( SwitchInteractionStyleId );
+  if ( a->isChecked() != theOn ) a->setChecked( theOn );
 }
 
 /*!

@@ -130,6 +130,10 @@ SUIT_ViewWindow* SVTK_Viewer::createView( SUIT_Desktop* theDesktop )
 
   aViewWindow->setBackgroundColor( backgroundColor() );
   aViewWindow->SetTrihedronSize( trihedronSize(), trihedronRelative() );
+  aViewWindow->SetProjectionMode( projectionMode() );
+  aViewWindow->SetInteractionStyle( interactionStyle() );
+  aViewWindow->SetIncrementalSpeed( incrementalSpeed(), incrementalSpeedMode() );
+  aViewWindow->SetSpacemouseButtons( spacemouseBtn(1), spacemouseBtn(2), spacemouseBtn(3) );
 
   connect(aViewWindow, SIGNAL( actorAdded(VTKViewer_Actor*) ), 
 	  this,  SLOT(onActorAdded(VTKViewer_Actor*)));
