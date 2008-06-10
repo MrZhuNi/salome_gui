@@ -27,7 +27,6 @@
 #ifndef SVTK_CubeAxesDlg_H
 #define SVTK_CubeAxesDlg_H
 
-#include "SVTK.h"
 #include "SVTK_DialogBase.h"
 
 #include <QFrame>
@@ -53,7 +52,7 @@ class SVTK_MainWindow;
  * Class       : SVTK_CubeAxesDlg
  * Description : Dialog for specifynig cube axes properties
  */
-class SVTK_EXPORT SVTK_CubeAxesDlg : public SVTK_DialogBase
+class SVTK_CubeAxesDlg : public SVTK_DialogBase
 {
   Q_OBJECT
 
