@@ -1,6 +1,8 @@
 unix:TEMPLATE = lib
 win32:TEMPLATE = vclib
 
+win32:QMAKE_MOC=$(QTDIR)\bin\moc.exe
+
 DESTDIR = ../../$(CONFIG_ID)/lib
 MOC_DIR = ../../moc
 OBJECTS_DIR = ../../$(CONFIG_ID)/obj/$$TARGET
@@ -10,6 +12,8 @@ INCLUDEPATH += ../Qtx ../SUIT
 unix:LIBS  += -L$$(QWTLIB) -lqwt
 win32:LIBS += /LIBPATH:$$(QWTLIB) -lqwt5
 LIBS += -L../../$(CONFIG_ID)/lib -lQtx -lSUIT
+win32:LIBS *= -L$(QTLIB)
+win32:INCLUDEPATH *= $(QTINC) $(QTINC)\QtCore $(QTINC)\QtGui $(QTINC)\QtXml
 
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared

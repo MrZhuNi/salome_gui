@@ -3,12 +3,16 @@ win32:TEMPLATE = vcapp
 
 CONFIG -= embed_manifest_exe
 
+win32:QMAKE_MOC=$(QTDIR)\bin\moc.exe
+
 DESTDIR = ../../$(CONFIG_ID)/bin
 MOC_DIR = ../../moc
 OBJECTS_DIR = ../../$(CONFIG_ID)/obj/$$TARGET
 
 INCLUDEPATH = ../../include
 LIBS += -L../../$(CONFIG_ID)/lib -lSUIT -lQtx -lStyle -lObjBrowser
+win32:LIBS *= -L$(QTLIB)
+win32:INCLUDEPATH *= $(QTINC) $(QTINC)\QtCore $(QTINC)\QtGui $(QTINC)\QtXml
 
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared

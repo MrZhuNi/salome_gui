@@ -3,9 +3,14 @@ unix:TEMPLATE = lib
 
 CONFIG += embed_manifest_exe
 
+win32:QMAKE_MOC=$(QTDIR)\bin\moc.exe
+
 DESTDIR = ../../$(CONFIG_ID)/lib
 MOC_DIR = ../../moc
 OBJECTS_DIR = ../../$(CONFIG_ID)/obj/$$TARGET
+
+win32:LIBS *= -L$(QTLIB)
+win32:INCLUDEPATH *= $(QTINC) $(QTINC)\QtCore $(QTINC)\QtGui $(QTINC)\QtXml
 
 QT += xml
 CONFIG -= debug release debug_and_release
