@@ -13,6 +13,8 @@ CAS_VIEWER = -L$(CASLIB) -lTKV3d -lTKService
 
 INCLUDEPATH += ../../include  $${CAS_CPPFLAGS}
 LIBS += -L../../$(CONFIG_ID)/lib $${CAS_KERNEL} $${CAS_VIEWER}
+win32:LIBS *= -L$(QTLIB)
+win32:INCLUDEPATH *= $(QTINC) $(QTINC)\QtCore $(QTINC)\QtGui $(QTINC)\QtXml
 
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared
