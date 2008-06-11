@@ -24,7 +24,7 @@
 //  File   : VTKViewer_GeometryFilter.cxx
 //  Author : Michael ZORIN
 //  Module : SALOME
-//  $Header$
+//  $Header$ 
 
 #include "VTKViewer_GeometryFilter.h"
 #include "VTKViewer_ConvexTool.h"
@@ -772,7 +772,7 @@ VTKViewer_GeometryFilter
     delete [] cellVis;
     }
 
-  return 0;
+  return 1;
 }
 
 
