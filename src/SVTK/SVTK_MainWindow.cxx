@@ -795,7 +795,9 @@ void SVTK_MainWindow::onSwitchInteractionStyle(bool theOn)
     }
   }
   else {
-    PopInteractorStyle();
+    // pop only key free  style
+    if ( GetInteractorStyle() == myKeyFreeInteractorStyle.GetPointer() )
+      PopInteractorStyle();
   }
 
   // update action state if method is called outside
