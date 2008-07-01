@@ -293,6 +293,47 @@
         <source>MNU_SVTK_UPDATE_RATE</source>
         <translation>Update rate</translation>
     </message>
+    <message>
+        <source>DSC_SVTK_RECORDING_START</source>
+        <translation>Start recording</translation>
+    </message>
+    <message>
+        <source>MNU_SVTK_RECORDING_START</source>
+        <translation>Start recording</translation>
+    </message>
+    <message>
+        <source>DSC_SVTK_RECORDING_PLAY</source>
+        <translation>Play recording</translation>
+    </message>
+    <message>
+        <source>MNU_SVTK_RECORDING_PLAY</source>
+        <translation>Play recording</translation>
+    </message>
+    <message>
+        <source>DSC_SVTK_RECORDING_PAUSE</source>
+        <translation>Pause recording</translation>
+    </message>
+    <message>
+        <source>MNU_SVTK_RECORDING_PAUSE</source>
+        <translation>Pause recording</translation>
+    </message>
+    <message>
+        <source>DSC_SVTK_RECORDING_STOP</source>
+        <translation>Stop recording</translation>
+    </message>
+    <message>
+        <source>MNU_SVTK_RECORDING_STOP</source>
+        <translation>Stop recording</translation>
+    </message>
+    <message>
+        <source>LBL_TOOLBAR_RECORD_LABEL</source>
+        <translation>Recording Operations</translation>
+    </message>
+    <message>
+        <source>MSG_NO_AVI_MAKER</source>
+        <translation>Tool jpeg2yuv, necessary for AVI recording, is not available.
+Please, refer to the documentation.</translation>
+    </message>
 </context>
 <context>
     <name>SVTK_NonIsometricDlg</name>
@@ -315,6 +356,65 @@
     <message>
         <source>DLG_TITLE</source>
         <translation>Scaling</translation>
+    </message>
+</context>
+<context>
+    <name>SVTK_RecorderDlg</name>
+    <message>
+        <source>ALL_DISLPAYED_FRAMES</source>
+        <translation>Recording all displayed frames</translation>
+    </message>
+    <message>
+        <source>CLOSE</source>
+        <translation>Close</translation>
+    </message>
+    <message>
+        <source>DLG_RECORDER_TITLE</source>
+        <translation>Recorder</translation>
+    </message>
+    <message>
+        <source>FILE_NAME</source>
+        <translation>Save to file : </translation>
+    </message>
+    <message>
+        <source>FLT_ALL_FILES</source>
+        <translation>All Files (*.*)</translation>
+    </message>
+    <message>
+        <source>FLT_AVI_FILES</source>
+        <translation>AVI Files (*.avi)</translation>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation>FPS : </translation>
+    </message>
+    <message>
+        <source>HELP</source>
+        <translation>Help</translation>
+    </message>
+    <message>
+        <source>PROGRESSIVE</source>
+        <translation>Progressive</translation>
+    </message>
+    <message>
+        <source>QUALITY</source>
+        <translation>Quality : </translation>
+    </message>
+    <message>
+        <source>RECORDING_MODE</source>
+        <translation>Mode : </translation>
+    </message>
+    <message>
+        <source>SETTINGS</source>
+        <translation>Settings</translation>
+    </message>
+    <message>
+        <source>SKIPPED_FRAMES</source>
+        <translation>Recording at a given FPS</translation>
+    </message>
+    <message>
+        <source>START</source>
+        <translation>Start</translation>
     </message>
 </context>
 <context>

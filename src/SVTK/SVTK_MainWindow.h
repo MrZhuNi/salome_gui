@@ -52,6 +52,7 @@ class SVTK_ViewParameterDlg;
 class SVTK_Renderer;
 class SVTK_Selector;
 class SVTK_KeyFreeInteractorStyle;
+class SVTK_Recorder;
 
 class VTKViewer_Trihedron;
 class VTKViewer_Actor;
@@ -221,6 +222,11 @@ public:
 
   void onSwitchInteractionStyle(bool theOn);
 
+  void onStartRecording();
+  void onPlayRecording();
+  void onPauseRecording();
+  void onStopRecording();
+
  public:
   QImage dumpView();
 
@@ -239,7 +245,8 @@ public:
 	 ChangeRotationPointId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
 	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate,
-	 ProjectionModeId, ViewParametersId, SwitchInteractionStyleId };
+	 ProjectionModeId, ViewParametersId, SwitchInteractionStyleId,
+	 StartRecordingId, PlayRecordingId, PauseRecordingId, StopRecordingId };
 
   SUIT_ViewWindow* myViewWindow;
 
@@ -251,9 +258,16 @@ public:
 
   vtkSmartPointer<vtkObject> myEventDispatcher;
   int myToolBar;
+  int myRecordingToolBar;
 
   SVTK_RenderWindowInteractor* myInteractor;
   vtkSmartPointer<SVTK_KeyFreeInteractorStyle> myKeyFreeInteractorStyle;
+
+  SVTK_Recorder* myRecorder;
+  QtxAction* myStartAction;
+  QtxAction* myPlayAction;
+  QtxAction* myPauseAction;
+  QtxAction* myStopAction;
 };
 
 #ifdef WIN32

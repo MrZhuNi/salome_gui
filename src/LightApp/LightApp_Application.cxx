@@ -1884,6 +1884,33 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->setItemProperty( "strings", values, spacemousePref3 );
   pref->setItemProperty( "indexes", indices, spacemousePref3 );
 
+  int vtkRec = pref->addPreference( tr( "PREF_FRAME_RECORDING" ), vtkGroup, LightApp_Preferences::GroupBox );
+  pref->setItemProperty( "columns", 2, vtkRec );
+
+  int modePref = pref->addPreference( tr( "PREF_RECORDING_MODE" ), vtkRec,
+				      LightApp_Preferences::Selector, "VTKViewer", "recorder_mode" );
+  values.clear();
+  values.append( tr( "PREF_SKIPPED_FRAMES" ) );
+  values.append( tr( "PREF_ALL_DISLPAYED_FRAMES" ) );
+  indices.clear();
+  indices.append( 0 );
+  indices.append( 1 );
+  pref->setItemProperty( "strings", values, modePref );
+  pref->setItemProperty( "indexes", indices, modePref );
+
+  int fpsPref = pref->addPreference( tr( "PREF_FPS" ), vtkRec,
+				     LightApp_Preferences::DblSpin, "VTKViewer", "recorder_fps" );
+  pref->setItemProperty( "min", 0.1, fpsPref );
+  pref->setItemProperty( "max", 100, fpsPref );
+
+  int qualityPref = pref->addPreference( tr( "PREF_QUALITY" ), vtkRec,
+					 LightApp_Preferences::IntSpin, "VTKViewer", "recorder_quality" );
+  pref->setItemProperty( "min", 1, qualityPref );
+  pref->setItemProperty( "max", 100, qualityPref );
+
+  pref->addPreference( tr( "PREF_PROGRESSIVE" ), vtkRec,
+		       LightApp_Preferences::Bool, "VTKViewer", "recorder_progressive" );
+
   // Plot2d
   pref->addPreference( tr( "PREF_SHOW_LEGEND" ), plot2dGroup,
 		       LightApp_Preferences::Bool, "Plot2d", "ShowLegend" );

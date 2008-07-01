@@ -33,5 +33,21 @@
         <source>ICON_SVTK_STYLE_SWITCH</source>
         <translation>vtk_view_style_switch.png</translation>
     </message>
+    <message>
+        <source>ICON_SVTK_RECORDING_START</source>
+        <translation>vtk_view_recording_start.png</translation>
+    </message>
+    <message>
+        <source>ICON_SVTK_RECORDING_PLAY</source>
+        <translation>vtk_view_recording_play.png</translation>
+    </message>
+    <message>
+        <source>ICON_SVTK_RECORDING_PAUSE</source>
+        <translation>vtk_view_recording_pause.png</translation>
+    </message>
+    <message>
+        <source>ICON_SVTK_RECORDING_STOP</source>
+        <translation>vtk_view_recording_stop.png</translation>
+    </message>
 </context>
 </TS>

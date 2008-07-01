@@ -55,7 +55,11 @@ salomeinclude_HEADERS= \
 	SVTK_SetRotationPointDlg.h \
 	SVTK_ViewParameterDlg.h \
 	SVTK_ComboAction.h \
-	SVTK_Extension.h
+	SVTK_Extension.h \
+	SVTK_Recorder.h \
+	SVTK_RecorderDlg.h \
+	SVTK_ImageWriter.h \
+	SVTK_ImageWriterMgr.h
 
 dist_libSVTK_la_SOURCES= \
 	SVTK_Prs.cxx \
@@ -85,7 +89,11 @@ dist_libSVTK_la_SOURCES= \
 	SVTK_SetRotationPointDlg.cxx \
 	SVTK_ViewParameterDlg.cxx \
 	SVTK_ComboAction.cxx \
-	SVTK_Extension.cxx
+	SVTK_Extension.cxx \
+	SVTK_Recorder.cxx \
+	SVTK_RecorderDlg.cxx \
+	SVTK_ImageWriter.cxx \
+	SVTK_ImageWriterMgr.cxx
 
 EXTRA_DIST+= SVTK_SelectorDef.h SVTK_Trihedron.h
 
@@ -105,7 +113,8 @@ MOC_FILES= \
 	SVTK_View_moc.cxx \
 	SVTK_SetRotationPointDlg_moc.cxx \
 	SVTK_ViewParameterDlg_moc.cxx \
-	SVTK_ComboAction_moc.cxx
+	SVTK_ComboAction_moc.cxx \
+	SVTK_RecorderDlg_moc.cxx
 nodist_libSVTK_la_SOURCES= $(MOC_FILES)
 
 dist_salomeres_DATA=\
@@ -116,7 +125,11 @@ dist_salomeres_DATA=\
 	resources/vtk_view_parallel.png \
 	resources/vtk_view_perspective.png \
 	resources/vtk_view_parameters.png \
-	resources/vtk_view_style_switch.png
+	resources/vtk_view_style_switch.png \
+	resources/vtk_view_recording_start.png \
+	resources/vtk_view_recording_play.png \
+	resources/vtk_view_recording_pause.png \
+	resources/vtk_view_recording_stop.png
 
 nodist_salomeres_DATA= \
 	SVTK_msg_en.qm \

@@ -58,6 +58,8 @@
 #include "SVTK_KeyFreeInteractorStyle.h"
 #include "SVTK_Selector.h"
 #include "SVTK_ComboAction.h"
+#include "SVTK_Recorder.h"
+#include "SVTK_RecorderDlg.h"
 
 /*!
   Constructor
@@ -82,6 +84,7 @@ SVTK_MainWindow::SVTK_MainWindow(QWidget* theParent,
 void SVTK_MainWindow::Initialize(SVTK_RenderWindowInteractor* theInteractor)
 {
   myToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL"), -1, this );
+  myRecordingToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_RECORD_LABEL"), -1, this );
 
   createActions( SUIT_Session::session()->activeApplication()->resourceMgr() );
   createToolBar();
@@ -103,6 +106,17 @@ void SVTK_MainWindow::Initialize(SVTK_RenderWindowInteractor* theInteractor)
     ( action( ChangeRotationPointId ), this, "SVTK_SetRotationPointDlg" );
   myViewParameterDlg = new SVTK_ViewParameterDlg
     ( action( ViewParametersId ), this, "SVTK_ViewParameterDlg" );
+
+  myRecorder = SVTK_Recorder::New();
+  //myRecorder->CheckExistAVIMaker();
+  //if(myRecorder->ErrorStatus())
+  //  myRecordingToolBar->setEnabled(false);
+
+  myRecorder->SetNbFPS( 17.3 );
+  myRecorder->SetQuality( 100 );
+  myRecorder->SetProgressiveMode( true );
+  myRecorder->SetUseSkippedFrames( true );
+  myRecorder->SetRenderWindow( theInteractor->getRenderWindow() );
 }
 
 /*!
@@ -110,6 +124,8 @@ void SVTK_MainWindow::Initialize(SVTK_RenderWindowInteractor* theInteractor)
 */
 SVTK_MainWindow::~SVTK_MainWindow()
 {
+  if(myRecorder)
+    myRecorder->Delete();
 }
 
 /*!
@@ -576,6 +592,41 @@ void SVTK_MainWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
   anAction->setCheckable(true);
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchInteractionStyle(bool)));
   mgr->registerAction( anAction, SwitchInteractionStyleId );
+
+  // Start recording
+  myStartAction = new QtxAction(tr("MNU_SVTK_RECORDING_START"), 
+				theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_RECORDING_START" ) ),
+				tr( "MNU_SVTK_RECORDING_START" ), 0, this);
+  myStartAction->setStatusTip(tr("DSC_SVTK_RECORDING_START"));
+  connect( myStartAction, SIGNAL( triggered ( bool ) ), this, SLOT( onStartRecording() ) );
+  mgr->registerAction( myStartAction, StartRecordingId );
+
+  // Play recording
+  myPlayAction = new QtxAction(tr("MNU_SVTK_RECORDING_PLAY"), 
+			       theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_RECORDING_PLAY" ) ),
+			       tr( "MNU_SVTK_RECORDING_PLAY" ), 0, this);
+  myPlayAction->setStatusTip(tr("DSC_SVTK_RECORDING_PLAY"));
+  myPlayAction->setEnabled( false );
+  connect( myPlayAction, SIGNAL( triggered ( bool ) ), this, SLOT( onPlayRecording() ) );
+  mgr->registerAction( myPlayAction, PlayRecordingId );
+
+  // Pause recording
+  myPauseAction = new QtxAction(tr("MNU_SVTK_RECORDING_PAUSE"), 
+				theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_RECORDING_PAUSE" ) ),
+				tr( "MNU_SVTK_RECORDING_PAUSE" ), 0, this);
+  myPauseAction->setStatusTip(tr("DSC_SVTK_RECORDING_PAUSE"));
+  myPauseAction->setEnabled( false );
+  connect( myPauseAction, SIGNAL( triggered ( bool ) ), this, SLOT( onPauseRecording() ) );
+  mgr->registerAction( myPauseAction, PauseRecordingId );
+
+  // Stop recording
+  myStopAction = new QtxAction(tr("MNU_SVTK_RECORDING_STOP"), 
+			       theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_RECORDING_STOP" ) ),
+			       tr( "MNU_SVTK_RECORDING_STOP" ), 0, this);
+  myStopAction->setStatusTip(tr("DSC_SVTK_RECORDING_STOP"));
+  myStopAction->setEnabled( false );
+  connect( myStopAction, SIGNAL( triggered ( bool ) ), this, SLOT( onStopRecording() ) );
+  mgr->registerAction( myStopAction, StopRecordingId );
 }
 
 #if defined(WIN32) && !defined(_DEBUG)
@@ -625,6 +676,11 @@ void SVTK_MainWindow::createToolBar()
 
   mgr->append( ViewParametersId, myToolBar );
   mgr->append( ProjectionModeId, myToolBar );
+
+  mgr->append( StartRecordingId, myRecordingToolBar );
+  mgr->append( PlayRecordingId, myRecordingToolBar );
+  mgr->append( PauseRecordingId, myRecordingToolBar );
+  mgr->append( StopRecordingId, myRecordingToolBar );
 }
 
 /*!
@@ -947,4 +1003,55 @@ QImage SVTK_MainWindow::dumpView()
 QtxAction* SVTK_MainWindow::action( int id ) const
 {
   return dynamic_cast<QtxAction*>( toolMgr()->action( id ) );
+}
+
+void SVTK_MainWindow::onStartRecording()
+{
+  myRecorder->CheckExistAVIMaker();
+  if (myRecorder->ErrorStatus()) {
+    SUIT_MessageBox::warning(this, tr("ERROR"), tr("MSG_NO_AVI_MAKER") );
+  }
+  else {
+    SVTK_RecorderDlg* aRecorderDlg = new SVTK_RecorderDlg( this, myRecorder );
+
+    if( !aRecorderDlg->exec() )
+      return;
+
+    myStartAction->setEnabled( false );
+    myPlayAction->setEnabled( false );
+    myPauseAction->setEnabled( true );
+    myStopAction->setEnabled( true );
+
+    myRecorder->Record();
+  }
+}
+
+void SVTK_MainWindow::onPlayRecording()
+{
+  myStartAction->setEnabled( false );
+  myPlayAction->setEnabled( false );
+  myPauseAction->setEnabled( true );
+  myStopAction->setEnabled( true );
+
+  myRecorder->Pause();
+}
+
+void SVTK_MainWindow::onPauseRecording()
+{
+  myStartAction->setEnabled( false );
+  myPlayAction->setEnabled( true );
+  myPauseAction->setEnabled( false );
+  myStopAction->setEnabled( true );
+
+  myRecorder->Pause();
+}
+
+void SVTK_MainWindow::onStopRecording()
+{
+  myStartAction->setEnabled( true );
+  myPlayAction->setEnabled( false );
+  myPauseAction->setEnabled( false );
+  myStopAction->setEnabled( false );
+
+  myRecorder->Stop();
 }

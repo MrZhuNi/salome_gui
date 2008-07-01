@@ -182,6 +182,38 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
         <translation>Button 11</translation>
     </message>
     <message>
+        <source>PREF_FRAME_RECORDING</source>
+        <translation>AVI Recording</translation>
+    </message>
+    <message>
+        <source>PREF_ALL_DISLPAYED_FRAMES</source>
+        <translation>Recording all displayed frames</translation>
+    </message>
+    <message>
+        <source>PREF_FPS</source>
+        <translation>FPS</translation>
+    </message>
+    <message>
+        <source>PREF_GROUP_TTL</source>
+        <translation>Settings</translation>
+    </message>
+    <message>
+        <source>PREF_PROGRESSIVE</source>
+        <translation>Progressive</translation>
+    </message>
+    <message>
+        <source>PREF_QUALITY</source>
+        <translation>Quality</translation>
+    </message>
+    <message>
+        <source>PREF_RECORDING_MODE</source>
+        <translation>Mode</translation>
+    </message>
+    <message>
+        <source>PREF_SKIPPED_FRAMES</source>
+        <translation>Recording at a given FPS</translation>
+    </message>
+    <message>
         <source>PREF_BOTTOM</source>
         <translation>Bottom</translation>
     </message>
