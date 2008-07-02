@@ -1022,6 +1022,11 @@ void SVTK_MainWindow::onStartRecording()
     myPauseAction->setEnabled( true );
     myStopAction->setEnabled( true );
 
+    // to prevent resizing the window while recording
+    myPreRecordingMinSize = minimumSize();
+    myPreRecordingMaxSize = maximumSize();
+    setFixedSize( size() );
+
     myRecorder->Record();
   }
 }
@@ -1054,4 +1059,7 @@ void SVTK_MainWindow::onStopRecording()
   myStopAction->setEnabled( false );
 
   myRecorder->Stop();
+
+  setMinimumSize( myPreRecordingMinSize );
+  setMaximumSize( myPreRecordingMaxSize );
 }

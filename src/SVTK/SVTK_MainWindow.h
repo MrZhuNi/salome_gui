@@ -263,6 +263,9 @@ public:
   SVTK_RenderWindowInteractor* myInteractor;
   vtkSmartPointer<SVTK_KeyFreeInteractorStyle> myKeyFreeInteractorStyle;
 
+  QSize myPreRecordingMinSize;
+  QSize myPreRecordingMaxSize;
+
   SVTK_Recorder* myRecorder;
   QtxAction* myStartAction;
   QtxAction* myPlayAction;
