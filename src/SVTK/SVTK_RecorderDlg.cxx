@@ -113,15 +113,15 @@ SVTK_RecorderDlg::SVTK_RecorderDlg( QWidget* theParent, SVTK_Recorder* theRecord
   aCloseButton->setAutoDefault( true );
   CommonGroupLayout->addWidget( aCloseButton, 0, 2 );
 
-  QPushButton* aHelpButton = new QPushButton( tr( "HELP" ), CommonGroup );
-  aHelpButton->setAutoDefault( true );
-  CommonGroupLayout->addWidget( aHelpButton, 0, 3 );
+  //QPushButton* aHelpButton = new QPushButton( tr( "HELP" ), CommonGroup );
+  //aHelpButton->setAutoDefault( true );
+  //CommonGroupLayout->addWidget( aHelpButton, 0, 3 );
 
   aTopLayout->addWidget( CommonGroup );
 
   connect( aStartButton, SIGNAL( clicked() ), this, SLOT( onStart() ) );
   connect( aCloseButton, SIGNAL( clicked() ), this, SLOT( onClose() ) );
-  connect( aHelpButton,  SIGNAL( clicked() ), this, SLOT( onHelp() ) );
+  //connect( aHelpButton,  SIGNAL( clicked() ), this, SLOT( onHelp() ) );
 }
 
 SVTK_RecorderDlg::~SVTK_RecorderDlg()
