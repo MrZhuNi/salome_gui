@@ -165,7 +165,9 @@ QPixmap SalomeApp_DataObject::icon() const
 #else
 	SUIT_ResourceMgr* mgr = aRoot->study()->application()->resourceMgr();
 	return mgr->loadPixmap( componentType, pixmapName, false ); 
-      }
+//GDD
+#endif
+     }
     }
   }
   //END_TIMING(50)
