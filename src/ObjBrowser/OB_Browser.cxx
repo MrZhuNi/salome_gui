@@ -36,6 +36,15 @@
 #include <qdatetime.h>
 
 #include <time.h>
+#include <iostream>
+
+#include <sys/time.h>
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);long tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+  tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
 
 /*!
   \class  OB_Browser::ToolTip
@@ -139,6 +148,7 @@ OB_BrowserSync::OB_BrowserSync( OB_Browser* ob )
 */
 bool OB_BrowserSync::needUpdate( const ItemPtr& item ) const
 {
+  START_TIMING
   bool update = false;
   if ( item ) {
     SUIT_DataObject* obj = item->dataObject();
@@ -165,6 +175,7 @@ bool OB_BrowserSync::needUpdate( const ItemPtr& item ) const
       }
     }
   }
+  END_TIMING(50)
   return update;
 }
 
@@ -174,6 +185,7 @@ bool OB_BrowserSync::needUpdate( const ItemPtr& item ) const
 */
 void OB_BrowserSync::updateItem( const ObjPtr& o, const ItemPtr& p ) const
 {
+  //START_TIMING
   if ( p && needUpdate( p ) ) { 
     //    printf( "--- needUpdate for %s = true ---\n", p->text( 0 ).latin1() );
     myBrowser->updateText( p );
@@ -183,6 +195,7 @@ void OB_BrowserSync::updateItem( const ObjPtr& o, const ItemPtr& p ) const
     {
       myBrowser->getUpdater()->update( o, p );
     }
+  //END_TIMING(50)
 }
 
 /*!
@@ -716,6 +729,7 @@ int OB_Browser::addColumn( const QString& label, const int id, const int width )
 */
 int OB_Browser::addColumn( const QIconSet& icon, const QString& label, const int id, const int width )
 {
+  std::cerr << "OB_Browser::addColumn " << label << id << std::endl;
   QListView* lv = listView();
   if ( !lv )
     return -1;
@@ -921,7 +935,10 @@ void OB_Browser::setAppropriateColumn( const int id, const bool on )
 */
 void OB_Browser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
 {
+  //START_TIMING
 //  QTime t1 = QTime::currentTime();
+//  std::cerr << "OB_Browser::updateTree" << std::endl;
+//  clock_t t0=clock ();
 
   if ( !obj && !(obj = getRootObject()) )
     return;
@@ -945,7 +962,9 @@ void OB_Browser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
 
   if ( selNum != numberOfSelected() )
     emit selectionChanged();
+  //END_TIMING(1)
 
+  //std::cerr << "temps CPU (ms): " << (clock()-t0)/1000. << std::endl;
 //  QTime t2 = QTime::currentTime();
 //  qDebug( QString( "update tree time = %1 msecs" ).arg( t1.msecsTo( t2 ) ) );
 }
@@ -997,6 +1016,8 @@ void OB_Browser::replaceTree( SUIT_DataObject* src, SUIT_DataObject* trg )
 */
 void OB_Browser::updateView( SUIT_DataObject* startObj )
 {
+  std::cerr << "OB_Browser::updateView" << std::endl;
+  //START_TIMING
   QListView* lv = listView();
   if ( !lv )
     return;
@@ -1018,6 +1039,7 @@ void OB_Browser::updateView( SUIT_DataObject* startObj )
     OB_ListItem* startItem = dynamic_cast<OB_ListItem*>( listViewItem( startObj ) );
     synchronize<ObjPtr,ItemPtr,OB_BrowserSync>( startObj, startItem, sync );
   }
+  //END_TIMING(1)
 }
 
 /*!
@@ -1444,14 +1466,22 @@ void OB_Browser::updateText()
 */
 bool OB_Browser::needToUpdateTexts( QListViewItem* item ) const
 {
+  //START_TIMING
   SUIT_DataObject* obj = dataObject( item );
   if ( !obj )
     return false;
 
+  bool ret=false;
   for( QMap<int, int>::const_iterator it = myColumnIds.begin(); it != myColumnIds.end(); ++it )
     if( item->text( it.data() ) != obj->text( it.key() ) )
-      return true;
-  return false;
+      {
+        ret=true;
+        break;
+      }
+      //return true;
+  //END_TIMING(50)
+  //return false;
+  return ret;
 }
 
 /*!
@@ -1473,6 +1503,7 @@ void OB_Browser::updateText( QListViewItem* item )
 */
 bool OB_Browser::eventFilter( QObject* o, QEvent* e )
 {
+  //std::cerr << "OB_Browser::eventFilter" << std::endl;
   if ( o == myView && e->type() == QEvent::ContextMenu )
   {
     QContextMenuEvent* ce = (QContextMenuEvent*)e;

@@ -134,6 +134,16 @@
 #include <qmessagebox.h>
 #include <qfontdatabase.h>
 
+#include <sys/time.h>
+static long tt0;
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+      tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+
+
 #define FIRST_HELP_ID 1000000
 
 #ifndef DISABLE_SALOMEOBJECT
@@ -498,10 +508,13 @@ void LightApp_Application::createActions()
       continue;
 
     QString modName = moduleName( *it );
+    std::cout << modName << std::endl;
     
     if (dir = getenv( modName + "_ROOT_DIR")) {
       root = Qtx::addSlash( Qtx::addSlash(dir) +  Qtx::addSlash("share") + Qtx::addSlash("doc") + 
                             Qtx::addSlash("salome") + Qtx::addSlash("gui") +  Qtx::addSlash(modName) );
+    std::cout << root << std::endl;
+    std::cout << root+aFileName << std::endl;
       if ( QFileInfo( root + aFileName ).exists() ) {
 
 	QAction* a = createAction( id, tr( moduleTitle(modName) + QString(" Help") ), QIconSet(),
@@ -1342,6 +1355,8 @@ PythonConsole* LightApp_Application::pythonConsole()
 */
 void LightApp_Application::updateObjectBrowser( const bool updateModels )
 {
+  std::cerr << "LightApp_Application::updateObjectBrowser " << objectBrowser() << std::endl;
+  START_TIMING
   // update existing data models
   if ( updateModels ) 
   {
@@ -1368,6 +1383,7 @@ void LightApp_Application::updateObjectBrowser( const bool updateModels )
     objectBrowser()->updateGeometry();
     objectBrowser()->updateTree( 0, false );
   }
+  END_TIMING(1)
 }
 
 /*!
@@ -1645,6 +1661,7 @@ QStringList LightApp_Application::getOpenFileNames( const QString& initial, cons
 /*!Private SLOT. Update object browser.*/
 void LightApp_Application::onRefresh()
 {
+  std::cerr << "LightApp_Application::onRefresh" << std::endl;
   updateObjectBrowser( true );
 }
 

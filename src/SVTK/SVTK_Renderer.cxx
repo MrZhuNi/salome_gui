@@ -54,6 +54,15 @@
 #undef min
 #undef max
 
+#include <sys/time.h>
+static long tt0;
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+    tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+
 
 vtkStandardNewMacro(SVTK_Renderer);
 
@@ -233,6 +242,7 @@ void
 SVTK_Renderer
 ::AddActor(VTKViewer_Actor* theActor)
 {
+  START_TIMING
   if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(theActor)){
     anActor->SetInteractor(myInteractor);
     anActor->SetTransform(GetTransform());
@@ -248,8 +258,13 @@ SVTK_Renderer
     anActor->SetHighlightProperty(myHighlightProperty.GetPointer());
 
     anActor->AddToRender(GetDevice());
+    //CCAR
+#if 0
+#else
     AdjustActors();
+#endif
   }
+  END_TIMING(100)
 }
 
 /*!

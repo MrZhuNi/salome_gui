@@ -27,6 +27,7 @@
 #include "SalomeApp_Module.h"
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Engine_i.hxx"
+#include "SALOMEDS_SObject.hxx"
 
 #include "LightApp_RootObject.h"
 
@@ -43,6 +44,14 @@
 
 typedef _PTR(SObject)     kerPtr;
 typedef SUIT_DataObject*  suitPtr;
+
+#include <sys/time.h>
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);long tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+  tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
 
 /*!
   \class SalomeApp_DataModelSync
@@ -83,8 +92,9 @@ SalomeApp_DataModelSync::SalomeApp_DataModelSync( _PTR( Study ) aStudy, SUIT_Dat
 */
 bool SalomeApp_DataModelSync::isCorrect( const kerPtr& so ) const
 {
+  //START_TIMING
   kerPtr refObj;
-  QString name = so->GetName().c_str();
+  //QString name = so->GetName().c_str();
   _PTR( GenericAttribute ) anAttr;
   bool isDraw = true;
   if ( so->FindAttribute(anAttr, "AttributeDrawable") ) 
@@ -93,6 +103,7 @@ bool SalomeApp_DataModelSync::isCorrect( const kerPtr& so ) const
     isDraw = aAttrDraw->IsDrawable(); 
   }
   bool res = so && ( so->GetName().size() || so->ReferencedObject( refObj ) ) && isDraw;  
+  //END_TIMING(25)
   return res;
 }
 
@@ -158,12 +169,23 @@ void SalomeApp_DataModelSync::deleteItemWithChildren( const suitPtr& p ) const
 */
 bool SalomeApp_DataModelSync::isEqual( const kerPtr& p, const suitPtr& q ) const
 {
+  //START_TIMING
   LightApp_ModuleObject* lobj = dynamic_cast<LightApp_ModuleObject*>( q );
   SalomeApp_DataObject* sobj = dynamic_cast<SalomeApp_DataObject*>( q );
   _PTR( SComponent ) aComp( p );
+//CCAR
   bool res = ( !p && !q ) ||
              ( lobj && !sobj && aComp ) ||
+#if 0
+	     ( sobj && isCorrect( p ) && p->Tag() == sobj->object()->Tag() );
+#else
 	     ( sobj && isCorrect( p ) && p->GetID().c_str()==sobj->entry() );
+#endif
+	     //( sobj && p->GetID().c_str()==sobj->entry() );
+	     //( sobj && isCorrect( p ) && p->GetID().c_str()==sobj->entry() );
+	     //( sobj && isCorrect( p ) );
+	     //( sobj && isCorrect( p ) && p->GetID() == sobj->object()->GetID() );
+  //END_TIMING(50)
   return res;
 }
 
@@ -191,9 +213,18 @@ suitPtr SalomeApp_DataModelSync::nullTrg() const
 void SalomeApp_DataModelSync::children( const kerPtr& obj, QValueList<kerPtr>& ch ) const
 {
   ch.clear();
+//CCAR
+#if 0
+  std::vector<_PTR(SObject)> v=obj->GetAllChildren();
+  for(std::vector<_PTR(SObject)>::const_iterator p=v.begin();p!=v.end();p++)
+    {
+      ch.append(*p);
+    }
+#else
   _PTR(ChildIterator) it ( myStudy->NewChildIterator( obj ) );
   for( ; it->More(); it->Next() )
     ch.append( it->Value() );
+#endif
 }
 
 /*!
@@ -300,6 +331,8 @@ bool SalomeApp_DataModel::create( CAM_Study* theStudy )
 */
 void SalomeApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
 {
+  START_TIMING
+  std::cerr << "SalomeApp_DataModel::update " << module()->moduleName() << std::endl;
   SalomeApp_Study* aSStudy = dynamic_cast<SalomeApp_Study*>(study);
   LightApp_RootObject* studyRoot = 0;
   _PTR(SComponent) sobj;
@@ -329,6 +362,7 @@ void SalomeApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
   }
   if ( sobj && aSStudy )
     updateTree( sobj, aSStudy );
+  END_TIMING(1)
 }
 
 /*!
@@ -336,6 +370,8 @@ void SalomeApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
 */
 SUIT_DataObject* SalomeApp_DataModel::synchronize( const _PTR( SComponent )& sobj, SalomeApp_Study* study )
 {
+  std::cerr << "SalomeApp_DataModel::synchronize " << std::endl;
+  //START_TIMING
   if( !study || !study->root() || !sobj )
     return 0;
     
@@ -355,9 +391,16 @@ SUIT_DataObject* SalomeApp_DataModel::synchronize( const _PTR( SComponent )& sob
   SalomeApp_DataModelSync sync( study->studyDS(), study->root() );
 
   if( !suitObj || dynamic_cast<SalomeApp_DataObject*>( suitObj ) )
-    return ::synchronize<kerPtr,suitPtr,SalomeApp_DataModelSync>( sobj, suitObj, sync );
+    {
+    SUIT_DataObject* o= ::synchronize<kerPtr,suitPtr,SalomeApp_DataModelSync>( sobj, suitObj, sync );
+  //END_TIMING(1)
+    return o;
+    }
   else
+    {
+  //END_TIMING(1)
     return 0;
+    }
 }
 
 /*!
@@ -365,12 +408,15 @@ SUIT_DataObject* SalomeApp_DataModel::synchronize( const _PTR( SComponent )& sob
 */
 void SalomeApp_DataModel::updateTree( const _PTR( SComponent )& comp, SalomeApp_Study* study )
 {
+  std::cerr << "SalomeApp_DataModel::updateTree " << std::endl;
+  //START_TIMING
   SalomeApp_ModuleObject* aNewRoot = dynamic_cast<SalomeApp_ModuleObject*>( synchronize( comp, study ) );
   if( aNewRoot )
   {
     aNewRoot->setDataModel( this );
     setRoot( aNewRoot );
   }
+  //END_TIMING(1)
 }
 
 /*!

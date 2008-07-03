@@ -31,6 +31,9 @@
 
 #include <stdlib.h>
 
+#include <map>
+std::map<QString,QPixmap>  myOnePixmapCache;
+
 /*!
   Class: QtxResourceMgr::Resources
   Level: Internal
@@ -1712,11 +1715,23 @@ QPixmap QtxResourceMgr::loadPixmap( const QString& prefix, const QString& name, 
 {
   initialize();
 
+  //CCAR
+#if 0
+  if( myOnePixmapCache.count( prefix + "/" + name ) !=0 )
+    {
+      return myOnePixmapCache[prefix + "/" + name];
+    }
+#endif
+
   QPixmap pix;
   for ( ResListIterator it( myResources ); it.current() && pix.isNull(); ++it )
     pix = it.current()->loadPixmap( resSection(), prefix, name );
   if ( pix.isNull() )
     pix = defPix;
+  //CCAR
+#if 0
+  myOnePixmapCache[prefix + "/" + name]=pix;
+#endif
   return pix;
 }
 

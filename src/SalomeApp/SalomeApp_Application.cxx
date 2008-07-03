@@ -85,6 +85,16 @@
 #include <SALOMEDSClient_ClientFactory.hxx>
 
 #include <vector>
+
+#include <sys/time.h>
+static long tt0;
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+      tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+
 /*!Internal class that updates object browser item properties */
 class SalomeApp_Updater : public OB_Updater
 {
@@ -1116,6 +1126,8 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QPopupMenu* t
  3. update object browser if it exists */
 void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 {
+  std::cerr << "SalomeApp_Application::updateObjectBrowser " << updateModels << std::endl;
+  START_TIMING
   // update "non-existing" (not loaded yet) data models
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>(activeStudy());
   if ( study )
@@ -1126,6 +1138,27 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
       for ( _PTR(SComponentIterator) it ( stdDS->NewComponentIterator() ); it->More(); it->Next() ) 
       {
 	_PTR(SComponent) aComponent ( it->Value() );
+
+//CCAR
+#if 0
+        //don't update already loaded data models
+        std::string compoName=aComponent->GetName();
+        SUIT_DataObject* suitObj = 0;
+        CAM_Study::ModelList dm_list;
+        study->dataModels( dm_list );
+        for ( CAM_Study::ModelListIterator it( dm_list ); it.current(); ++it ) 
+          {
+            CAM_DataModel* camDM = it.current();
+            SalomeApp_DataObject* dobj = dynamic_cast<SalomeApp_DataObject*>( camDM->root() );
+            if( dobj && dobj->name() == compoName )
+              {
+                suitObj = dobj;
+                break;
+              }
+          }
+        if(suitObj)continue;
+#else
+#endif
 
 	if ( aComponent->ComponentDataType() == "Interface Applicative" )
 	  continue; // skip the magic "Interface Applicative" component
@@ -1145,6 +1178,7 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 
   // update existing data models (already loaded SComponents)
   LightApp_Application::updateObjectBrowser( updateModels );
+  END_TIMING(1)
 }
 
 /*!Display Catalog Genenerator dialog */

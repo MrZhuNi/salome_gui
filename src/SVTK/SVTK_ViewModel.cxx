@@ -37,6 +37,15 @@
 #include <SALOME_Actor.h>
 #include <SALOME_InteractiveObject.hxx>
 
+#include <sys/time.h>
+static long tt0;
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+    tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+
 // in order NOT TO link with SalomeApp, here the code returns SALOMEDS_Study.
 // SalomeApp_Study::studyDS() does it as well, but -- here it is retrieved from 
 // SALOMEDS::StudyManager - no linkage with SalomeApp. 
@@ -296,6 +305,7 @@ void
 SVTK_Viewer
 ::Display( const SALOME_VTKPrs* prs )
 {
+  START_TIMING
   // try do downcast object
   if(const SVTK_Prs* aPrs = dynamic_cast<const SVTK_Prs*>( prs )){
     if(aPrs->IsNull())
@@ -334,6 +344,7 @@ SVTK_Viewer
       }
     }
   }
+  END_TIMING(10)
 }
 
 /*!

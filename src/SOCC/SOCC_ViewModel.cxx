@@ -23,6 +23,7 @@
 
 #include "SUIT_Session.h"
 #include "SUIT_Application.h"
+#include <iostream>
 
 //#include "ToolsGUI.h"
 
@@ -50,6 +51,15 @@
 //#include "SALOMEDS_StudyManager.hxx"
 
 #include <AIS_TypeOfIso.hxx>
+#include <sys/time.h>
+static long tt0;
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+    tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+
 
 // in order NOT TO link with SalomeApp, here the code returns SALOMEDS_Study.
 // SalomeApp_Study::studyDS() does it as well, but -- here it is retrieved from 
@@ -311,6 +321,7 @@ void SOCC_Viewer::rename( const Handle(SALOME_InteractiveObject)& obj,
 */
 void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
 {
+  START_TIMING
   // try do downcast object
   const SOCC_Prs* anOCCPrs = dynamic_cast<const SOCC_Prs*>( prs );
   if ( !anOCCPrs || anOCCPrs->IsNull() )
@@ -327,10 +338,18 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
 
   // get all displayed objects
   AIS_ListOfInteractive List;
+//CCAR
+#if 0
+#else
   ic->DisplayedObjects( List );
+#endif
   // get objects in the collector
   AIS_ListOfInteractive ListCollector;
+//CCAR
+#if 0
+#else
   ic->ObjectsInCollector( ListCollector );
+#endif
 
   // get objects to be displayed
   AIS_ListOfInteractive anAISObjects;
@@ -423,6 +442,7 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
         ic->Deactivate( anAIS );
     }
   }
+  END_TIMING(200)
 }
 
 
@@ -681,8 +701,10 @@ bool SOCC_Viewer::getTrihedronSize( double& theNewSize, double& theSize )
 */
 void SOCC_Viewer::Repaint()
 {
+  std::cerr << "SOCC_Viewer::Repaint" << std::endl;
 //  onAdjustTrihedron();
   getViewer3d()->Update();
+  std::cerr << "end of SOCC_Viewer::Repaint" << std::endl;
 }
 
 

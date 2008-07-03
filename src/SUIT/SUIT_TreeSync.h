@@ -22,6 +22,15 @@
 
 #include <qptrlist.h>
 #include <qvaluelist.h>
+#include <iostream>
+#include <sys/time.h>
+static long tcount0=0;
+static long cumul0;
+#define START_TIMING0 timeval tv; gettimeofday(&tv,0);long tt00=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING0(NUMBER) \
+  tcount0=tcount0+1;gettimeofday(&tv,0);cumul0=cumul0+tv.tv_usec+tv.tv_sec*1000000 -tt00; \
+  if(tcount0==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul0 << std::endl; tcount0=0;cumul0=0; }
+
 
 /*!
   \struct DiffItem
@@ -73,6 +82,49 @@ const typename QValueList<TrgItem>::const_iterator findEqual( const QValueList<T
 							      const TreeData& td );
 
 
+/*!
+  Synchronizes two trees when we are sure that r1 == r2
+  */
+template <class SrcItem, class TrgItem, class TreeData>
+TrgItem synchronize_eq( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
+{
+    // update items themselves
+    td.updateItem( r1, r2 );
+
+    // iterate 'siblings' (direct children)
+    QValueList< DiffItem< SrcItem, TrgItem > > d;
+    diffSiblings( r1, r2, d, td );
+
+    typename QValueList< DiffItem< SrcItem, TrgItem > >::const_iterator anIt = d.begin(), aLast = d.end();
+    TrgItem lastItem = td.nullTrg();
+    //    TrgItem tail = td.nullTrg();
+    for( ; anIt!=aLast; anIt++ )
+    {
+      const DiffItem<SrcItem,TrgItem>& item = *anIt;
+      if( item.mySrc==td.nullSrc() )
+        if( item.myTrg==td.nullTrg() )
+          qDebug( "error: both null" );
+        else
+          //to delete
+          td.deleteItemWithChildren( item.myTrg );
+      else {
+        if( item.myTrg==td.nullTrg() )
+        {
+          //to add
+          TrgItem nitem = createSubTree( item.mySrc, r2, lastItem, lastItem==td.nullTrg(), td );
+          if( nitem!=td.nullTrg() )
+            lastItem = nitem;
+        }
+        else
+        {
+          //to update
+          synchronize_eq( item.mySrc, item.myTrg, td );
+          lastItem = item.myTrg;
+        }
+      }
+    }
+    return r2;
+}
 
 
 /*!
@@ -103,6 +155,7 @@ const typename QValueList<TrgItem>::const_iterator findEqual( const QValueList<T
 template <class SrcItem, class TrgItem, class TreeData>
 TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
 {
+  //START_TIMING0
   if( td.isEqual( r1, r2 ) )
   {
     // update items themselves
@@ -119,29 +172,36 @@ TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
     {
       const DiffItem<SrcItem,TrgItem>& item = *anIt;
       if( item.mySrc==td.nullSrc() )
-	if( item.myTrg==td.nullTrg() )
-	  qDebug( "error: both null" );
+        if( item.myTrg==td.nullTrg() )
+          qDebug( "error: both null" );
         else
-	  //to delete
-	  td.deleteItemWithChildren( item.myTrg );
+          //to delete
+          td.deleteItemWithChildren( item.myTrg );
       else {
-	if( item.myTrg==td.nullTrg() )
-	{
-	  //to add
-	  TrgItem nitem = createSubTree( item.mySrc, r2, lastItem, lastItem==td.nullTrg(), td );
-	  if( nitem!=td.nullTrg() )
-	    lastItem = nitem;
-	}
+        if( item.myTrg==td.nullTrg() )
+        {
+          //to add
+          TrgItem nitem = createSubTree( item.mySrc, r2, lastItem, lastItem==td.nullTrg(), td );
+          if( nitem!=td.nullTrg() )
+            lastItem = nitem;
+        }
         else
-	{
-	  //to update
-	  td.updateItem( item.mySrc, item.myTrg );
-	  synchronize( item.mySrc, item.myTrg, td );
-	  lastItem = item.myTrg;
-	}
+        {
+          //to update
+//CCAR
+#if 0
+          //no need to update synchronize_eq does it : td.updateItem( item.mySrc, item.myTrg );
+          //do not test isequal
+          synchronize_eq( item.mySrc, item.myTrg, td );
+#else
+          td.updateItem( item.mySrc, item.myTrg );
+          synchronize( item.mySrc, item.myTrg, td );
+#endif
+          lastItem = item.myTrg;
+        }
       }
     }
-
+    //END_TIMING0(50)
     return r2;
   }
   else
@@ -149,6 +209,7 @@ TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
     TrgItem new_r2 = createSubTree( r1, td.parent( r2 ), r2, false, td );
     if( r2!=td.nullTrg() )
       td.deleteItemWithChildren( r2 );
+    //END_TIMING0(50)
     return new_r2;
   }
 }
@@ -167,10 +228,15 @@ const typename QValueList<TrgItem>::const_iterator findEqual( const QValueList<T
 							      const SrcItem& it,
 							      const TreeData& td )
 {
+  //START_TIMING0
   typename QValueList<TrgItem>::const_iterator cur = first, last = l.end();
   for( ; cur!=last; cur++ )
     if( td.isEqual( it, *cur ) )
+    {
+      //END_TIMING0(25)
       return cur;
+    }
+  //END_TIMING0(25)
   return last;
 }
 
@@ -186,6 +252,7 @@ void diffSiblings( const SrcItem& src, const TrgItem& trg,
 		   QValueList < DiffItem < SrcItem,TrgItem > >& d,
 		   const TreeData& td )
 {
+  //START_TIMING0
   //if( src==td.nullSrc() || trg==td.nullTrg() )
   //  return;
 
@@ -193,6 +260,7 @@ void diffSiblings( const SrcItem& src, const TrgItem& trg,
   QValueList<TrgItem> trg_ch;
   td.children( src, src_ch );
   td.children( trg, trg_ch );
+  //END_TIMING0(50)
 
   typename QValueList<SrcItem>::const_iterator src_it = src_ch.begin(), src_last = src_ch.end();
   typename QValueList<TrgItem>::const_iterator cur = trg_ch.begin(), trg_last = trg_ch.end();
@@ -206,10 +274,10 @@ void diffSiblings( const SrcItem& src, const TrgItem& trg,
       //mark all items before found as "to be deleted"
       for( typename QValueList<TrgItem>::const_iterator it = cur; it!=f; it++ )
       {
-	DiffItem<SrcItem,TrgItem> ndiff;
-	ndiff.mySrc = td.nullSrc();
-	ndiff.myTrg = *it; //to delete;
-	d.append( ndiff );
+        DiffItem<SrcItem,TrgItem> ndiff;
+        ndiff.mySrc = td.nullSrc();
+        ndiff.myTrg = *it; //to delete;
+        d.append( ndiff );
       }
       cur = f;
       DiffItem<SrcItem,TrgItem> ndiff;

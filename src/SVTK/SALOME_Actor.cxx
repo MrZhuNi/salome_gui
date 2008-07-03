@@ -62,6 +62,16 @@
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 
+#include <sys/time.h>
+static long tt0;
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+      tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+
+
 using namespace std;
 
 #if defined __GNUC__
@@ -137,6 +147,10 @@ SALOME_Actor
   myOutline(vtkOutlineSource::New()),
   myOutlineActor(VTKViewer_Actor::New())
 {
+//  START_TIMING
+//CCAR
+#if 0
+#else
   myPreHighlightActor->Delete();
   myPreHighlightActor->Initialize();
   myPreHighlightActor->PickableOff();
@@ -162,6 +176,8 @@ SALOME_Actor
   myOutlineActor->GetProperty()->SetAmbient(1.0);
   myOutlineActor->GetProperty()->SetDiffuse(0.0);
   myOutlineActor->SetVisibility( false );
+#endif
+ // END_TIMING(20)
 }
 
 /*!

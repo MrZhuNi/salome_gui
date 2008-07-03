@@ -35,6 +35,19 @@
 #include <SALOMEDSClient_AttributeTableOfReal.hxx>
 #include <SALOMEDSClient_AttributeTableOfInteger.hxx>
 
+#include <iostream>
+#include <sys/time.h>
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);long tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+  tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+#include <map>
+std::map<std::string,QString>  pixmapNameMap;
+std::map< std::string , QPixmap >  mypixmapMap;
+
+
 /*!Constructor. Initialize by \a parent*/
 SalomeApp_DataObject::SalomeApp_DataObject( SUIT_DataObject* parent )
 : LightApp_DataObject( parent ),
@@ -73,6 +86,7 @@ QString SalomeApp_DataObject::entry() const
 /*!Gets name of object.*/
 QString SalomeApp_DataObject::name() const
 {
+  //START_TIMING
   //if ( myName.isEmpty() )
   {
     QString str;
@@ -93,15 +107,19 @@ QString SalomeApp_DataObject::name() const
         else
 	  str = QString( "<Invalid Reference>" );
       }
+    /*
+      */
     SalomeApp_DataObject* that = (SalomeApp_DataObject*)this;
     that->myName = str;
   }
+  //END_TIMING(25)
   return myName;
 }
 
 /*!Gets icon picture of object.*/
 QPixmap SalomeApp_DataObject::icon() const
 {
+  //START_TIMING
   _PTR(GenericAttribute) anAttr;
   if ( myObject && myObject->FindAttribute( anAttr, "AttributePixMap" ) ){
     _PTR(AttributePixMap) aPixAttr ( anAttr );
@@ -114,14 +132,43 @@ QPixmap SalomeApp_DataObject::icon() const
         componentType = plugin_pixmap.front();
         pixmapID      = plugin_pixmap.back();
       }
+      //CCAR: tr is expansive
       QString pixmapName = QObject::tr( pixmapID );
       LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root() );
       if ( aRoot && aRoot->study() ) {
+//CCAR
+#if 0
+      //std::string key= componentDataType().latin1() ;
+      std::string key;
+
+    const SalomeApp_DataObject* compObj = dynamic_cast<SalomeApp_DataObject*>( componentObject() );
+    if ( compObj && compObj->object() )
+    {
+      _PTR(SComponent) aComp( compObj->object() );
+      if ( aComp ) {
+        key=aComp->ComponentDataType();
+      }
+    }
+
+      key= key + "/" + name;
+      QPixmap p;
+      if( mypixmapMap.count(key) !=0 )
+        {
+          p=mypixmapMap[key];
+        }
+      else
+        {
+	  SUIT_ResourceMgr* mgr = aRoot->study()->application()->resourceMgr();
+	  p= mgr->loadPixmap( componentDataType(), pixmapName, false ); 
+          mypixmapMap[key]=p;
+        }
+#else
 	SUIT_ResourceMgr* mgr = aRoot->study()->application()->resourceMgr();
 	return mgr->loadPixmap( componentType, pixmapName, false ); 
       }
     }
   }
+  //END_TIMING(50)
   return QPixmap();
 }
 
@@ -133,6 +180,7 @@ QPixmap SalomeApp_DataObject::icon() const
  */
 QString SalomeApp_DataObject::text( const int id ) const
 {
+  //START_TIMING
   QString txt;
   switch ( id )
   {
@@ -144,7 +192,16 @@ QString SalomeApp_DataObject::text( const int id ) const
 #endif
       txt = value( object() );
       if ( txt.isEmpty() )
-	txt = value( referencedObject() );
+        {
+//CCAR: no need to calculate if it is the same object
+#if 0
+          _PTR(SObject) o=referencedObject();
+          if(o != object())
+	    txt = value( o );
+#else
+	    txt = value( referencedObject() );
+#endif
+        }
     break;
   case CT_Entry:
     txt = entry( object() );
@@ -157,6 +214,7 @@ QString SalomeApp_DataObject::text( const int id ) const
       txt = entry( referencedObject() );
     break;
   }
+  //END_TIMING(50)
   return txt;
 }
 
@@ -272,6 +330,7 @@ _PTR(SObject) SalomeApp_DataObject::referencedObject() const
 /*!Gets IOR*/
 QString SalomeApp_DataObject::ior( const _PTR(SObject)& obj ) const
 {
+  //START_TIMING
   QString txt;
   if ( obj )
   {
@@ -281,8 +340,19 @@ QString SalomeApp_DataObject::ior( const _PTR(SObject)& obj ) const
       _PTR(AttributeIOR) iorAttr = attr;
       if ( iorAttr )
       {
+//CCAR
+#if 0
+	std::string str = "IOR:";
+#else
 	std::string str = iorAttr->Value();
+#endif
+//CCAR
+#if 0
+	txt = QString( str );
+#else
 	txt = QString( str.c_str() );
+#endif
+  //END_TIMING(50)
       }
     }
   }
@@ -304,6 +374,7 @@ QString SalomeApp_DataObject::entry( const _PTR(SObject)& obj ) const
 /*!Value*/
 QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
 {
+  //START_TIMING
   if ( !obj )
     return QString::null;
 
@@ -347,6 +418,7 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
     val = QString( str.c_str() );
   }
 
+  //END_TIMING(25)
   return val;
 }
 
