@@ -24,6 +24,7 @@
 #include "SUIT_Session.h"
 #include "SUIT_Application.h"
 #include <iostream>
+#include <set>
 
 //#include "ToolsGUI.h"
 
@@ -38,6 +39,15 @@
 
 #include <SALOME_AISShape.hxx>
 #include <SALOME_AISObject.hxx>
+
+struct AISLessThan
+{
+  bool  operator()(const Handle(AIS_InteractiveObject)* theRightIO,
+                   const Handle(AIS_InteractiveObject)* theLeftIO) const
+  {
+    return (theLeftIO<theRightIO); 
+  } 
+};
 
 // Temporarily commented to avoid awful dependecy on SALOMEDS
 // TODO: better mechanism of storing display/erse status in a study
@@ -321,7 +331,6 @@ void SOCC_Viewer::rename( const Handle(SALOME_InteractiveObject)& obj,
 */
 void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
 {
-  START_TIMING
   // try do downcast object
   const SOCC_Prs* anOCCPrs = dynamic_cast<const SOCC_Prs*>( prs );
   if ( !anOCCPrs || anOCCPrs->IsNull() )
@@ -351,11 +360,29 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
   ic->ObjectsInCollector( ListCollector );
 #endif
 
+
+  START_TIMING
   // get objects to be displayed
   AIS_ListOfInteractive anAISObjects;
   anOCCPrs->GetObjects( anAISObjects );
 
   AIS_ListIteratorOfListOfInteractive aIter( anAISObjects );
+  AIS_ListIteratorOfListOfInteractive ite( List );
+
+  std::set<Handle(AIS_InteractiveObject)*,AISLessThan> check;
+  std::set<Handle(AIS_InteractiveObject)*,AISLessThan> checkCollector;
+  
+  for ( ; ite.More();ite.Next())
+    {
+      check.insert(&ite.Value());
+    }
+
+  ite.Initialize(ListCollector);
+  for ( ; ite.More();ite.Next())
+    {
+      checkCollector.insert(&ite.Value());
+    }
+
   for ( ; aIter.More(); aIter.Next() )
   {
     Handle(AIS_InteractiveObject) anAIS = aIter.Value();
@@ -363,33 +390,25 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
     {
       // try to find presentation in the viewer
       bool bDisplayed = false;
-      AIS_ListIteratorOfListOfInteractive ite( List );
-      for ( ; ite.More(); ite.Next() )
-      {
+      // if insert.second is True object was not displayed before
+      if (!check.insert(&anAIS).second)
         // compare presentations by handles
         // if the object is already displayed - nothing to do more
-        if ( ite.Value() == anAIS )
-        {
           // Deactivate object if necessary
           if ( !anOCCPrs->ToActivate() )
             ic->Deactivate( anAIS );
           bDisplayed = true;
           break;
-        }
-      }
 
       if ( bDisplayed )
         continue;
 
       // then try to find presentation in the collector
       bDisplayed = false;
-      ite.Initialize( ListCollector );
-      for ( ; ite.More(); ite.Next() )
+      if (!checkCollector.insert(&anAIS).second)
       {
         // compare presentations by handles
         // if the object is in collector - display it
-        if ( ite.Value() == anAIS )
-        {
           ic->DisplayFromCollector( anAIS, false );
 
           // Deactivate object if necessary
@@ -405,11 +424,9 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
           //  Handle(SALOME_InteractiveObject)::DownCast( anAIS->GetOwner() );
           //if ( !anObj.IsNull() && anObj->hasEntry() )
           //{
-	  //  if ( study )
 	  //    ToolsGUI::SetVisibility( study, anObj->getEntry(), true, this );
 	  //}
           break;
-        }
       }
       if ( bDisplayed )
         continue;
