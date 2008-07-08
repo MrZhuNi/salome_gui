@@ -371,12 +371,11 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
 
   std::set<Handle(AIS_InteractiveObject)*,AISLessThan> check;
   std::set<Handle(AIS_InteractiveObject)*,AISLessThan> checkCollector;
-  
+
   for ( ; ite.More();ite.Next())
     {
       check.insert(&ite.Value());
     }
-
   ite.Initialize(ListCollector);
   for ( ; ite.More();ite.Next())
     {
@@ -391,21 +390,17 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
       // try to find presentation in the viewer
       bool bDisplayed = false;
       // if insert.second is True object was not displayed before
-      if (!check.insert(&anAIS).second)
+      if ((check.insert(&anAIS)).second)
         // compare presentations by handles
         // if the object is already displayed - nothing to do more
           // Deactivate object if necessary
           if ( !anOCCPrs->ToActivate() )
             ic->Deactivate( anAIS );
           bDisplayed = true;
-          break;
-
-      if ( bDisplayed )
-        continue;
-
+      
       // then try to find presentation in the collector
       bDisplayed = false;
-      if (!checkCollector.insert(&anAIS).second)
+      if ((checkCollector.insert(&anAIS)).second)
       {
         // compare presentations by handles
         // if the object is in collector - display it
@@ -426,10 +421,7 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
           //{
 	  //    ToolsGUI::SetVisibility( study, anObj->getEntry(), true, this );
 	  //}
-          break;
       }
-      if ( bDisplayed )
-        continue;
 
       // if object is not displayed and not found in the collector - display it
       if ( anAIS->IsKind( STANDARD_TYPE(AIS_Trihedron) ) )
