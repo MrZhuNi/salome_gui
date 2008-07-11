@@ -155,6 +155,7 @@ void SVTK_KeyFreeInteractorStyle::OnChar()
   case 's':
   case 'S':
     ActionPicking();
+    EventCallbackCommand->AbortFlagOn();
     return;
   }
   SVTK_InteractorStyle::OnChar();
