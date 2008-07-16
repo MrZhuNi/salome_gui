@@ -52,14 +52,20 @@
 
 #include <AIS_TypeOfIso.hxx>
 #include <sys/time.h>
-static long tt0;
-static long tcount=0;
-static long cumul;
-#define START_TIMING timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
-#define END_TIMING(NUMBER) \
-    tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
-  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+static int IDMax=10;
+static long tt0[10]={0,0,0,0,0,0,0,0,0,0};
+static long tcount[10]={0,0,0,0,0,0,0,0,0,0};
+static long cumul[10]={0,0,0,0,0,0,0,0,0,0};
+timeval tv;
+#define START_TIMING(ID) if (ID<IDMax){gettimeofday(&tv,0);tt0[ID]=tv.tv_usec+tv.tv_sec*1000000;}
+#define END_TIMING(ID,NUMBER) if (ID<IDMax){\
+    tcount[ID]=tcount[ID]+1;gettimeofday(&tv,0);cumul[ID]=cumul[ID]+tv.tv_usec+tv.tv_sec*1000000 -tt0[ID]; \
+  if(tcount[ID]==NUMBER){ std::cout << __FILE__ << ", " << __LINE__ << " (timer " << ID <<"): temps CPU(mus)= " << cumul[ID] << std::endl; tcount[ID]=0;cumul[ID]=0; }}
 
+// BR_PERF
+#define PERF
+#define MESSAGE(STR) std::cerr << __FILE__ << " [" << __LINE__ << "] : " << STR << std::endl;
+//~ #include "utilities.h"
 
 // in order NOT TO link with SalomeApp, here the code returns SALOMEDS_Study.
 // SalomeApp_Study::studyDS() does it as well, but -- here it is retrieved from 
@@ -321,7 +327,7 @@ void SOCC_Viewer::rename( const Handle(SALOME_InteractiveObject)& obj,
 */
 void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
 {
-  START_TIMING
+  //~ START_TIMING
   // try do downcast object
   const SOCC_Prs* anOCCPrs = dynamic_cast<const SOCC_Prs*>( prs );
   if ( !anOCCPrs || anOCCPrs->IsNull() )
@@ -413,7 +419,7 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
         ic->Deactivate( anAIS );
     }
   }
-  END_TIMING(200)
+  //~ END_TIMING(200)
 }
 
 
@@ -522,21 +528,37 @@ void SOCC_Viewer::EraseAll( const bool forced )
 */
 SALOME_Prs* SOCC_Viewer::CreatePrs( const char* entry )
 {
+  //~ START_TIMING(0)
   SOCC_Prs* prs = new SOCC_Prs();
+
   if ( entry )
   {
+#ifdef PERF
+    MESSAGE("=== PERF ===");
+    MapOfEntryIO myMapOfEntryIO = getMapOfEntryIO() ;
+    MESSAGE("=== PERF === myMapOfEntryIO.size(): " << myMapOfEntryIO.size());
+    if (myMapOfEntryIO.contains(entry)) {
+      MESSAGE("=== PERF === entry:" << entry);
+      prs->AddObject( myMapOfEntryIO[entry]);
+    }
+    MESSAGE("=== PERF ===");
+#else
     // get context
     Handle(AIS_InteractiveContext) ic = getAISContext();
-
     // get displayed objects
     AIS_ListOfInteractive List;
+    //~ START_TIMING(1)
     ic->DisplayedObjects( List );
+    //~ END_TIMING(1,200)
     // get objects in the collector
     AIS_ListOfInteractive ListCollector;
+    //~ START_TIMING(2)
     ic->ObjectsInCollector( ListCollector );
+    //~ END_TIMING(2,200)
     List.Append( ListCollector );
 
     AIS_ListIteratorOfListOfInteractive ite( List );
+    //~ START_TIMING(3)
     for ( ; ite.More(); ite.Next() )
     {
       Handle(SALOME_InteractiveObject) anObj =
@@ -544,8 +566,13 @@ SALOME_Prs* SOCC_Viewer::CreatePrs( const char* entry )
 
       if ( !anObj.IsNull() && anObj->hasEntry() && strcmp( anObj->getEntry(), entry ) == 0 )
         prs->AddObject( ite.Value() );
+        break;
     }
+#endif
   }
+    //~ END_TIMING(3,200)
+
+  //~ END_TIMING(0,200)
   return prs;
 }
 
@@ -672,10 +699,8 @@ bool SOCC_Viewer::getTrihedronSize( double& theNewSize, double& theSize )
 */
 void SOCC_Viewer::Repaint()
 {
-  std::cerr << "SOCC_Viewer::Repaint" << std::endl;
 //  onAdjustTrihedron();
   getViewer3d()->Update();
-  std::cerr << "end of SOCC_Viewer::Repaint" << std::endl;
 }
 
 

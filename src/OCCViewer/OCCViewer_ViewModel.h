@@ -31,6 +31,10 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_InteractiveContext.hxx>
 
+// GDD PERF
+//~ #include <map>
+//
+
 class SUIT_ViewWindow;
 class SUIT_Desktop;
 class OCCViewer_ViewWindow;
@@ -58,6 +62,10 @@ public:
 };
 
 typedef QValueList<viewAspect> viewAspectList;
+
+// GDD PERF
+typedef QMap<QString, Handle(AIS_InteractiveObject)> MapOfEntryIO;
+//
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -115,6 +123,10 @@ public:
   Handle(V3d_Viewer)              getViewer3d()    const { return myV3dViewer;}
   Handle(V3d_Viewer)              getCollector3d() const { return myV3dCollector; }
   Handle(AIS_InteractiveContext)  getAISContext()  const { return myAISContext; }
+  // GDD PERF
+  MapOfEntryIO                        getMapOfEntryIO() const { return myMapOfEntryIO; }
+  void                                       registerIOWithEntry(const std::string entry,const Handle(AIS_InteractiveObject) io);
+  //
   Handle(AIS_Trihedron)           getTrihedron()   const { return myTrihedron; }
 
   void                            enableSelection(bool isEnabled);
@@ -162,7 +174,9 @@ private:
 
   Handle(AIS_Trihedron)           myTrihedron;
   Handle(AIS_InteractiveContext)  myAISContext;
-
+  // GDD PERF
+  MapOfEntryIO       myMapOfEntryIO;
+  //
   viewAspectList                  myViewAspects;
 
   bool                            mySelectionEnabled;

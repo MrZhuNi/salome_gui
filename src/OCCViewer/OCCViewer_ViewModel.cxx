@@ -40,6 +40,8 @@
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 
+#define MESSAGE(STR) std::cerr << __FILE__ << " [" << __LINE__ << "] : " << STR << std::endl;
+
 /*!
   Constructor
   \param DisplayTrihedron - is trihedron displayed
@@ -604,12 +606,20 @@ void OCCViewer_Viewer::setTrihedronSize( const double sz )
 */
 void OCCViewer_Viewer::setIsos( const int u, const int v )
 {
+#if 0
   Handle(AIS_InteractiveContext) ic = getAISContext();
   if ( ic.IsNull() )
   return;
 
   ic->SetIsoNumber( u, AIS_TOI_IsoU );
   ic->SetIsoNumber( v, AIS_TOI_IsoV );
+#else
+  if ( !myAISContext.IsNull()  )
+  {
+  myAISContext->SetIsoNumber( u, AIS_TOI_IsoU );
+  myAISContext->SetIsoNumber( v, AIS_TOI_IsoV );
+  }
+#endif
 }
 
 /*!
@@ -619,10 +629,30 @@ void OCCViewer_Viewer::setIsos( const int u, const int v )
 */
 void OCCViewer_Viewer::isos( int& u, int& v ) const
 {
+#if 0
   Handle(AIS_InteractiveContext) ic = getAISContext();
   if ( !ic.IsNull() )
   {
     u = ic->IsoNumber( AIS_TOI_IsoU );
     v = ic->IsoNumber( AIS_TOI_IsoV );
   }
+#else
+  if ( !myAISContext.IsNull()  )
+  {
+  myAISContext->IsoNumber( AIS_TOI_IsoU );
+  myAISContext->IsoNumber( AIS_TOI_IsoV );
+  }
+#endif
+}
+
+/*!
+  \param entry - Entry of interactive object
+  \param io - Interactive object
+*/
+void OCCViewer_Viewer::registerIOWithEntry(const std::string entry,const Handle(AIS_InteractiveObject) io)
+{
+	MESSAGE("===== PERF =====");
+	if (!entry.size() || io.IsNull())
+		return;
+	myMapOfEntryIO[entry] = io;
 }
