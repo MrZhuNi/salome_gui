@@ -51,6 +51,21 @@ dev_docs:
 	cp -fr $(srcdir)/GUI/sources/ GUI/ ; \
 	rm -fr INPUT
 
+docs: dev_docs
+
+clean-local:
+	cd ./GUI; \
+	rm -fr `ls | grep -v "doxyfile"`
+	rm -fr `ls | grep -vE "Makefile|GUI"`
+
+install-data-local: dev_docs
+	mkdir -p $(docdir)/tui
+	cp -rf GUI $(docdir)/tui
+	-find $(PWD) -name CVS -prune -exec rm -rf {} \;
+
+uninstall-local:
+	rm -rf $(docdir)/tui/GUI
+
 doctuidir=$(docdir)/tui/GUI
 
 nodist_doctui_DATA= GUI/doxyfile
