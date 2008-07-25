@@ -40,7 +40,7 @@ salomeinclude_HEADERS= \
 	SVTK_ViewManager.h \
 	SVTK_ViewModel.h \
 	SVTK_ViewWindow.h \
-	SVTK_MainWindow.h \
+#	SVTK_MainWindow.h \
 	SVTK_Renderer.h \
 	SVTK_InteractorStyle.h \
 	SVTK_KeyFreeInteractorStyle.h \
@@ -79,7 +79,7 @@ dist_libSVTK_la_SOURCES= \
 	SVTK_ViewModel.cxx \
 	SVTK_Renderer.cxx \
 	SVTK_ViewWindow.cxx \
-	SVTK_MainWindow.cxx \
+#	SVTK_MainWindow.cxx \
 	SVTK_InteractorStyle.cxx \
 	SVTK_KeyFreeInteractorStyle.cxx \
 	SVTK_RenderWindowInteractor.cxx \
@@ -108,7 +108,7 @@ MOC_FILES= \
 	SVTK_ViewModelBase_moc.cxx \
 	SVTK_ViewManager_moc.cxx \
 	SVTK_ViewWindow_moc.cxx \
-	SVTK_MainWindow_moc.cxx \
+#	SVTK_MainWindow_moc.cxx \
 	SVTK_ViewModel_moc.cxx \
 	SVTK_View_moc.cxx \
 	SVTK_SetRotationPointDlg_moc.cxx \

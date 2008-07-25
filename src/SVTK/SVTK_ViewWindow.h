@@ -30,14 +30,16 @@
 #include "SALOME_InteractiveObject.hxx"
 
 #include <QImage>
+#include <vtkSmartPointer.h>
 
 class SUIT_Desktop;
+class SUIT_ResourceMgr;
 
 class VTKViewer_Actor;
 class VTKViewer_Trihedron;
 
 class SVTK_ViewModelBase;
-class SVTK_MainWindow;
+//class SVTK_MainWindow;
 class SVTK_Selector;
 class SVTK_View;
 
@@ -46,6 +48,15 @@ class SVTK_CubeAxesActor2D;
 class vtkRenderer;
 class vtkRenderWindow;
 class vtkRenderWindowInteractor;
+class SVTK_RenderWindowInteractor;
+class SVTK_Renderer;
+class SVTK_NonIsometricDlg;
+class SVTK_UpdateRateDlg;
+class SVTK_CubeAxesDlg;
+class SVTK_SetRotationPointDlg;
+
+class vtkObject;
+class QtxAction;
 
 namespace SVTK
 {
@@ -73,7 +84,7 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   SVTK_View* getView();
 
   //! Get #SVTK_MainWindow
-  SVTK_MainWindow* getMainWindow();
+  //SVTK_MainWindow* getMainWindow();
 
   //! Redirect the request to #SVTK_MainWindow::getRenderWindow
   vtkRenderWindow* getRenderWindow();
@@ -81,11 +92,16 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   //! Redirect the request to #SVTK_MainWindow::getInteractor
   vtkRenderWindowInteractor* getInteractor();
 
+  //! Redirect the request to #SVTK_MainWindow::getInteractor
+  SVTK_RenderWindowInteractor*  GetInteractor() const;
+
   //! Redirect the request to #SVTK_MainWindow::getRenderer 
   vtkRenderer* getRenderer();
 
+  SVTK_Renderer* GetRenderer() const;
+
   //! Redirect the request to #SVTK_MainWindow::GetSelector 
-  SVTK_Selector* GetSelector();
+  SVTK_Selector* GetSelector() const;
   
   //! Redirect the request to #SVTK_Selector::SelectionMode
   Selection_Mode SelectionMode() const;
@@ -218,6 +234,22 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 public slots:
   virtual void onSelectionChanged();
 
+  void onChangeRotationPoint(bool theIsActivate);
+
+  void activateSetRotationGravity();
+  void activateSetRotationSelected(void* theData);
+  void activateStartPointSelection();
+
+  void onUpdateRate(bool theIsActivate);
+  void onNonIsometric(bool theIsActivate);
+  void onGraduatedAxes(bool theIsActivate);
+
+  void activateZoom();
+  void activateWindowFit();
+  void activateRotation();
+  void activatePanning(); 
+  void activateGlobalPanning(); 
+
 signals:
  void selectionChanged();
  void actorAdded(VTKViewer_Actor*);
@@ -273,17 +305,39 @@ protected:
 			  SVTK_ViewModelBase* theModel);
 
   void doSetVisualParameters( const QString& );
+  void SetEventDispatcher(vtkObject* theDispatcher);
 
   virtual QString filter() const;
   virtual bool dumpViewToFormat( const QImage& img, const QString& fileName, const QString& format );
   
   virtual bool action( const int );
   
+  QtxAction* getAction( int ) const;
+  void createToolBar();
+  void createActions(SUIT_ResourceMgr* theResourceMgr);
+
+  enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, 
+	 ChangeRotationPointId, RotationId,
+         FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
+	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate};
+
+
   SVTK_View* myView;
-  SVTK_MainWindow* myMainWindow;
+  //SVTK_MainWindow* myMainWindow;
   SVTK_ViewModelBase* myModel;
 
+  SVTK_RenderWindowInteractor* myInteractor;
+
   QString myVisualParams; // used for delayed setting of view parameters 
+
+  vtkSmartPointer<vtkObject> myEventDispatcher;
+
+  SVTK_NonIsometricDlg* myNonIsometricDlg;
+  SVTK_UpdateRateDlg* myUpdateRateDlg;
+  SVTK_CubeAxesDlg* myCubeAxesDlg;
+  SVTK_SetRotationPointDlg* mySetRotationPointDlg;
+
+  int myToolBar;
 
 private:
   QImage myDumpImage;
