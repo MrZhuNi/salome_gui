@@ -36,14 +36,10 @@
 
 #include "SUIT_ViewModel.h"
 #include "SUIT_ViewManager.h"
-#include "CAM_Module.h"
-#include "CAM_Application.h"
 
 #include <SALOME_Actor.h>
 
 #include <QtxActionToolMgr.h>
-
-#include <CAM_ViewExtender.h>
 
 // in order NOT TO link with SalomeApp, here the code returns SALOMEDS_Study.
 // SalomeApp_Study::studyDS() does it as well, but -- here it is retrieved from 
@@ -72,7 +68,6 @@
 */
 SVTK_Viewer::SVTK_Viewer()
 {
-  myActiveModule = 0;
   myTrihedronSize = 105;
   myTrihedronRelative = true;
   myIncrementSpeed = 10;
@@ -140,13 +135,6 @@ SUIT_ViewWindow* SVTK_Viewer::createView( SUIT_Desktop* theDesktop )
   connect(aViewWindow, SIGNAL( actorRemoved(VTKViewer_Actor*) ), 
 	  this,  SLOT(onActorRemoved(VTKViewer_Actor*)));
 
-  if (myActiveModule) {
-    CAM_ViewExtender* aExtender = myActiveModule->getViewExtender();
-    if (aExtender) {
-      QtxActionToolMgr* aMgr = aViewWindow->toolMgr();
-      myExtToolBarId = aExtender->createToolbar(aViewWindow);
-    }
-  }
   return aViewWindow;
 }
 
@@ -347,12 +335,6 @@ void SVTK_Viewer::contextMenuPopup( QMenu* thePopup )
     for( ; it!=last; it++ )
       thePopup->addAction( (*it)->toggleViewAction() );
     aView->RefreshDumpImage();
-  }
-  if (myActiveModule) {
-    CAM_ViewExtender* aExtender = myActiveModule->getViewExtender();
-    if (aExtender) {
-      aExtender->contextMenuPopup(thePopup);
-    }
   }
 }
 
@@ -620,54 +602,6 @@ void SVTK_Viewer::Repaint()
 	aView->Repaint();
 }
  
-void SVTK_Viewer::connectToApplication( CAM_Application* theApp )
-{
-  onModuleActivated(theApp->activeModule());
-  connect(theApp, SIGNAL(moduleActivated(CAM_Module*)), 
-	  this, SLOT(onModuleActivated(CAM_Module*)));
-}
-
- 
-void SVTK_Viewer::onModuleActivated( CAM_Module* mod )
-{
-  CAM_Module* aModule =  dynamic_cast<CAM_Module*>(mod);
-  if (aModule) {
-    if (myActiveModule != aModule) {
-      CAM_ViewExtender* aExtender = (myActiveModule)? myActiveModule->getViewExtender() : 0;
-      if (aExtender)
-	aExtender->deactivate(this);
-
-      myActiveModule = aModule;
-      aExtender = myActiveModule->getViewExtender();
-      if (aExtender)
-	aExtender->activate(this);
-
-      updateToolBars();
-    }
-  }
-}
-
-
-void SVTK_Viewer::updateToolBars()
-{
-  if (!myActiveModule) return;
-
-  CAM_ViewExtender* aExtender = myActiveModule->getViewExtender();
-  int aNewId = -1;
-  QVector<SUIT_ViewWindow*> aViews = myViewManager->getViews();
-  for(int i = 0, iEnd = aViews.size(); i < iEnd; i++) {
-    if(SUIT_ViewWindow* aViewWindow = aViews.at(i)) {
-      if(TViewWindow* aViewWnd = dynamic_cast<TViewWindow*>(aViewWindow)) {
-	QtxActionToolMgr* aMgr = aViewWnd->toolMgr();
-	if (myExtToolBarId != -1)
-	  aMgr->removeToolBar(myExtToolBarId);
-	if (aExtender)
-	  aNewId = aExtender->createToolbar(aViewWnd);
-      }
-    }
-  }
-  myExtToolBarId = aNewId;
-}
 
 void SVTK_Viewer::onActorAdded(VTKViewer_Actor* theActor)
 {

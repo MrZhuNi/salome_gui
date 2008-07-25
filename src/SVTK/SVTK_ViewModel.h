@@ -31,9 +31,6 @@
 class QMouseEvent;
 
 class SVTK_ViewWindow;
-class CAM_Module;
-class CAM_Application;
-class CAM_Module;
 class VTKViewer_Actor;
 
 //! Extends two interfaces #SVTK_ViewModelBase and #SALOME_View 
@@ -139,9 +136,6 @@ public:
   //! See #SALOME_View::Repaint()
   virtual void Repaint();
 
-
-  virtual void connectToApplication(CAM_Application* theApp);
-
  signals:
   void actorAdded(SVTK_ViewWindow*, VTKViewer_Actor*);
   void actorRemoved(SVTK_ViewWindow*, VTKViewer_Actor*);
@@ -154,7 +148,6 @@ protected slots:
   void onDumpView();
   void onChangeBgColor();
 
-  void onModuleActivated( CAM_Module* mod );
   void onActorAdded(VTKViewer_Actor*);
   void onActorRemoved(VTKViewer_Actor*);
 
@@ -172,9 +165,6 @@ private:
   int    myProjMode;
   int    myStyle;
   int    mySpaceBtn[3];
-
-  CAM_Module* myActiveModule;
-  int myExtToolBarId;
 };
 
 #endif

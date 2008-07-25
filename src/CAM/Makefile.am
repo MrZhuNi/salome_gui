@@ -31,8 +31,7 @@ salomeinclude_HEADERS= \
 	CAM_DataModel.h \
 	CAM_DataObject.h \
 	CAM_Module.h \
-	CAM_Study.h \
-	CAM_ViewExtender.h
+	CAM_Study.h
 
 dist_libCAM_la_SOURCES= \
 	CAM_Application.cxx \

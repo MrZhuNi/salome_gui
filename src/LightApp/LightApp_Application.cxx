@@ -1305,7 +1305,6 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
 				resMgr->integerValue( "VTKViewer", "spacemouse_func2_btn", vm->spacemouseBtn(2) ),
 				resMgr->integerValue( "VTKViewer", "spacemouse_func5_btn", vm->spacemouseBtn(3) ) );
       new LightApp_VTKSelector( vm, mySelMgr );
-      vm->connectToApplication(this);
     }
 #else
     viewMgr = new VTKViewer_ViewManager( activeStudy(), desktop() );
@@ -2766,7 +2765,6 @@ bool LightApp_Application::activateModule( CAM_Module* mod )
   if ( objectBrowser() )
     objectBrowser()->updateTree();
 
-  //emit moduleActivated(mod);
   return res;
 }
 
