@@ -18,14 +18,14 @@ OB_FindDlg::OB_FindDlg( QWidget* parent )
 {
   QFrame *btns = new QFrame( this ), *checks = new QFrame( this );
   
-  myData = new QLineEdit( btns );
   myToFirst = new QPushButton( "|<<", btns );
-  myToLast = new QPushButton( ">>|", btns );
-  myNext = new QPushButton( ">>", btns );
   myPrev = new QPushButton( "<<", btns );
-  myClose = new QPushButton( tr( "CLOSE" ), checks );
+  myData = new QLineEdit( btns );
+  myNext = new QPushButton( ">>", btns );
+  myToLast = new QPushButton( ">>|", btns );
   myIsCaseSens = new QCheckBox( tr( "CASE_SENSITIVE" ), checks );
   myIsRegExp = new QCheckBox( tr( "IS_REG_EXP" ), checks );
+  myClose = new QPushButton( tr( "CLOSE" ), checks );
   int w = 30, h = myToFirst->height();
   myToFirst->setMaximumSize( w, h );
   myToLast->setMaximumSize( w, h );
