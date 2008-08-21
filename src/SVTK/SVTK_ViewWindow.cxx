@@ -21,6 +21,7 @@
 #include "SVTK_UpdateRateDlg.h"
 #include "SVTK_CubeAxesDlg.h"
 #include "SVTK_SetRotationPointDlg.h"
+#include "SVTK_ViewParameterDlg.h"
 
 #include "SALOME_Actor.h"
 
@@ -36,6 +37,7 @@
 #include <vtkCellPicker.h>
 #include <vtkAxisActor2D.h>
 #include <vtkGL2PSExporter.h>
+#include <vtkInteractorStyle.h>
 
 #include "QtxAction.h"
 
@@ -63,6 +65,11 @@
 #include "SVTK_RenderWindowInteractor.h"
 #include "SVTK_GenericRenderWindowInteractor.h"
 #include "SVTK_CubeAxesActor2D.h"
+#include "SVTK_ComboAction.h"
+#include "SVTK_KeyFreeInteractorStyle.h"
+#include "SVTK_Selector.h"
+#include "SVTK_Recorder.h"
+#include "SVTK_RecorderDlg.h"
 
 #include "SALOME_ListIteratorOfListIO.hxx"
 
@@ -101,8 +108,12 @@ SVTK_ViewWindow::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
   SUIT_ViewWindow(theDesktop),
   //myMainWindow(0),
   myView(NULL),
-  myDumpImage(QImage())
-{}
+  myDumpImage(QImage()),
+  myKeyFreeInteractorStyle(SVTK_KeyFreeInteractorStyle::New())
+{
+  // specific of vtkSmartPointer
+  myKeyFreeInteractorStyle->Delete();
+}
 
 /*!
   To initialize #SVTK_ViewWindow instance
@@ -133,8 +144,11 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
 
     //myMainWindow->Initialize(anIteractor);
     myToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL"), -1, this );
+    myRecordingToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_RECORD_LABEL"), -1, this );
+
     createActions( SUIT_Session::session()->activeApplication()->resourceMgr() );
     createToolBar();
+
     SetEventDispatcher(myInteractor->GetDevice());
     myInteractor->setBackgroundRole( QPalette::NoRole );//NoBackground
     myInteractor->setFocusPolicy(Qt::StrongFocus);
@@ -146,10 +160,20 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
     myCubeAxesDlg = new SVTK_CubeAxesDlg( getAction( GraduatedAxes ), this, "SVTK_CubeAxesDlg" );
     mySetRotationPointDlg = new SVTK_SetRotationPointDlg
       ( getAction( ChangeRotationPointId ), this, "SVTK_SetRotationPointDlg" );
+    myViewParameterDlg = new SVTK_ViewParameterDlg
+      ( getAction( ViewParametersId ), this, "SVTK_ViewParameterDlg" );
 
     SVTK_InteractorStyle* aStyle = SVTK_InteractorStyle::New();
     myInteractor->PushInteractorStyle(aStyle);
     aStyle->Delete();
+
+    myRecorder = SVTK_Recorder::New();
+    
+    myRecorder->SetNbFPS( 17.3 );
+    myRecorder->SetQuality( 100 );
+    myRecorder->SetProgressiveMode( true );
+    myRecorder->SetUseSkippedFrames( true );
+    myRecorder->SetRenderWindow( myInteractor->getRenderWindow() );
 
     //setCentralWidget(myMainWindow);
     setCentralWidget(myInteractor);
@@ -159,7 +183,7 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
     Initialize(myView,theModel);
 
     myInteractor->getRenderWindow()->Render();
-    //myMainWindow->onResetView();
+    onResetView();
   }
 }
 
@@ -485,6 +509,31 @@ QColor SVTK_ViewWindow::backgroundColor() const
 		int(aBackgroundColor[2]*255));
 }
 
+
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::GetInteractorStyle
+*/
+vtkInteractorStyle* SVTK_ViewWindow::GetInteractorStyle() const
+{
+  return GetInteractor()->GetInteractorStyle();
+}
+
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::PushInteractorStyle
+*/
+void SVTK_ViewWindow::PushInteractorStyle(vtkInteractorStyle* theStyle)
+{
+  GetInteractor()->PushInteractorStyle(theStyle);
+}
+
+/*!
+  Redirect the request to SVTK_RenderWindowInteractor::PopInteractorStyle
+*/
+void SVTK_ViewWindow::PopInteractorStyle()
+{
+  GetInteractor()->PopInteractorStyle();
+}
+
 /*!
   Updates current viewer
 */
@@ -591,9 +640,38 @@ vtkFloatingPointType SVTK_ViewWindow::GetTrihedronSize() const
 */
 void SVTK_ViewWindow::SetProjectionMode(const int theMode)
 {
-  //myMainWindow->activateProjectionMode( theMode );
+  activateProjectionMode( theMode );
+}
+
+
+/*!
+  Set the gravity center as a focal point
+*/
+void SVTK_ViewWindow::activateSetFocalPointGravity()
+{
+  myEventDispatcher->InvokeEvent(SVTK::SetFocalPointGravity, 0);
+}
+
+/*!
+  Set the selected point as a focal point
+*/
+void SVTK_ViewWindow::activateSetFocalPointSelected()
+{
+  myEventDispatcher->InvokeEvent(SVTK::SetFocalPointSelected, 0);
+}
+
+/*!
+  Set the point selected by user as a focal point
+*/
+void SVTK_ViewWindow::activateStartFocalPointSelection()
+{
+  myEventDispatcher->InvokeEvent(SVTK::StartFocalPointSelection,0);
+}
+
+void SVTK_ViewWindow::activateProjectionMode(int theMode)
+{
   SVTK_ComboAction* a = ::qobject_cast<SVTK_ComboAction*>( toolMgr()->action( ProjectionModeId ) );
-  if ( a ) a->setCurrentIndex(mode);
+  if ( a ) a->setCurrentIndex(theMode);
 }
 
 /*!
@@ -602,7 +680,14 @@ void SVTK_ViewWindow::SetProjectionMode(const int theMode)
 */
 void SVTK_ViewWindow::SetInteractionStyle(const int theStyle)
 {
-  //myMainWindow->onSwitchInteractionStyle( theStyle==1 );
+  onSwitchInteractionStyle( theStyle==1 );
+}
+
+/*!
+  Switches "keyboard free" interaction style on/off
+*/
+void SVTK_ViewWindow::onSwitchInteractionStyle(bool theOn)
+{
   if (theOn) {
     // check if style is already set
     if ( GetInteractorStyle() != myKeyFreeInteractorStyle.GetPointer() )
@@ -624,7 +709,7 @@ void SVTK_ViewWindow::SetInteractionStyle(const int theStyle)
   }
 
   // update action state if method is called outside
-  QtxAction* a = action( SwitchInteractionStyleId );
+  QtxAction* a = getAction( SwitchInteractionStyleId );
   if ( a->isChecked() != theOn ) a->setChecked( theOn );
 }
 
@@ -754,7 +839,7 @@ void SVTK_ViewWindow::AddActor( VTKViewer_Actor* theActor,
 				bool theUpdate )
 {
   //myMainWindow->AddActor( theActor, theUpdate );
-  getRenderer()->AddActor(theActor);
+  GetRenderer()->AddActor(theActor);
   if(theUpdate) 
     Repaint();
   emit actorAdded(theActor);
@@ -767,7 +852,7 @@ void SVTK_ViewWindow::RemoveActor( VTKViewer_Actor* theActor,
 				   bool theUpdate )
 {
   //myMainWindow->RemoveActor( theActor, theUpdate );
-  getRenderer()->RemoveActor(theActor);
+  GetRenderer()->RemoveActor(theActor);
   if(theUpdate) 
     Repaint();
   emit actorRemoved(theActor);
@@ -1179,6 +1264,16 @@ void SVTK_ViewWindow::activateStartPointSelection()
   myEventDispatcher->InvokeEvent(SVTK::StartPointSelection,0);
 }
 
+/*!
+  Set the view projection mode: orthogonal or perspective
+*/
+void SVTK_ViewWindow::onProjectionMode(int mode)
+{
+  vtkCamera* aCamera = getRenderer()->GetActiveCamera();
+  aCamera->SetParallelProjection(mode==0);
+  GetInteractor()->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
+}
+
 void SVTK_ViewWindow::SetEventDispatcher(vtkObject* theDispatcher)
 {
   myEventDispatcher = theDispatcher;
@@ -1342,6 +1437,67 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
   anAction->setCheckable(true);
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onUpdateRate(bool)));
   mgr->registerAction( anAction, UpdateRate );
+
+  // Set projection mode
+  SVTK_ComboAction* aModeAction = new SVTK_ComboAction(tr("MNU_SVTK_PROJECTION_MODE"), this);
+  aModeAction->setStatusTip(tr("DSC_SVTK_PROJECTION_MODE"));
+  aModeAction->insertItem(theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_VIEW_PARALLEL" ) ) );
+  aModeAction->insertItem(theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_VIEW_PERSPECTIVE" ) ) );
+  connect(aModeAction, SIGNAL(triggered(int)), this, SLOT(onProjectionMode(int)));
+  mgr->registerAction( aModeAction, ProjectionModeId );
+
+  // View Parameters
+  anAction = new QtxAction(tr("MNU_VIEWPARAMETERS_VIEW"), 
+			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_VIEW_PARAMETERS" ) ),
+			   tr( "MNU_VIEWPARAMETERS_VIEW" ), 0, this);
+  anAction->setStatusTip(tr("DSC_VIEWPARAMETERS_VIEW"));
+  anAction->setCheckable(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onViewParameters(bool)));
+  mgr->registerAction( anAction, ViewParametersId );
+
+  // Switch between interaction styles
+  anAction = new QtxAction(tr("MNU_SVTK_STYLE_SWITCH"), 
+			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_STYLE_SWITCH" ) ),
+			   tr( "MNU_SVTK_STYLE_SWITCH" ), 0, this);
+  anAction->setStatusTip(tr("DSC_SVTK_STYLE_SWITCH"));
+  anAction->setCheckable(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchInteractionStyle(bool)));
+  mgr->registerAction( anAction, SwitchInteractionStyleId );
+
+  // Start recording
+  myStartAction = new QtxAction(tr("MNU_SVTK_RECORDING_START"), 
+				theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_RECORDING_START" ) ),
+				tr( "MNU_SVTK_RECORDING_START" ), 0, this);
+  myStartAction->setStatusTip(tr("DSC_SVTK_RECORDING_START"));
+  connect( myStartAction, SIGNAL( triggered ( bool ) ), this, SLOT( onStartRecording() ) );
+  mgr->registerAction( myStartAction, StartRecordingId );
+
+  // Play recording
+  myPlayAction = new QtxAction(tr("MNU_SVTK_RECORDING_PLAY"), 
+			       theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_RECORDING_PLAY" ) ),
+			       tr( "MNU_SVTK_RECORDING_PLAY" ), 0, this);
+  myPlayAction->setStatusTip(tr("DSC_SVTK_RECORDING_PLAY"));
+  myPlayAction->setEnabled( false );
+  connect( myPlayAction, SIGNAL( triggered ( bool ) ), this, SLOT( onPlayRecording() ) );
+  mgr->registerAction( myPlayAction, PlayRecordingId );
+
+  // Pause recording
+  myPauseAction = new QtxAction(tr("MNU_SVTK_RECORDING_PAUSE"), 
+				theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_RECORDING_PAUSE" ) ),
+				tr( "MNU_SVTK_RECORDING_PAUSE" ), 0, this);
+  myPauseAction->setStatusTip(tr("DSC_SVTK_RECORDING_PAUSE"));
+  myPauseAction->setEnabled( false );
+  connect( myPauseAction, SIGNAL( triggered ( bool ) ), this, SLOT( onPauseRecording() ) );
+  mgr->registerAction( myPauseAction, PauseRecordingId );
+
+  // Stop recording
+  myStopAction = new QtxAction(tr("MNU_SVTK_RECORDING_STOP"), 
+			       theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_RECORDING_STOP" ) ),
+			       tr( "MNU_SVTK_RECORDING_STOP" ), 0, this);
+  myStopAction->setStatusTip(tr("DSC_SVTK_RECORDING_STOP"));
+  myStopAction->setEnabled( false );
+  connect( myStopAction, SIGNAL( triggered ( bool ) ), this, SLOT( onStopRecording() ) );
+  mgr->registerAction( myStopAction, StopRecordingId );
 }
 
 /*!
@@ -1352,6 +1508,7 @@ void SVTK_ViewWindow::createToolBar()
   QtxActionToolMgr* mgr = toolMgr();
   
   mgr->append( DumpId, myToolBar );
+  mgr->append( SwitchInteractionStyleId, myToolBar );
   mgr->append( ViewTrihedronId, myToolBar );
 
   QtxMultiAction* aScaleAction = new QtxMultiAction( this );
@@ -1383,6 +1540,14 @@ void SVTK_ViewWindow::createToolBar()
   mgr->append( UpdateRate, myToolBar );
   mgr->append( NonIsometric, myToolBar );
   mgr->append( GraduatedAxes, myToolBar );
+
+  mgr->append( ViewParametersId, myToolBar );
+  mgr->append( ProjectionModeId, myToolBar );
+
+  mgr->append( StartRecordingId, myRecordingToolBar );
+  mgr->append( PlayRecordingId, myRecordingToolBar );
+  mgr->append( PauseRecordingId, myRecordingToolBar );
+  mgr->append( StopRecordingId, myRecordingToolBar );
 }
 
 void SVTK_ViewWindow::onUpdateRate(bool theIsActivate)
@@ -1451,4 +1616,83 @@ void SVTK_ViewWindow::activateWindowFit()
 void SVTK_ViewWindow::activateGlobalPanning()
 {
   myEventDispatcher->InvokeEvent(SVTK::StartGlobalPan,0);
+}
+
+void SVTK_ViewWindow::onStartRecording()
+{
+  myRecorder->CheckExistAVIMaker();
+  if (myRecorder->ErrorStatus()) {
+    SUIT_MessageBox::warning(this, tr("ERROR"), tr("MSG_NO_AVI_MAKER") );
+  }
+  else {
+    SVTK_RecorderDlg* aRecorderDlg = new SVTK_RecorderDlg( this, myRecorder );
+
+    if( !aRecorderDlg->exec() )
+      return;
+
+    myStartAction->setEnabled( false );
+    myPlayAction->setEnabled( false );
+    myPauseAction->setEnabled( true );
+    myStopAction->setEnabled( true );
+
+    // to prevent resizing the window while recording
+    myPreRecordingMinSize = minimumSize();
+    myPreRecordingMaxSize = maximumSize();
+    setFixedSize( size() );
+
+    myRecorder->Record();
+  }
+}
+
+void SVTK_ViewWindow::onPlayRecording()
+{
+  myStartAction->setEnabled( false );
+  myPlayAction->setEnabled( false );
+  myPauseAction->setEnabled( true );
+  myStopAction->setEnabled( true );
+
+  myRecorder->Pause();
+}
+
+void SVTK_ViewWindow::onPauseRecording()
+{
+  myStartAction->setEnabled( false );
+  myPlayAction->setEnabled( true );
+  myPauseAction->setEnabled( false );
+  myStopAction->setEnabled( true );
+
+  myRecorder->Pause();
+}
+
+void SVTK_ViewWindow::onStopRecording()
+{
+  myStartAction->setEnabled( true );
+  myPlayAction->setEnabled( false );
+  myPauseAction->setEnabled( false );
+  myStopAction->setEnabled( false );
+
+  myRecorder->Stop();
+
+  setMinimumSize( myPreRecordingMinSize );
+  setMaximumSize( myPreRecordingMaxSize );
+}
+
+/*!
+  To invoke a VTK event on SVTK_RenderWindowInteractor instance
+*/
+void SVTK_ViewWindow::InvokeEvent(unsigned long theEvent, void* theCallData)
+{
+  GetInteractor()->InvokeEvent(theEvent,theCallData);
+}
+
+/*!
+  Modify view parameters
+*/
+void SVTK_ViewWindow::onViewParameters(bool theIsActivate)
+{
+  if(theIsActivate){
+    myViewParameterDlg->addObserver();
+    myViewParameterDlg->show();
+  }else
+    myViewParameterDlg->hide();
 }

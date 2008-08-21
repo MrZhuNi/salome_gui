@@ -48,12 +48,16 @@ class SVTK_CubeAxesActor2D;
 class vtkRenderer;
 class vtkRenderWindow;
 class vtkRenderWindowInteractor;
+class vtkInteractorStyle;
 class SVTK_RenderWindowInteractor;
 class SVTK_Renderer;
 class SVTK_NonIsometricDlg;
 class SVTK_UpdateRateDlg;
 class SVTK_CubeAxesDlg;
 class SVTK_SetRotationPointDlg;
+class SVTK_KeyFreeInteractorStyle;
+class SVTK_ViewParameterDlg;
+class SVTK_Recorder;
 
 class vtkObject;
 class QtxAction;
@@ -90,13 +94,21 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   vtkRenderWindow* getRenderWindow();
 
   //! Redirect the request to #SVTK_MainWindow::getInteractor
-  vtkRenderWindowInteractor* getInteractor();
+  vtkRenderWindowInteractor* getInteractor() const;
 
   //! Redirect the request to #SVTK_MainWindow::getInteractor
   SVTK_RenderWindowInteractor*  GetInteractor() const;
 
+  vtkInteractorStyle* GetInteractorStyle() const;
+
+  //! Redirect the request to #SVTK_RenderWindowInteractor::PushInteractorStyle
+  void PushInteractorStyle(vtkInteractorStyle* theStyle);
+
+  //! Redirect the request to #SVTK_RenderWindowInteractor::PopInteractorStyle
+  void PopInteractorStyle();
+
   //! Redirect the request to #SVTK_MainWindow::getRenderer 
-  vtkRenderer* getRenderer();
+  vtkRenderer* getRenderer() const;
 
   SVTK_Renderer* GetRenderer() const;
 
@@ -230,6 +242,9 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   virtual bool eventFilter( QObject*, QEvent* );
 
   virtual void RefreshDumpImage();
+
+  //! To invoke a VTK event on #SVTK_RenderWindowInteractor instance
+  void InvokeEvent(unsigned long theEvent, void* theCallData);
   
 public slots:
   virtual void onSelectionChanged();
@@ -249,6 +264,23 @@ public slots:
   void activateRotation();
   void activatePanning(); 
   void activateGlobalPanning(); 
+
+  void onProjectionMode(int mode);
+
+  void activateProjectionMode(int);
+
+  void activateSetFocalPointGravity();
+  void activateSetFocalPointSelected();
+  void activateStartFocalPointSelection();
+
+  void onViewParameters(bool theIsActivate);
+
+  void onSwitchInteractionStyle(bool theOn);
+
+  void onStartRecording();
+  void onPlayRecording();
+  void onPauseRecording();
+  void onStopRecording();
 
 signals:
  void selectionChanged();
@@ -319,7 +351,9 @@ protected:
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, 
 	 ChangeRotationPointId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
-	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate};
+	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate,
+	 ProjectionModeId, ViewParametersId, SwitchInteractionStyleId,
+	 StartRecordingId, PlayRecordingId, PauseRecordingId, StopRecordingId };
 
 
   SVTK_View* myView;
@@ -327,6 +361,7 @@ protected:
   SVTK_ViewModelBase* myModel;
 
   SVTK_RenderWindowInteractor* myInteractor;
+  vtkSmartPointer<SVTK_KeyFreeInteractorStyle> myKeyFreeInteractorStyle;
 
   QString myVisualParams; // used for delayed setting of view parameters 
 
@@ -336,8 +371,19 @@ protected:
   SVTK_UpdateRateDlg* myUpdateRateDlg;
   SVTK_CubeAxesDlg* myCubeAxesDlg;
   SVTK_SetRotationPointDlg* mySetRotationPointDlg;
+  SVTK_ViewParameterDlg* myViewParameterDlg;
+
+  QSize myPreRecordingMinSize;
+  QSize myPreRecordingMaxSize;
+
+  SVTK_Recorder* myRecorder;
+  QtxAction* myStartAction;
+  QtxAction* myPlayAction;
+  QtxAction* myPauseAction;
+  QtxAction* myStopAction;
 
   int myToolBar;
+  int myRecordingToolBar;
 
 private:
   QImage myDumpImage;

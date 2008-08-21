@@ -36,7 +36,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkTimeStamp.h>
 
-class SVTK_MainWindow;
+class SVTK_ViewWindow;
 class SVTK_RenderWindowInteractor;
 
 class QtxAction;
@@ -56,7 +56,7 @@ class SVTK_EXPORT SVTK_ViewParameterDlg : public SVTK_DialogBase
 
 public:
   SVTK_ViewParameterDlg(QtxAction* theAction,
-			SVTK_MainWindow* theParent,
+			SVTK_ViewWindow* theParent,
 			const char* theName);
 
   ~SVTK_ViewParameterDlg();
@@ -64,7 +64,7 @@ public:
   void addObserver();
   
 protected:
-  SVTK_MainWindow *myMainWindow;
+  SVTK_ViewWindow *myMainWindow;
   SVTK_RenderWindowInteractor* myRWInteractor;
   bool myIsObserverAdded;
   bool myBusy;

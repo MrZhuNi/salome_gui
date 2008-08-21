@@ -268,7 +268,7 @@
     </message>
 </context>
 <context>
-    <name>SVTK_MainWindow</name>
+    <name>SVTK_ViewWindow</name>
     <message>
         <source>DSC_SVTK_UPDATE_RATE</source>
         <translation>Update rate</translation>

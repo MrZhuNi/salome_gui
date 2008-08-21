@@ -27,7 +27,7 @@
 //  $Header: 
 
 #include "SVTK_ViewParameterDlg.h"
-#include "SVTK_MainWindow.h"
+#include "SVTK_ViewWindow.h"
 #include "SVTK_RenderWindowInteractor.h"
 #include "SVTK_Event.h"
 #include "SVTK_InteractorStyle.h"
@@ -57,7 +57,7 @@ using namespace std;
   Constructor
 */
 SVTK_ViewParameterDlg::SVTK_ViewParameterDlg(QtxAction* theAction,
-					     SVTK_MainWindow* theParent,
+					     SVTK_ViewWindow* theParent,
 					     const char* theName):
   SVTK_DialogBase(theAction, theParent, theName),
   myMainWindow(theParent),
