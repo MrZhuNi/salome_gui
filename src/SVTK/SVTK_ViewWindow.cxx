@@ -27,6 +27,9 @@
 
 #include <QToolBar>
 #include <QEvent>
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
+#include <QXmlStreamAttributes>
 
 #include <vtkTextProperty.h>
 #include <vtkActorCollection.h>
@@ -120,71 +123,71 @@ SVTK_ViewWindow::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
 */
 void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
 {
-  if(SUIT_ResourceMgr* aResourceMgr = SUIT_Session::session()->resourceMgr()){
+  //  if(SUIT_ResourceMgr* aResourceMgr = SUIT_Session::session()->resourceMgr()){
     //myMainWindow = new SVTK_MainWindow(this,"SVTK_MainWindow",aResourceMgr,this);
 
     //SVTK_RenderWindowInteractor* anIteractor = 
     //  new SVTK_RenderWindowInteractor(myMainWindow,"SVTK_RenderWindowInteractor");
-    myInteractor = new SVTK_RenderWindowInteractor(this,"SVTK_RenderWindowInteractor");
-
-    SVTK_Selector* aSelector = SVTK_Selector::New();
-
-    SVTK_GenericRenderWindowInteractor* aDevice = SVTK_GenericRenderWindowInteractor::New();
-    aDevice->SetRenderWidget(myInteractor);
-    aDevice->SetSelector(aSelector);
-
-    SVTK_Renderer* aRenderer = SVTK_Renderer::New();
-    aRenderer->Initialize(aDevice,aSelector);
-
-    myInteractor->Initialize(aDevice,aRenderer,aSelector);
-
-    aDevice->Delete();
-    aRenderer->Delete();
-    aSelector->Delete();
-
-    //myMainWindow->Initialize(anIteractor);
-    myToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL"), -1, this );
-    myRecordingToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_RECORD_LABEL"), -1, this );
-
-    createActions( SUIT_Session::session()->activeApplication()->resourceMgr() );
-    createToolBar();
-
-    SetEventDispatcher(myInteractor->GetDevice());
-    myInteractor->setBackgroundRole( QPalette::NoRole );//NoBackground
-    myInteractor->setFocusPolicy(Qt::StrongFocus);
-    myInteractor->setFocus();
-    setFocusProxy(myInteractor);
-
-    myUpdateRateDlg = new SVTK_UpdateRateDlg( getAction( UpdateRate ), this, "SVTK_UpdateRateDlg" );
-    myNonIsometricDlg = new SVTK_NonIsometricDlg( getAction( NonIsometric ), this, "SVTK_NonIsometricDlg" );
-    myCubeAxesDlg = new SVTK_CubeAxesDlg( getAction( GraduatedAxes ), this, "SVTK_CubeAxesDlg" );
-    mySetRotationPointDlg = new SVTK_SetRotationPointDlg
-      ( getAction( ChangeRotationPointId ), this, "SVTK_SetRotationPointDlg" );
-    myViewParameterDlg = new SVTK_ViewParameterDlg
-      ( getAction( ViewParametersId ), this, "SVTK_ViewParameterDlg" );
-
-    SVTK_InteractorStyle* aStyle = SVTK_InteractorStyle::New();
-    myInteractor->PushInteractorStyle(aStyle);
-    aStyle->Delete();
-
-    myRecorder = SVTK_Recorder::New();
-    
-    myRecorder->SetNbFPS( 17.3 );
-    myRecorder->SetQuality( 100 );
-    myRecorder->SetProgressiveMode( true );
-    myRecorder->SetUseSkippedFrames( true );
-    myRecorder->SetRenderWindow( myInteractor->getRenderWindow() );
-
-    //setCentralWidget(myMainWindow);
-    setCentralWidget(myInteractor);
-    
-    //myView = new SVTK_View(myMainWindow);
-    myView = new SVTK_View(this);
-    Initialize(myView,theModel);
-
-    myInteractor->getRenderWindow()->Render();
-    onResetView();
-  }
+  myInteractor = new SVTK_RenderWindowInteractor(this,"SVTK_RenderWindowInteractor");
+  
+  SVTK_Selector* aSelector = SVTK_Selector::New();
+  
+  SVTK_GenericRenderWindowInteractor* aDevice = SVTK_GenericRenderWindowInteractor::New();
+  aDevice->SetRenderWidget(myInteractor);
+  aDevice->SetSelector(aSelector);
+  
+  SVTK_Renderer* aRenderer = SVTK_Renderer::New();
+  aRenderer->Initialize(aDevice,aSelector);
+  
+  myInteractor->Initialize(aDevice,aRenderer,aSelector);
+  
+  aDevice->Delete();
+  aRenderer->Delete();
+  aSelector->Delete();
+  
+  //myMainWindow->Initialize(anIteractor);
+  myToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL"), -1, this );
+  myRecordingToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_RECORD_LABEL"), -1, this );
+  
+  createActions( SUIT_Session::session()->activeApplication()->resourceMgr() );
+  createToolBar();
+  
+  SetEventDispatcher(myInteractor->GetDevice());
+  myInteractor->setBackgroundRole( QPalette::NoRole );//NoBackground
+  myInteractor->setFocusPolicy(Qt::StrongFocus);
+  myInteractor->setFocus();
+  setFocusProxy(myInteractor);
+  
+  myUpdateRateDlg = new SVTK_UpdateRateDlg( getAction( UpdateRate ), this, "SVTK_UpdateRateDlg" );
+  myNonIsometricDlg = new SVTK_NonIsometricDlg( getAction( NonIsometric ), this, "SVTK_NonIsometricDlg" );
+  myCubeAxesDlg = new SVTK_CubeAxesDlg( getAction( GraduatedAxes ), this, "SVTK_CubeAxesDlg" );
+  mySetRotationPointDlg = new SVTK_SetRotationPointDlg
+    ( getAction( ChangeRotationPointId ), this, "SVTK_SetRotationPointDlg" );
+  myViewParameterDlg = new SVTK_ViewParameterDlg
+    ( getAction( ViewParametersId ), this, "SVTK_ViewParameterDlg" );
+  
+  SVTK_InteractorStyle* aStyle = SVTK_InteractorStyle::New();
+  myInteractor->PushInteractorStyle(aStyle);
+  aStyle->Delete();
+  
+  myRecorder = SVTK_Recorder::New();
+  
+  myRecorder->SetNbFPS( 17.3 );
+  myRecorder->SetQuality( 100 );
+  myRecorder->SetProgressiveMode( true );
+  myRecorder->SetUseSkippedFrames( true );
+  myRecorder->SetRenderWindow( myInteractor->getRenderWindow() );
+  
+  //setCentralWidget(myMainWindow);
+  setCentralWidget(myInteractor);
+  
+  //myView = new SVTK_View(myMainWindow);
+  myView = new SVTK_View(this);
+  Initialize(myView,theModel);
+  
+  myInteractor->getRenderWindow()->Render();
+  onResetView();
+  //}
 }
 
 /*!
@@ -987,11 +990,11 @@ const int nAllParams = nNormalParams + 3*nGradAxisParams + 1; // number of all v
 
 /*! The method returns visual parameters of a graduated axis actor (x,y,z axis of graduated axes)
  */
-QString getGradAxisVisualParams( vtkAxisActor2D* actor )
+void getGradAxisVisualParams( QXmlStreamWriter& writer, vtkAxisActor2D* actor, QString theAxis )
 {
-  QString params;
+  //QString params;
   if ( !actor )
-    return params;
+    return ;//params;
 
   // Name
   bool isVisible = actor->GetTitleVisibility();
@@ -1011,8 +1014,26 @@ QString getGradAxisVisualParams( vtkAxisActor2D* actor )
     italic = txtProp->GetItalic();
     shadow = txtProp->GetShadow();
   }
-  params.sprintf( "* Graduated Axis: * Name *%u*%s*%.2f*%.2f*%.2f*%u*%u*%u*%u", isVisible, 
-		  title.toLatin1().data(), color[0], color[1], color[2], font, bold, italic, shadow );
+  writer.writeStartElement("GraduatedAxis");
+  writer.writeAttribute("Axis", theAxis);
+
+  writer.writeStartElement("Title");
+  writer.writeAttribute("isVisible", QString("%1").arg(isVisible));
+  writer.writeAttribute("Text", title);
+  writer.writeAttribute("Font", QString("%1").arg(font));
+  writer.writeAttribute("Bold", QString("%1").arg(bold));
+  writer.writeAttribute("Italic", QString("%1").arg(italic));
+  writer.writeAttribute("Shadow", QString("%1").arg(shadow));
+
+  writer.writeStartElement("Color");
+  writer.writeAttribute("R", QString("%1").arg(color[0]));
+  writer.writeAttribute("G", QString("%1").arg(color[1]));
+  writer.writeAttribute("B", QString("%1").arg(color[2]));
+  writer.writeEndElement();
+  writer.writeEndElement();
+
+  //params.sprintf( "* Graduated Axis: * Name *%u*%s*%.2f*%.2f*%.2f*%u*%u*%u*%u", isVisible, 
+  //		  title.toLatin1().data(), color[0], color[1], color[2], font, bold, italic, shadow );
 
   // Labels
   isVisible = actor->GetLabelVisibility();
@@ -1032,16 +1053,132 @@ QString getGradAxisVisualParams( vtkAxisActor2D* actor )
     italic = txtProp->GetItalic();
     shadow = txtProp->GetShadow();
   }
-  params += QString().sprintf( "* Labels *%u*%u*%u*%.2f*%.2f*%.2f*%u*%u*%u*%u", isVisible, labels, offset,  
-			       color[0], color[1], color[2], font, bold, italic, shadow );
+
+  writer.writeStartElement("Labels");
+  writer.writeAttribute("isVisible", QString("%1").arg(isVisible));
+  writer.writeAttribute("Number", QString("%1").arg(labels));
+  writer.writeAttribute("Offset", QString("%1").arg(offset));
+  writer.writeAttribute("Font", QString("%1").arg(font));
+  writer.writeAttribute("Bold", QString("%1").arg(bold));
+  writer.writeAttribute("Italic", QString("%1").arg(italic));
+  writer.writeAttribute("Shadow", QString("%1").arg(shadow));
+
+  writer.writeStartElement("Color");
+  writer.writeAttribute("R", QString("%1").arg(color[0]));
+  writer.writeAttribute("G", QString("%1").arg(color[1]));
+  writer.writeAttribute("B", QString("%1").arg(color[2]));
+  writer.writeEndElement();
+  writer.writeEndElement();
+  //  params += QString().sprintf( "* Labels *%u*%u*%u*%.2f*%.2f*%.2f*%u*%u*%u*%u", isVisible, labels, offset,  
+  //			       color[0], color[1], color[2], font, bold, italic, shadow );
 
   // Tick marks
   isVisible = actor->GetTickVisibility();
   int length = actor->GetTickLength();
+  writer.writeStartElement("TickMarks");
+  writer.writeAttribute("isVisible", QString("%1").arg(isVisible));
+  writer.writeAttribute("Length", QString("%1").arg(length));
+  writer.writeEndElement();
   
-  params += QString().sprintf( "* Tick marks *%u*%u", isVisible, length );
+  //params += QString().sprintf( "* Tick marks *%u*%u", isVisible, length );
   
-  return params;
+  writer.writeEndElement();
+  //return params;
+}
+
+void setGradAxisVisualParams(QXmlStreamReader& reader, vtkAxisActor2D* actor)
+{
+  if ( !actor )
+    return;
+
+  do {
+    reader.readNext();
+  } while (!reader.isStartElement());
+
+  // Read title params
+  QXmlStreamAttributes aAttr = reader.attributes();
+  bool isVisible = aAttr.value("isVisible").toString().toUShort();
+  QString title = aAttr.value("Text").toString();
+  int font = aAttr.value("Font").toString().toInt();
+  int bold = aAttr.value("Bold").toString().toInt();
+  int italic = aAttr.value("Italic").toString().toInt();
+  int shadow = aAttr.value("Shadow").toString().toInt();
+
+  //printf("#### TITLE: %i, %s, %i, %i, %i, %i\n", isVisible, qPrintable(title), font, bold, italic, shadow);
+
+  do {
+    reader.readNext();
+  } while (!reader.isStartElement());
+  
+  // Read title color
+  aAttr = reader.attributes();
+
+  vtkFloatingPointType color[3];
+  color[0] = aAttr.value("R").toString().toDouble();
+  color[1] = aAttr.value("G").toString().toDouble();
+  color[2] = aAttr.value("B").toString().toDouble();
+  //printf("#### Color: %f, %f, %f\n", color[0], color[1], color[2]);
+
+  actor->SetTitleVisibility( isVisible );
+  actor->SetTitle( title.toLatin1() );
+  vtkTextProperty* txtProp = actor->GetTitleTextProperty();
+  if ( txtProp ) {
+    txtProp->SetColor( color );
+    txtProp->SetFontFamily( font );
+    txtProp->SetBold( bold );
+    txtProp->SetItalic( italic );
+    txtProp->SetShadow( shadow );
+  }
+
+  // Labels
+
+  do {
+    reader.readNext();
+  } while (!reader.isStartElement()); 
+  // Read labels
+  aAttr = reader.attributes();
+  isVisible = aAttr.value("isVisible").toString().toUShort();
+  int labels = aAttr.value("Number").toString().toInt();
+  int offset = aAttr.value("Offset").toString().toInt();
+  font = aAttr.value("Font").toString().toInt();
+  bold = aAttr.value("Bold").toString().toInt();
+  italic = aAttr.value("Italic").toString().toInt();
+  shadow = aAttr.value("Shadow").toString().toInt();
+
+  do {
+    reader.readNext();
+  } while (!reader.isStartElement()); 
+  // Read Color
+  aAttr = reader.attributes();
+
+  color[0] = aAttr.value("R").toString().toDouble();
+  color[1] = aAttr.value("G").toString().toDouble();
+  color[2] = aAttr.value("B").toString().toDouble();
+
+  actor->SetLabelVisibility( isVisible );
+  actor->SetNumberOfLabels( labels );
+  actor->SetTickOffset( offset );
+  txtProp = actor->GetLabelTextProperty();
+  if ( txtProp ) {
+    txtProp->SetColor( color );
+    txtProp->SetFontFamily( font );
+    txtProp->SetBold( bold );
+    txtProp->SetItalic( italic );
+    txtProp->SetShadow( shadow );
+  }
+
+  // Tick Marks
+  do {
+    reader.readNext();
+  } while (!reader.isStartElement()); 
+  aAttr = reader.attributes();
+
+  // retrieve and set tick marks properties
+  isVisible = aAttr.value("isVisible").toString().toUShort();
+  int length = aAttr.value("Length").toString().toInt();
+  
+  actor->SetTickVisibility( isVisible );
+  actor->SetTickLength( length );
 }
 
 /*! The method restores visual parameters of a graduated axis actor (x,y,z axis)
@@ -1129,17 +1266,61 @@ QString SVTK_ViewWindow::getVisualParameters()
   // view up values (3 digits), parallel scale (1 digit), scale (3 digits, 
   // Graduated axes parameters (X, Y, Z axes parameters)
   QString retStr;
-  retStr.sprintf( "%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e", 
-		  pos[0], pos[1], pos[2], focalPnt[0], focalPnt[1], focalPnt[2], 
-		  viewUp[0], viewUp[1], viewUp[2], parScale, scale[0], scale[1], scale[2] );
+  QXmlStreamWriter aWriter(&retStr);
+  aWriter.setAutoFormatting(true);
 
-  // save graduated axes parameters
+  aWriter.writeStartDocument();
+  aWriter.writeStartElement("ViewState");
+
+  aWriter.writeStartElement("Position");
+  aWriter.writeAttribute("X", QString("%1").arg(pos[0]));
+  aWriter.writeAttribute("Y", QString("%1").arg(pos[1]));
+  aWriter.writeAttribute("Z", QString("%1").arg(pos[2]));
+  aWriter.writeEndElement();
+
+  aWriter.writeStartElement("FocalPoint");
+  aWriter.writeAttribute("X", QString::number(focalPnt[0]));
+  aWriter.writeAttribute("Y", QString::number(focalPnt[1]));
+  aWriter.writeAttribute("Z", QString::number(focalPnt[2]));
+  aWriter.writeEndElement();
+
+  aWriter.writeStartElement("ViewUp");
+  aWriter.writeAttribute("X", QString::number(viewUp[0]));
+  aWriter.writeAttribute("Y", QString::number(viewUp[1]));
+  aWriter.writeAttribute("Z", QString::number(viewUp[2]));
+  aWriter.writeEndElement();
+
+  aWriter.writeStartElement("ViewScale");
+  aWriter.writeAttribute("Parallel", QString::number(parScale));
+  aWriter.writeAttribute("X", QString::number(scale[0]));
+  aWriter.writeAttribute("Y", QString::number(scale[1]));
+  aWriter.writeAttribute("Z", QString::number(scale[2]));
+  aWriter.writeEndElement();
+
   if ( SVTK_CubeAxesActor2D* gradAxesActor = GetCubeAxes() ) {
-    retStr += QString( "*%1" ).arg( GetRenderer()->IsCubeAxesDisplayed() );
-    retStr += ::getGradAxisVisualParams( gradAxesActor->GetXAxisActor2D() );
-    retStr += ::getGradAxisVisualParams( gradAxesActor->GetYAxisActor2D() );
-    retStr += ::getGradAxisVisualParams( gradAxesActor->GetZAxisActor2D() );
+    aWriter.writeStartElement("DisplayCubeAxis");
+    aWriter.writeAttribute("Show", QString( "%1" ).arg( GetRenderer()->IsCubeAxesDisplayed()));
+    aWriter.writeEndElement();
+
+    getGradAxisVisualParams(aWriter, gradAxesActor->GetXAxisActor2D(), "X");
+    getGradAxisVisualParams(aWriter, gradAxesActor->GetYAxisActor2D(), "Y");
+    getGradAxisVisualParams(aWriter, gradAxesActor->GetZAxisActor2D(), "Z");
   }
+
+  aWriter.writeEndElement();
+  aWriter.writeEndDocument();
+
+//   retStr.sprintf( "%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e", 
+// 		  pos[0], pos[1], pos[2], focalPnt[0], focalPnt[1], focalPnt[2], 
+// 		  viewUp[0], viewUp[1], viewUp[2], parScale, scale[0], scale[1], scale[2] );
+
+//   // save graduated axes parameters
+//   if ( SVTK_CubeAxesActor2D* gradAxesActor = GetCubeAxes() ) {
+//     retStr += QString( "*%1" ).arg( GetRenderer()->IsCubeAxesDisplayed() );
+//     retStr += ::getGradAxisVisualParams( gradAxesActor->GetXAxisActor2D() );
+//     retStr += ::getGradAxisVisualParams( gradAxesActor->GetYAxisActor2D() );
+//     retStr += ::getGradAxisVisualParams( gradAxesActor->GetZAxisActor2D() );
+//   }
 
   return retStr;
 }
@@ -1149,6 +1330,7 @@ QString SVTK_ViewWindow::getVisualParameters()
 */ 
 void SVTK_ViewWindow::setVisualParameters( const QString& parameters )
 {
+  //printf("#### %s\n", qPrintable(parameters));
   SVTK_RenderWindowInteractor* anInteractor = GetInteractor();
   if ( anInteractor->isVisible() ) {
     doSetVisualParameters( parameters ); 
@@ -1164,47 +1346,101 @@ void SVTK_ViewWindow::setVisualParameters( const QString& parameters )
 */
 void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
 {
-  QStringList paramsLst = parameters.split( '*' );
-  if ( paramsLst.size() >= nNormalParams ) {
-    // 'reading' list of parameters
-    double pos[3], focalPnt[3], viewUp[3], parScale, scale[3];
-    pos[0] = paramsLst[0].toDouble();
-    pos[1] = paramsLst[1].toDouble();
-    pos[2] = paramsLst[2].toDouble();
-    focalPnt[0] = paramsLst[3].toDouble();
-    focalPnt[1] = paramsLst[4].toDouble();
-    focalPnt[2] = paramsLst[5].toDouble();
-    viewUp[0] = paramsLst[6].toDouble();
-    viewUp[1] = paramsLst[7].toDouble();
-    viewUp[2] = paramsLst[8].toDouble();
-    parScale = paramsLst[9].toDouble();
-    scale[0] = paramsLst[10].toDouble();
-    scale[1] = paramsLst[11].toDouble();
-    scale[2] = paramsLst[12].toDouble();
-    
-    // applying parameters
+  double pos[3], focalPnt[3], viewUp[3], parScale, scale[3];
+
+  QXmlStreamReader aReader(parameters);
+  SVTK_CubeAxesActor2D* gradAxesActor = GetCubeAxes();
+
+  while(!aReader.atEnd()) {
+    aReader.readNext();
+    if (aReader.isStartElement()) {
+      QXmlStreamAttributes aAttr = aReader.attributes();
+      //printf("### Name = %s\n", qPrintable(aReader.name().toString()));
+      if (aReader.name() == "Position") {	
+	pos[0] = aAttr.value("X").toString().toDouble();
+	pos[1] = aAttr.value("Y").toString().toDouble();
+	pos[2] = aAttr.value("Z").toString().toDouble();
+	//printf("#### Position %f; %f; %f\n", pos[0], pos[1], pos[2]);
+      } else if (aReader.name() == "FocalPoint") {
+	focalPnt[0] = aAttr.value("X").toString().toDouble();
+	focalPnt[1] = aAttr.value("Y").toString().toDouble();
+	focalPnt[2] = aAttr.value("Z").toString().toDouble();
+	//printf("#### FocalPoint %f; %f; %f\n", focalPnt[0], focalPnt[1], focalPnt[2]);
+      } else if (aReader.name() == "ViewUp") {
+	viewUp[0] = aAttr.value("X").toString().toDouble();
+	viewUp[1] = aAttr.value("Y").toString().toDouble();
+	viewUp[2] = aAttr.value("Z").toString().toDouble();
+	//printf("#### ViewUp %f; %f; %f\n", viewUp[0], viewUp[1], viewUp[2]);
+      } else if (aReader.name() == "ViewScale") {
+	parScale = aAttr.value("Parallel").toString().toDouble();
+	scale[0] = aAttr.value("X").toString().toDouble();
+	scale[1] = aAttr.value("Y").toString().toDouble();
+	scale[2] = aAttr.value("Z").toString().toDouble();
+	//printf("#### ViewScale %f; %f; %f\n", scale[0], scale[1], scale[2]);
+      } else if (aReader.name() == "DisplayCubeAxis") {
+	if (aAttr.value("Show") == "0")
+	  gradAxesActor->VisibilityOff();
+	else
+	  gradAxesActor->VisibilityOn();
+      } else if (aReader.name() == "GraduatedAxis") {
+	if(aAttr.value("Axis") == "X") 
+	  setGradAxisVisualParams(aReader, gradAxesActor->GetXAxisActor2D());
+	else if(aAttr.value("Axis") == "Y")
+	  setGradAxisVisualParams(aReader, gradAxesActor->GetYAxisActor2D());
+	else if(aAttr.value("Axis") == "Z")
+	  setGradAxisVisualParams(aReader, gradAxesActor->GetZAxisActor2D());
+      }
+    } 
+  }
+  if (!aReader.hasError()) {
     vtkCamera* camera = getRenderer()->GetActiveCamera();
     camera->SetPosition( pos );
     camera->SetFocalPoint( focalPnt );
     camera->SetViewUp( viewUp );
     camera->SetParallelScale( parScale );
     SetScale( scale );
-
-    // apply graduated axes parameters
-    SVTK_CubeAxesActor2D* gradAxesActor = GetCubeAxes();
-    if ( gradAxesActor && paramsLst.size() == nAllParams ) {
+  } else {
+    QStringList paramsLst = parameters.split( '*' );
+    if ( paramsLst.size() >= nNormalParams ) {
+      // 'reading' list of parameters
+      pos[0] = paramsLst[0].toDouble();
+      pos[1] = paramsLst[1].toDouble();
+      pos[2] = paramsLst[2].toDouble();
+      focalPnt[0] = paramsLst[3].toDouble();
+      focalPnt[1] = paramsLst[4].toDouble();
+      focalPnt[2] = paramsLst[5].toDouble();
+      viewUp[0] = paramsLst[6].toDouble();
+      viewUp[1] = paramsLst[7].toDouble();
+      viewUp[2] = paramsLst[8].toDouble();
+      parScale = paramsLst[9].toDouble();
+      scale[0] = paramsLst[10].toDouble();
+      scale[1] = paramsLst[11].toDouble();
+      scale[2] = paramsLst[12].toDouble();
       
-      int i = nNormalParams+1, j = i + nGradAxisParams - 1;
-      ::setGradAxisVisualParams( gradAxesActor->GetXAxisActor2D(), parameters.section( '*', i, j ) ); 
-      i = j + 1; j += nGradAxisParams;
-      ::setGradAxisVisualParams( gradAxesActor->GetYAxisActor2D(), parameters.section( '*', i, j ) ); 
-      i = j + 1; j += nGradAxisParams;
-      ::setGradAxisVisualParams( gradAxesActor->GetZAxisActor2D(), parameters.section( '*', i, j ) ); 
-
-      if ( paramsLst[13].toUShort() )
-	gradAxesActor->VisibilityOn();
-      else
-	gradAxesActor->VisibilityOff();
+      // applying parameters
+      vtkCamera* camera = getRenderer()->GetActiveCamera();
+      camera->SetPosition( pos );
+      camera->SetFocalPoint( focalPnt );
+      camera->SetViewUp( viewUp );
+      camera->SetParallelScale( parScale );
+      SetScale( scale );
+      
+      // apply graduated axes parameters
+      SVTK_CubeAxesActor2D* gradAxesActor = GetCubeAxes();
+      if ( gradAxesActor && paramsLst.size() == nAllParams ) {
+	
+	int i = nNormalParams+1, j = i + nGradAxisParams - 1;
+	::setGradAxisVisualParams( gradAxesActor->GetXAxisActor2D(), parameters.section( '*', i, j ) ); 
+	i = j + 1; j += nGradAxisParams;
+	::setGradAxisVisualParams( gradAxesActor->GetYAxisActor2D(), parameters.section( '*', i, j ) ); 
+	i = j + 1; j += nGradAxisParams;
+	::setGradAxisVisualParams( gradAxesActor->GetZAxisActor2D(), parameters.section( '*', i, j ) ); 
+	
+	if ( paramsLst[13].toUShort() )
+	  gradAxesActor->VisibilityOn();
+	else
+	  gradAxesActor->VisibilityOff();
+      }
     }
   }
 }
