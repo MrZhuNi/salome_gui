@@ -24,11 +24,13 @@
 #include <qpixmap.h>
 #include <qlineedit.h>
 
+#include <qevent.h>
+
 /*!
   Constructor
 */
-QtxListBox::QtxListBox( QWidget* parent, const char* name, WFlags f )
-: QListBox( parent, name, f ),
+QtxListBox::QtxListBox( QWidget* parent )
+: QListWidget( parent ),
 myEditor( 0 ),
 myEditIndex( -1 ),
 myEditState( false ),
@@ -112,7 +114,7 @@ void QtxListBox::setModificationEnabled( bool on )
 /*!
   \return current edited item
 */
-QListBoxItem* QtxListBox::editedItem() const
+QListWidgetItem* QtxListBox::editedItem() const
 {
   return item( editedIndex() );
 }
@@ -144,7 +146,7 @@ void QtxListBox::startEdition( const int idx )
 
   ensureItemVisible( myEditIndex );
 
-  ed->setText( text( myEditIndex ) );
+  ed->setText( item( myEditIndex )->text() );
   updateEditor();
   ed->show();
 
@@ -155,9 +157,9 @@ void QtxListBox::startEdition( const int idx )
   Starts edition of item
   \param item - item to be edited
 */
-void QtxListBox::startEdition( const QListBoxItem* item )
+void QtxListBox::startEdition( const QListWidgetItem* item )
 {
-  startEdition( index( item ) );
+  startEdition( row( item ) );
 }
 
 /*!
@@ -178,14 +180,17 @@ void QtxListBox::endEdition( const bool action )
 
   if ( action )
   {
-    int cur = currentItem();
+    int cur = currentRow();
 
+    /*qt4
     if ( pixmap( idx ) )
       changeItem( *pixmap( idx ), ed->text(), idx );
     else
       changeItem( ed->text(), idx );
+    */
+    item( idx )->setText( ed->text() );
 
-    setCurrentItem( cur );
+    setCurrentRow( cur );
 
     emit itemEdited( idx );
     emit itemEdited( item( idx ) );
@@ -201,19 +206,19 @@ void QtxListBox::ensureItemVisible( const int idx )
   if ( idx < 0 )
     return;
 
-  if ( itemVisible( idx ) )
-    return;
+  //qt4 if ( itemVisible( idx ) )
+  //qt4  return;
 
-  setTopItem( idx );
+  //qt4 setTopItem( idx );
 }
 
 /*!
   Ensures that the item is visible.
   \param item - item to be made visible
 */
-void QtxListBox::ensureItemVisible( const QListBoxItem* item )
+void QtxListBox::ensureItemVisible( const QListWidgetItem* item )
 {
-  ensureItemVisible( index( item ) );
+  ensureItemVisible( row( item ) );
 }
 
 /*!
@@ -233,7 +238,7 @@ const QValidator* QtxListBox::validator() const
 void QtxListBox::clearValidator()
 {
   if ( editor() )
-    editor()->clearValidator();
+    editor()->setValidator( 0 );
 }
 
 /*!
@@ -271,18 +276,18 @@ void QtxListBox::moveItemToBottom( const int idx )
 */
 void QtxListBox::moveItem( const int idx, const int step )
 {
-  QListBoxItem* i = item( idx );
+  QListWidgetItem* i = item( idx );
   if ( !i || step == 0 )
     return;
 
-  QListBoxItem* cur = item( currentItem() );
+  QListWidgetItem* cur = currentItem();
 
-  takeItem( i );
-  insertItem( i, QMAX( 0, idx + step ) );
+  takeItem( idx );
+  insertItem( qMax( 0, idx + step ), i );
 
-  setCurrentItem( index( cur ) );
+  setCurrentItem( cur );
 
-  int pos = index( i );
+  int pos = row( i );
   if ( myEditIndex == idx )
     myEditIndex = pos;
 
@@ -301,12 +306,12 @@ void QtxListBox::createItem( const int i )
   if ( !isEditEnabled() )
     return;
 
-  int idx = i < 0 ? currentItem() : i;
+  int idx = i < 0 ? currentRow() : i;
   idx = idx < 0 ? count() : idx;
-  idx = QMIN( (int)count(), idx );
+  idx = qMin( (int)count(), idx );
 
-  insertItem( "", idx );
-  setCurrentItem( idx );
+  insertItem( idx, "" );
+  setCurrentRow( idx );
   startEdition( idx );
 }
 
@@ -319,14 +324,14 @@ void QtxListBox::deleteItem( const int i )
   if ( !isEditEnabled() )
     return;
 
-  int idx = i < 0 ? currentItem() : i;
+  int idx = i < 0 ? currentRow() : i;
   if ( idx < 0 )
     return;
 
   if ( editedIndex() == idx )
     endEdition( defaultEditAction() );
 
-  removeItem( idx );
+  takeItem( idx );
   updateEditor();
 }
 
@@ -336,7 +341,7 @@ void QtxListBox::deleteItem( const int i )
 */
 void QtxListBox::setContentsPos( int x, int y )
 {
-  QListBox::setContentsPos( x, y );
+  //qt4 QListWidget::setContentsPos( x, y );
 
   updateEditor();
 }
@@ -354,14 +359,14 @@ bool QtxListBox::eventFilter( QObject* o, QEvent* e )
     if ( e->type() == QEvent::KeyPress )
     {
       QKeyEvent* ke = (QKeyEvent*)e;
-      if ( ke->key() == Key_Escape )
+      if ( ke->key() == Qt::Key_Escape )
         endEdition( false );
-      else if ( ke->key() == Key_Enter || ke->key() == Key_Return )
+      else if ( ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Return )
         endEdition( true );
     }
   }
 
-  return QListBox::eventFilter( o, e );
+  return QListWidget::eventFilter( o, e );
 }
 
 /*!
@@ -370,28 +375,28 @@ bool QtxListBox::eventFilter( QObject* o, QEvent* e )
 */
 void QtxListBox::keyPressEvent( QKeyEvent* e )
 {
-  if ( e->key() == Key_Up && e->state() & ControlButton && isModificationEnabled() )
-    moveItem( currentItem(), -1 );
-  else if ( e->key() == Key_Down && e->state() & ControlButton && isModificationEnabled() )
-    moveItem( currentItem(), 1 );
-  else if ( e->key() == Key_Home && e->state() & ControlButton && isModificationEnabled() )
-    moveItemToTop( currentItem() );
-  else if ( e->key() == Key_End && e->state() & ControlButton && isModificationEnabled() )
-    moveItemToBottom( currentItem() );
-  else if ( e->key() == Key_Insert && e->state() & ControlButton )
-    createItem( currentItem() );
-  else if ( e->key() == Key_Delete && e->state() & ControlButton )
-    deleteItem( currentItem() );
+  if ( e->key() == Qt::Key_Up && e->modifiers() & Qt::ControlModifier && isModificationEnabled() )
+    moveItem( currentRow(), -1 );
+  else if ( e->key() == Qt::Key_Down && e->modifiers() & Qt::ControlModifier && isModificationEnabled() )
+    moveItem( currentRow(), 1 );
+  else if ( e->key() == Qt::Key_Home && e->modifiers() & Qt::ControlModifier && isModificationEnabled() )
+    moveItemToTop( currentRow() );
+  else if ( e->key() == Qt::Key_End && e->modifiers() & Qt::ControlModifier && isModificationEnabled() )
+    moveItemToBottom( currentRow() );
+  else if ( e->key() == Qt::Key_Insert && e->modifiers() & Qt::ControlModifier )
+    createItem( currentRow() );
+  else if ( e->key() == Qt::Key_Delete && e->modifiers() & Qt::ControlModifier )
+    deleteItem( currentRow() );
   else
-    QListBox::keyPressEvent( e );
+    QListWidget::keyPressEvent( e );
 }
 
 /*!
   Custom resize event handler
 */
-void QtxListBox::viewportResizeEvent( QResizeEvent* e )
+void QtxListBox::resizeEvent( QResizeEvent* e )
 {
-  QListBox::viewportResizeEvent( e );
+  QListWidget::resizeEvent( e );
 
   updateEditor();
 }
@@ -404,7 +409,7 @@ void QtxListBox::mouseDoubleClickEvent( QMouseEvent* e )
   if ( isEditEnabled() )
     startEdition( itemAt( e->pos() ) );
   else
-    QListBox::mouseDoubleClickEvent( e );
+    QListWidget::mouseDoubleClickEvent( e );
 }
 
 /*!
@@ -438,14 +443,14 @@ void QtxListBox::createEditor()
 
   myEditor = new QLineEdit( viewport() );
 
-  myEditor->setLineWidth( 1 );
-  myEditor->setMidLineWidth( 0 );
-  myEditor->setFrameStyle( QFrame::Box | QFrame::Plain );
+  //qt4 myEditor->setLineWidth( 1 );
+  //qt4 myEditor->setMidLineWidth( 0 );
+  //qt4 myEditor->setFrameStyle( QFrame::Box | QFrame::Plain );
   myEditor->installEventFilter( this );
 
   myEditor->hide();
 
-  addChild( myEditor );
+  //qt4 addChild( myEditor );
 }
 
 /*!
@@ -453,6 +458,7 @@ void QtxListBox::createEditor()
 */
 void QtxListBox::updateEditor()
 {
+  /*qt4
   if ( !editedItem() || !editor() )
     return;
 
@@ -468,4 +474,5 @@ void QtxListBox::updateEditor()
     r.addCoords( pix->width() + 2, 0, 0, 0 );
 
   editor()->setGeometry( r );
+  */
 }

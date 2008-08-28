@@ -265,7 +265,7 @@ void LightApp_SelectionMgr::AddOrRemoveIndex( const Handle(SALOME_InteractiveObj
   select 'subobjects' with given indexes
 */
 void LightApp_SelectionMgr::selectObjects( const Handle(SALOME_InteractiveObject)& IObject, 
-					    TColStd_IndexedMapOfInteger theIndex, bool append )
+					    const TColStd_IndexedMapOfInteger& theIndex, bool append )
 {
   SUIT_DataOwnerPtrList aList;
 

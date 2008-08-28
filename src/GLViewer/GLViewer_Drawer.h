@@ -399,6 +399,9 @@ public:
   //! Draw rectangle with predefined color
   static void                     drawRectangle( GLViewer_Rect* theRect, QColor = Qt::black );
 
+  //! Draw filled rectangle with predefined color
+  static void                     drawFilledRectangle( GLViewer_Rect*, QColor = Qt::black );
+
 protected:
   //! Draw basic primitives: rectangle, contour, polygon, vertex, cross, arrow
   //* with predefined color

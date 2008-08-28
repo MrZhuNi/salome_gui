@@ -144,6 +144,14 @@ const char* imageCrossCursor[] = {
   "................................"};
   
 
+QString Plot2d_ViewFrame::myPrefTitle = "";
+QString Plot2d_ViewFrame::myPrefXTitle = "";
+QString Plot2d_ViewFrame::myPrefYTitle = "";
+
+bool Plot2d_ViewFrame::myPrefTitleChangedByUser = false;
+bool Plot2d_ViewFrame::myXPrefTitleChangedByUser = false;
+bool Plot2d_ViewFrame::myYPrefTitleChangedByUser = false;
+
 /*!
   Constructor
 */
@@ -421,6 +429,22 @@ void Plot2d_ViewFrame::writePreferences()
   }
 
   resMgr->setValue( "Plot2d", "VerScaleMode", myYMode );
+
+  if ( myTitleChangedByUser )
+  {
+    myPrefTitle = myTitle;
+    myPrefTitleChangedByUser = true;
+  }
+  if ( myXTitleChangedByUser )
+  {
+    myPrefXTitle = myXTitle;
+    myXPrefTitleChangedByUser = true;
+  }
+  if ( myYTitleChangedByUser )
+  {
+    myPrefYTitle = myYTitle;
+    myYPrefTitleChangedByUser = true;
+  }
 }
 
 /*!
@@ -907,14 +931,26 @@ void Plot2d_ViewFrame::onSettings()
          myY2GridMinorEnabled, myPlot->axisMaxMinor( QwtPlot::yRight ) );
   if ( dlg->exec() == QDialog::Accepted ) {
     // horizontal axis title
+    bool isTileChanged = dlg->getXTitle() != myXTitle;
     setTitle( dlg->isXTitleEnabled(), dlg->getXTitle(), XTitle, false );
+    if ( isTileChanged )
+      myXTitleChangedByUser = true;
+
     // vertical left axis title
+    isTileChanged = dlg->getYTitle() != myYTitle;
     setTitle( dlg->isYTitleEnabled(), dlg->getYTitle(), YTitle, false );
+    if ( isTileChanged  )
+      myYTitleChangedByUser = true;
+
     if (mySecondY) // vertical right axis title
       setTitle( dlg->isY2TitleEnabled(), dlg->getY2Title(), Y2Title, false );
 
     // main title
+    isTileChanged = dlg->getMainTitle() != myTitle;
     setTitle( dlg->isMainTitleEnabled(), dlg->getMainTitle(), MainTitle, true );
+    if ( isTileChanged )
+      myTitleChangedByUser = true;
+
     // curve type
     if ( myCurveType != dlg->getCurveType() ) {
       setCurveType( dlg->getCurveType(), false );
@@ -2117,4 +2153,87 @@ void Plot2d_ViewFrame::customEvent( QEvent* ce )
 {
   if ( ce->type() == FITALL_EVENT )
     fitAll();
+}
+
+/*!
+  Verifies whether plot title must be generated automatically using curves titles
+*/
+bool Plot2d_ViewFrame::isTitleChangedByUser( const ObjectType type )
+{
+  switch ( type ) 
+  {
+  case MainTitle:
+    return myPrefTitleChangedByUser || myTitleChangedByUser;
+  case XTitle:
+    return myXPrefTitleChangedByUser || myXTitleChangedByUser;
+  case YTitle:
+    return myYPrefTitleChangedByUser || myYTitleChangedByUser;
+  default:
+    return false;
+  }
+}
+
+/*!
+  Verifies whether plot title must be generated automatically using curves titles
+*/
+void Plot2d_ViewFrame::forgetLocalUserChanges( const ObjectType type )
+{
+  switch ( type )
+  {
+  case MainTitle:
+    myTitleChangedByUser = false;
+    break;
+  case XTitle:
+    myXTitleChangedByUser = false;
+    break;
+  case YTitle:
+    myYTitleChangedByUser = false;
+    break;
+  default:
+    break;
+  }
+}
+
+/*!
+  Sets flag for automatic updates of titles in accordance with current set of curves
+  ( updateTitles method). You should call setAutoUpdateTitle( ObjType, false ) 
+  if your application set titles itself and they can not be updated automatically.
+  By default titles are updated automatically.
+*/
+
+void Plot2d_ViewFrame::setAutoUpdateTitle( const ObjectType type, const bool upd )
+{
+  switch ( type )
+  {
+  case MainTitle:
+    myTitleAutoUpdate = upd;
+    break;
+  case XTitle:
+    myXTitleAutoUpdate = upd;
+    break;
+  case YTitle:
+    myYTitleAutoUpdate = upd;
+    break;
+  default:
+    break;
+  }
+}
+
+/*!
+  Gets flag for automatic updates of titles in accordance with current set of curves
+  ( updateTitles method)
+*/
+bool Plot2d_ViewFrame::getAutoUpdateTitle( const ObjectType type ) const
+{
+  switch ( type )
+  {
+  case MainTitle:
+    return myTitleAutoUpdate;
+  case XTitle:
+    return myXTitleAutoUpdate;
+  case YTitle:
+    return myYTitleAutoUpdate;
+  default:
+    return true;
+  }
 }

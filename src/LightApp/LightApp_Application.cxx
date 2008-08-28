@@ -2391,8 +2391,9 @@ void LightApp_Application::loadDockWindowsState()
   if ( activeModule() )
     modName = activeModule()->name();
 
-  if ( myWinGeom.contains( modName ) )
-    desktop()->restoreState( myWinGeom[modName] );
+  // temporarily commented (for CATHARE)
+  //if ( myWinGeom.contains( modName ) )
+  //  desktop()->restoreState( myWinGeom[modName] );
 
   if ( !myWinVis.contains( modName ) )
     return;
@@ -2422,8 +2423,9 @@ void LightApp_Application::loadDockWindowsState()
     if ( po != desktop() )
       continue;
 
-    if ( dwMap.contains( dw->objectName() ) )
-      dw->setVisible( dwMap[dw->objectName()] );
+    // temporarily commented (for CATHARE)
+    //if ( dwMap.contains( dw->objectName() ) )
+    //  dw->setVisible( dwMap[dw->objectName()] );
   }
 }
 

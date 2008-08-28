@@ -652,7 +652,7 @@ bool GLViewer_ViewTransformer::eventFilter( QObject* o, QEvent* e )
             TransformState state = EnTrain;
             QMouseEvent* me = ( QMouseEvent* )e;
 
-            myButtonState = me->modifiers();
+            myButtonState = me->buttons();
             if ( e->type() == QEvent::MouseButtonPress )
                 myButtonState |= me->button();  /* add pressed button */
 
@@ -664,7 +664,7 @@ bool GLViewer_ViewTransformer::eventFilter( QObject* o, QEvent* e )
                 myMajorBtn = mouseOnlyState;
             }
 
-            if ( e->type() == QEvent::MouseButtonRelease && mouseOnlyState == myMajorBtn )
+            if ( e->type() == QEvent::MouseButtonRelease )
             {
                 state = Fin;
             }
@@ -830,7 +830,7 @@ bool GLViewer_ViewSketcher::eventFilter( QObject* o, QEvent* e )
             SketchState state = EnTrain;
             QMouseEvent* me = (QMouseEvent*)e;
 
-            myButtonState = me->modifiers();
+            myButtonState = me->buttons();
             if ( e->type() == QEvent::MouseButtonPress )
                 myButtonState |= me->button();  /* add pressed button */
 

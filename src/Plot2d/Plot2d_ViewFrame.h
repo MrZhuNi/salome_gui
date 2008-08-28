@@ -107,6 +107,9 @@ public:
   void    setTitle( bool enabled, const QString& title, ObjectType type, bool update = true );
   QString getTitle( ObjectType type ) const;
 
+  bool    isTitleChangedByUser( const ObjectType type );
+  void    forgetLocalUserChanges( const ObjectType type );
+
   void    setFont( const QFont& font, ObjectType type, bool update = true );
   void    setHorScaleMode( const int mode, bool update = true );
   int     getHorScaleMode() const { return myXMode; }
@@ -130,6 +133,9 @@ public:
 
   void    incrementalPan ( const int incrX, const int incrY );
   void    incrementalZoom( const int incrX, const int incrY );
+
+  void    setAutoUpdateTitle( const ObjectType type, const bool upd );
+  bool    getAutoUpdateTitle( const ObjectType type ) const;
 
 protected:
   int     testOperation( const QMouseEvent& );
@@ -189,6 +195,17 @@ protected:
   int            myXMode, myYMode;
   double         myXDistance, myYDistance, myYDistance2;
   bool           mySecondY;
+  
+  bool           myTitleAutoUpdate, myXTitleAutoUpdate, myYTitleAutoUpdate;
+  bool           myTitleChangedByUser, myXTitleChangedByUser, myYTitleChangedByUser;
+
+  static         QString myPrefTitle;
+  static         QString myPrefXTitle;
+  static         QString myPrefYTitle;
+
+  static bool    myPrefTitleChangedByUser;
+  static bool    myXPrefTitleChangedByUser;
+  static bool    myYPrefTitleChangedByUser;
 };
 
 class Plot2d_Plot2d : public QwtPlot 

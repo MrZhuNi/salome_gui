@@ -895,6 +895,32 @@ void GLViewer_Drawer::drawRectangle( GLViewer_Rect* rect, QColor color )
 }
 
 /*!
+  Draws filled rectangle
+  \param rect - instance of primitive
+  \param fillingColor - color of filling
+*/
+void GLViewer_Drawer::drawFilledRectangle( GLViewer_Rect* rect, QColor color )
+{
+  if( !rect )
+    return;
+
+  float x1 = rect->left();
+  float x2 = rect->right();
+  float y1 = rect->bottom();
+  float y2 = rect->top();
+  
+  glColor3f( ( GLfloat )color.red() / 255,
+    ( GLfloat )color.green() / 255,
+    ( GLfloat )color.blue() / 255 );
+  glBegin( GL_POLYGON );
+  glVertex2f( x1, y1 );
+  glVertex2f( x1, y2 );
+  glVertex2f( x2, y2 );
+  glVertex2f( x2, y1 );
+  glEnd();
+}
+
+/*!
   Saves object to file with format of HPGL
   \param hFile - file
   \param aViewerCS - viewer co-ordinate system

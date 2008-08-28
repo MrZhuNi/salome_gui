@@ -97,6 +97,11 @@ public:
   // non-positive X/Y coordinate
   double             getMinX() const;
   double             getMinY() const;
+  // Protection against QwtCurve::drawLines() bug in Qwt 0.4.x:
+  // sometimes it crashes (FPE) if draws curve with big abciss or ordinate cooridates
+  // after curve with small values
+  double             getMaxX() const;
+  double             getMaxY() const;
 
 protected:
   bool               myAutoAssign;

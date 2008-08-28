@@ -1279,6 +1279,7 @@ void QtxWorkstackChild::childEvent( QChildEvent* e )
 */
 QtxWorkstackTabBar::QtxWorkstackTabBar( QWidget* parent )
 : QTabBar( parent ),
+  myActive( false ),
   myId( -1 )
 {
   setDrawBase( true );
