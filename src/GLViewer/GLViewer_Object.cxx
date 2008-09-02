@@ -95,7 +95,7 @@ int GLViewer_Object::getPriority() const
 */
 GLboolean GLViewer_Object::isInside( GLViewer_Rect theRect )
 {
-    return theRect.toQRect().contains( myRect->toQRect() );
+    return theRect.toQRectF().contains( myRect->toQRectF() );
 }
 
 /*!

@@ -28,6 +28,7 @@
 #include "GLViewer.h"
 
 #include <QRect>
+#include <QRectF>
 #include <QtOpenGL>
 #include <math.h>
 
@@ -74,6 +75,9 @@ public:
   GLViewer_Rect( QRect theRect ) {
     myLeft = ( float )theRect.left(); myRight = ( float )theRect.right();
     myTop = ( float )theRect.top(); myBottom = ( float )theRect.bottom(); }
+  GLViewer_Rect( QRectF theRect ) {
+    myLeft = theRect.left(); myRight = theRect.right();
+    myTop = theRect.top(); myBottom = theRect.bottom(); }
   
   float       left() const { return myLeft; }
   float       right() const { return myRight; }
@@ -95,6 +99,11 @@ public:
   QRect       toQRect() { return QRect( ( int )myLeft, ( int )myBottom,
                                         ( int )( myRight - myLeft ),
                                         ( int )( myTop - myBottom ) ); }
+
+  //! \warning This method translate only rect format
+  QRectF      toQRectF() { return QRectF( myLeft, myBottom,
+                                          myRight - myLeft,
+                                          myTop - myBottom ); }
 
   //! On/off empty status
   void        setIsEmpty( bool on ) { myIsEmpty = on; }
