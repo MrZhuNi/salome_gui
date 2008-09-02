@@ -178,7 +178,7 @@ void GLViewer_Viewer2d::updateBorders()
         {
             GLViewer_Object* anObject = *it;
             GLViewer_Rect* aRect = anObject->getRect();
-            if( !anObject->isSelectable() || !anObject->getVisible() )
+            if( !anObject->isScalable() || !anObject->getVisible() )
                 continue;
 
             if( border->isEmpty() )
@@ -1006,7 +1006,10 @@ void GLViewer_Viewer2d::startOperations( QWheelEvent* e )
     for( myGLContext->InitSelected(); myGLContext->MoreSelected(); myGLContext->NextSelected() )
     {
         GLViewer_Object* anObject = myGLContext->SelectedObject();
-        update = anObject->updateZoom( zoomIn ) || update;
+        if( e->modifiers() & Qt::ControlModifier )
+          update = anObject->updateXZoom( zoomIn ) || update;
+        else
+          update = anObject->updateZoom( zoomIn ) || update;
     }
 
     emit wheelZoomChange( zoomIn );
