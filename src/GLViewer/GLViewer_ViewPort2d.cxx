@@ -34,8 +34,7 @@
 #include "GLViewer_Grid.h"
 #include "GLViewer_Drawer.h"
 
-// TODO: Porting to Qt4
-//#include <QtxToolTip.h>
+#include <QtxToolTip.h>
 
 #include <QHBoxLayout>
 #include <QMouseEvent>
@@ -108,12 +107,11 @@ GLViewer_ViewPort2d::GLViewer_ViewPort2d( QWidget* parent, GLViewer_ViewFrame* t
   mypFirstPoint = NULL;
   mypLastPoint = NULL;
 
-    // TODO: Porting to Qt4
-    /*myObjectTip = new QtxToolTip( myGLWidget );///GLViewer_ObjectTip( this );
-    myObjectTip->setShowDelayTime( 60000 );
-    connect( myObjectTip, SIGNAL( maybeTip( QPoint, QString&, QFont&, QRect&, QRect& ) ),
-             this, SLOT( onMaybeTip( QPoint, QString&, QFont&, QRect&, QRect& ) ) );*/
-//    myGLWidget->installEventFilter( myObjectTip );
+  myObjectTip = new QtxToolTip( myGLWidget );///GLViewer_ObjectTip( this );
+  myObjectTip->setShowDelayTime( 60000 );
+  connect( myObjectTip, SIGNAL( maybeTip( QPoint, QString&, QFont&, QRect&, QRect& ) ),
+           this, SLOT( onMaybeTip( QPoint, QString&, QFont&, QRect&, QRect& ) ) );
+  //myGLWidget->installEventFilter( myObjectTip );
 }
 
 /*!
