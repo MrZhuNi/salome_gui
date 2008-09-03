@@ -168,6 +168,8 @@ if ENABLE_PLOT2DVIEWER
 else
   libLightApp_la_CPPFLAGS+= -DDISABLE_PLOT2DVIEWER
 endif
+libLightApp_la_CPPFLAGS+= -I$(srcdir)/../QxScene
+
 if ENABLE_OCCVIEWER
   libLightApp_la_CPPFLAGS+= -I$(srcdir)/../OCCViewer
 else !ENABLE_OCCVIEWER
@@ -251,3 +253,4 @@ endif
 if ENABLE_QXGRAPHVIEWER
   libLightApp_la_LIBADD+= ../QxGraph/libQxGraph.la
 endif
+  libLightApp_la_LIBADD+= ../QxScene/libQxScene.la

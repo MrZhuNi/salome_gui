@@ -638,6 +638,7 @@ AC_OUTPUT([ \
   ./src/SPlot2d/Makefile \
   ./src/SUPERVGraph/Makefile \
   ./src/QxGraph/Makefile \
+  ./src/QxScene/Makefile \
   ./src/LightApp/Makefile \
   ./src/ResExporter/Makefile \
   ./src/TOOLSGUI/Makefile \

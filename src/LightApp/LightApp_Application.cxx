@@ -90,6 +90,10 @@
 #endif
 #endif
 
+#include <QxScene_ViewManager.h>
+#include <QxScene_ViewModel.h>
+#include <QxScene_ViewWindow.h>
+
 #ifndef DISABLE_OCCVIEWER
   #include <OCCViewer_ViewManager.h>
 #ifndef DISABLE_SALOMEOBJECT
@@ -600,6 +604,8 @@ void LightApp_Application::createActions()
   createActionForViewer( NewQxGraphViewId, newWinMenu, QString::number( 4 ), Qt::ALT+Qt::Key_C );
 #endif
 
+  createActionForViewer( NewQxSceneViewId, newWinMenu, QString::number( 5 ), Qt::ALT+Qt::Key_S );
+
   createAction( RenameId, tr( "TOT_RENAME" ), QIcon(), tr( "MEN_DESK_RENAME" ), tr( "PRP_RENAME" ),
 		Qt::SHIFT+Qt::Key_R, desk, false, this, SLOT( onRenameWindow() ) );
   createMenu( RenameId, windowMenu, -1 );
@@ -701,6 +707,9 @@ void LightApp_Application::onNewWindow()
     type = QxGraph_Viewer::Type();
     break;
 #endif
+  case NewQxSceneViewId:
+    type = QxScene_Viewer::Type();
+    break;
   }
 
   if ( !type.isEmpty() )
@@ -822,6 +831,9 @@ void LightApp_Application::updateCommandsStatus()
   if( a )
     a->setEnabled( activeStudy() );
 #endif
+  a = action( NewQxSceneViewId );
+  if( a )
+    a->setEnabled( activeStudy() );
 }
 
 /*!
@@ -1261,6 +1273,13 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     }
   }
 #endif
+  if( vmType == QxScene_Viewer::Type() )
+  {
+    viewMgr = new QxScene_ViewManager( activeStudy(), desktop() );
+    QxScene_Viewer* vm = new QxScene_Viewer();
+    viewMgr->setViewModel( vm  );
+    QxScene_ViewWindow* wnd = dynamic_cast<QxScene_ViewWindow*>( viewMgr->getActiveView() );
+  }
   //#ifndef DISABLE_SUPERVGRAPHVIEWER
   //  if( vmType == SUPERVGraph_Viewer::Type() )
   //  {
