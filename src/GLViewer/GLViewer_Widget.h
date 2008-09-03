@@ -27,10 +27,13 @@
 
 #include "GLViewer.h"
 
+#ifdef WIN32
+#pragma warning( disable:4251 )
+#endif
+
 #include <QtOpenGL>
 
 class QFile;
-
 class GLViewer_ViewPort2d;
 class GLViewer_CoordSystem;
 

@@ -27,6 +27,9 @@
   #include "SALOME_InteractiveObject.hxx"
 #endif
 
+#ifdef WIN32
+#pragma warning ( disable:4251 )
+#endif
 
 /*!
   This class provide data owner objects.

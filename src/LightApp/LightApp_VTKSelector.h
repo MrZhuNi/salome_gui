@@ -25,6 +25,10 @@
 
 #include <QObject>
 
+#ifdef WIN32
+#pragma warning( disable:4251 )
+#endif
+
 class SUIT_Desktop;
 
 #ifndef DISABLE_VTKVIEWER
