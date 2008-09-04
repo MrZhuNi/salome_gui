@@ -114,6 +114,7 @@ SVTK_ViewWindow::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
   myDumpImage(QImage()),
   myKeyFreeInteractorStyle(SVTK_KeyFreeInteractorStyle::New())
 {
+  setWindowFlags( windowFlags() & ~Qt::Window );
   // specific of vtkSmartPointer
   myKeyFreeInteractorStyle->Delete();
 }
