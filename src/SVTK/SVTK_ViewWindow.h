@@ -246,7 +246,13 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   //! To invoke a VTK event on #SVTK_RenderWindowInteractor instance
   void InvokeEvent(unsigned long theEvent, void* theCallData);
   
+ signals:
+  void Show( QShowEvent * );
+  void Hide( QHideEvent * );
+
 public slots:
+  virtual void showEvent( QShowEvent * );
+  virtual void hideEvent( QHideEvent * );
   virtual void onSelectionChanged();
 
   void onChangeRotationPoint(bool theIsActivate);

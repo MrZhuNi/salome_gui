@@ -1933,3 +1933,20 @@ void SVTK_ViewWindow::onViewParameters(bool theIsActivate)
   }else
     myViewParameterDlg->hide();
 }
+
+/*!
+  Custom show event handler
+*/
+void SVTK_ViewWindow::showEvent( QShowEvent * theEvent ) 
+{
+  emit Show( theEvent );
+}
+
+/*!
+  Custom hide event handler
+*/
+void SVTK_ViewWindow::hideEvent( QHideEvent * theEvent ) 
+{
+  emit Hide( theEvent );
+}
+
