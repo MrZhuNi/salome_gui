@@ -316,36 +316,4 @@ bool ComputeBBCenter(vtkRenderer* theRenderer, vtkFloatingPointType theCenter[3]
   }
 
   return false;
-
-  /*
-  vtkFloatingPointType aBounds[6];
-  int aCount = ComputeVisiblePropBounds(theRenderer,aBounds);
-  printf("aNewBndBox[0] = %f, aNewBndBox[1] = %f,\naNewBndBox[2] = %f, aNewBndBox[3] = %f,\naNewBndBox[4] = %f, aNewBndBox[5] = %f\n",
-	   aBounds[0],aBounds[1],aBounds[2],aBounds[3],aBounds[4],aBounds[5]);
-  printf("aCount = %d\n",aCount);
-
-  if(aCount){
-    static vtkFloatingPointType MIN_DISTANCE = 1.0 / VTK_LARGE_FLOAT;
-
-    vtkFloatingPointType aLength = aBounds[1]-aBounds[0];
-    aLength = max((aBounds[3]-aBounds[2]),aLength);
-    aLength = max((aBounds[5]-aBounds[4]),aLength);
-    
-    if(aLength < MIN_DISTANCE)
-      return false;
-
-    vtkFloatingPointType aWidth = 
-      sqrt((aBounds[1]-aBounds[0])*(aBounds[1]-aBounds[0]) +
-	   (aBounds[3]-aBounds[2])*(aBounds[3]-aBounds[2]) +
-	   (aBounds[5]-aBounds[4])*(aBounds[5]-aBounds[4]));
-    
-    if(aWidth < MIN_DISTANCE)
-      return false;
-
-    theCenter[0] = (aBounds[0] + aBounds[1])/2.0;
-    theCenter[1] = (aBounds[2] + aBounds[3])/2.0;
-    theCenter[2] = (aBounds[4] + aBounds[5])/2.0;
-    return true;
-  }
-  return false;*/
 }
