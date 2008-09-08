@@ -93,6 +93,9 @@ class SVTK_EXPORT SVTK_RectPicker : public vtkAbstractPropPicker
   const TVectorIdsMap& 
   GetCellIdsMap() const;
 
+  bool IsThrough() { return myIsThrough;} // RKV
+  void SetIsThrough(bool val) { myIsThrough = val;} // RKV
+
  protected:
   SVTK_RectPicker();
   ~SVTK_RectPicker();
@@ -111,6 +114,9 @@ class SVTK_EXPORT SVTK_RectPicker : public vtkAbstractPropPicker
 
   TVectorIdsMap myPointIdsMap;
   TVectorIdsMap myCellIdsMap;
+
+  bool myIsThrough; // RKV : Will the picker take all elements throuth selected 
+                    // volume inclung invizible elements
 
  private:
   virtual 

@@ -59,6 +59,9 @@ class LIGHTAPP_EXPORT LightApp_SVTKDataOwner : public LightApp_DataOwner
     /*!Gets dataowners ids list.*/
     const TColStd_IndexedMapOfInteger& GetIds() const;
 
+    /*!Sets dataowners ids list.*/
+    void SetIds( const TColStd_IndexedMapOfInteger& );
+
     /*!Gets selection mode.*/
     Selection_Mode GetMode() const;
 

@@ -97,8 +97,6 @@ void STD_Application::start()
 */
 void STD_Application::closeApplication()
 {
-  if ( desktop() )
-    savePreferences();
   SUIT_Study* study = activeStudy();
 
   if ( study )
@@ -112,6 +110,9 @@ void STD_Application::closeApplication()
 
     afterCloseDoc();
   }
+
+  if ( desktop() )
+    savePreferences();
 
   setDesktop( 0 );
 
@@ -533,7 +534,7 @@ bool STD_Application::onSaveAsDoc()
     putInfo( tr( "INF_DOC_SAVING" ) + aName );
     isOk = study->saveDocumentAs( aName );
 
-    putInfo( isOk ? tr( "INF_DOC_SAVED" ).arg( aName ) : "" );
+    putInfo( isOk ? tr( "INF_DOC_SAVED" ).arg( aName ) : QString( "" ) );
 
     QApplication::restoreOverrideCursor();
 

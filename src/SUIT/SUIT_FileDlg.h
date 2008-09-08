@@ -98,7 +98,7 @@ protected:
   virtual bool        event( QEvent* );
   QLineEdit*          lineEdit() const;
   virtual bool        acceptData();
-  QString             addExtension( const QString& ) const;
+  virtual QString     addExtension( const QString& ) const;
   bool                processPath( const QString& );
   void                addFilter( const QString& );
   static bool         hasWildCards( const QString& );

@@ -662,7 +662,7 @@ QString LightApp_Application::defaultModule() const
   modules( aModuleNames, false ); // obtain a complete list of module names for the current configuration
   //! If there's the one and only module --> activate it automatically
   //! TODO: Possible improvement - default module can be taken from preferences
-  return aModuleNames.count() > 1 ? "" : ( aModuleNames.count() ? aModuleNames.first() : "" );
+  return aModuleNames.count() > 1 ? QString( "" ) : ( aModuleNames.count() ? aModuleNames.first() : QString( "" ) );
 }
 
 /*!On new window slot.*/
@@ -2225,6 +2225,13 @@ void LightApp_Application::updateDesktopTitle()
     aTitle += QString( " - [%1]" ).arg( sName );
   }
 
+  QStringList anInfoList;
+  modules( anInfoList, false );
+
+  LightApp_Module* aModule = ( LightApp_Module* )activeModule();
+  if( aModule && anInfoList.count() == 1 ) // to avoid a conflict between different modules
+    aTitle = aModule->updateDesktopTitle( aTitle );
+
   desktop()->setWindowTitle( aTitle );
 }
 
@@ -2836,7 +2843,7 @@ bool LightApp_Application::event( QEvent* e )
     SALOME_CustomEvent* ce = ( SALOME_CustomEvent* )e;
     QString* d = ( QString* )ce->data();
     if( SUIT_MessageBox::question(0, tr("WRN_WARNING"),
-				  d ? *d : "",
+				  d ? *d : QString( "" ),
 				  SUIT_MessageBox::Yes | SUIT_MessageBox::No,
 				  SUIT_MessageBox::Yes ) == SUIT_MessageBox::Yes )
        onPreferences();

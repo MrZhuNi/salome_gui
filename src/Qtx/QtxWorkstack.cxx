@@ -514,6 +514,8 @@ void QtxWorkstackArea::removeWidget( QWidget* wid, const bool del )
   if ( !myList.contains( wid ) )
     return;
 
+  bool wasActive = wid == workstack()->activeWindow();
+
   if ( myBar->indexOf( widgetId( wid ) ) != -1 )
     myBar->removeTab( myBar->indexOf( widgetId( wid ) ) );
 
@@ -524,12 +526,19 @@ void QtxWorkstackArea::removeWidget( QWidget* wid, const bool del )
   myChild.remove( wid );
 
   if ( del )
+  {
     delete child( wid );
+    if ( myList.isEmpty() )
+      wasActive = false;
+  }
 
   if ( isNull() )
     deleteLater();
   else
     updateState();
+
+  if ( wasActive )
+    emit activated( activeWidget() );
 }
 
 /*!
@@ -1171,7 +1180,8 @@ QtxWorkstackChild::~QtxWorkstackChild()
   if ( !widget() )
     return;
 
-  disconnect( widget(), SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
+  if( widget() )
+    disconnect( widget(), SIGNAL( destroyed( QObject* ) ), this, SLOT( onDestroyed( QObject* ) ) );
 
   widget()->hide();
   widget()->removeEventFilter( this );

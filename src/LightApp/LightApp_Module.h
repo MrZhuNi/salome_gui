@@ -90,6 +90,9 @@ public:
   virtual LightApp_Displayer*         displayer();
   virtual LightApp_Selection*         createSelection() const;
 
+  virtual QString                     updateDesktopTitle( const QString& );
+  // Custom update desktop title
+
 public slots:
   virtual bool                        activateModule( SUIT_Study* );
   virtual bool                        deactivateModule( SUIT_Study* );

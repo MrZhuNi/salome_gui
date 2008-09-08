@@ -195,6 +195,7 @@ SVTK_InteractorStyle
 
   mySelectionEvent->myIsCtrl = Interactor->GetControlKey();
   mySelectionEvent->myIsShift = Interactor->GetShiftKey();
+  mySelectionEvent->myKeyCode = Interactor->GetKeyCode();
 
   mySelectionEvent->myLastX = mySelectionEvent->myX;
   mySelectionEvent->myLastY = mySelectionEvent->myY;

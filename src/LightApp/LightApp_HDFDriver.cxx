@@ -18,6 +18,7 @@
 //
 #include "LightApp_HDFDriver.h"
 
+#include "HDFexplorer.hxx"
 #include "HDFOI.hxx"
 
 // OCCT Includes
@@ -68,13 +69,6 @@ bool LightApp_HDFDriver::SaveDatasInFile( const char* theFileName, bool isMultiF
     for (it = myMap.begin(); it != myMap.end(); ++it, ++tag) {
       std::string aName (it->first);
       char* aModuleName = const_cast<char*>(aName.c_str());
-      unsigned char* aBuffer;
-      long           aBufferSize;
-      PutFilesToStream(aName, aBuffer, aBufferSize, isMultiFile);
-
-      //Handle(SALOMEDSImpl_SComponent) sco = itcomponent.Value();
-      //TCollection_AsciiString scoid = sco->GetID();
-      //hdf_sco_group = new HDFgroup(scoid.ToCString(), hdf_group_datacomponent);
 
       TCollection_AsciiString entry ("0:1:");
       entry += TCollection_AsciiString(tag);
@@ -84,13 +78,37 @@ bool LightApp_HDFDriver::SaveDatasInFile( const char* theFileName, bool isMultiF
       hdf_sco_group = new HDFgroup (entry.ToCString(), hdf_group_datacomponent);
       hdf_sco_group->CreateOnDisk();
 
-      aHDFSize[0] = aBufferSize;
+      unsigned char* aBuffer; 
+      long           aBufferSize;
+      
+      /*while( LightApp_Driver::HasUnsavedData() )
+        PutFilesToNextStream( aName, aBuffer, aBufferSize, isMultiFile );*/
 
-      hdf_dataset = new HDFdataset ("FILE_STREAM", hdf_sco_group, HDF_STRING, aHDFSize, 1);
+      // first data set
+      TCollection_AsciiString aBaseName( (Standard_CString)"FILE_STREAM" );
+      PutFilesToFirstStream( aName, aBuffer, aBufferSize, isMultiFile );
+      aHDFSize[0] = aBufferSize;
+      hdf_dataset = new HDFdataset( aBaseName.ToCString(), hdf_sco_group, HDF_STRING, aHDFSize, 1);
       hdf_dataset->CreateOnDisk();
       hdf_dataset->WriteOnDisk(aBuffer); //Save the stream in the HDF file
       hdf_dataset->CloseOnDisk();
       hdf_dataset = 0; //will be deleted by hdf_sco_group destructor
+
+     // other data sets
+      int anIndex = 0;
+      while( LightApp_Driver::HasUnsavedData() )
+      {
+        anIndex++;
+        TCollection_AsciiString aDataSetName = 
+          aBaseName + TCollection_AsciiString( anIndex );
+        PutFilesToNextStream( aName, aBuffer, aBufferSize, isMultiFile );
+        aHDFSize[0] = aBufferSize;
+        hdf_dataset = new HDFdataset( aDataSetName.ToCString(), hdf_sco_group, HDF_STRING, aHDFSize, 1);
+        hdf_dataset->CreateOnDisk();
+        hdf_dataset->WriteOnDisk(aBuffer); //Save the stream in the HDF file
+        hdf_dataset->CloseOnDisk();
+        hdf_dataset = 0; //will be deleted by hdf_sco_group destructor
+      }
 
       // store multifile state
       aHDFSize[0] = 2;
@@ -270,23 +288,47 @@ bool LightApp_HDFDriver::ReadDatasFromFile( const char* theFileName, bool isMult
           hdf_sco_group->OpenOnDisk();
 
           // Read component data
-          unsigned char* aStreamFile = NULL;
-          int aStreamSize = 0;
 
-          if (hdf_sco_group->ExistInternalObject("FILE_STREAM")) {
-            HDFdataset *hdf_dataset = new HDFdataset("FILE_STREAM", hdf_sco_group);
-            hdf_dataset->OpenOnDisk();
-            aStreamSize = hdf_dataset->GetSize();
-            aStreamFile = new unsigned char[aStreamSize];
-            if (aStreamFile == NULL) {
-              isError = true;
-            } else {
-              hdf_dataset->ReadFromDisk(aStreamFile);
+          // read first file stream
+          TCollection_AsciiString aBaseName( (Standard_CString)"FILE_STREAM" );
+          ListOfFiles aListOfFiles;
+          for ( int ds = 0; true; ds++ ) {
+            unsigned char* aStreamFile = NULL;
+            int aStreamSize = 0;
+
+            TCollection_AsciiString aDataSetName = aBaseName;
+            if ( ds > 0  )
+              aDataSetName = aBaseName + TCollection_AsciiString( ds );
+
+            if ( hdf_sco_group->ExistInternalObject( aDataSetName.ToCString() ) ) {
+              HDFdataset *hdf_dataset = new HDFdataset( aDataSetName.ToCString(), hdf_sco_group );
+              hdf_dataset->OpenOnDisk();
+              aStreamSize = hdf_dataset->GetSize();
+              aStreamFile = new unsigned char[aStreamSize];
+              if (aStreamFile == NULL) {
+                isError = true;
+              } else {
+                hdf_dataset->ReadFromDisk(aStreamFile);
+              }
+
+              hdf_dataset->CloseOnDisk();
+              hdf_dataset = 0;
             }
+            else 
+              break;
 
-            hdf_dataset->CloseOnDisk();
-            hdf_dataset = 0;
-          }
+            if ( aStreamFile != NULL ) 
+            {
+              if ( ds == 0 )
+                PutFirstStreamToFiles( aListOfFiles, aStreamFile, aStreamSize, isMultiFile );
+              else
+                PutNextStreamToFiles( aListOfFiles, aStreamFile, aStreamSize, isMultiFile );
+              delete [] aStreamFile;
+            }
+          } // for ( int i = 0; true; i++ )
+
+          char* aCompDataType = (char*)(mapEntryName[name].c_str());
+          SetListOfFiles( aCompDataType, aListOfFiles );
 
           HDFdataset *multifile_hdf_dataset = new HDFdataset("MULTIFILE_STATE", hdf_sco_group);
           multifile_hdf_dataset->OpenOnDisk();
@@ -301,15 +343,6 @@ bool LightApp_HDFDriver::ReadDatasFromFile( const char* theFileName, bool isMult
           ascii_hdf_dataset = 0;
 
           isASCII = (ASCIIfileState[0] == 'A') ? true : false;
-
-          if (aStreamFile != NULL) {
-            // Put buffer to aListOfFiles and set to myMap
-            ListOfFiles aListOfFiles = PutStreamToFiles(aStreamFile, aStreamSize, isMultiFile);
-            char* aCompDataType = (char*)(mapEntryName[name].c_str());
-            SetListOfFiles(aCompDataType, aListOfFiles);
-
-            delete [] aStreamFile;
-          }
 
           hdf_sco_group->CloseOnDisk();
         }
