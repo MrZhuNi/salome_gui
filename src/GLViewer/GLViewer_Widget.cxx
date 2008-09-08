@@ -345,14 +345,15 @@ void GLViewer_Widget::resizeGL( int w, int h )
   if( w < 1 ) w = 1;
   glViewport( 0, 0, w, h);
 
+  myViewPort->initResize( w, h );
+
   if( myStart )
   {
     myWidth = w;
     myHeight = h;
+    myViewPort->fitAll();
     myStart = GL_FALSE;
   }
-
-  myViewPort->initResize( w, h );
 
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity();

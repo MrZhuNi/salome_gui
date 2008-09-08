@@ -965,52 +965,6 @@ bool GLViewer_Drawer::translateToEMF( HDC hDC, GLViewer_CoordSystem* aViewerCS, 
 #endif
 
 /*!
-  Draws rectangle
-  \param rect - instance of primitive
-  \param lineWidth - width of line
-  \param gap - gap of rectangle
-  \param color - color of primitive
-  \param filled - if it is true, then rectangle will be drawn filled with color "fillingColor"
-  \param fillingColor - color of filling
-*/
-void GLViewer_Drawer::drawRectangle( GLViewer_Rect* rect, GLfloat lineWidth, GLfloat gap,
-				     QColor color, bool filled, QColor fillingColor )
-{
-  if( !rect )
-    return;
-
-  float x1 = rect->left() - gap;
-  float x2 = rect->right() + gap;
-  float y1 = rect->bottom() - gap;
-  float y2 = rect->top() + gap;
-  
-  if( filled )
-  {
-    glColor3f( ( GLfloat )fillingColor.red() / 255,
-      ( GLfloat )fillingColor.green() / 255,
-      ( GLfloat )fillingColor.blue() / 255 );
-    glBegin( GL_POLYGON );
-    glVertex2f( x1, y1 );
-    glVertex2f( x1, y2 );
-    glVertex2f( x2, y2 );
-    glVertex2f( x2, y1 );
-    glEnd();
-  }
-
-  glColor3f( ( GLfloat )color.red() / 255,
-    ( GLfloat )color.green() / 255,
-    ( GLfloat )color.blue() / 255 );
-  glLineWidth( lineWidth );
-  
-  glBegin( GL_LINE_LOOP );
-  glVertex2f( x1, y1 );
-  glVertex2f( x1, y2 );
-  glVertex2f( x2, y2 );
-  glVertex2f( x2, y1 );
-  glEnd();
-}
-
-/*!
   Draws contour
   \param pntList - list of points
   \param color - color of contour

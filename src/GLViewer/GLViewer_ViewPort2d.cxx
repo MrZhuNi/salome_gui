@@ -352,6 +352,9 @@ void GLViewer_ViewPort2d::mouseMoveEvent( QMouseEvent* e )
 {
     emit vpMouseEvent( e );
 
+    if( isPulling() )
+      return;
+
     if( myIsDragProcess == inDrag )
         onDragObject( e );
 
@@ -397,6 +400,9 @@ void GLViewer_ViewPort2d::mouseReleaseEvent( QMouseEvent* e )
         //destroyPopup( /*popup*/ );
     }
     emit vpMouseEvent( e );
+
+    if( isPulling() )
+      return;
 
     if( myIsDragProcess == inDrag )
     {
@@ -1196,6 +1202,14 @@ void GLViewer_ViewPort2d::drawSelectByRect( int x, int y )
 }
 
 /*!
+  Returns tue if selection by rect is preformed
+*/
+bool GLViewer_ViewPort2d::isSelectByRect() const
+{
+  return mypFirstPoint && mypLastPoint;
+}
+
+/*!
   Finishes rectangle selection
 */
 void GLViewer_ViewPort2d::finishSelectByRect()
@@ -1402,6 +1416,13 @@ void GLViewer_ViewPort2d::onMaybeTip( QPoint thePoint, QString& theText, QFont& 
       theTextReg = QRect( thePoint.x(), thePoint.y() + cur_height,
                           aSize.width(), aSize.height() );
       theRegion = QRect( thePoint.x(), thePoint.y(), 1, 1 );
+
+      QPoint aBottomRightGlobal = mapToGlobal( theTextReg.bottomRight() );
+      int dx = aBottomRightGlobal.x() - QApplication::desktop()->screenGeometry().width();
+      int dy = aBottomRightGlobal.y() - QApplication::desktop()->screenGeometry().height();
+      dx = dx < 0 ? 0 : -dx;
+      dy = dy < 0 ? 0 : -dy;
+      theTextReg.translate( dx, dy );
     }
   }
 }

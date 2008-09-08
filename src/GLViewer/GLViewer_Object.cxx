@@ -148,7 +148,7 @@ GLboolean GLViewer_Object::setZoom( GLfloat zoom, bool, bool )
 }
 
 /*!
-  Performs zoom change by step
+  Performs vertical zoom change by step
   \param zoomIn - to increase to decrease zoom
 */
 GLboolean GLViewer_Object::updateZoom( bool zoomIn )

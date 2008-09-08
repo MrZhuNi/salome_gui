@@ -280,6 +280,20 @@ QImage GLViewer_ViewFrame::dumpView()
 }
 
 /*!
+  Saves image to file according to the format
+  \param image - image
+  \param fileName - name of file
+  \param format - string contains name of format (for example, "BMP"(default) or "JPEG", "JPG")
+*/
+bool GLViewer_ViewFrame::dumpViewToFormat( const QImage& img, const QString& fileName, const QString& format )
+{
+  bool ok = SUIT_ViewWindow::dumpViewToFormat( img, fileName, format );
+  if( ok )
+    emit vfViewDumped( img, fileName, format );
+  return ok;
+}
+
+/*!
   Start panning
 */
 void GLViewer_ViewFrame::onViewPan()
