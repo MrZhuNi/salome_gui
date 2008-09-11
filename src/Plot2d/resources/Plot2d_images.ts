@@ -65,5 +65,13 @@
         <source>ICON_PLOT2D_SHOW_LEGEND</source>
         <translation>plot2d_legend.png</translation>
     </message>
+    <message>
+        <source>ICON_CURVES_SETTINGS</source>
+        <translation>plot2d_curves_settings.png</translation>
+    </message>
+    <message>
+        <source>ICON_MINUS</source>
+        <translation>plot2d_minus.png</translation>
+    </message>
 </context>
 </TS>
