@@ -20,6 +20,7 @@
 
 #include "Plot2d_Prs.h"
 #include "Plot2d_Curve.h"
+#include "Plot2d_SetupCurvesDlg.h"
 #include "Plot2d_FitDataDlg.h"
 #include "Plot2d_ViewWindow.h"
 #include "Plot2d_SetupViewDlg.h"
@@ -49,7 +50,6 @@
 #include <qwt_math.h>
 #include <qwt_plot_canvas.h>
 #include <qwt_scale_div.h>
-#include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include <qwt_scale_engine.h>
 #include <qwt_plot_zoomer.h>
@@ -60,6 +60,7 @@
 #include <qprinter.h>
 
 #include <qwt_legend.h>
+#include <qwt_painter.h>
 
 #define DEFAULT_LINE_WIDTH     0     // (default) line width
 #define DEFAULT_MARKER_SIZE    9     // default marker size
@@ -169,7 +170,9 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
        myXGridMinorEnabled( false ), myYGridMinorEnabled( false ), myY2GridMinorEnabled( false ),
        myXGridMaxMajor( 8 ), myYGridMaxMajor( 8 ), myY2GridMaxMajor( 8 ),
        myXGridMaxMinor( 5 ), myYGridMaxMinor( 5 ), myY2GridMaxMinor( 5 ),
-       myXMode( 0 ), myYMode( 0 ), mySecondY( false )
+       myXMode( 0 ), myYMode( 0 ), mySecondY( false ),
+       myTitleAutoUpdate( true ), myXTitleAutoUpdate( true ), myYTitleAutoUpdate( true ),
+       myTitleChangedByUser( false ), myXTitleChangedByUser( false ), myYTitleChangedByUser( false )
 {
   setObjectName( title );
   /* Plot 2d View */
@@ -241,6 +244,7 @@ void Plot2d_ViewFrame::DisplayAll()
   getCurves( clist );
   for ( int i = 0; i < (int)clist.count(); i++ ) {
     updateCurve( clist.at( i ), false );
+     emit curveDisplayed( clist.at( i ) );
   }
   myPlot->replot();
 }
@@ -249,6 +253,10 @@ void Plot2d_ViewFrame::DisplayAll()
 */
 void Plot2d_ViewFrame::EraseAll() 
 {
+  CurveDict::iterator it = myPlot->getCurves().begin();
+  for ( ; it != myPlot->getCurves().end(); it++ )
+    emit curveErased( it.value() );
+  
   myPlot->clear();
   myPlot->getCurves().clear();
   myPlot->replot();
@@ -387,6 +395,10 @@ void Plot2d_ViewFrame::readPreferences()
 
   myYMode = resMgr->integerValue( "Plot2d", "VerScaleMode", myYMode );
   myYMode = qMax( 0, qMin( 1, myYMode ) );
+
+  myTitle = myPrefTitle;
+  myXTitle = myPrefXTitle;
+  myYTitle = myPrefYTitle;
 }
 
 /*!
@@ -570,7 +582,7 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
     updateCurve( curve, update );
   }
   else {
-    QwtPlotCurve* aPCurve = new QwtPlotCurve( curve->getVerTitle() );
+    QwtPlotCurve* aPCurve = new Plot2d_PlotCurve( curve->getVerTitle() );
     aPCurve->attach( myPlot );
     //myPlot->setCurveYAxis(curveKey, curve->getYAxis());
 
@@ -589,6 +601,7 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
       curve->setColor( color );
       curve->setLine( Plot2d::qwt2plotLine( typeLine ) );
       curve->setMarker( Plot2d::qwt2plotMarker( typeMarker ) );
+      myPlot->setCurveNbMarkers( curve, 1 );
     }
     else {
       Qt::PenStyle     ps = Plot2d::plot2qwtLine( curve->getLine() );
@@ -598,6 +611,7 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
                QBrush( curve->getColor() ), 
                QPen( curve->getColor() ), 
                QSize( myMarkerSize, myMarkerSize ) ) );
+      myPlot->setCurveNbMarkers( curve, curve->getNbMarkers() );
     }
     setCurveType( aPCurve, myCurveType );
     aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
@@ -605,6 +619,8 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
   updateTitles();
   if ( update )
     myPlot->replot();
+
+  emit curveDisplayed( curve );
 }
 
 /*!
@@ -641,6 +657,7 @@ void Plot2d_ViewFrame::eraseCurve( Plot2d_Curve* curve, bool update )
     updateTitles();
     if ( update )
       myPlot->replot();
+    emit curveErased( curve );
   }
 }
 
@@ -678,6 +695,9 @@ void Plot2d_ViewFrame::updateCurve( Plot2d_Curve* curve, bool update )
                QPen( curve->getColor() ), 
                QSize( myMarkerSize, myMarkerSize ) ) );
       aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
+      Plot2d_PlotCurve* aPlot2dCurve = dynamic_cast< Plot2d_PlotCurve* >( aPCurve );
+      if ( aPlot2dCurve )
+        aPlot2dCurve->setNbMarkers( curve->getNbMarkers() );
     }
     aPCurve->setTitle( curve->getVerTitle() );
     aPCurve->setVisible( true );
@@ -995,6 +1015,138 @@ void Plot2d_ViewFrame::onSettings()
       writePreferences();
   }
   delete dlg;
+}
+
+/*!
+  "Curves settings" toolbar action slot
+*/
+void Plot2d_ViewFrame::onCurvesSettings()
+{
+  Plot2d_SetupCurvesDlg* aDlg = new Plot2d_SetupCurvesDlg( this );
+
+  // Initialize dialog with legend
+  int nbCurves = myPlot->getCurves().count();
+  if ( nbCurves == 0 )
+    return;
+
+  QVector< int > aMarkers( nbCurves );
+  QVector< QString > aTexts( nbCurves );
+  QVector< QColor > aColors( nbCurves );
+  QVector< int > nbMarkers( nbCurves );
+
+  QList< Plot2d_Curve* > aCurves;
+
+  CurveDict::iterator it = myPlot->getCurves().begin();
+  for ( int i = 0; it != myPlot->getCurves().end(); it++, i++ )
+  {
+    Plot2d_Curve* aCurve = it.value();
+    if ( !aCurve )
+      return;
+    
+    int aMarkerType = aCurve->getMarker();
+    QString aText = aCurve->getHorTitle();
+    if ( aText.isEmpty() )
+      aText = aCurve->getVerTitle();
+    QColor aColor = aCurve->getColor();
+    int nbMarker = aCurve->getNbMarkers();
+
+    aMarkers[ i ] = aMarkerType;
+    aTexts[ i ] = aText;
+    aColors[ i ] = aColor;
+    nbMarkers[ i ] = nbMarker;
+
+    aCurves.append( aCurve );
+  }
+
+  aDlg->SetParameters( aMarkers, aTexts, aColors, nbMarkers );
+
+  if ( aDlg->exec() != QDialog::Accepted ) 
+    return;
+
+  // Note: Indexes retrieved from dialog do not correspond to the real indexes of 
+  // plot 2d curves. They correspond to the user actions. For example, if user removes 
+  // first curve in dialog’s table two times. Then contents of list of indexes is 
+  // equal (1, 1) although first and second curves must be removed.
+  const QList< int >& toRemove = aDlg->GetRemovedIndexes();
+  QList< int >::const_iterator aRemIter;
+  for ( aRemIter = toRemove.begin(); aRemIter != toRemove.end(); ++aRemIter )
+  {
+    int anIndex = *aRemIter;
+    if ( anIndex >= 0 && anIndex < (int)aCurves.count() )  
+    {
+      Plot2d_Curve* aCurve = aCurves[ anIndex ];
+      aCurves.removeAt( anIndex );
+      eraseCurve( aCurve );
+    }
+  }
+
+  QMap< int, Plot2d_Curve* > anIndexToCurve;
+  QList< Plot2d_Curve* >::iterator aCurvIter;
+  for ( i = 0, aCurvIter = aCurves.begin(); aCurvIter != aCurves.end(); ++aCurvIter, ++i )
+  {
+    anIndexToCurve[ i ] = *aCurvIter;
+  }
+
+  aDlg->GetParameters( aMarkers, aTexts, aColors, nbMarkers );
+
+  int n;
+  for ( i = 0, n = aMarkers.size(); i < n; i++ )
+  {
+    Plot2d_Curve* aCurve = anIndexToCurve[ i ];
+    aCurve->setAutoAssign( false );
+
+    // old values 
+    Plot2d::MarkerType anOldMarker = aCurve->getMarker();
+    QString anOldText = aCurve->getHorTitle();
+    bool isHorTitle = true;
+    if ( anOldText.isEmpty() )
+    {
+      anOldText = aCurve->getVerTitle();
+      isHorTitle = false;
+    }
+    QColor anOldColor = aCurve->getColor();
+    int anOldNbMarker = aCurve->getNbMarkers();
+
+    // new values
+
+    Plot2d::MarkerType aMarker = (Plot2d::MarkerType)aMarkers[ i ];
+    QString aText = aTexts[ i ];
+    QColor aColor = aColors[ i ];
+    int nbMarker = nbMarkers[ i ];
+
+    bool toUpdate = false;
+
+    if ( anOldMarker != aMarker )
+    {
+      aCurve->setMarker( aMarker );
+      toUpdate = true;
+    }
+    if ( anOldText != aText )
+    {
+      if ( isHorTitle )
+        aCurve->setHorTitle( aText );
+      else 
+        aCurve->setVerTitle( aText );
+      toUpdate = true;
+    }
+    if ( anOldColor != aColor )
+    {
+      aCurve->setColor( aColor );
+      toUpdate = true;
+    }
+    if ( anOldNbMarker != nbMarker )
+    {
+      aCurve->setNbMarkers( nbMarker );
+      toUpdate = true;
+    }
+
+    if ( toUpdate )
+      updateCurve( aCurve, false );
+  }
+  
+  Repaint();
+
+  delete aDlg;
 }
 
 /*!
@@ -1615,6 +1767,94 @@ public:
   ~Plot2d_QwtPlotZoomer() {};
 };
 
+
+/*!
+  Constructor
+*/
+Plot2d_PlotCurve::Plot2d_PlotCurve( const QString& title )
+: QwtPlotCurve( title ),
+  myNbMarkers( 1 )
+{
+}
+
+Plot2d_PlotCurve::~Plot2d_PlotCurve()
+{
+}
+
+/*!
+  Sets number of markers for steps. If number of markers is equal to 1 then 
+  markers are displayed for steps only. If number of markers is equal to 3 
+  (for example) then markers are displayed for steps and two markers are 
+  displayed between side by side steps. 
+*/
+void Plot2d_PlotCurve::setNbMarkers( const int theNbMarkers )
+{
+  myNbMarkers = theNbMarkers;
+}
+
+/*!
+  Gets number of markers for steps. If number of markers is equal to 1 then 
+  markers are displayed for steps only. If number of markers is equal to 3 
+  (for example) then markers are displayed for steps and two markers are 
+  displayed between side by side steps. 
+*/
+int Plot2d_PlotCurve::nbMarkers() const
+{
+  return myNbMarkers;
+}
+
+/*!
+  Draws curve's markers
+*/
+void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
+                                   const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                                   int from, int to ) const
+{
+  p->setBrush( symbol.brush() );
+  p->setPen( symbol.pen() );
+
+  QRect rect;
+  rect.setSize( QwtPainter::metricsMap().screenToLayout( symbol.size()  ) );
+
+  if ( to > from && testPaintAttribute( PaintFiltered ) )
+  {
+    QwtPlotCurve::drawSymbols( p, symbol, xMap, yMap, from, to );
+  }
+  else
+  {
+    for ( int i = from; i <= to; i++ )
+    {
+      const int u = xMap.transform(x(i));
+      const int v = yMap.transform(y(i));
+
+      rect.moveCenter( QPoint( u, v ) );
+      symbol.draw( p, rect );
+
+      // draw markers between current and previous step
+      if ( myNbMarkers > 1 && i >= 1 )
+      {
+        int u_1 = xMap.transform( x( i - 1 ) );
+        int v_1 = yMap.transform( y( i - 1 ) );
+
+        if ( u_1 == u )
+          continue;
+
+        double k = ( (double)( v_1 - v ) ) / ( u_1 - u );
+        double b = v - k * u;
+        double step = ( (double)( u - u_1 ) ) / myNbMarkers;
+        for ( int ind = 1; ind < myNbMarkers; ind++ )
+        {
+          int X = (int)( u_1 + step * ind );
+          int Y = (int)( k * X + b );
+
+          rect.moveCenter( QPoint( X, Y ) );
+          symbol.draw( p, rect );
+        }
+      }
+    }
+  }
+}
+
 /*!
   Constructor
 */
@@ -1829,6 +2069,39 @@ Plot2d_Curve* Plot2d_Plot2d::getClosestCurve( QPoint p, double& distance, int& i
       return it.value();
   }
   return 0;
+}
+
+/*!
+  Sets number of markers for steps. If number of markers is equal to 1 then 
+  markers are displayed for steps only. If number of markers is equal to 3 
+  (for example) then markers are displayed for steps and two markers are 
+  displayed between side by side steps. 
+*/
+bool Plot2d_Plot2d::setCurveNbMarkers( Plot2d_Curve* curve, const int nb )
+{
+  Plot2d_PlotCurve* aPlotCurve = 
+    dynamic_cast<Plot2d_PlotCurve*>( myCurves.key( curve, 0 ) );
+  if ( aPlotCurve )
+  {
+    aPlotCurve->setNbMarkers( nb );
+    return true;
+  }
+  else 
+    return false;
+}
+
+
+/*!
+  Gets number of markers for steps. If number of markers is equal to 1 then 
+  markers are displayed for steps only. If number of markers is equal to 3 
+  (for example) then markers are displayed for steps and two markers are 
+  displayed between side by side steps. 
+*/
+int Plot2d_Plot2d::curveNbMarkers( Plot2d_Curve* curve ) const
+{
+  Plot2d_PlotCurve* aPlotCurve = 
+    dynamic_cast<Plot2d_PlotCurve*>( myCurves.key( curve, 0 ) );
+  return aPlotCurve ? aPlotCurve->nbMarkers() : 0;
 }
 
 /*!
@@ -2237,3 +2510,4 @@ bool Plot2d_ViewFrame::getAutoUpdateTitle( const ObjectType type ) const
     return true;
   }
 }
+

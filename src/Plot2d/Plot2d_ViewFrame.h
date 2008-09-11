@@ -24,6 +24,7 @@
 #include <QMultiHash>
 #include <QList>
 #include <qwt_symbol.h>
+#include <qwt_plot_curve.h>
 
 class Plot2d_Plot2d;
 class Plot2d_Prs;
@@ -154,6 +155,7 @@ public slots:
   void    onViewFitArea();
   void    onViewGlobalPan(); 
   void    onSettings();
+  void    onCurvesSettings();
   void    onFitData();
   void    onChangeBackground();
 
@@ -175,6 +177,8 @@ signals:
   void    vpModeVerChanged();
   void    vpCurveChanged();
   void    contextMenuRequested( QContextMenuEvent *e );
+  void    curveDisplayed( Plot2d_Curve* );
+  void    curveErased( Plot2d_Curve* );
 
 protected:
   Plot2d_Plot2d* myPlot;
@@ -236,6 +240,13 @@ public:
   CurveDict& getCurves() { return myCurves; }
   Plot2d_Curve*       getClosestCurve( QPoint p, double& distance, int& index );
 
+  long                insertCurve( const QString &title,
+                                   int xAxis = xBottom, 
+                                   int yAxis = yLeft );
+
+  bool                setCurveNbMarkers( Plot2d_Curve* curve, const int nb );
+  int                 curveNbMarkers( Plot2d_Curve* curve ) const;
+
 public slots:
   virtual void polish();
 
@@ -248,6 +259,32 @@ protected:
   QList<QColor>      myColors;
   bool               myIsPolished;
   QwtPlotZoomer*     myPlotZoomer;
+};
+
+//! The class is derived from QwtPlotCurve.
+/*!
+  The class is derived from QwtPlotCurve. Its main purpose is redefining 
+  drawSymbols virtual method in order to provide possibility to change 
+  number of markers between steps.
+*/
+
+class Plot2d_PlotCurve : public QwtPlotCurve
+{
+public: 
+  Plot2d_PlotCurve( const QString &title );
+  virtual ~Plot2d_PlotCurve();
+
+  void                setNbMarkers( const int );
+  int                 nbMarkers() const;
+
+protected:
+
+  virtual void drawSymbols(QPainter *p, const QwtSymbol &,
+        const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+        int from, int to) const;
+
+private:
+  int myNbMarkers;
 };
 
 #endif
