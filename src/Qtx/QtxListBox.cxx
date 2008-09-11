@@ -24,7 +24,12 @@
 #include <qpixmap.h>
 #include <qlineedit.h>
 
+#ifdef WIN32
+#pragma warning ( disable: 4251 )
+#endif
+
 #include <qevent.h>
+#include <qscrollbar.h>
 
 /*!
   Constructor
@@ -37,8 +42,13 @@ myEditState( false ),
 myEditDefault( true ),
 myModifEnabled( true )
 {
-  connect( this, SIGNAL( contentsMoving( int, int ) ),
-           this, SLOT( onContentsMoving( int, int ) ) );
+  QScrollBar* hsb = horizontalScrollBar();
+  if ( hsb )
+    connect( hsb, SIGNAL( valueChanged( int ) ), SLOT( onContentsMoving() ) );
+  
+  QScrollBar* vsb = horizontalScrollBar();
+  if ( vsb )
+    connect( vsb, SIGNAL( valueChanged( int ) ), SLOT( onContentsMoving() ) );
 }
 
 /*!
@@ -415,7 +425,7 @@ void QtxListBox::mouseDoubleClickEvent( QMouseEvent* e )
 /*!
   Updates editor on contents moving
 */
-void QtxListBox::onContentsMoving( int, int )
+void QtxListBox::onContentsMoving()
 {
   updateEditor();
 }
@@ -442,6 +452,7 @@ void QtxListBox::createEditor()
     return;
 
   myEditor = new QLineEdit( viewport() );
+  myEditor->setBackgroundRole( QPalette::Window );
 
   //qt4 myEditor->setLineWidth( 1 );
   //qt4 myEditor->setMidLineWidth( 0 );
@@ -458,21 +469,26 @@ void QtxListBox::createEditor()
 */
 void QtxListBox::updateEditor()
 {
-  /*qt4
   if ( !editedItem() || !editor() )
     return;
 
-  QRect r = itemRect( editedItem() );
+  QRect r = visualItemRect( editedItem() );
   if ( !r.isValid() )
     return;
 
-  int m = editor()->lineWidth();
-  r.addCoords( m, 0, 0, 0 );
-
-  const QPixmap* pix = pixmap( editedIndex() );
-  if ( pix )
-    r.addCoords( pix->width() + 2, 0, 0, 0 );
+  int m = /*editor()->lineWidth()*/ 1;
+  r.setLeft( r.left() + 1 );
+  
+  QListWidgetItem* it = item( editedIndex() );
+  if ( it )
+  {
+    const QIcon pix = it->icon();
+    if ( !pix.isNull() )
+    {
+      QSize s = pix.actualSize( QSize( 100, 100 ) );
+      r.setLeft( s.width() + 2 );
+    }
+  }
 
   editor()->setGeometry( r );
-  */
 }
