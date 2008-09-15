@@ -45,6 +45,9 @@ class QXSCENE_EXPORT QxScene_ViewWindow : public SUIT_ViewWindow {
   Q_OBJECT
 
  public:
+  //! Actions ID
+  enum { FitAllId, FitRectId, ZoomId, ScaleOpId, PanId, GlobalPanId, MoveOpId, ResetId };
+
   QxScene_ViewWindow(SUIT_Desktop* theDesktop, QxScene_Viewer* theModel);
   virtual ~QxScene_ViewWindow();
 
@@ -84,9 +87,6 @@ class QXSCENE_EXPORT QxScene_ViewWindow : public SUIT_ViewWindow {
  private:
   void              createActions();
   void              createToolBar();
-
-  //! Actions ID
-  enum { FitAllId, FitRectId, ZoomId, ScaleOpId, PanId, GlobalPanId, MoveOpId, ResetId };
 
   int               myToolBar;
 
