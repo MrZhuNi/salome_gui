@@ -36,13 +36,14 @@
 #include "GLViewer_Widget.h"
 #include "GLViewer_Geom.h"
 
-#include <QtOpenGL>
 #include <QColor>
 #include <QPaintDevice>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
+
+#include <QtOpenGL>
 
 class GLViewer_Compass;
 class GLViewer_Grid;

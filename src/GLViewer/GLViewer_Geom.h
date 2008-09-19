@@ -29,7 +29,6 @@
 
 #include <QRect>
 #include <QRectF>
-#include <QtOpenGL>
 #include <math.h>
 
 //using namespace QGL;
@@ -37,6 +36,8 @@
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
+
+#include <QtOpenGL>
 
 /*! Struct GLViewer_Pnt
 * Substitution of QPoint for OpenGL
