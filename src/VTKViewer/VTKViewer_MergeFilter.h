@@ -20,7 +20,7 @@
 #define __VTKViewer_MergeFilter_h
 
 #include "VTKViewer.h" // RKV
-#include "vtkDataSetToDataSetFilter.h"
+#include "vtkDataSetAlgorithm.h"
 
 class vtkFieldList;
 
@@ -35,17 +35,17 @@ class vtkFieldList;
 // RKV: Fixed to be able to pass through celldata arrays given by AddField()
 
 //RKV class VTK_GRAPHICS_EXPORT VTKViewer_MergeFilter : public vtkDataSetToDataSetFilter
-class VTKVIEWER_EXPORT VTKViewer_MergeFilter : public vtkDataSetToDataSetFilter // RKV
+class VTKVIEWER_EXPORT VTKViewer_MergeFilter : public vtkDataSetAlgorithm // RKV
 {
 public:
   static VTKViewer_MergeFilter *New();
-  vtkTypeRevisionMacro(VTKViewer_MergeFilter,vtkDataSetToDataSetFilter);
+  vtkTypeRevisionMacro(VTKViewer_MergeFilter,vtkDataSetAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
   // Specify object from which to extract geometry information.
   void SetGeometry(vtkDataSet *input) {this->SetInput(input);};
-  vtkDataSet *GetGeometry() {return this->GetInput();};
+  vtkDataSet *GetGeometry();
 
   // Description:
   // Specify object from which to extract scalar information.
@@ -83,8 +83,9 @@ protected:
   ~VTKViewer_MergeFilter();
 
   // Usual data generation method
-  void Execute();
-  void ComputeInputUpdateExtents(vtkDataObject *data);
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  int RequestUpdateExtent(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  int FillInputPortInformation(int port, vtkInformation *info);
 
   vtkFieldList* FieldList;
 private:

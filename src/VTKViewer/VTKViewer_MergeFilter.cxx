@@ -18,14 +18,17 @@
 //
 #include "VTKViewer_MergeFilter.h"
 
-#include "vtkCellData.h"
-#include "vtkObjectFactory.h"
-#include "vtkPointData.h"
-#include "vtkPolyData.h"
-#include "vtkRectilinearGrid.h"
-#include "vtkStructuredGrid.h"
-#include "vtkStructuredPoints.h"
-#include "vtkUnstructuredGrid.h"
+#include <vtkCellData.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
+#include <vtkObjectFactory.h>
+#include <vtkPointData.h>
+#include <vtkPolyData.h>
+#include <vtkRectilinearGrid.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
+#include <vtkStructuredGrid.h>
+#include <vtkStructuredPoints.h>
+#include <vtkUnstructuredGrid.h>
 
 vtkCxxRevisionMacro(VTKViewer_MergeFilter, "$Revision$");
 vtkStandardNewMacro(VTKViewer_MergeFilter);
@@ -147,6 +150,7 @@ private:
 VTKViewer_MergeFilter::VTKViewer_MergeFilter()
 {
   this->FieldList = new vtkFieldList;
+  this->SetNumberOfInputPorts(6);
 }
 
 VTKViewer_MergeFilter::~VTKViewer_MergeFilter()
@@ -154,69 +158,84 @@ VTKViewer_MergeFilter::~VTKViewer_MergeFilter()
   delete this->FieldList;
 }
 
-void VTKViewer_MergeFilter::SetScalars(vtkDataSet *input)
+vtkDataSet* VTKViewer_MergeFilter::GetGeometry()
 {
-  this->vtkProcessObject::SetNthInput(1, input);
-}
-vtkDataSet *VTKViewer_MergeFilter::GetScalars()
-{
-  if (this->NumberOfInputs < 2)
+  if (this->GetNumberOfInputConnections(0) < 1)
     {
     return NULL;
     }
-  return (vtkDataSet *)(this->Inputs[1]);
+  return vtkDataSet::SafeDownCast(
+    this->GetExecutive()->GetInputData(0, 0));
+}
+
+void VTKViewer_MergeFilter::SetScalars(vtkDataSet *input)
+{
+  this->SetInput(1, input);
+}
+vtkDataSet *VTKViewer_MergeFilter::GetScalars()
+{
+  if (this->GetNumberOfInputConnections(1) < 1)
+    {
+    return NULL;
+    }
+  return vtkDataSet::SafeDownCast(
+    this->GetExecutive()->GetInputData(1, 0));
 }
 
 void VTKViewer_MergeFilter::SetVectors(vtkDataSet *input)
 {
-  this->vtkProcessObject::SetNthInput(2, input);
+  this->SetInput(2, input);
 }
 vtkDataSet *VTKViewer_MergeFilter::GetVectors()
 {
-  if (this->NumberOfInputs < 3)
+  if (this->GetNumberOfInputConnections(2) < 1)
     {
     return NULL;
     }
-  return (vtkDataSet *)(this->Inputs[2]);
+  return vtkDataSet::SafeDownCast(
+    this->GetExecutive()->GetInputData(2, 0));
 }
 
 void VTKViewer_MergeFilter::SetNormals(vtkDataSet *input)
 {
-  this->vtkProcessObject::SetNthInput(3, input);
+  this->SetInput(3, input);
 }
 vtkDataSet *VTKViewer_MergeFilter::GetNormals()
 {
-  if (this->NumberOfInputs < 4)
+  if (this->GetNumberOfInputConnections(3) < 1)
     {
     return NULL;
     }
-  return (vtkDataSet *)(this->Inputs[3]);
+  return vtkDataSet::SafeDownCast(
+    this->GetExecutive()->GetInputData(3, 0));
 }
 
 void VTKViewer_MergeFilter::SetTCoords(vtkDataSet *input)
 {
-  this->vtkProcessObject::SetNthInput(4, input);
+  this->SetInput(4, input);
 }
 vtkDataSet *VTKViewer_MergeFilter::GetTCoords()
 {
-  if (this->NumberOfInputs < 5)
+  if (this->GetNumberOfInputConnections(4) < 1)
     {
     return NULL;
     }
-  return (vtkDataSet *)(this->Inputs[4]);
+  return vtkDataSet::SafeDownCast(
+    this->GetExecutive()->GetInputData(4, 0));
 }
 
 void VTKViewer_MergeFilter::SetTensors(vtkDataSet *input)
 {
-  this->vtkProcessObject::SetNthInput(5, input);
+  this->SetInput(5, input);
 }
 vtkDataSet *VTKViewer_MergeFilter::GetTensors()
 {
-  if (this->NumberOfInputs < 6)
+  if (this->GetNumberOfInputConnections(5) < 1)
     {
     return NULL;
     }
-  return (vtkDataSet *)(this->Inputs[5]);
+  return vtkDataSet::SafeDownCast(
+    this->GetExecutive()->GetInputData(5, 0));
 }
 
 void VTKViewer_MergeFilter::AddField(const char* name, vtkDataSet* input)
@@ -224,8 +243,56 @@ void VTKViewer_MergeFilter::AddField(const char* name, vtkDataSet* input)
   this->FieldList->Add(name, input);
 }
 
-void VTKViewer_MergeFilter::Execute()
+int VTKViewer_MergeFilter::RequestData(
+  vtkInformation *vtkNotUsed(request),
+  vtkInformationVector **inputVector,
+  vtkInformationVector *outputVector)
 {
+  // get the info objects
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+  vtkInformation *scalarsInfo = inputVector[1]->GetInformationObject(0);
+  vtkInformation *vectorsInfo = inputVector[2]->GetInformationObject(0);
+  vtkInformation *normalsInfo = inputVector[3]->GetInformationObject(0);
+  vtkInformation *tCoordsInfo = inputVector[4]->GetInformationObject(0);
+  vtkInformation *tensorsInfo = inputVector[5]->GetInformationObject(0);
+  
+  // get the input and ouptut
+  vtkDataSet *input = vtkDataSet::SafeDownCast(
+    inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkDataSet *output = vtkDataSet::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkDataSet *scalarsData = 0;
+  vtkDataSet *vectorsData = 0;
+  vtkDataSet *normalsData = 0;
+  vtkDataSet *tCoordsData = 0;
+  vtkDataSet *tensorsData = 0;
+  if (scalarsInfo)
+    {
+    scalarsData = vtkDataSet::SafeDownCast(
+      scalarsInfo->Get(vtkDataObject::DATA_OBJECT()));
+    }
+  if (vectorsInfo)
+    {
+    vectorsData = vtkDataSet::SafeDownCast(
+      vectorsInfo->Get(vtkDataObject::DATA_OBJECT()));
+    }
+  if (normalsInfo)
+    {
+    normalsData = vtkDataSet::SafeDownCast(
+      normalsInfo->Get(vtkDataObject::DATA_OBJECT()));
+    }
+  if (tCoordsInfo)
+    {
+    tCoordsData = vtkDataSet::SafeDownCast(
+      tCoordsInfo->Get(vtkDataObject::DATA_OBJECT()));
+    }
+  if (tensorsInfo)
+    {
+    tensorsData = vtkDataSet::SafeDownCast(
+      tensorsInfo->Get(vtkDataObject::DATA_OBJECT()));
+    }
+
   vtkIdType numPts, numScalars=0, numVectors=0, numNormals=0, numTCoords=0;
   vtkIdType numTensors=0;
   vtkIdType numCells, numCellScalars=0, numCellVectors=0, numCellNormals=0;
@@ -242,29 +309,28 @@ void VTKViewer_MergeFilter::Execute()
   vtkDataArray *cellNormals = NULL;
   vtkDataArray *cellTCoords = NULL;
   vtkDataArray *cellTensors = NULL;
-  vtkDataSet *output = this->GetOutput();
   vtkPointData *outputPD = output->GetPointData();
   vtkCellData *outputCD = output->GetCellData();
   
   vtkDebugMacro(<<"Merging data!");
 
   // geometry needs to be copied
-  output->CopyStructure(this->GetInput());
-  if ( (numPts = this->GetInput()->GetNumberOfPoints()) < 1 )
+  output->CopyStructure(input);
+  if ( (numPts = input->GetNumberOfPoints()) < 1 )
     {
     vtkWarningMacro(<<"Nothing to merge!");
     }
-  numCells = this->GetInput()->GetNumberOfCells();
+  numCells = input->GetNumberOfCells();
   
-  if ( this->GetScalars() ) 
+  if ( scalarsData ) 
     {
-    pd = this->GetScalars()->GetPointData();
+    pd = scalarsData->GetPointData();
     scalars = pd->GetScalars();
     if ( scalars != NULL )
       {
       numScalars = scalars->GetNumberOfTuples();
       }
-    cd = this->GetScalars()->GetCellData();
+    cd = scalarsData->GetCellData();
     cellScalars = cd->GetScalars();
     if ( cellScalars != NULL )
       {
@@ -272,15 +338,15 @@ void VTKViewer_MergeFilter::Execute()
       }
     }
 
-  if ( this->GetVectors() ) 
+  if ( vectorsData ) 
     {
-    pd = this->GetVectors()->GetPointData();
+    pd = vectorsData->GetPointData();
     vectors = pd->GetVectors();
     if ( vectors != NULL )
       {
       numVectors= vectors->GetNumberOfTuples();
       }
-    cd = this->GetVectors()->GetCellData();
+    cd = vectorsData->GetCellData();
     cellVectors = cd->GetVectors();
     if ( cellVectors != NULL )
       {
@@ -288,15 +354,15 @@ void VTKViewer_MergeFilter::Execute()
       }
     }
 
-  if ( this->GetNormals() ) 
+  if ( normalsData ) 
     {
-    pd = this->GetNormals()->GetPointData();
+    pd = normalsData->GetPointData();
     normals = pd->GetNormals();
     if ( normals != NULL )
       {
       numNormals= normals->GetNumberOfTuples();
       }
-    cd = this->GetNormals()->GetCellData();
+    cd = normalsData->GetCellData();
     cellNormals = cd->GetNormals();
     if ( cellNormals != NULL )
       {
@@ -304,15 +370,15 @@ void VTKViewer_MergeFilter::Execute()
       }
     }
 
-  if ( this->GetTCoords() ) 
+  if ( tCoordsData ) 
     {
-    pd = this->GetTCoords()->GetPointData();
+    pd = tCoordsData->GetPointData();
     tcoords = pd->GetTCoords();
     if ( tcoords != NULL )
       {
       numTCoords= tcoords->GetNumberOfTuples();
       }
-    cd = this->GetTCoords()->GetCellData();
+    cd = tCoordsData->GetCellData();
     cellTCoords = cd->GetTCoords();
     if ( cellTCoords != NULL )
       {
@@ -320,15 +386,15 @@ void VTKViewer_MergeFilter::Execute()
       }
     }
 
-  if ( this->GetTensors() ) 
+  if ( tensorsData ) 
     {
-    pd = this->GetTensors()->GetPointData();
+    pd = tensorsData->GetPointData();
     tensors = pd->GetTensors();
     if ( tensors != NULL )
       {
       numTensors = tensors->GetNumberOfTuples();
       }
-    cd = this->GetTensors()->GetCellData();
+    cd = tensorsData->GetCellData();
     cellTensors = cd->GetTensors();
     if ( cellTensors != NULL )
       {
@@ -410,6 +476,8 @@ void VTKViewer_MergeFilter::Execute()
         }
       }
     }
+
+  return 1;
 }
 
 //----------------------------------------------------------------------------
@@ -418,20 +486,39 @@ void VTKViewer_MergeFilter::Execute()
 // Output/Geometry may be structured while ScalarInput may be 
 // unstructured (but really have same triagulation/topology as geometry).
 // Just request all the input. Always generate all of the output (todo).
-void VTKViewer_MergeFilter::ComputeInputUpdateExtents(vtkDataObject *vtkNotUsed(data))
+int VTKViewer_MergeFilter::RequestUpdateExtent(
+  vtkInformation *vtkNotUsed(request),
+  vtkInformationVector **inputVector,
+  vtkInformationVector *vtkNotUsed(outputVector))
 {
-  vtkDataSet *input;
+  vtkInformation *inputInfo;
   int idx;
   
-  for (idx = 0; idx < this->NumberOfInputs; ++idx)
+  for (idx = 0; idx < 6; ++idx)
     {
-    input = (vtkDataSet *)(this->Inputs[idx]);
-    if (input)
+    inputInfo = inputVector[idx]->GetInformationObject(0);
+    if (inputInfo)
       {
-      input->SetUpdateExtent(0, 1, 0);
-      input->RequestExactExtentOn();
+      inputInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_PIECE_NUMBER(),
+                     0);
+      inputInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_PIECES(),
+                     1);
+      inputInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS(),
+                     0);
+      inputInfo->Set(vtkStreamingDemandDrivenPipeline::EXACT_EXTENT(), 1);
       }
     }
+  return 1;
+}
+
+int VTKViewer_MergeFilter::FillInputPortInformation(int port, vtkInformation *info)
+{
+  int retval = this->Superclass::FillInputPortInformation(port, info);
+  if (port > 0)
+    {
+    info->Set(vtkAlgorithm::INPUT_IS_OPTIONAL(), 1);
+    }
+  return retval;
 }
 
 void VTKViewer_MergeFilter::PrintSelf(ostream& os, vtkIndent indent)
