@@ -1304,7 +1304,7 @@ bool Qtx::hasAnyPrinters()
   bool aRes = true;
 #if !defined(WIN32) && !defined(QT_NO_CUPS)
 #if QT_VERSION < 0x040303
-  QLibrary aCupsLib( QString( "cups" ) );
+  QLibrary aCupsLib( QString( "cups" ), 2 );
   if ( !aCupsLib.load() )
     aRes = false;
   else {
