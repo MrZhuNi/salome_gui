@@ -36,13 +36,19 @@
   \param parent parent object
 */
 QtxMRUAction::QtxMRUAction( QObject* parent )
-: QtxAction( "Most Recently Used", "Most Recently Used", 0, parent ),
+: QtxAction( tr( "Most Recently Used" ), tr( "Most Recently Used" ), 0, parent ),
   myVisCount( 5 ),
+  myHistoryCount( -1 ),
   myLinkType( LinkAuto ),
   myInsertMode( MoveFirst )
 {
+  myClear = new QAction( tr( "Clear" ), this );
+  myClear->setVisible( false );
+
   setMenu( new QMenu( 0 ) );
+
   connect( menu(), SIGNAL( aboutToShow() ), this, SLOT( onAboutToShow() ) );
+  connect( myClear, SIGNAL( triggered( bool ) ), this, SLOT( onCleared( bool ) ) );
 }
 
 /*!
@@ -54,11 +60,16 @@ QtxMRUAction::QtxMRUAction( QObject* parent )
 QtxMRUAction::QtxMRUAction( const QString& text, const QString& menuText, QObject* parent )
 : QtxAction( text, menuText, 0, parent ),
   myVisCount( 5 ),
+  myHistoryCount( -1 ),
   myLinkType( LinkAuto ),
   myInsertMode( MoveFirst )
 {
+  myClear = new QAction( tr( "Clear" ), this );
+  myClear->setVisible( false );
+
   setMenu( new QMenu( 0 ) );
   connect( menu(), SIGNAL( aboutToShow() ), this, SLOT( onAboutToShow() ) );
+  connect( myClear, SIGNAL( triggered( bool ) ), this, SLOT( onCleared( bool ) ) );
 }
 
 /*!
@@ -72,11 +83,16 @@ QtxMRUAction::QtxMRUAction( const QString& text, const QIcon& icon,
                             const QString& menuText, QObject* parent )
 : QtxAction( text, icon, menuText, 0, parent ),
   myVisCount( 5 ),
+  myHistoryCount( -1 ),
   myLinkType( LinkAuto ),
   myInsertMode( MoveFirst )
 {
+  myClear = new QAction( tr( "Clear" ), this );
+  myClear->setVisible( false );
+
   setMenu( new QMenu( 0 ) );
   connect( menu(), SIGNAL( aboutToShow() ), this, SLOT( onAboutToShow() ) );
+  connect( myClear, SIGNAL( triggered( bool ) ), this, SLOT( onCleared( bool ) ) );
 }
 
 /*!
@@ -170,6 +186,48 @@ void QtxMRUAction::setVisibleCount( int num )
 }
 
 /*!
+  \brief Return visible status of the menu item which clear all MRU items.
+*/
+bool QtxMRUAction::isClearPossible() const
+{
+  return myClear->isVisible();
+}
+
+/*!
+  \brief Set visible the menu item which clear all MRU items.
+*/
+void QtxMRUAction::setClearPossible( const bool on )
+{
+  myClear->setVisible( on );
+}
+
+/*!
+  \brief Get number of totally stored MRU items.
+  \return number of MRU items stored in the preferences
+  \sa setHistoryCount(), saveLinks(), loadLinks()
+*/
+int QtxMRUAction::historyCount() const
+{
+  return myHistoryCount;
+}
+
+/*!
+  \brief Set number of totally stored MRU items.
+
+  This option allows setting number of MRU items to be stored
+  in the preferences file.
+
+  If \a num < 0, then number of stored MRU items is not limited.
+
+  \return number of MRU items stored in the preferences
+  \sa historyCount(), saveLinks(), loadLinks()
+*/
+void QtxMRUAction::setHistoryCount( const int num )
+{
+  myHistoryCount = num;
+}
+
+/*!
   \brief Insert MRU item.
 
   The item is inserted according to the current insertion policy.
@@ -221,6 +279,14 @@ void QtxMRUAction::remove( const int idx )
 void QtxMRUAction::remove( const QString& link )
 {
   myLinks.removeAll( link );
+}
+
+/*!
+  \brief Remove all MRU items.
+*/
+void QtxMRUAction::clear()
+{
+  myLinks.clear();
 }
 
 /*!
@@ -302,8 +368,16 @@ void QtxMRUAction::saveLinks( QtxResourceMgr* resMgr, const QString& section, co
   if ( !resMgr || section.isEmpty() )
     return;
 
-  if ( clear )
-    resMgr->remove( section );
+  QString itemPrefix( "item_" );
+
+  if ( clear ) {
+    QStringList items = resMgr->parameters( section );
+    for ( QStringList::const_iterator it = items.begin(); it != items.end(); ++it )
+    {
+      if ( (*it).startsWith( itemPrefix ) )
+	resMgr->remove( section, *it );
+    }
+  }
 
   QStringList lst;
   QMap<QString, int> map;
@@ -313,7 +387,6 @@ void QtxMRUAction::saveLinks( QtxResourceMgr* resMgr, const QString& section, co
     map.insert( *itr, 0 );
   }
 
-  QString itemPrefix( "item_" );
   QStringList items = resMgr->parameters( section );
   for ( QStringList::const_iterator it = items.begin(); it != items.end(); ++it )
   {
@@ -331,7 +404,9 @@ void QtxMRUAction::saveLinks( QtxResourceMgr* resMgr, const QString& section, co
   }
 
   int counter = 0;
-  for ( QStringList::const_iterator iter = lst.begin(); iter != lst.end(); ++iter, counter++ )
+  for ( QStringList::const_iterator iter = lst.begin();
+	iter != lst.end() && ( myHistoryCount < 0 || counter < myHistoryCount );
+	++iter, counter++ )
     resMgr->setValue( section, itemPrefix + QString().sprintf( "%03d", counter ), *iter );
 }
 
@@ -362,6 +437,11 @@ void QtxMRUAction::onActivated()
     emit activated( link );
 }
 
+void QtxMRUAction::onCleared( bool )
+{
+  clear();
+}
+
 /*!
   \brief Update MRU items popup menu.
 */
@@ -376,12 +456,13 @@ void QtxMRUAction::updateMenu()
   QStringList links;
   QMap<QString, int> map;
   int count = visibleCount() < 0 ? myLinks.count() : visibleCount();
-  for ( QStringList::const_iterator it = myLinks.begin(); it != myLinks.end() && count > 0; ++it, count-- )
+  int i = insertMode() == AddLast || insertMode() == MoveLast ? qMax( 0, myLinks.count()-count ) : 0;
+  for ( ; i < myLinks.count() && count > 0; ++i, count-- )
   {
-    links.append( *it );
+    links.append( myLinks[i] );
     if ( linkType() == LinkAuto )
     {
-      QString shortName = Qtx::file( *it );
+      QString shortName = Qtx::file( myLinks[i] );
       if ( map.contains( shortName ) )
 	map[shortName]++;
       else
@@ -389,7 +470,7 @@ void QtxMRUAction::updateMenu()
     }
   }
 
-  int i = 1;
+  i = 1;
   for ( QStringList::const_iterator it = links.begin(); it != links.end(); ++it, i++ )
   {
     QString linkName;
@@ -417,6 +498,13 @@ void QtxMRUAction::updateMenu()
 
   if ( pm->isEmpty() )
     pm->addAction( tr( "<Empty>" ) )->setEnabled( false );
+
+  if ( isClearPossible() )
+  {
+    pm->addSeparator();
+    pm->addAction( myClear );
+    myClear->setEnabled( !pm->isEmpty() );
+  }
 }
 
 /*!

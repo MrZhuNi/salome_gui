@@ -616,11 +616,6 @@ QtxListAction::QtxListAction( const QString& text, const QString& menuText,
 : QtxAction( text, menuText, accel, parent ),
   myFrame( 0 )
 {
-  setText( menuText );
-  setShortcut( accel );
-  setToolTip( text );
-  setStatusTip( text );
-
   initialize();
 }
 
@@ -637,12 +632,6 @@ QtxListAction::QtxListAction( const QString& text, const QIcon& icon,
 : QtxAction( text, icon, menuText, accel, parent ),
   myFrame( 0 )
 {
-  setIcon( icon );
-  setText( menuText );
-  setShortcut( accel );
-  setToolTip( text );
-  setStatusTip( text );
-
   initialize();
 }
 

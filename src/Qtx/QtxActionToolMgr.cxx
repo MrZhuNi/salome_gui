@@ -102,10 +102,9 @@ int QtxActionToolMgr::createToolBar( const QString& title, const int tid, QMainW
   int tbId = -1;
   for ( ToolBarMap::ConstIterator it = myToolBars.begin(); it != myToolBars.end() && tbId == -1; ++it )
   {
-    // NKV - BUG IPAL19144 - search by toolbar title is done below via find() function
-    // if ( it.value().toolBar->windowTitle().toLower() == title.toLower() )
-    //   tbId = it.key();
-    if (it.key() == tid) tbId = it.key();
+    if( it.value().toolBar->windowTitle().toLower() == title.toLower() &&
+        ( !mw || it.value().toolBar->parent()==mw ) )
+      tbId = it.key();
   }
 
   if ( tbId != -1 )
@@ -122,10 +121,11 @@ int QtxActionToolMgr::createToolBar( const QString& title, const int tid, QMainW
   if ( !tb )
   {
     tb = new QtxToolBar( true, tbw );
-    mainWindow()->addToolBar( tb );
+    //mainWindow()->addToolBar( tb );
     tb->setWindowTitle( title );
     tb->setObjectName( title );
-  }
+    tb->setToolTip( title );
+   }
 
   tInfo.toolBar = tb;
   connect( tInfo.toolBar, SIGNAL( destroyed() ), this, SLOT( onToolBarDestroyed() ) );
@@ -503,6 +503,11 @@ void QtxActionToolMgr::updateToolBar( const int tid )
   }
 
   simplifySeparators( tb );
+  
+  // fix of 19921 -->
+  if ( !tb->isVisible() )
+    tb->adjustSize();
+  // fix of 19921 <--
 }
 
 /*!
