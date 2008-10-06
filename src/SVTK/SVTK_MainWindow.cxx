@@ -29,9 +29,11 @@
 #include "SALOME_Actor.h"
 
 #include <QImage>
+#include <QPainter>
 
 #include <vtkGenericRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 
 #include <QtxAction.h>
 #include <QtxMultiAction.h>
@@ -42,6 +44,7 @@
 #include <SUIT_ViewWindow.h>
 #include <SUIT_Tools.h>
 #include <SUIT_ResourceMgr.h>
+#include <SUIT_Session.h>
 
 #include "SVTK_NonIsometricDlg.h"
 #include "SVTK_UpdateRateDlg.h"
@@ -54,9 +57,6 @@
 #include "SVTK_RenderWindowInteractor.h"
 #include "SVTK_InteractorStyle.h"
 #include "SVTK_Selector.h"
-
-#include <vtkGenericRenderWindowInteractor.h>
-#include <vtkRenderer.h>
 
 /*!
   Constructor
@@ -71,11 +71,6 @@ SVTK_MainWindow
 {
   setObjectName(theName);
   setWindowFlags( windowFlags() & ~Qt::Window );
-
-  myToolBar = myViewWindow->toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL"), -1, this );
-
-  createActions(theResourceMgr);
-  createToolBar();
 }
 
 /*!
@@ -85,6 +80,11 @@ void
 SVTK_MainWindow
 ::Initialize(SVTK_RenderWindowInteractor* theInteractor)
 {
+  myToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL"), -1, this );
+
+  createActions( SUIT_Session::session()->activeApplication()->resourceMgr() );
+  createToolBar();
+
   myInteractor = theInteractor;
   SetEventDispatcher(myInteractor->GetDevice());
 
@@ -101,7 +101,6 @@ SVTK_MainWindow
   mySetRotationPointDlg = new SVTK_SetRotationPointDlg
     ( action( ChangeRotationPointId ), this, "SVTK_SetRotationPointDlg" );
   myTextRegionDlg = new SVTK_TextRegionDlg( action( TextRegion ), this, "SVTK_TextRegionDlg");
-
 }
 
 /*!
@@ -110,6 +109,14 @@ SVTK_MainWindow
 SVTK_MainWindow
 ::~SVTK_MainWindow()
 {
+}
+
+/*!
+  \return assigned tool manager
+*/
+QtxActionToolMgr* SVTK_MainWindow::toolMgr() const
+{
+  return myViewWindow->toolMgr();
 }
 
 /*!
@@ -403,7 +410,7 @@ QToolBar*
 SVTK_MainWindow
 ::getToolBar()
 {
-  return myViewWindow->toolMgr()->toolBar( myToolBar );
+  return toolMgr()->toolBar( myToolBar );
 }
 
 void
@@ -425,7 +432,7 @@ SVTK_MainWindow
 ::createActions(SUIT_ResourceMgr* theResourceMgr)
 {
   QtxAction* anAction;
-  QtxActionToolMgr* mgr = myViewWindow->toolMgr();
+  QtxActionToolMgr* mgr = toolMgr();
 
   // Dump view
   anAction = new QtxAction(tr("MNU_DUMP_VIEW"), 
@@ -606,7 +613,7 @@ void
 SVTK_MainWindow
 ::createToolBar()
 {
-  QtxActionToolMgr* mgr = myViewWindow->toolMgr();
+  QtxActionToolMgr* mgr = toolMgr();
   
   mgr->append( DumpId, myToolBar );
   mgr->append( ViewTrihedronId, myToolBar );
@@ -925,25 +932,6 @@ SVTK_MainWindow
 }
 
 /*!
-  \return QImage, containing all scene rendering in window
-*/
-QImage
-SVTK_MainWindow
-::dumpView()
-{
-  QPixmap px = QPixmap::grabWindow( GetInteractor()->winId() );
-  return px.toImage();
-}
-
-/*!
-  \return action by it's id
-*/
-QtxAction* SVTK_MainWindow::action( int id ) const
-{
-  return dynamic_cast<QtxAction*>( myViewWindow->toolMgr()->action( id ) );
-}
-
-/*!
   \brief Called when the "Print view" action is activated.
 */
 void SVTK_MainWindow::onPrintView()
@@ -953,23 +941,32 @@ void SVTK_MainWindow::onPrintView()
     myViewWindow->printImage( img, this );
 }
 
+/*!
+  \return QImage, containing all scene rendering in window
+*/
+QImage
+SVTK_MainWindow
+::dumpView()
+{
+  vtkRenderWindow* aWindow = GetInteractor()->getRenderWindow();
+  int* aSize = aWindow->GetSize();
+  int aWidth = aSize[0];
+  int aHeight = aSize[1];
+  
+  unsigned char *aData = 
+    aWindow->GetRGBACharPixelData( 0, 0, aWidth-1, aHeight-1, 0 );
+  
+  QImage anImage( aData, aWidth, aHeight, QImage::Format_ARGB32 );
 
+  anImage = anImage.rgbSwapped();
+  anImage = anImage.mirrored();
+  return anImage;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*!
+  \return action by it's id
+*/
+QtxAction* SVTK_MainWindow::action( int id ) const
+{
+  return dynamic_cast<QtxAction*>( toolMgr()->action( id ) );
+}
