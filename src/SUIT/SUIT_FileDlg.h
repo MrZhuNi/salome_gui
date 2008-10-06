@@ -54,9 +54,9 @@ public:
   QStringList         selectedFiles() const;
   QString             selectedFile() const;
 
-  static QString      getLastVisitedDirectory();
+  void selectFile( const QString& );
 
-  void                selectFile( const QString& );
+  static QString      getLastVisitedDirectory();
 
   static QString      getFileName( QWidget*, 
 				   const QString&, 
@@ -91,6 +91,8 @@ public:
                                             const QString& = QString(), 
 					    const bool = true,
 					    SUIT_FileValidator* = 0 );
+
+  static QString      getLastVisitedPath();
 
 protected:
   virtual bool        event( QEvent* );
