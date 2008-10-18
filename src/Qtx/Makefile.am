@@ -26,9 +26,10 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 # header files
 
 #VSR: already migrated to Qt4 files
-salomeinclude_HEADERS=		\
+salomeinclude_HEADERS =		\
 	Qtx.h			\
 	QtxAction.h		\
+	QtxActionGroup.h	\
 	QtxActionMenuMgr.h	\
 	QtxActionMgr.h		\
 	QtxActionSet.h		\
@@ -79,12 +80,13 @@ salomeinclude_HEADERS=		\
 
 # Libraries targets
 
-lib_LTLIBRARIES= libqtx.la
+lib_LTLIBRARIES = libqtx.la
 
 #VSR: already migrated to Qt4 files
-dist_libqtx_la_SOURCES=		\
+dist_libqtx_la_SOURCES =	\
 	Qtx.cxx			\
 	QtxAction.cxx		\
+	QtxActionGroup.cxx	\
 	QtxActionMenuMgr.cxx	\
 	QtxActionMgr.cxx	\
 	QtxActionSet.cxx	\
@@ -133,8 +135,9 @@ dist_libqtx_la_SOURCES=		\
 	QtxTable.cxx
 
 #VSR: already migrated to Qt4 files
-MOC_FILES=				\
+MOC_FILES =				\
 	QtxAction_moc.cxx		\
+	QtxActionGroup_moc.cxx		\
 	QtxActionMenuMgr_moc.cxx	\
 	QtxActionMgr_moc.cxx		\
 	QtxActionSet_moc.cxx		\
@@ -177,8 +180,7 @@ MOC_FILES=				\
 	QtxListBox_moc.cxx		\
 	QtxTable_moc.cxx
 
-nodist_libqtx_la_SOURCES= $(MOC_FILES)
+nodist_libqtx_la_SOURCES = $(MOC_FILES)
 
-libqtx_la_CPPFLAGS=$(QT_INCLUDES)
-
-libqtx_la_LDFLAGS=$(QT_MT_LIBS)
+libqtx_la_CPPFLAGS = $(QT_INCLUDES)
+libqtx_la_LDFLAGS  = $(QT_MT_LIBS)

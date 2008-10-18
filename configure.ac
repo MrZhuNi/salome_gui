@@ -6,7 +6,7 @@
 # Modified by : Mikhail PONIKAROV (OCN) - autotools usage
 #
 
-AC_INIT([Salome2 Project GUI module], [5.0.0], [webmaster.salome@opencascade.com], [salome])
+AC_INIT([Salome2 Project GUI module], [5.0.0], [webmaster.salome@opencascade.com], [SalomeGUI])
 AC_CONFIG_AUX_DIR(salome_adm/unix/config_files)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
@@ -354,6 +354,8 @@ echo
 
 CHECK_QWT
 
+CHECK_TESTRECORDER
+
 echo
 echo ---------------------------------------------
 echo Testing PyConsole
@@ -522,7 +524,7 @@ do
 done
 
 echo "---Optional:"
-variables="cppunit_ok"
+variables="cppunit_ok TestRecorder_ok"
 
 for var in $variables
 do
@@ -556,32 +558,7 @@ AM_CONDITIONAL(ENABLE_OCCVIEWER, [test "$DISABLE_OCCVIEWER" = no])
 AM_CONDITIONAL(ENABLE_VTKVIEWER, [test "$DISABLE_VTKVIEWER" = no])
 AM_CONDITIONAL(ENABLE_SALOMEOBJECT, [test "$DISABLE_SALOMEOBJECT" = no])
 AM_CONDITIONAL(ENABLE_QXGRAPHVIEWER, [test "$DISABLE_QXGRAPHVIEWER" = no])
-
-echo
-echo ---------------------------------------------
-echo copying resource files, shell scripts, and
-echo xml files
-echo ---------------------------------------------
-echo
-
-
-dnl copy shells and utilities contained in the bin directory
-dnl excluding .in files (treated in AC-OUTPUT below) and CVS
-dnl directory
-
-mkdir -p bin/salome
-cd bin/salome
-
-for i in $ROOT_SRCDIR/bin/*
-do
-  local_bin=`echo $i | sed -e "s,$ROOT_SRCDIR,.,"`
-  case "$local_bin" in
-        *.in | *~)                    ;;
-        ./bin/CVS | ./bin/salome)                    ;;
-        *) $INSTALL $i . ; echo $local_bin ;;
-  esac
-done
-cd $ROOT_BUILDDIR
+AM_CONDITIONAL(ENABLE_TESTRECORDER, [test "$DISABLE_TESTRECORDER" = no])
 
 echo
 echo ---------------------------------------------
@@ -589,10 +566,10 @@ echo generating Makefiles and configure files
 echo ---------------------------------------------
 echo
 
-AC_OUTPUT_COMMANDS([ \
-  chmod +x ./bin/*; \
-  chmod +x ./bin/salome/*; \
-])
+#AC_OUTPUT_COMMANDS([ \
+#  chmod +x ./bin/*; \
+#  chmod +x ./bin/salome/*; \
+#])
 
 # This list is initiated using autoscan and must be updated manually
 # when adding a new file <filename>.in to manage. When you execute
@@ -609,9 +586,9 @@ AC_OUTPUT([ \
   ./doc/Makefile \
   ./doc/salome/Makefile \
   ./doc/salome/gui/Makefile \
-  ./doc/salome/gui/GUI/doxyfile \
+  ./doc/salome/gui/doxyfile \
   ./doc/salome/tui/Makefile \
-  ./doc/salome/tui/GUI/doxyfile \
+  ./doc/salome/tui/doxyfile \
   ./src/Makefile \
   ./src/CASCatch/Makefile \
   ./src/Qtx/Makefile \

@@ -35,7 +35,7 @@
 
 #include <vtkSmartPointer.h>
 
-class SVTK_MainWindow;
+class SVTK_ViewWindow;
 class SVTK_RenderWindowInteractor;
 
 class QtxAction;
@@ -54,7 +54,7 @@ class SVTK_EXPORT SVTK_SetRotationPointDlg : public SVTK_DialogBase
 
 public:
   SVTK_SetRotationPointDlg(QtxAction* theAction,
-			   SVTK_MainWindow* theParent,
+			   SVTK_ViewWindow* theParent,
 			   const char* theName);
 
   ~SVTK_SetRotationPointDlg();
@@ -63,7 +63,7 @@ public:
   bool IsFirstShown();
   
 protected:
-  SVTK_MainWindow *myMainWindow;
+  SVTK_ViewWindow *myMainWindow;
   SVTK_RenderWindowInteractor* myRWInteractor;
   bool myIsObserverAdded;
   
