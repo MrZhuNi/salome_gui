@@ -26,6 +26,10 @@
   #include <PyConsole_Console.h>
 #endif
 
+#ifdef WIN32
+#include<shlwapi.h>
+#endif
+
 #include "LightApp_Application.h"
 #include "LightApp_Module.h"
 #include "LightApp_DataModel.h"
@@ -905,6 +909,20 @@ void LightApp_Application::onHelpContentsModule()
 	QString quote("\"");
 	anApp.prepend( quote );
 	anApp.append( quote );
+
+        if ( anApp.isEmpty() || anApp == "\"\"" )
+        {
+          // try to find default browser
+          HRESULT hr;
+          static const int aLen = MAX_PATH + 100;
+          TCHAR szExe[ aLen ];
+          DWORD cchExe = sizeof( TCHAR ) * aLen;
+          if ( SUCCEEDED(hr = AssocQueryString(0, ASSOCSTR_COMMAND,
+            TEXT(".html"), TEXT("open"), szExe, &cchExe)))
+          {
+            anApp = szExe;
+          }
+        }
 #endif
   QString aParams = resMgr->stringValue("ExternalBrowser", "parameters");
 
