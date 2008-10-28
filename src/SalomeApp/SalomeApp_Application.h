@@ -62,7 +62,7 @@ class SALOMEAPP_EXPORT SalomeApp_Application : public LightApp_Application
 public:
   enum { MenuToolsId = 5 };
   enum { DumpStudyId = LightApp_Application::UserID, LoadScriptId, PropertiesId,
-         CatalogGenId, RegDisplayId, SaveGUIStateId, FileLoadId, UserID };
+         CatalogGenId, RegDisplayId, SaveGUIStateId, FileLoadId, NoteBookId, UserID };
 
 protected:
   enum { OpenRefresh = LightApp_Application::OpenReload + 1 };
@@ -139,6 +139,7 @@ private slots:
   void                                onDblClick( SUIT_DataObject* );
   void                                onProperties();
   void                                onDumpStudy();
+  void                                onNoteBook();
   void                                onLoadScript();
 
   void                                onDeleteGUIState();

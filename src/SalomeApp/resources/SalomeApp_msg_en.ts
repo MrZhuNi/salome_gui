@@ -242,6 +242,18 @@ Do you want to reload it ?</translation>
         <translation>Dumps study to the python script</translation>
     </message>
     <message>
+        <source>TOT_DESK_FILE_NOTEBOOK</source>
+        <translation>Open Notebook</translation>
+    </message>
+    <message>
+        <source>MEN_DESK_FILE_NOTEBOOK</source>
+        <translation>Note&amp;book</translation>
+    </message>
+    <message>
+        <source>PRP_DESK_FILE_NOTEBOOK</source>
+        <translation>Open Notebook</translation>
+    </message>
+    <message>
         <source>TOT_DESK_PROPERTIES</source>
         <translation>Study properties</translation>
     </message>
@@ -327,5 +339,27 @@ Do you want to reload it ?</translation>
         <source>SHUTDOWN_SERVERS</source>
         <translation>Shutdown standalone servers</translation>
     </message>
+</context>
+<context>
+    <name>NoteBook_Table</name>
+        <message>
+           <source>VARNAME_COLUMN</source>
+           <translation>Variable Name</translation>
+	 </message>
+        <message>
+           <source>VARVALUE_COLUMN</source>
+           <translation>Variable Value</translation>
+	</message>
+</context>
+<context>
+    <name>SalomeApp_NoteBookDlg</name>
+        <message>
+           <source>NOTEBOOK_TITLE</source>
+           <translation>Salome NoteBook</translation>
+	 </message>
+        <message>
+           <source>BUT_UPDATE_STUDY</source>
+           <translation>Update Study</translation>y
+	</message>
 </context>
 </TS>
