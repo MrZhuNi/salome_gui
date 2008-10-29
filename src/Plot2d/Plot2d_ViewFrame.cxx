@@ -1037,7 +1037,8 @@ void Plot2d_ViewFrame::onCurvesSettings()
   QList< Plot2d_Curve* > aCurves;
 
   CurveDict::iterator it = myPlot->getCurves().begin();
-  for ( int i = 0; it != myPlot->getCurves().end(); it++, i++ )
+  int i = 0;
+  for ( i = 0; it != myPlot->getCurves().end(); it++, i++ )
   {
     Plot2d_Curve* aCurve = it.value();
     if ( !aCurve )
