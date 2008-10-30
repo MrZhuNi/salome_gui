@@ -346,9 +346,21 @@ Do you want to reload it ?</translation>
            <source>VARNAME_COLUMN</source>
            <translation>Variable Name</translation>
 	 </message>
-        <message>
+        <message>	
            <source>VARVALUE_COLUMN</source>
            <translation>Variable Value</translation>
+	</message>
+        <message>	
+           <source>VARVALUE_INCORRECT</source>
+           <translation>Variable Value Incorrect: %1</translation>
+	</message>
+        <message>	
+           <source>VARNAME_INCORRECT</source>
+           <translation>Valiable Name Incorrect :%1</translation>
+	</message>
+        <message>	
+           <source>VARNAME_EXISTS</source>
+           <translation>Valiable with name "%1" exists</translation>
 	</message>
 </context>
 <context>
@@ -359,7 +371,11 @@ Do you want to reload it ?</translation>
 	 </message>
         <message>
            <source>BUT_UPDATE_STUDY</source>
-           <translation>Update Study</translation>y
+           <translation>Update Study</translation>
+	</message>
+        <message>
+           <source>BUT_REMOVE</source>
+           <translation>Remove</translation>
 	</message>
 </context>
 </TS>

@@ -240,7 +240,7 @@ void SalomeApp_Application::createActions()
   //! NoteBook
   createAction(NoteBookId, tr( "TOT_DESK_FILE_NOTEBOOK" ), QIcon(),
                tr( "MEN_DESK_FILE_NOTEBOOK" ), tr( "PRP_DESK_FILE_NOTEBOOK" ),
-               Qt::CTRL+Qt::Key_B, desk, false, this, SLOT(onNoteBook()));
+               /*Qt::CTRL+Qt::Key_B*/0, desk, false, this, SLOT(onNoteBook()));
 
   //! Load script
   createAction( LoadScriptId, tr( "TOT_DESK_FILE_LOAD_SCRIPT" ), QIcon(),

@@ -30,12 +30,11 @@
 
 #include <QDialog>
 #include <QTableWidget>
-
+#include <QList>
 
 class QWidget;
 class QPushButton;
 class QTableWidgetItem;
-
 
 class SALOMEAPP_EXPORT NoteBook_TableRow : public QWidget
 {
@@ -43,16 +42,35 @@ class SALOMEAPP_EXPORT NoteBook_TableRow : public QWidget
   NoteBook_TableRow(QWidget* parent=0);
   virtual ~NoteBook_TableRow();
   
-  void setEditable(bool enable);
+  void SetNameEditable(bool enable);
+  bool IsNameEditable();
+
   void AddToTable(QTableWidget *theTable);
   
   void SetName(const QString theName);
   void SetValue(const QString theValue);
+
+  QString GetValue() const;
+  QString GetName() const;
+
+  bool CheckName();
+  bool CheckValue();
+
+  void setValueEditable(bool enable);
+  void setNameEditable(bool enable);
+
+  QTableWidgetItem* GetVariableItem();
+  QTableWidgetItem* GetNameItem();
+
+  static bool IsRealValue(const QString theValue, double* theResult = 0);
+  static bool IsIntegerValue(const QString theValue, int* theResult = 0);
+  static bool IsBooleanValue(const QString theValue, bool* theResult = 0);
   
  private:
   QTableWidgetItem* myRowHeader;
   QTableWidgetItem* myVariableName;
   QTableWidgetItem* myVariableValue;
+  bool              isNameEditable;
 
 };
 
@@ -64,12 +82,37 @@ class SALOMEAPP_EXPORT NoteBook_Table : public QTableWidget
   virtual ~NoteBook_Table();
 
   void Init(_PTR(Study) theStudy);
+  static QString Variable2String(const std::string& theVarName,
+				 _PTR(Study) theStudy);
+  void AddEmptyRow();
+  NoteBook_TableRow* GetRowByItem(const QTableWidgetItem* theItem) const;
+  bool IsLastRow(const NoteBook_TableRow* aRow) const;
+
+  void RemoveSelected();
+
+  void SetIncorrectItem(QTableWidgetItem* theItem);
+  void RemoveIncorrectItem();
+  
+  void SetProcessItemChangedSignalFlag(const bool enable);
+  bool GetProcessItemChangedSignalFlag()const;
+
+  bool IsUniqueName(const NoteBook_TableRow* theRow) const;
+  QList<NoteBook_TableRow*> GetRows() const;
   
   public slots:
     void onItemChanged(QTableWidgetItem* theItem);
+    void onItemSelectionChanged();
+
+    
+ signals:
+    void incorrectItemAdded();
+    void incorrectItemRemoved();
+    void selectionChanged(bool);
 
  private:
-  bool isInitialized;
+  bool isProcessItemChangedSignal;
+  QTableWidgetItem*                  myIncorrectItem;
+  QList<NoteBook_TableRow*>          myRows;
 };
 
 class SALOMEAPP_EXPORT SalomeApp_NoteBookDlg : public QDialog 
@@ -83,15 +126,20 @@ class SALOMEAPP_EXPORT SalomeApp_NoteBookDlg : public QDialog
    void onOK();
    void onApply();
    void onUpdateStudy();
+   void onRemove();
+   void onIncorrectItemAdded();
+   void onIncorrectItemRemoved();
+   void onTableSelectionChanged(bool flag);
 
  private:
   NoteBook_Table*  myTable;
+  QPushButton*     myRemoveButton;
+  QPushButton*     myUpdateStudyBtn;
   QPushButton*     myOkBtn;
   QPushButton*     myApplyBtn;
   QPushButton*     myCancelBtn;
-  QPushButton*     myUpdateStudyBtn;
   
-  _PTR(Study) myStudy;
+  _PTR(Study)      myStudy;
   
 };
 
