@@ -441,7 +441,13 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
   QString val;
   _PTR(GenericAttribute) attr;
 
-  if ( obj->FindAttribute( attr, "AttributeInteger" ) )
+  if ( obj->FindAttribute( attr, "AttributeString" ) )
+  {
+    _PTR(AttributeString) strAttr = attr;
+    std::string str = strAttr->Value();
+    val = QString( str.c_str() );
+  }
+  else if ( obj->FindAttribute( attr, "AttributeInteger" ) )
   {
     _PTR(AttributeInteger) intAttr = attr;
     if ( intAttr )
