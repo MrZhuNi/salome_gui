@@ -42,15 +42,16 @@ public:
 
   virtual QValidator::State validate( QString&, int& ) const;
 
-  bool                      isValid() const;
+  virtual bool              isValid() const;
+
+  virtual void              setDefaultValue( const int );
 
 protected:
   int                       defaultValue() const;
   bool                      findVariable( const QString&, int& ) const;
 
-private slots:
-
 private:
+  int                       myDefaultValue; 
 };
 
 #endif

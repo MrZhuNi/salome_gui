@@ -43,15 +43,20 @@ public:
 
   virtual QValidator::State validate( QString&, int& ) const;
 
-  bool                      isValid() const;
+  virtual bool              isValid() const;
+
+  virtual void              setDefaultValue( const double );
+  virtual void              setRange( double, double );
 
 protected:
   double                    defaultValue() const;
+  bool                      checkRange( const QString& ) const;
   bool                      findVariable( const QString&, double& ) const;
 
-private slots:
-
 private:
+  double                    myMinimum;
+  double                    myMaximum;
+  double                    myDefaultValue; 
 };
 
 #endif

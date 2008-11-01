@@ -41,7 +41,8 @@
   \param parent parent object
 */
 SalomeApp_IntSpinBox::SalomeApp_IntSpinBox( QWidget* parent )
-: QtxIntSpinBox( parent )
+: QtxIntSpinBox( parent ),
+  myDefaultValue( 0 )
 {
 }
 
@@ -57,7 +58,8 @@ SalomeApp_IntSpinBox::SalomeApp_IntSpinBox( QWidget* parent )
   \param parent parent object
 */
 SalomeApp_IntSpinBox::SalomeApp_IntSpinBox( int min, int max, int step, QWidget* parent )
-: QtxIntSpinBox( min, max, step, parent )
+: QtxIntSpinBox( min, max, step, parent ),
+  myDefaultValue( 0 )
 {
 }
 
@@ -132,15 +134,24 @@ bool SalomeApp_IntSpinBox::isValid() const
 }
 
 /*!
+  \brief This function is used to set a default value for this spinbox.
+  \param value default value
+*/
+void SalomeApp_IntSpinBox::setDefaultValue( const int value )
+{
+  myDefaultValue = value;
+}
+
+/*!
   \brief This function return a default acceptable value (commonly, 0).
   \return default acceptable value
 */
 int SalomeApp_IntSpinBox::defaultValue() const
 {
-  if( minimum() > 0 || maximum() < 0 )
+  if( minimum() > myDefaultValue || maximum() < myDefaultValue )
     return minimum();
 
-  return 0;
+  return myDefaultValue;
 }
 
 /*!

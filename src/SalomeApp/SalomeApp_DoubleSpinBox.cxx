@@ -42,7 +42,10 @@
   \param parent parent object
 */
 SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( QWidget* parent )
-: QtxDoubleSpinBox( parent )
+: QtxDoubleSpinBox( parent ),
+  myDefaultValue( 0.0 ),
+  myMinimum( 0.0 ),
+  myMaximum( 99.99 )
 {
 }
 
@@ -59,7 +62,10 @@ SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( QWidget* parent )
   \param parent parent object
 */
 SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( double min, double max, double step, QWidget* parent )
-: QtxDoubleSpinBox( min, max, step, parent )
+: QtxDoubleSpinBox( min, max, step, parent ),
+  myDefaultValue( 0.0 ),
+  myMinimum( min ),
+  myMaximum( max )
 {
 }
 
@@ -76,7 +82,10 @@ SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( double min, double max, double
   \param parent parent object
 */
 SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( double min, double max, double step, int prec, int dec, QWidget* parent )
-: QtxDoubleSpinBox( min, max, step, prec, dec, parent )
+: QtxDoubleSpinBox( min, max, step, prec, dec, parent ),
+  myDefaultValue( 0.0 ),
+  myMinimum( min ),
+  myMaximum( max )
 {
 }
 
@@ -102,7 +111,7 @@ double SalomeApp_DoubleSpinBox::valueFromText( const QString& text ) const
     str = QString::number( value );
 
   int pos = 0;
-  if( QtxDoubleSpinBox::validate( str, pos ) == QValidator::Acceptable )
+  if( checkRange( str ) && QtxDoubleSpinBox::validate( str, pos ) == QValidator::Acceptable )
     value = QtxDoubleSpinBox::valueFromText( str );
   else
     value = defaultValue();
@@ -147,7 +156,28 @@ bool SalomeApp_DoubleSpinBox::isValid() const
     str = QString::number( value );
 
   int pos = 0;
-  return QtxDoubleSpinBox::validate( str, pos ) == QValidator::Acceptable;
+  return checkRange( str ) && QtxDoubleSpinBox::validate( str, pos ) == QValidator::Acceptable;
+}
+
+/*!
+  \brief This function is used to set minimum and maximum values for this spinbox.
+  \param value default value
+*/
+void SalomeApp_DoubleSpinBox::setRange( const double min, const double max )
+{
+  QtxDoubleSpinBox::setRange( min, max );
+
+  myMinimum = min;
+  myMaximum = max;
+}
+
+/*!
+  \brief This function is used to set a default value for this spinbox.
+  \param value default value
+*/
+void SalomeApp_DoubleSpinBox::setDefaultValue( const double value )
+{
+  myDefaultValue = value;
 }
 
 /*!
@@ -156,10 +186,21 @@ bool SalomeApp_DoubleSpinBox::isValid() const
 */
 double SalomeApp_DoubleSpinBox::defaultValue() const
 {
-  if( minimum() > 0 || maximum() < 0 )
-    return minimum();
+  if( myMinimum > myDefaultValue || myMaximum < myDefaultValue )
+    return myMinimum;
 
-  return 0.0;
+  return myDefaultValue;
+}
+
+/*!
+  \brief This function is used to check that string value lies within predefined range.
+  \return check status
+*/
+bool SalomeApp_DoubleSpinBox::checkRange( const QString& str ) const
+{
+  bool ok = false;
+  double value = str.toDouble( &ok );
+  return ok && value >= myMinimum && value <= myMaximum;
 }
 
 /*!
