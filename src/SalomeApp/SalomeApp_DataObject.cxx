@@ -445,7 +445,21 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
   {
     _PTR(AttributeString) strAttr = attr;
     std::string str = strAttr->Value();
-    val = QString( str.c_str() );
+    QString aStrings = QString( str.c_str() );
+    
+    //Special case to show NoteBook variables in the "Value" column of the OB 
+    QStringList aStringList = aStrings.split(":");
+    if(aStringList.size() > 0) {
+      int i = 0;
+      for (;i<aStringList.size();i++){
+        if(!aStringList[i].isEmpty())
+          val.append(aStringList[i]+", ");
+      }
+      if(!val.isEmpty())
+        val.remove(val.length()-2,2);
+    }
+    else
+      val = aStrings;
   }
   else if ( obj->FindAttribute( attr, "AttributeInteger" ) )
   {
