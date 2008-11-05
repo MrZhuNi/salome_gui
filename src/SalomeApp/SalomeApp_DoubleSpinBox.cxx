@@ -44,6 +44,7 @@
 SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( QWidget* parent )
 : QtxDoubleSpinBox( parent ),
   myDefaultValue( 0.0 ),
+  myIsRangeSet( false ),
   myMinimum( 0.0 ),
   myMaximum( 99.99 )
 {
@@ -64,6 +65,7 @@ SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( QWidget* parent )
 SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( double min, double max, double step, QWidget* parent )
 : QtxDoubleSpinBox( min, max, step, parent ),
   myDefaultValue( 0.0 ),
+  myIsRangeSet( false ),
   myMinimum( min ),
   myMaximum( max )
 {
@@ -84,6 +86,7 @@ SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( double min, double max, double
 SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( double min, double max, double step, int prec, int dec, QWidget* parent )
 : QtxDoubleSpinBox( min, max, step, prec, dec, parent ),
   myDefaultValue( 0.0 ),
+  myIsRangeSet( false ),
   myMinimum( min ),
   myMaximum( max )
 {
@@ -167,6 +170,7 @@ void SalomeApp_DoubleSpinBox::setRange( const double min, const double max )
 {
   QtxDoubleSpinBox::setRange( min, max );
 
+  myIsRangeSet = true;
   myMinimum = min;
   myMaximum = max;
 }
@@ -198,6 +202,9 @@ double SalomeApp_DoubleSpinBox::defaultValue() const
 */
 bool SalomeApp_DoubleSpinBox::checkRange( const QString& str ) const
 {
+  if( !myIsRangeSet )
+    return true;
+
   bool ok = false;
   double value = str.toDouble( &ok );
   return ok && value >= myMinimum && value <= myMaximum;

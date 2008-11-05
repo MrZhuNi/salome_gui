@@ -54,9 +54,11 @@ protected:
   bool                      findVariable( const QString&, double& ) const;
 
 private:
+  double                    myDefaultValue; 
+
+  bool                      myIsRangeSet;
   double                    myMinimum;
   double                    myMaximum;
-  double                    myDefaultValue; 
 };
 
 #endif
