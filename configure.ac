@@ -6,7 +6,7 @@
 # Modified by : Mikhail PONIKAROV (OCN) - autotools usage
 #
 
-AC_INIT([Salome2 Project GUI module], [5.0.0], [webmaster.salome@opencascade.com], [SalomeGUI])
+AC_INIT([Salome2 Project GUI module], [5.1.0], [webmaster.salome@opencascade.com], [SalomeGUI])
 AC_CONFIG_AUX_DIR(salome_adm/unix/config_files)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
@@ -558,7 +558,7 @@ AM_CONDITIONAL(ENABLE_OCCVIEWER, [test "$DISABLE_OCCVIEWER" = no])
 AM_CONDITIONAL(ENABLE_VTKVIEWER, [test "$DISABLE_VTKVIEWER" = no])
 AM_CONDITIONAL(ENABLE_SALOMEOBJECT, [test "$DISABLE_SALOMEOBJECT" = no])
 AM_CONDITIONAL(ENABLE_QXGRAPHVIEWER, [test "$DISABLE_QXGRAPHVIEWER" = no])
-AM_CONDITIONAL(ENABLE_TESTRECORDER, [test "$DISABLE_TESTRECORDER" = no])
+AM_CONDITIONAL(ENABLE_TESTRECORDER, [test "$ENABLE_TESTRECORDER" = yes])
 
 echo
 echo ---------------------------------------------

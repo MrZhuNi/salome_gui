@@ -77,7 +77,9 @@ public:
   enum { RenameId = CAM_Application::UserID,
 	 CloseId, CloseAllId, GroupAllId,
 	 PreferencesId, MRUId, ModulesListId,
-         NewGLViewId, NewPlot2dId, NewOCCViewId, NewVTKViewId, NewQxGraphViewId, NewQxSceneViewId, UserID };
+         NewGLViewId, NewPlot2dId, NewOCCViewId, NewVTKViewId, NewQxGraphViewId,
+	 NewQxSceneViewId, StyleId,
+	 UserID };
 
 protected:
   enum { NewStudyId = 1, OpenStudyId };
@@ -141,6 +143,8 @@ public:
 
   virtual bool                        checkDataObject( LightApp_DataObject* theObj );
 
+  virtual void                        updateDesktopTitle();
+
 signals:
   void                                studyOpened();
   void                                studySaved();
@@ -182,8 +186,6 @@ protected:
   virtual void                        loadPreferences();
   virtual void                        savePreferences();
 
-  virtual void                        updateDesktopTitle();
-
   virtual QMap<int, QString>          activateModuleActions() const;
   virtual void                        moduleActionSelected( const int );
 
@@ -202,6 +204,8 @@ protected slots:
   void                                onWCDestroyed( QObject* );
 
   void                                onMRUActivated( const QString& );
+
+  void                                onStylePreferences();
 
 private slots:
   void                                onSelection();

@@ -29,7 +29,8 @@
 #include "SUIT_Application.h"
 #include "SUIT_ViewManager.h"
 
-//#include "utilities.h"
+#include "SALOME_ListIO.hxx"
+
 #include <QApplication>
 #include <QToolBar>
 #include <QToolButton>
@@ -374,4 +375,30 @@ SUIT_ViewWindow* SPlot2d_Viewer::createView( SUIT_Desktop* theDesktop )
   if (getPrs())
     aPlot2dView->getViewFrame()->Display(getPrs());
   return aPlot2dView;
+}
+
+/*!
+  SLOT: called when action "Legend Clicked" is activated.
+  override "onLegendClicked" method from Plot2d_ViewModel.
+*/
+void SPlot2d_Viewer::onLegendClicked( QwtPlotItem* plotItem )
+{
+  Plot2d_ViewFrame* aViewFrame = getActiveViewFrame();
+  if(aViewFrame == NULL) return;
+
+  CurveDict aCurves = aViewFrame->getCurves();
+  SPlot2d_Curve* aSCurve;
+  CurveDict::Iterator it = aCurves.begin();
+  for( ; it != aCurves.end(); ++it )
+  {
+    if ( it.key() == plotItem ) {
+      aSCurve = dynamic_cast<SPlot2d_Curve*>( it.value() );
+      break;
+    }
+  }
+  // Highlight curve in Object Browser
+  if(aSCurve && aSCurve->hasIO()) {
+    QString anEntry = aSCurve->getIO()->getEntry();
+    emit legendSelected( anEntry );
+  }
 }

@@ -75,6 +75,12 @@ public:
   SPlot2d_Curve*                   getCurveByIO( const Handle(SALOME_InteractiveObject)&, Plot2d_ViewFrame* = 0 );
   Plot2d_ViewFrame*                getActiveViewFrame();
   Handle(SALOME_InteractiveObject) FindIObject( const char* Entry );
+
+protected slots:
+  virtual void onLegendClicked( QwtPlotItem* plotItem );
+
+signals:
+  void legendSelected( const QString& );
 };
 
 
