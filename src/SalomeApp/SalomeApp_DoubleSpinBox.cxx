@@ -109,17 +109,17 @@ double SalomeApp_DoubleSpinBox::valueFromText( const QString& text ) const
 {
   QString str = text;
 
+  bool ok = false;
   double value = 0;
   if( findVariable( str, value ) )
-    str = QString::number( value );
-
-  int pos = 0;
-  if( checkRange( str ) && QtxDoubleSpinBox::validate( str, pos ) == QValidator::Acceptable )
-    value = QtxDoubleSpinBox::valueFromText( str );
+    ok = true;
   else
-    value = defaultValue();
+    value = str.toDouble( &ok );
 
-  return value;
+  if( ok && checkRange( value ) )
+    return value;
+
+  return defaultValue();
 }
 
 /*!
@@ -154,12 +154,14 @@ bool SalomeApp_DoubleSpinBox::isValid() const
 {
   QString str = text();
 
+  bool ok = false;
   double value = 0;
   if( findVariable( str, value ) )
-    str = QString::number( value );
+    ok = true;
+  else
+    value = str.toDouble( &ok );
 
-  int pos = 0;
-  return checkRange( str ) && QtxDoubleSpinBox::validate( str, pos ) == QValidator::Acceptable;
+  return ok && checkRange( value );
 }
 
 /*!
@@ -200,14 +202,12 @@ double SalomeApp_DoubleSpinBox::defaultValue() const
   \brief This function is used to check that string value lies within predefined range.
   \return check status
 */
-bool SalomeApp_DoubleSpinBox::checkRange( const QString& str ) const
+bool SalomeApp_DoubleSpinBox::checkRange( const double value ) const
 {
   if( !myIsRangeSet )
     return true;
 
-  bool ok = false;
-  double value = str.toDouble( &ok );
-  return ok && value >= myMinimum && value <= myMaximum;
+  return value >= myMinimum && value <= myMaximum;
 }
 
 /*!

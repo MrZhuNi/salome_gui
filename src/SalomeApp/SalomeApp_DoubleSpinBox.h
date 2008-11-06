@@ -50,7 +50,7 @@ public:
 
 protected:
   double                    defaultValue() const;
-  bool                      checkRange( const QString& ) const;
+  bool                      checkRange( const double ) const;
   bool                      findVariable( const QString&, double& ) const;
 
 private:
