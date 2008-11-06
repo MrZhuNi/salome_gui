@@ -247,7 +247,7 @@ Do you want to reload it ?</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE_NOTEBOOK</source>
-        <translation>Note&amp;book</translation>
+        <translation>Notebook</translation>
     </message>
     <message>
         <source>PRP_DESK_FILE_NOTEBOOK</source>
