@@ -186,6 +186,7 @@ SVTK_SelectionEvent* SVTK_InteractorStyle::GetSelectionEventFlipY()
 
   mySelectionEvent->myIsCtrl = Interactor->GetControlKey();
   mySelectionEvent->myIsShift = Interactor->GetShiftKey();
+  mySelectionEvent->myKeyCode = Interactor->GetKeyCode();
 
   mySelectionEvent->myLastX = mySelectionEvent->myX;
   mySelectionEvent->myLastY = mySelectionEvent->myY;

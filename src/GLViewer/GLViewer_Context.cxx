@@ -618,7 +618,12 @@ void GLViewer_Context::setSelected( GLViewer_Object* object, bool updateViewer )
   }
      
   if( updateViewer )
-    myGLViewer2d->activateDrawer( object, TRUE, TRUE );
+  {
+    if( myUpdateAll )
+      myGLViewer2d->updateAll();
+    else
+      myGLViewer2d->activateDrawer( object, TRUE, TRUE );
+  }
 }
 
 /*!

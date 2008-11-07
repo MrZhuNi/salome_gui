@@ -40,6 +40,7 @@ GLViewer_Object::GLViewer_Object()
   myYScale = 1.0;
   myXGap = 0;
   myYGap = 0;
+  myXZoom = 1.0;
   myZoom = 1.0;
 
   myIsHigh = GL_FALSE;
@@ -94,7 +95,43 @@ int GLViewer_Object::getPriority() const
 */
 GLboolean GLViewer_Object::isInside( GLViewer_Rect theRect )
 {
-    return theRect.toQRect().contains( myRect->toQRect() );
+    return theRect.toQRectF().contains( myRect->toQRectF() );
+}
+
+/*!
+  Sets horizontal zoom factor
+  \param zoom - zoom factor
+*/
+GLboolean GLViewer_Object::setXZoom( GLfloat zoom, bool, bool )
+{
+    if( myXZoom == zoom )
+        return GL_FALSE;
+
+    myXZoom = zoom;
+    return GL_TRUE;
+}
+
+/*!
+  Performs horizontal zoom change by step
+  \param zoomIn - to increase to decrease zoom
+*/
+GLboolean GLViewer_Object::updateXZoom( bool zoomIn )
+{
+    float newZoom;
+    float step = zoomIn ? 1 : -1;
+    double epsilon = 0.001;
+
+    if( myXZoom - 1 > epsilon )
+        newZoom = ( myXZoom * 2 + step ) / 2;
+    else if( 1 - myXZoom > epsilon )
+        newZoom = 2 / ( 2 / myXZoom - step );
+    else
+        newZoom = zoomIn ? 3./2. : 2./3.;
+
+    if( newZoom < 0.01 || newZoom > 100.0 )
+        return GL_FALSE;
+
+    return setXZoom( newZoom, true );
 }
 
 /*!
@@ -111,7 +148,7 @@ GLboolean GLViewer_Object::setZoom( GLfloat zoom, bool, bool )
 }
 
 /*!
-  Performs zoom change by step
+  Performs vertical zoom change by step
   \param zoomIn - to increase to decrease zoom
 */
 GLboolean GLViewer_Object::updateZoom( bool zoomIn )

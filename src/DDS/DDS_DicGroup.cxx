@@ -28,6 +28,8 @@
 #include <Standard_Failure.hxx>
 #include <Standard_ErrorHandler.hxx>
 
+#include <stdio.h>
+
 IMPLEMENT_STANDARD_HANDLE(DDS_DicGroup, MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(DDS_DicGroup, MMgt_TShared)
 
@@ -188,7 +190,9 @@ void DDS_DicGroup::FillDataMap( const LDOM_Element& theComponentData, const LDOM
     for( int i=1, n=myKeys.Length(); i<=n && !exist; i++ )
       if( myKeys.Value( i )==anID )
       {
+#ifdef DEB
         cout << "Doubled key:" << anID << endl;
+#endif
         exist = true;
       }
     if( !exist )

@@ -202,11 +202,12 @@ static void ChangeValues(vtkFloatingPointType* aArray1,
 {
   vtkFloatingPointType tmp=-1000;
   if (!theY){
-    for (int i=0; i<4; i++){
+    int i=0;
+    for (; i<4; i++){
       tmp = aArray1[i]; aArray1[i] = aArray2[i]; aArray2[i] = tmp;
     }
 #ifndef WIN32
-    for(int i=0;i<2; i++){
+    for(i=0;i<2; i++){
 #else
     for(i=0;i<2; i++){
 #endif

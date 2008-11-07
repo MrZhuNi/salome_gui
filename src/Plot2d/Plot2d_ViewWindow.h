@@ -27,7 +27,6 @@
 #include <SUIT_ViewWindow.h>
 #include <QMap>
 
-
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
@@ -52,7 +51,7 @@ public:
          PModeYLinearId, PModeYLogarithmicId,
 	 CurvPointsId, CurvLinesId, CurvSplinesId, 
 	 LegendId,
-	 CurvSettingsId,
+	 CurvSettingsId, CurvesSettingsId,
 	 CloneId };
 
 public:

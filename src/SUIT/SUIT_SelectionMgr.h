@@ -77,6 +77,10 @@ public:
 
   bool            isSynchronizing() const;
 
+  QString         lastSelectionSource() const;
+  bool            isSynchronizationEnabled() const;
+  void            setSynchronizationEnabled( const bool );
+
 signals:
   void            selectionChanged();
 
@@ -99,6 +103,8 @@ private:
   int             myIterations;
   bool            myAutoDelFilter;
   bool            myIsSelChangeEnabled;
+  bool            myIsSynchronizationEnabled;
+  QString         myLastSelectionSource;
 
   friend class SUIT_Selector;
 };

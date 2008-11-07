@@ -34,7 +34,8 @@ Plot2d_Curve::Plot2d_Curve()
   myMarker( Plot2d::Circle ), 
   myLine( Plot2d::Solid ), 
   myLineWidth( 0 ),
-  myYAxis( QwtPlot::yLeft )
+  myYAxis( QwtPlot::yLeft ),
+  myNbMarkers( 1 )
 {
 }
 
@@ -60,6 +61,7 @@ Plot2d_Curve::Plot2d_Curve( const Plot2d_Curve& curve )
   myLine       = curve.getLine();
   myLineWidth  = curve.getLineWidth();
   myPoints     = curve.getPointList();
+  myNbMarkers  = curve.getNbMarkers();
 }
 
 /*!
@@ -77,6 +79,7 @@ Plot2d_Curve& Plot2d_Curve::operator=( const Plot2d_Curve& curve )
   myLine       = curve.getLine();
   myLineWidth  = curve.getLineWidth();
   myPoints     = curve.getPointList();
+  myNbMarkers  = curve.getNbMarkers();
   return *this;
 }
 
@@ -315,6 +318,23 @@ Plot2d::MarkerType Plot2d_Curve::getMarker() const
 }
 
 /*!
+  Sets number of markers per step ( and resets AutoAssign flag ). 
+*/
+void Plot2d_Curve::setNbMarkers( const int nbMarkers )
+{
+  myNbMarkers = nbMarkers;
+  myAutoAssign = false;
+}
+
+/*!
+  Gets number of markers per step ( and resets AutoAssign flag ). 
+*/
+int Plot2d_Curve::getNbMarkers() const
+{
+  return myNbMarkers;
+}
+
+/*!
   Sets curve's line type and width ( and resets AutoAssign flag )
   NOTE : A line width of 0 will produce a 1 pixel wide line using a fast algorithm for diagonals. 
          A line width of 1 will also produce a 1 pixel wide line, but uses a slower more accurate 
@@ -378,6 +398,21 @@ double Plot2d_Curve::getMinX() const
 }
 
 /*!
+  Gets curve's maxiaml abscissa
+*/
+double Plot2d_Curve::getMaxX() const
+{
+  QList<Plot2d_Point>::const_iterator aIt;
+  double aMaxX = -1e150;
+  //int aCurrent = 0;
+  for(aIt = myPoints.begin(); aIt != myPoints.end(); ++aIt) {
+    if ( (*aIt).x > aMaxX )
+      aMaxX = (*aIt).x;
+  }
+  return aMaxX;
+}
+
+/*!
   Gets curve's minimal ordinate
 */
 double Plot2d_Curve::getMinY() const
@@ -390,6 +425,21 @@ double Plot2d_Curve::getMinY() const
       aMinY = (*aIt).y;
   }
   return aMinY;
+}
+
+/*!
+  Gets curve's maximal ordinate
+*/
+double Plot2d_Curve::getMaxY() const
+{
+  QList<Plot2d_Point>::const_iterator aIt;
+  double aMaxY = -1e150;
+  //int aCurrent = 0;
+  for(aIt = myPoints.begin(); aIt != myPoints.end(); ++aIt) {
+    if ( (*aIt).y > aMaxY )
+      aMaxY = (*aIt).y;
+  }
+  return aMaxY;
 }
 
 /*!

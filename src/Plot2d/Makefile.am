@@ -37,6 +37,7 @@ salomeinclude_HEADERS =		\
 	Plot2d_ViewModel.h	\
 	Plot2d_ViewWindow.h	\
 	Plot2d_SetupCurveDlg.h	\
+	Plot2d_SetupCurvesDlg.h	\
 	Plot2d_ToolTip.h
 
 dist_libPlot2d_la_SOURCES =		\
@@ -50,6 +51,7 @@ dist_libPlot2d_la_SOURCES =		\
 	Plot2d_ViewModel.cxx		\
 	Plot2d_ViewWindow.cxx		\
 	Plot2d_SetupCurveDlg.cxx	\
+	Plot2d_SetupCurvesDlg.cxx	\
 	Plot2d_ToolTip.cxx
 
 MOC_FILES =				\
@@ -60,6 +62,7 @@ MOC_FILES =				\
 	Plot2d_ViewModel_moc.cxx	\
 	Plot2d_ViewWindow_moc.cxx	\
 	Plot2d_SetupCurveDlg_moc.cxx	\
+	Plot2d_SetupCurvesDlg_moc.cxx	\
 	Plot2d_ToolTip_moc.cxx
 nodist_libPlot2d_la_SOURCES = $(MOC_FILES)
 
@@ -79,7 +82,9 @@ dist_salomeres_DATA =				\
 	resources/plot2d_points.png		\
 	resources/plot2d_settings.png		\
 	resources/plot2d_splines.png		\
-	resources/plot2d_zoom.png
+	resources/plot2d_zoom.png		\
+	resources/plot2d_curves_settings.png	\
+	resources/plot2d_minus.png
 
 nodist_salomeres_DATA =		\
 	Plot2d_images.qm	\

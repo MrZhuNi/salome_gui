@@ -138,6 +138,13 @@ public:
   virtual void              getScale( GLfloat& xScale, GLfloat& yScale ) const { xScale = myXScale; yScale = myYScale;}
 
   //!\warning It is for ouv
+  virtual GLboolean         setXZoom( GLfloat zoom, bool recompute, bool fromGroup = false );
+  //!\warning It is for ouv
+  virtual GLfloat           getXZoom() const { return myXZoom; }
+  //!\warning It is for ouv
+  virtual GLboolean         updateXZoom( bool zoomIn );
+
+  //!\warning It is for ouv
   virtual GLboolean         setZoom( GLfloat zoom, bool recompute, bool fromGroup = false );
   //!\warning It is for ouv
   virtual GLfloat           getZoom() const { return myZoom; }
@@ -271,6 +278,8 @@ protected:
   //! Gap for Y direction of rect
   GLfloat                   myYGap;
 
+  //!\warning It is for ouv
+  GLfloat                   myXZoom;
   //!\warning It is for ouv
   GLfloat                   myZoom;
 

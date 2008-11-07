@@ -71,11 +71,10 @@ salomeinclude_HEADERS =		\
 	QtxWorkspace.h		\
 	QtxWorkspaceAction.h	\
 	QtxWorkstack.h		\
-	QtxWorkstackAction.h
-
+	QtxWorkstackAction.h    \
+	QtxListBox.h		
 #VSR: not yet migrated to Qt4 files
 #				\
-	QtxListBox.h		\
 	QtxTable.h
 
 # Libraries targets
@@ -127,11 +126,11 @@ dist_libqtx_la_SOURCES =	\
 	QtxWorkspace.cxx	\
 	QtxWorkspaceAction.cxx	\
 	QtxWorkstack.cxx	\
-	QtxWorkstackAction.cxx
+	QtxWorkstackAction.cxx  \
+	QtxListBox.cxx
 
 #VSR: not yet migrated to Qt4 files
 #				\
-	QtxListBox.cxx		\
 	QtxTable.cxx
 
 #VSR: already migrated to Qt4 files
@@ -174,11 +173,11 @@ MOC_FILES =				\
 	QtxWorkspace_moc.cxx		\
 	QtxWorkspaceAction_moc.cxx	\
 	QtxWorkstack_moc.cxx		\
-	QtxWorkstackAction_moc.cxx
+	QtxWorkstackAction_moc.cxx      \
+	QtxListBox_moc.cxx
 
 #VSR: not yet migrated to Qt4 files
 #					\
-	QtxListBox_moc.cxx		\
 	QtxTable_moc.cxx
 
 nodist_libqtx_la_SOURCES = $(MOC_FILES)

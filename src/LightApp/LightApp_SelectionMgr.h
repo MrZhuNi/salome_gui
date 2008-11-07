@@ -70,7 +70,7 @@ public:
 					   bool modeShift );
 
   void                   selectObjects( const Handle(SALOME_InteractiveObject)& IObject, 
-					TColStd_IndexedMapOfInteger theIndex, bool append );
+					const TColStd_IndexedMapOfInteger& theIndex, bool append );
   void                   selectObjects( MapIOOfMapOfInteger theMapIO, bool append );
 
   void                   selectedSubOwners( MapEntryOfMapOfInteger& theMap );

@@ -42,7 +42,7 @@ class QTX_EXPORT QtxListBox : public QListWidget//QListBox // This file isn't ye
     Q_OBJECT
 
 public:
-    QtxListBox( QWidget* = 0, const char* = 0, Qt::WindowFlags = 0 );
+    QtxListBox( QWidget* = 0 );
     virtual ~QtxListBox();
 
     bool              isEditEnabled() const;
@@ -85,13 +85,13 @@ public slots:
     virtual void      setContentsPos( int, int );
 
 private slots:
-    void              onContentsMoving( int, int );
+    void              onContentsMoving();
 
 protected:
     virtual void      keyPressEvent( QKeyEvent* );
-    virtual void      viewportResizeEvent( QResizeEvent* );
+    virtual void      resizeEvent( QResizeEvent* ); //qt4 viewportResizeEvent
     virtual void      mouseDoubleClickEvent( QMouseEvent* );
-
+    
 private:
     QLineEdit*        editor() const;
     void              createEditor();

@@ -170,7 +170,7 @@ SVTK_DeviceActor
 ::SetInput(vtkDataSet* theDataSet)
 {
   myMapper->SetInput(theDataSet);
-  InitPipeLine(myMapper);
+  SetMapper(myMapper);
 }
 
 /*!

@@ -85,6 +85,9 @@ public:
   void               setMarker( Plot2d::MarkerType );
   Plot2d::MarkerType getMarker() const;
 
+  void               setNbMarkers( const int );
+  int                getNbMarkers() const;
+
   void               setLine( Plot2d::LineType, const int = 0 );
   Plot2d::LineType   getLine() const;
   int                getLineWidth() const;
@@ -97,6 +100,11 @@ public:
   // non-positive X/Y coordinate
   double             getMinX() const;
   double             getMinY() const;
+  // Protection against QwtCurve::drawLines() bug in Qwt 0.4.x:
+  // sometimes it crashes (FPE) if draws curve with big abciss or ordinate cooridates
+  // after curve with small values
+  double             getMaxX() const;
+  double             getMaxY() const;
 
 protected:
   bool               myAutoAssign;
@@ -106,6 +114,7 @@ protected:
   QString            myVerUnits;
   QColor             myColor;
   Plot2d::MarkerType myMarker;
+  int                myNbMarkers;
   Plot2d::LineType   myLine;
   int                myLineWidth;
   QwtPlot::Axis      myYAxis;

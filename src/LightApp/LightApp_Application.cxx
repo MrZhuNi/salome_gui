@@ -26,6 +26,10 @@
   #include <PyConsole_Console.h>
 #endif
 
+#ifdef WIN32
+#include<shlwapi.h>
+#endif
+
 #include "LightApp_Application.h"
 #include "LightApp_Module.h"
 #include "LightApp_DataModel.h"
@@ -143,8 +147,6 @@
 #include <QByteArray>
 #include <QMenu>
 #include <QProcess>
-
-#include <utilities.h>
 
 #define FIRST_HELP_ID 1000000
 
@@ -555,9 +557,11 @@ void LightApp_Application::createActions()
       if ( icon.isNull() )
       {
 	icon = modIcon;
-	INFOS ( "****************************************************************" << std::endl
+#ifdef DEB
+	cout  "****************************************************************" << std::endl
 	     << "*    Icon for " << (*it).toLatin1().constData() << " not found. Using the default one." << std::endl
-	     << "****************************************************************" << std::endl );
+	     << "****************************************************************" << std::endl ;
+#endif
       }
 
       icon = Qtx::scaleIcon( icon, iconSize );
@@ -664,7 +668,7 @@ QString LightApp_Application::defaultModule() const
   modules( aModuleNames, false ); // obtain a complete list of module names for the current configuration
   //! If there's the one and only module --> activate it automatically
   //! TODO: Possible improvement - default module can be taken from preferences
-  return aModuleNames.count() > 1 ? "" : ( aModuleNames.count() ? aModuleNames.first() : "" );
+  return aModuleNames.count() > 1 ? QString( "" ) : ( aModuleNames.count() ? aModuleNames.first() : "" );
 }
 
 /*!On new window slot.*/
@@ -907,6 +911,20 @@ void LightApp_Application::onHelpContentsModule()
 	QString quote("\"");
 	anApp.prepend( quote );
 	anApp.append( quote );
+
+        if ( anApp.isEmpty() || anApp == "\"\"" )
+        {
+          // try to find default browser
+          HRESULT hr;
+          static const int aLen = MAX_PATH + 100;
+          TCHAR szExe[ aLen ];
+          DWORD cchExe = sizeof( TCHAR ) * aLen;
+          if ( SUCCEEDED(hr = AssocQueryString(0, ASSOCSTR_COMMAND,
+            TEXT(".html"), TEXT("open"), szExe, &cchExe)))
+          {
+            anApp = szExe;
+          }
+        }
 #endif
   QString aParams = resMgr->stringValue("ExternalBrowser", "parameters");
 
@@ -2451,6 +2469,13 @@ void LightApp_Application::updateDesktopTitle()
     aTitle += QString( " - [%1]" ).arg( sName );
   }
 
+  QStringList anInfoList;
+  modules( anInfoList, false );
+
+  LightApp_Module* aModule = ( LightApp_Module* )activeModule();
+  if( aModule && anInfoList.count() == 1 ) // to avoid a conflict between different modules
+    aTitle = aModule->updateDesktopTitle( aTitle );
+ 
   desktop()->setWindowTitle( aTitle );
 }
 
@@ -2985,10 +3010,12 @@ bool LightApp_Application::isLibExists( const QString& moduleTitle ) const
 
   if ( !isLibFound )
     {
-      INFOS( "****************************************************************" << std::endl
+#ifdef DEB
+      cout "****************************************************************" << std::endl
           << "*    Warning: library " << lib.toLatin1().constData() << " cannot be found" << std::endl
           << "*    Module " << moduleTitle.toLatin1().constData() << " will not be available in GUI mode" << std::endl
-          << "****************************************************************" << std::endl );
+          << "****************************************************************" << std::endl ;
+#endif
     }
   else if ( !isPythonModule )
     return true;
@@ -3060,7 +3087,7 @@ bool LightApp_Application::event( QEvent* e )
     SALOME_CustomEvent* ce = ( SALOME_CustomEvent* )e;
     QString* d = ( QString* )ce->data();
     if( SUIT_MessageBox::question(0, tr("WRN_WARNING"),
-				  d ? *d : "",
+				  d ? *d : QString( "" ),
 				  SUIT_MessageBox::Yes | SUIT_MessageBox::No,
 				  SUIT_MessageBox::Yes ) == SUIT_MessageBox::Yes )
       showPreferences( tr( "PREF_APP" ) );

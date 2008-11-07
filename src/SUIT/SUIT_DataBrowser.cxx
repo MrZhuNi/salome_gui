@@ -296,6 +296,20 @@ void SUIT_DataBrowser::setResizeOnExpandItem( const bool on )
 }
 
 /*!
+  Ensures that object obj is visible, scrolling the list view vertically 
+  if necessary and opening (expanding) any parent items if this is required to show the item. 
+*/
+void SUIT_DataBrowser::ensureItemVisible( const SUIT_DataObject* obj )
+{
+  SUIT_ProxyModel* m = qobject_cast<SUIT_ProxyModel*>( model() );
+  if ( m ) {
+    QModelIndex index = m->index( obj );
+    if( index.isValid() )
+      treeView()->scrollTo( index );
+  }
+}
+
+/*!
   \brief Initialize object browser.
   \param root root data object
 */

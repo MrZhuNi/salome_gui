@@ -36,13 +36,14 @@
 #include "GLViewer_Widget.h"
 #include "GLViewer_Geom.h"
 
-#include <QtOpenGL>
 #include <QColor>
 #include <QPaintDevice>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
+
+#include <QtOpenGL>
 
 class GLViewer_Compass;
 class GLViewer_Grid;
@@ -61,9 +62,11 @@ class QRubberBand;
 class GLViewer_ViewPort2d: public GLViewer_ViewPort
 {
   Q_OBJECT
+  friend class GLViewer_Widget;
 
+public:
   //! Dragging states
-  enum vpDragState{ noDrag, initDrag, inDrag };
+  enum vpDragState{ noDrag = 0, initDrag, inDrag };
 
 public:
   GLViewer_ViewPort2d( QWidget* parent, GLViewer_ViewFrame* theViewFrame = NULL );
@@ -119,7 +122,7 @@ public:
   void                   endRotation();
   
   //! Checks of dragging process state
-  bool                   isDragProcess(){ return myIsDragProcess; }
+  int                    isDragProcess(){ return myIsDragProcess; }
   
   //! On/off compass
   void                   turnCompass( GLboolean on );
@@ -138,6 +141,9 @@ public:
   void                   drawSelectByRect( int x, int y );
   //! Pass rect into selector and update
   void                   finishSelectByRect();
+  
+  //! Pass rect into selector and update
+  bool                   isSelectByRect() const;
   
   //! \warnign It is for ouv
   bool                   startPulling( GLViewer_Pnt );

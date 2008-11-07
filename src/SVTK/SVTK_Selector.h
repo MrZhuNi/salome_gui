@@ -41,7 +41,7 @@
 class Handle(VTKViewer_Filter);
 
 class SALOME_Actor;
-class SVTK_SelectionEvent;
+struct SVTK_SelectionEvent;
 class vtkRenderer;
 class Handle(SALOME_InteractiveObject);
 

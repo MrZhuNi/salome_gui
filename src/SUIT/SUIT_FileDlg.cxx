@@ -511,6 +511,12 @@ QString SUIT_FileDlg::addExtension( const QString& fileName ) const
 
     // now we get the list of all extension masks and remove all which does not contain wildcard symbols
     QStringList extList = aPattern.split( "|", QString::SkipEmptyParts );
+
+    // This protection is added for GUITHARE application, (*.FORT21 fort21) filter. 
+    // When user selects “fort21” file name then extension should not be added
+    if ( extList.contains( QFileInfo( fname ).baseName() ) )
+      return fileName;
+
     for ( int i = extList.count() - 1; i >= 0; i-- ) {
       if ( !extList[i].contains( "." ) )
         extList.removeAt( i );

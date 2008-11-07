@@ -634,3 +634,13 @@ LightApp_Operation* LightApp_Module::operation( const int id ) const
 {
   return myOperations.contains( id ) ? myOperations[id] : 0;
 }
+
+/*!
+ * \brief Virtual public method called to custom update of the desktop title
+  * \param theTitle - current desktop title
+  * \return Modified desktop title
+*/
+QString LightApp_Module::updateDesktopTitle( const QString& theTitle )
+{
+  return theTitle;
+}

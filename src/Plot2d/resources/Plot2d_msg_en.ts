@@ -424,6 +424,18 @@ Logarithmic scale for ordinate axis is not allowed.</translation>
         <translation>&amp;Settings</translation>
     </message>
     <message>
+        <source>TOT_CURVES_SETTINGS</source>
+        <translation>Curves settings</translation>
+    </message>
+    <message>
+        <source>MEN_CURVES_SETTINGS</source>
+        <translation>Curves settings</translation>
+    </message>
+    <message>
+        <source>PRP_CURVES_SETTINGS</source>
+        <translation>Setups curves properties</translation>
+    </message>
+    <message>
         <source>CIRCLE_MARKER_LBL</source>
         <translation>Circle</translation>
     </message>
@@ -502,4 +514,54 @@ Logarithmic scale for ordinate axis is not allowed.</translation>
         <translation>Plot2d scene:%M - viewer:%V</translation>
     </message>
 </context>
+<context>
+    <name>Plot2d_SetupCurvesDlg</name>
+    <message>
+        <source>SETUP_CURVES</source>
+        <translation>Setup curves</translation>
+    </message>
+    <message>
+        <source>PARAMETERS</source>
+        <translation>Parameters</translation>
+    </message>
+    <message>
+        <source>FIG</source>
+        <translation>Fig</translation>
+    </message>
+    <message>
+        <source>MARKER</source>
+        <translation>Marker</translation>
+    </message>
+    <message>
+        <source>TEXT</source>
+        <translation>Text</translation>
+    </message>
+    <message>
+        <source>COLOR</source>
+        <translation>Color</translation>
+    </message>
+    <message>
+        <source>NB_MARKERS</source>
+        <translation>Nb markers</translation>
+    </message>
+</context>
 </TS>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

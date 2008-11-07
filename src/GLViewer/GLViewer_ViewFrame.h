@@ -80,6 +80,10 @@ public:
 signals:
   void                    vfDrawExternal( QPainter* );
   void                    vfViewClosing( QCloseEvent* );
+  void                    vfViewDumped( const QImage&, const QString&, const QString& );
+
+protected:
+  virtual bool            dumpViewToFormat( const QImage&, const QString& fileName, const QString& format );
 
 protected:
   GLViewer_Viewer*        myViewer;

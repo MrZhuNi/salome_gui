@@ -512,7 +512,8 @@ void SVTK_Viewer::EraseAll( const bool forced )
 	    //if(!anObj.IsNull() && anObj->hasEntry() && aStudy)
 	    //  ToolsGUI::SetVisibility(aStudy,anObj->getEntry(),false,this);
 	    if(forced)
-	      aRenderer->RemoveActor(anAct);
+	      // RKV : aRenderer->RemoveActor(anAct);
+        anAct->RemoveFromRender(aRenderer); // RKV
 	    else{
 	      // just erase actor
 	      anAct->SetVisibility( false );

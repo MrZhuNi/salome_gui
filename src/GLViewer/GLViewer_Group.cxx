@@ -142,6 +142,23 @@ void GLViewer_Group::dragingObjects( float x, float y, bool once )
 }
 
 /*!
+  Updates horizontal zoom of object
+  \param sender - object to be updated
+  \param zoom - zoom coefficient
+*/
+void GLViewer_Group::updateXZoom( GLViewer_Object* sender, float zoom )
+{
+  OGIterator it = myList.begin();
+  OGIterator end_it = myList.end();
+  for( int i = 0; it != end_it; ++it, i++ )
+  {
+    GLViewer_Object* anObject = *it;
+    if( anObject != sender )
+      anObject->setXZoom( zoom, true, true );
+  }
+}
+
+/*!
   Updates zoom of object
   \param sender - object to be updated
   \param zoom - zoom coefficient
