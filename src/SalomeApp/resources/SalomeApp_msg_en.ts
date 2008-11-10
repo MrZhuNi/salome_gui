@@ -57,6 +57,14 @@
         <source>REFENTRY_COLUMN</source>
         <translation>Ref.Entry</translation>
     </message>
+    <message>
+        <source>ERR_INVALID_VALUE</source>
+        <translation>Value hasn't been validated</translation>
+    </message>
+    <message>
+        <source>ERR_NO_VARIABLE</source>
+        <translation>Variable with name "%1" doesn't exist</translation>
+    </message>
 </context>
 <context>
     <name>SalomeApp_Application</name>

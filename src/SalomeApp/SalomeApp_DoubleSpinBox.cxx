@@ -28,6 +28,8 @@
 #include "SALOMEDSClient_ClientFactory.hxx" 
 #include CORBA_SERVER_HEADER(SALOMEDS)
 
+#include <QLineEdit>
+
 /*!
   \class SalomeApp_DoubleSpinBox
 */
@@ -48,6 +50,7 @@ SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( QWidget* parent )
   myMinimum( 0.0 ),
   myMaximum( 99.99 )
 {
+  connectSignalsAndSlots();
 }
 
 /*!
@@ -69,6 +72,7 @@ SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( double min, double max, double
   myMinimum( min ),
   myMaximum( max )
 {
+  connectSignalsAndSlots();
 }
 
 /*!
@@ -90,6 +94,7 @@ SalomeApp_DoubleSpinBox::SalomeApp_DoubleSpinBox( double min, double max, double
   myMinimum( min ),
   myMaximum( max )
 {
+  connectSignalsAndSlots();
 }
 
 /*!
@@ -100,6 +105,41 @@ SalomeApp_DoubleSpinBox::~SalomeApp_DoubleSpinBox()
 }
 
 /*!
+  \brief Connect signals and slots.
+*/
+void SalomeApp_DoubleSpinBox::connectSignalsAndSlots()
+{
+  connect( this, SIGNAL( editingFinished() ),
+	   this, SLOT( onEditingFinished() ) );
+
+  connect( lineEdit(), SIGNAL( textChanged( const QString& ) ),
+	   this, SLOT( onTextChanged( const QString& ) ) );
+}
+
+/*!
+  \brief This function is called when editing is finished.
+*/
+void SalomeApp_DoubleSpinBox::onEditingFinished()
+{
+  if( myTextValue.isNull() )
+    myTextValue = text();
+
+  lineEdit()->setText( myTextValue );
+}
+
+/*!
+  \brief This function is called when value is changed.
+*/
+void SalomeApp_DoubleSpinBox::onTextChanged( const QString& text )
+{
+  myTextValue = text;
+
+  double value = 0;
+  if( isValid( text, value ) == Acceptable )
+    myCorrectValue = text;
+}
+
+/*!
   \brief Interpret text entered by the user as a value.
   \param text text entered by the user
   \return mapped value
@@ -107,16 +147,8 @@ SalomeApp_DoubleSpinBox::~SalomeApp_DoubleSpinBox()
 */
 double SalomeApp_DoubleSpinBox::valueFromText( const QString& text ) const
 {
-  QString str = text;
-
-  bool ok = false;
   double value = 0;
-  if( findVariable( str, value ) )
-    ok = true;
-  else
-    value = str.toDouble( &ok );
-
-  if( ok && checkRange( value ) )
+  if( isValid( text, value ) == Acceptable )
     return value;
 
   return defaultValue();
@@ -150,23 +182,41 @@ QValidator::State SalomeApp_DoubleSpinBox::validate( QString& str, int& pos ) co
   \brief This function is used to determine whether input is valid.
   \return validating operation result
 */
-bool SalomeApp_DoubleSpinBox::isValid() const
+bool SalomeApp_DoubleSpinBox::isValid( QString& msg, bool toCorrect )
 {
-  QString str = text();
+  double value;
+  State aState = isValid( text(), value );
 
-  bool ok = false;
-  double value = 0;
-  if( findVariable( str, value ) )
-    ok = true;
-  else
-    value = str.toDouble( &ok );
+  if( aState != Acceptable )
+  {
+    if( toCorrect )
+    {
+      if( aState == NoVariable )
+	msg += tr( "ERR_NO_VARIABLE" ).arg( text() ) + "\n";
+      else if( aState == Invalid )
+	msg += tr( "ERR_INVALID_VALUE" ) + "\n";
 
-  return ok && checkRange( value );
+      lineEdit()->setText( myCorrectValue );
+    }
+    return false;
+  }
+
+  return true;
+}
+
+/*!
+  \brief This function is used to set a default value for this spinbox.
+  \param value default value
+*/
+void SalomeApp_DoubleSpinBox::setDefaultValue( const double value )
+{
+  myDefaultValue = value;
 }
 
 /*!
   \brief This function is used to set minimum and maximum values for this spinbox.
-  \param value default value
+  \param min minimum value
+  \param max maximum value
 */
 void SalomeApp_DoubleSpinBox::setRange( const double min, const double max )
 {
@@ -178,12 +228,34 @@ void SalomeApp_DoubleSpinBox::setRange( const double min, const double max )
 }
 
 /*!
-  \brief This function is used to set a default value for this spinbox.
-  \param value default value
+  \brief This function is used to set a current value for this spinbox.
+  \param value current value
 */
-void SalomeApp_DoubleSpinBox::setDefaultValue( const double value )
+void SalomeApp_DoubleSpinBox::setValue( const double value )
 {
-  myDefaultValue = value;
+  QtxDoubleSpinBox::setValue( value );
+
+  myCorrectValue = QString::number( value );
+}
+
+/*!
+  \brief This function is used to determine whether input is valid.
+  \return validating operation result
+*/
+SalomeApp_DoubleSpinBox::State SalomeApp_DoubleSpinBox::isValid( const QString& text, double& value ) const
+{
+  if( !findVariable( text, value ) )
+  {
+    bool ok = false;
+    value = text.toDouble( &ok );
+    if( !ok )
+      return NoVariable;
+  }
+
+  if( !checkRange( value ) )
+    return Invalid;
+
+  return Acceptable;
 }
 
 /*!
@@ -221,19 +293,12 @@ bool SalomeApp_DoubleSpinBox::findVariable( const QString& name, double& value )
     if( SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( app->activeStudy() ) )
     {
       _PTR(Study) studyDS = study->studyDS();
-      std::vector<std::string> aVariableNames = studyDS->GetVariableNames();
-      for( unsigned int i = 0, n = aVariableNames.size(); i < n; i++ )
+
+      std::string aName = name.toStdString();
+      if( studyDS->IsVariable( aName ) && ( studyDS->IsReal( aName ) || studyDS->IsInteger( aName ) ) )
       {
-	std::string aName = aVariableNames[ i ];
-	if( studyDS->IsReal( aName ) || studyDS->IsInteger( aName ) )
-	{
-	  double aValue = studyDS->GetReal( aName );
-	  if( aName == name.toStdString() )
-	  {
-	    value = aValue;
-	    return true;
-	  }
-	}
+	value = studyDS->GetReal( aName );
+	return true;
       }
     }
   }

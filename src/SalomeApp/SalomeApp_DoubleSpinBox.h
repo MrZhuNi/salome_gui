@@ -32,6 +32,8 @@ class SALOMEAPP_EXPORT SalomeApp_DoubleSpinBox : public QtxDoubleSpinBox
 {
   Q_OBJECT
 
+  enum State { Invalid = 0, NoVariable, Acceptable };
+
 public:
   SalomeApp_DoubleSpinBox( QWidget* = 0 );
   SalomeApp_DoubleSpinBox( double, double, double = 1, QWidget* = 0 );
@@ -43,15 +45,27 @@ public:
 
   virtual QValidator::State validate( QString&, int& ) const;
 
-  virtual bool              isValid() const;
+  virtual bool              isValid( QString& msg, bool = false );
 
   virtual void              setDefaultValue( const double );
+
   virtual void              setRange( double, double );
+  virtual void              setValue( double );
 
 protected:
+  State                     isValid( const QString&, double& ) const;
+
   double                    defaultValue() const;
   bool                      checkRange( const double ) const;
+
   bool                      findVariable( const QString&, double& ) const;
+
+protected slots:
+  void                      onEditingFinished();
+  void                      onTextChanged( const QString& );
+
+private:
+  void                      connectSignalsAndSlots();
 
 private:
   double                    myDefaultValue; 
@@ -59,6 +73,9 @@ private:
   bool                      myIsRangeSet;
   double                    myMinimum;
   double                    myMaximum;
+
+  QString                   myCorrectValue;
+  QString                   myTextValue;
 };
 
 #endif

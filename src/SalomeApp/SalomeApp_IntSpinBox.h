@@ -32,6 +32,8 @@ class SALOMEAPP_EXPORT SalomeApp_IntSpinBox : public QtxIntSpinBox
 {
   Q_OBJECT
 
+  enum State { Invalid = 0, NoVariable, Acceptable };
+
 public:
   SalomeApp_IntSpinBox( QWidget* = 0 );
   SalomeApp_IntSpinBox( int, int, int = 1, QWidget* = 0 );
@@ -42,16 +44,32 @@ public:
 
   virtual QValidator::State validate( QString&, int& ) const;
 
-  virtual bool              isValid() const;
+  virtual bool              isValid( QString& msg, bool = false );
 
   virtual void              setDefaultValue( const int );
 
+  virtual void              setValue( int );
+
 protected:
+  State                     isValid( const QString&, int& ) const;
+
   int                       defaultValue() const;
+  bool                      checkRange( const int ) const;
+
   bool                      findVariable( const QString&, int& ) const;
+
+protected slots:
+  void                      onEditingFinished();
+  void                      onTextChanged( const QString& );
+
+private:
+  void                      connectSignalsAndSlots();
 
 private:
   int                       myDefaultValue; 
+
+  QString                   myCorrectValue;
+  QString                   myTextValue;
 };
 
 #endif
