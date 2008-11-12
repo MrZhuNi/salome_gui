@@ -195,6 +195,15 @@ void SalomeApp_IntSpinBox::setValue( const int value )
 }
 
 /*!
+  \brief This function is used to set a text for this spinbox.
+  \param value current value
+*/
+void SalomeApp_IntSpinBox::setText( const QString& value )
+{
+  lineEdit()->setText(value);
+}
+
+/*!
   \brief This function is used to determine whether input is valid.
   \return validating operation result
 */

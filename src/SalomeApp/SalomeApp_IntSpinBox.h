@@ -50,6 +50,8 @@ public:
 
   virtual void              setValue( int );
 
+  virtual void              setText(const QString& );
+
 protected:
   State                     isValid( const QString&, int& ) const;
 

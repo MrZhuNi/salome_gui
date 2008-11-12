@@ -52,6 +52,8 @@ public:
   virtual void              setRange( double, double );
   virtual void              setValue( double );
 
+  virtual void              setText(const QString& );
+
 protected:
   State                     isValid( const QString&, double& ) const;
 
