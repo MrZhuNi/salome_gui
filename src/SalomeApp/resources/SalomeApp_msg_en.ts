@@ -351,6 +351,16 @@ Do you want to reload it ?</translation>
 <context>
     <name>NoteBook_Table</name>
         <message>
+           <source>REMOVE_VARIABLE_IS_USED</source>
+           <translation>Variable with name "%1" is used in the study.
+Do you really want to remove it?</translation>
+	</message>
+        <message>
+           <source>RENAME_VARIABLE_IS_USED</source>
+           <translation>Variable with name "%1" is used in the study.
+Do you really want to rename it?</translation>
+	</message>
+        <message>
            <source>VARNAME_COLUMN</source>
            <translation>Variable Name</translation>
 	 </message>
@@ -384,6 +394,11 @@ Do you want to reload it ?</translation>
         <message>
            <source>BUT_REMOVE</source>
            <translation>Remove</translation>
+	</message>
+        <message>
+           <source>INCORRECT_DATA</source>
+           <translation>At least one variable has been defined incorrectly.
+Please edit its parameters or remove it from table.</translation>
 	</message>
 </context>
 </TS>

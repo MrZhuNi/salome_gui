@@ -36,11 +36,27 @@ class QWidget;
 class QPushButton;
 class QTableWidgetItem;
 
+struct NoteBoox_Variable
+{
+  NoteBoox_Variable() {}
+  NoteBoox_Variable( const QString& theName, const QString& theValue )
+  {
+    Name = theName;
+    Value = theValue;
+  }
+  QString Name;
+  QString Value;
+};
+
+typedef QMap< int, NoteBoox_Variable > VariableMap;
+
 class SALOMEAPP_EXPORT NoteBook_TableRow : public QWidget
 {
  public:
-  NoteBook_TableRow(QWidget* parent=0);
+  NoteBook_TableRow(int, QWidget* parent=0);
   virtual ~NoteBook_TableRow();
+
+  int  GetIndex() const { return myIndex; }
   
   void SetNameEditable(bool enable);
   bool IsNameEditable();
@@ -67,11 +83,11 @@ class SALOMEAPP_EXPORT NoteBook_TableRow : public QWidget
   static bool IsBooleanValue(const QString theValue, bool* theResult = 0);
   
  private:
+  int               myIndex;
   QTableWidgetItem* myRowHeader;
   QTableWidgetItem* myVariableName;
   QTableWidgetItem* myVariableValue;
   bool              isNameEditable;
-
 };
 
 class SALOMEAPP_EXPORT NoteBook_Table : public QTableWidget
@@ -84,35 +100,47 @@ class SALOMEAPP_EXPORT NoteBook_Table : public QTableWidget
   void Init(_PTR(Study) theStudy);
   static QString Variable2String(const std::string& theVarName,
 				 _PTR(Study) theStudy);
+
+  bool IsValid() const;
+
+  void AddRow( const QString& theName = QString::null, const QString& theValue = QString::null );
   void AddEmptyRow();
   NoteBook_TableRow* GetRowByItem(const QTableWidgetItem* theItem) const;
   bool IsLastRow(const NoteBook_TableRow* aRow) const;
 
   void RemoveSelected();
 
-  void SetIncorrectItem(QTableWidgetItem* theItem);
-  void RemoveIncorrectItem();
-  
   void SetProcessItemChangedSignalFlag(const bool enable);
   bool GetProcessItemChangedSignalFlag()const;
 
   bool IsUniqueName(const NoteBook_TableRow* theRow) const;
   QList<NoteBook_TableRow*> GetRows() const;
-  
+
+  const QList<int>&  GetRemovedRows() const { return myRemovedRows; }
+  const VariableMap& GetVariableMap() const { return myVariableMap; }
+  const VariableMap& GetVariableMapRef() const { return myVariableMapRef; }
+
+  void ResetMaps();
+
   public slots:
     void onItemChanged(QTableWidgetItem* theItem);
     void onItemSelectionChanged();
 
+ private:
+    int  getUniqueIndex() const;
     
  signals:
-    void incorrectItemAdded();
-    void incorrectItemRemoved();
     void selectionChanged(bool);
 
  private:
   bool isProcessItemChangedSignal;
-  QTableWidgetItem*                  myIncorrectItem;
   QList<NoteBook_TableRow*>          myRows;
+
+  QList<int>  myRemovedRows;
+  VariableMap myVariableMapRef;
+  VariableMap myVariableMap;
+
+  _PTR(Study)      myStudy;
 };
 
 class SALOMEAPP_EXPORT SalomeApp_NoteBookDlg : public QDialog 
@@ -125,10 +153,9 @@ class SALOMEAPP_EXPORT SalomeApp_NoteBookDlg : public QDialog
  public slots:
    void onOK();
    void onApply();
+   void onCancel();
    void onUpdateStudy();
    void onRemove();
-   void onIncorrectItemAdded();
-   void onIncorrectItemRemoved();
    void onTableSelectionChanged(bool flag);
 
  private:
@@ -140,7 +167,6 @@ class SALOMEAPP_EXPORT SalomeApp_NoteBookDlg : public QDialog
   QPushButton*     myCancelBtn;
   
   _PTR(Study)      myStudy;
-  
 };
 
 #endif //SALOMEAPP_NOTEBOOKDLG_H

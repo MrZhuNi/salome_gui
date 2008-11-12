@@ -55,8 +55,9 @@ using namespace std;
  *  Purpose  : Constructor
  */
 //============================================================================
-NoteBook_TableRow::NoteBook_TableRow(QWidget* parent):
+NoteBook_TableRow::NoteBook_TableRow(int index, QWidget* parent):
   QWidget(parent),
+  myIndex(index),
   myRowHeader(new QTableWidgetItem()),
   myVariableName(new QTableWidgetItem()),
   myVariableValue(new QTableWidgetItem()),
@@ -296,8 +297,7 @@ bool NoteBook_TableRow::IsIntegerValue(const QString theValue, int* theResult)
 //============================================================================
 NoteBook_Table::NoteBook_Table(QWidget * parent)
   :QTableWidget(parent),
-   isProcessItemChangedSignal(false),
-   myIncorrectItem(NULL)
+   isProcessItemChangedSignal(false)
 {
   setColumnCount(2);
   setSelectionMode(QAbstractItemView::SingleSelection);
@@ -335,6 +335,29 @@ NoteBook_Table::NoteBook_Table(QWidget * parent)
 NoteBook_Table::~NoteBook_Table(){}
 
 //============================================================================
+/*! Function : getUniqueIndex
+ *  Purpose  : Get a unique index for the new row
+ */
+//============================================================================
+int NoteBook_Table::getUniqueIndex() const
+{
+  int anIndex = 0;
+  if( !myRows.isEmpty() )
+    if( NoteBook_TableRow* aRow = myRows.last() )
+      anIndex = aRow->GetIndex();
+
+  int aMaxRemovedRow = 0;
+  for( QListIterator<int> anIter( myRemovedRows ); anIter.hasNext(); )
+  {
+    int aRemovedRow = anIter.next();
+    aMaxRemovedRow = qMax( aRemovedRow, aMaxRemovedRow );
+  }
+
+  anIndex = qMax( anIndex, aMaxRemovedRow ) + 1;
+  return anIndex;
+}
+
+//============================================================================
 /*! Function : Init
  *  Purpose  : Add variables in the table from theStudy
  */
@@ -343,18 +366,18 @@ void NoteBook_Table::Init(_PTR(Study) theStudy)
 {
   //Add all variables into the table
   vector<string> aVariables = theStudy->GetVariableNames();
-  for(int iVar = 0; iVar < aVariables.size()  ; iVar++ ) {
-    NoteBook_TableRow* aRow = new NoteBook_TableRow(this);
-    aRow->SetName(QString(aVariables[iVar].c_str()));
-    aRow->SetValue( Variable2String(aVariables[iVar],theStudy) );
-    aRow->SetNameEditable(false); 
-    aRow->AddToTable(this);
-    myRows.append(aRow);
+  for(int iVar = 0; iVar < aVariables.size(); iVar++ ) {
+    AddRow(QString(aVariables[iVar].c_str()),
+	   Variable2String(aVariables[iVar],theStudy));
   }
 
   //Add empty row
   AddEmptyRow();
   isProcessItemChangedSignal = true;
+
+  ResetMaps();
+
+  myStudy = theStudy;
 }
 
 //============================================================================
@@ -377,62 +400,52 @@ QString NoteBook_Table::Variable2String(const string& theVarName,
 }
 
 //============================================================================
-/*! Function : SetIncorrectItem
- *  Purpose  : 
+/*! Function : IsValid
+ *  Purpose  : Check validity of the table data
  */
 //============================================================================
-void NoteBook_Table::SetIncorrectItem(QTableWidgetItem* theItem)
+bool NoteBook_Table::IsValid() const
 {
-  if(!theItem)
-    return;
-  
-  myIncorrectItem = theItem;
-  isProcessItemChangedSignal = false;
-  NoteBook_TableRow* except = GetRowByItem(myIncorrectItem);
+  int aNumRows = myRows.count();
+  if( aNumRows == 0 )
+    return true;
 
-  for (int i = 0; i < myRows.size(); i++) {
-    myRows[i]->setNameEditable(false);
-    myRows[i]->setValueEditable(false);
-  }
-  if(except) {
-    if(column(theItem) == NAME_COLUMN )
-      except->setNameEditable(true);
-    else if(column(theItem) == VALUE_COLUMN)
-      except->setValueEditable(true);
-  }
-  isProcessItemChangedSignal = true;
-  emit incorrectItemAdded();
+  bool aLastRowIsEmpty = myRows[ aNumRows - 1 ]->GetName().isEmpty() &&
+                         myRows[ aNumRows - 1 ]->GetValue().isEmpty();
+
+  for( int i = 0, n = aLastRowIsEmpty ? aNumRows - 1 : aNumRows; i < n; i++ )
+    if( !myRows[i]->CheckName() || !IsUniqueName( myRows[i] ) || !myRows[i]->CheckValue() )
+      return false;
+
+  return true;
 }
 
 //============================================================================
-/*! Function : RemoveIncorrectItem
- *  Purpose  : 
+/*! Function : AddRow
+ *  Purpose  : Add a row into the table
  */
 //============================================================================
-void NoteBook_Table::RemoveIncorrectItem()
+void NoteBook_Table::AddRow(const QString& theName, const QString& theValue)
 {
-  if(!myIncorrectItem)
-    return;
-  
-  isProcessItemChangedSignal = false;
-  for (int i = 0; i < myRows.size(); i++) {
-    myRows[i]->setNameEditable(true);
-    myRows[i]->setValueEditable(true);
-  }
-
-  myIncorrectItem = NULL;
-  isProcessItemChangedSignal = true;
-  emit incorrectItemRemoved();
-}
-
-void NoteBook_Table::AddEmptyRow()
-{
-  isProcessItemChangedSignal = false; 
-  NoteBook_TableRow* aRow = new NoteBook_TableRow();  
-  aRow->SetName(QString());
-  aRow->SetValue(QString());
+  int anIndex = getUniqueIndex();
+  NoteBook_TableRow* aRow = new NoteBook_TableRow(anIndex, this);
+  aRow->SetName(theName);
+  aRow->SetValue(theValue);
   aRow->AddToTable(this);
   myRows.append(aRow);
+
+  myVariableMap.insert( anIndex, NoteBoox_Variable( theName, theValue ) );
+}
+
+//============================================================================
+/*! Function : AddEmptyRow
+ *  Purpose  : Add an empty row into the end of the table
+ */
+//============================================================================
+void NoteBook_Table::AddEmptyRow()
+{
+  isProcessItemChangedSignal = false;
+  AddRow();
   isProcessItemChangedSignal = true;
 }
 
@@ -472,46 +485,70 @@ void NoteBook_Table::onItemChanged(QTableWidgetItem* theItem)
     NoteBook_TableRow* aRow = GetRowByItem(theItem);
     if(aRow) {
       int aCurrentColumn = column(theItem);
-      bool IsVariableComplited = false;
-      
+      bool IsCorrect = true, IsVariableComplited = false;
+      QString aMsg;
+
+      if(aCurrentColumn == NAME_COLUMN) {
+	int anIndex = aRow->GetIndex();
+	if( myVariableMap.contains( anIndex ) )
+	{
+	  const NoteBoox_Variable& aVariable = myVariableMap[ anIndex ];
+	  if( myStudy->IsVariableUsed( string( aVariable.Name.toLatin1().constData() ) ) )
+	  {
+	    if( QMessageBox::warning( parentWidget(), tr( "WARNING" ),
+				      tr( "RENAME_VARIABLE_IS_USED" ).arg( aVariable.Name ),
+				      QMessageBox::Yes, QMessageBox::No ) == QMessageBox::No )
+	    {
+	      bool isBlocked = blockSignals( true );
+	      aRow->SetName( aVariable.Name );
+	      blockSignals( isBlocked );
+	      return;
+	    }
+	  }
+	}
+      }
+
       //Case then varible name changed. 
       if(aCurrentColumn == NAME_COLUMN) {
-        bool isVarNameCorrect = aRow->CheckName();
-        if(!isVarNameCorrect) {
-          SUIT_MessageBox::warning((QWidget*)parent(),
-                                   tr( "WARNING" ), 
-                                   tr( "VARNAME_INCORRECT" ).arg(aRow->GetName()));
-          SetIncorrectItem(theItem);
-          return;
-        }
-        if(!IsUniqueName(aRow)){
-          SUIT_MessageBox::warning((QWidget*)parent(),
-                                   tr( "WARNING" ), 
-                                   tr( "VARNAME_EXISTS" ).arg(aRow->GetName()));
-          SetIncorrectItem(theItem);
-          return;
-        }
-        IsVariableComplited = isVarNameCorrect & aRow->CheckValue();
+        if(!aRow->CheckName()) {
+	  IsCorrect = false;
+	  aMsg = tr( "VARNAME_INCORRECT" ).arg(aRow->GetName());
+	}
+        else if(!IsUniqueName(aRow)) {
+	  IsCorrect = false;
+          aMsg = tr( "VARNAME_EXISTS" ).arg(aRow->GetName());
+	}
+	else
+	  IsVariableComplited = aRow->CheckValue();
       }
       
       //Case then varible value changed. 
       else if(aCurrentColumn == VALUE_COLUMN){
-        bool isVarValueCorrect = aRow->CheckValue();
-        if(!isVarValueCorrect) {
-          SUIT_MessageBox::warning((QWidget*)parent(),
-                                   tr( "WARNING" ), 
-                                   tr( "VARVALUE_INCORRECT" ).arg(aRow->GetValue()));
-          SetIncorrectItem(theItem);
-          return;
-        }
-        IsVariableComplited = isVarValueCorrect & aRow->CheckName();
+        if(!aRow->CheckValue()) {
+	  IsCorrect = false;
+	  aMsg = tr( "VARVALUE_INCORRECT" ).arg(aRow->GetName());
+	}
+	else
+	  IsVariableComplited = aRow->CheckName() && IsUniqueName(aRow);
       }
-      
-      if(myIncorrectItem)
-        RemoveIncorrectItem();
-      
-      if(IsVariableComplited && IsLastRow(aRow))
-        AddEmptyRow();
+
+      if(!IsCorrect && !aMsg.isEmpty())
+	SUIT_MessageBox::warning( parentWidget(), tr( "WARNING" ), aMsg );
+
+      bool isBlocked = blockSignals( true );
+      theItem->setForeground( QBrush( IsCorrect ? Qt::black : Qt::red ) );
+      blockSignals( isBlocked );
+
+      int anIndex = aRow->GetIndex();
+      if( myVariableMap.contains( anIndex ) )
+      {
+	NoteBoox_Variable& aVariable = myVariableMap[ anIndex ];
+	aVariable.Name = aRow->GetName();
+	aVariable.Value = aRow->GetValue();
+      }
+
+      if(IsCorrect && IsVariableComplited && IsLastRow(aRow))
+	AddEmptyRow();
     }
   }
 }
@@ -576,12 +613,25 @@ void NoteBook_Table::RemoveSelected()
       }
       else {
         int nRow = row(aSelectedItems[i]);
+
+	if( myStudy->IsVariableUsed( string( aRow->GetName().toLatin1().constData() ) ) )
+	{
+	  if( QMessageBox::warning( parentWidget(), tr( "WARNING" ),
+				    tr( "REMOVE_VARIABLE_IS_USED" ).arg( aRow->GetName() ),
+				    QMessageBox::Yes, QMessageBox::No ) == QMessageBox::No )
+	  {
+	    isProcessItemChangedSignal = true;
+	    return;
+	  }
+	}
+
+	int index = aRow->GetIndex();
+	myRemovedRows.append( index );
+	if( myVariableMap.contains( index ) )
+	  myVariableMap.remove( index );
+
         removeRow(nRow);
         myRows.removeAt(nRow);
-      }
-      if(aRow->GetVariableItem() == myIncorrectItem ||
-         aRow->GetNameItem() == myIncorrectItem ) {
-        RemoveIncorrectItem();
       }
     }
   }
@@ -616,6 +666,17 @@ bool NoteBook_Table::GetProcessItemChangedSignalFlag() const
 QList<NoteBook_TableRow*> NoteBook_Table::GetRows() const
 {
   return myRows;
+}
+
+//============================================================================
+/*! Function : ResetMaps
+ *  Purpose  : Reset variable maps
+ */
+//============================================================================
+void NoteBook_Table::ResetMaps()
+{
+  myVariableMapRef = myVariableMap;
+  myRemovedRows.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -677,12 +738,10 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
 
   connect( myOkBtn, SIGNAL(clicked()), this, SLOT(onOK()) );
   connect( myApplyBtn, SIGNAL(clicked()), this, SLOT(onApply()) );
+  connect( myCancelBtn, SIGNAL(clicked()), this, SLOT(onCancel()) );
   connect( myUpdateStudyBtn, SIGNAL(clicked()), this, SLOT(onUpdateStudy()) );
-  connect( myCancelBtn, SIGNAL(clicked()), this, SLOT(reject()) );
   connect( myRemoveButton, SIGNAL(clicked()), this, SLOT(onRemove()));
 
-  connect( myTable, SIGNAL(incorrectItemAdded()), this, SLOT(onIncorrectItemAdded()));
-  connect( myTable, SIGNAL(incorrectItemRemoved()), this, SLOT(onIncorrectItemRemoved()));
   connect( myTable, SIGNAL(selectionChanged(bool)),this, SLOT(onTableSelectionChanged(bool)));
 
   myTable->Init(myStudy);
@@ -698,35 +757,13 @@ SalomeApp_NoteBookDlg::~SalomeApp_NoteBookDlg(){}
 
 
 //============================================================================
-/*! Function : onIncorrectItemAdded
- *  Purpose  : [slot]
- */
-//============================================================================
-void SalomeApp_NoteBookDlg::onIncorrectItemAdded()
-{
-  myOkBtn->setEnabled(false);
-  myApplyBtn->setEnabled(false);
-}
-
-//============================================================================
-/*! Function : onIncorrectItemRemoved
- *  Purpose  : [slot]
- */
-//============================================================================
-void SalomeApp_NoteBookDlg::onIncorrectItemRemoved()
-{
-  myOkBtn->setEnabled(true);
-  myApplyBtn->setEnabled(true);
-}
-
-//============================================================================
 /*! Function : onTableSelectionChanged
  *  Purpose  : [slot]
  */
 //============================================================================
 void SalomeApp_NoteBookDlg::onTableSelectionChanged(bool flag)
 {
-  myRemoveButton->setEnabled(flag);
+  //myRemoveButton->setEnabled(flag);
 }
 
 //============================================================================
@@ -757,30 +794,76 @@ void SalomeApp_NoteBookDlg::onOK()
 //============================================================================
 void SalomeApp_NoteBookDlg::onApply()
 {
-  QList<NoteBook_TableRow*> aRows = myTable->GetRows();
+  if( !myTable->IsValid() )
+  {
+    SUIT_MessageBox::warning( this, tr( "WARNING" ), tr( "INCORRECT_DATA" ) );
+    return;
+  }
+
   double aDVal;
   int    anIVal;
   bool   aBVal;
-  int i = 0;
-  myTable->SetProcessItemChangedSignalFlag(false);
-  
-  for(;i<aRows.size()-1;i++) {
-    
-    if( NoteBook_TableRow::IsIntegerValue(aRows[i]->GetValue(),&anIVal) )
-      myStudy->SetInteger(string(aRows[i]->GetName().toLatin1().constData()),anIVal);
 
-    else if( NoteBook_TableRow::IsRealValue(aRows[i]->GetValue(),&aDVal) )
-      myStudy->SetReal(string(aRows[i]->GetName().toLatin1().constData()),aDVal);
-    
-    else if( NoteBook_TableRow::IsBooleanValue(aRows[i]->GetValue(),&aBVal) )
-      myStudy->SetBoolean(string(aRows[i]->GetName().toLatin1().constData()),aBVal);
+  const QList<int>& aRemovedRows = myTable->GetRemovedRows();
+  const VariableMap& aVariableMap = myTable->GetVariableMap();
+  const VariableMap& aVariableMapRef = myTable->GetVariableMapRef();
 
-    if( aRows[i]->IsNameEditable())
-      aRows[i]->SetNameEditable(false);
+  for( QListIterator<int> anIter( aRemovedRows ); anIter.hasNext(); )
+  {
+    int anIndex = anIter.next();
+    if( aVariableMapRef.contains( anIndex ) )
+    {
+      QString aNameRef = aVariableMapRef[ anIndex ].Name;
+      myStudy->RemoveVariable( string( aNameRef.toLatin1().constData() ) );
+    }
   }
-  myTable->SetProcessItemChangedSignalFlag(true);
+
+  VariableMap::const_iterator it = aVariableMap.constBegin(), itEnd = aVariableMap.constEnd();
+  for( ; it != itEnd; ++it )
+  {
+    int anIndex = it.key();
+    const NoteBoox_Variable& aVariable = it.value();
+    QString aName = aVariable.Name;
+    QString aValue = aVariable.Value;
+
+    if( !aName.isEmpty() && !aValue.isEmpty() )
+    {
+      if( aVariableMapRef.contains( anIndex ) )
+      {
+	const NoteBoox_Variable& aVariableRef = aVariableMapRef[ anIndex ];
+	QString aNameRef = aVariableRef.Name;
+	QString aValueRef = aVariableRef.Value;
+
+	if( !aNameRef.isEmpty() && !aValueRef.isEmpty() && aNameRef != aName )
+	{
+	  myStudy->RenameVariable( string( aNameRef.toLatin1().constData() ),
+				   string( aName.toLatin1().constData() ) );
+	}
+      }
+
+      if( NoteBook_TableRow::IsIntegerValue(aValue,&anIVal) )
+	myStudy->SetInteger(string(aName.toLatin1().constData()),anIVal);
+
+      else if( NoteBook_TableRow::IsRealValue(aValue,&aDVal) )
+	myStudy->SetReal(string(aName.toLatin1().constData()),aDVal);
+    
+      else if( NoteBook_TableRow::IsBooleanValue(aValue,&aBVal) )
+	myStudy->SetBoolean(string(aName.toLatin1().constData()),aBVal);
+    }
+  }
+
+  myTable->ResetMaps();
 }
 
+//============================================================================
+/*! Function : onCancel
+ *  Purpose  : [slot]
+ */
+//============================================================================
+void SalomeApp_NoteBookDlg::onCancel()
+{
+  reject();
+}
 
 //============================================================================
 /*! Function : onUpdateStudy

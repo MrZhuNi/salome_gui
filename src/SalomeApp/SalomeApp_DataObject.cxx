@@ -448,18 +448,29 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
     QString aStrings = QString( str.c_str() );
     
     //Special case to show NoteBook variables in the "Value" column of the OB 
-    QStringList aStringList = aStrings.split(":");
-    if(aStringList.size() > 0) {
-      int i = 0;
-      for (;i<aStringList.size();i++){
-        if(!aStringList[i].isEmpty())
-          val.append(aStringList[i]+", ");
+    if ( LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root() ) )
+    {
+      if ( SalomeApp_Study* aStudy = dynamic_cast<SalomeApp_Study*>( aRoot->study() ) )
+      {
+        _PTR(Study) studyDS( aStudy->studyDS() );
+	
+	QStringList aStringList = aStrings.split(":");
+	if ( !aStringList.isEmpty() )
+	{
+	  for ( int i = 0, n = aStringList.size(); i < n; i++ )
+	  {
+	    QString aStr = aStringList[i];
+	    if ( studyDS->IsVariable( aStr.toStdString() ) )
+	      val.append( aStr + ", " );
+	  }
+
+	  if ( !val.isEmpty() )
+	    val.remove( val.length() - 2, 2 );
+	}
+	else
+	  val = aStrings;
       }
-      if(!val.isEmpty())
-        val.remove(val.length()-2,2);
     }
-    else
-      val = aStrings;
   }
   else if ( obj->FindAttribute( attr, "AttributeInteger" ) )
   {

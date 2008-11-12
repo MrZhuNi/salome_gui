@@ -112,6 +112,9 @@ void SalomeApp_DoubleSpinBox::connectSignalsAndSlots()
   connect( this, SIGNAL( editingFinished() ),
 	   this, SLOT( onEditingFinished() ) );
 
+  connect( this, SIGNAL( valueChanged( const QString& ) ),
+	   this, SLOT( onTextChanged( const QString& ) ) );
+
   connect( lineEdit(), SIGNAL( textChanged( const QString& ) ),
 	   this, SLOT( onTextChanged( const QString& ) ) );
 }
@@ -124,7 +127,7 @@ void SalomeApp_DoubleSpinBox::onEditingFinished()
   if( myTextValue.isNull() )
     myTextValue = text();
 
-  lineEdit()->setText( myTextValue );
+  setText( myTextValue );
 }
 
 /*!
@@ -196,7 +199,7 @@ bool SalomeApp_DoubleSpinBox::isValid( QString& msg, bool toCorrect )
       else if( aState == Invalid )
 	msg += tr( "ERR_INVALID_VALUE" ) + "\n";
 
-      lineEdit()->setText( myCorrectValue );
+      setText( myCorrectValue );
     }
     return false;
   }
