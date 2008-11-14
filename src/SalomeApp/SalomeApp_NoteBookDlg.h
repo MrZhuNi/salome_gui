@@ -58,9 +58,6 @@ class SALOMEAPP_EXPORT NoteBook_TableRow : public QWidget
 
   int  GetIndex() const { return myIndex; }
   
-  void SetNameEditable(bool enable);
-  bool IsNameEditable();
-
   void AddToTable(QTableWidget *theTable);
   
   void SetName(const QString theName);
@@ -71,9 +68,6 @@ class SALOMEAPP_EXPORT NoteBook_TableRow : public QWidget
 
   bool CheckName();
   bool CheckValue();
-
-  void setValueEditable(bool enable);
-  void setNameEditable(bool enable);
 
   QTableWidgetItem* GetVariableItem();
   QTableWidgetItem* GetNameItem();
@@ -87,7 +81,6 @@ class SALOMEAPP_EXPORT NoteBook_TableRow : public QWidget
   QTableWidgetItem* myRowHeader;
   QTableWidgetItem* myVariableName;
   QTableWidgetItem* myVariableValue;
-  bool              isNameEditable;
 };
 
 class SALOMEAPP_EXPORT NoteBook_Table : public QTableWidget
@@ -124,14 +117,10 @@ class SALOMEAPP_EXPORT NoteBook_Table : public QTableWidget
 
   public slots:
     void onItemChanged(QTableWidgetItem* theItem);
-    void onItemSelectionChanged();
 
  private:
     int  getUniqueIndex() const;
     
- signals:
-    void selectionChanged(bool);
-
  private:
   bool isProcessItemChangedSignal;
   QList<NoteBook_TableRow*>          myRows;
@@ -154,9 +143,12 @@ class SALOMEAPP_EXPORT SalomeApp_NoteBookDlg : public QDialog
    void onOK();
    void onApply();
    void onCancel();
-   void onUpdateStudy();
    void onRemove();
-   void onTableSelectionChanged(bool flag);
+   void onUpdateStudy();
+
+ protected:
+   bool updateStudy();
+   void clearStudy();
 
  private:
   NoteBook_Table*  myTable;

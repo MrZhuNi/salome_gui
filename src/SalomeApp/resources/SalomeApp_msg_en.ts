@@ -400,5 +400,9 @@ Do you really want to rename it?</translation>
            <translation>At least one variable has been defined incorrectly.
 Please edit its parameters or remove it from table.</translation>
 	</message>
+        <message>
+           <source>ERR_UPDATE_STUDY_FAILED</source>
+           <translation>Failed to update study!</translation>
+	</message>
 </context>
 </TS>

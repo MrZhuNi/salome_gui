@@ -21,7 +21,20 @@
 // Module : GUI
 
 #include "SalomeApp_NoteBookDlg.h"
+#include "SalomeApp_Application.h"
+#include "SalomeApp_Study.h"
+#include "SalomeApp_VisualState.h"
+
+#include <Qtx.h>
+
+#include <CAM_Module.h>
+
 #include <SUIT_MessageBox.h>
+#include <SUIT_Session.h>
+
+#include <PyConsole_Console.h>
+
+#include <SALOMEDS_Tool.hxx>
 
 #include <QWidget>
 #include <QDialog>
@@ -32,6 +45,8 @@
 #include <QFont>
 #include <QGroupBox>
 #include <QList>
+#include <QApplication>
+#include <QDir>
 
 #include <string>
 #include <vector>
@@ -60,8 +75,7 @@ NoteBook_TableRow::NoteBook_TableRow(int index, QWidget* parent):
   myIndex(index),
   myRowHeader(new QTableWidgetItem()),
   myVariableName(new QTableWidgetItem()),
-  myVariableValue(new QTableWidgetItem()),
-  isNameEditable(true)
+  myVariableValue(new QTableWidgetItem())
 {
 }
 
@@ -89,51 +103,6 @@ void NoteBook_TableRow::AddToTable(QTableWidget *theTable)
   theTable->setVerticalHeaderItem(aPosition,myRowHeader);
   theTable->setItem(aPosition, NAME_COLUMN, myVariableName);
   theTable->setItem(aPosition, VALUE_COLUMN, myVariableValue);
-}
-
-//============================================================================
-/*! Function : SetNameEditable
- *  Purpose  : Set item with variable name editable/not editable
- *             and change flag isNameEditable
- */
-//============================================================================
-void NoteBook_TableRow::SetNameEditable(bool enable)
-{
-  isNameEditable = enable;
-  Qt::ItemFlags f = myVariableName->flags();
-  f = f & (isNameEditable ? Qt::ItemIsEditable : ~Qt::ItemIsEditable);
-  myVariableName->setFlags(f);
-
-  //Mark all not editabe variable names
-  QFont aFont = QFont();
-  aFont.setBold(true);
-  myVariableName->setFont(aFont);
-}
-
-//============================================================================
-/*! Function : setValueEditable
- *  Purpose  : Set item with variable value editable/not editable
- */
-//============================================================================
-void NoteBook_TableRow::setValueEditable(bool enable)
-{
-  Qt::ItemFlags f = myVariableValue->flags();
-  f = enable ? (f | Qt::ItemIsEditable) : (f & ~Qt::ItemIsEditable);
-  myVariableValue->setFlags(f);
-}
-
-//============================================================================
-/*! Function : setNameEditable
- *  Purpose  : Set item with variable name editable/not editable
- */
-//============================================================================
-void NoteBook_TableRow::setNameEditable(bool enable)
-{
-  if(isNameEditable) {
-    Qt::ItemFlags f = myVariableName->flags();
-    f = enable ? (f | Qt::ItemIsEditable) : (f & ~Qt::ItemIsEditable);
-    myVariableName->setFlags(f);
-  }
 }
 
 //============================================================================
@@ -176,11 +145,11 @@ QString NoteBook_TableRow::GetValue() const
   return myVariableValue->text(); 
 }
 
-bool NoteBook_TableRow::IsNameEditable()
-{
-  return isNameEditable;
-}
-
+//============================================================================
+/*! Function : CheckName
+ *  Purpose  : Return true if variable name correct, otherwise return false
+ */
+//============================================================================
 bool NoteBook_TableRow::CheckName()
 {
   bool aResult = false;
@@ -192,7 +161,7 @@ bool NoteBook_TableRow::CheckName()
 }
 
 //============================================================================
-/*! Function : GetValue
+/*! Function : CheckValue
  *  Purpose  : Return true if variable value correct, otherwise return false
  */
 //============================================================================
@@ -323,8 +292,6 @@ NoteBook_Table::NoteBook_Table(QWidget * parent)
   setSortingEnabled(false);
   
   connect(this,SIGNAL(itemChanged(QTableWidgetItem*)),this,SLOT(onItemChanged(QTableWidgetItem*)));
-  connect(this,SIGNAL(itemSelectionChanged()),this,SLOT(onItemSelectionChanged()));
-
 }
 
 //============================================================================
@@ -364,6 +331,28 @@ int NoteBook_Table::getUniqueIndex() const
 //============================================================================
 void NoteBook_Table::Init(_PTR(Study) theStudy)
 {
+  isProcessItemChangedSignal = false;
+
+  int aNumRows = myRows.count();
+  if( aNumRows > 0 )
+  {
+    for( int i = 0; i < myRows.size(); i++ )
+    {
+      NoteBook_TableRow* aRow = myRows[ i ];
+      if( aRow )
+      {
+	delete aRow;
+	aRow = 0;
+      }
+    }
+    myRows.clear();
+  }
+  setRowCount( 0 );
+
+  myRemovedRows.clear();
+  myVariableMapRef.clear();
+  myVariableMap.clear();
+
   //Add all variables into the table
   vector<string> aVariables = theStudy->GetVariableNames();
   for(int iVar = 0; iVar < aVariables.size(); iVar++ ) {
@@ -493,7 +482,7 @@ void NoteBook_Table::onItemChanged(QTableWidgetItem* theItem)
 	if( myVariableMap.contains( anIndex ) )
 	{
 	  const NoteBoox_Variable& aVariable = myVariableMap[ anIndex ];
-	  if( myStudy->IsVariableUsed( string( aVariable.Name.toLatin1().constData() ) ) )
+	  if( !aVariable.Name.isEmpty() && myStudy->IsVariableUsed( string( aVariable.Name.toLatin1().constData() ) ) )
 	  {
 	    if( QMessageBox::warning( parentWidget(), tr( "WARNING" ),
 				      tr( "RENAME_VARIABLE_IS_USED" ).arg( aVariable.Name ),
@@ -567,27 +556,6 @@ bool NoteBook_Table::IsUniqueName(const NoteBook_TableRow* theRow) const
       return false;
   }
   return true;
-}
-
-//============================================================================
-/*! Function : onItemSelectionChanged
- *  Purpose  : [slot] 
- */
-//============================================================================
-void NoteBook_Table::onItemSelectionChanged()
-{
-  bool aResult = true;
-  QList<QTableWidgetItem*> aSelectedItems = selectedItems();
-  aResult &= (aSelectedItems.size() > 0);
-
-  if(aResult) {
-    for(int i=0; i < aSelectedItems.size(); i++ ) {
-      NoteBook_TableRow* aRow = GetRowByItem(aSelectedItems[i]);
-      if(aRow)
-        aResult &= aRow->IsNameEditable();
-    }
-  }
-  emit selectionChanged(aResult);
 }
 
 //============================================================================
@@ -742,10 +710,7 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
   connect( myUpdateStudyBtn, SIGNAL(clicked()), this, SLOT(onUpdateStudy()) );
   connect( myRemoveButton, SIGNAL(clicked()), this, SLOT(onRemove()));
 
-  connect( myTable, SIGNAL(selectionChanged(bool)),this, SLOT(onTableSelectionChanged(bool)));
-
   myTable->Init(myStudy);
-  myUpdateStudyBtn->setEnabled(false);
 }
 
 //============================================================================
@@ -755,26 +720,6 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
 //============================================================================
 SalomeApp_NoteBookDlg::~SalomeApp_NoteBookDlg(){}
 
-
-//============================================================================
-/*! Function : onTableSelectionChanged
- *  Purpose  : [slot]
- */
-//============================================================================
-void SalomeApp_NoteBookDlg::onTableSelectionChanged(bool flag)
-{
-  //myRemoveButton->setEnabled(flag);
-}
-
-//============================================================================
-/*! Function : onRemove
- *  Purpose  : [slot]
- */
-//============================================================================
-void SalomeApp_NoteBookDlg::onRemove()
-{
-  myTable->RemoveSelected();
-}
 
 //============================================================================
 /*! Function : onOK
@@ -813,8 +758,8 @@ void SalomeApp_NoteBookDlg::onApply()
     int anIndex = anIter.next();
     if( aVariableMapRef.contains( anIndex ) )
     {
-      QString aNameRef = aVariableMapRef[ anIndex ].Name;
-      myStudy->RemoveVariable( string( aNameRef.toLatin1().constData() ) );
+      QString aRemovedVariable = aVariableMapRef[ anIndex ].Name;
+      myStudy->RemoveVariable( string( aRemovedVariable.toLatin1().constData() ) );
     }
   }
 
@@ -866,11 +811,117 @@ void SalomeApp_NoteBookDlg::onCancel()
 }
 
 //============================================================================
+/*! Function : onRemove
+ *  Purpose  : [slot]
+ */
+//============================================================================
+void SalomeApp_NoteBookDlg::onRemove()
+{
+  myTable->RemoveSelected();
+}
+
+//============================================================================
 /*! Function : onUpdateStudy
  *  Purpose  : [slot]
  */
 //============================================================================
 void SalomeApp_NoteBookDlg::onUpdateStudy()
 {
+  onApply();
 
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  if( !updateStudy() )
+    SUIT_MessageBox::warning( this, tr( "ERROR" ), tr( "ERR_UPDATE_STUDY_FAILED" ) );
+    
+  QApplication::restoreOverrideCursor();
+}
+
+//============================================================================
+/*! Function : updateStudy
+ *  Purpose  : 
+ */
+//============================================================================
+bool SalomeApp_NoteBookDlg::updateStudy()
+{
+  SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
+  if( !app )
+    return false;
+
+  SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( app->activeStudy() );
+  if( !study )
+    return false;
+
+  _PTR(Study) studyDS = study->studyDS();
+
+  // get unique temporary directory name
+  QString aTmpDir = QString::fromStdString( SALOMEDS_Tool::GetTmpDir() );
+  if( aTmpDir.isEmpty() )
+    return false;
+
+  if( aTmpDir.right( 1 ).compare( QDir::separator() ) == 0 )
+    aTmpDir.remove( aTmpDir.length() - 1, 1 );
+
+  // dump study to the temporary directory
+  QString aFileName( "notebook" );
+  bool toPublish = true;
+  bool toSaveGUI = true;
+
+  int savePoint;
+  _PTR(AttributeParameter) ap;
+  _PTR(IParameters) ip = ClientFactory::getIParameters(ap);
+  if(ip->isDumpPython(studyDS)) ip->setDumpPython(studyDS); //Unset DumpPython flag.
+  if ( toSaveGUI ) { //SRN: Store a visual state of the study at the save point for DumpStudy method
+    ip->setDumpPython(studyDS);
+    savePoint = SalomeApp_VisualState( app ).storeState(); //SRN: create a temporary save point
+  }
+  bool ok = studyDS->DumpStudy( aTmpDir.toStdString(), aFileName.toStdString(), toPublish );
+  if ( toSaveGUI )
+    study->removeSavePoint(savePoint); //SRN: remove the created temporary save point.
+
+  if( !ok )
+    return false;
+
+  // clear a study (delete all objects)
+  clearStudy();
+
+  // load study from the temporary directory
+  QString command = QString( "execfile(\"%1\")" ).arg( aTmpDir + QDir::separator() + aFileName + ".py" );
+
+  PyConsole_Console* pyConsole = app->pythonConsole();
+  if ( pyConsole )
+    pyConsole->execAndWait( command );
+
+  // remove temporary directory
+  QDir aDir( aTmpDir );
+  QStringList aFiles = aDir.entryList( QStringList( "*.py*" ) );
+  for( QStringList::iterator it = aFiles.begin(), itEnd = aFiles.end(); it != itEnd; ++it )
+    ok = aDir.remove( *it ) && ok;
+  if( ok )
+    ok = aDir.rmdir( aTmpDir );
+
+  if( SalomeApp_Study* newStudy = dynamic_cast<SalomeApp_Study*>( app->activeStudy() ) )
+  {
+    myStudy = newStudy->studyDS();
+    myTable->Init( myStudy );
+  }
+  else
+    ok = false;
+
+  return ok;
+}
+
+//============================================================================
+/*! Function : clearStudy
+ *  Purpose  : 
+ */
+//============================================================================
+void SalomeApp_NoteBookDlg::clearStudy()
+{
+  SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
+  if( !app )
+    return;
+
+  app->onCloseDoc( false );
+  app->onNewDoc();
 }
