@@ -114,6 +114,7 @@ public slots:
   virtual void showEvent( QShowEvent * );
   virtual void hideEvent( QHideEvent * );
 
+
 signals:
   void vpTransformationStarted(OCCViewer_ViewWindow::OperationType type);
   void vpTransformationFinished(OCCViewer_ViewWindow::OperationType type);
@@ -123,7 +124,9 @@ signals:
   void Hide( QHideEvent * );
 
 protected:
-  QImage dumpView();
+  virtual QImage dumpView();
+  virtual bool   dumpViewToFormat( const QImage&, const QString& fileName, const QString& format );
+  virtual QString  filter() const;
 
   /* Transformation selected but not started yet */
   bool transformRequested() const;

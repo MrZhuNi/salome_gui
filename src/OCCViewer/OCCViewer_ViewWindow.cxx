@@ -64,6 +64,7 @@
 #include <Visual3d_View.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_Structure.hxx>
+#include <Graphic3d_ExportFormat.hxx>
 
 static QEvent* l_mbPressEvent = 0;
 
@@ -1388,6 +1389,30 @@ QImage OCCViewer_ViewWindow::dumpView()
   QPixmap px = QPixmap::grabWindow( myViewPort->winId() );
   return px.toImage();
 }
+
+bool OCCViewer_ViewWindow::dumpViewToFormat( const QImage& img, 
+					     const QString& fileName, 
+					     const QString& format )
+{
+  if ( format != "PS" && format != "EPS")
+    return SUIT_ViewWindow::dumpViewToFormat( img, fileName, format );
+
+  Handle(Visual3d_View) a3dView = myViewPort->getView()->View();
+
+  if (format == "PS")
+    a3dView->Export(qPrintable(fileName), Graphic3d_EF_PostScript);
+  else if (format == "EPS")
+    a3dView->Export(qPrintable(fileName), Graphic3d_EF_EnhPostScript);
+
+  return true;
+}
+
+
+QString OCCViewer_ViewWindow::filter() const
+{
+  return tr( "OCC_IMAGE_FILES" );
+}
+
 
 /*!
   \brief Set parameters of the cutting plane
