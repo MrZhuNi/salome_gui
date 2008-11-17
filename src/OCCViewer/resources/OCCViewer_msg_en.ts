@@ -209,6 +209,10 @@
         <source>MNU_SCALING</source>
         <translation>Scaling</translation>
     </message>
+    <message>
+        <source>OCC_IMAGE_FILES</source>
+        <translation>Images Files (*.bmp *.png *.jpg *.jpeg *.eps *.ps)</translation>
+    </message>
 </context>
 <context>
     <name>OCCViewer_CreateRestoreViewDlg</name>
