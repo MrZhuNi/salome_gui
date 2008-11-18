@@ -60,6 +60,9 @@ protected:
 
   bool                      findVariable( const QString&, int& ) const;
 
+protected:
+  virtual void              showEvent( QShowEvent* );
+
 protected slots:
   void                      onEditingFinished();
   void                      onTextChanged( const QString& );

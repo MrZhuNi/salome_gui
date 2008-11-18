@@ -316,3 +316,11 @@ bool SalomeApp_DoubleSpinBox::findVariable( const QString& name, double& value )
   }
   return false;
 }
+
+/*!
+  \brief This function is called when the spinbox recieves show event.
+*/
+void SalomeApp_DoubleSpinBox::showEvent( QShowEvent* )
+{
+  setText( myTextValue );
+}

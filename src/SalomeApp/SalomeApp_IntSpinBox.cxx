@@ -269,3 +269,11 @@ bool SalomeApp_IntSpinBox::findVariable( const QString& name, int& value ) const
   }
   return false;
 }
+
+/*!
+  \brief This function is called when the spinbox recieves show event.
+*/
+void SalomeApp_IntSpinBox::showEvent( QShowEvent* )
+{
+  setText( myTextValue );
+}
