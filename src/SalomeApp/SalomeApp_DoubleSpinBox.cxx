@@ -239,6 +239,7 @@ void SalomeApp_DoubleSpinBox::setValue( const double value )
   QtxDoubleSpinBox::setValue( value );
 
   myCorrectValue = QString::number( value );
+  myTextValue = myCorrectValue;
 }
 
 /*!

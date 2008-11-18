@@ -195,6 +195,7 @@ void SalomeApp_IntSpinBox::setValue( const int value )
   QtxIntSpinBox::setValue( value );
 
   myCorrectValue = QString::number( value );
+  myTextValue = myCorrectValue;
 }
 
 /*!
