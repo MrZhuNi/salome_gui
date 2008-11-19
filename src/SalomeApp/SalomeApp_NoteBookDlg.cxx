@@ -729,7 +729,8 @@ SalomeApp_NoteBookDlg::~SalomeApp_NoteBookDlg(){}
 void SalomeApp_NoteBookDlg::onOK()
 {
   onApply();
-  hide();
+  if( myTable->IsValid() )
+    accept();
 }
 
 //============================================================================
