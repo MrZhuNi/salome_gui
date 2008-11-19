@@ -74,6 +74,7 @@ public:
   virtual std::string getVisualComponentName();
 
   virtual void        restoreState(int savePoint);
+  void                markAsSavedIn(QString theFileName);
 
 protected:
   virtual void        saveModuleData ( QString theModuleName, QStringList theListOfFiles );
@@ -85,6 +86,8 @@ protected:
   virtual void        SetListOfFiles ( const char* theModuleName,
                                        const std::vector<std::string> theListOfFiles);
   virtual void        RemoveTemporaryFiles ( const char* theModuleName, const bool isMultiFile) const;
+
+
 
 protected:
   virtual void        dataModelInserted( const CAM_DataModel* );

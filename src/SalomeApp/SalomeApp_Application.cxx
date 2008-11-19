@@ -722,6 +722,8 @@ void SalomeApp_Application::onNoteBook()
     _PTR(Study) aStudy = appStudy->studyDS();
     SalomeApp_NoteBookDlg aDlg(desktop(),aStudy);
     aDlg.exec();
+    updateCommandsStatus();
+    updateDesktopTitle();
   }
 }
 

@@ -853,6 +853,9 @@ bool SalomeApp_NoteBookDlg::updateStudy()
   if( !study )
     return false;
 
+  bool isStudySaved = study->isSaved();
+  QString aStudyName = study->studyName();
+
   _PTR(Study) studyDS = study->studyDS();
 
   // get unique temporary directory name
@@ -905,6 +908,9 @@ bool SalomeApp_NoteBookDlg::updateStudy()
   {
     myStudy = newStudy->studyDS();
     myTable->Init( myStudy );
+    if(isStudySaved) {
+      newStudy->markAsSavedIn(aStudyName);
+    }
   }
   else
     ok = false;
