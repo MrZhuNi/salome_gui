@@ -54,6 +54,9 @@ public:
 
   virtual void              setText(const QString& );
 
+signals:
+  void                      textChanged( const QString& );
+
 protected:
   State                     isValid( const QString&, double& ) const;
 
@@ -62,7 +65,7 @@ protected:
 
   bool                      findVariable( const QString&, double& ) const;
 
-protected:
+ protected:
   virtual void              showEvent( QShowEvent* );
 
 protected slots:

@@ -52,6 +52,9 @@ public:
 
   virtual void              setText(const QString& );
 
+signals:
+  void                      textChanged( const QString& );
+
 protected:
   State                     isValid( const QString&, int& ) const;
 

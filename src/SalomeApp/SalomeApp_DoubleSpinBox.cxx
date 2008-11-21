@@ -117,6 +117,9 @@ void SalomeApp_DoubleSpinBox::connectSignalsAndSlots()
 
   connect( lineEdit(), SIGNAL( textChanged( const QString& ) ),
 	   this, SLOT( onTextChanged( const QString& ) ) );
+
+  connect( lineEdit(), SIGNAL( textChanged( const QString& )),
+ 	   this, SIGNAL( textChanged( const QString& ) ) );
 }
 
 /*!
