@@ -454,7 +454,7 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
       {
         _PTR(Study) studyDS( aStudy->studyDS() );
 	
-	QStringList aStringList = aStrings.split(":");
+	QStringList aStringList = aStrings.split( QRegExp( "[:|]" ) );
 	if ( !aStringList.isEmpty() )
 	{
 	  for ( int i = 0, n = aStringList.size(); i < n; i++ )
