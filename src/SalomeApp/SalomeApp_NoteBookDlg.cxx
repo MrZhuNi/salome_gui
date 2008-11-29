@@ -829,6 +829,8 @@ void SalomeApp_NoteBookDlg::onRemove()
 void SalomeApp_NoteBookDlg::onUpdateStudy()
 {
   onApply();
+  if( !myTable->IsValid() )
+    return;
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
