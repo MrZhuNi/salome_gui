@@ -28,6 +28,7 @@
 #include "SALOMEDSClient_ClientFactory.hxx" 
 #include CORBA_SERVER_HEADER(SALOMEDS)
 
+#include <QKeyEvent>
 #include <QLineEdit>
 
 /*!
@@ -319,6 +320,17 @@ bool SalomeApp_DoubleSpinBox::findVariable( const QString& name, double& value )
     }
   }
   return false;
+}
+
+/*!
+  \brief This function is called when the spinbox recieves key press event.
+*/
+void SalomeApp_DoubleSpinBox::keyPressEvent( QKeyEvent* e )
+{
+  if ( e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter )
+    QWidget::keyPressEvent( e );
+  else
+    QtxDoubleSpinBox::keyPressEvent( e );
 }
 
 /*!

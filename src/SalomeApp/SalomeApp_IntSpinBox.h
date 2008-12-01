@@ -64,6 +64,7 @@ protected:
   bool                      findVariable( const QString&, int& ) const;
 
 protected:
+  virtual void              keyPressEvent( QKeyEvent* );
   virtual void              showEvent( QShowEvent* );
 
 protected slots:
