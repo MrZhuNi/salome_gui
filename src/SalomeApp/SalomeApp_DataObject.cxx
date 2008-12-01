@@ -453,21 +453,28 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
       if ( SalomeApp_Study* aStudy = dynamic_cast<SalomeApp_Study*>( aRoot->study() ) )
       {
         _PTR(Study) studyDS( aStudy->studyDS() );
-	
-	QStringList aStringList = aStrings.split( QRegExp( "[:|]" ) );
-	if ( !aStringList.isEmpty() )
-	{
-	  for ( int i = 0, n = aStringList.size(); i < n; i++ )
-	  {
-	    QString aStr = aStringList[i];
-	    if ( studyDS->IsVariable( aStr.toStdString() ) )
-	      val.append( aStr + ", " );
-	  }
 
-	  if ( !val.isEmpty() )
-	    val.remove( val.length() - 2, 2 );
+	bool ok = false;
+	QStringList aSectionList = aStrings.split( "|" );
+	if ( !aSectionList.isEmpty() )
+	{
+	  QString aLastSection = aSectionList.last();
+	  QStringList aStringList = aLastSection.split( ":" );
+	  if ( !aStringList.isEmpty() )
+	  {
+	    ok = true;
+	    for ( int i = 0, n = aStringList.size(); i < n; i++ )
+	    {
+	      QString aStr = aStringList[i];
+	      if ( studyDS->IsVariable( aStr.toStdString() ) )
+		val.append( aStr + ", " );
+	    }
+
+	    if ( !val.isEmpty() )
+	      val.remove( val.length() - 2, 2 );
+	  }
 	}
-	else
+	if( !ok )
 	  val = aStrings;
       }
     }
