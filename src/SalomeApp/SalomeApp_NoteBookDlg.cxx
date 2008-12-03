@@ -152,12 +152,12 @@ QString NoteBook_TableRow::GetValue() const
 //============================================================================
 bool NoteBook_TableRow::CheckName()
 {
-  bool aResult = false;
   QString aName = GetName();
-  if( !aName.isEmpty() )
-    aResult = true;
-  
-  return aResult;
+  int aPos = 0;
+  QRegExpValidator aValidator( QRegExp("^([a-zA-Z]+)([a-zA-Z0-9_]*)$"), 0 );
+  if( aName.isEmpty() || !aValidator.validate( aName, aPos ) )
+    return false;
+  return true;
 }
 
 //============================================================================

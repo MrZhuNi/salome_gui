@@ -20,6 +20,7 @@
 <li>\subpage using_find_tool_page</li>
 <li>\subpage using_registry_tool_page</li>
 <li>\subpage using_catalog_generator_page "Using Catalog Generator"</li>
+<li>\subpage using_notebook</li>
 <li>\subpage viewers_page</li>
 <ul>
 <li>\ref occ_3d_viewer_page</li>
