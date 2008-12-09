@@ -29,6 +29,7 @@
 
 #include <CAM_Module.h>
 
+#include <SUIT_Desktop.h>
 #include <SUIT_MessageBox.h>
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_Session.h>
@@ -936,6 +937,9 @@ bool SalomeApp_NoteBookDlg::updateStudy()
   // clear a study (delete all objects)
   clearStudy();
 
+  // get active application
+  app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
+
   // load study from the temporary directory
   QString command = QString( "execfile(\"%1\")" ).arg( aTmpDir + QDir::separator() + aFileName + ".py" );
 
@@ -976,6 +980,25 @@ void SalomeApp_NoteBookDlg::clearStudy()
   if( !app )
     return;
 
+  QList<SUIT_Application*> aList = SUIT_Session::session()->applications();
+  int anIndex = aList.indexOf( app );
+
+  if( anIndex > 0 )
+    setParent( 0 );
+
   app->onCloseDoc( false );
+
+  if( anIndex > 0 && anIndex < aList.count() )
+    app = dynamic_cast<SalomeApp_Application*>( aList[ anIndex - 1 ] );
+
+  if( !app )
+    return;
+
   app->onNewDoc();
+
+  app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
+  if( anIndex > 0 && app ) {
+    setParent( app->desktop(), Qt::Dialog );
+    show();
+  }
 }
