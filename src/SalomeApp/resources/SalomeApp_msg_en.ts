@@ -389,11 +389,11 @@ Do you really want to rename it?</translation>
 	 </message>
         <message>
            <source>BUT_UPDATE_STUDY</source>
-           <translation>Update Study</translation>
+           <translation>&amp;Update Study</translation>
 	</message>
         <message>
            <source>BUT_REMOVE</source>
-           <translation>Remove</translation>
+           <translation>&amp;Remove</translation>
 	</message>
         <message>
            <source>BUT_APPLY_AND_CLOSE</source>
