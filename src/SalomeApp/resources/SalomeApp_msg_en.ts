@@ -255,7 +255,7 @@ Do you want to reload it ?</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE_NOTEBOOK</source>
-        <translation>Notebook</translation>
+        <translation>Notebook...</translation>
     </message>
     <message>
         <source>PRP_DESK_FILE_NOTEBOOK</source>
@@ -394,6 +394,14 @@ Do you really want to rename it?</translation>
         <message>
            <source>BUT_REMOVE</source>
            <translation>Remove</translation>
+	</message>
+        <message>
+           <source>BUT_APPLY_AND_CLOSE</source>
+           <translation>A&amp;pply and Close</translation>
+	</message>
+        <message>
+           <source>BUT_HELP</source>
+           <translation>&amp;Help</translation>
 	</message>
         <message>
            <source>INCORRECT_DATA</source>

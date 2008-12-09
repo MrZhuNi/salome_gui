@@ -720,10 +720,8 @@ void SalomeApp_Application::onNoteBook()
   SalomeApp_Study* appStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
   if ( appStudy ) {
     _PTR(Study) aStudy = appStudy->studyDS();
-    SalomeApp_NoteBookDlg aDlg(desktop(),aStudy);
-    aDlg.exec();
-    updateCommandsStatus();
-    updateDesktopTitle();
+    SalomeApp_NoteBookDlg *aDlg = new SalomeApp_NoteBookDlg(desktop(),aStudy);
+    aDlg->show();
   }
 }
 

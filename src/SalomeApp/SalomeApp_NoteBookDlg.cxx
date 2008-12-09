@@ -30,6 +30,7 @@
 #include <CAM_Module.h>
 
 #include <SUIT_MessageBox.h>
+#include <SUIT_ResourceMgr.h>
 #include <SUIT_Session.h>
 
 #include <PyConsole_Console.h>
@@ -659,7 +660,8 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
   QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
   myStudy(theStudy)
 {
-  setModal(true);
+  setModal(false);
+  setAttribute( Qt::WA_DeleteOnClose);
   setObjectName("SalomeApp_NoteBookDlg");
   setWindowTitle(tr("NOTEBOOK_TITLE"));
   QGridLayout* aLayout = new QGridLayout(this);
@@ -674,8 +676,9 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
   myRemoveButton = new QPushButton(tr("BUT_REMOVE"));
   aLayout->addWidget(myRemoveButton, 1, 0, 1, 1);
 
+
   QSpacerItem* spacer =
-    new QSpacerItem(SPACER_SIZE, 5 , QSizePolicy::Expanding, QSizePolicy::Minimum);
+    new QSpacerItem(DEFAULT_SPACING, 5 , QSizePolicy::Expanding, QSizePolicy::Minimum);
   aLayout->addItem(spacer, 1, 1, 2, 1);
 
   myUpdateStudyBtn = new QPushButton(tr("BUT_UPDATE_STUDY"));
@@ -688,18 +691,17 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
   aLayout1->setMargin(DEFAULT_MARGIN);
   aLayout1->setSpacing(DEFAULT_SPACING);
 
-  myOkBtn = new QPushButton(tr("BUT_OK"));
+  myOkBtn = new QPushButton(tr("BUT_APPLY_AND_CLOSE"));
   aLayout1->addWidget(myOkBtn, 0, 0, 1, 1);
   
   myApplyBtn = new QPushButton(tr("BUT_APPLY"));
   aLayout1->addWidget(myApplyBtn, 0, 1, 1, 1);  
 
-  QSpacerItem* spacer1 =
-    new QSpacerItem(SPACER_SIZE, 5, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  aLayout1->addItem(spacer1, 0, 2, 1, 1);
+  myHelpBtn = new QPushButton(tr("BUT_HELP"));
+  aLayout1->addWidget(myHelpBtn, 0, 2, 1, 1);
+  
 
-
-  myCancelBtn = new QPushButton(tr("BUT_CANCEL"));
+  myCancelBtn = new QPushButton(tr("BUT_CLOSE"));
   aLayout1->addWidget(myCancelBtn, 0, 3, 1, 1);
 
   aLayout->addWidget(groupBox, 2, 0, 1, 3);
@@ -709,7 +711,8 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
   connect( myCancelBtn, SIGNAL(clicked()), this, SLOT(onCancel()) );
   connect( myUpdateStudyBtn, SIGNAL(clicked()), this, SLOT(onUpdateStudy()) );
   connect( myRemoveButton, SIGNAL(clicked()), this, SLOT(onRemove()));
-
+  connect( myHelpBtn, SIGNAL(clicked()), this, SLOT(onHelp()));
+  
   myTable->Init(myStudy);
 }
 
@@ -733,6 +736,32 @@ void SalomeApp_NoteBookDlg::onOK()
     accept();
 }
 
+//============================================================================
+/*! Function : onHelp
+ *  Purpose  : [slot]
+ */
+//============================================================================
+void SalomeApp_NoteBookDlg::onHelp()
+{
+  QString aHelpFileName("using_notebook.html");
+  LightApp_Application* app = (LightApp_Application*)(SUIT_Session::session()->activeApplication());
+  if (app)
+    app->onHelpContextModule("GUI",aHelpFileName);
+  else {
+    QString platform;
+#ifdef WIN32
+    platform = "winapplication";
+#else
+    platform = "application";
+#endif
+    SUIT_MessageBox::warning(this, tr("WRN_WARNING"),
+                             tr("EXTERNAL_BROWSER_CANNOT_SHOW_PAGE").
+                             arg(app->resourceMgr()->stringValue("ExternalBrowser",
+                                                                 platform)).
+                             arg(aHelpFileName));
+  }
+
+}
 //============================================================================
 /*! Function : onApply
  *  Purpose  : [slot]
@@ -797,8 +826,12 @@ void SalomeApp_NoteBookDlg::onApply()
 	myStudy->SetBoolean(string(aName.toLatin1().constData()),aBVal);
     }
   }
-
   myTable->ResetMaps();
+
+  SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
+  if(app)
+    app->updateActions();
+
 }
 
 //============================================================================

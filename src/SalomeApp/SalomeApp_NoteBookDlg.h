@@ -145,6 +145,7 @@ class SALOMEAPP_EXPORT SalomeApp_NoteBookDlg : public QDialog
    void onCancel();
    void onRemove();
    void onUpdateStudy();
+   void onHelp();
 
  protected:
    bool updateStudy();
@@ -157,6 +158,7 @@ class SALOMEAPP_EXPORT SalomeApp_NoteBookDlg : public QDialog
   QPushButton*     myOkBtn;
   QPushButton*     myApplyBtn;
   QPushButton*     myCancelBtn;
+  QPushButton*     myHelpBtn;
   
   _PTR(Study)      myStudy;
 };
