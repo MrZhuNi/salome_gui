@@ -676,7 +676,6 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
   myRemoveButton = new QPushButton(tr("BUT_REMOVE"));
   aLayout->addWidget(myRemoveButton, 1, 0, 1, 1);
 
-
   QSpacerItem* spacer =
     new QSpacerItem(DEFAULT_SPACING, 5 , QSizePolicy::Expanding, QSizePolicy::Minimum);
   aLayout->addItem(spacer, 1, 1, 2, 1);
@@ -697,14 +696,27 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
   myApplyBtn = new QPushButton(tr("BUT_APPLY"));
   aLayout1->addWidget(myApplyBtn, 0, 1, 1, 1);  
 
-  myHelpBtn = new QPushButton(tr("BUT_HELP"));
-  aLayout1->addWidget(myHelpBtn, 0, 2, 1, 1);
-  
+  QSpacerItem* spacer1 =
+    new QSpacerItem(DEFAULT_SPACING, 5, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  aLayout1->addItem(spacer1, 0, 2, 1, 1);
 
   myCancelBtn = new QPushButton(tr("BUT_CLOSE"));
   aLayout1->addWidget(myCancelBtn, 0, 3, 1, 1);
 
+  myHelpBtn = new QPushButton(tr("BUT_HELP"));
+  aLayout1->addWidget(myHelpBtn, 0, 4, 1, 1);
+  
   aLayout->addWidget(groupBox, 2, 0, 1, 3);
+
+  QWidgetList aWidgetList;
+  aWidgetList.append( myTable );
+  aWidgetList.append( myOkBtn );
+  aWidgetList.append( myApplyBtn );
+  aWidgetList.append( myCancelBtn );
+  aWidgetList.append( myHelpBtn );
+  aWidgetList.append( myUpdateStudyBtn );
+  aWidgetList.append( myRemoveButton );
+  Qtx::setTabOrder( aWidgetList );
 
   connect( myOkBtn, SIGNAL(clicked()), this, SLOT(onOK()) );
   connect( myApplyBtn, SIGNAL(clicked()), this, SLOT(onApply()) );
