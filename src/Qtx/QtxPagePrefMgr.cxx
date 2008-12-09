@@ -3014,6 +3014,72 @@ void QtxPagePrefFontItem::setFeatures( const int f )
 }
 
 /*!
+  \brief Specifies whether widget works in Native or Custom mode. Native mode 
+  is intended for working with system fonts. Custom mode is intended for 
+  working with manually defined set of fonts. Set of custom fonts can be 
+  specified with setFonts() method 
+  \param mode mode from QtxFontEdit::Mode enumeration
+  \sa mode()
+*/
+void QtxPagePrefFontItem::setMode( const int mode )
+{
+  myFont->setMode( mode );
+}
+
+/*!
+  \brief Verifies whether widget works in Native or Custom mode
+  \return Native or Custom mode
+  \sa setMode()
+*/
+int QtxPagePrefFontItem::mode() const
+{
+  return myFont->mode();
+}
+
+/*!
+  \brief Sets list of custom fonts. 
+  <b>This method is intended for working in Custom mode only.</b>
+  \param fams list of families
+  \sa fonts(), setMode()
+*/
+void QtxPagePrefFontItem::setFonts( const QStringList& fams )
+{
+  myFont->setFonts( fams );
+}
+
+/*!
+  \brief Gets list of custom fonts 
+  \return list of families
+  \sa setFonts(), setMode()
+*/
+QStringList QtxPagePrefFontItem::fonts() const
+{
+  return myFont->fonts();
+}
+
+/*!
+  \brief Sets list of available font sizes. 
+  <b>This method is intended for working in Custom mode only.</b> The list of sizes can 
+  be empty. In this case system generate listof size automatically from 8 till 72.
+  \param sizes list of sizes
+  \sa sizes(), setMode()
+*/
+void QtxPagePrefFontItem::setSizes( const QList<int>& sizes )
+{
+  myFont->setSizes( sizes );
+}
+
+/*!
+  \brief Gets list of custom fonts 
+  \return list of families
+  \sa setFonts(), setMode()
+*/
+QList<int> QtxPagePrefFontItem::sizes() const
+{
+  return myFont->sizes();
+}
+
+/*!
   \brief Store preference item to the resource manager.
   \sa retrieve()
 */
@@ -3041,6 +3107,18 @@ QVariant QtxPagePrefFontItem::optionValue( const QString& name ) const
 {
   if ( name == "features" )
     return features();
+  else if ( name == "mode" )
+    return mode();
+  else if ( name == "fonts" || name == "families" )
+    return fonts();
+  else if ( name == "sizes" )
+  {
+    QList<QVariant> lst;
+    QList<int> nums = sizes();
+    for ( QList<int>::const_iterator it = nums.begin(); it != nums.end(); ++it )
+      lst.append( *it );
+    return lst;
+  }
   else
     return QtxPageNamedPrefItem::optionValue( name );
 }
@@ -3057,6 +3135,30 @@ void QtxPagePrefFontItem::setOptionValue( const QString& name, const QVariant& v
   {
     if ( val.canConvert( QVariant::Int ) )
       setFeatures( val.toInt() );
+  }
+  else if ( name == "mode" )
+  {
+    if ( val.canConvert( QVariant::Int ) )
+      setMode( val.toInt() );
+  }
+  else if ( name == "fonts" || name == "families" )
+  {
+    if ( val.canConvert( QVariant::StringList ) )
+      setFonts( val.toStringList() );
+  }
+  else if ( name == "sizes" )
+  {
+    if ( val.type() == QVariant::List )
+    {
+      QList<int> lst;
+      QList<QVariant> varList = val.toList();
+      for ( QList<QVariant>::const_iterator it = varList.begin(); it != varList.end(); ++it )
+      {
+        if ( (*it).canConvert( QVariant::Int ) )
+          lst.append( (*it).toInt() );
+      }
+      setSizes( lst );
+    }
   }
   else
     QtxPageNamedPrefItem::setOptionValue( name, val );

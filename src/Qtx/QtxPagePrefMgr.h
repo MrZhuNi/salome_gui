@@ -521,6 +521,15 @@ public:
   int              features() const;
   void             setFeatures( const int );
 
+  void             setMode( const int );
+  int              mode() const;
+
+  void             setFonts( const QStringList& );
+  QStringList      fonts() const;
+
+  void             setSizes( const QList<int>& = QList<int>() );
+  QList<int>       sizes() const;
+
   virtual void     store();
   virtual void     retrieve();
 
