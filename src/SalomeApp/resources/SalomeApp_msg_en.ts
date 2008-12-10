@@ -404,6 +404,14 @@ Do you really want to rename it?</translation>
            <translation>&amp;Help</translation>
 	</message>
         <message>
+            <source>CLOSE_CAPTION</source>
+            <translation>Close NoteBook</translation>
+        </message>
+        <message>
+            <source>CLOSE_DESCRIPTION</source>
+            <translation>Do you want to save changes you made to NoteBook?</translation>
+        </message>
+        <message>
            <source>INCORRECT_DATA</source>
            <translation>At least one variable has been defined incorrectly.
 Please edit its parameters or remove it from table.</translation>

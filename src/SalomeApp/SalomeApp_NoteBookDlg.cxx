@@ -268,7 +268,8 @@ bool NoteBook_TableRow::IsIntegerValue(const QString theValue, int* theResult)
 //============================================================================
 NoteBook_Table::NoteBook_Table(QWidget * parent)
   :QTableWidget(parent),
-   isProcessItemChangedSignal(false)
+   isProcessItemChangedSignal(false),
+   myIsModified(false)
 {
   setColumnCount(2);
   setSelectionMode(QAbstractItemView::SingleSelection);
@@ -473,6 +474,7 @@ bool NoteBook_Table::IsLastRow(const NoteBook_TableRow* theRow) const
 void NoteBook_Table::onItemChanged(QTableWidgetItem* theItem)
 {
   if(isProcessItemChangedSignal) {
+    bool isModified = true;
     NoteBook_TableRow* aRow = GetRowByItem(theItem);
     if(aRow) {
       int aCurrentColumn = column(theItem);
@@ -534,13 +536,22 @@ void NoteBook_Table::onItemChanged(QTableWidgetItem* theItem)
       if( myVariableMap.contains( anIndex ) )
       {
 	NoteBoox_Variable& aVariable = myVariableMap[ anIndex ];
-	aVariable.Name = aRow->GetName();
-	aVariable.Value = aRow->GetValue();
+	if( aVariable.Name.compare( aRow->GetName() ) != 0 ||
+	    aVariable.Value.compare( aRow->GetValue() ) != 0 )
+	{
+	  aVariable.Name = aRow->GetName();
+	  aVariable.Value = aRow->GetValue();
+	}
+	else
+	  isModified = false;
       }
 
       if(IsCorrect && IsVariableComplited && IsLastRow(aRow))
 	AddEmptyRow();
     }
+
+    if( !myIsModified )
+      myIsModified = isModified;
   }
 }
 
@@ -645,6 +656,7 @@ QList<NoteBook_TableRow*> NoteBook_Table::GetRows() const
 //============================================================================
 void NoteBook_Table::ResetMaps()
 {
+  myIsModified = false;
   myVariableMapRef = myVariableMap;
   myRemovedRows.clear();
 }
@@ -854,6 +866,18 @@ void SalomeApp_NoteBookDlg::onApply()
 //============================================================================
 void SalomeApp_NoteBookDlg::onCancel()
 {
+  if( myTable->IsModified() )
+  {
+    int answer = QMessageBox::question( this, tr( "CLOSE_CAPTION" ), tr( "CLOSE_DESCRIPTION" ),
+					QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel );
+    switch( answer )
+    {
+      case QMessageBox::Yes    : onOK(); return;
+      case QMessageBox::No     : break;
+      case QMessageBox::Cancel : return;
+      default :	break;
+    }
+  }
   reject();
 }
 
