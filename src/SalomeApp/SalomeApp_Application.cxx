@@ -136,10 +136,11 @@ extern "C" SALOMEAPP_EXPORT SUIT_Application* createApplication()
 
 /*!Constructor.*/
 SalomeApp_Application::SalomeApp_Application()
-: LightApp_Application()
+  : LightApp_Application()
 {
   connect( desktop(), SIGNAL( message( const QString& ) ),
 	   this,      SLOT( onDesktopMessage( const QString& ) ) );
+  setNoteBook(0);
 }
 
 /*!Destructor.
@@ -473,8 +474,9 @@ void SalomeApp_Application::onCloseDoc( bool ask )
 
     }
   }
-
   LightApp_Application::onCloseDoc( ask );
+  if(myNoteBook && myNoteBook->isVisible())
+     myNoteBook->hide();
 }
 
 /*!Sets enable or disable some actions on selection changed.*/
@@ -720,8 +722,13 @@ void SalomeApp_Application::onNoteBook()
   SalomeApp_Study* appStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
   if ( appStudy ) {
     _PTR(Study) aStudy = appStudy->studyDS();
-    SalomeApp_NoteBookDlg *aDlg = new SalomeApp_NoteBookDlg(desktop(),aStudy);
-    aDlg->show();
+    if(!myNoteBook) {
+      myNoteBook = new SalomeApp_NoteBookDlg(desktop(),aStudy);
+    }
+    else if(!myNoteBook->isVisible()){
+      myNoteBook->Init(aStudy);
+    }
+    myNoteBook->show();
   }
 }
 
@@ -1448,3 +1455,15 @@ void SalomeApp_Application::objectBrowserColumnsVisibility()
 										   QString().sprintf( "visibility_column_%d", i-1 ), 
 										   true )) );
 }
+
+/*! Set SalomeApp_NoteBookDlg pointer */
+void SalomeApp_Application::setNoteBook(SalomeApp_NoteBookDlg* theNoteBook){
+  myNoteBook = theNoteBook;
+}
+
+/*! Return SalomeApp_NoteBookDlg pointer */
+SalomeApp_NoteBookDlg* SalomeApp_Application::getNoteBook() const
+{
+  return myNoteBook;
+}
+

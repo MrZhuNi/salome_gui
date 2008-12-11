@@ -674,7 +674,6 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
   myStudy(theStudy)
 {
   setModal(false);
-  setAttribute( Qt::WA_DeleteOnClose);
   setObjectName("SalomeApp_NoteBookDlg");
   setWindowTitle(tr("NOTEBOOK_TITLE"));
   QGridLayout* aLayout = new QGridLayout(this);
@@ -747,6 +746,18 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
  */
 //============================================================================
 SalomeApp_NoteBookDlg::~SalomeApp_NoteBookDlg(){}
+
+
+//============================================================================
+/*! Function : Init()
+ *  Purpose  : init variable table
+ */
+//============================================================================
+void SalomeApp_NoteBookDlg::Init(_PTR(Study) theStudy){
+  if(myStudy!= theStudy)
+    myStudy = theStudy;
+  myTable->Init(myStudy);
+}
 
 
 //============================================================================
@@ -982,7 +993,7 @@ bool SalomeApp_NoteBookDlg::updateStudy()
   if( SalomeApp_Study* newStudy = dynamic_cast<SalomeApp_Study*>( app->activeStudy() ) )
   {
     myStudy = newStudy->studyDS();
-    myTable->Init( myStudy );
+    myTable->Init(myStudy);
     if(isStudySaved) {
       newStudy->markAsSavedIn(aStudyName);
     }
@@ -1007,13 +1018,21 @@ void SalomeApp_NoteBookDlg::clearStudy()
   QList<SUIT_Application*> aList = SUIT_Session::session()->applications();
   int anIndex = aList.indexOf( app );
 
-  if( anIndex > 0 )
+
+  // Disconnect dialog from application desktop in case if:
+  // 1) Application is not the first application in the session	
+  // 2) Application is the first application in session but not the only.
+  bool changeDesktop = ((anIndex > 0) || (anIndex == 0 && aList.count() > 1));
+
+  if( changeDesktop )
     setParent( 0 );
 
   app->onCloseDoc( false );
-
+  
   if( anIndex > 0 && anIndex < aList.count() )
     app = dynamic_cast<SalomeApp_Application*>( aList[ anIndex - 1 ] );
+  else if(anIndex == 0 && aList.count() > 1)
+    app = dynamic_cast<SalomeApp_Application*>( aList[ 1 ] );
 
   if( !app )
     return;
@@ -1021,8 +1040,9 @@ void SalomeApp_NoteBookDlg::clearStudy()
   app->onNewDoc();
 
   app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
-  if( anIndex > 0 && app ) {
+  if( changeDesktop && app ) {
     setParent( app->desktop(), Qt::Dialog );
-    show();
+    app->setNoteBook(this);
   }
+  show();
 }

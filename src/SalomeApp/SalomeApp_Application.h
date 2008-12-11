@@ -41,6 +41,7 @@
 
 class LightApp_Preferences;
 class SalomeApp_Study;
+class SalomeApp_NoteBookDlg;
 class SUIT_DataObject;
 
 class SALOME_LifeCycleCORBA;
@@ -95,6 +96,9 @@ public:
   virtual bool                        isPossibleToClose( bool& );
 
   virtual bool                        useStudy( const QString& );
+  
+  virtual void                        setNoteBook(SalomeApp_NoteBookDlg* theNoteBook);
+  virtual SalomeApp_NoteBookDlg*      getNoteBook() const;
 
 public slots:
   virtual void                        onLoadDoc();
@@ -149,6 +153,9 @@ private slots:
   void                                onCatalogGen();
   void                                onRegDisplay();
   void                                onOpenWith();
+
+ private:
+  SalomeApp_NoteBookDlg*             myNoteBook;
 };
 
 #ifdef WIN32

@@ -140,6 +140,8 @@ class SALOMEAPP_EXPORT SalomeApp_NoteBookDlg : public QDialog
  public:
   SalomeApp_NoteBookDlg(QWidget * parent , _PTR(Study) theStudy);
   virtual ~SalomeApp_NoteBookDlg();
+
+  void Init(_PTR(Study) theStudy);
   
  public slots:
    void onOK();
