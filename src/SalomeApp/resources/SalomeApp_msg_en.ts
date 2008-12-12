@@ -255,7 +255,7 @@ Do you want to reload it ?</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE_NOTEBOOK</source>
-        <translation>Notebook...</translation>
+        <translation>Noteboo&amp;k...</translation>
     </message>
     <message>
         <source>PRP_DESK_FILE_NOTEBOOK</source>
