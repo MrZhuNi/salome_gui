@@ -201,6 +201,16 @@ QTableWidgetItem* NoteBook_TableRow::GetNameItem()
 }
 
 //============================================================================
+/*! Function : GetHeaderItem
+ *  Purpose  : 
+ */
+//============================================================================
+QTableWidgetItem* NoteBook_TableRow::GetHeaderItem()
+{
+  return myRowHeader;
+}
+
+//============================================================================
 /*! Function : IsRealValue
  *  Purpose  : Return true if theValue string is real value, otherwise return 
  *             false
@@ -413,6 +423,17 @@ bool NoteBook_Table::IsValid() const
 }
 
 //============================================================================
+/*! Function : RenamberRowItems
+ *  Purpose  : renumber row items
+ */
+//============================================================================
+void NoteBook_Table::RenamberRowItems(){
+  for(int i=0; i<myRows.size();i++){
+    myRows[i]->GetHeaderItem()->setText(QString::number(i+1));
+  }
+}
+
+//============================================================================
 /*! Function : AddRow
  *  Purpose  : Add a row into the table
  */
@@ -584,7 +605,7 @@ void NoteBook_Table::RemoveSelected()
     isProcessItemChangedSignal = true;
     return;
   }
-
+  bool removedFromStudy = false;
   for(int i=0; i < aSelectedItems.size(); i++ ) {
     NoteBook_TableRow* aRow = GetRowByItem(aSelectedItems[i]);
     if(aRow) {
@@ -607,15 +628,20 @@ void NoteBook_Table::RemoveSelected()
 	}
 
 	int index = aRow->GetIndex();
+        QString aVarName = aRow->GetName();
 	myRemovedRows.append( index );
 	if( myVariableMap.contains( index ) )
 	  myVariableMap.remove( index );
-
         removeRow(nRow);
         myRows.removeAt(nRow);
+        if(myStudy->IsVariable(aVarName.toLatin1().constData()))
+          removedFromStudy = true;
       }
     }
   }
+  if(removedFromStudy)
+    myIsModified = true;
+  RenamberRowItems();
   isProcessItemChangedSignal = true;
 }
 

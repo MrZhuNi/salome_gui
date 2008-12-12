@@ -71,6 +71,7 @@ class SALOMEAPP_EXPORT NoteBook_TableRow : public QWidget
 
   QTableWidgetItem* GetVariableItem();
   QTableWidgetItem* GetNameItem();
+  QTableWidgetItem* GetHeaderItem();
 
   static bool IsRealValue(const QString theValue, double* theResult = 0);
   static bool IsIntegerValue(const QString theValue, int* theResult = 0);
@@ -113,6 +114,7 @@ class SALOMEAPP_EXPORT NoteBook_Table : public QTableWidget
   const QList<int>&  GetRemovedRows() const { return myRemovedRows; }
   const VariableMap& GetVariableMap() const { return myVariableMap; }
   const VariableMap& GetVariableMapRef() const { return myVariableMapRef; }
+  void  RenamberRowItems();
 
   void ResetMaps();
 
