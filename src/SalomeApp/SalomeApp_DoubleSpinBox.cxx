@@ -198,7 +198,9 @@ bool SalomeApp_DoubleSpinBox::isValid( QString& msg, bool toCorrect )
   {
     if( toCorrect )
     {
-      if( aState == NoVariable )
+      if( aState == Incompatible )
+	msg += tr( "ERR_INCOMPATIBLE_TYPE" ).arg( text() ) + "\n";
+      else if( aState == NoVariable )
 	msg += tr( "ERR_NO_VARIABLE" ).arg( text() ) + "\n";
       else if( aState == Invalid )
 	msg += tr( "ERR_INVALID_VALUE" ) + "\n";
@@ -261,13 +263,16 @@ void SalomeApp_DoubleSpinBox::setText( const QString& value )
 */
 SalomeApp_DoubleSpinBox::State SalomeApp_DoubleSpinBox::isValid( const QString& text, double& value ) const
 {
-  if( !findVariable( text, value ) )
+  SearchState aSearchState = findVariable( text, value );
+  if( aSearchState == NotFound )
   {
     bool ok = false;
     value = text.toDouble( &ok );
     if( !ok )
       return NoVariable;
   }
+  else if( aSearchState == IncorrectType )
+    return Incompatible;
 
   if( !checkRange( value ) )
     return Invalid;
@@ -301,10 +306,11 @@ bool SalomeApp_DoubleSpinBox::checkRange( const double value ) const
 
 /*!
   \brief This function is used to determine whether input is a variable name and to get its value.
-  \return true if the input is a variable name
+  \return status of search operation
 */
-bool SalomeApp_DoubleSpinBox::findVariable( const QString& name, double& value ) const
+SalomeApp_DoubleSpinBox::SearchState SalomeApp_DoubleSpinBox::findVariable( const QString& name, double& value ) const
 {
+  value = 0;
   if( SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() ) )
   {
     if( SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( app->activeStudy() ) )
@@ -312,14 +318,18 @@ bool SalomeApp_DoubleSpinBox::findVariable( const QString& name, double& value )
       _PTR(Study) studyDS = study->studyDS();
 
       std::string aName = name.toStdString();
-      if( studyDS->IsVariable( aName ) && ( studyDS->IsReal( aName ) || studyDS->IsInteger( aName ) ) )
+      if( studyDS->IsVariable( aName ) )
       {
-	value = studyDS->GetReal( aName );
-	return true;
+	if( studyDS->IsReal( aName ) || studyDS->IsInteger( aName ) )
+	{
+	  value = studyDS->GetReal( aName );
+	  return Found;
+	}
+	return IncorrectType;
       }
     }
   }
-  return false;
+  return NotFound;
 }
 
 /*!

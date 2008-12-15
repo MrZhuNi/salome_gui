@@ -32,7 +32,8 @@ class SALOMEAPP_EXPORT SalomeApp_DoubleSpinBox : public QtxDoubleSpinBox
 {
   Q_OBJECT
 
-  enum State { Invalid = 0, NoVariable, Acceptable };
+  enum State { Invalid = 0, NoVariable, Incompatible, Acceptable };
+  enum SearchState { NotFound = 0, IncorrectType, Found };
 
 public:
   SalomeApp_DoubleSpinBox( QWidget* = 0 );
@@ -63,7 +64,7 @@ protected:
   double                    defaultValue() const;
   bool                      checkRange( const double ) const;
 
-  bool                      findVariable( const QString&, double& ) const;
+  SearchState               findVariable( const QString&, double& ) const;
 
 protected:
   virtual void              keyPressEvent( QKeyEvent* );

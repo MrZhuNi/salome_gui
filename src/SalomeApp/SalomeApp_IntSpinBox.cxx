@@ -168,7 +168,9 @@ bool SalomeApp_IntSpinBox::isValid( QString& msg, bool toCorrect )
   {
     if( toCorrect )
     {
-      if( aState == NoVariable )
+      if( aState == Incompatible )
+	msg += tr( "ERR_INCOMPATIBLE_TYPE" ).arg( text() ) + "\n";
+      else if( aState == NoVariable )
 	msg += tr( "ERR_NO_VARIABLE" ).arg( text() ) + "\n";
       else if( aState == Invalid )
 	msg += tr( "ERR_INVALID_VALUE" ) + "\n";
@@ -217,13 +219,21 @@ void SalomeApp_IntSpinBox::setText( const QString& value )
 */
 SalomeApp_IntSpinBox::State SalomeApp_IntSpinBox::isValid( const QString& text, int& value ) const
 {
-  if( !findVariable( text, value ) )
+  SearchState aSearchState = findVariable( text, value );
+  if( aSearchState == NotFound )
   {
     bool ok = false;
     value = text.toInt( &ok );
     if( !ok )
+    {
+      text.toDouble( &ok );
+      if( ok )
+	return Invalid;
       return NoVariable;
+    }
   }
+  else if( aSearchState == IncorrectType )
+    return Incompatible;
 
   if( !checkRange( value ) )
     return Invalid;
@@ -254,10 +264,11 @@ bool SalomeApp_IntSpinBox::checkRange( const int value ) const
 
 /*!
   \brief This function is used to determine whether input is a variable name and to get its value.
-  \return true if the input is a variable name
+  \return status of search operation
 */
-bool SalomeApp_IntSpinBox::findVariable( const QString& name, int& value ) const
+SalomeApp_IntSpinBox::SearchState SalomeApp_IntSpinBox::findVariable( const QString& name, int& value ) const
 {
+  value = 0;
   if( SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() ) )
   {
     if( SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( app->activeStudy() ) )
@@ -265,14 +276,18 @@ bool SalomeApp_IntSpinBox::findVariable( const QString& name, int& value ) const
       _PTR(Study) studyDS = study->studyDS();
 
       std::string aName = name.toStdString();
-      if( studyDS->IsVariable( aName ) && studyDS->IsInteger( aName ) )
+      if( studyDS->IsVariable( aName ) )
       {
-	value = studyDS->GetInteger( aName );
-	return true;
+	if( studyDS->IsInteger( aName ) )
+	{
+	  value = studyDS->GetInteger( aName );
+	  return Found;
+	}
+	return IncorrectType;
       }
     }
   }
-  return false;
+  return NotFound;
 }
 
 /*!
