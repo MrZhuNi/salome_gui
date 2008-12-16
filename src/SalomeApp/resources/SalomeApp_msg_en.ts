@@ -58,6 +58,10 @@
         <translation>Ref.Entry</translation>
     </message>
     <message>
+        <source>ERR_INCOMPATIBLE_TYPE</source>
+        <translation>Variable with name "%1" has incompatible numeric type</translation>
+    </message>
+    <message>
         <source>ERR_INVALID_VALUE</source>
         <translation>Value hasn't been validated</translation>
     </message>
