@@ -79,7 +79,7 @@ int SUIT_PreferenceMgr::addItem( const QString& title, const int pId,
 
   QtxPreferenceItem* item = parent->findItem( title, true );
 
-  if ( item && item->depth() < 4 )
+  if ( item && item->depth() < 5 )
     return item->id();
 
   if ( pId == -1 )
