@@ -656,6 +656,9 @@ bool GLViewer_ViewTransformer::eventFilter( QObject* o, QEvent* e )
             if ( e->type() == QEvent::MouseButtonPress )
                 myButtonState |= me->button();  /* add pressed button */
 
+            if ( e->type() == QEvent::MouseButtonRelease )
+                myButtonState |= me->button();  /* add release button */
+
             int mouseOnlyState = ( myButtonState & ( Qt::LeftButton | Qt::MidButton | Qt::RightButton ) );
             if ( myStart.isNull() )
             {
