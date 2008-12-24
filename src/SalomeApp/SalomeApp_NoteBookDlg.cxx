@@ -1044,6 +1044,11 @@ void SalomeApp_NoteBookDlg::clearStudy()
   QList<SUIT_Application*> aList = SUIT_Session::session()->applications();
   int anIndex = aList.indexOf( app );
 
+  //Store position and size of the this dialog
+  int aW = width();
+  int aH = height();
+  int aX = x();
+  int aY = y();
 
   // Disconnect dialog from application desktop in case if:
   // 1) Application is not the first application in the session	
@@ -1070,5 +1075,8 @@ void SalomeApp_NoteBookDlg::clearStudy()
     setParent( app->desktop(), Qt::Dialog );
     app->setNoteBook(this);
   }
+  //Set position and size of the this dialog
+  resize( aW, aH );
+  move( aX, aY );
   show();
 }

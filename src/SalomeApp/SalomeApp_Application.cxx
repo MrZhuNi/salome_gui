@@ -727,6 +727,9 @@ void SalomeApp_Application::onNoteBook()
     }
     else if(!myNoteBook->isVisible()){
       myNoteBook->Init(aStudy);
+      myNoteBook->adjustSize();
+      myNoteBook->move((int)(desktop()->x() + desktop()->width()/2  - myNoteBook->frameGeometry().width()/2),
+                       (int)(desktop()->y() + desktop()->height()/2 - myNoteBook->frameGeometry().height()/2));
     }
     myNoteBook->show();
   }
