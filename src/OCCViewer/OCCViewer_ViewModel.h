@@ -129,6 +129,7 @@ public:
   bool                            isMultiSelectionEnabled() const { return myMultiSelectionEnabled; }
 
   int                             getSelectionCount() const { return (!myAISContext.IsNull())? myAISContext->NbSelected():0; }
+  bool                            isStaticTrihedronDisplayed() { return myShowStaticTrihedron; }
 
   /* Selection management */
   bool    highlight( const Handle(AIS_InteractiveObject)&, bool, bool=true );
@@ -171,6 +172,8 @@ private:
 
   QColor                          myBgColor;
   QPoint                          myStartPnt, myEndPnt;
+
+  bool                            myShowStaticTrihedron;
 };
 
 #ifdef WIN32

@@ -23,7 +23,6 @@
 #include "OCCViewer_ViewWindow.h"
 #include "OCCViewer_VService.h"
 #include "OCCViewer_ViewPort3d.h"
-#include "OCCViewer_Trihedron.h"
 
 #include "SUIT_ViewWindow.h"
 #include "SUIT_ViewManager.h"
@@ -60,7 +59,8 @@
 */
 OCCViewer_Viewer::OCCViewer_Viewer( bool DisplayTrihedron, bool DisplayStaticTrihedron )
 : SUIT_ViewModel(),
-myBgColor( Qt::black )
+  myBgColor( Qt::black ),
+  myShowStaticTrihedron( DisplayStaticTrihedron )
 {
   // init CasCade viewers
   myV3dViewer = OCCViewer_VService::Viewer3d( "", (short*) "Viewer3d", "", 1000.,
@@ -112,15 +112,6 @@ myBgColor( Qt::black )
 
     myAISContext->Display(myTrihedron);
     myAISContext->Deactivate(myTrihedron);
-  }
-
-  /* create static trihedron (16551: EDF PAL 501) */
-  if( DisplayStaticTrihedron )
-  {
-    Handle(OCCViewer_Trihedron) aTrihedron = new OCCViewer_Trihedron();
-    myAISContext->Display(aTrihedron);
-    myAISContext->Deactivate(aTrihedron);
-    aTrihedron->SetTransformPersistence(Graphic3d_TMF_TriedronPers, gp_Pnt(-1, -1, 200));
   }
 
   // selection

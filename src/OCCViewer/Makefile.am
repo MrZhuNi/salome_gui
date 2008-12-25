@@ -45,7 +45,6 @@ salomeinclude_HEADERS =				\
 	OCCViewer_Trihedron.h
 
 dist_libOCCViewer_la_SOURCES =			\
-	OCCViewer.cxx				\
 	OCCViewer_AISSelector.cxx		\
 	OCCViewer_ViewManager.cxx		\
 	OCCViewer_ViewModel.cxx			\
@@ -108,5 +107,5 @@ nodist_salomeres_DATA =		\
 libOCCViewer_la_CPPFLAGS = $(QT_INCLUDES) $(OGL_INCLUDES) $(CAS_CPPFLAGS) \
 	-I$(srcdir)/../SUIT -I$(srcdir)/../Qtx
 
-libOCCViewer_la_LDFLAGS  = $(OGL_LIBS) $(QT_MT_LIBS) $(CAS_KERNEL) $(CAS_VIEWER) -lTKOpenGl
+libOCCViewer_la_LDFLAGS  = $(OGL_LIBS) $(QT_MT_LIBS) $(CAS_KERNEL) $(CAS_VIEWER)
 libOCCViewer_la_LIBADD   = ../Qtx/libqtx.la ../SUIT/libsuit.la

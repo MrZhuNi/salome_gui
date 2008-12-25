@@ -23,6 +23,9 @@
 
 #include "OCCViewer_VService.h"
 #include "OCCViewer_ViewWindow.h"
+#include "OCCViewer_ViewModel.h"
+
+#include <SUIT_ViewManager.h>
 
 #include <QColor>
 #include <QRect>
@@ -112,6 +115,16 @@ bool OCCViewer_ViewPort3d::mapView( const Handle(V3d_View)& view )
 		if ( view != activeView() )
 	    view->View()->Deactivate();
 	}
+
+  /* create static trihedron (16551: EDF PAL 501) */
+  OCCViewer_ViewWindow* aVW = dynamic_cast<OCCViewer_ViewWindow*>( parentWidget() );
+  if ( aVW ){
+    OCCViewer_Viewer* aViewModel = dynamic_cast<OCCViewer_Viewer*>( aVW->getViewManager()->getViewModel() );
+    if ( aViewModel && aViewModel->isStaticTrihedronDisplayed() ){
+      view->ZBufferTriedronSetup();
+      view->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.05, V3d_ZBUFFER );
+    }
+  }
   return true;
 }
 
