@@ -2105,7 +2105,7 @@ void Style_Salome::updatePaletteColors()
   aPal.setColor( QPalette::Window,          getColor( Style_Model::bg_clr ) );
   //aPal.setColor( QPalette::Shadow, ??? );
   QColor hc = getColor( Style_Model::pal_high_clr );
-  hc.setAlpha(100);
+  //hc.setAlpha(100);
   aPal.setColor( QPalette::Highlight,       hc );
   aPal.setColor( QPalette::HighlightedText, getColor( Style_Model::pal_high_text_clr ) );
   //aPal.setColor( QPalette::Link, ??? );
