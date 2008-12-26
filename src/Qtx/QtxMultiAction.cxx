@@ -409,7 +409,8 @@ void QtxMultiAction::updateButton( QToolButton* btn )
     b->setStatusTip( (*itr)->statusTip() );
     b->setAutoRaise( true );
     b->setIconSize( btn->iconSize() );
-    b->setToolButtonStyle( btn->toolButtonStyle() );
+    //b->setToolButtonStyle( btn->toolButtonStyle() );
+    b->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     b->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     b->installEventFilter( filter );
     vbox->addWidget( b );
