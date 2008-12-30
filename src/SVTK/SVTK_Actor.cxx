@@ -147,15 +147,13 @@ SVTK_Actor
   if(int aNbOfParts = theMapIndex.Extent()){
     vtkPoints *aPoints = vtkPoints::New();
     aPoints->SetNumberOfPoints(aNbOfParts);
-    vtkIdType iIdT;
-    for(int i = 0; i < aNbOfParts; i++){
+    for(vtkIdType i = 0; i < aNbOfParts; i++){
       int aPartId = theMapIndex( i+1 );
       if(vtkFloatingPointType* aCoord = theMapActor->GetNodeCoord(aPartId)){
 	aPoints->SetPoint(i,aCoord);
 	// Change the type from int to vtkIdType in order to avoid compilation errors while using VTK
 	// from ParaView-3.4.0 compiled on 64-bit Debian platform with VTK_USE_64BIT_IDS = ON
-	iIdT = i;
-	myUnstructuredGrid->InsertNextCell(VTK_VERTEX,1,&iIdT);
+	myUnstructuredGrid->InsertNextCell(VTK_VERTEX,(vtkIdType) 1,&i);
       }
     }
     myUnstructuredGrid->SetPoints(aPoints);

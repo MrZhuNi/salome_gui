@@ -22,6 +22,7 @@
 // File   : SALOME_PYQT_Module.cxx
 // Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
 //
+
 #include "SALOME_PYQT_Module.h"
 
 #include <PyInterp_Dispatcher.h>
@@ -91,6 +92,15 @@ const int DEFAULT_GROUP = 40;
 const bool IsCallOldMethods = true;
 #else
 const bool IsCallOldMethods = false;
+#endif
+
+/* Py_ssize_t for old Pythons */
+/* This code is as recommended by: */
+/* http://www.python.org/dev/peps/pep-0353/#conversion-guidelines */
+#if PY_VERSION_HEX < 0x02050000 && !defined(PY_SSIZE_T_MIN)
+typedef int Py_ssize_t;
+# define PY_SSIZE_T_MAX INT_MAX
+# define PY_SSIZE_T_MIN INT_MIN
 #endif
 
 //
@@ -854,7 +864,7 @@ void SALOME_PYQT_Module::init( CAM_Application* app )
       if ( PyDict_Check( res1 ) ) {
         PyObject* key;
         PyObject* value;
-        int pos = 0;
+        Py_ssize_t pos = 0;
         while ( PyDict_Next( res1, &pos, &key, &value ) ) {
 	  // parse the return value
 	  // it should be a map: {integer:integer}
