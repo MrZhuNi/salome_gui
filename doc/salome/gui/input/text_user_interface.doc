@@ -319,7 +319,7 @@ selCount = salome.sg.SelectedCount() # total number of selected items
 for i in range(selCount):
     print salome.sg.getSelected(i) # print entry ID of i-th selected item
 
-# get list of all selected obects' IDs
+# get list of all selected objects' IDs
 selected = salome.sg.getAllSelected()
 
 # add object to the selection
