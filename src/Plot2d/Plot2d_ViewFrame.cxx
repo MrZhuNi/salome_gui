@@ -1704,6 +1704,7 @@ void Plot2d_ViewFrame::onViewFitArea()
   myPlot->canvas()->setCursor( QCursor( Qt::PointingHandCursor ) );
   myOperation = FitAreaId;
   myPlot->setPickerMousePattern( Qt::LeftButton );
+  myPlot->setZoomBase();
 }
 /*!
   View operations : Global panning
@@ -2104,6 +2105,16 @@ int Plot2d_Plot2d::curveNbMarkers( Plot2d_Curve* curve ) const
   Plot2d_PlotCurve* aPlotCurve = 
     dynamic_cast<Plot2d_PlotCurve*>( myCurves.key( curve, 0 ) );
   return aPlotCurve ? aPlotCurve->nbMarkers() : 0;
+}
+
+/*!
+   Update initial zoomer structure. This method is  called from onViewFitArea() 
+   slots to reinitialize zoomer in accordance with current plot 2d state
+*/
+void Plot2d_Plot2d::setZoomBase( const bool doReplot )
+{
+  if ( myPlotZoomer )
+    myPlotZoomer->setZoomBase( doReplot );
 }
 
 /*!

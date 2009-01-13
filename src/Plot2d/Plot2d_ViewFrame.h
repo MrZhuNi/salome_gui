@@ -247,6 +247,8 @@ public:
   bool                setCurveNbMarkers( Plot2d_Curve* curve, const int nb );
   int                 curveNbMarkers( Plot2d_Curve* curve ) const;
 
+  void                setZoomBase( const bool doReplot = true );
+
 public slots:
   virtual void polish();
 
