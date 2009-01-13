@@ -257,7 +257,7 @@ void CAM_Application::loadModules()
   \param modName module name
   \return module object pointer or 0 if module could not be loaded
 */
-CAM_Module* CAM_Application::loadModule( const QString& modName )
+CAM_Module* CAM_Application::loadModule( const QString& modName, const bool showMsg )
 {
   if ( myInfoList.isEmpty() )
   {
@@ -316,7 +316,7 @@ CAM_Module* CAM_Application::loadModule( const QString& modName )
     module->setName( moduleName( modName ) );
   }
 
-  if ( !err.isEmpty() ) {
+  if ( !err.isEmpty() && showMsg ) {
     if ( desktop() && desktop()->isVisible() )
       SUIT_MessageBox::warning( desktop(), tr( "Error" ), err );
     else
