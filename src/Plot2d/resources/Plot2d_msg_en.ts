@@ -65,6 +65,10 @@
         <translation>PostScript files (*.ps)</translation>
     </message>
     <message>
+        <source>ENCAPSULATED_POSTSCRIPT_FILES</source>
+        <translation>Encapsulated PostScript files (*.eps)</translation>
+    </message>
+    <message>
         <source>DSC_GLOBALPAN_VIEW</source>
         <translation>Selection of a new center of the view</translation>
     </message>

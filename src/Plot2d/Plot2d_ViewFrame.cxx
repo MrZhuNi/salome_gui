@@ -2004,7 +2004,7 @@ bool Plot2d_ViewFrame::print( const QString& file, const QString& format ) const
   if( myPlot )
   {
     QPaintDevice* pd = 0;
-    if( format=="PS" )
+    if( format=="PS" || format=="EPS" )
     {
       QPrinter* pr = new QPrinter( QPrinter::HighResolution );
       pr->setPageSize( QPrinter::A4 );
