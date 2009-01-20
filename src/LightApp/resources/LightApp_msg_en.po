@@ -88,22 +88,22 @@ msgid "LightApp_Application::PRP_MODULE"
 msgstr "Switch to the module \"%1\""
 
 msgid "LightApp_Application::NEW_WINDOW_0"
-msgstr "&GL view"
+msgstr "&GL View"
 
 msgid "LightApp_Application::NEW_WINDOW_1"
-msgstr "&Plot2d view"
+msgstr "&Plot2d View"
 
 msgid "LightApp_Application::NEW_WINDOW_2"
-msgstr "&OCC view"
+msgstr "&OCC View"
 
 msgid "LightApp_Application::NEW_WINDOW_3"
-msgstr "VT&K view"
+msgstr "VT&K View"
 
 msgid "LightApp_Application::NEW_WINDOW_4"
-msgstr "&QxGraph view"
+msgstr "&QxGraph View"
 
 msgid "LightApp_Application::NEW_WINDOW_5"
-msgstr "Qx&Scene view"
+msgstr "Qx&Scene View"
 
 msgid "LightApp_Application::INF_CANCELLED"
 msgstr "Module activation cancelled"
@@ -129,7 +129,7 @@ msgstr "Message Window"
 //=======================================================================================
 
 msgid "LightApp_Application::MEN_DESK_MODULE_HELP"
-msgstr "Module help"
+msgstr "Module Help"
 
 //=======================================================================================
 

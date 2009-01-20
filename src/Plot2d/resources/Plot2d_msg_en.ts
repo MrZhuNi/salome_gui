@@ -222,7 +222,7 @@
     </message>
     <message>
         <source>MEN_PLOT2D_CURVES_SPLINES</source>
-        <translation>Draw splines</translation>
+        <translation>Draw Splines</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_MODE_LOGARITHMIC_HOR</source>
@@ -266,7 +266,7 @@
     </message>
     <message>
         <source>MEN_PLOT2D_CHANGE_BACKGROUND</source>
-        <translation>Change background...</translation>
+        <translation>Change Background...</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_CHANGE_BACKGROUND</source>
@@ -328,7 +328,7 @@ Logarithmic scale for ordinate axis is not allowed.</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_CURVES_POINTS</source>
-        <translation>Draw points</translation>
+        <translation>Draw Points</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_CURVES_POINTS</source>
@@ -392,11 +392,11 @@ Logarithmic scale for ordinate axis is not allowed.</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_MODE_LOGARITHMIC_HOR</source>
-        <translation>Horizontal axis: logarithmic</translation>
+        <translation>Horizontal Axis: Logarithmic</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_MODE_LOGARITHMIC_VER</source>
-        <translation>Vertical axis: logarithmic</translation>
+        <translation>Vertical Axis: Logarithmic</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_FITDATA</source>
@@ -404,11 +404,11 @@ Logarithmic scale for ordinate axis is not allowed.</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_MODE_LINEAR_VER</source>
-        <translation>Vertical axis: linear</translation>
+        <translation>Vertical Axis: Linear</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_MODE_LINEAR_HOR</source>
-        <translation>Horizontal axis: linear</translation>
+        <translation>Horizontal Axis: Linear</translation>
     </message>
     <message>
         <source>NONE_MARKER_LBL</source>
@@ -480,7 +480,7 @@ Logarithmic scale for ordinate axis is not allowed.</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_CURVES_LINES</source>
-        <translation>Draw lines</translation>
+        <translation>Draw Lines</translation>
     </message>
 </context>
 <context>

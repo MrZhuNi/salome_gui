@@ -437,7 +437,7 @@ Do you want to overwrite it?</translation>
     </message>
     <message>
         <source>MEN_STUDIES_CHOICE</source>
-        <translation>Choose existent study.</translation>
+        <translation>Choose Existent Study.</translation>
     </message>
 </context>
 <context>

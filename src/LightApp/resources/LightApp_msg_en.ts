@@ -456,7 +456,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>MEN_DESK_MODULE_HELP</source>
-        <translation>Module help</translation>
+        <translation>Module Help</translation>
     </message>
     <message>
         <source>PREF_SUPERV_TITLE_COLOR</source>
@@ -496,7 +496,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>MEN_DESK_MRU</source>
-        <translation>Most recently used</translation>
+        <translation>Most Recently Used</translation>
     </message>
     <message>
         <source>TOT_DESK_PREFERENCES</source>
@@ -548,7 +548,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>MEN_DESK_CLOSE_ALL</source>
-        <translation>Close all</translation>
+        <translation>Close All</translation>
     </message>
     <message>
         <source>PRP_CLOSE_ALL</source>
@@ -560,7 +560,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>MEN_DESK_GROUP_ALL</source>
-        <translation>&amp;Group all</translation>
+        <translation>&amp;Group All</translation>
     </message>
     <message>
         <source>PRP_GROUP_ALL</source>
@@ -636,7 +636,7 @@ File does not exist</translation>
     </message>
     <message>
         <source>MEN_DISPLAY_ONLY</source>
-        <translation>Show only</translation>
+        <translation>Show Only</translation>
     </message>
     <message>
         <source>TOP_HIDE</source>
@@ -644,7 +644,7 @@ File does not exist</translation>
     </message>
     <message>
         <source>MEN_ERASE_ALL</source>
-        <translation>Hide all</translation>
+        <translation>Hide All</translation>
     </message>
     <message>
         <source>STB_HIDE</source>

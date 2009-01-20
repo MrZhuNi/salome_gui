@@ -176,15 +176,15 @@
     <name>VTKViewer_Viewer</name>
     <message>
         <source>MEN_DUMP_VIEW</source>
-        <translation>Dump view...</translation>
+        <translation>Dump View...</translation>
     </message>
     <message>
         <source>MEN_SHOW_TOOLBAR</source>
-        <translation>Show toolbar</translation>
+        <translation>Show Toolbar</translation>
     </message>
     <message>
         <source>MEN_CHANGE_BACKGROUD</source>
-        <translation>Change background...</translation>
+        <translation>Change Background...</translation>
     </message>
 </context>
 </TS>

@@ -629,7 +629,7 @@ Please, refer to the documentation.</translation>
     <name>SVTK_Viewer</name>
     <message>
         <source>MEN_DUMP_VIEW</source>
-        <translation>Dump view...</translation>
+        <translation>Dump View...</translation>
     </message>
     <message>
         <source>MEN_SHOW_TOOLBAR</source>

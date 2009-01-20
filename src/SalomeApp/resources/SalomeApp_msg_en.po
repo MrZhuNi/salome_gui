@@ -48,7 +48,7 @@ msgid "SalomeApp_Application::TOT_DESK_FILE_DUMP_STUDY"
 msgstr "Dump study"
 
 msgid "SalomeApp_Application::MEN_DESK_FILE_DUMP_STUDY"
-msgstr "&Dump study..."
+msgstr "&Dump Study..."
 
 msgid "SalomeApp_Application::PRP_DESK_FILE_DUMP_STUDY"
 msgstr "Dumps study to the python script"
@@ -66,7 +66,7 @@ msgid "SalomeApp_Application::TOT_DESK_FILE_LOAD_SCRIPT"
 msgstr "Load python script"
 
 msgid "SalomeApp_Application::MEN_DESK_FILE_LOAD_SCRIPT"
-msgstr "Load scrip&t..."
+msgstr "Load Scrip&t..."
 
 msgid "SalomeApp_Application::PRP_DESK_FILE_LOAD_SCRIPT"
 msgstr "Loads python script from file"
@@ -81,7 +81,7 @@ msgid "SalomeApp_Application::TOT_DESK_CATALOG_GENERATOR"
 msgstr "Catalog generator"
 
 msgid "SalomeApp_Application::MEN_DESK_CATALOG_GENERATOR"
-msgstr "Catalog &generator"
+msgstr "Catalog &Generator"
 
 msgid "SalomeApp_Application::PRP_DESK_CATALOG_GENERATOR"
 msgstr "Generates XML catalog of a component's interface"
@@ -90,7 +90,7 @@ msgid "SalomeApp_Application::TOT_DESK_REGISTRY_DISPLAY"
 msgstr "Registry display"
 
 msgid "SalomeApp_Application::MEN_DESK_REGISTRY_DISPLAY"
-msgstr "Registry &display"
+msgstr "Registry &Display"
 
 msgid "SalomeApp_Application::PRP_DESK_REGISTRY_DISPLAY"
 msgstr "Displays content of the Registry CORBA server"
@@ -99,7 +99,7 @@ msgid "SalomeApp_Application::TOT_DESK_MRU"
 msgstr "Most recently used"
 
 msgid "SalomeApp_Application::MEN_DESK_MRU"
-msgstr "Most recently used"
+msgstr "Most Recently Used"
 
 msgid "SalomeApp_Application::TOT_DESK_PROPERTIES"
 msgstr "Study properties"
@@ -136,7 +136,7 @@ msgstr "Save GUI state"
 //=======================================================================================
 
 msgid "SalomeApp_Application::MEN_WINDOWS_NEW"
-msgstr "New window"
+msgstr "New Window"
 
 msgid "SalomeApp_Application::MEN_VIEW_WNDS"
 msgstr "Windows"

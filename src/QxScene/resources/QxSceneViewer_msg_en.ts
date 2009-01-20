@@ -26,7 +26,7 @@
     <name>@default</name>
     <message>
         <source>MEN_CHANGE_BACKGROUND</source>
-        <translation>Change background...</translation>
+        <translation>Change Background...</translation>
     </message>
     <message>
         <source>MNU_PAN_VIEW</source>

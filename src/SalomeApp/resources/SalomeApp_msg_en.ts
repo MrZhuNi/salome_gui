@@ -97,7 +97,7 @@
     </message>
     <message>
         <source>MEN_WINDOWS_NEW</source>
-        <translation>New window</translation>
+        <translation>New Window</translation>
     </message>
     <message>
         <source>MEN_DELETE_INVALID_REFERENCE</source>
@@ -117,7 +117,7 @@
     </message>
     <message>
         <source>MEN_DESK_REGISTRY_DISPLAY</source>
-        <translation>Registry &amp;display</translation>
+        <translation>Registry &amp;Display</translation>
     </message>
     <message>
         <source>APPCLOSE_SAVE</source>
@@ -137,7 +137,7 @@
     </message>
     <message>
         <source>MEN_DESK_FILE_SAVE_GUI_STATE</source>
-        <translation>Save GUI state</translation>
+        <translation>Save GUI State</translation>
     </message>
     <message>
         <source>TOT_DESK_FILE_SAVE_GUI_STATE</source>
@@ -238,7 +238,7 @@ Do you want to reload it ?</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE_LOAD_SCRIPT</source>
-        <translation>Load scrip&amp;t...</translation>
+        <translation>Load Scrip&amp;t...</translation>
     </message>
     <message>
         <source>MEN_DESK_TOOLS</source>
@@ -254,7 +254,7 @@ Do you want to reload it ?</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE_DUMP_STUDY</source>
-        <translation>&amp;Dump study...</translation>
+        <translation>&amp;Dump Study...</translation>
     </message>
     <message>
         <source>PRP_DESK_CATALOG_GENERATOR</source>
@@ -278,7 +278,7 @@ Do you want to reload it ?</translation>
     </message>
     <message>
         <source>MEN_DESK_CATALOG_GENERATOR</source>
-        <translation>Catalog &amp;generator</translation>
+        <translation>Catalog &amp;Generator</translation>
     </message>
     <message>
         <source>APPCLOSE_CAPTION</source>
@@ -286,7 +286,7 @@ Do you want to reload it ?</translation>
     </message>
     <message>
         <source>MEN_DESK_MRU</source>
-        <translation>Most recently used</translation>
+        <translation>Most Recently Used</translation>
     </message>
     <message>
         <source>TOT_DESK_MRU</source>
