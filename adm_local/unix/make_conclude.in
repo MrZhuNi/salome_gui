@@ -182,16 +182,16 @@ inc: $(DEST_HEADERS)
 $(DEST_HEADERS): $(inc_builddir)/%: %
 	cp -f $< $@
 
-# build resources file (icons and messages) : .qm file from .po file
+# build resources file (icons and messages) : .qm file from .ts file
 RESOURCES_FILES_ALL := $(notdir $(wildcard $(srcdir)/resources/*))
 RESOURCES_FILES_ALL := $(filter-out CVS, $(RESOURCES_FILES_ALL))
-RESOURCES_FILES_ALL := $(filter-out %.po, $(RESOURCES_FILES_ALL))
+RESOURCES_FILES_ALL := $(filter-out %.ts, $(RESOURCES_FILES_ALL))
 RESOURCES_FILES_ALL := $(filter-out %.in, $(RESOURCES_FILES_ALL))
 RESOURCES_FILES ?= $(RESOURCES_FILES_ALL)
 
-resources: resources-po resources-cp 
+resources: resources-ts resources-cp 
 
-resources-po: $(PO_FILES:%.po=$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%.qm)
+resources-ts: $(TS_FILES:%.ts=$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%.qm)
 
 resources-cp: $(RESOURCES_FILES:%=$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%)
 
@@ -256,7 +256,7 @@ $(EXPORT_SHAREDPYSCRIPTS:%=install-%): install-%: %
 # generic rule to install .qm files :
 install-qm: resources
 	$(INSTALL) -d $(datadir)/resources/$(MODULE_NAME)
-	@for f in X $(PO_FILES:%.po=$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%.qm); do \
+	@for f in X $(TS_FILES:%.ts=$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%.qm); do \
 	   if test $$f != X; then							 \
 	     ($(INSTALL_DATA) $$f $(datadir)/resources/$(MODULE_NAME)/. || exit 1);			 \
 	   fi; 										 \
@@ -316,7 +316,7 @@ uninstall:
 	done
 
 # Uninstall qm files
-	@for f in X $(PO_FILES:%.po=%.qm); do 	      \
+	@for f in X $(TS_FILES:%.ts=%.qm); do 	      \
 	   if test $$f != X; then					      \
 	     $(LT_UNINSTALL) $(datadir)/resources/$(MODULE_NAME)/$$f ;			      \
 	   fi; 								      \
@@ -363,7 +363,7 @@ clean: mostlyclean
 #
 distclean: clean
 	#remove qm file !
-	-$(RM) $(PO_FILES:%.po=%.qm) $(PO_FILES:%.po=$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%.qm)
+	-$(RM) $(TS_FILES:%.ts=%.qm) $(TS_FILES:%.ts=$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%.qm)
 	#remove include files
 	-$(RM) $(DEST_HEADERS)
 	-$(RM) $(DISTCLEAN) *.bak *.old *.new .dep*
@@ -410,8 +410,8 @@ distclean: clean
 %_wrap.cxx : %.i
 	$(SWIG) $(SWIG_FLAGS) -o $@ $<
 
-$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%.qm: %.po
-	$(MSG2QM) $< $@ ; \
+$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%.qm: %.ts
+	$(LRELEASE) $< -qm $@
 
 #------------------------------------------------------------------------------
 # The following section of this makefile contains dependencies between the
