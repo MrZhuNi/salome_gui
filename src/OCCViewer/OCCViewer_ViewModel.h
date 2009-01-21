@@ -61,6 +61,8 @@ public:
         double   scaleY;
         double   scaleZ;
 	QString    name;
+	bool     isVisible;
+	double   size;
 };
 
 typedef QList<viewAspect> viewAspectList;

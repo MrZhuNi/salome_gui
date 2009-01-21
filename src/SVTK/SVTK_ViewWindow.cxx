@@ -57,6 +57,7 @@
 #include "QtxMultiAction.h"
 
 #include "VTKViewer_Utilities.h"
+#include "VTKViewer_Trihedron.h"
 
 #include "SVTK_View.h"
 //#include "SVTK_MainWindow.h"
@@ -111,7 +112,6 @@ namespace SVTK
 */
 SVTK_ViewWindow::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
   SUIT_ViewWindow(theDesktop),
-  //myMainWindow(0),
   myView(NULL),
   myDumpImage(QImage()),
   myKeyFreeInteractorStyle(SVTK_KeyFreeInteractorStyle::New())
@@ -126,11 +126,6 @@ SVTK_ViewWindow::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
 */
 void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
 {
-  //  if(SUIT_ResourceMgr* aResourceMgr = SUIT_Session::session()->resourceMgr()){
-    //myMainWindow = new SVTK_MainWindow(this,"SVTK_MainWindow",aResourceMgr,this);
-
-    //SVTK_RenderWindowInteractor* anIteractor = 
-    //  new SVTK_RenderWindowInteractor(myMainWindow,"SVTK_RenderWindowInteractor");
   myInteractor = new SVTK_RenderWindowInteractor(this,"SVTK_RenderWindowInteractor");
   
   SVTK_Selector* aSelector = SVTK_Selector::New();
@@ -148,7 +143,6 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
   aRenderer->Delete();
   aSelector->Delete();
   
-  //myMainWindow->Initialize(anIteractor);
   myToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL"), -1, this );
   myRecordingToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_RECORD_LABEL"), -1, this );
   
@@ -181,16 +175,13 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
   myRecorder->SetUseSkippedFrames( true );
   myRecorder->SetRenderWindow( myInteractor->getRenderWindow() );
   
-  //setCentralWidget(myMainWindow);
   setCentralWidget(myInteractor);
   
-  //myView = new SVTK_View(myMainWindow);
   myView = new SVTK_View(this);
   Initialize(myView,theModel);
   
   myInteractor->getRenderWindow()->Render();
   onResetView();
-  //}
 }
 
 /*!
@@ -231,14 +222,6 @@ SVTK_View* SVTK_ViewWindow::getView()
 { 
   return myView; 
 }
-
-/*!
-  \return corresponding vtk main window
-*/
-// SVTK_MainWindow* SVTK_ViewWindow::getMainWindow() 
-// { 
-//   return myMainWindow; 
-// }
 
 /*!
   \return corresponding vtk render window
@@ -293,7 +276,6 @@ SVTK_Selector* SVTK_ViewWindow::GetSelector() const
 */
 void SVTK_ViewWindow::onFrontView()
 {
-  //myMainWindow->onFrontView();
   GetRenderer()->OnFrontView();
   Repaint();
 }
@@ -303,7 +285,6 @@ void SVTK_ViewWindow::onFrontView()
 */
 void SVTK_ViewWindow::onBackView()
 {
-  //myMainWindow->onBackView();
   GetRenderer()->OnBackView();
   Repaint();
 }
@@ -313,7 +294,6 @@ void SVTK_ViewWindow::onBackView()
 */
 void SVTK_ViewWindow::onTopView()
 {
-  //myMainWindow->onTopView();
   GetRenderer()->OnTopView();
   Repaint();
 }
@@ -323,7 +303,6 @@ void SVTK_ViewWindow::onTopView()
 */
 void SVTK_ViewWindow::onBottomView()
 {
-  //myMainWindow->onBottomView();
   GetRenderer()->OnBottomView();
   Repaint();
 }
@@ -333,7 +312,6 @@ void SVTK_ViewWindow::onBottomView()
 */
 void SVTK_ViewWindow::onLeftView()
 {
-  //myMainWindow->onLeftView();
   GetRenderer()->OnLeftView();
   Repaint();
 }
@@ -343,7 +321,6 @@ void SVTK_ViewWindow::onLeftView()
 */
 void SVTK_ViewWindow::onRightView()
 {
-  //myMainWindow->onRightView();
   GetRenderer()->OnRightView();
   Repaint();
 }
@@ -353,7 +330,6 @@ void SVTK_ViewWindow::onRightView()
 */
 void SVTK_ViewWindow::onResetView()
 {
-  //myMainWindow->onResetView();
   GetRenderer()->OnResetView();
   Repaint();
 }
@@ -363,7 +339,6 @@ void SVTK_ViewWindow::onResetView()
 */
 void SVTK_ViewWindow::onFitAll()
 {
-  //myMainWindow->onFitAll();
   GetRenderer()->OnFitAll();
   Repaint();
 }
@@ -382,7 +357,6 @@ void SVTK_ViewWindow::onSelectionChanged()
 */
 void SVTK_ViewWindow::SetSelectionMode(Selection_Mode theMode)
 {
-  //myMainWindow->SetSelectionMode( theMode );
   GetSelector()->SetSelectionMode(theMode);
 }
 
@@ -391,7 +365,6 @@ void SVTK_ViewWindow::SetSelectionMode(Selection_Mode theMode)
 */
 Selection_Mode SVTK_ViewWindow::SelectionMode() const
 {
-  //return myMainWindow->SelectionMode();
   return GetSelector()->SelectionMode();
 }
 
@@ -496,7 +469,6 @@ void SVTK_ViewWindow::EraseAll()
 */
 void SVTK_ViewWindow::setBackgroundColor( const QColor& theColor )
 {
-  //myMainWindow->SetBackgroundColor( color );
   getRenderer()->SetBackground(theColor.red()/255.0, 
 			       theColor.green()/255.0,
 			       theColor.blue()/255.0);
@@ -507,7 +479,6 @@ void SVTK_ViewWindow::setBackgroundColor( const QColor& theColor )
 */
 QColor SVTK_ViewWindow::backgroundColor() const
 {
-  //return myMainWindow->BackgroundColor();
   vtkFloatingPointType aBackgroundColor[3];
   getRenderer()->GetBackground(aBackgroundColor);
   return QColor(int(aBackgroundColor[0]*255), 
@@ -545,7 +516,6 @@ void SVTK_ViewWindow::PopInteractorStyle()
 */
 void SVTK_ViewWindow::Repaint(bool theUpdateTrihedron)
 {
-  //myMainWindow->Repaint( theUpdateTrihedron );
   if(theUpdateTrihedron) 
     GetRenderer()->OnAdjustTrihedron();
 
@@ -561,7 +531,6 @@ void SVTK_ViewWindow::Repaint(bool theUpdateTrihedron)
 */
 void SVTK_ViewWindow::GetScale( double theScale[3] ) 
 {
-  //myMainWindow->GetScale( theScale );
   GetRenderer()->GetScale( theScale );
 }
 
@@ -570,7 +539,6 @@ void SVTK_ViewWindow::GetScale( double theScale[3] )
 */
 void SVTK_ViewWindow::SetScale( double theScale[3] ) 
 {
-  //myMainWindow->SetScale( theScale );
   GetRenderer()->SetScale( theScale );
   Repaint();
 }
@@ -581,7 +549,6 @@ void SVTK_ViewWindow::SetScale( double theScale[3] )
 bool SVTK_ViewWindow::isTrihedronDisplayed()
 {
   return GetRenderer()->IsTrihedronDisplayed();
-  //  return myMainWindow->IsTrihedronDisplayed();
 }
 
 /*!
@@ -589,7 +556,6 @@ bool SVTK_ViewWindow::isTrihedronDisplayed()
 */
 bool SVTK_ViewWindow::isCubeAxesDisplayed()
 {
-  //return myMainWindow->IsCubeAxesDisplayed();
   return GetRenderer()->IsCubeAxesDisplayed();
 }
 
@@ -598,7 +564,6 @@ bool SVTK_ViewWindow::isCubeAxesDisplayed()
 */
 void SVTK_ViewWindow::onViewTrihedron()
 {
-  //myMainWindow->onViewTrihedron();
   GetRenderer()->OnViewTrihedron();
   Repaint();
 }
@@ -608,7 +573,6 @@ void SVTK_ViewWindow::onViewTrihedron()
 */
 void SVTK_ViewWindow::onViewCubeAxes()
 {
-  //myMainWindow->onViewCubeAxes();
   GetRenderer()->OnViewCubeAxes();
   Repaint();
 }
@@ -618,7 +582,6 @@ void SVTK_ViewWindow::onViewCubeAxes()
 */
 VTKViewer_Trihedron* SVTK_ViewWindow::GetTrihedron()
 {
-  //return myMainWindow->GetTrihedron();
   return GetRenderer()->GetTrihedron();
 }
 
@@ -627,7 +590,6 @@ VTKViewer_Trihedron* SVTK_ViewWindow::GetTrihedron()
 */
 SVTK_CubeAxesActor2D* SVTK_ViewWindow::GetCubeAxes()
 {
-  //return myMainWindow->GetCubeAxes();
   return GetRenderer()->GetCubeAxes();
 }
 
@@ -636,7 +598,6 @@ SVTK_CubeAxesActor2D* SVTK_ViewWindow::GetCubeAxes()
 */
 vtkFloatingPointType SVTK_ViewWindow::GetTrihedronSize() const
 {
-  //return myMainWindow->GetTrihedronSize();
   return GetRenderer()->GetTrihedronSize();
 }
 
@@ -728,7 +689,6 @@ void SVTK_ViewWindow::onSwitchInteractionStyle(bool theOn)
 */
 void SVTK_ViewWindow::SetIncrementalSpeed(const int theValue, const int theMode)
 {
-  //myMainWindow->SetIncrementalSpeed(theValue, theMode);
   if ( (SVTK_InteractorStyle*)GetInteractorStyle() )
     ((SVTK_InteractorStyle*)GetInteractorStyle())->SetIncrementSpeed(theValue, theMode);
 }
@@ -743,7 +703,6 @@ void SVTK_ViewWindow::SetSpacemouseButtons(const int theBtn1,
 					   const int theBtn2,
 					   const int theBtn3)
 {
-  //myMainWindow->SetSMButtons(theBtn1, theBtn2, theBtn3);
   int val = theBtn1;
   myEventDispatcher->InvokeEvent(SVTK::SetSMDecreaseSpeedEvent, &val);
   val = theBtn2;
@@ -759,7 +718,6 @@ void SVTK_ViewWindow::SetSpacemouseButtons(const int theBtn1,
 */
 void SVTK_ViewWindow::SetTrihedronSize(const vtkFloatingPointType theSize, const bool theRelative)
 {
-  //myMainWindow->SetTrihedronSize(theSize, theRelative);
   GetRenderer()->SetTrihedronSize(theSize, theRelative);
   Repaint();
 }
@@ -769,7 +727,6 @@ void SVTK_ViewWindow::SetTrihedronSize(const vtkFloatingPointType theSize, const
  */
 void SVTK_ViewWindow::AdjustTrihedrons(const bool theIsForcedUpdate)
 {
-  //myMainWindow->AdjustActors();
   GetRenderer()->AdjustActors();
   Repaint();
 }
@@ -779,7 +736,6 @@ void SVTK_ViewWindow::AdjustTrihedrons(const bool theIsForcedUpdate)
 */
 void SVTK_ViewWindow::onAdjustTrihedron()
 {   
-  //myMainWindow->onAdjustTrihedron();
   GetRenderer()->OnAdjustTrihedron();
 }
 
@@ -788,7 +744,6 @@ void SVTK_ViewWindow::onAdjustTrihedron()
 */
 void SVTK_ViewWindow::onAdjustCubeAxes()
 {   
-  //myMainWindow->onAdjustCubeAxes();
   GetRenderer()->OnAdjustCubeAxes();
 }
 
@@ -846,7 +801,6 @@ void SVTK_ViewWindow::onMouseDoubleClicked( QMouseEvent* event )
 void SVTK_ViewWindow::AddActor( VTKViewer_Actor* theActor, 
 				bool theUpdate )
 {
-  //myMainWindow->AddActor( theActor, theUpdate );
   GetRenderer()->AddActor(theActor);
   if(theUpdate) 
     Repaint();
@@ -859,7 +813,6 @@ void SVTK_ViewWindow::AddActor( VTKViewer_Actor* theActor,
 void SVTK_ViewWindow::RemoveActor( VTKViewer_Actor* theActor, 
 				   bool theUpdate )
 {
-  //myMainWindow->RemoveActor( theActor, theUpdate );
   GetRenderer()->RemoveActor(theActor);
   if(theUpdate) 
     Repaint();
@@ -871,10 +824,6 @@ void SVTK_ViewWindow::RemoveActor( VTKViewer_Actor* theActor,
 */
 QImage SVTK_ViewWindow::dumpView()
 {
-//   if ( myMainWindow->getToolBar()->testAttribute(Qt::WA_UnderMouse) || myDumpImage.isNull() )
-//     return myMainWindow->dumpView();
-  
-//   return myDumpImage;
   QPixmap px = QPixmap::grabWindow( GetInteractor()->winId() );
   return px.toImage();
 }
@@ -923,7 +872,6 @@ bool SVTK_ViewWindow::dumpViewToFormat( const QImage& img, const QString& fileNa
 */
 void SVTK_ViewWindow::RefreshDumpImage()
 {
-  //myDumpImage = myMainWindow->dumpView();
   QPixmap px = QPixmap::grabWindow( GetInteractor()->winId() );
   myDumpImage = px.toImage();
 }
@@ -966,13 +914,10 @@ void SVTK_ViewWindow::SetSelectionTolerance(const double& theTolNodes,
 */
 bool SVTK_ViewWindow::action( const int accelAction  )
 {
-  //  if ( !myMainWindow->hasFocus() )
-  //    return false;
   if ( accelAction == SUIT_Accel::ZoomFit )
     onFitAll();
   else {
     int anEvent = SVTK::convertAction( accelAction );
-    //myMainWindow->InvokeEvent( anEvent, 0 );
     GetInteractor()->InvokeEvent(anEvent, 0);
   }
   return true;
@@ -1312,20 +1257,13 @@ QString SVTK_ViewWindow::getVisualParameters()
     getGradAxisVisualParams(aWriter, gradAxesActor->GetZAxisActor2D(), "Z");
   }
 
+  aWriter.writeStartElement("Trihedron");
+  aWriter.writeAttribute("isShown",  QString( "%1" ).arg( isTrihedronDisplayed()));
+  aWriter.writeAttribute("Size", QString::number(GetTrihedronSize()));
+  aWriter.writeEndElement();
+
   aWriter.writeEndElement();
   aWriter.writeEndDocument();
-
-//   retStr.sprintf( "%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e", 
-// 		  pos[0], pos[1], pos[2], focalPnt[0], focalPnt[1], focalPnt[2], 
-// 		  viewUp[0], viewUp[1], viewUp[2], parScale, scale[0], scale[1], scale[2] );
-
-//   // save graduated axes parameters
-//   if ( SVTK_CubeAxesActor2D* gradAxesActor = GetCubeAxes() ) {
-//     retStr += QString( "*%1" ).arg( GetRenderer()->IsCubeAxesDisplayed() );
-//     retStr += ::getGradAxisVisualParams( gradAxesActor->GetXAxisActor2D() );
-//     retStr += ::getGradAxisVisualParams( gradAxesActor->GetYAxisActor2D() );
-//     retStr += ::getGradAxisVisualParams( gradAxesActor->GetZAxisActor2D() );
-//   }
 
   return retStr;
 }
@@ -1394,6 +1332,12 @@ void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
 	  setGradAxisVisualParams(aReader, gradAxesActor->GetYAxisActor2D());
 	else if(aAttr.value("Axis") == "Z")
 	  setGradAxisVisualParams(aReader, gradAxesActor->GetZAxisActor2D());
+      } else if (aReader.name() == "Trihedron") {
+	if (aAttr.value("isShown") == "0")
+	  GetTrihedron()->VisibilityOff();
+	else
+	  GetTrihedron()->VisibilityOn();
+	SetTrihedronSize(aAttr.value("Size").toString().toDouble());
       }
     } 
   }
@@ -1445,6 +1389,13 @@ void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
 	  gradAxesActor->VisibilityOn();
 	else
 	  gradAxesActor->VisibilityOff();
+
+	if ( paramsLst[14].toUShort() )
+	  GetTrihedron()->VisibilityOn();
+	else
+	  GetTrihedron()->VisibilityOff();
+	
+	SetTrihedronSize(paramsLst[15].toDouble());
       }
     }
   }

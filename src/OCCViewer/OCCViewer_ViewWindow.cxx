@@ -1361,6 +1361,8 @@ void OCCViewer_ViewWindow::performRestoring( const viewAspect& anItem )
   aView3d->SetEye( anItem.eyeX, anItem.eyeY, anItem.eyeZ );
   aView3d->SetProj( anItem.projX, anItem.projY, anItem.projZ );
   aView3d->SetAxialScale( anItem.scaleX, anItem.scaleY, anItem.scaleZ );
+  myModel->setTrihedronShown( anItem.isVisible );
+  myModel->setTrihedronSize( anItem.size );
 	
   myRestoreFlag = 0;
 }
@@ -1465,6 +1467,9 @@ viewAspect OCCViewer_ViewWindow::getViewParams() const
 
   aView3d->AxialScale(aScaleX,aScaleY,aScaleZ);
 
+  bool isShown = myModel->isTrihedronVisible();
+  double size = myModel->trihedronSize();
+
   QString aName = QTime::currentTime().toString() + QString::fromLatin1( " h:m:s" );
 
   viewAspect params;
@@ -1485,6 +1490,8 @@ viewAspect OCCViewer_ViewWindow::getViewParams() const
   params.scaleY   = aScaleY;
   params.scaleZ   = aScaleZ;
   params.name	  = aName;
+  params.isVisible= isShown;
+  params.size     = size;
 
   return params;
 }
@@ -1502,6 +1509,7 @@ QString OCCViewer_ViewWindow::getVisualParameters()
 		  params.centerX, params.centerY, params.projX, params.projY, params.projZ, params.twist,
 		  params.atX, params.atY, params.atZ, params.eyeX, params.eyeY, params.eyeZ,
 		  params.scaleX, params.scaleY, params.scaleZ );
+  retStr += QString().sprintf("*%u*%.2f", params.isVisible, params.size );
   return retStr;
 }
 
@@ -1512,7 +1520,7 @@ QString OCCViewer_ViewWindow::getVisualParameters()
 void OCCViewer_ViewWindow::setVisualParameters( const QString& parameters )
 {
   QStringList paramsLst = parameters.split( '*' );
-  if ( paramsLst.size() >= 13 ) {
+  if ( paramsLst.size() >= 15 ) {
     viewAspect params;
     params.scale    = paramsLst[0].toDouble();
     params.centerX  = paramsLst[1].toDouble();
@@ -1527,7 +1535,7 @@ void OCCViewer_ViewWindow::setVisualParameters( const QString& parameters )
     params.eyeX     = paramsLst[10].toDouble();
     params.eyeY     = paramsLst[11].toDouble();
     params.eyeZ     = paramsLst[12].toDouble();
-    if ( paramsLst.size() == 16 ) {
+    if ( paramsLst.size() == 18 ) {
       params.scaleX    = paramsLst[13].toDouble();
       params.scaleY    = paramsLst[14].toDouble();
       params.scaleZ    = paramsLst[15].toDouble();
@@ -1537,6 +1545,8 @@ void OCCViewer_ViewWindow::setVisualParameters( const QString& parameters )
       params.scaleY    = 1.;
       params.scaleZ    = 1.;
     }
+    params.isVisible   = paramsLst[16].toDouble();
+    params.size        = paramsLst[17].toDouble();
 
     performRestoring( params );
   }
