@@ -32,6 +32,7 @@
 #include <SUIT_ResourceMgr.h>
 
 #include <QtxDockAction.h>
+#include <QtxMenu.h>
 #include <QtxActionMenuMgr.h>
 #include <QtxActionToolMgr.h>
 
@@ -782,11 +783,11 @@ void STD_Application::setActiveViewManager( SUIT_ViewManager* vm )
 /*!Public slot. */
 void STD_Application::onConnectPopupRequest( SUIT_PopupClient* client, QContextMenuEvent* e )
 {
-  QMenu* popup = new QMenu();
+  QtxMenu* popup = new QtxMenu();
   // fill popup by own items
   QString title;
   contextMenuPopup( client->popupClientType(), popup, title );
-  popup->setTitle( title );
+  popup->setTitleText( title );
 
   popup->addSeparator();
   // add items from popup client
