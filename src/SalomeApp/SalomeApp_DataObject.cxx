@@ -23,13 +23,16 @@
 // Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
 //
 #include "SalomeApp_DataObject.h"
-
 #include "SalomeApp_Study.h"
+#include "SalomeApp_Application.h"
 
 #include <CAM_DataObject.h>
 
+#include <SUIT_Session.h>
 #include <SUIT_Application.h>
 #include <SUIT_ResourceMgr.h>
+
+#include <SALOME_LifeCycleCORBA.hxx>
 
 #include <QObject>
 #include <QVariant>
@@ -251,6 +254,26 @@ QString SalomeApp_DataObject::toolTip( const int /*id*/ ) const
 {
   // we ignore parameter <id> in order to use the same tooltip for 
   // all columns
+  
+  // Get customized tooltip in case of it exists
+  const SalomeApp_DataObject* compObj = dynamic_cast<SalomeApp_DataObject*>( componentObject() );
+  // Check if the component has been loaded.
+  // In order to avoid loading the component only for getting a custom tooltip.
+  if ( compObj && compObj != this && !ior(compObj->object()).isEmpty() ) {
+    SalomeApp_Application* app = 
+      dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
+    if ( app ) {
+      Engines::Component_var aComponent = 
+	app->lcc()->FindOrLoad_Component( "FactoryServer", componentDataType().toLatin1().constData() );
+      
+      if ( !CORBA::is_nil(aComponent) && aComponent->hasObjectInfo() ) {
+	LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root() );
+	if ( aRoot && aRoot->study() )
+	  return QString( aComponent->getObjectInfo( aRoot->study()->id(), entry().toLatin1().constData()) );
+      }
+    }
+  }
+  
   return QString( "Object \'%1\', module \'%2\', ID=%3" ).arg( name() ).arg( componentDataType() ).arg( entry() );
 }
 

@@ -22,8 +22,7 @@
 #  File   : Makefile.in
 #  Author : Vladimir Klyachin (OCN)
 #  Module : VTKViewer
-# $Header$
-#
+
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
 lib_LTLIBRARIES = libVTKViewer.la

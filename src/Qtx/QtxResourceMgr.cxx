@@ -1391,6 +1391,8 @@ bool QtxResourceMgr::value( const QString& sect, const QString& name, QFont& fVa
       fVal.setItalic( true );
     else if ( curval == QString( "underline" ) )
       fVal.setUnderline( true );
+    else if ( curval == QString( "shadow" ) || curval == QString( "overline" ) )
+      fVal.setOverline( true );
     else
     {
       bool isOk = false;
@@ -1826,6 +1828,8 @@ void QtxResourceMgr::setValue( const QString& sect, const QString& name, const Q
     fontDescr.append( "Italic" );
   if ( val.underline() )
     fontDescr.append( "Underline" );
+  if ( val.overline() )
+    fontDescr.append( "Overline" );
   fontDescr.append( QString( "%1" ).arg( val.pointSize() ) );
 
   setResource( sect, name, fontDescr.join( "," ) );
