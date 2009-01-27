@@ -936,7 +936,8 @@ QtxAction* SVTK_ViewWindow::getAction( int id ) const
 // 76 values for graduated axes, so both numbers are processed.
 const int nNormalParams = 13;   // number of view windows parameters excluding graduated axes params
 const int nGradAxisParams = 25; // number of parameters of ONE graduated axis (X, Y, or Z)
-const int nAllParams = nNormalParams + 3*nGradAxisParams + 1; // number of all visual parameters
+const int nTrihedronParams = 3; // number of parameters for Trihedron
+const int nAllParams = nNormalParams + 3*nGradAxisParams + nTrihedronParams + 1; // number of all visual parameters
 
 /*! The method returns visual parameters of a graduated axis actor (x,y,z axis of graduated axes)
  */
@@ -1377,7 +1378,6 @@ void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
       // apply graduated axes parameters
       SVTK_CubeAxesActor2D* gradAxesActor = GetCubeAxes();
       if ( gradAxesActor && paramsLst.size() == nAllParams ) {
-	
 	int i = nNormalParams+1, j = i + nGradAxisParams - 1;
 	::setGradAxisVisualParams( gradAxesActor->GetXAxisActor2D(), parameters.section( '*', i, j ) ); 
 	i = j + 1; j += nGradAxisParams;
@@ -1389,13 +1389,13 @@ void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
 	  gradAxesActor->VisibilityOn();
 	else
 	  gradAxesActor->VisibilityOff();
-
-	if ( paramsLst[14].toUShort() )
+      } else if ( paramsLst.size() == nAllParams ) {
+	if ( paramsLst[90].toUShort() )
 	  GetTrihedron()->VisibilityOn();
 	else
 	  GetTrihedron()->VisibilityOff();
 	
-	SetTrihedronSize(paramsLst[15].toDouble());
+	SetTrihedronSize(paramsLst[91].toDouble());
       }
     }
   }
