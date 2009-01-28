@@ -80,6 +80,18 @@
         <source>REFENTRY_COLUMN</source>
         <translation>Ref.Entry</translation>
     </message>
+    <message>
+        <source>ERR_INCOMPATIBLE_TYPE</source>
+        <translation>Variable with name "%1" has incompatible numeric type</translation>
+    </message>
+    <message>
+        <source>ERR_INVALID_VALUE</source>
+        <translation>Value hasn't been validated</translation>
+    </message>
+    <message>
+        <source>ERR_NO_VARIABLE</source>
+        <translation>Variable with name "%1" doesn't exist</translation>
+    </message>
 </context>
 <context>
     <name>SalomeApp_Application</name>
@@ -265,6 +277,18 @@ Do you want to reload it ?</translation>
         <translation>Dumps study to the python script</translation>
     </message>
     <message>
+        <source>TOT_DESK_FILE_NOTEBOOK</source>
+        <translation>Open Notebook</translation>
+    </message>
+    <message>
+        <source>MEN_DESK_FILE_NOTEBOOK</source>
+        <translation>Noteboo&amp;k...</translation>
+    </message>
+    <message>
+        <source>PRP_DESK_FILE_NOTEBOOK</source>
+        <translation>Open Notebook</translation>
+    </message>
+    <message>
         <source>TOT_DESK_PROPERTIES</source>
         <translation>Study properties</translation>
     </message>
@@ -350,5 +374,78 @@ Do you want to reload it ?</translation>
         <source>SHUTDOWN_SERVERS</source>
         <translation>Shutdown standalone servers</translation>
     </message>
+</context>
+<context>
+    <name>NoteBook_Table</name>
+        <message>
+           <source>REMOVE_VARIABLE_IS_USED</source>
+           <translation>Variable with name "%1" is used in the study.
+Do you really want to remove it?</translation>
+	</message>
+        <message>
+           <source>RENAME_VARIABLE_IS_USED</source>
+           <translation>Variable with name "%1" is used in the study.
+Do you really want to rename it?</translation>
+	</message>
+        <message>
+           <source>VARNAME_COLUMN</source>
+           <translation>Variable Name</translation>
+	 </message>
+        <message>	
+           <source>VARVALUE_COLUMN</source>
+           <translation>Variable Value</translation>
+	</message>
+        <message>	
+           <source>VARVALUE_INCORRECT</source>
+           <translation>Variable Value Incorrect: %1</translation>
+	</message>
+        <message>	
+           <source>VARNAME_INCORRECT</source>
+           <translation>Valiable Name Incorrect :%1</translation>
+	</message>
+        <message>	
+           <source>VARNAME_EXISTS</source>
+           <translation>Valiable with name "%1" exists</translation>
+	</message>
+</context>
+<context>
+    <name>SalomeApp_NoteBookDlg</name>
+        <message>
+           <source>NOTEBOOK_TITLE</source>
+           <translation>Salome NoteBook</translation>
+	 </message>
+        <message>
+           <source>BUT_UPDATE_STUDY</source>
+           <translation>&amp;Update Study</translation>
+	</message>
+        <message>
+           <source>BUT_REMOVE</source>
+           <translation>&amp;Remove</translation>
+	</message>
+        <message>
+           <source>BUT_APPLY_AND_CLOSE</source>
+           <translation>A&amp;pply and Close</translation>
+	</message>
+        <message>
+           <source>BUT_HELP</source>
+           <translation>&amp;Help</translation>
+	</message>
+        <message>
+            <source>CLOSE_CAPTION</source>
+            <translation>Close NoteBook</translation>
+        </message>
+        <message>
+            <source>CLOSE_DESCRIPTION</source>
+            <translation>Do you want to save changes you made to NoteBook?</translation>
+        </message>
+        <message>
+           <source>INCORRECT_DATA</source>
+           <translation>At least one variable has been defined incorrectly.
+Please edit its parameters or remove it from table.</translation>
+	</message>
+        <message>
+           <source>ERR_UPDATE_STUDY_FAILED</source>
+           <translation>Failed to update study!</translation>
+	</message>
 </context>
 </TS>

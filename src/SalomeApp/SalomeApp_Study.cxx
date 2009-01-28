@@ -593,6 +593,16 @@ void SalomeApp_Study::RemoveTemporaryFiles ( const char* theModuleName, const bo
 }
 
 /*!
+  Mark the study as saved in the file
+  \param theFileName - the name of file
+*/
+void SalomeApp_Study::markAsSavedIn(QString theFileName)
+{
+  setStudyName(theFileName);
+  setIsSaved(true);
+}
+
+/*!
   Deletes all references to object
   \param obj - object
 */

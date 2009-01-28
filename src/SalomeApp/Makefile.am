@@ -51,7 +51,10 @@ salomeinclude_HEADERS =			\
 	SalomeApp_StudyPropertiesDlg.h	\
 	SalomeApp_CheckFileDlg.h	\
 	SalomeApp_VisualState.h		\
-	SalomeApp_ExitDlg.h
+	SalomeApp_ExitDlg.h             \
+	SalomeApp_NoteBookDlg.h         \
+	SalomeApp_DoubleSpinBox.h       \
+	SalomeApp_IntSpinBox.h
 
 dist_libSalomeApp_la_SOURCES =			\
 	SalomeApp_Module.cxx			\
@@ -70,7 +73,10 @@ dist_libSalomeApp_la_SOURCES =			\
 	SalomeApp_ListView.cxx			\
 	SalomeApp_CheckFileDlg.cxx		\
 	SalomeApp_VisualState.cxx		\
-	SalomeApp_ExitDlg.cxx
+	SalomeApp_ExitDlg.cxx                   \
+	SalomeApp_NoteBookDlg.cxx               \
+	SalomeApp_DoubleSpinBox.cxx             \
+	SalomeApp_IntSpinBox.cxx
 
 MOC_FILES =					\
 	SalomeApp_Application_moc.cxx		\
@@ -81,7 +87,10 @@ MOC_FILES =					\
 	SalomeApp_StudyPropertiesDlg_moc.cxx	\
 	SalomeApp_ListView_moc.cxx		\
 	SalomeApp_CheckFileDlg_moc.cxx		\
-	SalomeApp_ExitDlg_moc.cxx
+	SalomeApp_ExitDlg_moc.cxx               \
+	SalomeApp_NoteBookDlg_moc.cxx           \
+	SalomeApp_DoubleSpinBox_moc.cxx         \
+	SalomeApp_IntSpinBox_moc.cxx
 
 nodist_libSalomeApp_la_SOURCES = $(MOC_FILES)
 

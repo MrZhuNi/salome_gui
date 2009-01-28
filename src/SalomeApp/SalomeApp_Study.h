@@ -77,6 +77,7 @@ public:
   virtual std::string getVisualComponentName();
 
   virtual void        restoreState(int savePoint);
+  void                markAsSavedIn(QString theFileName);
 
 protected:
   virtual void        saveModuleData ( QString theModuleName, QStringList theListOfFiles );

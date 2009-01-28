@@ -73,6 +73,8 @@ saved in the Python file.
 </ul>
 To confirm your choice click \b Save.
 
+<b>Notebook</b> - allows to manage study variables using \subpage using_notebook "NoteBook".
+
 <b>Load Script</b> - allows to load a saved Python Script.
 
 \image html loadscript.png

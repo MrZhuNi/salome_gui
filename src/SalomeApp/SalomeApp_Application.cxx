@@ -31,6 +31,8 @@
 #include "SalomeApp_VisualState.h"
 #include "SalomeApp_StudyPropertiesDlg.h"
 #include "SalomeApp_LoadStudiesDlg.h"
+#include "SalomeApp_NoteBookDlg.h"
+
 #include "SalomeApp_ExitDlg.h"
 
 #include <LightApp_Application.h>
@@ -137,10 +139,11 @@ extern "C" SALOMEAPP_EXPORT SUIT_Application* createApplication()
 
 /*!Constructor.*/
 SalomeApp_Application::SalomeApp_Application()
-: LightApp_Application()
+  : LightApp_Application()
 {
   connect( desktop(), SIGNAL( message( const QString& ) ),
 	   this,      SLOT( onDesktopMessage( const QString& ) ) );
+  setNoteBook(0);
 }
 
 /*!Destructor.
@@ -238,6 +241,11 @@ void SalomeApp_Application::createActions()
 		tr( "MEN_DESK_FILE_DUMP_STUDY" ), tr( "PRP_DESK_FILE_DUMP_STUDY" ),
 		Qt::CTRL+Qt::Key_D, desk, false, this, SLOT( onDumpStudy() ) );
 
+  //! NoteBook
+  createAction(NoteBookId, tr( "TOT_DESK_FILE_NOTEBOOK" ), QIcon(),
+               tr( "MEN_DESK_FILE_NOTEBOOK" ), tr( "PRP_DESK_FILE_NOTEBOOK" ),
+               Qt::CTRL+Qt::Key_K, desk, false, this, SLOT(onNoteBook()));
+
   //! Load script
   createAction( LoadScriptId, tr( "TOT_DESK_FILE_LOAD_SCRIPT" ), QIcon(),
 		tr( "MEN_DESK_FILE_LOAD_SCRIPT" ), tr( "PRP_DESK_FILE_LOAD_SCRIPT" ),
@@ -275,6 +283,7 @@ void SalomeApp_Application::createActions()
   createMenu( FileLoadId,   fileMenu, 0 );  //SRN: BugID IPAL9021, add a menu item "Load"
 
   createMenu( DumpStudyId, fileMenu, 10, -1 );
+  createMenu( NoteBookId, fileMenu, 10, -1 );
   createMenu( separator(), fileMenu, -1, 10, -1 );
   createMenu( LoadScriptId, fileMenu, 10, -1 );
   createMenu( separator(), fileMenu, -1, 10, -1 );
@@ -470,6 +479,8 @@ void SalomeApp_Application::onCloseDoc( bool ask )
   }
 
   LightApp_Application::onCloseDoc( ask );
+  if(myNoteBook && myNoteBook->isVisible())
+     myNoteBook->hide();
 }
 
 /*!Sets enable or disable some actions on selection changed.*/
@@ -579,6 +590,11 @@ void SalomeApp_Application::updateCommandsStatus()
   if ( a )
     a->setEnabled( activeStudy() );
 
+  // Note Book
+  a = action(NoteBookId);
+  if( a )
+    a->setEnabled( activeStudy() );
+  
   // Load script menu
   a = action( LoadScriptId );
   if ( a )
@@ -701,6 +717,25 @@ void SalomeApp_Application::onDumpStudy( )
 				  QObject::tr("WRN_WARNING"),
 				  tr("WRN_DUMP_STUDY_FAILED") );
     }
+  }
+}
+
+/*!Private SLOT. On NoteBook*/
+void SalomeApp_Application::onNoteBook()
+{
+  SalomeApp_Study* appStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
+  if ( appStudy ) {
+    _PTR(Study) aStudy = appStudy->studyDS();
+    if(!myNoteBook) {
+      myNoteBook = new SalomeApp_NoteBookDlg(desktop(),aStudy);
+    }
+    else if(!myNoteBook->isVisible()){
+      myNoteBook->Init(aStudy);
+      myNoteBook->adjustSize();
+      myNoteBook->move((int)(desktop()->x() + desktop()->width()/2  - myNoteBook->frameGeometry().width()/2),
+                       (int)(desktop()->y() + desktop()->height()/2 - myNoteBook->frameGeometry().height()/2));
+    }
+    myNoteBook->show();
   }
 }
 
@@ -1443,3 +1478,15 @@ void SalomeApp_Application::objectBrowserColumnsVisibility()
       objectBrowser()->treeView()->setColumnHidden( i, !shown );
     }
 }
+
+/*! Set SalomeApp_NoteBookDlg pointer */
+void SalomeApp_Application::setNoteBook(SalomeApp_NoteBookDlg* theNoteBook){
+  myNoteBook = theNoteBook;
+}
+
+/*! Return SalomeApp_NoteBookDlg pointer */
+SalomeApp_NoteBookDlg* SalomeApp_Application::getNoteBook() const
+{
+  return myNoteBook;
+}
+
