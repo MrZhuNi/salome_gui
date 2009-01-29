@@ -348,6 +348,8 @@ protected:
   void doSetVisualParameters( const QString& );
   void SetEventDispatcher(vtkObject* theDispatcher);
 
+  QImage dumpViewContent();
+
   virtual QString filter() const;
   virtual bool dumpViewToFormat( const QImage& img, const QString& fileName, const QString& format );
   

@@ -819,13 +819,32 @@ void SVTK_ViewWindow::RemoveActor( VTKViewer_Actor* theActor,
   emit actorRemoved(theActor);
 }
 
+QImage SVTK_ViewWindow::dumpViewContent()
+{
+  vtkRenderWindow* aWindow = getRenderWindow();
+  int* aSize = aWindow->GetSize();
+  int aWidth = aSize[0];
+  int aHeight = aSize[1];
+  
+  unsigned char *aData = 
+    aWindow->GetRGBACharPixelData( 0, 0, aWidth-1, aHeight-1, 0 );
+  
+  QImage anImage( aData, aWidth, aHeight, QImage::Format_ARGB32 );
+
+  anImage = anImage.rgbSwapped();
+  anImage = anImage.mirrored();
+  return anImage;
+}
+
 /*!
   \return QImage, containing all scene rendering in window
 */
 QImage SVTK_ViewWindow::dumpView()
 {
-  QPixmap px = QPixmap::grabWindow( GetInteractor()->winId() );
-  return px.toImage();
+  if( myDumpImage.isNull() )
+    return dumpViewContent();
+  
+  return myDumpImage;
 }
 
 QString SVTK_ViewWindow::filter() const
@@ -872,8 +891,7 @@ bool SVTK_ViewWindow::dumpViewToFormat( const QImage& img, const QString& fileNa
 */
 void SVTK_ViewWindow::RefreshDumpImage()
 {
-  QPixmap px = QPixmap::grabWindow( GetInteractor()->winId() );
-  myDumpImage = px.toImage();
+  myDumpImage = dumpViewContent();
 }
 
 /*!
