@@ -209,7 +209,9 @@ void OCCViewer_Viewer::onMouseMove(SUIT_ViewWindow* theWindow, QMouseEvent* theE
   OCCViewer_ViewWindow* aView = (OCCViewer_ViewWindow*) theWindow;
 
   if ( isSelectionEnabled() ) {
-    if (aView->getViewPort()->getBusy()) return;
+    if (aView->getViewPort()->isBusy()) return; // Check that the ViewPort initialization completed
+                                                // To Prevent call move event if the View port is not initialized
+                                                // IPAL 20883
     Handle(V3d_View) aView3d = aView->getViewPort()->getView();
     if ( !aView3d.IsNull() )
       myAISContext->MoveTo(theEvent->x(), theEvent->y(), aView3d);

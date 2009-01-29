@@ -74,7 +74,7 @@ public:
   void	                startRotation( int, int, int, const gp_Pnt& );
   void	                rotate( int, int, int, const gp_Pnt& );
   void	                endRotation();
-  bool                  getBusy() {return myBusy;}
+  bool                  isBusy() {return myBusy;} // check that View Port is fully initialized
 
 protected:
     // EVENTS
