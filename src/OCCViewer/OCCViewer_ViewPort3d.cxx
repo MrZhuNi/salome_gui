@@ -57,7 +57,8 @@ OCCViewer_ViewPort3d::OCCViewer_ViewPort3d( QWidget* parent, const Handle( V3d_V
 : OCCViewer_ViewPort( parent ),
 myScale( 1.0 ),
 myDegenerated( true ),
-myAnimate( false )
+myAnimate( false ),
+myBusy( true )
 {
   selectVisualId();
 
@@ -459,6 +460,7 @@ void OCCViewer_ViewPort3d::paintEvent( QPaintEvent* e )
 		    activeView()->Redraw( rc.x(), rc.y(), rc.width(), rc.height() );
 	}
 	OCCViewer_ViewPort::paintEvent( e );
+	myBusy = false;
 }
 
 /*!

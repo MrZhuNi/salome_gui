@@ -207,8 +207,13 @@ void OCCViewer_Viewer::onMouseMove(SUIT_ViewWindow* theWindow, QMouseEvent* theE
   if (!theWindow->inherits("OCCViewer_ViewWindow")) return;
 
   OCCViewer_ViewWindow* aView = (OCCViewer_ViewWindow*) theWindow;
-  if ( isSelectionEnabled() )
-    myAISContext->MoveTo(theEvent->x(), theEvent->y(), aView->getViewPort()->getView());
+
+  if ( isSelectionEnabled() ) {
+    if (aView->getViewPort()->getBusy()) return;
+    Handle(V3d_View) aView3d = aView->getViewPort()->getView();
+    if ( !aView3d.IsNull() )
+      myAISContext->MoveTo(theEvent->x(), theEvent->y(), aView3d);
+  }
 }
 
 

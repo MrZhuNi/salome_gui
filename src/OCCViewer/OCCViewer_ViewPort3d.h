@@ -74,6 +74,7 @@ public:
   void	                startRotation( int, int, int, const gp_Pnt& );
   void	                rotate( int, int, int, const gp_Pnt& );
   void	                endRotation();
+  bool                  getBusy() {return myBusy;}
 
 protected:
     // EVENTS
@@ -93,6 +94,7 @@ private:
   Handle(V3d_View)	myActiveView;
   bool		        myDegenerated;
   bool                  myAnimate;
+  bool                  myBusy;
   double	        myScale;
 };
 
