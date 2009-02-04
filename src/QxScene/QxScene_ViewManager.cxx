@@ -20,8 +20,9 @@
 //  See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 #include "QxScene_ViewManager.h"
+#include "QxScene_ViewWindow.h"
 
-#define _DEVDEBUG_
+//#define _DEVDEBUG_
 #include "DebTrace.hxx"
 
 /*!
@@ -63,4 +64,26 @@ void QxScene_ViewManager::createView()
 {
   DEBTRACE("QxScene_ViewManager::createView");
   createViewWindow();
+}
+
+/*!
+ *  Method redefined here to allow some housekeeping before closing
+ *  the view (delete a loded schema and everything related).
+ *  If this is not possible, the view is not closed 
+ */
+void QxScene_ViewManager::closeView(SUIT_ViewWindow* theView)
+{
+  DEBTRACE("QxScene_ViewManager::closeView");
+  QxScene_ViewWindow *qxview = dynamic_cast<QxScene_ViewWindow*>(theView);
+  bool OKToClose = true;
+  if (!qxview)
+    OKToClose = true;
+  else
+    OKToClose = qxview->closeRequested();
+   if (OKToClose)
+     {
+       DEBTRACE("SUIT View to close");
+       SUIT_ViewManager::closeView(theView);
+       DEBTRACE("SUIT View closed");
+     }
 }

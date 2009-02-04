@@ -70,6 +70,10 @@ class QXSCENE_EXPORT QxScene_ViewWindow : public SUIT_ViewWindow {
   QGraphicsScene*   getScene() { return _scene; }
   void              setSceneView(QGraphicsView* sceneView){ _sceneView = sceneView; }
   QGraphicsView*    getSceneView() { return _sceneView; }
+  virtual bool      closeRequested();
+
+ signals:
+  void              tryClose(bool &isClosed, QxScene_ViewWindow* window);
 
  public slots:
   void              onViewFitAll();

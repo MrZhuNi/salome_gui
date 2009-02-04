@@ -39,7 +39,7 @@ public:
 
 protected:
   bool         insertView(SUIT_ViewWindow* theView);
-
+  virtual void closeView(SUIT_ViewWindow* theView);
 public slots:
   void         createView();
 

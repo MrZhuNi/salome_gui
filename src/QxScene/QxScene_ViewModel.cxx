@@ -32,7 +32,7 @@
 #include <QMenu>
 #include <QToolBar>
 
-#define _DEVDEBUG_
+//#define _DEVDEBUG_
 #include "DebTrace.hxx"
 
 /*!
@@ -68,10 +68,6 @@ void QxScene_Viewer::initView( QxScene_ViewWindow* view )
   if ( view )
   {
     view->initLayout();
-    
-    /*
-    // test add items into the current canvas view
-    */
   }
 }
 
@@ -113,7 +109,8 @@ void QxScene_Viewer::onChangeBgColor()
 /*!
   SLOT: called when popup item "Show toolbar" is activated, shows toolbar of active view window
 */
-void QxScene_Viewer::onShowToolbar() {
+void QxScene_Viewer::onShowToolbar()
+{
   QxScene_ViewWindow* aView = (QxScene_ViewWindow*)(myViewManager->getActiveView());
   if ( aView )
     aView->getToolBar()->show();    

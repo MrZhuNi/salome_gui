@@ -36,7 +36,7 @@
 #include <QToolBar>
 #include <QGraphicsRectItem>
 
-#define _DEVDEBUG_
+//#define _DEVDEBUG_
 #include "DebTrace.hxx"
 
 using namespace std;
@@ -269,3 +269,15 @@ SUIT_ResourceMgr* QxScene_ViewWindow::resMgr() const
   return SUIT_Session::session()->resourceMgr(); 
 }
 
+/*!
+ *  emits a signal to ask to close the schema associated to the window.
+ *  A boolean in return indicates if it is OK to close.
+ */
+bool QxScene_ViewWindow::closeRequested()
+{
+  DEBTRACE("QxScene_ViewWindow::closeRequested");
+  bool isClosed = false;
+  emit tryClose(isClosed, this);
+  DEBTRACE("isClosed=" << isClosed);
+  return isClosed;
+}
