@@ -33,6 +33,7 @@
 #include <SUIT_ResourceMgr.h>
 
 #include <SALOME_LifeCycleCORBA.hxx>
+#include <Basics_Utils.hxx>
 
 #include <QObject>
 #include <QVariant>
@@ -263,8 +264,13 @@ QString SalomeApp_DataObject::toolTip( const int /*id*/ ) const
     SalomeApp_Application* app = 
       dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
     if ( app ) {
-      Engines::Component_var aComponent = 
-	app->lcc()->FindOrLoad_Component( "FactoryServer", componentDataType().toLatin1().constData() );
+      // --- try to find (and not load) the component instance, like GEOM instance,
+      //     registered in naming service under Containers/<hostname>/...
+      //     with any container name, on every machine available
+      Engines::MachineParameters params;
+      app->lcc()->preSet(params); // --- any container name, anywhere
+      Engines::Component_var aComponent =
+        app->lcc()->FindComponent(params, componentDataType().toLatin1().constData() );
       
       if ( !CORBA::is_nil(aComponent) && aComponent->hasObjectInfo() ) {
 	LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root() );
