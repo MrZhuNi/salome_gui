@@ -231,7 +231,8 @@ void GLViewer_Viewer2d::activateDrawers( QList<GLViewer_Object*>& theObjects, bo
     QList<GLViewer_Drawer*>::Iterator anIt = myDrawers.begin();
     QList<GLViewer_Drawer*>::Iterator endDIt = myDrawers.end();
     for( ; anIt != endDIt; anIt++ )
-        (*anIt)->clear();
+        if( *anIt )
+            (*anIt)->clear();
 
     QList<GLViewer_Drawer*> anActiveDrawers;
     QList<GLViewer_Object*>::Iterator endOIt = theObjects.end();
@@ -245,7 +246,7 @@ void GLViewer_Viewer2d::activateDrawers( QList<GLViewer_Object*>& theObjects, bo
             endDIt = myDrawers.end();
 
             for( ; anIt != endDIt; anIt++ )
-                if( (*anIt)->getObjectType() == (*oit)->getObjectType() )
+                if( *anIt && (*anIt)->getObjectType() == (*oit)->getObjectType() )
                 {
                     (*oit)->setDrawer( *anIt );
                     aDrawer = *anIt;
