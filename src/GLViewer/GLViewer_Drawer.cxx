@@ -833,6 +833,22 @@ void GLViewer_Drawer::drawGLText( QString text, float x, float y,
   float height = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.height() * scale : aFontMetrics.height() / myYScale;
   float gap = 5 / myXScale;
 
+  if( text.indexOf( "\n" ) != -1 ) // case of multi-string text
+  {
+    QStringList aTextList = text.split( "\n" );
+    int aNbStrings = aTextList.count();
+    float yPos = y + ( aNbStrings - 1 ) * height / 2;
+
+    QStringListIterator anIter( aTextList );
+    while( anIter.hasNext() )
+    {
+      QString aText = anIter.next();
+      drawGLText( aText, x, yPos, hPosition, vPosition, color, smallFont );
+      yPos -= height;
+    }
+    return;
+  }
+
   switch( hPosition )
   {
       case GLText_Left   : x -= ( gap + width ); break;
@@ -857,11 +873,29 @@ void GLViewer_Drawer::drawGLText( QString text, float x, float y,
 */
 GLViewer_Rect GLViewer_Drawer::textRect( const QString& text ) const
 {
-  GLfloat scale = textScale() > 0. ? textScale() : 1.;
+  float width = 0;
+  float height = 0;
 
-  QFontMetrics aFontMetrics( myFont );
-  float width  = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.width( text ) * scale : aFontMetrics.width( text );
-  float height = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.height() * scale : aFontMetrics.height();
+  if( text.indexOf( "\n" ) != -1 ) // case of multi-string text
+  {
+    QStringList aTextList = text.split( "\n" );
+    QStringListIterator anIter( aTextList );
+    while( anIter.hasNext() )
+    {
+      QString aText = anIter.next();
+      GLViewer_Rect aRect = textRect( aText );
+      width = qMax( aRect.width(), width );
+      height += aRect.height();
+    }
+  }
+  else
+  {
+    GLfloat scale = textScale() > 0. ? textScale() : 1.;
+
+    QFontMetrics aFontMetrics( myFont );
+    width  = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.width( text ) * scale : aFontMetrics.width( text );
+    height = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.height() * scale : aFontMetrics.height();
+  }
 
   return GLViewer_Rect( 0, width, height, 0 );
 }
