@@ -157,14 +157,21 @@ Plot2d_SetupCurvesDlg::Plot2d_SetupCurvesDlg( QWidget* theParent )
   setWindowTitle( tr( "SETUP_CURVES" ) );
 
   QFrame* aMainFrame = mainFrame();
+
+  QVBoxLayout* aMainLay = new QVBoxLayout( aMainFrame );
+  aMainLay->setMargin( 5 );
+
   myGrp = new QtxGroupBox( aMainFrame ); 
   myGrp->setTitle( tr( "PARAMETERS" ) );
+  aMainLay->addWidget( myGrp );
+
   QVBoxLayout* aLay = new QVBoxLayout( myGrp );
   aLay->setMargin( 0 );
 
   // Create table
-
   myTable = new QTableWidget( myGrp );
+  myTable->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
+
   aLay->addWidget( myTable );
 
   myTable->setRowCount( 0 );
@@ -203,14 +210,11 @@ Plot2d_SetupCurvesDlg::Plot2d_SetupCurvesDlg( QWidget* theParent )
   myRemoveBtn->setFixedSize( minusPix.size() /*+ QSize( 2, 2 )*/ );
   myGrp->insertTitleWidget( myRemoveBtn );
 
-  QVBoxLayout* aMainLay = new QVBoxLayout( aMainFrame );
-  aMainLay->setMargin( 5 );
-  aMainLay->addWidget( myGrp );
-
   connect( myRemoveBtn, SIGNAL( clicked() ), SLOT( onRemove() ) );
   connect( myTable, SIGNAL( valueChanged( int, int ) ), SLOT( onValueChanged( int, int ) ) );
 
   setButtonPosition( Right, Cancel );
+  setMinimumHeight( 250 );
 }
 
 /*!
@@ -327,6 +331,7 @@ void Plot2d_SetupCurvesDlg::SetParameters( const QVector< int >& theMarker,
   int lw = aWg->lineWidth();
   int mlw = aWg->midLineWidth();
   aWg->setFixedWidth( aWidth + 2 * fw );
+  //aWg->setMinimumWidth( aWidth + 2 * fw );
   
   myRemovedIndexes.clear();
 
