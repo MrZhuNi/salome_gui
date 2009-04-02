@@ -31,6 +31,7 @@
 
 #include <QFrame>
 #include <QVBoxLayout>
+#include <QStatusBar>
 
 #include <stdarg.h>
 
@@ -102,10 +103,27 @@ QList<SUIT_ViewWindow*> STD_MDIDesktop::windows() const
 */
 void STD_MDIDesktop::addWindow( QWidget* w )
 {
-  if ( !w || !workspace() )
+  if ( !w || !myWorkspace )
     return;
 
-  workspace()->addWindow( w );
+  QWidget* aWnd = myWorkspace->addWindow( w );
+  //aWnd->setAutoFillBackground(false);
+  //setBackgroundRole(QPalette::NoRole);
+  QSize aSize = myWorkspace->size();
+
+  QWidget* aCurrWnd = myWorkspace->activeWindow();
+  int xPos = 0, yPos = 0;
+  if (aCurrWnd) {
+    const QRect& aCurrGeom = aCurrWnd->geometry();
+    int aShift = 20;
+    if (statusBar())
+      aShift = statusBar()->geometry().height();
+    int aXLow = aSize.width() * 1./3.;
+    int aYLow = aSize.height() * 1./3.;
+    xPos = (aCurrGeom.x() > aXLow)? 0 : aCurrGeom.x() + aShift;
+    yPos = (aCurrGeom.y() > aYLow)? 0 : aCurrGeom.y() + aShift;
+  } 
+  aWnd->setGeometry(xPos, yPos, aSize.width() * 2./3., aSize.height() * 2./3.);
 }
 
 /*!Call method perform for operation \a type.*/

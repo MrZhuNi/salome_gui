@@ -153,7 +153,7 @@ SUIT_ViewWindow* SUIT_ViewManager::createViewWindow()
   setViewName( aView );
   aView->setWindowIcon( QIcon( myIcon ) );
 
-  //myDesktop->addViewWindow( aView );
+  myDesktop->addWindow( aView );
   //it is done automatically during creation of view
 
   aView->setViewManager( this );
@@ -162,6 +162,7 @@ SUIT_ViewWindow* SUIT_ViewManager::createViewWindow()
   // Special treatment for the case when <aView> is the first one in this view manager
   // -> call onWindowActivated() directly, because somebody may always want
   // to use getActiveView()
+  aView->show();
   if ( !myActiveView )
     onWindowActivated( aView );
 

@@ -71,6 +71,8 @@ public:
   void                     emitActivated();
   void                     emitMessage( const QString& );
 
+  virtual void             addWindow( QWidget* ) = 0;
+
 signals:
   void                     activated();
   void                     deactivated();
@@ -80,11 +82,10 @@ signals:
 
 protected:
   virtual bool             event( QEvent* );
-  virtual void             customEvent( QEvent* );
+  //virtual void             customEvent( QEvent* );
   virtual void             closeEvent( QCloseEvent* );
-  virtual void             childEvent( QChildEvent* );
+  //virtual void             childEvent( QChildEvent* );
 
-  virtual void             addWindow( QWidget* ) = 0;
 
 private:
   QtxActionMenuMgr*        myMenuMgr;

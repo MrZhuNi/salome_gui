@@ -192,7 +192,7 @@ bool SUIT_ViewWindow::event( QEvent* e )
       SUIT_MessageBox::critical( this, tr( "ERROR" ), tr( "ERR_CANT_DUMP_VIEW" ) );
 
     return true;
-  }
+  } 
   return QMainWindow::event( e );
 }
 
