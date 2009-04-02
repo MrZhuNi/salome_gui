@@ -309,13 +309,21 @@ bool OCCViewer_ViewWindow::eventFilter( QObject* watched, QEvent* e )
           emit contextMenuRequested( aEvent );
       }
       return true;
-
     default:
       break;
     }
   }
   return SUIT_ViewWindow::eventFilter(watched, e);
 }
+
+/*void OCCViewer_ViewWindow::resizeEvent( QResizeEvent* e )
+{
+  bool aRes = testAttribute(Qt::WA_Resized);
+  resize(e->size());
+  SUIT_ViewWindow::resizeEvent(e);
+  e->accept();
+}*/
+
 
 /*!
   \brief Update state of enable draw mode state.

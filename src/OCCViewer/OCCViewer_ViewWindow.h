@@ -127,6 +127,8 @@ signals:
   void Hide( QHideEvent * );
 
 protected:
+  //virtual void          resizeEvent( QResizeEvent* );
+
   virtual QImage dumpView();
   virtual bool   dumpViewToFormat( const QImage&, const QString& fileName, const QString& format );
   virtual QString  filter() const;

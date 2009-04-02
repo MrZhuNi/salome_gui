@@ -76,8 +76,13 @@ public:
   void	                endRotation();
   bool                  isBusy() {return myBusy;} // check that View Port is fully initialized
 
+
+  virtual QPaintEngine* paintEngine () const { return 0; }
+
 protected:
     // EVENTS
+  //virtual bool		event( QEvent* );
+
   virtual void		paintEvent( QPaintEvent* );
   virtual void          resizeEvent( QResizeEvent* );
 
@@ -96,6 +101,7 @@ private:
   bool                  myAnimate;
   bool                  myBusy;
   double	        myScale;
+  bool mySizeChanged;
 };
 
 #ifdef WIN32

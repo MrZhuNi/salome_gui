@@ -32,6 +32,7 @@
 #include <QPaintEvent>
 #include <QResizeEvent>
 #include <QApplication>
+#include <QPainter>
 
 #include <Visual3d_View.hxx>
 #include <V3d_Viewer.hxx>
@@ -58,8 +59,14 @@ OCCViewer_ViewPort3d::OCCViewer_ViewPort3d( QWidget* parent, const Handle( V3d_V
 myScale( 1.0 ),
 myDegenerated( true ),
 myAnimate( false ),
-myBusy( true )
+myBusy( true ),
+mySizeChanged(false)
 {
+  setAttribute( Qt::WA_PaintOnScreen );
+  setAttribute( Qt::WA_NoSystemBackground );
+  setAttribute( Qt::WA_OpaquePaintEvent );
+  setAutoFillBackground(false);
+
   selectVisualId();
 
   if ( type == V3d_ORTHOGRAPHIC ) {
@@ -435,12 +442,22 @@ void OCCViewer_ViewPort3d::endRotation()
     {
       if (myAnimate) activeView()->SetAnimationModeOff();
       if ( !myDegenerated )
-	activeView()->SetDegenerateModeOff();
+	      activeView()->SetDegenerateModeOff();
       activeView()->ZFitAll(1.);
       activeView()->SetZSize(0.);
       activeView()->Update();
     }
 }
+
+/*bool OCCViewer_ViewPort3d::event( QEvent* e)
+{
+  if (e->type() == QEvent::Paint) {
+    paintEvent((QPaintEvent*)e);
+    return true;
+  } 
+  return QWidget::event(e);
+}*/
+
 
 /*!
     Repaints the viewport. [ virtual protected ]
@@ -456,11 +473,16 @@ void OCCViewer_ViewPort3d::paintEvent( QPaintEvent* e )
 	{
 		QApplication::syncX();
 		QRect rc = e->rect();
-		if ( !myPaintersRedrawing )
+    if (mySizeChanged) {
+      activeView()->MustBeResized();
+      mySizeChanged = false;
+    }
+    if ( !myPaintersRedrawing )
 		    activeView()->Redraw( rc.x(), rc.y(), rc.width(), rc.height() );
 	}
 	OCCViewer_ViewPort::paintEvent( e );
 	myBusy = false;
+  e->accept();
 }
 
 /*!
@@ -473,9 +495,14 @@ void OCCViewer_ViewPort3d::resizeEvent( QResizeEvent* e )
 	if ( !mapped( activeView() ) )
 	    mapView( activeView() );
 #endif
+  //bool aRes = testAttribute(Qt::WA_Resized);
 	QApplication::syncX();
-    if ( !activeView().IsNull() )
-        activeView()->MustBeResized();
+  mySizeChanged = true;
+  //if ( !activeView().IsNull() ) {
+    //activeView()->MustBeResized();
+    e->accept();
+  //}
+  //OCCViewer_ViewPort::resizeEvent(e);
 }
 
 /*!

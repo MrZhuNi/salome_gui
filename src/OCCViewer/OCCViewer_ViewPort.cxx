@@ -209,8 +209,6 @@ void OCCViewer_ViewPort::initialize()
   setBackgroundRole( QPalette::NoRole );//NoBackground );
   // set focus policy to threat QContextMenuEvent from keyboard  
   setFocusPolicy( Qt::StrongFocus );
-  setAttribute( Qt::WA_PaintOnScreen );
-  setAttribute( Qt::WA_NoSystemBackground );
 }
 
 /*!
@@ -424,7 +422,7 @@ void OCCViewer_ViewPort::keyReleaseEvent( QKeyEvent *e )
 /*!
     Repaints the viewport. [ virtual protected ]
 */
-void OCCViewer_ViewPort::paintEvent( QPaintEvent* )
+void OCCViewer_ViewPort::paintEvent( QPaintEvent* e)
 {
 	if ( myPaintersRedrawing )
 	{
