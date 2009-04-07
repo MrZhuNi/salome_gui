@@ -23,23 +23,25 @@
 #ifndef QTXMAP_H
 #define QTXMAP_H
 
-template <class Key, class Value> class IMap;
-template <class Key, class Value> class IMapIterator;
-template <class Key, class Value> class IMapConstIterator;
+#include<QMap>
+
+template <class Key, class Value> class QtxMap;
+template <class Key, class Value> class QtxMapIterator;
+template <class Key, class Value> class QtxMapConstIterator;
 
 /*!
   \brief Indexed map template class.
 */
-template <class Key, class Value> class IMap
+template <class Key, class Value> class QtxMap
 {
 public:
-  typedef IMapIterator<Key,Value>      Iterator;
-  typedef IMapConstIterator<Key,Value> ConstIterator;
+  typedef QtxMapIterator<Key,Value>      Iterator;
+  typedef QtxMapConstIterator<Key,Value> ConstIterator;
 
 public:
-  IMap() {}
-  IMap( const IMap& m ) : myKeys( m.myKeys ), myData( m.myData ) {}
-  IMap& operator=( const IMap& m ) { myKeys = m.myKeys; myData = m.myData; return *this; }
+  QtxMap() {}
+  QtxMap( const QtxMap& m ) : myKeys( m.myKeys ), myData( m.myData ) {}
+  QtxMap& operator=( const QtxMap& m ) { myKeys = m.myKeys; myData = m.myData; return *this; }
   
   int  count() const   { return myData.count(); }
   int  size() const    { return myData.count(); }
@@ -88,14 +90,19 @@ public:
     return myKeys[index];
   }
 
-  Value value( const int index )
+  const Key findKey( const Value& val ) const
+  {
+    return myData.key( val );
+  }
+
+  Value& value( const int index )
   {
     if ( index < 0 || index >= (int)myKeys.count() ) 
       return dummyValue;
     return myData[ myKeys[index] ];
   }
 
-  Value operator[]( const Key& key )
+  Value& operator[]( const Key& key )
   {
     if ( myData.find( key ) == myData.end() )
       insert( key, Value() );
@@ -129,61 +136,61 @@ private:
   Key             dummyKey;
   Value           dummyValue;
 
-  friend class IMapIterator<Key,Value>;
-  friend class IMapConstIterator<Key,Value>;
+  friend class QtxMapIterator<Key,Value>;
+  friend class QtxMapConstIterator<Key,Value>;
 };
 
 /*!
   \brief Indexed map iterator template class.
 */
-template <class Key, class Value> class IMapIterator
+template <class Key, class Value> class QtxMapIterator
 {
 public:
-  IMapIterator()                           : myMap( 0 ), myIndex( 0 )                                   { init(); }
-  IMapIterator( const IMap<Key,Value>* m ) : myMap( const_cast< IMap<Key,Value>* >( m ) ), myIndex( 0 ) { init(); }
-  IMapIterator( const IMapIterator& i )    : myMap( i.myMap ), myIndex( i.myIndex )                     { init(); }
+  QtxMapIterator()                           : myMap( 0 ), myIndex( 0 )                                   { init(); }
+  QtxMapIterator( const QtxMap<Key,Value>* m ) : myMap( const_cast< QtxMap<Key,Value>* >( m ) ), myIndex( 0 ) { init(); }
+  QtxMapIterator( const QtxMapIterator& i )    : myMap( i.myMap ), myIndex( i.myIndex )                     { init(); }
 
-  bool operator==( const IMapIterator& i ) { return !operator!=( i );                                   }
-  bool operator!=( const IMapIterator& i ) { return !myMap || myMap != i.myMap || myIndex != i.myIndex; }
+  bool operator==( const QtxMapIterator& i ) { return !operator!=( i );                                   }
+  bool operator!=( const QtxMapIterator& i ) { return !myMap || myMap != i.myMap || myIndex != i.myIndex; }
   
   operator bool() const { return myIndex >= 0; }
 
   const Key&   key() const  { return myMap->key( myIndex );   }
   Value&       value()       { return myMap->value( myIndex ); }
-  const Value& value() const { return myMap->value( myIndex ); }
+  const Value  value() const { return myMap->value( myIndex ); }
 
   Value& operator*() { return value(); }
 
-  IMapIterator& operator++()      { myIndex++; init(); return *this;                     }
-  IMapIterator  operator++( int ) { IMapIterator i = *this; myIndex++; init(); return i; }
-  IMapIterator& operator--()      { myIndex--; init(); return *this;                     }
-  IMapIterator  operator--( int ) { IMapIterator i = *this; myIndex--; init(); return i; }
+  QtxMapIterator& operator++()      { myIndex++; init(); return *this;                     }
+  QtxMapIterator  operator++( int ) { QtxMapIterator i = *this; myIndex++; init(); return i; }
+  QtxMapIterator& operator--()      { myIndex--; init(); return *this;                     }
+  QtxMapIterator  operator--( int ) { QtxMapIterator i = *this; myIndex--; init(); return i; }
 
 private:
-  IMapIterator( const IMap<Key,Value>* m, const int index ) : myMap( const_cast< IMap<Key,Value>* >( m ) ), myIndex( index ) { init(); }
+  QtxMapIterator( const QtxMap<Key,Value>* m, const int index ) : myMap( const_cast< QtxMap<Key,Value>* >( m ) ), myIndex( index ) { init(); }
   void init() { if ( !myMap || myIndex >= myMap->count() ) myIndex = -1; }
 
 private:
-  IMap<Key,Value>* myMap;
+  QtxMap<Key,Value>* myMap;
   int              myIndex;
 
-  friend class IMap<Key, Value>;
-  friend class IMapConstIterator<Key, Value>;
+  friend class QtxMap<Key, Value>;
+  friend class QtxMapConstIterator<Key, Value>;
 };
 
 /*!
   \brief Indexed map const iterator template class.
 */
-template <class Key, class Value> class IMapConstIterator
+template <class Key, class Value> class QtxMapConstIterator
 {
 public:
-  IMapConstIterator()                                    : myMap( 0 ), myIndex( 0 )                                    { init(); }
-  IMapConstIterator( const IMap<Key,Value>* m )          : myMap( const_cast< IMap<Key,Value>* >( m )  ), myIndex( 0 ) { init(); }
-  IMapConstIterator( const IMapConstIterator& i )        : myMap( i.myMap ), myIndex( i.myIndex )                      { init(); }
-  IMapConstIterator( const IMapIterator<Key, Value>& i ) : myMap( i.myMap ), myIndex( i.myIndex )                      { init(); }
+  QtxMapConstIterator()                                    : myMap( 0 ), myIndex( 0 )                                    { init(); }
+  QtxMapConstIterator( const QtxMap<Key,Value>* m )          : myMap( const_cast< QtxMap<Key,Value>* >( m )  ), myIndex( 0 ) { init(); }
+  QtxMapConstIterator( const QtxMapConstIterator& i )        : myMap( i.myMap ), myIndex( i.myIndex )                      { init(); }
+  QtxMapConstIterator( const QtxMapIterator<Key, Value>& i ) : myMap( i.myMap ), myIndex( i.myIndex )                      { init(); }
   
-  bool operator==( const IMapConstIterator& i ) { return !operator!=( i );                                   }
-  bool operator!=( const IMapConstIterator& i ) { return !myMap || myMap != i.myMap || myIndex != i.myIndex; }
+  bool operator==( const QtxMapConstIterator& i ) { return !operator!=( i );                                   }
+  bool operator!=( const QtxMapConstIterator& i ) { return !myMap || myMap != i.myMap || myIndex != i.myIndex; }
   
   operator bool() const { return myIndex >= 0; }
   
@@ -192,20 +199,20 @@ public:
   
   const Value operator*() const { return value(); }
 
-  IMapConstIterator& operator++()      { myIndex++; init(); return *this;                          }
-  IMapConstIterator  operator++( int ) { IMapConstIterator i = *this; myIndex++; init(); return i; }
-  IMapConstIterator& operator--()      { myIndex--; init(); return *this;                          }
-  IMapConstIterator  operator--( int ) { IMapConstIterator i = *this; myIndex--; init(); return i; }
+  QtxMapConstIterator& operator++()      { myIndex++; init(); return *this;                          }
+  QtxMapConstIterator  operator++( int ) { QtxMapConstIterator i = *this; myIndex++; init(); return i; }
+  QtxMapConstIterator& operator--()      { myIndex--; init(); return *this;                          }
+  QtxMapConstIterator  operator--( int ) { QtxMapConstIterator i = *this; myIndex--; init(); return i; }
   
 private:
-  IMapConstIterator( const IMap<Key,Value>* m, const int index ): myMap( const_cast< IMap<Key,Value>* >( m ) ), myIndex( index ) { init(); }
+  QtxMapConstIterator( const QtxMap<Key,Value>* m, const int index ): myMap( const_cast< QtxMap<Key,Value>* >( m ) ), myIndex( index ) { init(); }
   void init() { if ( !myMap || myIndex >= myMap->count() ) myIndex = -1; }
   
 private:
-  IMap<Key,Value>* myMap;
+  QtxMap<Key,Value>* myMap;
   int              myIndex;
   
-  friend class IMap<Key,Value>;
+  friend class QtxMap<Key,Value>;
 };
 
 #endif // QTXMAP_H

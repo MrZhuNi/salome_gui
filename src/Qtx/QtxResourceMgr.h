@@ -57,7 +57,7 @@ public:
 #ifdef QTX_NO_INDEXED_MAP
   typedef QMap<QString, QString> Section;   //!< resource section
 #else
-  typedef IMap<QString, QString> Section;   //!< resource section
+  typedef QtxMap<QString, QString> Section; //!< resource section
 #endif
 
 public:

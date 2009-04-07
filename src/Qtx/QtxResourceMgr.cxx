@@ -2124,9 +2124,9 @@ QStringList QtxResourceMgr::parameters( const QString& sec ) const
   initialize();
 
 #if defined(QTX_NO_INDEXED_MAP)
-  typedef QMap<QString, int> PMap;
+  typedef QMap<QString, int>   PMap;
 #else
-  typedef IMap<QString, int> PMap;
+  typedef QtxMap<QString, int> PMap;
 #endif
   PMap pmap;
   
