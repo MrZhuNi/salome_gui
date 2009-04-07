@@ -251,7 +251,7 @@ void Plot2d_ViewFrame::DisplayAll()
 */
 void Plot2d_ViewFrame::EraseAll() 
 {
-  CurveDict::iterator it = myPlot->getCurves().begin();
+  CurveDict::Iterator it = myPlot->getCurves().begin();
   for ( ; it != myPlot->getCurves().end(); it++ )
     emit curveErased( it.value() );
   
@@ -713,7 +713,7 @@ int Plot2d_ViewFrame::getCurves( curveList& clist )
 {
   clist.clear();
 
-  CurveDict::iterator it = myPlot->getCurves().begin();
+  CurveDict::Iterator it = myPlot->getCurves().begin();
   for ( ; it != myPlot->getCurves().end(); it++ )
     clist.append( it.value() );
   return clist.count();
@@ -1036,7 +1036,7 @@ void Plot2d_ViewFrame::onCurvesSettings()
 
   QList< Plot2d_Curve* > aCurves;
 
-  CurveDict::iterator it = myPlot->getCurves().begin();
+  CurveDict::Iterator it = myPlot->getCurves().begin();
   int i = 0;
   for ( i = 0; it != myPlot->getCurves().end(); it++, i++ )
   {
@@ -1184,7 +1184,7 @@ void Plot2d_ViewFrame::onChangeBackground()
 void Plot2d_ViewFrame::setCurveType( int curveType, bool update )
 {
   myCurveType = curveType;
-  CurveDict::iterator it = myPlot->getCurves().begin();
+  CurveDict::Iterator it = myPlot->getCurves().begin();
   for ( ; it != myPlot->getCurves().end(); it++ ) {
     QwtPlotCurve* crv = it.key();
     if ( crv )
@@ -1259,7 +1259,7 @@ void Plot2d_ViewFrame::setMarkerSize( const int size, bool update )
   if ( myMarkerSize != size )
   {
     myMarkerSize = size;
-    CurveDict::iterator it = myPlot->getCurves().begin();
+    CurveDict::Iterator it = myPlot->getCurves().begin();
     for ( ; it != myPlot->getCurves().end(); it++ ) {
       QwtPlotCurve* crv = it.key();
       if ( crv )
@@ -1628,7 +1628,7 @@ void Plot2d_ViewFrame::wheelEvent(QWheelEvent* event)
 */
 QwtPlotCurve* Plot2d_ViewFrame::getPlotCurve( Plot2d_Curve* curve )
 {
-  CurveDict::iterator it = myPlot->getCurves().begin();
+  CurveDict::Iterator it = myPlot->getCurves().begin();
   for ( ; it != myPlot->getCurves().end(); it++ ) {
     if ( it.value() == curve )
       return it.key();
@@ -1640,7 +1640,7 @@ QwtPlotCurve* Plot2d_ViewFrame::getPlotCurve( Plot2d_Curve* curve )
 */
 bool Plot2d_ViewFrame::hasPlotCurve( Plot2d_Curve* curve )
 {
-  CurveDict::iterator it = myPlot->getCurves().begin();
+  CurveDict::Iterator it = myPlot->getCurves().begin();
   for ( ; it != myPlot->getCurves().end(); it++ ) {
     if ( it.value() == curve )
       return true;
@@ -1739,7 +1739,7 @@ void Plot2d_ViewFrame::onViewGlobalPan()
 bool Plot2d_ViewFrame::isXLogEnabled() const
 {
   bool allPositive = true;
-  CurveDict::const_iterator it = myPlot->getCurves().begin();
+  CurveDict::ConstIterator it = myPlot->getCurves().begin();
   for ( ; allPositive && it != myPlot->getCurves().end(); it++ )
     allPositive = ( it.value()->getMinX() > 0. );
   return allPositive;
@@ -1751,7 +1751,7 @@ bool Plot2d_ViewFrame::isXLogEnabled() const
 bool Plot2d_ViewFrame::isYLogEnabled() const
 {
   bool allPositive = true;
-  CurveDict::const_iterator it = myPlot->getCurves().begin();
+  CurveDict::ConstIterator it = myPlot->getCurves().begin();
   for ( ; allPositive && it != myPlot->getCurves().end(); it++ )
     allPositive = ( it.value()->getMinY() > 0. );
   return allPositive;
@@ -1945,7 +1945,8 @@ void Plot2d_Plot2d::getNextMarker( QwtSymbol::Style& typeMarker, QColor& color, 
     int aMarker = (int)( 9.0 * rand() / RAND_MAX) + 1;  // 9 markers types ( not including empty )
     int aLine   = (int)( 5.0 * rand() / RAND_MAX) + 1;  // 5 line types ( not including empty )
 
-    typeMarker = ( QwtSymbol::Style )aMarker;
+    
+    typeMarker = Plot2d::plot2qwtMarker( (Plot2d::MarkerType)aMarker );
     color      = QColor( aRed, aGreen, aBlue );
     typeLine   = ( Qt::PenStyle )aLine;
 
@@ -2061,7 +2062,7 @@ void Plot2d_Plot2d::setPickerMousePattern( int button, int state )
 */
 Plot2d_Curve* Plot2d_Plot2d::getClosestCurve( QPoint p, double& distance, int& index )
 {
-  CurveDict::iterator it = getCurves().begin();
+  CurveDict::Iterator it = getCurves().begin();
   QwtPlotCurve* aCurve;
   for ( ; it != getCurves().end(); it++ ) {
     aCurve = it.key();
@@ -2083,7 +2084,7 @@ Plot2d_Curve* Plot2d_Plot2d::getClosestCurve( QPoint p, double& distance, int& i
 bool Plot2d_Plot2d::setCurveNbMarkers( Plot2d_Curve* curve, const int nb )
 {
   Plot2d_PlotCurve* aPlotCurve = 
-    dynamic_cast<Plot2d_PlotCurve*>( myCurves.key( curve, 0 ) );
+    dynamic_cast<Plot2d_PlotCurve*>( myCurves.findKey( curve ) );
   if ( aPlotCurve )
   {
     aPlotCurve->setNbMarkers( nb );
@@ -2103,7 +2104,7 @@ bool Plot2d_Plot2d::setCurveNbMarkers( Plot2d_Curve* curve, const int nb )
 int Plot2d_Plot2d::curveNbMarkers( Plot2d_Curve* curve ) const
 {
   Plot2d_PlotCurve* aPlotCurve = 
-    dynamic_cast<Plot2d_PlotCurve*>( myCurves.key( curve, 0 ) );
+    dynamic_cast<Plot2d_PlotCurve*>( myCurves.findKey( curve ) );
   return aPlotCurve ? aPlotCurve->nbMarkers() : 0;
 }
 
@@ -2126,7 +2127,7 @@ bool Plot2d_Plot2d::existMarker( const QwtSymbol::Style typeMarker, const QColor
   if ( closeColors( color, aColor ) )
       return true;
 
-  CurveDict::iterator it = myCurves.begin();
+  CurveDict::Iterator it = myCurves.begin();
   for ( ; it != myCurves.end(); it++ ) {
     QwtPlotCurve* crv = it.key();
     if ( crv ) {
@@ -2205,7 +2206,7 @@ void Plot2d_ViewFrame::copyPreferences( Plot2d_ViewFrame* vf )
 #define BRACKETIZE(x) QString( "[ " ) + x + QString( " ]" )
 void Plot2d_ViewFrame::updateTitles() 
 {
-  CurveDict::iterator it = myPlot->getCurves().begin();
+  CurveDict::Iterator it = myPlot->getCurves().begin();
   //QIntDictIterator<Plot2d_Curve> it( myCurves );
   QStringList aXTitles;
   QStringList aYTitles;

@@ -20,8 +20,9 @@
 #define PLOT2D_VIEWFRAME_H
 
 #include "Plot2d_Curve.h"
+#include <QtxMap.h>
+
 #include <QWidget>
-#include <QMultiHash>
 #include <QList>
 #include <qwt_symbol.h>
 #include <qwt_plot_curve.h>
@@ -29,11 +30,12 @@
 class Plot2d_Plot2d;
 class Plot2d_Prs;
 class QCustomEvent;
-class QwtPlotCurve;
 class QwtPlotGrid;
 class QwtPlotZoomer;
 
-typedef QMultiHash<QwtPlotCurve*, Plot2d_Curve*> CurveDict;
+typedef QwtPlotCurve* QwtPlotCurvePtr;
+typedef Plot2d_Curve* Plot2d_CurvePtr;
+typedef QtxMap<QwtPlotCurvePtr, Plot2d_CurvePtr> CurveDict;
 
 class PLOT2D_EXPORT Plot2d_ViewFrame : public QWidget
 { 
