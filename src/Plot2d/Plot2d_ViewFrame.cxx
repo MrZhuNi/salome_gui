@@ -337,6 +337,17 @@ bool Plot2d_ViewFrame::eventFilter( QObject* watched, QEvent* e )
         }
         break;
       }
+      case QEvent::ContextMenu: {
+        if ( myOperation == NoOpId )
+        {
+          QContextMenuEvent* me = (QContextMenuEvent*)e;
+          QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
+            me->pos(), me->globalPos() );
+          emit contextMenuRequested( &aEvent );
+          return true;
+        }
+        break;
+      }
     }
   }
   return QWidget::eventFilter( watched, e );
@@ -1588,12 +1599,6 @@ bool Plot2d_ViewFrame::plotMouseMoved( const QMouseEvent& me )
 */
 void Plot2d_ViewFrame::plotMouseReleased( const QMouseEvent& me )
 {
-  if ( myOperation == NoOpId && me.button() == Qt::RightButton && me.modifiers() != Qt::ControlModifier )
-  {
-    QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
-                              me.pos(), me.globalPos() );
-    emit contextMenuRequested( &aEvent );
-  }
   myPlot->canvas()->setCursor( QCursor( Qt::CrossCursor ) );
   myPlot->defaultPicker();
 
