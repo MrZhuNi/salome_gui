@@ -23,10 +23,11 @@
 #define LIGHTAPP_PREFERENCESDLG_H
 
 #include "LightApp.h"
+#include "LightApp_Preferences.h"
 
 #include <QtxDialog.h>
 
-class LightApp_Preferences;
+#include <QPointer>
 
 /*!
   \class LightApp_PreferencesDlg
@@ -54,7 +55,8 @@ private slots:
   void                  onImportPref();
 
 private:
-  LightApp_Preferences* myPrefs;
+  typedef QPointer<LightApp_Preferences> PrefPtr;
+  PrefPtr               myPrefs;
   bool                  mySaved;
 };
 

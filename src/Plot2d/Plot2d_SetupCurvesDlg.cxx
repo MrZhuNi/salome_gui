@@ -616,27 +616,3 @@ void Plot2d_SetupCurvesDlg::setColor( QPushButton* theBtn, const QColor& theColo
   aPalette.setColor( QColorGroup::Midlight, theColor );
   theBtn->setPalette( aPalette );*/
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
