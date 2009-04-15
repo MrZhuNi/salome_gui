@@ -125,7 +125,7 @@ foreach mod ( $mods )
 		endif
 	    endif
 	    if ( "$mod" != "KERNEL" && "$mod" != "GUI" ) then
-		setenv LightAppConfig ${LightAppConfig}:${root_dir}/share/salome/resources/${mod_lower}
+		setenv LightAppConfig ${root_dir}/share/salome/resources/${mod_lower}:${LightAppConfig}
 	    endif
 	    if ( "${SALOMEPATH}" == "" ) then
 		setenv SALOMEPATH ${root_dir}

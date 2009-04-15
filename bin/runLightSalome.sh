@@ -117,7 +117,7 @@ for mod in $mods ; do
 		fi
 	    fi
 	    if [ "$mod" != "KERNEL" ] && [ "$mod" != "GUI" ] ; then
-		export LightAppConfig=${LightAppConfig}:${root_dir}/share/salome/resources/${mod_lower}
+		export LightAppConfig=${root_dir}/share/salome/resources/${mod_lower}:${LightAppConfig}
 	    fi
 	    if [ "${SALOMEPATH}" == "" ] ; then
 		export SALOMEPATH=${root_dir}
