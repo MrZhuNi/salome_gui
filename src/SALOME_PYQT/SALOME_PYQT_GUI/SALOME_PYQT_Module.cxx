@@ -1009,10 +1009,28 @@ Engines::Component_var SALOME_PYQT_Module::getEngine() const
  */
 QString SALOME_PYQT_Module::engineIOR() const
 {
-  QString anIOR = QString::null;
-  if ( !CORBA::is_nil( getEngine() ) )
-    return QString( getApp()->orb()->object_to_string( getEngine() ) );
-  return QString( "" );
+  class EngineIORReq : public PyInterp_LockRequest
+  {
+  public:
+    EngineIORReq( PyInterp_base*      _py_interp,
+		  SALOME_PYQT_Module* _obj )
+      : PyInterp_LockRequest( _py_interp, 0, true ), // this request should be processed synchronously (sync == true)
+        myObj( _obj ) {}
+
+  protected:
+    virtual void execute()
+    {
+      myObj->getEngineIOR();
+    }
+
+  private:
+    SALOME_PYQT_Module* myObj;
+  };
+
+  // post request
+  PyInterp_Dispatcher::Get()->Exec( new EngineIORReq( myInterp, const_cast<SALOME_PYQT_Module*>( this ) ) );
+
+  return myIOR;
 }
 
 /*!
@@ -1153,6 +1171,37 @@ void SALOME_PYQT_Module::initPreferences()
   }
 
   myInitModule = 0;
+}
+
+/*!
+ * Tries to get engine IOR from the Python module using engineIOR() function.
+ * That function can load module engine using appropriate container if required.
+ * If this function is not available in Python module, the default implementation
+ * is used which loads engine to the default FactoryServerPy container.
+ */
+void SALOME_PYQT_Module::getEngineIOR()
+{
+  myIOR = "";
+
+  // Python interpreter should be initialized and Python module should be
+  // import first
+  if ( !myInterp || !myModule )
+    return;
+
+  if ( PyObject_HasAttrString( myModule , "engineIOR" ) ) {
+    PyObjWrapper res( PyObject_CallMethod( myModule, "engineIOR", "" ) );
+    if ( !res ) {
+      PyErr_Print();
+    }
+    else {
+      // parse the return value, result chould be string
+      if ( PyString_Check( res ) ) {
+        myIOR = PyString_AsString( res );
+      }
+    }
+  }
+  else if ( !CORBA::is_nil( getEngine() ) )
+    myIOR = QString( getApp()->orb()->object_to_string( getEngine() ) );
 }
 
 /*!

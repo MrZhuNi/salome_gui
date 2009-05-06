@@ -80,6 +80,8 @@ private:
 
   /* status of last trying of module activation*/
   bool                             myLastActivateStatus;
+  /* engine IOR */
+  QString                          myIOR;
   
   /******************************
    * Construction/destruction
@@ -231,6 +233,8 @@ private:
   void            menuHighlight( const int, const int );
   /* Init preferences */
   void            initPreferences();
+  /* Get engine IOR */
+  void            getEngineIOR();
 
   /* initialize a Python subinterpreter */
   void            initInterp  ( int );
@@ -243,10 +247,10 @@ private:
   void            prefChanged( const QString&, const QString& );
   
   /* window signals connectors*/
-  void           activeViewChanged( const SUIT_ViewWindow* );
-  void           viewClosed( const SUIT_ViewWindow* );
-  void           viewCloned( const SUIT_ViewWindow* );
-  void           connectView( const SUIT_ViewWindow* );
+  void            activeViewChanged( const SUIT_ViewWindow* );
+  void            viewClosed( const SUIT_ViewWindow* );
+  void            viewCloned( const SUIT_ViewWindow* );
+  void            connectView( const SUIT_ViewWindow* );
 
   friend class SALOME_PYQT_XmlHandler;
 };
