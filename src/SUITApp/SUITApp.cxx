@@ -171,7 +171,7 @@ int main( int args, char* argv[] )
   QStringList argList;
   bool noExceptHandling = false;
   bool iniFormat        = false;
-  bool noSplash         = false;
+  bool noSplash         = true;
   bool useLicense       = false;
   for ( int i = 1; i < args /*&& !noExceptHandling*/; i++ )
   {
@@ -233,23 +233,23 @@ int main( int args, char* argv[] )
 	  delete splash;
 	  splash = 0;
 	}
-	else {
-	  QString appName    = QObject::tr( "APP_NAME" ).trimmed();
-	  QString appVersion = QObject::tr( "APP_VERSION" ).trimmed();
-	  if ( appVersion == "APP_VERSION" )
-	  {
-	    if ( appName == "APP_NAME" || appName.toLower() == "salome" )
-	      appVersion = salomeVersion();
-	    else
-	      appVersion = "";
-	  }
-	  splash->setOption( "%A", appName );
-	  splash->setOption( "%V", QObject::tr( "ABOUT_VERSION" ).arg( appVersion ) );
-	  splash->setOption( "%L", QObject::tr( "ABOUT_LICENSE" ) );
-	  splash->setOption( "%C", QObject::tr( "ABOUT_COPYRIGHT" ) );
-	  splash->show();
-	  QApplication::instance()->processEvents();
-	}
+  else {
+    QString appName    = QObject::tr( "APP_NAME" ).trimmed();
+    QString appVersion = QObject::tr( "APP_VERSION" ).trimmed();
+    if ( appVersion == "APP_VERSION" )
+    {
+      if ( appName == "APP_NAME" || appName.toLower() == "salome" )
+        appVersion = salomeVersion();
+      else
+        appVersion = "";
+    }
+    splash->setOption( "%A", appName );
+    splash->setOption( "%V", QObject::tr( "ABOUT_VERSION" ).arg( appVersion ) );
+    splash->setOption( "%L", QObject::tr( "ABOUT_LICENSE" ) );
+    splash->setOption( "%C", QObject::tr( "ABOUT_COPYRIGHT" ) );
+    splash->show();
+    QApplication::instance()->processEvents();
+  }
       }
     }
 
@@ -258,22 +258,48 @@ int main( int args, char* argv[] )
     {
       if ( resMgr && resMgr->booleanValue( "Style", "use_salome_style", true ) )
       {
-	Style_Salome* aStyle = new Style_Salome();
-	aStyle->getModel()->initFromResource( theApp->resourceMgr() );
-	app.setStyle( aStyle );
+        Style_Salome* aStyle = new Style_Salome();
+        aStyle->getModel()->initFromResource( theApp->resourceMgr() );
+        app.setStyle( aStyle );
       }
-	
+
       if ( !noExceptHandling )
         app.setHandler( aSession->handler() );
 
       if ( splash )
-	splash->finish( theApp->desktop() );
+        splash->finish( theApp->desktop() );
 
       result = app.exec();
-      delete splash;
+      //delete splash;
     }
     delete aSession;
   }
+
+#ifndef WNT
+
+  // Exceptional case for SuSE Linux. 
+  // Process hangs up after the end of application because of problem with 
+  // QFileDialog. This dialog creates two auxiliary threads that do not die 
+  // after dialog closing. So SUITApp remains “launched”. 
+  // Here we kill application by force.
+
+  QFile aVFile( "/proc/version" );
+  if ( aVFile.open( QIODevice::ReadOnly ) )
+  {
+    QByteArray aData = aVFile.readAll();
+    QString aStr( aData.constData() );
+    if ( aStr.indexOf( "SuSE", 0, Qt::CaseInsensitive ) >= 0 )
+    {
+      // Usi pusi Linux SuSE
+      pid_t aPid = getpid();
+      char aCmd[ 255 ];
+      memset( aCmd, 0, 255 );
+      sprintf( aCmd, "kill -9 %d", aPid );
+      // I'll kill myself
+      system( aCmd );
+    }
+  }
+#endif
 
   return result;
 }
