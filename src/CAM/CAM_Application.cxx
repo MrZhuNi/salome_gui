@@ -183,11 +183,11 @@ void CAM_Application::loadModules()
     if ( mod )
       addModule( mod );
     else {
+      QString wrn = tr( "Can not load module %1" ).arg( (*it).title );
       if ( desktop() && desktop()->isShown() )
-	SUIT_MessageBox::error1( desktop(), tr( "Loading modules" ),
-				 tr( "Can not load module %1" ).arg( (*it).title ), tr( "Ok" ) );
+	SUIT_MessageBox::error1( desktop(), tr( "Loading modules" ), wrn, tr( "Ok" ) );
       else
-	qWarning( tr( "Can not load module %1" ).arg( (*it).title ).latin1() ); 
+	qWarning( wrn.latin1() ); 
     }
   }
 }
@@ -326,10 +326,11 @@ bool CAM_Application::activateModule( CAM_Module* mod )
     {
       myModule->setMenuShown( false );
       myModule->setToolShown( false );
+      QString wrn = tr( "ERROR_ACTIVATE_MODULE_MSG" ).arg( myModule->moduleName() );
       if ( desktop() && desktop()->isShown() )
-	SUIT_MessageBox::error1( desktop(), tr( "ERROR_TLT" ), tr( "ERROR_ACTIVATE_MODULE_MSG" ).arg( myModule->moduleName() ), tr( "BUT_OK" ) );
+	SUIT_MessageBox::error1( desktop(), tr( "ERROR_TLT" ), wrn, tr( "BUT_OK" ) );
       else
-	qWarning( tr( "ERROR_ACTIVATE_MODULE_MSG" ).arg( myModule->moduleName() ).latin1() ); 
+	qWarning( wrn.latin1() ); 
       myModule = 0;
       return false;
     }
@@ -472,8 +473,8 @@ void CAM_Application::readModuleList()
     if ( modTitle.isEmpty() )
       {
 	printf( "****************************************************************\n" );
-	printf( "*    Warning: %s not found in resources.\n", (*it).latin1() );
-	printf( "*    Module will not be available\n" );
+	printf( "*    Warning: %s GUI resources are not found.\n", (*it).latin1() );
+	printf( "*    %s GUI will not be available\n", (*it).latin1() );
 	printf( "****************************************************************\n" );
 	continue;
       }
