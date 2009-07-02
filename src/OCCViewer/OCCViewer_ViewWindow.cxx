@@ -20,7 +20,7 @@
 //  See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 // OCCViewer_ViewWindow.cxx: implementation of the OCCViewer_ViewWindow class.
-//
+
 #include "OCCViewer_ViewWindow.h"
 #include "OCCViewer_ViewModel.h"
 #include "OCCViewer_ViewPort3d.h"
@@ -1174,7 +1174,8 @@ void OCCViewer_ViewWindow::onSetRotationPoint( bool on )
 
       if ( !mySetRotationPointDlg->isShown() )
       {
-	if ( mySetRotationPointDlg->IsFirstShown() )
+	//if ( mySetRotationPointDlg->IsFirstShown() )
+        if (myCurrPointType == GRAVITY)
 	{ 
 	  Standard_Real Xcenter, Ycenter, Zcenter;
 	  if ( computeGravityCenter( Xcenter, Ycenter, Zcenter ) )
