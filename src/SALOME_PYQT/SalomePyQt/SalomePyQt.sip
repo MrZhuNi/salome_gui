@@ -123,6 +123,7 @@ public:
   static QStringList       getOpenFileNames    ( QWidget*, const QString&, const QStringList&, const QString& );
   static QString           getExistingDirectory( QWidget*, const QString&, const QString& );
 
+  static QIcoSet           loadIcon( const QString&, const QString& );
   static void              helpContext( const QString&, const QString& );
 
   static bool              dumpView( const QString& );

@@ -25,6 +25,7 @@
 #include <qstring.h>
 #include <qobject.h>
 #include <qcolor.h>
+#include <qiconset.h>
 
 #include <LightApp_Application.h>
 #include <LightApp_Preferences.h>
@@ -124,6 +125,8 @@ public:
   static QString           getFileName         ( QWidget*, const QString&, const QStringList&, const QString&, bool );
   static QStringList       getOpenFileNames    ( QWidget*, const QString&, const QStringList&, const QString& );
   static QString           getExistingDirectory( QWidget*, const QString&, const QString& );
+
+  static QIconSet          loadIcon( const QString&, const QString& );
 
   static void              helpContext( const QString&, const QString& );
 

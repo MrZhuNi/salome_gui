@@ -129,6 +129,7 @@ public:
   static QStringList       getOpenFileNames    ( QWidget*, const QString&, const QStringList&, const QString& ) /ReleaseGIL/ ;
   static QString           getExistingDirectory( QWidget*, const QString&, const QString& ) /ReleaseGIL/ ;
 
+  static QIconSet          loadIcon( const QString&, const QString& ) /ReleaseGIL/ ;
   static void              helpContext( const QString&, const QString& ) /ReleaseGIL/ ;
 
   static bool              dumpView( const QString& ) /ReleaseGIL/ ;
