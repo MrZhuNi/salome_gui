@@ -1100,7 +1100,8 @@ SVTK_InteractorStyle
 	    if(!myShiftState)
 	      GetSelector()->ClearIObjects();
 
-	    vtkActorCollection* aListActors = GetCurrentRenderer()->GetActors();
+	    VTK::ActorCollectionCopy aCopy(GetCurrentRenderer()->GetActors());
+	    vtkActorCollection* aListActors = aCopy.GetActors();
 	    aListActors->InitTraversal();
 	    while(vtkActor* aActor = aListActors->GetNextActor())
 	      {

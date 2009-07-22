@@ -33,6 +33,7 @@
 #include "SALOME_Actor.h"
 #include "SALOME_InteractiveObject.hxx"
 
+#include "VTKViewer_Algorithm.h"
 #include "VTKViewer_Transform.h"
 #include "VTKViewer_TransformFilter.h"
 #include "VTKViewer_GeometryFilter.h"
@@ -454,7 +455,8 @@ SALOME_Actor
 
   if( !theIsHighlight ) {
     SetPreSelected( false );
-    vtkActorCollection* theActors = aRenderer->GetActors();
+    VTK::ActorCollectionCopy aCopy(aRenderer->GetActors());
+    vtkActorCollection* theActors = aCopy.GetActors();
     theActors->InitTraversal();
     while( vtkActor *ac = theActors->GetNextActor() )
       if( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( ac ) )
@@ -553,7 +555,8 @@ SALOME_Actor
       if( !mySelector->IsSelected( myIO ) ) {
 	SetPreSelected( true );
 
-	vtkActorCollection* theActors = aRenderer->GetActors();
+	VTK::ActorCollectionCopy aCopy(aRenderer->GetActors());
+	vtkActorCollection* theActors = aCopy.GetActors();
 	theActors->InitTraversal();
 	while( vtkActor *anAct = theActors->GetNextActor() ) {
 	  if( anAct != this )

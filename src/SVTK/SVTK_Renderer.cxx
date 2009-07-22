@@ -33,6 +33,7 @@
 
 #include "SALOME_Actor.h"
 #include "VTKViewer_Actor.h"
+#include "VTKViewer_Algorithm.h"
 #include "VTKViewer_Transform.h"
 #include "VTKViewer_Utilities.h"
 
@@ -156,7 +157,8 @@ SVTK_Renderer
 SVTK_Renderer
 ::~SVTK_Renderer()
 {
-  vtkActorCollection* anActors = GetDevice()->GetActors();
+  VTK::ActorCollectionCopy aCopy(GetDevice()->GetActors());
+  vtkActorCollection* anActors = aCopy.GetActors();
   vtkActorCollection* anActors2 = vtkActorCollection::New();
 
   anActors->InitTraversal();
@@ -309,7 +311,8 @@ SVTK_Renderer
   myTransform->SetMatrixScale( theScale[0], theScale[1], theScale[2] );
   AdjustActors();
   
-  vtkActorCollection* anActors = GetDevice()->GetActors();
+  VTK::ActorCollectionCopy aCopy(GetDevice()->GetActors());
+  vtkActorCollection* anActors = aCopy.GetActors();
   anActors->InitTraversal();
   while(vtkActor* anAct = anActors->GetNextActor())
     if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(anAct))
@@ -414,7 +417,8 @@ SVTK_Renderer
       myTrihedron->SetSize( myTrihedronSize );
 
     // iterate through displayed objects and set size if necessary
-    vtkActorCollection* anActors = GetDevice()->GetActors();
+    VTK::ActorCollectionCopy aCopy(GetDevice()->GetActors());
+    vtkActorCollection* anActors = aCopy.GetActors();
     anActors->InitTraversal();
     while(vtkActor* anAct = anActors->GetNextActor()){
       if(SALOME_Actor* anActor = dynamic_cast<SALOME_Actor*>(anAct)){
