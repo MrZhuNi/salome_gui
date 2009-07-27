@@ -69,32 +69,14 @@ PythonConsole_PyInterp::~PythonConsole_PyInterp()
  * but if we have copied some modules and imported others problems may arise with operations that
  * are not allowed in restricted execution environment. So we must impose that all interpreters
  * have identical __builtin__ module.
- * That's all, for the moment ...
+ *
+ * When calling initState the GIL is not held
+ * It must not be held on exit
+ *
  */
 
 bool PythonConsole_PyInterp::initState()
 {
-  /*
-   * The GIL is acquired on input and released on output
-   */
-    /*PyEval_AcquireLock();
-#ifdef WNT 
-  _tstate = PyGILState_GetThisThreadState();
-  // if no thread state defined
-  if ( _tstate )
-    PyThreadState_Swap(_tstate);
-  else
-#endif
-  {
-    _tstate = Py_NewInterpreter(); // create an interpreter and save current state
-    PySys_SetArgv(PyInterp_base::_argc,PyInterp_base::_argv); // initialize sys.argv
-    //if(MYDEBUG) MESSAGE("PythonConsole_PyInterp::initState - this = "<<this<<"; _tstate = "<<_tstate);
-  }*/
-
-  /*
-   * The GIL is acquired and will be held on initState output
-   * It is the caller responsability to release the lock if needed
-   */
   PyEval_AcquireLock();
 
   _tstate = Py_NewInterpreter(); // create an interpreter and save current state
@@ -131,8 +113,8 @@ bool PythonConsole_PyInterp::initState()
 
 /*!
    The GIL is assumed to be held
-   It is the caller responsability caller to acquire the GIL
-   It will still be held on initContext output
+   It is the caller responsability to acquire the GIL.
+   It must still be held on initContext() exit.
 */
 bool PythonConsole_PyInterp::initContext()
 {
