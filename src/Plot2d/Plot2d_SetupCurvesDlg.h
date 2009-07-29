@@ -47,8 +47,6 @@ class PLOT2D_EXPORT Plot2d_SetupCurvesDlg : public QtxDialog
 { 
   Q_OBJECT
 
-  class PixmapWg;
-
 public:
   Plot2d_SetupCurvesDlg( QWidget* theParent = 0 );
   virtual ~Plot2d_SetupCurvesDlg();
@@ -95,6 +93,31 @@ private:
   QTableWidget*             myTable;
   QToolButton*              myRemoveBtn;
   QList< int >              myRemovedIndexes;
+};
+
+/*!
+  \class Plot2d_PixmapWg
+  \internal
+  \brief This class is derived from QWidget is intended for drawing curves symbol 
+  inside its area. It contains QwtSymbol as its internal field and delegates paint 
+  event to it for drawing
+*/
+class PLOT2D_EXPORT Plot2d_PixmapWg : public QWidget
+{
+public: 
+  Plot2d_PixmapWg( QWidget* theParent );
+  virtual ~Plot2d_PixmapWg();
+
+  void setColor( const QColor& );
+  void setMarkerType( const int );
+  void setText( const QString& );
+
+protected:
+  virtual void paintEvent( QPaintEvent * event );
+
+private:
+  QwtSymbol mySymbol;
+  QString myText;
 };
 
 #endif 

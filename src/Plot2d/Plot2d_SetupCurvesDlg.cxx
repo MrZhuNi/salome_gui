@@ -50,37 +50,14 @@
 #define NB_MARKERS_COL  4
 
 
-/*!
-  \class Plot2d_SetupCurvesDlg::PixmapWg
-  \internal
-  \brief This class is derived from QWidget is intended for drawing curves symbol 
-  inside its area. It contains QwtSymbol as its internal field and delegates paint 
-  event to it for drawing
-*/
-class Plot2d_SetupCurvesDlg::PixmapWg : public QWidget
-{
-public: 
-  PixmapWg( QWidget* theParent );
-  virtual ~PixmapWg();
-
-  void setColor( const QColor& );
-  void setMarkerType( const int );
-
-protected:
-  virtual void paintEvent( QPaintEvent * event );
-
-private:
-  QwtSymbol mySymbol;
-};
-
-Plot2d_SetupCurvesDlg::PixmapWg::PixmapWg( QWidget* theParent )
+Plot2d_PixmapWg::Plot2d_PixmapWg( QWidget* theParent )
 : QWidget( theParent )
 {
   mySymbol.setSize( QSize( 8, 8 ) );
   mySymbol.setStyle( QwtSymbol::NoSymbol );
 }
 
-Plot2d_SetupCurvesDlg::PixmapWg::~PixmapWg()
+Plot2d_PixmapWg::~Plot2d_PixmapWg()
 {
 
 }
@@ -89,7 +66,7 @@ Plot2d_SetupCurvesDlg::PixmapWg::~PixmapWg()
 // Function : setColor
 // Purpose  : 
 //=============================================================================
-void Plot2d_SetupCurvesDlg::PixmapWg::setColor( const QColor& theColor )
+void Plot2d_PixmapWg::setColor( const QColor& theColor )
 {
   mySymbol.setBrush( QBrush( theColor ) );
   mySymbol.setPen( QPen( theColor ) );
@@ -99,7 +76,7 @@ void Plot2d_SetupCurvesDlg::PixmapWg::setColor( const QColor& theColor )
 // Function : setMarkerType
 // Purpose  : 
 //=============================================================================
-void Plot2d_SetupCurvesDlg::PixmapWg::setMarkerType( const int  theType )
+void Plot2d_PixmapWg::setMarkerType( const int  theType )
 {
   QwtSymbol::Style aStyle = QwtSymbol::NoSymbol;
   switch( theType )
@@ -119,31 +96,40 @@ void Plot2d_SetupCurvesDlg::PixmapWg::setMarkerType( const int  theType )
 }
 
 //=============================================================================
+// Function : setText
+// Purpose  : 
+//=============================================================================
+void Plot2d_PixmapWg::setText( const QString& theText )
+{
+  myText = theText;
+}
+
+//=============================================================================
 // Function : paint
 // Purpose  : 
 //=============================================================================
-void Plot2d_SetupCurvesDlg::PixmapWg::paintEvent( QPaintEvent* event )
+void Plot2d_PixmapWg::paintEvent( QPaintEvent* e )
 {
-  QRect r = event->rect();
-  /*int rm, lm, tm, bm;
-  if ( r.width() > 8 )
-  {
-    rm = ( r.width() - 8 ) / 2;
-    lm = r.width() - 8 - rm;
-  }
-  if ( r.height() > 8 )
-  {
-    tm = ( r.height() - 8 ) / 2;
-    bm = r.height() - 8 - tm;
-  }
-
-  r.setLeft( r.left() + lm );
-  r.setRight( r.right() - rm );
-  r.setTop( r.top() + tm );
-  r.setBottom( r.bottom() - bm );*/
-
+  QRect r = e->rect();
   QPainter p( this );
-  mySymbol.draw( &p, r.center() );
+
+  if ( myText.isEmpty() )
+  {
+    mySymbol.draw( &p, r.center() );
+  }
+  else 
+  {
+      const QSize& s = mySymbol.size();
+      int x = r.left() + s.width() / 2 + 2;
+      int y = r.top() + qMax( s.height(), r.height() ) / 2;
+      mySymbol.draw( &p, x, y );
+
+      p.setPen( QColor( 0, 0, 0 ) );
+      int textH = QFontMetrics( font() ).ascent();
+      x = r.left() + s.width() + 10;
+      y = qMax( r.top(), r.top() + ( r.height() - textH ) / 2 + textH );
+      p.drawText( QPoint( x, y ), myText );
+  }
 }
 
 /*!
@@ -295,7 +281,7 @@ void Plot2d_SetupCurvesDlg::SetParameters( const QVector< int >& theMarker,
   for ( int i = 0; i < nbRows; i++ )
   {
     // Pixmap
-    PixmapWg* aPixWg = new PixmapWg( myTable ) ;
+    Plot2d_PixmapWg* aPixWg = new Plot2d_PixmapWg( myTable ) ;
     myTable->setCellWidget( i, PIXMAP_COL, aPixWg );
 
     // Marker type
@@ -568,7 +554,7 @@ void Plot2d_SetupCurvesDlg::updatePixmap( const int theRow )
   for ( anIter = aRows.begin(); anIter != aRows.end(); ++anIter )
   {
     int r = *anIter;
-    PixmapWg* aWg = dynamic_cast<PixmapWg*>( myTable->cellWidget( r, PIXMAP_COL ) );
+    Plot2d_PixmapWg* aWg = dynamic_cast<Plot2d_PixmapWg*>( myTable->cellWidget( r, PIXMAP_COL ) );
     if ( aWg )
     {
       // Marker type
