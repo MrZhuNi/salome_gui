@@ -211,7 +211,8 @@ void PythonConsole_PyEditor::exec( const QString& command )
   // Let events creating a study end before script execution starts
   setText( command /*+ "\n"*/ );
   //handleReturn();
-  qApp->postEvent( this, new QKeyEvent(QEvent::KeyPress,Key_Return,13,Qt::NoButton ));
+  QKeyEvent ke(QEvent::KeyPress,Key_Return,13,Qt::NoButton );
+  qApp->sendEvent( this, &ke );
 }
 
 void PythonConsole_PyEditor::execAndWait( const QString& command )
