@@ -50,6 +50,7 @@ QtxColorScale::QtxColorScale( QWidget* parent, Qt::WindowFlags f )
   myDumpMode( NoDump ),
   myColorMode( Auto ),
   myLabelMode( Auto ),
+  myScalingMode( Linear ),
   myFlags( AtBorder | WrapTitle ),
   myLabelPos( Right ),
   myTitlePos( Center )
@@ -73,6 +74,7 @@ QtxColorScale::QtxColorScale( const int num, QWidget* parent, Qt::WindowFlags f 
   myDumpMode( NoDump ),
   myColorMode( Auto ),
   myLabelMode( Auto ),
+  myScalingMode( Linear ),
   myFlags( AtBorder | WrapTitle ),
   myLabelPos( Right ),
   myTitlePos( Center )
@@ -165,6 +167,15 @@ int QtxColorScale::labelMode() const
 int QtxColorScale::colorMode() const
 {
   return myColorMode;
+}
+
+/*!
+  \brief Get scaling mode.
+  \return current scaling mode (QtxColorScale::ScalingMode)
+*/
+int QtxColorScale::scalingMode() const
+{
+  return myScalingMode;
 }
 
 /*!
@@ -413,6 +424,19 @@ void QtxColorScale::setColorMode( const int mode )
     return;
   
   myColorMode = mode;
+  updateScale();
+}
+
+/*!
+  \brief Set color scale scaling mode.
+  \param mode new scaling mode (QtxColorScale::ScalingMode)
+*/
+void QtxColorScale::setScalingMode( const int mode )
+{
+  if ( myScalingMode == mode )
+    return;
+  
+  myScalingMode = mode;
   updateScale();
 }
 
@@ -822,7 +846,7 @@ void QtxColorScale::drawScale( QPainter* p, const QColor& bg, const bool transp,
       labels.prepend( getLabel( idx ) );
     }
   }
-  
+
   if ( testFlags( AtBorder ) )
   {
     if ( reverse )
@@ -1002,7 +1026,20 @@ double QtxColorScale::getNumber( const int idx ) const
 {
   double val = 0;
   if ( intervalsNumber() > 0 )
-    val = minimum() + idx * ( qAbs( maximum() - minimum() ) / intervalsNumber() );
+  {
+    if ( scalingMode() == Linear )
+      val = minimum() + idx * ( qAbs( maximum() - minimum() ) / intervalsNumber() );
+    else if ( scalingMode() == Logarithmic )
+    {
+      if ( minimum() > 0 && maximum() > 0 )
+      {
+        double logMin = log10( minimum() );
+        double logMax = log10( maximum() );
+        double logVal = logMin + idx * ( qAbs( logMax - logMin ) / intervalsNumber() );
+        val = pow( 10, logVal );
+      }
+    }
+  }
   return val;
 }
 

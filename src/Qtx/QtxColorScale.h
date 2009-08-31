@@ -43,6 +43,11 @@ public:
     Auto,            //!< auto
     User             //!< user defined
   } Mode;
+  //! Color scale scaling mode.
+  typedef enum {
+    Linear,          //!< linear
+    Logarithmic      //!< logarithmic
+  } ScalingMode;
   //! Color scale title, label position.
   typedef enum { 
     None,            //!< do not draw
@@ -78,6 +83,7 @@ public:
   int                   dumpMode() const;
   int                   labelMode() const;
   int                   colorMode() const;
+  int                   scalingMode() const;
   int                   intervalsNumber() const;
 
   QString               title() const;
@@ -96,6 +102,7 @@ public:
   void                  setDumpMode( const int );
   void                  setColorMode( const int );
   void                  setLabelMode( const int );
+  void                  setScalingMode( const int );
   void                  setIntervalsNumber( const int );
 
   void                  setTitle( const QString& );
@@ -151,6 +158,7 @@ private:
   int                   myDumpMode;        //!< dump mode (QtxColorScale::DumpMode)
   int                   myColorMode;       //!< color mode (QtxColorScale::Mode)
   int                   myLabelMode;       //!< label mode (QtxColorScale::Mode)
+  int                   myScalingMode;     //!< scaling mode (QtxColorScale::ScalingMode)
 
   QList<QColor>         myColors;          //!< list of colors
   QList<QString>        myLabels;          //!< list of labels
