@@ -78,20 +78,7 @@ void Plot2d_PixmapWg::setColor( const QColor& theColor )
 //=============================================================================
 void Plot2d_PixmapWg::setMarkerType( const int  theType )
 {
-  QwtSymbol::Style aStyle = QwtSymbol::NoSymbol;
-  switch( theType )
-  {
-  case Plot2d::Circle   : aStyle = QwtSymbol::Ellipse; break;
-  case Plot2d::Rectangle: aStyle = QwtSymbol::Rect; break;
-  case Plot2d::Diamond  : aStyle = QwtSymbol::Diamond; break;
-  case Plot2d::DTriangle: aStyle = QwtSymbol::DTriangle; break;
-  case Plot2d::UTriangle: aStyle = QwtSymbol::UTriangle; break;
-  case Plot2d::LTriangle: aStyle = QwtSymbol::LTriangle; break;
-  case Plot2d::RTriangle: aStyle = QwtSymbol::RTriangle; break;
-  case Plot2d::Cross    : aStyle = QwtSymbol::Cross; break;
-  case Plot2d::XCross   : aStyle = QwtSymbol::XCross; break;
-  }
-
+  QwtSymbol::Style aStyle = Plot2d::plot2qwtMarker( (Plot2d::MarkerType)theType );
   mySymbol.setStyle( aStyle );
 }
 
@@ -288,8 +275,9 @@ void Plot2d_SetupCurvesDlg::SetParameters( const QVector< int >& theMarker,
     setCombo( i, MARKER_COL, aMarkers, theMarker[ i ]/*, strWidth*/ );
 
     // Text
-        
-    setText( i, TEXT_COL, theText[ i ] );
+    QString aText = theText[ i ];
+    aText.replace( QChar('\n'), QChar( ' ' ) );
+    setText( i, TEXT_COL, aText );
     aTextLength = qMax( aTextLength, fm.width( theText[ i ] ) );
 
     // Color 
@@ -349,6 +337,7 @@ void Plot2d_SetupCurvesDlg::GetParameters( QVector< int >& theMarkers,
     // Text
     QTableWidgetItem* it = myTable->item( i, TEXT_COL );
     theTexts[ i ] = it ? it->text() : "";
+    theTexts[ i ].replace( ' ', '\n' );
 
     // Color
     QColor aColor;
