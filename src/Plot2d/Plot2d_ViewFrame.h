@@ -181,7 +181,9 @@ signals:
   void    legendClicked( QwtPlotItem* );
   void    curveDisplayed( Plot2d_Curve* );
   void    curveErased( Plot2d_Curve* );
-
+  void    curvesErased( const curveList& );
+  void    curvesUpdated();
+  
 protected:
   Plot2d_Plot2d* myPlot;
   int            myOperation;

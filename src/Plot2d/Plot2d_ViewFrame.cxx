@@ -683,6 +683,9 @@ void Plot2d_ViewFrame::eraseCurves( const curveList& curves, bool update )
     aCurve = *it;
     eraseCurve( aCurve, false );
   }
+
+  emit curvesErased( curves );
+
 //  fitAll();
   if ( update )
     myPlot->replot();
@@ -1153,10 +1156,14 @@ void Plot2d_ViewFrame::onCurvesSettings()
     }
 
     if ( toUpdate )
+    {
       updateCurve( aCurve, false );
+    }
   }
   
   Repaint();
+
+  emit curvesUpdated();
 
   delete aDlg;
 }
