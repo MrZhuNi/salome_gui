@@ -61,8 +61,8 @@ namespace Plot2d
     DashDotDot
   } LineType;
 
-  QwtSymbol::Style         plot2qwtMarker( MarkerType );
-  MarkerType qwt2plotMarker( QwtSymbol::Style );
+  PLOT2D_EXPORT QwtSymbol::Style plot2qwtMarker( MarkerType );
+  PLOT2D_EXPORT MarkerType qwt2plotMarker( QwtSymbol::Style );
 
   Qt::PenStyle             plot2qwtLine( LineType );
   LineType                 qwt2plotLine( Qt::PenStyle );
