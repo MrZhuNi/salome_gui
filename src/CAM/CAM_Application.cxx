@@ -146,7 +146,7 @@ void CAM_Application::modules( CAM_Application::ModuleList& out ) const
   out.clear();
 
   for ( QList<CAM_Module*>::const_iterator it = myModules.begin(); 
-	it != myModules.end(); ++it )
+        it != myModules.end(); ++it ) 
     out.append( *it );
 }
 
@@ -166,14 +166,14 @@ void CAM_Application::modules( QStringList& lst, const bool loaded ) const
   if ( loaded )
   {
     for ( QList<CAM_Module*>::const_iterator it = myModules.begin(); 
-	  it != myModules.end(); ++it )
-      lst.append( (*it)->moduleName() );
+          it != myModules.end(); ++it )
+        lst.append( (*it)->moduleName() );
   }
   else
   {
     for ( ModuleInfoList::const_iterator it = myInfoList.begin(); 
-	  it != myInfoList.end(); ++it )
-      lst.append( (*it).title );
+          it != myInfoList.end(); ++it ) 
+        lst.append( (*it).title );
   }
 }
 
@@ -225,6 +225,29 @@ void CAM_Application::addModule( CAM_Module* mod )
 }
 
 /*!
+  \brief returns true if module is accessible for the current application.
+  If module is a singleton and current session has more then one application
+  then this module can't be accessible in this one.
+ */
+bool CAM_Application::isModuleAccessible(const QString& theModName) const
+{
+  for ( ModuleInfoList::const_iterator it = myInfoList.begin(); it != myInfoList.end(); ++it )
+  {
+    if ((*it).name == theModName) {
+        return isModuleAccessible(it);
+    }
+  }
+  return true;
+}
+bool CAM_Application::isModuleAccessible(const ModuleInfoList::const_iterator& theIt) const
+{
+  int aAppsNb = SUIT_Session::session()->applications().size();
+  if ((*theIt).isSingleton && (aAppsNb > 1))
+    return false;
+  return true;
+}
+
+/*!
   \brief Load modules from the modules information list.
   
   If some module can not be loaded, an error message is shown.
@@ -233,15 +256,18 @@ void CAM_Application::loadModules()
 {
   for ( ModuleInfoList::const_iterator it = myInfoList.begin(); it != myInfoList.end(); ++it )
   {
+    if (!isModuleAccessible((*it).name)) {
+      continue;
+    }
     CAM_Module* mod = loadModule( (*it).title );
     if ( mod )
       addModule( mod );
     else {
       QString wrn = tr( "Can not load module %1" ).arg( (*it).title );
       if ( desktop() && desktop()->isVisible() )
-	SUIT_MessageBox::critical( desktop(), tr( "Loading modules" ), wrn );
+        SUIT_MessageBox::critical( desktop(), tr( "Loading modules" ), wrn );
       else
-	qWarning( qPrintable( wrn ) ); 
+        qWarning( qPrintable( wrn ) ); 
     }
   }
 }
@@ -634,11 +660,14 @@ void CAM_Application::readModuleList()
     else
       modLibrary = modName;
 
+    bool aIsSingleton = resMgr->booleanValue(*it, "singleton", false);
+
     ModuleInfo inf;
     inf.name = modName;
     inf.title = modTitle;
     inf.internal = modLibrary;
     inf.icon = modIcon;
+    inf.isSingleton = aIsSingleton;
     myInfoList.append( inf );
   }
 

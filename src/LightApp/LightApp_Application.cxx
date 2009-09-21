@@ -496,60 +496,64 @@ void LightApp_Application::createActions()
   static QtxMRUAction* mru = new QtxMRUAction( tr( "TOT_DESK_MRU" ), tr( "MEN_DESK_MRU" ), 0 );
   connect( mru, SIGNAL( activated( const QString& ) ), this, SLOT( onMRUActivated( const QString& ) ) );
   registerAction( MRUId, mru );
-
+  
   // default icon for neutral point ('SALOME' module)
   QPixmap defIcon = resMgr->loadPixmap( "LightApp", tr( "APP_DEFAULT_ICO" ), false );
   if ( defIcon.isNull() )
     defIcon = QPixmap( imageEmptyIcon );
-
+  
   //! default icon for any module
   QPixmap modIcon = resMgr->loadPixmap( "LightApp", tr( "APP_MODULE_ICO" ), false );
   if ( modIcon.isNull() )
     modIcon = QPixmap( imageEmptyIcon );
-
+  
   QStringList modList;
   modules( modList, false );
-
+  
   if ( modList.count() > 1 )
-  {
-    LightApp_ModuleAction* moduleAction =
-      new LightApp_ModuleAction( tr( "APP_NAME" ), defIcon, desk );
-
-    QMap<QString, QString> iconMap;
-    moduleIconNames( iconMap );
-
-    const int iconSize = 20;
-
-    QStringList::Iterator it;
-    for ( it = modList.begin(); it != modList.end(); ++it )
     {
-      if ( !isLibExists( *it ) )
-        continue;
+      LightApp_ModuleAction* moduleAction =
+        new LightApp_ModuleAction( tr( "APP_NAME" ), defIcon, desk );
+      
+      QMap<QString, QString> iconMap;
+      moduleIconNames( iconMap );
+      
+      const int iconSize = 20;
+      
+      QStringList::Iterator it;
+      for ( it = modList.begin(); it != modList.end(); ++it )
+        {
+          if ( !isLibExists( *it ) )
+            continue;
+          QString modName = moduleName( *it );
 
-      QString iconName;
-      if ( iconMap.contains( *it ) )
-        iconName = iconMap[*it];
+          if (!isModuleAccessible(modName))
+            continue;
 
-      QString modName = moduleName( *it );
-
-      QPixmap icon = resMgr->loadPixmap( modName, iconName, false );
-      if ( icon.isNull() )
-      {
-	icon = modIcon;
-	INFOS ( "****************************************************************" << std::endl
-	     << "*    Icon for " << (*it).toLatin1().constData() << " not found. Using the default one." << std::endl
-	     << "****************************************************************" << std::endl );
-      }
-
-      icon = Qtx::scaleIcon( icon, iconSize );
-
-      moduleAction->insertModule( *it, icon );
+          QString iconName;
+          if ( iconMap.contains( *it ) )
+            iconName = iconMap[*it];      
+          
+          QPixmap icon = resMgr->loadPixmap( modName, iconName, false );
+          if ( icon.isNull() )
+            {
+              icon = modIcon;
+              INFOS ( "****************************************************************" << std::endl
+                      << "*    Icon for " << (*it).toLatin1().constData() 
+                      << " not found. Using the default one." << std::endl
+                      << "****************************************************************" << std::endl );
+            }
+          
+          icon = Qtx::scaleIcon( icon, iconSize );
+          
+          moduleAction->insertModule( *it, icon );
+        }
+      
+      
+      connect( moduleAction, SIGNAL( moduleActivated( const QString& ) ), 
+               this, SLOT( onModuleActivation( const QString& ) ) );
+      registerAction( ModulesListId, moduleAction );
     }
-
-
-    connect( moduleAction, SIGNAL( moduleActivated( const QString& ) ), this, SLOT( onModuleActivation( const QString& ) ) );
-    registerAction( ModulesListId, moduleAction );
-  }
 
   // New window
   int windowMenu = createMenu( tr( "MEN_DESK_WINDOW" ), -1, MenuWindowId, 100 );

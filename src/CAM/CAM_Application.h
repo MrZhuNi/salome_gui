@@ -69,6 +69,8 @@ public:
 
   virtual void        createEmptyStudy();
 
+  virtual bool        isModuleAccessible(const QString&) const;
+
 protected:
   virtual SUIT_Study* createNewStudy();
   virtual void        updateCommandsStatus();
@@ -82,11 +84,12 @@ protected:
   QString             moduleLibrary( const QString&, const bool = true ) const;
 
 private:
-  void                readModuleList();
+  typedef struct { QString name, title, internal, icon; bool isSingleton; } ModuleInfo;
+  typedef QList<ModuleInfo> ModuleInfoList;
 
 private:
-  typedef struct { QString name, title, internal, icon; } ModuleInfo;
-  typedef QList<ModuleInfo> ModuleInfoList;
+  void                readModuleList();
+  bool                isModuleAccessible(const ModuleInfoList::const_iterator&) const;
 
 private:
   CAM_Module*         myModule;        //!< active module
