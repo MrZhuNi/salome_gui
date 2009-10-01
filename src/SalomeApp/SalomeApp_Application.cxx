@@ -705,7 +705,7 @@ bool DumpStudyFileValidator::canSave(const QString& file)
   QFileInfo fi( file );
   QString name = fi.fileName(); 
   
-  if ( name.find( QRegExp("[-!?#*&]") ) != -1 ) {
+  if ( name.find( QRegExp("[-!?#*&]") ) != -1 || name.find( QRegExp("[0-9]")) == 0 ) {
     SUIT_MessageBox::error1 ( parent(),
 			      QObject::tr("WRN_WARNING"),
 			      QObject::tr("WRN_FILE_NAME_BAD"),
