@@ -225,7 +225,7 @@ msgid "SalomeApp_Application::WRN_DUMP_STUDY_FAILED"
 msgstr "Dump study failed"
 
 msgid "WRN_FILE_NAME_BAD"
-msgstr "Please, enter a valid file name. The name should not contain any reserved characters or begin with a numeral."
+msgstr "Please, enter valid file name.\nPython file must include only letters, digits and underscores and start from letter or underscore."
 
 msgid "SAVE_POINT_OBJECT_TOOLTIP"
 msgstr "Saved GUI state: %1"
