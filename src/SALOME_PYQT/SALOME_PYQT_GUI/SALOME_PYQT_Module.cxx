@@ -195,6 +195,10 @@ SALOME_PYQT_Module::~SALOME_PYQT_Module()
 {
   if ( myXmlHandler )
     delete myXmlHandler;
+  if ( myInterp && myModule ) {
+    PyLockWrapper aLock = myInterp->GetLockWrapper();
+    Py_XDECREF(myModule);
+  }
 }
 
 /*!
@@ -834,13 +838,17 @@ void SALOME_PYQT_Module::activate( SUIT_Study* theStudy )
 
   // initialize Python subinterpreter (on per study) and put it in <myInterp> variable
   initInterp( aStudyId );
-  if ( !myInterp )
+  if ( !myInterp ) {
+    myLastActivateStatus = false;
     return; // Error
+  }
 
   // import Python GUI module
   importModule();
-  if ( !myModule )
+  if ( !myModule ) {
+    myLastActivateStatus = false;
     return; // Error
+  }
 
   // get python lock
   PyLockWrapper aLock = myInterp->GetLockWrapper();

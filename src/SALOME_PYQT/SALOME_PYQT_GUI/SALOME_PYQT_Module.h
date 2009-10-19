@@ -54,7 +54,7 @@ private:
   /* current Python subinterpreter */
   SALOME_PYQT_PyInterp*            myInterp;
   /* Python GUI module loaded */
-  PyObjWrapper                     myModule;
+  PyObject*                        myModule;
   /* Python GUI being initialized (not zero only during the initialization)*/
   static SALOME_PYQT_Module*       myInitModule;
 
