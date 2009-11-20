@@ -104,7 +104,8 @@ private:
   QString             newStudyName() const;
 
 private:
-  _PTR(Study)         myStudyDS;
+  _PTR(Study)          myStudyDS;
+  SALOME::Notebook_ptr myNotebook;
 };
 
 #ifdef WIN32

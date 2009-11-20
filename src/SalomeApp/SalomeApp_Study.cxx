@@ -85,12 +85,17 @@ _PTR(Study) SalomeApp_Study::studyDS() const
 */
 SALOME::Notebook_ptr SalomeApp_Study::notebook() const
 {
-  SALOME::Notebook_var aRes;
-  SALOMEDS_Study* aStudy = dynamic_cast<SALOMEDS_Study*>( myStudyDS.operator->() );
-  if( aStudy )
-    aRes = aStudy->GetStudy()->GetNotebook();
+  if( CORBA::is_nil( myNotebook ) )
+  {
+    SALOME::Notebook_var aRes;
+    SALOMEDS_Study* aStudy = dynamic_cast<SALOMEDS_Study*>( myStudyDS.operator->() );
+    if( aStudy )
+      aRes = aStudy->GetStudy()->GetNotebook();
 
-  return aRes._retn();
+    const_cast<SalomeApp_Study*>( this )->myNotebook = aRes._retn();
+  }
+
+  return myNotebook;
 }
 
 /*!
