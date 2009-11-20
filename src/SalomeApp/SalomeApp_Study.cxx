@@ -28,6 +28,8 @@
 #include "SalomeApp_Engine_i.hxx"
 #include "SalomeApp_VisualState.h"
 
+#include <SALOMEDS_Study.hxx>
+
 // temporary commented
 //#include <OB_Browser.h>
 
@@ -76,6 +78,19 @@ int SalomeApp_Study::id() const
 _PTR(Study) SalomeApp_Study::studyDS() const
 {
   return myStudyDS;
+}
+
+/*!
+  Return instance of notebook
+*/
+SALOME::Notebook_ptr SalomeApp_Study::notebook() const
+{
+  SALOME::Notebook_var aRes;
+  SALOMEDS_Study* aStudy = dynamic_cast<SALOMEDS_Study*>( myStudyDS.operator->() );
+  if( aStudy )
+    aRes = aStudy->GetStudy()->GetNotebook();
+
+  return aRes._retn();
 }
 
 /*!

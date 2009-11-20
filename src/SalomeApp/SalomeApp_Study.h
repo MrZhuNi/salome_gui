@@ -23,8 +23,8 @@
 #define SALOMEAPP_STUDY_H
 
 #include "SalomeApp.h"
-
 #include <LightApp_Study.h>
+#include CORBA_CLIENT_HEADER( SALOME_Notebook )
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
@@ -78,6 +78,8 @@ public:
 
   virtual void        restoreState(int savePoint);
   void                markAsSavedIn(QString theFileName);
+
+  SALOME::Notebook_ptr notebook() const;
 
 protected:
   virtual void        saveModuleData ( QString theModuleName, QStringList theListOfFiles );
