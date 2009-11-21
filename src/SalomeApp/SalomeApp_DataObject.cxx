@@ -25,6 +25,7 @@
 #include "SalomeApp_DataObject.h"
 #include "SalomeApp_Study.h"
 #include "SalomeApp_Application.h"
+#include "SalomeApp_Notebook.h"
 
 #include <CAM_DataObject.h>
 
@@ -489,7 +490,7 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
     {
       if ( SalomeApp_Study* aStudy = dynamic_cast<SalomeApp_Study*>( aRoot->study() ) )
       {
-        _PTR(Study) studyDS( aStudy->studyDS() );
+        SalomeApp_Notebook aNb( aStudy );
 
 	bool ok = false;
 	QStringList aSectionList = aStrings.split( "|" );
@@ -503,7 +504,7 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
 	    for ( int i = 0, n = aStringList.size(); i < n; i++ )
 	    {
 	      QString aStr = aStringList[i];
-	      if ( studyDS->IsVariable( aStr.toStdString() ) )
+	      if ( aNb.get( aStr ).isValid() )
 		val.append( aStr + ", " );
 	    }
 
