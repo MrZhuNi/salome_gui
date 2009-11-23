@@ -45,6 +45,13 @@ SalomeApp_Notebook::~SalomeApp_Notebook()
 {
 }
 
+bool SalomeApp_Notebook::isParameter( const QString& theName ) const
+{
+  const char* aName = theName.toLatin1().constData();
+  SALOME::Parameter_ptr aParam = myNotebook->GetParameter( aName );
+  return !CORBA::is_nil( aParam );
+}
+
 void SalomeApp_Notebook::set( const QString& theName, const QVariant& theValue )
 {
   const char* aName = theName.toLatin1().constData();

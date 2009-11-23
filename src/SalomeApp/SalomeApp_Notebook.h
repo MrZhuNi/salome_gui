@@ -46,6 +46,7 @@ public:
   SalomeApp_Notebook( SalomeApp_Study* theStudy );
   virtual ~SalomeApp_Notebook();
 
+  bool isParameter( const QString& theName ) const;
   void set( const QString& theName, const QVariant& theValue );
   QVariant get( const QString& theName ) const;
 
