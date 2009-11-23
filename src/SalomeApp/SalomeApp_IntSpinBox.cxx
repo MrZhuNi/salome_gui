@@ -25,6 +25,7 @@
 #include "SalomeApp_IntSpinBox.h"
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Study.h"
+#include "SalomeApp_Notebook.h"
 
 #include <SUIT_Session.h>
 
@@ -278,14 +279,19 @@ SalomeApp_IntSpinBox::SearchState SalomeApp_IntSpinBox::findVariable( const QStr
   {
     if( SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( app->activeStudy() ) )
     {
-      _PTR(Study) studyDS = study->studyDS();
-
-      std::string aName = name.toStdString();
-      if( studyDS->IsVariable( aName ) )
+      std::string aName = name.toStdString(); 
+      //
+      SalomeApp_Notebook aNotebook( study );
+      bool bisParameter=aNotebook.isParameter(name);
+      //
+      if(bisParameter)
       {
-	if( studyDS->IsInteger( aName ) || studyDS->IsString( aName ) )
+	QVariant aVariant=aNotebook.get(name);
+	QVariant::Type aType=aVariant.type();
+	
+	if(aType==QVariant::Int || aType==QVariant::String)
 	{
-	  if( studyDS->IsString( aName ) )
+	  if(aType==QVariant::String)
 	    {
 	      PyConsole_Console* pyConsole = app->pythonConsole();
 	      PyConsole_Interp* pyInterp = pyConsole->getInterp();
@@ -302,7 +308,8 @@ SalomeApp_IntSpinBox::SearchState SalomeApp_IntSpinBox::findVariable( const QStr
 		  return IncorrectType;
 		}
 	    }
-	  value = studyDS->GetInteger( aName );
+	  bool bOk;
+	  value = aVariant.toInt(&bOk);
 	  return Found;
 	}
 	return IncorrectType;

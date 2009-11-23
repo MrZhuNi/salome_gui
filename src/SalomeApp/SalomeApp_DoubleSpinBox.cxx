@@ -25,6 +25,7 @@
 #include "SalomeApp_DoubleSpinBox.h"
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Study.h"
+#include "SalomeApp_Notebook.h"
 
 #include <SUIT_Session.h>
 
@@ -35,6 +36,7 @@
 #include <QLineEdit>
 
 #include <string>
+
 
 /*!
   \class SalomeApp_DoubleSpinBox
@@ -320,14 +322,19 @@ SalomeApp_DoubleSpinBox::SearchState SalomeApp_DoubleSpinBox::findVariable( cons
   {
     if( SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( app->activeStudy() ) )
     {
-      _PTR(Study) studyDS = study->studyDS();
-
       std::string aName = name.toStdString();
-      if( studyDS->IsVariable( aName ) )
+      //
+      SalomeApp_Notebook aNotebook( study );
+      bool bisParameter=aNotebook.isParameter(name);
+      //
+      if (bisParameter)
       {
-	if( studyDS->IsReal( aName ) || studyDS->IsInteger( aName ) || studyDS->IsString( aName ) )
+	QVariant aVariant=aNotebook.get(name);
+	QVariant::Type aType=aVariant.type();
+	
+	if(aType==QVariant::Double || aType==QVariant::Int || aType==QVariant::String) 
 	{
-	  if( studyDS->IsString( aName ) )
+	  if(aType==QVariant::String)
 	    {
 	      PyConsole_Console* pyConsole = app->pythonConsole();
 	      PyConsole_Interp* pyInterp = pyConsole->getInterp();
@@ -344,7 +351,8 @@ SalomeApp_DoubleSpinBox::SearchState SalomeApp_DoubleSpinBox::findVariable( cons
 		  return IncorrectType;
 		}
 	    }
-	  value = studyDS->GetReal( aName );
+	  bool bOk;
+	  value = aVariant.toDouble(&bOk);
 	  return Found;
 	}
 	return IncorrectType;
