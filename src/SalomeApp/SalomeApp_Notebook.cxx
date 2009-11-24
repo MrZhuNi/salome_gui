@@ -96,9 +96,30 @@ void SalomeApp_Notebook::set( const QString& theName, const QVariant& theValue )
 
 QVariant SalomeApp_Notebook::get( const QString& theName ) const
 {
+  return convert( myNotebook->GetParameter( theName.toLatin1().constData() ) );
+}
+
+QVariant SalomeApp_Notebook::calculate( const QString& theExpr ) const
+{
+  if( CORBA::is_nil( myTmp ) )
+  {
+    static const char TMP_NAME[] = "__notebook__tmp__";
+    myTmp = myNotebook->GetParameter( TMP_NAME );
+    if( CORBA::is_nil( myTmp ) )
+    {
+      myNotebook->AddReal( TMP_NAME, 0 );
+      myTmp = myNotebook->GetParameter( TMP_NAME );
+    }
+  }
+  myTmp->SetExpression( theExpr );
+  myTmp->Update();
+  return convert( myTmp );
+}
+
+QVariant SalomeApp_Notebook::convert( SALOME::Parameter_ptr theParam ) const
+{
   QVariant aRes;
-  SALOME::Parameter_ptr aParam = myNotebook->GetParameter( theName.toLatin1().constData() );
-  if( !CORBA::is_nil( aParam ) )
+  if( !CORBA::is_nil( theParam ) )
     switch( aParam->GetType() )
     {
     case SALOME::TBoolean:
@@ -115,6 +136,10 @@ QVariant SalomeApp_Notebook::get( const QString& theName ) const
       break;
     }
   return aRes;
+}
+
+QVariant SalomeApp_Notebook::calculate( const QString& theExpr ) const
+{
 }
 
 void SalomeApp_Notebook::update()
