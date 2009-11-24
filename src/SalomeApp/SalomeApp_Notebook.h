@@ -49,7 +49,7 @@ public:
   bool isParameter( const QString& theName ) const;
   void set( const QString& theName, const QVariant& theValue );
   QVariant get( const QString& theName ) const;
-  QVariant calculate( const QString& theExpr ) const;
+  QVariant calculate( const QString& theExpr );
 
   void update();
 
@@ -63,8 +63,8 @@ protected:
   QVariant convert( SALOME::Parameter_ptr theParam ) const;
 
 private:
-  SALOME::Notebook_ptr myNotebook;
-  SALOME::Parameter_ptr myTmp;
+  SALOME::Notebook_var myNotebook;
+  SALOME::Parameter_var myTmp;
 };
 
 #endif

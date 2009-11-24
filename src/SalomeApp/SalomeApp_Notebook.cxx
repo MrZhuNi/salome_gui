@@ -34,11 +34,9 @@
 
 SalomeApp_Notebook::SalomeApp_Notebook( SalomeApp_Study* theStudy )
 {
-  SALOME::Notebook_var aRes;
   SALOMEDS_Study* aStudy = dynamic_cast<SALOMEDS_Study*>( theStudy->studyDS().operator->() );
   if( aStudy )
-    aRes = aStudy->GetStudy()->GetNotebook();
-  myNotebook = aRes._retn();
+    myNotebook = aStudy->GetStudy()->GetNotebook();
 }
 
 SalomeApp_Notebook::~SalomeApp_Notebook()
@@ -99,7 +97,7 @@ QVariant SalomeApp_Notebook::get( const QString& theName ) const
   return convert( myNotebook->GetParameter( theName.toLatin1().constData() ) );
 }
 
-QVariant SalomeApp_Notebook::calculate( const QString& theExpr ) const
+QVariant SalomeApp_Notebook::calculate( const QString& theExpr )
 {
   if( CORBA::is_nil( myTmp ) )
   {
@@ -111,8 +109,8 @@ QVariant SalomeApp_Notebook::calculate( const QString& theExpr ) const
       myTmp = myNotebook->GetParameter( TMP_NAME );
     }
   }
-  myTmp->SetExpression( theExpr );
-  myTmp->Update();
+  myTmp->SetExpression( theExpr.toLatin1().constData() );
+  myTmp->Update( myNotebook._retn() );
   return convert( myTmp );
 }
 
@@ -120,26 +118,22 @@ QVariant SalomeApp_Notebook::convert( SALOME::Parameter_ptr theParam ) const
 {
   QVariant aRes;
   if( !CORBA::is_nil( theParam ) )
-    switch( aParam->GetType() )
+    switch( theParam->GetType() )
     {
     case SALOME::TBoolean:
-      aRes = aParam->AsBoolean();
+      aRes = theParam->AsBoolean();
       break;
     case SALOME::TInteger:
-      aRes = (int)aParam->AsInteger();
+      aRes = (int)theParam->AsInteger();
       break;
     case SALOME::TReal:
-      aRes = aParam->AsReal();
+      aRes = theParam->AsReal();
       break;
     case SALOME::TString:
-      aRes = aParam->AsString();
+      aRes = theParam->AsString();
       break;
     }
   return aRes;
-}
-
-QVariant SalomeApp_Notebook::calculate( const QString& theExpr ) const
-{
 }
 
 void SalomeApp_Notebook::update()
@@ -170,25 +164,26 @@ QStringList SalomeApp_Notebook::absentParameters() const
 
 void SalomeApp_Notebook::setParameters( SALOME::ParameterizedObject_ptr theObject, int theCount, QAbstractSpinBox* theFirstSpin, ... )
 {
-  SALOME::StringArray aParams;
-  aParams.length( theCount );
-  QAbstractSpinBox** aSpin = &theFirstSpin;
-  for( int i=0; i<theCount; i++, aSpin++ )
+  SALOME::StringArray_var aParams = new SALOME::StringArray();
+  aParams->length( theCount );
+
+  QAbstractSpinBox** aSpinArray = &theFirstSpin;
+  for( int i=0; i<theCount; i++, aSpinArray++ )
   {
-    SalomeApp_DoubleSpinBox* aDbl = dynamic_cast<SalomeApp_DoubleSpinBox*>( *aSpin );
-    if( aDbl )
-    {
-      continue;
-    }
+    QAbstractSpinBox* aSpin = *aSpinArray;
+    QString aText = aSpin->text();
 
-    SalomeApp_IntSpinBox* anInt = dynamic_cast<SalomeApp_IntSpinBox*>( *aSpin );
-    if( anInt )
-    {
-      continue;
-    }
+    bool anIsValue = false;
+    if( dynamic_cast<SalomeApp_DoubleSpinBox*>( aSpin ) )
+      aText.toDouble( &anIsValue );
+    else if( dynamic_cast<SalomeApp_IntSpinBox*>( aSpin ) )
+      aText.toInt( &anIsValue );
 
-    aParams[i] = CORBA::string_dup( "" );
+    if( anIsValue )
+      aText = "";
+
+    aParams[i] = CORBA::string_dup( aText.toLatin1().constData() );
   }
 
-  theObject->SetParameters( myNotebook, aParams );
+  theObject->SetParameters( myNotebook._retn(), aParams );
 }
