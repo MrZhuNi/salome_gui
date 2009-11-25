@@ -424,10 +424,6 @@ Do you really want to rename it?</translation>
            <translation>&amp;Remove</translation>
 	</message>
         <message>
-           <source>BUT_APPLY_AND_CLOSE</source>
-           <translation>A&amp;pply and Close</translation>
-	</message>
-        <message>
            <source>BUT_HELP</source>
            <translation>&amp;Help</translation>
 	</message>
@@ -436,17 +432,10 @@ Do you really want to rename it?</translation>
             <translation>Close NoteBook</translation>
         </message>
         <message>
-            <source>CLOSE_DESCRIPTION</source>
-            <translation>Do you want to save changes you made to NoteBook?</translation>
-        </message>
-        <message>
            <source>INCORRECT_DATA</source>
-           <translation>At least one variable has been defined incorrectly.
-Please edit its parameters or remove it from table.</translation>
-	</message>
-        <message>
-           <source>ERR_UPDATE_STUDY_FAILED</source>
-           <translation>Failed to update study!</translation>
+           <translation>Some variables are defined incorrectly and will not be saved.
+If you want to close the notebook anyway, click Ok.
+Otherwise click Cancel and correct these variables.</translation>
 	</message>
 </context>
 </TS>

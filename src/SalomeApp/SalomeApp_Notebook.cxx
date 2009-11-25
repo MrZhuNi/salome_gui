@@ -45,15 +45,13 @@ SalomeApp_Notebook::~SalomeApp_Notebook()
 
 bool SalomeApp_Notebook::isParameter( const QString& theName ) const
 {
-  const char* aName = theName.toLatin1().constData();
-  SALOME::Parameter_ptr aParam = myNotebook->GetParameter( aName );
+  SALOME::Parameter_ptr aParam = myNotebook->GetParameter( theName.toLatin1().constData() );
   return !CORBA::is_nil( aParam );
 }
 
 void SalomeApp_Notebook::set( const QString& theName, const QVariant& theValue )
 {
-  const char* aName = theName.toLatin1().constData();
-  SALOME::Parameter_ptr aParam = myNotebook->GetParameter( aName );
+  SALOME::Parameter_ptr aParam = myNotebook->GetParameter( theName.toLatin1().constData() );
   bool isNew = CORBA::is_nil( aParam );
 
   switch( theValue.type() )
@@ -61,32 +59,32 @@ void SalomeApp_Notebook::set( const QString& theName, const QVariant& theValue )
   case QVariant::Int:
   case QVariant::UInt:
     if( isNew )
-      myNotebook->AddInteger( aName, theValue.toInt() );
+      myNotebook->AddInteger( theName.toLatin1().constData(), theValue.toInt() );
     else
       aParam->SetInteger( theValue.toInt() );
     break;
 
   case QVariant::Double:
     if( isNew )
-      myNotebook->AddReal( aName, theValue.toDouble() );
+      myNotebook->AddReal( theName.toLatin1().constData(), theValue.toDouble() );
     else
       aParam->SetReal( theValue.toDouble() );
     break;
 
   case QVariant::Bool:
     if( isNew )
-      myNotebook->AddBoolean( aName, theValue.toBool() );
+      myNotebook->AddBoolean( theName.toLatin1().constData(), theValue.toBool() );
     else
       aParam->SetBoolean( theValue.toBool() );
     break;
 
   case QVariant::String:
     {
-      const char* aData = theValue.toString().toLatin1().constData();
       if( isNew )
-        myNotebook->AddNamedExpression( aName, aData );
+        myNotebook->AddNamedExpression( theName.toLatin1().constData(),
+                                        theValue.toString().toLatin1().constData() );
       else
-        aParam->SetExpression( aData );
+        aParam->SetExpression( theValue.toString().toLatin1().constData() );
       break;
     }
   }
@@ -136,9 +134,19 @@ QVariant SalomeApp_Notebook::convert( SALOME::Parameter_ptr theParam ) const
   return aRes;
 }
 
-void SalomeApp_Notebook::update()
+void SalomeApp_Notebook::update( bool theOnlyParameters )
 {
-  myNotebook->Update();
+  myNotebook->Update( theOnlyParameters );
+}
+
+void SalomeApp_Notebook::remove( const QString& theParamName )
+{
+  myNotebook->Remove( theParamName.toLatin1().constData() );
+}
+
+void SalomeApp_Notebook::rename( const QString& theOldName, const QString& theNewName )
+{
+  myNotebook->Rename( theOldName.toLatin1().constData(), theNewName.toLatin1().constData() );
 }
 
 QStringList SalomeApp_Notebook::convert( SALOME::StringArray* theList ) const
@@ -186,4 +194,9 @@ void SalomeApp_Notebook::setParameters( SALOME::ParameterizedObject_ptr theObjec
   }
 
   theObject->SetParameters( myNotebook._retn(), aParams );
+}
+
+char* SalomeApp_Notebook::dump()
+{
+  return myNotebook->Dump();
 }

@@ -25,16 +25,15 @@
 
 #include "SalomeApp.h"
 
-#include "SALOMEDSClient_ClientFactory.hxx" 
-#include CORBA_SERVER_HEADER(SALOMEDS)
-
 #include <QDialog>
 #include <QTableWidget>
 #include <QList>
 
-class QWidget;
 class QPushButton;
 class QTableWidgetItem;
+
+class SalomeApp_Notebook;
+class SalomeApp_Study;
 
 struct NoteBoox_Variable
 {
@@ -56,118 +55,97 @@ class SALOMEAPP_EXPORT NoteBook_TableRow : public QWidget
   NoteBook_TableRow(int, QWidget* parent=0);
   virtual ~NoteBook_TableRow();
 
-  int  GetIndex() const { return myIndex; }
+  int                       GetIndex() const { return myIndex; }
   
-  void AddToTable(QTableWidget *theTable);
+  void                      AddToTable(QTableWidget *theTable);
   
-  void SetName(const QString theName);
-  void SetValue(const QString theValue);
+  void                      SetName(const QString theName);
+  void                      SetValue(const QString theValue);
 
-  QString GetValue() const;
-  QString GetName() const;
+  QString                   GetValue() const;
+  QString                   GetName() const;
 
-  bool CheckName();
-  bool CheckValue();
+  QTableWidgetItem*         GetVariableItem();
+  QTableWidgetItem*         GetNameItem();
+  QTableWidgetItem*         GetHeaderItem();
 
-  QTableWidgetItem* GetVariableItem();
-  QTableWidgetItem* GetNameItem();
-  QTableWidgetItem* GetHeaderItem();
-
-  static bool IsRealValue(const QString theValue, double* theResult = 0);
-  static bool IsIntegerValue(const QString theValue, int* theResult = 0);
-  static bool IsBooleanValue(const QString theValue, bool* theResult = 0);
-  static bool IsValidStringValue(const QString theName);
+  static bool               IsRealValue(const QString theValue, double* theResult = 0);
+  static bool               IsIntegerValue(const QString theValue, int* theResult = 0);
+  static bool               IsBooleanValue(const QString theValue, bool* theResult = 0);
+  static bool               IsValidStringValue(const QString theName);
   
  private:
-  int               myIndex;
-  QTableWidgetItem* myRowHeader;
-  QTableWidgetItem* myVariableName;
-  QTableWidgetItem* myVariableValue;
+  int                       myIndex;
+  QTableWidgetItem*         myRowHeader;
+  QTableWidgetItem*         myVariableName;
+  QTableWidgetItem*         myVariableValue;
 };
 
 class SALOMEAPP_EXPORT NoteBook_Table : public QTableWidget
 {
   Q_OBJECT
- public:
-  NoteBook_Table(QWidget * parent = 0);
+
+public:
+  NoteBook_Table( QWidget* parent = 0 );
   virtual ~NoteBook_Table();
 
-  void Init(_PTR(Study) theStudy);
-  static QString Variable2String(const std::string& theVarName,
-				 _PTR(Study) theStudy);
+  void                      Init( SalomeApp_Notebook* theNoteBook );
 
-  bool IsValid() const;
+  bool                      IsValid() const;
 
-  void AddRow( const QString& theName = QString::null, const QString& theValue = QString::null );
-  void AddEmptyRow();
-  NoteBook_TableRow* GetRowByItem(const QTableWidgetItem* theItem) const;
-  bool IsLastRow(const NoteBook_TableRow* aRow) const;
+  void                      AddRow( const QString& theName = QString::null,
+                                    const QString& theValue = QString::null );
 
-  void RemoveSelected();
+  NoteBook_TableRow*        GetRowByItem(const QTableWidgetItem* theItem) const;
+  bool                      IsLastRow(const NoteBook_TableRow* aRow) const;
 
-  void SetProcessItemChangedSignalFlag(const bool enable);
-  bool GetProcessItemChangedSignalFlag()const;
+  void                      RemoveSelected();
 
-  bool IsUniqueName(const NoteBook_TableRow* theRow) const;
-  QList<NoteBook_TableRow*> GetRows() const;
+protected slots:
+  void                      onItemChanged(QTableWidgetItem* theItem);
 
-  const bool         IsModified() const { return myIsModified; }
-  const QList<int>&  GetRemovedRows() const { return myRemovedRows; }
-  const VariableMap& GetVariableMap() const { return myVariableMap; }
-  const VariableMap& GetVariableMapRef() const { return myVariableMapRef; }
-  void  RenamberRowItems();
+private:
+  void                      printVariableMap(); // tmp
+  int                       getUniqueIndex() const;
+  void                      markItem( NoteBook_TableRow* theRow, int theColumn, bool theIsCorrect );
+  bool                      checkItem( QTableWidgetItem* theItem ) const;
 
-  void ResetMaps();
+private:
+  QList<NoteBook_TableRow*> myRows;
 
-  public slots:
-    void onItemChanged(QTableWidgetItem* theItem);
+  VariableMap               myVariableMap;
 
- private:
-    int  getUniqueIndex() const;
-    
- private:
-  bool isProcessItemChangedSignal;
-  QList<NoteBook_TableRow*>          myRows;
-
-  bool        myIsModified;
-  QList<int>  myRemovedRows;
-  VariableMap myVariableMapRef;
-  VariableMap myVariableMap;
-
-  _PTR(Study)      myStudy;
+  SalomeApp_Notebook*       myNoteBook;
 };
 
 class SALOMEAPP_EXPORT SalomeApp_NoteBookDlg : public QDialog 
 {
   Q_OBJECT
- public:
-  SalomeApp_NoteBookDlg(QWidget * parent , _PTR(Study) theStudy);
+
+public:
+  SalomeApp_NoteBookDlg(QWidget* parent, SalomeApp_Study* theStudy);
   virtual ~SalomeApp_NoteBookDlg();
 
-  void Init(_PTR(Study) theStudy);
+  void                      Init(SalomeApp_Study* theStudy);
   
- public slots:
-   void onOK();
-   void onApply();
-   void onCancel();
-   void onRemove();
-   void onUpdateStudy();
-   void onHelp();
+public slots:
+   void                     onRemove();
+   void                     onUpdateStudy();
+   void                     onClose();
+   void                     onHelp();
 
- protected:
-   bool updateStudy();
-   void clearStudy();
+protected:
+   bool                     updateStudy();
+   void                     clearStudy();
 
- private:
-  NoteBook_Table*  myTable;
-  QPushButton*     myRemoveButton;
-  QPushButton*     myUpdateStudyBtn;
-  QPushButton*     myOkBtn;
-  QPushButton*     myApplyBtn;
-  QPushButton*     myCancelBtn;
-  QPushButton*     myHelpBtn;
+private:
+  NoteBook_Table*           myTable;
+  QPushButton*              myRemoveButton;
+  QPushButton*              myUpdateStudyBtn;
+  QPushButton*              myCloseBtn;
+  QPushButton*              myHelpBtn;
   
-  _PTR(Study)      myStudy;
+  SalomeApp_Notebook*       myNoteBook;
 };
 
 #endif //SALOMEAPP_NOTEBOOKDLG_H

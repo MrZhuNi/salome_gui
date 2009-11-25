@@ -732,12 +732,11 @@ void SalomeApp_Application::onNoteBook()
 {
   SalomeApp_Study* appStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
   if ( appStudy ) {
-    _PTR(Study) aStudy = appStudy->studyDS();
     if(!myNoteBook) {
-      myNoteBook = new SalomeApp_NoteBookDlg(desktop(),aStudy);
+      myNoteBook = new SalomeApp_NoteBookDlg(desktop(),appStudy);
     }
     else if(!myNoteBook->isVisible()){
-      myNoteBook->Init(aStudy);
+      myNoteBook->Init(appStudy);
       myNoteBook->adjustSize();
       myNoteBook->move((int)(desktop()->x() + desktop()->width()/2  - myNoteBook->frameGeometry().width()/2),
                        (int)(desktop()->y() + desktop()->height()/2 - myNoteBook->frameGeometry().height()/2));

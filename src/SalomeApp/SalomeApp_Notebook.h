@@ -51,12 +51,17 @@ public:
   QVariant get( const QString& theName ) const;
   QVariant calculate( const QString& theExpr );
 
-  void update();
+  void update( bool theOnlyParameters );
+
+  void remove( const QString& theParamName );
+  void rename( const QString& theOldName, const QString& theNewName );
 
   QStringList parameters() const;
   QStringList absentParameters() const;
 
   void setParameters( SALOME::ParameterizedObject_ptr theObject, int theCount, QAbstractSpinBox* theFirstSpin, ... );
+
+  char* dump();
 
 protected:
   QStringList convert( SALOME::StringArray* theArray ) const;

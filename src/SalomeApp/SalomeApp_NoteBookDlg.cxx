@@ -20,45 +20,23 @@
 // Author : Roman NIKOLAEV, Open CASCADE S.A.S.
 // Module : GUI
 
-#include <PyConsole_Interp.h> // this include must be first (see PyInterp_base.h)!
-#include <PyConsole_Console.h>
-
 #include "SalomeApp_NoteBookDlg.h"
 #include "SalomeApp_Application.h"
+#include "SalomeApp_Notebook.h"
 #include "SalomeApp_Study.h"
-#include "SalomeApp_VisualState.h"
 
-#include <Qtx.h>
-
-#include <CAM_Module.h>
-
-#include <SUIT_Desktop.h>
 #include <SUIT_MessageBox.h>
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_Session.h>
 
-#include <SALOMEDS_Tool.hxx>
-
-#include <QWidget>
-#include <QDialog>
-#include <QGridLayout>
-#include <QTableWidget>
-#include <QTableWidgetItem>
-#include <QPushButton>
+#include <QApplication>
 #include <QFont>
 #include <QGroupBox>
-#include <QList>
-#include <QApplication>
-#include <QDir>
-
-#include <string>
-#include <vector>
-
-using namespace std;
+#include <QLayout>
+#include <QPushButton>
 
 #define DEFAULT_MARGIN  11
 #define DEFAULT_SPACING 6
-#define SPACER_SIZE     120
 #define COLUMN_SIZE     180
 
 #define NAME_COLUMN  0
@@ -146,40 +124,6 @@ QString NoteBook_TableRow::GetName() const
 QString NoteBook_TableRow::GetValue() const
 {
   return myVariableValue->text(); 
-}
-
-//============================================================================
-/*! Function : CheckName
- *  Purpose  : Return true if variable name correct, otherwise return false
- */
-//============================================================================
-bool NoteBook_TableRow::CheckName()
-{
-  QString aName = GetName();
-  int aPos = 0;
-  QRegExpValidator aValidator( QRegExp("^([a-zA-Z]+)([a-zA-Z0-9_]*)$"), 0 );
-  if( aName.isEmpty() || !aValidator.validate( aName, aPos ) )
-    return false;
-  return true;
-}
-
-//============================================================================
-/*! Function : CheckValue
- *  Purpose  : Return true if variable value correct, otherwise return false
- */
-//============================================================================
-bool NoteBook_TableRow::CheckValue()
-{
-  bool aResult = false;
-  QString aValue = GetValue();
-  if(!aValue.isEmpty() && 
-     (IsRealValue(aValue) ||
-      IsIntegerValue(aValue) ||
-      IsBooleanValue(aValue) ||
-      IsValidStringValue(aValue)))
-    aResult = true;
-  
-  return aResult;
 }
 
 //============================================================================
@@ -291,9 +235,7 @@ bool NoteBook_TableRow::IsValidStringValue(const QString theValue)
  */
 //============================================================================
 NoteBook_Table::NoteBook_Table(QWidget * parent)
-  :QTableWidget(parent),
-   isProcessItemChangedSignal(false),
-   myIsModified(false)
+  :QTableWidget(parent)
 {
   setColumnCount(2);
   setSelectionMode(QAbstractItemView::SingleSelection);
@@ -328,6 +270,20 @@ NoteBook_Table::NoteBook_Table(QWidget * parent)
 //============================================================================
 NoteBook_Table::~NoteBook_Table(){}
 
+void NoteBook_Table::printVariableMap()
+{
+  printf( "VariableMap:\n" );
+  VariableMap::const_iterator it = myVariableMap.constBegin(), itEnd = myVariableMap.constEnd();
+  for( ; it != itEnd; ++it )
+  {
+    int anIndex = it.key();
+    const NoteBoox_Variable& aVariable = it.value();
+    QString aName = aVariable.Name;
+    QString aValue = aVariable.Value;
+    printf( "%d - %s - %s\n", anIndex, aName.toLatin1().constData(), aValue.toLatin1().constData() );
+  }
+}
+
 //============================================================================
 /*! Function : getUniqueIndex
  *  Purpose  : Get a unique index for the new row
@@ -340,25 +296,45 @@ int NoteBook_Table::getUniqueIndex() const
     if( NoteBook_TableRow* aRow = myRows.last() )
       anIndex = aRow->GetIndex();
 
-  int aMaxRemovedRow = 0;
-  for( QListIterator<int> anIter( myRemovedRows ); anIter.hasNext(); )
-  {
-    int aRemovedRow = anIter.next();
-    aMaxRemovedRow = qMax( aRemovedRow, aMaxRemovedRow );
-  }
-
-  anIndex = qMax( anIndex, aMaxRemovedRow ) + 1;
+  anIndex++;
   return anIndex;
 }
 
 //============================================================================
-/*! Function : Init
- *  Purpose  : Add variables in the table from theStudy
+/*! Function : markItem
+ *  Purpose  : Mark an item at the given column of the given row by red or
+ *             black color (red color means incorrect value, black - correct)
  */
 //============================================================================
-void NoteBook_Table::Init(_PTR(Study) theStudy)
+void NoteBook_Table::markItem( NoteBook_TableRow* theRow, int theColumn, bool theIsCorrect )
 {
-  isProcessItemChangedSignal = false;
+  if( QTableWidgetItem* anItem =
+      theColumn == NAME_COLUMN ? theRow->GetNameItem() : theRow->GetVariableItem() )
+  {
+    bool isBlocked = blockSignals( true );
+    anItem->setForeground( QBrush( theIsCorrect ? Qt::black : Qt::red ) );
+    blockSignals( isBlocked );
+  }
+}
+
+//============================================================================
+/*! Function : checkItem
+ *  Purpose  : Check validity of item by its color
+ */
+//============================================================================
+bool NoteBook_Table::checkItem( QTableWidgetItem* theItem ) const
+{
+  return theItem->foreground().color() == Qt::black;
+}
+
+//============================================================================
+/*! Function : Init
+ *  Purpose  : Add variables in the table from theNoteBook
+ */
+//============================================================================
+void NoteBook_Table::Init(SalomeApp_Notebook* theNoteBook)
+{
+  bool isBlocked = blockSignals( true );
 
   int aNumRows = myRows.count();
   if( aNumRows > 0 )
@@ -376,45 +352,24 @@ void NoteBook_Table::Init(_PTR(Study) theStudy)
   }
   setRowCount( 0 );
 
-  myRemovedRows.clear();
-  myVariableMapRef.clear();
   myVariableMap.clear();
 
   //Add all variables into the table
-  vector<string> aVariables = theStudy->GetVariableNames();
-  for(int iVar = 0; iVar < aVariables.size(); iVar++ ) {
-    AddRow(QString(aVariables[iVar].c_str()),
-	   Variable2String(aVariables[iVar],theStudy));
+  QStringList aVariables = theNoteBook->parameters();
+  QStringListIterator anIter( aVariables );
+  while( anIter.hasNext() )
+  {
+    QString aVariable = anIter.next();
+    QString aVariableValue = theNoteBook->get(aVariable).toString();
+    AddRow( aVariable, aVariableValue );
   }
 
   //Add empty row
-  AddEmptyRow();
-  isProcessItemChangedSignal = true;
+  AddRow();
 
-  ResetMaps();
+  myNoteBook = theNoteBook;
 
-  myStudy = theStudy;
-}
-
-//============================================================================
-/*! Function : Variable2String
- *  Purpose  : Convert variable values to QString
- */
-//============================================================================
-QString NoteBook_Table::Variable2String(const string& theVarName,
-                                        _PTR(Study) theStudy)
-{
-  QString aResult;
-  if( theStudy->IsReal(theVarName) )
-    aResult = QString::number(theStudy->GetReal(theVarName));
-  else if( theStudy->IsInteger(theVarName) )
-    aResult = QString::number(theStudy->GetInteger(theVarName));
-  else if( theStudy->IsBoolean(theVarName) )
-    aResult = theStudy->GetBoolean(theVarName) ? QString("True") : QString("False");
-  else if( theStudy->IsString(theVarName) )
-    aResult = theStudy->GetString(theVarName).c_str();
-  
-  return aResult;
+  blockSignals( isBlocked );
 }
 
 //============================================================================
@@ -428,41 +383,17 @@ bool NoteBook_Table::IsValid() const
   if( aNumRows == 0 )
     return true;
 
-  bool aLastRowIsEmpty = myRows[ aNumRows - 1 ]->GetName().isEmpty() &&
-                         myRows[ aNumRows - 1 ]->GetValue().isEmpty();
+  if( !myRows[ aNumRows - 1 ]->GetName().isEmpty() ||
+      !myRows[ aNumRows - 1 ]->GetValue().isEmpty() )
+    return false;
 
-  for( int i = 0, n = aLastRowIsEmpty ? aNumRows - 1 : aNumRows; i < n; i++ )
-    if( !myRows[i]->CheckName() || !IsUniqueName( myRows[i] ) || !myRows[i]->CheckValue() )
-      return false;
+  for( int aRow = 0, aRowCount = rowCount(); aRow < aRowCount; aRow++ )
+    for( int aCol = 0, aColCount = columnCount(); aCol < aColCount; aCol++ )
+      if( QTableWidgetItem* anItem = item( aRow, aCol ) )
+        if( !checkItem( anItem ) )
+          return false;
 
-  SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
-  PyConsole_Console* pyConsole = app->pythonConsole();
-  PyConsole_Interp* pyInterp = pyConsole->getInterp();
-  PyLockWrapper aLock = pyInterp->GetLockWrapper();
-  string command = "import salome_notebook ; ";
-  command += "salome_notebook.checkThisNoteBook(";
-  for( int i = 0, n = aLastRowIsEmpty ? aNumRows - 1 : aNumRows; i < n; i++ )
-    {
-      command += myRows[i]->GetName().toStdString();
-      command += "=\"";
-      command += myRows[i]->GetValue().toStdString();
-      command += "\",";
-    }
-  command += ")";
-  bool aResult = pyInterp->run(command.c_str());
-  aResult = !aResult;
-  return aResult;
-}
-
-//============================================================================
-/*! Function : RenamberRowItems
- *  Purpose  : renumber row items
- */
-//============================================================================
-void NoteBook_Table::RenamberRowItems(){
-  for(int i=0; i<myRows.size();i++){
-    myRows[i]->GetHeaderItem()->setText(QString::number(i+1));
-  }
+  return true;
 }
 
 //============================================================================
@@ -480,18 +411,6 @@ void NoteBook_Table::AddRow(const QString& theName, const QString& theValue)
   myRows.append(aRow);
 
   myVariableMap.insert( anIndex, NoteBoox_Variable( theName, theValue ) );
-}
-
-//============================================================================
-/*! Function : AddEmptyRow
- *  Purpose  : Add an empty row into the end of the table
- */
-//============================================================================
-void NoteBook_Table::AddEmptyRow()
-{
-  isProcessItemChangedSignal = false;
-  AddRow();
-  isProcessItemChangedSignal = true;
 }
 
 //============================================================================
@@ -526,102 +445,120 @@ bool NoteBook_Table::IsLastRow(const NoteBook_TableRow* theRow) const
 //============================================================================
 void NoteBook_Table::onItemChanged(QTableWidgetItem* theItem)
 {
-  if(isProcessItemChangedSignal) {
-    bool isModified = true;
-    NoteBook_TableRow* aRow = GetRowByItem(theItem);
-    if(aRow) {
-      int aCurrentColumn = column(theItem);
-      bool IsCorrect = true, IsVariableComplited = false;
-      QString aMsg;
+  //printf( "onItemChanged( %d, %d )\n", theItem->row(), theItem->column() );
 
-      if(aCurrentColumn == NAME_COLUMN) {
-	int anIndex = aRow->GetIndex();
-	if( myVariableMap.contains( anIndex ) )
-	{
-	  const NoteBoox_Variable& aVariable = myVariableMap[ anIndex ];
-	  if( !aVariable.Name.isEmpty() && myStudy->IsVariableUsed( string( aVariable.Name.toLatin1().constData() ) ) )
-	  {
-	    if( QMessageBox::warning( parentWidget(), tr( "WARNING" ),
-				      tr( "RENAME_VARIABLE_IS_USED" ).arg( aVariable.Name ),
-				      QMessageBox::Yes, QMessageBox::No ) == QMessageBox::No )
-	    {
-	      bool isBlocked = blockSignals( true );
-	      aRow->SetName( aVariable.Name );
-	      blockSignals( isBlocked );
-	      return;
-	    }
-	  }
-	}
-      }
+  //printf( "Before:\n" );
+  //printVariableMap();
 
-      //Case then varible name changed. 
-      if(aCurrentColumn == NAME_COLUMN) {
-        if(!aRow->CheckName()) {
-	  IsCorrect = false;
-	  aMsg = tr( "VARNAME_INCORRECT" ).arg(aRow->GetName());
-	}
-        else if(!IsUniqueName(aRow)) {
-	  IsCorrect = false;
-          aMsg = tr( "VARNAME_EXISTS" ).arg(aRow->GetName());
-	}
-	else
-	  IsVariableComplited = aRow->CheckValue();
-      }
-      
-      //Case then varible value changed. 
-      else if(aCurrentColumn == VALUE_COLUMN){
-        if(!aRow->CheckValue()) {
-	  IsCorrect = false;
-	  aMsg = tr( "VARVALUE_INCORRECT" ).arg(aRow->GetName());
-	}
-	else
-	  IsVariableComplited = aRow->CheckName() && IsUniqueName(aRow);
-      }
+  NoteBook_TableRow* aRow = GetRowByItem( theItem );
+  if( !aRow )
+    return;
 
-      if(!IsCorrect && !aMsg.isEmpty())
-	SUIT_MessageBox::warning( parentWidget(), tr( "WARNING" ), aMsg );
+  int anIndex = aRow->GetIndex();
+  if( !myVariableMap.contains( anIndex ) )
+    return;
 
-      bool isBlocked = blockSignals( true );
-      theItem->setForeground( QBrush( IsCorrect ? Qt::black : Qt::red ) );
-      blockSignals( isBlocked );
+  NoteBoox_Variable& aVariable = myVariableMap[ anIndex ];
 
-      int anIndex = aRow->GetIndex();
-      if( myVariableMap.contains( anIndex ) )
+  QString aName = aRow->GetName();
+  QString aValue = aRow->GetValue();
+  bool isComplete = !aName.isEmpty() && !aValue.isEmpty();
+
+  QString anErrorType, anErrorMessage;
+
+  int aCurrentColumn = column( theItem );
+  if( aCurrentColumn == NAME_COLUMN )
+  {
+    if( !aVariable.Name.isEmpty() && !aVariable.Value.isEmpty() && aName != aVariable.Name)
+    { // just rename and return
+      try
       {
-	NoteBoox_Variable& aVariable = myVariableMap[ anIndex ];
-	if( aVariable.Name.compare( aRow->GetName() ) != 0 ||
-	    aVariable.Value.compare( aRow->GetValue() ) != 0 )
-	{
-	  aVariable.Name = aRow->GetName();
-	  aVariable.Value = aRow->GetValue();
-	}
-	else
-	  isModified = false;
+        myNoteBook->rename( aVariable.Name, aName );
+      }
+      catch( const SALOME::NotebookError& ex ) {
+        anErrorType = tr( "NOTEBOOK_ERROR" );
+        anErrorMessage = ex.Reason.in();
+      } catch( const SALOME::ExpressionError& ex ) {
+        anErrorType = tr( "EXPRESSION_ERROR" );
+        anErrorMessage = ex.Reason.in();
+      } catch( const SALOME::CalculationError& ex ) {
+        anErrorType = tr( "CALCULATION_ERROR" );
+        anErrorMessage = ex.Reason.in();
+      } catch( const SALOME::TypeError& ex ) {
+        anErrorType = tr( "TYPE_ERROR" );
+        anErrorMessage = ex.Reason.in();
       }
 
-      if(IsCorrect && IsVariableComplited && IsLastRow(aRow))
-	AddEmptyRow();
+      if( !anErrorType.isEmpty() )
+      {
+        SUIT_MessageBox::warning( this, anErrorType, anErrorMessage );
+
+        //aRow->SetValue( aVariable.Value );
+        markItem( aRow, aCurrentColumn, false );
+
+        return;
+      }
+    }
+    aVariable.Name = aName;
+    return;
+  }
+
+  if( isComplete )
+  {
+    int iVal;
+    double dVal;
+    bool bVal;
+    QString anErrorType, anErrorMessage;
+    try
+    {
+      //printf( "myNoteBook->set( %s, %s )\n", aName.toLatin1().constData(), aValue.toLatin1().constData() );
+      if( NoteBook_TableRow::IsIntegerValue( aValue, &iVal ) )
+        myNoteBook->set( aName, iVal );
+      else if( NoteBook_TableRow::IsRealValue( aValue, &dVal ) )
+        myNoteBook->set( aName, dVal );
+      else if( NoteBook_TableRow::IsBooleanValue( aValue, &bVal ) )
+        myNoteBook->set( aName, bVal );
+      else if( NoteBook_TableRow::IsValidStringValue( aValue ) )
+        myNoteBook->set( aName, aValue );
+      aVariable.Value = aValue;
+    }
+    catch( const SALOME::NotebookError& ex ) {
+      anErrorType = tr( "NOTEBOOK_ERROR" );
+      anErrorMessage = ex.Reason.in();
+    } catch( const SALOME::ExpressionError& ex ) {
+      anErrorType = tr( "EXPRESSION_ERROR" );
+      anErrorMessage = ex.Reason.in();
+    } catch( const SALOME::CalculationError& ex ) {
+      anErrorType = tr( "CALCULATION_ERROR" );
+      anErrorMessage = ex.Reason.in();
+    } catch( const SALOME::TypeError& ex ) {
+      anErrorType = tr( "TYPE_ERROR" );
+      anErrorMessage = ex.Reason.in();
     }
 
-    if( !myIsModified )
-      myIsModified = isModified;
-  }
-}
+    if( !anErrorType.isEmpty() )
+    {
+      SUIT_MessageBox::warning( this, anErrorType, anErrorMessage );
 
-//============================================================================
-/*! Function : IsUniqueName
- *  Purpose  : Return true if theName is unique name of the Variable
- */
-//============================================================================
-bool NoteBook_Table::IsUniqueName(const NoteBook_TableRow* theRow) const
-{
-  for(int i=0; i<myRows.size();i++) {
-    if(myRows[i] == theRow ) 
-      continue;
-    if(myRows[i]->GetName().compare(theRow->GetName()) == 0)
-      return false;
+      //aRow->SetValue( aVariable.Value );
+      markItem( aRow, aCurrentColumn, false );
+
+      return;
+    }
   }
-  return true;
+
+  markItem( aRow, NAME_COLUMN, true );
+  markItem( aRow, VALUE_COLUMN, true );
+
+  if( IsLastRow( aRow ) ) // && isComplete
+  {
+    bool isBlocked = blockSignals( true );
+    AddRow();
+    blockSignals( isBlocked );
+  }
+
+  //printf( "After:\n" );
+  //printVariableMap();
 }
 
 //============================================================================
@@ -631,92 +568,41 @@ bool NoteBook_Table::IsUniqueName(const NoteBook_TableRow* theRow) const
 //============================================================================
 void NoteBook_Table::RemoveSelected()
 {
-  isProcessItemChangedSignal = false;
+  bool isBlocked = blockSignals( true );
+
   QList<QTableWidgetItem*> aSelectedItems = selectedItems();
-  if( !(aSelectedItems.size() > 0)) {
-    isProcessItemChangedSignal = true;
-    return;
-  }
-  bool removedFromStudy = false;
-  for(int i=0; i < aSelectedItems.size(); i++ ) {
-    NoteBook_TableRow* aRow = GetRowByItem(aSelectedItems[i]);
-    if(aRow) {
-      if(IsLastRow(aRow)) {
-        aRow->SetName(QString());
-        aRow->SetValue(QString());
+  if( aSelectedItems.size() == 1 )
+  {
+    QTableWidgetItem* anItem = aSelectedItems.first();
+    if( NoteBook_TableRow* aRow = GetRowByItem( anItem ) )
+    {
+      if( IsLastRow( aRow ) )
+      {
+        aRow->SetName( QString() );
+        aRow->SetValue( QString() );
       }
-      else {
-        int nRow = row(aSelectedItems[i]);
+      else
+      {
+        int nRow = row( anItem );
+        int index = aRow->GetIndex();
 
-	if( myStudy->IsVariableUsed( string( aRow->GetName().toLatin1().constData() ) ) )
-	{
-	  if( QMessageBox::warning( parentWidget(), tr( "WARNING" ),
-				    tr( "REMOVE_VARIABLE_IS_USED" ).arg( aRow->GetName() ),
-				    QMessageBox::Yes, QMessageBox::No ) == QMessageBox::No )
-	  {
-	    isProcessItemChangedSignal = true;
-	    return;
-	  }
-	}
+        QString aName = aRow->GetName();
+        if( myVariableMap.contains( index ) )
+          myVariableMap.remove( index );
 
-	int index = aRow->GetIndex();
-        QString aVarName = aRow->GetName();
-	myRemovedRows.append( index );
-	if( myVariableMap.contains( index ) )
-	  myVariableMap.remove( index );
-        removeRow(nRow);
-        myRows.removeAt(nRow);
-        if(myStudy->IsVariable(aVarName.toLatin1().constData()))
-          removedFromStudy = true;
+        removeRow( nRow );
+        myRows.removeAt( nRow );
+
+        myNoteBook->remove( aName );
       }
     }
+
+    // renumber header items
+    for( int i = 0; i < myRows.size(); i++ )
+      myRows[i]->GetHeaderItem()->setText( QString::number( i+1 ) );
   }
-  if(removedFromStudy)
-    myIsModified = true;
-  RenamberRowItems();
-  isProcessItemChangedSignal = true;
-}
 
-//============================================================================
-/*! Function : SetProcessItemChangedSignalFlag
- *  Purpose  : 
- */
-//============================================================================
-void NoteBook_Table::SetProcessItemChangedSignalFlag(const bool enable)
-{
-  isProcessItemChangedSignal = enable;
-}
-
-//============================================================================
-/*! Function : GetProcessItemChangedSignalFlag
- *  Purpose  : 
- */
-//============================================================================
-bool NoteBook_Table::GetProcessItemChangedSignalFlag() const
-{
-  return isProcessItemChangedSignal;
-}
-
-//============================================================================
-/*! Function : GetRows
- *  Purpose  : 
- */
-//============================================================================
-QList<NoteBook_TableRow*> NoteBook_Table::GetRows() const
-{
-  return myRows;
-}
-
-//============================================================================
-/*! Function : ResetMaps
- *  Purpose  : Reset variable maps
- */
-//============================================================================
-void NoteBook_Table::ResetMaps()
-{
-  myIsModified = false;
-  myVariableMapRef = myVariableMap;
-  myRemovedRows.clear();
+  blockSignals( isBlocked );
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -727,13 +613,14 @@ void NoteBook_Table::ResetMaps()
  *  Purpose  : Constructor
  */
 //============================================================================
-SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theStudy):
+SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget* parent, SalomeApp_Study* theStudy):
   QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
-  myStudy(theStudy)
+  myNoteBook(0)
 {
   setModal(false);
   setObjectName("SalomeApp_NoteBookDlg");
   setWindowTitle(tr("NOTEBOOK_TITLE"));
+
   QGridLayout* aLayout = new QGridLayout(this);
   aLayout->setMargin(DEFAULT_MARGIN);
   aLayout->setSpacing(DEFAULT_SPACING);
@@ -755,47 +642,39 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
   
   QGroupBox* groupBox = new QGroupBox(this);
 
-  QGridLayout* aLayout1 = new QGridLayout(groupBox);
+  QBoxLayout* aLayout1 = new QHBoxLayout(groupBox);
 
   aLayout1->setMargin(DEFAULT_MARGIN);
   aLayout1->setSpacing(DEFAULT_SPACING);
 
-  myOkBtn = new QPushButton(tr("BUT_APPLY_AND_CLOSE"));
-  aLayout1->addWidget(myOkBtn, 0, 0, 1, 1);
-  
-  myApplyBtn = new QPushButton(tr("BUT_APPLY"));
-  aLayout1->addWidget(myApplyBtn, 0, 1, 1, 1);  
+  myCloseBtn = new QPushButton(tr("BUT_CLOSE"));
+  aLayout1->addWidget(myCloseBtn);
 
   QSpacerItem* spacer1 =
     new QSpacerItem(DEFAULT_SPACING, 5, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  aLayout1->addItem(spacer1, 0, 2, 1, 1);
-
-  myCancelBtn = new QPushButton(tr("BUT_CLOSE"));
-  aLayout1->addWidget(myCancelBtn, 0, 3, 1, 1);
+  aLayout1->addItem(spacer1);
 
   myHelpBtn = new QPushButton(tr("BUT_HELP"));
-  aLayout1->addWidget(myHelpBtn, 0, 4, 1, 1);
+  aLayout1->addWidget(myHelpBtn);
   
   aLayout->addWidget(groupBox, 2, 0, 1, 3);
 
+  setMinimumWidth( 2 * COLUMN_SIZE + 50 );
+
   QWidgetList aWidgetList;
   aWidgetList.append( myTable );
-  aWidgetList.append( myOkBtn );
-  aWidgetList.append( myApplyBtn );
-  aWidgetList.append( myCancelBtn );
-  aWidgetList.append( myHelpBtn );
-  aWidgetList.append( myUpdateStudyBtn );
   aWidgetList.append( myRemoveButton );
+  aWidgetList.append( myUpdateStudyBtn );
+  aWidgetList.append( myCloseBtn );
+  aWidgetList.append( myHelpBtn );
   Qtx::setTabOrder( aWidgetList );
 
-  connect( myOkBtn, SIGNAL(clicked()), this, SLOT(onOK()) );
-  connect( myApplyBtn, SIGNAL(clicked()), this, SLOT(onApply()) );
-  connect( myCancelBtn, SIGNAL(clicked()), this, SLOT(onCancel()) );
-  connect( myUpdateStudyBtn, SIGNAL(clicked()), this, SLOT(onUpdateStudy()) );
   connect( myRemoveButton, SIGNAL(clicked()), this, SLOT(onRemove()));
+  connect( myUpdateStudyBtn, SIGNAL(clicked()), this, SLOT(onUpdateStudy()) );
+  connect( myCloseBtn, SIGNAL(clicked()), this, SLOT(onClose()) );
   connect( myHelpBtn, SIGNAL(clicked()), this, SLOT(onHelp()));
-  
-  myTable->Init(myStudy);
+ 
+  Init( theStudy );
 }
 
 //============================================================================
@@ -803,31 +682,76 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg(QWidget * parent, _PTR(Study) theSt
  *  Purpose  : Destructor
  */
 //============================================================================
-SalomeApp_NoteBookDlg::~SalomeApp_NoteBookDlg(){}
-
+SalomeApp_NoteBookDlg::~SalomeApp_NoteBookDlg()
+{
+  if( myNoteBook )
+  {
+    delete myNoteBook;
+    myNoteBook = 0;
+  }
+}
 
 //============================================================================
 /*! Function : Init()
  *  Purpose  : init variable table
  */
 //============================================================================
-void SalomeApp_NoteBookDlg::Init(_PTR(Study) theStudy){
-  if(myStudy!= theStudy)
-    myStudy = theStudy;
-  myTable->Init(myStudy);
+void SalomeApp_NoteBookDlg::Init(SalomeApp_Study* theStudy)
+{
+  // delete the current notebook (if can based on another study)
+  if( myNoteBook )
+    delete myNoteBook;
+
+  // create new notebook based on the given study
+  myNoteBook = new SalomeApp_Notebook( theStudy );
+  myTable->Init( myNoteBook );
 }
 
-
 //============================================================================
-/*! Function : onOK
+/*! Function : onRemove
  *  Purpose  : [slot]
  */
 //============================================================================
-void SalomeApp_NoteBookDlg::onOK()
+void SalomeApp_NoteBookDlg::onRemove()
 {
-  onApply();
-  if( myTable->IsValid() )
-    accept();
+  myTable->RemoveSelected();
+}
+
+//============================================================================
+/*! Function : onUpdateStudy
+ *  Purpose  : [slot]
+ */
+//============================================================================
+void SalomeApp_NoteBookDlg::onUpdateStudy()
+{
+  //printf( "Notebook:\n%s", myNoteBook->dump() );
+  //printf( "-----------------------------------------\n" );
+  //return;
+
+  //onApply();
+  if( !myTable->IsValid() )
+    return;
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  myNoteBook->update( false );
+  //SUIT_MessageBox::warning( this, tr( "ERROR" ), tr( "ERR_UPDATE_STUDY_FAILED" ) );
+    
+  QApplication::restoreOverrideCursor();
+}
+
+//============================================================================
+/*! Function : onClose
+ *  Purpose  : [slot]
+ */
+//============================================================================
+void SalomeApp_NoteBookDlg::onClose()
+{
+  if( !myTable->IsValid() &&
+      SUIT_MessageBox::question( this, tr( "CLOSE_CAPTION" ), tr( "INCORRECT_DATA" ),
+                                 QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Ok )
+    return;
+  accept();
 }
 
 //============================================================================
@@ -854,264 +778,4 @@ void SalomeApp_NoteBookDlg::onHelp()
                                                                  platform)).
                              arg(aHelpFileName));
   }
-
-}
-//============================================================================
-/*! Function : onApply
- *  Purpose  : [slot]
- */
-//============================================================================
-void SalomeApp_NoteBookDlg::onApply()
-{
-  if( !myTable->IsValid() )
-  {
-    SUIT_MessageBox::warning( this, tr( "WARNING" ), tr( "INCORRECT_DATA" ) );
-    return;
-  }
-
-  double aDVal;
-  int    anIVal;
-  bool   aBVal;
-
-  const QList<int>& aRemovedRows = myTable->GetRemovedRows();
-  const VariableMap& aVariableMap = myTable->GetVariableMap();
-  const VariableMap& aVariableMapRef = myTable->GetVariableMapRef();
-
-  for( QListIterator<int> anIter( aRemovedRows ); anIter.hasNext(); )
-  {
-    int anIndex = anIter.next();
-    if( aVariableMapRef.contains( anIndex ) )
-    {
-      QString aRemovedVariable = aVariableMapRef[ anIndex ].Name;
-      myStudy->RemoveVariable( string( aRemovedVariable.toLatin1().constData() ) );
-    }
-  }
-
-  VariableMap::const_iterator it = aVariableMap.constBegin(), itEnd = aVariableMap.constEnd();
-  for( ; it != itEnd; ++it )
-  {
-    int anIndex = it.key();
-    const NoteBoox_Variable& aVariable = it.value();
-    QString aName = aVariable.Name;
-    QString aValue = aVariable.Value;
-
-    if( !aName.isEmpty() && !aValue.isEmpty() )
-    {
-      if( aVariableMapRef.contains( anIndex ) )
-      {
-	const NoteBoox_Variable& aVariableRef = aVariableMapRef[ anIndex ];
-	QString aNameRef = aVariableRef.Name;
-	QString aValueRef = aVariableRef.Value;
-
-	if( !aNameRef.isEmpty() && !aValueRef.isEmpty() && aNameRef != aName )
-	{
-	  myStudy->RenameVariable( string( aNameRef.toLatin1().constData() ),
-				   string( aName.toLatin1().constData() ) );
-	}
-      }
-
-      if( NoteBook_TableRow::IsIntegerValue(aValue,&anIVal) )
-	myStudy->SetInteger(string(aName.toLatin1().constData()),anIVal);
-
-      else if( NoteBook_TableRow::IsRealValue(aValue,&aDVal) )
-	myStudy->SetReal(string(aName.toLatin1().constData()),aDVal);
-    
-      else if( NoteBook_TableRow::IsBooleanValue(aValue,&aBVal) )
-	myStudy->SetBoolean(string(aName.toLatin1().constData()),aBVal);
-    
-      else if( NoteBook_TableRow::IsValidStringValue(aValue) )
-	myStudy->SetString(string(aName.toLatin1().constData()),aValue.toStdString());
-    }
-  }
-  myTable->ResetMaps();
-
-  SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
-  if(app)
-    app->updateActions();
-
-}
-
-//============================================================================
-/*! Function : onCancel
- *  Purpose  : [slot]
- */
-//============================================================================
-void SalomeApp_NoteBookDlg::onCancel()
-{
-  if( myTable->IsModified() )
-  {
-    int answer = QMessageBox::question( this, tr( "CLOSE_CAPTION" ), tr( "CLOSE_DESCRIPTION" ),
-					QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel );
-    switch( answer )
-    {
-      case QMessageBox::Yes    : onOK(); return;
-      case QMessageBox::No     : break;
-      case QMessageBox::Cancel : return;
-      default :	break;
-    }
-  }
-  reject();
-}
-
-//============================================================================
-/*! Function : onRemove
- *  Purpose  : [slot]
- */
-//============================================================================
-void SalomeApp_NoteBookDlg::onRemove()
-{
-  myTable->RemoveSelected();
-}
-
-//============================================================================
-/*! Function : onUpdateStudy
- *  Purpose  : [slot]
- */
-//============================================================================
-void SalomeApp_NoteBookDlg::onUpdateStudy()
-{
-  onApply();
-  if( !myTable->IsValid() )
-    return;
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  if( !updateStudy() )
-    SUIT_MessageBox::warning( this, tr( "ERROR" ), tr( "ERR_UPDATE_STUDY_FAILED" ) );
-    
-  QApplication::restoreOverrideCursor();
-}
-
-//============================================================================
-/*! Function : updateStudy
- *  Purpose  : 
- */
-//============================================================================
-bool SalomeApp_NoteBookDlg::updateStudy()
-{
-  SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
-  if( !app )
-    return false;
-
-  SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( app->activeStudy() );
-  if( !study )
-    return false;
-
-  bool isStudySaved = study->isSaved();
-  QString aStudyName = study->studyName();
-
-  _PTR(Study) studyDS = study->studyDS();
-
-  // get unique temporary directory name
-  QString aTmpDir = QString::fromStdString( SALOMEDS_Tool::GetTmpDir() );
-  if( aTmpDir.isEmpty() )
-    return false;
-
-  if( aTmpDir.right( 1 ).compare( QDir::separator() ) == 0 )
-    aTmpDir.remove( aTmpDir.length() - 1, 1 );
-
-  // dump study to the temporary directory
-  QString aFileName( "notebook" );
-  bool toPublish = true;
-  bool toSaveGUI = true;
-
-  int savePoint;
-  _PTR(AttributeParameter) ap;
-  _PTR(IParameters) ip = ClientFactory::getIParameters(ap);
-  if(ip->isDumpPython(studyDS)) ip->setDumpPython(studyDS); //Unset DumpPython flag.
-  if ( toSaveGUI ) { //SRN: Store a visual state of the study at the save point for DumpStudy method
-    ip->setDumpPython(studyDS);
-    savePoint = SalomeApp_VisualState( app ).storeState(); //SRN: create a temporary save point
-  }
-  bool ok = studyDS->DumpStudy( aTmpDir.toStdString(), aFileName.toStdString(), toPublish );
-  if ( toSaveGUI )
-    study->removeSavePoint(savePoint); //SRN: remove the created temporary save point.
-
-  if( !ok )
-    return false;
-
-  // clear a study (delete all objects)
-  clearStudy();
-
-  // get active application
-  app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
-
-  // load study from the temporary directory
-  QString command = QString( "execfile(r\"%1\")" ).arg( aTmpDir + QDir::separator() + aFileName + ".py" );
-
-  PyConsole_Console* pyConsole = app->pythonConsole();
-  if ( pyConsole )
-    pyConsole->execAndWait( command );
-
-  // remove temporary directory
-  QDir aDir( aTmpDir );
-  QStringList aFiles = aDir.entryList( QStringList( "*.py*" ) );
-  for( QStringList::iterator it = aFiles.begin(), itEnd = aFiles.end(); it != itEnd; ++it )
-    ok = aDir.remove( *it ) && ok;
-  if( ok )
-    ok = aDir.rmdir( aTmpDir );
-
-  if( SalomeApp_Study* newStudy = dynamic_cast<SalomeApp_Study*>( app->activeStudy() ) )
-  {
-    myStudy = newStudy->studyDS();
-    myTable->Init(myStudy);
-    if(isStudySaved) {
-      newStudy->markAsSavedIn(aStudyName);
-    }
-  }
-  else
-    ok = false;
-
-  return ok;
-}
-
-//============================================================================
-/*! Function : clearStudy
- *  Purpose  : 
- */
-//============================================================================
-void SalomeApp_NoteBookDlg::clearStudy()
-{
-  SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
-  if( !app )
-    return;
-
-  QList<SUIT_Application*> aList = SUIT_Session::session()->applications();
-  int anIndex = aList.indexOf( app );
-
-  //Store position and size of the this dialog
-  int aW = width();
-  int aH = height();
-  int aX = x();
-  int aY = y();
-
-  // Disconnect dialog from application desktop in case if:
-  // 1) Application is not the first application in the session	
-  // 2) Application is the first application in session but not the only.
-  bool changeDesktop = ((anIndex > 0) || (anIndex == 0 && aList.count() > 1));
-
-  if( changeDesktop )
-    setParent( 0 );
-
-  app->onCloseDoc( false );
-  
-  if( anIndex > 0 && anIndex < aList.count() )
-    app = dynamic_cast<SalomeApp_Application*>( aList[ anIndex - 1 ] );
-  else if(anIndex == 0 && aList.count() > 1)
-    app = dynamic_cast<SalomeApp_Application*>( aList[ 1 ] );
-
-  if( !app )
-    return;
-
-  app->onNewDoc();
-
-  app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
-  if( changeDesktop && app ) {
-    setParent( app->desktop(), Qt::Dialog );
-    app->setNoteBook(this);
-  }
-  //Set position and size of the this dialog
-  resize( aW, aH );
-  move( aX, aY );
-  show();
 }
