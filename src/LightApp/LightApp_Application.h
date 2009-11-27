@@ -147,6 +147,9 @@ public:
 
   virtual void                        updateDesktopTitle();
 
+  // Removes ViewManagers only of known type
+  virtual void clearKnownViewManagers();
+
 signals:
   void                                studyOpened();
   void                                studySaved();

@@ -3091,3 +3091,34 @@ bool LightApp_Application::openAction( const int choice, const QString& aName )
 
   return res;
 }
+
+void LightApp_Application::clearKnownViewManagers()
+{
+  QStringList aTypesList;
+#ifndef DISABLE_GLVIEWER
+  aTypesList<<GLViewer_Viewer::Type();
+#endif
+#ifndef DISABLE_PLOT2DVIEWER
+  aTypesList<<Plot2d_Viewer::Type();
+#endif
+#ifndef DISABLE_QXGRAPHVIEWER
+  aTypesList<<QxScene_Viewer::Type();
+#endif
+#ifndef DISABLE_OCCVIEWER
+  aTypesList<<OCCViewer_Viewer::Type();
+#endif
+#ifndef DISABLE_VTKVIEWER
+ #ifndef DISABLE_SALOMEOBJECT
+  aTypesList<<SVTK_Viewer::Type();
+ #else
+  aTypesList<<VTKViewer_Viewer::Type();
+ #endif
+#endif
+
+  QList<SUIT_ViewManager*> aMgrList;
+  viewManagers( aMgrList );
+  foreach (SUIT_ViewManager* aMgr, aMgrList) {
+    if (aTypesList.contains(aMgr->getType()))
+      removeViewManager(aMgr);
+  }
+}
