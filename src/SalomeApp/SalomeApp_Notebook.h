@@ -57,7 +57,7 @@ public:
   void rename( const QString& theOldName, const QString& theNewName );
 
   QStringList parameters() const;
-  QStringList absentParameters() const;
+  QStringList absentParameters( const QString& theExpr ) const;
 
   void setParameters( SALOME::ParameterizedObject_ptr theObject, int theCount, QAbstractSpinBox* theFirstSpin, ... );
 

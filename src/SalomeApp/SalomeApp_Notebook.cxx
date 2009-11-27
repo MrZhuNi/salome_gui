@@ -165,9 +165,9 @@ QStringList SalomeApp_Notebook::parameters() const
   return convert( myNotebook->Parameters() );
 }
 
-QStringList SalomeApp_Notebook::absentParameters() const
+QStringList SalomeApp_Notebook::absentParameters( const QString& theExpr ) const
 {
-  return convert( myNotebook->AbsentParameters() );
+  return convert( myNotebook->AbsentParameters( theExpr.toLatin1().constData() ) );
 }
 
 void SalomeApp_Notebook::setParameters( SALOME::ParameterizedObject_ptr theObject, int theCount, QAbstractSpinBox* theFirstSpin, ... )
