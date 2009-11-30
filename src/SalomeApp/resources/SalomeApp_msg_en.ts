@@ -91,7 +91,7 @@ Python file must include only letters, digits and underscores and start from let
     </message>
     <message>
         <source>ERR_NO_VARIABLE</source>
-        <translation>Variable with name "%1" doesn't exist</translation>
+        <translation>These variables have to be defined: "%1"</translation>
     </message>
 </context>
 <context>
@@ -378,64 +378,71 @@ Do you want to reload it ?</translation>
 </context>
 <context>
     <name>NoteBook_Table</name>
-        <message>
-           <source>REMOVE_VARIABLE_IS_USED</source>
-           <translation>Variable with name "%1" is used in the study.
-Do you really want to remove it?</translation>
-	</message>
-        <message>
-           <source>RENAME_VARIABLE_IS_USED</source>
-           <translation>Variable with name "%1" is used in the study.
-Do you really want to rename it?</translation>
-	</message>
-        <message>
-           <source>VARNAME_COLUMN</source>
-           <translation>Variable Name</translation>
-	 </message>
-        <message>	
-           <source>VARVALUE_COLUMN</source>
-           <translation>Variable Value</translation>
-	</message>
-        <message>	
-           <source>VARVALUE_INCORRECT</source>
-           <translation>Variable Value Incorrect: %1</translation>
-	</message>
-        <message>	
-           <source>VARNAME_INCORRECT</source>
-           <translation>Valiable Name Incorrect :%1</translation>
-	</message>
-        <message>	
-           <source>VARNAME_EXISTS</source>
-           <translation>Valiable with name "%1" exists</translation>
-	</message>
+    <message>
+        <source>VARIABLE</source>
+        <translation>Variable</translation>
+    </message>
+    <message>	
+        <source>EXPRESSION</source>
+        <translation>Expression</translation>
+    </message>
+    <message>	
+        <source>VALUE</source>
+        <translation>Value</translation>
+    </message>
 </context>
 <context>
     <name>SalomeApp_NoteBookDlg</name>
-        <message>
-           <source>NOTEBOOK_TITLE</source>
-           <translation>Salome NoteBook</translation>
-	 </message>
-        <message>
-           <source>BUT_UPDATE_STUDY</source>
-           <translation>&amp;Update Study</translation>
-	</message>
-        <message>
-           <source>BUT_REMOVE</source>
-           <translation>&amp;Remove</translation>
-	</message>
-        <message>
-           <source>BUT_HELP</source>
-           <translation>&amp;Help</translation>
-	</message>
-        <message>
-            <source>CLOSE_CAPTION</source>
-            <translation>Close NoteBook</translation>
-        </message>
-        <message>
-           <source>INCORRECT_DATA</source>
-           <translation>Some variables are defined incorrectly and will not be saved.
+    <message>
+        <source>NOTEBOOK_TITLE</source>
+        <translation>Salome NoteBook</translation>
+    </message>
+    <message>
+        <source>NOTEBOOK_ERROR</source>
+        <translation>NoteBook error</translation>
+    </message>
+    <message>
+        <source>EXPRESSION_ERROR</source>
+        <translation>Expression error</translation>
+    </message>
+    <message>
+        <source>CALCULATION_ERROR</source>
+        <translation>Calculation error</translation>
+    </message>
+    <message>
+        <source>TYPE_ERROR</source>
+        <translation>Type error</translation>
+    </message>
+    <message>
+        <source>BUT_UPDATE_STUDY</source>
+        <translation>&amp;Update Study</translation>
+    </message>
+    <message>
+        <source>BUT_REMOVE</source>
+        <translation>&amp;Remove</translation>
+    </message>
+    <message>
+        <source>BUT_HELP</source>
+        <translation>&amp;Help</translation>
+    </message>
+    <message>
+        <source>BUT_DUMP</source>
+        <translation>&amp;Dump</translation>
+    </message>
+    <message>
+        <source>CLOSE_CAPTION</source>
+        <translation>Close NoteBook</translation>
+    </message>
+    <message>
+        <source>INCORRECT_DATA_ON_CLOSE</source>
+        <translation>Some variables have been defined incorrectly and will not be saved.
 If you want to close the notebook anyway, click Ok.
 Otherwise click Cancel and correct these variables.</translation>
-	</message>
+    </message>
+    <message>
+        <source>INCORRECT_DATA_ON_UPDATE</source>
+        <translation>Some variables have been defined incorrectly.
+Please correct these variables before study update.</translation>
+    </message>
 </context>
 </TS>

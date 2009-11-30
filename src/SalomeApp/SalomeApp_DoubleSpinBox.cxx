@@ -19,9 +19,6 @@
 // File:      SalomeApp_DoubleSpinBox.cxx
 // Author:    Oleg UVAROV
 
-#include <PyConsole_Interp.h> // this include must be first (see PyInterp_base.h)!
-#include <PyConsole_Console.h>
-
 #include "SalomeApp_DoubleSpinBox.h"
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Study.h"
@@ -29,14 +26,8 @@
 
 #include <SUIT_Session.h>
 
-#include "SALOMEDSClient_ClientFactory.hxx" 
-#include CORBA_SERVER_HEADER(SALOMEDS)
-
 #include <QKeyEvent>
 #include <QLineEdit>
-
-#include <string>
-
 
 /*!
   \class SalomeApp_DoubleSpinBox
@@ -199,18 +190,19 @@ QValidator::State SalomeApp_DoubleSpinBox::validate( QString& str, int& pos ) co
 bool SalomeApp_DoubleSpinBox::isValid( QString& msg, bool toCorrect )
 {
   double value;
-  State aState = isValid( text(), value );
+  QString absent;
+  State aState = isValid( text(), value, &absent );
 
   if( aState != Acceptable )
   {
     if( toCorrect )
     {
       if( aState == Incompatible )
-	msg += tr( "ERR_INCOMPATIBLE_TYPE" ).arg( text() ) + "\n";
-      else if( aState == NoVariable )
-	msg += tr( "ERR_NO_VARIABLE" ).arg( text() ) + "\n";
+        msg += tr( "ERR_INCOMPATIBLE_TYPE" ).arg( text() ) + "\n";
+      else if( aState == NoVariable && !absent.isEmpty() )
+        msg += tr( "ERR_NO_VARIABLE" ).arg( absent ) + "\n";
       else if( aState == Invalid )
-	msg += tr( "ERR_INVALID_VALUE" ) + "\n";
+        msg += tr( "ERR_INVALID_VALUE" ) + "\n";
 
       setText( myCorrectValue );
     }
@@ -268,9 +260,9 @@ void SalomeApp_DoubleSpinBox::setText( const QString& value )
   \brief This function is used to determine whether input is valid.
   \return validating operation result
 */
-SalomeApp_DoubleSpinBox::State SalomeApp_DoubleSpinBox::isValid( const QString& text, double& value ) const
+SalomeApp_DoubleSpinBox::State SalomeApp_DoubleSpinBox::isValid( const QString& text, double& value, QString* absent ) const
 {
-  SearchState aSearchState = findVariable( text, value );
+  SearchState aSearchState = findVariable( text, value, absent );
   if( aSearchState == NotFound )
   {
     bool ok = false;
@@ -280,6 +272,8 @@ SalomeApp_DoubleSpinBox::State SalomeApp_DoubleSpinBox::isValid( const QString& 
   }
   else if( aSearchState == IncorrectType )
     return Incompatible;
+  else if( aSearchState == IncorrectExpression )
+    return Invalid;
 
   if( !checkRange( value ) )
     return Invalid;
@@ -315,50 +309,49 @@ bool SalomeApp_DoubleSpinBox::checkRange( const double value ) const
   \brief This function is used to determine whether input is a variable name and to get its value.
   \return status of search operation
 */
-SalomeApp_DoubleSpinBox::SearchState SalomeApp_DoubleSpinBox::findVariable( const QString& name, double& value ) const
+SalomeApp_DoubleSpinBox::SearchState SalomeApp_DoubleSpinBox::findVariable( const QString& name, double& value, QString* absent ) const
 {
   value = 0;
   if( SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() ) )
   {
     if( SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( app->activeStudy() ) )
     {
-      std::string aName = name.toStdString();
-      //
       SalomeApp_Notebook aNotebook( study );
-      bool bisParameter=aNotebook.isParameter(name);
-      //
-      if (bisParameter)
+      QStringList anAbsentParameters = aNotebook.absentParameters( name );
+      if( !anAbsentParameters.isEmpty() )
       {
-	QVariant aVariant=aNotebook.get(name);
-	QVariant::Type aType=aVariant.type();
-	
-	if(aType==QVariant::Double || aType==QVariant::Int || aType==QVariant::String) 
-	{
-	  if(aType==QVariant::String)
-	    {
-	      PyConsole_Console* pyConsole = app->pythonConsole();
-	      PyConsole_Interp* pyInterp = pyConsole->getInterp();
-	      PyLockWrapper aLock = pyInterp->GetLockWrapper();
-	      std::string command;
-	      command  = "import salome_notebook ; ";
-	      command += "salome_notebook.notebook.setAsReal(\"";
-	      command += aName;
-	      command += "\")";
-	      bool aResult;
-	      aResult = pyInterp->run(command.c_str());
-	      if(aResult)
-		{
-		  return IncorrectType;
-		}
-	    }
-	  bool bOk;
-	  value = aVariant.toDouble(&bOk);
-	  return Found;
-	}
-	return IncorrectType;
+        if( absent )
+          *absent = anAbsentParameters.join( "\", \"" );
+        return NotFound;
       }
+
+      QVariant aVariant;
+      if( aNotebook.isParameter( name ) )
+	aVariant = aNotebook.get( name );
+      else
+      {
+        try {
+          aVariant = aNotebook.calculate( name );
+        } catch ( const SALOME::TypeError& ex ) {
+          return IncorrectType;
+        } catch ( const SALOME::ExpressionError& ex ) {
+          return IncorrectExpression;
+        }
+      }
+
+      QVariant::Type aType = aVariant.type();
+      if( aType == QVariant::Double || aType == QVariant::Int || aType == QVariant::String ) 
+      {
+        bool ok = false;
+        value = aVariant.toDouble( &ok );
+        if( ok )
+          return Found;
+      }
+      return IncorrectType;
     }
   }
+  if( absent )
+    *absent = name;
   return NotFound;
 }
 

@@ -504,7 +504,7 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
 	    for ( int i = 0, n = aStringList.size(); i < n; i++ )
 	    {
 	      QString aStr = aStringList[i];
-	      if ( aNb.get( aStr ).isValid() )
+	      if ( aNb.isParameter( aStr ) )
 		val.append( aStr + ", " );
 	    }
 

@@ -33,7 +33,7 @@ class SALOMEAPP_EXPORT SalomeApp_IntSpinBox : public QtxIntSpinBox
   Q_OBJECT
 
   enum State { Invalid = 0, NoVariable, Incompatible, Acceptable };
-  enum SearchState { NotFound = 0, IncorrectType, Found };
+  enum SearchState { NotFound = 0, IncorrectType, IncorrectExpression, Found };
 
 public:
   SalomeApp_IntSpinBox( QWidget* = 0 );
@@ -51,18 +51,18 @@ public:
 
   virtual void              setValue( int );
 
-  virtual void              setText(const QString& );
+  virtual void              setText( const QString& );
 
 signals:
   void                      textChanged( const QString& );
 
 protected:
-  State                     isValid( const QString&, int& ) const;
+  State                     isValid( const QString&, int&, QString* = 0 ) const;
 
   int                       defaultValue() const;
   bool                      checkRange( const int ) const;
 
-  SearchState               findVariable( const QString&, int& ) const;
+  SearchState               findVariable( const QString&, int&, QString* = 0 ) const;
 
 protected:
   virtual void              keyPressEvent( QKeyEvent* );

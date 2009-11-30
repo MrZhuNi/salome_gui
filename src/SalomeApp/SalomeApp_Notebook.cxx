@@ -25,12 +25,14 @@
 //
 
 #include "SalomeApp_Notebook.h"
+#include "SalomeApp_Application.h"
 #include "SalomeApp_Study.h"
-#include "SalomeApp_DoubleSpinBox.h"
-#include "SalomeApp_IntSpinBox.h"
+
 #include <SALOMEDS_Study.hxx>
-#include <QVariant>
+
+#include <QAbstractSpinBox>
 #include <QStringList>
+#include <QVariant>
 
 SalomeApp_Notebook::SalomeApp_Notebook( SalomeApp_Study* theStudy )
 {
@@ -49,10 +51,10 @@ bool SalomeApp_Notebook::isParameter( const QString& theName ) const
   return !CORBA::is_nil( aParam );
 }
 
-void SalomeApp_Notebook::set( const QString& theName, const QVariant& theValue )
+void SalomeApp_Notebook::set( const QString& theName, const QVariant& theValue, bool theIsNew )
 {
   SALOME::Parameter_ptr aParam = myNotebook->GetParameter( theName.toLatin1().constData() );
-  bool isNew = CORBA::is_nil( aParam );
+  bool isNew = CORBA::is_nil( aParam ) || theIsNew;
 
   switch( theValue.type() )
   {
@@ -95,11 +97,17 @@ QVariant SalomeApp_Notebook::get( const QString& theName ) const
   return convert( myNotebook->GetParameter( theName.toLatin1().constData() ) );
 }
 
+QString SalomeApp_Notebook::expression( const QString& theName ) const
+{
+  SALOME::Parameter_var aParam = myNotebook->GetParameter( theName.toLatin1().constData() );
+  return CORBA::is_nil( aParam ) ? QString::null : QString( aParam->GetExpression( true ) );
+}
+
 QVariant SalomeApp_Notebook::calculate( const QString& theExpr )
 {
   if( CORBA::is_nil( myTmp ) )
   {
-    static const char TMP_NAME[] = "__notebook__tmp__";
+    static const char TMP_NAME[] = "__tmp__";
     myTmp = myNotebook->GetParameter( TMP_NAME );
     if( CORBA::is_nil( myTmp ) )
     {
@@ -172,25 +180,47 @@ QStringList SalomeApp_Notebook::absentParameters( const QString& theExpr ) const
 
 void SalomeApp_Notebook::setParameters( SALOME::ParameterizedObject_ptr theObject, int theCount, QAbstractSpinBox* theFirstSpin, ... )
 {
-  SALOME::StringArray_var aParams = new SALOME::StringArray();
-  aParams->length( theCount );
-
+  QList<QAbstractSpinBox*> aSpinList;
   QAbstractSpinBox** aSpinArray = &theFirstSpin;
-  for( int i=0; i<theCount; i++, aSpinArray++ )
+  for( int i = 0; i < theCount; i++, aSpinArray++ )
+    aSpinList << *aSpinArray;
+  setParameters( theObject, aSpinList );
+}
+
+void SalomeApp_Notebook::setParameters( SALOME::ParameterizedObject_ptr theObject, QList<QAbstractSpinBox*> theSpinList )
+{
+  QStringList aParameters;
+  QListIterator<QAbstractSpinBox*> anIter( theSpinList );
+  while( anIter.hasNext() )
   {
-    QAbstractSpinBox* aSpin = *aSpinArray;
+    QAbstractSpinBox* aSpin = anIter.next();
     QString aText = aSpin->text();
+    aParameters << aText;
+  }
+  setParameters( theObject, aParameters );
+}
+
+void SalomeApp_Notebook::setParameters( SALOME::ParameterizedObject_ptr theObject, const QStringList& theParameters )
+{
+  SALOME::StringArray_var aParams = new SALOME::StringArray();
+  aParams->length( theParameters.count() );
+
+  int i = 0;
+  QStringListIterator anIter( theParameters );
+  while( anIter.hasNext() )
+  {
+    QString aParameter = anIter.next();
 
     bool anIsValue = false;
-    if( dynamic_cast<SalomeApp_DoubleSpinBox*>( aSpin ) )
-      aText.toDouble( &anIsValue );
-    else if( dynamic_cast<SalomeApp_IntSpinBox*>( aSpin ) )
-      aText.toInt( &anIsValue );
+    aParameter.toInt( &anIsValue );
+    if( !anIsValue )
+      aParameter.toDouble( &anIsValue );
 
     if( anIsValue )
-      aText = "";
+      aParameter = "";
 
-    aParams[i] = CORBA::string_dup( aText.toLatin1().constData() );
+    aParams[i] = CORBA::string_dup( aParameter.toLatin1().constData() );
+    i++;
   }
 
   theObject->SetParameters( myNotebook._retn(), aParams );

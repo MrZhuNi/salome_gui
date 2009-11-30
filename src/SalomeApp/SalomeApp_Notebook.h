@@ -29,6 +29,8 @@
 #include "SalomeApp.h"
 #include CORBA_CLIENT_HEADER( SALOME_Notebook )
 
+#include <QList>
+
 class SalomeApp_Study;
 class QString;
 class QVariant;
@@ -47,8 +49,9 @@ public:
   virtual ~SalomeApp_Notebook();
 
   bool isParameter( const QString& theName ) const;
-  void set( const QString& theName, const QVariant& theValue );
+  void set( const QString& theName, const QVariant& theValue, bool theIsNew = false );
   QVariant get( const QString& theName ) const;
+  QString expression( const QString& theName ) const;
   QVariant calculate( const QString& theExpr );
 
   void update( bool theOnlyParameters );
@@ -60,6 +63,8 @@ public:
   QStringList absentParameters( const QString& theExpr ) const;
 
   void setParameters( SALOME::ParameterizedObject_ptr theObject, int theCount, QAbstractSpinBox* theFirstSpin, ... );
+  void setParameters( SALOME::ParameterizedObject_ptr theObject, QList<QAbstractSpinBox*> theSpinList );
+  void setParameters( SALOME::ParameterizedObject_ptr theObject, const QStringList& theParameters );
 
   char* dump();
 
