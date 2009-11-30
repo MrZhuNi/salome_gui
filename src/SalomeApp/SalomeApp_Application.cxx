@@ -1524,6 +1524,23 @@ SalomeApp_NoteBookDlg* SalomeApp_Application::getNoteBook() const
   return myNoteBook;
 }
 
+/*!
+ * Define extra actions defined in module definition XML file.
+ * Additional popup items sections can be defined by parameter "popupitems". 
+ * Supported attributes: 
+ * title - title of menu item, 
+ * attributelocalid - AttributeLocalId defined for selected data item where menu command has to be applied, 
+ * method - method which has to be called when menu item is selected
+ * Example:
+ * <section name="MODULENAME">
+ *   <parameter name="popupitems" value="menuitem1:menuitem2:..."/>
+ * </section>
+ * <section name="importmed">
+ *   <parameter name="title" value="My menu"/>
+ *   <parameter name="attributelocalid" value="19"/>
+ *   <parameter name="method" value="nameOfModuleMethod"/>
+ * </section>
+ */
 void SalomeApp_Application::fillExtActions()
 {
   myExtActions.clear();
@@ -1558,6 +1575,9 @@ void SalomeApp_Application::fillExtActions()
   }
 }
 
+/*!
+ * Called when extra action is selected
+ */
 void SalomeApp_Application::onExtAction()
 {
   QAction* aAction = ::qobject_cast<QAction*>(sender());

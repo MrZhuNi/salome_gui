@@ -3092,7 +3092,7 @@ bool LightApp_Application::openAction( const int choice, const QString& aName )
   return res;
 }
 
-void LightApp_Application::clearKnownViewManagers()
+QStringList LightApp_Application::viewManagersTypes() const
 {
   QStringList aTypesList;
 #ifndef DISABLE_GLVIEWER
@@ -3114,7 +3114,15 @@ void LightApp_Application::clearKnownViewManagers()
   aTypesList<<VTKViewer_Viewer::Type();
  #endif
 #endif
-
+  return aTypesList;
+}
+/*!
+ * Removes all view managers of known types
+ * Other view managers are ignored
+ */
+void LightApp_Application::clearKnownViewManagers()
+{
+  QStringList aTypesList = viewManagersTypes();
   QList<SUIT_ViewManager*> aMgrList;
   viewManagers( aMgrList );
   foreach (SUIT_ViewManager* aMgr, aMgrList) {
