@@ -116,7 +116,7 @@ QVariant SalomeApp_Notebook::calculate( const QString& theExpr )
     }
   }
   myTmp->SetExpression( theExpr.toLatin1().constData() );
-  myTmp->Update( myNotebook._retn() );
+  myTmp->Update( SALOME::Notebook::_duplicate( myNotebook ) );
   return convert( myTmp );
 }
 
@@ -223,7 +223,13 @@ void SalomeApp_Notebook::setParameters( SALOME::ParameterizedObject_ptr theObjec
     i++;
   }
 
-  theObject->SetParameters( myNotebook._retn(), aParams );
+  theObject->SetParameters( SALOME::Notebook::_duplicate( myNotebook ), aParams );
+}
+
+QString SalomeApp_Notebook::getParameters( const QString& theComponent, const QString& theEntry )
+{
+  return QString( myNotebook->GetParameters( theComponent.toLatin1().constData(),
+                                             theEntry.toLatin1().constData() ) );
 }
 
 char* SalomeApp_Notebook::dump()

@@ -66,6 +66,8 @@ public:
   void setParameters( SALOME::ParameterizedObject_ptr theObject, QList<QAbstractSpinBox*> theSpinList );
   void setParameters( SALOME::ParameterizedObject_ptr theObject, const QStringList& theParameters );
 
+  QString getParameters( const QString& theComponent, const QString& theEntry );
+
   char* dump();
 
 protected:
