@@ -110,7 +110,8 @@ void SalomeApp_IntSpinBox::onTextChanged( const QString& text )
   myTextValue = text;
 
   int value = 0;
-  if( isValid( text, value ) == Acceptable )
+  QStringList absent;
+  if( isValid( text, value, absent ) == Acceptable )
     myCorrectValue = text;
 }
 
@@ -123,7 +124,8 @@ void SalomeApp_IntSpinBox::onTextChanged( const QString& text )
 int SalomeApp_IntSpinBox::valueFromText( const QString& text ) const
 {
   int value = 0;
-  if( isValid( text, value ) == Acceptable )
+  QStringList absent;
+  if( isValid( text, value, absent ) == Acceptable )
     return value;
 
   return defaultValue();
@@ -157,11 +159,11 @@ QValidator::State SalomeApp_IntSpinBox::validate( QString& str, int& pos ) const
   \brief This function is used to determine whether input is valid.
   \return validating operation result
 */
-bool SalomeApp_IntSpinBox::isValid( QString& msg, bool toCorrect )
+bool SalomeApp_IntSpinBox::isValid( QString& msg, QStringList& absentParams, bool toCorrect )
 {
   int value;
-  QString absent;
-  State aState = isValid( text(), value, &absent );
+  QStringList absent;
+  State aState = isValid( text(), value, absent );
 
   if( aState != Acceptable )
   {
@@ -170,7 +172,11 @@ bool SalomeApp_IntSpinBox::isValid( QString& msg, bool toCorrect )
       if( aState == Incompatible )
         msg += tr( "ERR_INCOMPATIBLE_TYPE" ).arg( text() ) + "\n";
       else if( aState == NoVariable && !absent.isEmpty() )
-        msg += tr( "ERR_NO_VARIABLE" ).arg( absent ) + "\n";
+      {
+        // this kind of error should be processed by the external module
+        absentParams << absent;
+        return false;
+      }
       else if( aState == Invalid )
         msg += tr( "ERR_INVALID_VALUE" ) + "\n";
 
@@ -178,6 +184,15 @@ bool SalomeApp_IntSpinBox::isValid( QString& msg, bool toCorrect )
     }
     return false;
   }
+
+  // workaround (to update the spin-box value after automatic variable definition)
+  // in this case the spin-box should behave as its value has been changed but
+  // at the same time its text should not be changed
+  bool isBlocked = blockSignals( true );
+  QString aText = text();
+  setValue( value );
+  setText( aText );
+  blockSignals( isBlocked );
 
   return true;
 }
@@ -216,7 +231,7 @@ void SalomeApp_IntSpinBox::setText( const QString& value )
   \brief This function is used to determine whether input is valid.
   \return validating operation result
 */
-SalomeApp_IntSpinBox::State SalomeApp_IntSpinBox::isValid( const QString& text, int& value, QString* absent ) const
+SalomeApp_IntSpinBox::State SalomeApp_IntSpinBox::isValid( const QString& text, int& value, QStringList& absent ) const
 {
   SearchState aSearchState = findVariable( text, value, absent );
   if( aSearchState == NotFound )
@@ -267,7 +282,7 @@ bool SalomeApp_IntSpinBox::checkRange( const int value ) const
   \brief This function is used to determine whether input is a variable name and to get its value.
   \return status of search operation
 */
-SalomeApp_IntSpinBox::SearchState SalomeApp_IntSpinBox::findVariable( const QString& name, int& value, QString* absent ) const
+SalomeApp_IntSpinBox::SearchState SalomeApp_IntSpinBox::findVariable( const QString& name, int& value, QStringList& absent ) const
 {
   value = 0;
   if( SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() ) )
@@ -278,8 +293,7 @@ SalomeApp_IntSpinBox::SearchState SalomeApp_IntSpinBox::findVariable( const QStr
       QStringList anAbsentParameters = aNotebook.absentParameters( name );
       if( !anAbsentParameters.isEmpty() )
       {
-        if( absent )
-          *absent = anAbsentParameters.join( "\", \"" );
+        absent << anAbsentParameters;
         return NotFound;
       }
 
@@ -308,8 +322,7 @@ SalomeApp_IntSpinBox::SearchState SalomeApp_IntSpinBox::findVariable( const QStr
       return IncorrectType;
     }
   }
-  if( absent )
-    *absent = name;
+  absent << name;
   return NotFound;
 }
 

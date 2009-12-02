@@ -730,19 +730,7 @@ void SalomeApp_Application::onDumpStudy( )
 /*!Private SLOT. On NoteBook*/
 void SalomeApp_Application::onNoteBook()
 {
-  SalomeApp_Study* appStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
-  if ( appStudy ) {
-    if(!myNoteBook) {
-      myNoteBook = new SalomeApp_NoteBookDlg(desktop(),appStudy);
-    }
-    else if(!myNoteBook->isVisible()){
-      myNoteBook->Init(appStudy);
-      myNoteBook->adjustSize();
-      myNoteBook->move((int)(desktop()->x() + desktop()->width()/2  - myNoteBook->frameGeometry().width()/2),
-                       (int)(desktop()->y() + desktop()->height()/2 - myNoteBook->frameGeometry().height()/2));
-    }
-    myNoteBook->show();
-  }
+  showNoteBook( QStringList() );
 }
 
 /*!Private SLOT. On load script.*/
@@ -1498,3 +1486,61 @@ SalomeApp_NoteBookDlg* SalomeApp_Application::getNoteBook() const
   return myNoteBook;
 }
 
+/*! Define absent NoteBook parameters */
+bool SalomeApp_Application::defineAbsentParameters( const QStringList& theParameters )
+{
+  if( theParameters.isEmpty() )
+    return false;
+
+  QStringList aParameters;
+  QStringListIterator anIter( theParameters );
+  while( anIter.hasNext() )
+  {
+    QString aParameter = anIter.next();
+    if( !aParameters.contains( aParameter ) )
+      aParameters << aParameter;
+  }
+
+  QString aParametersString = aParameters.join( "\", \"" );
+  aParametersString.prepend( "\"" );
+  aParametersString.append( "\"" );
+
+  if( SUIT_MessageBox::question( desktop(),
+                                 QObject::tr( "WRN_WARNING" ),
+                                 QObject::tr( "ERR_NO_VARIABLE" ).arg( aParametersString ),
+                                 SUIT_MessageBox::Yes | SUIT_MessageBox::No,
+                                 SUIT_MessageBox::No ) == SUIT_MessageBox::Yes )
+  {
+    showNoteBook( aParameters, true );
+    return true;
+  }
+  return false;
+}
+
+/*! Show NoteBook dialog with additional parameters */
+void SalomeApp_Application::showNoteBook( const QStringList& theParameters, bool theIsModal )
+{
+  SalomeApp_Study* appStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
+  if( !appStudy )
+    return;
+
+  if( !myNoteBook )
+    myNoteBook = new SalomeApp_NoteBookDlg( desktop(), appStudy );
+  else if( !myNoteBook->isVisible() )
+  {
+    myNoteBook->init( appStudy );
+    myNoteBook->adjustSize();
+    myNoteBook->move( (int)( desktop()->x() + desktop()->width()/2  - myNoteBook->frameGeometry().width()/2 ),
+                      (int)( desktop()->y() + desktop()->height()/2 - myNoteBook->frameGeometry().height()/2 ) );
+  }
+
+  myNoteBook->addUndefinedParameters( theParameters );
+
+  if( theIsModal )
+    myNoteBook->exec();
+  else
+  {  
+    myNoteBook->setModal( false );
+    myNoteBook->show();
+  }
+}

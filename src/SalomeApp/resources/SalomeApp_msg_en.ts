@@ -91,7 +91,9 @@ Python file must include only letters, digits and underscores and start from let
     </message>
     <message>
         <source>ERR_NO_VARIABLE</source>
-        <translation>These variables have to be defined: "%1"</translation>
+        <translation>The following variables are not defined:
+%1
+Do you want to define them by the notebook?</translation>
     </message>
 </context>
 <context>

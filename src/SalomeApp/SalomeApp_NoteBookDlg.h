@@ -49,30 +49,30 @@ typedef QMap< int, NoteBoox_Variable > VariableMap;
 class SALOMEAPP_EXPORT NoteBook_TableRow : public QWidget
 {
  public:
-  NoteBook_TableRow(int, QWidget* parent=0);
+  NoteBook_TableRow( int, QWidget* parent = 0 );
   virtual ~NoteBook_TableRow();
 
-  int                       GetIndex() const { return myIndex; }
+  int                       getIndex() const { return myIndex; }
   
-  void                      AddToTable( QTableWidget *theTable );
+  void                      addToTable( QTableWidget *theTable );
   
-  void                      SetVariable( const QString& theVariable );
-  void                      SetExpression( const QString& theExpression );
-  void                      SetValue( const QString& theValue );
+  void                      setVariable( const QString& theVariable );
+  void                      setExpression( const QString& theExpression );
+  void                      setValue( const QString& theValue );
 
-  QString                   GetVariable() const;
-  QString                   GetExpression() const;
-  QString                   GetValue() const;
+  QString                   getVariable() const;
+  QString                   getExpression() const;
+  QString                   getValue() const;
 
-  QTableWidgetItem*         GetRowHeaderItem() { return myRowHeaderItem; }
-  QTableWidgetItem*         GetVariableItem() { return myVariableItem; }
-  QTableWidgetItem*         GetExpressionItem() { return myExpressionItem; }
-  QTableWidgetItem*         GetValueItem() { return myValueItem; }
+  QTableWidgetItem*         getRowHeaderItem() { return myRowHeaderItem; }
+  QTableWidgetItem*         getVariableItem() { return myVariableItem; }
+  QTableWidgetItem*         getExpressionItem() { return myExpressionItem; }
+  QTableWidgetItem*         getValueItem() { return myValueItem; }
 
-  static bool               IsRealValue( const QString theValue, double* theResult = 0 );
-  static bool               IsIntegerValue( const QString theValue, int* theResult = 0 );
-  static bool               IsBooleanValue( const QString theValue, bool* theResult = 0 );
-  static bool               IsValidStringValue( const QString theName );
+  static bool               isRealValue( const QString theValue, double* theResult = 0 );
+  static bool               isIntegerValue( const QString theValue, int* theResult = 0 );
+  static bool               isBooleanValue( const QString theValue, bool* theResult = 0 );
+  static bool               isValidStringValue( const QString theName );
   
  private:
   int                       myIndex;
@@ -90,17 +90,12 @@ public:
   NoteBook_Table( QWidget* parent = 0 );
   virtual ~NoteBook_Table();
 
-  void                      Init( SalomeApp_Notebook* theNoteBook );
+  void                      init( SalomeApp_Notebook* theNoteBook );
+  void                      addUndefinedParameters( const QStringList& theParameters );
 
-  bool                      IsValid() const;
+  bool                      isValid() const;
 
-  void                      AddRow( const QString& theName = QString::null,
-                                    const QString& theExpression = QString::null );
-
-  NoteBook_TableRow*        GetRowByItem( const QTableWidgetItem* theItem ) const;
-  bool                      IsLastRow( const NoteBook_TableRow* aRow ) const;
-
-  void                      RemoveSelected();
+  void                      removeSelected();
 
 protected slots:
   void                      onItemChanged( QTableWidgetItem* theItem );
@@ -127,6 +122,12 @@ private:
                                             QString& theErrorType,
                                             QString& theErrorMessage );
 
+  void                      addRow( const QString& theName = QString::null,
+                                    const QString& theExpression = QString::null );
+
+  NoteBook_TableRow*        getRowByItem( const QTableWidgetItem* theItem ) const;
+  bool                      isLastRow( const NoteBook_TableRow* aRow ) const;
+
 private:
   QList<NoteBook_TableRow*> myRows;
 
@@ -143,9 +144,10 @@ public:
   SalomeApp_NoteBookDlg( QWidget* parent, SalomeApp_Study* theStudy );
   virtual ~SalomeApp_NoteBookDlg();
 
-  void                      Init( SalomeApp_Study* theStudy );
+  void                      init( SalomeApp_Study* theStudy );
+  void                      addUndefinedParameters( const QStringList& theParameters );
   
-public slots:
+protected slots:
    void                     onRemove();
    void                     onDump();
    void                     onUpdateStudy();

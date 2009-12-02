@@ -74,11 +74,11 @@ NoteBook_TableRow::~NoteBook_TableRow()
 }
 
 //============================================================================
-/*! Function : AddToTable
+/*! Function : addToTable
  *  Purpose  : Add this row to the table theTable
  */
 //============================================================================
-void NoteBook_TableRow::AddToTable( QTableWidget *theTable )
+void NoteBook_TableRow::addToTable( QTableWidget *theTable )
 {
   int aPosition = theTable->rowCount();
   int aRowCount = aPosition+1;
@@ -92,72 +92,72 @@ void NoteBook_TableRow::AddToTable( QTableWidget *theTable )
 }
 
 //============================================================================
-/*! Function : SetVariable
+/*! Function : setVariable
  *  Purpose  : 
  */
 //============================================================================
-void NoteBook_TableRow::SetVariable( const QString& theVariable )
+void NoteBook_TableRow::setVariable( const QString& theVariable )
 {
   myVariableItem->setText( theVariable );
 }
 
 //============================================================================
-/*! Function : SetExpression
+/*! Function : setExpression
  *  Purpose  : 
  */
 //============================================================================
-void NoteBook_TableRow::SetExpression( const QString& theExpression )
+void NoteBook_TableRow::setExpression( const QString& theExpression )
 {
   myExpressionItem->setText( theExpression );
 }
 
 //============================================================================
-/*! Function : SetValue
+/*! Function : setValue
  *  Purpose  : 
  */
 //============================================================================
-void NoteBook_TableRow::SetValue( const QString& theValue )
+void NoteBook_TableRow::setValue( const QString& theValue )
 {
   myValueItem->setText( theValue );
 }
 
 //============================================================================
-/*! Function : GetVariable
+/*! Function : getVariable
  *  Purpose  : Return variable name
  */
 //============================================================================
-QString NoteBook_TableRow::GetVariable() const
+QString NoteBook_TableRow::getVariable() const
 {
   return myVariableItem->text();
 }
 
 //============================================================================
-/*! Function : GetExpression
+/*! Function : getExpression
  *  Purpose  : Return variable expression
  */
 //============================================================================
-QString NoteBook_TableRow::GetExpression() const
+QString NoteBook_TableRow::getExpression() const
 {
   return myExpressionItem->text(); 
 }
 
 //============================================================================
-/*! Function : GetValue
+/*! Function : getValue
  *  Purpose  : Return variable value
  */
 //============================================================================
-QString NoteBook_TableRow::GetValue() const
+QString NoteBook_TableRow::getValue() const
 {
   return myValueItem->text(); 
 }
 
 //============================================================================
-/*! Function : IsRealValue
+/*! Function : isRealValue
  *  Purpose  : Return true if theValue string is real value, otherwise return 
  *             false
  */
 //============================================================================
-bool NoteBook_TableRow::IsRealValue( const QString theValue, double* theResult )
+bool NoteBook_TableRow::isRealValue( const QString theValue, double* theResult )
 {
   bool aResult = false;
   double aDResult = theValue.toDouble( &aResult );
@@ -168,12 +168,12 @@ bool NoteBook_TableRow::IsRealValue( const QString theValue, double* theResult )
 }
 
 //============================================================================
-/*! Function : IsBooleanValue
+/*! Function : isBooleanValue
  *  Purpose  : Return true if theValue String is boolean value, otherwise return 
  *             false
  */
 //============================================================================
-bool NoteBook_TableRow::IsBooleanValue( const QString theValue, bool* theResult )
+bool NoteBook_TableRow::isBooleanValue( const QString theValue, bool* theResult )
 {
   bool aResult = false;
   bool aBResult; 
@@ -194,12 +194,12 @@ bool NoteBook_TableRow::IsBooleanValue( const QString theValue, bool* theResult 
 }
 
 //============================================================================
-/*! Function : IsIntegerValue
+/*! Function : isIntegerValue
  *  Purpose  : Return true if theValue string is integer value, otherwise return 
  *             false
  */
 //============================================================================
-bool NoteBook_TableRow::IsIntegerValue( const QString theValue, int* theResult )
+bool NoteBook_TableRow::isIntegerValue( const QString theValue, int* theResult )
 {
   bool aResult = false;
   int anIResult;
@@ -212,14 +212,14 @@ bool NoteBook_TableRow::IsIntegerValue( const QString theValue, int* theResult )
 }
 
 //============================================================================
-/*! Function : IsValidStringValue
+/*! Function : isValidStringValue
  *  Purpose  : Return true if theValue string is valid, otherwise return 
  *             false
  *             The string are always valid for the moment
  *             The whole notebook is verified on apply
  */
 //============================================================================
-bool NoteBook_TableRow::IsValidStringValue( const QString theValue )
+bool NoteBook_TableRow::isValidStringValue( const QString theValue )
 {
   return true;
 }
@@ -311,7 +311,7 @@ int NoteBook_Table::getUniqueIndex() const
   int anIndex = 0;
   if( !myRows.isEmpty() )
     if( NoteBook_TableRow* aRow = myRows.last() )
-      anIndex = aRow->GetIndex();
+      anIndex = aRow->getIndex();
 
   anIndex++;
   return anIndex;
@@ -326,8 +326,8 @@ int NoteBook_Table::getUniqueIndex() const
 void NoteBook_Table::markItem( NoteBook_TableRow* theRow, int theColumn, bool theIsCorrect )
 {
   if( QTableWidgetItem* anItem =
-      theColumn == VARIABLE_COLUMN ? theRow->GetVariableItem() :
-      theColumn == EXPRESSION_COLUMN ? theRow->GetExpressionItem() : theRow->GetValueItem() )
+      theColumn == VARIABLE_COLUMN ? theRow->getVariableItem() :
+      theColumn == EXPRESSION_COLUMN ? theRow->getExpressionItem() : theRow->getValueItem() )
   {
     bool isBlocked = blockSignals( true );
     anItem->setForeground( QBrush( theIsCorrect ? Qt::black : Qt::red ) );
@@ -356,9 +356,9 @@ void NoteBook_Table::markRow( NoteBook_TableRow* theRow, bool theIsCorrect )
 bool NoteBook_Table::checkItem( NoteBook_TableRow* theRow, int theColumn ) const
 {
   if( QTableWidgetItem* anItem =
-      theColumn == VARIABLE_COLUMN ? theRow->GetVariableItem() :
-      theColumn == EXPRESSION_COLUMN ? theRow->GetExpressionItem() : theRow->GetValueItem() )
-    return anItem->foreground().color() == Qt::black;
+      theColumn == VARIABLE_COLUMN ? theRow->getVariableItem() :
+      theColumn == EXPRESSION_COLUMN ? theRow->getExpressionItem() : theRow->getValueItem() )
+    return ( anItem->foreground().color() == Qt::black && !anItem->text().isEmpty() );
   return false;
 }
 
@@ -385,9 +385,9 @@ void NoteBook_Table::correctData( int theBaseRowIndex )
   {
     if( NoteBook_TableRow* aRow = myRows[ i ] )
     {
-      if( aRow->GetIndex() != theBaseRowIndex )
+      if( aRow->getIndex() != theBaseRowIndex )
       {
-        QString aName = aRow->GetVariable();
+        QString aName = aRow->getVariable();
         QString anExpression = myNoteBook->expression( aName );
       }
     }
@@ -407,11 +407,11 @@ void NoteBook_Table::updateExpressions( int theBaseRowIndex )
   {
     if( NoteBook_TableRow* aRow = myRows[ i ] )
     {
-      if( aRow->GetIndex() != theBaseRowIndex )
+      if( aRow->getIndex() != theBaseRowIndex )
       {
-        QString aName = aRow->GetVariable();
+        QString aName = aRow->getVariable();
         QString anExpression = myNoteBook->expression( aName );
-        aRow->SetExpression( anExpression );
+        aRow->setExpression( anExpression );
       }
     }
   }
@@ -430,9 +430,9 @@ void NoteBook_Table::updateValues()
   {
     if( NoteBook_TableRow* aRow = myRows[ i ] )
     {
-      QString aName = aRow->GetVariable();
+      QString aName = aRow->getVariable();
       QVariant aValue = myNoteBook->get( aName );
-      aRow->SetValue( aValue.toString() );
+      aRow->setValue( aValue.toString() );
     }
   }
   blockSignals( isBlocked );
@@ -457,13 +457,13 @@ bool NoteBook_Table::setExpression( const QString& theName,
   bool bVal;
   try
   {
-    if( NoteBook_TableRow::IsIntegerValue( theExpression, &iVal ) )
+    if( NoteBook_TableRow::isIntegerValue( theExpression, &iVal ) )
       myNoteBook->set( theName, iVal, theIsNew );
-    else if( NoteBook_TableRow::IsRealValue( theExpression, &dVal ) )
+    else if( NoteBook_TableRow::isRealValue( theExpression, &dVal ) )
       myNoteBook->set( theName, dVal, theIsNew );
-    else if( NoteBook_TableRow::IsBooleanValue( theExpression, &bVal ) )
+    else if( NoteBook_TableRow::isBooleanValue( theExpression, &bVal ) )
       myNoteBook->set( theName, bVal, theIsNew );
-    else if( NoteBook_TableRow::IsValidStringValue( theExpression ) )
+    else if( NoteBook_TableRow::isValidStringValue( theExpression ) )
       myNoteBook->set( theName, theExpression, theIsNew );
   }
   catch( const SALOME::NotebookError& ex ) {
@@ -518,11 +518,11 @@ bool NoteBook_Table::renameVariable( const QString& theOldName,
 }
 
 //============================================================================
-/*! Function : Init
+/*! Function : init
  *  Purpose  : Add variables in the table from theNoteBook
  */
 //============================================================================
-void NoteBook_Table::Init( SalomeApp_Notebook* theNoteBook )
+void NoteBook_Table::init( SalomeApp_Notebook* theNoteBook )
 {
   myNoteBook = theNoteBook;
 
@@ -539,12 +539,12 @@ void NoteBook_Table::Init( SalomeApp_Notebook* theNoteBook )
     QString aVariable = anIter.next();
     if( aVariable.left( 2 ).compare( "__" ) == 0 ) // tmp variable
       continue;
-    QString aVariableValue = myNoteBook->expression(aVariable);
-    AddRow( aVariable, aVariableValue );
+    QString aVariableValue = myNoteBook->expression( aVariable );
+    addRow( aVariable, aVariableValue );
   }
 
   // Add empty row
-  AddRow();
+  addRow();
 
   updateValues();
 
@@ -552,22 +552,51 @@ void NoteBook_Table::Init( SalomeApp_Notebook* theNoteBook )
 }
 
 //============================================================================
-/*! Function : IsValid
+/*! Function : addUndefinedParameters
+ *  Purpose  : Add undefined parameters
+ */
+//============================================================================
+void NoteBook_Table::addUndefinedParameters( const QStringList& theParameters )
+{
+  int aNumParams = theParameters.count();
+  if( aNumParams == 0 )
+    return;
+
+  int aNumRows = myRows.count();
+  if( aNumRows == 0 )
+    return;
+
+  bool isBlocked = blockSignals( true );
+
+  QStringListIterator anIter( theParameters );
+  while( anIter.hasNext() )
+  {
+    QString aVariable = anIter.next();
+    if( NoteBook_TableRow* aRow = myRows.last() )
+      aRow->setVariable( aVariable );
+    addRow();
+  }
+
+  blockSignals( isBlocked );
+}
+
+//============================================================================
+/*! Function : isValid
  *  Purpose  : Check validity of the table data
  */
 //============================================================================
-bool NoteBook_Table::IsValid() const
+bool NoteBook_Table::isValid() const
 {
   int aNumRows = myRows.count();
   if( aNumRows == 0 )
     return true;
 
-  if( !myRows[ aNumRows - 1 ]->GetVariable().isEmpty() ||
-      !myRows[ aNumRows - 1 ]->GetExpression().isEmpty() ||
-      !myRows[ aNumRows - 1 ]->GetValue().isEmpty() )
+  if( !myRows[ aNumRows - 1 ]->getVariable().isEmpty() ||
+      !myRows[ aNumRows - 1 ]->getExpression().isEmpty() ||
+      !myRows[ aNumRows - 1 ]->getValue().isEmpty() )
     return false;
 
-  for( int i = 0, n = myRows.size(); i < n; i++ )
+  for( int i = 0, n = myRows.size()-1; i < n; i++ )
     if( NoteBook_TableRow* aRow = myRows[ i ] )
       if( !checkRow( aRow ) )
         return false;
@@ -576,28 +605,28 @@ bool NoteBook_Table::IsValid() const
 }
 
 //============================================================================
-/*! Function : AddRow
+/*! Function : addRow
  *  Purpose  : Add a row into the table
  */
 //============================================================================
-void NoteBook_Table::AddRow( const QString& theName, const QString& theExpression )
+void NoteBook_Table::addRow( const QString& theName, const QString& theExpression )
 {
   int anIndex = getUniqueIndex();
   NoteBook_TableRow* aRow = new NoteBook_TableRow( anIndex, this );
-  aRow->SetVariable( theName );
-  aRow->SetExpression( theExpression );
-  aRow->AddToTable( this );
+  aRow->setVariable( theName );
+  aRow->setExpression( theExpression );
+  aRow->addToTable( this );
   myRows.append( aRow );
 
   myVariableMap.insert( anIndex, NoteBoox_Variable( theName, theExpression ) );
 }
 
 //============================================================================
-/*! Function : GetRowByItem
+/*! Function : getRowByItem
  *  Purpose  : 
  */
 //============================================================================
-NoteBook_TableRow* NoteBook_Table::GetRowByItem( const QTableWidgetItem* theItem ) const
+NoteBook_TableRow* NoteBook_Table::getRowByItem( const QTableWidgetItem* theItem ) const
 {
   int aCurrentRow = row( theItem );
   if( aCurrentRow >= 0 && aCurrentRow < myRows.size() )
@@ -606,11 +635,11 @@ NoteBook_TableRow* NoteBook_Table::GetRowByItem( const QTableWidgetItem* theItem
 }
 
 //============================================================================
-/*! Function : IsLastRow
+/*! Function : isLastRow
  *  Purpose  : Return true if theRow is last row in the table
  */
 //============================================================================
-bool NoteBook_Table::IsLastRow( const NoteBook_TableRow* theRow ) const
+bool NoteBook_Table::isLastRow( const NoteBook_TableRow* theRow ) const
 {
   return theRow == myRows.last();
 }
@@ -622,11 +651,11 @@ bool NoteBook_Table::IsLastRow( const NoteBook_TableRow* theRow ) const
 //============================================================================
 void NoteBook_Table::onItemChanged( QTableWidgetItem* theItem )
 {
-  NoteBook_TableRow* aRow = GetRowByItem( theItem );
+  NoteBook_TableRow* aRow = getRowByItem( theItem );
   if( !aRow )
     return;
 
-  int anIndex = aRow->GetIndex();
+  int anIndex = aRow->getIndex();
   if( !myVariableMap.contains( anIndex ) )
     return;
 
@@ -638,8 +667,8 @@ void NoteBook_Table::onItemChanged( QTableWidgetItem* theItem )
   bool isCorrectPrevious = checkRow( aRow );
   markRow( aRow, true );
 
-  QString aName = aRow->GetVariable();
-  QString anExpression = aRow->GetExpression();
+  QString aName = aRow->getVariable();
+  QString anExpression = aRow->getExpression();
   bool isComplete = !aName.isEmpty() && !anExpression.isEmpty();
 
   aVariable.Name = aName;
@@ -672,20 +701,20 @@ void NoteBook_Table::onItemChanged( QTableWidgetItem* theItem )
     updateValues();
   }
 
-  if( IsLastRow( aRow ) && isComplete )
+  if( isLastRow( aRow ) && isComplete )
   {
     bool isBlocked = blockSignals( true );
-    AddRow();
+    addRow();
     blockSignals( isBlocked );
   }
 }
 
 //============================================================================
-/*! Function : RemoveSelected
+/*! Function : removeSelected
  *  Purpose  : Remove selected rows in the table
  */
 //============================================================================
-void NoteBook_Table::RemoveSelected()
+void NoteBook_Table::removeSelected()
 {
   bool isBlocked = blockSignals( true );
 
@@ -693,17 +722,17 @@ void NoteBook_Table::RemoveSelected()
   if( aSelectedItems.size() == 1 )
   {
     QTableWidgetItem* anItem = aSelectedItems.first();
-    if( NoteBook_TableRow* aRow = GetRowByItem( anItem ) )
+    if( NoteBook_TableRow* aRow = getRowByItem( anItem ) )
     {
-      if( IsLastRow( aRow ) )
+      if( isLastRow( aRow ) )
       {
-        aRow->SetVariable( QString() );
-        aRow->SetExpression( QString() );
+        aRow->setVariable( QString() );
+        aRow->setExpression( QString() );
       }
       else
       {
-        int anIndex = aRow->GetIndex();
-        QString aName = aRow->GetVariable();
+        int anIndex = aRow->getIndex();
+        QString aName = aRow->getVariable();
         if( myVariableMap.contains( anIndex ) )
           myVariableMap.remove( anIndex );
 
@@ -718,7 +747,7 @@ void NoteBook_Table::RemoveSelected()
 
     // renumber header items
     for( int i = 0, n = myRows.size(); i < n; i++ )
-      myRows[i]->GetRowHeaderItem()->setText( QString::number( i+1 ) );
+      myRows[i]->getRowHeaderItem()->setText( QString::number( i+1 ) );
   }
 
   blockSignals( isBlocked );
@@ -736,7 +765,6 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg( QWidget* parent, SalomeApp_Study* 
   : QDialog( parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint ),
     myNoteBook( 0 )
 {
-  setModal( false );
   setWindowTitle( tr( "NOTEBOOK_TITLE" ) );
 
   // Table
@@ -793,7 +821,7 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg( QWidget* parent, SalomeApp_Study* 
  
   //aDumpBtn->hide();
 
-  Init( theStudy );
+  init( theStudy );
 }
 
 //============================================================================
@@ -811,11 +839,11 @@ SalomeApp_NoteBookDlg::~SalomeApp_NoteBookDlg()
 }
 
 //============================================================================
-/*! Function : Init()
- *  Purpose  : init variable table
+/*! Function : init
+ *  Purpose  : Init variable table
  */
 //============================================================================
-void SalomeApp_NoteBookDlg::Init( SalomeApp_Study* theStudy )
+void SalomeApp_NoteBookDlg::init( SalomeApp_Study* theStudy )
 {
   // delete the current notebook (if can based on another study)
   if( myNoteBook )
@@ -823,7 +851,17 @@ void SalomeApp_NoteBookDlg::Init( SalomeApp_Study* theStudy )
 
   // create new notebook based on the given study
   myNoteBook = new SalomeApp_Notebook( theStudy );
-  myTable->Init( myNoteBook );
+  myTable->init( myNoteBook );
+}
+
+//============================================================================
+/*! Function : addUndefinedParameters
+ *  Purpose  : Add undefined parameters
+ */
+//============================================================================
+void SalomeApp_NoteBookDlg::addUndefinedParameters( const QStringList& theParameters )
+{
+  myTable->addUndefinedParameters( theParameters );
 }
 
 //============================================================================
@@ -833,7 +871,7 @@ void SalomeApp_NoteBookDlg::Init( SalomeApp_Study* theStudy )
 //============================================================================
 void SalomeApp_NoteBookDlg::onRemove()
 {
-  myTable->RemoveSelected();
+  myTable->removeSelected();
 }
 
 //============================================================================
@@ -853,7 +891,7 @@ void SalomeApp_NoteBookDlg::onDump()
 //============================================================================
 void SalomeApp_NoteBookDlg::onUpdateStudy()
 {
-  if( !myTable->IsValid() )
+  if( !myTable->isValid() )
   {
     SUIT_MessageBox::warning( this, tr( "ERROR" ), tr( "INCORRECT_DATA_ON_UPDATE" ) );
     return;
@@ -871,7 +909,7 @@ void SalomeApp_NoteBookDlg::onUpdateStudy()
 //============================================================================
 void SalomeApp_NoteBookDlg::onClose()
 {
-  if( !myTable->IsValid() &&
+  if( !myTable->isValid() &&
       SUIT_MessageBox::question( this, tr( "CLOSE_CAPTION" ), tr( "INCORRECT_DATA_ON_CLOSE" ),
                                  QMessageBox::Ok | QMessageBox::Cancel,
                                  QMessageBox::Cancel ) != QMessageBox::Ok )

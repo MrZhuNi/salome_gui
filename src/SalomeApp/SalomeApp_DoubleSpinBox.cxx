@@ -140,7 +140,8 @@ void SalomeApp_DoubleSpinBox::onTextChanged( const QString& text )
   myTextValue = text;
 
   double value = 0;
-  if( isValid( text, value ) == Acceptable )
+  QStringList absent;
+  if( isValid( text, value, absent ) == Acceptable )
     myCorrectValue = text;
 }
 
@@ -153,7 +154,8 @@ void SalomeApp_DoubleSpinBox::onTextChanged( const QString& text )
 double SalomeApp_DoubleSpinBox::valueFromText( const QString& text ) const
 {
   double value = 0;
-  if( isValid( text, value ) == Acceptable )
+  QStringList absent;
+  if( isValid( text, value, absent ) == Acceptable )
     return value;
 
   return defaultValue();
@@ -187,11 +189,11 @@ QValidator::State SalomeApp_DoubleSpinBox::validate( QString& str, int& pos ) co
   \brief This function is used to determine whether input is valid.
   \return validating operation result
 */
-bool SalomeApp_DoubleSpinBox::isValid( QString& msg, bool toCorrect )
+bool SalomeApp_DoubleSpinBox::isValid( QString& msg, QStringList& absentParams, bool toCorrect )
 {
   double value;
-  QString absent;
-  State aState = isValid( text(), value, &absent );
+  QStringList absent;
+  State aState = isValid( text(), value, absent );
 
   if( aState != Acceptable )
   {
@@ -200,7 +202,11 @@ bool SalomeApp_DoubleSpinBox::isValid( QString& msg, bool toCorrect )
       if( aState == Incompatible )
         msg += tr( "ERR_INCOMPATIBLE_TYPE" ).arg( text() ) + "\n";
       else if( aState == NoVariable && !absent.isEmpty() )
-        msg += tr( "ERR_NO_VARIABLE" ).arg( absent ) + "\n";
+      {
+        // this kind of error should be processed by the external module
+        absentParams << absent;
+        return false;
+      }
       else if( aState == Invalid )
         msg += tr( "ERR_INVALID_VALUE" ) + "\n";
 
@@ -208,6 +214,15 @@ bool SalomeApp_DoubleSpinBox::isValid( QString& msg, bool toCorrect )
     }
     return false;
   }
+
+  // workaround (to update the spin-box value after automatic variable definition)
+  // in this case the spin-box should behave as its value has been changed but
+  // at the same time its text should not be changed
+  bool isBlocked = blockSignals( true );
+  QString aText = text();
+  setValue( value );
+  setText( aText );
+  blockSignals( isBlocked );
 
   return true;
 }
@@ -260,7 +275,7 @@ void SalomeApp_DoubleSpinBox::setText( const QString& value )
   \brief This function is used to determine whether input is valid.
   \return validating operation result
 */
-SalomeApp_DoubleSpinBox::State SalomeApp_DoubleSpinBox::isValid( const QString& text, double& value, QString* absent ) const
+SalomeApp_DoubleSpinBox::State SalomeApp_DoubleSpinBox::isValid( const QString& text, double& value, QStringList& absent ) const
 {
   SearchState aSearchState = findVariable( text, value, absent );
   if( aSearchState == NotFound )
@@ -309,7 +324,7 @@ bool SalomeApp_DoubleSpinBox::checkRange( const double value ) const
   \brief This function is used to determine whether input is a variable name and to get its value.
   \return status of search operation
 */
-SalomeApp_DoubleSpinBox::SearchState SalomeApp_DoubleSpinBox::findVariable( const QString& name, double& value, QString* absent ) const
+SalomeApp_DoubleSpinBox::SearchState SalomeApp_DoubleSpinBox::findVariable( const QString& name, double& value, QStringList& absent ) const
 {
   value = 0;
   if( SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() ) )
@@ -320,8 +335,7 @@ SalomeApp_DoubleSpinBox::SearchState SalomeApp_DoubleSpinBox::findVariable( cons
       QStringList anAbsentParameters = aNotebook.absentParameters( name );
       if( !anAbsentParameters.isEmpty() )
       {
-        if( absent )
-          *absent = anAbsentParameters.join( "\", \"" );
+        absent << anAbsentParameters;
         return NotFound;
       }
 
@@ -350,8 +364,7 @@ SalomeApp_DoubleSpinBox::SearchState SalomeApp_DoubleSpinBox::findVariable( cons
       return IncorrectType;
     }
   }
-  if( absent )
-    *absent = name;
+  absent << name;
   return NotFound;
 }
 

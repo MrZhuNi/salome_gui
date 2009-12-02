@@ -103,6 +103,8 @@ public:
   virtual void                        setNoteBook(SalomeApp_NoteBookDlg* theNoteBook);
   virtual SalomeApp_NoteBookDlg*      getNoteBook() const;
 
+  virtual bool                        defineAbsentParameters( const QStringList& );
+
 public slots:
   virtual void                        onLoadDoc();
   virtual bool                        onLoadDoc( const QString& );
@@ -137,6 +139,8 @@ protected:
 
   virtual QMap<int, QString>          activateModuleActions() const;
   virtual void                        moduleActionSelected( const int );
+
+  virtual void                        showNoteBook( const QStringList&, bool = false );
 
   void                                objectBrowserColumnsVisibility();
 

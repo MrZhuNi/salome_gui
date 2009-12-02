@@ -45,7 +45,7 @@ public:
 
   virtual QValidator::State validate( QString&, int& ) const;
 
-  virtual bool              isValid( QString& msg, bool = false );
+  virtual bool              isValid( QString& msg, QStringList& absentParams, bool = false );
 
   virtual void              setDefaultValue( const int );
 
@@ -57,12 +57,12 @@ signals:
   void                      textChanged( const QString& );
 
 protected:
-  State                     isValid( const QString&, int&, QString* = 0 ) const;
+  State                     isValid( const QString&, int&, QStringList& ) const;
 
   int                       defaultValue() const;
   bool                      checkRange( const int ) const;
 
-  SearchState               findVariable( const QString&, int&, QString* = 0 ) const;
+  SearchState               findVariable( const QString&, int&, QStringList& ) const;
 
 protected:
   virtual void              keyPressEvent( QKeyEvent* );
