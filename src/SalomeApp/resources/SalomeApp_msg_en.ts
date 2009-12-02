@@ -392,13 +392,6 @@ Do you want to reload it ?</translation>
         <source>VALUE</source>
         <translation>Value</translation>
     </message>
-</context>
-<context>
-    <name>SalomeApp_NoteBookDlg</name>
-    <message>
-        <source>NOTEBOOK_TITLE</source>
-        <translation>Salome NoteBook</translation>
-    </message>
     <message>
         <source>NOTEBOOK_ERROR</source>
         <translation>NoteBook error</translation>
@@ -414,6 +407,13 @@ Do you want to reload it ?</translation>
     <message>
         <source>TYPE_ERROR</source>
         <translation>Type error</translation>
+    </message>
+</context>
+<context>
+    <name>SalomeApp_NoteBookDlg</name>
+    <message>
+        <source>NOTEBOOK_TITLE</source>
+        <translation>Salome NoteBook</translation>
     </message>
     <message>
         <source>BUT_UPDATE_STUDY</source>

@@ -54,6 +54,8 @@ public:
   QString expression( const QString& theName ) const;
   QVariant calculate( const QString& theExpr );
 
+  bool isValid( const QString& theName ) const;
+
   void update( bool theOnlyParameters );
 
   void remove( const QString& theParamName );

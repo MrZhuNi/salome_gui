@@ -336,19 +336,6 @@ void NoteBook_Table::markItem( NoteBook_TableRow* theRow, int theColumn, bool th
 }
 
 //============================================================================
-/*! Function : markRow
- *  Purpose  : Mark the given row by red or black color
- *             (red color means incorrect value, black - correct)
- */
-//============================================================================
-void NoteBook_Table::markRow( NoteBook_TableRow* theRow, bool theIsCorrect )
-{
-  markItem( theRow, VARIABLE_COLUMN, theIsCorrect );
-  markItem( theRow, EXPRESSION_COLUMN, theIsCorrect );
-  markItem( theRow, VALUE_COLUMN, theIsCorrect );
-}
-
-//============================================================================
 /*! Function : checkItem
  *  Purpose  : Check validity of the item by its color
  */
@@ -363,6 +350,19 @@ bool NoteBook_Table::checkItem( NoteBook_TableRow* theRow, int theColumn ) const
 }
 
 //============================================================================
+/*! Function : markRow
+ *  Purpose  : Mark the given row by red or black color
+ *             (red color means incorrect value, black - correct)
+ */
+//============================================================================
+void NoteBook_Table::markRow( NoteBook_TableRow* theRow, bool theIsCorrect )
+{
+  markItem( theRow, VARIABLE_COLUMN, theIsCorrect );
+  markItem( theRow, EXPRESSION_COLUMN, theIsCorrect );
+  markItem( theRow, VALUE_COLUMN, theIsCorrect );
+}
+
+//============================================================================
 /*! Function : checkRow
  *  Purpose  : Check validity of the row by a color of its first item
  */
@@ -372,26 +372,6 @@ bool NoteBook_Table::checkRow( NoteBook_TableRow* theRow ) const
   return checkItem( theRow, VARIABLE_COLUMN ) &&
          checkItem( theRow, EXPRESSION_COLUMN ) &&
          checkItem( theRow, VALUE_COLUMN );
-}
-
-//============================================================================
-/*! Function : correctData
- *  Purpose  : Try to correct data of the table
- */
-//============================================================================
-void NoteBook_Table::correctData( int theBaseRowIndex )
-{
-  for( int i = 0, n = myRows.size(); i < n; i++ )
-  {
-    if( NoteBook_TableRow* aRow = myRows[ i ] )
-    {
-      if( aRow->getIndex() != theBaseRowIndex )
-      {
-        QString aName = aRow->getVariable();
-        QString anExpression = myNoteBook->expression( aName );
-      }
-    }
-  }
 }
 
 //============================================================================
@@ -431,8 +411,28 @@ void NoteBook_Table::updateValues()
     if( NoteBook_TableRow* aRow = myRows[ i ] )
     {
       QString aName = aRow->getVariable();
-      QVariant aValue = myNoteBook->get( aName );
-      aRow->setValue( aValue.toString() );
+      QString aValue = myNoteBook->get( aName ).toString();
+      aRow->setValue( aValue );
+    }
+  }
+  blockSignals( isBlocked );
+}
+
+//============================================================================
+/*! Function : updateValidity
+ *  Purpose  : Update validity status of myNoteBook data
+ */
+//============================================================================
+void NoteBook_Table::updateValidity()
+{
+  bool isBlocked = blockSignals( true );
+  for( int i = 0, n = myRows.size(); i < n; i++ )
+  {
+    if( NoteBook_TableRow* aRow = myRows[ i ] )
+    {
+      QString aName = aRow->getVariable();
+      bool isValid = myNoteBook->isValid( aName );
+      markRow( aRow, isValid );
     }
   }
   blockSignals( isBlocked );
@@ -445,16 +445,12 @@ void NoteBook_Table::updateValues()
 //============================================================================
 bool NoteBook_Table::setExpression( const QString& theName,
                                     const QString& theExpression,
-                                    bool theIsNew,
-                                    QString& theErrorType,
-                                    QString& theErrorMessage )
+                                    bool theIsNew )
 {
-  theErrorType.clear();
-  theErrorMessage.clear();
-
   int iVal;
   double dVal;
   bool bVal;
+  QString anErrorType, anErrorMessage;
   try
   {
     if( NoteBook_TableRow::isIntegerValue( theExpression, &iVal ) )
@@ -467,54 +463,94 @@ bool NoteBook_Table::setExpression( const QString& theName,
       myNoteBook->set( theName, theExpression, theIsNew );
   }
   catch( const SALOME::NotebookError& ex ) {
-    theErrorType = tr( "NOTEBOOK_ERROR" );
-    theErrorMessage = ex.Reason.in();
+    anErrorType = tr( "NOTEBOOK_ERROR" );
+    anErrorMessage = ex.Reason.in();
   } catch( const SALOME::ExpressionError& ex ) {
-    theErrorType = tr( "EXPRESSION_ERROR" );
-    theErrorMessage = ex.Reason.in();
+    anErrorType = tr( "EXPRESSION_ERROR" );
+    anErrorMessage = ex.Reason.in();
   } catch( const SALOME::CalculationError& ex ) {
-    theErrorType = tr( "CALCULATION_ERROR" );
-    theErrorMessage = ex.Reason.in();
+    anErrorType = tr( "CALCULATION_ERROR" );
+    anErrorMessage = ex.Reason.in();
   } catch( const SALOME::TypeError& ex ) {
-    theErrorType = tr( "TYPE_ERROR" );
-    theErrorMessage = ex.Reason.in();
+    anErrorType = tr( "TYPE_ERROR" );
+    anErrorMessage = ex.Reason.in();
   }
 
-  return theErrorType.isEmpty();
+  if( !anErrorType.isEmpty() )
+  {
+    SUIT_MessageBox::warning( this, anErrorType, anErrorMessage );
+    return false;
+  }
+  return true;
 }
 
 //============================================================================
-/*! Function : setExpression
+/*! Function : renameVariable
  *  Purpose  : Try to rename the variable
  */
 //============================================================================
 bool NoteBook_Table::renameVariable( const QString& theOldName,
-                                     const QString& theNewName,
-                                     QString& theErrorType,
-                                     QString& theErrorMessage )
+                                     const QString& theNewName )
 {
-  theErrorType.clear();
-  theErrorMessage.clear();
-
+  QString anErrorType, anErrorMessage;
   try
   {
     myNoteBook->rename( theOldName, theNewName );
   }
   catch( const SALOME::NotebookError& ex ) {
-    theErrorType = tr( "NOTEBOOK_ERROR" );
-    theErrorMessage = ex.Reason.in();
+    anErrorType = tr( "NOTEBOOK_ERROR" );
+    anErrorMessage = ex.Reason.in();
   } catch( const SALOME::ExpressionError& ex ) {
-    theErrorType = tr( "EXPRESSION_ERROR" );
-    theErrorMessage = ex.Reason.in();
+    anErrorType = tr( "EXPRESSION_ERROR" );
+    anErrorMessage = ex.Reason.in();
   } catch( const SALOME::CalculationError& ex ) {
-    theErrorType = tr( "CALCULATION_ERROR" );
-    theErrorMessage = ex.Reason.in();
+    anErrorType = tr( "CALCULATION_ERROR" );
+    anErrorMessage = ex.Reason.in();
   } catch( const SALOME::TypeError& ex ) {
-    theErrorType = tr( "TYPE_ERROR" );
-    theErrorMessage = ex.Reason.in();
+    anErrorType = tr( "TYPE_ERROR" );
+    anErrorMessage = ex.Reason.in();
   }
 
-  return theErrorType.isEmpty();
+  if( !anErrorType.isEmpty() )
+  {
+    SUIT_MessageBox::warning( this, anErrorType, anErrorMessage );
+    return false;
+  }
+  return true;
+}
+
+//============================================================================
+/*! Function : updateNoteBook
+ *  Purpose  : Try to update notebook
+ */
+//============================================================================
+bool NoteBook_Table::updateNoteBook( bool theOnlyParameters )
+{
+  QString anErrorType, anErrorMessage;
+  try
+  {
+    myNoteBook->update( theOnlyParameters );
+  }
+  catch( const SALOME::NotebookError& ex ) {
+    anErrorType = tr( "NOTEBOOK_ERROR" );
+    anErrorMessage = ex.Reason.in();
+  } catch( const SALOME::ExpressionError& ex ) {
+    anErrorType = tr( "EXPRESSION_ERROR" );
+    anErrorMessage = ex.Reason.in();
+  } catch( const SALOME::CalculationError& ex ) {
+    anErrorType = tr( "CALCULATION_ERROR" );
+    anErrorMessage = ex.Reason.in();
+  } catch( const SALOME::TypeError& ex ) {
+    anErrorType = tr( "TYPE_ERROR" );
+    anErrorMessage = ex.Reason.in();
+  }
+
+  if( !anErrorType.isEmpty() )
+  {
+    SUIT_MessageBox::warning( this, anErrorType, anErrorMessage );
+    return false;
+  }
+  return true;
 }
 
 //============================================================================
@@ -651,11 +687,22 @@ bool NoteBook_Table::isLastRow( const NoteBook_TableRow* theRow ) const
 //============================================================================
 void NoteBook_Table::onItemChanged( QTableWidgetItem* theItem )
 {
-  NoteBook_TableRow* aRow = getRowByItem( theItem );
-  if( !aRow )
-    return;
+  if( NoteBook_TableRow* aRow = getRowByItem( theItem ) )
+  {
+    int aColumn = column( theItem );
+    processItemChanged( aRow, aColumn );
+    updateValidity();
+  }
+}
 
-  int anIndex = aRow->getIndex();
+//============================================================================
+/*! Function : processItemChanged
+ *  Purpose  : Process item data changing
+ */
+//============================================================================
+void NoteBook_Table::processItemChanged( NoteBook_TableRow* theRow, int theColumn )
+{
+  int anIndex = theRow->getIndex();
   if( !myVariableMap.contains( anIndex ) )
     return;
 
@@ -664,44 +711,31 @@ void NoteBook_Table::onItemChanged( QTableWidgetItem* theItem )
   QString anExpressionPrevious = aVariable.Expression;
   bool isCompletePrevious = !aVariable.Name.isEmpty() && !aVariable.Expression.isEmpty();
 
-  bool isCorrectPrevious = checkRow( aRow );
-  markRow( aRow, true );
+  bool isCorrectPrevious = checkRow( theRow );
 
-  QString aName = aRow->getVariable();
-  QString anExpression = aRow->getExpression();
+  QString aName = theRow->getVariable();
+  QString anExpression = theRow->getExpression();
   bool isComplete = !aName.isEmpty() && !anExpression.isEmpty();
 
   aVariable.Name = aName;
   aVariable.Expression = anExpression;
 
-  QString anErrorType, anErrorMessage;
-
-  int aCurrentColumn = column( theItem );
-  if( aCurrentColumn == VARIABLE_COLUMN && isCompletePrevious && isCorrectPrevious && aName != aNamePrevious )
+  if( theColumn == VARIABLE_COLUMN && isCompletePrevious && isCorrectPrevious && aName != aNamePrevious )
   {
-    if( !renameVariable( aNamePrevious, aName, anErrorType, anErrorMessage ) )
-    {
-      SUIT_MessageBox::warning( this, anErrorType, anErrorMessage );
-      markRow( aRow, false );
+    if( !renameVariable( aNamePrevious, aName ) )
       return;
-    }
     updateExpressions( anIndex );
-    return; // not necessary to update notebook data after renaming
+    return; // it is not necessary to update notebook data after renaming
   }
-
-  if( isComplete )
+  else if( isComplete )
   {
-    if( !setExpression( aName, anExpression, !isCompletePrevious, anErrorType, anErrorMessage ) )
-    {
-      SUIT_MessageBox::warning( this, anErrorType, anErrorMessage );
-      markRow( aRow, false );
+    if( !setExpression( aName, anExpression, !isCompletePrevious ) )
       return;
-    }
-    myNoteBook->update( true );
+    updateNoteBook( true );
     updateValues();
   }
 
-  if( isLastRow( aRow ) && isComplete )
+  if( isLastRow( theRow ) && isComplete )
   {
     bool isBlocked = blockSignals( true );
     addRow();
@@ -898,7 +932,7 @@ void SalomeApp_NoteBookDlg::onUpdateStudy()
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  myNoteBook->update( false );
+  myTable->updateNoteBook( false );
   QApplication::restoreOverrideCursor();
 }
 
@@ -909,14 +943,16 @@ void SalomeApp_NoteBookDlg::onUpdateStudy()
 //============================================================================
 void SalomeApp_NoteBookDlg::onClose()
 {
-  if( !myTable->isValid() &&
+  bool isTableValid = myTable->isValid();
+  if( !isTableValid &&
       SUIT_MessageBox::question( this, tr( "CLOSE_CAPTION" ), tr( "INCORRECT_DATA_ON_CLOSE" ),
                                  QMessageBox::Ok | QMessageBox::Cancel,
-                                 QMessageBox::Cancel ) != QMessageBox::Ok )
+                                 QMessageBox::Cancel ) == QMessageBox::Cancel )
     return;
 
   // update only variables
-  myNoteBook->update( true );
+  if( isTableValid && !myTable->updateNoteBook( true ) )
+    return;
 
   accept();
 }

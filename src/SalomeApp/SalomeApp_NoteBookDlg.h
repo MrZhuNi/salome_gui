@@ -97,6 +97,8 @@ public:
 
   void                      removeSelected();
 
+  bool                      updateNoteBook( bool theOnlyParameters );
+
 protected slots:
   void                      onItemChanged( QTableWidgetItem* theItem );
 
@@ -104,29 +106,27 @@ private:
   void                      clear();
   int                       getUniqueIndex() const;
   void                      markItem( NoteBook_TableRow* theRow, int theColumn, bool theIsCorrect );
-  void                      markRow( NoteBook_TableRow* theRow, bool theIsCorrect );
   bool                      checkItem( NoteBook_TableRow* theRow, int theColumn ) const;
+  void                      markRow( NoteBook_TableRow* theRow, bool theIsCorrect );
   bool                      checkRow( NoteBook_TableRow* theRow ) const;
-  void                      correctData( int theBaseRowIndex );
   void                      updateExpressions( int theBaseRowIndex );
   void                      updateValues();
+  void                      updateValidity();
 
   bool                      setExpression( const QString& theName,
                                            const QString& theExpression,
-                                           bool theIsNew,
-                                           QString& theErrorType,
-                                           QString& theErrorMessage );
+                                           bool theIsNew );
 
   bool                      renameVariable( const QString& theOldName,
-                                            const QString& theNewName,
-                                            QString& theErrorType,
-                                            QString& theErrorMessage );
+                                            const QString& theNewName );
 
   void                      addRow( const QString& theName = QString::null,
                                     const QString& theExpression = QString::null );
 
   NoteBook_TableRow*        getRowByItem( const QTableWidgetItem* theItem ) const;
   bool                      isLastRow( const NoteBook_TableRow* aRow ) const;
+
+  void                      processItemChanged( NoteBook_TableRow* theRow, int theColumn );
 
 private:
   QList<NoteBook_TableRow*> myRows;
