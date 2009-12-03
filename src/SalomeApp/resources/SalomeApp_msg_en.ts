@@ -25,6 +25,14 @@
 <context>
     <name>@default</name>
     <message>
+        <source>YES</source>
+        <translation>Yes</translation>
+    </message>
+    <message>
+        <source>NO</source>
+        <translation>No</translation>
+    </message>
+    <message>
         <source>WRN_FILE_NAME_BAD</source>
         <translation>Please enter correct file name.
 Python file must include only letters, digits and underscores and start from letter or underscore.</translation>

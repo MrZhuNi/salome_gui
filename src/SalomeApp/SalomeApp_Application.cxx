@@ -1508,8 +1508,7 @@ bool SalomeApp_Application::defineAbsentParameters( const QStringList& theParame
   if( SUIT_MessageBox::question( desktop(),
                                  QObject::tr( "WRN_WARNING" ),
                                  QObject::tr( "ERR_NO_VARIABLE" ).arg( aParametersString ),
-                                 SUIT_MessageBox::Yes | SUIT_MessageBox::No,
-                                 SUIT_MessageBox::No ) == SUIT_MessageBox::Yes )
+                                 QObject::tr( "YES" ), QObject::tr( "NO" ), 0, 1 ) == 0 )
   {
     showNoteBook( aParameters, true );
     return true;

@@ -946,8 +946,7 @@ void SalomeApp_NoteBookDlg::onClose()
   bool isTableValid = myTable->isValid();
   if( !isTableValid &&
       SUIT_MessageBox::question( this, tr( "CLOSE_CAPTION" ), tr( "INCORRECT_DATA_ON_CLOSE" ),
-                                 QMessageBox::Ok | QMessageBox::Cancel,
-                                 QMessageBox::Cancel ) == QMessageBox::Cancel )
+                                 tr( "OK" ), tr( "CANCEL" ), 0, 1 ) == 1 )
     return;
 
   // update only variables
