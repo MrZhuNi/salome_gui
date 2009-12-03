@@ -26,6 +26,7 @@
 #include "LightApp_Application.h"
 #include "LightApp_DataModel.h"
 #include "LightApp_DataObject.h"
+#include "LightApp_IDataObject.h"
 #include "LightApp_HDFDriver.h"
 
 #include "SUIT_ResourceMgr.h"
@@ -80,7 +81,15 @@ bool LightApp_Study::openDocument( const QString& theFileName )
     return false;
 
   setRoot( new LightApp_RootObject( this ) ); // create myRoot
-
+  
+  //create  object tree for all modules
+  CAM_Application* app = dynamic_cast<CAM_Application*>( application() );
+  QStringList listOfModules;
+  app->modules( listOfModules, false );
+ 
+  for ( QStringList::Iterator it = listOfModules.begin(); it != listOfModules.end(); ++it )
+    LightApp_IDataObject::BuildITree( root(), myDriver->GetTree( ( app->moduleName( (*it) ) ).toStdString() ) );
+     
   // update loaded data models: call open() and update() on them.
   ModelList dm_s;
   dataModels( dm_s );
@@ -155,7 +164,7 @@ bool LightApp_Study::saveDocumentAs( const QString& theFileName )
     aModel->saveAs( theFileName, this, listOfFiles );
     if ( !listOfFiles.isEmpty() )
       saveModuleData(aModel->module()->name(), listOfFiles);
-
+    myDriver->SetTree(aModel->module()->name().toStdString(),LightApp_IDataObject::GetTreeDoc(aModel->root()).toStdString());
     // Remove files if necessary. File is removed if it was in the list of files before
     // saving and it is not contained in the list after saving. This provides correct 
     // removing previous temporary files. These files are not removed before saving
@@ -204,6 +213,7 @@ bool LightApp_Study::saveDocument()
   myDriver->ClearDriverContents();
   QStringList listOfFiles;
   QListIterator<CAM_DataModel*> itList( list );
+
   while ( itList.hasNext() ) {
     LightApp_DataModel* aModel = (LightApp_DataModel*)itList.next();
     if ( !aModel ) continue;
@@ -211,6 +221,7 @@ bool LightApp_Study::saveDocument()
     listOfFiles.clear();
     aModel->save( listOfFiles );
     saveModuleData(aModel->module()->name(), listOfFiles);
+    myDriver->SetTree(aModel->module()->name().toStdString(),LightApp_IDataObject::GetTreeDoc(aModel->root()).toStdString());
   }
 
   bool res = saveStudyData(studyName());

@@ -41,6 +41,7 @@ salomeinclude_HEADERS =			\
 	LightApp_Driver.h		\
 	LightApp_EventFilter.h		\
 	LightApp_HDFDriver.h		\
+	LightApp_IDataObject.h		\
 	LightApp_Module.h		\
 	LightApp_ModuleAction.h		\
 	LightApp_ModuleDlg.h		\
@@ -89,6 +90,7 @@ dist_libLightApp_la_SOURCES =		\
 	LightApp_Driver.cxx		\
 	LightApp_EventFilter.cxx	\
 	LightApp_HDFDriver.cxx		\
+	LightApp_IDataObject.cxx	\
 	LightApp_Module.cxx		\
 	LightApp_ModuleAction.cxx	\
 	LightApp_ModuleDlg.cxx		\

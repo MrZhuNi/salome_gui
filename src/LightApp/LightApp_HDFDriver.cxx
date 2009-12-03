@@ -94,6 +94,17 @@ bool LightApp_HDFDriver::SaveDatasInFile( const char* theFileName, bool isMultiF
       hdf_dataset->WriteOnDisk(aBuffer); //Save the stream in the HDF file
       hdf_dataset->CloseOnDisk();
       hdf_dataset = 0; //will be deleted by hdf_sco_group destructor
+      
+      if ( myMapTree.count( aName ) ) {
+        char* aTree = const_cast<char*>( myMapTree[ aName ].c_str() );
+        aHDFSize[0] = strlen(aTree)+1;
+      
+        hdf_dataset = new HDFdataset ("TREE_STREAM", hdf_sco_group, HDF_STRING, aHDFSize, 1);
+        hdf_dataset->CreateOnDisk();
+        hdf_dataset->WriteOnDisk(aTree); //Save the stream of tree in the HDF file
+        hdf_dataset->CloseOnDisk();
+        hdf_dataset = 0; //will be deleted by hdf_sco_group destructor
+      }
 
       // store multifile state
       aHDFSize[0] = 2;
@@ -291,6 +302,25 @@ bool LightApp_HDFDriver::ReadDatasFromFile( const char* theFileName, bool isMult
             hdf_dataset = 0;
           }
 
+          // Read the Tree
+          char* aStreamTree = NULL;
+          int aTreeStreamSize = 0;
+
+          if (hdf_sco_group->ExistInternalObject("TREE_STREAM")) {
+            HDFdataset *hdf_dataset = new HDFdataset("TREE_STREAM", hdf_sco_group);
+            hdf_dataset->OpenOnDisk();
+            aTreeStreamSize = hdf_dataset->GetSize();
+            aStreamTree = new char[aTreeStreamSize];
+            if (aStreamTree == NULL) {
+              isError = true;
+            } else {
+              hdf_dataset->ReadFromDisk(aStreamTree);
+            }
+
+            hdf_dataset->CloseOnDisk();
+            hdf_dataset = 0;
+          }
+
           HDFdataset *multifile_hdf_dataset = new HDFdataset("MULTIFILE_STATE", hdf_sco_group);
           multifile_hdf_dataset->OpenOnDisk();
           multifile_hdf_dataset->ReadFromDisk(aMultifileState);
@@ -312,6 +342,14 @@ bool LightApp_HDFDriver::ReadDatasFromFile( const char* theFileName, bool isMult
             SetListOfFiles(aCompDataType, aListOfFiles);
 
             delete [] aStreamFile;
+          }
+
+          if (aStreamTree != NULL) {
+            // Set buffer to to myMapTree
+	    std::string aTree(aStreamTree);
+            SetTree(mapEntryName[name], aTree);
+
+            delete [] aStreamTree;
           }
 
           hdf_sco_group->CloseOnDisk();

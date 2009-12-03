@@ -1411,6 +1411,8 @@ void LightApp_Application::onStudyOpened( SUIT_Study* theStudy )
   if ( objectBrowser() )
     objectBrowser()->openLevels();
 
+  updateObjectBrowser( true );
+
   emit studyOpened();
 }
 

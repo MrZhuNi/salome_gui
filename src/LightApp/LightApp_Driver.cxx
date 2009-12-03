@@ -31,6 +31,7 @@
 
 #include <QFileInfo>
 #include <QDir>
+#include <cstring>
 
 #ifdef WIN32
 #include <time.h>
@@ -56,12 +57,14 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
 {
   int aNbModules = 0;
   std::map<std::string, ListOfFiles>::const_iterator it;
+  std::map<std::string, std::string>::const_iterator it1;
   for (it = myMap.begin(); it != myMap.end(); ++it)
     aNbModules++;
 
   unsigned char** aBuffer = new unsigned char*[aNbModules]; 
   long*           aBufferSize = new long[aNbModules];
   char**          aModuleName = new char*[aNbModules];
+  char**          aTree = new char*[aNbModules];
 
   if(aBuffer == NULL || aBufferSize == NULL || aModuleName == NULL)
     return false;
@@ -79,6 +82,14 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
     i++;
   }
   int n = i;
+  
+  i = 0;
+  for ( it1 = myMapTree.begin(); it1 != myMapTree.end(); ++it1 ) {
+    aFileBufferSize += 4;                                //Add 4 bytes: a length of the object tree
+    aTree[i] = const_cast<char*>( it1->second.c_str() );
+    aFileBufferSize += strlen( aTree[i] ) + 1;
+    i++;
+  }
 
   unsigned char* aFileBuffer = new unsigned char[aFileBufferSize];
   if(aFileBuffer == NULL)
@@ -95,6 +106,7 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
   aCurrentPos += 4;
 
   int aBufferNameSize = 0;
+  int aTreeSize = 0;
   for (i = 0; i < n; i++) {
     aBufferNameSize = strlen(aModuleName[i])+1;
     //Initialize 4 bytes of the buffer by 0
@@ -114,6 +126,16 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
     //Copy the module buffer to the buffer
     memcpy((aFileBuffer + aCurrentPos), aBuffer[i], aBufferSize[i]);
     aCurrentPos += aBufferSize[i];
+    
+    //Initialize 4 bytes of the buffer by 0
+    memset((aFileBuffer + aCurrentPos), 0, 4);
+    aTreeSize = strlen(aTree[i]) + 1;
+    //Copy the length of the object tree
+    memcpy((aFileBuffer + aCurrentPos), &aTreeSize, ((sizeof(int) > 4) ? : sizeof(int)));
+    aCurrentPos += 4;
+    //Copy the object tree to the buffer
+    memcpy((aFileBuffer + aCurrentPos), aTree[i], aTreeSize);
+    aCurrentPos += aTreeSize;
   }
 
 #ifdef WIN32
@@ -128,6 +150,7 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
   delete[] aBufferSize;
   delete[] aModuleName;
   delete[] aFileBuffer;
+  delete[] aTree;
 
   return true;
 }
@@ -173,17 +196,32 @@ bool LightApp_Driver::ReadDatasFromFile( const char* theFileName, bool isMultiFi
     memcpy(&aBufferSize, (aFileBuffer + aCurrentPos), ((sizeof(long) > 8) ? 8 : sizeof(long))); 
     aCurrentPos += 8;
     unsigned char *aBuffer = new unsigned char[aBufferSize];
- 
+
     //Put a buffer for current module to aBuffer
-    memcpy(aBuffer, (aFileBuffer + aCurrentPos), aBufferSize); 
+    memcpy(aBuffer, (aFileBuffer + aCurrentPos), aBufferSize);
     aCurrentPos += aBufferSize;
+
+    //Put a length of the object tree buffer to aTreeSize
+    int aTreeSize;
+    memcpy(&aTreeSize, (aFileBuffer + aCurrentPos), ((sizeof(int) > 4) ? 4 : sizeof(int)));
+    aCurrentPos += 4;
+    char *aTree = new char[aTreeSize];
+
+    //Put an object tree for current module to aTree
+    memcpy(aTree, (aFileBuffer + aCurrentPos), aTreeSize);
+    aCurrentPos += aTreeSize;
 
     // Put buffer to aListOfFiles and set to myMap
     ListOfFiles aListOfFiles = PutStreamToFiles(aBuffer, aBufferSize, isMultiFile);
     SetListOfFiles(aModuleName, aListOfFiles);
 
+    // Set the object tree to myMapTree
+    std::string aTmpTree(aTree);
+    SetTree(aModuleName, aTmpTree);
+
     delete[] aModuleName;
     delete[] aBuffer;
+    delete[] aTree;
   }
 
   delete[] aFileBuffer;
@@ -223,6 +261,27 @@ void LightApp_Driver::SetListOfFiles( const char* theModuleName, const ListOfFil
 {
   std::string aName (theModuleName);
   myMap[aName] = theListOfFiles;
+
+}
+
+/*!
+  Sets the object tree for module with name 'theModuleName'
+*/
+void LightApp_Driver::SetTree( const std::string& theModuleName, const std::string& theTree )
+{
+  myMapTree[theModuleName] = theTree;
+}
+
+/*!
+  Gets the object tree for module with name 'theModuleName'
+*/
+QString LightApp_Driver::GetTree( const std::string& theModuleName )
+{
+  if ( myMapTree.count( theModuleName ) ) {
+    QString aTree( myMapTree[theModuleName].c_str() );
+    return aTree;
+  }
+  return QString();
 }
 
 /*!
@@ -552,4 +611,3 @@ std::string LightApp_Driver::GetDirFromPath( const std::string& thePath ) {
   aDirString.ChangeAll('|','/');
   return aDirString.ToCString();
 }
-

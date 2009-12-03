@@ -28,6 +28,8 @@
 #include "vector"
 #include "map"
 
+#include <QString>
+
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
@@ -54,6 +56,9 @@ public:
 
   virtual void        ClearDriverContents();
 
+  QString             GetTree (const std::string& theModuleName);
+  void                SetTree (const std::string& theModuleName, const std::string& theTree);
+
 protected:
   void                PutFilesToStream(const std::string& theModuleName, unsigned char*& theBuffer,
                                        long& theBufferSize, bool theNamesOnly = false);
@@ -69,6 +74,8 @@ protected:
 protected:
   typedef std::map<std::string, ListOfFiles> MapOfListOfFiles;
   MapOfListOfFiles                           myMap;
+  typedef std::map<std::string, std::string> MapTrees;
+  MapTrees                                   myMapTree;  
   std::string                                myTmpDir;
 
 private:
