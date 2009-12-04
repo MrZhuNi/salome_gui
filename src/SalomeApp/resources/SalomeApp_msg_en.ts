@@ -454,5 +454,9 @@ Otherwise click Cancel and correct these variables.</translation>
         <translation>Some variables have been defined incorrectly.
 Please correct these variables before study update.</translation>
     </message>
+    <message>
+        <source>ERR_UPDATE_STUDY_FAILED</source>
+        <translation>Failed to update study!</translation>
+    </message>
 </context>
 </TS>
