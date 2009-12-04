@@ -186,10 +186,18 @@ QStringList SalomeApp_Notebook::absentParameters( const QString& theExpr ) const
 
 void SalomeApp_Notebook::setParameters( SALOME::ParameterizedObject_ptr theObject, int theCount, QAbstractSpinBox* theFirstSpin, ... )
 {
+  va_list aSpins;
+  va_start( aSpins, theFirstSpin );
+
+  int aCounter = 0;
   QList<QAbstractSpinBox*> aSpinList;
-  QAbstractSpinBox** aSpinArray = &theFirstSpin;
-  for( int i = 0; i < theCount; i++, aSpinArray++ )
-    aSpinList << *aSpinArray;
+  QAbstractSpinBox* aSpin = theFirstSpin;
+  while( aSpin && aCounter < theCount )
+  {
+    aSpinList.append( aSpin );
+    aSpin = va_arg( aSpins, QAbstractSpinBox* );
+    aCounter++;
+  }
   setParameters( theObject, aSpinList );
 }
 
