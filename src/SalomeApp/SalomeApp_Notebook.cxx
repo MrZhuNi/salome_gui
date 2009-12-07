@@ -105,19 +105,8 @@ QString SalomeApp_Notebook::expression( const QString& theName ) const
 
 QVariant SalomeApp_Notebook::calculate( const QString& theExpr )
 {
-  if( CORBA::is_nil( myTmp ) )
-  {
-    static const char TMP_NAME[] = "__tmp__";
-    myTmp = myNotebook->GetParameter( TMP_NAME );
-    if( CORBA::is_nil( myTmp ) )
-    {
-      myNotebook->AddReal( TMP_NAME, 0 );
-      myTmp = myNotebook->GetParameter( TMP_NAME );
-    }
-  }
-  myTmp->SetExpression( theExpr.toLatin1().constData() );
-  myTmp->Update( myNotebook.in() );
-  return convert( myTmp );
+  SALOME::Parameter_var aParam = myNotebook->Calculate( theExpr.toLatin1().constData() );
+  return convert( aParam.in() );
 }
 
 bool SalomeApp_Notebook::isValid( const QString& theName ) const
@@ -148,9 +137,9 @@ QVariant SalomeApp_Notebook::convert( SALOME::Parameter_ptr theParam ) const
   return aRes;
 }
 
-void SalomeApp_Notebook::update( bool theOnlyParameters )
+void SalomeApp_Notebook::update()
 {
-  myNotebook->Update( theOnlyParameters );
+  myNotebook->Update();
 }
 
 void SalomeApp_Notebook::remove( const QString& theParamName )

@@ -56,7 +56,7 @@ public:
 
   bool isValid( const QString& theName ) const;
 
-  void update( bool theOnlyParameters );
+  void update();
 
   void remove( const QString& theParamName );
   void rename( const QString& theOldName, const QString& theNewName );
@@ -78,7 +78,6 @@ protected:
 
 private:
   SALOME::Notebook_var myNotebook;
-  SALOME::Parameter_var myTmp;
 };
 
 #endif
