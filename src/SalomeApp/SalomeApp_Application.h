@@ -130,6 +130,7 @@ protected:
   virtual void                        onSelectionChanged();
 
   virtual void                        createPreferences( LightApp_Preferences* );
+  virtual void                        preferencesChanged( const QString&, const QString& );
 
   virtual bool                        closeAction( const int, bool& );
   virtual int                         closeChoice( const QString& );

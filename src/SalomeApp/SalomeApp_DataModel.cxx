@@ -29,6 +29,8 @@
 #include "SalomeApp_Module.h"
 #include "SalomeApp_Application.h"
 
+#include <SUIT_Session.h>
+#include <SUIT_ResourceMgr.h>
 #include <CAM_DataObject.h>
 
 #include <SUIT_TreeSync.h>
@@ -65,6 +67,7 @@ private:
 private:
   _PTR( Study )     myStudy;
   SUIT_DataObject*  myRoot;
+  bool              myShowNoteBook;
 };
 
 /*!
@@ -74,6 +77,7 @@ SalomeApp_DataModelSync::SalomeApp_DataModelSync( _PTR( Study ) aStudy, SUIT_Dat
 : myStudy( aStudy ),
   myRoot( aRoot )
 {
+  myShowNoteBook = SUIT_Session::session()->resourceMgr()->booleanValue( "ObjectBrowser", "show_notebook", false );
 }
 
 /*!
@@ -90,6 +94,8 @@ bool SalomeApp_DataModelSync::isCorrect( const kerPtr& so ) const
     _PTR(AttributeDrawable) aAttrDraw = anAttr;
     isDraw = aAttrDraw->IsDrawable(); 
   }
+  _PTR(SComponent) aSComp( so );
+  if ( aSComp && aSComp->ComponentDataType() == "NOTEBOOK" && !myShowNoteBook ) return false;
   bool res = so && ( so->GetName().size() || so->ReferencedObject( refObj ) ) && isDraw;  
   return res;
 }

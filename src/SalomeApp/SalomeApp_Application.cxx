@@ -876,12 +876,25 @@ void SalomeApp_Application::createPreferences( LightApp_Preferences* pref )
     pref->addPreference( tr( QString().sprintf( "OBJ_BROWSER_COLUMN_%d", i-1 ).toLatin1() ), defCols,
                          LightApp_Preferences::Bool, "ObjectBrowser", QString().sprintf( "visibility_column_id_%d", i ) );
   }
+  int nbGrp = pref->addPreference( tr( "PREF_NOTEBOOK" ), obTab );
+  pref->addPreference( tr( "SHOW_NOTEBOOK" ), nbGrp, LightApp_Preferences::Bool, "ObjectBrowser", "show_notebook" );
+  
   pref->setItemProperty( "orientation", Qt::Vertical, defCols );
 
   // adding preference to LightApp_Application handled preferences..  a bit of hacking with resources..
   int genTab = pref->addPreference( LightApp_Application::tr( "PREF_TAB_GENERAL" ), salomeCat );
   int studyGroup = pref->addPreference( LightApp_Application::tr( "PREF_GROUP_STUDY" ), genTab );
   pref->addPreference( tr( "PREF_STORE_VISUAL_STATE" ), studyGroup, LightApp_Preferences::Bool, "Study", "store_visual_state" );
+}
+
+/*! Called when application preferenes are changed */
+void SalomeApp_Application::preferencesChanged( const QString& section, const QString& param )
+{
+  if ( section == "ObjectBrowser" ) {
+    if ( param == "show_notebook" ) {
+      updateObjectBrowser( false );
+    }
+  }
 }
 
 /*!Update desktop title.*/

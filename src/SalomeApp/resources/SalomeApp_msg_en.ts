@@ -331,6 +331,14 @@ Do you want to reload it ?</translation>
         <source>ACTIVATE_MODULE_OP_LOAD</source>
         <translation>&amp;Load...</translation>
     </message>
+    <message>
+        <source>PREF_NOTEBOOK</source>
+        <translation>Notebook</translation>
+    </message>
+    <message>
+        <source>SHOW_NOTEBOOK</source>
+        <translation>Show Notebook item</translation>
+    </message>
 </context>
 <context>
     <name>SalomeApp_StudyPropertiesDlg</name>

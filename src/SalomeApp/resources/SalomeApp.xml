@@ -105,14 +105,15 @@
   </section>
   <section name="ObjectBrowser" >
     <!-- Object Browser preferences -->
-    <parameter name="auto_hide_search_tool" value="true" />
-    <parameter name="auto_size"             value="false" />
-    <parameter name="auto_size_first"       value="true"  />
-    <parameter name="resize_on_expand_item" value="false"  />
+    <parameter name="auto_hide_search_tool"  value="true" />
+    <parameter name="auto_size"              value="false" />
+    <parameter name="auto_size_first"        value="true"  />
+    <parameter name="resize_on_expand_item"  value="false"  />
     <parameter name="visibility_column_id_1" value="false"  />
     <parameter name="visibility_column_id_2" value="false" />
     <parameter name="visibility_column_id_3" value="false" />
     <parameter name="visibility_column_id_4" value="false" />
+    <parameter name="show_notebook"          value="false" />
   </section>
   <section name="PyConsole">
     <!-- Python console preferences -->
