@@ -97,7 +97,7 @@ public:
 
   void                      removeSelected();
 
-  bool                      updateNoteBook( bool theOnlyParameters );
+  bool                      updateNoteBook();
 
 protected slots:
   void                      onItemChanged( QTableWidgetItem* theItem );
@@ -111,7 +111,6 @@ private:
   bool                      checkRow( NoteBook_TableRow* theRow ) const;
   void                      updateExpressions( int theBaseRowIndex );
   void                      updateValues();
-  void                      updateValidity();
 
   bool                      setExpression( const QString& theName,
                                            const QString& theExpression,

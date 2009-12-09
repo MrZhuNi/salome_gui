@@ -30,6 +30,7 @@
 #include CORBA_CLIENT_HEADER( SALOME_Notebook )
 
 #include <QList>
+#include <QMap>
 
 class SalomeApp_Study;
 class QString;
@@ -68,7 +69,10 @@ public:
   void setParameters( SALOME::ParameterizedObject_ptr theObject, QList<QAbstractSpinBox*> theSpinList );
   void setParameters( SALOME::ParameterizedObject_ptr theObject, const QStringList& theParameters );
 
-  QString getParameters( const QString& theComponent, const QString& theEntry );
+  QStringList getObjectParameters( const QString& theComponent, const QString& theEntry ) const;
+  QStringList getParameters( const QString& theParamName ) const;
+
+  void setRecentValues( const QMap<QString, bool>& theRecentValues );
 
   char* dump();
 
@@ -78,6 +82,7 @@ protected:
 
 private:
   SALOME::Notebook_var myNotebook;
+  QMap<QString, bool>  myRecentValues;
 };
 
 #endif

@@ -424,28 +424,12 @@ void NoteBook_Table::updateValues()
     if( NoteBook_TableRow* aRow = myRows[ i ] )
     {
       QString aName = aRow->getVariable();
-      QString aValue = myNoteBook->get( aName ).toString();
-      aRow->setValue( aValue );
-    }
-  }
-  blockSignals( isBlocked );
-}
 
-//============================================================================
-/*! Function : updateValidity
- *  Purpose  : Update validity status of myNoteBook data
- */
-//============================================================================
-void NoteBook_Table::updateValidity()
-{
-  bool isBlocked = blockSignals( true );
-  for( int i = 0, n = myRows.size(); i < n; i++ )
-  {
-    if( NoteBook_TableRow* aRow = myRows[ i ] )
-    {
-      QString aName = aRow->getVariable();
       bool isValid = myNoteBook->isValid( aName );
       markRow( aRow, isValid );
+
+      QString aValue = myNoteBook->get( aName ).toString();
+      aRow->setValue( isValid ? aValue : QString::null );
     }
   }
   blockSignals( isBlocked );
@@ -537,12 +521,12 @@ bool NoteBook_Table::renameVariable( const QString& theOldName,
  *  Purpose  : Try to update notebook
  */
 //============================================================================
-bool NoteBook_Table::updateNoteBook( bool theOnlyParameters )
+bool NoteBook_Table::updateNoteBook()
 {
   QString anErrorType, anErrorMessage;
   try
   {
-    myNoteBook->update( theOnlyParameters );
+    myNoteBook->update();
   }
   catch( const SALOME::NotebookError& ex ) {
     anErrorType = tr( "NOTEBOOK_ERROR" );
@@ -580,20 +564,23 @@ void NoteBook_Table::init( SalomeApp_Notebook* theNoteBook )
   clear();
   myVariableMap.clear();
 
+  QMap<QString, bool> aRecentValues;
+
   // Add all variables into the table
   QStringList aVariables = myNoteBook->parameters();
   QStringListIterator anIter( aVariables );
   while( anIter.hasNext() )
   {
     QString aVariable = anIter.next();
-    if( aVariable.left( 2 ).compare( "__" ) == 0 ) // tmp variable
-      continue;
-    QString aVariableValue = myNoteBook->expression( aVariable );
-    addRow( aVariable, aVariableValue );
+    QString anExpression = myNoteBook->expression( aVariable );
+    addRow( aVariable, anExpression );
+    aRecentValues.insert( aVariable, true );
   }
 
   // Add empty row
   addRow();
+
+  myNoteBook->setRecentValues( aRecentValues );
 
   updateValues();
 
@@ -704,7 +691,7 @@ void NoteBook_Table::onItemChanged( QTableWidgetItem* theItem )
   {
     int aColumn = column( theItem );
     processItemChanged( aRow, aColumn );
-    updateValidity();
+    updateValues();
   }
 }
 
@@ -733,10 +720,13 @@ void NoteBook_Table::processItemChanged( NoteBook_TableRow* theRow, int theColum
   aVariable.Name = aName;
   aVariable.Expression = anExpression;
 
-  if( theColumn == VARIABLE_COLUMN && isCompletePrevious && isCorrectPrevious && aName != aNamePrevious )
+  if( theColumn == VARIABLE_COLUMN && isCompletePrevious /*&& isCorrectPrevious*/ && aName != aNamePrevious )
   {
     if( !renameVariable( aNamePrevious, aName ) )
+    {
+      aVariable.Name = aNamePrevious;
       return;
+    }
     updateExpressions( anIndex );
     return; // it is not necessary to update notebook data after renaming
   }
@@ -744,8 +734,6 @@ void NoteBook_Table::processItemChanged( NoteBook_TableRow* theRow, int theColum
   {
     if( !setExpression( aName, anExpression, !isCompletePrevious ) )
       return;
-    updateNoteBook( true );
-    updateValues();
   }
 
   if( isLastRow( theRow ) && isComplete )
@@ -796,6 +784,7 @@ void NoteBook_Table::removeSelected()
     for( int i = 0, n = myRows.size(); i < n; i++ )
       myRows[i]->getRowHeaderItem()->setText( QString::number( i+1 ) );
   }
+  updateValues();
 
   blockSignals( isBlocked );
 }
@@ -946,7 +935,7 @@ void SalomeApp_NoteBookDlg::onUpdateStudy()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  myTable->updateNoteBook( false );
+  myTable->updateNoteBook();
 
   // tmp code
   if( !updateStudy() )
@@ -963,14 +952,9 @@ void SalomeApp_NoteBookDlg::onUpdateStudy()
 //============================================================================
 void SalomeApp_NoteBookDlg::onClose()
 {
-  bool isTableValid = myTable->isValid();
-  if( !isTableValid &&
+  if( !myTable->isValid() &&
       SUIT_MessageBox::question( this, tr( "CLOSE_CAPTION" ), tr( "INCORRECT_DATA_ON_CLOSE" ),
                                  tr( "OK" ), tr( "CANCEL" ), 0, 1 ) == 1 )
-    return;
-
-  // update only variables
-  if( isTableValid && !myTable->updateNoteBook( true ) )
     return;
 
   accept();

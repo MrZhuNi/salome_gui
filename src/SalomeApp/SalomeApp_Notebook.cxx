@@ -56,6 +56,7 @@ void SalomeApp_Notebook::set( const QString& theName, const QVariant& theValue, 
   SALOME::Parameter_ptr aParam = myNotebook->GetParameter( theName.toLatin1().constData() );
   bool isNew = CORBA::is_nil( aParam ) || theIsNew;
 
+  myRecentValues[ theName ] = false;
   switch( theValue.type() )
   {
   case QVariant::Int:
@@ -90,6 +91,7 @@ void SalomeApp_Notebook::set( const QString& theName, const QVariant& theValue, 
       break;
     }
   }
+  myRecentValues[ theName ] = true;
 }
 
 QVariant SalomeApp_Notebook::get( const QString& theName ) const
@@ -111,8 +113,25 @@ QVariant SalomeApp_Notebook::calculate( const QString& theExpr )
 
 bool SalomeApp_Notebook::isValid( const QString& theName ) const
 {
+  QMap<QString, bool>::const_iterator it = myRecentValues.find( theName );
+  if( it != myRecentValues.end() )
+    if( !it.value() )
+      return false;
+
   SALOME::Parameter_var aParam = myNotebook->GetParameter( theName.toLatin1().constData() );
-  return CORBA::is_nil( aParam ) ? false : aParam->IsValid();
+  if( CORBA::is_nil( aParam ) )
+    return false;
+
+  if( !aParam->IsValid() )
+    return false;
+
+  QStringList aDependencies = getParameters( theName );
+  QStringListIterator anIter( aDependencies );
+  while( anIter.hasNext() )
+    if( !isValid( anIter.next() ) )
+      return false;
+
+  return true;
 }
 
 QVariant SalomeApp_Notebook::convert( SALOME::Parameter_ptr theParam ) const
@@ -145,11 +164,17 @@ void SalomeApp_Notebook::update()
 void SalomeApp_Notebook::remove( const QString& theParamName )
 {
   myNotebook->Remove( theParamName.toLatin1().constData() );
+  QMap<QString, bool>::iterator it = myRecentValues.find( theParamName );
+  if( it != myRecentValues.end() )
+    myRecentValues.erase( it );
 }
 
 void SalomeApp_Notebook::rename( const QString& theOldName, const QString& theNewName )
 {
   myNotebook->Rename( theOldName.toLatin1().constData(), theNewName.toLatin1().constData() );
+  QMap<QString, bool>::iterator it = myRecentValues.find( theOldName );
+  if( it != myRecentValues.end() )
+    myRecentValues.insert( theNewName, myRecentValues.take( theOldName ) );
 }
 
 QStringList SalomeApp_Notebook::convert( SALOME::StringArray* theList ) const
@@ -229,10 +254,20 @@ void SalomeApp_Notebook::setParameters( SALOME::ParameterizedObject_ptr theObjec
   theObject->SetParameters( myNotebook.in(), aParams );
 }
 
-QString SalomeApp_Notebook::getParameters( const QString& theComponent, const QString& theEntry )
+QStringList SalomeApp_Notebook::getObjectParameters( const QString& theComponent, const QString& theEntry ) const
 {
-  return QString( myNotebook->GetParameters( theComponent.toLatin1().constData(),
-                                             theEntry.toLatin1().constData() ) );
+  return convert( myNotebook->GetObjectParameters( theComponent.toLatin1().constData(),
+                                                   theEntry.toLatin1().constData() ) );
+}
+
+QStringList SalomeApp_Notebook::getParameters( const QString& theParamName ) const
+{
+  return convert( myNotebook->GetParameters( theParamName.toLatin1().constData() ) );
+}
+
+void SalomeApp_Notebook::setRecentValues( const QMap<QString, bool>& theRecentValues )
+{
+  myRecentValues = theRecentValues;
 }
 
 char* SalomeApp_Notebook::dump()
