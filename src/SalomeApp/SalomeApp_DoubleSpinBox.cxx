@@ -277,18 +277,18 @@ void SalomeApp_DoubleSpinBox::setText( const QString& value )
 */
 SalomeApp_DoubleSpinBox::State SalomeApp_DoubleSpinBox::isValid( const QString& text, double& value, QStringList& absent ) const
 {
-  SearchState aSearchState = findVariable( text, value, absent );
-  if( aSearchState == NotFound )
+  bool isNumber = false;
+  value = QLocale().toDouble( text, &isNumber );
+  if( !isNumber )
   {
-    bool ok = false;
-    value = QLocale().toDouble( text, &ok );
-    if ( !ok )
+    SearchState aSearchState = findVariable( text, value, absent );
+    if( aSearchState == NotFound )
       return NoVariable;
+    else if( aSearchState == IncorrectType )
+      return Incompatible;
+    else if( aSearchState == IncorrectExpression )
+      return Invalid;
   }
-  else if( aSearchState == IncorrectType )
-    return Incompatible;
-  else if( aSearchState == IncorrectExpression )
-    return Invalid;
 
   if( !checkRange( value ) )
     return Invalid;

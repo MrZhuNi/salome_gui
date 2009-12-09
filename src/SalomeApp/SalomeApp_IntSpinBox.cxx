@@ -233,23 +233,22 @@ void SalomeApp_IntSpinBox::setText( const QString& value )
 */
 SalomeApp_IntSpinBox::State SalomeApp_IntSpinBox::isValid( const QString& text, int& value, QStringList& absent ) const
 {
-  SearchState aSearchState = findVariable( text, value, absent );
-  if( aSearchState == NotFound )
+  bool isNumber = false;
+  value = text.toInt( &isNumber );
+  if( !isNumber )
   {
-    bool ok = false;
-    value = text.toInt( &ok );
-    if( !ok )
-    {
-      text.toDouble( &ok );
-      if( ok )
-	return Invalid;
+    text.toDouble( &isNumber );
+    if( isNumber )
+      return Invalid;
+
+    SearchState aSearchState = findVariable( text, value, absent );
+    if( aSearchState == NotFound )
       return NoVariable;
-    }
+    else if( aSearchState == IncorrectType )
+      return Incompatible;
+    else if( aSearchState == IncorrectExpression )
+      return Invalid;
   }
-  else if( aSearchState == IncorrectType )
-    return Incompatible;
-  else if( aSearchState == IncorrectExpression )
-    return Invalid;
 
   if( !checkRange( value ) )
     return Invalid;
