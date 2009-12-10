@@ -271,7 +271,7 @@ void SalomeApp_Notebook::setParameters( SALOME::ParameterizedObject_ptr theObjec
 
     if( anIsValue )
       aParameter = "";
-    else if( !isParameter( aParameter ) )
+    else if( aParameter.length() > 0 && !isParameter( aParameter ) )
       myNotebook->AddExpression( aParameter.toLatin1().constData() );
 
     aParams[i] = CORBA::string_dup( aParameter.toLatin1().constData() );
