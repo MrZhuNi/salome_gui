@@ -31,10 +31,10 @@
 
 #include <QList>
 #include <QMap>
+#include <QVariant>
 
 class SalomeApp_Study;
 class QString;
-class QVariant;
 class QStringList;
 class QAbstractSpinBox;
 
@@ -54,6 +54,8 @@ public:
   QVariant get( const QString& theName ) const;
   QString expression( const QString& theName ) const;
   QVariant calculate( const QString& theExpr );
+
+  QVariant::Type getType( const QString& theName );
 
   bool isValid( const QString& theName ) const;
 

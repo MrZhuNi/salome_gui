@@ -111,6 +111,31 @@ QVariant SalomeApp_Notebook::calculate( const QString& theExpr )
   return convert( aParam.in() );
 }
 
+QVariant::Type SalomeApp_Notebook::getType( const QString& theName )
+{
+  QVariant::Type aRes = QVariant::Invalid;
+  SALOME::Parameter_var aParam = myNotebook->GetParameter( theName.toLatin1().constData() );
+  if( !CORBA::is_nil( aParam ) )
+    switch( aParam->GetType() )
+    {
+    case SALOME::TBoolean:
+      aRes = QVariant::Bool;
+      break;
+    case SALOME::TInteger:
+      aRes = QVariant::Int;
+      break;
+    case SALOME::TReal:
+      aRes = QVariant::Double;
+      break;
+    case SALOME::TString:
+      aRes = QVariant::String;
+      break;
+    default:
+      break;
+    }
+  return aRes;
+}
+
 bool SalomeApp_Notebook::isValid( const QString& theName ) const
 {
   QMap<QString, bool>::const_iterator it = myRecentValues.find( theName );
