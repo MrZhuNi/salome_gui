@@ -613,6 +613,8 @@ void NoteBook_Table::addUndefinedParameters( const QStringList& theParameters )
     addRow();
   }
 
+  updateValues();
+
   blockSignals( isBlocked );
 }
 
