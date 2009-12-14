@@ -30,6 +30,8 @@
 #include "LightApp_Preferences.h"
 #include <CAM_Module.h>
 
+#include <QList>
+
 class LightApp_Application;
 class LightApp_Selection;
 class LightApp_Operation;
@@ -45,6 +47,7 @@ class CAM_Application;
 
 class QtxPopupMgr;
 
+class QAction;
 class QString;
 class QVariant;
 
@@ -91,6 +94,8 @@ public:
 
   virtual LightApp_Displayer*         displayer();
   virtual LightApp_Selection*         createSelection() const;
+  
+  QList<QAction*>                     displayActions() const;
 
 public slots:
   virtual bool                        activateModule( SUIT_Study* );

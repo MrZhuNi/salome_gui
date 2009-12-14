@@ -119,6 +119,10 @@ Do you want to define them by the notebook?</translation>
         <translation>&amp;Close w/o saving</translation>
     </message>
     <message>
+        <source>MEN_SHOW_NOTEBOOK</source>
+        <translation>Edit variables</translation>
+    </message>
+    <message>
         <source>MEN_WINDOWS_NEW</source>
         <translation>New Window</translation>
     </message>

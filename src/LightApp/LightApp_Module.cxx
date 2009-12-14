@@ -200,6 +200,16 @@ bool LightApp_Module::isSelectionCompatible()
   return isCompatible;
 }
 
+QList<QAction*> LightApp_Module::displayActions() const
+{
+  QList<QAction*> res;
+  if ( action( myDisplay ) )     res << action( myDisplay );
+  if ( action( myErase ) )       res << action( myErase );
+  if ( action( myDisplayOnly ) ) res << action( myDisplayOnly );
+  if ( action( myEraseAll ) )    res << action( myEraseAll );
+  return res;
+}
+
 /*!Activate module.*/
 bool LightApp_Module::activateModule( SUIT_Study* study )
 {

@@ -48,6 +48,7 @@
 #include <LightApp_SelectionMgr.h>
 #include <LightApp_NameDlg.h>
 #include <LightApp_DataOwner.h>
+#include <LightApp_Module.h>
 
 #include <CAM_Module.h>
 
@@ -1181,14 +1182,34 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QMenu* thePop
   // "Activate module" item should appear only if it's necessary
   if (aList.Extent() != 1)
     return;
+
   Handle(SALOME_InteractiveObject) aIObj = aList.First();
+
   // check if item is a "GUI state" item (also a first level object)
   QString entry( aIObj->getEntry() );
   if ( entry.startsWith( tr( "SAVE_POINT_DEF_NAME" ) ) )
     return;
+
   QString aModuleName(aIObj->getComponentDataType());
   QString aModuleTitle = moduleTitle(aModuleName);
   CAM_Module* currentModule = activeModule();
+
+  // check if it a "Notebook" item
+  if ( aModuleName == "NOTEBOOK" ) {
+    if ( currentModule ) {
+      LightApp_Module* lightModule = dynamic_cast<LightApp_Module*>( currentModule );
+      if ( lightModule ) {
+	QList<QAction*> displayActions = lightModule->displayActions();
+	QAction* a;
+	foreach( a, displayActions ) thePopup->removeAction( a );
+      }
+    }
+    thePopup->insertSeparator( thePopup->actions()[0] );
+    QAction* nbAction = new QAction( tr( "MEN_SHOW_NOTEBOOK" ), thePopup );
+    connect( nbAction, SIGNAL( activated() ), this, SLOT( onNoteBook() ) );
+    thePopup->insertAction( thePopup->actions()[0], nbAction );
+  }
+
   if (currentModule && currentModule->moduleName() == aModuleTitle)
     return;
   if ( !aModuleTitle.isEmpty() )
@@ -1350,6 +1371,8 @@ void SalomeApp_Application::onStudyCreated( SUIT_Study* study )
 {
   LightApp_Application::onStudyCreated( study );
 
+  updateObjectBrowser( true );
+
   objectBrowserColumnsVisibility();
 }
 
@@ -1369,6 +1392,8 @@ void SalomeApp_Application::onStudySaved( SUIT_Study* study )
 void SalomeApp_Application::onStudyOpened( SUIT_Study* study )
 {
   LightApp_Application::onStudyOpened( study );
+
+  updateObjectBrowser( true );
 
   objectBrowserColumnsVisibility();
 
