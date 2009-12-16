@@ -483,44 +483,21 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
   {
     _PTR(AttributeString) strAttr = attr;
     std::string str = strAttr->Value();
-    QString aStrings = QString( str.c_str() );
+    val = QString( str.c_str() );
 
     // Special case to show NoteBook variables in the "Value" column of the OB 
-    if( aStrings.contains( ":" ) ) // old format ('var1::var2|var1')
+    if( val.contains( ":" ) ) // old format ('var1::var2|var1')
     {
       if ( LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root() ) )
       {
         if ( SalomeApp_Study* aStudy = dynamic_cast<SalomeApp_Study*>( aRoot->study() ) )
         {
           SalomeApp_Notebook aNb( aStudy );
-
-          bool ok = false;
-          QStringList aSectionList = aStrings.split( "|" );
-          if ( !aSectionList.isEmpty() )
-          {
-            QString aLastSection = aSectionList.last();
-            QStringList aStringList = aLastSection.split( ":" );
-            if ( !aStringList.isEmpty() )
-            {
-              ok = true;
-              for ( int i = 0, n = aStringList.size(); i < n; i++ )
-              {
-                QString aStr = aStringList[i];
-                if ( aNb.isParameter( aStr ) )
-                  val.append( aStr + ", " );
-              }
-
-              if ( !val.isEmpty() )
-                val.remove( val.length() - 2, 2 );
-            }
-          }
-          if( !ok )
-            val = aStrings;
+          QStringList aList = aNb.getAttributeParameters( val );
+          val = aList.join( ", " );
         }
       }
     }
-    else // new format ('var1, var2') or single variable in old format
-      val = aStrings;
   }
   else if ( obj->FindAttribute( attr, "AttributeInteger" ) )
   {

@@ -292,6 +292,11 @@ QStringList SalomeApp_Notebook::getParameters( const QString& theParamName ) con
   return convert( myNotebook->GetParameters( theParamName.toLatin1().constData() ) );
 }
 
+QStringList SalomeApp_Notebook::getAttributeParameters( const QString& theStringAttribute ) const
+{
+  return convert( myNotebook->GetAttributeParameters( theStringAttribute.toLatin1().constData() ) );
+}
+
 void SalomeApp_Notebook::setRecentValues( const QMap<QString, bool>& theRecentValues )
 {
   myRecentValues = theRecentValues;

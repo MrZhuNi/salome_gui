@@ -73,6 +73,7 @@ public:
 
   QStringList getObjectParameters( const QString& theComponent, const QString& theEntry ) const;
   QStringList getParameters( const QString& theParamName ) const;
+  QStringList getAttributeParameters( const QString& theStringAttribute ) const;
 
   void setRecentValues( const QMap<QString, bool>& theRecentValues );
 

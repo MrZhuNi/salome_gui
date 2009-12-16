@@ -713,8 +713,6 @@ void NoteBook_Table::processItemChanged( NoteBook_TableRow* theRow, int theColum
   QString anExpressionPrevious = aVariable.Expression;
   bool isCompletePrevious = !aVariable.Name.isEmpty() && !aVariable.Expression.isEmpty();
 
-  bool isCorrectPrevious = checkRow( theRow );
-
   QString aName = theRow->getVariable();
   QString anExpression = theRow->getExpression();
   bool isComplete = !aName.isEmpty() && !anExpression.isEmpty();
@@ -722,7 +720,7 @@ void NoteBook_Table::processItemChanged( NoteBook_TableRow* theRow, int theColum
   aVariable.Name = aName;
   aVariable.Expression = anExpression;
 
-  if( theColumn == VARIABLE_COLUMN && isCompletePrevious /*&& isCorrectPrevious*/ && aName != aNamePrevious )
+  if( theColumn == VARIABLE_COLUMN && isCompletePrevious && aName != aNamePrevious )
   {
     if( !renameVariable( aNamePrevious, aName ) )
     {
