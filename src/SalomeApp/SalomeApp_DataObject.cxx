@@ -486,7 +486,8 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
     val = QString( str.c_str() );
 
     // Special case to show NoteBook variables in the "Value" column of the OB 
-    if( val.contains( ":" ) ) // old format ('var1::var2|var1')
+    // The attribute is temporarily processed as it is always stored in old format
+    //if( val.contains( ":" ) ) // old format ('var1::var2|var1')
     {
       if ( LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root() ) )
       {
