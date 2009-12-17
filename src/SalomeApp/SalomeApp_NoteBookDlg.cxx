@@ -428,8 +428,14 @@ void NoteBook_Table::updateValues()
       bool isValid = myNoteBook->isValid( aName );
       markRow( aRow, isValid );
 
-      QString aValue = myNoteBook->get( aName ).toString();
-      aRow->setValue( isValid ? aValue : QString::null );
+      QVariant aValue = myNoteBook->get( aName );
+      QString aValueStr = aValue.toString();
+      if( isValid && aValue.type() == QVariant::Bool )
+      { // replace "true" with "True" and "false" with "False"
+        QString aFirstChar = aValueStr.left( 1 );
+        aValueStr.replace( 0, 1, aFirstChar.toUpper() );
+      }
+      aRow->setValue( isValid ? aValueStr : QString::null );
     }
   }
   blockSignals( isBlocked );
@@ -842,11 +848,11 @@ SalomeApp_NoteBookDlg::SalomeApp_NoteBookDlg( QWidget* parent, SalomeApp_Study* 
 
   QWidgetList aWidgetList;
   aWidgetList.append( myTable );
+  aWidgetList.append( aCloseBtn );
+  aWidgetList.append( aHelpBtn );
   aWidgetList.append( aRemoveBtn );
   aWidgetList.append( aDumpBtn );
   aWidgetList.append( anUpdateStudyBtn );
-  aWidgetList.append( aCloseBtn );
-  aWidgetList.append( aHelpBtn );
   Qtx::setTabOrder( aWidgetList );
 
   connect( aRemoveBtn,       SIGNAL( clicked() ), this, SLOT( onRemove() ) );
