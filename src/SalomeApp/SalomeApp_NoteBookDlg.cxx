@@ -963,6 +963,15 @@ void SalomeApp_NoteBookDlg::onClose()
                                  tr( "OK" ), tr( "CANCEL" ), 0, 1 ) == 1 )
     return;
 
+  // update "Save" action if the study has been modified
+  if( SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() ) )
+    if( SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( app->activeStudy() ) )
+    {
+      _PTR(Study) studyDS = study->studyDS();
+      if( studyDS->IsModified() )
+        app->updateActions();
+    }
+
   accept();
 }
 
