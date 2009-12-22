@@ -36,9 +36,11 @@
 
 SalomeApp_Notebook::SalomeApp_Notebook( SalomeApp_Study* theStudy )
 {
-  SALOMEDS_Study* aStudy = dynamic_cast<SALOMEDS_Study*>( theStudy->studyDS().operator->() );
-  if( aStudy )
-    myNotebook = aStudy->GetStudy()->GetNotebook();
+  SALOMEDS_Study* aStudy = _CAST(Study, theStudy->studyDS());
+  if( aStudy ) {
+    SALOMEDS::Study_var studyDS = aStudy->GetStudy();
+    myNotebook = studyDS->GetNotebook();
+  }
 }
 
 SalomeApp_Notebook::~SalomeApp_Notebook()
