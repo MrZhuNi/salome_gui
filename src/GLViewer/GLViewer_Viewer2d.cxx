@@ -144,6 +144,9 @@ void GLViewer_Viewer2d::updateColors( QColor colorH, QColor colorS )
 */
 void GLViewer_Viewer2d::updateBorders( GLViewer_Rect* theRect )
 {
+  if ( theRect->isNull() )
+    return;
+
   QVector<SUIT_ViewWindow*> views = getViewManager()->getViews();
   for ( int i = 0, n = views.count(); i < n; i++ )
   {
@@ -178,7 +181,7 @@ void GLViewer_Viewer2d::updateBorders()
         {
             GLViewer_Object* anObject = *it;
             GLViewer_Rect* aRect = anObject->getRect();
-            if( !anObject->isScalable() || !anObject->getVisible() )
+            if( !anObject->isScalable() || !anObject->getVisible() || aRect->isNull() )
                 continue;
 
             if( border->isEmpty() )
