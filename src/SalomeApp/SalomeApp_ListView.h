@@ -27,7 +27,7 @@
 
 //#include <QtxListView.h>
 
-#include <SUIT_PopupClient.h>
+#include "SUIT_PopupClient.h"
 
 #include <QTreeWidget>
 #include <QTreeWidgetItem>

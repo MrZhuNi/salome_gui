@@ -27,7 +27,7 @@
 //
 #include "SalomeApp_Engine_i.hxx"
 
-#include "SALOMEDS_Tool.hxx"
+#include <kernel/SALOMEDS_Tool.hxx>
 
 #include <iostream>
 

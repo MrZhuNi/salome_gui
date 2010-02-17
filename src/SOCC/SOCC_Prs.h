@@ -30,7 +30,7 @@
 
 #include "SOCC.h"
 
-#include <SALOME_Prs.h>
+#include "SALOME_Prs.h"
 
 #include <AIS_ListOfInteractive.hxx>
 

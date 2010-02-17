@@ -27,7 +27,7 @@
 
 #include "Style.h"
 
-#include <QtxDialog.h>
+#include "QtxDialog.h"
 #include <QFrame>
 #include <QMap>
 

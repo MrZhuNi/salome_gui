@@ -26,7 +26,7 @@
 #define PLOT2D_VIEWWINDOW_H
 
 #include "Plot2d.h"
-#include <SUIT_ViewWindow.h>
+#include "SUIT_ViewWindow.h"
 #include <QMap>
 
 

@@ -24,9 +24,9 @@
 
 #include "LightApp.h"
 
-#include <SUIT_Selector.h>
-#include <SUIT_DataOwner.h>
-#include <SPlot2d_ViewModel.h>
+#include "SUIT_Selector.h"
+#include "SUIT_DataOwner.h"
+#include "SPlot2d_ViewModel.h"
 
 class LightApp_DataObject;
 

@@ -21,7 +21,7 @@
 //
 #include "LightApp_HDFDriver.h"
 
-#include "HDFOI.hxx"
+#include "kernel/HDFOI.hxx"
 
 // OCCT Includes
 #include <TCollection_AsciiString.hxx>

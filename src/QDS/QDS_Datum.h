@@ -32,7 +32,7 @@ class QVBoxLayout;
 class QGridLayout;
 class QValidator;
 
-#include <DDS_DicItem.h>
+#include "DDS_DicItem.h"
 
 class QWidget;
 

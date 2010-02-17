@@ -26,9 +26,9 @@
 #define SALOME_PYQT_DATAMODELLIGHT_H
 
 #include "SALOME_PYQT_GUILight.h"
-#include <LightApp_DataModel.h>
+#include "LightApp_DataModel.h"
 
-#include <CAM_Module.h>
+#include "CAM_Module.h"
 #include "SALOME_PYQT_DataObjectLight.h"
 
 class SALOME_PYQT_RootObjectLight;

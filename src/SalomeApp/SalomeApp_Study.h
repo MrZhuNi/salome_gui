@@ -24,13 +24,13 @@
 
 #include "SalomeApp.h"
 
-#include <LightApp_Study.h>
+#include "LightApp_Study.h"
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
-#include "SALOMEDSClient.hxx"
+#include <kernel/SALOMEDSClient.hxx>
 
 class SALOMEAPP_EXPORT SalomeApp_Study : public LightApp_Study
 {

@@ -27,7 +27,7 @@
 #include "SALOME_PYQT_DataModelLight.h" 
 #include "SALOME_PYQT_DataObjectLight.h"
 #include "SALOME_PYQT_ModuleLight.h"
-#include <utilities.h>
+#include <kernel/utilities.h>
 
 #include <LightApp_Study.h>
 #include <CAM_Module.h>

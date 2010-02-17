@@ -28,7 +28,7 @@
 
 #include "LightApp.h"
 #include "LightApp_Preferences.h"
-#include <CAM_Module.h>
+#include "CAM_Module.h"
 
 class LightApp_Application;
 class LightApp_Selection;

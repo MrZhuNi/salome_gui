@@ -43,7 +43,7 @@
 #include <Standard_Boolean.hxx>
 #endif
 #ifndef _Handle_SALOME_InteractiveObject_HeaderFile
-#include <Handle_SALOME_InteractiveObject.hxx>
+#include "Handle_SALOME_InteractiveObject.hxx"
 #endif
 
 class SALOME_TypeFilter : public SALOME_Filter {

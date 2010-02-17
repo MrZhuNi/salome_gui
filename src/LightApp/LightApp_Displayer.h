@@ -24,7 +24,7 @@
 
 #include "LightApp.h"
 
-#include <SALOME_Prs.h>
+#include "SALOME_Prs.h"
 
 class QString;
 

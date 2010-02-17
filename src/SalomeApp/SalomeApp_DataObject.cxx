@@ -32,8 +32,8 @@
 #include <SUIT_Application.h>
 #include <SUIT_ResourceMgr.h>
 
-#include <SALOME_LifeCycleCORBA.hxx>
-#include <Basics_Utils.hxx>
+#include <kernel/SALOME_LifeCycleCORBA.hxx>
+#include <kernel/Basics_Utils.hxx>
 
 #include <QObject>
 #include <QVariant>

@@ -25,7 +25,7 @@
 
 #include "SalomeApp.h"
 
-#include "SALOMEDSClient_ClientFactory.hxx" 
+#include <kernel/SALOMEDSClient_ClientFactory.hxx>
 #include CORBA_SERVER_HEADER(SALOMEDS)
 
 #include <QDialog>

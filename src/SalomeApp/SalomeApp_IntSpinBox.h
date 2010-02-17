@@ -24,7 +24,7 @@
 
 #include "SalomeApp.h"
 
-#include <QtxIntSpinBox.h>
+#include "QtxIntSpinBox.h"
 
 #include <QValidator>
 

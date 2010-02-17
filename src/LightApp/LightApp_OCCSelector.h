@@ -24,13 +24,13 @@
 
 #include "LightApp.h"
 
-#include <SUIT_Selector.h>
-#include <SUIT_DataOwner.h>
+#include "SUIT_Selector.h"
+#include "SUIT_DataOwner.h"
 
 #include <QObject>
 
 #ifndef DISABLE_OCCVIEWER
-#include <OCCViewer_ViewModel.h>
+#include "OCCViewer_ViewModel.h"
 
 class Handle_AIS_InteractiveObject;
 #endif

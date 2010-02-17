@@ -24,7 +24,7 @@
 
 #include "SalomeApp.h"
 
-#include <SUIT_FileDlg.h>
+#include "SUIT_FileDlg.h"
 
 class QCheckBox;
 

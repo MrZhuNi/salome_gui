@@ -26,7 +26,7 @@
 #define LIGHTAPP_PREFERENCES_H
 
 #include "LightApp.h"
-#include <SUIT_PreferenceMgr.h>
+#include "SUIT_PreferenceMgr.h"
 
 #include <QMap>
 

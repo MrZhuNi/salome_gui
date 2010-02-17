@@ -34,7 +34,7 @@
 #include "SALOME_PYQT_DataModelLight.h"
 
 #ifndef GUI_DISABLE_CORBA
-#include <Container_init_python.hxx>
+#include <kernel/Container_init_python.hxx>
 #endif
 
 #include <SUIT_ResourceMgr.h>
@@ -71,7 +71,7 @@
 #include "sipQtGuiQMenu.h"
 #endif
 
-#include <utilities.h>
+#include <kernel/utilities.h>
 
 /*!
   \brief Default name of the module, replaced at the moment

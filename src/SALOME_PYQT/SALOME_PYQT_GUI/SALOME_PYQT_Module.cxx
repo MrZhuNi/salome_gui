@@ -29,8 +29,8 @@
 #include "SalomeApp_Application.h"
 #include "SALOME_PYQT_ModuleLight.h"
 
-#include <SALOME_LifeCycleCORBA.hxx>
-#include <Container_init_python.hxx>
+#include <kernel/SALOME_LifeCycleCORBA.hxx>
+#include <kernel/Container_init_python.hxx>
 #include <CORBA.h>
 
 

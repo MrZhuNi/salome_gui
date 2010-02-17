@@ -24,7 +24,7 @@
 
 #include "SalomeApp.h"
 
-#include <SUIT_Tools.h>
+#include "SUIT_Tools.h"
 
 class QColor;
 class QString;

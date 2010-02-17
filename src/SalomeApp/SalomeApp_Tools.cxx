@@ -25,7 +25,7 @@
 #include <SUIT_Desktop.h>
 #include <SUIT_MessageBox.h>
 
-#include <utilities.h>
+#include <kernel/utilities.h>
 
 #include <QColor>
 #include <QString>

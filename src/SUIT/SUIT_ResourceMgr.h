@@ -24,7 +24,7 @@
 
 #include "SUIT.h"
 
-#include <QtxResourceMgr.h>
+#include "QtxResourceMgr.h"
 
 class SUIT_EXPORT SUIT_ResourceMgr : public QtxResourceMgr
 {

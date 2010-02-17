@@ -29,7 +29,7 @@
 #include "GLViewer.h"
 
 //#include <qtooltip.h>
-//#include <QtxToolTip.h>
+//#include "QtxToolTip.h"
 #include <QObject>
 #include <QPoint>
 

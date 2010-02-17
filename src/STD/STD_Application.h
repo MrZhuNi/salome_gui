@@ -24,7 +24,7 @@
 
 #include "STD.h"
 
-#include <SUIT_Application.h>
+#include "SUIT_Application.h"
 
 #include <QList>
 

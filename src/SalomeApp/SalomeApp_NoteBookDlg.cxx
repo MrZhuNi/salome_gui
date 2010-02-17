@@ -37,7 +37,7 @@
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_Session.h>
 
-#include <SALOMEDS_Tool.hxx>
+#include <kernel/SALOMEDS_Tool.hxx>
 
 #include <QWidget>
 #include <QDialog>

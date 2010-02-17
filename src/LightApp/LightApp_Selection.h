@@ -29,7 +29,7 @@
 #define LIGHTAPP_SELECTION_HeaderFile
 
 #include "LightApp.h"
-#include <QtxPopupMgr.h>
+#include "QtxPopupMgr.h"
 
 class LightApp_SelectionMgr;
 class LightApp_DataOwner;

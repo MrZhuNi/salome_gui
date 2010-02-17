@@ -28,7 +28,7 @@
 #include <QPixmap>
 #include <QStringList>
 
-#include <Qtx.h>
+#include "Qtx.h"
 
 class QtxComboBox;
 

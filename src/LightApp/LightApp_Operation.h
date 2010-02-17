@@ -27,7 +27,7 @@
 #define LightApp_Operation_H
 
 #include "LightApp.h"
-#include <SUIT_Operation.h>
+#include "SUIT_Operation.h"
 
 class LightApp_Module;
 class LightApp_SelectionMgr;

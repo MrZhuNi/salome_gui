@@ -70,9 +70,9 @@
 
 #include <PyConsole_Console.h>
 
-#include <Utils_ORB_INIT.hxx>
-#include <Utils_SINGLETON.hxx>
-#include <SALOME_LifeCycleCORBA.hxx>
+#include <kernel/Utils_ORB_INIT.hxx>
+#include <kernel/Utils_SINGLETON.hxx>
+#include <kernel/SALOME_LifeCycleCORBA.hxx>
 
 #include <QApplication>
 #include <QAction>
@@ -84,8 +84,8 @@
 #include <QGridLayout>
 #include <QMenu>
 
-#include <SALOMEDSClient_ClientFactory.hxx>
-#include <Basics_Utils.hxx>
+#include <kernel/SALOMEDSClient_ClientFactory.hxx>
+#include <kernel/Basics_Utils.hxx>
 
 #include <SALOME_ListIteratorOfListIO.hxx>
 #include <SALOME_ListIO.hxx>

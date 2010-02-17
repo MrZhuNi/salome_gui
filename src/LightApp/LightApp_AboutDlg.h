@@ -28,7 +28,7 @@
 
 #include "LightApp.h"
 
-#include <QtxDialog.h>
+#include "QtxDialog.h"
 
 class QLabel;
 

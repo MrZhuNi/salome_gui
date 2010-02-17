@@ -23,7 +23,7 @@
 #define OCCVIEWER_TOOLTIP_H
 
 #include "OCCViewer.h"
-#include <QtxToolTip.h>
+#include "QtxToolTip.h"
 #include <QFont>
 
 class OCCViewer_ViewWindow;

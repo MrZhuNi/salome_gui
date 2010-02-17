@@ -33,11 +33,11 @@
 
 #include <SUIT_ResourceMgr.h>
 
-#include "utilities.h"
+#include <kernel/utilities.h>
 
-#include "SALOMEDS_Tool.hxx"
+#include <kernel/SALOMEDS_Tool.hxx>
 
-#include "SALOMEDSClient_ClientFactory.hxx"
+#include <kernel/SALOMEDSClient_ClientFactory.hxx>
 
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Exception)

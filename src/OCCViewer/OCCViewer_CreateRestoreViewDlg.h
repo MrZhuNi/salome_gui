@@ -27,8 +27,8 @@
 #include "OCCViewer_ViewModel.h"
 #include "OCCViewer_ViewWindow.h"
 
-#include <QtxDialog.h>
-#include <SUIT_Application.h>
+#include "QtxDialog.h"
+#include "SUIT_Application.h"
 
 #include <QDialog>
 #include <QListWidget>

@@ -26,7 +26,7 @@
 #define LIGHTAPP_DIALOG_H
 
 #include "LightApp.h"
-#include <QtxDialog.h>
+#include "QtxDialog.h"
 
 #include <QList>
 #include <QMap>

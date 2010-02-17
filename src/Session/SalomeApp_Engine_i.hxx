@@ -30,7 +30,7 @@
 
 #include "SALOME_Session.hxx"
 
-#include "SALOME_Component_i.hxx"
+#include <kernel/SALOME_Component_i.hxx>
 
 #include <vector> 
 #include <map> 

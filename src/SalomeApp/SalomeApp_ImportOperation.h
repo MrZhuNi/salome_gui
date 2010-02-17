@@ -32,7 +32,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <SUIT_Operation.h>
+#include "SUIT_Operation.h"
 
 class SUIT_Application;
 

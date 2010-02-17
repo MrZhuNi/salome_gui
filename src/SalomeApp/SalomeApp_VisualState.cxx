@@ -36,8 +36,8 @@
 #include <QApplication>
 #include <QMultiHash>
 
-#include <SALOMEDSClient_ClientFactory.hxx>//?
-#include <SALOMEDSClient_IParameters.hxx>//?
+#include <kernel/SALOMEDSClient_ClientFactory.hxx>//?
+#include <kernel/SALOMEDSClient_IParameters.hxx>//?
 
 #include <vector>//?
 #include <string>//?

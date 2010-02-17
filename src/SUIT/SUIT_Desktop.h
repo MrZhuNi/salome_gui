@@ -27,7 +27,7 @@
 #include <QList>
 #include <QEvent>
 
-#include <QtxMainWindow.h>
+#include "QtxMainWindow.h"
 
 class QMovie;
 

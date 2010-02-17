@@ -27,7 +27,7 @@
 
 #include "Style.h"
 
-#include <QtxResourceMgr.h>
+#include "QtxResourceMgr.h"
 
 //
 // This class is private for Style package.

@@ -24,15 +24,15 @@
 //  Author : Paul RASCLE, EDF
 //  Module : SALOME
 //
-#include <Container_init_python.hxx>
-#include <Utils_ORB_INIT.hxx>
-#include <Utils_SINGLETON.hxx>
-#include <SALOME_NamingService.hxx>
-#include <SALOME_ModuleCatalog_impl.hxx>
-#include <OpUtil.hxx>
-#include <RegistryService.hxx>
-#include <ConnectionManager_i.hxx>
-#include <SALOME_LifeCycleCORBA.hxx>
+#include <kernel/Container_init_python.hxx>
+#include <kernel/Utils_ORB_INIT.hxx>
+#include <kernel/Utils_SINGLETON.hxx>
+#include <kernel/SALOME_NamingService.hxx>
+#include <kernel/SALOME_ModuleCatalog_impl.hxx>
+#include <kernel/OpUtil.hxx>
+#include <kernel/RegistryService.hxx>
+#include <kernel/ConnectionManager_i.hxx>
+#include <kernel/SALOME_LifeCycleCORBA.hxx>
 
 #ifdef ENABLE_TESTRECORDER
   #include <TestApplication.h>
@@ -46,15 +46,15 @@
 #include <QRegExp>
 #include <QTextStream>
 
-#include <Utils_SALOME_Exception.hxx>
-#include <Utils_CorbaException.hxx>
+#include <kernel/Utils_SALOME_Exception.hxx>
+#include <kernel/Utils_CorbaException.hxx>
 #include <SALOME_Event.h>
 
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Session)
 #include CORBA_SERVER_HEADER(SALOMEDS)
 
-#include <utilities.h>
+#include <kernel/utilities.h>
 #include "Session_ServerLauncher.hxx"
 #include "Session_ServerCheck.hxx"
 

@@ -24,7 +24,7 @@
 
 #include "SUIT.h"
 
-#include <Qtx.h>
+#include "Qtx.h"
 
 #include <QRect>
 #include <QString>

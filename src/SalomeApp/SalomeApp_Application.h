@@ -31,15 +31,15 @@
 #endif // _MSC_VER > 1000
 
 #include "SalomeApp.h"
-#include <LightApp_Application.h>
+#include "LightApp_Application.h"
 
 #include <CORBA.h>
 
 //#include <SALOMEconfig.h>
 //#include CORBA_CLIENT_HEADER(SALOMEDS)
-#include <SALOME_NamingService.hxx>
+#include <kernel/SALOME_NamingService.hxx>
 
-#include "SALOMEDSClient.hxx"
+#include <kernel/SALOMEDSClient.hxx>
 
 class LightApp_Preferences;
 class SalomeApp_Study;

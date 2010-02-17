@@ -24,7 +24,7 @@
 
 #include "QDS_Datum.h"
 
-#include <Qtx.h>
+#include "Qtx.h"
 
 #include <QMap>
 #include <QStringList>

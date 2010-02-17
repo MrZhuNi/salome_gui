@@ -26,7 +26,7 @@
 #define PLOT2D_TOOLTIP_H
 
 #include "Plot2d.h"
-#include <QtxToolTip.h>
+#include "QtxToolTip.h"
 
 class Plot2d_ViewFrame;
 class Plot2d_Plot2d;

@@ -37,7 +37,7 @@
 #include <AIS_InteractiveObject.hxx>
 #endif
 #ifndef _Handle_SALOME_InteractiveObject_HeaderFile
-#include <Handle_SALOME_InteractiveObject.hxx>
+#include "Handle_SALOME_InteractiveObject.hxx"
 #endif
 #ifndef _Standard_Boolean_HeaderFile
 #include <Standard_Boolean.hxx>

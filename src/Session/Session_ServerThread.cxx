@@ -30,22 +30,22 @@
 //
 #include "Session_ServerThread.hxx"
 
-#include <SALOME_NamingService.hxx>
-#include <SALOME_Container_i.hxx>
-#include <SALOME_Launcher.hxx>
-#include <SALOMEDSClient_ClientFactory.hxx>
-#include <SALOME_ModuleCatalog_impl.hxx>
-#include <RegistryService.hxx>
+#include <kernel/SALOME_NamingService.hxx>
+#include <kernel/SALOME_Container_i.hxx>
+#include <kernel/SALOME_Launcher.hxx>
+#include <kernel/SALOMEDSClient_ClientFactory.hxx>
+#include <kernel/SALOME_ModuleCatalog_impl.hxx>
+#include <kernel/RegistryService.hxx>
 
 #include "Session_Session_i.hxx"
 #include "SalomeApp_Engine_i.hxx"
 
-#include <Utils_ORB_INIT.hxx>
-#include <Utils_SINGLETON.hxx>
-#include <Utils_SALOME_Exception.hxx>
-#include <Basics_Utils.hxx>
-#include <NamingService_WaitForServerReadiness.hxx>
-#include <utilities.h>
+#include <kernel/Utils_ORB_INIT.hxx>
+#include <kernel/Utils_SINGLETON.hxx>
+#include <kernel/Utils_SALOME_Exception.hxx>
+#include <kernel/Basics_Utils.hxx>
+#include <kernel/NamingService_WaitForServerReadiness.hxx>
+#include <kernel/utilities.h>
 
 #include <cstdlib>
 #include <ctime>

@@ -36,7 +36,7 @@
 #  define LOGWINDOW_EXPORT
 #endif
 
-#include <SUIT_PopupClient.h>
+#include "SUIT_PopupClient.h"
 
 #include <QWidget>
 #include <QMap>

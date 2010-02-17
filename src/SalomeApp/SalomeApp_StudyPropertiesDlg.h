@@ -33,7 +33,7 @@
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOMEDS)
 
-#include <SALOMEDSClient_Study.hxx>
+#include <kernel/SALOMEDSClient_Study.hxx>
 
 class SalomeApp_ListView;
 class QPushButton;

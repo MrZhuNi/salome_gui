@@ -27,7 +27,7 @@
 
 #include "SUIT.h"
 
-#include <Qtx.h>
+#include "Qtx.h"
 
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>

@@ -44,13 +44,13 @@
 # include <QLabel>
 # include <QGroupBox>
 
-# include <SALOME_NamingService.hxx>
-# include <ServiceUnreachable.hxx>
-# include <Utils_SINGLETON.hxx>
-# include <Utils_CommException.hxx>
+# include <kernel/SALOME_NamingService.hxx>
+# include <kernel/ServiceUnreachable.hxx>
+# include <kernel/Utils_SINGLETON.hxx>
+# include <kernel/Utils_CommException.hxx>
 
-# include <utilities.h>
-# include <OpUtil.hxx>
+# include <kernel/utilities.h>
+# include <kernel/OpUtil.hxx>
 
 # include <Qtx.h>
 

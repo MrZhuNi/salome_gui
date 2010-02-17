@@ -3,10 +3,10 @@
 
 #include <SUITApp_init_python.hxx>
 #include <PyInterp_Interp.h>
-#include <utilities.h>
+#include <kernel/utilities.h>
 
 #ifndef GUI_DISABLE_CORBA
-#include <Container_init_python.hxx>
+#include <kernel/Container_init_python.hxx>
 #endif
 
 

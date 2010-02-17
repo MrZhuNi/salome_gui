@@ -24,7 +24,7 @@
 
 #include "VTKViewer.h"
 
-#include <SUIT_ViewManager.h>
+#include "SUIT_ViewManager.h"
 
 class SUIT_Desktop;
 

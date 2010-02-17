@@ -24,7 +24,7 @@
 
 #include "CAM.h"
 
-#include <STD_Application.h>
+#include "STD_Application.h"
 #include <QList>
 
 class QMenu;

@@ -28,7 +28,7 @@
 
 #include "SalomeApp.h"
 
-#include <LightApp_Module.h>
+#include "LightApp_Module.h"
 
 class CAM_DataModel;
 class SalomeApp_Application;

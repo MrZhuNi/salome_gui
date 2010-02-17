@@ -24,7 +24,7 @@
 
 #include "CAM.h"
 
-#include <SUIT_DataObject.h>
+#include "SUIT_DataObject.h"
 
 class CAM_Module;
 class CAM_DataModel;

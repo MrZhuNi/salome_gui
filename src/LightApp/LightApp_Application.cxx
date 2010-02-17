@@ -161,7 +161,7 @@
 #include <QProcess>
 #include <QTimer>
 
-#include <utilities.h>
+#include <kernel/utilities.h>
 
 #define FIRST_HELP_ID 1000000
 

@@ -29,8 +29,8 @@
 #include <QString>
 #include <QColor>
 
-#include <LightApp_Application.h>
-#include <LightApp_Preferences.h>
+#include "LightApp_Application.h"
+#include "LightApp_Preferences.h"
 
 class LightApp_SelectionMgr;
 class LightApp_Application;

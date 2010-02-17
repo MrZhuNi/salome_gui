@@ -27,8 +27,8 @@
 //
 #include "SalomeApp_PyInterp.h"
 
-#include <utilities.h>
-#include <Container_init_python.hxx>
+#include <kernel/utilities.h>
+#include <kernel/Container_init_python.hxx>
 
 #include "PyInterp.h" // this include must be first (see PyInterp_base.h)!
 

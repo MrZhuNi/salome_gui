@@ -30,7 +30,7 @@
 #include "SALOME_PYQT_GUILight.h"
 #include "LightApp_Module.h"
 #include "SALOME_PYQT_DataObjectLight.h"
-#include <CAM_Module.h>
+#include "CAM_Module.h"
 
 #include <map>
 #include <QStringList>

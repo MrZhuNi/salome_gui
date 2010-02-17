@@ -31,11 +31,11 @@
 #include CORBA_CLIENT_HEADER(SALOME_ModuleCatalog)
 #include CORBA_CLIENT_HEADER(SALOME_Component)
 
-#include "Utils_ORB_INIT.hxx"
-#include "Utils_SINGLETON.hxx"
-#include "SALOME_NamingService.hxx"
-#include "Basics_Utils.hxx"
-#include "utilities.h"
+#include <kernel/Utils_ORB_INIT.hxx>
+#include <kernel/Utils_SINGLETON.hxx>
+#include <kernel/SALOME_NamingService.hxx>
+#include <kernel/Basics_Utils.hxx>
+#include <kernel/utilities.h>
 
 #include <QApplication> 
 #include <QWaitCondition>

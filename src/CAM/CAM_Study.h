@@ -24,7 +24,7 @@
 
 #include "CAM.h"
 
-#include <SUIT_Study.h>
+#include "SUIT_Study.h"
 #include <QList>
 
 class CAM_DataModel;

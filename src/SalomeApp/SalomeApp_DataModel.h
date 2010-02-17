@@ -33,7 +33,7 @@
 #include "SalomeApp.h"
 #include "LightApp_DataModel.h"
 
-#include "SALOMEDSClient.hxx"
+#include <kernel/SALOMEDSClient.hxx>
 
 class SalomeApp_Module;
 class SalomeApp_Study;

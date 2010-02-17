@@ -29,4 +29,4 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SalomeAppTest );
 
 // --- generic Main program from Basic/Test
 
-#include "BasicMainTest.hxx"
+#include "kernel/BasicMainTest.hxx"

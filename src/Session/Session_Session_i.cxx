@@ -25,18 +25,18 @@
 //  Module : SALOME
 //  $Header$
 //
-#include "utilities.h"
+#include <kernel/utilities.h>
 
 #include "Session_Session_i.hxx"
 
-#include "SALOME_NamingService.hxx"
+#include <kernel/SALOME_NamingService.hxx>
 #include "SALOME_Event.h"
 
 #include "SUIT_Session.h"
 #include "SUIT_Desktop.h"
 #include "SUIT_Study.h"
 
-#include "Basics_Utils.hxx"
+#include <kernel/Basics_Utils.hxx>
 
 #include <QMutex>
 #include <QWaitCondition>

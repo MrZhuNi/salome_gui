@@ -47,7 +47,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_CString.hxx>
 
-#include "utilities.h"
+#include <kernel/utilities.h>
 
 using namespace std;
 

@@ -28,7 +28,7 @@
 
 #include "GLViewer.h"
 #include "GLViewer_Defs.h"
-#include <SUIT_ViewModel.h>
+#include "SUIT_ViewModel.h"
 
 #include <QCursor>
 #include <QObject>

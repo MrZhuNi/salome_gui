@@ -28,8 +28,8 @@
 #include "Session_ServerLauncher.hxx"
 #include "Session_ServerThread.hxx"
 
-#include "Utils_SALOME_Exception.hxx"
-#include "utilities.h"
+#include <kernel/Utils_SALOME_Exception.hxx>
+#include <kernel/utilities.h>
 
 #include <QMutex>
 #include <QWaitCondition>

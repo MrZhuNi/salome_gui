@@ -34,7 +34,7 @@
 #include "SUIT_PopupClient.h"
 #include "SUIT_ViewWindow.h"
 
-#include <QtxAction.h>
+#include "QtxAction.h"
 
 #ifdef WIN32
 #pragma warning ( disable:4251 )

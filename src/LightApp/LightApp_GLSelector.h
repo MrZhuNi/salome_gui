@@ -24,9 +24,9 @@
 
 #include "LightApp.h"
 
-#include <SUIT_Selector.h>
+#include "SUIT_Selector.h"
 
-#include <GLViewer_Viewer2d.h>
+#include "GLViewer_Viewer2d.h"
 
 #include <QObject>
 

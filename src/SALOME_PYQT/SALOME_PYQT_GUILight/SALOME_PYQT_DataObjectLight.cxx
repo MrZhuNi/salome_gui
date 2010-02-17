@@ -26,7 +26,7 @@
 #include "SALOME_PYQT_DataObjectLight.h"
 #include <LightApp_Application.h>
 #include <SUIT_Session.h>
-#include <utilities.h>
+#include <kernel/utilities.h>
 #include <SUIT_ResourceMgr.h>
 
 

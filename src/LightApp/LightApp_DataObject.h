@@ -26,7 +26,7 @@
 #define LIGHTAPP_DATAOBJECT_H
 
 #include "LightApp.h"
-#include <CAM_DataObject.h>
+#include "CAM_DataObject.h"
 
 class CAM_DataModel;
 class LightApp_Study;

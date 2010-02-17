@@ -24,7 +24,7 @@
 
 #include "STD.h"
 
-#include <SUIT_Desktop.h>
+#include "SUIT_Desktop.h"
 
 class QtxWorkspace;
 class QtxWorkspaceAction;

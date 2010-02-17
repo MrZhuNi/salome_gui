@@ -24,7 +24,7 @@
 
 #include "SalomeApp.h"
 
-#include <SUIT_ExceptionHandler.h>
+#include "SUIT_ExceptionHandler.h"
 
 class SALOMEAPP_EXPORT SalomeApp_ExceptionHandler : public SUIT_ExceptionHandler
 {

@@ -28,8 +28,8 @@
 
 
 #include "SALOME_PYQT_GUILight.h"
-#include <LightApp_DataObject.h>
-#include <LightApp_Study.h>
+#include "LightApp_DataObject.h"
+#include "LightApp_Study.h"
 
 #include <qstring.h>
 

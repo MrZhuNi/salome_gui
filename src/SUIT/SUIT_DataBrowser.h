@@ -28,7 +28,7 @@
 #include "SUIT.h"
 #include "SUIT_PopupClient.h"
 #include "SUIT_DataObject.h"
-#include <OB_Browser.h>
+#include "OB_Browser.h"
 
 class QShortcut;
 

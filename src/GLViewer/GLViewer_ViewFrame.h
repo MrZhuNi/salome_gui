@@ -36,7 +36,7 @@ class SUIT_Desktop;
 class GLViewer_Viewer;
 class GLViewer_ViewPort;
 
-#include <QtxAction.h>
+#include "QtxAction.h"
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

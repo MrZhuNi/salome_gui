@@ -31,7 +31,7 @@
 #endif // _MSC_VER > 1000
 
 #include "LightApp.h"
-#include <CAM_Application.h>
+#include "CAM_Application.h"
 
 #include <QPointer>
 

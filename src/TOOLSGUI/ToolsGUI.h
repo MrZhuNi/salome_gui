@@ -36,8 +36,8 @@
 #  define TOOLSGUI_EXPORT
 #endif  // WIN32
 
-#include "utilities.h"
-#include "SALOMEDSClient.hxx"
+#include <kernel/utilities.h>
+#include <kernel/SALOMEDSClient.hxx>
 
 class TOOLSGUI_EXPORT ToolsGUI  
 {

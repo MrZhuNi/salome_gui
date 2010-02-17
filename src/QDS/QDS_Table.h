@@ -24,7 +24,7 @@
 
 #include "QDS_Datum.h"
 
-#include <QtxTable.h>
+#include "QtxTable.h"
 
 #include <QMap>
 #include <QVector>

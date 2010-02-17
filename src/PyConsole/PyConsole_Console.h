@@ -27,7 +27,7 @@
 
 #include "PyConsole.h"
 
-#include <SUIT_PopupClient.h>
+#include "SUIT_PopupClient.h"
 #include <QWidget>
 #include <QMap>
 

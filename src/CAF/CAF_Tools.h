@@ -27,7 +27,7 @@
 
 #include "CAF.h"
 
-#include <SUIT_Tools.h>
+#include "SUIT_Tools.h"
 
 #include <QColor>
 

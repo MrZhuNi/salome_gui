@@ -26,7 +26,7 @@
 
 #include <string>
 
-#include <VTKViewer_Functor.h>
+#include "VTKViewer_Functor.h"
 
 #include "SALOME_InteractiveObject.hxx"
 

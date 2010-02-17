@@ -24,10 +24,10 @@
 
 #include "LightApp.h"
 
-#include <SUIT_SelectionMgr.h>
+#include "SUIT_SelectionMgr.h"
 
 #ifndef DISABLE_SALOMEOBJECT
-  #include <SALOME_InteractiveObject.hxx>
+  #include "SALOME_InteractiveObject.hxx"
   #include <QMap>
   #include <NCollection_DataMap.hxx>
 

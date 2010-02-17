@@ -26,8 +26,8 @@
 #define SALOMEAPP_DATAOBJECT_H
 
 #include "SalomeApp.h"
-#include <LightApp_DataObject.h>
-#include <SALOMEDSClient.hxx>
+#include "LightApp_DataObject.h"
+#include <kernel/SALOMEDSClient.hxx>
 
 class SalomeApp_Study;
 
