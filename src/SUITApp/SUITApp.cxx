@@ -32,7 +32,7 @@
 // or make sure Python is initialized in main() in any case
 // Otherwise, application based on light SALOME and using Python 
 // are unlikely to work properly.
-#define SUIT_ENABLE_PYTHON
+//#define SUIT_ENABLE_PYTHON
 #include <Python.h>
 #endif
 
