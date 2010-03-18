@@ -342,9 +342,11 @@ QString QDS_Datum::label() const
     if( labStr.isNull() )
       labStr = toQString( myDicItem->GetId() );
   }
-  if( myTr )
+  if( myTr && labStr.length()>0 )
   {
-    QString dest = QApplication::translate( "QDS", labStr.toLatin1().constData() );
+    QString source = "QDS_" + labStr;
+    source.replace( "::", "_" );
+    QString dest = QApplication::translate( "", source.toLatin1().constData() );
     if( labStr != dest )
       labStr = dest;
   }
