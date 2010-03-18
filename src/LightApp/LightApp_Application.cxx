@@ -27,11 +27,14 @@
 // E.A. : On windows with python 2.6, there is a conflict
 // E.A. : between pymath.h and Standard_math.h which define
 // E.A. : some same symbols : acosh, asinh, ...
-#include <Standard_math.hxx>
-#include <pymath.h>
+  #include <Standard_math.hxx>
+  #ifndef DISABLE_PYCONSOLE
+    #include <pymath.h>
+  #endif
 #endif
 
 #ifndef DISABLE_PYCONSOLE
+  
   #include "LightApp_PyInterp.h" // WARNING! This include must be the first!
   #include <PyConsole_Console.h>
 #endif
@@ -1015,6 +1018,12 @@ void LightApp_Application::onHelpContextModule( const QString& theComponentName,
 */
 void LightApp_Application::onSelectionChanged()
 {
+  LightApp_Module* m = dynamic_cast<LightApp_Module*>( activeModule() );
+  bool canCopy  = m ? m->canCopy() : false;
+  bool canPaste = m ? m->canPaste() : false;
+
+  action( EditCopyId )->setEnabled(canCopy);
+  action( EditPasteId )->setEnabled(canPaste);
 }
 
 /*!
@@ -3249,4 +3258,24 @@ void LightApp_Application::clearKnownViewManagers()
     if (aTypesList.contains(aMgr->getType()))
       removeViewManager(aMgr);
   }
+}
+
+/*!
+  Copy of current selection 
+ */
+void LightApp_Application::onCopy()
+{
+  LightApp_Module* m = dynamic_cast<LightApp_Module*>( activeModule() );
+  if( m )
+    m->copy();
+}
+
+/*!
+  Paste of current data in clipboard
+ */
+void LightApp_Application::onPaste()
+{
+  LightApp_Module* m = dynamic_cast<LightApp_Module*>( activeModule() );
+  if( m )
+    m->paste();
 }
