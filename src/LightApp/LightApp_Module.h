@@ -92,6 +92,13 @@ public:
   virtual LightApp_Displayer*         displayer();
   virtual LightApp_Selection*         createSelection() const;
 
+  int                    createMenu( const QString&, const int, const int = -1, const int = -1, const int = -1 );
+  int                    createMenu( const QString&, const QString&, const int = -1, const int = -1, const int = -1 );
+  int                    createMenu( const int, const int, const int = -1, const int = -1 );
+  int                    createMenu( const int, const QString&, const int = -1, const int = -1 );
+  int                    createMenu( QAction*, const int, const int = -1, const int = -1, const int = -1 );
+  int                    createMenu( QAction*, const QString&, const int = -1, const int = -1, const int = -1 );
+
 public slots:
   virtual bool                        activateModule( SUIT_Study* );
   virtual bool                        deactivateModule( SUIT_Study* );

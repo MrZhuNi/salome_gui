@@ -133,7 +133,11 @@ class Plugins:
           for directory,salome_plugins_file in plugins_files:
             if directory not in sys.path:
               sys.path.insert(0,directory)
-            execfile(salome_plugins_file,globals(),{})
+            try:
+              execfile(salome_plugins_file,globals(),{})
+            except:
+              print "Error while loading plugins from file:",salome_plugins_file
+              traceback.print_exc()
           self.updateMenu()
 
     def updateMenu(self):
