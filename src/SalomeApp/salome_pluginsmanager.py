@@ -19,7 +19,7 @@ salome_plugins.py example::
     from PyQt4.QtGui import QMessageBox
     QMessageBox.about(None, "About SALOME pluginmanager", "SALOME plugins manager in SALOME virtual application ")
 
-  salome_pluginsmanager.AddFunction('Mesh Box','Create a box and mesh',mesh)
+  salome_pluginsmanager.AddFunction('About plugins','About SALOME pluginmanager',about)
 
 First import the python module salome_pluginsmanager
 Second write a function with one argument context (it's an object with 3 attributes)
