@@ -38,6 +38,8 @@ from PyQt4 import QtCore
 import salome
 
 SEP=":"
+if sys.platform == "win32":
+  SEP = ";"
 
 # Get SALOME PyQt interface
 import SalomePyQt
