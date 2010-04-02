@@ -512,8 +512,9 @@ QString CAM_Application::moduleLibrary( const QString& title, const bool full ) 
   QString res;
   for ( ModuleInfoList::const_iterator it = myInfoList.begin(); it != myInfoList.end() && res.isEmpty(); ++it )
   {
-    if ( (*it).title == title )
-      res = (*it).internal;
+    ModuleInfo anInfo = *it;
+    if ( anInfo.title == title )
+      res = anInfo.internal;
   }
   if ( !res.isEmpty() && full )
     res = SUIT_Tools::library( res );
@@ -575,6 +576,9 @@ void CAM_Application::readModuleList()
     else {
       break;
     }
+
+    if ( args.indexOf( "--autoload" ) != -1 )
+      myAutoLoad = true;
 
     modList.clear();
     QStringList mods = modules.split( QRegExp( "[:|,\\s]" ), QString::SkipEmptyParts );
@@ -674,4 +678,12 @@ void CAM_Application::createEmptyStudy()
 {
   /*SUIT_Study* study = */activeStudy();
   STD_Application::createEmptyStudy();
+}
+
+/*!
+  \brief Gets value of myAutoLoad flag
+*/
+bool CAM_Application::autoLoad() const
+{
+  return myAutoLoad;
 }

@@ -1419,7 +1419,22 @@ void LightApp_Application::onStudyOpened( SUIT_Study* theStudy )
   if ( objectBrowser() )
     objectBrowser()->setRoot( aRoot );
 
-  activateModule( defaultModule() );
+  QString aDefModule = defaultModule();
+
+  if ( autoLoad() )
+  {
+    LightApp_Application* anApp = this;
+    CAM_Application::ModuleList aModules = anApp->modules();
+    CAM_Application::ModuleList::iterator anIter;
+    for ( anIter = aModules.begin(); anIter != aModules.end(); ++anIter )
+    {
+      CAM_Module* aModule = *anIter;
+      if ( aModule && aModule->name() != aDefModule )
+        aModule->connectToStudy( (LightApp_Study*)theStudy );
+    }
+  }
+
+  activateModule( aDefModule );
 
   if ( objectBrowser() )
     objectBrowser()->openLevels();

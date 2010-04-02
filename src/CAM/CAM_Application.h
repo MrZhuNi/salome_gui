@@ -78,6 +78,8 @@ protected:
 
   QString             moduleLibrary( const QString&, const bool = true ) const;
 
+  bool                autoLoad() const;
+
 private:
   void                readModuleList();
 
