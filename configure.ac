@@ -573,6 +573,11 @@ AM_CONDITIONAL(ENABLE_SALOMEOBJECT, [test "$DISABLE_SALOMEOBJECT" = no])
 AM_CONDITIONAL(ENABLE_QXGRAPHVIEWER, [test "$DISABLE_QXGRAPHVIEWER" = no])
 AM_CONDITIONAL(ENABLE_TESTRECORDER, [test "$ENABLE_TESTRECORDER" = yes])
 
+if test "$DISABLE_PYCONSOLE" = "no" ; then
+  AC_DEFINE(SUIT_ENABLE_PYTHON)
+fi
+
+
 echo
 echo ---------------------------------------------
 echo generating Makefiles and configure files
@@ -600,8 +605,10 @@ AC_OUTPUT([ \
   doc/salome/Makefile \
   doc/salome/gui/Makefile \
   doc/salome/gui/doxyfile \
+  doc/salome/gui/static/header.html \
   doc/salome/tui/Makefile \
   doc/salome/tui/doxyfile \
+  doc/salome/tui/static/header.html \
   src/Makefile \
   src/CASCatch/Makefile \
   src/Qtx/Makefile \

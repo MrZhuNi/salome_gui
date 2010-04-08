@@ -92,6 +92,11 @@ public:
   virtual LightApp_Displayer*         displayer();
   virtual LightApp_Selection*         createSelection() const;
 
+  virtual bool                        canCopy() const;
+  virtual bool                        canPaste() const;
+  virtual void                        copy();
+  virtual void                        paste();
+
   int                    createMenu( const QString&, const int, const int = -1, const int = -1, const int = -1 );
   int                    createMenu( const QString&, const QString&, const int = -1, const int = -1, const int = -1 );
   int                    createMenu( const int, const int, const int = -1, const int = -1 );

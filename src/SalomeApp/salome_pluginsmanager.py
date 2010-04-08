@@ -29,6 +29,7 @@ context attributes:
 - sg : the SALOME Swig interface
 - studyId : the SALOME studyId that must be used to execute the plugin
 - study : the SALOME study object that must be used to execute the plugin
+
 """
 
 import os,sys,traceback
@@ -82,7 +83,14 @@ class Plugins:
           for directory in pluginspath.split(SEP):
             self.plugindirs.append(directory)
 
-        self.menu=QtGui.QMenu("Plugins",sgPyQt.getPopupMenu(SalomePyQt.Tools))
+        basemenu=sgPyQt.getPopupMenu("Tools")
+        self.menu=QtGui.QMenu("Plugins",basemenu)
+        basemenu.addMenu(self.menu)
+
+        #a=QtGui.QAction("Plugins",basemenu)
+        #a.setMenu(self.menu)
+        #mid=sgPyQt.createMenu(a,"Tools")
+
         self.menu.connect(self.menu,QtCore.SIGNAL("aboutToShow()"),self.importPlugins)
 
     def AddFunction(self,name,description,script,script_type=None):
@@ -114,10 +122,10 @@ class Plugins:
 
         plugins_files=[]
         for directory in self.plugindirs:
-          salome_plugins_file = os.path.join(directory,"salome_plugins.py")
-          if os.path.isfile(salome_plugins_file):
-            plugins_files.append((directory,salome_plugins_file))
-            lasttime=max(lasttime,os.path.getmtime(salome_plugins_file))
+          plugins_file = os.path.join(directory,"salome_plugins.py")
+          if os.path.isfile(plugins_file):
+            plugins_files.append((directory,plugins_file))
+            lasttime=max(lasttime,os.path.getmtime(plugins_file))
 
         plugins_files.sort()
 
@@ -140,18 +148,19 @@ class Plugins:
             except:
               print "Error while loading plugins from file:",salome_plugins_file
               traceback.print_exc()
+
           self.updateMenu()
 
     def updateMenu(self):
         """Update the Plugins menu"""
         self.menu.clear()
         for name,handler in self.handlers.items():
-            act=self.menu.addAction(name,handler)
+          act=self.menu.addAction(name,handler)
 
     def activate(self):
         """Add the Plugins menu to the Tools menu"""
-        tools_menu= sgPyQt.getPopupMenu(SalomePyQt.Tools)
-        tools_menu.addMenu(self.menu)
+        #tools_menu= sgPyQt.getPopupMenu(SalomePyQt.Tools)
+        #tools_menu.addMenu(self.menu)
 
     def deactivate(self):
         """Remove the Plugins menu from Tools menu (not implemented)"""
