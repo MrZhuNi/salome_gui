@@ -28,6 +28,8 @@
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Engine_i.hxx"
 #include "SalomeApp_VisualState.h"
+#include "SUIT_TreeModel.h"
+#include "SUIT_DataBrowser.h"
 
 // temporary commented
 //#include <OB_Browser.h>
@@ -45,6 +47,124 @@
 
 using namespace std;
 
+
+class Observer_i : public virtual POA_SALOME::Observer
+{
+  public:
+
+    Observer_i(_PTR(Study) aStudyDS, SalomeApp_Study* aStudy)
+    {
+      myStudyDS=aStudyDS;
+      myStudy=aStudy;
+    }
+
+    virtual void notifyObserver(const char* theID, const char* event)
+    {
+      MESSAGE("I'm notified of " << event << " of ID =  " << theID);
+      _PTR(SObject) obj = myStudyDS->FindObjectID( theID );
+      MESSAGE("This obj is named " << obj->GetIOR());
+      MESSAGE("Checking the ID from the sObj : " << obj->GetID());
+      
+      std::string entry_str = theID;
+      int last2Pnt_pos = entry_str.rfind(":");
+      std::string parent_id=entry_str.substr(0,last2Pnt_pos);
+      std::string pos_in_parent=entry_str.substr(last2Pnt_pos+1);
+
+
+      MESSAGE("Parent id  " << parent_id << " with position " << pos_in_parent);
+      _PTR(SObject) obj_parent = myStudyDS->FindObjectID( parent_id );
+      MESSAGE("Checking the ID from the sObj_parent : " << obj_parent->GetID());
+      
+      SUIT_DataObject* suit_obj;
+
+      if (std::string(event) == "ADD")
+      {
+	MESSAGE("ADDING");
+
+        _PTR(SComponent) aSComp(obj);
+        if( aSComp ){
+	  MESSAGE("This is a module");
+	  suit_obj=new SalomeApp_ModuleObject(aSComp,0);
+        }
+        else{
+	  MESSAGE("This is not a module ");
+	  suit_obj=new SalomeApp_DataObject(obj,0);
+        }
+
+	if (entry2SuitObject.count(parent_id)>0){
+	  SUIT_DataObject* father=entry2SuitObject[parent_id];
+	  SUIT_DataObject* after;
+	  std::string after_id;
+	  std::stringstream ss; 
+	  for (int i=atoi(pos_in_parent.c_str());i>0;i--){
+	    ss << parent_id << ":" << i ;
+	    after_id = ss.str();
+	    ss.str("");
+	    if (entry2SuitObject.count(after_id)>0){
+	      after=entry2SuitObject[after_id];
+	      MESSAGE("after_id " << after_id);
+	      break;
+	    }
+	  }
+	  int pos = after ? father->childPos( after ) : 0;
+	  father->insertChild(suit_obj,pos+1);
+	}
+	else{
+	  MESSAGE("This should be for a module");
+	  myStudy->root()->appendChild(suit_obj);
+	}
+	entry2SuitObject[theID]=suit_obj;
+      }
+      else if (std::string(event) == "REMOVE"){
+	MESSAGE("REMOVING");
+
+        if (entry2SuitObject.count(theID)>0){
+	  suit_obj= entry2SuitObject[theID];
+          if (entry2SuitObject.count(parent_id)>0){
+            SUIT_DataObject* father=entry2SuitObject[parent_id];
+	    father->removeChild(suit_obj);
+	  }
+	  else{
+	    MESSAGE("This should be for a module");
+	    myStudy->root()->removeChild(suit_obj);
+	  }
+	  entry2SuitObject.erase(theID);
+	}
+	else{
+	  MESSAGE("Want to remove an unknown object");
+	}
+      }
+      else if (std::string(event) == "MODIFY"){
+	MESSAGE("MODIFYING");
+        if (entry2SuitObject.count(theID)>0){
+	  suit_obj= entry2SuitObject[theID];
+	  LightApp_Application* myApp=dynamic_cast<LightApp_Application*>(myStudy->application());
+	  if (myApp){
+	      MESSAGE("Got an App !");
+	    SUIT_ProxyModel* myModel=dynamic_cast<SUIT_ProxyModel*>(myApp->objectBrowser()->model());
+	    if (myModel){
+	      MESSAGE("Call to myModel->updateItem");
+	      myModel->updateItem(suit_obj);
+	    }
+	  }
+	}
+	else{
+	  MESSAGE("Want to modify an unknown object");
+	}
+      }
+    }
+
+
+
+  private:
+
+    _PTR(Study) myStudyDS;
+    SalomeApp_Study* myStudy;
+    map<string,SUIT_DataObject*> entry2SuitObject;
+
+};
+
+
 /*!
   Constructor.
 */
@@ -58,6 +178,7 @@ SalomeApp_Study::SalomeApp_Study( SUIT_Application* app )
 */
 SalomeApp_Study::~SalomeApp_Study()
 {
+  //myStudyDS->detach(myObserver);
 }
 
 /*!
@@ -101,6 +222,9 @@ bool SalomeApp_Study::createDocument( const QString& theStr )
   bool aRet = CAM_Study::createDocument( theStr );
   emit created( this );
 
+  Observer_i* myObserver_i = new Observer_i(myStudyDS,this);
+  myStudyDS->attach(myObserver_i->_this());
+  
   return aRet;
 }
 
@@ -722,7 +846,6 @@ void SalomeApp_Study::removeSavePoint(int savePoint)
 }
 
 /*!
-  \return a name of save point
 */
 QString SalomeApp_Study::getNameOfSavePoint(int savePoint)
 {

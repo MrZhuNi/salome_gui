@@ -1172,6 +1172,7 @@ SUIT_DataObject* SUIT_TreeModel::object( const SUIT_TreeModel::TreeItem* item ) 
   return myItems.contains( obj ) ? obj : 0;
 }
 
+#include <iostream>
 /*!
   \brief Create an item corresponding to the data object.
   \param obj source data object
@@ -1183,6 +1184,7 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
                                                       SUIT_TreeModel::TreeItem* parent, 
                                                       SUIT_TreeModel::TreeItem* after )
 {
+  std::cerr << " SUIT_TreeModel::createItem " << std::endl;
   if ( !obj )
     return 0;
 
@@ -1207,6 +1209,8 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
 */
 void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item )
 {
+
+  std::cerr << " SUIT_TreeModel::updateItem " << std::endl;
   if ( !item )
     return;
   
@@ -1221,11 +1225,29 @@ void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item )
 }
 
 /*!
+  \brief Update tree item from the data object
+  \param item the Data Object to be updated
+*/
+void SUIT_TreeModel::updateItem( SUIT_DataObject* obj)
+{
+  std::cerr << " SUIT_TreeModel::updateItem from SuitObj " << std::endl;
+  if ( !treeItem(obj))
+    return;
+  
+  // update all columns corresponding to the given data object
+  QModelIndex firstIdx = index( obj, 0 );
+  QModelIndex lastIdx  = index( obj, columnCount() - 1 );
+  emit dataChanged( firstIdx, lastIdx );
+}
+
+
+/*!
   \brief Remove tree item (recursively).
   \param item tree item to be removed
 */
 void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
 {
+  std::cerr << " SUIT_TreeModel::removeItem " << std::endl;
   if ( !item )
     return;
 
@@ -1456,8 +1478,10 @@ QAbstractItemDelegate* SUIT_ProxyModel::delegate() const
   \param index starting index for the updating
   \sa setAutoUpdate()
 */
+#include <iostream>
 void SUIT_ProxyModel::updateTree( const QModelIndex& index )
 {
+  std::cerr << "updateTree with QModelIndex from SUIT_ProxyModel" << std::endl;
   if ( treeModel() )
     treeModel()->updateTree( mapToSource( index ) );
 }
@@ -1474,8 +1498,16 @@ void SUIT_ProxyModel::updateTree( const QModelIndex& index )
 */
 void SUIT_ProxyModel::updateTree( SUIT_DataObject* obj )
 {
+  std::cerr << "updateTree with SUIT_DataObj from SUIT_ProxyModel" << std::endl;
   if ( treeModel() )
     treeModel()->updateTree( obj );
+}
+
+void SUIT_ProxyModel::updateItem( SUIT_DataObject* obj )
+{
+  std::cerr << "updateItem with SUIT_DataObj from SUIT_ProxyModel" << std::endl;
+  if ( treeModel() )
+    treeModel()->updateItem( obj );
 }
 
 /*!
