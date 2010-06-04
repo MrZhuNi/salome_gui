@@ -62,7 +62,6 @@ class Observer_i : public virtual POA_SALOME::Observer
     {
       MESSAGE("I'm notified of " << event << " of ID =  " << theID);
       _PTR(SObject) obj = myStudyDS->FindObjectID( theID );
-      MESSAGE("This obj is named " << obj->GetIOR());
       MESSAGE("Checking the ID from the sObj : " << obj->GetID());
       
       std::string entry_str = theID;
@@ -140,10 +139,9 @@ class Observer_i : public virtual POA_SALOME::Observer
 	  suit_obj= entry2SuitObject[theID];
 	  LightApp_Application* myApp=dynamic_cast<LightApp_Application*>(myStudy->application());
 	  if (myApp){
-	      MESSAGE("Got an App !");
 	    SUIT_ProxyModel* myModel=dynamic_cast<SUIT_ProxyModel*>(myApp->objectBrowser()->model());
 	    if (myModel){
-	      MESSAGE("Call to myModel->updateItem");
+	      MESSAGE("Call to SUIT_ProxyModel::myModel->updateItem");
 	      myModel->updateItem(suit_obj);
 	    }
 	  }
