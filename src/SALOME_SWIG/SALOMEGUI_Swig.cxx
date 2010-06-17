@@ -50,6 +50,16 @@
 #include <SALOME_InteractiveObject.hxx>
 #include <SALOME_ListIteratorOfListIO.hxx>
 
+#include <sys/time.h>
+static long tt0;
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+      tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+
+timeval tv;
 /*!
   \class SALOMEGUI_Swig
   \brief Python interface module for SALOME GUI.
@@ -163,12 +173,14 @@ bool SALOMEGUI_Swig::hasDesktop()
 */
 void SALOMEGUI_Swig::updateObjBrowser( bool /*updateSelection*/ )
 {
+  gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
   class TEvent: public SALOME_Event
   {
   public:
     TEvent() {}
     virtual void Execute()
     {
+  END_TIMING(1);
       if ( LightApp_Application* anApp = getApplication() ) {
         anApp->updateObjectBrowser();
         anApp->updateActions(); //SRN: added in order to update the toolbar

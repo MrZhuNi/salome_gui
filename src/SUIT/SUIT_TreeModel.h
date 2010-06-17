@@ -64,6 +64,7 @@ public:
   virtual void             updateTree( const QModelIndex& ) = 0;
   virtual void             updateTree( SUIT_DataObject* = 0 ) = 0;
   virtual void             updateItem( SUIT_DataObject* ) = 0;
+  virtual void             createItem( SUIT_DataObject*,SUIT_DataObject*,SUIT_DataObject* ) = 0;
 
   virtual void             registerColumn( const int group_id, const QString& name, const int custom_id ) = 0;
   virtual void             unregisterColumn( const int group_id, const QString& name ) = 0;
@@ -148,6 +149,7 @@ public slots:
   virtual void           updateTree( const QModelIndex& );
   virtual void           updateTree( SUIT_DataObject* = 0 );
   virtual void           updateItem( SUIT_DataObject* );
+  virtual void           createItem( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject*);
 
 signals:
   void modelUpdated();
@@ -165,7 +167,8 @@ private:
   void                   removeItem( TreeItem* );
 
 private slots:
-  void                   onInserted( SUIT_DataObject*, SUIT_DataObject* );
+  void                   onUpdated( SUIT_DataObject*);
+  void                   onInserted( SUIT_DataObject*, SUIT_DataObject* ,SUIT_DataObject*);
   void                   onRemoved( SUIT_DataObject*, SUIT_DataObject* );
 
 private:
@@ -228,6 +231,7 @@ public slots:
   virtual void           updateTree( const QModelIndex& );
   virtual void           updateTree( SUIT_DataObject* = 0 );
   virtual void           updateItem( SUIT_DataObject* );
+  virtual void           createItem( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject*);
   void                   setSortingEnabled( bool );
 
 signals:

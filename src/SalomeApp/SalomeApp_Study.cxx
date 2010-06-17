@@ -45,6 +45,15 @@
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Exception)
 
+#include <sys/time.h>
+static long tt0;
+static long tcount=0;
+static long cumul;
+#define START_TIMING timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+    tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+
 using namespace std;
 
 
@@ -60,9 +69,11 @@ class Observer_i : public virtual POA_SALOME::Observer
 
     virtual void notifyObserver(const char* theID, const char* event)
     {
-      MESSAGE("I'm notified of " << event << " of ID =  " << theID);
+      START_TIMING;
+
+      //MESSAGE("I'm notified of " << event << " of ID =  " << theID);
       _PTR(SObject) obj = myStudyDS->FindObjectID( theID );
-      MESSAGE("Checking the ID from the sObj : " << obj->GetID());
+      //MESSAGE("Checking the ID from the sObj : " << obj->GetID());
       
       std::string entry_str = theID;
       int last2Pnt_pos = entry_str.rfind(":");
@@ -70,89 +81,96 @@ class Observer_i : public virtual POA_SALOME::Observer
       std::string pos_in_parent=entry_str.substr(last2Pnt_pos+1);
 
 
-      MESSAGE("Parent id  " << parent_id << " with position " << pos_in_parent);
+      //MESSAGE("Parent id  " << parent_id << " with position " << pos_in_parent);
       _PTR(SObject) obj_parent = myStudyDS->FindObjectID( parent_id );
-      MESSAGE("Checking the ID from the sObj_parent : " << obj_parent->GetID());
+      //MESSAGE("Checking the ID from the sObj_parent : " << obj_parent->GetID());
       
       SUIT_DataObject* suit_obj;
 
       if (std::string(event) == "ADD")
       {
-	MESSAGE("ADDING");
+        //MESSAGE("ADDING");
 
         _PTR(SComponent) aSComp(obj);
-        if( aSComp ){
-	  MESSAGE("This is a module");
-	  suit_obj=new SalomeApp_ModuleObject(aSComp,0);
+        if( aSComp )
+        {
+          //MESSAGE("This is a module");
+          suit_obj=new SalomeApp_ModuleObject(aSComp,0);
         }
-        else{
-	  MESSAGE("This is not a module ");
-	  suit_obj=new SalomeApp_DataObject(obj,0);
+        else
+        {
+          //MESSAGE("This is not a module ");
+          suit_obj=new SalomeApp_DataObject(obj,0);
         }
 
-	if (entry2SuitObject.count(parent_id)>0){
-	  SUIT_DataObject* father=entry2SuitObject[parent_id];
-	  SUIT_DataObject* after;
-	  std::string after_id;
-	  std::stringstream ss; 
-	  for (int i=atoi(pos_in_parent.c_str());i>0;i--){
-	    ss << parent_id << ":" << i ;
-	    after_id = ss.str();
-	    ss.str("");
-	    if (entry2SuitObject.count(after_id)>0){
-	      after=entry2SuitObject[after_id];
-	      MESSAGE("after_id " << after_id);
-	      break;
-	    }
-	  }
-	  int pos = after ? father->childPos( after ) : 0;
-	  father->insertChild(suit_obj,pos+1);
-	}
-	else{
-	  MESSAGE("This should be for a module");
-	  myStudy->root()->appendChild(suit_obj);
-	}
-	entry2SuitObject[theID]=suit_obj;
+        if (entry2SuitObject.count(parent_id)>0)
+        {
+          SUIT_DataObject* father=entry2SuitObject[parent_id];
+          SUIT_DataObject* after=0;
+          std::string after_id;
+          std::stringstream ss; 
+          for (int i=atoi(pos_in_parent.c_str());i>0;i--)
+          {
+            ss << parent_id << ":" << i ;
+            after_id = ss.str();
+            ss.str("");
+            if (entry2SuitObject.count(after_id)>0)
+            {
+              after=entry2SuitObject[after_id];
+              //MESSAGE("after_id " << after_id);
+              break;
+            }
+          }
+          int pos = after ? father->childPos( after ) : 0;
+          father->insertChild(suit_obj,pos+1);
+        }
+        else
+        {
+          //MESSAGE("This should be for a module");
+          SUIT_DataObject* father=myStudy->root();
+          father->appendChild(suit_obj);
+        }
+        entry2SuitObject[theID]=suit_obj;
       }
-      else if (std::string(event) == "REMOVE"){
-	MESSAGE("REMOVING");
+      else if (std::string(event) == "REMOVE")
+      {
+        //MESSAGE("REMOVING");
 
-        if (entry2SuitObject.count(theID)>0){
-	  suit_obj= entry2SuitObject[theID];
-          if (entry2SuitObject.count(parent_id)>0){
-            SUIT_DataObject* father=entry2SuitObject[parent_id];
-	    father->removeChild(suit_obj);
-	  }
-	  else{
-	    MESSAGE("This should be for a module");
-	    myStudy->root()->removeChild(suit_obj);
-	  }
-	  entry2SuitObject.erase(theID);
-	}
-	else{
-	  MESSAGE("Want to remove an unknown object");
-	}
+        if (entry2SuitObject.count(theID)>0)
+        {
+          suit_obj= entry2SuitObject[theID];
+          if (entry2SuitObject.count(parent_id)>0)
+            {
+              SUIT_DataObject* father=entry2SuitObject[parent_id];
+              father->removeChild(suit_obj);
+            }
+          else
+            {
+              //MESSAGE("This should be for a module");
+              myStudy->root()->removeChild(suit_obj);
+            }
+          entry2SuitObject.erase(theID);
+        }
+        else
+        {
+          MESSAGE("Want to remove an unknown object"  << theID);
+        }
       }
-      else if (std::string(event) == "MODIFY"){
-	MESSAGE("MODIFYING");
-        if (entry2SuitObject.count(theID)>0){
-	  suit_obj= entry2SuitObject[theID];
-	  LightApp_Application* myApp=dynamic_cast<LightApp_Application*>(myStudy->application());
-	  if (myApp){
-	    SUIT_ProxyModel* myModel=dynamic_cast<SUIT_ProxyModel*>(myApp->objectBrowser()->model());
-	    if (myModel){
-	      MESSAGE("Call to SUIT_ProxyModel::myModel->updateItem");
-	      myModel->updateItem(suit_obj);
-	    }
-	  }
-	}
-	else{
-	  MESSAGE("Want to modify an unknown object");
-	}
+      else if (std::string(event) == "MODIFY")
+      {
+        //MESSAGE("MODIFYING");
+        if (entry2SuitObject.count(theID)>0)
+          {
+            suit_obj= entry2SuitObject[theID];
+            suit_obj->updateItem();
+          }
+        else
+          {
+            MESSAGE("Want to modify an unknown object"  << theID);
+          }
       }
+      END_TIMING(200);
     }
-
-
 
   private:
 

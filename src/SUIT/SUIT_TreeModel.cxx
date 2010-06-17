@@ -23,6 +23,7 @@
 #include "SUIT_TreeModel.h"
 #include "SUIT_TreeSync.h"
 #include "SUIT_DataObject.h"
+#include <iostream>
 
 #include <QApplication>
 #include <QHash>
@@ -465,10 +466,11 @@ SUIT_TreeModel::SUIT_TreeModel( SUIT_DataObject* root, QObject* parent )
 SUIT_TreeModel::~SUIT_TreeModel()
 {
   if ( autoDeleteTree() ) {
-    SUIT_DataObject::disconnect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject* ) ),
-                                 this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::disconnect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ),
+                                 this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ) );
     SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                  this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
     delete myRoot;
   }
 
@@ -630,10 +632,11 @@ void SUIT_TreeModel::setRoot( SUIT_DataObject* r )
     return;
 
   if ( autoDeleteTree() ) {
-    SUIT_DataObject::disconnect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject* ) ),
-                                 this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::disconnect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject* ,SUIT_DataObject*) ),
+                                 this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ) );
     SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                  this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
     delete myRoot;
   }
 
@@ -653,6 +656,7 @@ void SUIT_TreeModel::setRoot( SUIT_DataObject* r )
 */
 QVariant SUIT_TreeModel::data( const QModelIndex& index, int role ) const
 {
+//  std::cerr << "SUIT_TreeModel::data " << role << std::endl;
   if ( !index.isValid() )
     return QVariant();
 
@@ -1003,17 +1007,19 @@ void SUIT_TreeModel::setAutoUpdate( const bool on )
   if ( myAutoUpdate == on )
     return;
 
-  SUIT_DataObject::disconnect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject* ) ),
-                               this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
+  SUIT_DataObject::disconnect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ),
+                               this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ) );
   SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+  SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
   myAutoUpdate = on;
 
   if ( myAutoUpdate ) {
-    SUIT_DataObject::connect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject* ) ),
-                              this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::connect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ),
+                              this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ,SUIT_DataObject*) ) );
     SUIT_DataObject::connect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                               this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::connect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
 
     updateTree();
   }
@@ -1102,15 +1108,17 @@ void SUIT_TreeModel::updateTree( SUIT_DataObject* obj )
 */
 void SUIT_TreeModel::initialize()
 {
-  SUIT_DataObject::disconnect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject* ) ),
-                               this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
+  SUIT_DataObject::disconnect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject* ,SUIT_DataObject*) ),
+                               this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ) );
   SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+  SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
   if ( autoUpdate() ) {
-    SUIT_DataObject::connect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject* ) ),
-                              this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::connect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ),
+                              this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ) );
     SUIT_DataObject::connect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                               this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::connect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
   }
 
   myItems.clear(); // ????? is it really necessary
@@ -1184,7 +1192,7 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
                                                       SUIT_TreeModel::TreeItem* parent, 
                                                       SUIT_TreeModel::TreeItem* after )
 {
-  std::cerr << " SUIT_TreeModel::createItem " << std::endl;
+  //std::cerr << " SUIT_TreeModel::createItem " << pthread_self() << std::endl;
   if ( !obj )
     return 0;
 
@@ -1203,6 +1211,13 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
   return myItems[ obj ];
 }
 
+void SUIT_TreeModel::createItem( SUIT_DataObject* obj, SUIT_DataObject* parent, SUIT_DataObject* after )
+{
+  if ( !treeItem(parent))
+    return;
+  createItem(obj,treeItem(parent),treeItem(after));
+}
+
 /*!
   \brief Update tree item.
   \param item tree item to be updated
@@ -1210,7 +1225,7 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
 void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item )
 {
 
-  std::cerr << " SUIT_TreeModel::updateItem " << std::endl;
+  //std::cerr << " SUIT_TreeModel::updateItem " << std::endl;
   if ( !item )
     return;
   
@@ -1230,7 +1245,7 @@ void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item )
 */
 void SUIT_TreeModel::updateItem( SUIT_DataObject* obj)
 {
-  std::cerr << " SUIT_TreeModel::updateItem from SuitObj " << std::endl;
+  //std::cerr << " SUIT_TreeModel::updateItem from SuitObj " << std::endl;
   if ( !treeItem(obj))
     return;
   
@@ -1247,7 +1262,7 @@ void SUIT_TreeModel::updateItem( SUIT_DataObject* obj)
 */
 void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
 {
-  std::cerr << " SUIT_TreeModel::removeItem " << std::endl;
+  //std::cerr << " SUIT_TreeModel::removeItem " << std::endl;
   if ( !item )
     return;
 
@@ -1278,15 +1293,25 @@ void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
   endRemoveRows();
 }
 
+void SUIT_TreeModel::onUpdated( SUIT_DataObject* object)
+{
+  updateItem(object);
+}
+
 /*!
   \brief Called when the data object is inserted to the tree.
   \param object data object being inserted
   \param parent parent data object
 */
-void SUIT_TreeModel::onInserted( SUIT_DataObject* /*object*/, SUIT_DataObject* parent )
+void SUIT_TreeModel::onInserted( SUIT_DataObject* object, SUIT_DataObject* parent,SUIT_DataObject* after )
 {
+  //std::cerr << "SUIT_TreeModel::onInserted" << std::endl;
+  createItem(object,parent,after);
+  emit modelUpdated();
+  /*
   if ( autoUpdate() )
     updateTree( parent );
+    */
 }
 
 /*!
@@ -1294,10 +1319,15 @@ void SUIT_TreeModel::onInserted( SUIT_DataObject* /*object*/, SUIT_DataObject* p
   \param object data object being removed
   \param parent parent data object
 */
-void SUIT_TreeModel::onRemoved( SUIT_DataObject* /*object*/, SUIT_DataObject* parent )
+void SUIT_TreeModel::onRemoved( SUIT_DataObject* object, SUIT_DataObject* parent )
 {
+  //std::cerr << "onRemoved" << std::endl;
+  removeItem( treeItem(object) );
+  emit modelUpdated();
+  /*
   if ( autoUpdate() )
     updateTree( parent );
+    */
 }
 
 /*!
@@ -1481,7 +1511,7 @@ QAbstractItemDelegate* SUIT_ProxyModel::delegate() const
 #include <iostream>
 void SUIT_ProxyModel::updateTree( const QModelIndex& index )
 {
-  std::cerr << "updateTree with QModelIndex from SUIT_ProxyModel" << std::endl;
+  //std::cerr << "updateTree with QModelIndex from SUIT_ProxyModel" << std::endl;
   if ( treeModel() )
     treeModel()->updateTree( mapToSource( index ) );
 }
@@ -1498,14 +1528,21 @@ void SUIT_ProxyModel::updateTree( const QModelIndex& index )
 */
 void SUIT_ProxyModel::updateTree( SUIT_DataObject* obj )
 {
-  std::cerr << "updateTree with SUIT_DataObj from SUIT_ProxyModel" << std::endl;
+  //std::cerr << "updateTree with SUIT_DataObj from SUIT_ProxyModel" << std::endl;
   if ( treeModel() )
     treeModel()->updateTree( obj );
 }
 
+void SUIT_ProxyModel::createItem( SUIT_DataObject* obj ,SUIT_DataObject* parent, SUIT_DataObject* after)
+{
+  //std::cerr << "createItem with SUIT_DataObj from SUIT_ProxyModel" << std::endl;
+  if ( treeModel() )
+    treeModel()->createItem( obj , parent, after);
+}
+
 void SUIT_ProxyModel::updateItem( SUIT_DataObject* obj )
 {
-  std::cerr << "updateItem with SUIT_DataObj from SUIT_ProxyModel" << std::endl;
+  //std::cerr << "updateItem with SUIT_DataObj from SUIT_ProxyModel" << std::endl;
   if ( treeModel() )
     treeModel()->updateItem( obj );
 }

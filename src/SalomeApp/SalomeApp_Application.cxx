@@ -1244,8 +1244,10 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QMenu* thePop
  3. update object browser if it exists */
 void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 {
-  MESSAGE("UpdateObjBrowser");
+  //MESSAGE("UpdateObjBrowser");
   return;
+
+
   // update "non-existing" (not loaded yet) data models
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>(activeStudy());
   if ( study )

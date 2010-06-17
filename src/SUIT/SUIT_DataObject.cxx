@@ -26,6 +26,7 @@
 #include "SUIT_DataObject.h"
 #include "SUIT_DataObjectKey.h"
 #include <cstdio>
+#include <iostream>
 
 SUIT_DataObject::Signal* SUIT_DataObject::mySignal = 0;
 
@@ -279,7 +280,10 @@ void SUIT_DataObject::insertChild( SUIT_DataObject* obj, int position )
   int pos = position < 0 ? myChildren.count() : position;
   myChildren.insert( qMin( pos, (int)myChildren.count() ), obj );
   obj->setParent( this );
-  signal()->emitInserted( obj, this );
+  if(pos == 0)
+    signal()->emitInserted( obj, this ,0);
+  else
+    signal()->emitInserted( obj, this ,myChildren.at(pos-1));
 }
 
 /*!
@@ -289,6 +293,7 @@ void SUIT_DataObject::insertChild( SUIT_DataObject* obj, int position )
 */
 void SUIT_DataObject::removeChild( SUIT_DataObject* obj, const bool del )
 {
+  //std::cerr << "removeChild " << del << std::endl;
   if ( !obj )
     return;
 
@@ -843,14 +848,19 @@ void SUIT_DataObject::Signal::emitDestroyed( SUIT_DataObject* object )
   }
 }
 
+void SUIT_DataObject::Signal::emitUpdated( SUIT_DataObject* object )
+{
+  emit( updated( object) );
+}
+
 /*!
   \brief Emit signal about data object adding to the parent data object.
   \param object data object being added
   \param parent parent data object
 */
-void SUIT_DataObject::Signal::emitInserted( SUIT_DataObject* object, SUIT_DataObject* parent )
+void SUIT_DataObject::Signal::emitInserted( SUIT_DataObject* object, SUIT_DataObject* parent,SUIT_DataObject* after )
 {
-  emit( inserted( object, parent ) );
+  emit( inserted( object, parent ,after) );
 }
 
 /*!
@@ -873,6 +883,11 @@ void SUIT_DataObject::Signal::deleteLater( SUIT_DataObject* object )
     emitDestroyed( object );
     myDelLaterObjects.append( object );
   }
+}
+
+void SUIT_DataObject::updateItem()
+{
+  signal()->emitUpdated(this);
 }
 
 /*!

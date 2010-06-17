@@ -119,6 +119,7 @@ public:
   virtual bool                isOpen() const;
   virtual void                setOpen( const bool );
 
+  virtual void                updateItem();
   virtual void                update();
   virtual bool                customSorting( const int = NameId ) const;
   virtual bool                compare( const QVariant&, const QVariant&, const int = NameId ) const;
@@ -158,7 +159,8 @@ public:
 private:
   void emitCreated( SUIT_DataObject* );
   void emitDestroyed( SUIT_DataObject* );
-  void emitInserted( SUIT_DataObject*, SUIT_DataObject* );
+  void emitInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* );
+  void emitUpdated( SUIT_DataObject*);
   void emitRemoved( SUIT_DataObject*, SUIT_DataObject* );
 
   void deleteLater( SUIT_DataObject* );
@@ -166,7 +168,8 @@ private:
 signals:
   void created( SUIT_DataObject* );
   void destroyed( SUIT_DataObject* );
-  void inserted( SUIT_DataObject*, SUIT_DataObject* );
+  void updated( SUIT_DataObject* );
+  void inserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* );
   void removed( SUIT_DataObject*, SUIT_DataObject* );
 
   friend class SUIT_DataObject;
