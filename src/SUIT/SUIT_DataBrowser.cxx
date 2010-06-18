@@ -25,7 +25,6 @@
 #include <QtxTreeView.h>
 
 #include <QShortcut>
-#include <iostream>
 
 /*!
   \class SUIT_DataBrowser
@@ -124,8 +123,7 @@ void SUIT_DataBrowser::setAutoUpdate( const bool on )
   \param autoOpen if \c true automatically open branches
 */
 void SUIT_DataBrowser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
-{ 
-  //std::cerr << " updateTree from SUIT_DataBrowser" << std::endl;
+{
   SUIT_ProxyModel* m = qobject_cast<SUIT_ProxyModel*>( model() );
   if ( m ) {
     m->updateTree( obj );

@@ -1180,7 +1180,6 @@ SUIT_DataObject* SUIT_TreeModel::object( const SUIT_TreeModel::TreeItem* item ) 
   return myItems.contains( obj ) ? obj : 0;
 }
 
-#include <iostream>
 /*!
   \brief Create an item corresponding to the data object.
   \param obj source data object
@@ -1508,7 +1507,6 @@ QAbstractItemDelegate* SUIT_ProxyModel::delegate() const
   \param index starting index for the updating
   \sa setAutoUpdate()
 */
-#include <iostream>
 void SUIT_ProxyModel::updateTree( const QModelIndex& index )
 {
   //std::cerr << "updateTree with QModelIndex from SUIT_ProxyModel" << std::endl;
