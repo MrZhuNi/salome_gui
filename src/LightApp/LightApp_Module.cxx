@@ -169,8 +169,8 @@ void LightApp_Module::updateObjBrowser( bool theIsUpdateDataModel,
   }
 
   getApp()->objectBrowser()->setAutoUpdate( upd );
-  getApp()->objectBrowser()->updateTree( 0, false );
 */
+  getApp()->objectBrowser()->updateTree( 0, false );
 }
 
 /*!NOT IMPLEMENTED*/

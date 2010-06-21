@@ -1239,11 +1239,11 @@ void LightApp_Application::updateObjectBrowser( const bool updateModels )
       objectBrowser()->setAutoUpdate( isAutoUpdate );
   }
 
+  */
   if ( objectBrowser() ) {
     objectBrowser()->updateGeometry();
     objectBrowser()->updateTree( 0, false );
   }
-  */
 }
 
 /*!

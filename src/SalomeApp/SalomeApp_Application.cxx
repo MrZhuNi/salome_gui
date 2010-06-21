@@ -832,6 +832,8 @@ QWidget* SalomeApp_Application::createWindow( const int flag )
       // temporary commented
       //ob->setUpdater( new SalomeApp_Updater() );
 
+      ob->setAutoUpdate(false);
+
       connect( ob, SIGNAL( doubleClicked( SUIT_DataObject* ) ), this, SLOT( onDblClick( SUIT_DataObject* ) ) );
 
       QString
@@ -1245,11 +1247,10 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QMenu* thePop
 void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 {
   //MESSAGE("UpdateObjBrowser");
-  return;
-
 
   // update "non-existing" (not loaded yet) data models
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>(activeStudy());
+/*
   if ( study )
   {
     _PTR(Study) stdDS = study->studyDS();
@@ -1271,7 +1272,7 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
       }
     }
   }
-
+*/
   // create data objects that correspond to GUI state save points
   if ( study ) updateSavePointDataObjects( study );
 

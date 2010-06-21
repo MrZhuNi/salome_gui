@@ -28,6 +28,17 @@
 #include <QApplication>
 #include <QHash>
 
+#include <sys/time.h>
+static long tt0;
+static long tcount=0;
+static long cumul;
+static timeval tv;
+#define START_TIMING gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+      tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr <<pthread_self()<<":"<<__FILE__<<":"<<__LINE__<<" temps CPU(mus): "<<cumul<< std::endl; tcount=0;cumul=0; }
+
+
 SUIT_AbstractModel::SUIT_AbstractModel()
 {
 }
@@ -396,6 +407,7 @@ bool SUIT_TreeModel::TreeSync::needUpdate( const ItemPtr& item ) const
       // - use "LastModified" time stamp in data objects and tree items - hardly possible, for sometimes data objects do not know that data changes...
       // ...
       update = true; // TEMPORARY!!!
+      update = obj->modified();
       // 1. check text
 /*      update = ( item->text( 0 ) != obj->name() ) || myBrowser->needToUpdateTexts( item );
 
@@ -1091,6 +1103,9 @@ void SUIT_TreeModel::updateTree( const QModelIndex& index )
 */
 void SUIT_TreeModel::updateTree( SUIT_DataObject* obj )
 {
+  if(myAutoUpdate)
+    return;
+
   if ( !obj )
     obj = root();
 
@@ -1207,6 +1222,8 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
 
   endInsertRows();
 
+  obj->setModified(false);
+
   return myItems[ obj ];
 }
 
@@ -1236,6 +1253,7 @@ void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item )
   QModelIndex firstIdx = index( obj, 0 );
   QModelIndex lastIdx  = index( obj, columnCount() - 1 );
   emit dataChanged( firstIdx, lastIdx );
+  obj->setModified(false);
 }
 
 /*!
@@ -1252,6 +1270,7 @@ void SUIT_TreeModel::updateItem( SUIT_DataObject* obj)
   QModelIndex firstIdx = index( obj, 0 );
   QModelIndex lastIdx  = index( obj, columnCount() - 1 );
   emit dataChanged( firstIdx, lastIdx );
+  obj->setModified(false);
 }
 
 

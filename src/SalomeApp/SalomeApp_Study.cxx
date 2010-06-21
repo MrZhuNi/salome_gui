@@ -69,7 +69,7 @@ class Observer_i : public virtual POA_SALOME::Observer
 
     virtual void notifyObserver(const char* theID, const char* event)
     {
-      START_TIMING;
+      //START_TIMING;
 
       //MESSAGE("I'm notified of " << event << " of ID =  " << theID);
       _PTR(SObject) obj = myStudyDS->FindObjectID( theID );
@@ -169,7 +169,7 @@ class Observer_i : public virtual POA_SALOME::Observer
             MESSAGE("Want to modify an unknown object"  << theID);
           }
       }
-      END_TIMING(200);
+      //END_TIMING(10);
     }
 
   private:

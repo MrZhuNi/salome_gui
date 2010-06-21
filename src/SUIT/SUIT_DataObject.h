@@ -124,6 +124,9 @@ public:
   virtual bool                customSorting( const int = NameId ) const;
   virtual bool                compare( const QVariant&, const QVariant&, const int = NameId ) const;
 
+  bool                        modified(){return _modified;};
+  void                        setModified(bool modified){_modified = modified;};
+
   virtual SUIT_DataObjectKey* key() const;
   virtual int groupId() const;
 
@@ -141,6 +144,7 @@ private:
   bool                        myCheck;
   bool                        myAutoDel;
   DataObjectList              myChildren;
+  bool                        _modified;
 
   static Signal*              mySignal;
 
