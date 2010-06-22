@@ -32,6 +32,7 @@
 #endif
 
 #include "SALOMEDSClient.hxx"
+#include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Observer)
 
 class SALOMEAPP_EXPORT SalomeApp_Study : public LightApp_Study 
