@@ -673,6 +673,7 @@ QVariant SUIT_TreeModel::data( const QModelIndex& index, int role ) const
     return QVariant();
 
   SUIT_DataObject* obj = object( index );
+  obj->setModified(false);
 
   QColor c;
   QVariant val;
@@ -1222,7 +1223,7 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
 
   endInsertRows();
 
-  obj->setModified(false);
+  //obj->setModified(false);
 
   return myItems[ obj ];
 }
@@ -1253,7 +1254,7 @@ void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item )
   QModelIndex firstIdx = index( obj, 0 );
   QModelIndex lastIdx  = index( obj, columnCount() - 1 );
   emit dataChanged( firstIdx, lastIdx );
-  obj->setModified(false);
+  //obj->setModified(false);
 }
 
 /*!
@@ -1270,7 +1271,7 @@ void SUIT_TreeModel::updateItem( SUIT_DataObject* obj)
   QModelIndex firstIdx = index( obj, 0 );
   QModelIndex lastIdx  = index( obj, columnCount() - 1 );
   emit dataChanged( firstIdx, lastIdx );
-  obj->setModified(false);
+  //obj->setModified(false);
 }
 
 

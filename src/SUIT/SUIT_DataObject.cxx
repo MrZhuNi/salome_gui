@@ -887,6 +887,7 @@ void SUIT_DataObject::Signal::deleteLater( SUIT_DataObject* object )
 
 void SUIT_DataObject::updateItem()
 {
+  if(modified())return;
   setModified(true);
   signal()->emitUpdated(this);
 }
