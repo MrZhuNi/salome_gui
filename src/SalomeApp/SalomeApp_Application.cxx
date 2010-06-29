@@ -832,7 +832,7 @@ QWidget* SalomeApp_Application::createWindow( const int flag )
       // temporary commented
       //ob->setUpdater( new SalomeApp_Updater() );
 
-      ob->setAutoUpdate(true);
+      ob->setAutoUpdate(false);
 
       connect( ob, SIGNAL( doubleClicked( SUIT_DataObject* ) ), this, SLOT( onDblClick( SUIT_DataObject* ) ) );
 

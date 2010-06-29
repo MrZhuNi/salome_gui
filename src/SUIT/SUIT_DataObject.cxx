@@ -28,6 +28,15 @@
 #include <cstdio>
 #include <iostream>
 
+#include <sys/time.h>
+static long tcount=0;
+static long cumul;
+static timeval tv;
+#define START_TIMING gettimeofday(&tv,0);long tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+  tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr <<pthread_self()<<":"<<__FILE__<<":"<<__LINE__<<" temps CPU(mus): "<<cumul<< std::endl; tcount=0 ;cumul=0; }
+
 SUIT_DataObject::Signal* SUIT_DataObject::mySignal = 0;
 
 /*!
@@ -274,16 +283,20 @@ void SUIT_DataObject::appendChild( SUIT_DataObject* obj )
 */
 void SUIT_DataObject::insertChild( SUIT_DataObject* obj, int position )
 {
+  START_TIMING;
   if ( !obj || myChildren.contains( obj ) )
     return;
 
   int pos = position < 0 ? myChildren.count() : position;
   myChildren.insert( qMin( pos, (int)myChildren.count() ), obj );
   obj->setParent( this );
+  /*
   if(pos == 0)
     signal()->emitInserted( obj, this ,0);
   else
     signal()->emitInserted( obj, this ,myChildren.at(pos-1));
+    */
+  END_TIMING(100);
 }
 
 /*!

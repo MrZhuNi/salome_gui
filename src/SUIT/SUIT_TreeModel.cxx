@@ -35,7 +35,7 @@ static long cumul;
 static timeval tv;
 #define START_TIMING gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
 #define END_TIMING(NUMBER) \
-      tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
   if(tcount==NUMBER){ std::cerr <<pthread_self()<<":"<<__FILE__<<":"<<__LINE__<<" temps CPU(mus): "<<cumul<< std::endl; tcount=0;cumul=0; }
 
 
@@ -334,8 +334,10 @@ void SUIT_TreeModel::TreeSync::updateItem( const ObjPtr& obj, const ItemPtr& ite
 {
   if( obj )
     obj->update();
+  /*
   if ( item && needUpdate( item ) ) 
     myModel->updateItem( item );
+    */
 }
 
 /*!
@@ -482,7 +484,7 @@ SUIT_TreeModel::~SUIT_TreeModel()
                                  this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ) );
     SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                  this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
-    SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
+    //SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
     delete myRoot;
   }
 
@@ -648,7 +650,7 @@ void SUIT_TreeModel::setRoot( SUIT_DataObject* r )
                                  this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ) );
     SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                  this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
-    SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
+    //SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
     delete myRoot;
   }
 
@@ -673,7 +675,7 @@ QVariant SUIT_TreeModel::data( const QModelIndex& index, int role ) const
     return QVariant();
 
   SUIT_DataObject* obj = object( index );
-  obj->setModified(false);
+  //obj->setModified(false);
 
   QColor c;
   QVariant val;
@@ -1024,7 +1026,7 @@ void SUIT_TreeModel::setAutoUpdate( const bool on )
                                this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ) );
   SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
-  SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
+  //SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
   myAutoUpdate = on;
 
   if ( myAutoUpdate ) {
@@ -1032,7 +1034,7 @@ void SUIT_TreeModel::setAutoUpdate( const bool on )
                               this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ,SUIT_DataObject*) ) );
     SUIT_DataObject::connect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                               this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
-    SUIT_DataObject::connect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
+    //SUIT_DataObject::connect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
 
     updateTree();
   }
@@ -1105,7 +1107,12 @@ void SUIT_TreeModel::updateTree( const QModelIndex& index )
 void SUIT_TreeModel::updateTree( SUIT_DataObject* obj )
 {
   if(myAutoUpdate)
-    return;
+    {
+      emit layoutAboutToBeChanged();
+      emit layoutChanged();
+      emit modelUpdated();
+      return;
+    }
 
   if ( !obj )
     obj = root();
@@ -1113,9 +1120,12 @@ void SUIT_TreeModel::updateTree( SUIT_DataObject* obj )
   else if ( obj->root() != root() )
     return;
 
+  emit layoutAboutToBeChanged();
+
   synchronize<ObjPtr,ItemPtr,SUIT_TreeModel::TreeSync>( obj, 
                                                         treeItem( obj ), 
                                                         SUIT_TreeModel::TreeSync( this ) );
+  emit layoutChanged();
   emit modelUpdated();
 }
 
@@ -1128,13 +1138,13 @@ void SUIT_TreeModel::initialize()
                                this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ) );
   SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
-  SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
+  //SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
   if ( autoUpdate() ) {
     SUIT_DataObject::connect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ),
                               this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject*,SUIT_DataObject* ) ) );
     SUIT_DataObject::connect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                               this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
-    SUIT_DataObject::connect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
+    //SUIT_DataObject::connect( SIGNAL( updated( SUIT_DataObject* ) ), this, SLOT( onUpdated( SUIT_DataObject* ) ) );
   }
 
   myItems.clear(); // ????? is it really necessary
@@ -1216,12 +1226,13 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
 
   SUIT_DataObject* afterObj = after ? object( after ) : 0;
   int row = afterObj ? afterObj->position() + 1 : 0;
+  //std::cerr << " SUIT_TreeModel::createItem " << row << ":" << afterObj << std::endl;
 
-  beginInsertRows( parentIdx, row, row );
+  //beginInsertRows( parentIdx, row, row );
 
   myItems[ obj ] = new TreeItem( obj, parent, after );
 
-  endInsertRows();
+  //endInsertRows();
 
   //obj->setModified(false);
 
@@ -1230,6 +1241,7 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
 
 void SUIT_TreeModel::createItem( SUIT_DataObject* obj, SUIT_DataObject* parent, SUIT_DataObject* after )
 {
+  //std::cerr << " SUIT_TreeModel::createItem " << obj << ":" << parent << ":" << after << std::endl;
   if ( !treeItem(parent))
     return;
   createItem(obj,treeItem(parent),treeItem(after));

@@ -51,8 +51,8 @@ static long tcount=0;
 static long cumul;
 #define START_TIMING timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
 #define END_TIMING(NUMBER) \
-    tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
-  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+  tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << pthread_self()<<":"<<__FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
 
 using namespace std;
 
@@ -69,7 +69,7 @@ class Observer_i : public virtual POA_SALOME::Observer
 
     virtual void notifyObserver(const char* theID, const char* event)
     {
-      //START_TIMING;
+      START_TIMING;
 
       //MESSAGE("I'm notified of " << event << " of ID =  " << theID);
       _PTR(SObject) obj = myStudyDS->FindObjectID( theID );
@@ -123,12 +123,22 @@ class Observer_i : public virtual POA_SALOME::Observer
           }
           int pos = after ? father->childPos( after ) : 0;
           father->insertChild(suit_obj,pos+1);
+          /*
+          if (LightApp_Application* myApp=dynamic_cast<LightApp_Application*>(myStudy->application()))
+            if (SUIT_ProxyModel* myModel=dynamic_cast<SUIT_ProxyModel*>(myApp->objectBrowser()->model()))
+              myModel->createItem(suit_obj,father,after);
+              */
         }
         else
         {
           //MESSAGE("This should be for a module");
           SUIT_DataObject* father=myStudy->root();
           father->appendChild(suit_obj);
+          /*
+          if (LightApp_Application* myApp=dynamic_cast<LightApp_Application*>(myStudy->application()))
+            if (SUIT_ProxyModel* myModel=dynamic_cast<SUIT_ProxyModel*>(myApp->objectBrowser()->model()))
+              myModel->createItem(suit_obj,father,father->lastChild());
+              */
         }
         entry2SuitObject[theID]=suit_obj;
       }
@@ -169,7 +179,7 @@ class Observer_i : public virtual POA_SALOME::Observer
             MESSAGE("Want to modify an unknown object"  << theID);
           }
       }
-      //END_TIMING(10);
+      END_TIMING(100);
     }
 
   private:
