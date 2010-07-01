@@ -199,6 +199,8 @@ public:
   //! \retval Return false.
   virtual bool isVisible( const Handle_SALOME_InteractiveObject& ){ return false; }
   virtual void Repaint() {} //!< Null body here.
+
+  virtual void updateViewer(SALOME_Prs* prs){};
 };
 
 /*!

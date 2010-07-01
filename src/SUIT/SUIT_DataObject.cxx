@@ -283,7 +283,6 @@ void SUIT_DataObject::appendChild( SUIT_DataObject* obj )
 */
 void SUIT_DataObject::insertChild( SUIT_DataObject* obj, int position )
 {
-  START_TIMING;
   if ( !obj || myChildren.contains( obj ) )
     return;
 
@@ -296,7 +295,6 @@ void SUIT_DataObject::insertChild( SUIT_DataObject* obj, int position )
   else
     signal()->emitInserted( obj, this ,myChildren.at(pos-1));
     */
-  END_TIMING(100);
 }
 
 /*!

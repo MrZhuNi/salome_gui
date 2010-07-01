@@ -176,7 +176,6 @@ QPixmap SalomeApp_DataObject::icon( const int id ) const
   if ( id == NameId ) {
     _PTR(GenericAttribute) anAttr;
     if ( myObject && myObject->FindAttribute( anAttr, "AttributePixMap" ) ){
-   //   MESSAGE("SalomeApp_DataObject::icon : found attributePixmap")
       _PTR(AttributePixMap) aPixAttr ( anAttr );
       if ( aPixAttr->HasPixMap() ) {
         QString componentType = componentDataType();
@@ -189,11 +188,8 @@ QPixmap SalomeApp_DataObject::icon( const int id ) const
         }
         QString pixmapName = QObject::tr( pixmapID.toLatin1().constData() );
         LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root() );
-	  //MESSAGE("SalomeApp_DataObject::icon : after dynamic cast")
         if ( aRoot && aRoot->study() ) {
           SUIT_ResourceMgr* mgr = aRoot->study()->application()->resourceMgr();
-	  //MESSAGE("SalomeApp_DataObject::icon : Call to mgr mgr == " << mgr );
-	  //MESSAGE("SalomeApp_DataObject::icon : Call to mgr loadPixmap ( " << componentType.toStdString() << " , " << pixmapName.toStdString() << " )");
           return mgr->loadPixmap( componentType, pixmapName, false ); 
         }
       }

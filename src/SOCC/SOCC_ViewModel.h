@@ -68,6 +68,9 @@ public:
   // a utility function, used by SALOME_View_s methods
   bool                        getTrihedronSize( double& theNewSize, double& theSize );
 
+  //a map to store AIS objects associated to a SALOME entry
+  std::map< std::string , Handle(AIS_InteractiveObject) > entry2aisobject;
+  virtual void updateViewer(SALOME_Prs* prs);
 };
 
 #ifdef WIN32

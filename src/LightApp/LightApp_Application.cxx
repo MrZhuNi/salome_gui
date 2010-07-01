@@ -1211,10 +1211,8 @@ PyConsole_Console* LightApp_Application::pythonConsole()
   Updates object browser and maybe data models
   \param updateModels - if it is true, then data models are updated
 */
-#include "utilities.h"
 void LightApp_Application::updateObjectBrowser( const bool updateModels )
 {
-  MESSAGE("Update from LightApp_Application");
   /*
   // update existing data models
   if ( updateModels )

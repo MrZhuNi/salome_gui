@@ -173,14 +173,12 @@ bool SALOMEGUI_Swig::hasDesktop()
 */
 void SALOMEGUI_Swig::updateObjBrowser( bool /*updateSelection*/ )
 {
-  gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
   class TEvent: public SALOME_Event
   {
   public:
     TEvent() {}
     virtual void Execute()
     {
-  END_TIMING(1);
       if ( LightApp_Application* anApp = getApplication() ) {
         anApp->updateObjectBrowser();
         anApp->updateActions(); //SRN: added in order to update the toolbar

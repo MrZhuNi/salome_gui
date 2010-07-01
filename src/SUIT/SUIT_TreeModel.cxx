@@ -1311,7 +1311,7 @@ void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
   QModelIndex parentIdx = index( parentObj, 0 );
   int row = item->position();
   
-  beginRemoveRows( parentIdx, row, row );
+  //beginRemoveRows( parentIdx, row, row );
   myItems.remove( obj );
 
   if ( obj == root() )
@@ -1321,7 +1321,7 @@ void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
 
   delete item;
 
-  endRemoveRows();
+  //endRemoveRows();
 }
 
 void SUIT_TreeModel::onUpdated( SUIT_DataObject* object)

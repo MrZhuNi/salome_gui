@@ -296,7 +296,6 @@ bool SalomeApp_DataModel::create( CAM_Study* theStudy )
 */
 void SalomeApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
 {
-  std::cerr << "in update" << std::endl;
   SalomeApp_Study* aSStudy = dynamic_cast<SalomeApp_Study*>(study);
   LightApp_RootObject* studyRoot = 0;
   _PTR(SComponent) sobj;
@@ -333,8 +332,6 @@ void SalomeApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
 */
 SUIT_DataObject* SalomeApp_DataModel::synchronize( const _PTR( SComponent )& sobj, SalomeApp_Study* study )
 {
-
-  std::cerr << "in synchronize" << std::endl;
   if( !study || !study->root() || !sobj )
     return 0;
     
@@ -364,7 +361,6 @@ SUIT_DataObject* SalomeApp_DataModel::synchronize( const _PTR( SComponent )& sob
 */
 void SalomeApp_DataModel::updateTree( const _PTR( SComponent )& comp, SalomeApp_Study* study )
 {
-  std::cerr << "in updatetree" << std::endl;
   SalomeApp_ModuleObject* aNewRoot = dynamic_cast<SalomeApp_ModuleObject*>( synchronize( comp, study ) );
   if( aNewRoot )
   {

@@ -145,11 +145,9 @@ void LightApp_Module::contextMenuPopup( const QString& client, QMenu* menu, QStr
 /*!Update object browser.
  * For updating model or whole object browser use update() method can be used.
 */
-#include "utilities.h"
 void LightApp_Module::updateObjBrowser( bool theIsUpdateDataModel, 
                                         SUIT_DataObject* theDataObject )
 {
-  MESSAGE("Update from LightApp_Module");
   /*
   bool upd = getApp()->objectBrowser()->autoUpdate();
   getApp()->objectBrowser()->setAutoUpdate( false );

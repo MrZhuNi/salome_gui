@@ -61,6 +61,15 @@
 
 #include <Precision.hxx>
 
+#include <sys/time.h>
+static long tcount=0;
+static long cumul;
+#define START_TIMING long tt0; timeval tv; gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define END_TIMING(NUMBER) \
+  tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
+  if(tcount==NUMBER){ std::cerr << __FILE__ << __LINE__ << " temps CPU(mus): " << cumul << std::endl; tcount=0;cumul=0; }
+
+
 // in order NOT TO link with SalomeApp, here the code returns SALOMEDS_Study.
 // SalomeApp_Study::studyDS() does it as well, but -- here it is retrieved from 
 // SALOMEDS::StudyManager - no linkage with SalomeApp. 
@@ -321,6 +330,7 @@ void SOCC_Viewer::rename( const Handle(SALOME_InteractiveObject)& obj,
 */
 void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
 {
+  //std::cerr << "SOCC_Viewer::Display" << std::endl;
   // try do downcast object
   const SOCC_Prs* anOCCPrs = dynamic_cast<const SOCC_Prs*>( prs );
   if ( !anOCCPrs || anOCCPrs->IsNull() )
@@ -335,12 +345,14 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
   // get context
   Handle (AIS_InteractiveContext) ic = getAISContext();
 
+  /*
   // get all displayed objects
   AIS_ListOfInteractive List;
   ic->DisplayedObjects( List );
   // get objects in the collector
   AIS_ListOfInteractive ListCollector;
   ic->ObjectsInCollector( ListCollector );
+  */
 
   // get objects to be displayed
   AIS_ListOfInteractive anAISObjects;
@@ -354,6 +366,7 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
     {
       // try to find presentation in the viewer
       bool bDisplayed = false;
+   /*
       AIS_ListIteratorOfListOfInteractive ite( List );
       for ( ; ite.More(); ite.Next() )
       {
@@ -361,6 +374,7 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
         // if the object is already displayed - nothing to do more
         if ( ite.Value() == anAIS )
         {
+std::cerr << "ais found in displayed objects" << std::endl;
           // Deactivate object if necessary
           if ( !anOCCPrs->ToActivate() )
             ic->Deactivate( anAIS );
@@ -368,12 +382,33 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
           break;
         }
       }
+*/
+      AIS_DisplayStatus status = ic->DisplayStatus(anAIS);
+      if(status == AIS_DS_Displayed)
+        {
+//std::cerr << "ais found in displayed objects" << std::endl;
+          // Deactivate object if necessary
+          if ( !anOCCPrs->ToActivate() )
+            ic->Deactivate( anAIS );
+          bDisplayed = true;
+        }
 
       if ( bDisplayed )
         continue;
 
       // then try to find presentation in the collector
       bDisplayed = false;
+      if(status == AIS_DS_Erased)
+        {
+//std::cerr << "ais found in collector" << std::endl;
+          ic->DisplayFromCollector( anAIS, false );
+
+          // Deactivate object if necessary
+          if ( !anOCCPrs->ToActivate() )
+            ic->Deactivate( anAIS );
+          bDisplayed = true;
+        }
+      /*
       ite.Initialize( ListCollector );
       for ( ; ite.More(); ite.Next() )
       {
@@ -381,6 +416,7 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
         // if the object is in collector - display it
         if ( ite.Value() == anAIS )
         {
+std::cerr << "ais found in collector" << std::endl;
           ic->DisplayFromCollector( anAIS, false );
 
           // Deactivate object if necessary
@@ -402,8 +438,11 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
           break;
         }
       }
+      */
       if ( bDisplayed )
         continue;
+
+      //std::cerr << "ais not found in context. Display it" << std::endl;
 
       // if object is not displayed and not found in the collector - display it
       if ( anAIS->IsKind( STANDARD_TYPE(AIS_Trihedron) ) )
@@ -414,7 +453,9 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
         aTrh->SetSize( aTrh == getTrihedron() ? aNewSize : 0.5 * aNewSize );
       }
 
+  START_TIMING;
       ic->Display( anAIS, false );
+  END_TIMING(100);
 
       // Set visibility flag
       // Temporarily commented to avoid awful dependecy on SALOMEDS
@@ -443,6 +484,7 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
 */
 void SOCC_Viewer::Erase( const SALOME_OCCPrs* prs, const bool forced )
 {
+  //std::cerr << "SOCC_Viewer::Erase " << forced << std::endl;
   // try do downcast object
   const SOCC_Prs* anOCCPrs = dynamic_cast<const SOCC_Prs*>( prs );
   if ( !anOCCPrs || anOCCPrs->IsNull() )
@@ -510,8 +552,8 @@ void SOCC_Viewer::EraseAll( const bool forced )
   ic->DisplayedObjects( aList );
   AIS_ListIteratorOfListOfInteractive anIter( aList );
   for ( ; anIter.More(); anIter.Next() ) {
-    if ( isTrihedronDisplayed && anIter.Value()->DynamicType() == STANDARD_TYPE( AIS_Trihedron ) ||
-         anIter.Value()->DynamicType() == STANDARD_TYPE( OCCViewer_Trihedron ))
+    if ( (isTrihedronDisplayed && anIter.Value()->DynamicType() == STANDARD_TYPE( AIS_Trihedron ) )||
+         (anIter.Value()->DynamicType() == STANDARD_TYPE( OCCViewer_Trihedron )) )
       continue;
 
     // erase an object
@@ -542,12 +584,26 @@ void SOCC_Viewer::EraseAll( const bool forced )
 */
 SALOME_Prs* SOCC_Viewer::CreatePrs( const char* entry )
 {
+  //std::cerr << "SOCC_Viewer::CreatePrs " << entry << std::endl;
   SOCC_Prs* prs = new SOCC_Prs();
   if ( entry )
   {
     // get context
     Handle(AIS_InteractiveContext) ic = getAISContext();
 
+    if(entry2aisobject.count(entry)>0)
+      {
+        //ais object exists
+        Handle(AIS_InteractiveObject) anAIS = entry2aisobject[entry];
+        AIS_DisplayStatus status = ic->DisplayStatus(anAIS);
+        if((status == AIS_DS_Displayed) || (status == AIS_DS_Erased))
+          {
+            //std::cerr << "ais found in context: add it in prs " << entry << std::endl;
+            prs->AddObject( anAIS );
+          }
+       }
+
+    /*
     // get displayed objects
     AIS_ListOfInteractive List;
     ic->DisplayedObjects( List );
@@ -563,8 +619,12 @@ SALOME_Prs* SOCC_Viewer::CreatePrs( const char* entry )
         Handle(SALOME_InteractiveObject)::DownCast( ite.Value()->GetOwner() );
 
       if ( !anObj.IsNull() && anObj->hasEntry() && strcmp( anObj->getEntry(), entry ) == 0 )
-        prs->AddObject( ite.Value() );
+        {
+          std::cerr << "ais found in context: add it in prs " << entry << std::endl;
+          prs->AddObject( ite.Value() );
+        }
     }
+*/
   }
   return prs;
 }
@@ -702,6 +762,40 @@ void SOCC_Viewer::Repaint()
   getViewer3d()->Update();
 }
 
+void SOCC_Viewer::updateViewer(SALOME_Prs* prs)
+{
+  //std::cerr << "SOCC_Viewer::updateViewer" << std::endl;
+  // try do downcast object
+  const SOCC_Prs* anOCCPrs = dynamic_cast<const SOCC_Prs*>( prs );
+  if ( !anOCCPrs || anOCCPrs->IsNull() )
+    return;
+
+  AIS_ListOfInteractive anAISObjects;
+  anOCCPrs->GetObjects( anAISObjects );
+
+  AIS_ListIteratorOfListOfInteractive aIter( anAISObjects );
+  for ( ; aIter.More(); aIter.Next() )
+  {
+    Handle(SALOME_InteractiveObject) anObj = Handle(SALOME_InteractiveObject)::DownCast( aIter.Value()->GetOwner() );
+    if ( !anObj.IsNull() && anObj->hasEntry() )
+      {
+        //std::cerr << "add ais in map entry2aisobject" << anObj->getEntry() << std::endl;
+        if(entry2aisobject.count(anObj->getEntry())>0)
+          {
+            if(entry2aisobject[anObj->getEntry()] == aIter.Value())
+              {
+                //std::cerr << "ais already in map entry2aisobject and the same" << std::endl;
+                continue;
+              }
+            else
+              {
+                //std::cerr << "ais already in map entry2aisobject but not the same" << std::endl;
+              }
+          }
+        entry2aisobject[anObj->getEntry()] = aIter.Value();
+      }
+  }
+}
 
 /*!
   create SOCC_ViewWindow
