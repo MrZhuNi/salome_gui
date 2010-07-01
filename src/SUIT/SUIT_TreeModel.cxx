@@ -909,6 +909,7 @@ QModelIndex SUIT_TreeModel::index( int row, int column,
 */
 QModelIndex SUIT_TreeModel::parent( const QModelIndex& index ) const
 {
+  //std::cerr << "SUIT_TreeModel::parent " << index.row() << std::endl;
   if ( !index.isValid() )
     return QModelIndex();
 
@@ -1120,11 +1121,12 @@ void SUIT_TreeModel::updateTree( SUIT_DataObject* obj )
   else if ( obj->root() != root() )
     return;
 
-  emit layoutAboutToBeChanged();
 
   synchronize<ObjPtr,ItemPtr,SUIT_TreeModel::TreeSync>( obj, 
                                                         treeItem( obj ), 
                                                         SUIT_TreeModel::TreeSync( this ) );
+
+  emit layoutAboutToBeChanged();
   emit layoutChanged();
   emit modelUpdated();
 }
@@ -1228,11 +1230,11 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
   int row = afterObj ? afterObj->position() + 1 : 0;
   //std::cerr << " SUIT_TreeModel::createItem " << row << ":" << afterObj << std::endl;
 
-  //beginInsertRows( parentIdx, row, row );
+  beginInsertRows( parentIdx, row, row );
 
   myItems[ obj ] = new TreeItem( obj, parent, after );
 
-  //endInsertRows();
+  endInsertRows();
 
   //obj->setModified(false);
 
@@ -1311,7 +1313,7 @@ void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
   QModelIndex parentIdx = index( parentObj, 0 );
   int row = item->position();
   
-  //beginRemoveRows( parentIdx, row, row );
+  beginRemoveRows( parentIdx, row, row );
   myItems.remove( obj );
 
   if ( obj == root() )
@@ -1321,7 +1323,7 @@ void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
 
   delete item;
 
-  //endRemoveRows();
+  endRemoveRows();
 }
 
 void SUIT_TreeModel::onUpdated( SUIT_DataObject* object)

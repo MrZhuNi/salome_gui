@@ -68,6 +68,61 @@
 #include <SUIT_Desktop.h>
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_ExceptionHandler.h>
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
+#include <stdexcept>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+void AttachDebugger();
+void Handler(int);
+
+typedef void (*sighandler_t)(int);
+sighandler_t setsig(int sig, sighandler_t handler)
+{
+  struct sigaction context, ocontext;
+  context.sa_handler = handler;
+  sigemptyset(&context.sa_mask);
+  context.sa_flags = 0;
+  if (sigaction(sig, &context, &ocontext) == -1)
+    return SIG_ERR;
+  return ocontext.sa_handler;
+}
+
+void AttachDebugger()
+{
+  if(getenv ("DEBUGGER"))
+    {
+      std::stringstream exec;
+      exec << "$DEBUGGER SALOME_Session_Server " << getpid() << "&";
+      std::cerr << exec.str() << std::endl;
+      system(exec.str().c_str());
+      while(1);
+    }
+}
+
+void Handler(int theSigId)
+{
+  std::cerr << "SIGSEGV: "  << std::endl;
+  AttachDebugger();
+  //to exit or not to exit
+  exit(1);
+}
+void terminateHandler(void)
+{
+  std::cerr << "Terminate: not managed exception !"  << std::endl;
+  AttachDebugger();
+}
+
+void unexpectedHandler(void)
+{
+  std::cerr << "Unexpected: unexpected exception !"  << std::endl;
+  AttachDebugger();
+}
+
 
 #include <Standard_Version.hxx>
 
@@ -346,6 +401,15 @@ void shutdownServers( SALOME_NamingService* theNS )
 // ---------------------------- MAIN -----------------------
 int main( int argc, char **argv )
 {
+
+  if(getenv ("DEBUGGER"))
+    {
+      setsig(SIGSEGV,&Handler);
+      setsig(SIGBUS,&Handler);
+      set_terminate(&terminateHandler);
+      set_unexpected(&unexpectedHandler);
+    }
+
   // Install Qt debug messages handler
   qInstallMsgHandler( MessageOutput );
   
