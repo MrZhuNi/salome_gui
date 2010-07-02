@@ -194,7 +194,12 @@ SALOME_Prs* LightApp_Displayer::buildPresentation( const QString& entry, SALOME_
   SALOME_View* vf = theViewFrame ? theViewFrame : GetActiveView();
 
   if ( vf )
-    prs = vf->CreatePrs( entry.toLatin1() );
+    {
+      if(entry.isNull())
+        prs = vf->CreatePrs( 0 );
+      else
+        prs = vf->CreatePrs( entry.toLatin1() );
+    }
 
   return prs;
 }

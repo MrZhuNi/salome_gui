@@ -762,6 +762,9 @@ void SOCC_Viewer::Repaint()
   getViewer3d()->Update();
 }
 
+/*!
+  Updates viewer map entry2aisobject
+*/
 void SOCC_Viewer::updateViewer(SALOME_Prs* prs)
 {
   //std::cerr << "SOCC_Viewer::updateViewer" << std::endl;

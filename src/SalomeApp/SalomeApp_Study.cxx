@@ -82,7 +82,8 @@ class Observer_i : public virtual POA_SALOME::Observer
 
 
       //MESSAGE("Parent id  " << parent_id << " with position " << pos_in_parent);
-      _PTR(SObject) obj_parent = myStudyDS->FindObjectID( parent_id );
+      //_PTR(SObject) obj_parent = myStudyDS->FindObjectID( parent_id );
+      _PTR(SObject) obj_parent = obj->GetFather();
       //MESSAGE("Checking the ID from the sObj_parent : " << obj_parent->GetID());
       
       SUIT_DataObject* suit_obj;
