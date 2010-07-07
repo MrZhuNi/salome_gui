@@ -95,6 +95,7 @@ public:
 
   virtual SUIT_DataObject*    parent() const;
   virtual void                setParent( SUIT_DataObject* );
+  virtual void                assignParent( SUIT_DataObject* );
 
   virtual QString             name() const;
   virtual QString             text( const int = NameId ) const;

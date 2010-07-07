@@ -145,6 +145,8 @@ public:
 
   QAbstractItemDelegate* delegate() const;
 
+  virtual void updateTreeModel(SUIT_DataObject*,TreeItem*);
+
 public slots:
   virtual void           updateTree( const QModelIndex& );
   virtual void           updateTree( SUIT_DataObject* = 0 );

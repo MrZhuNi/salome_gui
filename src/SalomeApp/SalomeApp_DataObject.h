@@ -69,6 +69,8 @@ public:
   virtual bool           customSorting( const int = NameId ) const;
   virtual bool           compare( const QVariant&, const QVariant&, const int = NameId ) const;
 
+  virtual void           insertChildAtTag( SalomeApp_DataObject*, int );
+
 private:
   QString                ior( const _PTR(SObject)& ) const;
   QString                entry( const _PTR(SObject)& ) const;

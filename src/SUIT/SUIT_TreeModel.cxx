@@ -29,11 +29,10 @@
 #include <QHash>
 
 #include <sys/time.h>
-static long tt0;
 static long tcount=0;
 static long cumul;
 static timeval tv;
-#define START_TIMING gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
+#define START_TIMING long tt0;gettimeofday(&tv,0);tt0=tv.tv_usec+tv.tv_sec*1000000;
 #define END_TIMING(NUMBER) \
   tcount=tcount+1;gettimeofday(&tv,0);cumul=cumul+tv.tv_usec+tv.tv_sec*1000000 -tt0; \
   if(tcount==NUMBER){ std::cerr <<pthread_self()<<":"<<__FILE__<<":"<<__LINE__<<" temps CPU(mus): "<<cumul<< std::endl; tcount=0;cumul=0; }
@@ -80,6 +79,7 @@ public:
   SUIT_DataObject*      dataObject() const;
   TreeItem*             parent() const;
   int                   position() const;
+  void                  setPosition(int position) {_position=position;};
   int                   childCount() const;
   TreeItem*             child( const int i );
   QList<TreeItem*>      children() const;
@@ -90,6 +90,7 @@ private:
   TreeItem*             myParent;
   QList<TreeItem*>      myChildren;
   SUIT_DataObject*      myObj;
+  int _position;
 };
 
 /*!
@@ -138,7 +139,7 @@ void SUIT_TreeModel::TreeItem::insertChild( SUIT_TreeModel::TreeItem* child,
   if ( !child )
     return;
 
-  int index = after ? myChildren.indexOf( after ) + 1 : 0;
+  int index = after ? after->position() + 1 : 0;
   myChildren.insert( index, child );
 }
 
@@ -181,7 +182,7 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::TreeItem::parent() const
 */
 int SUIT_TreeModel::TreeItem::position() const
 {
-  return myParent ? myParent->myChildren.indexOf( (TreeItem*)this ) : -1;
+  return _position;
 }
 
 /*!
@@ -334,10 +335,8 @@ void SUIT_TreeModel::TreeSync::updateItem( const ObjPtr& obj, const ItemPtr& ite
 {
   if( obj )
     obj->update();
-  /*
   if ( item && needUpdate( item ) ) 
     myModel->updateItem( item );
-    */
 }
 
 /*!
@@ -409,7 +408,8 @@ bool SUIT_TreeModel::TreeSync::needUpdate( const ItemPtr& item ) const
       // - use "LastModified" time stamp in data objects and tree items - hardly possible, for sometimes data objects do not know that data changes...
       // ...
       update = true; // TEMPORARY!!!
-      update = obj->modified();
+      //update = obj->modified();
+      update = false;
       // 1. check text
 /*      update = ( item->text( 0 ) != obj->name() ) || myBrowser->needToUpdateTexts( item );
 
@@ -670,12 +670,10 @@ void SUIT_TreeModel::setRoot( SUIT_DataObject* r )
 */
 QVariant SUIT_TreeModel::data( const QModelIndex& index, int role ) const
 {
-//  std::cerr << "SUIT_TreeModel::data " << role << std::endl;
   if ( !index.isValid() )
     return QVariant();
 
   SUIT_DataObject* obj = object( index );
-  //obj->setModified(false);
 
   QColor c;
   QVariant val;
@@ -909,7 +907,6 @@ QModelIndex SUIT_TreeModel::index( int row, int column,
 */
 QModelIndex SUIT_TreeModel::parent( const QModelIndex& index ) const
 {
-  //std::cerr << "SUIT_TreeModel::parent " << index.row() << std::endl;
   if ( !index.isValid() )
     return QModelIndex();
 
@@ -1095,6 +1092,82 @@ void SUIT_TreeModel::updateTree( const QModelIndex& index )
   updateTree( object( index ) );
 }
 
+
+void SUIT_TreeModel::updateTreeModel(SUIT_DataObject* obj,TreeItem* item)
+{
+  int kobj=0;
+  int kitem=0;
+  int nobjchild=obj->childCount();
+  //std::cerr << "updateTreeModel " << nobjchild << std::endl;
+  SUIT_DataObject* sobj=obj->childObject(kobj);
+  TreeItem* sitem = item->child(kitem);
+
+  while(kobj < nobjchild)
+    {
+          //START_TIMING;
+      //std::cerr << kitem << std::endl;
+      if(sitem==0)
+        {
+          //end of item list
+          //std::cerr << "new object " << kobj << std::endl;
+          if(kitem==0)
+            sitem=createItem(sobj,item,0);
+          else
+            sitem=createItem(sobj,item,item->child(kitem-1));
+          updateTreeModel(sobj,sitem);
+          kobj++;
+          kitem++;
+          sobj=obj->childObject(kobj);
+          sitem = item->child(kitem);
+        }
+      else if(sitem->dataObject() != sobj)
+        {
+          if(treeItem(sobj))
+            {
+              // item : to remove
+              //std::cerr << "remove object " << kitem << std::endl;
+              removeItem(sitem);
+              sitem = item->child(kitem);
+            }
+          else
+            {
+              // obj : new object
+              //std::cerr << "new object " << kobj << std::endl;
+              createItem(sobj,item,item->child(kitem-1));
+              kobj++;
+              kitem++;
+              sobj=obj->childObject(kobj);
+              sitem = item->child(kitem);
+            }
+        }
+      else
+        {
+          //obj and item are synchronised : go to next ones
+          //std::cerr << "existing object " << kitem << ":" << kobj << std::endl;
+          updateTreeModel(sobj,sitem);
+          if(sobj->modified()) updateItem(sitem);
+          if( sobj ) sobj->update();
+          kobj++;
+          kitem++;
+          sobj=obj->childObject(kobj);
+          sitem = item->child(kitem);
+        }
+          //END_TIMING(100);
+    }
+  //std::cerr << "end of updatetreemodel " << kobj << ":" << kitem << std::endl;
+  //std::cerr << "end of updateTreeModel " << obj->childCount() << ":" << item->childCount() << std::endl;
+  //remove remaining items
+  for(int i = item->childCount(); i > kitem;i--)
+    {
+      //std::cerr << "remove object " << i << std::endl;
+      sitem = item->child(i-1);
+      removeItem(sitem);
+    }
+}
+
+
+
+
 /*!
   \brief Update tree model.
 
@@ -1107,27 +1180,14 @@ void SUIT_TreeModel::updateTree( const QModelIndex& index )
 */
 void SUIT_TreeModel::updateTree( SUIT_DataObject* obj )
 {
-  if(myAutoUpdate)
-    {
-      emit layoutAboutToBeChanged();
-      emit layoutChanged();
-      emit modelUpdated();
-      return;
-    }
-
   if ( !obj )
     obj = root();
 
   else if ( obj->root() != root() )
     return;
 
+  updateTreeModel(obj,treeItem( obj ));
 
-  synchronize<ObjPtr,ItemPtr,SUIT_TreeModel::TreeSync>( obj, 
-                                                        treeItem( obj ), 
-                                                        SUIT_TreeModel::TreeSync( this ) );
-
-  emit layoutAboutToBeChanged();
-  emit layoutChanged();
   emit modelUpdated();
 }
 
@@ -1226,17 +1286,18 @@ SUIT_TreeModel::TreeItem* SUIT_TreeModel::createItem( SUIT_DataObject* obj,
   SUIT_DataObject* parentObj = object( parent );
   QModelIndex parentIdx = index( parentObj );
 
-  SUIT_DataObject* afterObj = after ? object( after ) : 0;
-  int row = afterObj ? afterObj->position() + 1 : 0;
-  //std::cerr << " SUIT_TreeModel::createItem " << row << ":" << afterObj << std::endl;
+  int row = after ? after->position() + 1 : 0;
 
   beginInsertRows( parentIdx, row, row );
 
   myItems[ obj ] = new TreeItem( obj, parent, after );
 
+  for(int pos=row;pos < parent->childCount();pos++)
+    parent->child(pos)->setPosition(pos);
+
   endInsertRows();
 
-  //obj->setModified(false);
+  obj->setModified(false);
 
   return myItems[ obj ];
 }
@@ -1268,7 +1329,7 @@ void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item )
   QModelIndex firstIdx = index( obj, 0 );
   QModelIndex lastIdx  = index( obj, columnCount() - 1 );
   emit dataChanged( firstIdx, lastIdx );
-  //obj->setModified(false);
+  obj->setModified(false);
 }
 
 /*!
@@ -1285,7 +1346,7 @@ void SUIT_TreeModel::updateItem( SUIT_DataObject* obj)
   QModelIndex firstIdx = index( obj, 0 );
   QModelIndex lastIdx  = index( obj, columnCount() - 1 );
   emit dataChanged( firstIdx, lastIdx );
-  //obj->setModified(false);
+  obj->setModified(false);
 }
 
 
@@ -1309,7 +1370,8 @@ void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
   
   // Warning! obj can be deleted at this point!
 
-  SUIT_DataObject* parentObj = object( item->parent() );
+  TreeItem* parent=item->parent();
+  SUIT_DataObject* parentObj = object( parent );
   QModelIndex parentIdx = index( parentObj, 0 );
   int row = item->position();
   
@@ -1318,8 +1380,12 @@ void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
 
   if ( obj == root() )
     setRoot( 0 );
-  else if ( item->parent() )
-    item->parent()->removeChild( item );
+  else if ( parent )
+    {
+      parent->removeChild( item );
+      for(int pos=row;pos < parent->childCount();pos++)
+        parent->child(pos)->setPosition(pos);
+    }
 
   delete item;
 
@@ -1329,6 +1395,7 @@ void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
 void SUIT_TreeModel::onUpdated( SUIT_DataObject* object)
 {
   updateItem(object);
+  emit modelUpdated();
 }
 
 /*!
@@ -1341,10 +1408,6 @@ void SUIT_TreeModel::onInserted( SUIT_DataObject* object, SUIT_DataObject* paren
   //std::cerr << "SUIT_TreeModel::onInserted" << std::endl;
   createItem(object,parent,after);
   emit modelUpdated();
-  /*
-  if ( autoUpdate() )
-    updateTree( parent );
-    */
 }
 
 /*!
@@ -1357,10 +1420,6 @@ void SUIT_TreeModel::onRemoved( SUIT_DataObject* object, SUIT_DataObject* parent
   //std::cerr << "onRemoved" << std::endl;
   removeItem( treeItem(object) );
   emit modelUpdated();
-  /*
-  if ( autoUpdate() )
-    updateTree( parent );
-    */
 }
 
 /*!

@@ -283,18 +283,20 @@ void SUIT_DataObject::appendChild( SUIT_DataObject* obj )
 */
 void SUIT_DataObject::insertChild( SUIT_DataObject* obj, int position )
 {
-  if ( !obj || myChildren.contains( obj ) )
+  //std::cerr << "SUIT_DataObject::insertChild " << obj << ":" << position << std::endl;
+  //if ( !obj || myChildren.contains( obj ) )
+  if ( !obj )
     return;
 
   int pos = position < 0 ? myChildren.count() : position;
   myChildren.insert( qMin( pos, (int)myChildren.count() ), obj );
-  obj->setParent( this );
-  /*
+  obj->assignParent( this );
+
   if(pos == 0)
     signal()->emitInserted( obj, this ,0);
   else
     signal()->emitInserted( obj, this ,myChildren.at(pos-1));
-    */
+
 }
 
 /*!
@@ -304,7 +306,6 @@ void SUIT_DataObject::insertChild( SUIT_DataObject* obj, int position )
 */
 void SUIT_DataObject::removeChild( SUIT_DataObject* obj, const bool del )
 {
-  //std::cerr << "removeChild " << del << std::endl;
   if ( !obj )
     return;
 
@@ -389,6 +390,13 @@ void SUIT_DataObject::setParent( SUIT_DataObject* p )
 
   if ( parent() )
     parent()->appendChild( this );
+}
+
+void SUIT_DataObject::assignParent( SUIT_DataObject* p )
+{
+  if ( p == myParent )
+    return;
+  myParent = p;
 }
 
 /*!
@@ -900,7 +908,7 @@ void SUIT_DataObject::updateItem()
 {
   if(modified())return;
   setModified(true);
-  signal()->emitUpdated(this);
+  //signal()->emitUpdated(this);
 }
 
 /*!

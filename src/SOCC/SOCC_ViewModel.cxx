@@ -453,9 +453,9 @@ std::cerr << "ais found in collector" << std::endl;
         aTrh->SetSize( aTrh == getTrihedron() ? aNewSize : 0.5 * aNewSize );
       }
 
-  START_TIMING;
+  //START_TIMING;
       ic->Display( anAIS, false );
-  END_TIMING(100);
+  //END_TIMING(100);
 
       // Set visibility flag
       // Temporarily commented to avoid awful dependecy on SALOMEDS
@@ -484,7 +484,6 @@ std::cerr << "ais found in collector" << std::endl;
 */
 void SOCC_Viewer::Erase( const SALOME_OCCPrs* prs, const bool forced )
 {
-  //std::cerr << "SOCC_Viewer::Erase " << forced << std::endl;
   // try do downcast object
   const SOCC_Prs* anOCCPrs = dynamic_cast<const SOCC_Prs*>( prs );
   if ( !anOCCPrs || anOCCPrs->IsNull() )

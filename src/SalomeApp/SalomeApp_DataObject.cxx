@@ -171,7 +171,6 @@ QString SalomeApp_DataObject::text( const int id ) const
 */
 QPixmap SalomeApp_DataObject::icon( const int id ) const
 {
-  //std::cerr << "SalomeApp_DataObject::icon " << pthread_self() << std::endl;
   // we display icon only for the first (NameId ) column
   if ( id == NameId ) {
     _PTR(GenericAttribute) anAttr;
@@ -562,6 +561,27 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
 
   return val;
 }
+
+void SalomeApp_DataObject::insertChildAtTag(SalomeApp_DataObject* obj,int tag)
+{
+  int pos=0;
+  int npos=std::min(tag-1,childCount());
+  for (int i=npos;i>0;i--)
+    {
+ //   std::cerr << (dynamic_cast<SalomeApp_DataObject*>(father->childObject(i-1)))->object()->GetID() << std::endl;
+      if((dynamic_cast<SalomeApp_DataObject*>(childObject(i-1)))->object()->Tag() < tag)
+        {
+       // std::cerr << "found" << std::endl;
+          pos=i-1;
+          break;
+        }
+    }
+  //  std::cerr << "position after: " << pos << std::endl;
+  insertChild(obj,pos+1);
+}
+
+
+
 
 /*!
   \class SalomeApp_ModuleObject

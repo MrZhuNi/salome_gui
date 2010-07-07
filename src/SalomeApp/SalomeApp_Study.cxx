@@ -69,28 +69,27 @@ class Observer_i : public virtual POA_SALOME::Observer
 
     virtual void notifyObserver(const char* theID, const char* event)
     {
-      START_TIMING;
 
       //MESSAGE("I'm notified of " << event << " of ID =  " << theID);
-      _PTR(SObject) obj = myStudyDS->FindObjectID( theID );
-      //MESSAGE("Checking the ID from the sObj : " << obj->GetID());
+    //  START_TIMING;
       
-      std::string entry_str = theID;
-      int last2Pnt_pos = entry_str.rfind(":");
-      std::string parent_id=entry_str.substr(0,last2Pnt_pos);
-      std::string pos_in_parent=entry_str.substr(last2Pnt_pos+1);
-
-
-      //MESSAGE("Parent id  " << parent_id << " with position " << pos_in_parent);
-      //_PTR(SObject) obj_parent = myStudyDS->FindObjectID( parent_id );
-      _PTR(SObject) obj_parent = obj->GetFather();
-      //MESSAGE("Checking the ID from the sObj_parent : " << obj_parent->GetID());
-      
-      SUIT_DataObject* suit_obj;
+      SalomeApp_DataObject* suit_obj;
 
       if (std::string(event) == "ADD")
       {
+        if (entry2SuitObject.count(theID)>0)
+          {
+            std::cerr << "entry " << theID << " is already added. Problem ??" << std::endl;
+            return;
+          }
         //MESSAGE("ADDING");
+        _PTR(SObject) obj = myStudyDS->FindObjectID( theID );
+        //MESSAGE("Checking the ID from the sObj : " << obj->GetID());
+        std::string entry_str = theID;
+        int last2Pnt_pos = entry_str.rfind(":");
+        std::string parent_id=entry_str.substr(0,last2Pnt_pos);
+        std::string pos_in_parent=entry_str.substr(last2Pnt_pos+1);
+        //MESSAGE("Parent id  " << parent_id << " with position " << pos_in_parent);
 
         _PTR(SComponent) aSComp(obj);
         if( aSComp )
@@ -106,24 +105,9 @@ class Observer_i : public virtual POA_SALOME::Observer
 
         if (entry2SuitObject.count(parent_id)>0)
         {
-          SUIT_DataObject* father=entry2SuitObject[parent_id];
-          SUIT_DataObject* after=0;
-          std::string after_id;
-          std::stringstream ss; 
-          for (int i=atoi(pos_in_parent.c_str());i>0;i--)
-          {
-            ss << parent_id << ":" << i ;
-            after_id = ss.str();
-            ss.str("");
-            if (entry2SuitObject.count(after_id)>0)
-            {
-              after=entry2SuitObject[after_id];
-              //MESSAGE("after_id " << after_id);
-              break;
-            }
-          }
-          int pos = after ? father->childPos( after ) : 0;
-          father->insertChild(suit_obj,pos+1);
+          SalomeApp_DataObject* father=entry2SuitObject[parent_id];
+          int tag=atoi(pos_in_parent.c_str());
+          father->insertChildAtTag(suit_obj,tag);
           /*
           if (LightApp_Application* myApp=dynamic_cast<LightApp_Application*>(myStudy->application()))
             if (SUIT_ProxyModel* myModel=dynamic_cast<SUIT_ProxyModel*>(myApp->objectBrowser()->model()))
@@ -150,16 +134,9 @@ class Observer_i : public virtual POA_SALOME::Observer
         if (entry2SuitObject.count(theID)>0)
         {
           suit_obj= entry2SuitObject[theID];
-          if (entry2SuitObject.count(parent_id)>0)
-            {
-              SUIT_DataObject* father=entry2SuitObject[parent_id];
-              father->removeChild(suit_obj);
-            }
-          else
-            {
-              //MESSAGE("This should be for a module");
-              myStudy->root()->removeChild(suit_obj);
-            }
+          SUIT_DataObject* father=suit_obj->parent();
+          if(father)
+            father->removeChild(suit_obj);
           entry2SuitObject.erase(theID);
         }
         else
@@ -174,20 +151,25 @@ class Observer_i : public virtual POA_SALOME::Observer
           {
             suit_obj= entry2SuitObject[theID];
             suit_obj->updateItem();
+          /*
+          if (LightApp_Application* myApp=dynamic_cast<LightApp_Application*>(myStudy->application()))
+            if (SUIT_ProxyModel* myModel=dynamic_cast<SUIT_ProxyModel*>(myApp->objectBrowser()->model()))
+              myModel->updateItem(suit_obj);
+              */
           }
         else
           {
             MESSAGE("Want to modify an unknown object"  << theID);
           }
       }
-      END_TIMING(100);
+     // END_TIMING(100);
     }
 
   private:
 
     _PTR(Study) myStudyDS;
     SalomeApp_Study* myStudy;
-    map<string,SUIT_DataObject*> entry2SuitObject;
+    map<string,SalomeApp_DataObject*> entry2SuitObject;
 
 };
 
@@ -269,7 +251,8 @@ bool SalomeApp_Study::createDocument( const QString& theStr )
   emit created( this );
 
   Observer_i* myObserver_i = new Observer_i(myStudyDS,this);
-  myStudyDS->attach(myObserver_i->_this());
+  //attach an observer to the study without notification of modifications 
+  myStudyDS->attach(myObserver_i->_this(),true);
   
   return aRet;
 }
