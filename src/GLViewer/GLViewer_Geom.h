@@ -117,7 +117,7 @@ public:
   bool        isValid() const { return ( myLeft < myRight && myBottom < myTop ); }
 
   //! Checks staus of contains point 
-  bool        contains( GLViewer_Pnt pnt ) { return ( pnt.x() > left() &&
+  bool        contains( GLViewer_Pnt pnt ) const { return ( pnt.x() > left() &&
                                                       pnt.x() < right() &&
                                                       pnt.y() > bottom() &&
                                                       pnt.y() < top() ); }
