@@ -24,6 +24,10 @@
 
 #include "Qtx.h"
 
+#ifdef WIN32
+#pragma warning( disable:4251 )
+#endif
+
 #include <QWidget>
 #include <QFrame>
 #include <QTabBar>
@@ -40,10 +44,6 @@ class QtxWorkstackArea;
 class QtxWorkstackDrag;
 class QtxWorkstackChild;
 class QtxWorkstackTabBar;
-
-#ifdef WIN32
-#pragma warning( disable:4251 )
-#endif
 
 class QTX_EXPORT QtxWorkstack : public QWidget
 {
@@ -371,7 +371,7 @@ private:
 };
 
 #ifdef WIN32
-#pragma warning( default:4251 )
+//#pragma warning( default:4251 )
 #endif
 
 #endif   // QTXWORKSTACK_H

@@ -29,6 +29,10 @@
 #include <QPixmap>
 #include <QToolButton>
 
+#if defined WIN32
+#pragma warning ( disable: 4251 )
+#endif
+
 class QPaintDevice;
 
 class QTX_EXPORT QtxColorButton : public QToolButton

@@ -2233,7 +2233,7 @@ void QtxPagePrefSelectItem::setInputType( const int type )
 QStringList QtxPagePrefSelectItem::strings() const
 {
   QStringList res;
-  for ( uint i = 0; i < mySelector->count(); i++ )
+  for ( uint i = 0; i < (uint)mySelector->count(); i++ )
     res.append( mySelector->itemText( i ) );
   return res;
 }
@@ -2246,7 +2246,7 @@ QStringList QtxPagePrefSelectItem::strings() const
 QList<int> QtxPagePrefSelectItem::numbers() const
 {
   QList<int> res;
-  for ( uint i = 0; i < mySelector->count(); i++ )
+  for ( uint i = 0; i < (uint)mySelector->count(); i++ )
   {
     if ( mySelector->hasId( i ) )
       res.append( mySelector->id( i ) );
@@ -2273,7 +2273,7 @@ void QtxPagePrefSelectItem::setStrings( const QStringList& lst )
 void QtxPagePrefSelectItem::setNumbers( const QList<int>& ids )
 {
   uint i = 0;
-  for ( QList<int>::const_iterator it = ids.begin(); it != ids.end() && i < mySelector->count(); ++it, i++ )
+  for ( QList<int>::const_iterator it = ids.begin(); it != ids.end() && i < (uint)mySelector->count(); ++it, i++ )
     mySelector->setId( i, *it );
 }
 
@@ -2310,7 +2310,7 @@ void QtxPagePrefSelectItem::retrieve()
     idx = mySelector->index( num );
   else
   {
-    for ( uint i = 0; i < mySelector->count() && idx == -1; i++ )
+    for ( uint i = 0; i < (uint)mySelector->count() && idx == -1; i++ )
     {
       if ( mySelector->itemText( i ) == txt )
         idx = i;

@@ -72,7 +72,7 @@ private:
 };
 
 #if defined WIN32
-#pragma warning ( default: 4251 )
+//#pragma warning ( default: 4251 )
 #endif
 
 #endif

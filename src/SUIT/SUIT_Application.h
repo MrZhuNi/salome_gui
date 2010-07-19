@@ -183,7 +183,7 @@ extern "C"
 #define APP_CREATE_NAME "createApplication"
 
 #ifdef WIN32
-#pragma warning ( default:4251 )
+//#pragma warning ( default:4251 )
 #endif
 
 #endif

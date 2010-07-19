@@ -84,8 +84,8 @@ private:
 };
 
 #ifdef WIN32
-#pragma warning( default:4251 )
-#pragma warning( default:4275 )
+//#pragma warning( default:4251 )
+//#pragma warning( default:4275 )
 #endif
 
 #endif

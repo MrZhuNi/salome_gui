@@ -127,7 +127,7 @@ class SVTK_EXPORT SVTK_GenericRenderWindowInteractor: public QVTK_GenericRenderW
 };
 
 #ifdef WIN32
-#pragma warning ( default:4251 )
+//#pragma warning ( default:4251 )
 #endif
 
 #endif

@@ -24,13 +24,13 @@
 
 #include "Qtx.h"
 
-#include <QWidgetAction>
-
-class QIcon;
-
 #ifdef WIN32
 #pragma warning ( disable:4251 )
 #endif
+
+#include <QWidgetAction>
+
+class QIcon;
 
 class QTX_EXPORT QtxAction : public QWidgetAction
 {
@@ -54,7 +54,7 @@ protected:
 };
 
 #ifdef WIN32
-#pragma warning ( default:4251 )
+//#pragma warning ( default:4251 )
 #endif
 
 #endif

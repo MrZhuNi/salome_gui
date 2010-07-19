@@ -27,6 +27,10 @@
 
 class QToolButton;
 
+#ifdef WIN32
+#pragma warning ( disable:4251 )
+#endif
+
 class QTX_EXPORT QtxMultiAction : public QtxActionSet
 {
   Q_OBJECT

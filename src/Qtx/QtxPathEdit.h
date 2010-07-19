@@ -24,6 +24,10 @@
 
 #include "Qtx.h"
 
+#if defined WIN32
+#pragma warning ( disable: 4251 )
+#endif
+
 #include <QFrame>
 
 class QLineEdit;

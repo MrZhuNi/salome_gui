@@ -31,10 +31,6 @@
 class QMenuBar;
 class QMovie;
 
-#ifdef WIN32
-#pragma warning( disable : 4251 )
-#endif
-
 class QTX_EXPORT QtxLogoMgr : public QObject
 {
   Q_OBJECT
@@ -74,7 +70,7 @@ private:
 };
 
 #ifdef WIN32
-#pragma warning( default : 4251 )
+//#pragma warning( default : 4251 )
 #endif
 
 #endif // QTXLOGOMGR_H

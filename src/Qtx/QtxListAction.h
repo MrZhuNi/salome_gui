@@ -23,12 +23,18 @@
 #define QTXLISTACTION_H
 
 #include "Qtx.h"
-#include "QtxAction.h"
-#include <QStringList>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
+
+#include "QtxAction.h"
+
+#ifdef WIN32
+#pragma warning( disable:4251 )
+#endif
+
+#include <QStringList>
 
 class QTX_EXPORT QtxListAction : public QtxAction
 {
@@ -89,7 +95,7 @@ private:
 };
 
 #ifdef WIN32
-#pragma warning( default:4251 )
+//#pragma warning( default:4251 )
 #endif
 
 #endif

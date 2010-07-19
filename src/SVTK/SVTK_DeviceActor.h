@@ -267,7 +267,7 @@ class SVTK_EXPORT SVTK_DeviceActor: public vtkLODActor
 };
 
 #ifdef WIN32
-#pragma warning ( default:4251 )
+//#pragma warning ( default:4251 )
 #endif
 
 #endif //SVTK_DEVICE_ACTOR_H

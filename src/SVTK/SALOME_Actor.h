@@ -236,7 +236,7 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 };
 
 #ifdef WIN32
-#pragma warning ( default:4251 )
+//#pragma warning ( default:4251 )
 #endif
 
 #endif // SALOME_ACTOR_H

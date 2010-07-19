@@ -23,7 +23,6 @@
 #define QTXPAGEPREFMGR_H
 
 #include "QtxPreferenceMgr.h"
-
 #include "QtxPathEdit.h"
 #include "QtxPathListEdit.h"
 

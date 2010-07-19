@@ -335,7 +335,7 @@ class VTKVIEWER_EXPORT VTKViewer_Actor : public vtkLODActor
 };
 
 #ifdef WIN32
-#pragma warning ( default:4251 )
+//#pragma warning ( default:4251 )
 #endif
 
 #endif // VTKVIEVER_ACTOR_H
