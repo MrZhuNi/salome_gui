@@ -442,8 +442,12 @@ void GLViewer_ViewPort2d::mouseReleaseEvent( QMouseEvent* e )
 */
 void GLViewer_ViewPort2d::mouseDoubleClickEvent( QMouseEvent * e )
 {
+  // OUV: this fix (PTV, 2005-08-01, revision 1.3) seems to be
+  // non-actual for the current version - therefore disabled
+  /*
   //redefined to block mouse release after mouse double click
   myIsMouseReleaseBlock = true;
+  */
   // invoke base implementation
   GLViewer_ViewPort::mouseDoubleClickEvent( e );
 }
