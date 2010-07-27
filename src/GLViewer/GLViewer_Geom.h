@@ -180,7 +180,7 @@ public:
   virtual ~GLViewer_Poly();
 
   //! Adds point to polygon
-  void              AddPoint( GLViewer_Pnt& pnt ) { myPoints->append( pnt ); }
+  void              AddPoint( const GLViewer_Pnt& thePnt ) { myPoints->append( thePnt ); }
 
   //! Returns number of point
   int               Count() const { return myPoints->count(); }
