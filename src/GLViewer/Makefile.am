@@ -51,7 +51,8 @@ salomeinclude_HEADERS =		\
 	GLViewer_ViewPort2d.h	\
 	GLViewer_Viewer.h	\
 	GLViewer_Viewer2d.h	\
-	GLViewer_Widget.h
+	GLViewer_Widget.h	\
+	GLViewer_FrameBuffer.h
 
 dist_libGLViewer_la_SOURCES =		\
 	GLViewer_AspectLine.cxx		\
@@ -77,7 +78,8 @@ dist_libGLViewer_la_SOURCES =		\
 	GLViewer_ViewPort2d.cxx		\
 	GLViewer_Viewer.cxx		\
 	GLViewer_Viewer2d.cxx		\
-	GLViewer_Widget.cxx
+	GLViewer_Widget.cxx		\
+	GLViewer_FrameBuffer.cxx
 
 MOC_FILES =				\
 	GLViewer_Selector_moc.cxx	\
@@ -89,7 +91,8 @@ MOC_FILES =				\
 	GLViewer_ViewPort2d_moc.cxx	\
 	GLViewer_Viewer_moc.cxx		\
 	GLViewer_Viewer2d_moc.cxx	\
-	GLViewer_Widget_moc.cxx
+	GLViewer_Widget_moc.cxx		\
+	GLViewer_FrameBuffer_moc.cxx
 nodist_libGLViewer_la_SOURCES = $(MOC_FILES)
 
 dist_salomeres_DATA =			\
