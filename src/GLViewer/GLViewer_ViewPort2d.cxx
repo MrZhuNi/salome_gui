@@ -1158,7 +1158,7 @@ BlockStatus GLViewer_ViewPort2d::currentBlock()
     if( myIsDragProcess == inDrag && myCurDragPosX != NULL && myCurDragPosY != NULL)
         return BlockStatus(BS_Highlighting | BS_Selection);
 
-    if( mypFirstPoint && mypLastPoint )
+    if( mypFirstPoint && mypLastPoint && ( *mypFirstPoint != *mypLastPoint ) )
         return BlockStatus(BS_Highlighting | BS_Selection);
 
     return BS_NoBlock;
