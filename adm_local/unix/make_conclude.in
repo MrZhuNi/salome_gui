@@ -157,7 +157,7 @@ $(DEST_UI_PY_FILES): $(top_builddir)/bin/salome/%: %
 PYTHON_SHARED_SITE=$(top_builddir)/lib@LIB_LOCATION_SUFFIX@/python$(PYTHON_VERSION)/site-packages/salome/shared_modules
 
 $(PYTHON_SHARED_SITE):
-	$(INSTALL) -d  $@
+	$(INSTALL) -p -d  $@
 
 DEST_SHAREDPYSCRIPTS = $(EXPORT_SHAREDPYSCRIPTS:%=$(PYTHON_SHARED_SITE)/%)
 sharedpyscripts: $(PYTHON_SHARED_SITE) $(DEST_SHAREDPYSCRIPTS)
@@ -200,13 +200,13 @@ $(RESOURCES_FILES:%=$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%): $(
 
 # Make installation directories if they don't exist.
 $(libdir) $(includedir) $(bindir) $(datadir) $(idldir) $(sharedpydir):
-	$(INSTALL) -d $@ && chmod 755 $@
+	$(INSTALL) -p -d $@ && chmod 755 $@
 
 # Install the library, the public header files, and programs.
 install: $(LIB) $(BIN) $(TEST_PROGS) $(libdir) $(includedir) $(bindir) $(datadir) $(idldir) install-python install-sharedpyqt install-qm install-res
 	@for f in X $(LIB); do						      \
 	   if test $$f != X; then					      \
-	      ($(LT_INSTALL_LIB) $$f $(libdir)/. || exit 1);		      \
+	      ($(LT_INSTALL_LIB) -p $$f $(libdir)/. || exit 1);		      \
 	   fi;								      \
 	done
 	@if ! test -z $(LIB_SWIG) ; then				      \
@@ -214,19 +214,19 @@ install: $(LIB) $(BIN) $(TEST_PROGS) $(libdir) $(includedir) $(bindir) $(datadir
         fi;								      
 	@for f in X $(BIN); do						      \
 	   if test $$f != X; then					      \
-	     ($(LT_INSTALL_PROG) $$f $(bindir)/. || exit 1);		      \
+	     ($(LT_INSTALL_PROG) -p $$f $(bindir)/. || exit 1);		      \
 	   fi;							              \
 	done
 # Install tests programmes in bindir
 	@for f in X $(TEST_PROGS); do  					      \
 	   if test $$f != X; then					      \
-	     ($(LT_INSTALL_PROG) $$f $(bindir)/. || exit 1);		      \
+	     ($(LT_INSTALL_PROG) -p $$f $(bindir)/. || exit 1);		      \
 	   fi;							              \
 	done
 # Install exported includes in includedir
 	@for f in X $(EXPORT_HEADERS:%=$(srcdir)/%); do			      \
 	   if test $$f != X; then					      \
-	     (cp -p -f $$f $(includedir) || exit 1);			      \
+	     (cp -p -u -f $$f $(includedir) || exit 1);			      \
 	   fi;							              \
 	done
 
@@ -234,10 +234,10 @@ install: $(LIB) $(BIN) $(TEST_PROGS) $(libdir) $(includedir) $(bindir) $(datadir
 install-python: $(bindir) $(EXPORT_PYSCRIPTS:%=install-%) $(UI_PY_FILES:%=install-%)
 
 $(UI_PY_FILES:%=install-%): install-%: %
-	$(INSTALL_PROGRAM) $< $(bindir)/.
+	$(INSTALL_PROGRAM) -p $< $(bindir)/.
 
 $(EXPORT_PYSCRIPTS:%=install-%): install-%: %
-	$(INSTALL_PROGRAM) $< $(bindir)/.
+	$(INSTALL_PROGRAM) -p $< $(bindir)/.
 
 #install-python: $(bindir) $(EXPORT_PYSCRIPTS)
 #	@for f in X $(EXPORT_PYSCRIPTS); do			      \
@@ -250,24 +250,24 @@ $(EXPORT_PYSCRIPTS:%=install-%): install-%: %
 install-sharedpyqt: $(sharedpydir) $(EXPORT_SHAREDPYSCRIPTS:%=install-%) 
 
 $(EXPORT_SHAREDPYSCRIPTS:%=install-%): install-%: %
-	$(INSTALL_PROGRAM) $< $(sharedpydir)/.
+	$(INSTALL_PROGRAM) -p $< $(sharedpydir)/.
 
 
 # generic rule to install .qm files :
 install-qm: resources
-	$(INSTALL) -d $(datadir)/resources/$(MODULE_NAME)
+	$(INSTALL) -p -d $(datadir)/resources/$(MODULE_NAME)
 	@for f in X $(TS_FILES:%.ts=$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%.qm); do \
 	   if test $$f != X; then							 \
-	     ($(INSTALL_DATA) $$f $(datadir)/resources/$(MODULE_NAME)/. || exit 1);			 \
+	     ($(INSTALL_DATA) -p  $$f $(datadir)/resources/$(MODULE_NAME)/. || exit 1);			 \
 	   fi; 										 \
 	done
 
 # generic rule to install resources files (png, ini ...):
 install-res: resources
-	$(INSTALL) -d $(datadir)/resources/$(MODULE_NAME)
+	$(INSTALL) -p  -d $(datadir)/resources/$(MODULE_NAME)
 	@for f in X $(RESOURCES_FILES:%=$(top_builddir)/share/salome/resources/$(MODULE_NAME)/%); do \
 	   if test $$f != X; then							 \
-	     ($(INSTALL_DATA) $$f $(datadir)/resources/$(MODULE_NAME)/. || exit 1);			 \
+	     ($(INSTALL_DATA) -p $$f $(datadir)/resources/$(MODULE_NAME)/. || exit 1);			 \
 	   fi; 										 \
 	done  
 

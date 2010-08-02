@@ -35,6 +35,7 @@ salomeinclude_HEADERS =		\
 	GLViewer_CoordSystem.h	\
 	GLViewer_Defs.h		\
 	GLViewer_Drawer.h	\
+	GLViewer_FrameBuffer.h  \
 	GLViewer_Geom.h		\
 	GLViewer_Grid.h		\
 	GLViewer_Group.h	\
@@ -60,6 +61,7 @@ dist_libGLViewer_la_SOURCES =		\
 	GLViewer_Compass.cxx		\
 	GLViewer_Context.cxx		\
 	GLViewer_CoordSystem.cxx	\
+	GLViewer_FrameBuffer.cxx        \
 	GLViewer_Drawer.cxx		\
 	GLViewer_Geom.cxx		\
 	GLViewer_Grid.cxx		\
