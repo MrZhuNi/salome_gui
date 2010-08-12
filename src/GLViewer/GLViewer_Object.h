@@ -178,7 +178,7 @@ public:
   QString                   getName() const { return myName; } 
   
   //! Returns object priority
-  virtual int               getPriority() const;
+  virtual int               getPriority() const { return myPriority; }
 
   //! Moves object per by recomputing
   /*!
@@ -295,6 +295,9 @@ protected:
   //! Line aspect for object presentation
   GLViewer_AspectLine*      myAspectLine;
   
+  //! Display priority
+  int                       myPriority;
+
   //! Objet tool tip text
   QString                   myToolTipText;
   //! HTML object tool tip status

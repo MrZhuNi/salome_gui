@@ -53,6 +53,8 @@ GLViewer_Object::GLViewer_Object()
   myAspectLine = new GLViewer_AspectLine();
   myType = "GLViewer_Object";
 
+  myPriority = 0;
+
   myOwner = NULL;
   myDrawer = NULL;
 
@@ -79,14 +81,6 @@ GLViewer_Object::~GLViewer_Object()
 
   if( myAspectLine )
     delete myAspectLine;
-}
-
-/*!
-  \return priority of object
-*/
-int GLViewer_Object::getPriority() const
-{
-    return myDrawer ? myDrawer->getPriority() : 0;
 }
 
 /*!

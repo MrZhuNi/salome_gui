@@ -483,7 +483,6 @@ GLViewer_Drawer::GLViewer_Drawer()
   myObjects.clear();
   myTextList = 0/*-1*/;
   myObjectType = "GLViewer_Object";
-  myPriority = 0;
   myTextFormat = DTF_BITMAP;
   myTextScale = 0.125;
 }
@@ -496,6 +495,18 @@ GLViewer_Drawer::~GLViewer_Drawer()
   myObjects.clear();
   glDeleteLists( myTextList, 1 );
 }
+
+/*!
+  Returns object priority
+*/
+int GLViewer_Drawer::getPriority() const
+{
+  if( !myObjects.isEmpty() )
+    if( GLViewer_Object* anObject = myObjects.first() )
+      return anObject->getPriority();
+  return 0;
+}
+
 
 /*!
   Clears all generated textures

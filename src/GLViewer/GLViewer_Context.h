@@ -157,6 +157,10 @@ public:
   bool                  setInactive( GLViewer_Object* theObject );
 
 protected:
+  //! Inserts the object to the corresponding list to the position based on its priority
+  void                  insertObjectToList( GLViewer_Object* theObject, bool isActive = true );
+
+protected:
   //! Flag of updating viewer after highlight
   /*!
   * if = true, the viewer update all objects after change of highlight object,

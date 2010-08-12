@@ -233,7 +233,7 @@ public:
   QString                         getObjectType() const { return myObjectType; }
 
   //! Returns object priority
-  int                             getPriority() const { return myPriority; }
+  int                             getPriority() const;
 
 	//! The function enables and disables antialiasing in Open GL (for points, lines and polygons).
 	void                            setAntialiasing(const bool on);
@@ -428,8 +428,6 @@ protected:
   
   //! Type of supporting object
   QString                         myObjectType;
-  //! Dislay priority
-  int                             myPriority;
 
   //! Default font for drawGLText() method
   QFont                           myFont;

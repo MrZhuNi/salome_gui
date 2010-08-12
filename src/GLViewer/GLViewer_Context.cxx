@@ -505,7 +505,7 @@ int GLViewer_Context::insertObject( GLViewer_Object* object, bool display, bool 
 
     if( isActive )
     {
-        myActiveObjects.append( object );
+        insertObjectToList( object );
         if( display )
         {
             //QRect* rect = object->getRect()->toQRect();
@@ -514,7 +514,7 @@ int GLViewer_Context::insertObject( GLViewer_Object* object, bool display, bool 
         }
     }
     else
-        myInactiveObjects.append( object );
+        insertObjectToList( object, false );
 
     return myActiveObjects.count() + myInactiveObjects.count();
 }
@@ -532,14 +532,14 @@ bool GLViewer_Context::replaceObject( GLViewer_Object* oldObject, GLViewer_Objec
   if( myActiveObjects.contains( oldObject ) )
   {
     myActiveObjects.removeAll( oldObject );
-    myActiveObjects.append( newObject );
+    insertObjectToList( newObject );
     return true;
   }
 
   if( myInactiveObjects.contains( oldObject ) )
   {
     myInactiveObjects.removeAll( oldObject );
-    myInactiveObjects.append( newObject );
+    insertObjectToList( newObject, false );
     return true;
   }
 
@@ -700,7 +700,7 @@ bool GLViewer_Context::setActive( GLViewer_Object* theObject )
     return false;
 
   myInactiveObjects.removeAll( theObject );
-  myActiveObjects.append( theObject );
+  insertObjectToList( theObject );
   return true;
 }
 
@@ -714,6 +714,24 @@ bool GLViewer_Context::setInactive( GLViewer_Object* theObject )
     return false;
 
   myActiveObjects.removeAll( theObject );
-  myInactiveObjects.append( theObject );
+  insertObjectToList( theObject, false );
   return true;
+}
+
+/*!
+  Inserts the object to the corresponding list to the position based on its priority
+  \param theObject - object to be inserted
+  \param isActive - true if needs inserting object in active list
+*/
+void GLViewer_Context::insertObjectToList( GLViewer_Object* theObject, bool isActive )
+{
+  int aPriority = theObject->getPriority();
+
+  ObjList& anObjList = isActive ? myActiveObjects : myInactiveObjects;
+  ObjList::Iterator anIter = anObjList.begin(), anIterEnd = anObjList.end();
+  for( ; anIter != anIterEnd; anIter++ )
+    if( (*anIter)->getPriority() > aPriority )
+      break;
+
+  anObjList.insert( anIter, theObject );
 }
