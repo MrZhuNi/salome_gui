@@ -100,6 +100,11 @@ public:
   //! Returns margin of borders
   GLfloat                getMargin() const { return myMargin; }
 
+  //! Sets margin ratio (smaller the ratio, smaller an empty gap for fit all operation)
+  void                   setMarginRatio( GLfloat marginRatio ) { myMarginRatio = marginRatio; }
+  //! Returns margin ratio
+  GLfloat                getMarginRatio() const { return myMarginRatio; }
+
   //! Returns width of view
   int                    getWidth() const { return myWidth; }
   //! Returns height of view
@@ -214,6 +219,7 @@ protected:
   QColor                 myBackgroundColor;
   
   GLfloat                myMargin;
+  GLfloat                myMarginRatio;
   int                    myHeight;
   int                    myWidth;
   

@@ -48,9 +48,10 @@
 #include <QWidget>
 #include <QRubberBand>
 
-#define WIDTH       640
-#define HEIGHT      480
-#define MARGIN      100
+#define WIDTH        640
+#define HEIGHT       480
+#define MARGIN       100
+#define MARGIN_RATIO 0.2
 
 #define GRID_XSIZE  100
 #define GRID_YSIZE  100
@@ -70,7 +71,8 @@ void rotate_point( float& theX, float& theY, float theAngle )
 */
 GLViewer_ViewPort2d::GLViewer_ViewPort2d( QWidget* parent, GLViewer_ViewFrame* theViewFrame )
 : GLViewer_ViewPort( parent ),
-  myMargin( MARGIN ), myWidth( WIDTH ), myHeight( HEIGHT ),
+  myMargin( MARGIN ), myMarginRatio( (GLfloat)MARGIN_RATIO ),
+  myWidth( WIDTH ), myHeight( HEIGHT ),
   myXScale( 1.0 ), myYScale( 1.0 ), myXOldScale( 1.0 ), myYOldScale( 1.0 ),
   myXPan( 0.0 ), myYPan( 0.0 ),
   myIsMouseReleaseBlock( false ),
@@ -838,7 +840,7 @@ void GLViewer_ViewPort2d::fitAll( bool keepScale, bool withZ )
     float dx, dy, zm;
     float xScale, yScale;
 
-    myMargin = qMax( myBorder->width(), myBorder->height() ) / 5;
+    myMargin = qMax( myBorder->width(), myBorder->height() ) * myMarginRatio;
 
     xa = myBorder->left() - myMargin;
     xb = myBorder->right() + myMargin;
