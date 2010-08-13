@@ -1161,6 +1161,9 @@ BlockStatus GLViewer_ViewPort2d::currentBlock()
     if( mypFirstPoint && mypLastPoint && ( *mypFirstPoint != *mypLastPoint ) )
         return BlockStatus(BS_Highlighting | BS_Selection);
 
+    if( isPulling() )
+        return BlockStatus(BS_Highlighting | BS_Selection);
+
     return BS_NoBlock;
 }
 
