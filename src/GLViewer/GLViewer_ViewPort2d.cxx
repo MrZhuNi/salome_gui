@@ -33,6 +33,7 @@
 #include "GLViewer_Compass.h"
 #include "GLViewer_Grid.h"
 #include "GLViewer_Drawer.h"
+#include "GLViewer_FrameBuffer.h"
 
 #include <QtxToolTip.h>
 
@@ -1434,4 +1435,82 @@ void GLViewer_ViewPort2d::onMaybeTip( QPoint thePoint, QString& theText, QFont& 
       theTextReg.translate( dx, dy );
     }
   }
+}
+
+/*!
+  Dumps contents of the scene
+  \param theWholeScene - flag, allowing to dump the whole scene,
+         not only its visible regeion
+  \return image with the scene contents
+*/
+QImage GLViewer_ViewPort2d::dumpContents( bool theWholeScene )
+{
+  QImage aResult;
+
+  int aWidth = theWholeScene ? myBorder->width() : myWidth;
+  int aHeight = theWholeScene ? myBorder->height() : myHeight;
+
+  // try to initialize framebuffer
+  GLViewer_FrameBuffer aFrameBuffer;
+  if( !aFrameBuffer.init( aWidth, aHeight ) )
+    return aResult;
+
+  if( theWholeScene )
+  {
+    glMatrixMode( GL_PROJECTION );
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho( -aWidth/2, aWidth/2, -aHeight/2, aHeight/2, -100, 100 );
+
+    glPushAttrib( GL_VIEWPORT_BIT );
+    glViewport( 0, 0, aWidth, aHeight );
+  }
+
+  // bind the framebuffer
+  aFrameBuffer.bind();
+
+  if( theWholeScene )
+  {
+    // centre the scene and reset the scale
+    int aXOffset = myBorder->left();
+    int aYOffset = myBorder->bottom();
+    myGLWidget->setPan( -aWidth/2 - aXOffset, -aHeight/2 - aYOffset, 0.0 );
+    myGLWidget->setScale( 1.0, 1.0, 1.0 );
+  }
+
+  // draw the scene to the framebuffer
+  myGLWidget->updateGL();
+
+  // unbind the framebuffer
+  aFrameBuffer.unbind();
+
+  if( theWholeScene )
+  {
+    glPopAttrib(); // GL_VIEWPORT_BIT
+
+    glMatrixMode( GL_PROJECTION );
+    glPopMatrix();
+    glMatrixMode( GL_MODELVIEW );
+    glPopMatrix();
+  }
+
+  // get an image by reading pixels from the framebuffer
+  QImage anImage( aWidth, aHeight, QImage::Format_RGB32 );
+
+  aFrameBuffer.bind();
+  glReadPixels( 0, 0, aWidth, aHeight, GL_RGBA, GL_UNSIGNED_BYTE, anImage.bits() );
+  aFrameBuffer.unbind();
+
+  if( theWholeScene )
+  {
+    // restore the scene parameters
+    myGLWidget->setPan( myXPan, myYPan, 0.0 );
+    myGLWidget->setScale( myXScale, myYScale, 1.0 );
+    myGLWidget->updateGL();
+  }
+
+  anImage = anImage.rgbSwapped();
+  anImage = anImage.mirrored();
+
+  return anImage;
 }

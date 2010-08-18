@@ -59,7 +59,7 @@ class QRubberBand;
  * Class GLViewer_ViewPort
  * 2D visualisation canvas of GLViewer
  */
-class GLViewer_ViewPort2d: public GLViewer_ViewPort
+class GLVIEWER_API GLViewer_ViewPort2d: public GLViewer_ViewPort
 {
   Q_OBJECT
   friend class GLViewer_Widget;
@@ -166,6 +166,9 @@ public:
   GLViewer_Rect          win2GLV( const QRect& ) const;
   //! Transforms global rect to window rect
   QRect                  GLV2win( const GLViewer_Rect& ) const;
+
+  //! Dumps contents of the scene
+  QImage                 dumpContents( bool theWholeScene = false );
 
 signals:
   //! Emits after any transformation

@@ -26,7 +26,6 @@
 #include "GLViewer_ViewFrame.h"
 #include "GLViewer_Viewer.h"
 #include "GLViewer_ViewPort2d.h"
-#include "GLViewer_FrameBuffer.h"
 
 #include <QtxToolBar.h>
 #include <QtxMultiAction.h>
@@ -272,36 +271,10 @@ void GLViewer_ViewFrame::onUpdate( int )
 QImage GLViewer_ViewFrame::dumpView()
 {
   GLViewer_ViewPort2d* aViewPort = ((GLViewer_ViewPort2d*)myVP);
-  int aWidth = aViewPort->getWidth();
-  int aHeight = aViewPort->getHeight();
-   
-  GLViewer_FrameBuffer aFrameBuffer;
-  if( aFrameBuffer.init( aWidth, aHeight ) )
-  {
-    glPushAttrib( GL_VIEWPORT_BIT );
-    glViewport( 0, 0, aWidth, aHeight );
-    aFrameBuffer.bind();
-
-    // draw scene
-    aViewPort->getGLWidget()->updateGL();
-    
-    aFrameBuffer.unbind();
-    glPopAttrib();
-
-    QImage anImage( aWidth, aHeight, QImage::Format_RGB32 );
-
-    aFrameBuffer.bind();
-
-    glReadPixels( 0, 0, aWidth, aHeight, GL_RGBA, GL_UNSIGNED_BYTE, anImage.bits() );
-
-    aFrameBuffer.unbind();
-
-    anImage = anImage.rgbSwapped();
-    anImage = anImage.mirrored();
+  QImage anImage = aViewPort->dumpContents( false );
+  if( !anImage.isNull() )
     return anImage;
-  }
 
-  QImage anImage;
   GLViewer_Widget* aWidget = aViewPort->getGLWidget();
   if ( aWidget )
     anImage = aWidget->grabFrameBuffer();
