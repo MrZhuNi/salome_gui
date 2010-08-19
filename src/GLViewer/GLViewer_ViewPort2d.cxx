@@ -475,14 +475,19 @@ void GLViewer_ViewPort2d::turnGrid( GLboolean on )
 {
     if( on )
     {
-        myGrid = new GLViewer_Grid( 2*WIDTH, 2*HEIGHT,
-                                    2*WIDTH, 2*HEIGHT,
-                                    GRID_XSIZE, GRID_YSIZE,
-                                    myXPan, myYPan,
-                                    myXScale, myYScale );
+        if( !myGrid )
+            myGrid = new GLViewer_Grid( 2*WIDTH, 2*HEIGHT,
+                                        2*WIDTH, 2*HEIGHT,
+                                        GRID_XSIZE, GRID_YSIZE,
+                                        myXPan, myYPan,
+                                        myXScale, myYScale );
+        myGrid->setEnabled( GL_TRUE );
     }
-    else if( myGrid )
-        delete myGrid;
+    else
+    {
+        if( myGrid )
+            myGrid->setEnabled( GL_FALSE );
+    }
 }
 
 /*!
@@ -1441,14 +1446,20 @@ void GLViewer_ViewPort2d::onMaybeTip( QPoint thePoint, QString& theText, QFont& 
   Dumps contents of the scene
   \param theWholeScene - flag, allowing to dump the whole scene,
          not only its visible regeion
+  \param theScale - parameter, allowing to get a scaled image
   \return image with the scene contents
 */
-QImage GLViewer_ViewPort2d::dumpContents( bool theWholeScene )
+QImage GLViewer_ViewPort2d::dumpContents( bool theWholeScene,
+                                          double theScale )
 {
   QImage aResult;
 
-  int aWidth = theWholeScene ? myBorder->width() : myWidth;
-  int aHeight = theWholeScene ? myBorder->height() : myHeight;
+  GLViewer_Viewer2d* aViewer = (GLViewer_Viewer2d*)getViewFrame()->getViewer();
+  if( !aViewer )
+    return aResult;
+
+  int aWidth = theWholeScene ? myBorder->width() * theScale : myWidth;
+  int aHeight = theWholeScene ? myBorder->height() * theScale : myHeight;
 
   // try to initialize framebuffer
   GLViewer_FrameBuffer aFrameBuffer;
@@ -1469,13 +1480,23 @@ QImage GLViewer_ViewPort2d::dumpContents( bool theWholeScene )
   // bind the framebuffer
   aFrameBuffer.bind();
 
+  bool isGridEnabled = ( myGrid && myGrid->isEnabled() );
+
   if( theWholeScene )
   {
+    // enable printing mode (to disable selection indicating)
+    aViewer->setPrintingModeEnabled( true );
+
+    // disable grid
+    turnGrid( false );
+
     // centre the scene and reset the scale
     int aXOffset = myBorder->left();
     int aYOffset = myBorder->bottom();
-    myGLWidget->setPan( -aWidth/2 - aXOffset, -aHeight/2 - aYOffset, 0.0 );
-    myGLWidget->setScale( 1.0, 1.0, 1.0 );
+    myGLWidget->setPan( -aWidth / 2 / theScale - aXOffset,
+                        -aHeight / 2 / theScale - aYOffset,
+                        0.0 );
+    myGLWidget->setScale( theScale, theScale, 1.0 );
   }
 
   // draw the scene to the framebuffer
@@ -1503,6 +1524,12 @@ QImage GLViewer_ViewPort2d::dumpContents( bool theWholeScene )
 
   if( theWholeScene )
   {
+    // disable printing mode (to enable selection indicating)
+    aViewer->setPrintingModeEnabled( false );
+
+    // restore grid enable state
+    turnGrid( isGridEnabled );
+
     // restore the scene parameters
     myGLWidget->setPan( myXPan, myYPan, 0.0 );
     myGLWidget->setScale( myXScale, myYScale, 1.0 );

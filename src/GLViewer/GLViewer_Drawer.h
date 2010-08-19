@@ -395,6 +395,11 @@ public:
   //! Returns a rectangle of text (without viewer scale)
   GLViewer_Rect                   textRect( const QString& ) const;
 
+  //! Enables/disables printing mode (in particular, rendering without selection)
+  void                            setPrintingModeEnabled( bool theFlag ) { myIsPrintingModeEnabled = theFlag; }
+
+  //! Returns printing mode state
+  bool                            isPrintingModeEnabled() const { return myIsPrintingModeEnabled; }
 
   //! Draw rectangle with predefined color
   static void                     drawRectangle( GLViewer_Rect* theRect, QColor = Qt::black );
@@ -437,6 +442,9 @@ protected:
   //! Scale factor for text string draw, by default 0.125
   //! (used only with text format DTF_TEXTURE_SCALABLE)
   GLfloat                         myTextScale;
+
+  //! Printing mode state
+  bool                            myIsPrintingModeEnabled;
 };
 
 #ifdef WIN32

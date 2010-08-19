@@ -32,10 +32,10 @@
   Default constructor
 */
 GLViewer_Grid::GLViewer_Grid() :
-       myGridList( 0 ), myGridHeight( (GLfloat)0.0 ), myGridWidth( (GLfloat)0.0 ),
+       myIsEnabled( GL_TRUE ), myGridList( 0 ), myGridHeight( (GLfloat)0.0 ), myGridWidth( (GLfloat)0.0 ),
        myWinW( (GLfloat)0.0 ), myWinH( (GLfloat)0.0 ), myXSize( (GLfloat)0.0 ), myYSize( (GLfloat)0.0 ),
        myXPan( (GLfloat)0.0 ), myYPan( (GLfloat)0.0 ), myXScale( (GLfloat)1.0 ), myYScale( (GLfloat)1.0 ),
-       myLineWidth( (GLfloat)0.05 ), myCenterWidth( (GLfloat)1.5 ), myCenterRadius( (GLfloat)5.0 ), 
+       myLineWidth( (GLfloat)0.05 ), myCenterWidth( (GLfloat)1.5 ), myCenterRadius( 5 ), 
        myScaleFactor( 10 ), myIsUpdate( GL_FALSE )
 {
   myGridColor[0] = 0.5;
@@ -59,10 +59,10 @@ GLViewer_Grid::GLViewer_Grid( GLfloat width, GLfloat height,
                               GLfloat xSize, GLfloat ySize,
                               GLfloat xPan, GLfloat yPan,
                               GLfloat xScale, GLfloat yScale ) :
-       myGridList( 0 ), myGridHeight( (GLfloat)0.0 ), myGridWidth( (GLfloat)0.0 ),
+       myIsEnabled( GL_TRUE ), myGridList( 0 ), myGridHeight( (GLfloat)0.0 ), myGridWidth( (GLfloat)0.0 ),
        myWinW( (GLfloat)0.0 ), myWinH( (GLfloat)0.0 ), myXSize( (GLfloat)0.0 ), myYSize( (GLfloat)0.0 ),
        myXPan( (GLfloat)0.0 ), myYPan( (GLfloat)0.0 ), myXScale( (GLfloat)1.0 ), myYScale( (GLfloat)1.0 ),
-       myLineWidth( (GLfloat)0.05 ), myCenterWidth( (GLfloat)1.5 ), myCenterRadius( (GLfloat)5.0 ), 
+       myLineWidth( (GLfloat)0.05 ), myCenterWidth( (GLfloat)1.5 ), myCenterRadius( 5 ), 
        myScaleFactor( 10 ), myIsUpdate( GL_FALSE )
 {
   myGridColor[0] = 0.5;
@@ -85,10 +85,22 @@ GLViewer_Grid::~GLViewer_Grid()
 */
 void GLViewer_Grid::draw()
 {
+  if ( !isEnabled() )
+    return;
+
   if ( myGridList == 0 || myIsUpdate )
     initList();
 
   glCallList( myGridList );
+}
+
+/*!
+  Sets grid enabled
+  \param state - enable state
+*/
+void GLViewer_Grid::setEnabled( GLboolean state )
+{
+  myIsEnabled = state;
 }
 
 /*!
@@ -122,7 +134,7 @@ void GLViewer_Grid::setAxisColor( GLfloat r, GLfloat g, GLfloat b )
 }
 
 /*!
-  Changes grid width
+  Sets grid width
   \param w - new grid width
 */
 void GLViewer_Grid::setGridWidth( float w )
@@ -131,6 +143,19 @@ void GLViewer_Grid::setGridWidth( float w )
     return;
 
   myGridWidth = w;
+  myIsUpdate = GL_TRUE;
+}
+
+/*!
+  Sets grid height
+  \param h - new grid height
+*/
+void GLViewer_Grid::setGridHeight( float h )
+{
+  if( myGridHeight == h )
+    return;
+
+  myGridHeight = h;
   myIsUpdate = GL_TRUE;
 }
 
@@ -259,16 +284,29 @@ void GLViewer_Grid::getScale( float& xScale, float& yScale ) const
 }
 
 /*!
+  Sets grid scale factor
+  \param scaleFactor - scale factor
+*/
+void GLViewer_Grid::setScaleFactor( int scaleFactor )
+{
+  if( myScaleFactor == scaleFactor )
+    return;
+ 
+  myScaleFactor = scaleFactor;
+  myIsUpdate = GL_TRUE; 
+}
+
+/*!
   Initialize grid display list
 */
 bool GLViewer_Grid::initList()
 {
   myIsUpdate = GL_FALSE;
    
-    if( myXSize == (GLfloat)0.0 )
-        myXSize = (GLfloat)0.1;
-    if( myYSize == (GLfloat)0.0 )
-        myYSize = (GLfloat)0.1;
+  if( myXSize == (GLfloat)0.0 )
+      myXSize = (GLfloat)0.1;
+  if( myYSize == (GLfloat)0.0 )
+      myYSize = (GLfloat)0.1;
 
 label:
   if( ( myXSize >= myGridWidth/5 ) && ( myYSize >= myGridHeight/5 ) )
@@ -295,7 +333,7 @@ label:
     { 
       glDeleteLists( myGridList, 1 ); 
       if ( glGetError() != GL_NO_ERROR ) 
-    return FALSE;
+        return FALSE;
     } 
          
     float xLoc = (int)(myXPan / myXSize) * myXSize; 
@@ -334,15 +372,18 @@ label:
     glVertex2d( 0, -myGridHeight / 2 - myYSize - yLoc );    
     glEnd();
 
-    glBegin( GL_LINE_LOOP ); 
-    double angle = 0.0;
-    for ( int k = 0; k < SEGMENTS; k++ )     
-    { 
-      glVertex2f( cos(angle) * myCenterRadius * myXScale,
-          sin(angle) * myCenterRadius * myYScale ); 
-      angle += STEP; 
-    } 
-    glEnd();
+    if( myCenterRadius > 0 )
+    {
+      glBegin( GL_LINE_LOOP ); 
+      double angle = 0.0;
+      for ( int k = 0; k < SEGMENTS; k++ )     
+      { 
+        glVertex2f( cos(angle) * myCenterRadius * myXScale,
+                    sin(angle) * myCenterRadius * myYScale ); 
+        angle += STEP; 
+      } 
+      glEnd();
+    }
 
     glEndList();
   }

@@ -345,6 +345,18 @@ void GLViewer_Viewer2d::activateAllDrawers( bool onlyUpdate, GLboolean swap )
 }
 
 /*!
+  Enables/disables printing mode (in particular, rendering without selection)
+  \param theFlag printing mode state
+*/
+void GLViewer_Viewer2d::setPrintingModeEnabled( bool theFlag )
+{
+  QList<GLViewer_Drawer*>::iterator anIter, anIterEnd = myDrawers.end();
+  for( anIter = myDrawers.begin(); anIter != anIterEnd; anIter++ )
+    if( GLViewer_Drawer* aDrawer = *anIter )
+      aDrawer->setPrintingModeEnabled( theFlag );
+}
+
+/*!
   Creates set of marker
   \param theMarkersNum - number of markers 
   \param theMarkersRad - radius of markers

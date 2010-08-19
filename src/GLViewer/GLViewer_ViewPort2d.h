@@ -168,7 +168,8 @@ public:
   QRect                  GLV2win( const GLViewer_Rect& ) const;
 
   //! Dumps contents of the scene
-  QImage                 dumpContents( bool theWholeScene = false );
+  QImage                 dumpContents( bool theWholeScene = false,
+                                       double theScale = 1.0 );
 
 signals:
   //! Emits after any transformation

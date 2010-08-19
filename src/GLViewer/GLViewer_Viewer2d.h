@@ -144,6 +144,9 @@ public:
   /* \param onlyUpdate is passed to drawers*/
   void                 activateAllDrawers( bool onlyUpdate, GLboolean swap = GL_FALSE );
   
+  //! Enables/disables printing mode (in particular, rendering without selection)
+  void                 setPrintingModeEnabled( bool theFlag );
+  
   //! Translates point (x,y) from global CS to curreent viewer CS
   void                 transPoint( GLfloat& x, GLfloat& y );
   //! Returns object rect in window CS

@@ -66,11 +66,20 @@ public:
   //! Draws grid
   void                   draw();
 
+  //! Sets grid enabled
+  void                   setEnabled( GLboolean );
+
+  //! Returns grid enable state
+  GLboolean              isEnabled() const { return myIsEnabled; }
+
   //! Sets color of grid in RGB format
   void                   setGridColor( GLfloat r, GLfloat g, GLfloat b );
   //! Sets color of grid axes in RGB format
   void                   setAxisColor( GLfloat r, GLfloat g, GLfloat b );
+  //! Sets grid width
   void                   setGridWidth( float );
+  //! Sets grid height
+  void                   setGridHeight( float );
   //! Sets Radius of center point( begin coords )
   void                   setCenterRadius( int );
 
@@ -89,11 +98,13 @@ public:
 
   //! Sets step of scale
   void                   setScaleFactor( int );
-  int                    getScaleFactor();
+  int                    getScaleFactor() const { return myScaleFactor; }
 
 protected:
   //! Initialize grid display list
   bool                   initList();
+
+  GLboolean              myIsEnabled;
 
   GLuint                 myGridList;
   GLfloat                myGridColor[3];

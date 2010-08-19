@@ -485,6 +485,7 @@ GLViewer_Drawer::GLViewer_Drawer()
   myObjectType = "GLViewer_Object";
   myTextFormat = DTF_BITMAP;
   myTextScale = 0.125;
+  myIsPrintingModeEnabled = false;
 }
 
 /*!
