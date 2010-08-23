@@ -73,7 +73,7 @@ public:
   ~GLViewer_ViewPort2d();
 
   //! On/off rectangular grid
-  void                   turnGrid( GLboolean on );
+  bool                   turnGrid( GLboolean on );
   //! Returns rectangular grid
   GLViewer_Grid*         getGrid() const { return myGrid; }
   //! Returns grid color

@@ -470,17 +470,22 @@ void GLViewer_ViewPort2d::turnCompass( GLboolean on )
 /*!
   Creates or deletes grid
   \param on - if it is true, then to create
+  \return true if the grid has been just created
 */
-void GLViewer_ViewPort2d::turnGrid( GLboolean on )
+bool GLViewer_ViewPort2d::turnGrid( GLboolean on )
 {
+    bool aResult = false;
     if( on )
     {
         if( !myGrid )
+        {
             myGrid = new GLViewer_Grid( 2*WIDTH, 2*HEIGHT,
                                         2*WIDTH, 2*HEIGHT,
                                         GRID_XSIZE, GRID_YSIZE,
                                         myXPan, myYPan,
                                         myXScale, myYScale );
+            aResult = true;
+        }
         myGrid->setEnabled( GL_TRUE );
     }
     else
@@ -488,6 +493,7 @@ void GLViewer_ViewPort2d::turnGrid( GLboolean on )
         if( myGrid )
             myGrid->setEnabled( GL_FALSE );
     }
+    return aResult;
 }
 
 /*!

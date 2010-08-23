@@ -340,14 +340,17 @@ void GLViewer_Widget::paintGL()
 */
 void GLViewer_Widget::resizeGL( int w, int h )
 {
-
   if( h < 1 ) h = 1;
   if( w < 1 ) w = 1;
   glViewport( 0, 0, w, h);
 
   myViewPort->initResize( w, h );
 
-  if( myStart )
+  // check if the widget has not been resized yet
+  // (values 100 and 30 of width and height are default initial)
+  bool anIsUnitializedWidget = ( w == 100 && h == 30 );
+
+  if( myStart && !anIsUnitializedWidget )
   {
     myWidth = w;
     myHeight = h;
