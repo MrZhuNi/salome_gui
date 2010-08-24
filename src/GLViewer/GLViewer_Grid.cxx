@@ -32,45 +32,33 @@
   Default constructor
 */
 GLViewer_Grid::GLViewer_Grid() :
-       myIsEnabled( GL_TRUE ), myGridList( 0 ), myGridHeight( (GLfloat)0.0 ), myGridWidth( (GLfloat)0.0 ),
-       myWinW( (GLfloat)0.0 ), myWinH( (GLfloat)0.0 ), myXSize( (GLfloat)0.0 ), myYSize( (GLfloat)0.0 ),
-       myXPan( (GLfloat)0.0 ), myYPan( (GLfloat)0.0 ), myXScale( (GLfloat)1.0 ), myYScale( (GLfloat)1.0 ),
-       myLineWidth( (GLfloat)0.05 ), myCenterWidth( (GLfloat)1.5 ), myCenterRadius( 5 ), 
-       myScaleFactor( 10 ), myIsUpdate( GL_FALSE )
+  myIsEnabled( GL_TRUE ),
+  myGridList( 0 ),
+  myGridHeight( (GLfloat)0.0 ),
+  myGridWidth( (GLfloat)0.0 ),
+  myWinWidth( (GLfloat)0.0 ),
+  myWinHeight( (GLfloat)0.0 ),
+  myXSize( (GLfloat)0.0 ),
+  myYSize( (GLfloat)0.0 ),
+  myXPan( (GLfloat)0.0 ),
+  myYPan( (GLfloat)0.0 ),
+  myXScale( (GLfloat)1.0 ),
+  myYScale( (GLfloat)1.0 ),
+  myLineWidth( (GLfloat)0.05 ),
+  myLineType( Solid ),
+  myAxisLineWidth( (GLfloat)1.5 ),
+  myAxisLineType( Solid ),
+  myCenterRadius( 5 ),
+  myScaleFactor( (GLfloat)10.0 ),
+  myScaleRatio( (GLfloat)5.0 ),
+  myIsUpdate( GL_FALSE )
 {
-  myGridColor[0] = 0.5;
-  myGridColor[1] = 0.5;
-  myGridColor[2] = 0.5;
-  myAxisColor[0] = 0.75;
-  myAxisColor[1] = 0.75;
-  myAxisColor[2] = 0.75;
-}
-
-/*!
-  Constructor
-  \param  width and \param height - width and height of grid 
-  \param winW and \param winH     - width and height of window 
-  \param xSize and \param ySize   - steps along x and y direction
-  \param xPan and \param yPan     - offsets along x and y direction
-  \param xScale and \param yScal  - scale factors along x and y direction
-*/
-GLViewer_Grid::GLViewer_Grid( GLfloat width, GLfloat height,
-                              GLfloat winW, GLfloat winH,
-                              GLfloat xSize, GLfloat ySize,
-                              GLfloat xPan, GLfloat yPan,
-                              GLfloat xScale, GLfloat yScale ) :
-       myIsEnabled( GL_TRUE ), myGridList( 0 ), myGridHeight( (GLfloat)0.0 ), myGridWidth( (GLfloat)0.0 ),
-       myWinW( (GLfloat)0.0 ), myWinH( (GLfloat)0.0 ), myXSize( (GLfloat)0.0 ), myYSize( (GLfloat)0.0 ),
-       myXPan( (GLfloat)0.0 ), myYPan( (GLfloat)0.0 ), myXScale( (GLfloat)1.0 ), myYScale( (GLfloat)1.0 ),
-       myLineWidth( (GLfloat)0.05 ), myCenterWidth( (GLfloat)1.5 ), myCenterRadius( 5 ), 
-       myScaleFactor( 10 ), myIsUpdate( GL_FALSE )
-{
-  myGridColor[0] = 0.5;
-  myGridColor[1] = 0.5;
-  myGridColor[2] = 0.5;
-  myAxisColor[0] = 0.75;
-  myAxisColor[1] = 0.75;
-  myAxisColor[2] = 0.75;
+  myLineColor[0] = 0.5;
+  myLineColor[1] = 0.5;
+  myLineColor[2] = 0.5;
+  myAxisLineColor[0] = 0.75;
+  myAxisLineColor[1] = 0.75;
+  myAxisLineColor[2] = 0.75;
 }
 
 /*!
@@ -91,7 +79,18 @@ void GLViewer_Grid::draw()
   if ( myGridList == 0 || myIsUpdate )
     initList();
 
+  // disable smoothing (if enabled)
+  glPushAttrib( GL_ENABLE_BIT | GL_HINT_BIT );
+	glDisable( GL_POINT_SMOOTH );
+	glDisable( GL_LINE_SMOOTH );
+	glDisable( GL_POLYGON_SMOOTH );
+	glBlendFunc( GL_ONE, GL_ZERO );
+	glDisable( GL_BLEND );
+
   glCallList( myGridList );
+
+  // restore previous state of smoothing
+  glPopAttrib();
 }
 
 /*!
@@ -100,36 +99,10 @@ void GLViewer_Grid::draw()
 */
 void GLViewer_Grid::setEnabled( GLboolean state )
 {
+  if( myIsEnabled == state )
+    return;
+
   myIsEnabled = state;
-}
-
-/*!
-  Changes color of grid
-  \param r, g, b - components of color
-*/
-void GLViewer_Grid::setGridColor( GLfloat r, GLfloat g, GLfloat b )
-{
-  if( myGridColor[0] == r && myGridColor[1] == g && myGridColor[2] == b )
-    return;
-
-  myGridColor[0] = r;
-  myGridColor[1] = g;
-  myGridColor[2] = b;
-  myIsUpdate = GL_TRUE;
-}
-
-/*!
-  Changes color of axis
-  \param r, g, b - components of color
-*/
-void GLViewer_Grid::setAxisColor( GLfloat r, GLfloat g, GLfloat b )
-{
-  if( myAxisColor[0] == r && myAxisColor[1] == g && myAxisColor[2] == b )
-    return;
-
-  myAxisColor[0] = r;
-  myAxisColor[1] = g;
-  myAxisColor[2] = b;
   myIsUpdate = GL_TRUE;
 }
 
@@ -160,15 +133,21 @@ void GLViewer_Grid::setGridHeight( float h )
 }
 
 /*!
-  Sets Radius of center point( begin coords )
-  \param r - new radius
+  Sets parameters of grid by zoom coefficient and window size
+  \param w - window width
+  \param h - window height
+  \param zoom - zoom coefficient
 */
-void GLViewer_Grid::setCenterRadius( int r )
+void GLViewer_Grid::setResize( float w, float h, float zoom )
 {
-  if( myCenterRadius == r )
+  if( myWinWidth == w && myWinHeight == h && zoom == 1.0 )
     return;
 
-  myCenterRadius = r;
+  myGridWidth = myGridWidth + ( w - myWinWidth ) * myXScale; 
+  myGridHeight = myGridHeight + ( h - myWinHeight ) * myYScale;
+  myWinWidth = w;
+  myWinHeight = h;
+  setZoom( zoom );
   myIsUpdate = GL_TRUE;
 }
 
@@ -232,68 +211,139 @@ bool GLViewer_Grid::setZoom( float zoom )
 }
 
 /*!
-  Sets parameters of grid by zoom coefficient and window size
-  \param WinW - window width
-  \param WinH - window height
-  \param zoom - zoom coefficient
+  Sets line width
+  \param value - new line width
 */
-void GLViewer_Grid::setResize( float WinW, float WinH, float zoom )
+void GLViewer_Grid::setLineWidth( float value )
 {
-  if( myWinW == WinW && myWinH == WinH && zoom == 1.0 )
+  if( myLineWidth == value )
     return;
 
-  myGridWidth = myGridWidth + ( WinW - myWinW ) * myXScale; 
-  myGridHeight = myGridHeight + ( WinH - myWinH ) * myYScale;
-  myWinW = WinW;
-  myWinH = WinH;
-  setZoom( zoom );
+  myLineWidth = value;
   myIsUpdate = GL_TRUE;
 }
 
 /*!
-  \return grid size along x and y axis
-  \param xSize - for size along x axis
-  \param ySize - for size along y axis
+  Sets line type
+  \param type - new line type
 */
-void GLViewer_Grid::getSize( float& xSize, float& ySize ) const
+void GLViewer_Grid::setLineType( LineType type )
 {
-  xSize = myXSize;
-  ySize = myYSize;
+  if( myLineType == type )
+    return;
+
+  myLineType = type;
+  myIsUpdate = GL_TRUE;
 }
 
 /*!
-  \return panning along x and y axis
-  \param xPan - for panning along x axis
-  \param yPan - for panning along y axis
+  Changes color of grid
+  \param r, g, b - components of color
 */
-void GLViewer_Grid::getPan( float& xPan, float& yPan ) const
+void GLViewer_Grid::setLineColor( GLfloat r, GLfloat g, GLfloat b )
 {
-  xPan = myXPan;
-  yPan = myYPan;
+  if( myLineColor[0] == r && myLineColor[1] == g && myLineColor[2] == b )
+    return;
+
+  myLineColor[0] = r;
+  myLineColor[1] = g;
+  myLineColor[2] = b;
+  myIsUpdate = GL_TRUE;
 }
 
 /*!
-  \return scaling along x and y axis
-  \param xScale - for scaling along x axis
-  \param yScale - for scaling along y axis
+  Sets axis line width
+  \param value - new axis line width
 */
-void GLViewer_Grid::getScale( float& xScale, float& yScale ) const
+void GLViewer_Grid::setAxisLineWidth( float value )
 {
-  xScale = myXScale;
-  yScale = myYScale;
+  if( myAxisLineWidth == value )
+    return;
+
+  myAxisLineWidth = value;
+  myIsUpdate = GL_TRUE;
+}
+
+/*!
+  Sets axis line type
+  \param type - new axis line type
+*/
+void GLViewer_Grid::setAxisLineType( LineType type )
+{
+  if( myAxisLineType == type )
+    return;
+
+  myAxisLineType = type;
+  myIsUpdate = GL_TRUE;
+}
+
+/*!
+  Changes color of axis
+  \param r, g, b - components of color
+*/
+void GLViewer_Grid::setAxisLineColor( GLfloat r, GLfloat g, GLfloat b )
+{
+  if( myAxisLineColor[0] == r && myAxisLineColor[1] == g && myAxisLineColor[2] == b )
+    return;
+
+  myAxisLineColor[0] = r;
+  myAxisLineColor[1] = g;
+  myAxisLineColor[2] = b;
+  myIsUpdate = GL_TRUE;
+}
+
+/*!
+  Sets Radius of center point( begin coords )
+  \param r - new radius
+*/
+void GLViewer_Grid::setCenterRadius( int r )
+{
+  if( myCenterRadius == r )
+    return;
+
+  myCenterRadius = r;
+  myIsUpdate = GL_TRUE;
 }
 
 /*!
   Sets grid scale factor
   \param scaleFactor - scale factor
 */
-void GLViewer_Grid::setScaleFactor( int scaleFactor )
+void GLViewer_Grid::setScaleFactor( float scaleFactor )
 {
   if( myScaleFactor == scaleFactor )
     return;
  
   myScaleFactor = scaleFactor;
   myIsUpdate = GL_TRUE; 
+}
+
+/*!
+  Sets grid scale ratio
+  \param scaleFactor - scale factor
+*/
+void GLViewer_Grid::setScaleRatio( float scaleRatio )
+{
+  if( myScaleRatio == scaleRatio )
+    return;
+ 
+  myScaleRatio = scaleRatio;
+  myIsUpdate = GL_TRUE; 
+}
+
+/*!
+  Gets dash pattern by line type
+  \param type - line type
+*/
+GLushort GLViewer_Grid::getDashPattern( const LineType type )
+{
+  switch( type )
+  {
+    case LongDash:  return 0xF0F0;
+    case ShortDash: return 0xCCCC;
+    case Dot:       return 0x8888;
+  }
+  return 0;
 }
 
 /*!
@@ -309,14 +359,15 @@ bool GLViewer_Grid::initList()
       myYSize = (GLfloat)0.1;
 
 label:
-  if( ( myXSize >= myGridWidth/5 ) && ( myYSize >= myGridHeight/5 ) )
+  if( ( myXSize >= myGridWidth / myScaleRatio ) &&
+      ( myYSize >= myGridHeight / myScaleRatio ) )
   { //zoom in
     myXSize /= myScaleFactor;
     myYSize /= myScaleFactor;
     goto label;
   }
-  else if( ( myXSize * myScaleFactor < myGridWidth/5 ) 
-        || ( myYSize * myScaleFactor < myGridHeight/5 ) )
+  else if( ( myXSize * myScaleFactor < myGridWidth / myScaleRatio ) ||
+           ( myYSize * myScaleFactor < myGridHeight / myScaleRatio ) )
   { //zoom out
     myXSize *= myScaleFactor;
     myYSize *= myScaleFactor;
@@ -331,46 +382,73 @@ label:
   { 
     if ( myGridList != 0 )  
     { 
-      glDeleteLists( myGridList, 1 ); 
-      if ( glGetError() != GL_NO_ERROR ) 
-        return FALSE;
+      glDeleteLists( myGridList, 1 );
+      // temporarily commented (too cruel)
+      //if ( glGetError() != GL_NO_ERROR )
+      //  return FALSE;
     } 
-         
+
     float xLoc = (int)(myXPan / myXSize) * myXSize; 
     float yLoc = (int)(myYPan / myYSize) * myYSize; 
  
     myGridList = glGenLists( 1 ); 
     glNewList( myGridList, GL_COMPILE ); 
 
-    glColor3f( myGridColor[0], myGridColor[1], myGridColor[2] );  
+    glColor3f( myLineColor[0], myLineColor[1], myLineColor[2] );  
     glLineWidth( myLineWidth ); 
-    
+
+    GLushort aLineDashPattern = getDashPattern( myLineType );
+    if( aLineDashPattern )
+    {
+      glEnable( GL_LINE_STIPPLE );
+      glLineStipple( 1, aLineDashPattern );
+    }
+
     glBegin( GL_LINES ); 
-    for( int j = 0; ( j-1 ) * myXSize <= myGridWidth / 2 ; j++ )
+    for( int j = 0; ( j-1 ) * myXSize <= myGridWidth / 2; j++ )
     { 
       glVertex2d( -myXSize * j - xLoc, -myGridHeight / 2 - myYSize - yLoc );
-      glVertex2d( -myXSize * j - xLoc,  myGridHeight / 2 + myYSize - yLoc ); 
-      glVertex2d(  myXSize * j - xLoc, -myGridHeight / 2 - myYSize - yLoc );
-      glVertex2d(  myXSize * j - xLoc,  myGridHeight / 2 + myYSize - yLoc );
+      glVertex2d( -myXSize * j - xLoc,  myGridHeight / 2 + myYSize - yLoc );
+      if( j != 0 )
+      {
+        glVertex2d(  myXSize * j - xLoc, -myGridHeight / 2 - myYSize - yLoc );
+        glVertex2d(  myXSize * j - xLoc,  myGridHeight / 2 + myYSize - yLoc );
+      }
     }
-    for( int i = 0; ( i-1 ) * myYSize <= myGridHeight / 2 ; i++)  
+    for( int i = 0; ( i-1 ) * myYSize <= myGridHeight / 2; i++ )  
     {
-      glVertex2d( -myGridWidth / 2 - myXSize - xLoc, -myYSize * i - yLoc ); 
-      glVertex2d(  myGridWidth / 2 + myXSize - xLoc, -myYSize * i - yLoc ); 
-      glVertex2d( -myGridWidth / 2 - myXSize - xLoc,  myYSize * i - yLoc ); 
-      glVertex2d(  myGridWidth / 2 + myXSize - xLoc,  myYSize * i - yLoc ); 
-    } 
+      glVertex2d( -myGridWidth / 2 - myXSize - xLoc, -myYSize * i - yLoc );
+      glVertex2d(  myGridWidth / 2 + myXSize - xLoc, -myYSize * i - yLoc );
+      if( i != 0 )
+      {
+        glVertex2d( -myGridWidth / 2 - myXSize - xLoc,  myYSize * i - yLoc );
+        glVertex2d(  myGridWidth / 2 + myXSize - xLoc,  myYSize * i - yLoc );
+      }
+    }
     glEnd();
 
-    glColor3f( myAxisColor[0], myAxisColor[1], myAxisColor[2] );
-    glLineWidth( myCenterWidth );
+    if( aLineDashPattern )
+      glDisable( GL_LINE_STIPPLE );
+
+    glColor3f( myAxisLineColor[0], myAxisLineColor[1], myAxisLineColor[2] );
+    glLineWidth( myAxisLineWidth );
+
+    GLushort anAxisLineDashPattern = getDashPattern( myAxisLineType );
+    if( anAxisLineDashPattern )
+    {
+      glEnable( GL_LINE_STIPPLE );
+      glLineStipple( 1, anAxisLineDashPattern );
+    }
 
     glBegin( GL_LINES );
-    glVertex2d(  myGridWidth / 2 + myXSize - xLoc, 0); 
-    glVertex2d( -myGridWidth / 2 - myXSize - xLoc, 0); 
+    glVertex2d(  myGridWidth / 2 + myXSize - xLoc, 0 ); 
+    glVertex2d( -myGridWidth / 2 - myXSize - xLoc, 0 ); 
     glVertex2d( 0,  myGridHeight / 2 + myYSize - yLoc );
     glVertex2d( 0, -myGridHeight / 2 - myYSize - yLoc );    
     glEnd();
+
+    if( anAxisLineDashPattern )
+      glDisable( GL_LINE_STIPPLE );
 
     if( myCenterRadius > 0 )
     {

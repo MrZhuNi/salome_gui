@@ -54,9 +54,6 @@
 #define MARGIN       100
 #define MARGIN_RATIO 0.2
 
-#define GRID_XSIZE  100
-#define GRID_YSIZE  100
-
 int static aLastViewPostId = 0;
 
 void rotate_point( float& theX, float& theY, float theAngle )
@@ -479,11 +476,7 @@ bool GLViewer_ViewPort2d::turnGrid( GLboolean on )
     {
         if( !myGrid )
         {
-            myGrid = new GLViewer_Grid( 2*WIDTH, 2*HEIGHT,
-                                        2*WIDTH, 2*HEIGHT,
-                                        GRID_XSIZE, GRID_YSIZE,
-                                        myXPan, myYPan,
-                                        myXScale, myYScale );
+            myGrid = new GLViewer_Grid();
             aResult = true;
         }
         myGrid->setEnabled( GL_TRUE );
@@ -505,12 +498,8 @@ void GLViewer_ViewPort2d::setGridColor( const QColor gridColor, const QColor axi
 {
     if( myGrid )
     {
-        myGrid->setGridColor( ( GLfloat )gridColor.red() / 255,
-                  ( GLfloat )gridColor.green() / 255,
-                  ( GLfloat )gridColor.blue() / 255 );
-        myGrid->setAxisColor( ( GLfloat )axisColor.red() / 255,
-                  ( GLfloat )axisColor.green() / 255,
-                  ( GLfloat )axisColor.blue() / 255 );
+        myGrid->setLineColor( gridColor.redF(), gridColor.greenF(), gridColor.blueF() );
+        myGrid->setAxisLineColor( axisColor.redF(), axisColor.greenF(), axisColor.blueF() );
     }
 }
 
@@ -522,9 +511,7 @@ void GLViewer_ViewPort2d::setBackgroundColor( const QColor& color )
 {
     GLViewer_ViewPort::setBackgroundColor( color );
     myGLWidget->makeCurrent();
-    glClearColor( ( GLfloat )color.red() / 255,
-            ( GLfloat )color.green() / 255,
-            ( GLfloat )color.blue() / 255, 1.0 );
+    glClearColor( color.redF(), color.greenF(), color.blueF(), 1.0 );
     myGLWidget->repaint();
 }
 
