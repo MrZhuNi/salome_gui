@@ -433,6 +433,7 @@ void GLViewer_ViewPort2d::mouseReleaseEvent( QMouseEvent* e )
       {
         emit objectMoved();
         aViewer->updateBorders();
+        aViewer->updateAll();
       }
     }
 }
