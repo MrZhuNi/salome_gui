@@ -85,6 +85,27 @@ public:
   GLViewer_Widget*       getGLWidget() const { return myGLWidget; }
   virtual QPaintDevice*  getPaintDevice() { return myGLWidget; }
 
+  //! Gets foreground enable state
+  bool                   isForegroundEnabled() const;
+
+  //! Sets foreground enable state
+  void                   setForegroundEnabled( const bool theIsEnabled );
+
+  //! Sets foreground size
+  void                   setForegroundSize( const GLfloat theWidth, const GLfloat theHeight );
+
+  //! Sets foreground margin
+  void                   setForegroundMargin( const GLfloat theMargin );
+
+  //! Sets foreground color
+  void                   setForegroundColor( const QColor& theColor );
+
+  //! Sets foreground frame color
+  void                   setForegroundFrameColor( const QColor& theColor );
+
+  //! Sets foreground frame line width
+  void                   setForegroundFrameLineWidth( const GLfloat theLineWidth );
+
   //! Sets background color
   void                   setBackgroundColor( const QColor& color);
   //! Returns background color

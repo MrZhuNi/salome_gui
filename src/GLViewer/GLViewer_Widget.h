@@ -54,6 +54,30 @@ public:
   //! A destructor
   ~GLViewer_Widget();
 
+  //! Gets foreground enable state
+  bool                   isForegroundEnabled() const { return myIsForegroundEnabled; }
+
+  //! Sets foreground enable state
+  void                   setForegroundEnabled( const bool theIsEnabled );
+
+  //! Sets foreground size
+  void                   setForegroundSize( const GLfloat theWidth, const GLfloat theHeight );
+
+  //! Sets foreground margin
+  void                   setForegroundMargin( const GLfloat theMargin );
+
+  //! Sets foreground color
+  void                   setForegroundColor( const QColor& theColor );
+
+  //! Sets foreground frame color
+  void                   setForegroundFrameColor( const QColor& theColor );
+
+  //! Sets foreground frame line width
+  void                   setForegroundFrameLineWidth( const GLfloat theLineWidth );
+
+  //! Sets background color
+  void                   setBackgroundColor( const QColor& theColor );
+
   //! Returns parent GLViewer_ViewPort2d
   /*! ViewPort2d because this class is not use for 3D Viewer */
   GLViewer_ViewPort2d*   getViewPort() const { return myViewPort; }
@@ -161,6 +185,30 @@ protected:
   virtual bool           event ( QEvent* );
   
 private:
+  //! foreground enable state
+  bool                   myIsForegroundEnabled;
+
+  //! foreground width
+  GLfloat                myForegroundWidth;
+
+  //! foreground height
+  GLfloat                myForegroundHeight;
+
+  //! foreground margin
+  GLfloat                myForegroundMargin;
+
+  //! foreground color
+  QColor                 myForegroundColor;
+
+  //! foreground frame color
+  QColor                 myForegroundFrameColor;
+
+  //! foreground frame line width
+  GLfloat                myForegroundFrameLineWidth;
+
+  //! background color
+  QColor                 myBackgroundColor;
+
   //! width of window
   GLint                  myWidth;
   //! height of window

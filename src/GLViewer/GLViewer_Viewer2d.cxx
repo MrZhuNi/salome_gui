@@ -104,7 +104,10 @@ void GLViewer_Viewer2d::onChangeBgColor()
 
   QColor selColor = QColorDialog::getColor( vp->backgroundColor(), vp );	
   if ( selColor.isValid() ) {
-    vp->setBackgroundColor( selColor );
+    if( vp->isForegroundEnabled() )
+      vp->setForegroundColor( selColor );
+    else
+      vp->setBackgroundColor( selColor );
   }
 }
 

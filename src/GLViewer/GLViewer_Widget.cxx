@@ -56,6 +56,15 @@ QGLWidget( parent, 0/*, WRepaintNoErase | WResizeNoErase*/ )
 {
   myViewPort = ( GLViewer_ViewPort2d* )parent;
 
+  myIsForegroundEnabled = false;
+  myForegroundWidth = 100.0;
+  myForegroundHeight = 30.0;
+  myForegroundMargin = 1.0;
+  myForegroundColor = Qt::white;
+  myForegroundFrameColor = Qt::black;
+  myForegroundFrameLineWidth = 1.0;
+  myBackgroundColor = Qt::darkGray;
+
   myXPan = 0.0;
   myYPan = 0.0;
   myZPan = 0.0;
@@ -81,6 +90,71 @@ QGLWidget( parent, 0/*, WRepaintNoErase | WResizeNoErase*/ )
 */
 GLViewer_Widget::~GLViewer_Widget()
 {
+}
+
+/*!
+  Sets foreground enable state
+  \param theIsEnabled - enable state
+*/
+void GLViewer_Widget::setForegroundEnabled( const bool theIsEnabled )
+{
+  myIsForegroundEnabled = theIsEnabled;
+}
+
+/*!
+  Sets foreground size
+  \param theWidth - foreground width
+  \param theHeight - foreground height
+*/
+void GLViewer_Widget::setForegroundSize( const GLfloat theWidth, const GLfloat theHeight )
+{
+  myForegroundWidth = theWidth;
+  myForegroundHeight = theHeight;
+}
+
+/*!
+  Sets foreground margin
+  \param theMargin - foreground margin
+*/
+void GLViewer_Widget::setForegroundMargin( const GLfloat theMargin )
+{
+  myForegroundMargin = theMargin;
+}
+
+/*!
+  Sets foreground color
+  \param theColor - foreground color
+*/
+void GLViewer_Widget::setForegroundColor( const QColor& theColor )
+{
+  myForegroundColor = theColor;
+}
+
+/*!
+  Sets foreground frame color
+  \param theColor - foreground frame color
+*/
+void GLViewer_Widget::setForegroundFrameColor( const QColor& theColor )
+{
+  myForegroundFrameColor = theColor;
+}
+
+/*!
+  Sets foreground frame line width
+  \theLineWidth theColor - foreground frame line width
+*/
+void GLViewer_Widget::setForegroundFrameLineWidth( const GLfloat theLineWidth )
+{
+  myForegroundFrameLineWidth = theLineWidth;
+}
+
+/*!
+  Sets foreground color
+  \param theColor - background color
+*/
+void GLViewer_Widget::setBackgroundColor( const QColor& theColor )
+{
+  myBackgroundColor = theColor;
 }
 
 /*!
@@ -321,6 +395,38 @@ void GLViewer_Widget::paintGL()
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     }
 
+    // background
+    glClearColor( myBackgroundColor.redF(),
+                  myBackgroundColor.greenF(),
+                  myBackgroundColor.blueF(),
+                  1.0 );
+
+    // foreground
+    if( myIsForegroundEnabled )
+    {
+      glColor3f( myForegroundColor.redF(),
+                 myForegroundColor.greenF(),
+                 myForegroundColor.blueF() );
+
+      glBegin( GL_POLYGON );
+      glVertex2f(                   - myForegroundMargin,                    - myForegroundMargin );
+      glVertex2f( myForegroundWidth + myForegroundMargin,                    - myForegroundMargin );
+      glVertex2f( myForegroundWidth + myForegroundMargin, myForegroundHeight + myForegroundMargin );
+      glVertex2f(                   - myForegroundMargin, myForegroundHeight + myForegroundMargin );
+      glEnd();
+
+      glColor3f( myForegroundFrameColor.redF(),
+                 myForegroundFrameColor.greenF(),
+                 myForegroundFrameColor.blueF() );
+      glLineWidth( myForegroundFrameLineWidth );
+
+      glBegin( GL_LINE_LOOP );
+      glVertex2f(                   - myForegroundMargin,                    - myForegroundMargin );
+      glVertex2f( myForegroundWidth + myForegroundMargin,                    - myForegroundMargin );
+      glVertex2f( myForegroundWidth + myForegroundMargin, myForegroundHeight + myForegroundMargin );
+      glVertex2f(                   - myForegroundMargin, myForegroundHeight + myForegroundMargin );
+      glEnd();
+    }
 
     GLViewer_Grid* grid = myViewPort->getGrid();
     if( grid )

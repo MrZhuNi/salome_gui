@@ -505,14 +505,76 @@ void GLViewer_ViewPort2d::setGridColor( const QColor gridColor, const QColor axi
 }
 
 /*!
+  Gets foreground enable state
+*/
+bool GLViewer_ViewPort2d::isForegroundEnabled() const
+{
+    return myGLWidget->isForegroundEnabled();
+}
+
+/*!
+  Sets foreground enable state
+  \param theIsEnabled - enable state
+*/
+void GLViewer_ViewPort2d::setForegroundEnabled( const bool theIsEnabled )
+{
+    myGLWidget->setForegroundEnabled( theIsEnabled );
+}
+
+/*!
+  Sets foreground size
+  \param theWidth - foreground width
+  \param theHeight - foreground height
+*/
+void GLViewer_ViewPort2d::setForegroundSize( const GLfloat theWidth, const GLfloat theHeight )
+{
+    myGLWidget->setForegroundSize( theWidth, theHeight );
+}
+
+/*!
+  Sets foreground margin
+  \param theMargin - foreground margin
+*/
+void GLViewer_ViewPort2d::setForegroundMargin( const GLfloat theMargin )
+{
+    myGLWidget->setForegroundMargin( theMargin );
+}
+
+/*!
+  Sets foreground color
+  \param theColor - foreground color
+*/
+void GLViewer_ViewPort2d::setForegroundColor( const QColor& theColor )
+{
+    myGLWidget->setForegroundColor( theColor );
+}
+
+/*!
+  Sets foreground frame color
+  \param theColor - foreground frame color
+*/
+void GLViewer_ViewPort2d::setForegroundFrameColor( const QColor& theColor )
+{
+    myGLWidget->setForegroundFrameColor( theColor );
+}
+
+/*!
+  Sets foreground frame line width
+  \theLineWidth theColor - foreground frame line width
+*/
+void GLViewer_ViewPort2d::setForegroundFrameLineWidth( const GLfloat theLineWidth )
+{
+    myGLWidget->setForegroundFrameLineWidth( theLineWidth );
+}
+
+/*!
   Changes background color
   \param color - new background color
 */
 void GLViewer_ViewPort2d::setBackgroundColor( const QColor& color )
 {
     GLViewer_ViewPort::setBackgroundColor( color );
-    myGLWidget->makeCurrent();
-    glClearColor( color.redF(), color.greenF(), color.blueF(), 1.0 );
+    myGLWidget->setBackgroundColor( color );
     myGLWidget->repaint();
 }
 
