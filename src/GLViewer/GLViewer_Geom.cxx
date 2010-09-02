@@ -26,6 +26,52 @@
 #define TOLERANCE 1e-3
 
 /*!
+  Checks that the rectangle contains point
+*/
+bool GLViewer_Rect::contains( const GLViewer_Pnt& thePnt ) const
+{
+  return ( thePnt.x() >= myLeft && thePnt.x() <= myRight &&
+           thePnt.y() >= myBottom && thePnt.y() <= myTop );
+}
+
+/*!
+  Checks that the rectangle contains another rectangle
+*/
+bool GLViewer_Rect::contains( const GLViewer_Rect& theRect ) const
+{
+  return ( theRect.left() >= myLeft && theRect.right() <= myRight &&
+           theRect.bottom() >= myBottom && theRect.top() <= myTop );
+}
+
+/*!
+  Checks that X projection of the rectangle contains X projection of another rectangle
+*/
+bool GLViewer_Rect::containsByX( const GLViewer_Rect& theRect ) const
+{
+  return ( theRect.left() >= myLeft && theRect.right() <= myRight );
+}
+
+/*!
+  Checks that Y projection of the rectangle contains Y projection of another rectangle
+*/
+bool GLViewer_Rect::containsByY( const GLViewer_Rect& theRect ) const
+{
+  return ( theRect.bottom() >= myBottom && theRect.top() <= myTop );
+}
+
+/*!
+  Moves the rectangle
+*/
+void GLViewer_Rect::move( const float theDX, const float theDY )
+{
+  myLeft   += theDX;
+  myRight  += theDX;
+  myTop    += theDY;
+  myBottom += theDY;
+}
+
+
+/*!
   constructs a real segment bounded by two points
 */
 GLViewer_Segment::GLViewer_Segment( const GLViewer_Pnt& thePnt1, 

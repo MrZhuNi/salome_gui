@@ -116,19 +116,20 @@ public:
   //! Checks valid status
   bool        isValid() const { return ( myLeft < myRight && myBottom < myTop ); }
 
-  //! Checks staus of contains point 
-  bool        contains( GLViewer_Pnt pnt ) const { return ( pnt.x() > left() &&
-                                                      pnt.x() < right() &&
-                                                      pnt.y() > bottom() &&
-                                                      pnt.y() < top() ); }
-  
-  void        move( const float x, const float y )
-                  {
-                    myLeft   += x;
-                    myRight  += x;
-                    myTop    += y;
-                    myBottom += y;
-                  }
+  //! Checks that the rectangle contains point
+  bool        contains( const GLViewer_Pnt& thePnt ) const;
+
+  //! Checks that the rectangle contains another rectangle
+  bool        contains( const GLViewer_Rect& theRect ) const;
+
+  //! Checks that X projection of the rectangle contains X projection of another rectangle
+  bool        containsByX( const GLViewer_Rect& theRect ) const;
+
+  //! Checks that Y projection of the rectangle contains Y projection of another rectangle
+  bool        containsByY( const GLViewer_Rect& theRect ) const;
+
+  //! Moves the rectangle
+  void        move( const float theDX, const float theDY );
 
 protected:
   float       myLeft;

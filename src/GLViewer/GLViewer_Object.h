@@ -47,7 +47,7 @@ class GLViewer_AspectLine;
 class GLViewer_Group;
 class GLViewer_CoordSystem;
 class GLViewer_Text;
-//class GLViewer_Owner;
+class GLViewer_Viewer2d;
 
 class SUIT_DataOwner;
 
@@ -189,6 +189,10 @@ public:
   virtual void              moveObject( float dx, float dy, bool fromGroup = false ) = 0;
   //! Finaly recomputing object after moving
   virtual bool              finishMove() { return true; }
+  //! Checks that moving the object by X axis is allowed
+  virtual bool              isMovingByXAllowed( float theDX ) { return true; }
+  //! Checks that moving the object by Y axis is allowed
+  virtual bool              isMovingByYAllowed( float theDY ) { return true; }
   
   //! Returns visible object status
   virtual bool              getVisible() const { return myIsVisible; }

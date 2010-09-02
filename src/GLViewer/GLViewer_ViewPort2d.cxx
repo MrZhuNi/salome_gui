@@ -294,31 +294,64 @@ void GLViewer_ViewPort2d::onDragObject( QMouseEvent* e )
     return;
   }
 
-  //QPoint aNewPos = e->pos();
-  //GLViewer_Viewer2d* aViewer = (GLViewer_Viewer2d*)getViewFrame()->getViewer();
-
-  if( anObject && (e->buttons() & Qt::LeftButton ) )
+  ObjList anObjectsToMove;
+  if( anObject && ( e->buttons() & Qt::LeftButton ) )
   {
     if( aContext->isSelected( anObject ) )
     {
       for( aContext->InitSelected(); aContext->MoreSelected(); aContext->NextSelected() )
-      {
-        GLViewer_Object* aMovingObject = aContext->SelectedObject();
-        if( aMovingObject )
-          aMovingObject->moveObject( aX - *myCurDragPosX, anY - *myCurDragPosY);
-      }
+        if( GLViewer_Object* aMovingObject = aContext->SelectedObject() )
+          anObjectsToMove.append( aMovingObject );
     }
     else
-      anObject->moveObject( aX - *myCurDragPosX, anY - *myCurDragPosY);
+      anObjectsToMove.append( anObject );
   }
-  else if( aContext->NbSelected() && (e->buttons() & Qt::MidButton ) )
+  else if( aContext->NbSelected() && ( e->buttons() & Qt::MidButton ) )
+  {
     for( aContext->InitSelected(); aContext->MoreSelected(); aContext->NextSelected() )
-        (aContext->SelectedObject())->moveObject( aX - *myCurDragPosX, anY - *myCurDragPosY);
+      if( GLViewer_Object* aMovingObject = aContext->SelectedObject() )
+        anObjectsToMove.append( aMovingObject );
+  }
 
-  delete myCurDragPosX;
-  delete myCurDragPosY;
-  myCurDragPosX = new float(aX);
-  myCurDragPosY = new float(anY);
+  float aDX = aX - *myCurDragPosX;
+  float aDY = anY - *myCurDragPosY;
+
+  bool anIsMovingByXAllowed = true, anIsMovingByYAllowed = true;
+  ObjList::const_iterator anObjIter, anObjIterEnd = anObjectsToMove.end();
+  for( anObjIter = anObjectsToMove.begin(); anObjIter != anObjIterEnd; anObjIter++ )
+    if( GLViewer_Object* aMovingObject = *anObjIter )
+    {
+      if( !aMovingObject->isMovingByXAllowed( aDX ) )
+        anIsMovingByXAllowed = false;
+      if( !aMovingObject->isMovingByYAllowed( aDY ) )
+        anIsMovingByYAllowed = false;
+    }
+
+  if( !anIsMovingByXAllowed && !anIsMovingByYAllowed )
+    return; // myCurDragPosX and myCurDragPosY shouldn't be changed
+
+  if( !anIsMovingByXAllowed )
+    aDX = 0;
+
+  if( !anIsMovingByYAllowed )
+    aDY = 0;
+
+  anObjIterEnd = anObjectsToMove.end();
+  for( anObjIter = anObjectsToMove.begin(); anObjIter != anObjIterEnd; anObjIter++ )
+    if( GLViewer_Object* aMovingObject = *anObjIter )
+      aMovingObject->moveObject( aDX, aDY );
+
+  if( anIsMovingByXAllowed )
+  {
+    delete myCurDragPosX;
+    myCurDragPosX = new float(aX);
+  }
+
+  if( anIsMovingByYAllowed )
+  {
+    delete myCurDragPosY;
+    myCurDragPosY = new float(anY);
+  }
 
   myGLWidget->updateGL();
 }

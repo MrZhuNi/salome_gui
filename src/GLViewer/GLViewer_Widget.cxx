@@ -404,27 +404,54 @@ void GLViewer_Widget::paintGL()
     // foreground
     if( myIsForegroundEnabled )
     {
+      GLfloat x1 = -myForegroundMargin, x2 = myForegroundWidth + myForegroundMargin;
+      GLfloat y1 = -myForegroundMargin, y2 = myForegroundHeight + myForegroundMargin;
+
+      // shadow (2 pixels, always black)
+      GLfloat xs = 2. / myXScale;
+      GLfloat ys = 2. / myYScale;
+
+      glColor3f( 0.0, 0.0, 0.0 );
+
+      // right shadow
+      glBegin( GL_POLYGON );
+      glVertex2f( x2,      y1 - ys );
+      glVertex2f( x2 + xs, y1 - ys );
+      glVertex2f( x2 + xs, y2 - ys );
+      glVertex2f( x2,      y2 - ys );
+      glEnd();
+
+      // bottom shadow
+      glBegin( GL_POLYGON );
+      glVertex2f( x1 + xs, y1 - ys );
+      glVertex2f( x2 + xs, y1 - ys );
+      glVertex2f( x2 + xs, y1 );
+      glVertex2f( x1 + xs, y1 );
+      glEnd();
+
+      // forefround sheet
       glColor3f( myForegroundColor.redF(),
                  myForegroundColor.greenF(),
                  myForegroundColor.blueF() );
 
       glBegin( GL_POLYGON );
-      glVertex2f(                   - myForegroundMargin,                    - myForegroundMargin );
-      glVertex2f( myForegroundWidth + myForegroundMargin,                    - myForegroundMargin );
-      glVertex2f( myForegroundWidth + myForegroundMargin, myForegroundHeight + myForegroundMargin );
-      glVertex2f(                   - myForegroundMargin, myForegroundHeight + myForegroundMargin );
+      glVertex2f( x1, y1 );
+      glVertex2f( x2, y1 );
+      glVertex2f( x2, y2 );
+      glVertex2f( x1, y2 );
       glEnd();
 
+      // foreground frame
       glColor3f( myForegroundFrameColor.redF(),
                  myForegroundFrameColor.greenF(),
                  myForegroundFrameColor.blueF() );
       glLineWidth( myForegroundFrameLineWidth );
 
       glBegin( GL_LINE_LOOP );
-      glVertex2f(                   - myForegroundMargin,                    - myForegroundMargin );
-      glVertex2f( myForegroundWidth + myForegroundMargin,                    - myForegroundMargin );
-      glVertex2f( myForegroundWidth + myForegroundMargin, myForegroundHeight + myForegroundMargin );
-      glVertex2f(                   - myForegroundMargin, myForegroundHeight + myForegroundMargin );
+      glVertex2f( x1, y1 );
+      glVertex2f( x2, y1 );
+      glVertex2f( x2, y2 );
+      glVertex2f( x1, y2 );
       glEnd();
     }
 
