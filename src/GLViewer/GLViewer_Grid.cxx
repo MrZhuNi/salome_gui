@@ -358,6 +358,10 @@ bool GLViewer_Grid::initList()
   if( myYSize == (GLfloat)0.0 )
       myYSize = (GLfloat)0.1;
 
+  if( myGridWidth == (GLfloat)0.0 ||
+      myGridHeight == (GLfloat)0.0 )
+    return false;
+
 label:
   if( ( myXSize >= myGridWidth / myScaleRatio ) &&
       ( myYSize >= myGridHeight / myScaleRatio ) )
