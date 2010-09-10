@@ -345,6 +345,9 @@ bool Plot2d_ViewFrame::eventFilter( QObject* watched, QEvent* e )
         }
         break;
       }
+	  case QEvent::ContextMenu: {
+	    return true; // IPAL21925 Win TC5.1.4 Unexpected "View operations" Popup
+	  }
       case QEvent::MouseButtonPress: {
         QMouseEvent* me = (QMouseEvent*)e;
         if ( me && ( me->buttons() != 0 || me->button() != 0 ) ) {
