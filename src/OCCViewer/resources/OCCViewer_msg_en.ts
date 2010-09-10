@@ -248,6 +248,22 @@
         <source>OCC_IMAGE_FILES</source>
         <translation>Images Files (*.bmp *.png *.jpg *.jpeg)</translation>
     </message>
+    <message>
+        <source>DSC_MAXIMIZE_VIEW</source>
+        <translation>Maximize view</translation>
+    </message>
+    <message>
+        <source>DSC_MINIMIZE_VIEW</source>
+        <translation>Minimize view</translation>
+    </message>
+    <message>
+        <source>MNU_MAXIMIZE_VIEW</source>
+        <translation>Maximize</translation>
+    </message>
+    <message>
+        <source>MNU_MINIMIZE_VIEW</source>
+        <translation>Minimize</translation>
+    </message>
 </context>
 <context>
     <name>OCCViewer_CreateRestoreViewDlg</name>

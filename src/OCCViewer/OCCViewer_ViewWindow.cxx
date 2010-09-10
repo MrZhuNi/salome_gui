@@ -1974,7 +1974,6 @@ void OCCViewer_ViewWindow::setMaximized(bool toMaximize, bool toSendSignal)
     anAction->setIcon( aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_MINIMIZE" ) ) );
     anAction->setStatusTip( tr( "DSC_MINIMIZE_VIEW" ) );
     if (toSendSignal) {
-      printf("### OCCViewer_ViewWindow::emitMaximised\n");
       emit maximized( this, true );
     }
   }
@@ -1983,7 +1982,6 @@ void OCCViewer_ViewWindow::setMaximized(bool toMaximize, bool toSendSignal)
     anAction->setIcon( aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_MAXIMIZE" ) ) );
     anAction->setStatusTip( tr( "DSC_MAXIMIZE_VIEW" ) );
     if (toSendSignal) {
-      printf("### OCCViewer_ViewWindow::emitMinimised\n");
       emit maximized( this, false );
     }
   }
