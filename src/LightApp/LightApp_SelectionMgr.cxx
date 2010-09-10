@@ -187,7 +187,7 @@ void LightApp_SelectionMgr::GetIndexes( const Handle(SALOME_InteractiveObject)& 
   for ( SUIT_DataOwnerPtrList::const_iterator itr = aList.begin(); itr != aList.end(); ++itr )
   {
     LightApp_DataSubOwner* subOwner = dynamic_cast<LightApp_DataSubOwner*>( (*itr).operator->() );
-    if ( subOwner->entry() == QString(IObject->getEntry()) )
+    if ( subOwner && subOwner->entry() == QString(IObject->getEntry()) )
       theIndex.Add( subOwner->index() );
   }
 }
