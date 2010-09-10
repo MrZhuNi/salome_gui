@@ -22,6 +22,7 @@
 
 #include "OCCViewer_ViewModel.h"
 #include "OCCViewer_ViewWindow.h"
+#include "OCCViewer_ViewFrame.h"
 #include "OCCViewer_VService.h"
 #include "OCCViewer_ViewPort3d.h"
 
@@ -114,7 +115,7 @@ OCCViewer_Viewer::OCCViewer_Viewer( bool DisplayTrihedron, bool DisplayStaticTri
 
     myAISContext->Display(myTrihedron);
     myAISContext->Deactivate(myTrihedron);
-  }
+    }
 
   // set interaction style to standard
   myInteractionStyle = 0;
@@ -172,8 +173,9 @@ void OCCViewer_Viewer::initView( OCCViewer_ViewWindow* view )
 */
 SUIT_ViewWindow* OCCViewer_Viewer::createView( SUIT_Desktop* theDesktop )
 {
-  OCCViewer_ViewWindow* view = new OCCViewer_ViewWindow(theDesktop, this);
-  initView( view );
+  //OCCViewer_ViewWindow* view = new OCCViewer_ViewWindow(theDesktop, this);
+  OCCViewer_ViewFrame* view = new OCCViewer_ViewFrame(theDesktop, this);
+  initView( view->getView(OCCViewer_ViewFrame::MAIN_VIEW) );
   return view;
 }
 
@@ -218,12 +220,16 @@ void OCCViewer_Viewer::onMouseMove(SUIT_ViewWindow* theWindow, QMouseEvent* theE
   OCCViewer_ViewWindow* aView = (OCCViewer_ViewWindow*) theWindow;
 
   if ( isSelectionEnabled() ) {
-    if (aView->getViewPort()->isBusy()) return; // Check that the ViewPort initialization completed
+    if (aView->getViewPort()->isBusy()) {
+      QCoreApplication::processEvents();
+      return; // Check that the ViewPort initialization completed
                                                 // To Prevent call move event if the View port is not initialized
                                                 // IPAL 20883
+    }
     Handle(V3d_View) aView3d = aView->getViewPort()->getView();
-    if ( !aView3d.IsNull() )
+    if ( !aView3d.IsNull() ) {
       myAISContext->MoveTo(theEvent->x(), theEvent->y(), aView3d);
+    }
   }
 }
 
@@ -405,14 +411,10 @@ void OCCViewer_Viewer::onChangeBgColor()
   OCCViewer_ViewWindow* aView = (OCCViewer_ViewWindow*)(myViewManager->getActiveView());
   if( !aView )
     return;
-  OCCViewer_ViewPort3d* aViewPort3d = aView->getViewPort();
-  if( !aViewPort3d )
-    return;
-  QColor aColorActive = aViewPort3d->backgroundColor();
-
+  QColor aColorActive = aView->backgroundColor();
   QColor selColor = QColorDialog::getColor( aColorActive, aView);
   if ( selColor.isValid() )
-    aViewPort3d->setBackgroundColor(selColor);
+    aView->setBackgroundColor(selColor);
 }
 
 /*!
@@ -707,4 +709,12 @@ void OCCViewer_Viewer::isos( int& u, int& v ) const
     u = ic->IsoNumber( AIS_TOI_IsoU );
     v = ic->IsoNumber( AIS_TOI_IsoV );
   }
+}
+
+/* 
+ * Returns a new OCCViewer_ViewWindow instance which will be placed as a sub window in ViewFrame
+ */
+OCCViewer_ViewWindow* OCCViewer_Viewer::createSubWindow()
+{
+  return new OCCViewer_ViewWindow( 0,  this);
 }

@@ -117,6 +117,8 @@ public:
   double                          trihedronSize() const;
   virtual void                    setTrihedronSize( const double );
 
+  virtual OCCViewer_ViewWindow* createSubWindow();
+
 public slots:
   void                            onClearViewAspects();
  
@@ -150,12 +152,13 @@ public:
   void    setIsos( const int u, const int v ); // number of isolines
   void    isos( int& u, int& v ) const;
 
+  void initView( OCCViewer_ViewWindow* view );
+
 signals:
   void selectionChanged();
   void deselection();
 
 protected:
-  void initView( OCCViewer_ViewWindow* view );
 
 protected slots:
   void onMousePress(SUIT_ViewWindow*, QMouseEvent*);
