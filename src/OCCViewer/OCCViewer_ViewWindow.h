@@ -35,7 +35,7 @@ class OCCViewer_ClippingDlg;
 class OCCViewer_AxialScaleDlg;
 class OCCViewer_SetRotationPointDlg;
 class OCCViewer_Viewer;
-class viewAspect;
+struct viewAspect;
 class QtxAction;
 
 #ifdef WIN32
