@@ -62,8 +62,8 @@
 */
 OCCViewer_Viewer::OCCViewer_Viewer( bool DisplayTrihedron, bool DisplayStaticTrihedron )
 : SUIT_ViewModel(),
-  myBgColor( Qt::black ),
-  myShowStaticTrihedron( DisplayStaticTrihedron )
+  myShowStaticTrihedron( DisplayStaticTrihedron ),
+  myColors(4, Qt::black)
 {
   // init CasCade viewers
   myV3dViewer = OCCViewer_VService::Viewer3d( "", (short*) "Viewer3d", "", 1000.,
@@ -137,7 +137,7 @@ OCCViewer_Viewer::~OCCViewer_Viewer()
 */
 QColor OCCViewer_Viewer::backgroundColor() const
 {
-  return myBgColor;
+  return myColors[0];
 }
 
 /*!
@@ -147,7 +147,7 @@ QColor OCCViewer_Viewer::backgroundColor() const
 void OCCViewer_Viewer::setBackgroundColor( const QColor& c )
 {
   if ( c.isValid() )
-    myBgColor = c;
+    myColors[0] = c;
 }
 
 /*!
@@ -163,7 +163,7 @@ void OCCViewer_Viewer::initView( OCCViewer_ViewWindow* view )
     
     OCCViewer_ViewPort3d* vp3d = view->getViewPort();
     if ( vp3d )
-      vp3d->setBackgroundColor( myBgColor );
+      vp3d->setBackgroundColor( myColors[0] );
   }
 }
 
@@ -408,7 +408,7 @@ void OCCViewer_Viewer::onDumpView()
 */
 void OCCViewer_Viewer::onChangeBgColor()
 {
-  OCCViewer_ViewWindow* aView = (OCCViewer_ViewWindow*)(myViewManager->getActiveView());
+  OCCViewer_ViewWindow* aView = dynamic_cast<OCCViewer_ViewWindow*>(myViewManager->getActiveView());
   if( !aView )
     return;
   QColor aColorActive = aView->backgroundColor();
@@ -717,4 +717,17 @@ void OCCViewer_Viewer::isos( int& u, int& v ) const
 OCCViewer_ViewWindow* OCCViewer_Viewer::createSubWindow()
 {
   return new OCCViewer_ViewWindow( 0,  this);
+}
+  
+QColor OCCViewer_Viewer::backgroundColor(int theViewId) const
+{
+  if (theViewId < myColors.count())
+    return myColors[theViewId];
+  return Qt::black;
+}
+
+void OCCViewer_Viewer::setBackgroundColor( int theViewId, const QColor& theColor)
+{
+  if (theViewId < myColors.count())
+    myColors[theViewId] = theColor;
 }

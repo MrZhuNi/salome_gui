@@ -25,6 +25,7 @@
 
 #include <QColor>
 #include <QPoint>
+#include <QVector>
 
 #include "OCCViewer.h"
 
@@ -105,7 +106,10 @@ public:
   virtual void                    clearViewAspects();
 
   QColor                          backgroundColor() const;
-  void                            setBackgroundColor( const QColor& );
+  void                             setBackgroundColor( const QColor& );
+
+  QColor                          backgroundColor(int theViewId) const;
+  void                             setBackgroundColor( int theViewId, const QColor& );
 
   //! returns true if 3d Trihedron in viewer was created
   bool                            trihedronActivated() const { return !myTrihedron.IsNull(); }
@@ -183,10 +187,12 @@ private:
   bool                            mySelectionEnabled;
   bool                            myMultiSelectionEnabled;
 
-  QColor                          myBgColor;
+  //QColor                          myBgColor;
   QPoint                          myStartPnt, myEndPnt;
 
   bool                            myShowStaticTrihedron;
+
+  QVector<QColor>     myColors;
 };
 
 #ifdef WIN32

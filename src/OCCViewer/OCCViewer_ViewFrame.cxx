@@ -73,7 +73,7 @@ void OCCViewer_ViewFrame::onMaximizedView( OCCViewer_ViewWindow* theView, bool i
 
     int i = 0;
     if (myViews.count() == 1) {
-      QColor aColor = myViews.at( MAIN_VIEW )->backgroundColor();
+      //QColor aColor = myViews.at( MAIN_VIEW )->backgroundColor();
       OCCViewer_ViewWindow* view = 0;
       for ( i = BOTTOM_LEFT; i <= TOP_RIGHT; i++) {
         view = aModel->createSubWindow();
@@ -84,7 +84,7 @@ void OCCViewer_ViewFrame::onMaximizedView( OCCViewer_ViewWindow* theView, bool i
         aModel->initView(view);
         view->setMaximized(false, false);
         connectViewSignals(view);
-        view->setBackgroundColor(aColor);
+        view->setBackgroundColor(aModel->backgroundColor(i));
      }
       myLayout->addWidget( myViews.at(BOTTOM_LEFT), 1, 0 );
       myLayout->addWidget( myViews.at(TOP_LEFT), 0, 0 );
