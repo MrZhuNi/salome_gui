@@ -1208,8 +1208,10 @@ void OCCViewer_ViewWindow::createToolBar()
     toolMgr()->append( toolMgr()->separator(), tid );
     toolMgr()->append( ClippingId, tid );
     toolMgr()->append( AxialScaleId, tid );
+    toolMgr()->append( AmbientId, tid );
+  } else {
+    toolMgr()->append( AxialScaleId, tid );
   }
-  toolMgr()->append( AmbientId, tid );
   toolMgr()->append( MaximizedId,  tid);
 }
 
