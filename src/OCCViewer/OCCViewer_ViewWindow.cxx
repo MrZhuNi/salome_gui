@@ -1329,7 +1329,7 @@ void OCCViewer_ViewWindow::onSetRotationPoint( bool on )
   {
     if (!mySetRotationPointDlg)
     {
-      mySetRotationPointDlg = new OCCViewer_SetRotationPointDlg (this, myDesktop);
+      mySetRotationPointDlg = new OCCViewer_SetRotationPointDlg (this);
       mySetRotationPointDlg->SetAction(mySetRotationPointAction);
     }
 
@@ -1382,7 +1382,7 @@ void OCCViewer_ViewWindow::onClipping( bool on )
   {
     if ( !myClippingDlg )
     {
-      myClippingDlg = new OCCViewer_ClippingDlg( this, myDesktop );
+      myClippingDlg = new OCCViewer_ClippingDlg( this );
       myClippingDlg->SetAction( myClippingAction );
     }
     
@@ -1403,7 +1403,7 @@ void OCCViewer_ViewWindow::onClipping( bool on )
 void OCCViewer_ViewWindow::onAxialScale()
 {
   if ( !myScalingDlg )
-    myScalingDlg = new OCCViewer_AxialScaleDlg( this, myDesktop );
+    myScalingDlg = new OCCViewer_AxialScaleDlg( this );
   
   if ( !myScalingDlg->isVisible() )
     myScalingDlg->show();

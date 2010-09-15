@@ -62,8 +62,8 @@
   \param modal - is this dialog modal
   \param fl - flags
 */
-OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
-: QDialog( parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint ),
+OCCViewer_ClippingDlg::OCCViewer_ClippingDlg( OCCViewer_ViewWindow* view, const char* name, bool modal, Qt::WindowFlags fl )
+: QDialog( view, Qt::WindowTitleHint | Qt::WindowSystemMenuHint ),
   myView( view )
 {
   setObjectName( "OCCViewer_ClippingDlg" );
