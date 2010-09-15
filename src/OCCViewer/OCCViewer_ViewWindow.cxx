@@ -1168,7 +1168,7 @@ void OCCViewer_ViewWindow::createToolBar()
 
   toolMgr()->append( DumpId, tid );
   toolMgr()->append( SwitchInteractionStyleId, tid );
-  if( myModel->trihedronActivated() ) 
+  if( myModel->trihedronActivated() && (my2dMode == No2dMode) )
     toolMgr()->append( TrihedronShowId, tid );
 
   QtxMultiAction* aScaleAction = new QtxMultiAction( this );
