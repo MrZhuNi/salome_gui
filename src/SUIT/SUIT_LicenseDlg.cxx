@@ -51,7 +51,7 @@ SUIT_LicenseDlg::SUIT_LicenseDlg( bool firstShow, QWidget* parent, const char* n
   if ( ::getenv( "TRIPOLI_ROOT_DIR" ) )
     env = ::getenv( "TRIPOLI_ROOT_DIR" );
  
-  QFile file( env + "/share/salome/resources/License.txt" ); // Read the text from a file
+  QFile file( env + "/share/salome/resources/tripoli/License.txt" ); // Read the text from a file
   
   if ( !file.exists() || !file.open( QIODevice::ReadOnly ) )
     return;
