@@ -1164,7 +1164,22 @@ void OCCViewer_ViewWindow::createActions()
 */
 void OCCViewer_ViewWindow::createToolBar()
 {
-  int tid = toolMgr()->createToolBar( tr( "LBL_TOOLBAR_LABEL" ), false );
+  QString aToolbarName;
+  switch (my2dMode) {
+  case XYPlane:
+    aToolbarName = tr( "LBL_XYTOOLBAR_LABEL" );
+    break;
+  case XZPlane:
+    aToolbarName = tr( "LBL_XZTOOLBAR_LABEL" );
+    break;
+  case YZPlane:
+    aToolbarName = tr( "LBL_YZTOOLBAR_LABEL" );
+    break;
+  default:
+    aToolbarName = tr( "LBL_3DTOOLBAR_LABEL" );
+  }
+  
+  int tid = toolMgr()->createToolBar( aToolbarName, false );
 
   toolMgr()->append( DumpId, tid );
   toolMgr()->append( SwitchInteractionStyleId, tid );
@@ -1973,6 +1988,7 @@ void OCCViewer_ViewWindow::setMaximized(bool toMaximize, bool toSendSignal)
   SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
   if ( toMaximize ) {
     anAction->setText( tr( "MNU_MINIMIZE_VIEW" ) );  
+    anAction->setToolTip( tr( "MNU_MINIMIZE_VIEW" ) );  
     anAction->setIcon( aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_MINIMIZE" ) ) );
     anAction->setStatusTip( tr( "DSC_MINIMIZE_VIEW" ) );
     if (toSendSignal) {
@@ -1981,6 +1997,7 @@ void OCCViewer_ViewWindow::setMaximized(bool toMaximize, bool toSendSignal)
   }
   else {
     anAction->setText( tr( "MNU_MAXIMIZE_VIEW" ) );  
+    anAction->setToolTip( tr( "MNU_MAXIMIZE_VIEW" ) );  
     anAction->setIcon( aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_MAXIMIZE" ) ) );
     anAction->setStatusTip( tr( "DSC_MAXIMIZE_VIEW" ) );
     if (toSendSignal) {

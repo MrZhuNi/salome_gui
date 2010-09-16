@@ -213,8 +213,20 @@
         <translation>Restore view</translation>
     </message>
     <message>
-        <source>LBL_TOOLBAR_LABEL</source>
-        <translation>View Operations</translation>
+        <source>LBL_XYTOOLBAR_LABEL</source>
+        <translation>XY View Operations</translation>
+    </message>
+    <message>
+        <source>LBL_XZTOOLBAR_LABEL</source>
+        <translation>XZ View Operations</translation>
+    </message>
+    <message>
+        <source>LBL_YZTOOLBAR_LABEL</source>
+        <translation>YZ View Operations</translation>
+    </message>
+    <message>
+        <source>LBL_3DTOOLBAR_LABEL</source>
+        <translation>3D View Operations</translation>
     </message>
     <message>
         <source>DSC_BACK_VIEW</source>
@@ -254,7 +266,7 @@
     </message>
     <message>
         <source>DSC_MINIMIZE_VIEW</source>
-        <translation>Minimize view</translation>
+        <translation>Set axonometric projections</translation>
     </message>
     <message>
         <source>MNU_MAXIMIZE_VIEW</source>
@@ -262,7 +274,7 @@
     </message>
     <message>
         <source>MNU_MINIMIZE_VIEW</source>
-        <translation>Minimize</translation>
+        <translation>Axonometric views</translation>
     </message>
 </context>
 <context>
