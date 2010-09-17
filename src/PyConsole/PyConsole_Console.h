@@ -62,6 +62,10 @@ public:
   bool                isSync() const;
   void                setIsSync( const bool );
 
+  bool                isSuppressOutput() const;
+  void                setIsSuppressOutput( const bool );
+
+
   void                exec( const QString& );
   void                execAndWait( const QString& );
 
