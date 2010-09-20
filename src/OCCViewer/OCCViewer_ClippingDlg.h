@@ -50,7 +50,7 @@ class OCCViewer_ClippingDlg : public QDialog
     Q_OBJECT
     
     public:
-    OCCViewer_ClippingDlg(OCCViewer_ViewWindow* , QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0);
+    OCCViewer_ClippingDlg(OCCViewer_ViewWindow* , const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0);
     ~OCCViewer_ClippingDlg();
 
     void SetAction( QtxAction* theAction ) { myAction = theAction; }

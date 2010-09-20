@@ -93,10 +93,14 @@ void SUIT_SelectionMgr::setEnabled( const bool on, const QString& typ )
 void SUIT_SelectionMgr::selected( SUIT_DataOwnerPtrList& lst, const QString& type ) const
 {
   lst.clear();
+  if (type.isEmpty())
+    return;
 
   for ( SelectorList::const_iterator it = mySelectors.begin(); it != mySelectors.end(); ++it )
   {
-    if ( !type.isEmpty() && (*it)->type() != type )
+    if (!(*it)->isEnabled())
+      continue;
+    if ( (*it)->type() != type)
       continue;
 
     SUIT_DataOwnerPtrList curList;

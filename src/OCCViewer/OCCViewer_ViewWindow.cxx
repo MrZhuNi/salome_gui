@@ -216,6 +216,7 @@ OCCViewer_ViewWindow::OCCViewer_ViewWindow( SUIT_Desktop*     theDesktop,
 
   mypSketcher = 0;
   myCurSketch = -1;
+  my2dMode = No2dMode;
 
   myInteractionStyle = SUIT_ViewModel::STANDARD;
 }
@@ -250,6 +251,17 @@ void OCCViewer_ViewWindow::initLayout()
 
   createActions();
   createToolBar();
+  switch (my2dMode) {
+  case XYPlane:
+    onTopView();
+    break;
+  case XZPlane:
+    onLeftView();
+    break;
+  case YZPlane:
+    onFrontView();
+    break;
+  }
 }
 
 /*!
@@ -270,7 +282,8 @@ OCCViewer_ViewWindow::getButtonState( QMouseEvent* theEvent, int theInteractionS
            (theEvent->buttons() == SUIT_ViewModel::myButtonMap[aStyle][SUIT_ViewModel::PAN]) )
     aOp = PANVIEW;
   else if( (theEvent->modifiers()  == SUIT_ViewModel::myStateMap[aStyle][SUIT_ViewModel::ROTATE]) &&
-           (theEvent->buttons() == SUIT_ViewModel::myButtonMap[aStyle][SUIT_ViewModel::ROTATE]) )
+           (theEvent->buttons() == SUIT_ViewModel::myButtonMap[aStyle][SUIT_ViewModel::ROTATE]) &&
+           (my2dMode == No2dMode))
     aOp = ROTATE;
 
   return aOp;
@@ -1137,6 +1150,13 @@ void OCCViewer_ViewWindow::createActions()
   aAction->setCheckable(true);
   connect(aAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchInteractionStyle(bool)));
   toolMgr()->registerAction( aAction, SwitchInteractionStyleId );
+
+ // Maximized view
+  aAction = new QtxAction(tr("MNU_MINIMIZE_VIEW"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_MINIMIZE" ) ),
+                          tr( "MNU_MINIMIZE_VIEW" ), 0, this );
+  aAction->setStatusTip(tr("DSC_MINIMIZE_VIEW"));
+  connect(aAction, SIGNAL(triggered()), this, SLOT(onMaximizedView()));
+  toolMgr()->registerAction( aAction, MaximizedId );
 }
 
 /*!
@@ -1144,11 +1164,26 @@ void OCCViewer_ViewWindow::createActions()
 */
 void OCCViewer_ViewWindow::createToolBar()
 {
-  int tid = toolMgr()->createToolBar( tr( "LBL_TOOLBAR_LABEL" ), false );
+  QString aToolbarName;
+  switch (my2dMode) {
+  case XYPlane:
+    aToolbarName = tr( "LBL_XYTOOLBAR_LABEL" );
+    break;
+  case XZPlane:
+    aToolbarName = tr( "LBL_XZTOOLBAR_LABEL" );
+    break;
+  case YZPlane:
+    aToolbarName = tr( "LBL_YZTOOLBAR_LABEL" );
+    break;
+  default:
+    aToolbarName = tr( "LBL_3DTOOLBAR_LABEL" );
+  }
+  
+  int tid = toolMgr()->createToolBar( aToolbarName, false );
 
   toolMgr()->append( DumpId, tid );
   toolMgr()->append( SwitchInteractionStyleId, tid );
-  if( myModel->trihedronActivated() ) 
+  if( myModel->trihedronActivated() && (my2dMode == No2dMode) )
     toolMgr()->append( TrihedronShowId, tid );
 
   QtxMultiAction* aScaleAction = new QtxMultiAction( this );
@@ -1162,32 +1197,37 @@ void OCCViewer_ViewWindow::createToolBar()
   aPanningAction->insertAction( toolMgr()->action( GlobalPanId ) );
   toolMgr()->append( aPanningAction, tid );
 
-  toolMgr()->append( ChangeRotationPointId, tid );
-  toolMgr()->append( RotationId, tid );
+  if (my2dMode == No2dMode) {
+    toolMgr()->append( ChangeRotationPointId, tid );
+    toolMgr()->append( RotationId, tid );
 
-  QtxMultiAction* aViewsAction = new QtxMultiAction( this );
-  aViewsAction->insertAction( toolMgr()->action( FrontId ) );
-  aViewsAction->insertAction( toolMgr()->action( BackId ) );
-  aViewsAction->insertAction( toolMgr()->action( TopId ) );
-  aViewsAction->insertAction( toolMgr()->action( BottomId ) );
-  aViewsAction->insertAction( toolMgr()->action( LeftId ) );
-  aViewsAction->insertAction( toolMgr()->action( RightId ) );
-  toolMgr()->append( aViewsAction, tid );
-
-  toolMgr()->append( ResetId, tid );
-
-  QtxMultiAction* aMemAction = new QtxMultiAction( this );
-  aMemAction->insertAction( toolMgr()->action( MemId ) );
-  aMemAction->insertAction( toolMgr()->action( RestoreId ) );
-  toolMgr()->append( aMemAction, tid );
-
-  toolMgr()->append( toolMgr()->separator(), tid );
-  toolMgr()->append( CloneId, tid );
+    QtxMultiAction* aViewsAction = new QtxMultiAction( this );
+    aViewsAction->insertAction( toolMgr()->action( FrontId ) );
+    aViewsAction->insertAction( toolMgr()->action( BackId ) );
+    aViewsAction->insertAction( toolMgr()->action( TopId ) );
+    aViewsAction->insertAction( toolMgr()->action( BottomId ) );
+    aViewsAction->insertAction( toolMgr()->action( LeftId ) );
+    aViewsAction->insertAction( toolMgr()->action( RightId ) );
+    toolMgr()->append( aViewsAction, tid );
   
-  toolMgr()->append( toolMgr()->separator(), tid );
-  toolMgr()->append( ClippingId, tid );
-  toolMgr()->append( AxialScaleId, tid );
-  toolMgr()->append( AmbientId, tid );
+    toolMgr()->append( ResetId, tid );
+
+    QtxMultiAction* aMemAction = new QtxMultiAction( this );
+    aMemAction->insertAction( toolMgr()->action( MemId ) );
+    aMemAction->insertAction( toolMgr()->action( RestoreId ) );
+    toolMgr()->append( aMemAction, tid );
+
+    toolMgr()->append( toolMgr()->separator(), tid );
+    toolMgr()->append( CloneId, tid );
+  
+    toolMgr()->append( toolMgr()->separator(), tid );
+    toolMgr()->append( ClippingId, tid );
+    toolMgr()->append( AxialScaleId, tid );
+    toolMgr()->append( AmbientId, tid );
+  } else {
+    toolMgr()->append( AxialScaleId, tid );
+  }
+  toolMgr()->append( MaximizedId,  tid);
 }
 
 /*!
@@ -1306,7 +1346,7 @@ void OCCViewer_ViewWindow::onSetRotationPoint( bool on )
   {
     if (!mySetRotationPointDlg)
     {
-      mySetRotationPointDlg = new OCCViewer_SetRotationPointDlg (this, myDesktop);
+      mySetRotationPointDlg = new OCCViewer_SetRotationPointDlg (this);
       mySetRotationPointDlg->SetAction(mySetRotationPointAction);
     }
 
@@ -1359,7 +1399,7 @@ void OCCViewer_ViewWindow::onClipping( bool on )
   {
     if ( !myClippingDlg )
     {
-      myClippingDlg = new OCCViewer_ClippingDlg( this, myDesktop );
+      myClippingDlg = new OCCViewer_ClippingDlg( this );
       myClippingDlg->SetAction( myClippingAction );
     }
     
@@ -1380,7 +1420,7 @@ void OCCViewer_ViewWindow::onClipping( bool on )
 void OCCViewer_ViewWindow::onAxialScale()
 {
   if ( !myScalingDlg )
-    myScalingDlg = new OCCViewer_AxialScaleDlg( this, myDesktop );
+    myScalingDlg = new OCCViewer_AxialScaleDlg( this );
   
   if ( !myScalingDlg->isVisible() )
     myScalingDlg->show();
@@ -1615,6 +1655,14 @@ void OCCViewer_ViewWindow::setCuttingPlane( bool on, const double x,  const doub
   view->Update();
   view->Redraw();
 }
+
+void OCCViewer_ViewWindow::setCuttingPlane( bool on, const gp_Pln pln )
+{
+  gp_Dir aDir = pln.Axis().Direction();
+  gp_Pnt aPnt = pln.Location();
+  setCuttingPlane(on, aPnt.X(), aPnt.Y(), aPnt.Z(), aDir.X(), aDir.Y(), aDir.Z());
+}
+
 
 /*!
   \brief Check if any cutting plane is enabled
@@ -1926,4 +1974,60 @@ void OCCViewer_ViewWindow::setTransformEnabled( const OperationType id, const bo
 bool OCCViewer_ViewWindow::transformEnabled( const OperationType id ) const
 {
   return myStatus.contains( id ) ? myStatus[ id ] : true;
+}
+
+void OCCViewer_ViewWindow::onMaximizedView()
+{
+  setMaximized(!isMaximized());
+}
+
+
+void OCCViewer_ViewWindow::setMaximized(bool toMaximize, bool toSendSignal)
+{
+  QAction* anAction =  toolMgr()->action( MaximizedId );
+  SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
+  if ( toMaximize ) {
+    anAction->setText( tr( "MNU_MINIMIZE_VIEW" ) );  
+    anAction->setToolTip( tr( "MNU_MINIMIZE_VIEW" ) );  
+    anAction->setIcon( aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_MINIMIZE" ) ) );
+    anAction->setStatusTip( tr( "DSC_MINIMIZE_VIEW" ) );
+    if (toSendSignal) {
+      emit maximized( this, true );
+    }
+  }
+  else {
+    anAction->setText( tr( "MNU_MAXIMIZE_VIEW" ) );  
+    anAction->setToolTip( tr( "MNU_MAXIMIZE_VIEW" ) );  
+    anAction->setIcon( aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_MAXIMIZE" ) ) );
+    anAction->setStatusTip( tr( "DSC_MAXIMIZE_VIEW" ) );
+    if (toSendSignal) {
+      emit maximized( this, false );
+    }
+  }
+}
+
+
+bool OCCViewer_ViewWindow::isMaximized() const
+{
+  return !(toolMgr()->action( MaximizedId )->text() == tr( "MNU_MAXIMIZE_VIEW" ));
+}
+
+
+void OCCViewer_ViewWindow::set2dMode(Mode2dType theType)
+{
+  my2dMode = theType;
+}
+   
+QColor OCCViewer_ViewWindow::backgroundColor() const
+{
+  if( !myViewPort )
+    return Qt::black;
+  return myViewPort->backgroundColor();
+}
+   
+void OCCViewer_ViewWindow::setBackgroundColor( const QColor& theColor)
+{
+  if( !myViewPort )
+    return;
+  myViewPort->setBackgroundColor(theColor);
 }
