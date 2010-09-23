@@ -152,6 +152,8 @@ LightApp_Module* LightApp_DataModel::getModule() const
 */
 LightApp_Study* LightApp_DataModel::getStudy() const
 {
+  if ( !root() )
+    return 0;
   LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root()->root() );
   if ( !aRoot )
     return 0;
