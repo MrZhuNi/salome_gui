@@ -3071,7 +3071,7 @@ void QtxPagePrefSpinItem::setPrecision( const QVariant& prec )
   if ( QtxDoubleSpinBox* dsb = ::qobject_cast<QtxDoubleSpinBox*>( control() ) )
   {
     if ( prec.canConvert( QVariant::Int ) ) {
-      dsb->setDecimals( prec.toInt() );
+      dsb->setDecimals( qAbs( prec.toInt() ) );
       dsb->setPrecision( prec.toInt() );
     }
   }
@@ -4245,7 +4245,17 @@ QtxPagePrefShortcutTreeItem::QtxPagePrefShortcutTreeItem( const QString& title, 
                                                           const QString& param ): QtxPageNamedPrefItem( title, parent, sect, "" )
 {
   mySection = sect;
+
   myShortcutTree = new QtxShortcutTree();
+
+  // Retrieve shortcuts common sections from resources
+  QtxResourceMgr* resMgr = resourceMgr();
+  if ( resMgr ){
+    QString generalSections = resourceMgr()->stringValue( "shortcuts_settings", "general_sections", QString() );
+    QStringList sectionsList = generalSections.split( ";", QString::SkipEmptyParts );
+    myShortcutTree->setGeneralSections( sectionsList );
+  }
+ 
   setControl( myShortcutTree );
 }
 

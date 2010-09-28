@@ -70,6 +70,7 @@
 #include <SUIT_Study.h>
 #include <SUIT_FileDlg.h>
 #include <SUIT_ResourceMgr.h>
+#include <SUIT_ShortcutMgr.h>
 #include <SUIT_Tools.h>
 #include <SUIT_Accel.h>
 #include <SUIT_MessageBox.h>
@@ -231,6 +232,8 @@ LightApp_Application::LightApp_Application()
 : CAM_Application( false ),
   myPrefs( 0 )
 {
+  Q_INIT_RESOURCE( LightApp );
+
   STD_TabDesktop* desk = new STD_TabDesktop();
 
   setDesktop( desk );
@@ -1596,6 +1599,9 @@ void LightApp_Application::showPreferences( const QString& itemText )
     if ( desktop() )
       resourceMgr()->setValue( "desktop", "geometry", desktop()->storeGeometry() );
     resourceMgr()->save();
+
+    // Update shortcuts
+    shortcutMgr()->updateShortcuts();
   }
 
   delete prefDlg;
@@ -1854,6 +1860,19 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->setItemIcon( salomeCat, Qtx::scaleIcon( resourceMgr()->loadPixmap( "LightApp", tr( "APP_DEFAULT_ICO" ), false ), 20 ) );
 
   int genTab = pref->addPreference( tr( "PREF_TAB_GENERAL" ), salomeCat );
+
+  int langGroup = pref->addPreference( tr( "PREF_GROUP_LANGUAGE" ), genTab );
+  pref->setItemProperty( "columns", 2, langGroup );
+  int curLang = pref->addPreference( tr( "PREF_CURRENT_LANGUAGE" ), langGroup,
+                                          LightApp_Preferences::Selector, "language", "language" );
+  QStringList aLangs = SUIT_Session::session()->resourceMgr()->stringValue( "language", "languages", "en" ).split( "," );
+  QList<QVariant> aIcons;
+  foreach ( QString aLang, aLangs ) {
+    aIcons << QPixmap( QString( ":/images/%1" ).arg( aLang ) );
+  }
+  pref->setItemProperty( "strings", aLangs, curLang );
+  pref->setItemProperty( "icons",   aIcons, curLang );
+
   int studyGroup = pref->addPreference( tr( "PREF_GROUP_STUDY" ), genTab );
 
   pref->setItemProperty( "columns", 2, studyGroup );
@@ -2142,6 +2161,12 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
                        "ObjectBrowser", "auto_size" );
   pref->addPreference( tr( "PREF_RESIZE_ON_EXPAND_ITEM" ), objSetGroup, LightApp_Preferences::Bool,
                        "ObjectBrowser", "resize_on_expand_item" );
+
+  // Shortcuts preferences
+  int shortcutTab = pref->addPreference( tr( "PREF_TAB_SHORTCUTS" ), salomeCat );
+  int shortcutGroup = pref->addPreference( tr( "PREF_GROUP_SHORTCUTS" ), shortcutTab );
+  pref->addPreference( tr( "" ), shortcutGroup,
+                       LightApp_Preferences::ShortcutTree, "shortcuts" );
 
   // MRU preferences
   int mruGroup = pref->addPreference( tr( "PREF_GROUP_MRU" ), genTab, LightApp_Preferences::Auto, "MRU", "show_mru" );
@@ -2434,6 +2459,10 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
       else if ( param == "show_mru" )
         mru->setVisible( resMgr->booleanValue( "MRU", "show_mru", false ) );          // do not show MRU menu item by default
     }
+  }
+  if ( sec == "language" && param == "language" )
+  {
+    SUIT_MessageBox::information( desktop(), tr( "WRN_WARNING" ), tr( "LANG_CHANGED" ) );
   }
 }
 

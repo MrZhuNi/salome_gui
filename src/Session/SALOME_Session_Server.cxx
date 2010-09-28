@@ -401,7 +401,6 @@ void shutdownServers( SALOME_NamingService* theNS )
 // ---------------------------- MAIN -----------------------
 int main( int argc, char **argv )
 {
-
   if(getenv ("DEBUGGER"))
     {
       setsig(SIGSEGV,&Handler);
@@ -440,7 +439,7 @@ int main( int argc, char **argv )
     SUIT_ResourceMgr resMgr( "SalomeApp", QString( "%1Config" ) );
     resMgr.setCurrentFormat( "xml" );
     resMgr.setWorkingMode( QtxResourceMgr::IgnoreUserValues );
-    resMgr.loadLanguage( "LightApp", "en" );
+    resMgr.loadLanguage( "LightApp" );
     //
     splash = QtxSplash::splash( QPixmap() );
     splash->readSettings( &resMgr );

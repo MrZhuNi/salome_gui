@@ -67,7 +67,7 @@ salomeinclude_HEADERS =		\
 	QtxResourceMgr.h	\
 	QtxRubberBand.h         \
 	QtxSearchTool.h		\
-	QtxShortcutEdit.h       \	
+	QtxShortcutEdit.h       \
 	QtxSplash.h		\
 	QtxToolBar.h		\
 	QtxToolTip.h		\
@@ -192,3 +192,6 @@ nodist_libqtx_la_SOURCES = $(MOC_FILES)
 
 libqtx_la_CPPFLAGS = $(QT_INCLUDES)
 libqtx_la_LDFLAGS  = $(QT_MT_LIBS)
+
+nodist_salomeres_DATA =		\
+	Qtx_msg_fr.qm
