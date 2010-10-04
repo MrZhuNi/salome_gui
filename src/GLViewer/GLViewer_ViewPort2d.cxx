@@ -583,6 +583,15 @@ void GLViewer_ViewPort2d::setForegroundColor( const QColor& theColor )
 }
 
 /*!
+  Gets foreground color
+  \return foreground color
+*/
+QColor GLViewer_ViewPort2d::foregroundColor() const
+{
+    return myGLWidget->foregroundColor();
+}
+
+/*!
   Sets foreground frame color
   \param theColor - foreground frame color
 */

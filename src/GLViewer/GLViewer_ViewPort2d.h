@@ -100,6 +100,9 @@ public:
   //! Sets foreground color
   void                   setForegroundColor( const QColor& theColor );
 
+  //! Gets foreground color
+  QColor                 foregroundColor() const;
+
   //! Sets foreground frame color
   void                   setForegroundFrameColor( const QColor& theColor );
 

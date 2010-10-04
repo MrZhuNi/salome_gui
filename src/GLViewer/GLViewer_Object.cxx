@@ -279,7 +279,7 @@ bool GLViewer_Object::initializeFromByteCopy( QByteArray theArray )
         *aPointer = theArray[i];
 
     //myRect = new QRect( aLeft, aTop, aRight - aLeft, aBottom - aTop );
-    myRect = new GLViewer_Rect( aLeft, aRight, aTop, aBottom );
+    myRect = new GLViewer_Rect( aLeft, aRight, aBottom, aTop );
 
     aPointer = (char*)&myXScale;
     for( ; i < 5*aFSize; i++, aPointer++ )

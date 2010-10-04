@@ -131,6 +131,15 @@ void GLViewer_Widget::setForegroundColor( const QColor& theColor )
 }
 
 /*!
+  Gets foreground color
+  \return foreground color
+*/
+QColor GLViewer_Widget::foregroundColor() const
+{
+  return myForegroundColor;
+}
+
+/*!
   Sets foreground frame color
   \param theColor - foreground frame color
 */

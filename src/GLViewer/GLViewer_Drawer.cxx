@@ -909,7 +909,7 @@ GLViewer_Rect GLViewer_Drawer::textRect( const QString& text ) const
     height = myTextFormat == DTF_TEXTURE_SCALABLE ? aFontMetrics.height() * scale : aFontMetrics.height();
   }
 
-  return GLViewer_Rect( 0, width, height, 0 );
+  return GLViewer_Rect( 0, width, 0, height );
 }
 
 /*!

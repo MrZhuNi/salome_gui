@@ -70,28 +70,28 @@ typedef QList<GLViewer_Pnt> GLViewer_PntList;
 class GLVIEWER_API GLViewer_Rect
 {
 public:
-  GLViewer_Rect(): myLeft(0.0), myRight(0.0), myTop(0.0), myBottom(0.0){}
-  GLViewer_Rect( float theLeft, float theRight, float theTop, float theBottom )
-    : myLeft(theLeft), myRight(theRight), myTop(theTop), myBottom(theBottom) {}
+  GLViewer_Rect(): myLeft(0.0), myRight(0.0), myBottom(0.0), myTop(0.0) {}
+  GLViewer_Rect( float theLeft, float theRight, float theBottom, float theTop )
+    : myLeft(theLeft), myRight(theRight), myBottom(theBottom), myTop(theTop) {}
   GLViewer_Rect( QRect theRect ) {
     myLeft = ( float )theRect.left(); myRight = ( float )theRect.right();
-    myTop = ( float )theRect.top(); myBottom = ( float )theRect.bottom(); }
+    myBottom = ( float )theRect.bottom(); myTop = ( float )theRect.top(); }
   GLViewer_Rect( QRectF theRect ) {
     myLeft = theRect.left(); myRight = theRect.right();
-    myTop = theRect.top(); myBottom = theRect.bottom(); }
+    myBottom = theRect.bottom(); myTop = theRect.top(); }
   
   float       left() const { return myLeft; }
   float       right() const { return myRight; }
-  float       top() const { return myTop; }
   float       bottom() const { return myBottom; }
+  float       top() const { return myTop; }
 
   float       width() const { return fabs( myRight - myLeft ); }
   float       height() const { return fabs( myTop - myBottom ); }
   
   void        setLeft( float theLeft ) { myLeft = theLeft; }
   void        setRight( float theRight ) { myRight = theRight; }
-  void        setTop( float theTop ) { myTop = theTop; }
   void        setBottom( float theBottom ) { myBottom = theBottom; }
+  void        setTop( float theTop ) { myTop = theTop; }
   
   void        setCoords( float theLeft, float theRight, float theBottom, float theTop )
   { myLeft = theLeft; myRight = theRight; myBottom = theBottom; myTop = theTop; }
@@ -134,8 +134,8 @@ public:
 protected:
   float       myLeft;
   float       myRight;
-  float       myTop;
   float       myBottom;
+  float       myTop;
 
   bool        myIsEmpty;
 };

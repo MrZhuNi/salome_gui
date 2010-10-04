@@ -122,7 +122,7 @@ public:
   virtual bool              isPulling() { return false; }
   //!\warning It is for ouv
   virtual GLViewer_Rect     getPullingRect() const { return GLViewer_Rect(
-                                myRect->left(), myRect->right(), myRect->top(), myRect->bottom() ); }
+                                myRect->left(), myRect->right(), myRect->bottom(), myRect->top() ); }
   
   //! Installs object rectangle
   virtual void              setRect( GLViewer_Rect* rect) { myRect = rect; }
