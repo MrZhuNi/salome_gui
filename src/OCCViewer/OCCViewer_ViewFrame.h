@@ -71,8 +71,9 @@ public:
 
   virtual bool eventFilter(QObject* watched, QEvent* e) { return SUIT_ViewWindow::eventFilter(watched, e); }
 
-  virtual QColor backgroundColor() const { return getView(MAIN_VIEW)->backgroundColor(); }
+  virtual QColor backgroundColor() const;
   virtual void    setBackgroundColor( const QColor& );
+
 
 public slots:
   virtual void onFrontView() { getView(MAIN_VIEW)->onFrontView(); }
@@ -105,12 +106,17 @@ public slots:
 
   virtual void onDumpView() { getView(MAIN_VIEW)->onDumpView(); }
 
+private slots:
+  void onContextMenuRequested(QContextMenuEvent*);
+
 private:
   void connectViewSignals(OCCViewer_ViewWindow* theView);
 
 
   QList<OCCViewer_ViewWindow*> myViews;
   QGridLayout* myLayout;
+
+  OCCViewer_ViewWindow* myPopupRequestedView;
 };
 
 #endif

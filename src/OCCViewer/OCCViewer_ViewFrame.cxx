@@ -10,7 +10,7 @@
 
 
 OCCViewer_ViewFrame::OCCViewer_ViewFrame(SUIT_Desktop* theDesktop, OCCViewer_Viewer* theModel)
-  : OCCViewer_ViewWindow( theDesktop, theModel )
+  : OCCViewer_ViewWindow( theDesktop, theModel ), myPopupRequestedView(0)
 {
   QFrame* centralFrame = new QFrame( this );
   setCentralWidget( centralFrame );
@@ -156,15 +156,24 @@ void OCCViewer_ViewFrame::connectViewSignals(OCCViewer_ViewWindow* theView)
   connect( theView, SIGNAL( mouseMoving(SUIT_ViewWindow*, QMouseEvent*) ), 
            this, SIGNAL( mouseMoving(SUIT_ViewWindow*, QMouseEvent*) ) );
 
+  // The signal is used to process get/set bacgrounf\d color from popup
+  connect( theView, SIGNAL( contextMenuRequested(QContextMenuEvent*) ), 
+           this, SLOT( onContextMenuRequested(QContextMenuEvent*) ) );
+
   connect( theView, SIGNAL( contextMenuRequested(QContextMenuEvent*) ), 
            this, SIGNAL( contextMenuRequested(QContextMenuEvent*) ) );
+
 }
 
 void OCCViewer_ViewFrame::setBackgroundColor( const QColor& theColor)
 {
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
-    aView->setBackgroundColor(theColor); 
-  }
+  if (myPopupRequestedView)
+    myPopupRequestedView->setBackgroundColor(theColor); 
+  else
+    foreach (OCCViewer_ViewWindow* aView, myViews) {
+      if (aView->isVisible())
+        aView->setBackgroundColor(theColor); 
+    }
 }
 
 
@@ -181,3 +190,21 @@ void OCCViewer_ViewFrame::onFitAll()
     aView->onFitAll(); 
   }
 }
+  
+QColor OCCViewer_ViewFrame::backgroundColor() const 
+{ 
+  if (myPopupRequestedView)
+    return myPopupRequestedView->backgroundColor(); 
+
+  foreach (OCCViewer_ViewWindow* aView, myViews) {
+    if (aView->isVisible())
+      return aView->backgroundColor(); 
+  }
+  return getView(MAIN_VIEW)->backgroundColor(); 
+}
+
+void OCCViewer_ViewFrame::onContextMenuRequested(QContextMenuEvent*)
+{
+  myPopupRequestedView = dynamic_cast<OCCViewer_ViewWindow*>(sender());
+}
+
