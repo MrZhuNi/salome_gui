@@ -59,7 +59,8 @@ salomeinclude_HEADERS =			\
 	LightApp_SwitchOp.h		\
 	LightApp_Preferences.h		\
 	LightApp_PreferencesDlg.h	\
-	LightApp_UpdateFlags.h
+	LightApp_UpdateFlags.h		\
+	LightApp_WgViewModel.h
 
 if ENABLE_PYCONSOLE
   salomeinclude_HEADERS += LightApp_PyInterp.h
@@ -106,7 +107,8 @@ dist_libLightApp_la_SOURCES =		\
 	LightApp_Study.cxx		\
 	LightApp_SwitchOp.cxx		\
 	LightApp_Preferences.cxx	\
-	LightApp_PreferencesDlg.cxx
+	LightApp_PreferencesDlg.cxx	\
+	LightApp_WgViewModel.cxx
 
 if ENABLE_PYCONSOLE
   dist_libLightApp_la_SOURCES += LightApp_PyInterp.cxx
@@ -145,7 +147,8 @@ MOC_FILES =				\
 	LightApp_Study_moc.cxx		\
 	LightApp_SwitchOp_moc.cxx	\
 	LightApp_Preferences_moc.cxx	\
-	LightApp_PreferencesDlg_moc.cxx
+	LightApp_PreferencesDlg_moc.cxx	\
+	LightApp_WgViewModel_moc.cxx
 
 if ENABLE_VTKVIEWER
 if ENABLE_SALOMEOBJECT

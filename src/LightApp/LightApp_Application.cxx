@@ -54,6 +54,7 @@
 #include "LightApp_OBSelector.h"
 #include "LightApp_SelectionMgr.h"
 #include "LightApp_DataObject.h"
+#include "LightApp_WgViewModel.h"
 
 #include <SALOME_Event.h>
 
@@ -1402,6 +1403,24 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     viewWin->resize( (int)( desktop()->width() * 0.6 ), (int)( desktop()->height() * 0.6 ) );
 
   return viewMgr;
+}
+
+SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType, QWidget* w )
+{
+  SUIT_ViewManager* vm = new SUIT_ViewManager( activeStudy(), 
+					       desktop(),
+					       new LightApp_WgViewModel( vmType, w ) );
+  vm->setTitle( QString( "%1: %M - viewer %V" ).arg( vmType ) );
+ 
+  addViewManager( vm );
+  SUIT_ViewWindow* vw = vm->createViewWindow();
+  if ( vw && desktop() )
+    vw->resize( (int)( desktop()->width() * 0.6 ), (int)( desktop()->height() * 0.6 ) );
+
+  if ( !vmType.isEmpty() && !myUserWmTypes.contains( vmType ) )
+    myUserWmTypes << vmType;
+
+  return vm;
 }
 
 /*!
@@ -3281,6 +3300,7 @@ bool LightApp_Application::openAction( const int choice, const QString& aName )
 QStringList LightApp_Application::viewManagersTypes() const
 {
   QStringList aTypesList;
+  aTypesList += myUserWmTypes;
 #ifndef DISABLE_GLVIEWER
   aTypesList<<GLViewer_Viewer::Type();
 #endif

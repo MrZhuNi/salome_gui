@@ -135,7 +135,8 @@ void SUIT_ViewWindow::setDestructiveClose( const bool on )
 void SUIT_ViewWindow::closeEvent( QCloseEvent* e )
 {
   e->ignore();
-  emit closing( this );
+  emit tryClosing( this );
+  if ( closable() ) emit closing( this );
 }
 
 /*! Context menu requested for event \a e.
@@ -213,10 +214,25 @@ bool SUIT_ViewWindow::action( const int  )
   return true;
 }
 
+/*! Returns \c true if view window can be closed by the user
+*/
+bool SUIT_ViewWindow::closable() const
+{
+  QVariant val = property( "closable" );
+  return !val.isValid() || val.toBool();
+}
+
+/*! Set / reset "closable" option of the view window
+*/
+bool SUIT_ViewWindow::setClosable( const bool on )
+{
+  setProperty( "closable", on );
+}
+
 /*!
   \return string containing visual parameters of window
 */
-QString   SUIT_ViewWindow::getVisualParameters()
+QString SUIT_ViewWindow::getVisualParameters()
 {
   return "empty";
 }
