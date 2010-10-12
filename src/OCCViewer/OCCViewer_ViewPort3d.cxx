@@ -51,6 +51,14 @@ static int sx = 0;
 static int sy = 0;
 static Standard_Boolean zRotation = Standard_False;
 
+#include <Standard_Version.hxx>
+
+#ifdef OCC_VERSION_SERVICEPACK
+#define OCC_VERSION_LARGE (OCC_VERSION_MAJOR << 24 | OCC_VERSION_MINOR << 16 | OCC_VERSION_MAINTENANCE << 8 | OCC_VERSION_SERVICEPACK)
+#else
+#define OCC_VERSION_LARGE (OCC_VERSION_MAJOR << 24 | OCC_VERSION_MINOR << 16 | OCC_VERSION_MAINTENANCE << 8)
+#endif
+
 /*!
   Constructor
 */
@@ -314,8 +322,10 @@ void OCCViewer_ViewPort3d::fitRect( const QRect& rect )
 */
 void OCCViewer_ViewPort3d::startZoomAtPoint( int x, int y )
 {
+#if OCC_VERSION_LARGE > 0x06030010 // available only with OCC-6.3-sp11 and higher version
   if ( !activeView().IsNull() && isAdvancedZoomingEnabled() )
     activeView()->StartZoomAtPoint( x, y );
+#endif
 }
 
 /*!

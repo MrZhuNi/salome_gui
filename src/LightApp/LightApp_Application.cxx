@@ -177,6 +177,14 @@
   #include <SALOME_ListIO.hxx>
 #endif
 
+#include <Standard_Version.hxx>
+
+#ifdef OCC_VERSION_SERVICEPACK
+#define OCC_VERSION_LARGE (OCC_VERSION_MAJOR << 24 | OCC_VERSION_MINOR << 16 | OCC_VERSION_MAINTENANCE << 8 | OCC_VERSION_SERVICEPACK)
+#else
+#define OCC_VERSION_LARGE (OCC_VERSION_MAJOR << 24 | OCC_VERSION_MINOR << 16 | OCC_VERSION_MAINTENANCE << 8)
+#endif
+
 #define ToolBarMarker    0
 #define DockWidgetMarker 1
 
@@ -1970,14 +1978,16 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->setItemProperty( "strings", aStyleModeList, occStyleMode );
   pref->setItemProperty( "indexes", aModeIndexesList, occStyleMode );
 
+#if OCC_VERSION_LARGE > 0x06030010 // available only with OCC-6.3-sp11 and higher version
   int occZoomingStyleMode = pref->addPreference( tr( "PREF_ZOOMING" ), occGroup,
                                                  LightApp_Preferences::Selector, "OCCViewer", "zooming_mode" );
-  QStringList aZoomingStyleModeList;
-  aZoomingStyleModeList.append( tr("PREF_ZOOMING_AT_CENTER") );
-  aZoomingStyleModeList.append( tr("PREF_ZOOMING_AT_CURSOR") );
+  QStringList anOCCZoomingStyleModeList;
+  anOCCZoomingStyleModeList.append( tr("PREF_ZOOMING_AT_CENTER") );
+  anOCCZoomingStyleModeList.append( tr("PREF_ZOOMING_AT_CURSOR") );
 
-  pref->setItemProperty( "strings", aZoomingStyleModeList, occZoomingStyleMode );
+  pref->setItemProperty( "strings", anOCCZoomingStyleModeList, occZoomingStyleMode );
   pref->setItemProperty( "indexes", aModeIndexesList, occZoomingStyleMode );
+#endif
 
   // VTK Viewer
   int vtkGen = pref->addPreference( "", vtkGroup, LightApp_Preferences::Frame );
@@ -2012,7 +2022,11 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   int vtkZoomingStyleMode = pref->addPreference( tr( "PREF_ZOOMING" ), vtkGen,
                                                  LightApp_Preferences::Selector, "VTKViewer", "zooming_mode" );
 
-  pref->setItemProperty( "strings", aZoomingStyleModeList, vtkZoomingStyleMode );
+  QStringList aVTKZoomingStyleModeList;
+  aVTKZoomingStyleModeList.append( tr("PREF_ZOOMING_AT_CENTER") );
+  aVTKZoomingStyleModeList.append( tr("PREF_ZOOMING_AT_CURSOR") );
+
+  pref->setItemProperty( "strings", aVTKZoomingStyleModeList, vtkZoomingStyleMode );
   pref->setItemProperty( "indexes", aModeIndexesList, vtkZoomingStyleMode );
 
   int vtkSpeed = pref->addPreference( tr( "PREF_INCREMENTAL_SPEED" ), vtkGen,
