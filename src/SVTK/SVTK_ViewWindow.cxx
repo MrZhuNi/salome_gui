@@ -171,9 +171,9 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
   myViewParameterDlg = new SVTK_ViewParameterDlg
     ( getAction( ViewParametersId ), this, "SVTK_ViewParameterDlg" );
   
-  SVTK_InteractorStyle* aStyle = SVTK_InteractorStyle::New();
-  myInteractor->PushInteractorStyle(aStyle);
-  aStyle->Delete();
+  myDefaultInteractorStyle = SVTK_InteractorStyle::New();
+  myInteractor->PushInteractorStyle(myDefaultInteractorStyle);
+  myDefaultInteractorStyle->Delete();
   
   myRecorder = SVTK_Recorder::New();
   
@@ -681,6 +681,15 @@ void SVTK_ViewWindow::SetInteractionStyle(const int theStyle)
 }
 
 /*!
+  Sets actual zooming style
+  \param theStyle - type of zooming style ( 0 - standard, 1 - advanced (at cursor) )
+*/
+void SVTK_ViewWindow::SetZoomingStyle(const int theStyle)
+{
+  onSwitchZoomingStyle( theStyle==1 );
+}
+
+/*!
   Switches "keyboard free" interaction style on/off
 */
 void SVTK_ViewWindow::onSwitchInteractionStyle(bool theOn)
@@ -708,6 +717,22 @@ void SVTK_ViewWindow::onSwitchInteractionStyle(bool theOn)
   // update action state if method is called outside
   QtxAction* a = getAction( SwitchInteractionStyleId );
   if ( a->isChecked() != theOn ) a->setChecked( theOn );
+}
+
+/*!
+  Toogles advanced zooming style (relatively to the cursor position) on/off
+*/
+void SVTK_ViewWindow::onSwitchZoomingStyle( bool theOn )
+{
+  if( myDefaultInteractorStyle.GetPointer() )
+    myDefaultInteractorStyle->SetAdvancedZoomingEnabled( theOn );
+  if( myKeyFreeInteractorStyle.GetPointer() )
+    myKeyFreeInteractorStyle->SetAdvancedZoomingEnabled( theOn );
+
+  // update action state if method is called outside
+  QtxAction* a = getAction( SwitchZoomingStyleId );
+  if ( a->isChecked() != theOn )
+    a->setChecked( theOn );
 }
 
 /*!
@@ -1549,8 +1574,14 @@ void SVTK_ViewWindow::activateStartPointSelection()
 */
 void SVTK_ViewWindow::onPerspectiveMode()
 {
+  bool anIsParallelMode = toolMgr()->action( ParallelModeId )->isChecked();
+
+  // advanced zooming is not available in perspective mode
+  if( QtxAction* anAction = getAction( SwitchZoomingStyleId ) )
+    anAction->setEnabled( anIsParallelMode );
+
   vtkCamera* aCamera = getRenderer()->GetActiveCamera();
-  aCamera->SetParallelProjection(toolMgr()->action( ParallelModeId )->isChecked());
+  aCamera->SetParallelProjection(anIsParallelMode);
   GetInteractor()->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
 }
 
@@ -1764,6 +1795,15 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchInteractionStyle(bool)));
   mgr->registerAction( anAction, SwitchInteractionStyleId );
 
+  // Switch between zomming styles
+  anAction = new QtxAction(tr("MNU_SVTK_ZOOMING_STYLE_SWITCH"), 
+                           theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_ZOOMING_STYLE_SWITCH" ) ),
+                           tr( "MNU_SVTK_ZOOMING_STYLE_SWITCH" ), 0, this);
+  anAction->setStatusTip(tr("DSC_SVTK_ZOOMING_STYLE_SWITCH"));
+  anAction->setCheckable(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchZoomingStyle(bool)));
+  mgr->registerAction( anAction, SwitchZoomingStyleId );
+
   // Start recording
   myStartAction = new QtxAction(tr("MNU_SVTK_RECORDING_START"), 
                                 theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_RECORDING_START" ) ),
@@ -1809,6 +1849,7 @@ void SVTK_ViewWindow::createToolBar()
   
   mgr->append( DumpId, myToolBar );
   mgr->append( SwitchInteractionStyleId, myToolBar );
+  mgr->append( SwitchZoomingStyleId, myToolBar );
   mgr->append( ViewTrihedronId, myToolBar );
 
   QtxMultiAction* aScaleAction = new QtxMultiAction( this );

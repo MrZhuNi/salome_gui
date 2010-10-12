@@ -96,6 +96,12 @@ public:
   //! Sets interaction style
   void setInteractionStyle( const int );
 
+  //! Gets zooming style
+  int zoomingStyle() const;
+
+  //! Sets zooming style
+  void setZoomingStyle( const int );
+
   //! Get incremental speed (see #SVTK_InteractorStyle::ControllerIncrement)
   int incrementalSpeed() const;
 
@@ -175,6 +181,7 @@ private:
   int    myIncrementMode;
   int    myProjMode;
   int    myStyle;
+  int    myZoomingStyle;
   int    mySpaceBtn[3];
 };
 

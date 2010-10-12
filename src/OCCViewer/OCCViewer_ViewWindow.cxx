@@ -385,20 +385,26 @@ void OCCViewer_ViewWindow::vpMousePressEvent( QMouseEvent* theEvent )
     break;
 
   case ZOOMVIEW:
-    if ( theEvent->button() == Qt::LeftButton )
+    if ( theEvent->button() == Qt::LeftButton ) {
+      myViewPort->startZoomAtPoint( myStartX, myStartY );
       emit vpTransformationStarted ( ZOOMVIEW );
+    }
     break;
 
   case PANVIEW:
-    if ( aSwitchToZoom )
+    if ( aSwitchToZoom ) {
+      myViewPort->startZoomAtPoint( myStartX, myStartY );
       activateZoom();
+    }
     else if ( theEvent->button() == Qt::LeftButton )
       emit vpTransformationStarted ( PANVIEW );
     break;
 
   case ROTATE:
-    if ( aSwitchToZoom )
+    if ( aSwitchToZoom ) {
+      myViewPort->startZoomAtPoint( myStartX, myStartY );
       activateZoom();
+    }
     else if ( theEvent->button() == Qt::LeftButton ) {
       myViewPort->startRotation(myStartX, myStartY, myCurrPointType, mySelectedPoint);
       emit vpTransformationStarted ( ROTATE );
@@ -409,7 +415,8 @@ void OCCViewer_ViewWindow::vpMousePressEvent( QMouseEvent* theEvent )
   /*  Try to activate a transformation */
     switch ( getButtonState(theEvent, anInteractionStyle) ) {
     case ZOOMVIEW:
-            activateZoom();
+      myViewPort->startZoomAtPoint( myStartX, myStartY );
+      activateZoom();
       break;
     case PANVIEW:
             activatePanning();
@@ -1160,12 +1167,20 @@ void OCCViewer_ViewWindow::createActions()
   toolMgr()->registerAction( aAction, AmbientId );
 
   // Switch between interaction styles
-  aAction = new QtxAction(tr("MNU_STYLE_SWITCH"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_SVTK_STYLE_SWITCH" ) ),
+  aAction = new QtxAction(tr("MNU_STYLE_SWITCH"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_STYLE_SWITCH" ) ),
                           tr( "MNU_STYLE_SWITCH" ), 0, this);
   aAction->setStatusTip(tr("DSC_STYLE_SWITCH"));
   aAction->setCheckable(true);
   connect(aAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchInteractionStyle(bool)));
   toolMgr()->registerAction( aAction, SwitchInteractionStyleId );
+
+  // Switch between zooming styles
+  aAction = new QtxAction(tr("MNU_ZOOMING_STYLE_SWITCH"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_ZOOMING_STYLE_SWITCH" ) ),
+                          tr( "MNU_ZOOMING_STYLE_SWITCH" ), 0, this);
+  aAction->setStatusTip(tr("DSC_ZOOMING_STYLE_SWITCH"));
+  aAction->setCheckable(true);
+  connect(aAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchZoomingStyle(bool)));
+  toolMgr()->registerAction( aAction, SwitchZoomingStyleId );
 }
 
 /*!
@@ -1177,6 +1192,7 @@ void OCCViewer_ViewWindow::createToolBar()
 
   toolMgr()->append( DumpId, tid );
   toolMgr()->append( SwitchInteractionStyleId, tid );
+  toolMgr()->append( SwitchZoomingStyleId, tid );
   if( myModel->trihedronActivated() ) 
     toolMgr()->append( TrihedronShowId, tid );
 
@@ -1567,6 +1583,19 @@ void OCCViewer_ViewWindow::onSwitchInteractionStyle( bool on )
 }
 
 /*!
+  \brief Toogles advanced zooming style (relatively to the cursor position) on/off
+*/
+void OCCViewer_ViewWindow::onSwitchZoomingStyle( bool on )
+{
+  myViewPort->setAdvancedZoomingEnabled( on );
+
+  // update action state if method is called outside
+  QtxAction* a = dynamic_cast<QtxAction*>( toolMgr()->action( SwitchZoomingStyleId ) );
+  if ( a->isChecked() != on )
+    a->setChecked( on );
+}
+
+/*!
   \brief Get current interaction style
   \return interaction style
 */
@@ -1582,6 +1611,24 @@ int OCCViewer_ViewWindow::interactionStyle() const
 void OCCViewer_ViewWindow::setInteractionStyle( const int theStyle )
 {
   onSwitchInteractionStyle( theStyle == (int)SUIT_ViewModel::KEY_FREE );
+}
+
+/*!
+  \brief Get current zooming style
+  \return zooming style
+*/
+int OCCViewer_ViewWindow::zoomingStyle() const
+{
+  return myViewPort->isAdvancedZoomingEnabled() ? 1 : 0;
+}
+
+/*!
+  \brief Set current zooming style
+  \param theStyle zooming style
+*/
+void OCCViewer_ViewWindow::setZoomingStyle( const int theStyle )
+{
+  onSwitchZoomingStyle( theStyle == 1 );
 }
 
 /*!

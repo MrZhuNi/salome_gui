@@ -170,6 +170,9 @@ public:
   int                             interactionStyle() const;
   void                            setInteractionStyle( const int );
 
+  int                             zoomingStyle() const;
+  void                            setZoomingStyle( const int );
+
   void                            enableSelection(bool isEnabled);
   bool                            isSelectionEnabled() const { return mySelectionEnabled; }
 
@@ -217,6 +220,7 @@ private:
   viewAspectList                  myViewAspects;
 
   int                             myInteractionStyle;
+  int                             myZoomingStyle;
 
   bool                            mySelectionEnabled;
   bool                            myMultiSelectionEnabled;

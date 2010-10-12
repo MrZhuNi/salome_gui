@@ -59,7 +59,8 @@ OCCViewer_ViewPort3d::OCCViewer_ViewPort3d( QWidget* parent, const Handle( V3d_V
     myScale( 1.0 ),
     myDegenerated( true ),
     myAnimate( false ),
-    myBusy( true )
+    myBusy( true ),
+    myIsAdvancedZoomingEnabled( false )
 {
   selectVisualId();
 
@@ -309,6 +310,15 @@ void OCCViewer_ViewPort3d::fitRect( const QRect& rect )
 }
 
 /*!
+  Inits 'zoom' transformation. [ protected ]
+*/
+void OCCViewer_ViewPort3d::startZoomAtPoint( int x, int y )
+{
+  if ( !activeView().IsNull() && isAdvancedZoomingEnabled() )
+    activeView()->StartZoomAtPoint( x, y );
+}
+
+/*!
   Called at 'zoom' transformation. [ virtual protected ]
 */
 void OCCViewer_ViewPort3d::zoom( int x0, int y0, int x, int y )
@@ -317,7 +327,10 @@ void OCCViewer_ViewPort3d::zoom( int x0, int y0, int x, int y )
     // as OCCT respects a sign of only dx,
     // but we want both signes to be taken into account
     //activeView()->Zoom( x0, y0, x, y );
-    activeView()->Zoom( x0 + y0, 0, x + y, 0 );
+    if ( isAdvancedZoomingEnabled() )
+      activeView()->ZoomAtPoint( x0, y0, x, y );
+    else
+      activeView()->Zoom( x0 + y0, 0, x + y, 0 );
   }
 }
 

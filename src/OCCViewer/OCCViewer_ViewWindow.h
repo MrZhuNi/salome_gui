@@ -51,7 +51,7 @@ public:
   enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId,
          ChangeRotationPointId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, CloneId, ClippingId, MemId, RestoreId,
-         TrihedronShowId, AxialScaleId, GraduatedAxesId, AmbientId, SwitchInteractionStyleId };
+         TrihedronShowId, AxialScaleId, GraduatedAxesId, AmbientId, SwitchInteractionStyleId, SwitchZoomingStyleId };
 
   enum OperationType{ NOTHING, PANVIEW, ZOOMVIEW, ROTATE, 
                       PANGLOBAL, WINDOWFIT, FITALLVIEW, RESETVIEW,
@@ -90,6 +90,9 @@ public:
   int                     interactionStyle() const;
   void                    setInteractionStyle( const int );
  
+  int                     zoomingStyle() const;
+  void                    setZoomingStyle( const int );
+ 
   void setTransformEnabled( const OperationType, const bool );
   bool transformEnabled( const OperationType ) const;
 
@@ -119,6 +122,7 @@ public slots:
   void onTrihedronShow();
   void setRestoreFlag();
   void onSwitchInteractionStyle( bool on );
+  void onSwitchZoomingStyle( bool on );
 
   void activateSetRotationGravity();
   void activateSetRotationSelected( double theX, double theY, double theZ );

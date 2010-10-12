@@ -97,6 +97,13 @@ operations are assigned to the buttons differently: rotation is made
 with the left button, translation with the right and zoom with both
 pressed in the same time.</li>
 </ul>
+<li><b>Zooming mode</b> - this option allows to choose a zooming mode.</li>
+<ul>
+<li><b>Relative to the view's center</b> - allows to zoom the view 
+relatively to its center.</li>
+<li><b>Relative to the cursor</b> - allows to zoom the view
+relatively to the current cursor position..</li>
+</ul>
 <li><b>[+]/[-] Speed Increment</b> - defines the number of units by
 which the speed increases or respectively decreases after pressing [+]
 or [-] keyboard buttons.</li>
