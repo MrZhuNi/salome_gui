@@ -337,9 +337,11 @@ void OCCViewer_ViewPort3d::zoom( int x0, int y0, int x, int y )
     // as OCCT respects a sign of only dx,
     // but we want both signes to be taken into account
     //activeView()->Zoom( x0, y0, x, y );
+#if OCC_VERSION_LARGE > 0x06030010 // available only with OCC-6.3-sp11 and higher version
     if ( isAdvancedZoomingEnabled() )
       activeView()->ZoomAtPoint( x0, y0, x, y );
     else
+#endif
       activeView()->Zoom( x0 + y0, 0, x + y, 0 );
   }
 }
