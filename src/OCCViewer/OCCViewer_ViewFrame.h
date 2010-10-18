@@ -43,7 +43,7 @@ public:
 
   OCCViewer_ViewWindow*   getView( const int ) const;
 
-  virtual OCCViewer_ViewPort3d* getViewPort() { return 0; }
+  virtual OCCViewer_ViewPort3d* getViewPort() { return getView(MAIN_VIEW)->getViewPort(); }
   OCCViewer_ViewPort3d* getViewPort(int theView);
 
   virtual void performRestoring( const viewAspect& theAspect) { getView(MAIN_VIEW)->performRestoring(theAspect); }
