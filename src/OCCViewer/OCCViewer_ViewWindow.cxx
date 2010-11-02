@@ -1395,23 +1395,26 @@ void OCCViewer_ViewWindow::onClipping( bool on )
   else
     myActionsMap[ ClippingId ]->setIcon(aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_CLIPPING" )));
   */
+  OCCViewer_ViewWindow* aParent = dynamic_cast<OCCViewer_ViewWindow*>(parent()->parent());
+  if (!aParent)
+    aParent = this;
   if ( on )
-  {
-    if ( !myClippingDlg )
     {
-      myClippingDlg = new OCCViewer_ClippingDlg( this );
-      myClippingDlg->SetAction( myClippingAction );
-    }
+      if ( !myClippingDlg )
+        {
+          myClippingDlg = new OCCViewer_ClippingDlg( aParent );
+          myClippingDlg->SetAction( myClippingAction );
+        }
     
-    if ( !myClippingDlg->isVisible() )
-      myClippingDlg->show();
-  }
+      if ( !myClippingDlg->isVisible() )
+        myClippingDlg->show();
+    }
   else
-  {
-    if ( myClippingDlg->isVisible() )
-      myClippingDlg->hide();
-    setCuttingPlane(false);
-  }
+    {
+      if ( myClippingDlg->isVisible() )
+        myClippingDlg->hide();
+      aParent->setCuttingPlane(false);
+    }
 }
 
 /*!
@@ -2031,3 +2034,4 @@ void OCCViewer_ViewWindow::setBackgroundColor( const QColor& theColor)
     return;
   myViewPort->setBackgroundColor(theColor);
 }
+

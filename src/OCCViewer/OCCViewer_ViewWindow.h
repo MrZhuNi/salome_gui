@@ -26,6 +26,7 @@
 #include "OCCViewer.h"
 #include "SUIT_ViewWindow.h"
 #include <gp_Pnt.hxx>
+#include <V3d_Plane.hxx>
 
 class QtxRectRubberBand;
 class SUIT_Desktop;
@@ -106,6 +107,7 @@ public:
 
   virtual QColor backgroundColor() const;
   virtual void    setBackgroundColor( const QColor& );
+
 
 public slots:
   virtual void onFrontView();
@@ -236,6 +238,8 @@ private:
   MapOfTransformStatus myStatus;
 
   Mode2dType my2dMode;
+
+  Handle(V3d_Plane) myReserveClippingPlane;
 };
 
 #ifdef WIN32

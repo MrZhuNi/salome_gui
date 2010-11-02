@@ -113,6 +113,7 @@ void OCCViewer_ViewFrame::setCuttingPlane( bool on, const double x , const doubl
 { 
   foreach (OCCViewer_ViewWindow* aView, myViews) {
     aView->setCuttingPlane(on, x, y, z, dx, dy, dz); 
+    aView->update();
   }
 }
 
@@ -121,6 +122,7 @@ void OCCViewer_ViewFrame::setCuttingPlane( bool on, const gp_Pln thePln )
 { 
   foreach (OCCViewer_ViewWindow* aView, myViews) {
     aView->setCuttingPlane(on, thePln); 
+    aView->update();
   }
 }
   

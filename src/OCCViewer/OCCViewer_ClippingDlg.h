@@ -94,7 +94,7 @@ private :
     OCCViewer_ViewWindow* myView;
 
     Handle(AIS_Plane) myPreviewPlane;
-    Handle(V3d_Plane) myClippingPlane;
+    //Handle(V3d_Plane) myClippingPlane;
     
     bool myBusy;
 
