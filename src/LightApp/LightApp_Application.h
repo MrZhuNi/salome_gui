@@ -77,7 +77,8 @@ public:
   enum { RenameId = CAM_Application::UserID,
 	 CloseId, CloseAllId, GroupAllId,
 	 PreferencesId, MRUId, ModulesListId,
-         NewGLViewId, NewPlot2dId, NewOCCViewId, NewVTKViewId, NewQxGraphViewId, UserID };
+         NewGLViewId, NewPlot2dId, NewOCCViewId, NewVTKViewId, NewQxGraphViewId,
+         NewGraphicsViewId, UserID };
 
 protected:
   enum { NewStudyId = 1, OpenStudyId };

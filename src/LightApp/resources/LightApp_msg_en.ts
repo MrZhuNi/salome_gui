@@ -358,6 +358,10 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
         <translation>&amp;QxGraph view</translation>
     </message>
     <message>
+        <source>NEW_WINDOW_5</source>
+        <translation>G&amp;raphics view</translation>
+    </message>
+    <message>
         <source>OBJ_BROWSER_NAME</source>
         <translation>Object</translation>
     </message>

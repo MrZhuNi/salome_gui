@@ -1,0 +1,1052 @@
+// Copyright (C) 2005  OPEN CASCADE, CEA/DEN, EDF R&D, PRINCIPIA R&D
+// 
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either 
+// version 2.1 of the License.
+// 
+// This library is distributed in the hope that it will be useful 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public  
+// License along with this library; if not, write to the Free Software 
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+//
+// See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
+//
+// File:   GraphicsView_ViewPort.cxx
+// Author: Oleg UVAROV, Open CASCADE S.A.S. (oleg.uvarov@opencascade.com)
+//
+
+#include "GraphicsView_ViewPort.h"
+
+#include "GraphicsView_Object.h"
+#include "GraphicsView_Scene.h"
+#include "GraphicsView_ViewTransformer.h"
+
+#include "SUIT_ResourceMgr.h"
+#include "SUIT_Session.h"
+
+#include <QCursor>
+#include <QGraphicsSceneMouseEvent>
+#include <QRectF>
+#include <QRubberBand>
+#include <QScrollBar>
+
+#include <math.h>
+
+int GraphicsView_ViewPort::nCounter = 0;
+QCursor* GraphicsView_ViewPort::defCursor = 0;
+QCursor* GraphicsView_ViewPort::handCursor = 0;
+QCursor* GraphicsView_ViewPort::panCursor = 0;
+QCursor* GraphicsView_ViewPort::panglCursor = 0;
+QCursor* GraphicsView_ViewPort::zoomCursor = 0;
+
+//================================================================
+// Function : createCursors
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::createCursors ()
+{
+  defCursor   = new QCursor( Qt::ArrowCursor );
+  handCursor  = new QCursor( Qt::PointingHandCursor );
+  panCursor   = new QCursor( Qt::SizeAllCursor );
+  panglCursor = new QCursor( Qt::CrossCursor );
+
+  SUIT_ResourceMgr* rmgr = SUIT_Session::session()->resourceMgr();
+  zoomCursor   = new QCursor( rmgr->loadPixmap( "GraphicsView", tr( "ICON_GV_CURSOR_ZOOM" ) ) );
+}
+
+//================================================================
+// Function : destroyCursors
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::destroyCursors()
+{
+  delete defCursor;   defCursor   = 0;
+  delete handCursor;  handCursor  = 0;
+  delete panCursor;   panCursor   = 0;
+  delete panglCursor; panglCursor = 0;
+  delete zoomCursor;  zoomCursor  = 0;
+}
+
+//=======================================================================
+// Name    : GraphicsView_ViewPort
+// Purpose : Constructor
+//=======================================================================
+GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
+: QGraphicsView( theParent ),
+  myForegroundItem( 0 ),
+  myIsTransforming( false ),
+  myHighlightedObject( 0 ),
+  myHighlightX( 0 ),
+  myHighlightY( 0 ),
+  mySelectionIterator( 0 ),
+  myRectBand( 0 ),
+  myAreSelectionPointsInitialized( false ),
+  myIsDragging( false ),
+  myIsDragPositionInitialized( false ),
+  myIsPulling( false ),
+  myPullingObject( 0 )
+{
+  // scene
+  myScene = new GraphicsView_Scene( this );
+  setScene( myScene );
+
+  // background
+  setBackgroundBrush( QBrush( Qt::white ) );
+
+  // foreground
+  myIsForegroundEnabled = false;
+  myForegroundSize = QSizeF( 100, 30 );
+  myForegroundMargin = 0.0;
+  myForegroundColor = Qt::white;
+  myForegroundFrameColor = Qt::black;
+  myForegroundFrameLineWidth = 1.0;
+
+  // render hints (default - TextAntialiasing only)
+  setRenderHints( QPainter::Antialiasing |
+                  QPainter::TextAntialiasing |
+                  QPainter::SmoothPixmapTransform |
+                  QPainter::HighQualityAntialiasing );
+
+  connect( myScene, SIGNAL( gsMouseEvent( QGraphicsSceneMouseEvent* ) ),
+           this, SLOT( onMouseEvent( QGraphicsSceneMouseEvent* ) ) );
+  connect( myScene, SIGNAL( gsWheelEvent( QGraphicsSceneWheelEvent* ) ),
+           this, SLOT( onWheelEvent( QGraphicsSceneWheelEvent* ) ) );
+  connect( myScene, SIGNAL( gsContextMenuEvent( QGraphicsSceneContextMenuEvent* ) ),
+           this, SLOT( onContextMenuEvent( QGraphicsSceneContextMenuEvent* ) ) );
+
+  initialize();
+}
+
+//=======================================================================
+// Name    : GraphicsView_ViewPort
+// Purpose : Destructor
+//=======================================================================
+GraphicsView_ViewPort::~GraphicsView_ViewPort()
+{
+  cleanup();
+
+  if( myScene )
+  {
+    delete myScene;
+    myScene = 0;
+  }
+}
+
+//================================================================
+// Function : initialize
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::initialize()
+{
+  if ( nCounter++ == 0 )
+    createCursors();
+
+  setMouseTracking( true );
+  setFocusPolicy( Qt::StrongFocus );
+}
+
+//================================================================
+// Function : cleanup
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::cleanup()
+{
+  if ( --nCounter == 0 )
+    destroyCursors();
+}
+
+//================================================================
+// Function : addItem
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::addItem( QGraphicsItem* theItem )
+{
+  myScene->addItem( theItem );
+}
+
+//================================================================
+// Function : removeItem
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::removeItem( QGraphicsItem* theItem )
+{
+  if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( theItem ) )
+  {
+    if( myHighlightedObject == anObject )
+      myHighlightedObject = 0;
+    mySelectedObjects.removeAll( anObject );
+  }
+  myScene->removeItem( theItem );
+}
+
+//================================================================
+// Function : dumpView
+// Purpose  : 
+//================================================================
+QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
+{
+  if( !theWholeScene ) // just grab the view contents
+  {
+    QPixmap aPixmap = QPixmap::grabWindow( viewport()->winId() );
+    return aPixmap.toImage();
+  }
+
+  // get a bounding rect of all presented objects
+  // (itemsBoundingRect() method is unsuitable)
+  QRectF aRect;
+  QListIterator<QGraphicsItem*> anIter( items() );
+  while( anIter.hasNext() )
+  {
+    if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+    {
+      if( aRect.isNull() )
+        aRect = anObject->getRect();
+      else
+        aRect |= anObject->getRect();
+    }
+  }
+
+  if( aRect.isNull() )
+    return QImage();
+
+  // store a list of selected objects
+  GraphicsView_ObjectList aSelectedObjects = mySelectedObjects;
+
+  // unhighlight and unselect all objects
+  clearHighlighted();
+  clearSelected();
+
+  // render the scene to an image
+  QImage anImage( aRect.toRect().size(), QImage::Format_RGB32 );
+  QPainter aPainter( &anImage );
+  QRectF aTargetRect( 0, 0, aRect.width(), aRect.height() );
+  myScene->render( &aPainter, aTargetRect, aRect );
+
+  // restore selection
+  GraphicsView_ObjectListIterator aSelectedIter( aSelectedObjects );
+  while( aSelectedIter.hasNext() )
+    if( GraphicsView_Object* anObject = aSelectedIter.next() )
+    {
+      setSelected( anObject );
+      anObject->compute();
+    }
+
+  return anImage;
+}
+
+//================================================================
+// Function : backgroundColor
+// Purpose  : 
+//================================================================
+QColor GraphicsView_ViewPort::backgroundColor() const
+{
+  return backgroundBrush().color();
+}
+
+//================================================================
+// Function : setBackgroundColor
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setBackgroundColor( const QColor& theColor )
+{
+  setBackgroundBrush( QBrush( theColor ) );
+}
+
+//================================================================
+// Function : setForegroundEnabled
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setForegroundEnabled( bool theState )
+{
+  myIsForegroundEnabled = theState;
+}
+
+//================================================================
+// Function : setForegroundSize
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setForegroundSize( const QSizeF& theSize )
+{
+  myForegroundSize = theSize;
+}
+
+//================================================================
+// Function : setForegroundMargin
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setForegroundMargin( double theMargin )
+{
+  myForegroundMargin = theMargin;
+}
+
+//================================================================
+// Function : setForegroundColor
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setForegroundColor( const QColor& theColor )
+{
+  myForegroundColor = theColor;
+}
+
+//================================================================
+// Function : setForegroundFrameColor
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setForegroundFrameColor( const QColor& theColor )
+{
+  myForegroundFrameColor = theColor;
+}
+
+//================================================================
+// Function : setForegroundFrameLineWidth
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setForegroundFrameLineWidth( double theLineWidth )
+{
+  myForegroundFrameLineWidth = theLineWidth;
+}
+
+//================================================================
+// Function : updateForeground
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::updateForeground()
+{
+  if( myIsForegroundEnabled )
+  {
+    if( !myForegroundItem )
+      myForegroundItem = myScene->addRect( QRectF(), QPen(), QBrush( Qt::white ) );
+    myForegroundItem->setZValue( -1 );
+
+    QRectF aRect( QPointF(), myForegroundSize );
+    aRect.adjust( -myForegroundMargin, -myForegroundMargin,
+                  myForegroundMargin, myForegroundMargin );
+    myForegroundItem->setRect( aRect );
+
+    QBrush aBrush = myForegroundItem->brush();
+    aBrush.setColor( myForegroundColor );
+    myForegroundItem->setBrush( aBrush );
+
+    QPen aPen = myForegroundItem->pen();
+    aPen.setColor( myForegroundFrameColor );
+    aPen.setWidthF( myForegroundFrameLineWidth );
+    myForegroundItem->setPen( aPen );
+
+    myForegroundItem->setVisible( true );
+
+    myScene->setSceneRect( aRect.adjusted( -20, -20, 20, 20 ) );
+  }
+  else
+  {
+    if( myForegroundItem )
+      myForegroundItem->setVisible( false );
+  }
+}
+
+//================================================================
+// Function : reset
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::reset()
+{
+  fitAll();
+}
+
+//================================================================
+// Function : pan
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::pan( double theDX, double theDY )
+{
+  myIsTransforming = true;
+
+  if( QScrollBar* aHBar = horizontalScrollBar() )
+    aHBar->setValue( aHBar->value() - theDX );
+  if( QScrollBar* aVBar = verticalScrollBar() )
+    aVBar->setValue( aVBar->value() + theDY );
+
+  myIsTransforming = false;
+}
+
+//================================================================
+// Function : setCenter
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setCenter( double theX, double theY )
+{
+  myIsTransforming = true;
+
+  setTransform( myCurrentTransform );
+  centerOn( theX, theY );
+
+  myIsTransforming = false;
+}
+
+//================================================================
+// Function : zoom
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::zoom( double theX1, double theY1, double theX2, double theY2 )
+{
+  myIsTransforming = true;
+
+  double aDX = theX2 - theX1;
+  double aDY = theY2 - theY1;
+  double aZoom = sqrt( aDX * aDX + aDY * aDY ) / 100 + 1;
+  aZoom = ( aDX > 0 ) ?  aZoom : 1 / aZoom;
+
+  QTransform aTransform = transform();
+  aTransform.scale( aZoom, aZoom );
+  double aM11 = aTransform.m11();
+  double aM22 = aTransform.m22();
+  if( qMax( aM11, aM22 ) < 400 ) // to prevent a crash at the value of 500
+    setTransform( aTransform );
+
+  myIsTransforming = false;
+}
+
+//================================================================
+// Function : fitRect
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::fitRect( const QRectF& theRect )
+{
+  myIsTransforming = true;
+
+  fitInView( theRect, Qt::KeepAspectRatio );
+
+  myIsTransforming = false;
+}
+
+//================================================================
+// Function : fitSelect
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::fitSelect()
+{
+  myIsTransforming = true;
+
+  QRectF aGlobalRect;
+  for( initSelected(); moreSelected(); nextSelected() )
+  {
+    if( GraphicsView_Object* aMovingObject = selectedObject() )
+    {
+      QRectF aRect = aMovingObject->getRect();
+      if( aGlobalRect.isNull() )
+        aGlobalRect = aRect;
+      else
+        aGlobalRect |= aRect;
+    }
+  }
+
+  if( !aGlobalRect.isNull() )
+  {
+    double aGap = qMax( aGlobalRect.width(), aGlobalRect.height() ) / 5;
+    aGlobalRect.adjust( -aGap, -aGap, aGap, aGap );
+    fitInView( aGlobalRect, Qt::KeepAspectRatio );
+  }
+
+  myIsTransforming = false;
+}
+
+//================================================================
+// Function : fitAll
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::fitAll( bool theKeepScale )
+{
+  myIsTransforming = true;
+
+  if( theKeepScale )
+    myCurrentTransform = transform();
+
+  fitInView( sceneRect(), Qt::KeepAspectRatio );
+
+  myIsTransforming = false;
+}
+
+//================================================================
+// Function : currentBlock
+// Purpose  : 
+//================================================================
+GraphicsView_ViewPort::BlockStatus GraphicsView_ViewPort::currentBlock()
+{
+  if( isDragging() && !myDragPosition.isNull() )
+    return BlockStatus( BS_Selection );
+
+  if( myAreSelectionPointsInitialized && ( myFirstSelectionPoint != myLastSelectionPoint ) )
+    return BlockStatus( BS_Selection );
+
+  if( isPulling() )
+    return BlockStatus( BS_Selection );
+
+  return BS_NoBlock;
+}
+
+//================================================================
+// Function : highlight
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::highlight( double theX, double theY )
+{
+  myHighlightX = theX;
+  myHighlightY = theY;
+
+  bool anIsHighlighted = false;
+  bool anIsOnObject = false;
+
+  GraphicsView_Object* aPreviousHighlightedObject = myHighlightedObject;
+  GraphicsView_Object* aHighlightedObject = 0;
+
+  QListIterator<QGraphicsItem*> anIter( items() );
+  while( anIter.hasNext() )
+  {
+    if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+    {
+      if( anObject->isSelectable() )
+      {
+        QRectF aRect = anObject->getRect();
+        if( !aRect.isNull() && aRect.contains( theX, theY ) )
+        {
+          anIsOnObject = true;
+          anIsHighlighted = anObject->highlight( theX, theY );
+        }
+
+        if( anIsHighlighted )
+        {
+          aHighlightedObject = anObject;
+          break;
+        }
+      }
+    }
+  }
+
+  if( !anIsOnObject )
+  {
+    anIter = items();
+    while( anIter.hasNext() )
+      if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+        anObject->unhighlight();
+
+    myHighlightedObject = 0;
+    return;
+  }
+  else if( !myHighlightedObject && anIsHighlighted )
+  {
+    myHighlightedObject = aHighlightedObject;
+  }
+  else if( myHighlightedObject && !anIsHighlighted )
+  {
+    myHighlightedObject->unhighlight();
+    myHighlightedObject = 0;
+  }
+  else if( myHighlightedObject && anIsHighlighted )
+  {
+    myHighlightedObject->highlight( theX, theY );
+    if( myHighlightedObject != aHighlightedObject )
+    {
+      myHighlightedObject->unhighlight();
+      myHighlightedObject = aHighlightedObject;
+    }
+  }
+}
+
+//================================================================
+// Function : clearHighlighted
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::clearHighlighted()
+{
+  if( myHighlightedObject )
+  {
+    myHighlightedObject->unhighlight();
+    myHighlightedObject = 0;
+  }
+}
+
+//================================================================
+// Function : select
+// Purpose  : 
+//================================================================
+int GraphicsView_ViewPort::select( const QRectF& theRect, bool theIsAppend )
+{
+  GV_SelectionStatus aStatus = GVSS_Invalid;
+  if( theRect.isNull() ) // point selection
+  {
+    if( myHighlightedObject )
+    {
+      if( mySelectedObjects.count() == 1 &&
+          mySelectedObjects.first() == myHighlightedObject )
+        aStatus = GVSS_LocalChanged;
+
+      if( !theIsAppend )
+      {
+        GraphicsView_ObjectListIterator anIter( mySelectedObjects );
+        while( anIter.hasNext() )
+          if( GraphicsView_Object* anObject = anIter.next() )
+            if( myHighlightedObject != anObject )
+              anObject->unselect();
+
+        if( !mySelectedObjects.isEmpty() && aStatus == GVSS_Invalid )
+          aStatus = GVSS_GlobalChanged;
+        mySelectedObjects.clear();
+      } 
+      else if( myHighlightedObject->isSelected() && aStatus != GVSS_LocalChanged )
+      {
+        mySelectedObjects.removeAll( myHighlightedObject );
+        myHighlightedObject->unselect();
+
+        if( !mySelectedObjects.isEmpty() && aStatus == GVSS_Invalid )
+          aStatus = GVSS_GlobalChanged;
+
+        return aStatus;
+      }
+
+      if( myHighlightedObject->select( myHighlightX, myHighlightY, QRectF() ) &&
+          mySelectedObjects.indexOf( myHighlightedObject ) == -1 )
+      {
+        mySelectedObjects.append( myHighlightedObject );
+        if( aStatus == GVSS_Invalid )
+          aStatus = GVSS_GlobalChanged;
+      }
+      else if( aStatus == GVSS_LocalChanged )
+        aStatus = GVSS_GlobalChanged;
+
+      return aStatus;
+    }
+
+    if( !myHighlightedObject )
+    {
+      if( !theIsAppend )
+      {
+        GraphicsView_ObjectListIterator anIter( mySelectedObjects );
+        while( anIter.hasNext() )
+          if( GraphicsView_Object* anObject = anIter.next() )
+            if( myHighlightedObject != anObject )
+              anObject->unselect();
+
+        if( !mySelectedObjects.isEmpty() )
+          aStatus = GVSS_GlobalChanged;
+        mySelectedObjects.clear();
+      }
+      return aStatus;
+    }
+
+    return GVSS_NoChanged;
+  }
+  else // rectangle selection
+  {
+    aStatus = GVSS_NoChanged;
+
+    bool updateAll = false;
+    if( !theIsAppend )
+    {
+      if( !mySelectedObjects.isEmpty() )
+        aStatus = GVSS_GlobalChanged;
+
+      GraphicsView_ObjectListIterator anIter( mySelectedObjects );
+      while( anIter.hasNext() )
+        if( GraphicsView_Object* anObject = anIter.next() )
+          if( myHighlightedObject != anObject )
+            anObject->unselect();
+      mySelectedObjects.clear();
+    }
+
+    QListIterator<QGraphicsItem*> anIter( items() );
+    while( anIter.hasNext() )
+    {
+      if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+      {
+        if( anObject->isSelectable() )
+        {
+          bool anIsSelected = false;
+          QRectF aRect = anObject->getRect();
+          if( theRect.contains( aRect ) )
+            anIsSelected = anObject->select( myHighlightX, myHighlightY, theRect );
+
+          if( anIsSelected && mySelectedObjects.indexOf( anObject ) == -1 )
+          {
+            mySelectedObjects.append( anObject );
+            aStatus = GVSS_GlobalChanged;
+          }
+        }
+      }
+    }
+  }
+  return aStatus;
+}
+
+//================================================================
+// Function : clearSelected
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::clearSelected()
+{
+  GraphicsView_ObjectListIterator anIter( mySelectedObjects );
+  while( anIter.hasNext() )
+    if( GraphicsView_Object* anObject = anIter.next() )
+      anObject->unselect();
+  mySelectedObjects.clear();
+}
+
+//================================================================
+// Function : setSelected
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setSelected( GraphicsView_Object* theObject )
+{
+  if( theObject )
+  {
+    theObject->setSelected( true );
+    mySelectedObjects.append( theObject );
+  }
+}
+
+//================================================================
+// Function : nbSelected
+// Purpose  : 
+//================================================================
+int GraphicsView_ViewPort::nbSelected() const
+{
+  return mySelectedObjects.count();
+}
+
+//================================================================
+// Function : initSelected
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::initSelected()
+{
+  mySelectionIterator = 0;
+}
+
+//================================================================
+// Function : moreSelected
+// Purpose  : 
+//================================================================
+bool GraphicsView_ViewPort::moreSelected()
+{
+  return mySelectionIterator < nbSelected();
+}
+
+//================================================================
+// Function : nextSelected
+// Purpose  : 
+//================================================================
+bool GraphicsView_ViewPort::nextSelected()
+{
+  if( mySelectionIterator >= 0 && mySelectionIterator < nbSelected() )
+  {
+    mySelectionIterator++;
+    return true;
+  }
+  return false;
+}
+
+//================================================================
+// Function : selectedObject
+// Purpose  : 
+//================================================================
+GraphicsView_Object* GraphicsView_ViewPort::selectedObject()
+{
+  return mySelectedObjects[ mySelectionIterator ];
+}
+
+//================================================================
+// Function : startSelectByRect
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::startSelectByRect( int x, int y )
+{
+  if( !myAreSelectionPointsInitialized )
+  {
+    myFirstSelectionPoint = QPoint( x, y );
+    myLastSelectionPoint = QPoint( x, y );
+    myAreSelectionPointsInitialized = true;
+  }
+
+  if( !myRectBand )
+  {
+    myRectBand = new QRubberBand( QRubberBand::Rectangle, this );
+    QPalette palette;
+    palette.setColor( myRectBand->foregroundRole(), Qt::white );
+    myRectBand->setPalette( palette );
+  }
+  myRectBand->hide();
+}
+
+//================================================================
+// Function : drawSelectByRect
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::drawSelectByRect( int x, int y )
+{
+  if( myAreSelectionPointsInitialized )
+  {
+    myRectBand->hide();
+
+    myLastSelectionPoint.setX( x );
+    myLastSelectionPoint.setY( y );
+
+    QRect aRect = selectionRect();
+    myRectBand->setGeometry( aRect );
+    myRectBand->setVisible( aRect.isValid() );
+  }
+}
+
+//================================================================
+// Function : isSelectByRect
+// Purpose  : 
+//================================================================
+bool GraphicsView_ViewPort::isSelectByRect() const
+{
+  return myAreSelectionPointsInitialized;
+}
+
+//================================================================
+// Function : finishSelectByRect
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::finishSelectByRect()
+{
+  if( myAreSelectionPointsInitialized )
+  {
+    if( myRectBand )
+    {
+      myRectBand->hide();
+      delete myRectBand;
+      myRectBand = 0;
+    }
+
+    myAreSelectionPointsInitialized = false;
+  }
+}
+
+//================================================================
+// Function : selectionRect
+// Purpose  : 
+//================================================================
+QRect GraphicsView_ViewPort::selectionRect()
+{
+  QRect aRect;
+  if( myAreSelectionPointsInitialized )
+  {
+    aRect.setLeft( qMin( myFirstSelectionPoint.x(), myLastSelectionPoint.x() ) );
+    aRect.setTop( qMin( myFirstSelectionPoint.y(), myLastSelectionPoint.y() ) );
+    aRect.setRight( qMax( myFirstSelectionPoint.x(), myLastSelectionPoint.x() ) );
+    aRect.setBottom( qMax( myFirstSelectionPoint.y(), myLastSelectionPoint.y() ) );
+  }
+  return aRect;
+}
+
+//================================================================
+// Function : dragObjects
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::dragObjects( QGraphicsSceneMouseEvent* e )
+{
+  GraphicsView_Object* anObject = getHighlightedObject();
+
+  if( myDragPosition.isNull() )
+  {
+    myDragPosition = e->scenePos();
+    return;
+  }
+
+  GraphicsView_ObjectList anObjectsToMove;
+  if( anObject && anObject->isMovable() && ( e->buttons() & Qt::LeftButton ) )
+  {
+    if( anObject->isSelected() )
+    {
+      for( initSelected(); moreSelected(); nextSelected() )
+        if( GraphicsView_Object* aMovingObject = selectedObject() )
+          if( aMovingObject->isMovable() )
+            anObjectsToMove.append( aMovingObject );
+    }
+    else
+      anObjectsToMove.append( anObject );
+  }
+  else if( nbSelected() && ( e->buttons() & Qt::MidButton ) )
+  {
+    for( initSelected(); moreSelected(); nextSelected() )
+      if( GraphicsView_Object* aMovingObject = selectedObject() )
+        if( aMovingObject->isMovable() )
+          anObjectsToMove.append( aMovingObject );
+  }
+
+  if( anObjectsToMove.isEmpty() )
+    return;
+
+  double aDX = e->scenePos().x() - myDragPosition.x();
+  double aDY = e->scenePos().y() - myDragPosition.y();
+
+  bool anIsMovingByXAllowed = true, anIsMovingByYAllowed = true;
+  GraphicsView_ObjectListIterator anIter( anObjectsToMove );
+  while( anIter.hasNext() )
+    if( GraphicsView_Object* aMovingObject = anIter.next() )
+    {
+      if( !aMovingObject->isMovingByXAllowed( aDX ) )
+        anIsMovingByXAllowed = false;
+      if( !aMovingObject->isMovingByYAllowed( aDY ) )
+        anIsMovingByYAllowed = false;
+    }
+
+  if( !anIsMovingByXAllowed && !anIsMovingByYAllowed )
+    return; // myDragPosition shouldn't be changed
+
+  if( !anIsMovingByXAllowed )
+    aDX = 0;
+
+  if( !anIsMovingByYAllowed )
+    aDY = 0;
+
+  anIter = anObjectsToMove;
+  while( anIter.hasNext() )
+    if( GraphicsView_Object* aMovingObject = anIter.next() )
+      aMovingObject->move( aDX, aDY );
+
+  if( anIsMovingByXAllowed )
+    myDragPosition.setX( e->scenePos().x() );
+
+  if( anIsMovingByYAllowed )
+    myDragPosition.setY( e->scenePos().y() );
+}
+
+//================================================================
+// Function : startPulling
+// Purpose  : 
+//================================================================
+bool GraphicsView_ViewPort::startPulling( const QPointF& thePoint )
+{
+  QListIterator<QGraphicsItem*> anIter( items() );
+  while( anIter.hasNext() )
+  {
+    if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+    {
+      QRectF aRect = anObject->getPullingRect();
+      if( aRect.contains( thePoint ) && anObject->startPulling( thePoint ) )
+      {
+        myIsPulling = true;
+        myPullingObject = anObject;
+        setCursor( *getHandCursor() );
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+//================================================================
+// Function : drawPulling
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::drawPulling( const QPointF& thePoint )
+{
+  GraphicsView_Object* aLockedObject = 0;
+
+  QListIterator<QGraphicsItem*> anIter( items() );
+  while( anIter.hasNext() )
+  {
+    if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+    {
+      if( !anObject->isVisible() )
+        continue;
+
+      QRectF aRect = anObject->getPullingRect();
+      if( aRect.contains( thePoint ) && anObject->portContains( thePoint ) )
+      {
+        aLockedObject = anObject;
+        break;
+      }
+    }
+  }
+
+  myPullingObject->pull( thePoint, aLockedObject );
+}
+
+//================================================================
+// Function : finishPulling
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::finishPulling()
+{
+  myIsPulling = false;
+  myPullingObject->finishPulling();
+  setCursor( *getDefaultCursor() );
+}
+
+//================================================================
+// Function : onMouseEvent
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
+{
+  emit vpMouseEvent( e );
+
+  switch( e->type() )
+  {
+    case QEvent::GraphicsSceneMousePress:
+    {
+      bool anAccel = e->modifiers() & GraphicsView_ViewTransformer::accelKey();
+      if( ( getHighlightedObject() &&
+            getHighlightedObject()->isMovable() &&
+            !( anAccel || e->button() == Qt::RightButton ) ) ||
+          ( nbSelected() && !anAccel && e->button() == Qt::MidButton ) )
+        myIsDragging = true;
+      break;
+    }
+    case QEvent::GraphicsSceneMouseMove:
+    {
+      if( !isPulling() && myIsDragging )
+        dragObjects( e );
+      break;
+    }
+    case QEvent::GraphicsSceneMouseRelease:
+    {
+      if( !isPulling() && myIsDragging )
+      {
+        bool anIsMoved = false;
+        for( initSelected(); moreSelected(); nextSelected() )
+          if( GraphicsView_Object* aMovingObject = selectedObject() )
+            anIsMoved = aMovingObject->finishMove() || anIsMoved;
+
+        if( GraphicsView_Object* aMovingObject = getHighlightedObject() )
+          anIsMoved = aMovingObject->finishMove() || anIsMoved;
+
+        myIsDragging = false;
+        myDragPosition = QPointF();
+
+        if( anIsMoved )
+          emit vpObjectMoved();
+      }
+      break;
+    }
+    case QEvent::GraphicsSceneMouseDoubleClick:
+      break; // do nothing, just emit the signal
+    default:
+      break;
+  }
+}
+
+//================================================================
+// Function : onWheelEvent
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::onWheelEvent( QGraphicsSceneWheelEvent* e )
+{
+  emit vpWheelEvent( e );
+}
+
+//================================================================
+// Function : onContextMenuEvent
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::onContextMenuEvent( QGraphicsSceneContextMenuEvent* e )
+{
+  emit vpContextMenuEvent( e );
+}

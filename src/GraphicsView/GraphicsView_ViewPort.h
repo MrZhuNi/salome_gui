@@ -1,0 +1,212 @@
+// Copyright (C) 2005  OPEN CASCADE, CEA/DEN, EDF R&D, PRINCIPIA R&D
+// 
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either 
+// version 2.1 of the License.
+// 
+// This library is distributed in the hope that it will be useful 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public  
+// License along with this library; if not, write to the Free Software 
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+//
+// See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
+//
+// File:   GraphicsView_ViewPort.h
+// Author: Oleg UVAROV, Open CASCADE S.A.S. (oleg.uvarov@opencascade.com)
+//
+
+#ifndef GRAPHICSVIEW_VIEWPORT_H
+#define GRAPHICSVIEW_VIEWPORT_H
+
+#include "GraphicsView.h"
+
+#include "GraphicsView_Defs.h"
+
+#include <QGraphicsView>
+
+class QRubberBand;
+
+class GraphicsView_Object;
+class GraphicsView_Scene;
+
+/*
+  Class       : GraphicsView_ViewPort
+  Description : View port of the graphics view
+*/
+class GRAPHICSVIEW_API GraphicsView_ViewPort : public QGraphicsView
+{
+  Q_OBJECT
+
+public:
+  enum BlockStatus
+  {
+    BS_NoBlock   = 0x0000,
+    BS_Selection = 0x0001, // and highlighting
+    BS_Dragging  = 0x0002  // currently unused
+  };
+
+public:
+  GraphicsView_ViewPort( QWidget* theParent );
+  ~GraphicsView_ViewPort();
+
+public:
+  GraphicsView_Scene*              getScene() { return myScene; }
+  void                             addItem( QGraphicsItem* theItem );
+  void                             removeItem( QGraphicsItem* theItem );
+
+  QImage                           dumpView( bool theWholeScene = false );
+
+public:
+  // background / foreground
+  QColor                           backgroundColor() const;
+  void                             setBackgroundColor( const QColor& theColor );
+
+  bool                             isForegroundEnabled() const { return myIsForegroundEnabled; }
+  void                             setForegroundEnabled( bool theState );
+
+  QSizeF                           foregroundSize() const { return myForegroundSize; }
+  void                             setForegroundSize( const QSizeF& theRect );
+
+  double                           foregroundMargin() const { return myForegroundMargin; }
+  void                             setForegroundMargin( double theMargin );
+
+  QColor                           foregroundColor() const { return myForegroundColor; }
+  void                             setForegroundColor( const QColor& theColor );
+
+  QColor                           foregroundFrameColor() const { return myForegroundFrameColor; }
+  void                             setForegroundFrameColor( const QColor& theColor );
+
+  double                           foregroundFrameLineWidth() const { return myForegroundFrameLineWidth; }
+  void                             setForegroundFrameLineWidth( double theLineWidth );
+
+  void                             updateForeground();
+
+  // transformation
+  void                             reset();
+  void                             pan( double theDX, double theDY );
+  void                             setCenter( double theX, double theY );
+  void                             zoom( double theX1, double theY1, double theX2, double theY2 );
+  void                             fitRect( const QRectF& theRect );
+  void                             fitSelect();
+  void                             fitAll( bool theKeepScale = false );
+
+  bool                             isTransforming() const { return myIsTransforming; }
+
+  // block status
+  BlockStatus                      currentBlock();
+
+  // highlighting
+  virtual void                     highlight( double theX, double theY );
+  void                             clearHighlighted();
+
+  GraphicsView_Object*             getHighlightedObject() const { return myHighlightedObject; }
+
+  // selection
+  virtual int                      select( const QRectF& theRect, bool theIsAppend );
+  void                             clearSelected();
+  void                             setSelected( GraphicsView_Object* theObject );
+
+  int                              nbSelected() const;
+  void                             initSelected();
+  bool                             moreSelected();
+  bool                             nextSelected();
+  GraphicsView_Object*             selectedObject();
+
+  // rectangle selection
+  void                             startSelectByRect( int x, int y );
+  void                             drawSelectByRect( int x, int y );
+  void                             finishSelectByRect();
+  bool                             isSelectByRect() const;
+  QRect                            selectionRect();
+
+  // dragging
+  bool                             isDragging() { return myIsDragging; }
+
+  // pulling
+  bool                             startPulling( const QPointF& );
+  void                             drawPulling( const QPointF& );
+  void                             finishPulling();
+  bool                             isPulling() const { return myIsPulling; }
+
+public:
+  static void                      createCursors();
+  static void                      destroyCursors();
+  static QCursor*                  getDefaultCursor() { return defCursor; }
+  static QCursor*                  getHandCursor() { return handCursor; }
+  static QCursor*                  getPanCursor() { return panCursor; }
+  static QCursor*                  getPanglCursor() { return panglCursor; }
+  static QCursor*                  getZoomCursor() { return zoomCursor; }
+
+protected slots:
+  void                             onMouseEvent( QGraphicsSceneMouseEvent* );
+  void                             onWheelEvent( QGraphicsSceneWheelEvent* );
+  void                             onContextMenuEvent( QGraphicsSceneContextMenuEvent* );
+
+signals:
+  void                             vpMouseEvent( QGraphicsSceneMouseEvent* );
+  void                             vpWheelEvent( QGraphicsSceneWheelEvent* );
+  void                             vpContextMenuEvent( QGraphicsSceneContextMenuEvent* );
+
+  void                             vpObjectMoved();
+
+private:
+  void                             initialize();
+  void                             cleanup();
+
+  void                             dragObjects( QGraphicsSceneMouseEvent* );
+
+private:
+  static int                       nCounter;
+  static QCursor*                  defCursor;
+  static QCursor*                  handCursor;
+  static QCursor*                  panCursor;
+  static QCursor*                  panglCursor;
+  static QCursor*                  zoomCursor;
+
+private:
+  GraphicsView_Scene*              myScene;
+
+  // foreground
+  bool                             myIsForegroundEnabled;
+  QSizeF                           myForegroundSize;
+  double                           myForegroundMargin;
+  QColor                           myForegroundColor;
+  QColor                           myForegroundFrameColor;
+  double                           myForegroundFrameLineWidth;
+  QGraphicsRectItem*               myForegroundItem;
+
+  // transformation
+  bool                             myIsTransforming;
+  QTransform                       myCurrentTransform;
+
+  // highlighting
+  GraphicsView_Object*             myHighlightedObject;
+  double                           myHighlightX;
+  double                           myHighlightY;
+
+  // selection
+  GraphicsView_ObjectList          mySelectedObjects;
+  int                              mySelectionIterator;
+
+  // rectangle selection
+  QRubberBand*                     myRectBand;
+  QPoint                           myFirstSelectionPoint;
+  QPoint                           myLastSelectionPoint;
+  bool                             myAreSelectionPointsInitialized;
+
+  // dragging
+  int                              myIsDragging;
+  QPointF                          myDragPosition;
+  bool                             myIsDragPositionInitialized;
+
+  // pulling
+  bool                             myIsPulling;
+  GraphicsView_Object*             myPullingObject;
+};
+
+#endif

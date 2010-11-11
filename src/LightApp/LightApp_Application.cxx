@@ -129,6 +129,11 @@
   #include <QxGraph_ViewManager.h>
 #endif
 
+#ifndef DISABLE_GRAPHICSVIEWER
+  #include <GraphicsView_Viewer.h>
+  #include <GraphicsView_ViewManager.h>
+#endif
+
 #include <QDir>
 #include <QImage>
 #include <QString>
@@ -605,6 +610,9 @@ void LightApp_Application::createActions()
 #ifndef DISABLE_QXGRAPHVIEWER
   createActionForViewer( NewQxGraphViewId, newWinMenu, QString::number( 4 ), Qt::ALT+Qt::Key_C );
 #endif
+#ifndef DISABLE_GRAPHICSVIEWER
+  createActionForViewer( NewGraphicsViewId, newWinMenu, QString::number( 5 ), Qt::ALT+Qt::Key_R );
+#endif
 
   createAction( RenameId, tr( "TOT_RENAME" ), QIcon(), tr( "MEN_DESK_RENAME" ), tr( "PRP_RENAME" ),
 		Qt::SHIFT+Qt::Key_R, desk, false, this, SLOT( onRenameWindow() ) );
@@ -705,6 +713,11 @@ void LightApp_Application::onNewWindow()
 #ifndef DISABLE_QXGRAPHVIEWER
   case NewQxGraphViewId:
     type = QxGraph_Viewer::Type();
+    break;
+#endif
+#ifndef DISABLE_GRAPHICSVIEWER
+  case NewGraphicsViewId:
+    type = GraphicsView_Viewer::Type();
     break;
 #endif
   }
@@ -825,6 +838,12 @@ void LightApp_Application::updateCommandsStatus()
 
 #ifndef DISABLE_QXGRAPHVIEWER
   a = action( NewQxGraphViewId );
+  if( a )
+    a->setEnabled( activeStudy() );
+#endif
+
+#ifndef DISABLE_GRAPHICSVIEWER
+  a = action( NewGraphicsViewId );
   if( a )
     a->setEnabled( activeStudy() );
 #endif
@@ -1350,6 +1369,12 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     if ( vm )
       vm->setBackgroundColor( resMgr->colorValue( "VTKViewer", "background", vm->backgroundColor() ) );
 #endif
+  }
+#endif
+#ifndef DISABLE_GRAPHICSVIEWER
+  if( vmType == GraphicsView_Viewer::Type() )
+  {
+    viewMgr = new GraphicsView_ViewManager( activeStudy(), desktop() );
   }
 #endif
 
