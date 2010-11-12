@@ -734,6 +734,8 @@ void LightApp_Application::onNewDoc()
   saveDockWindowsState();
 
   CAM_Application::onNewDoc();
+
+  activateDefaultModule();
 }
 
 /*!
@@ -751,6 +753,8 @@ void LightApp_Application::onOpenDoc()
     updateWindows();
     updateViewManagers();
   }
+
+  activateDefaultModule();
 }
 
 /*!
@@ -2092,6 +2096,16 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->setItemProperty( "strings", aValuesList,   mruLinkType );
   pref->setItemProperty( "indexes", anIndicesList, mruLinkType );
 
+  // Default Module Preferences
+  int moduleGroup = pref->addPreference( tr( "PREF_DEFAULT_MODULE" ), genTab );
+  int moduleNameCombo = pref->addPreference( tr( "PREF_DEF_MODULE_NAME" ), moduleGroup, LightApp_Preferences::Selector, "Activate", "def_module" );
+  aValuesList.clear();
+  anIndicesList.clear();
+  aValuesList   << tr("PREF_DEF_MODULE_NONE") << tr("PREF_DEF_MODULE_CATHARE") << tr("PREF_DEF_MODULE_DIAGRAM");
+  anIndicesList << 0                        << 1                         << 2                       ;
+  pref->setItemProperty( "strings", aValuesList,   moduleNameCombo );
+  pref->setItemProperty( "indexes", anIndicesList, moduleNameCombo );
+
   // theme values
   Style_Model* aSModel = 0;
   QStyle* style = qApp->style();
@@ -3202,4 +3216,23 @@ bool LightApp_Application::openAction( const int choice, const QString& aName )
   }
 
   return res;
+}
+
+void LightApp_Application::activateDefaultModule()
+{
+  QString defModName("");
+  SUIT_ResourceMgr* resMgr = SUIT_Session::session()->resourceMgr();
+  int sel = resMgr->integerValue( "Activate", "def_module" );
+  if ( sel > 0 ) {
+    LightApp_ModuleAction* moduleAction =
+      qobject_cast<LightApp_ModuleAction*>( action( ModulesListId ) );
+    if ( moduleAction && moduleAction->activeModule() == "" )
+    {
+      switch( sel ) {
+      case 1: defModName = "CATHARE GUI"; break;
+      case 2: defModName = "DIAGRAMS"; break;
+      }
+      activateModule( defModName );
+    }
+  }
 }

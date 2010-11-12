@@ -87,6 +87,10 @@
     <!-- General study settings -->
     <parameter name="store_positions" value="true" />
   </section>
+  <section name="Activate">
+    <!-- StartUp settings -->
+    <parameter name="def_module" value="0" />
+  </section>
   <section name="OCCViewer" >
     <!-- OCC viewer preferences -->
     <parameter name="background"     value="35, 136, 145" />

@@ -222,6 +222,8 @@ protected:
   void                                loadDockWindowsState();
   void                                saveDockWindowsState();
 
+  void                                activateDefaultModule();
+
   virtual void                        studyOpened( SUIT_Study* );
   virtual void                        studyCreated( SUIT_Study* );
 

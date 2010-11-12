@@ -579,6 +579,26 @@ File does not exist</translation>
         <translation>Full</translation>
     </message>
     <message>
+        <source>PREF_DEFAULT_MODULE</source>
+        <translation>Start Options</translation>
+    </message>
+    <message>
+        <source>PREF_DEF_MODULE_NAME</source>
+        <translation>Activate module by default:</translation>
+    </message>
+    <message>
+        <source>PREF_DEF_MODULE_NONE</source>
+        <translation>Activate nothing</translation>
+    </message>
+    <message>
+        <source>PREF_DEF_MODULE_CATHARE</source>
+        <translation>Cathare module</translation>
+    </message>
+    <message>
+        <source>PREF_DEF_MODULE_DIAGRAM</source>
+        <translation>Diagram module</translation>
+    </message>
+    <message>
         <source></source>
         <translation></translation>
     </message>
