@@ -250,7 +250,7 @@ void OCCViewer_CubeAxesDlg::SetData( bool theIsVisible, OCCViewer_AxisWidget::Ax
 */
 void OCCViewer_CubeAxesDlg::ApplyData( const Handle(V3d_View)& theView )
 {
-#if OCC_VERSION_LARGE > 0x06030009 // available only with OCC-6.3-sp10 and higher version
+#if OCC_VERSION_LARGE > 0x06030009 && OCC_VERSION_LARGE !=  0x06040000 // available only with OCC-6.3-sp10 and higher version, except 6.4.0 
   if( theView.IsNull() )
     return;
 
