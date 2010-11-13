@@ -40,7 +40,7 @@ public:
   virtual void               compute() = 0;
 
   const QString&             getName() const { return myName; }
-  void                       setName( const QString& theName );
+  virtual void               setName( const QString& theName );
 
   virtual bool               isSelectable() const { return true; }
   virtual bool               isMovable() const { return true; }
