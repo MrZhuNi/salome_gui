@@ -59,6 +59,8 @@ public:
   void                             addItem( QGraphicsItem* theItem );
   void                             removeItem( QGraphicsItem* theItem );
 
+  GraphicsView_ObjectList          getObjects() const;
+
   QImage                           dumpView( bool theWholeScene = false );
 
 public:

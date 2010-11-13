@@ -185,6 +185,20 @@ void GraphicsView_ViewPort::removeItem( QGraphicsItem* theItem )
 }
 
 //================================================================
+// Function : getObjects
+// Purpose  : 
+//================================================================
+GraphicsView_ObjectList GraphicsView_ViewPort::getObjects() const
+{
+  GraphicsView_ObjectList aList;
+  QListIterator<QGraphicsItem*> anIter( items() );
+  while( anIter.hasNext() )
+    if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+      aList.append( anObject );
+  return aList;
+}
+
+//================================================================
 // Function : dumpView
 // Purpose  : 
 //================================================================
