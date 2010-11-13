@@ -231,10 +231,7 @@ QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
   GraphicsView_ObjectListIterator aSelectedIter( aSelectedObjects );
   while( aSelectedIter.hasNext() )
     if( GraphicsView_Object* anObject = aSelectedIter.next() )
-    {
       setSelected( anObject );
-      anObject->compute();
-    }
 
   return anImage;
 }
@@ -508,7 +505,7 @@ void GraphicsView_ViewPort::highlight( double theX, double theY )
   {
     if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
     {
-      if( anObject->isSelectable() )
+      if( anObject->isVisible() && anObject->isSelectable() )
       {
         QRectF aRect = anObject->getRect();
         if( !aRect.isNull() && aRect.contains( theX, theY ) )
@@ -662,7 +659,7 @@ int GraphicsView_ViewPort::select( const QRectF& theRect, bool theIsAppend )
     {
       if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
       {
-        if( anObject->isSelectable() )
+        if( anObject->isVisible() && anObject->isSelectable() )
         {
           bool anIsSelected = false;
           QRectF aRect = anObject->getRect();
@@ -703,6 +700,7 @@ void GraphicsView_ViewPort::setSelected( GraphicsView_Object* theObject )
   if( theObject )
   {
     theObject->setSelected( true );
+    theObject->compute();
     mySelectedObjects.append( theObject );
   }
 }
