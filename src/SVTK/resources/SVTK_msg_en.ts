@@ -187,6 +187,14 @@
         <source>MNU_SVTK_STYLE_SWITCH</source>
         <translation>Interaction Style Switch</translation>
     </message>
+    <message>
+        <source>DSC_SVTK_ZOOMING_STYLE_SWITCH</source>
+        <translation>Zooming style switch</translation>
+    </message>
+    <message>
+        <source>MNU_SVTK_ZOOMING_STYLE_SWITCH</source>
+        <translation>Zomming style switch</translation>
+    </message>
 </context>
 <context>
     <name>SVTK_FontWidget</name>

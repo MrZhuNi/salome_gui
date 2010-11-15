@@ -135,6 +135,18 @@ The changes will be applied on the next application session.</translation>
         <translation>Keyboard free style</translation>
     </message>
     <message>
+        <source>PREF_ZOOMING</source>
+        <translation>Zooming:</translation>
+    </message>
+    <message>
+        <source>PREF_ZOOMING_AT_CENTER</source>
+        <translation>Relative to the view's center</translation>
+    </message>
+    <message>
+        <source>PREF_ZOOMING_AT_CURSOR</source>
+        <translation>Relative to the cursor</translation>
+    </message>
+    <message>
         <source>PREF_INCREMENTAL_SPEED</source>
         <translation>Speed increment:</translation>
     </message>

@@ -232,6 +232,14 @@
         <translation>Interaction style switch</translation>
     </message>
     <message>
+        <source>DSC_ZOOMING_STYLE_SWITCH</source>
+        <translation>Zooming style switch</translation>
+    </message>
+    <message>
+        <source>MNU_ZOOMING_STYLE_SWITCH</source>
+        <translation>Zooming style switch</translation>
+    </message>
+    <message>
         <source>OCC_IMAGE_FILES</source>
         <translation>Images Files (*.bmp *.png *.jpg *.jpeg)</translation>
     </message>

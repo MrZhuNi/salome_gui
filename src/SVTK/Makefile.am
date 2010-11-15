@@ -128,6 +128,7 @@ dist_salomeres_DATA=\
 	resources/vtk_view_perspective.png \
 	resources/vtk_view_parameters.png \
 	resources/vtk_view_style_switch.png \
+	resources/vtk_view_zooming_style_switch.png \
 	resources/vtk_view_recording_start.png \
 	resources/vtk_view_recording_play.png \
 	resources/vtk_view_recording_pause.png \

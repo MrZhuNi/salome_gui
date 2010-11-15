@@ -54,6 +54,7 @@
 #include "LightApp_OBSelector.h"
 #include "LightApp_SelectionMgr.h"
 #include "LightApp_DataObject.h"
+#include "LightApp_WgViewModel.h"
 
 #include <SALOME_Event.h>
 
@@ -174,6 +175,14 @@
 #ifndef DISABLE_SALOMEOBJECT
   #include <SALOME_InteractiveObject.hxx>
   #include <SALOME_ListIO.hxx>
+#endif
+
+#include <Standard_Version.hxx>
+
+#ifdef OCC_VERSION_SERVICEPACK
+#define OCC_VERSION_LARGE (OCC_VERSION_MAJOR << 24 | OCC_VERSION_MINOR << 16 | OCC_VERSION_MAINTENANCE << 8 | OCC_VERSION_SERVICEPACK)
+#else
+#define OCC_VERSION_LARGE (OCC_VERSION_MAJOR << 24 | OCC_VERSION_MINOR << 16 | OCC_VERSION_MAINTENANCE << 8)
 #endif
 
 #define ToolBarMarker    0
@@ -1354,6 +1363,7 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     v = resMgr->integerValue( "OCCViewer", "iso_number_v", v );
     vm->setIsos( u, v );
     vm->setInteractionStyle( resMgr->integerValue( "OCCViewer", "navigation_mode", vm->interactionStyle() ) );
+    vm->setZoomingStyle( resMgr->integerValue( "OCCViewer", "zooming_mode", vm->zoomingStyle() ) );
     viewMgr->setViewModel( vm );// custom view model, which extends SALOME_View interface
     new LightApp_OCCSelector( (OCCViewer_Viewer*)viewMgr->getViewModel(), mySelMgr );
   }
@@ -1376,6 +1386,7 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
                             resMgr->booleanValue( "VTKViewer", "relative_size", vm->trihedronRelative() ) );
       vm->setStaticTrihedronVisible( resMgr->booleanValue( "VTKViewer", "show_static_trihedron", vm->isStaticTrihedronVisible() ) );
       vm->setInteractionStyle( resMgr->integerValue( "VTKViewer", "navigation_mode", vm->interactionStyle() ) );
+      vm->setZoomingStyle( resMgr->integerValue( "VTKViewer", "zooming_mode", vm->zoomingStyle() ) );
       vm->setIncrementalSpeed( resMgr->integerValue( "VTKViewer", "speed_value", vm->incrementalSpeed() ),
                                resMgr->integerValue( "VTKViewer", "speed_mode", vm->incrementalSpeedMode() ) );
       vm->setSpacemouseButtons( resMgr->integerValue( "VTKViewer", "spacemouse_func1_btn", vm->spacemouseBtn(1) ),
@@ -1402,6 +1413,24 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     viewWin->resize( (int)( desktop()->width() * 0.6 ), (int)( desktop()->height() * 0.6 ) );
 
   return viewMgr;
+}
+
+SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType, QWidget* w )
+{
+  SUIT_ViewManager* vm = new SUIT_ViewManager( activeStudy(), 
+					       desktop(),
+					       new LightApp_WgViewModel( vmType, w ) );
+  vm->setTitle( QString( "%1: %M - viewer %V" ).arg( vmType ) );
+ 
+  addViewManager( vm );
+  SUIT_ViewWindow* vw = vm->createViewWindow();
+  if ( vw && desktop() )
+    vw->resize( (int)( desktop()->width() * 0.6 ), (int)( desktop()->height() * 0.6 ) );
+
+  if ( !vmType.isEmpty() && !myUserWmTypes.contains( vmType ) )
+    myUserWmTypes << vmType;
+
+  return vm;
 }
 
 /*!
@@ -1949,6 +1978,17 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->setItemProperty( "strings", aStyleModeList, occStyleMode );
   pref->setItemProperty( "indexes", aModeIndexesList, occStyleMode );
 
+#if OCC_VERSION_LARGE > 0x06030010 // available only with OCC-6.3-sp11 and higher version
+  int occZoomingStyleMode = pref->addPreference( tr( "PREF_ZOOMING" ), occGroup,
+                                                 LightApp_Preferences::Selector, "OCCViewer", "zooming_mode" );
+  QStringList anOCCZoomingStyleModeList;
+  anOCCZoomingStyleModeList.append( tr("PREF_ZOOMING_AT_CENTER") );
+  anOCCZoomingStyleModeList.append( tr("PREF_ZOOMING_AT_CURSOR") );
+
+  pref->setItemProperty( "strings", anOCCZoomingStyleModeList, occZoomingStyleMode );
+  pref->setItemProperty( "indexes", aModeIndexesList, occZoomingStyleMode );
+#endif
+
   // VTK Viewer
   int vtkGen = pref->addPreference( "", vtkGroup, LightApp_Preferences::Frame );
   pref->setItemProperty( "columns", 2, vtkGen );
@@ -1979,7 +2019,15 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->setItemProperty( "strings", aStyleModeList, vtkStyleMode );
   pref->setItemProperty( "indexes", aModeIndexesList, vtkStyleMode );
 
-  pref->addPreference( "", vtkGroup, LightApp_Preferences::Space );
+  int vtkZoomingStyleMode = pref->addPreference( tr( "PREF_ZOOMING" ), vtkGen,
+                                                 LightApp_Preferences::Selector, "VTKViewer", "zooming_mode" );
+
+  QStringList aVTKZoomingStyleModeList;
+  aVTKZoomingStyleModeList.append( tr("PREF_ZOOMING_AT_CENTER") );
+  aVTKZoomingStyleModeList.append( tr("PREF_ZOOMING_AT_CURSOR") );
+
+  pref->setItemProperty( "strings", aVTKZoomingStyleModeList, vtkZoomingStyleMode );
+  pref->setItemProperty( "indexes", aModeIndexesList, vtkZoomingStyleMode );
 
   int vtkSpeed = pref->addPreference( tr( "PREF_INCREMENTAL_SPEED" ), vtkGen,
                                       LightApp_Preferences::IntSpin, "VTKViewer", "speed_value" );
@@ -2235,6 +2283,25 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
   }
 #endif
 
+#ifndef DISABLE_OCCVIEWER
+  if ( sec == QString( "OCCViewer" ) && param == QString( "zooming_mode" ) )
+  {
+    int mode = resMgr->integerValue( "OCCViewer", "zooming_mode", 0 );
+    QList<SUIT_ViewManager*> lst;
+    viewManagers( OCCViewer_Viewer::Type(), lst );
+    QListIterator<SUIT_ViewManager*> it( lst );
+    while ( it.hasNext() )
+    {
+      SUIT_ViewModel* vm = it.next()->getViewModel();
+      if ( !vm || !vm->inherits( "OCCViewer_Viewer" ) )
+        continue;
+
+      OCCViewer_Viewer* occVM = (OCCViewer_Viewer*)vm;
+      occVM->setZoomingStyle( mode );
+    }
+  }
+#endif
+
 #ifndef DISABLE_VTKVIEWER
   if ( sec == QString( "VTKViewer" ) && (param == QString( "trihedron_size" ) || param == QString( "relative_size" )) )
   {
@@ -2320,6 +2387,27 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
 
       SVTK_Viewer* vtkVM = dynamic_cast<SVTK_Viewer*>( vm );
       if( vtkVM ) vtkVM->setInteractionStyle( mode );
+    }
+#endif
+  }
+#endif
+
+#ifndef DISABLE_VTKVIEWER
+  if ( sec == QString( "VTKViewer" ) && param == QString( "zooming_mode" ) )
+  {
+    int mode = resMgr->integerValue( "VTKViewer", "zooming_mode", 0 );
+    QList<SUIT_ViewManager*> lst;
+#ifndef DISABLE_SALOMEOBJECT
+    viewManagers( SVTK_Viewer::Type(), lst );
+    QListIterator<SUIT_ViewManager*> it( lst );
+    while ( it.hasNext() )
+    {
+      SUIT_ViewModel* vm = it.next()->getViewModel();
+      if ( !vm || !vm->inherits( "SVTK_Viewer" ) )
+        continue;
+
+      SVTK_Viewer* vtkVM = dynamic_cast<SVTK_Viewer*>( vm );
+      if( vtkVM ) vtkVM->setZoomingStyle( mode );
     }
 #endif
   }
@@ -3281,6 +3369,7 @@ bool LightApp_Application::openAction( const int choice, const QString& aName )
 QStringList LightApp_Application::viewManagersTypes() const
 {
   QStringList aTypesList;
+  aTypesList += myUserWmTypes;
 #ifndef DISABLE_GLVIEWER
   aTypesList<<GLViewer_Viewer::Type();
 #endif

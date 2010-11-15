@@ -124,5 +124,9 @@
         <source>ICON_OCCVIEWER_STYLE_SWITCH</source>
         <translation>occ_view_style_switch.png</translation>
     </message>
+    <message>
+        <source>ICON_OCCVIEWER_ZOOMING_STYLE_SWITCH</source>
+        <translation>occ_view_zooming_style_switch.png</translation>
+    </message>
 </context>
 </TS>
