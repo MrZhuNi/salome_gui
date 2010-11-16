@@ -206,7 +206,7 @@ public:
       ::GetVTKViewWindow( myCreate ? __Create : __FindOrCreate );
     if( aVTKViewWindow && aPyClass ) {
       vtkRenderer* aVTKObject = aVTKViewWindow->getRenderer();
-      myResult = PyVTKObject_New( aPyClass, aVTKObject );
+      myResult = PyVTKObject_New( aPyClass, NULL, aVTKObject );
     }
   }
 };
@@ -255,7 +255,7 @@ public:
       ::GetVTKViewWindow( myCreate ? __Create : __FindOrCreate );
     if( aVTKViewWindow && aPyClass ) {
       vtkRenderWindow* aVTKObject = aVTKViewWindow->getRenderWindow();
-      myResult = PyVTKObject_New( aPyClass, aVTKObject );
+      myResult = PyVTKObject_New( aPyClass, NULL, aVTKObject );
     }
   }
 };
@@ -304,7 +304,7 @@ public:
       ::GetVTKViewWindow( myCreate ? __Create : __FindOrCreate );
     if( aVTKViewWindow && aPyClass ) {
       vtkRenderWindowInteractor* aVTKObject = aVTKViewWindow->getInteractor();
-      myResult = PyVTKObject_New( aPyClass, aVTKObject );
+      myResult = PyVTKObject_New( aPyClass, NULL, aVTKObject );
     }
   }
 };
