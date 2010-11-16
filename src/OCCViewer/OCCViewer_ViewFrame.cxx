@@ -7,7 +7,7 @@
 
 #include <QFrame>
 #include <QLayout>
-
+#include <QApplication>
 
 OCCViewer_ViewFrame::OCCViewer_ViewFrame(SUIT_Desktop* theDesktop, OCCViewer_Viewer* theModel)
   : OCCViewer_ViewWindow( theDesktop, theModel ), myPopupRequestedView(0)
@@ -90,8 +90,14 @@ void OCCViewer_ViewFrame::onMaximizedView( OCCViewer_ViewWindow* theView, bool i
       myLayout->addWidget( myViews.at(TOP_LEFT), 0, 0 );
       myLayout->addWidget( myViews.at(TOP_RIGHT), 0, 1 );
     }
-    for ( i = BOTTOM_RIGHT; i <= TOP_RIGHT; i++) 
-      myViews.at(i)->show();
+    OCCViewer_ViewWindow* view = 0;
+    for ( i = BOTTOM_RIGHT; i <= TOP_RIGHT; i++) {
+      view = myViews.at(i);
+      view->show();
+      QApplication::processEvents();
+      if (view != theView)
+        view->onViewFitAll();
+    }
   }
   myLayout->invalidate();
 }
