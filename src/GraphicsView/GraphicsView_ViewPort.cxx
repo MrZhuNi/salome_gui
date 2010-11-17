@@ -718,7 +718,6 @@ void GraphicsView_ViewPort::setSelected( GraphicsView_Object* theObject )
   if( theObject )
   {
     theObject->setSelected( true );
-    theObject->compute();
     mySelectedObjects.append( theObject );
   }
 }
