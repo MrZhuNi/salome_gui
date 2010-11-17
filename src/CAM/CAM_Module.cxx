@@ -951,12 +951,16 @@ void CAM_Module::connectToStudy( CAM_Study* camStudy )
   for( QList<CAM_Module*>::const_iterator it = mods.begin(); it != mods.end(); ++it )
   {
     CAM_DataModel* dm = (*it)->dataModel();
-    if( (*it) == this && !camStudy->containsDataModel( dm ) )
+    if( (*it) == this )
     {
-      if ( prev )
-        camStudy->insertDataModel( (*it)->dataModel(), prev );
-      else
-        camStudy->insertDataModel( (*it)->dataModel(), 0 );
+      if ( !camStudy->containsDataModel( dm ) )
+      {
+        if ( prev )
+          camStudy->insertDataModel( (*it)->dataModel(), prev );
+        else
+          camStudy->insertDataModel( (*it)->dataModel(), 0 );
+      }
+      return;
     }
     prev = dm;
   }
