@@ -132,6 +132,11 @@
   #include <VTKViewer_ViewModel.h>
 #endif
 
+#ifndef DISABLE_SALOMEOBJECT
+  #include <SALOME_Prs.h>
+  #include <SUIT_DataObject.h>
+#endif
+
 //#ifndef DISABLE_SUPERVGRAPHVIEWER
 //  #include <SUPERVGraph_ViewModel.h>
 //  #include <SUPERVGraph_ViewFrame.h>
@@ -3425,3 +3430,13 @@ void LightApp_Application::onPaste()
   if( m )
     m->paste();
 }
+
+#ifndef DISABLE_SALOMEOBJECT
+/*!
+  Update visibility state of given objects
+ */
+void LightApp_Application::updateVisibilityState( DataObjectList& /*theList*/,
+                                                  SALOME_View*    /*theView*/ )
+{
+}
+#endif

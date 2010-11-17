@@ -469,6 +469,8 @@ SUIT_TreeModel::~SUIT_TreeModel()
                                  this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
     SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                  this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ),
+                                 this, SLOT( onUpdated( SUIT_DataObject* ) ) );
     delete myRoot;
   }
 
@@ -527,6 +529,27 @@ void SUIT_TreeModel::unregisterColumn( const int group_id, const QString& name )
           }
           break;
     }
+}
+
+/*!
+  \brief Return column name by group and custom indeces
+  \param group_id - unique data object group identificator
+  \param custom_id - custom column id that should be passed into method SUIT_DataObject::data()
+  \return column name or empty string if column not found
+ */
+QString SUIT_TreeModel::columnName( const int group_id, const int custom_id )
+{
+  QString name = QString::null;
+  for( int i = 0, n = myColumns.size(); i<n; ++i )
+  {
+    
+    if (myColumns[i].myIds.contains( group_id ) &&
+        myColumns[i].myIds[ group_id ] == custom_id) {
+      name = myColumns[i].myName;
+      break;
+    }
+  }
+  return name;
 }
 
 /*!
@@ -634,6 +657,8 @@ void SUIT_TreeModel::setRoot( SUIT_DataObject* r )
                                  this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
     SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                  this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ),
+                                 this, SLOT( onUpdated( SUIT_DataObject* ) ) );
     delete myRoot;
   }
 
@@ -758,6 +783,10 @@ QVariant SUIT_TreeModel::data( const QModelIndex& index, int role ) const
       // data size hint
       // NOTE! not supported currently
       break;
+    case VisibilityRole:
+      // visibility state
+      val = obj->visibilityState();
+      break;
     default:
       break;
     } // ... switch ( role ) ...
@@ -785,6 +814,14 @@ bool SUIT_TreeModel::setData( const QModelIndex& index,
         // checked state
         if ( obj->isCheckable( index.column() ) ) {
           obj->setOn( value.toBool(), index.column() );
+          emit( dataChanged( index, index ) );
+          return true;
+        }
+        break;
+      case VisibilityRole:
+        // visibility state
+        if ( (int)obj->visibilityState() != value.toInt() ) {
+          obj->setVisibilityState( (SUIT_DataObject::VisibilityState)value.toInt() );
           emit( dataChanged( index, index ) );
           return true;
         }
@@ -1007,6 +1044,8 @@ void SUIT_TreeModel::setAutoUpdate( const bool on )
                                this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
   SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+  SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ),
+                               this, SLOT( onUpdated( SUIT_DataObject* ) ) );
   myAutoUpdate = on;
 
   if ( myAutoUpdate ) {
@@ -1014,6 +1053,8 @@ void SUIT_TreeModel::setAutoUpdate( const bool on )
                               this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
     SUIT_DataObject::connect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                               this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::connect( SIGNAL( updated( SUIT_DataObject* ) ),
+                              this, SLOT( onUpdated( SUIT_DataObject* ) ) );
 
     updateTree();
   }
@@ -1106,11 +1147,15 @@ void SUIT_TreeModel::initialize()
                                this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
   SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+  SUIT_DataObject::disconnect( SIGNAL( updated( SUIT_DataObject* ) ),
+                               this, SLOT( onUpdated( SUIT_DataObject* ) ) );
   if ( autoUpdate() ) {
     SUIT_DataObject::connect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject* ) ),
                               this, SLOT( onInserted( SUIT_DataObject*, SUIT_DataObject* ) ) );
     SUIT_DataObject::connect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                               this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
+    SUIT_DataObject::connect( SIGNAL( updated( SUIT_DataObject* ) ),
+                              this, SLOT( onUpdated( SUIT_DataObject* ) ) );
   }
 
   myItems.clear(); // ????? is it really necessary
@@ -1118,7 +1163,10 @@ void SUIT_TreeModel::initialize()
   if ( !myRootItem )
     myRootItem = new TreeItem( 0 );
 
+  QString VisCol = QObject::tr( "VISIBILITY_COLUMN" );
+  registerColumn( 0, VisCol, SUIT_DataObject::VisibilityId );
   registerColumn( 0, QObject::tr( "NAME_COLUMN" ), SUIT_DataObject::NameId );
+  setAppropriate( VisCol, Qtx::Hidden );
   updateTree();
 }
 
@@ -1276,6 +1324,20 @@ void SUIT_TreeModel::onRemoved( SUIT_DataObject* /*object*/, SUIT_DataObject* pa
 {
   if ( autoUpdate() )
     updateTree( parent );
+}
+
+/*!
+  \brief Called when the data object is modified (their data updated)
+  \param object data object being modified
+*/
+void SUIT_TreeModel::onUpdated( SUIT_DataObject* object )
+{
+  if ( !object )
+    return;
+  // update all columns corresponding to the given data object
+  QModelIndex firstIdx = index( object, 0 );
+  QModelIndex lastIdx  = index( object, columnCount() - 1 );
+  emit dataChanged( firstIdx, lastIdx );
 }
 
 /*!
@@ -1553,6 +1615,17 @@ void SUIT_ProxyModel::unregisterColumn( const int group_id, const QString& name 
 {
   if( treeModel() )
     treeModel()->unregisterColumn( group_id, name );
+}
+
+/*!
+  \brief Return column name by group and custom indeces
+  \param group_id - unique data object group identificator
+  \param custom_id - custom column id that should be passed into method SUIT_DataObject::data()
+  \return column name or empty string if column not found
+ */
+QString SUIT_ProxyModel::columnName( const int group_id, const int custom_id )
+{
+  return treeModel() ? treeModel()->columnName( group_id, custom_id ) : QString::null;
 }
 
 /*!

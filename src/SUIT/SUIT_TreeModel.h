@@ -66,6 +66,7 @@ public:
 
   virtual void             registerColumn( const int group_id, const QString& name, const int custom_id ) = 0;
   virtual void             unregisterColumn( const int group_id, const QString& name ) = 0;
+  virtual QString          columnName( const int group_id, const int custom_id ) = 0;
   virtual void             setColumnIcon( const QString& name, const QPixmap& icon ) = 0;
   virtual QPixmap          columnIcon( const QString& name ) const = 0;
   virtual void             setAppropriate( const QString& name, const Qtx::Appropriate appr ) = 0;
@@ -102,6 +103,7 @@ public:
     TextColorRole,                               //!< (editor) text color    (Qt::UserRole + 1)
     HighlightRole,                               //!< highlight color        (Qt::UserRole + 2)
     HighlightedTextRole,                         //!< highlighted text color (Qt::UserRole + 3)
+    VisibilityRole,                              //!< visibility state role  (Qt::UserRole + 4)
     AppropriateRole     = Qtx::AppropriateRole   //!< appropriate flag       (Qt::UserRole + 100)
   } Role;
 
@@ -124,6 +126,7 @@ public:
   virtual int              rowCount( const QModelIndex& = QModelIndex() ) const;
   virtual void             registerColumn( const int group_id, const QString& name, const int custom_id );
   virtual void             unregisterColumn( const int group_id, const QString& name );
+  virtual QString          columnName( const int group_id, const int custom_id );
   virtual void             setColumnIcon( const QString& name, const QPixmap& icon );
   virtual QPixmap          columnIcon( const QString& name ) const;
   virtual void             setAppropriate( const QString& name, const Qtx::Appropriate appr );
@@ -165,6 +168,7 @@ private:
 private slots:
   void                   onInserted( SUIT_DataObject*, SUIT_DataObject* );
   void                   onRemoved( SUIT_DataObject*, SUIT_DataObject* );
+  void                   onUpdated( SUIT_DataObject* );
 
 private:
   typedef QMap<SUIT_DataObject*, TreeItem*> ItemMap;
@@ -215,6 +219,7 @@ public:
   virtual bool             lessThan( const QModelIndex&, const QModelIndex& ) const;
   virtual void             registerColumn( const int group_id, const QString& name, const int custom_id );
   virtual void             unregisterColumn( const int group_id, const QString& name );
+  virtual QString          columnName( const int group_id, const int custom_id );
   virtual void             setColumnIcon( const QString& name, const QPixmap& icon );
   virtual QPixmap          columnIcon( const QString& name ) const;
   virtual void             setAppropriate( const QString& name, const Qtx::Appropriate appr );

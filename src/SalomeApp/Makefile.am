@@ -101,6 +101,8 @@ salomepython_PYTHON = salome_pluginsmanager.py
 dist_salomescript_DATA = addvars2notebook.py
 
 dist_salomeres_DATA =		\
+	resources/icon_visibility_on.png \
+	resources/icon_visibility_off.png\
 	resources/SalomeApp.ini	\
 	resources/SalomeApp.xml
 
@@ -116,7 +118,7 @@ libSalomeApp_la_CPPFLAGS = $(PYTHON_INCLUDES) $(QT_INCLUDES) $(QWT_INCLUDES)	\
 	-I$(srcdir)/../STD -I$(srcdir)/../VTKViewer -I$(srcdir)/../ObjBrowser	\
 	-I$(srcdir)/../PyConsole -I$(srcdir)/../TOOLSGUI			\
 	-I$(srcdir)/../PyInterp -I$(srcdir)/../Session -I$(top_builddir)/idl	\
-	-I$(srcdir)/../Event -I$(srcdir)/../CASCatch				\
+	-I$(srcdir)/../Event -I$(srcdir)/../CASCatch -I$(srcdir)/../Prs		\
 	@CORBA_CXXFLAGS@ @CORBA_INCLUDES@ @LIBXML_INCLUDES@
 libSalomeApp_la_LDFLAGS = $(PYTHON_LIBS) $(QT_MT_LIBS) 
 libSalomeApp_la_LIBADD  = $(KERNEL_LDFLAGS) -lOpUtil -lSALOMELocalTrace -lSalomeDSClient		\
@@ -126,4 +128,4 @@ libSalomeApp_la_LIBADD  = $(KERNEL_LDFLAGS) -lOpUtil -lSALOMELocalTrace -lSalome
 	../SVTK/libSVTK.la ../SOCC/libSOCC.la ../PyInterp/libPyInterp.la			\
 	../PyConsole/libPyConsole.la ../LogWindow/libLogWindow.la				\
 	../LightApp/libLightApp.la ../TOOLSGUI/libToolsGUI.la ../Session/libSalomeSession.la	\
-	../Event/libEvent.la ../CASCatch/libCASCatch.la $(CAS_KERNEL)
+	../Event/libEvent.la ../CASCatch/libCASCatch.la ../Prs/libSalomePrs.la $(CAS_KERNEL)

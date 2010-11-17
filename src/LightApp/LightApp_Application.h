@@ -50,6 +50,11 @@ class SUIT_Study;
 class SUIT_Accel;
 class CAM_Module;
 
+#ifndef DISABLE_SALOMEOBJECT
+class SALOME_View;
+#include <LightApp_DataObject.h>
+#endif
+
 class QString;
 class QWidget;
 class QStringList;
@@ -156,6 +161,12 @@ public:
 
   //! Removes ViewManagers only of known type
   virtual void                        clearKnownViewManagers();
+
+#ifndef DISABLE_SALOMEOBJECT
+  //! update visibility state of objects
+  virtual void                        updateVisibilityState( DataObjectList& theList,
+                                                             SALOME_View*    theView );
+#endif
 
 signals:
   void                                studyOpened();

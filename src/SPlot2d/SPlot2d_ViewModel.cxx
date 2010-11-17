@@ -310,6 +310,23 @@ bool SPlot2d_Viewer::isVisible( const Handle(SALOME_InteractiveObject)& IObject 
 }
 
 /*!
+  \Collect objects visible in viewer
+  \param theList - visible objects collection
+*/
+void SPlot2d_Viewer::GetVisible( SALOME_ListIO& theList )
+{
+  Plot2d_ViewFrame* aViewFrame = getActiveViewFrame();
+  if(aViewFrame == NULL) return;
+  CurveDict aCurves = aViewFrame->getCurves();
+  CurveDict::Iterator it = aCurves.begin();
+  for( ; it != aCurves.end(); ++it ) {
+    SPlot2d_Curve* aCurve = dynamic_cast<SPlot2d_Curve*>(it.value()); 
+    if ( aCurve && aCurve->hasIO() && aViewFrame->isVisible( aCurve ) )
+      theList.Append( aCurve->getIO() );
+  }
+}
+
+/*!
   Return interactive obeject if is presented in the viewer
 */
 Handle(SALOME_InteractiveObject) SPlot2d_Viewer::FindIObject( const char* Entry )

@@ -29,9 +29,10 @@
 
 #include "SPlot2d.h"  
 
-#include "SALOME_Prs.h"
+#include <SALOME_Prs.h>
 #include "Plot2d_ViewModel.h"
-#include "SALOME_InteractiveObject.hxx"
+#include <SALOME_InteractiveObject.hxx>
+#include <SALOME_ListIO.hxx>
 #include "Plot2d_ViewFrame.h"
 #include "Plot2d_ViewWindow.h"
 #include "SPlot2d_Curve.h"
@@ -73,6 +74,7 @@ public:
   virtual void         BeforeDisplay( SALOME_Displayer* d );
   virtual void         AfterDisplay ( SALOME_Displayer* d );
   virtual bool         isVisible( const Handle(SALOME_InteractiveObject)& IObject );
+  virtual void         GetVisible( SALOME_ListIO& theList );
 
 
   /* operations */

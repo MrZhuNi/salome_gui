@@ -33,8 +33,10 @@
 #include <SUIT_ViewWindow.h>
 
 #include <QString>
+#include <QStringList>
 #ifndef DISABLE_SALOMEOBJECT
-  #include "SALOME_InteractiveObject.hxx"
+#include <SALOME_InteractiveObject.hxx>
+#include <SUIT_DataObjectIterator.h>
 #endif
 
 /*!
@@ -57,24 +59,44 @@ LightApp_Displayer::~LightApp_Displayer()
   \param updateViewer - is it necessary to update viewer
   \param theViewFrame - view
 */
-void LightApp_Displayer::Display( const QString& entry, const bool updateViewer, SALOME_View* theViewFrame )
+void LightApp_Displayer::Display( const QString& entry, const bool updateViewer,
+                                  SALOME_View* theViewFrame, const bool updateVisState )
 {
-  SALOME_Prs* prs = buildPresentation( entry, theViewFrame );
-  if ( prs )
+  QStringList aList;
+  aList.append( entry );
+  Display( aList, updateViewer, theViewFrame, updateVisState );
+}
+
+/*!
+  Displays object in view
+  \param list - object entries
+  \param updateViewer - is it necessary to update viewer
+  \param theViewFrame - view
+*/
+void LightApp_Displayer::Display( const QStringList& list, const bool updateViewer,
+                                  SALOME_View* theViewFrame, const bool updateVisState )
+{
+  SALOME_View* vf = theViewFrame ? theViewFrame : GetActiveView();
+  QStringList::const_iterator it = list.constBegin();
+  for ( ; it != list.constEnd(); ++it)
   {
-    SALOME_View* vf = theViewFrame ? theViewFrame : GetActiveView();
-    if ( vf )
+    SALOME_Prs* prs = buildPresentation( *it, vf );
+    if ( prs )
     {
-      vf->BeforeDisplay( this );
-      vf->Display( prs );
-      vf->AfterDisplay( this );
+      if ( vf )
+      {
+        vf->BeforeDisplay( this );
+        vf->Display( prs );
+        vf->AfterDisplay( this );
 
-      if ( updateViewer )
-        vf->Repaint();
-
+        if ( updateViewer )
+          vf->Repaint();
+      }
       delete prs;  // delete presentation because displayer is its owner
     }
   }
+  if ( updateVisState )
+    updateVisibilityState( list, vf );
 }
 
 /*!
@@ -104,8 +126,8 @@ void LightApp_Displayer::Redisplay( const QString& entry, const bool updateViewe
       SALOME_View* view = dynamic_cast<SALOME_View*>(vmodel);
       if( view && ( IsDisplayed( entry, view ) || view == GetActiveView() ) )
       {
-        Erase( entry, true, false, view );
-        Display( entry, updateViewer, view );
+        Erase( entry, true, false, view, false );
+        Display( entry, updateViewer, view, false );
       }
     }
   }
@@ -119,12 +141,34 @@ void LightApp_Displayer::Redisplay( const QString& entry, const bool updateViewe
   \param theViewFrame - view
 */
 void LightApp_Displayer::Erase( const QString& entry, const bool forced,
-                                const bool updateViewer, SALOME_View* theViewFrame )
+                                const bool updateViewer,
+                                SALOME_View* theViewFrame, const bool updateVisState )
+{
+  QStringList aList;
+  aList.append( entry );
+  Erase( aList, forced, updateViewer, theViewFrame, updateVisState );
+}
+
+/*!
+  Erases object in view
+  \param list - object entries
+  \param forced - deletes object from viewer (otherwise it will be erased, but cached)
+  \param updateViewer - is it necessary to update viewer
+  \param theViewFrame - view
+*/
+void LightApp_Displayer::Erase( const QStringList& list, const bool forced,
+                                const bool updateViewer,
+                                SALOME_View* theViewFrame, const bool updateVisState )
 {
   SALOME_View* vf = theViewFrame ? theViewFrame : GetActiveView();
 
-  if ( vf ) {
-    SALOME_Prs* prs = vf->CreatePrs( entry.toLatin1() );
+  if ( !vf )
+    return;
+
+  QStringList::const_iterator it = list.constBegin();
+  for ( ; it != list.constEnd(); ++it)
+  {
+    SALOME_Prs* prs = vf->CreatePrs( (*it).toLatin1().data() );
     if ( prs ) {
       vf->Erase( prs, forced );
       if ( updateViewer )
@@ -132,6 +176,8 @@ void LightApp_Displayer::Erase( const QString& entry, const bool forced,
       delete prs;  // delete presentation because displayer is its owner
     }
   }
+  if ( updateVisState )
+    updateVisibilityState( list, vf );
 }
 
 /*!
@@ -140,7 +186,8 @@ void LightApp_Displayer::Erase( const QString& entry, const bool forced,
   \param updateViewer - is it necessary to update viewer
   \param theViewFrame - view
 */
-void LightApp_Displayer::EraseAll( const bool forced, const bool updateViewer, SALOME_View* theViewFrame ) const
+void LightApp_Displayer::EraseAll( const bool forced, const bool updateViewer,
+                                   SALOME_View* theViewFrame, const bool updateVisState ) const
 {
   SALOME_View* vf = theViewFrame ? theViewFrame : GetActiveView();
 
@@ -149,6 +196,69 @@ void LightApp_Displayer::EraseAll( const bool forced, const bool updateViewer, S
     if ( updateViewer )
       vf->Repaint();
   }
+  if ( updateVisState )
+    updateVisibilityState( vf );
+}
+
+/*!
+  updte visibility state of all objects
+  \param theViewFrame - view
+*/
+void LightApp_Displayer::updateVisibilityState( SALOME_View* theViewFrame ) const
+{
+  // this code wrapped by pre-processor directive, becase it works with SALOME_View
+  // and has no effect in case of SALOMEOBJECT disabled
+#ifndef DISABLE_SALOMEOBJECT
+  SUIT_Session* session = SUIT_Session::session();
+  LightApp_Application* app = dynamic_cast<LightApp_Application*>(session->activeApplication());
+  if (!app)
+    return;
+  SUIT_Study* study =  app->activeStudy();
+  if (!study)
+    return;
+  
+  DataObjectList anObjList;
+  SUIT_DataObjectIterator it( study->root(), SUIT_DataObjectIterator::DepthLeft );
+  for ( ; it.current(); ++it )
+    anObjList.append( it.current() );
+  app->updateVisibilityState( anObjList, theViewFrame );
+#endif
+}
+ 
+/*!
+  updte visibility state of given objects
+  \param theList - objects to update state
+  \param theViewFrame - view
+*/
+void LightApp_Displayer::updateVisibilityState( const QStringList& theList,
+                                                SALOME_View* theViewFrame ) const
+{
+  // this code wrapped by pre-processor directive, becase it works with SALOME_View
+  // and has no effect in case of SALOMEOBJECT disabled
+#ifndef DISABLE_SALOMEOBJECT
+  SUIT_Session* session = SUIT_Session::session();
+  LightApp_Application* app = dynamic_cast<LightApp_Application*>(session->activeApplication());
+  if (!app)
+    return;
+  SUIT_Study* study = app->activeStudy();
+  if (!study)
+    return;
+  
+  LightApp_EntryObjMap anEntryObjMap;
+  LightApp_DataObject::FillEntryObjMap( study->root(), anEntryObjMap );
+  if (anEntryObjMap.isEmpty())
+    return;
+
+  // take data objects by entries
+  DataObjectList anObjList;
+  QStringList::const_iterator it = theList.constBegin();
+  for ( ; it != theList.constEnd(); ++it) {
+    if (anEntryObjMap.contains( *it ) )
+      anObjList.append( anEntryObjMap[ *it ] );
+  }
+
+  app->updateVisibilityState( anObjList,  theViewFrame );
+#endif
 }
 
 /*!

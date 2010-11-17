@@ -61,8 +61,17 @@ public:
   //! Column id
   enum
   { 
+    VisibilityId,     //!< visibility state column
     NameId            //!< name column
   };
+
+  //! object visibility state
+  typedef enum
+  {
+    Shown,
+    Hidden,
+    Unpresentable,
+  } VisibilityState;
 
   SUIT_DataObject( SUIT_DataObject* = 0 );
   virtual ~SUIT_DataObject();
@@ -119,6 +128,9 @@ public:
   virtual bool                isOpen() const;
   virtual void                setOpen( const bool );
 
+  virtual VisibilityState     visibilityState() const;
+  virtual void                setVisibilityState( const VisibilityState );
+  
   virtual void                update();
   virtual bool                customSorting( const int = NameId ) const;
   virtual bool                compare( const QVariant&, const QVariant&, const int = NameId ) const;
@@ -140,6 +152,7 @@ private:
   bool                        myCheck;
   bool                        myAutoDel;
   DataObjectList              myChildren;
+  VisibilityState             myVisState;
 
   static Signal*              mySignal;
 
@@ -160,6 +173,7 @@ private:
   void emitDestroyed( SUIT_DataObject* );
   void emitInserted( SUIT_DataObject*, SUIT_DataObject* );
   void emitRemoved( SUIT_DataObject*, SUIT_DataObject* );
+  void emitUpdated( SUIT_DataObject* );
 
   void deleteLater( SUIT_DataObject* );
 
@@ -168,6 +182,7 @@ signals:
   void destroyed( SUIT_DataObject* );
   void inserted( SUIT_DataObject*, SUIT_DataObject* );
   void removed( SUIT_DataObject*, SUIT_DataObject* );
+  void updated( SUIT_DataObject* );
 
   friend class SUIT_DataObject;
 

@@ -28,6 +28,7 @@
 #include <SALOME_Prs.h>
 
 class QString;
+class QStringList;
 
 /*!
   \class LightApp_Displayer
@@ -40,10 +41,17 @@ public:
   LightApp_Displayer();
   virtual ~LightApp_Displayer();
 
-  void Display( const QString&, const bool = true, SALOME_View* = 0 );
-  void Redisplay( const QString&, const bool = true );
-  void Erase( const QString&, const bool forced = false, const bool updateViewer = true, SALOME_View* = 0 );
-  void EraseAll( const bool forced = false, const bool updateViewer = true, SALOME_View* = 0 ) const;
+  void Display( const QString&, const bool = true,
+                SALOME_View* = 0, const bool updateVisState = true );
+  void Display( const QStringList&, const bool = true,
+                SALOME_View* = 0, const bool updateVisState= true );
+  void Redisplay( const QString&,     const bool = true );
+  void Erase( const QString&,     const bool forced = false,
+              const bool updateViewer = true, SALOME_View* = 0, const bool updateVisState = true );
+  void Erase( const QStringList&, const bool forced = false,
+              const bool updateViewer = true, SALOME_View* = 0, const bool updateVisState = true );
+  void EraseAll( const bool forced = false, const bool updateViewer = true,
+                 SALOME_View* = 0, const bool updateVisState = true ) const;
   bool IsDisplayed( const QString&, SALOME_View* = 0 ) const;
   void UpdateViewer() const;
 
@@ -55,6 +63,10 @@ public:
 
 protected:
   virtual SALOME_Prs* buildPresentation( const QString&, SALOME_View* = 0 );
+
+  void updateVisibilityState( SALOME_View* theViewFrame ) const;
+  void updateVisibilityState( const QStringList& theList,
+                              SALOME_View* theViewFrame ) const;
 };
 
 #endif

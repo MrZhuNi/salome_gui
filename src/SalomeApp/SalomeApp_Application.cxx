@@ -41,6 +41,7 @@
 #include "SalomeApp_StudyPropertiesDlg.h"
 #include "SalomeApp_LoadStudiesDlg.h"
 #include "SalomeApp_NoteBookDlg.h"
+#include "SalomeApp_Module.h"
 
 #include "SalomeApp_ExitDlg.h"
 
@@ -61,6 +62,9 @@
 #include <SUIT_MessageBox.h>
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_TreeModel.h>
+#include <SUIT_ViewWindow.h>
+#include <SUIT_ViewManager.h>
+#include <SUIT_ViewModel.h>
 
 #include <QtxTreeView.h>
 
@@ -89,8 +93,9 @@
 #include <SALOMEDSClient_ClientFactory.hxx>
 #include <Basics_Utils.hxx>
 
-#include <SALOME_ListIteratorOfListIO.hxx>
 #include <SALOME_ListIO.hxx>
+#include <SALOME_ListIteratorOfListIO.hxx>
+#include <SALOME_Prs.h>
 
 #include <ToolsGUI_CatalogGeneratorDlg.h>
 #include <ToolsGUI_RegWidget.h>
@@ -154,6 +159,8 @@ SalomeApp_Application::SalomeApp_Application()
 {
   connect( desktop(), SIGNAL( message( const QString& ) ),
            this,      SLOT( onDesktopMessage( const QString& ) ) );
+  connect( desktop(), SIGNAL( windowActivated( SUIT_ViewWindow* ) ),
+           this,      SLOT( onWindowActivated( SUIT_ViewWindow* ) ) );
   setNoteBook(0);
 }
 
@@ -337,6 +344,32 @@ void SalomeApp_Application::createActions()
   PyGILState_Release(gstate);
   // end of SALOME plugins loading
 
+}
+
+/*!Set desktop:*/
+void SalomeApp_Application::setDesktop( SUIT_Desktop* desk )
+{
+  SUIT_Desktop* prev = desktop();
+  if ( prev == desk )
+    return;
+
+  if ( prev != 0 )
+  {
+    disconnect( prev, SIGNAL( message( const QString& ) ),
+                this, SLOT( onDesktopMessage( const QString& ) ) );
+    disconnect( prev, SIGNAL( windowActivated( SUIT_ViewWindow* ) ),
+                this, SLOT( onWindowActivated( SUIT_ViewWindow* ) ) );
+  }
+
+  LightApp_Application::setDesktop( desk );
+
+  if ( desk != 0 )
+  {
+    connect( desk, SIGNAL( message( const QString& ) ),
+             this, SLOT( onDesktopMessage( const QString& ) ) );
+    connect( desk, SIGNAL( windowActivated( SUIT_ViewWindow* ) ),
+             this, SLOT( onWindowActivated( SUIT_ViewWindow* ) ) );
+  }
 }
 
 /*!
@@ -861,15 +894,20 @@ QWidget* SalomeApp_Application::createWindow( const int flag )
         EntryCol = QObject::tr( "ENTRY_COLUMN" );
 
       SUIT_AbstractModel* treeModel = dynamic_cast<SUIT_AbstractModel*>( ob->model() );
-      treeModel->registerColumn( 0, EntryCol, SalomeApp_DataObject::EntryId );
-      treeModel->registerColumn( 0, ValueCol, SalomeApp_DataObject::ValueId );
-      treeModel->registerColumn( 0, IORCol, SalomeApp_DataObject::IORId );
-      treeModel->registerColumn( 0, RefCol, SalomeApp_DataObject::RefEntryId );
-      treeModel->setAppropriate( EntryCol, Qtx::Toggled );
-      treeModel->setAppropriate( ValueCol, Qtx::Toggled );
-      treeModel->setAppropriate( IORCol, Qtx::Toggled );
-      treeModel->setAppropriate( RefCol, Qtx::Toggled );
-
+      if (treeModel)
+      {
+        treeModel->registerColumn( 0, EntryCol, SalomeApp_DataObject::EntryId );
+        treeModel->registerColumn( 0, ValueCol, SalomeApp_DataObject::ValueId );
+        treeModel->registerColumn( 0, IORCol, SalomeApp_DataObject::IORId );
+        treeModel->registerColumn( 0, RefCol, SalomeApp_DataObject::RefEntryId );
+        treeModel->setAppropriate( EntryCol, Qtx::Toggled );
+        treeModel->setAppropriate( ValueCol, Qtx::Toggled );
+        treeModel->setAppropriate( IORCol, Qtx::Toggled );
+        treeModel->setAppropriate( RefCol, Qtx::Toggled );
+        // show visibility column
+        treeModel->setAppropriate( treeModel->columnName( 0, SalomeApp_DataObject::VisibilityId ), Qtx::Toggled );
+      }
+      
       bool autoSize      = resMgr->booleanValue( "ObjectBrowser", "auto_size", false );
       bool autoSizeFirst = resMgr->booleanValue( "ObjectBrowser", "auto_size_first", true );
       bool resizeOnExpandItem = resMgr->booleanValue( "ObjectBrowser", "resize_on_expand_item", true );
@@ -1266,6 +1304,13 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 {
   // update "non-existing" (not loaded yet) data models
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>(activeStudy());
+  SUIT_DataBrowser* ob = objectBrowser();
+  if ( !ob )
+  {
+    getWindow( WT_ObjectBrowser );
+    ob = objectBrowser();
+  }
+
   if ( study )
   {
     _PTR(Study) stdDS = study->studyDS();
@@ -1277,13 +1322,14 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
 
         if ( aComponent->ComponentDataType() == "Interface Applicative" )
           continue; // skip the magic "Interface Applicative" component
-
-        if ( !objectBrowser() )
-          getWindow( WT_ObjectBrowser );
-        const bool isAutoUpdate = objectBrowser()->autoUpdate();
-        objectBrowser()->setAutoUpdate( false );
-        SalomeApp_DataModel::synchronize( aComponent, study );
-        objectBrowser()->setAutoUpdate( isAutoUpdate );
+        
+        if (ob)
+        {
+          const bool isAutoUpdate = ob->autoUpdate();
+          ob->setAutoUpdate( false );
+          SalomeApp_DataModel::synchronize( aComponent, study );
+          ob->setAutoUpdate( isAutoUpdate );
+        }
       }
     }
   }
@@ -1543,11 +1589,12 @@ bool SalomeApp_Application::useStudy( const QString& theName )
 /*! Show/hide object browser colums according to preferences */
 void SalomeApp_Application::objectBrowserColumnsVisibility()
 {
-  if ( objectBrowser() )
+  SUIT_DataBrowser* ob = objectBrowser();
+  if ( ob )
     for ( int i = SalomeApp_DataObject::EntryId; i <= SalomeApp_DataObject::RefEntryId; i++ )
     {
       bool shown = resourceMgr()->booleanValue( "ObjectBrowser", QString( "visibility_column_id_%1" ).arg( i ), true );
-      objectBrowser()->treeView()->setColumnHidden( i, !shown );
+      ob->treeView()->setColumnHidden( i, !shown );
     }
 }
 
@@ -1651,4 +1698,57 @@ void SalomeApp_Application::onExtAction()
 
   if (!QMetaObject::invokeMethod(aModule, qPrintable(aDataList[1]), Q_ARG(QString, aEntry)))
     printf("Error: Can't Invoke method %s\n", qPrintable(aDataList[1]));
+}
+
+
+/*!
+ * Called when window activated
+ */
+void SalomeApp_Application::onWindowActivated( SUIT_ViewWindow* theViewWindow )
+{
+  SUIT_DataBrowser* anOB = objectBrowser();
+  if( !anOB )
+    return;
+  SUIT_DataObject* rootObj = anOB->root();
+  if( !rootObj )
+    return;
+
+  DataObjectList listObj = rootObj->children( true );
+  
+  SALOME_View* sView = 0;
+  if ( SUIT_ViewManager* vman = theViewWindow->getViewManager() )
+    if ( SUIT_ViewModel* vmod = vman->getViewModel() )
+      sView = dynamic_cast<SALOME_View*>( vmod );
+  updateVisibilityState( listObj, sView );
+}
+
+/*!
+  Update visibility state of given objects
+ */
+void SalomeApp_Application::updateVisibilityState( DataObjectList& theList,
+                                                   SALOME_View*    theView )
+{
+  if (theList.isEmpty() || !theView )
+    return;
+  // take visibale objects from current view
+  QMap<QString,int> aVisEntityMap;
+  SALOME_ListIO aListOfIO;
+  theView->GetVisible( aListOfIO );
+  SALOME_ListIteratorOfListIO anIter(aListOfIO);
+  for(; anIter.More(); anIter.Next())
+  {
+    Handle_SALOME_InteractiveObject& anObj = anIter.Value();
+    if (!anObj.IsNull() && anObj->hasEntry())
+      aVisEntityMap[ anObj->getEntry() ] = 1;
+  }
+
+  for ( DataObjectList::iterator itr = theList.begin(); itr != theList.end(); ++itr )
+  {
+    LightApp_DataObject* obj = dynamic_cast<LightApp_DataObject*>(*itr);
+    if (!obj) continue;
+    if (aVisEntityMap.contains( obj->entry() ) )
+      obj->setVisibilityState( SUIT_DataObject::Shown );
+    else if (obj->visibilityState() == SUIT_DataObject::Shown)
+      obj->setVisibilityState( SUIT_DataObject::Hidden );
+  }
 }

@@ -73,6 +73,7 @@ private:
 signals:
   void             requestUpdate();
   void             clicked( SUIT_DataObject* );
+  void             clicked( SUIT_DataObject*, int );
   void             doubleClicked( SUIT_DataObject* );
 
 private slots:

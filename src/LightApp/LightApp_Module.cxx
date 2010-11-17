@@ -121,6 +121,24 @@ void LightApp_Module::initialize( CAM_Application* app )
   SUIT_ResourceMgr* resMgr = app ? app->resourceMgr() : 0;
   if ( resMgr )
     resMgr->raiseTranslators( name() );
+
+  // create show-hide actions
+  QPixmap p;
+  SUIT_Desktop* d = app->desktop();
+  QAction 
+    *disp = createAction( -1, tr( "TOP_SHOW" ), p, tr( "MEN_SHOW" ), tr( "STB_SHOW" ),
+                          0, d, false, this, SLOT( onShowHide() ), QString("General:Show object(s)") ),
+    *erase = createAction( -1, tr( "TOP_HIDE" ), p, tr( "MEN_HIDE" ), tr( "STB_HIDE" ),
+                           0, d, false, this, SLOT( onShowHide() ) , QString("General:Hide object(s)") ),
+    *dispOnly = createAction( -1, tr( "TOP_DISPLAY_ONLY" ), p, tr( "MEN_DISPLAY_ONLY" ), tr( "STB_DISPLAY_ONLY" ),
+                              0, d, false, this, SLOT( onShowHide() ) ),
+    *eraseAll = createAction( -1, tr( "TOP_ERASE_ALL" ), p, tr( "MEN_ERASE_ALL" ), tr( "STB_ERASE_ALL" ),
+                              0, d, false, this, SLOT( onShowHide() ) );
+  // store actions indeces in protected fields
+  myDisplay     = actionId( disp );
+  myErase       = actionId( erase );
+  myDisplayOnly = actionId( dispOnly );
+  myEraseAll    = actionId( eraseAll );
 }
 
 /*!NOT IMPLEMENTED*/
@@ -398,22 +416,12 @@ QtxPopupMgr* LightApp_Module::popupMgr()
   {
     myPopupMgr = new QtxPopupMgr( 0, this );
 
-    QPixmap p;
-    SUIT_Desktop* d = application()->desktop();
-    
+    // take already created actions
     QAction 
-      *disp = createAction( -1, tr( "TOP_SHOW" ), p, tr( "MEN_SHOW" ), tr( "STB_SHOW" ),
-                            0, d, false, this, SLOT( onShowHide() ), QString("General:Show object(s)") ),
-      *erase = createAction( -1, tr( "TOP_HIDE" ), p, tr( "MEN_HIDE" ), tr( "STB_HIDE" ),
-                             0, d, false, this, SLOT( onShowHide() ) , QString("General:Hide object(s)") ),
-      *dispOnly = createAction( -1, tr( "TOP_DISPLAY_ONLY" ), p, tr( "MEN_DISPLAY_ONLY" ), tr( "STB_DISPLAY_ONLY" ),
-                                0, d, false, this, SLOT( onShowHide() ) ),
-      *eraseAll = createAction( -1, tr( "TOP_ERASE_ALL" ), p, tr( "MEN_ERASE_ALL" ), tr( "STB_ERASE_ALL" ),
-                                0, d, false, this, SLOT( onShowHide() ) );
-    myDisplay     = actionId( disp );
-    myErase       = actionId( erase );
-    myDisplayOnly = actionId( dispOnly );
-    myEraseAll    = actionId( eraseAll );
+      *disp     = action( myDisplay ),
+      *erase    = action( myErase ),
+      *dispOnly = action( myDisplayOnly ),
+      *eraseAll = action( myEraseAll );
 
     myPopupMgr->insert( disp, -1, 0 ); 
     myPopupMgr->insert( erase, -1, 0 );

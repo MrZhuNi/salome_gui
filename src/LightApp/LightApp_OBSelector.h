@@ -27,6 +27,7 @@
 #define LIGHTAPP_OBSELECTOR_H
 
 #include "LightApp.h"
+#include "LightApp_DataObject.h"
 
 #include <SUIT_Selector.h>
 #include <SUIT_DataOwner.h>
@@ -34,7 +35,6 @@
 #include <QObject>
 
 class SUIT_DataBrowser;
-class LightApp_DataObject;
 
 class LIGHTAPP_EXPORT LightApp_OBSelector : public QObject, public SUIT_Selector
 {
@@ -50,7 +50,7 @@ public:
 
   unsigned long      getModifiedTime() const;
   void               setModified();
-
+  
 private slots:
   void               onSelectionChanged();
 
@@ -59,13 +59,13 @@ protected:
   virtual void       setSelection( const SUIT_DataOwnerPtrList& );
 
 private:
-  void               fillEntries( QMap<QString, LightApp_DataObject*>& );
+  void               fillEntries();
 
 private:
-  SUIT_DataBrowser*                   myBrowser;
-  SUIT_DataOwnerPtrList               mySelectedList;
-  QMap<QString, LightApp_DataObject*> myEntries;
-  unsigned long                       myModifiedTime;
+  SUIT_DataBrowser*     myBrowser;
+  SUIT_DataOwnerPtrList mySelectedList;
+  LightApp_EntryObjMap  myEntries;
+  unsigned long         myModifiedTime;
 };
 
 #endif

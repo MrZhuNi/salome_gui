@@ -38,6 +38,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QMap>
 
 /*!
   \class SalomeApp_DataObject
@@ -154,35 +155,67 @@ QString SalomeApp_DataObject::text( const int id ) const
 }
 
 /*!
+  \brief Map to store data object icons
+*/
+typedef QMap<QString,QPixmap> MapKeyPixmap;
+
+/*!
   \brief Get data object icon for the specified column.
   \param id column id
   \return object icon for the specified column
 */
 QPixmap SalomeApp_DataObject::icon( const int id ) const
 {
-  // we display icon only for the first (NameId ) column
+  // we display icon only for the NameId and VisibilityId columns
+  QString pixmapName = QString::null;
+  QString componentType = QString::null;
   if ( id == NameId ) {
+    componentType = componentDataType();
     _PTR(GenericAttribute) anAttr;
     if ( myObject && myObject->FindAttribute( anAttr, "AttributePixMap" ) ){
       _PTR(AttributePixMap) aPixAttr ( anAttr );
       if ( aPixAttr->HasPixMap() ) {
-        QString componentType = componentDataType();
-        QString pixmapID      = aPixAttr->GetPixMap().c_str();
+        QString pixmapID = aPixAttr->GetPixMap().c_str();
         // select a plugin within a component
         QStringList plugin_pixmap = pixmapID.split( "::", QString::KeepEmptyParts );
         if ( plugin_pixmap.size() == 2 ) {
           componentType = plugin_pixmap.front();
           pixmapID      = plugin_pixmap.back();
         }
-        QString pixmapName = QObject::tr( pixmapID.toLatin1().constData() );
-        LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root() );
-        if ( aRoot && aRoot->study() ) {
-          SUIT_ResourceMgr* mgr = aRoot->study()->application()->resourceMgr();
-          return mgr->loadPixmap( componentType, pixmapName, false ); 
-        }
+        pixmapName = QObject::tr( pixmapID.toLatin1().constData() );
       }
     }
   }
+  else if ( id == VisibilityId ) {
+    componentType = "SalomeApp";
+    if (visibilityState() == Shown)
+      pixmapName = QObject::tr( "ICON_DATAOBJ_VISIBLE" );
+    else if (visibilityState() == Hidden)
+      pixmapName = QObject::tr( "ICON_DATAOBJ_INVISIBLE" );
+    else
+      return QPixmap();
+  }
+  if (pixmapName.isEmpty())
+    return LightApp_DataObject::icon( id );
+
+  // here we assume that user doesnot reaplce icons during application work
+  static QMap<QString,MapKeyPixmap> CompKeyMap;
+  if (!CompKeyMap.contains ( componentType ))
+    CompKeyMap.insert( componentType, MapKeyPixmap() );
+  MapKeyPixmap& keyPixMap = CompKeyMap[ componentType ];
+  if (!keyPixMap.contains( pixmapName ))
+  {
+    // load from resources
+    SUIT_ResourceMgr* mgr = 0;
+    LightApp_RootObject* aRoot = dynamic_cast<LightApp_RootObject*>( root() );
+    if ( aRoot && aRoot->study() )
+      mgr = aRoot->study()->application()->resourceMgr();
+    if (mgr)
+      keyPixMap.insert( pixmapName, mgr->loadPixmap( componentType, pixmapName, false ) );
+  }
+  if (keyPixMap.contains( pixmapName ))
+    return keyPixMap[ pixmapName ];
+
   return LightApp_DataObject::icon( id );
 }
 

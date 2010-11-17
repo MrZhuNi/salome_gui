@@ -154,7 +154,7 @@ void LightApp_OBSelector::setSelection( const SUIT_DataOwnerPtrList& theList )
     return;
 
   if( myEntries.count() == 0 || myModifiedTime < myBrowser->getModifiedTime() )
-    fillEntries( myEntries );
+    fillEntries();
 
   DataObjectList objList;
   for ( SUIT_DataOwnerPtrList::const_iterator it = theList.begin(); 
@@ -172,19 +172,13 @@ void LightApp_OBSelector::setSelection( const SUIT_DataOwnerPtrList& theList )
   \brief Fill map of the data objects currently shown in the Object Browser.
   \param entries map to be filled
 */
-void LightApp_OBSelector::fillEntries( QMap<QString, LightApp_DataObject*>& entries )
+void LightApp_OBSelector::fillEntries()
 {
-  entries.clear();
+  myEntries.clear();
 
   if ( !myBrowser )
     return;
-
-  for ( SUIT_DataObjectIterator it( myBrowser->root(),
-                                    SUIT_DataObjectIterator::DepthLeft ); it.current(); ++it ) {
-    LightApp_DataObject* obj = dynamic_cast<LightApp_DataObject*>( it.current() );
-    if ( obj )
-      entries.insert( obj->entry(), obj );
-  }
+  LightApp_DataObject::FillEntryObjMap( myBrowser->root(), myEntries );
 
   setModified();
 }

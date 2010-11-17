@@ -29,6 +29,7 @@
 
 #include <CAM_Module.h>
 #include <SUIT_DataObjectKey.h>
+#include <SUIT_DataObjectIterator.h>
 
 #include <QVariant>
 
@@ -267,6 +268,24 @@ bool LightApp_DataObject::compare( const QVariant& left, const QVariant& right, 
     return QString::localeAwareCompare( leftStr, rightStr ) < 0;
   }
   return CAM_DataObject::compare( left, right, id );
+}
+
+/*!
+  \brief Constructor.
+  \param theRoot - main parent object
+  \param theMap - map of entry-object relation
+*/
+void LightApp_DataObject::FillEntryObjMap( SUIT_DataObject* theRoot,
+                                           LightApp_EntryObjMap& theMap )
+{
+  if (!theRoot)
+    return;
+  SUIT_DataObjectIterator it( theRoot, SUIT_DataObjectIterator::DepthLeft );
+  for ( ; it.current(); ++it ) {
+    LightApp_DataObject* obj = dynamic_cast<LightApp_DataObject*>( it.current() );
+    if ( obj )
+      theMap.insert( obj->entry(), obj );
+  }
 }
 
 /*!

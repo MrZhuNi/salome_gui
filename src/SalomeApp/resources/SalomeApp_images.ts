@@ -22,4 +22,15 @@
   See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 
 -->
+<context>
+    <name>@default</name>
+    <message>
+        <source>ICON_DATAOBJ_VISIBLE</source>
+        <translation>icon_visibility_on.png</translation>
+    </message>
+    <message>
+        <source>ICON_DATAOBJ_INVISIBLE</source>
+        <translation>icon_visibility_off.png</translation>
+    </message>
+</context>
 </TS>

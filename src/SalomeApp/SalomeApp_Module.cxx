@@ -28,8 +28,10 @@
 #include "SalomeApp_DataModel.h"
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Study.h"
+#include "SalomeApp_DataObject.h"
 
 #include "LightApp_Selection.h"
+#include "LightApp_DataObject.h"
 
 #include "CAM_DataModel.h"
 
@@ -41,13 +43,18 @@
 #include <SALOME_InteractiveObject.hxx>
 
 #include <SUIT_Session.h>
+#include <SUIT_DataObject.h>
+#include <SUIT_DataBrowser.h>
 
 #include <QString>
 
 /*!Constructor.*/
 SalomeApp_Module::SalomeApp_Module( const QString& name )
-: LightApp_Module( name )
+  : LightApp_Module( name ),
+    myIsFirstActivate( true )
 {
+  SUIT_DataObject::connect( SIGNAL( inserted( SUIT_DataObject*, SUIT_DataObject* ) ),
+                            this, SLOT( onObjectInserted( SUIT_DataObject* ) ) );
 }
 
 /*!Destructor.*/
@@ -143,3 +150,130 @@ void SalomeApp_Module::restoreVisualParameters(int savePoint)
 {
 }
 
+/*!Returns module  data object module*/
+static SalomeApp_Module* objectModule( CAM_Application* theApp,
+                                       SalomeApp_DataObject* theObj )
+{
+  SalomeApp_Module* mod = 0;
+  if ( !theApp || !theObj )
+    return mod;
+
+  mod = dynamic_cast<SalomeApp_Module*>
+    (theApp->module(theApp->moduleTitle( theObj->componentDataType() )));
+
+  return mod;
+}
+
+/*! Redefined to reset internal flags valid for study instance */
+void SalomeApp_Module::studyClosed( SUIT_Study* theStudy )
+{
+  LightApp_Module::studyClosed( theStudy );
+  myIsFirstActivate = true;
+  
+  LightApp_Application* app = dynamic_cast<LightApp_Application*>(application());
+  if (!app)
+    return;
+  SUIT_DataBrowser* ob = app->objectBrowser();
+  if (ob)
+    disconnect( ob, SIGNAL( clicked( SUIT_DataObject*, int ) ),
+                this, SLOT( onObjectClicked( SUIT_DataObject*, int ) ) );
+}
+
+/*!Activate module.*/
+bool SalomeApp_Module::activateModule( SUIT_Study* theStudy )
+{
+  bool state = LightApp_Module::activateModule( theStudy );
+  if (!myIsFirstActivate)
+    return state;
+
+  myIsFirstActivate = false;
+
+  // update visibility state of objects
+  LightApp_Application* app = dynamic_cast<LightApp_Application*>(application());
+  if (!app)
+    return state;
+  
+  SUIT_DataBrowser* ob = app->objectBrowser();
+  if (!ob)
+    return state;
+
+  // connect to click on item
+  connect( ob, SIGNAL( clicked( SUIT_DataObject*, int ) ),
+           this, SLOT( onObjectClicked( SUIT_DataObject*, int ) ) );
+
+  SUIT_DataObject* rootObj = ob->root();
+  if( !rootObj )
+    return state;
+  DataObjectList listObj = rootObj->children( true );
+  for ( DataObjectList::iterator itr = listObj.begin(); itr != listObj.end(); ++itr )
+  {
+    SalomeApp_DataObject* obj = dynamic_cast<SalomeApp_DataObject*>(*itr);
+    if ( !obj || dynamic_cast<LightApp_ModuleObject*>(obj) || obj->isReference() )
+      continue;
+    
+    SalomeApp_Module* mod = objectModule( app, obj );
+    if (mod && mod == this)
+      mod->initVisibilityState( obj );
+  }
+  return state;
+}
+
+/*!
+ * \brief Virtual public slot
+ *
+ * This method is called after the object inserted into data view
+ * This is default implementation
+ */
+void SalomeApp_Module::onObjectInserted( SUIT_DataObject* theObject )
+{
+  SalomeApp_DataObject* anObj = dynamic_cast<SalomeApp_DataObject*>( theObject );
+  if (!anObj)
+    return;
+  
+  // no visibility state for module root and reference objects
+  if ( dynamic_cast<LightApp_ModuleObject*>(anObj) || anObj->isReference())
+  {
+    anObj->setVisibilityState( SUIT_DataObject::Unpresentable );
+    return;
+  }
+  
+  // update visibility state in native object module
+  SalomeApp_Module* mod = objectModule( application(), anObj );
+  if ( mod )
+    mod->initVisibilityState( anObj );
+}
+
+/*!
+ * \brief Virtual protected method
+ *
+ * This method is intended to update their visibility state
+ * This is default implementation
+ */
+void SalomeApp_Module::initVisibilityState( SUIT_DataObject* theObject )
+{
+  if ( theObject )
+    theObject->setVisibilityState( SUIT_DataObject::Unpresentable );
+}
+
+/*!
+ * \brief Virtual public slot
+ *
+ * This method is called after the object inserted into data view to update their visibility state
+ * This is default implementation
+ */
+void SalomeApp_Module::onObjectClicked( SUIT_DataObject* theObject, int theColumn )
+{
+  if (!isActiveModule())
+    return;
+  // change visibility of object
+  if (!theObject || theColumn != SUIT_DataObject::VisibilityId )
+    return;
+  // detect action index (from LightApp level)
+  int id = -1;
+  if ( theObject->visibilityState() == SUIT_DataObject::Shown )
+    id = myErase;
+  else if ( theObject->visibilityState() == SUIT_DataObject::Hidden )
+    id = myDisplay;
+  if ( id != -1 )
+    startOperation( id );
+}

@@ -28,9 +28,14 @@
 
 #include "LightApp.h"
 #include <CAM_DataObject.h>
+#include <QMap>
 
 class CAM_DataModel;
 class LightApp_Study;
+class LightApp_DataObject;
+
+//! entry - data object relationship map
+typedef QMap<QString, LightApp_DataObject*> LightApp_EntryObjMap;
 
 class LIGHTAPP_EXPORT LightApp_DataObject : public virtual CAM_DataObject
 {
@@ -57,6 +62,10 @@ public:
   virtual bool                    customSorting( const int = NameId ) const;
   virtual bool                    compare( const QVariant&, const QVariant&, const int = NameId ) const;
   virtual int                     groupId() const;
+
+  static void                     FillEntryObjMap( SUIT_DataObject*      theRoot,
+                                                   LightApp_EntryObjMap& theMap );
+
 
 protected:
   QString                         myCompDataType;

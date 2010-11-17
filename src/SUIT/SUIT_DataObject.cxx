@@ -49,7 +49,8 @@ SUIT_DataObject::SUIT_DataObject( SUIT_DataObject* p )
 : myParent( 0 ),
   myOpen( false ),
   myCheck( false ),
-  myAutoDel( true )
+  myAutoDel( true ),
+  myVisState( Unpresentable )
 {
   setParent( p );
   signal()->emitCreated( this );
@@ -646,6 +647,28 @@ void SUIT_DataObject::setOpen( const bool on )
 }
 
 /*!
+  \brief Returns the visibility state of the object.
+  \sa setVisibilityState()
+*/
+SUIT_DataObject::VisibilityState SUIT_DataObject::visibilityState() const
+{
+  return myVisState;
+}
+
+/*!
+  \brief Set the visibility state of the object.
+  \param on new "opened" state of the object
+  \sa isOpen()
+*/
+void SUIT_DataObject::setVisibilityState( const VisibilityState theState )
+{
+  if (myVisState == theState)
+    return;
+  myVisState = theState;
+  signal()->emitUpdated( this );
+}
+
+/*!
   \brief Check if the specified column supports custom sorting.
 
   This method can be re-implemented in the subclasses.
@@ -861,6 +884,16 @@ void SUIT_DataObject::Signal::emitInserted( SUIT_DataObject* object, SUIT_DataOb
 void SUIT_DataObject::Signal::emitRemoved( SUIT_DataObject* object, SUIT_DataObject* parent )
 {
   emit( removed( object, parent ) );
+}
+
+/*!
+  \brief Emit signal about data object modification
+  \param object data object being updated
+*/
+void SUIT_DataObject::Signal::emitUpdated( SUIT_DataObject* object )
+{
+  if ( object )
+    emit updated( object );
 }
 
 /*!

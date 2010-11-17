@@ -372,7 +372,11 @@ void SUIT_DataBrowser::onClicked( const QModelIndex& index )
 
   if ( m ) {
     SUIT_DataObject* obj = m->object( index );
-    if ( obj ) emit( clicked( obj ) );
+    if ( obj )
+    {
+      emit( clicked( obj ) );
+      emit( clicked( obj, index.column() ) );
+    }
   }
 }
 

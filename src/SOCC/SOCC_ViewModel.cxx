@@ -45,6 +45,7 @@
 #include <SALOME_AISShape.hxx>
 #include <SALOME_AISObject.hxx>
 #include <SALOME_InteractiveObject.hxx>
+#include <SALOME_ListIO.hxx>
 
 // Temporarily commented to avoid awful dependecy on SALOMEDS
 // TODO: better mechanism of storing display/erse status in a study
@@ -196,6 +197,26 @@ bool SOCC_Viewer::isVisible( const Handle(SALOME_InteractiveObject)& obj )
   }
   
   return false;
+}
+
+/*!
+  \Collect objects visible in viewer
+  \param theList - visible objects collection
+*/
+void SOCC_Viewer::GetVisible( SALOME_ListIO& theList )
+{
+  AIS_ListOfInteractive List;
+  getAISContext()->DisplayedObjects(List);
+  
+  AIS_ListIteratorOfListOfInteractive ite(List);
+  for ( ; ite.More(); ite.Next() )
+  {
+    Handle(SALOME_InteractiveObject) anObj =
+        Handle(SALOME_InteractiveObject)::DownCast( ite.Value()->GetOwner() );
+
+    if ( !anObj.IsNull() && anObj->hasEntry() )
+      theList.Append( anObj );
+  }
 }
 
 /*!
