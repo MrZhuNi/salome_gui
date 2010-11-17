@@ -363,6 +363,10 @@ bool Plot2d_ViewFrame::eventFilter( QObject* watched, QEvent* e )
         }
         break;
       }
+    case QEvent::ContextMenu:
+      // Fix from SLN
+      // Do nothing because context menu is called from MouseRelease
+      return true;
     }
   }
   return QWidget::eventFilter( watched, e );
@@ -643,7 +647,7 @@ void Plot2d_ViewFrame::displayCurves( const curveList& curves, bool update )
   }
   fitAll();
   //myPlot->setUpdatesEnabled( true );
-// update legend
+  // update legend
   if ( update )
     myPlot->replot();
 }
@@ -786,6 +790,7 @@ void Plot2d_ViewFrame::fitAll()
     myPlot->setAxisScale( QwtPlot::yRight, y2min, y2max );
   }
   myPlot->replot();
+  if ( myPlot->zoomer() ) myPlot->zoomer()->setZoomBase();
 }
 
 /*!
@@ -813,6 +818,7 @@ void Plot2d_ViewFrame::fitArea( const QRect& area )
             myPlot->invTransform( QwtPlot::xBottom, rect.left() ), 
             myPlot->invTransform( QwtPlot::xBottom, rect.right() ) );
   myPlot->replot();
+  if ( myPlot->zoomer() ) myPlot->zoomer()->setZoomBase();
 }
 
 /*!
@@ -831,6 +837,7 @@ void Plot2d_ViewFrame::fitData(const int mode,
   if ( mode == 0 || mode == 1 ) 
     myPlot->setAxisScale( QwtPlot::xBottom, xMin, xMax ); 
   myPlot->replot();
+  if ( myPlot->zoomer() ) myPlot->zoomer()->setZoomBase();
 }
 
 /*!
@@ -1155,19 +1162,21 @@ void Plot2d_ViewFrame::setLegendPos( int pos )
 {
   myLegendPos = pos;
   QwtLegend* legend = myPlot->legend();
-  switch( pos ) {
-  case 0:
-    myPlot->insertLegend( legend, QwtPlot::LeftLegend );
-    break;
-  case 1:
-    myPlot->insertLegend( legend, QwtPlot::RightLegend );
-    break;
-  case 2:
-    myPlot->insertLegend( legend, QwtPlot::TopLegend );
-    break;
-  case 3:
-    myPlot->insertLegend( legend, QwtPlot::BottomLegend );
-    break;
+  if ( legend ) {
+    switch( pos ) {
+    case 0:
+      myPlot->insertLegend( legend, QwtPlot::LeftLegend );
+      break;
+    case 1:
+      myPlot->insertLegend( legend, QwtPlot::RightLegend );
+      break;
+    case 2:
+      myPlot->insertLegend( legend, QwtPlot::TopLegend );
+      break;
+    case 3:
+      myPlot->insertLegend( legend, QwtPlot::BottomLegend );
+      break;
+    }
   }
 }
 
@@ -1700,6 +1709,11 @@ Plot2d_Plot2d::Plot2d_Plot2d( QWidget* parent )
   : QwtPlot( parent ),
     myIsPolished( false )
 {
+  // Create alternative scales
+  setAxisScaleDraw( QwtPlot::yLeft,   new Plot2d_ScaleDraw() );
+  setAxisScaleDraw( QwtPlot::xBottom, new Plot2d_ScaleDraw() );
+  setAxisScaleDraw( QwtPlot::yRight,  new Plot2d_ScaleDraw() );
+
   myPlotZoomer = new Plot2d_QwtPlotZoomer( QwtPlot::xBottom, QwtPlot::yLeft, canvas() );
   myPlotZoomer->setSelectionFlags( QwtPicker::DragSelection | QwtPicker::CornerToCorner );
   myPlotZoomer->setTrackerMode( QwtPicker::AlwaysOff );
@@ -1707,11 +1721,6 @@ Plot2d_Plot2d::Plot2d_Plot2d( QWidget* parent )
   myPlotZoomer->setRubberBandPen( QColor( Qt::green ) );
 
   defaultPicker();
-
-  // Create alternative scales
-  setAxisScaleDraw( QwtPlot::yLeft,   new Plot2d_ScaleDraw() );
-  setAxisScaleDraw( QwtPlot::xBottom, new Plot2d_ScaleDraw() );
-  setAxisScaleDraw( QwtPlot::yRight,  new Plot2d_ScaleDraw() );
 
   // auto scaling by default
   setAxisAutoScale( QwtPlot::yLeft );
@@ -2457,14 +2466,16 @@ void Plot2d_QwtPlotCurve::updateLegend( QwtLegend* legend ) const
 {
   QwtPlotCurve::updateLegend( legend );
 
-  QWidget* widget = legend->find( this );
-  if( Plot2d_QwtLegendItem* anItem = dynamic_cast<Plot2d_QwtLegendItem*>( widget ) ) {
-    int aMode = Plot2d_QwtLegendItem::IM_None;
-    if( myYAxisIdentifierEnabled )
-      aMode = myYAxis == QwtPlot::yRight ?
-        Plot2d_QwtLegendItem::IM_Right :
-        Plot2d_QwtLegendItem::IM_Left;
-    anItem->setYAxisIdentifierMode( aMode );
+  if ( legend ) {
+    QWidget* widget = legend->find( this );
+    if( Plot2d_QwtLegendItem* anItem = dynamic_cast<Plot2d_QwtLegendItem*>( widget ) ) {
+      int aMode = Plot2d_QwtLegendItem::IM_None;
+      if( myYAxisIdentifierEnabled )
+	aMode = myYAxis == QwtPlot::yRight ?
+	  Plot2d_QwtLegendItem::IM_Right :
+	  Plot2d_QwtLegendItem::IM_Left;
+      anItem->setYAxisIdentifierMode( aMode );
+    }
   }
 }
 
