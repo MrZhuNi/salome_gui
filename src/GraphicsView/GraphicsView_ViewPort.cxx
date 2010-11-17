@@ -106,6 +106,10 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   myForegroundFrameColor = Qt::black;
   myForegroundFrameLineWidth = 1.0;
 
+  // default index method (BspTreeIndex) leads to
+  // crashes in QGraphicsView::paintEvent() method
+  myScene->setItemIndexMethod( QGraphicsScene::NoIndex );
+
   // render hints (default - TextAntialiasing only)
   setRenderHints( QPainter::Antialiasing |
                   QPainter::TextAntialiasing |
