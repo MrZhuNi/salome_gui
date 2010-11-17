@@ -222,10 +222,14 @@ QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
   {
     if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
     {
-      if( aRect.isNull() )
-        aRect = anObject->getRect();
-      else
-        aRect |= anObject->getRect();
+      QRectF anObjectRect = anObject->getRect();
+      if( !anObjectRect.isNull() )
+      {
+        if( aRect.isNull() )
+          aRect = anObject->getRect();
+        else
+          aRect |= anObject->getRect();
+      }
     }
   }
 
