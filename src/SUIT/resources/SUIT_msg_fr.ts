@@ -112,6 +112,10 @@ Faut-il le réécrire?</translation>
         <source>NAME_COLUMN</source>
         <translation>Nom</translation>
     </message>
+    <message>
+        <source>VISIBILITY_COLUMN</source>
+        <translation>Visibilité</translation>
+    </message>
 </context>
 <context>
     <name>SUIT_Study</name>

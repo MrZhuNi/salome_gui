@@ -113,6 +113,10 @@ Do you want to overwrite it?</translation>
         <source>NAME_COLUMN</source>
         <translation>Name</translation>
     </message>
+    <message>
+        <source>VISIBILITY_COLUMN</source>
+        <translation>Visibility</translation>
+    </message>
 </context>
 <context>
     <name>SUIT_Study</name>
