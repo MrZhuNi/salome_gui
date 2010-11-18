@@ -49,7 +49,8 @@ STD_Application::STD_Application()
 : SUIT_Application(),
   myActiveViewMgr( 0 ),
   myExitConfirm( true ),
-  myEditEnabled( true )
+  myEditEnabled( true ),
+  myCustomPersistence( false )
 {
   setDesktop( new STD_MDIDesktop() );
 }
@@ -303,6 +304,12 @@ bool STD_Application::onNewDoc( const QString& name )
 /*!Put file name from file dialog to onOpenDoc(const QString&) function*/
 void STD_Application::onOpenDoc()
 {
+  if ( myCustomPersistence )
+  {
+    emit openDoc();
+    return;
+  }
+
   // It is preferrable to use OS-specific file dialog box here !!!
   QString aName = getFileName( true, QString(), getFileFilter(), QString(), 0 );
   if ( aName.isNull() )
@@ -488,6 +495,12 @@ void STD_Application::onSaveDoc()
   if ( !activeStudy() )
     return;
 
+  if ( myCustomPersistence )
+  {
+    emit saveDoc();
+    return;
+  }
+
   bool isOk = false;
   if ( activeStudy()->isSaved() )
   {
@@ -522,6 +535,12 @@ bool STD_Application::onSaveAsDoc()
   SUIT_Study* study = activeStudy();
   if ( !study )
     return false;
+
+  if ( myCustomPersistence )
+  {
+    emit saveAsDoc();
+    return true;
+  }
 
   bool isOk = false;
   while ( !isOk )
@@ -926,4 +945,24 @@ void STD_Application::studySaved( SUIT_Study* )
 {
   updateDesktopTitle();
   updateCommandsStatus();
+}
+
+/*!
+  Replace standard SALOME persistence mechanism with custom one. If custom 
+  persistence is set SALOME does not perform standard actions on open/save(as) 
+  buttons pressing; it emits corresponding signal instead.
+  \sa isCustomPersistence
+*/
+void STD_Application::setCustomPersistence( const bool theVal )
+{
+  myCustomPersistence = theVal;
+}
+
+/*!
+  Check f	lag of custom persistence
+  \sa setCustomPersistence
+*/
+bool STD_Application::isCustomPersistence() const
+{
+  return myCustomPersistence;
 }

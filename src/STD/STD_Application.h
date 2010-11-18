@@ -99,6 +99,9 @@ public:
 
   virtual void          updateDesktopTitle();
 
+  void                  setCustomPersistence( const bool );
+  bool                  isCustomPersistence() const;
+
 signals:
   /*!emit that view manager added*/
   void                  viewManagerAdded( SUIT_ViewManager* );
@@ -106,6 +109,11 @@ signals:
   void                  viewManagerRemoved( SUIT_ViewManager* );
   /*!emit that view manager activated*/
   void                  viewManagerActivated( SUIT_ViewManager* );
+
+  /*!*/
+  void                  openDoc();
+  void                  saveDoc();
+  void                  saveAsDoc();
 
 public slots:
   virtual void          onNewDoc();
@@ -168,6 +176,7 @@ private:
 private:
   bool                  myExitConfirm;
   bool                  myEditEnabled;
+  bool                  myCustomPersistence;
 };
 
 #if defined WIN32
