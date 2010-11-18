@@ -43,7 +43,8 @@
 GraphicsView_Viewer::GraphicsView_Viewer( const QString& title )
 : SUIT_ViewModel(),
   mySelector( 0 ),
-  myTransformer( 0 )
+  myTransformer( 0 ),
+  myIsInitialized( false )
 {
 }
 
@@ -166,6 +167,15 @@ void GraphicsView_Viewer::activateTransform( int theType )
     onTransformationStarted();
     myTransformer->exec();
   }
+}
+
+//================================================================
+// Function : setIsInitialized
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::setIsInitialized( bool theFlag )
+{
+  myIsInitialized = theFlag;
 }
 
 //================================================================

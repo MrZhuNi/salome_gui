@@ -72,6 +72,9 @@ public:
 
   void                          activateTransform( int );
 
+  bool                          isInitialized() const { return myIsInitialized; }
+  void                          setIsInitialized( bool );
+
 signals:
   void                          selectionChanged( GV_SelectionChangeStatus );
 
@@ -104,6 +107,8 @@ private:
 protected:
   GraphicsView_Selector*        mySelector;
   GraphicsView_ViewTransformer* myTransformer;
+
+  bool                          myIsInitialized;
 };
 
 #endif
