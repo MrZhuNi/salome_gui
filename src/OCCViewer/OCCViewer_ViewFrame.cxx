@@ -216,3 +216,11 @@ void OCCViewer_ViewFrame::onContextMenuRequested(QContextMenuEvent*)
   myPopupRequestedView = dynamic_cast<OCCViewer_ViewWindow*>(sender());
 }
 
+void OCCViewer_ViewFrame::onDumpView()
+{
+  if (myPopupRequestedView) {
+    myPopupRequestedView->onDumpView(); 
+  } else {
+    getView(MAIN_VIEW)->onDumpView(); 
+  }
+}

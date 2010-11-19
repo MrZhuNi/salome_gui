@@ -1547,14 +1547,18 @@ QImage OCCViewer_ViewWindow::dumpView()
   Handle(V3d_View) view = myViewPort->getView();
   if ( view.IsNull() )
     return QImage();
+  
   int aWidth = myViewPort->width();
   int aHeight = myViewPort->height();
   QApplication::syncX();
-  view->Update();
+  view->Redraw(); // In order to reactivate GL context
+  //view->Update();
 
   OpenGLUtils_FrameBuffer aFrameBuffer;
   if( aFrameBuffer.init( aWidth, aHeight ) )
   {
+    QImage anImage( aWidth, aHeight, QImage::Format_RGB32 );
+   
     glPushAttrib( GL_VIEWPORT_BIT );
     glViewport( 0, 0, aWidth, aHeight );
     aFrameBuffer.bind();
@@ -1565,8 +1569,6 @@ QImage OCCViewer_ViewWindow::dumpView()
     aFrameBuffer.unbind();
     glPopAttrib();
 
-    QImage anImage( aWidth, aHeight, QImage::Format_RGB32 );
-
     aFrameBuffer.bind();
     glReadPixels( 0, 0, aWidth, aHeight, GL_RGBA, GL_UNSIGNED_BYTE, anImage.bits() );
     aFrameBuffer.unbind();
@@ -1575,9 +1577,8 @@ QImage OCCViewer_ViewWindow::dumpView()
     anImage = anImage.mirrored();
     return anImage;
   }
-
   // if frame buffers are unsupported, use old functionality
-  view->Redraw();
+  //view->Redraw();
 
   unsigned char* data = new unsigned char[ aWidth*aHeight*4 ];
 

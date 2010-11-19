@@ -104,7 +104,7 @@ public slots:
    
   void onMaximizedView( OCCViewer_ViewWindow*, bool );
 
-  virtual void onDumpView() { getView(MAIN_VIEW)->onDumpView(); }
+  virtual void onDumpView();
 
 private slots:
   void onContextMenuRequested(QContextMenuEvent*);
