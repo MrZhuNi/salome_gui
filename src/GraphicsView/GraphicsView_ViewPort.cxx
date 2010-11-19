@@ -31,9 +31,12 @@
 
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
+#include <QLabel>
+#include <QMoveEvent>
 #include <QRectF>
 #include <QRubberBand>
 #include <QScrollBar>
+#include <QVBoxLayout>
 
 #include <math.h>
 
@@ -43,6 +46,40 @@ QCursor* GraphicsView_ViewPort::handCursor = 0;
 QCursor* GraphicsView_ViewPort::panCursor = 0;
 QCursor* GraphicsView_ViewPort::panglCursor = 0;
 QCursor* GraphicsView_ViewPort::zoomCursor = 0;
+
+//=======================================================================
+// Name    : GraphicsView_ViewPort::NameLabel
+// Purpose : Wrapper for label, which can ignore move events sent from
+//           QGraphicsView::scrollContentsBy() method, which,
+//           in its turn, called from GraphicsView_ViewPort::pan()
+//=======================================================================
+class GraphicsView_ViewPort::NameLabel : public QLabel
+{
+public:
+  NameLabel( QWidget* theParent ) : QLabel( theParent ) {}
+  ~NameLabel() {}
+
+  void setAcceptMoveEvents( bool theFlag )
+  {
+    myAcceptMoveEvents = theFlag;
+  }
+
+protected:
+  virtual void moveEvent( QMoveEvent* theEvent )
+  {
+    if( myAcceptMoveEvents )
+      QLabel::moveEvent( theEvent );
+    else // return the label to the initial position
+    {
+      myAcceptMoveEvents = true;
+      move( theEvent->oldPos() );
+      myAcceptMoveEvents = false;
+    }
+  }
+
+private:
+  bool myAcceptMoveEvents;
+};
 
 //================================================================
 // Function : createCursors
@@ -94,6 +131,14 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   // scene
   myScene = new GraphicsView_Scene( this );
   setScene( myScene );
+
+  // view name
+  myNameLabel = new NameLabel( viewport() );
+  myNameLabel->setVisible( false );
+
+  QBoxLayout* aLayout = new QVBoxLayout( viewport() );
+  aLayout->addStretch();
+  aLayout->addWidget( myNameLabel );
 
   // background
   setBackgroundBrush( QBrush( Qt::white ) );
@@ -259,6 +304,24 @@ QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
 }
 
 //================================================================
+// Function : setViewName
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setViewName( const QString& theName )
+{
+  myNameLabel->setText( theName );
+}
+
+//================================================================
+// Function : setViewNameEnabled
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setViewNameEnabled( bool theState )
+{
+  myNameLabel->setVisible( theState );
+}
+
+//================================================================
 // Function : backgroundColor
 // Purpose  : 
 //================================================================
@@ -384,10 +447,14 @@ void GraphicsView_ViewPort::pan( double theDX, double theDY )
 {
   myIsTransforming = true;
 
+  myNameLabel->setAcceptMoveEvents( false );
+
   if( QScrollBar* aHBar = horizontalScrollBar() )
     aHBar->setValue( aHBar->value() - theDX );
   if( QScrollBar* aVBar = verticalScrollBar() )
     aVBar->setValue( aVBar->value() + theDY );
+
+  myNameLabel->setAcceptMoveEvents( true );
 
   myIsTransforming = false;
 }

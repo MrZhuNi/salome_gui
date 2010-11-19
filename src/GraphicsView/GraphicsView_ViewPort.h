@@ -43,6 +43,8 @@ class GRAPHICSVIEW_API GraphicsView_ViewPort : public QGraphicsView
   Q_OBJECT
 
 public:
+  class NameLabel;
+
   enum BlockStatus
   {
     BS_NoBlock   = 0x0000,
@@ -64,6 +66,10 @@ public:
   QImage                           dumpView( bool theWholeScene = false );
 
 public:
+  // view name
+  void                             setViewName( const QString& theName );
+  void                             setViewNameEnabled( bool theState );
+
   // background / foreground
   QColor                           backgroundColor() const;
   void                             setBackgroundColor( const QColor& theColor );
@@ -171,7 +177,11 @@ private:
   static QCursor*                  zoomCursor;
 
 private:
+  // scene
   GraphicsView_Scene*              myScene;
+
+  // view name
+  NameLabel*                       myNameLabel;
 
   // foreground
   bool                             myIsForegroundEnabled;
