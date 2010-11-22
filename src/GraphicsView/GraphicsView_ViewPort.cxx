@@ -115,6 +115,7 @@ void GraphicsView_ViewPort::destroyCursors()
 //=======================================================================
 GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
 : QGraphicsView( theParent ),
+  myNameLabel( 0 ),
   myForegroundItem( 0 ),
   myIsTransforming( false ),
   myHighlightedObject( 0 ),
@@ -131,14 +132,6 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   // scene
   myScene = new GraphicsView_Scene( this );
   setScene( myScene );
-
-  // view name
-  myNameLabel = new NameLabel( viewport() );
-  myNameLabel->setVisible( false );
-
-  QBoxLayout* aLayout = new QVBoxLayout( viewport() );
-  aLayout->addStretch();
-  aLayout->addWidget( myNameLabel );
 
   // background
   setBackgroundBrush( QBrush( Qt::white ) );
@@ -304,21 +297,35 @@ QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
 }
 
 //================================================================
+// Function : setViewNameEnabled
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setViewNameEnabled( bool theState,
+                                                bool theIsForced )
+{
+  if( theIsForced && !myNameLabel )
+  {
+    myNameLabel = new NameLabel( viewport() );
+
+    QBoxLayout* aLayout = new QVBoxLayout( viewport() );
+    aLayout->setMargin( 10 );
+    aLayout->setSpacing( 0 );
+    aLayout->addStretch();
+    aLayout->addWidget( myNameLabel );
+  }
+
+  if( myNameLabel )
+    myNameLabel->setVisible( theState );
+}
+
+//================================================================
 // Function : setViewName
 // Purpose  : 
 //================================================================
 void GraphicsView_ViewPort::setViewName( const QString& theName )
 {
-  myNameLabel->setText( theName );
-}
-
-//================================================================
-// Function : setViewNameEnabled
-// Purpose  : 
-//================================================================
-void GraphicsView_ViewPort::setViewNameEnabled( bool theState )
-{
-  myNameLabel->setVisible( theState );
+  if( myNameLabel )
+    myNameLabel->setText( theName );
 }
 
 //================================================================
@@ -447,14 +454,16 @@ void GraphicsView_ViewPort::pan( double theDX, double theDY )
 {
   myIsTransforming = true;
 
-  myNameLabel->setAcceptMoveEvents( false );
+  if( myNameLabel )
+    myNameLabel->setAcceptMoveEvents( false );
 
   if( QScrollBar* aHBar = horizontalScrollBar() )
     aHBar->setValue( aHBar->value() - theDX );
   if( QScrollBar* aVBar = verticalScrollBar() )
     aVBar->setValue( aVBar->value() + theDY );
 
-  myNameLabel->setAcceptMoveEvents( true );
+  if( myNameLabel )
+    myNameLabel->setAcceptMoveEvents( true );
 
   myIsTransforming = false;
 }

@@ -67,8 +67,8 @@ public:
 
 public:
   // view name
+  void                             setViewNameEnabled( bool theState, bool theIsForced = false );
   void                             setViewName( const QString& theName );
-  void                             setViewNameEnabled( bool theState );
 
   // background / foreground
   QColor                           backgroundColor() const;
