@@ -1105,6 +1105,8 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
     {
       if( !isPulling() && myIsDragging )
       {
+        emit vpObjectBeforeMoving();
+
         bool anIsMoved = false;
         for( initSelected(); moreSelected(); nextSelected() )
           if( GraphicsView_Object* aMovingObject = selectedObject() )
@@ -1116,8 +1118,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
         myIsDragging = false;
         myDragPosition = QPointF();
 
-        if( anIsMoved )
-          emit vpObjectMoved();
+        emit vpObjectAfterMoving( anIsMoved );
       }
       break;
     }

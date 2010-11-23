@@ -160,7 +160,8 @@ signals:
   void                             vpWheelEvent( QGraphicsSceneWheelEvent* );
   void                             vpContextMenuEvent( QGraphicsSceneContextMenuEvent* );
 
-  void                             vpObjectMoved();
+  void                             vpObjectBeforeMoving();
+  void                             vpObjectAfterMoving( bool );
 
 private:
   void                             initialize();
