@@ -254,7 +254,8 @@ void SUIT_Application::setDesktop( SUIT_Desktop* desk )
   if ( myDesktop == desk )
     return;
 
-  delete myDesktop;
+  //delete myDesktop;
+  myDesktop->deleteLater();
   myDesktop = desk;
   if ( myDesktop ) {
     connect( myDesktop, SIGNAL( activated() ), this, SLOT( onDesktopActivated() ) );
