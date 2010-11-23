@@ -674,9 +674,12 @@ QString LightApp_Application::defaultModule() const
 {
   QStringList aModuleNames;
   modules( aModuleNames, false ); // obtain a complete list of module names for the current configuration
-  //! If there's the one and only module --> activate it automatically
-  //! TODO: Possible improvement - default module can be taken from preferences
-  return aModuleNames.count() > 1 ? QString( "" ) : ( aModuleNames.count() ? aModuleNames.first() : "" );
+  
+  SUIT_ResourceMgr* resMgr = SUIT_Session::session()->resourceMgr();
+  int sel = 0;
+  sel = resMgr->integerValue( "Activate", "def_module" );
+
+  return aModuleNames.count() > 1 && sel > 0 ? aModuleNames.at( sel - 1 ) : ( aModuleNames.count() ? aModuleNames.first() : "" );
 }
 
 /*!On new window slot.*/
@@ -734,8 +737,6 @@ void LightApp_Application::onNewDoc()
   saveDockWindowsState();
 
   CAM_Application::onNewDoc();
-
-  activateDefaultModule();
 }
 
 /*!
@@ -753,8 +754,6 @@ void LightApp_Application::onOpenDoc()
     updateWindows();
     updateViewManagers();
   }
-
-  activateDefaultModule();
 }
 
 /*!
@@ -3216,23 +3215,4 @@ bool LightApp_Application::openAction( const int choice, const QString& aName )
   }
 
   return res;
-}
-
-void LightApp_Application::activateDefaultModule()
-{
-  QString defModName("");
-  SUIT_ResourceMgr* resMgr = SUIT_Session::session()->resourceMgr();
-  int sel = resMgr->integerValue( "Activate", "def_module" );
-  if ( sel > 0 ) {
-    LightApp_ModuleAction* moduleAction =
-      qobject_cast<LightApp_ModuleAction*>( action( ModulesListId ) );
-    if ( moduleAction && moduleAction->activeModule() == "" )
-    {
-      switch( sel ) {
-      case 1: defModName = "CATHARE GUI"; break;
-      case 2: defModName = "DIAGRAMS"; break;
-      }
-      activateModule( defModName );
-    }
-  }
 }
