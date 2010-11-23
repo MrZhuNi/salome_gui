@@ -849,7 +849,9 @@ bool GraphicsView_ViewPort::nextSelected()
 //================================================================
 GraphicsView_Object* GraphicsView_ViewPort::selectedObject()
 {
-  return mySelectedObjects[ mySelectionIterator ];
+  if( mySelectionIterator >= 0 && mySelectionIterator < nbSelected() )
+    return mySelectedObjects[ mySelectionIterator ];
+  return 0;
 }
 
 //================================================================
