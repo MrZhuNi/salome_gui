@@ -679,7 +679,7 @@ QString LightApp_Application::defaultModule() const
   int sel = 0;
   sel = resMgr->integerValue( "Activate", "def_module" );
 
-  return aModuleNames.count() > 1 && sel > 0 ? aModuleNames.at( sel - 1 ) : ( aModuleNames.count() ? aModuleNames.first() : "" );
+  return aModuleNames.count() > 1 && sel > 0 ? aModuleNames.at( sel - 1 ) : ( aModuleNames.count() == 1 ? aModuleNames.first() : "" );
 }
 
 /*!On new window slot.*/
