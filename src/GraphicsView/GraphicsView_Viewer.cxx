@@ -44,7 +44,8 @@ GraphicsView_Viewer::GraphicsView_Viewer( const QString& title )
 : SUIT_ViewModel(),
   mySelector( 0 ),
   myTransformer( 0 ),
-  myIsInitialized( false )
+  myIsInitialized( false ),
+  myIsImmediateSelectionEnabled( false )
 {
 }
 
@@ -179,6 +180,15 @@ void GraphicsView_Viewer::setIsInitialized( bool theFlag )
 }
 
 //================================================================
+// Function : setIsImmediateSelectionEnabled
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::setIsImmediateSelectionEnabled( bool theFlag )
+{
+  myIsImmediateSelectionEnabled = theFlag;
+}
+
+//================================================================
 // Function : createTransformer
 // Purpose  : 
 //================================================================
@@ -269,6 +279,11 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
       activateTransform( Zoom );
     else if ( bs == GraphicsView_ViewTransformer::panButton() )
       activateTransform( Pan );
+  }
+  else if ( e->button() == Qt::RightButton && isImmediateSelectionEnabled() )
+  {
+    bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
+    getSelector()->select( QRectF(), append );
   }
   else // checking for other operations before selection in release event
     startOperations( e );
