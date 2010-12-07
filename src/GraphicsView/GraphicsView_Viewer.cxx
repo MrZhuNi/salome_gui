@@ -280,11 +280,6 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
     else if ( bs == GraphicsView_ViewTransformer::panButton() )
       activateTransform( Pan );
   }
-  else if ( e->button() == Qt::RightButton && isImmediateSelectionEnabled() )
-  {
-    bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
-    getSelector()->select( QRectF(), append );
-  }
   else // checking for other operations before selection in release event
     startOperations( e );
 }
@@ -383,6 +378,17 @@ void GraphicsView_Viewer::onSelectionCancel()
 void GraphicsView_Viewer::startOperations( QGraphicsSceneMouseEvent* e )
 {
   GraphicsView_ViewPort* aViewPort = getActiveViewPort();
+
+  // If the 'immediate selection' mode is enabled,
+  // try to perform selection before invoking context menu
+  if( e->button() == Qt::RightButton &&
+      isImmediateSelectionEnabled() &&
+      aViewPort->nbSelected() < 1 )
+  {
+    bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
+    getSelector()->select( QRectF(), append );
+    return;
+  }
 
   // Try to start pulling if rectangular selection is performed
   if( e->button() == Qt::LeftButton &&
