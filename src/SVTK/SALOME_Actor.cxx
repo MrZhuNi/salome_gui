@@ -459,7 +459,7 @@ SALOME_Actor
 ::highlight(bool theIsHighlight)
 {
   vtkFloatingPointType aBounds[6];
-  vtkDataSet * aDataSet =  myPassFilter.back()->GetOutput();
+  vtkDataSet * aDataSet = GetHighlightedDataSet();
   aDataSet->GetBounds(aBounds);
   myOutline->SetBounds(aBounds);
   myOutlineActor->SetVisibility( GetVisibility() && theIsHighlight );
