@@ -165,15 +165,15 @@ signals:
 protected:
 
 protected slots:
-  void onMousePress(SUIT_ViewWindow*, QMouseEvent*);
-  void onMouseMove(SUIT_ViewWindow*, QMouseEvent*);
-  void onMouseRelease(SUIT_ViewWindow*, QMouseEvent*);
-  void onKeyPress(SUIT_ViewWindow*, QKeyEvent*);
+  virtual void onMousePress(SUIT_ViewWindow*, QMouseEvent*);
+  virtual void onMouseMove(SUIT_ViewWindow*, QMouseEvent*);
+  virtual void onMouseRelease(SUIT_ViewWindow*, QMouseEvent*);
+  virtual void onKeyPress(SUIT_ViewWindow*, QKeyEvent*);
 
   void onDumpView();
   void onChangeBgColor();
 
-private:
+protected:
   Handle(V3d_Viewer)              myV3dViewer;
   Handle(V3d_Viewer)              myV3dCollector;
 
