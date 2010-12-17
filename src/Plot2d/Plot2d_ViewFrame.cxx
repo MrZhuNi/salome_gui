@@ -2263,9 +2263,14 @@ void Plot2d_ViewFrame::updateTitles()
   if ( !yTitle.isEmpty() && !yUnits.isEmpty() )
     yTitle += " ";
 
-  setTitle( myXTitleEnabled, xTitle + xUnits, XTitle, true );
-  setTitle( myYTitleEnabled, yTitle + yUnits, YTitle, true );
-  setTitle( true, aTables.join("; "), MainTitle, true );
+  if ( getAutoUpdateTitle( XTitle ) )
+    setTitle( myXTitleEnabled, xTitle + xUnits, XTitle, true );
+
+  if ( getAutoUpdateTitle( YTitle ) )
+    setTitle( myYTitleEnabled, yTitle + yUnits, YTitle, true );
+
+  if ( getAutoUpdateTitle( MainTitle ) )
+    setTitle( true, aTables.join("; "), MainTitle, true );
 }
 
 /*!
