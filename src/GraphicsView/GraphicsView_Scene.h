@@ -44,6 +44,7 @@ protected:
   virtual void               mouseMoveEvent( QGraphicsSceneMouseEvent* );
   virtual void               mouseReleaseEvent( QGraphicsSceneMouseEvent* );
   virtual void 	             mouseDoubleClickEvent( QGraphicsSceneMouseEvent* );
+  virtual void               wheelEvent( QGraphicsSceneWheelEvent* );
   virtual void               contextMenuEvent( QGraphicsSceneContextMenuEvent* );
 
   virtual void               dragEnterEvent( QGraphicsSceneDragDropEvent* );

@@ -288,7 +288,7 @@ void GraphicsView_ViewFrame::wheelEvent( QGraphicsSceneWheelEvent* e )
 {
   switch ( e->type() )
   {
-    case QEvent::Wheel:
+    case QEvent::GraphicsSceneWheel:
       emit wheeling( e );
       break;
     default:

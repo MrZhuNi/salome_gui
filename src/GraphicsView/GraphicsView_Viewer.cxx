@@ -22,6 +22,7 @@
 
 #include "GraphicsView_Viewer.h"
 
+#include "GraphicsView_Object.h"
 #include "GraphicsView_Selector.h"
 #include "GraphicsView_Scene.h"
 #include "GraphicsView_ViewFrame.h"
@@ -258,7 +259,7 @@ void GraphicsView_Viewer::onWheelEvent( QGraphicsSceneWheelEvent* e )
 {
   switch( e->type() )
   {
-    case QEvent::Wheel:
+    case QEvent::GraphicsSceneWheel:
       handleWheel( e );
       break;
     default: break;
@@ -308,13 +309,16 @@ void GraphicsView_Viewer::handleMouseMove( QGraphicsSceneMouseEvent* e )
 void GraphicsView_Viewer::handleMouseRelease( QGraphicsSceneMouseEvent* e )
 {
   // selection
-  if( e->button() == Qt::LeftButton &&
-      !( getActiveViewPort()->currentBlock() & GraphicsView_ViewPort::BS_Selection ) )
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
   {
-    if ( getSelector() )
+    if( e->button() == Qt::LeftButton &&
+        !( aViewPort->currentBlock() & GraphicsView_ViewPort::BS_Selection ) )
     {
-      bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
-      getSelector()->select( QRectF(), append );
+      if ( getSelector() )
+      {
+        bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
+        getSelector()->select( QRectF(), append );
+      }
     }
   }
 
@@ -378,6 +382,8 @@ void GraphicsView_Viewer::onSelectionCancel()
 void GraphicsView_Viewer::startOperations( QGraphicsSceneMouseEvent* e )
 {
   GraphicsView_ViewPort* aViewPort = getActiveViewPort();
+  if( !aViewPort )
+    return;
 
   // If the 'immediate selection' mode is enabled,
   // try to perform selection before invoking context menu
@@ -417,6 +423,8 @@ void GraphicsView_Viewer::startOperations( QGraphicsSceneMouseEvent* e )
 bool GraphicsView_Viewer::updateOperations( QGraphicsSceneMouseEvent* e )
 {
   GraphicsView_ViewPort* aViewPort = getActiveViewPort();
+  if( !aViewPort )
+    return false;
 
   if( aViewPort->isPulling() )
   {
@@ -449,6 +457,8 @@ bool GraphicsView_Viewer::updateOperations( QGraphicsSceneMouseEvent* e )
 bool GraphicsView_Viewer::finishOperations( QGraphicsSceneMouseEvent* e )
 {
   GraphicsView_ViewPort* aViewPort = getActiveViewPort();
+  if( !aViewPort )
+    return false;
 
   if( aViewPort->isPulling() )
   {
@@ -473,4 +483,26 @@ bool GraphicsView_Viewer::finishOperations( QGraphicsSceneMouseEvent* e )
   }
 
   return false;
+}
+
+//================================================================
+// Function : startOperations
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::startOperations( QGraphicsSceneWheelEvent* e )
+{
+  GraphicsView_ViewPort* aViewPort = getActiveViewPort();
+  if( !aViewPort )
+    return;
+
+  bool anIsScaleUp = e->delta() > 0;
+  bool anIsCtrl = e->modifiers() & Qt::ControlModifier;
+
+  bool anIsScaleChanged = false;
+  for( aViewPort->initSelected(); aViewPort->moreSelected(); aViewPort->nextSelected() )
+    if( GraphicsView_Object* anObject = aViewPort->selectedObject() )
+      anIsScaleChanged = anObject->updateScale( anIsScaleUp, anIsCtrl ) || anIsScaleChanged;
+
+  if( anIsScaleChanged )
+    emit wheelScaleChanged();
 }

@@ -80,6 +80,21 @@ void GraphicsView_Scene::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* e )
 }
 
 //================================================================
+// Function : wheelEvent
+// Purpose  : 
+//================================================================
+void GraphicsView_Scene::wheelEvent( QGraphicsSceneWheelEvent* e )
+{
+  emit gsWheelEvent( e );
+
+  // accept the event to prevent calling QAbstractScrollArea::wheelEvent()
+  // from QGraphicsView::wheelEvent(), which will change values of scroll-bars
+  e->accept();
+
+  //QGraphicsScene::wheelEvent( e ); // don't uncomment
+}
+
+//================================================================
 // Function : contextMenuEvent
 // Purpose  : 
 //================================================================

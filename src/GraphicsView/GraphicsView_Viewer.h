@@ -80,6 +80,7 @@ public:
 
 signals:
   void                          selectionChanged( GV_SelectionChangeStatus );
+  void                          wheelScaleChanged();
 
 protected:
   virtual GraphicsView_ViewTransformer* createTransformer( int );
@@ -90,7 +91,7 @@ protected:
   virtual void                  startOperations( QGraphicsSceneMouseEvent* );
   virtual bool                  updateOperations( QGraphicsSceneMouseEvent* );
   virtual bool                  finishOperations( QGraphicsSceneMouseEvent* );
-  virtual void                  startOperations( QGraphicsSceneWheelEvent* ) {}
+  virtual void                  startOperations( QGraphicsSceneWheelEvent* );
 
 protected slots:
   virtual void                  onMouseEvent( QGraphicsSceneMouseEvent* );
