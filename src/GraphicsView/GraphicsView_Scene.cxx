@@ -22,6 +22,8 @@
 
 #include "GraphicsView_Scene.h"
 
+#include <QGraphicsSceneWheelEvent>
+
 //=======================================================================
 // Name    : GraphicsView_Scene
 // Purpose : Constructor
