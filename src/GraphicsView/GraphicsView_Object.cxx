@@ -130,5 +130,5 @@ void GraphicsView_Object::move( double theDX, double theDY, bool theIsAtOnce )
 //================================================================
 bool GraphicsView_Object::finishMove()
 {
-  return true;
+  return false;
 }
