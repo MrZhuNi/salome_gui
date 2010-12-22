@@ -34,7 +34,7 @@ CAS_KERNEL = -L$${CASROOT}/Linux/lib -lTKernel
 
 INCLUDEPATH += $${PYTHON_INCLUDES} $${QT_INCLUDES} $${QWT_INCLUDES} $${CAS_CPPFLAGS} $${VTK_INCLUDES} $${BOOST_CPPFLAGS} $${KERNEL_CXXFLAGS} ../LightApp ../CAM ../Qtx ../SUIT ../OBJECT ../SVTK ../STD ../VTKViewer ../PyConsole ../TOOLSGUI ../PyInterp ../Session ../../idl ../Event ../../salome_adm/unix $${CORBA_INCLUDES} #../ObjBrowser
 
-LIBS += $${QT_MT_LIBS} $${PYTHON_LIBS} $${KERNEL_LDFLAGS} -lOpUtil -lSALOMELocalTrace -lSalomeDSClient -L../../lib -lsuit -lstd -lCAM -lSalomePrs -lSPlot2d -lGLViewer -lOCCViewer -lVTKViewer -lSalomeObject -lSVTK -lSOCC -lPyInterp -lPyConsole -lLogWindow -lLightApp -lToolsGUI $${CAS_KERNEL} #-lObjBrowser
+LIBS += $${QT_MT_LIBS} $${PYTHON_LIBS} $${KERNEL_LDFLAGS} -lOpUtil -lSALOMELocalTrace -lSalomeDSClient -L../../lib -lsuit -lstd -lCAM -lSalomePrs -lSPlot2d -lGLViewer -lGraphicsView -lOCCViewer -lVTKViewer -lSalomeObject -lSVTK -lSOCC -lPyInterp -lPyConsole -lLogWindow -lLightApp -lToolsGUI $${CAS_KERNEL} #-lObjBrowser
 
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared

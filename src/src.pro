@@ -15,6 +15,7 @@ SUBDIRS += PyConsole
 SUBDIRS += Prs
 SUBDIRS += OBJECT
 SUBDIRS += GLViewer
+SUBDIRS += GraphicsView
 SUBDIRS += VTKViewer
 SUBDIRS += SVTK
 SUBDIRS += OCCViewer

@@ -34,9 +34,9 @@ else !GUI_ENABLE_CORBA
     IDLDIR =
 endif
 
-SUBDIRS = $(IDLDIR) adm_local resources src doc bin 
+SUBDIRS = $(IDLDIR) adm_local resources src bin 
 
-DIST_SUBDIRS = idl adm_local resources src doc bin 
+DIST_SUBDIRS = idl adm_local resources src bin 
 
 DISTCLEANFILES = a.out aclocal.m4 configure
 

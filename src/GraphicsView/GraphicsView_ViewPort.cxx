@@ -412,7 +412,8 @@ void GraphicsView_ViewPort::updateForeground()
       myForegroundItem = myScene->addRect( QRectF(), QPen(), QBrush( Qt::white ) );
     myForegroundItem->setZValue( -1 );
 
-    QRectF aRect( QPointF(), myForegroundSize );
+    QPointF aPoint = QPointF();
+    QRectF aRect( aPoint, myForegroundSize );
     aRect.adjust( -myForegroundMargin, -myForegroundMargin,
                   myForegroundMargin, myForegroundMargin );
     myForegroundItem->setRect( aRect );

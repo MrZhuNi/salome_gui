@@ -199,7 +199,8 @@ then
     #QT_INCLUDES="${QT_INCLUDES} -I$(QTDIR)/include${QTINC}/QtDesigner"
     #QT_INCLUDES="${QT_INCLUDES} -I$(QTDIR)/include${QTINC}/QtNetwork"
     #QT_INCLUDES="${QT_INCLUDES} -I$(QTDIR)/include${QTINC}/QtSql"
-    #QT_INCLUDES="${QT_INCLUDES} -I$(QTDIR)/include${QTINC}/QtSvg"
+    # used for DIAGRAM
+    QT_INCLUDES="${QT_INCLUDES} -I${QTDIR}/include${QTINC}/QtSvg"
     #QT_INCLUDES="${QT_INCLUDES} -I$(QTDIR)/include${QTINC}/QtTest"
     #QT_INCLUDES="${QT_INCLUDES} -I$(QTDIR)/include${QTINC}/QtUiTools"
 
@@ -267,9 +268,9 @@ then
     # core libs
     QT_CORE_LIBS="$QT_LIB_DIR -lQtCore -lQtXml"
     # gui libs
-    QT_GUI_LIBS="$QT_LIB_DIR -lQtGui -lQtOpenGL"
+    QT_GUI_LIBS="$QT_LIB_DIR -lQtGui -lQtOpenGL -lQtSvg"
     # other libs (currently not used)
-    QT_OTHER_LIBS="$QT_LIB_DIR"
+    #QT_OTHER_LIBS="$QT_LIB_DIR"
     # other libs (can be used if necessary)
     #QT_OTHER_LIBS="$QT_LIB_DIR -lQt3Support -lQtAssistantClient -lQtDesigner -lQtNetwork -lQtSql -lQtSvg -lQtTest -ltQtUiTools"
     # all libs

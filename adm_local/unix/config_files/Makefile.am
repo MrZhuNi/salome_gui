@@ -21,6 +21,7 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 dist_admlocalm4_DATA =		\
 check_disable_Corba.m4		\
 check_GLViewer.m4		\
+check_GraphicsView.m4		\
 check_GUI.m4			\
 check_msg2qm.m4			\
 check_OCCViewer.m4		\
