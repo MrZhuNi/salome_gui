@@ -1149,3 +1149,18 @@ void GraphicsView_ViewPort::onContextMenuEvent( QGraphicsSceneContextMenuEvent* 
 {
   emit vpContextMenuEvent( e );
 }
+
+//================================================================
+// Function : scrollContentsBy
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::scrollContentsBy( int theDX, int theDY )
+{
+  if( myNameLabel )
+    myNameLabel->setAcceptMoveEvents( false );
+
+  QGraphicsView::scrollContentsBy( theDX, theDY );
+
+  if( myNameLabel )
+    myNameLabel->setAcceptMoveEvents( true );
+}

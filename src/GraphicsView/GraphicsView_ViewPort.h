@@ -155,6 +155,9 @@ protected slots:
   void                             onWheelEvent( QGraphicsSceneWheelEvent* );
   void                             onContextMenuEvent( QGraphicsSceneContextMenuEvent* );
 
+protected:
+  virtual void                     scrollContentsBy( int theDX, int theDY );
+
 signals:
   void                             vpMouseEvent( QGraphicsSceneMouseEvent* );
   void                             vpWheelEvent( QGraphicsSceneWheelEvent* );
