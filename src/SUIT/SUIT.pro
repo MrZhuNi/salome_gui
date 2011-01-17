@@ -22,12 +22,12 @@
 
 TEMPLATE = lib
 TARGET = suit
-DESTDIR = ../../lib
+DESTDIR = $$[GUI_ROOT_DIR]/lib
 MOC_DIR = ../../moc
 OBJECTS_DIR = ../../obj/$$TARGET
 
 INCLUDEPATH += ../../include ../Qtx
-LIBS += -L../../lib -lqtx
+LIBS += -L$$[GUI_ROOT_DIR]/lib -lqtx
 
 CONFIG -= debug release debug_and_release
 CONFIG += qt thread debug dll shared
@@ -92,15 +92,15 @@ SOURCES += SUIT_ViewManager.cxx
 SOURCES += SUIT_ViewModel.cxx
 SOURCES += SUIT_ViewWindow.cxx
 
-TRANSLATIONS = resources/SUIT_images.ts \
-               resources/SUIT_msg_en.ts
+TRANSLATIONS = resources/SUIT_msg_en.ts
 
-ICONS   = resources/*.png
+#ICONS   = resources/*.png
 
 includes.files = $$HEADERS
-includes.path = ../../include
+includes.path = $$[GUI_ROOT_DIR]/include
 
-resources.files = $$ICONS resources/*.qm
-resources.path = ../../resources
+resources.files = resources/*.qm
+resources.path = $$[GUI_ROOT_DIR]/resources
 
-INSTALLS += includes resources
+INSTALLS += includes 
+INSTALLS += resources
