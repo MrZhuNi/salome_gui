@@ -146,8 +146,10 @@ void LightApp_ShowHideOp::startOperation()
   for( QStringList::const_iterator it = entries.begin(), last = entries.end(); it!=last; it++ )
   {
     QString e = study->referencedToEntry( *it );
-    if( myActionType==DISPLAY || myActionType==DISPLAY_ONLY )
+    if( myActionType==DISPLAY || myActionType==DISPLAY_ONLY ) {
       d->Display( e, false, 0 );
+      mgr->setSelectedObjects(selObjs);
+    }
     else if( myActionType==ERASE )
       d->Erase( e, false, false, 0 );
   }
