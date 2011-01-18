@@ -102,7 +102,7 @@ void LightApp_OBSelector::onSelectionChanged()
   mySelectedList.clear();
   selectionChanged();
   QTime t2 = QTime::currentTime();
-  qDebug( QString( "selection time = %1 msecs" ).arg( t1.msecsTo( t2 ) ).toLatin1().constData() );
+  // qDebug( QString( "selection time = %1 msecs" ).arg( t1.msecsTo( t2 ) ).toLatin1().constData() );
 }
 
 /*!
@@ -156,9 +156,17 @@ void LightApp_OBSelector::setSelection( const SUIT_DataOwnerPtrList& theList )
   DataObjectList objList;
   for ( SUIT_DataOwnerPtrList::const_iterator it = theList.begin(); 
 	it != theList.end(); ++it ) {
-    const LightApp_DataOwner* owner = dynamic_cast<const LightApp_DataOwner*>( (*it).operator->() );
-    if ( owner && myEntries.contains( owner->entry() ) )
-      objList.append( myEntries[owner->entry()] );
+    const LightApp_DataOwner* owner = 
+      dynamic_cast<const LightApp_DataOwner*>( (*it).operator->() );
+    if ( owner )
+    {
+      QString entry = owner->entry();
+      if ( myEntries.contains( entry ) )
+      {
+        LightApp_DataObject* dataObj = myEntries[ entry ];
+        objList.append( dataObj );
+      }
+    }
   }
 
   myBrowser->setSelected( objList );
