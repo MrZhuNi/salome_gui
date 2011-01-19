@@ -2052,6 +2052,36 @@ void QtxPagePrefCheckItem::retrieve()
   for string, integer and double values.
 */
 
+static void fixupAndSet( QLineEdit* le, const QString& txt )
+{
+  if ( le ) {
+    QString val = txt;
+    if ( le->validator() ) {
+      const QDoubleValidator* de = dynamic_cast<const QDoubleValidator*>( le->validator() );
+      if ( de ) {
+	int dec = de->decimals();
+	int idx = val.lastIndexOf( QRegExp( QString("[.|%1]").arg( le->locale().decimalPoint () ) ) );
+	if ( idx >= 0 ) {
+	  QString tmp = val.mid( idx+1 );
+	  QString exp;
+	  val = val.left( idx+1 );
+	  idx = tmp.indexOf( QRegExp( QString("[e|E]") ) );
+	  if ( idx >= 0 ) {
+	    exp = tmp.mid( idx );
+	    tmp = tmp.left( idx );
+	  }
+	  tmp.truncate( dec );
+	  val = val + tmp + exp;
+	}
+      }
+      int pos = 0;
+      if ( le->validator()->validate( val, pos ) == QValidator::Invalid )
+	val.clear();
+    }
+    le->setText( val );
+  }
+}
+
 /*!
   \brief Constructor.
 
@@ -2140,13 +2170,14 @@ void QtxPagePrefEditItem::store()
 void QtxPagePrefEditItem::retrieve()
 {
   QString txt = getString();
-  if ( myEditor->validator() )
+  fixupAndSet( myEditor, txt );
+  /*&if ( myEditor->validator() )
   {
     int pos = 0;
     if ( myEditor->validator()->validate( txt, pos ) == QValidator::Invalid )
       txt.clear();
   }
-  myEditor->setText( txt );
+  myEditor->setText( txt );*/
 }
 
 /*!
@@ -2159,6 +2190,14 @@ QVariant QtxPagePrefEditItem::optionValue( const QString& name ) const
 {
   if ( name == "input_type" || name == "type" )
     return inputType();
+  else if ( name == "precision" || name == "prec" || name == "decimals" ) {
+    int precision = 0;
+    if ( myEditor ) {
+      const QDoubleValidator* dv = dynamic_cast<const QDoubleValidator*>( myEditor->validator() );
+      if ( dv ) precision = dv->decimals();
+    }
+    return precision;
+  }
   else
     return QtxPageNamedPrefItem::optionValue( name );
 }
@@ -2175,6 +2214,14 @@ void QtxPagePrefEditItem::setOptionValue( const QString& name, const QVariant& v
   {
     if ( val.canConvert( QVariant::Int ) )
       setInputType( val.toInt() );
+  }
+  else if ( name == "precision" || name == "prec" || name == "decimals" ) {
+    if ( inputType() == Double && val.canConvert( QVariant::Int ) && myEditor ) {
+      QDoubleValidator* dv = new QDoubleValidator( myEditor );
+      dv->setDecimals( qAbs( val.toInt() ) );
+      delete myEditor->validator();
+      myEditor->setValidator( dv );
+    }
   }
   else
     QtxPageNamedPrefItem::setOptionValue( name, val );
@@ -2198,16 +2245,18 @@ void QtxPagePrefEditItem::updateEditor()
     break;
   }
 
-  if ( !myEditor->text().isEmpty() && val )
+  fixupAndSet( myEditor, myEditor->text() );
+  /*if ( !myEditor->text().isEmpty() && val )
   {
     int pos = 0;
     QString str = myEditor->text();
     if ( val->validate( str, pos ) == QValidator::Invalid )
       myEditor->clear();
-  }
+      }
 
   delete myEditor->validator();
   myEditor->setValidator( val );
+  */
 }
 
 /*!
