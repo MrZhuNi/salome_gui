@@ -2207,6 +2207,14 @@ void Plot2d_ViewFrame::copyPreferences( Plot2d_ViewFrame* vf )
   myXMode = vf->myXMode;
   myYMode = vf->myYMode;
   mySecondY = vf->mySecondY;
+
+  // special fields for automatic update of viewer titles
+  myTitleAutoUpdate = vf->myTitleAutoUpdate;
+  myXTitleAutoUpdate = vf->myXTitleAutoUpdate;
+  myYTitleAutoUpdate = vf->myYTitleAutoUpdate;
+  myTitleChangedByUser = vf->myTitleChangedByUser;
+  myXTitleChangedByUser = vf->myXTitleChangedByUser;
+  myYTitleChangedByUser = vf->myYTitleChangedByUser;
 }
 
 /*!
@@ -2265,12 +2273,18 @@ void Plot2d_ViewFrame::updateTitles()
 
   if ( getAutoUpdateTitle( XTitle ) )
     setTitle( myXTitleEnabled, xTitle + xUnits, XTitle, true );
+  else 
+    setTitle( myXTitleEnabled, myXTitle, XTitle, true );
 
   if ( getAutoUpdateTitle( YTitle ) )
     setTitle( myYTitleEnabled, yTitle + yUnits, YTitle, true );
+  else 
+    setTitle( myYTitleEnabled, myYTitle, YTitle, true );
 
   if ( getAutoUpdateTitle( MainTitle ) )
     setTitle( true, aTables.join("; "), MainTitle, true );
+  else 
+    setTitle( true, myTitle, MainTitle, true );
 }
 
 /*!
