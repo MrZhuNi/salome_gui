@@ -56,7 +56,12 @@ QCursor* GraphicsView_ViewPort::zoomCursor = 0;
 class GraphicsView_ViewPort::NameLabel : public QLabel
 {
 public:
-  NameLabel( QWidget* theParent ) : QLabel( theParent ) {}
+  NameLabel( QWidget* theParent ) 
+    : 
+  QLabel( theParent ),
+  myAcceptMoveEvents( false )
+  {
+  }
   ~NameLabel() {}
 
   void setAcceptMoveEvents( bool theFlag )
