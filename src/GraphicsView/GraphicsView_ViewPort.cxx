@@ -40,6 +40,8 @@
 
 #include <math.h>
 
+#define VIEW_GAP 20
+
 int GraphicsView_ViewPort::nCounter = 0;
 QCursor* GraphicsView_ViewPort::defCursor = 0;
 QCursor* GraphicsView_ViewPort::handCursor = 0;
@@ -166,6 +168,9 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   connect( myScene, SIGNAL( gsContextMenuEvent( QGraphicsSceneContextMenuEvent* ) ),
            this, SLOT( onContextMenuEvent( QGraphicsSceneContextMenuEvent* ) ) );
 
+  connect( myScene, SIGNAL( gsBoundingRectChanged() ),
+           this, SLOT( onBoundingRectChanged() ) );
+
   initialize();
 }
 
@@ -214,6 +219,7 @@ void GraphicsView_ViewPort::cleanup()
 void GraphicsView_ViewPort::addItem( QGraphicsItem* theItem )
 {
   myScene->addItem( theItem );
+  onBoundingRectChanged();
 }
 
 //================================================================
@@ -229,6 +235,7 @@ void GraphicsView_ViewPort::removeItem( QGraphicsItem* theItem )
     mySelectedObjects.removeAll( anObject );
   }
   myScene->removeItem( theItem );
+  onBoundingRectChanged();
 }
 
 //================================================================
@@ -246,19 +253,11 @@ GraphicsView_ObjectList GraphicsView_ViewPort::getObjects() const
 }
 
 //================================================================
-// Function : dumpView
+// Function : objectsBoundingRect
 // Purpose  : 
 //================================================================
-QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
+QRectF GraphicsView_ViewPort::objectsBoundingRect() const
 {
-  if( !theWholeScene ) // just grab the view contents
-  {
-    QPixmap aPixmap = QPixmap::grabWindow( viewport()->winId() );
-    return aPixmap.toImage();
-  }
-
-  // get a bounding rect of all presented objects
-  // (itemsBoundingRect() method is unsuitable)
   QRectF aRect;
   QListIterator<QGraphicsItem*> anIter( items() );
   while( anIter.hasNext() )
@@ -275,7 +274,24 @@ QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
       }
     }
   }
+  return aRect;
+}
 
+//================================================================
+// Function : dumpView
+// Purpose  : 
+//================================================================
+QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
+{
+  if( !theWholeScene ) // just grab the view contents
+  {
+    QPixmap aPixmap = QPixmap::grabWindow( viewport()->winId() );
+    return aPixmap.toImage();
+  }
+
+  // get a bounding rect of all presented objects
+  // (itemsBoundingRect() method is unsuitable)
+  QRectF aRect = objectsBoundingRect();
   if( aRect.isNull() )
     return QImage();
 
@@ -434,7 +450,7 @@ void GraphicsView_ViewPort::updateForeground()
 
     myForegroundItem->setVisible( true );
 
-    myScene->setSceneRect( aRect.adjusted( -20, -20, 20, 20 ) );
+    myScene->setSceneRect( aRect.adjusted( -VIEW_GAP, -VIEW_GAP, VIEW_GAP, VIEW_GAP ) );
   }
   else
   {
@@ -566,7 +582,7 @@ void GraphicsView_ViewPort::fitAll( bool theKeepScale )
   if( theKeepScale )
     myCurrentTransform = transform();
 
-  fitInView( sceneRect(), Qt::KeepAspectRatio );
+  fitInView( myScene->sceneRect(), Qt::KeepAspectRatio );
 
   myIsTransforming = false;
 }
@@ -1081,6 +1097,16 @@ void GraphicsView_ViewPort::finishPulling()
   myIsPulling = false;
   myPullingObject->finishPulling();
   setCursor( *getDefaultCursor() );
+}
+
+//================================================================
+// Function : onBoundingRectChanged
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::onBoundingRectChanged()
+{
+  QRectF aRect = objectsBoundingRect();
+  myScene->setSceneRect( aRect.adjusted( -VIEW_GAP, -VIEW_GAP, VIEW_GAP, VIEW_GAP ) );
 }
 
 //================================================================

@@ -63,6 +63,8 @@ public:
 
   GraphicsView_ObjectList          getObjects() const;
 
+  QRectF                           objectsBoundingRect() const;
+
   QImage                           dumpView( bool theWholeScene = false );
 
 public:
@@ -149,6 +151,9 @@ public:
   static QCursor*                  getPanCursor() { return panCursor; }
   static QCursor*                  getPanglCursor() { return panglCursor; }
   static QCursor*                  getZoomCursor() { return zoomCursor; }
+
+public slots:
+  void                             onBoundingRectChanged();
 
 protected slots:
   void                             onMouseEvent( QGraphicsSceneMouseEvent* );

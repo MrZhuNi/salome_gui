@@ -504,5 +504,8 @@ void GraphicsView_Viewer::startOperations( QGraphicsSceneWheelEvent* e )
       anIsScaleChanged = anObject->updateScale( anIsScaleUp, anIsCtrl ) || anIsScaleChanged;
 
   if( anIsScaleChanged )
+  {
     emit wheelScaleChanged();
+    aViewPort->onBoundingRectChanged();
+  }
 }

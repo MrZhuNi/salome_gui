@@ -22,6 +22,8 @@
 
 #include "GraphicsView_Object.h"
 
+#include "GraphicsView_Scene.h"
+
 //=======================================================================
 // Name    : GraphicsView_Object
 // Purpose : Constructor
@@ -130,5 +132,7 @@ void GraphicsView_Object::move( double theDX, double theDY, bool theIsAtOnce )
 //================================================================
 bool GraphicsView_Object::finishMove()
 {
-  return false;
+  if( GraphicsView_Scene* aScene = dynamic_cast<GraphicsView_Scene*>( scene() ) )
+    aScene->processRectChanged();
+  return true;
 }

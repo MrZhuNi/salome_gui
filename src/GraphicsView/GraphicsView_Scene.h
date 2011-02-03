@@ -27,6 +27,8 @@
 
 #include <QGraphicsScene>
 
+class QGraphicsRectItem;
+
 /*
   Class       : GraphicsView_Scene
   Description : Scene of the graphics view
@@ -38,6 +40,12 @@ class GRAPHICSVIEW_API GraphicsView_Scene : public QGraphicsScene
 public:
   GraphicsView_Scene( QObject* theParent = 0 );
   ~GraphicsView_Scene();
+
+public:
+  void                       processRectChanged();
+
+protected slots:
+  void                       onSceneRectChanged( const QRectF& theRect ); // for debug
 
 protected:
   virtual void               mousePressEvent( QGraphicsSceneMouseEvent* );
@@ -56,6 +64,11 @@ signals:
   void                       gsMouseEvent( QGraphicsSceneMouseEvent* );
   void                       gsWheelEvent( QGraphicsSceneWheelEvent* );
   void                       gsContextMenuEvent( QGraphicsSceneContextMenuEvent* );
+
+  void                       gsBoundingRectChanged();
+
+private:
+  QGraphicsRectItem*         mySceneRectItem; // for debug
 };
 
 #endif

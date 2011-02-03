@@ -22,7 +22,10 @@
 
 #include "GraphicsView_Scene.h"
 
+#include <QGraphicsRectItem>
 #include <QGraphicsSceneWheelEvent>
+
+//#define VIEWER_DEBUG
 
 //=======================================================================
 // Name    : GraphicsView_Scene
@@ -31,6 +34,15 @@
 GraphicsView_Scene::GraphicsView_Scene( QObject* theParent )
 : QGraphicsScene( theParent )
 {
+#ifdef VIEWER_DEBUG
+  mySceneRectItem = new QGraphicsRectItem();
+  mySceneRectItem->setPen( QPen( Qt::red, 0.0 ) );
+
+  addItem( mySceneRectItem );
+
+  connect( this, SIGNAL( sceneRectChanged( const QRectF& ) ),
+           this, SLOT( onSceneRectChanged( const QRectF& ) ) );
+#endif
 }
 
 //=======================================================================
@@ -39,6 +51,26 @@ GraphicsView_Scene::GraphicsView_Scene( QObject* theParent )
 //=======================================================================
 GraphicsView_Scene::~GraphicsView_Scene()
 {
+}
+
+//================================================================
+// Function : processRectChanged
+// Purpose  : 
+//================================================================
+void GraphicsView_Scene::processRectChanged()
+{
+  emit gsBoundingRectChanged();
+}
+
+//================================================================
+// Function : onSceneRectChanged
+// Purpose  : 
+//================================================================
+void GraphicsView_Scene::onSceneRectChanged( const QRectF& theRect )
+{
+#ifdef VIEWER_DEBUG
+  mySceneRectItem->setRect( theRect );
+#endif
 }
 
 //================================================================
