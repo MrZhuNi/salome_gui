@@ -275,9 +275,9 @@ void Style_Salome::drawComplexControl( ComplexControl cc, const QStyleOptionComp
         QColor aBrdTopCol = getColor( Style_Model::border_top_clr ),
           aBrdBotCol = getColor( Style_Model::border_bot_clr );
 
-        /*if ( hover )
+        if ( hover )
           drawHoverRect(p, optr, opt->palette.color( QPalette::Window ), aRad, Style_Tools::Left, true);
-        else*/
+        else
         {
           Style_Tools::shadowRect( p, optr, aRad, LINE_GR_MARGIN, SHADOW, Style_Tools::Left,
             getColor( Style_Model::fld_light_clr ),
@@ -287,9 +287,9 @@ void Style_Salome::drawComplexControl( ComplexControl cc, const QStyleOptionComp
         QRect aBtnRect = QRect( QPoint( arUp.x(), optr.y() ), QPoint( arUp.right(), optr.bottom() ) );
         QColor aBtnCol = opt->palette.color( QPalette::Button );
         bool aStateOn = opt->state & ( State_Sunken | State_On );
-        /*if ( hover )
+        if ( hover )
           drawHoverRect(p, aBtnRect, opt->palette.color( QPalette::Window ), aRad, Style_Tools::Right, true);
-        else*/
+        else
           Style_Tools::shadowRect( p, aBtnRect, aRad, 0.0, SHADOW, Style_Tools::Right,
           aBtnCol.light( BUT_PERCENT_COL ), aBtnCol.dark( BUT_PERCENT_COL ),
           aBrdTopCol, aBrdBotCol, antialized, true, aStateOn );
@@ -357,9 +357,9 @@ void Style_Salome::drawComplexControl( ComplexControl cc, const QStyleOptionComp
         double aRad = getDblValue( Style_Model::edit_rad );
         QColor aBrdTopCol = getColor( Style_Model::border_top_clr ),
           aBrdBotCol = getColor( Style_Model::border_bot_clr );
-        /*if ( hover )
+        if ( hover )
           drawHoverRect(p, optr, opt->palette.color( QPalette::Window ), aRad, Style_Tools::Left, true);
-        else*/
+        else
           Style_Tools::shadowRect( p, optr, aRad, LINE_GR_MARGIN, SHADOW, Style_Tools::Left,
           getColor( Style_Model::fld_light_clr ),
           getColor( Style_Model::fld_dark_clr ), aBrdTopCol,
@@ -368,9 +368,9 @@ void Style_Salome::drawComplexControl( ComplexControl cc, const QStyleOptionComp
           State flags = State_None;
           QColor aBtnCol = opt->palette.color( QPalette::Button );
           bool aStateOn = opt->state & ( State_Sunken | State_On );
-          /*if ( hover )
+          if ( hover )
             drawHoverRect(p, ar, opt->palette.color( QPalette::Window ), aRad, Style_Tools::Right, true);
-          else*/
+          else
             Style_Tools::shadowRect( p, ar, aRad, 0.0, SHADOW, Style_Tools::Right,
             aBtnCol.light( BUT_PERCENT_COL ), aBtnCol.dark( BUT_PERCENT_COL ),
             aBrdTopCol, aBrdBotCol, antialized, true, aStateOn );
@@ -1614,9 +1614,9 @@ void Style_Salome::drawPrimitive( PrimitiveElement pe, const QStyleOption* opt,
           aBrdBotCol = getColor( Style_Model::border_bot_clr );
         bool hover = hasHover() && (opt->state & State_Enabled) && (opt->state & State_MouseOver);
         double aRad = getDblValue(Style_Model::edit_rad);
-        /*if ( hover )
+        if ( hover )
           drawHoverRect(p, opt->rect, opt->palette.color( QPalette::Window ), aRad, Style_Tools::All, true);
-        else */
+        else
         {
           QColor light = opt->palette.color( QPalette::Base );
           light.setAlpha( 255 );
