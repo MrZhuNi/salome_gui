@@ -40,8 +40,6 @@
 
 #include <math.h>
 
-#define VIEW_GAP 20
-
 int GraphicsView_ViewPort::nCounter = 0;
 QCursor* GraphicsView_ViewPort::defCursor = 0;
 QCursor* GraphicsView_ViewPort::handCursor = 0;
@@ -139,6 +137,9 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   // scene
   myScene = new GraphicsView_Scene( this );
   setScene( myScene );
+
+  mySceneGap = 20;
+  myFitAllGap = 40;
 
   // background
   setBackgroundBrush( QBrush( Qt::white ) );
@@ -256,7 +257,7 @@ GraphicsView_ObjectList GraphicsView_ViewPort::getObjects() const
 // Function : objectsBoundingRect
 // Purpose  : 
 //================================================================
-QRectF GraphicsView_ViewPort::objectsBoundingRect() const
+QRectF GraphicsView_ViewPort::objectsBoundingRect( bool theOnlyVisible ) const
 {
   QRectF aRect;
   QListIterator<QGraphicsItem*> anIter( items() );
@@ -264,6 +265,9 @@ QRectF GraphicsView_ViewPort::objectsBoundingRect() const
   {
     if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
     {
+      if( theOnlyVisible && !anObject->isVisible() )
+        continue;
+
       QRectF anObjectRect = anObject->getRect();
       if( !anObjectRect.isNull() )
       {
@@ -315,6 +319,25 @@ QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
       setSelected( anObject );
 
   return anImage;
+}
+
+//================================================================
+// Function : setSceneGap
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setSceneGap( double theSceneGap )
+{
+  mySceneGap = theSceneGap;
+  onBoundingRectChanged();
+}
+
+//================================================================
+// Function : setFitAllGap
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setFitAllGap( double theFitAllGap )
+{
+  myFitAllGap = theFitAllGap;
 }
 
 //================================================================
@@ -450,7 +473,7 @@ void GraphicsView_ViewPort::updateForeground()
 
     myForegroundItem->setVisible( true );
 
-    myScene->setSceneRect( aRect.adjusted( -VIEW_GAP, -VIEW_GAP, VIEW_GAP, VIEW_GAP ) );
+    myScene->setSceneRect( aRect.adjusted( -mySceneGap, -mySceneGap, mySceneGap, mySceneGap ) );
   }
   else
   {
@@ -582,7 +605,9 @@ void GraphicsView_ViewPort::fitAll( bool theKeepScale )
   if( theKeepScale )
     myCurrentTransform = transform();
 
-  fitInView( myScene->sceneRect(), Qt::KeepAspectRatio );
+  double aGap = myFitAllGap;
+  QRectF aRect = objectsBoundingRect( true );
+  fitInView( aRect.adjusted( -aGap, -aGap, aGap, aGap ), Qt::KeepAspectRatio );
 
   myIsTransforming = false;
 }
@@ -1106,7 +1131,7 @@ void GraphicsView_ViewPort::finishPulling()
 void GraphicsView_ViewPort::onBoundingRectChanged()
 {
   QRectF aRect = objectsBoundingRect();
-  myScene->setSceneRect( aRect.adjusted( -VIEW_GAP, -VIEW_GAP, VIEW_GAP, VIEW_GAP ) );
+  myScene->setSceneRect( aRect.adjusted( -mySceneGap, -mySceneGap, mySceneGap, mySceneGap ) );
 }
 
 //================================================================

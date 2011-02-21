@@ -63,11 +63,15 @@ public:
 
   GraphicsView_ObjectList          getObjects() const;
 
-  QRectF                           objectsBoundingRect() const;
+  QRectF                           objectsBoundingRect( bool theOnlyVisible = false ) const;
 
   QImage                           dumpView( bool theWholeScene = false );
 
 public:
+  // scene
+  void                             setSceneGap( double theSceneGap );
+  void                             setFitAllGap( double theFitAllGap );
+
   // view name
   void                             setViewNameEnabled( bool theState, bool theIsForced = false );
   void                             setViewName( const QString& theName );
@@ -188,6 +192,8 @@ private:
 private:
   // scene
   GraphicsView_Scene*              myScene;
+  double                           mySceneGap;
+  double                           myFitAllGap;
 
   // view name
   NameLabel*                       myNameLabel;
