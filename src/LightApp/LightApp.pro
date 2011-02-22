@@ -220,7 +220,8 @@ SOURCES += LightApp_WidgetContainer.cxx
 #endif
 
 TRANSLATIONS = resources/LightApp_images.ts \
-               resources/LightApp_msg_en.ts
+               resources/LightApp_msg_en.ts \
+               resources/LightApp_msg_fr.ts
 
 ICONS   = resources/*.png
 

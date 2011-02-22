@@ -47,7 +47,9 @@ MOC_FILES =			\
 	CAM_DataModel_moc.cxx
 nodist_libCAM_la_SOURCES = $(MOC_FILES)
 
-nodist_salomeres_DATA = CAM_msg_en.qm
+nodist_salomeres_DATA = \
+	CAM_msg_en.qm \
+	CAM_msg_en.qm
 
 libCAM_la_CPPFLAGS = $(QT_INCLUDES) -I$(srcdir)/../SUIT -I$(srcdir)/../STD -I$(srcdir)/../Qtx
 libCAM_la_LDFLAGS  = $(QT_MT_LIBS)

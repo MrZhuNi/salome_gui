@@ -71,7 +71,8 @@ SOURCES += SUIT_ViewModel.cxx
 SOURCES += SUIT_ViewWindow.cxx
 
 TRANSLATIONS = resources/SUIT_images.ts \
-               resources/SUIT_msg_en.ts
+               resources/SUIT_msg_en.ts \
+               resources/SUIT_msg_fr.ts
 
 ICONS   = resources/*.png
 

@@ -25,7 +25,8 @@ SOURCES += CAF_Study.cxx
 SOURCES += CAF_Tools.cxx
 
 TRANSLATIONS = resources/CAF_images.ts \
-               resources/CAF_msg_en.ts
+               resources/CAF_msg_en.ts \
+               resources/CAF_msg_fr.ts
 
 ICONS   = resources/*.png
 

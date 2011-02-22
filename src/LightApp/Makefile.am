@@ -159,7 +159,8 @@ dist_salomeres_DATA =			\
 
 nodist_salomeres_DATA =		\
 	LightApp_images.qm	\
-	LightApp_msg_en.qm
+	LightApp_msg_en.qm	\
+	LightApp_msg_fr.qm
 
 libLightApp_la_CPPFLAGS = $(PYTHON_INCLUDES) $(QT_INCLUDES) $(CAS_CPPFLAGS)		\
 	$(HDF5_INCLUDES) @KERNEL_CXXFLAGS@ -I$(srcdir)/../SUIT -I$(srcdir)/../STD	\

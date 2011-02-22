@@ -35,7 +35,8 @@ SOURCES += GraphicsView_ViewManager.cxx
 SOURCES += GraphicsView_ViewTransformer.cxx
 
 TRANSLATIONS = resources/GraphicsView_images.ts \
-               resources/GraphicsView_msg_en.ts
+               resources/GraphicsView_msg_en.ts \
+               resources/GraphicsView_msg_fr.ts
 
 ICONS   = resources/*.png
 

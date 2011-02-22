@@ -27,7 +27,8 @@ SOURCES += CAM_Module.cxx
 SOURCES += CAM_Study.cxx
 
 TRANSLATIONS = resources/CAM_images.ts \
-               resources/CAM_msg_en.ts
+               resources/CAM_msg_en.ts \
+               resources/CAM_msg_fr.ts
 
 ICONS   = resources/*.png
 

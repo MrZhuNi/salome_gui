@@ -25,7 +25,8 @@ SOURCES += STD_SDIDesktop.cxx
 SOURCES += STD_TabDesktop.cxx
 
 TRANSLATIONS = resources/STD_images.ts \
-               resources/STD_msg_en.ts
+               resources/STD_msg_en.ts \
+               resources/Std_msg_fr.ts
 
 ICONS   = resources/*.png
 

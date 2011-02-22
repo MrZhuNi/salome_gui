@@ -71,7 +71,8 @@ resources/graphics_view_zoom.png
 
 nodist_salomeres_DATA =		\
 	GraphicsView_images.qm	\
-	GraphicsView_msg_en.qm
+	GraphicsView_msg_en.qm	\
+	GraphicsView_msg_fr.qm
 
 libGraphicsView_la_CPPFLAGS = $(QT_INCLUDES) -I$(srcdir)/../SUIT -I$(srcdir)/../Qtx
 libGraphicsView_la_LDFLAGS  = $(QT_MT_LIBS)

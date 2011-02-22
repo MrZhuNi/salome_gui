@@ -48,7 +48,8 @@ SOURCES += Plot2d_SetupCurveDlg.cxx
 SOURCES += Plot2d_ToolTip.cxx
 
 TRANSLATIONS = resources/Plot2d_msg_en.ts \
-               resources/Plot2d_images.ts
+               resources/Plot2d_images.ts \
+               resources/Plot2d_msg_fr.ts
 
 ICONS = resources/*.png
 
