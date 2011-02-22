@@ -27,6 +27,7 @@
 #include <QRegExp>
 #include <QTextStream>
 #include <QApplication>
+#include <QLibraryInfo>
 #ifndef QT_NO_DOM
 #include <QDomDocument>
 #include <QDomElement>
@@ -2377,6 +2378,14 @@ void QtxResourceMgr::loadLanguage( const bool loadUser, const QString& pref, con
     prefixList.append( pref );
   else
     prefixList = parameters( resSection() );
+
+  if ( pref.isEmpty() && lang != "en" ) {
+    // load Qt resources
+    QString qt_translations = QLibraryInfo::location( QLibraryInfo::TranslationsPath );
+    QTranslator* trans = new QtxTranslator( 0 );
+    if ( trans->load( QString("qt_%1").arg( lang ), qt_translations ) )
+      QApplication::instance()->installTranslator( trans );
+  }
 
   for ( QStringList::ConstIterator iter = prefixList.begin(); iter != prefixList.end(); ++iter )
   {
