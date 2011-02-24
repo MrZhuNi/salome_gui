@@ -520,9 +520,12 @@ void LightApp_Application::createActions()
   }
 
   //! MRU
-  static QtxMRUAction* mru = new QtxMRUAction( tr( "TOT_DESK_MRU" ), tr( "MEN_DESK_MRU" ), 0 );
-  connect( mru, SIGNAL( activated( const QString& ) ), this, SLOT( onMRUActivated( const QString& ) ) );
-  registerAction( MRUId, mru );
+  if( !isCustomPersistence() )
+  {
+    static QtxMRUAction* mru = new QtxMRUAction( tr( "TOT_DESK_MRU" ), tr( "MEN_DESK_MRU" ), 0 );
+    connect( mru, SIGNAL( activated( const QString& ) ), this, SLOT( onMRUActivated( const QString& ) ) );
+    registerAction( MRUId, mru );
+  }
 
   // default icon for neutral point ('SALOME' module)
   QPixmap defIcon = resMgr->loadPixmap( "LightApp", tr( "APP_DEFAULT_ICO" ), false );
@@ -2080,20 +2083,23 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 		       "ObjectBrowser", "resize_on_expand_item" );
 
   // MRU preferences
-  int mruGroup = pref->addPreference( tr( "PREF_GROUP_MRU" ), genTab, LightApp_Preferences::Auto, "MRU", "show_mru" );
-  pref->setItemProperty( "columns", 4, mruGroup );
-  int mruVisCount = pref->addPreference( tr( "PREF_MRU_VISIBLE_COUNT" ), mruGroup, LightApp_Preferences::IntSpin,
-					 "MRU", "visible_count" );
-  pref->setItemProperty( "min", 0,   mruVisCount );
-  pref->setItemProperty( "max", 100, mruVisCount );
-  int mruLinkType = pref->addPreference( tr( "PREF_MRU_LINK_TYPE" ), mruGroup, LightApp_Preferences::Selector,
-					 "MRU", "link_type" );
-  aValuesList.clear();
-  anIndicesList.clear();
-  aValuesList   << tr("PREF_MRU_LINK_AUTO") << tr("PREF_MRU_LINK_SHORT") << tr("PREF_MRU_LINK_FULL");
-  anIndicesList << 0                        << 1                         << 2                       ;
-  pref->setItemProperty( "strings", aValuesList,   mruLinkType );
-  pref->setItemProperty( "indexes", anIndicesList, mruLinkType );
+  if( !isCustomPersistence() )
+  {
+    int mruGroup = pref->addPreference( tr( "PREF_GROUP_MRU" ), genTab, LightApp_Preferences::Auto, "MRU", "show_mru" );
+    pref->setItemProperty( "columns", 4, mruGroup );
+    int mruVisCount = pref->addPreference( tr( "PREF_MRU_VISIBLE_COUNT" ), mruGroup, LightApp_Preferences::IntSpin,
+					   "MRU", "visible_count" );
+    pref->setItemProperty( "min", 0,   mruVisCount );
+    pref->setItemProperty( "max", 100, mruVisCount );
+    int mruLinkType = pref->addPreference( tr( "PREF_MRU_LINK_TYPE" ), mruGroup, LightApp_Preferences::Selector,
+					   "MRU", "link_type" );
+    aValuesList.clear();
+    anIndicesList.clear();
+    aValuesList   << tr("PREF_MRU_LINK_AUTO") << tr("PREF_MRU_LINK_SHORT") << tr("PREF_MRU_LINK_FULL");
+    anIndicesList << 0                        << 1                         << 2                       ;
+    pref->setItemProperty( "strings", aValuesList,   mruLinkType );
+    pref->setItemProperty( "indexes", anIndicesList, mruLinkType );
+  }
 
   // Default Module Preferences
   int moduleGroup = pref->addPreference( tr( "PREF_DEFAULT_MODULE" ), genTab );
