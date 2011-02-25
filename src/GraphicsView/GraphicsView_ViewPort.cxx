@@ -31,12 +31,12 @@
 
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
+#include <QGridLayout>
 #include <QLabel>
 #include <QMoveEvent>
 #include <QRectF>
 #include <QRubberBand>
 #include <QScrollBar>
-#include <QVBoxLayout>
 
 #include <math.h>
 
@@ -121,6 +121,8 @@ void GraphicsView_ViewPort::destroyCursors()
 GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
 : QGraphicsView( theParent ),
   myNameLabel( 0 ),
+  myNamePosition( NP_None ),
+  myNameLayout( 0 ),
   myForegroundItem( 0 ),
   myIsTransforming( false ),
   myHighlightedObject( 0 ),
@@ -344,22 +346,43 @@ void GraphicsView_ViewPort::setFitAllGap( double theFitAllGap )
 // Function : setViewNameEnabled
 // Purpose  : 
 //================================================================
-void GraphicsView_ViewPort::setViewNameEnabled( bool theState,
-                                                bool theIsForced )
+void GraphicsView_ViewPort::setViewNamePosition( NamePosition thePosition,
+                                                 bool theIsForced )
 {
   if( theIsForced && !myNameLabel )
-  {
     myNameLabel = new NameLabel( viewport() );
 
-    QBoxLayout* aLayout = new QVBoxLayout( viewport() );
-    aLayout->setMargin( 10 );
-    aLayout->setSpacing( 0 );
-    aLayout->addStretch();
-    aLayout->addWidget( myNameLabel );
+  if( !myNameLabel )
+    return;
+
+  if( thePosition == NP_None )
+  {
+    myNameLabel->setVisible( false );
+    return;
   }
 
-  if( myNameLabel )
-    myNameLabel->setVisible( theState );
+  if( myNameLayout )
+    delete myNameLayout;
+
+  myNameLayout = new QGridLayout( viewport() );
+  myNameLayout->setMargin( 10 );
+  myNameLayout->setSpacing( 0 );
+
+  int aRow = 0, aColumn = 0;
+  switch( thePosition )
+  {
+    case NP_TopLeft:     aRow = 0; aColumn = 0; break;
+    case NP_TopRight:    aRow = 0; aColumn = 1; break;
+    case NP_BottomLeft:  aRow = 1; aColumn = 0; break;
+    case NP_BottomRight: aRow = 1; aColumn = 1; break;
+    default: break;
+  }
+
+  myNameLayout->addWidget( myNameLabel, aRow, aColumn );
+  myNameLayout->setRowStretch( 1 - aRow, 1 );
+  myNameLayout->setColumnStretch( 1 - aColumn, 1 );
+
+  myNameLabel->setVisible( true );
 }
 
 //================================================================

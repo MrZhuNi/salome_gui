@@ -29,6 +29,7 @@
 
 #include <QGraphicsView>
 
+class QGridLayout;
 class QRubberBand;
 
 class GraphicsView_Object;
@@ -52,6 +53,15 @@ public:
     BS_Dragging  = 0x0002  // currently unused
   };
 
+  enum NamePosition
+  {
+    NP_None         = 0,
+    NP_TopLeft      = 1,
+    NP_TopRight     = 2,
+    NP_BottomLeft   = 3,
+    NP_BottomRight  = 4
+  };
+
 public:
   GraphicsView_ViewPort( QWidget* theParent );
   ~GraphicsView_ViewPort();
@@ -73,7 +83,8 @@ public:
   void                             setFitAllGap( double theFitAllGap );
 
   // view name
-  void                             setViewNameEnabled( bool theState, bool theIsForced = false );
+  void                             setViewNamePosition( NamePosition thePosition,
+                                                        bool theIsForced = false );
   void                             setViewName( const QString& theName );
 
   // background / foreground
@@ -197,6 +208,8 @@ private:
 
   // view name
   NameLabel*                       myNameLabel;
+  NamePosition                     myNamePosition;
+  QGridLayout*                     myNameLayout;
 
   // foreground
   bool                             myIsForegroundEnabled;
