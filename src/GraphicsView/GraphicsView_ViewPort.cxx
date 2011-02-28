@@ -301,24 +301,11 @@ QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
   if( aRect.isNull() )
     return QImage();
 
-  // store a list of selected objects
-  GraphicsView_ObjectList aSelectedObjects = mySelectedObjects;
-
-  // unhighlight and unselect all objects
-  clearHighlighted();
-  clearSelected();
-
   // render the scene to an image
   QImage anImage( aRect.toRect().size(), QImage::Format_RGB32 );
   QPainter aPainter( &anImage );
   QRectF aTargetRect( 0, 0, aRect.width(), aRect.height() );
   myScene->render( &aPainter, aTargetRect, aRect );
-
-  // restore selection
-  GraphicsView_ObjectListIterator aSelectedIter( aSelectedObjects );
-  while( aSelectedIter.hasNext() )
-    if( GraphicsView_Object* anObject = aSelectedIter.next() )
-      setSelected( anObject );
 
   return anImage;
 }

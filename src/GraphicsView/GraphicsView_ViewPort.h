@@ -142,6 +142,9 @@ public:
   bool                             nextSelected();
   GraphicsView_Object*             selectedObject();
 
+  const GraphicsView_ObjectList&   getSelectedObjects() const { return mySelectedObjects; }
+
+
   // rectangle selection
   void                             startSelectByRect( int x, int y );
   void                             drawSelectByRect( int x, int y );
