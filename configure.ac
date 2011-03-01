@@ -200,11 +200,11 @@ AC_CXX_HAVE_SSTREAM
 
 dnl
 dnl ---------------------------------------------
-dnl testing MPICH
+dnl testing MPI
 dnl ---------------------------------------------
 dnl
 
-CHECK_MPICH
+CHECK_MPI
 
 echo
 echo ---------------------------------------------
