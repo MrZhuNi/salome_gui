@@ -368,7 +368,7 @@ void Plot2d_ViewWindow::createActions()
                 aResMgr->loadPixmap("Plot2d", tr("ICON_CURVES_SETTINGS")),
                 tr("MEN_CURVES_SETTINGS"), 0, this);
   aAction->setStatusTip( tr( "PRP_CURVES_SETTINGS") );
-  connect( aAction, SIGNAL( activated() ), myViewFrame, SLOT( onCurvesSettings() ) );
+  connect( aAction, SIGNAL( triggered( bool ) ), myViewFrame, SLOT( onCurvesSettings() ) );
   mgr->registerAction( aAction, CurvesSettingsId );
   
   // 9. Clone
