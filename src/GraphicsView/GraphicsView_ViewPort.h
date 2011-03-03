@@ -75,7 +75,8 @@ public:
 
   QRectF                           objectsBoundingRect( bool theOnlyVisible = false ) const;
 
-  QImage                           dumpView( bool theWholeScene = false );
+  QImage                           dumpView( bool theWholeScene = false,
+                                             QSizeF theSize = QSizeF() );
 
 public:
   // scene

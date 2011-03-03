@@ -287,7 +287,8 @@ QRectF GraphicsView_ViewPort::objectsBoundingRect( bool theOnlyVisible ) const
 // Function : dumpView
 // Purpose  : 
 //================================================================
-QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
+QImage GraphicsView_ViewPort::dumpView( bool theWholeScene,
+                                        QSizeF theSize )
 {
   if( !theWholeScene ) // just grab the view contents
   {
@@ -301,10 +302,21 @@ QImage GraphicsView_ViewPort::dumpView( bool theWholeScene )
   if( aRect.isNull() )
     return QImage();
 
-  // render the scene to an image
-  QImage anImage( aRect.toRect().size(), QImage::Format_RGB32 );
-  QPainter aPainter( &anImage );
   QRectF aTargetRect( 0, 0, aRect.width(), aRect.height() );
+  if( theSize.isValid() )
+  {
+    double aRatioX = theSize.width() / aTargetRect.width();
+    double aRatioY = theSize.height() / aTargetRect.height();
+    double aRatio = qMin( aRatioX, aRatioY );
+    aTargetRect.setWidth( aTargetRect.width() * aRatio );
+    aTargetRect.setHeight( aTargetRect.height() * aRatio );
+  }
+
+  // render the scene to an image
+  QImage anImage( aTargetRect.toRect().size(), QImage::Format_RGB32 );
+  QPainter aPainter( &anImage );
+  aPainter.setRenderHints( renderHints() );
+
   myScene->render( &aPainter, aTargetRect, aRect );
 
   return anImage;
