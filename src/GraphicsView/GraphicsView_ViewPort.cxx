@@ -566,7 +566,9 @@ void GraphicsView_ViewPort::zoom( double theX1, double theY1, double theX2, doub
   aTransform.scale( aZoom, aZoom );
   double aM11 = aTransform.m11();
   double aM22 = aTransform.m22();
-  if( qMax( aM11, aM22 ) < 400 ) // to prevent a crash at the value of 500
+  // increasing of diagonal coefficients (>300) leads to a crash sometimes
+  // at the values of 100 some primitives are drawn incorrectly
+  if( qMax( aM11, aM22 ) < 100 )
     setTransform( aTransform );
 
   myIsTransforming = false;
