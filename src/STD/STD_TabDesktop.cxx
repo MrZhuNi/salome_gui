@@ -52,9 +52,9 @@ myWorkstackAction( 0 )
   // But the workstack must occupy as much space as possible -- set Expanding for it.
   myWorkstack->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
-  myWorkstack->setAccel( QtxWorkstack::SplitVertical,   Qt::SHIFT + Qt::Key_V );
-  myWorkstack->setAccel( QtxWorkstack::SplitHorizontal, Qt::SHIFT + Qt::Key_H );
-  myWorkstack->setAccel( QtxWorkstack::Close,           Qt::SHIFT + Qt::Key_C );
+  //myWorkstack->setAccel( QtxWorkstack::SplitVertical,   Qt::SHIFT + Qt::Key_V );
+  //myWorkstack->setAccel( QtxWorkstack::SplitHorizontal, Qt::SHIFT + Qt::Key_H );
+  //myWorkstack->setAccel( QtxWorkstack::Close,           Qt::SHIFT + Qt::Key_C );
 
   SUIT_ResourceMgr* resMgr = SUIT_Session::session()->resourceMgr();
   if ( resMgr ) {
