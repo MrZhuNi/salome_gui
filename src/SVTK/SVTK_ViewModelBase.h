@@ -19,7 +19,7 @@
 #ifndef SVTK_SELECTIONCHANGED_H
 #define SVTK_SELECTIONCHANGED_H
 
-#include <qobject.h>
+#include <QObject>
 
 #include "SVTK.h"
 #include "SUIT_ViewModel.h"

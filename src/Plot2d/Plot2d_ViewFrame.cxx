@@ -57,7 +57,7 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include <qprinter.h>
+#include <QPrinter>
 
 #include <qwt_legend.h>
 #include <qwt_painter.h>

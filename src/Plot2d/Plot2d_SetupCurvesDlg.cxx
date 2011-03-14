@@ -23,25 +23,26 @@
 
 #include "Plot2d_SetupCurvesDlg.h"
 #include <QtxGroupBox.h>
-#include <qtablewidget.h>
-#include <qtoolbutton.h>
+#include <QTableWidget>
+#include <QToolButton>
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_Session.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qfontmetrics.h>
-#include <qcolordialog.h>
+#include <QLayout>
+#include <QPushButton>
+#include <QFontMetrics>
+#include <QColorDialog>
 
-#include <qpen.h>
+#include <QPen>
 #include <qwt_symbol.h>
 #include <Plot2d_Curve.h>
 #include <SUIT_MessageBox.h>
-#include <qheaderview.h>
-#include <qcombobox.h>
-#include <qset.h>
+#include <QHeaderView>
+#include <QComboBox>
+#include <QSet>
 #include "Plot2d.h"
-#include <qevent.h>
-#include <qpainter.h>
+#include <QEvent>
+#include <QPainter>
+#include <QPaintEvent>
 
 #define PIXMAP_COL      0
 #define TEXT_COL        1

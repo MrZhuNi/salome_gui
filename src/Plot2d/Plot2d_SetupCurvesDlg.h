@@ -26,8 +26,8 @@
 
 #include "Plot2d.h"
 #include <QtxDialog.h>
-#include <qvector.h>
-#include <qlist.h>
+#include <QVector>
+#include <QList>
 
 class QtxGroupBox;
 class QTableWidget;

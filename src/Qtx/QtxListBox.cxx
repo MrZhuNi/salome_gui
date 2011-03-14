@@ -21,15 +21,16 @@
 
 #include "QtxListBox.h"
 
-#include <qpixmap.h>
-#include <qlineedit.h>
+#include <QPixmap>
+#include <QLineEdit>
 
 #ifdef WIN32
 #pragma warning ( disable: 4251 )
 #endif
 
-#include <qevent.h>
-#include <qscrollbar.h>
+#include <QEvent>
+#include <QScrollBar>
+#include <QKeyEvent>
 
 /*!
   Constructor
