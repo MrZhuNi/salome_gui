@@ -112,6 +112,13 @@ public:
 
   void                             updateForeground();
 
+  // grid
+  void                             setGridEnabled( bool theState );
+  void                             setGridCellSize( int theCellSize );
+  void                             setGridLineStyle( int theLineStyle );
+  void                             setGridLineColor( const QColor& theLineColor );
+  void                             updateGrid();
+
   // transformation
   void                             reset();
   void                             pan( double theDX, double theDY );
@@ -223,6 +230,13 @@ private:
   QColor                           myForegroundFrameColor;
   double                           myForegroundFrameLineWidth;
   QGraphicsRectItem*               myForegroundItem;
+
+  // grid
+  bool                             myIsGridEnabled;
+  int                              myGridCellSize;
+  int                              myGridLineStyle;
+  QColor                           myGridLineColor;
+  QGraphicsPathItem*               myGridItem;
 
   // transformation
   bool                             myIsTransforming;

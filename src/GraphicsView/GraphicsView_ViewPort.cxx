@@ -124,6 +124,7 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   myNamePosition( NP_None ),
   myNameLayout( 0 ),
   myForegroundItem( 0 ),
+  myGridItem( 0 ),
   myIsTransforming( false ),
   myHighlightedObject( 0 ),
   myHighlightX( 0 ),
@@ -153,6 +154,12 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   myForegroundColor = Qt::white;
   myForegroundFrameColor = Qt::black;
   myForegroundFrameLineWidth = 1.0;
+
+  // grid
+  myIsGridEnabled = false;
+  myGridCellSize = 100;
+  myGridLineStyle = Qt::DotLine;
+  myGridLineColor = Qt::darkGray;
 
   // default index method (BspTreeIndex) leads to
   // crashes in QGraphicsView::paintEvent() method
@@ -476,7 +483,7 @@ void GraphicsView_ViewPort::updateForeground()
   {
     if( !myForegroundItem )
       myForegroundItem = myScene->addRect( QRectF(), QPen(), QBrush( Qt::white ) );
-    myForegroundItem->setZValue( -1 );
+    myForegroundItem->setZValue( -2 );
 
     QPointF aPoint = QPointF();
     QRectF aRect( aPoint, myForegroundSize );
@@ -501,6 +508,92 @@ void GraphicsView_ViewPort::updateForeground()
   {
     if( myForegroundItem )
       myForegroundItem->setVisible( false );
+  }
+
+  updateGrid(); // foreground size could be changed
+}
+
+//================================================================
+// Function : setGridEnabled
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setGridEnabled( bool theState )
+{
+  myIsGridEnabled = theState;
+}
+
+//================================================================
+// Function : setGridCellSize
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setGridCellSize( int theCellSize )
+{
+  myGridCellSize = theCellSize;
+}
+
+//================================================================
+// Function : setGridLineStyle
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setGridLineStyle( int theLineStyle )
+{
+  myGridLineStyle = theLineStyle;
+}
+
+//================================================================
+// Function : setGridLineColor
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setGridLineColor( const QColor& theLineColor )
+{
+  myGridLineColor = theLineColor;
+}
+
+//================================================================
+// Function : updateGrid
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::updateGrid()
+{
+  if( myIsGridEnabled )
+  {
+    if( !myGridItem )
+      myGridItem = myScene->addPath( QPainterPath() );
+    myGridItem->setZValue( -1 );
+
+    double aWidth = myForegroundSize.width();
+    double aHeight = myForegroundSize.height();
+
+    int aGridNbX = int( aWidth / myGridCellSize ) + 1;
+    int aGridNbY = int( aHeight / myGridCellSize ) + 1;
+
+    int anIndex;
+    QPainterPath aPath;
+    for( anIndex = 0; anIndex < aGridNbX; anIndex++ )
+    {
+      double x = myGridCellSize * (double)anIndex;
+      aPath.moveTo( x, 0 );
+      aPath.lineTo( x, aHeight );
+    }
+    for( anIndex = 0; anIndex < aGridNbY; anIndex++ )
+    {
+      double y = myGridCellSize * (double)anIndex;
+      aPath.moveTo( 0, y );
+      aPath.lineTo( aWidth, y );
+    }
+    myGridItem->setPath( aPath );
+
+    QPen aPen = myGridItem->pen();
+    aPen.setStyle( (Qt::PenStyle)myGridLineStyle );
+    aPen.setColor( myGridLineColor );
+    myGridItem->setPen( aPen );
+
+    myGridItem->setVisible( true );
+  }
+  else
+  {
+    if( myGridItem )
+      myGridItem->setVisible( false );
   }
 }
 
