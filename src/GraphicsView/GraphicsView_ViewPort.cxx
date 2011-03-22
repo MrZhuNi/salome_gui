@@ -143,6 +143,7 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
 
   mySceneGap = 20;
   myFitAllGap = 40;
+  myIsTraceBoundingRectEnabled = true;
 
   // background
   setBackgroundBrush( QBrush( Qt::white ) );
@@ -346,6 +347,15 @@ void GraphicsView_ViewPort::setSceneGap( double theSceneGap )
 void GraphicsView_ViewPort::setFitAllGap( double theFitAllGap )
 {
   myFitAllGap = theFitAllGap;
+}
+
+//================================================================
+// Function : setTraceBoundingRectEnabled
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setTraceBoundingRectEnabled( bool theState )
+{
+  myIsTraceBoundingRectEnabled = theState;
 }
 
 //================================================================
@@ -1247,8 +1257,11 @@ void GraphicsView_ViewPort::finishPulling()
 //================================================================
 void GraphicsView_ViewPort::onBoundingRectChanged()
 {
-  QRectF aRect = objectsBoundingRect();
-  myScene->setSceneRect( aRect.adjusted( -mySceneGap, -mySceneGap, mySceneGap, mySceneGap ) );
+  if( myIsTraceBoundingRectEnabled )
+  {
+    QRectF aRect = objectsBoundingRect();
+    myScene->setSceneRect( aRect.adjusted( -mySceneGap, -mySceneGap, mySceneGap, mySceneGap ) );
+  }
 }
 
 //================================================================

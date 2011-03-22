@@ -82,6 +82,7 @@ public:
   // scene
   void                             setSceneGap( double theSceneGap );
   void                             setFitAllGap( double theFitAllGap );
+  void                             setTraceBoundingRectEnabled( bool theState );
 
   // view name
   void                             setViewNamePosition( NamePosition thePosition,
@@ -216,6 +217,7 @@ private:
   GraphicsView_Scene*              myScene;
   double                           mySceneGap;
   double                           myFitAllGap;
+  bool                             myIsTraceBoundingRectEnabled;
 
   // view name
   NameLabel*                       myNameLabel;
