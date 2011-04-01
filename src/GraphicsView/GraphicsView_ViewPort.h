@@ -183,6 +183,7 @@ public slots:
   void                             onBoundingRectChanged();
 
 protected slots:
+  void                             onKeyEvent( QKeyEvent* );
   void                             onMouseEvent( QGraphicsSceneMouseEvent* );
   void                             onWheelEvent( QGraphicsSceneWheelEvent* );
   void                             onContextMenuEvent( QGraphicsSceneContextMenuEvent* );
@@ -191,6 +192,7 @@ protected:
   virtual void                     scrollContentsBy( int theDX, int theDY );
 
 signals:
+  void                             vpKeyEvent( QKeyEvent* );
   void                             vpMouseEvent( QGraphicsSceneMouseEvent* );
   void                             vpWheelEvent( QGraphicsSceneWheelEvent* );
   void                             vpContextMenuEvent( QGraphicsSceneContextMenuEvent* );

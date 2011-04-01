@@ -74,6 +74,26 @@ void GraphicsView_Scene::onSceneRectChanged( const QRectF& theRect )
 }
 
 //================================================================
+// Function : keyPressEvent
+// Purpose  : 
+//================================================================
+void GraphicsView_Scene::keyPressEvent( QKeyEvent* e )
+{
+  emit gsKeyEvent( e );
+  QGraphicsScene::keyPressEvent( e );
+}
+
+//================================================================
+// Function : keyReleaseEvent
+// Purpose  : 
+//================================================================
+void GraphicsView_Scene::keyReleaseEvent( QKeyEvent* e )
+{
+  emit gsKeyEvent( e );
+  QGraphicsScene::keyReleaseEvent( e );
+}
+
+//================================================================
 // Function : mousePressEvent
 // Purpose  : 
 //================================================================

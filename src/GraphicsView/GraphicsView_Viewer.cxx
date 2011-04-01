@@ -35,6 +35,7 @@
 #include <QColorDialog>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneWheelEvent>
+#include <QKeyEvent>
 #include <QMenu>
 
 //=======================================================================
@@ -66,6 +67,12 @@ GraphicsView_Viewer::~GraphicsView_Viewer()
 SUIT_ViewWindow* GraphicsView_Viewer::createView( SUIT_Desktop* theDesktop )
 {
   GraphicsView_ViewFrame* aViewFrame = new GraphicsView_ViewFrame( theDesktop, this );
+
+  connect( aViewFrame, SIGNAL( keyPressed( QKeyEvent* ) ),
+           this, SLOT( onKeyEvent( QKeyEvent* ) ) );
+
+  connect( aViewFrame, SIGNAL( keyReleased( QKeyEvent* ) ),
+           this, SLOT( onKeyEvent( QKeyEvent* ) ) );
 
   connect( aViewFrame, SIGNAL( mousePressed( QGraphicsSceneMouseEvent* ) ),
            this, SLOT( onMouseEvent( QGraphicsSceneMouseEvent* ) ) );
@@ -231,6 +238,24 @@ void GraphicsView_Viewer::onTransformationFinished()
 }
 
 //================================================================
+// Function : onKeyEvent
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onKeyEvent( QKeyEvent* e )
+{
+  switch( e->type() )
+  {
+    case QEvent::KeyPress:
+      handleKeyPress( e );
+      break;
+    case QEvent::KeyRelease:
+      handleKeyRelease( e );
+      break;
+    default: break;
+  }
+}
+
+//================================================================
 // Function : onMouseEvent
 // Purpose  : 
 //================================================================
@@ -267,6 +292,22 @@ void GraphicsView_Viewer::onWheelEvent( QGraphicsSceneWheelEvent* e )
 }
 
 //================================================================
+// Function : handleKeyPress
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::handleKeyPress( QKeyEvent* e )
+{
+}
+
+//================================================================
+// Function : handleKeyRelease
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::handleKeyRelease( QKeyEvent* e )
+{
+}
+
+//================================================================
 // Function : handleMousePress
 // Purpose  : 
 //================================================================
@@ -282,7 +323,36 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
       activateTransform( Pan );
   }
   else // checking for other operations before selection in release event
-    startOperations( e );
+  {
+    if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+    {
+      if( e->button() == Qt::RightButton &&
+          isImmediateSelectionEnabled() &&
+          aViewPort->nbSelected() < 1 )
+      {
+        // If the 'immediate selection' mode is enabled,
+        // try to perform selection before invoking context menu
+        bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
+        getSelector()->select( QRectF(), append );
+      }
+      else if( e->button() == Qt::LeftButton &&
+               !aViewPort->isSelectByRect() && 
+               !aViewPort->isDragging() &&
+               aViewPort->startPulling( e->scenePos() ) )
+      {
+        // Try to start pulling if rectangular selection is performed
+        aViewPort->finishSelectByRect();
+      }
+      else if( e->button() == Qt::LeftButton &&
+               !( aViewPort->currentBlock() & GraphicsView_ViewPort::BS_Selection ) &&
+               !aViewPort->getHighlightedObject() )
+      {
+        // Start rectangular selection if pulling was not started
+        QPoint p = aViewPort->mapFromScene( e->scenePos() );
+        aViewPort->startSelectByRect( p.x(), p.y() );
+      }
+    }
+  }
 }
 
 //================================================================
@@ -299,7 +369,26 @@ void GraphicsView_Viewer::handleMouseMove( QGraphicsSceneMouseEvent* e )
       getSelector()->detect( e->scenePos().x(), e->scenePos().y() );
   }
 
-  updateOperations( e ); // try to activate other operations
+  // try to activate other operations
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  {
+    if( aViewPort->isPulling() )
+    {
+      aViewPort->drawPulling( e->scenePos() );
+    }
+    else if( e->button() == Qt::LeftButton &&
+             !aViewPort->isSelectByRect() &&
+             !aViewPort->isDragging() &&
+             aViewPort->startPulling( e->scenePos() ) )
+    {
+      aViewPort->finishSelectByRect();
+    }
+    else if( !aViewPort->getHighlightedObject() )
+    {
+      QPoint p = aViewPort->mapFromScene( e->scenePos() );
+      aViewPort->drawSelectByRect( p.x(), p.y() );
+    }
+  }
 }
 
 //================================================================
@@ -322,7 +411,25 @@ void GraphicsView_Viewer::handleMouseRelease( QGraphicsSceneMouseEvent* e )
     }
   }
 
-  finishOperations( e ); // try to finish active operations
+  // try to finish active operations
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  {
+    if( aViewPort->isPulling() )
+    {
+      aViewPort->finishPulling();
+    }
+    else if( !aViewPort->getHighlightedObject() )
+    {
+      QRect aSelRect = aViewPort->selectionRect();
+      aViewPort->finishSelectByRect();
+      if ( getSelector() && !aSelRect.isNull() )
+      {            
+        bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
+        QRectF aRect = aViewPort->mapToScene( aSelRect ).boundingRect();
+        getSelector()->select( aRect, append );
+      }
+    }
+  }
 }
 
 //================================================================
@@ -331,7 +438,22 @@ void GraphicsView_Viewer::handleMouseRelease( QGraphicsSceneMouseEvent* e )
 //================================================================
 void GraphicsView_Viewer::handleWheel( QGraphicsSceneWheelEvent* e )
 {
-  startOperations( e );
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  {
+    bool anIsScaleUp = e->delta() > 0;
+    bool anIsCtrl = e->modifiers() & Qt::ControlModifier;
+
+    bool anIsScaleChanged = false;
+    for( aViewPort->initSelected(); aViewPort->moreSelected(); aViewPort->nextSelected() )
+      if( GraphicsView_Object* anObject = aViewPort->selectedObject() )
+        anIsScaleChanged = anObject->updateScale( anIsScaleUp, anIsCtrl ) || anIsScaleChanged;
+
+    if( anIsScaleChanged )
+    {
+      emit wheelScaleChanged();
+      aViewPort->onBoundingRectChanged();
+    }
+  }
 }
 
 //================================================================
@@ -351,7 +473,8 @@ void GraphicsView_Viewer::onChangeBgColor()
 {
   if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
   {
-    QColor aColor = aViewPort->isForegroundEnabled() ? aViewPort->foregroundColor() : aViewPort->backgroundColor();
+    QColor aColor = aViewPort->isForegroundEnabled() ?
+      aViewPort->foregroundColor() : aViewPort->backgroundColor();
     aColor = QColorDialog::getColor( aColor, aViewPort );	
     if ( aColor.isValid() )
     {
@@ -373,139 +496,4 @@ void GraphicsView_Viewer::onChangeBgColor()
 void GraphicsView_Viewer::onSelectionCancel()
 {
   emit selectionChanged( GVSCS_Invalid );
-}
-
-//================================================================
-// Function : startOperations
-// Purpose  : 
-//================================================================
-void GraphicsView_Viewer::startOperations( QGraphicsSceneMouseEvent* e )
-{
-  GraphicsView_ViewPort* aViewPort = getActiveViewPort();
-  if( !aViewPort )
-    return;
-
-  // If the 'immediate selection' mode is enabled,
-  // try to perform selection before invoking context menu
-  if( e->button() == Qt::RightButton &&
-      isImmediateSelectionEnabled() &&
-      aViewPort->nbSelected() < 1 )
-  {
-    bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
-    getSelector()->select( QRectF(), append );
-    return;
-  }
-
-  // Try to start pulling if rectangular selection is performed
-  if( e->button() == Qt::LeftButton &&
-      !aViewPort->isSelectByRect() && 
-      !aViewPort->isDragging() &&
-      aViewPort->startPulling( e->scenePos() ) )
-  {
-    aViewPort->finishSelectByRect();
-    return;
-  }
-
-  // Start rectangular selection if pulling was not started
-  if( e->button() == Qt::LeftButton &&
-      !( aViewPort->currentBlock() & GraphicsView_ViewPort::BS_Selection ) &&
-      !aViewPort->getHighlightedObject() )
-  {
-    QPoint p = aViewPort->mapFromScene( e->scenePos() );
-    aViewPort->startSelectByRect( p.x(), p.y() );
-  }
-}
-
-//================================================================
-// Function : updateOperations
-// Purpose  : 
-//================================================================
-bool GraphicsView_Viewer::updateOperations( QGraphicsSceneMouseEvent* e )
-{
-  GraphicsView_ViewPort* aViewPort = getActiveViewPort();
-  if( !aViewPort )
-    return false;
-
-  if( aViewPort->isPulling() )
-  {
-    aViewPort->drawPulling( e->scenePos() );
-    return true;
-  }
-
-  if( e->button() == Qt::LeftButton )
-  {
-    if( !aViewPort->isSelectByRect() && !aViewPort->isDragging() && aViewPort->startPulling( e->scenePos() ) )
-    {
-      aViewPort->finishSelectByRect();
-      return true;
-    }
-  }
-
-  if( !aViewPort->getHighlightedObject() )
-  {
-    QPoint p = aViewPort->mapFromScene( e->scenePos() );
-    aViewPort->drawSelectByRect( p.x(), p.y() );
-    return true;
-  }
-  return false;
-}
-
-//================================================================
-// Function : finishOperations
-// Purpose  : 
-//================================================================
-bool GraphicsView_Viewer::finishOperations( QGraphicsSceneMouseEvent* e )
-{
-  GraphicsView_ViewPort* aViewPort = getActiveViewPort();
-  if( !aViewPort )
-    return false;
-
-  if( aViewPort->isPulling() )
-  {
-    aViewPort->finishPulling();
-    // Although operation is finished, FALSE is returned because base class try to 
-    // perform selection in this case. In the other case it is impossible to perform
-    // selection of pulled port
-    return false;
-  }
-
-  if( !aViewPort->getHighlightedObject() )
-  {
-    QRect aSelRect = aViewPort->selectionRect();
-    aViewPort->finishSelectByRect();
-    if ( getSelector() && !aSelRect.isNull() )
-    {            
-      bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
-      QRectF aRect = aViewPort->mapToScene( aSelRect ).boundingRect();
-      getSelector()->select( aRect, append );
-      return true;
-    }
-  }
-
-  return false;
-}
-
-//================================================================
-// Function : startOperations
-// Purpose  : 
-//================================================================
-void GraphicsView_Viewer::startOperations( QGraphicsSceneWheelEvent* e )
-{
-  GraphicsView_ViewPort* aViewPort = getActiveViewPort();
-  if( !aViewPort )
-    return;
-
-  bool anIsScaleUp = e->delta() > 0;
-  bool anIsCtrl = e->modifiers() & Qt::ControlModifier;
-
-  bool anIsScaleChanged = false;
-  for( aViewPort->initSelected(); aViewPort->moreSelected(); aViewPort->nextSelected() )
-    if( GraphicsView_Object* anObject = aViewPort->selectedObject() )
-      anIsScaleChanged = anObject->updateScale( anIsScaleUp, anIsCtrl ) || anIsScaleChanged;
-
-  if( anIsScaleChanged )
-  {
-    emit wheelScaleChanged();
-    aViewPort->onBoundingRectChanged();
-  }
 }

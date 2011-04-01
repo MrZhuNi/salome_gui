@@ -172,6 +172,8 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
                   QPainter::SmoothPixmapTransform |
                   QPainter::HighQualityAntialiasing );
 
+  connect( myScene, SIGNAL( gsKeyEvent( QKeyEvent* ) ),
+           this, SLOT( onKeyEvent( QKeyEvent* ) ) );
   connect( myScene, SIGNAL( gsMouseEvent( QGraphicsSceneMouseEvent* ) ),
            this, SLOT( onMouseEvent( QGraphicsSceneMouseEvent* ) ) );
   connect( myScene, SIGNAL( gsWheelEvent( QGraphicsSceneWheelEvent* ) ),
@@ -1262,6 +1264,15 @@ void GraphicsView_ViewPort::onBoundingRectChanged()
     QRectF aRect = objectsBoundingRect();
     myScene->setSceneRect( aRect.adjusted( -mySceneGap, -mySceneGap, mySceneGap, mySceneGap ) );
   }
+}
+
+//================================================================
+// Function : onKeyEvent
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::onKeyEvent( QKeyEvent* e )
+{
+  emit vpKeyEvent( e );
 }
 
 //================================================================

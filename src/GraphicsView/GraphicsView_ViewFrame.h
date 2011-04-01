@@ -67,11 +67,14 @@ protected slots:
   void                    onViewReset();
 
 private slots:
+  void                    keyEvent( QKeyEvent* );
   void                    mouseEvent( QGraphicsSceneMouseEvent* );
   void                    wheelEvent( QGraphicsSceneWheelEvent* );
   void                    contextMenuEvent( QGraphicsSceneContextMenuEvent* );
 
 signals:
+  void                    keyPressed( QKeyEvent* );
+  void                    keyReleased( QKeyEvent* );
   void                    mousePressed( QGraphicsSceneMouseEvent* );
   void                    mouseMoving( QGraphicsSceneMouseEvent* );
   void                    mouseReleased( QGraphicsSceneMouseEvent* );

@@ -67,6 +67,8 @@ GraphicsView_ViewFrame::GraphicsView_ViewFrame( SUIT_Desktop* d, GraphicsView_Vi
   createActions();
   createToolBar();
 
+  connect( myViewPort, SIGNAL( vpKeyEvent( QKeyEvent* ) ),
+           this, SLOT( keyEvent( QKeyEvent* ) ) );
   connect( myViewPort, SIGNAL( vpMouseEvent( QGraphicsSceneMouseEvent* ) ),
            this, SLOT( mouseEvent( QGraphicsSceneMouseEvent* ) ) );
   connect( myViewPort, SIGNAL( vpWheelEvent( QGraphicsSceneWheelEvent* ) ),
@@ -253,6 +255,25 @@ void GraphicsView_ViewFrame::onViewGlobalPan()
 void GraphicsView_ViewFrame::onViewReset()
 {
   myViewer->activateTransform( GraphicsView_Viewer::Reset );
+}
+
+//================================================================
+// Function : keyEvent
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewFrame::keyEvent( QKeyEvent* e )
+{
+  switch ( e->type() )
+  {
+    case QEvent::KeyPress:
+      emit keyPressed( e );
+      break;
+    case QEvent::KeyRelease:
+      emit keyReleased( e );
+      break;
+    default:
+      break;
+  }
 }
 
 //================================================================

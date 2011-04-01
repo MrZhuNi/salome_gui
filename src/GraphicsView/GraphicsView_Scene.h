@@ -48,6 +48,8 @@ protected slots:
   void                       onSceneRectChanged( const QRectF& theRect ); // for debug
 
 protected:
+  virtual void               keyPressEvent( QKeyEvent* );
+  virtual void               keyReleaseEvent( QKeyEvent* );
   virtual void               mousePressEvent( QGraphicsSceneMouseEvent* );
   virtual void               mouseMoveEvent( QGraphicsSceneMouseEvent* );
   virtual void               mouseReleaseEvent( QGraphicsSceneMouseEvent* );
@@ -61,6 +63,7 @@ protected:
   virtual void               dropEvent( QGraphicsSceneDragDropEvent* );
 
 signals:
+  void                       gsKeyEvent( QKeyEvent* );
   void                       gsMouseEvent( QGraphicsSceneMouseEvent* );
   void                       gsWheelEvent( QGraphicsSceneWheelEvent* );
   void                       gsContextMenuEvent( QGraphicsSceneContextMenuEvent* );

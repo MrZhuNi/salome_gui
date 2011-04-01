@@ -31,6 +31,7 @@
 
 class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
+class QKeyEvent;
 
 class SUIT_ViewWindow;
 
@@ -88,12 +89,8 @@ protected:
   virtual void                  onTransformationStarted();
   virtual void                  onTransformationFinished();
 
-  virtual void                  startOperations( QGraphicsSceneMouseEvent* );
-  virtual bool                  updateOperations( QGraphicsSceneMouseEvent* );
-  virtual bool                  finishOperations( QGraphicsSceneMouseEvent* );
-  virtual void                  startOperations( QGraphicsSceneWheelEvent* );
-
 protected slots:
+  virtual void                  onKeyEvent( QKeyEvent* );
   virtual void                  onMouseEvent( QGraphicsSceneMouseEvent* );
   virtual void                  onWheelEvent( QGraphicsSceneWheelEvent* );
 
@@ -103,6 +100,8 @@ protected slots:
   virtual void                  onChangeBgColor();
 
 private:
+  void                          handleKeyPress( QKeyEvent* );
+  void                          handleKeyRelease( QKeyEvent* );
   void                          handleMouseMove( QGraphicsSceneMouseEvent* );
   void                          handleMousePress( QGraphicsSceneMouseEvent* );
   void                          handleMouseRelease( QGraphicsSceneMouseEvent* );
