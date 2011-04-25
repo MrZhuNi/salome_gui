@@ -1236,7 +1236,15 @@ void QtxWorkstackChild::onDestroyed( QObject* obj )
 {
   if ( obj != widget() )
     return;
-
+  
+  QLayout* lay = layout();
+  if ( lay )
+  {
+    QLayoutItem* item =	lay->takeAt( 0 );
+    if ( item )
+      lay->removeItem( item );
+  }
+  
   myWidget = 0;
   deleteLater();
 }
@@ -1249,6 +1257,14 @@ void QtxWorkstackChild::childEvent( QChildEvent* e )
 {
   if ( e->removed() && e->child() == widget() )
   {
+    QLayout* lay = layout();
+    if ( lay )
+    {
+      QLayoutItem* item =	lay->takeAt( 0 );
+      if ( item )
+        lay->removeItem( item );
+    }
+
     myWidget = 0;
     deleteLater();
   }
