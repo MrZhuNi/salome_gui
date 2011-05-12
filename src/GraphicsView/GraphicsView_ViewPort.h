@@ -71,7 +71,7 @@ public:
   void                             addItem( QGraphicsItem* theItem );
   void                             removeItem( QGraphicsItem* theItem );
 
-  GraphicsView_ObjectList          getObjects() const;
+  GraphicsView_ObjectList          getObjects( bool theIsSortSelected = false ) const;
 
   QRectF                           objectsBoundingRect( bool theOnlyVisible = false ) const;
 

@@ -255,13 +255,18 @@ void GraphicsView_ViewPort::removeItem( QGraphicsItem* theItem )
 // Function : getObjects
 // Purpose  : 
 //================================================================
-GraphicsView_ObjectList GraphicsView_ViewPort::getObjects() const
+GraphicsView_ObjectList GraphicsView_ViewPort::getObjects( bool theIsSortSelected ) const
 {
   GraphicsView_ObjectList aList;
   QListIterator<QGraphicsItem*> anIter( items() );
   while( anIter.hasNext() )
     if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
-      aList.append( anObject );
+    {
+      if( theIsSortSelected && anObject->isSelected() )
+        aList.prepend( anObject ); // put the selected objects to a head of the list
+      else
+        aList.append( anObject );
+    }
   return aList;
 }
 
@@ -774,10 +779,11 @@ void GraphicsView_ViewPort::highlight( double theX, double theY )
   GraphicsView_Object* aPreviousHighlightedObject = myHighlightedObject;
   GraphicsView_Object* aHighlightedObject = 0;
 
-  QListIterator<QGraphicsItem*> anIter( items() );
+  GraphicsView_ObjectList aList = getObjects( true );
+  GraphicsView_ObjectListIterator anIter( aList );
   while( anIter.hasNext() )
   {
-    if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+    if( GraphicsView_Object* anObject = anIter.next() )
     {
       if( anObject->isVisible() && anObject->isSelectable() )
       {
@@ -799,9 +805,9 @@ void GraphicsView_ViewPort::highlight( double theX, double theY )
 
   if( !anIsOnObject )
   {
-    anIter = items();
+    anIter = aList;
     while( anIter.hasNext() )
-      if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+      if( GraphicsView_Object* anObject = anIter.next() )
         anObject->unhighlight();
 
     myHighlightedObject = 0;
