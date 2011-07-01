@@ -2302,10 +2302,12 @@ bool Plot2d_ViewFrame::print( const QString& file, const QString& format ) const
     SUIT_Application* anApp = SUIT_Session::session()->activeApplication();
 
     QPrinter aPrinter( QPrinter::HighResolution );
-    aPrinter.setPageSize( QPrinter::A4 );
 
     if( anApp )
       aPrinter.setPrinterName( anApp->getLastUsedPrinter() );
+
+    aPrinter.setPageSize( QPrinter::A4 );
+    aPrinter.setOrientation( QPrinter::Landscape );
 
     QPrintDialog aDlg( &aPrinter );
     int aStatus = aDlg.exec();
