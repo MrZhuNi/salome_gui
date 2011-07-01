@@ -103,6 +103,12 @@ public:
   //! Invokes application-specific "Select Directory" dialog and returns the selected directory name.
   virtual QString getDirectory( const QString& initial, const QString& caption, QWidget* parent ) = 0;
 
+  //! Gets a name of the last used printer
+  QString               getLastUsedPrinter() const;
+
+  //! Sets a name of the last used printer
+  void                  setLastUsedPrinter( const QString& );
+
 signals:
   void                  applicationClosed( SUIT_Application* );
   void                  activated( SUIT_Application* );

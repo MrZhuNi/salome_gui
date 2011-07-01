@@ -673,3 +673,24 @@ void SUIT_Application::onHelpContextModule( const QString& /*theComponentName*/,
 					    const QString& /*theContext*/ )
 {
 }
+
+/*!
+  \return name of the last used printer
+*/
+QString SUIT_Application::getLastUsedPrinter() const
+{
+  QString aPrinterName;
+  if( SUIT_ResourceMgr* aResMgr = resourceMgr() )
+	  aPrinterName = aResMgr->stringValue( "Printer", "last_used_printer" );
+  return aPrinterName;
+}
+
+/*!
+  Stores a name of the last used printer
+  \param thePrinterName - name of printer
+*/
+void SUIT_Application::setLastUsedPrinter( const QString& thePrinterName )
+{
+  if( SUIT_ResourceMgr* aResMgr = resourceMgr() )
+    aResMgr->setValue( "Printer", "last_used_printer", thePrinterName );
+}
