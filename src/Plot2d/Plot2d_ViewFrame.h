@@ -41,7 +41,7 @@ class PLOT2D_EXPORT Plot2d_ViewFrame : public QWidget
 { 
   Q_OBJECT
 
-  enum { NoOpId, FitAreaId, ZoomId, PanId, GlPanId, DumpId, 
+  enum { NoOpId, FitAreaId, ZoomId, PanId, GlPanId, DumpId, PrintId,
    ModeXLinearId, ModeXLogarithmicId, ModeYLinearId, ModeYLogarithmicId,
    LegendId, CurvePointsId, CurveLinesId, CurveSplinesId };
 public:
@@ -129,7 +129,8 @@ public:
   bool    isXLogEnabled() const;
   bool    isYLogEnabled() const;
 
-  virtual bool print( const QString& file, const QString& format ) const;
+  virtual bool print( const QString& file = QString::null,
+                      const QString& format = QString::null ) const;
 
   QString getVisualParameters();
   void    setVisualParameters( const QString& parameters );

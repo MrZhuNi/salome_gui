@@ -22,6 +22,10 @@
         <translation>Dump view...</translation>
     </message>
     <message>
+        <source>MNU_PRINT_VIEW</source>
+        <translation>Print view...</translation>
+    </message>
+    <message>
         <source>PLOT2D_SCALE_MODE_HOR</source>
         <translation>Horizontal axis:</translation>
     </message>
@@ -318,6 +322,10 @@ Logarithmic scale for ordinate axis is not allowed.</translation>
     <message>
         <source>DSC_DUMP_VIEW</source>
         <translation>Saves the active view in the image file</translation>
+    </message>
+    <message>
+        <source>DSC_PRINT_VIEW</source>
+        <translation>Print the active view</translation>
     </message>
     <message>
         <source>WARNING</source>

@@ -45,6 +45,7 @@
 #include <QMouseEvent>
 #include <QContextMenuEvent>
 #include <QPrinter>
+#include <QPrintDialog>
 #include <QPalette>
 
 #include <qwt_math.h>
@@ -2294,6 +2295,29 @@ void Plot2d_ViewFrame::updateTitles()
 */
 bool Plot2d_ViewFrame::print( const QString& file, const QString& format ) const
 {
+  // if the method is called with default (empty) arguments,
+  // send contents of the plot directly to printer
+  if( file.isEmpty() && format.isEmpty() )
+  {
+    SUIT_Application* anApp = SUIT_Session::session()->activeApplication();
+
+    QPrinter aPrinter( QPrinter::HighResolution );
+    aPrinter.setPageSize( QPrinter::A4 );
+
+    if( anApp )
+      aPrinter.setPrinterName( anApp->getLastUsedPrinter() );
+
+    QPrintDialog aDlg( &aPrinter );
+    int aStatus = aDlg.exec();
+    if( aStatus )
+      myPlot->print( aPrinter );
+
+    if( anApp )
+      anApp->setLastUsedPrinter( aPrinter.printerName() );
+
+    return aStatus;
+  }
+
 #ifdef WIN32
   return false;
 

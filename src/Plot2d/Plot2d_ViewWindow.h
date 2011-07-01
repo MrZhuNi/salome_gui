@@ -44,7 +44,7 @@ class PLOT2D_EXPORT Plot2d_ViewWindow : public SUIT_ViewWindow
   Q_OBJECT
 
 public:
-  enum { DumpId, 
+  enum { DumpId, PrintId,
 	 ScaleOpId, FitAllId, FitRectId, ZoomId,
 	 MoveOpId, PanId, GlobalPanId,
 	 PModeXLinearId, PModeXLogarithmicId, 
@@ -91,6 +91,7 @@ public slots:
   void              onCurves();
 
   void              onDumpView();
+  void              onPrintView();
 
 protected:
   virtual QImage    dumpView();

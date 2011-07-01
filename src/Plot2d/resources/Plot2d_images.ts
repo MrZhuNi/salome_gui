@@ -22,6 +22,10 @@
         <translation>plot2d_camera_dump.png</translation>
     </message>
     <message>
+        <source>ICON_PLOT2D_PRINT</source>
+        <translation>plot2d_print.png</translation>
+    </message>
+    <message>
         <source>ICON_PLOT2D_ZOOM</source>
         <translation>plot2d_zoom.png</translation>
     </message>

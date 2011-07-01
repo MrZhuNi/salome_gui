@@ -183,7 +183,9 @@ void Plot2d_ViewWindow::createActions()
   QtxAction* aAction;
   SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
 
-  // 1. Dump View
+  // 1. Dump and Print
+
+  // 1.1. Dump View
   aAction = new QtxAction( tr( "MNU_DUMP_VIEW" ),
 			   aResMgr->loadPixmap( "Plot2d", tr( "ICON_PLOT2D_DUMP" ) ),
                            tr( "MNU_DUMP_VIEW" ),
@@ -191,6 +193,15 @@ void Plot2d_ViewWindow::createActions()
   aAction->setStatusTip( tr( "DSC_DUMP_VIEW" ) );
   connect( aAction, SIGNAL( triggered( bool ) ), this, SLOT( onDumpView() ) );
   mgr->registerAction( aAction, DumpId );
+
+  // 1.2. Print View
+  aAction = new QtxAction( tr( "MNU_PRINT_VIEW" ),
+			   aResMgr->loadPixmap( "Plot2d", tr( "ICON_PLOT2D_PRINT" ) ),
+                           tr( "MNU_PRINT_VIEW" ),
+			   0, this);
+  aAction->setStatusTip( tr( "DSC_PRINT_VIEW" ) );
+  connect( aAction, SIGNAL( triggered( bool ) ), this, SLOT( onPrintView() ) );
+  mgr->registerAction( aAction, PrintId );
 
   // 2. Scaling operations
 
@@ -395,6 +406,7 @@ void Plot2d_ViewWindow::createToolBar()
   QtxActionToolMgr* mgr = toolMgr();
   myToolBar = mgr->createToolBar( tr( "LBL_TOOLBAR_LABEL" ) );
   mgr->append( DumpId, myToolBar );
+  mgr->append( PrintId, myToolBar );
   mgr->append( ScaleOpId, myToolBar );
   mgr->append( MoveOpId, myToolBar );
   mgr->append( toolMgr()->separator(), myToolBar );
@@ -586,6 +598,14 @@ void Plot2d_ViewWindow::onDumpView()
 {
   qApp->postEvent( myViewFrame, new QPaintEvent( QRect( 0, 0, myViewFrame->width(), myViewFrame->height() ) ) );
   SUIT_ViewWindow::onDumpView();
+}
+
+/*!
+  \brief Called when the "Print view" action is activated.
+*/
+void Plot2d_ViewWindow::onPrintView()
+{
+  myViewFrame->print();
 }
 
 /*!
