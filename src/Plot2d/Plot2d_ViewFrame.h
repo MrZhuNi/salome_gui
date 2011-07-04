@@ -141,6 +141,8 @@ public:
   void    setAutoUpdateTitle( const ObjectType type, const bool upd );
   bool    getAutoUpdateTitle( const ObjectType type ) const;
 
+  void    updateSymbols();
+
 protected:
   int     testOperation( const QMouseEvent& );
   void    readPreferences();

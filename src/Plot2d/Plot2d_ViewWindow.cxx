@@ -606,6 +606,12 @@ void Plot2d_ViewWindow::onDumpView()
 void Plot2d_ViewWindow::onPrintView()
 {
   myViewFrame->print();
+
+  // This method is called to restore pen's width for all curves' marker symbols
+  // to 1 instead of zero values set somewhere in QwtPlot::print() (presumably,
+  // by QwtPlotPrintFilter), and, correspondingly, to prevent drawing black frames
+  // around the symbols during the next printing.
+  myViewFrame->updateSymbols();
 }
 
 /*!

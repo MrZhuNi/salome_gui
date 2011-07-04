@@ -608,7 +608,7 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
       aPCurve->setPen( QPen( color, DEFAULT_LINE_WIDTH, typeLine ) );
       aPCurve->setSymbol( QwtSymbol( typeMarker, 
                QBrush( color ), 
-               QPen( color ), 
+               QPen( color, 1 ), // width's set to 1 for correct printing
                QSize( myMarkerSize, myMarkerSize ) ) );
       curve->setColor( color );
       curve->setLine( Plot2d::qwt2plotLine( typeLine ) );
@@ -621,7 +621,7 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
       aPCurve->setPen( QPen( curve->getColor(), curve->getLineWidth(), ps ) );
       aPCurve->setSymbol( QwtSymbol( ms, 
                QBrush( curve->getColor() ), 
-               QPen( curve->getColor() ), 
+               QPen( curve->getColor(), 1 ), // width's set to 1 for correct printing
                QSize( myMarkerSize, myMarkerSize ) ) );
       myPlot->setCurveNbMarkers( curve, curve->getNbMarkers() );
     }
@@ -707,7 +707,7 @@ void Plot2d_ViewFrame::updateCurve( Plot2d_Curve* curve, bool update )
       aPCurve->setPen ( QPen( curve->getColor(), curve->getLineWidth(), ps ) );
       aPCurve->setSymbol( QwtSymbol( ms, 
                QBrush( curve->getColor() ), 
-               QPen( curve->getColor() ), 
+               QPen( curve->getColor(), 1 ), // width's set to 1 for correct printing
                QSize( myMarkerSize, myMarkerSize ) ) );
       aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
       Plot2d_PlotCurve* aPlot2dCurve = dynamic_cast< Plot2d_PlotCurve* >( aPCurve );
@@ -2579,3 +2579,30 @@ bool Plot2d_ViewFrame::getAutoUpdateTitle( const ObjectType type ) const
   }
 }
 
+/*!
+  Restores pen's width of marker symbols to 1
+*/
+void Plot2d_ViewFrame::updateSymbols()
+{
+  curveList aList;
+  getCurves( aList );
+
+  curveList::iterator anIter, anIterEnd = aList.end();
+  for( anIter = aList.begin(); anIter != anIterEnd; anIter++ )
+  {
+    if( Plot2d_Curve* aCurve = *anIter )
+    {
+      if( QwtPlotCurve* aPCurve = getPlotCurve( aCurve ) )
+      {
+        QwtSymbol aSymbol = aPCurve->symbol();
+        QPen aPen = aSymbol.pen();
+        if( aPen.width() == 0 )
+        {
+          aPen.setWidth( 1 );
+          aSymbol.setPen( aPen );
+          aPCurve->setSymbol( aSymbol );
+        }
+      }
+    }
+  }
+}
