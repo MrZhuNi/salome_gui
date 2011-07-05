@@ -259,8 +259,9 @@ GraphicsView_ObjectList GraphicsView_ViewPort::getObjects( bool theIsSortSelecte
 {
   GraphicsView_ObjectList aList;
   QListIterator<QGraphicsItem*> anIter( items() );
-  while( anIter.hasNext() )
-    if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+  anIter.toBack(); // objects created later should be put to the result list first
+  while( anIter.hasPrevious() )
+    if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.previous() ) )
     {
       if( theIsSortSelected && anObject->isSelected() )
         aList.prepend( anObject ); // put the selected objects to a head of the list
