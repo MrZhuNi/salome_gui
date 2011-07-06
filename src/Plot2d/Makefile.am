@@ -84,7 +84,8 @@ dist_salomeres_DATA =				\
 	resources/plot2d_splines.png		\
 	resources/plot2d_zoom.png		\
 	resources/plot2d_curves_settings.png	\
-	resources/plot2d_minus.png
+	resources/plot2d_minus.png \
+	resources/plot2d_print.png
 
 nodist_salomeres_DATA =		\
 	Plot2d_images.qm	\
