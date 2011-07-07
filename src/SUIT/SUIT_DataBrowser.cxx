@@ -25,6 +25,9 @@
 #include <QtxTreeView.h>
 
 #include <QShortcut>
+#include <QEvent>
+#include <QEvent>
+#include <QDropEvent>
 
 /*!
   \class SUIT_DataBrowser
@@ -317,6 +320,8 @@ void SUIT_DataBrowser::init( SUIT_DataObject* root )
 {
   SUIT_ProxyModel* m = new SUIT_ProxyModel( root, this );
   connect( m, SIGNAL( modelUpdated() ), this, SLOT( onModelUpdated() ) );
+  connect( m, SIGNAL( drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* ) ), 
+           this, SIGNAL( drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* ) ) );
   
   setModel( m );
   setItemDelegate( qobject_cast<SUIT_ProxyModel*>( model() )->delegate() );
@@ -329,6 +334,9 @@ void SUIT_DataBrowser::init( SUIT_DataObject* root )
   connect( treeView(), SIGNAL( expanded( const QModelIndex& ) ), 
 	   this,       SLOT( onExpanded( const QModelIndex& ) ) );
   myShortcut = new QShortcut( Qt::Key_F5, this, SIGNAL( requestUpdate() ), SIGNAL( requestUpdate() ) );
+
+  treeView()->installEventFilter( this );
+  treeView()->viewport()->installEventFilter( this );
 
   myAutoSizeFirstColumn = true;
   myAutoSizeColumns = false;
@@ -418,3 +426,62 @@ void SUIT_DataBrowser::onExpanded( const QModelIndex& index )
   }
 }
 
+/*!
+  \brief Activate drag-and-drop in object browser
+*/
+void SUIT_DataBrowser::setDragEnabled( const bool enabled )
+{
+  QTreeView* tree = treeView();
+
+  tree->setDragEnabled( enabled );
+
+  if ( enabled )
+  {
+    tree->setDragDropMode( QAbstractItemView::InternalMove );
+    tree->viewport()->setAcceptDrops( true );
+    tree->setDropIndicatorShown( true );
+
+  }
+}
+
+/*!
+  \brief Check whether drag-and-drop is activated.
+*/
+bool SUIT_DataBrowser::dragEnabled() const
+{
+  return treeView()->dragEnabled();
+}
+
+/*!
+  \brief Catch drag events, analyze mimeData, analyze underlying object and call 
+  SUIT_TreeModel::setDropAccepted() with corresponding flag
+*/
+bool SUIT_DataBrowser::eventFilter( QObject* obj, QEvent* e )
+{
+  QEvent::Type type = e->type();
+  QtxTreeView* tree = treeView();
+
+  if ( obj == tree->viewport() )
+  {
+    if ( type == QEvent::DragEnter || type == QEvent::DragMove )
+    {
+      SUIT_DataObject* destObj = 0;
+
+      QDropEvent* dropEvent = (QDropEvent*)e;
+      QModelIndex ind = tree->indexAt( dropEvent->pos() );
+      SUIT_ProxyModel* m = qobject_cast<SUIT_ProxyModel*>( model() );
+      if ( m && ind.isValid() ) 
+      {
+        destObj = m->object( ind );
+        if ( destObj )
+        {
+          QList<SUIT_DataObject*> srcList;
+          m->getObjects( dropEvent->mimeData(), srcList );
+          m->setDropAccepted( destObj->isDropAccepted( srcList ) );
+        }
+      }
+    }
+  }
+
+  return OB_Browser::eventFilter( obj, e );
+}

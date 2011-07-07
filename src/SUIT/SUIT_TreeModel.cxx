@@ -26,6 +26,10 @@
 
 #include <QApplication>
 #include <QHash>
+#include <QMimeData>
+#include <QSet>
+
+static const QString SUIT_DATAOBJECT_MIME_TYPE = "suit_dataobject.ptr";
 
 SUIT_AbstractModel::SUIT_AbstractModel()
 {
@@ -439,7 +443,8 @@ SUIT_TreeModel::SUIT_TreeModel( QObject* parent )
   myRoot( 0 ),
   myRootItem( 0 ),
   myAutoDeleteTree( false ),
-  myAutoUpdate( true )
+  myAutoUpdate( true ),
+  myDropAccepted( false )
 {
   initialize();
 }
@@ -822,6 +827,10 @@ Qt::ItemFlags SUIT_TreeModel::flags( const QModelIndex& index ) const
     // data object is checkable
     if ( obj->isCheckable( index.column() ) )
       f = f | Qt::ItemIsUserCheckable;
+
+    // sln: is moveable
+    if ( obj->isDragable() )
+      f = f | Qt::ItemIsDragEnabled;
   }
   return f;
 }
@@ -1301,6 +1310,9 @@ SUIT_ProxyModel::SUIT_ProxyModel( QObject* parent )
 {
   SUIT_TreeModel* model = new SUIT_TreeModel( this );
   connect( model, SIGNAL( modelUpdated() ), this, SIGNAL( modelUpdated() ) );
+  connect( model, SIGNAL( drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* ) ),
+           this,  SIGNAL( drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* ) ) );
+
   setSourceModel( model );
 }
 
@@ -1314,7 +1326,10 @@ SUIT_ProxyModel::SUIT_ProxyModel( SUIT_DataObject* root, QObject* parent )
   mySortingEnabled( true )
 {
   SUIT_TreeModel* model = new SUIT_TreeModel( root, this );
+  model->setSupportedDragActions( Qt::MoveAction );
   connect( model, SIGNAL( modelUpdated() ), this, SIGNAL( modelUpdated() ) );
+  connect( model, SIGNAL( drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* ) ),
+           this,  SIGNAL( drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* ) ) );
   setSourceModel( model );
 }
 
@@ -1328,6 +1343,8 @@ SUIT_ProxyModel::SUIT_ProxyModel( SUIT_AbstractModel* model, QObject* parent )
   mySortingEnabled( true )
 {
   connect( *model, SIGNAL( modelUpdated() ), this, SIGNAL( modelUpdated() ) );
+  connect( *model, SIGNAL( drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* ) ),
+           this,  SIGNAL( drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* ) ) );
   setSourceModel( *model );
 }
 
@@ -1614,10 +1631,30 @@ Qtx::Appropriate SUIT_ProxyModel::appropriate( const QString& name ) const
   return treeModel() ? treeModel()->appropriate( name ) : Qtx::Shown;
 }
 
+/*!
+  \brief Retrieve objects from mime data
 
+  \param data - mime data
+  \param lst - out list of objects
+  \return TRUE if operation has been completed successfully; FALSE otherwise
+*/
+bool SUIT_ProxyModel::getObjects( const QMimeData* data, QList<SUIT_DataObject*>& lst ) const
+{
+  SUIT_TreeModel* tm = dynamic_cast<SUIT_TreeModel*>( treeModel() );
+  return tm ? tm->getObjects( data, lst ) : false;
+}
 
+/*!
+  \brief Specify whether drop is acceptable
 
-
+  \param on - TRUE if drop is acceptable; FALSE otherwise
+*/
+void SUIT_ProxyModel::setDropAccepted( const bool on )
+{
+  SUIT_TreeModel* tm = dynamic_cast<SUIT_TreeModel*>( treeModel() );
+  if ( tm )
+    tm->setDropAccepted( on );
+}
 
 /*!
   \class SUIT_ItemDelegate
@@ -1673,3 +1710,164 @@ void SUIT_ItemDelegate::paint( QPainter* painter,
   }
   QItemDelegate::paint( painter, opt, index );
 }
+
+// ++++++++++++ TREE MODEL ++++++++++++
+
+/*!
+  \brief to do Gets supported drag and drop actions. Current implementation returns Qt::MoveAction only
+
+  \return Qt::MoveAction
+*/
+Qt::DropActions SUIT_TreeModel::supportedDropActions() const
+{
+  return Qt::MoveAction;
+}
+
+/*!
+  \brief Gets supported mime types
+
+  \return "suit_dataobject.ptr"
+*/
+QStringList SUIT_TreeModel::mimeTypes() const
+{
+  QStringList types;
+  if ( myDropAccepted )
+    types << SUIT_DATAOBJECT_MIME_TYPE;
+  return types;
+}
+
+/*!
+  \brief Create mime data for given objects
+
+  \param indexes - list of model indexes of objects for drag operation
+  \return mime data
+*/
+QMimeData* SUIT_TreeModel::mimeData( const QModelIndexList& indexes ) const
+{
+  QMimeData* mimeData = new QMimeData();
+  QByteArray encodedData;
+
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+
+  bool is64 = ( sizeof( void* ) == 64 );
+
+  QSet<SUIT_DataObject*> anAdded;
+  foreach( QModelIndex index, indexes ) 
+  {
+    if ( !index.isValid() ) 
+      continue;
+
+    SUIT_DataObject* dataObj = object( index );
+    if ( dataObj && !anAdded.contains( dataObj ) )
+    {
+      if ( !dataObj->isDragable() )
+      {
+        delete mimeData;
+        return 0;      
+      }
+        
+      if ( is64 )
+        stream << (quint64)dataObj;
+      else
+        stream << (quint32)dataObj;
+      anAdded.insert( dataObj );
+    }
+  }
+
+  mimeData->setData( SUIT_DATAOBJECT_MIME_TYPE , encodedData );
+  
+  return mimeData;
+}
+
+/*!
+  \brief Drop objects coded in mime data under parent object reimplemented from the base class
+
+  \return TRUE if operation has been completed successfully; FALSE otherwise
+*/
+bool SUIT_TreeModel::dropMimeData( const QMimeData* data, Qt::DropAction action, 
+                                   int row, int column, const QModelIndex& parent )
+{
+  QList<SUIT_DataObject*> resList;
+  SUIT_DataObject* targetObj = 0;
+
+  try
+  {
+    targetObj = object( parent );
+    if ( targetObj )
+      getObjects( data, resList );
+  }
+  catch (...)
+  {
+    resList.clear();
+  }
+
+  if ( resList.count() > 0 && targetObj )
+  {
+    emit drop( resList, targetObj );
+    return true;
+  }
+  else 
+    return false;
+}
+
+/*!
+  \brief Retrieve objects from mime data
+
+  \param data - mime data
+  \param lst - out list of objects
+  \return TRUE if operation has been completed successfully; FALSE otherwise
+*/
+bool SUIT_TreeModel::getObjects( const QMimeData* data, QList<SUIT_DataObject*>& outList ) const
+{
+  outList.clear();
+
+  QByteArray encodedData = data->data( SUIT_DATAOBJECT_MIME_TYPE );
+  QDataStream stream( &encodedData, QIODevice::ReadOnly );
+
+  bool is64 = ( sizeof( void* ) == 64 );
+
+  while( !stream.atEnd() ) 
+  {
+    SUIT_DataObject* dataObj = 0;
+
+    if ( is64 )
+    {
+      quint64 buff;
+      stream >> buff;
+      dataObj = (SUIT_DataObject*)buff;
+    }
+    else
+    {
+      quint32 buff;
+      stream >> buff;
+      dataObj = (SUIT_DataObject*)buff;
+    }
+
+    if ( dataObj )
+      outList.append( dataObj );
+  }  
+
+  return outList.count() > 0;
+}
+
+/*!
+  \brief Specify whether drop is acceptable
+
+  Purpose of this method is to enable drop operation for some items and disable
+  it for other items. QT does not provide corresponding interface. Drop operation 
+  can be enabled or disabled by means of mimeTypes() method only. If out of 
+  mimeTypes() contains type of mime data used for drag and drop, operation is 
+  enabled; disabled otherwise. SUIT_DataBrowser catches drag events, analyzes 
+  mimeData, analyzes underlying object and calls setDropAccepted() with 
+  corresponding flag
+
+  \param on - TRUE if drop is acceptable; FALSE otherwise
+*/
+void SUIT_TreeModel::setDropAccepted( const bool on )
+{
+  myDropAccepted = on;
+}
+
+
+
+

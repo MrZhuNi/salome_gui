@@ -143,12 +143,22 @@ public:
 
   QAbstractItemDelegate* delegate() const;
 
+  // sln: tree model
+  virtual Qt::DropActions  supportedDropActions() const;
+  virtual QStringList      mimeTypes() const;
+  virtual QMimeData*	     mimeData( const QModelIndexList& indexes ) const;
+  virtual bool             dropMimeData( const QMimeData* data, Qt::DropAction action, 
+                             int row, int column, const QModelIndex& parent );
+  bool                     getObjects( const QMimeData* data, QList<SUIT_DataObject*>& ) const;
+  void                     setDropAccepted( const bool );
+  
 public slots:
   virtual void           updateTree( const QModelIndex& );
   virtual void           updateTree( SUIT_DataObject* = 0 );
 
 signals:
   void modelUpdated();
+  void drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* );
 
 private:
   void                   initialize();
@@ -171,10 +181,9 @@ private:
   typedef struct
   {
     QString myName;
-	QMap<int,int> myIds;
-	QPixmap myIcon;
-	Qtx::Appropriate myAppropriate;
-
+	  QMap<int,int> myIds;
+	  QPixmap myIcon;
+	  Qtx::Appropriate myAppropriate;
   } ColumnInfo;
   
   SUIT_DataObject*    myRoot;
@@ -182,6 +191,7 @@ private:
   ItemMap             myItems;
   bool                myAutoDeleteTree;
   bool                myAutoUpdate;
+  bool                myDropAccepted;
   QVector<ColumnInfo> myColumns;
 
   friend class SUIT_TreeModel::TreeSync;
@@ -222,6 +232,9 @@ public:
 
   QAbstractItemDelegate* delegate() const;
 
+  bool                     getObjects( const QMimeData* data, QList<SUIT_DataObject*>& ) const;
+  void                     setDropAccepted( const bool );
+
 public slots:
   virtual void           updateTree( const QModelIndex& );
   virtual void           updateTree( SUIT_DataObject* = 0 );
@@ -229,6 +242,7 @@ public slots:
 
 signals:
   void modelUpdated();
+  void drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* );
 
 protected:
   SUIT_AbstractModel*    treeModel() const;

@@ -27,6 +27,7 @@
 #include "SUIT_PopupClient.h"
 #include "SUIT_DataObject.h"
 #include <OB_Browser.h>
+#include <QAbstractItemView>
 
 class QShortcut;
 
@@ -66,23 +67,28 @@ public:
 
   void             ensureItemVisible( const SUIT_DataObject* );
 
+  void             setDragEnabled( const bool enabled );
+  bool             dragEnabled() const;
+
 protected:
   virtual void     contextMenuEvent( QContextMenuEvent* );
+  virtual bool     eventFilter( QObject*, QEvent* );
 
 private:
   void             init( SUIT_DataObject* );
-
+  
 signals:
   void             requestUpdate();
   void             clicked( SUIT_DataObject* );
   void             doubleClicked( SUIT_DataObject* );
+  void             drop( const QList<SUIT_DataObject*>& , SUIT_DataObject* );
 
 private slots:
   void             onModelUpdated();
   void             onClicked( const QModelIndex& );
   void             onDblClicked( const QModelIndex& );
   void             onExpanded( const QModelIndex& );
-
+  
 private:
   QShortcut*       myShortcut;
 

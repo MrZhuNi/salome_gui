@@ -542,7 +542,7 @@ bool SUIT_DataObject::isDragable() const
           to this object
 */
 
-bool SUIT_DataObject::isDropAccepted( SUIT_DataObject* /*obj*/ )
+bool SUIT_DataObject::isDropAccepted( const QList<SUIT_DataObject*>& /*list*/ )
 {
   return false;
 }

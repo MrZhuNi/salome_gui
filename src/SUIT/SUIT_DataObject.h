@@ -104,8 +104,8 @@ public:
   virtual int                 alignment( const int = NameId ) const;
 
   virtual bool                isDragable() const;
-  virtual bool                isDropAccepted( SUIT_DataObject* obj );
-
+  virtual bool                isDropAccepted( const QList<SUIT_DataObject*>& );
+  
   virtual bool                isEnabled() const;
   virtual bool                isSelectable() const;
   virtual bool                isCheckable( const int = NameId ) const;
