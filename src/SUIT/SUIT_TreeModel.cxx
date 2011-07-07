@@ -828,8 +828,7 @@ Qt::ItemFlags SUIT_TreeModel::flags( const QModelIndex& index ) const
     if ( obj->isCheckable( index.column() ) )
       f = f | Qt::ItemIsUserCheckable;
 
-    if ( index.isValid() )
-      f = Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | f;
+    f = Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | f;
   }
   return f;
 }
@@ -1791,9 +1790,41 @@ bool SUIT_TreeModel::dropMimeData( const QMimeData* data, Qt::DropAction action,
 
   try
   {
-    targetObj = object( parent );
-    if ( targetObj )
-      getObjects( data, resList );
+    SUIT_DataObject* dataObj = object( parent );
+
+    if ( dataObj )
+    {
+      if ( row == -1 )
+      {
+        // mouse cursor other item
+        targetObj = dataObj;
+      }
+      else
+      {
+        // mouse between items (top item is considered as parent)
+        if ( row == 0 )
+        {
+          // cursor between parent item and its first child  
+          targetObj = dataObj;
+        }
+        else if ( row > 0 )
+        {
+          QList<SUIT_DataObject*> list;
+          dataObj->children( list );
+          QList<SUIT_DataObject*>::iterator it = list.begin();
+          for ( int i = 1 ; it != list.end(); ++it, ++i )
+          {
+            if ( i == row )
+            {
+              targetObj = *it ;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    getObjects( data, resList );
   }
   catch (...)
   {
