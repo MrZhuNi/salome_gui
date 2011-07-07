@@ -1731,6 +1731,11 @@ QStringList SUIT_TreeModel::mimeTypes() const
   QStringList types;
   if ( myDropAccepted )
     types << SUIT_DATAOBJECT_MIME_TYPE;
+  else
+  {
+    // work-arround for delivery only
+    ((SUIT_TreeModel*)this)->myDropAccepted = true;
+  }
   return types;
 }
 
