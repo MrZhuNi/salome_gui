@@ -137,7 +137,7 @@ protected:
 
   virtual bool                        isSelectionCompatible();
 
-  LightApp_Operation*                 operation( const int ) const;
+  LightApp_Operation*                 operation( const int, const bool toCreate = false ) const;
 
 private:
   typedef QMap<int,LightApp_Operation*> MapOfOperation;

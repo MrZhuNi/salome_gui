@@ -628,11 +628,23 @@ void LightApp_Module::onViewManagerRemoved( SUIT_ViewManager* )
   \brief Returns instance of operation by its id; if there is no operation
   corresponding to this id, null pointer is returned
   \param id - operation id 
+  \param toCreate - specify whether operation has to be created if it dos not exist
   \return operation instance
 */
-LightApp_Operation* LightApp_Module::operation( const int id ) const
+LightApp_Operation* LightApp_Module::operation( const int id, const bool toCreate ) const
 {
-  return myOperations.contains( id ) ? myOperations[id] : 0;
+  LightApp_Operation* op = 0;
+  
+  if ( myOperations.contains( id ) )
+    op = myOperations[ id ];
+  else if ( toCreate )
+  {
+    op = createOperation( id );
+    if ( op )
+      ((LightApp_Module*)this)->myOperations.insert( id, op );
+  }
+  
+  return op;
 }
 
 /*!
