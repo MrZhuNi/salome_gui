@@ -462,8 +462,8 @@ bool SUIT_DataBrowser::eventFilter( QObject* obj, QEvent* e )
   QtxTreeView* tree = treeView();
 
   if ( obj == tree->viewport() )
-  {
-    if ( type == QEvent::DragEnter || type == QEvent::DragMove )
+  { 
+    if ( /*type == QEvent::DragEnter || */type == QEvent::DragMove )
     {
       SUIT_DataObject* destObj = 0;
 
