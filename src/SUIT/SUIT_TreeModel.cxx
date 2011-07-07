@@ -828,9 +828,8 @@ Qt::ItemFlags SUIT_TreeModel::flags( const QModelIndex& index ) const
     if ( obj->isCheckable( index.column() ) )
       f = f | Qt::ItemIsUserCheckable;
 
-    // sln: is moveable
-    if ( obj->isDragable() )
-      f = f | Qt::ItemIsDragEnabled;
+    if ( index.isValid() )
+      f = Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | f;
   }
   return f;
 }
