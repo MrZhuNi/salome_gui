@@ -220,6 +220,7 @@ private:
   double                           mySceneGap;
   double                           myFitAllGap;
   bool                             myIsTraceBoundingRectEnabled;
+  GraphicsView_ObjectList          myObjects;
 
   // view name
   NameLabel*                       myNameLabel;

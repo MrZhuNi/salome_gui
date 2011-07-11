@@ -42,6 +42,8 @@ public:
   const QString&             getName() const { return myName; }
   virtual void               setName( const QString& theName );
 
+  virtual int                getPriority() const { return myPriority; }
+
   virtual bool               isSelectable() const { return true; }
   virtual bool               isMovable() const { return true; }
 
@@ -75,6 +77,8 @@ protected:
 
 protected:
   QString                    myName;
+
+  int                        myPriority;
 
   bool                       myIsHighlighted;
   bool                       myIsSelected;

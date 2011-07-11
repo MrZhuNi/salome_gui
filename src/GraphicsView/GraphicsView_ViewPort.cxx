@@ -231,6 +231,20 @@ void GraphicsView_ViewPort::cleanup()
 //================================================================
 void GraphicsView_ViewPort::addItem( QGraphicsItem* theItem )
 {
+  if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( theItem ) )
+  {
+    int aPriority = anObject->getPriority();
+    GraphicsView_ObjectList::iterator anIter, anIterEnd = myObjects.end();
+    for( anIter = myObjects.begin(); anIter != anIterEnd; anIter++ )
+    {
+      if( GraphicsView_Object* anObjectRef = *anIter )
+      {
+        if( anObjectRef->getPriority() > aPriority )
+          break;
+      }
+    }
+    myObjects.insert( anIter, anObject );
+  }
   myScene->addItem( theItem );
   onBoundingRectChanged();
 }
@@ -246,6 +260,7 @@ void GraphicsView_ViewPort::removeItem( QGraphicsItem* theItem )
     if( myHighlightedObject == anObject )
       myHighlightedObject = 0;
     mySelectedObjects.removeAll( anObject );
+    myObjects.removeAll( anObject );
   }
   myScene->removeItem( theItem );
   onBoundingRectChanged();
@@ -257,16 +272,45 @@ void GraphicsView_ViewPort::removeItem( QGraphicsItem* theItem )
 //================================================================
 GraphicsView_ObjectList GraphicsView_ViewPort::getObjects( bool theIsSortSelected ) const
 {
+  if( !theIsSortSelected )
+    return myObjects;
+
+  // to append selected objects after their non-selected siblings with similar priority
+  int aCurrentPriority = -1;
+  GraphicsView_ObjectList aSelectedObjects;
+
   GraphicsView_ObjectList aList;
-  QListIterator<QGraphicsItem*> anIter( items() );
+  GraphicsView_ObjectListIterator anIter( myObjects );
   while( anIter.hasNext() )
-    if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( anIter.next() ) )
+  {
+    if( GraphicsView_Object* anObject = anIter.next() )
     {
-      if( theIsSortSelected && anObject->isSelected() )
-        aList.prepend( anObject ); // put the selected objects to a head of the list
+      int aPriority = anObject->getPriority();
+      if( aPriority > aCurrentPriority  )
+      {
+        if( !aSelectedObjects.isEmpty() )
+        {
+          aList.append( aSelectedObjects );
+          aSelectedObjects.clear();
+        }
+        aCurrentPriority = aPriority;
+      }
+
+      if( anObject->isSelected() )
+        aSelectedObjects.append( anObject );
       else
         aList.append( anObject );
     }
+  }
+
+  // for selected objects with highest priority,
+  // which were not pushed to the result list yet
+  if( !aSelectedObjects.isEmpty() )
+  {
+    aList.append( aSelectedObjects );
+    aSelectedObjects.clear();
+  }
+
   return aList;
 }
 
@@ -781,9 +825,10 @@ void GraphicsView_ViewPort::highlight( double theX, double theY )
 
   GraphicsView_ObjectList aList = getObjects( true );
   GraphicsView_ObjectListIterator anIter( aList );
-  while( anIter.hasNext() )
+  anIter.toBack(); // objects with higher priority have to be checked earlier
+  while( anIter.hasPrevious() )
   {
-    if( GraphicsView_Object* anObject = anIter.next() )
+    if( GraphicsView_Object* anObject = anIter.previous() )
     {
       if( anObject->isVisible() && anObject->isSelectable() )
       {
