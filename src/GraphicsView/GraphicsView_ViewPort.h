@@ -46,6 +46,13 @@ class GRAPHICSVIEW_API GraphicsView_ViewPort : public QGraphicsView
 public:
   class NameLabel;
 
+  enum InteractionFlags
+  {
+    Dragging     = 0x0001,
+    WheelScaling = 0x0002,
+    All          = Dragging | WheelScaling
+  };
+
   enum BlockStatus
   {
     BS_NoBlock   = 0x0000,
@@ -83,6 +90,11 @@ public:
   void                             setSceneGap( double theSceneGap );
   void                             setFitAllGap( double theFitAllGap );
   void                             setTraceBoundingRectEnabled( bool theState );
+
+  // interaction flags
+  void                             setInteractionFlags( const int );
+  void                             clearInteractionFlags( const int );
+  bool                             testInteractionFlags( const int ) const;
 
   // view name
   void                             setViewNamePosition( NamePosition thePosition,
@@ -221,6 +233,9 @@ private:
   double                           myFitAllGap;
   bool                             myIsTraceBoundingRectEnabled;
   GraphicsView_ObjectList          myObjects;
+
+  // interaction flags
+  int                              myInteractionFlags;
 
   // view name
   NameLabel*                       myNameLabel;

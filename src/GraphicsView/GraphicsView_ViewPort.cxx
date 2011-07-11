@@ -145,6 +145,9 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   myFitAllGap = 40;
   myIsTraceBoundingRectEnabled = true;
 
+  // interaction flags
+  myInteractionFlags = All;
+
   // background
   setBackgroundBrush( QBrush( Qt::white ) );
 
@@ -407,6 +410,33 @@ void GraphicsView_ViewPort::setFitAllGap( double theFitAllGap )
 void GraphicsView_ViewPort::setTraceBoundingRectEnabled( bool theState )
 {
   myIsTraceBoundingRectEnabled = theState;
+}
+
+//================================================================
+// Function : setInteractionFlags
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setInteractionFlags( const int theFlags )
+{
+  myInteractionFlags |= theFlags;
+}
+
+//================================================================
+// Function : clearInteractionFlags
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::clearInteractionFlags( const int theFlags )
+{
+  myInteractionFlags &= ~theFlags;
+}
+
+//================================================================
+// Function : testInteractionFlags
+// Purpose  : 
+//================================================================
+bool GraphicsView_ViewPort::testInteractionFlags( const int theFlags ) const
+{
+  return ( myInteractionFlags & theFlags ) == theFlags;
 }
 
 //================================================================
@@ -1338,12 +1368,15 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
   {
     case QEvent::GraphicsSceneMousePress:
     {
-      bool anAccel = e->modifiers() & GraphicsView_ViewTransformer::accelKey();
-      if( ( getHighlightedObject() &&
-            getHighlightedObject()->isMovable() &&
-            !( anAccel || e->button() == Qt::RightButton ) ) ||
-          ( nbSelected() && !anAccel && e->button() == Qt::MidButton ) )
-        myIsDragging = true;
+      if( testInteractionFlags( Dragging ) )
+      {
+        bool anAccel = e->modifiers() & GraphicsView_ViewTransformer::accelKey();
+        if( ( getHighlightedObject() &&
+              getHighlightedObject()->isMovable() &&
+              !( anAccel || e->button() == Qt::RightButton ) ) ||
+            ( nbSelected() && !anAccel && e->button() == Qt::MidButton ) )
+          myIsDragging = true;
+      }
       break;
     }
     case QEvent::GraphicsSceneMouseMove:

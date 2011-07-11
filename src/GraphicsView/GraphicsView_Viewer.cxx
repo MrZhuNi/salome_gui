@@ -440,18 +440,21 @@ void GraphicsView_Viewer::handleWheel( QGraphicsSceneWheelEvent* e )
 {
   if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
   {
-    bool anIsScaleUp = e->delta() > 0;
-    bool anIsCtrl = e->modifiers() & Qt::ControlModifier;
-
-    bool anIsScaleChanged = false;
-    for( aViewPort->initSelected(); aViewPort->moreSelected(); aViewPort->nextSelected() )
-      if( GraphicsView_Object* anObject = aViewPort->selectedObject() )
-        anIsScaleChanged = anObject->updateScale( anIsScaleUp, anIsCtrl ) || anIsScaleChanged;
-
-    if( anIsScaleChanged )
+    if( aViewPort->testInteractionFlags( GraphicsView_ViewPort::WheelScaling ) )
     {
-      emit wheelScaleChanged();
-      aViewPort->onBoundingRectChanged();
+      bool anIsScaleUp = e->delta() > 0;
+      bool anIsCtrl = e->modifiers() & Qt::ControlModifier;
+
+      bool anIsScaleChanged = false;
+      for( aViewPort->initSelected(); aViewPort->moreSelected(); aViewPort->nextSelected() )
+        if( GraphicsView_Object* anObject = aViewPort->selectedObject() )
+          anIsScaleChanged = anObject->updateScale( anIsScaleUp, anIsCtrl ) || anIsScaleChanged;
+
+      if( anIsScaleChanged )
+      {
+        emit wheelScaleChanged();
+        aViewPort->onBoundingRectChanged();
+      }
     }
   }
 }
