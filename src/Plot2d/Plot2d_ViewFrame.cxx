@@ -882,21 +882,46 @@ int Plot2d_ViewFrame::testOperation( const QMouseEvent& me )
   const int panBtn  = Qt::ControlModifier | Qt::MidButton;
   const int fitBtn  = Qt::ControlModifier | Qt::RightButton;
 
-  if ( btn == zoomBtn ) {
-    QPixmap zoomPixmap (imageZoomCursor);
-    QCursor zoomCursor (zoomPixmap);
-    myPlot->canvas()->setCursor( zoomCursor );
-    return ZoomId;
+  //switch (btn)
+  //{
+  //case zoomBtn:
+  //  {
+  //    QPixmap zoomPixmap (imageZoomCursor);
+  //    QCursor zoomCursor (zoomPixmap);
+  //    myPlot->canvas()->setCursor( zoomCursor );
+  //    return ZoomId;
+  //  }
+  //case panBtn:
+  //  myPlot->canvas()->setCursor( QCursor( Qt::SizeAllCursor ) );
+  //  return PanId;
+  //case fitBtn:
+  //  myPlot->canvas()->setCursor( QCursor( Qt::PointingHandCursor ) );
+  //  return FitAreaId;
+  //default :
+  //  return NoOpId;
+  //}
+  if(btn == zoomBtn)
+  {
+	  QPixmap zoomPixmap (imageZoomCursor);
+	  QCursor zoomCursor (zoomPixmap);
+	  myPlot->canvas()->setCursor( zoomCursor );
+	  return ZoomId;
   }
-  else if ( btn == panBtn ) {
-    myPlot->canvas()->setCursor( QCursor( Qt::SizeAllCursor ) );
-    return PanId;
+  else if(btn == panBtn)
+  {
+	  myPlot->canvas()->setCursor( QCursor( Qt::SizeAllCursor ) );
+	  return PanId;
   }
-  else if ( btn == fitBtn ) {
-    myPlot->canvas()->setCursor( QCursor( Qt::PointingHandCursor ) );
-    return FitAreaId;
+  else if(btn == fitBtn)
+  {
+	  myPlot->canvas()->setCursor( QCursor( Qt::PointingHandCursor ) );
+	  return FitAreaId;
   }
-  return NoOpId;
+  else
+  {
+	  return NoOpId;
+  }
+
 }
 
 /*!
@@ -1168,19 +1193,28 @@ void Plot2d_ViewFrame::onCurvesSettings()
 
 /*!
   "Fit Data" command slot
-*/
+  */
 void Plot2d_ViewFrame::onFitData()
 {
   Plot2d_FitDataDlg* dlg = new Plot2d_FitDataDlg( this, mySecondY );
   double xMin,xMax,yMin,yMax,y2Min,y2Max;
   getFitRanges(xMin,xMax,yMin,yMax,y2Min,y2Max);
-  
+
   dlg->setRange( xMin, xMax, yMin, yMax, y2Min, y2Max );
-  if ( dlg->exec() == QDialog::Accepted ) {
+  if ( dlg->exec() == QDialog::Accepted ) 
+  {
     int mode = dlg->getRange( xMin, xMax, yMin, yMax, y2Min, y2Max );
     fitData(mode,xMin,xMax,yMin,yMax,y2Min,y2Max);
+    
+    if ( mode == 1 )
+      emit xRangeUpdated( xMin, xMax );
+    else if ( mode == 2 )
+      emit yRangeUpdated( yMin, yMax, y2Min, y2Max );
+    else
+      emit bothRangesUpdated( xMin, xMax, yMin, yMax, y2Min, y2Max );
   }
   delete dlg;
+
 }
 
 /*!

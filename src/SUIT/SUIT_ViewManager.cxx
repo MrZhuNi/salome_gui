@@ -340,6 +340,14 @@ void SUIT_ViewManager::closeAllViews()
   for ( int i = 0; i < myViews.size(); i++ )
     delete myViews[i];
   myViews.clear();
+
+  // CS suggests follwoing code because of unknown reason 
+  // i.e. the first view is always closed
+  /*int nbViews = myViews.size();
+  for ( int i = 0; i < nbViews; i++ )
+    closeView( myViews[0] );
+  myViews.clear();*/
+
 }
 
 /*!

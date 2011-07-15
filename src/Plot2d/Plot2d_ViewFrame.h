@@ -186,6 +186,10 @@ signals:
   void    curveErased( Plot2d_Curve* );
   void    curvesErased( const curveList& );
   void    curvesUpdated();
+  void	  xRangeUpdated( const double&, const double&);
+  void	  yRangeUpdated( const double&, const double&, const double&, const double&);
+  void	  bothRangesUpdated( const double&, const double&, const double&, 
+                             const double&, const double&, const double& );
   
 protected:
   Plot2d_Plot2d* myPlot;

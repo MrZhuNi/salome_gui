@@ -89,6 +89,9 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
   void
   InvokeEvent(unsigned long theEvent, void* theCallData);
 
+  //! CS-integration during developing GUITHARE V1.6l no comments provided
+  virtual QPaintEngine* paintEngine() const { return 0; }
+
  public slots:
    //! Need for initial contents display on Win32
   virtual void show();
