@@ -1752,8 +1752,6 @@ QMimeData* SUIT_TreeModel::mimeData( const QModelIndexList& indexes ) const
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  bool is64 = ( sizeof( void* ) == 64 );
-
   QSet<SUIT_DataObject*> anAdded;
   foreach( QModelIndex index, indexes ) 
   {
@@ -1769,10 +1767,11 @@ QMimeData* SUIT_TreeModel::mimeData( const QModelIndexList& indexes ) const
         return 0;      
       }
         
-      if ( is64 )
-        stream << (quint64)dataObj;
-      else
-        stream << (quint32)dataObj;
+#if (defined _WIN64) || (defined __amd64__)
+      stream << (quint64)dataObj;
+#else
+      stream << (quint32)dataObj;
+#endif
       anAdded.insert( dataObj );
     }
   }
