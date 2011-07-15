@@ -281,6 +281,7 @@ GraphicsView_ObjectList GraphicsView_ViewPort::getObjects( bool theIsSortSelecte
   // to append selected objects after their non-selected siblings with similar priority
   int aCurrentPriority = -1;
   GraphicsView_ObjectList aSelectedObjects;
+  GraphicsView_ObjectList aTopmostObjects;
 
   GraphicsView_ObjectList aList;
   GraphicsView_ObjectListIterator anIter( myObjects );
@@ -288,6 +289,12 @@ GraphicsView_ObjectList GraphicsView_ViewPort::getObjects( bool theIsSortSelecte
   {
     if( GraphicsView_Object* anObject = anIter.next() )
     {
+      if( anObject->isOnTop() )
+      {
+        aTopmostObjects.append( anObject );
+        continue;
+      }
+
       int aPriority = anObject->getPriority();
       if( aPriority > aCurrentPriority  )
       {
@@ -313,6 +320,8 @@ GraphicsView_ObjectList GraphicsView_ViewPort::getObjects( bool theIsSortSelecte
     aList.append( aSelectedObjects );
     aSelectedObjects.clear();
   }
+
+  aList.append( aTopmostObjects );
 
   return aList;
 }
@@ -1364,30 +1373,46 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
 {
   emit vpMouseEvent( e );
 
+  bool anIsHandled = false;
   switch( e->type() )
   {
     case QEvent::GraphicsSceneMousePress:
     {
-      if( testInteractionFlags( Dragging ) )
+      if( nbSelected() )
+        for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
+          if( GraphicsView_Object* anObject = selectedObject() )
+            anIsHandled = anObject->handleMousePress( e );
+
+      if( !anIsHandled && testInteractionFlags( Dragging ) )
       {
         bool anAccel = e->modifiers() & GraphicsView_ViewTransformer::accelKey();
         if( ( getHighlightedObject() &&
               getHighlightedObject()->isMovable() &&
               !( anAccel || e->button() == Qt::RightButton ) ) ||
             ( nbSelected() && !anAccel && e->button() == Qt::MidButton ) )
-          myIsDragging = true;
+        myIsDragging = true;
       }
       break;
     }
     case QEvent::GraphicsSceneMouseMove:
     {
-      if( !isPulling() && myIsDragging )
+      if( nbSelected() )
+        for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
+          if( GraphicsView_Object* anObject = selectedObject() )
+            anIsHandled = anObject->handleMousePress( e );
+
+      if( !anIsHandled && !isPulling() && myIsDragging )
         dragObjects( e );
       break;
     }
     case QEvent::GraphicsSceneMouseRelease:
     {
-      if( !isPulling() && myIsDragging )
+      if( nbSelected() )
+        for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
+          if( GraphicsView_Object* anObject = selectedObject() )
+            anIsHandled = anObject->handleMousePress( e );
+
+      if( !anIsHandled && !isPulling() && myIsDragging )
       {
         emit vpObjectBeforeMoving();
 

@@ -44,6 +44,9 @@ public:
 
   virtual int                getPriority() const { return myPriority; }
 
+  virtual bool               isOnTop() const { return myIsOnTop; }
+  virtual void               setIsOnTop( bool theIsOnTop ) { myIsOnTop = theIsOnTop; }
+
   virtual bool               isSelectable() const { return true; }
   virtual bool               isMovable() const { return true; }
 
@@ -72,6 +75,10 @@ public:
   virtual void               finishPulling() {}
   virtual bool               isPulling() { return false; }
 
+  virtual bool               handleMousePress( QGraphicsSceneMouseEvent* ) { return false; }
+  virtual bool               handleMouseMove( QGraphicsSceneMouseEvent* ) { return false; }
+  virtual bool               handleMouseRelease( QGraphicsSceneMouseEvent* ) { return false; }
+
 protected:
   virtual bool               checkHighlight( double theX, double theY ) const;
 
@@ -79,6 +86,7 @@ protected:
   QString                    myName;
 
   int                        myPriority;
+  bool                       myIsOnTop;
 
   bool                       myIsHighlighted;
   bool                       myIsSelected;

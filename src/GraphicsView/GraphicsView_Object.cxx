@@ -31,6 +31,7 @@
 GraphicsView_Object::GraphicsView_Object( QGraphicsItem* theParent )
 : QGraphicsItemGroup( theParent ),
   myPriority( 0 ),
+  myIsOnTop( false ),
   myIsHighlighted( false ),
   myIsSelected( false )
 {
