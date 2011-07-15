@@ -49,8 +49,9 @@ public:
   enum InteractionFlags
   {
     Dragging     = 0x0001,
-    WheelScaling = 0x0002,
-    All          = Dragging | WheelScaling
+    Pulling      = 0x0002,
+    WheelScaling = 0x0004,
+    All          = Dragging | Pulling | WheelScaling
   };
 
   enum BlockStatus

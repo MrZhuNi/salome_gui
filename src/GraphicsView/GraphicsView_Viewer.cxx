@@ -336,6 +336,7 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
         getSelector()->select( QRectF(), append );
       }
       else if( e->button() == Qt::LeftButton &&
+               aViewPort->testInteractionFlags( GraphicsView_ViewPort::Pulling ) &&
                !aViewPort->isSelectByRect() && 
                !aViewPort->isDragging() &&
                aViewPort->startPulling( e->scenePos() ) )
@@ -377,6 +378,7 @@ void GraphicsView_Viewer::handleMouseMove( QGraphicsSceneMouseEvent* e )
       aViewPort->drawPulling( e->scenePos() );
     }
     else if( e->button() == Qt::LeftButton &&
+             aViewPort->testInteractionFlags( GraphicsView_ViewPort::Pulling ) &&
              !aViewPort->isSelectByRect() &&
              !aViewPort->isDragging() &&
              aViewPort->startPulling( e->scenePos() ) )
