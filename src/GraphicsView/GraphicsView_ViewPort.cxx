@@ -146,7 +146,7 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   myIsTraceBoundingRectEnabled = true;
 
   // interaction flags
-  myInteractionFlags = All;
+  myInteractionFlags = AllFlags;
 
   // background
   setBackgroundBrush( QBrush( Qt::white ) );
@@ -1378,7 +1378,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
   {
     case QEvent::GraphicsSceneMousePress:
     {
-      if( nbSelected() )
+      if( testInteractionFlags( EditFlags ) && nbSelected() )
         for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
           if( GraphicsView_Object* anObject = selectedObject() )
             anIsHandled = anObject->handleMousePress( e );
@@ -1396,7 +1396,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
     }
     case QEvent::GraphicsSceneMouseMove:
     {
-      if( nbSelected() )
+      if( testInteractionFlags( EditFlags ) && nbSelected() )
         for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
           if( GraphicsView_Object* anObject = selectedObject() )
             anIsHandled = anObject->handleMousePress( e );
@@ -1407,7 +1407,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
     }
     case QEvent::GraphicsSceneMouseRelease:
     {
-      if( nbSelected() )
+      if( testInteractionFlags( EditFlags ) && nbSelected() )
         for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
           if( GraphicsView_Object* anObject = selectedObject() )
             anIsHandled = anObject->handleMousePress( e );

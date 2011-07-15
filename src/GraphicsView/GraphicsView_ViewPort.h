@@ -48,10 +48,13 @@ public:
 
   enum InteractionFlags
   {
-    Dragging     = 0x0001,
-    Pulling      = 0x0002,
-    WheelScaling = 0x0004,
-    All          = Dragging | Pulling | WheelScaling
+    Highlighting = 0x0001, // not implemented yet
+    Selecting    = 0x0002, // not implemented yet
+    Dragging     = 0x0004,
+    Pulling      = 0x0008,
+    WheelScaling = 0x0010,
+    EditFlags    = Dragging | Pulling | WheelScaling,
+    AllFlags     = Highlighting | Selecting | Dragging | Pulling | WheelScaling
   };
 
   enum BlockStatus
