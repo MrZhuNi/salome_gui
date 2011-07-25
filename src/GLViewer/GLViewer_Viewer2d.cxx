@@ -1032,7 +1032,8 @@ bool GLViewer_Viewer2d::finishOperations( QMouseEvent* e )
     {
         QRect aSelRect = vp->selectionRect();
         vp->finishSelectByRect();
-        if ( getSelector() && !aSelRect.isNull() )
+        bool anIsValidRectangle = aSelRect.width() > 1 || aSelRect.height() > 1;
+        if ( getSelector() && anIsValidRectangle )
         {            
             bool append = bool ( e->modifiers() & GLViewer_Selector::appendKey() );
             getSelector()->select( aSelRect, append );
