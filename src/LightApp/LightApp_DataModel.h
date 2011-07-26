@@ -63,6 +63,17 @@ public:
   void registerColumn( SUIT_DataBrowser*, const QString&, const int );
   void unregisterColumn( SUIT_DataBrowser*, const QString& );
 
+  void                                storeTree( SUIT_DataBrowser* theOB, 
+                                                 QMap<QString, bool>& theExpanded,
+                                                 QStringList& theSelected );
+
+  void                                restoreTree( SUIT_DataBrowser* theOB, 
+                                                   const QMap<QString, bool>& theExpanded,
+                                                   const QStringList& theSelected );
+
+  LightApp_DataObject*                findObjectByEntry( SUIT_DataBrowser* theOB, 
+                                                         const QString& theEntry );
+
 signals:
   void                                opened();
   void                                saved();

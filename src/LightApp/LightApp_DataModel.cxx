@@ -30,6 +30,9 @@
 #include <SUIT_TreeModel.h>
 #include <SUIT_DataBrowser.h>
 #include <SUIT_DataObject.h>
+#include <SUIT_DataObjectIterator.h>
+
+#include <QtxTreeView.h>
 
 /*!
   Constructor
@@ -207,4 +210,154 @@ void LightApp_DataModel::unregisterColumn( SUIT_DataBrowser* browser, const QStr
   SUIT_AbstractModel* m = dynamic_cast<SUIT_AbstractModel*>( browser ? browser->model() : 0 );
   if( m )
 	m->unregisterColumn( groupId(), name );
+}
+
+/*!
+  Store object browser tree state (expanding and selection)
+  \param theOB - object browser
+  \param theExpanded - map of entry to expanded state
+  \param theSelected - list of selected entries
+*/
+void LightApp_DataModel::storeTree( SUIT_DataBrowser* theOB, 
+                                    QMap<QString, bool>& theExpanded,
+                                    QStringList& theSelected )
+{
+  theExpanded.clear();
+  theSelected.clear();
+  if ( !theOB )
+    return;
+
+  SUIT_AbstractModel* aModel = dynamic_cast<SUIT_AbstractModel*>( theOB->model() );
+  if ( !aModel )
+    return;
+
+  SUIT_DataObject* aRoot = theOB->root();
+  if ( !aRoot )
+    return;
+
+  QtxTreeView* aTreeView = theOB->treeView();
+  if ( !aTreeView )
+    return;
+
+  // expanded
+  QList<SUIT_DataObject*> aChildren;
+  aRoot->children( aChildren, true );
+
+  QList<SUIT_DataObject*>::iterator aCIter;
+  for ( aCIter = aChildren.begin(); aCIter != aChildren.end(); ++aCIter )
+  {
+    LightApp_DataObject* aCurr = dynamic_cast<LightApp_DataObject*>( *aCIter );
+    if ( !aCurr )
+      continue;
+
+    QString anEntry = aCurr->entry();
+
+    QModelIndex anIndex = aModel->index( aCurr );
+    if ( !anIndex.isValid() )
+      continue;
+
+    bool isExp = aTreeView->isExpanded( anIndex );
+    theExpanded.insert( anEntry, isExp );
+  }
+
+  // selected
+  QModelIndexList aList = theOB->selectedIndexes();
+  QModelIndexList::iterator anIter;
+  for ( anIter = aList.begin(); anIter != aList.end(); ++anIter )
+  {
+    LightApp_DataObject* aCurr =
+      dynamic_cast<LightApp_DataObject*>( aModel->object( *anIter ) );
+    if ( !aCurr )
+      continue;
+    
+    QString anEntry = aCurr->entry();
+    theSelected.append( anEntry );
+  }
+}
+
+/*!
+  Restore object browser tree state (expanding and selection)
+  \param theOB - object browser
+  \param theExpanded - map of entry to expanded state
+  \param theSelected - list of selected entries
+*/
+void LightApp_DataModel::restoreTree( SUIT_DataBrowser* theOB, 
+                                      const QMap<QString, bool>& theExpanded,
+                                      const QStringList& theSelected )
+{
+  if ( !theOB )
+    return;
+
+  SUIT_AbstractModel* aModel = dynamic_cast<SUIT_AbstractModel*>( theOB->model() );
+  if ( !aModel )
+    return;
+
+  SUIT_DataObject* aRoot = theOB->root();
+  if ( !aRoot )
+    return;
+
+  QtxTreeView* aTreeView = theOB->treeView();
+  if ( !aTreeView )
+    return;
+
+  // expanded
+  QList<SUIT_DataObject*> aChildren;
+  aRoot->children( aChildren, true );
+
+  QList<SUIT_DataObject*>::iterator aCIter;
+  for ( aCIter = aChildren.begin(); aCIter != aChildren.end(); ++aCIter )
+  {
+    LightApp_DataObject* aCurr = dynamic_cast<LightApp_DataObject*>( *aCIter );
+    if ( !aCurr )
+      continue;
+
+    QString anEntry = aCurr->entry();
+    if ( !theExpanded.contains( anEntry ) )
+      continue;
+
+    QModelIndex anIndex = aModel->index( aCurr );
+    if ( !anIndex.isValid() )
+      continue;
+
+    bool isExp = theExpanded[ anEntry ];
+    aTreeView->setExpanded( anIndex, isExp );
+  }
+
+  // selected
+  QModelIndexList toSel;
+  QStringList::const_iterator anIter;
+  for ( anIter = theSelected.begin(); anIter != theSelected.end(); ++anIter )
+  {
+    QString anEntry = *anIter;
+
+    LightApp_DataObject* aGuiObj = findObjectByEntry( theOB, anEntry );
+    if ( !aGuiObj )
+      continue;
+
+    QModelIndex anIndex = aModel->index( aGuiObj );
+    if ( anIndex.isValid() )
+      toSel.append( anIndex );
+  }
+
+  if ( toSel.count() > 0 )
+    theOB->select( toSel, true );
+}
+
+/*!
+  Find object in the object browser by the specified entry
+  \param theOB - object browser
+  \param theEntry - entry of object to find
+*/
+LightApp_DataObject* LightApp_DataModel::findObjectByEntry( SUIT_DataBrowser* theOB, 
+                                                            const QString& theEntry )
+{
+  LightApp_DataObject* aCurrent;
+  SUIT_DataObjectIterator anIter( theOB->root(), SUIT_DataObjectIterator::DepthLeft );
+  for ( ; anIter.current(); ++anIter )
+  {
+    aCurrent = dynamic_cast<LightApp_DataObject*>( anIter.current() );
+    if ( aCurrent && aCurrent->entry() == theEntry )
+      return aCurrent;
+  }
+  return NULL;
 }
