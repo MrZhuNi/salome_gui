@@ -697,6 +697,54 @@ void SalomeApp_Study::setStudyDS( const _PTR(Study)& s )
 }
 
 /*!
+  Virtual method re-implemented from LightApp_Study in order to create
+  the module object connected to SALOMEDS - SalomeApp_ModuleObject.
+
+  \param theDataModel - data model instance to create a module object for
+  \param theParent - the module object's parent (normally it's the study root)
+  \return the module object instance
+  \sa LightApp_Study class, LightApp_DataModel class
+*/
+CAM_ModuleObject* SalomeApp_Study::createModuleObject( LightApp_DataModel* theDataModel, 
+						       SUIT_DataObject* theParent ) const
+{
+  SalomeApp_Study* that = const_cast<SalomeApp_Study*>( this );
+  
+  // Ensure that SComponent instance is published in the study for the given module
+  // This line causes automatic creation of SalomeApp_ModuleObject in case if
+  // WITH_SALOMEDS_OBSERVER is defined
+  that->addComponent( theDataModel );
+  
+  // SalomeApp_ModuleObject might have been created by SALOMEDS observer
+  // or by someone else so check if it exists first of all
+  CAM_ModuleObject* res = 0;
+
+  DataObjectList children = root()->children();
+  DataObjectList::const_iterator anIt = children.begin(), aLast = children.end();
+  for( ; !res && anIt!=aLast; anIt++ )
+  {
+    SalomeApp_ModuleObject* obj = dynamic_cast<SalomeApp_ModuleObject*>( *anIt );
+    if ( obj && obj->name() == theDataModel->module()->moduleName() )
+      res = obj;
+  }
+
+  if ( !res ){
+    _PTR(Study) aStudy = studyDS();
+    if ( !aStudy )
+      return res;
+
+    _PTR(SComponent) aComp = aStudy->FindComponent( 
+      theDataModel->module()->name().toStdString() );
+    if ( aComp )
+      return res;
+
+    res = new SalomeApp_ModuleObject( theDataModel, aComp, theParent );
+  }
+
+  return res;
+}
+
+/*!
   Insert data model.
 */
 void SalomeApp_Study::dataModelInserted (const CAM_DataModel* dm)
