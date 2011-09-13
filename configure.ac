@@ -371,6 +371,15 @@ echo
 
 CHECK_QWT
 
+echo
+echo ---------------------------------------------
+echo Testing OpenCV
+echo ---------------------------------------------
+echo
+
+CHECK_OPENCV
+
+
 CHECK_TESTRECORDER
 
 echo
@@ -526,10 +535,10 @@ fi
 
 if test "$GUI_DISABLE_CORBA" != "yes"; then
 variables="cc_ok lex_yacc_ok python_ok swig_ok threads_ok OpenGL_ok qt_ok vtk_ok hdf5_ok
-omniORB_ok boost_ok occ_ok sip_ok pyqt_ok qwt_ok doxygen_ok graphviz_ok libxml_ok Kernel_ok"
+omniORB_ok boost_ok occ_ok sip_ok pyqt_ok qwt_ok doxygen_ok graphviz_ok opencv_ok libxml_ok Kernel_ok"
 else
 variables="cc_ok lex_yacc_ok python_ok threads_ok OpenGL_ok qt_ok vtk_ok hdf5_ok boost_ok
-occ_ok sip_ok pyqt_ok qwt_ok doxygen_ok graphviz_ok Kernel_ok"
+occ_ok sip_ok pyqt_ok qwt_ok doxygen_ok graphviz_ok opencv_ok Kernel_ok "
 fi
 
 for var in $variables

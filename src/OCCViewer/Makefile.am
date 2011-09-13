@@ -127,12 +127,12 @@ nodist_salomeres_DATA =		\
 	OCCViewer_msg_fr.qm 
 
 libOCCViewer_la_CPPFLAGS = $(QT_INCLUDES) $(OGL_INCLUDES) $(CAS_CPPFLAGS) @KERNEL_CXXFLAGS@ \
-	-I$(srcdir)/../SUIT -I$(srcdir)/../ViewerTools -I$(srcdir)/../Qtx \
-	-I$(srcdir)/../OpenGLUtils -I$(srcdir)/../CASCatch		\
-	-I/home/palmco/OpenCV/OpenCV-2.3.0/install/include/opencv \
-	-I/home/palmco/OpenCV/OpenCV-2.3.0/install/include
+	$(OPENCV_INCLUDES)							\
+	-I$(srcdir)/../SUIT -I$(srcdir)/../ViewerTools -I$(srcdir)/../Qtx 	\
+	-I$(srcdir)/../OpenGLUtils -I$(srcdir)/../CASCatch
 
 libOCCViewer_la_LDFLAGS  = $(OGL_LIBS) $(QT_MT_LIBS) $(CAS_KERNEL) $(CAS_VIEWER) \
-	-L/home/palmco/OpenCV/OpenCV-2.3.0/install/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d -lopencv_calib3d -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_flann  
+	$(OPENCV_LIBS)
+
 libOCCViewer_la_LIBADD   = ../Qtx/libqtx.la ../SUIT/libsuit.la \
 	../ViewerTools/libViewerTools.la ../OpenGLUtils/libOpenGLUtils.la
