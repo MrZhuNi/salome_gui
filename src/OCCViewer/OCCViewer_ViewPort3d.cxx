@@ -28,6 +28,7 @@
 #include <Basics_OCCTVersion.hxx>
 
 #include <SUIT_ViewManager.h>
+#include <SUIT_ViewModel.h>
 
 #include <QColor>
 #include <QString>
@@ -40,6 +41,12 @@
 #include <V3d_Viewer.hxx>
 #include <V3d_PerspectiveView.hxx>
 #include <V3d_OrthographicView.hxx>
+
+#include <InterfaceGraphic_Visual3d.hxx>
+#include <OpenGl_cmn_varargs.h>
+#include <OpenGl_tsm_ws.h>
+
+#include "utilities.h"
 
 #if defined WNT
 #include <WNT_Window.hxx>
@@ -299,9 +306,41 @@ QString OCCViewer_ViewPort3d::backgroundImageFilename() const
 void OCCViewer_ViewPort3d::setBackgroundImage( const QString& fileName,const Aspect_FillMethod& theFillMethod)
 { 
   myBackgroundImageFilename=fileName;
-  if ( !activeView().IsNull() ) {
-    activeView()->SetBackgroundImage( (Standard_CString)fileName.toLatin1().constData(),theFillMethod,true);
-  }
+  //TEST
+//   if ( !activeView().IsNull() ) {
+//     activeView()->SetBackgroundImage( (Standard_CString)fileName.toLatin1().constData(),theFillMethod,true);
+    
+//     //TEST
+//     SUIT_ViewWindow*       theViewWindow    = getDesktop()->activeWindow();
+//   OCCViewer_Viewer*      anOCCViewer      = ( (OCCViewer_ViewManager*)( theViewWindow->getViewManager() ) )->getOCCViewer();
+//   QString                theImgFileName   = backgroundImageFilename();
+//   Handle(AIS_InteractiveContext) aContext = anOCCViewer->getAISContext(); 
+//   
+//   gp_Pnt p1(0,0,0);
+//   gp_Pnt p2(0,100,0);
+//   gp_Pnt p3(100,100,0);
+//   gp_Pnt p4(100,0,0);
+//   
+//   BRepBuilderAPI_MakePolygon Wire(p1,p2,p3,p4, Standard_True); 
+//   BRepBuilderAPI_MakeFace Face(Wire,Standard_True);
+//   const TopoDS_Shape& S = Face.Shape();
+//   Handle(AIS_TexturedShape) anAIS = new AIS_TexturedShape(S);
+//   if (!theImgFileName.isEmpty())
+//   {
+//     MESSAGE("filename is not empty")
+//     anAIS->SetTextureFileName(TCollection_AsciiString(theImgFileName.toStdString().c_str()));
+//     anAIS->SetTextureMapOn();
+//     activeView()->SetSurfaceDetail(V3d_TEX_ALL);
+// //     anAIS->SetDisplayMode(AIS_Shaded); 
+//   }
+//   else
+//     anAIS->SetTextureMapOff();
+//   //creation of the presentable object
+//   aContext->SetDisplayMode(anAIS,3);
+//   aContext->SetMaterial(anAIS,Graphic3d_NOM_SATIN);
+//   aContext->Display(anAIS);
+//   aContext->UpdateCurrentViewer();
+//   }
 }
 
 /*!

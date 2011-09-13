@@ -58,10 +58,20 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_Shape.hxx>
+#include <AIS_TexturedShape.hxx>
+
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+
+#include <TCollection_AsciiString.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
 
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Wire.hxx>
 
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
@@ -77,6 +87,12 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 
 #include <Standard_Version.hxx>
+
+#include "utilities.h"
+
+// OpenCV includes
+#include <cv.h>
+#include <highgui.h>
 
 static QEvent* l_mbPressEvent = 0;
 
@@ -820,6 +836,7 @@ void OCCViewer_ViewWindow::vpMouseMoveEvent( QMouseEvent* theEvent )
             myViewPort->setCursor( handCursor );
           }
         }
+        emit mouseMoving( this, theEvent );
       }
       else if ( anInteractionStyle == SUIT_ViewModel::STANDARD && 
                 aButton == Qt::RightButton && ( aState == Qt::NoModifier || Qt::ShiftModifier ) ) {
@@ -2248,6 +2265,7 @@ void OCCViewer_ViewWindow::onSketchingStarted()
 */
 void OCCViewer_ViewWindow::onSketchingFinished()
 {
+  MESSAGE("OCCViewer_ViewWindow::onSketchingFinished()")
   if ( mypSketcher && mypSketcher->result() == OCCViewer_ViewSketcher::Accept )
   {
     Handle(AIS_InteractiveContext) ic = myModel->getAISContext();
@@ -2263,6 +2281,7 @@ void OCCViewer_ViewWindow::onSketchingFinished()
           int aRight = aRect->right();
           int aTop = aRect->top();
           int aBottom = aRect->bottom();
+//           myRect = aRect;
 
           if( append )
             ic->ShiftSelect( aLeft, aBottom, aRight, aTop, getViewPort()->getView(), Standard_False );
@@ -2398,7 +2417,48 @@ QString OCCViewer_ViewWindow::backgroundImageFilename() const
    
 void OCCViewer_ViewWindow::setBackgroundImage( const QString& theFileName,const Aspect_FillMethod& theFillMethod)
 {
-  if ( myViewPort ) myViewPort->setBackgroundImage( theFileName ,theFillMethod);
+  if ( myViewPort ) 
+  {
+    myViewPort->setBackgroundImage( theFileName ,theFillMethod);
+  //     set2dMode(XYPlane);
+  //     onTopView();
+      //TEST
+    OCCViewer_Viewer*           anOCCViewer = ((OCCViewer_ViewManager*)getViewManager())->getOCCViewer();
+  //   QString                theImgFileName   = backgroundImageFilename();
+    Handle(AIS_InteractiveContext) aContext = anOCCViewer->getAISContext(); 
+    
+    IplImage* img = cvLoadImage( theFileName.toStdString().c_str(),CV_LOAD_IMAGE_GRAYSCALE);
+    int height = img->height;
+    int width  = img->width;
+    
+    gp_Pnt p1(0,0,0);
+    gp_Pnt p2(0,height,0);
+    gp_Pnt p3(width,height,0);
+    gp_Pnt p4(width,0,0);
+    
+    BRepBuilderAPI_MakePolygon Wire(p1,p2,p3,p4, Standard_True); 
+    BRepBuilderAPI_MakeFace Face(Wire,Standard_True);
+    const TopoDS_Shape& S = Face.Shape();
+    Handle(AIS_TexturedShape) anAIS = new AIS_TexturedShape(S);
+    if (!theFileName.isEmpty())
+    {
+      MESSAGE("filename is not empty")
+      anAIS->SetTextureFileName(TCollection_AsciiString(theFileName.toStdString().c_str()));
+      anAIS->SetTextureMapOn();
+      anAIS->DisableTextureModulate();
+      myViewPort->getView()->SetSurfaceDetail(V3d_TEX_ALL);
+  //     anAIS->SetDisplayMode(AIS_Shaded); 
+    }
+    else
+      anAIS->SetTextureMapOff();
+    //creation of the presentable object
+    aContext->SetDisplayMode(anAIS,3);
+    aContext->SetMaterial(anAIS,Graphic3d_NOM_SATIN);
+    aContext->Display(anAIS);
+    onTopView();
+    aContext->UpdateCurrentViewer();
+    
+  }
 }
 
 /*!

@@ -23,6 +23,7 @@
 #  Author : Vladimir Klyachin (OCN)
 #  Module : OCCViewer
 #  $Header$
+#
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
@@ -46,7 +47,8 @@ salomeinclude_HEADERS =				\
 	OCCViewer_FontWidget.h                  \
 	OCCViewer_CubeAxesDlg.h                 \
 	OCCViewer_ToolTip.h			\
-	OCCViewer_ViewFrame.h
+	OCCViewer_ViewFrame.h			\
+	OCCViewer_FeatureDetector.h
 
 dist_libOCCViewer_la_SOURCES =			\
 	OCCViewer_AISSelector.cxx		\
@@ -65,7 +67,8 @@ dist_libOCCViewer_la_SOURCES =			\
 	OCCViewer_FontWidget.cxx                \
 	OCCViewer_CubeAxesDlg.cxx               \
 	OCCViewer_ToolTip.cxx			\
-	OCCViewer_ViewFrame.cxx
+	OCCViewer_ViewFrame.cxx			\
+        OCCViewer_FeatureDetector.cxx
 
 MOC_FILES =					\
 	OCCViewer_AISSelector_moc.cxx		\
@@ -125,8 +128,11 @@ nodist_salomeres_DATA =		\
 
 libOCCViewer_la_CPPFLAGS = $(QT_INCLUDES) $(OGL_INCLUDES) $(CAS_CPPFLAGS) @KERNEL_CXXFLAGS@ \
 	-I$(srcdir)/../SUIT -I$(srcdir)/../ViewerTools -I$(srcdir)/../Qtx \
-	-I$(srcdir)/../OpenGLUtils -I$(srcdir)/../CASCatch
+	-I$(srcdir)/../OpenGLUtils -I$(srcdir)/../CASCatch		\
+	-I/home/palmco/OpenCV/OpenCV-2.3.0/install/include/opencv \
+	-I/home/palmco/OpenCV/OpenCV-2.3.0/install/include
 
-libOCCViewer_la_LDFLAGS  = $(OGL_LIBS) $(QT_MT_LIBS) $(CAS_KERNEL) $(CAS_VIEWER)
+libOCCViewer_la_LDFLAGS  = $(OGL_LIBS) $(QT_MT_LIBS) $(CAS_KERNEL) $(CAS_VIEWER) \
+	-L/home/palmco/OpenCV/OpenCV-2.3.0/install/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d -lopencv_calib3d -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_flann  
 libOCCViewer_la_LIBADD   = ../Qtx/libqtx.la ../SUIT/libsuit.la \
 	../ViewerTools/libViewerTools.la ../OpenGLUtils/libOpenGLUtils.la

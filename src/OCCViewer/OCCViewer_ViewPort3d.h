@@ -59,6 +59,9 @@ public:
 
   virtual QString       backgroundImageFilename() const;
   virtual void          setBackgroundImage( const QString& fileName , const Aspect_FillMethod& theFillMethod);
+  
+  virtual int           getBgImgHeight(){return myBgImgHeight; };
+  virtual int           getBgImgWidth() {return myBgImgWidth;  };
 
 //   void         setActive( V3d_TypeOfView );
   virtual bool syncronize( const OCCViewer_ViewPort3d* );
@@ -111,6 +114,8 @@ private:
   double                myScale;
   bool                  myIsAdvancedZoomingEnabled;
   QString               myBackgroundImageFilename;
+  int                   myBgImgHeight;
+  int                   myBgImgWidth;
 };
 
 #ifdef WIN32
