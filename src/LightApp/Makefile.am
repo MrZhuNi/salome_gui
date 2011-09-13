@@ -183,8 +183,11 @@ libLightApp_la_CPPFLAGS = $(PYTHON_INCLUDES) $(QT_INCLUDES) $(CAS_CPPFLAGS)		\
 	$(HDF5_INCLUDES) @KERNEL_CXXFLAGS@ -I$(srcdir)/../SUIT -I$(srcdir)/../STD	\
 	-I$(srcdir)/../CAM -I$(srcdir)/../ObjBrowser -I$(srcdir)/../LogWindow		\
 	-I$(srcdir)/../Prs -I$(srcdir)/../Qtx -I$(srcdir)/../Event -I$(srcdir)/../Style	\
-	-I$(srcdir)/../CASCatch
-libLightApp_la_LDFLAGS = $(QT_MT_LIBS)
+	-I$(srcdir)/../CASCatch								\
+	-I/home/palmco/OpenCV/OpenCV-2.3.0/install/include/opencv \
+	-I/home/palmco/OpenCV/OpenCV-2.3.0/install/include
+libLightApp_la_LDFLAGS = $(QT_MT_LIBS)							\
+	-L/home/palmco/OpenCV/OpenCV-2.3.0/install/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d -lopencv_calib3d -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_flann 
 
 if ENABLE_VTKVIEWER
   libLightApp_la_CPPFLAGS += $(VTK_INCLUDES) -I$(srcdir)/../VTKViewer
