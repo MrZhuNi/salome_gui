@@ -32,6 +32,7 @@
   </section>
   <section name="resources">
     <!-- Resource directories (resource manager)-->
+    <parameter name="Qtx"         value="${GUI_ROOT_DIR}/share/salome/resources/gui"/>
     <parameter name="SUIT"         value="${GUI_ROOT_DIR}/share/salome/resources/gui"/>
     <parameter name="STD"          value="${GUI_ROOT_DIR}/share/salome/resources/gui"/>
     <parameter name="Plot2d"       value="${GUI_ROOT_DIR}/share/salome/resources/gui"/>
