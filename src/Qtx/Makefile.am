@@ -182,5 +182,7 @@ MOC_FILES =				\
 
 nodist_libqtx_la_SOURCES = $(MOC_FILES)
 
+nodist_salomeres_DATA = Qtx_msg_fr.qm
+
 libqtx_la_CPPFLAGS = $(QT_INCLUDES)
 libqtx_la_LDFLAGS  = $(QT_MT_LIBS)
