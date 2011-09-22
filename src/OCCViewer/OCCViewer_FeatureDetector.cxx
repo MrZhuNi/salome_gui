@@ -137,7 +137,7 @@ bool OCCViewer_FeatureDetector::ComputeContours(){
 }
 
 /*!
-  Stores a regio of interest given by user in rect
+  Stores a region of interest given by user in rect
   \param theRect - Region Of Interest of the image located at imagePath 
 */
 void OCCViewer_FeatureDetector::SetROI( const QRect& theRect )

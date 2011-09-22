@@ -242,6 +242,7 @@ OCCViewer_ViewWindow::OCCViewer_ViewWindow( SUIT_Desktop*     theDesktop,
   myInteractionStyle = SUIT_ViewModel::STANDARD;
 
   clearViewAspects();
+  
 }
 
 /*!
@@ -2420,43 +2421,45 @@ void OCCViewer_ViewWindow::setBackgroundImage( const QString& theFileName,const 
   if ( myViewPort ) 
   {
     myViewPort->setBackgroundImage( theFileName ,theFillMethod);
+    myViewPort->getView()->SetSurfaceDetail(V3d_TEX_ALL);
   //     set2dMode(XYPlane);
   //     onTopView();
-      //TEST
-    OCCViewer_Viewer*           anOCCViewer = ((OCCViewer_ViewManager*)getViewManager())->getOCCViewer();
-  //   QString                theImgFileName   = backgroundImageFilename();
-    Handle(AIS_InteractiveContext) aContext = anOCCViewer->getAISContext(); 
-    
-    IplImage* img = cvLoadImage( theFileName.toStdString().c_str(),CV_LOAD_IMAGE_GRAYSCALE);
-    int height = img->height;
-    int width  = img->width;
-    
-    gp_Pnt p1(0,0,0);
-    gp_Pnt p2(0,height,0);
-    gp_Pnt p3(width,height,0);
-    gp_Pnt p4(width,0,0);
-    
-    BRepBuilderAPI_MakePolygon Wire(p1,p2,p3,p4, Standard_True); 
-    BRepBuilderAPI_MakeFace Face(Wire,Standard_True);
-    const TopoDS_Shape& S = Face.Shape();
-    Handle(AIS_TexturedShape) anAIS = new AIS_TexturedShape(S);
-    if (!theFileName.isEmpty())
-    {
-      MESSAGE("filename is not empty")
-      anAIS->SetTextureFileName(TCollection_AsciiString(theFileName.toStdString().c_str()));
-      anAIS->SetTextureMapOn();
-      anAIS->DisableTextureModulate();
-      myViewPort->getView()->SetSurfaceDetail(V3d_TEX_ALL);
-  //     anAIS->SetDisplayMode(AIS_Shaded); 
-    }
-    else
-      anAIS->SetTextureMapOff();
-    //creation of the presentable object
-    aContext->SetDisplayMode(anAIS,3);
-    aContext->SetMaterial(anAIS,Graphic3d_NOM_SATIN);
-    aContext->Display(anAIS);
-    onTopView();
-    aContext->UpdateCurrentViewer();
+//       //TEST
+//     OCCViewer_Viewer*           anOCCViewer = ((OCCViewer_ViewManager*)getViewManager())->getOCCViewer();
+//   //   QString                theImgFileName   = backgroundImageFilename();
+//     Handle(AIS_InteractiveContext) aContext = anOCCViewer->getAISContext(); 
+//     
+//     IplImage* img = cvLoadImage( theFileName.toStdString().c_str(),CV_LOAD_IMAGE_GRAYSCALE);
+//     int height = img->height;
+//     int width  = img->width;
+//     
+//     gp_Pnt p1(0,0,0);
+//     gp_Pnt p2(0,height,0);
+//     gp_Pnt p3(width,height,0);
+//     gp_Pnt p4(width,0,0);
+//     
+//     BRepBuilderAPI_MakePolygon Wire(p1,p2,p3,p4, Standard_True); 
+//     BRepBuilderAPI_MakeFace Face(Wire,Standard_True);
+//     const TopoDS_Shape& S = Face.Shape();
+//     Handle(AIS_TexturedShape) anAIS = new AIS_TexturedShape(S);
+//     if (!theFileName.isEmpty())
+//     {
+//       MESSAGE("filename is not empty")
+//       anAIS->SetTextureFileName(TCollection_AsciiString(theFileName.toStdString().c_str()));
+//       anAIS->SetTextureMapOn();
+//       anAIS->DisableTextureModulate();
+//       myViewPort->getView()->SetSurfaceDetail(V3d_TEX_ALL);
+//   //     anAIS->SetDisplayMode(AIS_Shaded); 
+//     }
+//     else
+//       anAIS->SetTextureMapOff();
+// //     creation of the presentable object
+//     aContext->SetDisplayMode(anAIS,3);
+// //     anAIS->SetDisplayMode(3);
+//     aContext->SetMaterial(anAIS,Graphic3d_NOM_SATIN);
+//     aContext->Display(anAIS);
+//     onTopView();
+//     aContext->UpdateCurrentViewer();
     
   }
 }
