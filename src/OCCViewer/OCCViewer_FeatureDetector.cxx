@@ -94,13 +94,13 @@ bool OCCViewer_FeatureDetector::ComputeContours(){
   Mat src, src_gray;
   Mat detected_edges;
 
-  /* TEST inutile si partie du bas commentée
+  // Thresholds for Canny detector
   int lowThreshold = 100;
   int ratio = 3;
-  int kernel_size = 3;
-  */
+  int kernel_size = 3; // 3,5 or 7
   
-  if (rect.width > 1)
+  bool isRectSelected = (rect.width > 1);
+  if (isRectSelected)
     src = _colorFiltering();
   else
   {
@@ -115,20 +115,23 @@ bool OCCViewer_FeatureDetector::ComputeContours(){
     cvtColor( src, src_gray, CV_BGR2GRAY );
   else if (src.channels() == 1)
     src_gray = src;
-
-  /* TEST commenté pour le moment mais peut servir dans certains cas
-  // Reduce noise with a kernel 3x3               
-  blur( src_gray, detected_edges, Size(3,3) );
-
-  // Canny detector
-  Canny( detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size );    // The problem is that with that filter the detector detects dobble contours
   
-  // Retrieve contours on the Canny result
-  _detectAndRetrieveContours( detected_edges );
-  */
-  
+  if(isRectSelected)
+  {
     _detectAndRetrieveContours( src_gray );
+  }
+  else
+  {
+    // Reduce noise with a kernel 3x3               
+    blur( src_gray, detected_edges, Size(3,3) );
 
+    // Canny detector
+    Canny( detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size, /*L2gradient =*/true );    // The problem is that with that filter the detector detects double contours
+    
+    // Retrieve contours on the Canny result
+    _detectAndRetrieveContours( detected_edges );
+  }
+  
   return true;
   
 }
@@ -150,8 +153,11 @@ void OCCViewer_FeatureDetector::SetROI( const QRect& theRect )
 */
 void OCCViewer_FeatureDetector::_detectAndRetrieveContours( Mat src )
 {
-  src = src > 1;  
-  findContours( src, contours, hierarchy,CV_RETR_CCOMP, CV_CHAIN_APPROX_TC89_KCOS);
+  src = src > 1; 
+  int method ;//= CV_CHAIN_APPROX_SIMPLE;
+//   if ( rect.width > 1 )
+  method = CV_CHAIN_APPROX_TC89_KCOS;//CV_CHAIN_APPROX_TC89_L1;
+  findContours( src, contours, hierarchy,CV_RETR_CCOMP, method);
   // Other possible approximations CV_CHAIN_APPROX_TC89_L1, CV_CHAIN_APPROX_SIMPLE cf. OpenCV documentation 
   // for precise information
 }
