@@ -167,7 +167,10 @@ void OCCViewer_Viewer::initView( OCCViewer_ViewWindow* view )
     
     OCCViewer_ViewPort3d* vp3d = view->getViewPort();
     if ( vp3d )
+    {
       vp3d->setBackgroundColor( myColors[0] );
+      vp3d->getView()->SetSurfaceDetail(V3d_TEX_ALL);
+    }
   }
 }
 
