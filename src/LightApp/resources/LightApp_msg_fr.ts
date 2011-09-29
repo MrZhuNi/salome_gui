@@ -602,10 +602,6 @@ Le fichier n&apos;existe pas</translation>
         <source>PREF_DEF_MODULE_DIAGRAM</source>
         <translation type="unfinished">Module des Diagrammes</translation>
     </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>LightApp_Module</name>

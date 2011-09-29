@@ -164,7 +164,7 @@ Le répertoir avec ce nom existe sur la disque. Essayez d&apos;utiliser un autre
     </message>
     <message>
         <source>MEN_DESK_VIEW_DOCKWINDOWS</source>
-        <translation>W&amp;indows</translation>
+        <translation>Fenêtres</translation>
     </message>
     <message>
         <source>BUT_YES</source>
