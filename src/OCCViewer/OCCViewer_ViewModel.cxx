@@ -500,7 +500,8 @@ void OCCViewer_Viewer::onChangeBgImageStretched()
   
   QString selFile = QFileDialog::getOpenFileName(aView,tr( "SELECT_IMAGE"),aView->backgroundImageFilename(), tr("OCC_IMAGE_FILES"));
   if ( ! selFile.isEmpty() )
-    aView->setBackgroundImage(selFile,Aspect_FM_STRETCH_NODEF);
+    aView->setBackgroundImage(selFile,Aspect_FM_STRETCH);
+//     aView->setBackgroundImage(selFile,Aspect_FM_STRETCH_NODEF);
 }
 /*!
   Updates OCC 3D viewer
