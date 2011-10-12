@@ -156,7 +156,7 @@ void OCCViewer_FeatureDetector::_detectAndRetrieveContours( Mat src )
   src = src > 1; 
   int method ;//= CV_CHAIN_APPROX_SIMPLE;
 //   if ( rect.width > 1 )
-  method = CV_CHAIN_APPROX_TC89_KCOS;//CV_CHAIN_APPROX_TC89_L1;
+  method = CV_CHAIN_APPROX_NONE;//CV_CHAIN_APPROX_TC89_KCOS;//CV_CHAIN_APPROX_TC89_L1;
   findContours( src, contours, hierarchy,CV_RETR_CCOMP, method);
   // Other possible approximations CV_CHAIN_APPROX_TC89_L1, CV_CHAIN_APPROX_SIMPLE cf. OpenCV documentation 
   // for precise information
