@@ -87,7 +87,6 @@
 #include <QtxSearchTool.h>
 #include <QtxWorkstack.h>
 #include <QtxMap.h>
-#include <QtxFontEdit.h>
 
 #include <LogWindow.h>
 
@@ -2199,10 +2198,6 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->setItemProperty( "strings", aValuesList,   legendPosition );
   pref->setItemProperty( "indexes", anIndicesList, legendPosition );
 
-  pref->addPreference( tr( "PREF_FONT" ), plot2dGroup, LightApp_Preferences::Font, "Plot2d", "LegendFont" );
-  
-  pref->addPreference( tr( "PREF_FONT_COLOR" ), plot2dGroup, LightApp_Preferences::Color, "Plot2d", "LegendColor" );
-
   int curveType = pref->addPreference( tr( "PREF_CURVE_TYPE" ), plot2dGroup,
                                        LightApp_Preferences::Selector, "Plot2d", "CurveType" );
   aValuesList.clear();
@@ -3673,3 +3668,5 @@ bool LightApp_Application::renameAllowed( const QString& /*entry*/) const {
 bool LightApp_Application::renameObject( const QString& entry, const QString& ) {
   return false;
 }
+
+
