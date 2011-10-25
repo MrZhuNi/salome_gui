@@ -198,7 +198,7 @@ void STD_Application::createActions()
 
   createAction( HelpAboutId, tr( "TOT_DESK_HELP_ABOUT" ), QIcon(),
                 tr( "MEN_DESK_HELP_ABOUT" ), tr( "PRP_DESK_HELP_ABOUT" ),
-                Qt::SHIFT+Qt::Key_A, desk, false, this, SLOT( onHelpAbout() ) );
+                0, desk, false, this, SLOT( onHelpAbout() ) );
 
 
   QtxDockAction* dwa = new QtxDockAction( tr( "TOT_DOCKWINDOWS" ), tr( "MEN_DESK_VIEW_DOCKWINDOWS" ), desk );
