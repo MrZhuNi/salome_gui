@@ -903,15 +903,11 @@ public:
               const QString&        theContext = QString() )
     : myApp( theApp ),
       myParams( theParams ),
-#ifdef WIN32
-      myHelpFile( "file://" + theHelpFile ),
-#else
-      myHelpFile( "file:" + theHelpFile ),
-#endif
       myContext( theContext ),
       myStatus(0),
       myLApp( app )
   {
+    myHelpFile = QString("file://%1").arg( QFileInfo( theHelpFile ).canonicalFilePath() );
   }
 
   virtual void run()
