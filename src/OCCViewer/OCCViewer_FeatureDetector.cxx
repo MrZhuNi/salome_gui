@@ -28,6 +28,12 @@
 
 using namespace cv;
 
+//TODO : All the following methods but ComputeContours use the C API of OpenCV while ComputContours
+// uses the C++ API of the library.
+// This should be homogenized and preferably by using the C++ API (which is more recent for all the methods
+
+// The code has to be "cleaned up" too
+
 /*!
   Constructor
   \param theFilename - image to process
@@ -88,50 +94,64 @@ void OCCViewer_FeatureDetector::ComputeCorners(){
 /*!
   Computes the contours of the image located at imagePath
 */
-bool OCCViewer_FeatureDetector::ComputeContours(){
+bool OCCViewer_FeatureDetector::ComputeContours( int detection_method ){
  
   // Initialising images
   Mat src, src_gray;
   Mat detected_edges;
-
-  // Thresholds for Canny detector
-  int lowThreshold = 100;
-  int ratio = 3;
-  int kernel_size = 3; // 3,5 or 7
   
-  bool isRectSelected = (rect.width > 1);
-  if (isRectSelected)
-    src = _colorFiltering();
-  else
-  {
-    src = imread( imagePath.c_str() );
-  }
-
+  // Read image
+  src = imread( imagePath.c_str() );
   if( !src.data )
-  { return false; }
-
-  // Convert the image to grayscale
-  if (src.channels() == 3)
-    cvtColor( src, src_gray, CV_BGR2GRAY );
-  else if (src.channels() == 1)
-    src_gray = src;
+    return false; 
   
-  if(isRectSelected)
-  {
-    _detectAndRetrieveContours( src_gray );
-  }
-  else
-  {
+  if ( detection_method == CANNY )   // The problem is that with that filter the detector detects double contours
+  {   
+    // Thresholds for Canny detector
+    int lowThreshold = 100;
+    int ratio = 3;
+    int kernel_size = 3; // 3,5 or 7
+    
+    // Convert the image to grayscale
+    if (src.channels() == 3)
+      cvtColor( src, src_gray, CV_BGR2GRAY );
+    else if (src.channels() == 1)
+      src_gray = src;
+  
     // Reduce noise with a kernel 3x3               
     blur( src_gray, detected_edges, Size(3,3) );
-
     // Canny detector
-    Canny( detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size, /*L2gradient =*/true );    // The problem is that with that filter the detector detects double contours
-    
-    // Retrieve contours on the Canny result
-    _detectAndRetrieveContours( detected_edges );
+    Canny( detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size, /*L2gradient =*/true );      
   }
+  else if ( detection_method == COLORFILTER )
+  {
+    if ( !rect.width > 1 )
+      return false;
+    detected_edges = _colorFiltering();
+  }
+  else if ( detection_method == RIDGE_DETECTOR )  // Method adapted for engineering drawings (e.g. watershed functionnality could be used here cf.OpenCV documentation and samples)
+  {
+    // TODO
+    return false;
+  }
+  _detectAndRetrieveContours( detected_edges );
   
+  return true;
+  
+}
+
+/*!
+  Computes the lines in the image located at imagePath
+*/
+bool OCCViewer_FeatureDetector::ComputeLines(){
+  MESSAGE("OCCViewer_FeatureDetector::ComputeLines()")
+  // Initialising images
+  Mat src, src_gray, detected_edges, dst;
+  
+  src=imread(imagePath.c_str(), 0);
+  
+  Canny( src, dst, 50, 200, 3 );
+  HoughLinesP( dst, lines, 1, CV_PI/180, 80, 30, 10 );
   return true;
   
 }
@@ -154,11 +174,9 @@ void OCCViewer_FeatureDetector::SetROI( const QRect& theRect )
 void OCCViewer_FeatureDetector::_detectAndRetrieveContours( Mat src )
 {
   src = src > 1; 
-  int method ;//= CV_CHAIN_APPROX_SIMPLE;
-//   if ( rect.width > 1 )
-  method = CV_CHAIN_APPROX_NONE;//CV_CHAIN_APPROX_TC89_KCOS;//CV_CHAIN_APPROX_TC89_L1;
+  int method = CV_CHAIN_APPROX_NONE;
   findContours( src, contours, hierarchy,CV_RETR_CCOMP, method);
-  // Other possible approximations CV_CHAIN_APPROX_TC89_L1, CV_CHAIN_APPROX_SIMPLE cf. OpenCV documentation 
+  // Other possible approximations CV_CHAIN_APPROX_TC89_KCOS, CV_CHAIN_APPROX_TC89_L1, CV_CHAIN_APPROX_SIMPLE cf. OpenCV documentation 
   // for precise information
 }
 
@@ -171,6 +189,9 @@ void OCCViewer_FeatureDetector::_detectAndRetrieveContours( Mat src )
 Mat OCCViewer_FeatureDetector::_colorFiltering()
 {  
   IplImage* find_image = cvLoadImage(imagePath.c_str(),CV_LOAD_IMAGE_COLOR);
+  // Reduce noise with a kernel 3x3               
+  cvSmooth( find_image, find_image, CV_GAUSSIAN, 3, 3 );
+  
   if ( !rect.width > 1 )
     return Mat(find_image);
   
@@ -184,7 +205,6 @@ Mat OCCViewer_FeatureDetector::_colorFiltering()
   
   IplImage* test_hsv = cvCreateImage(cvGetSize(test_image),8,3);
   IplImage* test_hue = cvCreateImage(cvGetSize(test_image),8,1);
-
   CvHistogram* hist;
 
   cvCvtColor(test_image, test_hsv, CV_BGR2HSV);
@@ -199,6 +219,30 @@ Mat OCCViewer_FeatureDetector::_colorFiltering()
   //calculate hue` histogram
   cvCalcHist(&test_hue, hist, 0 ,0);
 
+//   // TEST print of the histogram for debugging
+//   IplImage* hist_image = cvCreateImage(cvSize(320,300),8,3);
+//   
+//   //draw hist on hist_test image.
+//   cvZero(hist_image);
+//   float max_value = 0;
+//   cvGetMinMaxHistValue(hist, 0 , &max_value, 0, 0);
+//   int bin_w = hist_image->width/size_hist;
+//   for(int i = 0; i < size_hist; i++ )
+//   {
+//     //prevent overflow
+//     int val = cvRound( cvGetReal1D(hist->bins,i)*hist_image->
+//     height/max_value);
+//     CvScalar color = CV_RGB(200,0,0);
+//     //hsv2rgb(i*180.f/size_hist);
+//     cvRectangle( hist_image, cvPoint(i*bin_w,hist_image->height),
+//     cvPoint((i+1)*bin_w,hist_image->height - val),
+//     color, -1, 8, 0 );
+//   }
+//  
+//    
+//   cvNamedWindow("hist", 1); cvShowImage("hist",hist_image);
+  
+  
   //calculate back projection of hue plane of input image
   IplImage* backproject = cvCreateImage(cvGetSize(find_image), 8, 1);
   IplImage* binary_backproject = cvCreateImage(cvGetSize(find_image), 8, 1);
@@ -210,7 +254,7 @@ Mat OCCViewer_FeatureDetector::_colorFiltering()
   cvCalcBackProject(&find_hue, backproject, hist);
   
   // Threshold in order to obtain binary image
-  cvThreshold(backproject, binary_backproject, 1, 255, CV_THRESH_BINARY);  // NOTE it would be good to think about the best threshold to use (1 here)
+  cvThreshold(backproject, binary_backproject, 1, 255, CV_THRESH_BINARY);  // NOTE it would be good to think about the best threshold to use (it's 1 for now)
   cvReleaseImage(&test_image);
   cvReleaseImage(&test_hsv);
   cvReleaseImage(&test_hue);

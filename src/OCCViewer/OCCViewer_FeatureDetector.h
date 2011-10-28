@@ -32,6 +32,13 @@
 #include <QString>
 #include <QRect>
 
+enum              // Method used for contour detection
+{
+  CANNY,
+  COLORFILTER,
+  RIDGE_DETECTOR
+};
+
 class OCCViewer_FeatureDetector
 {
 public:
@@ -42,11 +49,13 @@ public:
   OCCViewer_FeatureDetector( const QString& );                           // Constructor
   
   void                    ComputeCorners();                              // Detects the corners from the image located at imagePath
-  bool                    ComputeContours();                             // Detects the corners from the image located at imagePath
+  bool                    ComputeLines();                                // Detects the lines from the image located at imagePath
+  bool                    ComputeContours( int method );                 // Detects the contours from the image located at imagePath
   
   void                    SetROI( const QRect& );                        // Sets a Region Of Interest in the image
   CvPoint2D32f*           GetCorners()           { return corners;     };
   CvContoursArray         GetContours()          { return contours;    };
+  std::vector<cv::Vec4i>  GetLines()             { return lines;       };
   std::vector<cv::Vec4i>  GetContoursHierarchy() { return hierarchy;   };
   int                     GetCornerCount()       { return cornerCount; };
   int                     GetImgHeight()         { return imgHeight;   };
@@ -61,6 +70,7 @@ private:
   
   CvContoursArray         contours;
   std::vector<cv::Vec4i>  hierarchy;
+  std::vector<cv::Vec4i>  lines;
   int                     imgHeight;
   int                     imgWidth; 
   CvRect                  rect;
