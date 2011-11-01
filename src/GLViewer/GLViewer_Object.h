@@ -153,6 +153,8 @@ public:
   
   //! Returns true if object is highlighted
   virtual GLboolean         isHighlighted() const { return myIsHigh; }
+  //! Installs highlight status to object
+  virtual void              setHighlighted( GLboolean state ) { myIsHigh = state; }
   //! Returns true if object is selected
   virtual GLboolean         isSelected() const { return myIsSel; }
   //! Installs select status to object
