@@ -90,9 +90,9 @@
 
 #include "utilities.h"
 
-// OpenCV includes
-#include <cv.h>
-#include <highgui.h>
+// // OpenCV includes
+// #include <cv.h>
+// #include <highgui.h>
 
 static QEvent* l_mbPressEvent = 0;
 

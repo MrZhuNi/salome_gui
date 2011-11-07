@@ -88,6 +88,8 @@ else
   AC_MSG_RESULT([for OPENCV: yes])
 fi
 
+AM_CONDITIONAL(WITH_OPENCV, [test x"$opencv_ok" = xyes])
+
 AC_SUBST(OPENCV_INCLUDES)
 AC_SUBST(OPENCV_LIBS)
 
