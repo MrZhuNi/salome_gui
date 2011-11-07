@@ -29,7 +29,7 @@ if WITH_OPENCV
   FeatureDetector_Header = OCCViewer_FeatureDetector.h
   FeatureDetector_Sources = OCCViewer_FeatureDetector.cxx
   Opencv_libs = $(OPENCV_LIBS)
-  Opencv_Includes = $(OPENCV_INCLUDES)
+  Opencv_includes = $(OPENCV_INCLUDES)
 endif
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
