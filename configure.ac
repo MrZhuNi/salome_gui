@@ -371,15 +371,6 @@ echo
 
 CHECK_QWT
 
-echo
-echo ---------------------------------------------
-echo Testing OpenCV
-echo ---------------------------------------------
-echo
-
-CHECK_OPENCV
-
-
 CHECK_TESTRECORDER
 
 echo

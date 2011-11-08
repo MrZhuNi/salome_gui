@@ -25,13 +25,6 @@
 #  $Header$
 #
 
-if WITH_OPENCV
-  FeatureDetector_Header = OCCViewer_FeatureDetector.h
-  FeatureDetector_Sources = OCCViewer_FeatureDetector.cxx
-  Opencv_libs = $(OPENCV_LIBS)
-  Opencv_includes = $(OPENCV_INCLUDES)
-endif
-
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
 lib_LTLIBRARIES = libOCCViewer.la
@@ -54,8 +47,7 @@ salomeinclude_HEADERS =				\
 	OCCViewer_FontWidget.h                  \
 	OCCViewer_CubeAxesDlg.h                 \
 	OCCViewer_ToolTip.h			\
-	OCCViewer_ViewFrame.h			\
-	$(FeatureDetector_Header)
+	OCCViewer_ViewFrame.h
 
 dist_libOCCViewer_la_SOURCES =			\
 	OCCViewer_AISSelector.cxx		\
@@ -74,8 +66,7 @@ dist_libOCCViewer_la_SOURCES =			\
 	OCCViewer_FontWidget.cxx                \
 	OCCViewer_CubeAxesDlg.cxx               \
 	OCCViewer_ToolTip.cxx			\
-	OCCViewer_ViewFrame.cxx			\
-	$(FeatureDetector_Sources)
+	OCCViewer_ViewFrame.cxx
 
 MOC_FILES =					\
 	OCCViewer_AISSelector_moc.cxx		\
@@ -135,11 +126,9 @@ nodist_salomeres_DATA =		\
 
 libOCCViewer_la_CPPFLAGS = $(QT_INCLUDES) $(OGL_INCLUDES) $(CAS_CPPFLAGS) @KERNEL_CXXFLAGS@ \
 	-I$(srcdir)/../SUIT -I$(srcdir)/../ViewerTools -I$(srcdir)/../Qtx \
-	-I$(srcdir)/../OpenGLUtils -I$(srcdir)/../CASCatch\
-	$(Opencv_includes)
+	-I$(srcdir)/../OpenGLUtils -I$(srcdir)/../CASCatch
 
 libOCCViewer_la_LDFLAGS  = $(OGL_LIBS) $(QT_MT_LIBS) $(CAS_KERNEL) $(CAS_VIEWER) \
-	$(Opencv_libs)
 
 libOCCViewer_la_LIBADD   = ../Qtx/libqtx.la ../SUIT/libsuit.la \
 	../ViewerTools/libViewerTools.la ../OpenGLUtils/libOpenGLUtils.la
