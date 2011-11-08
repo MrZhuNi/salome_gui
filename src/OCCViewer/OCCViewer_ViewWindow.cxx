@@ -58,20 +58,10 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_Shape.hxx>
-#include <AIS_TexturedShape.hxx>
-
-#include <BRepBuilderAPI_MakeVertex.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepBuilderAPI_MakePolygon.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
-
-#include <TCollection_AsciiString.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
 
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
 
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
