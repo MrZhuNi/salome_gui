@@ -50,6 +50,42 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
         <source>ENTRY_COLUMN</source>
         <translation>Entry</translation>
     </message>
+    <message>
+        <source>BROWSER_TITLE</source>
+        <translation>SALOME Help Browser</translation>
+    </message>    
+    <message>
+        <source>BROWSER_TOOLBAR_TITLE</source>
+        <translation>Navigation</translation>
+    </message>    
+    <message>
+        <source>BROWSER_FILEMENU</source>
+        <translation>&amp;File</translation>
+    </message>    
+    <message>
+        <source>BROWSER_CLOSE</source>
+        <translation>&amp;Close</translation>
+    </message>    
+    <message>
+        <source>BROWSER_BACK</source>
+        <translation>Go Back</translation>
+    </message>    
+    <message>
+        <source>BROWSER_FORWARD</source>
+        <translation>Go Forward</translation>
+    </message>    
+    <message>
+        <source>BROWSER_FIND</source>
+        <translation>&amp;Find...</translation>
+    </message>    
+    <message>
+        <source>BROWSER_FINDNEXT</source>
+        <translation>Find &amp;next</translation>
+    </message>    
+    <message>
+        <source>BROWSER_FINDPREV</source>
+        <translation>Find &amp;previous</translation>
+    </message>    
 </context>
 <context>
     <name>LightApp_Application</name>
@@ -69,6 +105,18 @@ The changes will be applied on the next application session.</translation>
     <message>
         <source>PRP_THEME</source>
         <translation>Change style properties</translation>
+    </message>
+    <message>
+        <source>TOT_FULLSCREEN</source>
+        <translation>Full screen</translation>
+    </message>
+    <message>
+        <source>MEN_DESK_FULLSCREEN</source>
+        <translation>Full screen</translation>
+    </message>
+    <message>
+        <source>PRP_FULLSCREEN</source>
+        <translation>Switch to full screen mode</translation>
     </message>
     <message>
         <source>INF_TOOLBAR_MODULES</source>
@@ -400,7 +448,7 @@ The changes will be applied on the next application session.</translation>
     </message>
     <message>
         <source>PREF_AUTO_SIZE_FIRST</source>
-        <translation>Auto size for first column</translation>
+        <translation>Auto size for "Name" column</translation>
     </message>
     <message>
         <source>PREF_RESIZE_ON_EXPAND_ITEM</source>
@@ -475,6 +523,10 @@ The changes will be applied on the next application session.</translation>
         <translation>Background color</translation>
     </message>
     <message>
+        <source>PREF_VIEWER_SELECTION</source>
+        <translation>Selection color</translation>
+    </message>    
+    <message>
         <source>PREF_XYVIEWER_BACKGROUND</source>
         <translation>XY View background color</translation>
     </message>
@@ -494,6 +546,18 @@ The changes will be applied on the next application session.</translation>
         <source>PREF_FONT</source>
         <translation>Font</translation>
     </message>
+    <message>
+        <source>PREF_LEGEND_FONT</source>
+        <translation>Legend font</translation>
+    </message>
+    <message>
+        <source>PREF_FONT_COLOR</source>
+        <translation>Legend font color</translation>
+    </message>
+    <message>
+        <source>PREF_SELECTED_FONT_COLOR</source>
+        <translation>Highlighted legend font color</translation>
+    </message>			        
     <message>
         <source>PREF_LEFT</source>
         <translation>Left</translation>
@@ -627,8 +691,8 @@ The changes will be applied on the next application session.</translation>
         <translation>Python Console</translation>
     </message>
     <message>
-        <source>PREF_USE_ADVANCED_SELECTION_ALGORITHM</source>
-        <translation>Use Advanced Selection Algorithm</translation>
+        <source>PREF_DYNAMIC_PRESELECTION</source>
+        <translation>Dynamic pre-selection</translation>
     </message>
     <message>
         <source>TOT_CLOSE</source>

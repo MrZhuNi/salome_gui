@@ -28,6 +28,7 @@
 
 #include "SALOME_Actor.h"
 
+#include <QMenu>
 #include <QToolBar>
 #include <QEvent>
 #include <QXmlStreamWriter>
@@ -45,6 +46,7 @@
 #include <vtkGL2PSExporter.h>
 #include <vtkInteractorStyle.h>
 #include <vtkProperty.h>
+#include <vtkCallbackCommand.h>
 
 #include "QtxAction.h"
 
@@ -55,6 +57,7 @@
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_Accel.h"
 #include "SUIT_OverrideCursor.h"
+#include "SUIT_ViewManager.h"
 #include "QtxActionToolMgr.h"
 #include "QtxMultiAction.h"
 
@@ -121,7 +124,8 @@ SVTK_ViewWindow::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
   SUIT_ViewWindow(theDesktop),
   myView(NULL),
   myDumpImage(QImage()),
-  myKeyFreeInteractorStyle(SVTK_KeyFreeInteractorStyle::New())
+  myKeyFreeInteractorStyle(SVTK_KeyFreeInteractorStyle::New()),
+  myEventCallbackCommand(vtkCallbackCommand::New())
 {
   setWindowFlags( windowFlags() & ~Qt::Window );
   // specific of vtkSmartPointer
@@ -135,7 +139,9 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
 {
   myInteractor = new SVTK_RenderWindowInteractor(this,"SVTK_RenderWindowInteractor");
   
-  SVTK_Selector* aSelector = SVTK_Selector::New();
+  SVTK_Selector* aSelector = SVTK_Selector::New(); 
+  aSelector->SetDynamicPreSelection( SUIT_Session::session()->resourceMgr()->
+				     booleanValue( "VTKViewer", "dynamic_preselection", true ) );
   
   SVTK_GenericRenderWindowInteractor* aDevice = SVTK_GenericRenderWindowInteractor::New();
   aDevice->SetRenderWidget(myInteractor);
@@ -153,7 +159,7 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
   myToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL"), false, Qt::AllToolBarAreas, -1, this );
   myRecordingToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_RECORD_LABEL"), false, Qt::AllToolBarAreas, -1, this );
   
-  createActions( SUIT_Session::session()->activeApplication()->resourceMgr() );
+  createActions( SUIT_Session::session()->resourceMgr() );
   createToolBar();
   
   SetEventDispatcher(myInteractor->GetDevice());
@@ -205,6 +211,16 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
 
   myView = new SVTK_View(this);
   Initialize(myView,theModel);
+
+
+  myEventCallbackCommand->SetClientData(this);
+  myEventCallbackCommand->SetCallback(SVTK_ViewWindow::ProcessEvents);
+  myEventCallbackCommand->Delete();
+
+  GetInteractor()->GetInteractorStyle()->AddObserver(SVTK::OperationFinished, 
+						     myEventCallbackCommand.GetPointer(), 0.0);
+
+
   
   myInteractor->getRenderWindow()->Render();
   onResetView();
@@ -307,6 +323,7 @@ void SVTK_ViewWindow::onFrontView()
 {
   GetRenderer()->OnFrontView();
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -316,6 +333,7 @@ void SVTK_ViewWindow::onBackView()
 {
   GetRenderer()->OnBackView();
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -325,6 +343,7 @@ void SVTK_ViewWindow::onTopView()
 {
   GetRenderer()->OnTopView();
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -334,6 +353,7 @@ void SVTK_ViewWindow::onBottomView()
 {
   GetRenderer()->OnBottomView();
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -343,6 +363,7 @@ void SVTK_ViewWindow::onLeftView()
 {
   GetRenderer()->OnLeftView();
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -352,6 +373,7 @@ void SVTK_ViewWindow::onRightView()
 {
   GetRenderer()->OnRightView();
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -361,6 +383,7 @@ void SVTK_ViewWindow::onClockWiseView()
 {
   GetRenderer()->onClockWiseView();
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -370,6 +393,7 @@ void SVTK_ViewWindow::onAntiClockWiseView()
 {
   GetRenderer()->onAntiClockWiseView();
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -379,6 +403,7 @@ void SVTK_ViewWindow::onResetView()
 {
   GetRenderer()->OnResetView();
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -388,6 +413,7 @@ void SVTK_ViewWindow::onFitAll()
 {
   GetRenderer()->OnFitAll();
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -588,6 +614,7 @@ void SVTK_ViewWindow::SetScale( double theScale[3] )
 {
   GetRenderer()->SetScale( theScale );
   Repaint();
+  emit transformed( this );
 }
 
 /*!
@@ -709,6 +736,15 @@ void SVTK_ViewWindow::SetZoomingStyle(const int theStyle)
 }
 
 /*!
+  Switch dynamic preselection on / off
+  \param theDynPreselection - dynamic pre-selection mode
+*/
+void SVTK_ViewWindow::SetDynamicPreSelection( bool theDynPreselection )
+{
+  onSwitchDynamicPreSelection( theDynPreselection );
+}
+
+/*!
   Switches "keyboard free" interaction style on/off
 */
 void SVTK_ViewWindow::onSwitchInteractionStyle(bool theOn)
@@ -750,6 +786,19 @@ void SVTK_ViewWindow::onSwitchZoomingStyle( bool theOn )
 
   // update action state if method is called outside
   QtxAction* a = getAction( SwitchZoomingStyleId );
+  if ( a->isChecked() != theOn )
+    a->setChecked( theOn );
+}
+
+/*!
+  Toogles dynamic preselection on/off
+*/
+void SVTK_ViewWindow::onSwitchDynamicPreSelection( bool theOn )
+{
+  GetSelector()->SetDynamicPreSelection( theOn );
+
+  // update action state if method is called outside
+  QtxAction* a = getAction( SwitchDynamicPreselectionId );
   if ( a->isChecked() != theOn )
     a->setChecked( theOn );
 }
@@ -817,6 +866,15 @@ void SVTK_ViewWindow::onAdjustTrihedron()
 void SVTK_ViewWindow::onAdjustCubeAxes()
 {   
   GetRenderer()->OnAdjustCubeAxes();
+}
+
+void SVTK_ViewWindow::synchronize(SVTK_ViewWindow* otherViewWindow )
+{
+  if ( otherViewWindow ) {
+    bool blocked = blockSignals( true );
+    doSetVisualParameters( otherViewWindow->getVisualParameters(), true );
+    blockSignals( blocked );
+  }
 }
 
 /*!
@@ -1422,8 +1480,9 @@ void SVTK_ViewWindow::setVisualParameters( const QString& parameters )
 /*!
   The method restores visual parameters of this view from a formated string
 */
-void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
+void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters, bool baseParamsOnly )
 {
+  
   double pos[3], focalPnt[3], viewUp[3], parScale, scale[3];
 
   QXmlStreamReader aReader(parameters);
@@ -1455,24 +1514,33 @@ void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
         scale[1] = aAttr.value("Y").toString().toDouble();
         scale[2] = aAttr.value("Z").toString().toDouble();
         //printf("#### ViewScale %f; %f; %f\n", scale[0], scale[1], scale[2]);
-      } else if (aReader.name() == "DisplayCubeAxis") {
-        if (aAttr.value("Show") == "0")
-          gradAxesActor->VisibilityOff();
-        else
-          gradAxesActor->VisibilityOn();
-      } else if (aReader.name() == "GraduatedAxis") {
-        if(aAttr.value("Axis") == "X") 
-          setGradAxisVisualParams(aReader, gradAxesActor->GetXAxisActor2D());
-        else if(aAttr.value("Axis") == "Y")
-          setGradAxisVisualParams(aReader, gradAxesActor->GetYAxisActor2D());
-        else if(aAttr.value("Axis") == "Z")
-          setGradAxisVisualParams(aReader, gradAxesActor->GetZAxisActor2D());
-      } else if (aReader.name() == "Trihedron") {
-        if (aAttr.value("isShown") == "0")
-          GetTrihedron()->VisibilityOff();
-        else
-          GetTrihedron()->VisibilityOn();
-        SetTrihedronSize(aAttr.value("Size").toString().toDouble());
+      } 
+      else if (aReader.name() == "DisplayCubeAxis") {
+	if ( !baseParamsOnly ) {
+	  if (aAttr.value("Show") == "0")
+	    gradAxesActor->VisibilityOff();
+	  else
+	    gradAxesActor->VisibilityOn();
+	}
+      }
+      else if (aReader.name() == "GraduatedAxis") {
+	if ( !baseParamsOnly ) {
+	  if(aAttr.value("Axis") == "X") 
+	    setGradAxisVisualParams(aReader, gradAxesActor->GetXAxisActor2D());
+	  else if(aAttr.value("Axis") == "Y")
+	    setGradAxisVisualParams(aReader, gradAxesActor->GetYAxisActor2D());
+	  else if(aAttr.value("Axis") == "Z")
+	    setGradAxisVisualParams(aReader, gradAxesActor->GetZAxisActor2D());
+	}
+      } 
+      else if (aReader.name() == "Trihedron") {
+	if ( !baseParamsOnly ) {
+	  if (aAttr.value("isShown") == "0")
+	    GetTrihedron()->VisibilityOff();
+	  else
+	    GetTrihedron()->VisibilityOn();
+	  SetTrihedronSize(aAttr.value("Size").toString().toDouble());
+	}
       }
     } 
   }
@@ -1482,8 +1550,10 @@ void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
     camera->SetFocalPoint( focalPnt );
     camera->SetViewUp( viewUp );
     camera->SetParallelScale( parScale );
-    SetScale( scale );
-  } else {
+    GetRenderer()->SetScale( scale );
+    //SetScale( scale );
+  }
+  else {
     QStringList paramsLst = parameters.split( '*' );
     if ( paramsLst.size() >= nNormalParams ) {
       // 'reading' list of parameters
@@ -1507,32 +1577,37 @@ void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
       camera->SetFocalPoint( focalPnt );
       camera->SetViewUp( viewUp );
       camera->SetParallelScale( parScale );
-      SetScale( scale );
+      GetRenderer()->SetScale( scale );
+      //SetScale( scale );
       
       // apply graduated axes parameters
-      SVTK_CubeAxesActor2D* gradAxesActor = GetCubeAxes();
-      if ( gradAxesActor && paramsLst.size() == nAllParams ) {
-        int i = nNormalParams+1, j = i + nGradAxisParams - 1;
-        ::setGradAxisVisualParams( gradAxesActor->GetXAxisActor2D(), parameters.section( '*', i, j ) ); 
-        i = j + 1; j += nGradAxisParams;
-        ::setGradAxisVisualParams( gradAxesActor->GetYAxisActor2D(), parameters.section( '*', i, j ) ); 
-        i = j + 1; j += nGradAxisParams;
-        ::setGradAxisVisualParams( gradAxesActor->GetZAxisActor2D(), parameters.section( '*', i, j ) ); 
+      if ( !baseParamsOnly ) {
+	SVTK_CubeAxesActor2D* gradAxesActor = GetCubeAxes();
+	if ( gradAxesActor && paramsLst.size() == nAllParams ) {
+	  int i = nNormalParams+1, j = i + nGradAxisParams - 1;
+	  ::setGradAxisVisualParams( gradAxesActor->GetXAxisActor2D(), parameters.section( '*', i, j ) ); 
+	  i = j + 1; j += nGradAxisParams;
+	  ::setGradAxisVisualParams( gradAxesActor->GetYAxisActor2D(), parameters.section( '*', i, j ) ); 
+	  i = j + 1; j += nGradAxisParams;
+	  ::setGradAxisVisualParams( gradAxesActor->GetZAxisActor2D(), parameters.section( '*', i, j ) ); 
         
-        if ( paramsLst[13].toUShort() )
-          gradAxesActor->VisibilityOn();
-        else
-          gradAxesActor->VisibilityOff();
-      } else if ( paramsLst.size() == nAllParams ) {
-        if ( paramsLst[90].toUShort() )
-          GetTrihedron()->VisibilityOn();
-        else
-          GetTrihedron()->VisibilityOff();
+	  if ( paramsLst[13].toUShort() )
+	    gradAxesActor->VisibilityOn();
+	  else
+	    gradAxesActor->VisibilityOff();
+	}
+	else if ( paramsLst.size() == nAllParams ) {
+	  if ( paramsLst[90].toUShort() )
+	    GetTrihedron()->VisibilityOn();
+	  else
+	    GetTrihedron()->VisibilityOff();
         
-        SetTrihedronSize(paramsLst[91].toDouble());
+	  SetTrihedronSize(paramsLst[91].toDouble());
+	}
       }
     }
   }
+  Repaint();
 }
 
 
@@ -1825,6 +1900,17 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onViewParameters(bool)));
   mgr->registerAction( anAction, ViewParametersId );
 
+  // Synchronize View 
+  anAction = new QtxAction(tr("MNU_SYNCHRONIZE_VIEW"), 
+                           theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_SYNCHRONIZE" ) ),
+                           tr( "MNU_SYNCHRONIZE_VIEW" ), 0, this);
+  anAction->setStatusTip(tr("DSC_SYNCHRONIZE_VIEW"));
+  anAction->setMenu( new QMenu( this ) );
+  anAction->setCheckable(true);
+  connect(anAction->menu(), SIGNAL(aboutToShow()), this, SLOT(updateSyncViews()));
+  connect(anAction, SIGNAL(triggered(bool)), this, SLOT(onSynchronizeView(bool)));
+  mgr->registerAction( anAction, SynchronizeId );
+
   // Switch between interaction styles
   anAction = new QtxAction(tr("MNU_SVTK_STYLE_SWITCH"), 
                            theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_STYLE_SWITCH" ) ),
@@ -1834,7 +1920,7 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchInteractionStyle(bool)));
   mgr->registerAction( anAction, SwitchInteractionStyleId );
 
-  // Switch between zomming styles
+  // Switch between zooming styles
   anAction = new QtxAction(tr("MNU_SVTK_ZOOMING_STYLE_SWITCH"), 
                            theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_ZOOMING_STYLE_SWITCH" ) ),
                            tr( "MNU_SVTK_ZOOMING_STYLE_SWITCH" ), 0, this);
@@ -1842,6 +1928,15 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
   anAction->setCheckable(true);
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchZoomingStyle(bool)));
   mgr->registerAction( anAction, SwitchZoomingStyleId );
+
+  // Turn on/off dynamic pre-selection
+  anAction = new QtxAction(tr("MNU_SVTK_DYNAMIC_PRESLECTION_SWITCH"), 
+                           theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_DYNAMIC_PRESLECTION_SWITCH" ) ),
+                           tr( "MNU_SVTK_DYNAMIC_PRESLECTION_SWITCH" ), 0, this);
+  anAction->setStatusTip(tr("DSC_SVTK_DYNAMIC_PRESLECTION_SWITCH"));
+  anAction->setCheckable(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchDynamicPreSelection(bool)));
+  mgr->registerAction( anAction, SwitchDynamicPreselectionId );
 
   // Start recording
   myStartAction = new QtxAction(tr("MNU_SVTK_RECORDING_START"), 
@@ -1889,6 +1984,7 @@ void SVTK_ViewWindow::createToolBar()
   mgr->append( DumpId, myToolBar );
   mgr->append( SwitchInteractionStyleId, myToolBar );
   mgr->append( SwitchZoomingStyleId, myToolBar );
+  mgr->append( SwitchDynamicPreselectionId, myToolBar );
   mgr->append( ViewTrihedronId, myToolBar );
 
   QtxMultiAction* aScaleAction = new QtxMultiAction( this );
@@ -1925,7 +2021,10 @@ void SVTK_ViewWindow::createToolBar()
   mgr->append( GraduatedAxes, myToolBar );
 
   mgr->append( ViewParametersId, myToolBar );
+  mgr->append( SynchronizeId, myToolBar );
+
   mgr->append( toolMgr()->separator(), myToolBar );
+
   mgr->append( ParallelModeId, myToolBar );
   mgr->append( ProjectionModeId, myToolBar );
 
@@ -2098,3 +2197,150 @@ void SVTK_ViewWindow::hideEvent( QHideEvent * theEvent )
   emit Hide( theEvent );
 }
 
+void SVTK_ViewWindow::synchronizeView( SVTK_ViewWindow* viewWindow, int id )
+{
+  SVTK_ViewWindow* otherViewWindow = 0;
+  QList<SVTK_ViewWindow*> compatibleViews;
+
+  bool isSync = viewWindow->toolMgr()->action( SynchronizeId )->isChecked();
+
+  int vwid = viewWindow->getId();
+  
+  SUIT_Application* app = SUIT_Session::session()->activeApplication();
+  if ( !app ) return;
+
+  QList<SUIT_ViewManager*> wmlist;
+  app->viewManagers( viewWindow->getViewManager()->getType(), wmlist );
+
+  foreach( SUIT_ViewManager* wm, wmlist ) {
+    QVector<SUIT_ViewWindow*> vwlist = wm->getViews();
+
+    foreach( SUIT_ViewWindow* vw, vwlist ) {
+      SVTK_ViewWindow* vtkVW = dynamic_cast<SVTK_ViewWindow*>( vw );
+      if ( !vtkVW ) continue;
+      if ( vtkVW->getId() == id ) 
+	otherViewWindow = vtkVW;
+      else if ( vtkVW != viewWindow )
+	compatibleViews.append( vtkVW );
+    }
+  }
+
+  if ( isSync && id ) {
+    // remove all possible disconnections
+    foreach( SVTK_ViewWindow* vw, compatibleViews ) {
+      // disconnect target view
+      vw->disconnect( SIGNAL( transformed( SVTK_ViewPort* ) ), viewWindow, SLOT( synchronize( SVTK_ViewPort* ) ) );
+      viewWindow->disconnect( SIGNAL( transformed( SVTK_ViewPort* ) ), vw, SLOT( synchronize( SVTK_ViewPort* ) ) );
+      if ( otherViewWindow ) {
+	// disconnect source view
+	vw->disconnect( SIGNAL( transformed( SVTK_ViewPort* ) ), otherViewWindow, SLOT( synchronize( SVTK_ViewPort* ) ) );
+	otherViewWindow->disconnect( SIGNAL( transformed( SVTK_ViewPort* ) ), vw, SLOT( synchronize( SVTK_ViewPort* ) ) );
+      }
+      QAction* a = vw->toolMgr()->action( SynchronizeId );
+      if ( a ) {
+	int anid = a->data().toInt();
+	if ( a->isChecked() && ( anid == id || anid == vwid ) ) {
+	  bool blocked = a->blockSignals( true );
+	  a->setChecked( false );
+	  a->blockSignals( blocked );
+	}
+      }
+    }
+    if ( otherViewWindow ) {
+      // reconnect source and target view
+      otherViewWindow->disconnect( SIGNAL( transformed( SVTK_ViewWindow* ) ), viewWindow, SLOT( synchronize( SVTK_ViewWindow* ) ) );
+      viewWindow->disconnect( SIGNAL( transformed( SVTK_ViewWindow* ) ), otherViewWindow, SLOT( synchronize( SVTK_ViewWindow* ) ) );
+      otherViewWindow->connect( viewWindow, SIGNAL( transformed( SVTK_ViewWindow* ) ), SLOT( synchronize( SVTK_ViewWindow* ) ) );
+      viewWindow->connect( otherViewWindow, SIGNAL( transformed( SVTK_ViewWindow* ) ), SLOT( synchronize( SVTK_ViewWindow* ) ) );
+      // synchronize target view with source view
+      viewWindow->doSetVisualParameters( otherViewWindow->getVisualParameters(), true );
+      viewWindow->toolMgr()->action( SynchronizeId )->setData( otherViewWindow->getId() );
+      otherViewWindow->toolMgr()->action( SynchronizeId )->setData( viewWindow->getId() );
+      if ( !otherViewWindow->toolMgr()->action( SynchronizeId )->isChecked() ) {
+	bool blocked = otherViewWindow->toolMgr()->action( SynchronizeId )->blockSignals( true );
+	otherViewWindow->toolMgr()->action( SynchronizeId )->setChecked( true );
+	otherViewWindow->toolMgr()->action( SynchronizeId )->blockSignals( blocked );
+      }
+    }
+  }
+  else if ( otherViewWindow ) {
+    // reconnect source and target view
+    otherViewWindow->disconnect( SIGNAL( transformed( SVTK_ViewWindow* ) ), viewWindow, SLOT( synchronize( SVTK_ViewWindow* ) ) );
+    viewWindow->disconnect( SIGNAL( transformed( SVTK_ViewWindow* ) ), otherViewWindow, SLOT( synchronize( SVTK_ViewWindow* ) ) );
+    viewWindow->doSetVisualParameters( otherViewWindow->getVisualParameters(), true );
+    viewWindow->toolMgr()->action( SynchronizeId )->setData( otherViewWindow->getId() );
+    if ( otherViewWindow->toolMgr()->action( SynchronizeId )->data().toInt() == viewWindow->getId() && otherViewWindow->toolMgr()->action( SynchronizeId )->isChecked() ) {
+      bool blocked = otherViewWindow->toolMgr()->action( SynchronizeId )->blockSignals( true );
+      otherViewWindow->toolMgr()->action( SynchronizeId )->setChecked( false );
+      otherViewWindow->toolMgr()->action( SynchronizeId )->blockSignals( blocked );
+    }
+  }
+}
+
+/*!
+  "Synchronize View" action slot.
+*/
+void SVTK_ViewWindow::onSynchronizeView(bool checked)
+{
+  QAction* a = qobject_cast<QAction*>( sender() );
+  if ( a ) {
+    synchronizeView( this, a->data().toInt() );
+  }
+}
+
+/*!
+  Update list of available view for the "Synchronize View" action
+*/
+void SVTK_ViewWindow::updateSyncViews()
+{
+  QAction* anAction = toolMgr()->action( SynchronizeId );
+  if ( anAction && anAction->menu() ) {
+    int currentId = anAction->data().toInt();
+    anAction->menu()->clear();
+    SUIT_Application* app = SUIT_Session::session()->activeApplication();
+    if ( app ) { 
+      QList<SUIT_ViewManager*> wmlist;
+      app->viewManagers( getViewManager()->getType(), wmlist );
+      foreach( SUIT_ViewManager* wm, wmlist ) {
+	QVector<SUIT_ViewWindow*> vwlist = wm->getViews();
+	foreach ( SUIT_ViewWindow* vw, vwlist ) {
+	  SVTK_ViewWindow* vtkVW = dynamic_cast<SVTK_ViewWindow*>( vw );
+	  if ( !vtkVW || vtkVW == this ) continue;
+	  QAction* a = anAction->menu()->addAction( vtkVW->windowTitle() );
+          if ( vtkVW->getId() == currentId ) {
+            QFont f = a->font();
+	    f.setBold( true );
+	    a->setFont( f );
+	  }
+	  a->setData( vtkVW->getId() );
+	  connect( a, SIGNAL( triggered(bool) ), this, SLOT( onSynchronizeView(bool) ) );
+	}
+      }
+    }
+    if ( anAction->menu()->actions().isEmpty() ) {
+      anAction->setData( 0 );
+      anAction->menu()->addAction( tr( "MNU_SYNC_NO_VIEW" ) );
+    }
+  }
+}
+
+
+/*!
+  Emit transformed signal.
+*/
+void SVTK_ViewWindow::emitTransformed() {
+  transformed(this);
+}
+
+/*!
+  Processes events
+*/
+void SVTK_ViewWindow::ProcessEvents(vtkObject* vtkNotUsed(theObject),
+				    unsigned long theEvent,
+				    void* theClientData,
+				    void* theCallData)
+{
+  SVTK_ViewWindow* self = reinterpret_cast<SVTK_ViewWindow*>(theClientData);
+  if(self)
+    self->emitTransformed();
+}

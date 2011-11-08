@@ -18,12 +18,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
-//
 
 // File:      LightApp_Application.h
 // Created:   6/20/2005 18:39:25 PM
 // Author:    OCC team
-//
+
 #ifndef LIGHTAPP_APPLICATION_H
 #define LIGHTAPP_APPLICATION_H
 
@@ -45,6 +44,7 @@ class PyConsole_Console;
 class LightApp_WidgetContainer;
 class LightApp_Preferences;
 class LightApp_SelectionMgr;
+class LightApp_FullScreenHelper;
 class LightApp_DataObject;
 class SUIT_DataBrowser;
 class SUIT_Study;
@@ -84,7 +84,7 @@ public:
          CloseId, CloseAllId, GroupAllId,
          PreferencesId, MRUId, ModulesListId,
          NewGLViewId, NewPlot2dId, NewOCCViewId, NewVTKViewId, NewQxGraphViewId,
-         NewQxSceneViewId = NewQxGraphViewId, StyleId,
+         NewQxSceneViewId = NewQxGraphViewId, StyleId, FullScreenId,
          UserID };
 
 protected:
@@ -232,10 +232,13 @@ protected slots:
   void                                onMRUActivated( const QString& );
 
   void                                onStylePreferences();
+  void                                onFullScreen();
 
 private slots:
   void                                onSelection();
   void                                onRefresh();
+  void                                onDropped( const QMimeData*, Qt::DropAction,
+                                                 int, int, const QModelIndex& );
   void                                onPreferences();
   void                                onPreferenceChanged( QString&, QString&, QString& );
   void                                onRenameWindow();
@@ -288,6 +291,8 @@ protected:
 protected:
   LightApp_Preferences*               myPrefs;
   LightApp_SelectionMgr*              mySelMgr;
+
+  LightApp_FullScreenHelper*          myScreenHelper;
 
   WinMap                              myWin;
   WinVis                              myWinVis;

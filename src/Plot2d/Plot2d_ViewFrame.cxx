@@ -157,7 +157,8 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
      : QWidget (parent, 0),
        myOperation( NoOpId ), 
        myCurveType( 1 ), 
-       myShowLegend( true ), myLegendPos( 1 ),
+       myShowLegend( true ), myLegendPos( 1 ), myLegendFont("Helvetic",12),
+       myLegendColor(Qt::black),
        myMarkerSize( DEFAULT_MARKER_SIZE ),
        myBackground( Qt::white ),
        myTitle( "" ), myXTitle( "" ), myYTitle( "" ), myY2Title( "" ),
@@ -209,6 +210,8 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
   setVerScaleMode( myYMode, false );
   setBackgroundColor( myBackground );
   setLegendPos( myLegendPos );
+  setLegendFont( myLegendFont );
+  setLegendFontColor( myLegendColor );
   showLegend( myShowLegend, false );
   myPlot->replot();
 
@@ -374,6 +377,8 @@ void Plot2d_ViewFrame::readPreferences()
 
   myShowLegend = resMgr->booleanValue( "Plot2d", "ShowLegend", myShowLegend );
   myLegendPos = resMgr->integerValue( "Plot2d", "LegendPos", myLegendPos );
+  myLegendFont = resMgr->fontValue( "Plot2d", "LegendFont", myLegendFont );
+  myLegendColor = resMgr->colorValue( "Plot2d", "LegendFontColor", myLegendColor );
   myMarkerSize = resMgr->integerValue( "Plot2d", "MarkerSize", myMarkerSize );
   myBackground = resMgr->colorValue( "Plot2d", "Background", myBackground );
 
@@ -414,6 +419,8 @@ void Plot2d_ViewFrame::writePreferences()
   resMgr->setValue( "Plot2d", "CurveType", myCurveType );
   resMgr->setValue( "Plot2d", "ShowLegend", myShowLegend );
   resMgr->setValue( "Plot2d", "LegendPos", myLegendPos );
+  resMgr->setValue( "Plot2d", "LegendFont", myLegendFont );
+  resMgr->setValue( "Plot2d", "LegendFontColor", myLegendColor );
   resMgr->setValue( "Plot2d", "MarkerSize", myMarkerSize );
   resMgr->setValue( "Plot2d", "Background", myBackground );
   resMgr->setValue( "Plot2d", "ShowTitle", myTitleEnabled );
@@ -632,7 +639,7 @@ void Plot2d_ViewFrame::displayObject( Plot2d_Object* object, bool update )
 {
   if ( !object )
     return;
-
+  
   if ( object->getYAxis() == QwtPlot::yRight )
     mySecondY = true;
 
@@ -779,6 +786,18 @@ void Plot2d_ViewFrame::updateLegend( const Plot2d_Prs* prs )
                             anObj->getName() : anObj->getVerTitle() );
   }
 }
+
+/*!
+  update legend
+*/
+void Plot2d_ViewFrame::updateLegend() {
+  if ( myPlot->getLegend() ) {
+    ObjectDict::iterator it = myObjects.begin();
+    for( ; it != myObjects.end(); ++it ) 
+      it.key()->updateLegend(myPlot->getLegend());
+  }
+}
+
 
 /*!
   Fits the view to see all data
@@ -1028,7 +1047,7 @@ void Plot2d_ViewFrame::onSettings()
   if (mySecondY)
     dlg->setY2Title( myY2TitleEnabled, myY2Title );
   dlg->setCurveType( myCurveType );
-  dlg->setLegend( myShowLegend, myLegendPos );
+  dlg->setLegend( myShowLegend, myLegendPos, myLegendFont, myLegendColor );
   dlg->setMarkerSize( myMarkerSize );
   dlg->setBackgroundColor( myBackground );
   dlg->setScaleMode(myXMode, myYMode);
@@ -1062,6 +1081,13 @@ void Plot2d_ViewFrame::onSettings()
     if ( myLegendPos != dlg->getLegendPos() ) {
       setLegendPos( dlg->getLegendPos() );
     }
+	if ( myLegendFont != dlg->getLegendFont() ) {
+      setLegendFont( dlg->getLegendFont() );
+    }
+	if ( myLegendColor != dlg->getLegendColor() ) {
+      setLegendFontColor( dlg->getLegendColor() );
+    }
+
     // marker size
     if ( myMarkerSize != dlg->getMarkerSize() ) {
       setMarkerSize( dlg->getMarkerSize(), false );
@@ -1182,11 +1208,13 @@ void Plot2d_ViewFrame::showLegend( bool show, bool update )
     QwtLegend* legend = myPlot->legend();
     if ( !legend ) {
       legend = new QwtLegend( myPlot );
-      legend->setFrameStyle( QFrame::Box | QFrame::Sunken );
+      legend->setFrameStyle( QFrame::Box | QFrame::Sunken );      
     }
     legend->setItemMode( QwtLegend::ClickableItem );
     myPlot->insertLegend( legend );
     setLegendPos( myLegendPos );
+    setLegendFont( myLegendFont );
+    setLegendFontColor( myLegendColor );  
   }
   else
     myPlot->insertLegend( 0 );
@@ -1228,6 +1256,48 @@ int Plot2d_ViewFrame::getLegendPos() const
 }
 
 /*!
+  Sets legend font
+*/
+void Plot2d_ViewFrame::setLegendFont( const QFont& fnt )
+{
+  myLegendFont = fnt;
+  QwtLegend* legend = myPlot->legend();
+  if ( legend ) {
+    legend->setFont(fnt);
+  }
+}
+
+/*!
+  Gets legend font
+*/
+QFont Plot2d_ViewFrame::getLegendFont() const
+{
+  return myLegendFont;
+}
+
+/*!
+  Gets legend font color
+*/
+QColor Plot2d_ViewFrame::getLegendFontColor() const
+{
+  return myLegendColor;
+}
+
+/*!
+  Sets legend font color
+*/
+void Plot2d_ViewFrame::setLegendFontColor( const QColor& col )
+{
+  myLegendColor = col;
+  QwtLegend* legend = myPlot->legend();
+  if ( legend ) {
+    QPalette pal = legend->palette();
+    pal.setColor( QPalette::Text, col );
+    legend->setPalette( pal );
+  }
+}
+
+/*!
   Sets new marker size
 */
 void Plot2d_ViewFrame::setMarkerSize( const int size, bool update )
@@ -1244,6 +1314,8 @@ void Plot2d_ViewFrame::setMarkerSize( const int size, bool update )
         QwtSymbol aSymbol = crv->symbol();
         aSymbol.setSize( myMarkerSize, myMarkerSize );
         crv->setSymbol( aSymbol );
+	if(it.value())
+	  it.value()->setMarkerSize( myMarkerSize );
       }
     }
     if ( update )
@@ -1274,6 +1346,7 @@ void Plot2d_ViewFrame::setBackgroundColor( const QColor& color )
       aPal.setColor( QPalette::Background, myBackground );
     }
     myPlot->getLegend()->setPalette( aPal );
+    updateLegend();
   }
   Repaint();
 }

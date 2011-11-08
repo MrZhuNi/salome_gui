@@ -54,6 +54,7 @@
 
 #include <Style_Salome.h>
 
+#include "GUI_version.h"
 #include <SUIT_Tools.h>
 #include <SUIT_Session.h>
 #include <SUIT_Application.h>
@@ -134,31 +135,7 @@ static const char* pixmap_not_found_xpm[] = {
 
 QString salomeVersion()
 {
-  QString path( ::getenv( "GUI_ROOT_DIR" ) );
-  if ( !path.isEmpty() )
-    path += QDir::separator();
-  path += QString( "bin/salome/VERSION" );
-
-  QFile vf( path );
-  if ( !vf.open( QIODevice::ReadOnly ) )
-    return QString();
-
-  QString line( vf.readLine( 1024 ) );
-
-  vf.close();
-
-  if ( line.isEmpty() )
-    return QString();
-
-  while ( !line.isEmpty() && line.at( line.length() - 1 ) == QChar( '\n' ) )
-    line.remove( line.length() - 1, 1 );
-
-  QString ver;
-  int idx = line.lastIndexOf( ":" );
-  if ( idx != -1 )
-    ver = line.mid( idx + 1 ).trimmed();
-
-  return ver;
+  return GUI_VERSION_STR;
 }
 
 class SALOME_ResourceMgr : public SUIT_ResourceMgr
@@ -197,8 +174,9 @@ protected:
     return SUIT_ResourceMgr::userFileName( myExtAppName, for_load );
   }
 
-  virtual int userFileId( const QString& _fname ) const
+  virtual long userFileId( const QString& _fname ) const
   {
+    long id = -1;
     if ( !myExtAppName.isEmpty() ) {
       QRegExp exp( QString( "\\.%1rc\\.([a-zA-Z0-9.]+)$" ).arg( myExtAppName ) );
       QRegExp vers_exp( "^([0-9]+)([A-Za-z]?)([0-9]*)$" );
@@ -207,25 +185,26 @@ protected:
       if( exp.exactMatch( fname ) ) {
         QStringList vers = exp.cap( 1 ).split( ".", QString::SkipEmptyParts );
         int major=0, minor=0;
-        major = vers[0].toInt();
-        minor = vers[1].toInt();
-        if( vers_exp.indexIn( vers[2] )==-1 )
-          return -1;
         int release = 0, dev1 = 0, dev2 = 0;
-        release = vers_exp.cap( 1 ).toInt();
-        dev1 = vers_exp.cap( 2 )[ 0 ].toLatin1();
-        dev2 = vers_exp.cap( 3 ).toInt();
+	if ( vers.count() > 0 ) major = vers[0].toInt();
+	if ( vers.count() > 1 ) minor = vers[1].toInt();
+	if ( vers.count() > 2 ) {
+	  if( vers_exp.indexIn( vers[2] ) != -1 ) {
+	    release = vers_exp.cap( 1 ).toInt();
+	    dev1 = vers_exp.cap( 2 )[ 0 ].toLatin1();
+	    dev2 = vers_exp.cap( 3 ).toInt();
+	  }
+	}
         
-        int dev = dev1*100+dev2, id = major;
+        int dev = dev1*100+dev2;
+	id = major;
         id*=100; id+=minor;
         id*=100; id+=release;
         id*=10000;
         if ( dev > 0 ) id+=dev-10000;
-        return id;
       }
     }
-
-    return -1;
+    return id;
   }
 
 public:
@@ -297,6 +276,14 @@ public:
     }
     catch (std::exception& e) {
       std::cerr << e.what()  << std::endl;
+    }
+    catch (CORBA::Exception& e) {
+      std::cerr << "Caught CORBA::Exception"  << std::endl;
+      CORBA::Any tmp;
+      tmp<<= e;
+      CORBA::TypeCode_var tc = tmp.type();
+      const char *p = tc->name();
+      std::cerr << "notify(): CORBA exception of the kind : " << p << " is caught" << std::endl;
     }
     catch (...) {
       std::cerr << "Unknown exception caught in Qt handler: it's probably a bug in SALOME platform" << std::endl;

@@ -64,7 +64,13 @@ information is shown:
 <ul>
 <li><b>Simple</b> - as a plain text</li>
 <li><b>Tree</b> - in a tree-like form</li>
-</ul></ul>
+</ul>
+<li><b>Automatic nodes compute limit</b></li> - Size limit for the
+mesh groups for which the number of underlying nodes is calculated
+automatically. If the group size exceeds the value set in preferences,
+the user will have to press \em Compute button explicitly. Zero value
+means "no limit". Default value is set to 100 000 mesh elements.
+</li></ul>
 <li><b>Automatic Parameters</b></li>
 <ul>
 <li><b>Ratio Bounding Box Diagonal / Max Size</b> - this parameter is
@@ -99,14 +105,17 @@ dialog box.</li>
 </ul>
 <li><b>Elements</b></li>
 <ul>
-<li><b>Fill</b>  - allows to select the color of surface of elements
+<li><b>Surface color</b>  - allows to select the color of surface of elements
 (seen in Shading mode). Click on the colored line to access to the
 \ref select_color_and_font_page "Select Color" dialog box.</li>
-<li><b>Outline</b> - allows to select the color of borders of
+<li><b>Back surface color</b> - allows to select the color of interior surface
+of elements. Use slider to select this color.  This color generated on base 
+of the <b>Surface color</b> by changing it's brightness and saturation.</li>
+<li><b>Outline color</b> - allows to select the color of borders of
 elements. Click on the colored line to access to the 
 \ref select_color_and_font_page "Select Color" dialog box.</li>
-<li><b>Back Face</b> - allows to select the color of interior surface
-of elements. Click on the colored line to access to the 
+<li><b>Wireframe color</b> - allows to select the color of borders of
+elements in the wireframe mode. Click on the colored line to access to the 
 \ref select_color_and_font_page "Select Color" dialog box.</li>
 <li><b>Width</b> - allows to define the width of lines (edges and borders of elements).</li>
 <li><b>Shrink coef.</b> - allows to define relative space of elements

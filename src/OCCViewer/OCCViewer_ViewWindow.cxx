@@ -41,6 +41,7 @@
 #include <SUIT_Tools.h>
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_MessageBox.h>
+#include <SUIT_Application.h>
 
 #include <QtxActionToolMgr.h>
 #include <QtxMultiAction.h>
@@ -54,6 +55,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QApplication>
+#include <QMenu>
 
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
@@ -282,6 +284,11 @@ void OCCViewer_ViewWindow::initLayout()
   QtxAction* anAction = dynamic_cast<QtxAction*>( toolMgr()->action( GraduatedAxesId ) );
   myCubeAxesDlg = new OCCViewer_CubeAxesDlg( anAction, this, "OCCViewer_CubeAxesDlg" );
   myCubeAxesDlg->initialize();
+}
+
+OCCViewer_ViewWindow* OCCViewer_ViewWindow::getView( const int mode ) const
+{
+  return mode == get2dMode() ? const_cast<OCCViewer_ViewWindow*>( this ) : 0;
 }
 
 /*!
@@ -1227,6 +1234,16 @@ void OCCViewer_ViewWindow::createActions()
   aAction->setStatusTip(tr("DSC_MINIMIZE_VIEW"));
   connect(aAction, SIGNAL(triggered()), this, SLOT(onMaximizedView()));
   toolMgr()->registerAction( aAction, MaximizedId );
+
+  // Synchronize view
+  aAction = new QtxAction(tr("MNU_SYNCHRONIZE_VIEW"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_SYNC" ) ),
+                          tr( "MNU_SYNCHRONIZE_VIEW" ), 0, this );
+  aAction->setStatusTip(tr("DSC_SYNCHRONIZE_VIEW"));
+  aAction->setMenu( new QMenu( this ) );
+  aAction->setCheckable(true);
+  connect(aAction->menu(), SIGNAL(aboutToShow()), this, SLOT(updateSyncViews()));
+  connect(aAction, SIGNAL(triggered(bool)), this, SLOT(onSynchronizeView(bool)));
+  toolMgr()->registerAction( aAction, SynchronizeId );
 }
 
 /*!
@@ -1305,7 +1322,8 @@ void OCCViewer_ViewWindow::createToolBar()
 #endif
   toolMgr()->append( AmbientId, tid );
 
-  toolMgr()->append( MaximizedId, tid);
+  toolMgr()->append( MaximizedId, tid );
+  toolMgr()->append( SynchronizeId, tid );
 }
 
 /*!
@@ -1579,7 +1597,7 @@ void OCCViewer_ViewWindow::onRestoreView()
   \brief Restore view parameters.
   \param anItem view parameters
 */
-void OCCViewer_ViewWindow::performRestoring( const viewAspect& anItem )
+void OCCViewer_ViewWindow::performRestoring( const viewAspect& anItem, bool baseParamsOnly )
 {
   Handle(V3d_View) aView3d = myViewPort->getView();
 
@@ -1592,56 +1610,61 @@ void OCCViewer_ViewWindow::performRestoring( const viewAspect& anItem )
   aView3d->SetEye( anItem.eyeX, anItem.eyeY, anItem.eyeZ );
   aView3d->SetProj( anItem.projX, anItem.projY, anItem.projZ );
   aView3d->SetAxialScale( anItem.scaleX, anItem.scaleY, anItem.scaleZ );
-  myModel->setTrihedronShown( anItem.isVisible );
-  myModel->setTrihedronSize( anItem.size );
+
+  if ( !baseParamsOnly ) {
+
+    myModel->setTrihedronShown( anItem.isVisible );
+    myModel->setTrihedronSize( anItem.size );
         
 #if OCC_VERSION_LARGE > 0x06030009 // available only with OCC-6.3-sp10 and higher version
-  // graduated trihedron
-  bool anIsVisible = anItem.gtIsVisible;
-  OCCViewer_AxisWidget::AxisData anAxisData[3];
-  anAxisData[0].DrawName = anItem.gtDrawNameX;
-  anAxisData[1].DrawName = anItem.gtDrawNameZ;
-  anAxisData[2].DrawName = anItem.gtDrawNameZ;
-  anAxisData[0].Name = anItem.gtNameX;
-  anAxisData[1].Name = anItem.gtNameZ;
-  anAxisData[2].Name = anItem.gtNameZ;
-  anAxisData[0].NameColor = QColor( anItem.gtNameColorRX,
-                                    anItem.gtNameColorGX,
-                                    anItem.gtNameColorBX );
-  anAxisData[1].NameColor = QColor( anItem.gtNameColorRY,
-                                    anItem.gtNameColorGY,
-                                    anItem.gtNameColorBY );
-  anAxisData[2].NameColor = QColor( anItem.gtNameColorRZ,
-                                    anItem.gtNameColorGZ,
-                                    anItem.gtNameColorBZ );
-  anAxisData[0].DrawValues = anItem.gtDrawValuesX;
-  anAxisData[1].DrawValues = anItem.gtDrawValuesY;
-  anAxisData[2].DrawValues = anItem.gtDrawValuesZ;
-  anAxisData[0].NbValues = anItem.gtNbValuesX;
-  anAxisData[1].NbValues = anItem.gtNbValuesY;
-  anAxisData[2].NbValues = anItem.gtNbValuesZ;
-  anAxisData[0].Offset = anItem.gtOffsetX;
-  anAxisData[1].Offset = anItem.gtOffsetY;
-  anAxisData[2].Offset = anItem.gtOffsetZ;
-  anAxisData[0].Color = QColor( anItem.gtColorRX,
-                                anItem.gtColorGX,
-                                anItem.gtColorBX );
-  anAxisData[1].Color = QColor( anItem.gtColorRY,
-                                anItem.gtColorGY,
-                                anItem.gtColorBY );
-  anAxisData[2].Color = QColor( anItem.gtColorRZ,
-                                anItem.gtColorGZ,
-                                anItem.gtColorBZ );
-  anAxisData[0].DrawTickmarks = anItem.gtDrawTickmarksX;
-  anAxisData[1].DrawTickmarks = anItem.gtDrawTickmarksY;
-  anAxisData[2].DrawTickmarks = anItem.gtDrawTickmarksZ;
-  anAxisData[0].TickmarkLength = anItem.gtTickmarkLengthX;
-  anAxisData[1].TickmarkLength = anItem.gtTickmarkLengthY;
-  anAxisData[2].TickmarkLength = anItem.gtTickmarkLengthZ;
+    // graduated trihedron
+    bool anIsVisible = anItem.gtIsVisible;
+    OCCViewer_AxisWidget::AxisData anAxisData[3];
+    anAxisData[0].DrawName = anItem.gtDrawNameX;
+    anAxisData[1].DrawName = anItem.gtDrawNameZ;
+    anAxisData[2].DrawName = anItem.gtDrawNameZ;
+    anAxisData[0].Name = anItem.gtNameX;
+    anAxisData[1].Name = anItem.gtNameZ;
+    anAxisData[2].Name = anItem.gtNameZ;
+    anAxisData[0].NameColor = QColor( anItem.gtNameColorRX,
+				      anItem.gtNameColorGX,
+				      anItem.gtNameColorBX );
+    anAxisData[1].NameColor = QColor( anItem.gtNameColorRY,
+				      anItem.gtNameColorGY,
+				      anItem.gtNameColorBY );
+    anAxisData[2].NameColor = QColor( anItem.gtNameColorRZ,
+				      anItem.gtNameColorGZ,
+				      anItem.gtNameColorBZ );
+    anAxisData[0].DrawValues = anItem.gtDrawValuesX;
+    anAxisData[1].DrawValues = anItem.gtDrawValuesY;
+    anAxisData[2].DrawValues = anItem.gtDrawValuesZ;
+    anAxisData[0].NbValues = anItem.gtNbValuesX;
+    anAxisData[1].NbValues = anItem.gtNbValuesY;
+    anAxisData[2].NbValues = anItem.gtNbValuesZ;
+    anAxisData[0].Offset = anItem.gtOffsetX;
+    anAxisData[1].Offset = anItem.gtOffsetY;
+    anAxisData[2].Offset = anItem.gtOffsetZ;
+    anAxisData[0].Color = QColor( anItem.gtColorRX,
+				  anItem.gtColorGX,
+				  anItem.gtColorBX );
+    anAxisData[1].Color = QColor( anItem.gtColorRY,
+				  anItem.gtColorGY,
+				  anItem.gtColorBY );
+    anAxisData[2].Color = QColor( anItem.gtColorRZ,
+				  anItem.gtColorGZ,
+				  anItem.gtColorBZ );
+    anAxisData[0].DrawTickmarks = anItem.gtDrawTickmarksX;
+    anAxisData[1].DrawTickmarks = anItem.gtDrawTickmarksY;
+    anAxisData[2].DrawTickmarks = anItem.gtDrawTickmarksZ;
+    anAxisData[0].TickmarkLength = anItem.gtTickmarkLengthX;
+    anAxisData[1].TickmarkLength = anItem.gtTickmarkLengthY;
+    anAxisData[2].TickmarkLength = anItem.gtTickmarkLengthZ;
 
-  myCubeAxesDlg->SetData( anIsVisible, anAxisData );
-  myCubeAxesDlg->ApplyData( aView3d );
+    myCubeAxesDlg->SetData( anIsVisible, anAxisData );
+    myCubeAxesDlg->ApplyData( aView3d );
 #endif
+
+  } // if ( !baseParamsOnly )
 
   myRestoreFlag = 0;
 }
@@ -2444,4 +2467,140 @@ void OCCViewer_ViewWindow::appendViewAspect( const viewAspect& aParams )
 void OCCViewer_ViewWindow::updateViewAspects( const viewAspectList& aViewList )
 {
   myViewAspects = aViewList;
+}
+
+void OCCViewer_ViewWindow::synchronizeView( OCCViewer_ViewWindow* viewWindow, int id )
+{
+  OCCViewer_ViewWindow* otherViewWindow = 0;
+  QList<OCCViewer_ViewWindow*> compatibleViews;
+
+  bool isSync = viewWindow->toolMgr()->action( SynchronizeId )->isChecked();
+
+  int vwid = viewWindow->getId();
+  
+  SUIT_Application* app = SUIT_Session::session()->activeApplication();
+  if ( !app ) return;
+
+  QList<SUIT_ViewManager*> wmlist;
+  app->viewManagers( viewWindow->getViewManager()->getType(), wmlist );
+
+  foreach( SUIT_ViewManager* wm, wmlist ) {
+    QVector<SUIT_ViewWindow*> vwlist = wm->getViews();
+
+    foreach( SUIT_ViewWindow* vw, vwlist ) {
+      OCCViewer_ViewWindow* occVW = dynamic_cast<OCCViewer_ViewWindow*>( vw );
+      if ( !occVW ) continue;
+
+      // check only compatible types
+      occVW = occVW->getView( viewWindow->get2dMode() );
+      if ( occVW ) {
+	if ( occVW->getId() == id ) 
+	  otherViewWindow = occVW;
+	else if ( occVW != viewWindow )
+	  compatibleViews.append( occVW );
+      }
+    }
+  }
+
+  if ( isSync && id ) {
+    // remove all possible disconnections
+    foreach( OCCViewer_ViewWindow* vw, compatibleViews ) {
+      // disconnect target view
+      vw->getViewPort()->disconnect( SIGNAL( vpTransformed( OCCViewer_ViewPort* ) ), viewWindow->getViewPort(), SLOT( synchronize( OCCViewer_ViewPort* ) ) );
+      viewWindow->getViewPort()->disconnect( SIGNAL( vpTransformed( OCCViewer_ViewPort* ) ), vw->getViewPort(), SLOT( synchronize( OCCViewer_ViewPort* ) ) );
+      if ( otherViewWindow ) {
+	// disconnect source view
+	vw->getViewPort()->disconnect( SIGNAL( vpTransformed( OCCViewer_ViewPort* ) ), otherViewWindow->getViewPort(), SLOT( synchronize( OCCViewer_ViewPort* ) ) );
+	otherViewWindow->getViewPort()->disconnect( SIGNAL( vpTransformed( OCCViewer_ViewPort* ) ), vw->getViewPort(), SLOT( synchronize( OCCViewer_ViewPort* ) ) );
+      }
+      QAction* a = vw->toolMgr()->action( SynchronizeId );
+      if ( a ) {
+	int anid = a->data().toInt();
+	if ( a->isChecked() && ( anid == id || anid == vwid ) ) {
+	  bool blocked = a->blockSignals( true );
+	  a->setChecked( false );
+	  a->blockSignals( blocked );
+	}
+      }
+    }
+    if ( otherViewWindow ) {
+      // reconnect source and target view
+      otherViewWindow->getViewPort()->disconnect( SIGNAL( vpTransformed( OCCViewer_ViewPort* ) ), viewWindow->getViewPort(), SLOT( synchronize( OCCViewer_ViewPort* ) ) );
+      viewWindow->getViewPort()->disconnect( SIGNAL( vpTransformed( OCCViewer_ViewPort* ) ), otherViewWindow->getViewPort(), SLOT( synchronize( OCCViewer_ViewPort* ) ) );
+      otherViewWindow->getViewPort()->connect( viewWindow->getViewPort(), SIGNAL( vpTransformed( OCCViewer_ViewPort* ) ), SLOT( synchronize( OCCViewer_ViewPort* ) ) );
+      viewWindow->getViewPort()->connect( otherViewWindow->getViewPort(), SIGNAL( vpTransformed( OCCViewer_ViewPort* ) ), SLOT( synchronize( OCCViewer_ViewPort* ) ) );
+      // synchronize target view with source view
+      viewWindow->getViewPort()->synchronize( otherViewWindow->getViewPort() );
+      viewWindow->toolMgr()->action( SynchronizeId )->setData( otherViewWindow->getId() );
+      otherViewWindow->toolMgr()->action( SynchronizeId )->setData( viewWindow->getId() );
+      if ( !otherViewWindow->toolMgr()->action( SynchronizeId )->isChecked() ) {
+	bool blocked = otherViewWindow->toolMgr()->action( SynchronizeId )->blockSignals( true );
+	otherViewWindow->toolMgr()->action( SynchronizeId )->setChecked( true );
+	otherViewWindow->toolMgr()->action( SynchronizeId )->blockSignals( blocked );
+      }
+    }
+  }
+  else if ( otherViewWindow ) {
+    // reconnect source and target view
+    otherViewWindow->getViewPort()->disconnect( SIGNAL( vpTransformed( OCCViewer_ViewPort* ) ), viewWindow->getViewPort(), SLOT( synchronize( OCCViewer_ViewPort* ) ) );
+    viewWindow->getViewPort()->disconnect( SIGNAL( vpTransformed( OCCViewer_ViewPort* ) ), otherViewWindow->getViewPort(), SLOT( synchronize( OCCViewer_ViewPort* ) ) );
+    viewWindow->getViewPort()->synchronize( otherViewWindow->getViewPort() );
+    viewWindow->toolMgr()->action( SynchronizeId )->setData( otherViewWindow->getId() );
+    if ( otherViewWindow->toolMgr()->action( SynchronizeId )->data().toInt() == viewWindow->getId() && otherViewWindow->toolMgr()->action( SynchronizeId )->isChecked() ) {
+      bool blocked = otherViewWindow->toolMgr()->action( SynchronizeId )->blockSignals( true );
+      otherViewWindow->toolMgr()->action( SynchronizeId )->setChecked( false );
+      otherViewWindow->toolMgr()->action( SynchronizeId )->blockSignals( blocked );
+    }
+  }
+}
+
+/*!
+  "Synchronize View" action slot.
+*/
+void OCCViewer_ViewWindow::onSynchronizeView(bool checked)
+{
+  QAction* a = qobject_cast<QAction*>( sender() );
+  if ( a ) {
+    synchronizeView( this, a->data().toInt() );
+  }
+}
+
+/*!
+  Update list of available view for the "Synchronize View" action
+*/
+void OCCViewer_ViewWindow::updateSyncViews()
+{
+  QAction* anAction = toolMgr()->action( SynchronizeId );
+  if ( anAction && anAction->menu() ) {
+    int currentId = anAction->data().toInt();
+    anAction->menu()->clear();
+    SUIT_Application* app = SUIT_Session::session()->activeApplication();
+    if ( app ) { 
+      QList<SUIT_ViewManager*> wmlist;
+      app->viewManagers( getViewManager()->getType(), wmlist );
+      foreach( SUIT_ViewManager* wm, wmlist ) {
+	QVector<SUIT_ViewWindow*> vwlist = wm->getViews();
+	foreach ( SUIT_ViewWindow* vw, vwlist ) {
+	  OCCViewer_ViewWindow* occVW = dynamic_cast<OCCViewer_ViewWindow*>( vw );
+	  if ( !occVW || occVW == this ) continue;
+	  // list only compatible types
+	  OCCViewer_ViewWindow* subWindow = occVW->getView( get2dMode() );
+	  if ( subWindow && subWindow != this ) {
+	    QAction* a = anAction->menu()->addAction( occVW->windowTitle() );
+	    if ( subWindow->getId() == currentId ) {
+	      QFont f = a->font();
+	      f.setBold( true );
+	      a->setFont( f );
+	    }
+	    a->setData( subWindow->getId() );
+	    connect( a, SIGNAL( triggered(bool) ), this, SLOT( onSynchronizeView(bool) ) );
+	  }
+	}
+      }
+    }
+    if ( anAction->menu()->actions().isEmpty() ) {
+      anAction->setData( 0 );
+      anAction->menu()->addAction( tr( "MNU_SYNC_NO_VIEW" ) );
+    }
+  }
 }

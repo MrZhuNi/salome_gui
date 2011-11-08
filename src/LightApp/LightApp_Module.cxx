@@ -18,12 +18,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
-//
 
 // File:      LightApp_Module.cxx
 // Created:   6/20/2005 16:30:56 AM
 // Author:    OCC team
-//
+
 #include "LightApp_Module.h"
 
 #include "CAM_Application.h"
@@ -93,6 +92,7 @@
 #include <QString>
 #include <QStringList>
 
+#include <iostream>
 
 /*!Constructor.*/
 LightApp_Module::LightApp_Module( const QString& name )
@@ -156,9 +156,9 @@ void LightApp_Module::updateObjBrowser( bool theIsUpdateDataModel,
   if( theIsUpdateDataModel ){
     if( CAM_DataModel* aDataModel = dataModel() ){
       if ( LightApp_DataModel* aModel = dynamic_cast<LightApp_DataModel*>( aDataModel ) ) {
-        SUIT_DataObject* aParent = NULL;
-        if(theDataObject && theDataObject != aDataModel->root())
-          aParent = theDataObject->parent();
+        //SUIT_DataObject* aParent = NULL;
+        //if(theDataObject && theDataObject != aDataModel->root())
+        //  aParent = theDataObject->parent();
 
         LightApp_DataObject* anObject = dynamic_cast<LightApp_DataObject*>(theDataObject);
         LightApp_Study* aStudy = dynamic_cast<LightApp_Study*>(getApp()->activeStudy());
@@ -700,6 +700,32 @@ void LightApp_Module::copy()
   \brief Pastes the current data in the clipboard
 */
 void LightApp_Module::paste()
+{
+}
+
+/*!
+  virtual method
+  \return true if module allows dragging the given object
+*/
+bool LightApp_Module::isDragable(const SUIT_DataObject* /*what*/) const
+{
+  return false;
+}
+
+/*!
+  virtual method
+  \return true if module allows dropping one or more objects (currently selected) on the object \c where
+*/
+bool LightApp_Module::isDropAccepted(const SUIT_DataObject* /*where*/) const
+{
+  return false;
+}
+
+/*!
+  virtual method
+*/
+void LightApp_Module::dropObjects(const DataObjectList& what, Qt::DropAction action,
+                                  const SUIT_DataObject* parent, const int row)
 {
 }
 

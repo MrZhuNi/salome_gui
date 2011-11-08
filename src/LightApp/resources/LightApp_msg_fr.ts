@@ -19,6 +19,22 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
         <translation>A propos de %1</translation>
     </message>
     <message>
+        <source>ABOUT_BASE</source>
+        <translation>Informations générales</translation>
+    </message>
+    <message>
+        <source>ABOUT_MODULE_INFOS</source>
+        <translation>Modules</translation>
+    </message>
+    <message>
+        <source>ABOUT_UNKNOWN_VERSION</source>
+        <translation>Inconnue</translation>
+    </message>
+    <message>
+        <source>ABOUT_CLOSE</source>
+        <translation>&amp;Fermer</translation>
+    </message>    
+    <message>
         <source>APP_NAME</source>
         <translation>SALOME</translation>
     </message>
@@ -33,6 +49,42 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     <message>
         <source>ENTRY_COLUMN</source>
         <translation>Entrée</translation>
+    </message>
+    <message>
+        <source>BROWSER_TITLE</source>
+        <translation>Aide de SALOME</translation>
+    </message>    
+    <message>
+        <source>BROWSER_TOOLBAR_TITLE</source>
+        <translation>Navigation</translation>
+    </message>    
+    <message>
+        <source>BROWSER_FILEMENU</source>
+        <translation>&amp;Fichier</translation>
+    </message>    
+    <message>
+        <source>BROWSER_CLOSE</source>
+        <translation>&amp;Fermer</translation>
+    </message>    
+    <message>
+        <source>BROWSER_BACK</source>
+        <translation>Reculer</translation>
+    </message>    
+    <message>
+        <source>BROWSER_FORWARD</source>
+        <translation>Avancer</translation>
+    </message>    
+    <message>
+        <source>BROWSER_FIND</source>
+        <translation>&amp;Chercher...</translation>
+    </message>    
+    <message>
+        <source>BROWSER_FINDNEXT</source>
+        <translation>Chercher &amp;suivant</translation>
+    </message>    
+    <message>
+        <source>BROWSER_FINDPREV</source>
+        <translation>Chercher &amp;précédent</translation>
     </message>
 </context>
 <context>
@@ -53,6 +105,18 @@ Les modifications seront appliquées à la prochaine session.</translation>
     <message>
         <source>PRP_THEME</source>
         <translation>Changer les propriétés du style </translation>
+    </message>
+    <message>
+        <source>TOT_FULLSCREEN</source>
+        <translation>Plein écran</translation>
+    </message>
+    <message>
+        <source>MEN_DESK_FULLSCREEN</source>
+        <translation>Plein écran</translation>
+    </message>
+    <message>
+        <source>PRP_FULLSCREEN</source>
+        <translation>Basculer en mode plein écran</translation>
     </message>
     <message>
         <source>INF_TOOLBAR_MODULES</source>
@@ -384,7 +448,7 @@ Les modifications seront appliquées à la prochaine session.</translation>
     </message>
     <message>
         <source>PREF_AUTO_SIZE_FIRST</source>
-        <translation>Taille automatique pour la première colonne</translation>
+        <translation>Taille automatique pour la colonne "Nom"</translation>
     </message>
     <message>
         <source>PREF_RESIZE_ON_EXPAND_ITEM</source>
@@ -611,7 +675,7 @@ Les modifications seront appliquées à la prochaine session.</translation>
         <translation>Console Python</translation>
     </message>
     <message>
-        <source>PREF_USE_ADVANCED_SELECTION_ALGORITHM</source>
+        <source>PREF_DYNAMIC_PRESELECTION</source>
         <translation>Utiliser l&apos;algorithme de sélection avancée</translation>
     </message>
     <message>

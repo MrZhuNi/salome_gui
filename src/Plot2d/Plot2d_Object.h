@@ -71,6 +71,9 @@ public:
   void                 setName( const QString& );
   QString              getName() const;
 
+  void                 setScale( double );
+  double               getScale() const;
+
   void                 addPoint( double, double, const QString& = QString() );
   void                 addPoint( const Plot2d_Point& );
   void                 insertPoint( int, double, double, const QString& = QString() );
@@ -107,8 +110,19 @@ public:
   double               getMaxX() const;
   double               getMinY() const;
   double               getMaxY() const;
+  
+  void                 setSelected(const bool);
+  bool                 isSelected() const;
 
   static bool          closeColors( const QColor&, const QColor&, int distance = -1 );
+  
+  static void initColors();
+  
+  static void   setSelectionColor(const QColor& c);
+  static QColor selectionColor();
+
+  static void   setHighlightedLegendTextColor(const QColor& c);
+  static QColor highlightedLegendTextColor();
 
 protected:
   bool                 myAutoAssign;
@@ -120,7 +134,14 @@ protected:
   QwtPlot::Axis        myXAxis;
   QwtPlot::Axis        myYAxis;
 
+  double               myScale;
+
   pointList            myPoints;
+  bool                 myIsSelected;
+
+ private:
+  static QColor mySelectionColor;            //!< Color of the selected curve or histogram
+  static QColor myHighlightedLegendTextColor;  //!< Color of the selected legend item font
 };
 
 typedef QList<Plot2d_Object*> objectList;

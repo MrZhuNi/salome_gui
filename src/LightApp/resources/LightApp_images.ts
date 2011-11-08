@@ -31,5 +31,13 @@
         <source>APP_MODULE_ICO</source>
         <translation>icon_module.png</translation>
     </message>
+    <message>
+        <source>BROWSER_ICON</source>
+        <translation>icon_default.png</translation>
+    </message>    
+    <message>
+        <source>BROWSER_CLOSE_ICON</source>
+        <translation>close.png</translation>
+    </message>    
 </context>
 </TS>

@@ -101,17 +101,19 @@ public:
   SUIT_ShortcutMgr*     shortcutMgr() const;
 
   //! Puts the message to the status bar  
-  void putInfo ( const QString&, const int = 0 );
+  void                  putInfo ( const QString&, const int = 0 );
 
   //! Invokes application-specific "Open/Save File" dialog and returns the selected file name.
-  virtual QString getFileName( bool open, const QString& initial, const QString& filters, 
-                               const QString& caption, QWidget* parent ) = 0;
+  virtual QString       getFileName( bool open, const QString& initial, const QString& filters, 
+                                     const QString& caption, QWidget* parent ) = 0;
 
   //! Invokes application-specific "Select Directory" dialog and returns the selected directory name.
-  virtual QString getDirectory( const QString& initial, const QString& caption, QWidget* parent ) = 0;
+  virtual QString       getDirectory( const QString& initial, const QString& caption, QWidget* parent ) = 0;
 
 
-  virtual int     viewManagerId ( const SUIT_ViewManager* ) const = 0;
+  virtual int           viewManagerId ( const SUIT_ViewManager* ) const = 0;
+  virtual void          viewManagers( const QString&, QList<SUIT_ViewManager*>& ) const = 0;
+  QAction*              action( const int ) const;
 
 signals:
   void                  applicationClosed( SUIT_Application* );
@@ -161,7 +163,6 @@ protected:
   void                  setActionShown( const int, const bool );
 
   static QAction*       separator();
-  QAction*              action( const int ) const;
   int                   actionId( const QAction* ) const;
 
   QList<QAction*>       actions() const;

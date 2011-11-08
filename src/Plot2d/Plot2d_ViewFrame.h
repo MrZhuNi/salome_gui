@@ -96,6 +96,7 @@ public:
   void           updateObject( Plot2d_Object*, bool = false );
 
   void           updateLegend( const Plot2d_Prs* );
+  void           updateLegend();
   void           fitAll();
   void           fitArea( const QRect& );
   void           fitData( const int, const double, const double,
@@ -117,6 +118,10 @@ public:
   void           showLegend( bool, bool = true );
   void           setLegendPos( int );
   int            getLegendPos() const;
+  void           setLegendFont( const QFont& );
+  QFont          getLegendFont() const;
+  void           setLegendFontColor( const QColor& );
+  QColor         getLegendFontColor() const;
   void           setMarkerSize( const int, bool = true  );
   int            getMarkerSize() const;
   void           setBackgroundColor( const QColor& );
@@ -212,6 +217,8 @@ protected:
   int            myCurveType;
   bool           myShowLegend;
   int            myLegendPos;
+  QFont          myLegendFont;
+  QColor         myLegendColor;
   int            myMarkerSize;
   QColor         myBackground;
   QString        myTitle, myXTitle, myYTitle, myY2Title;

@@ -40,15 +40,14 @@
 
 //#endif //#if defined WIN32
 
+#include "GUI_version.h"
 #include "SUITApp_Application.h"
-
-#include <SUIT_Session.h>
-#include <SUIT_Desktop.h>
-#include <SUIT_ResourceMgr.h>
-#include <Style_Salome.h>
-#include <QtxSplash.h>
-
-#include <SUIT_LicenseDlg.h>
+#include "SUIT_Desktop.h"
+#include "SUIT_LicenseDlg.h"
+#include "SUIT_ResourceMgr.h"
+#include "SUIT_Session.h"
+#include "Style_Salome.h"
+#include "QtxSplash.h"
 
 #include <QDir>
 #include <QFile>
@@ -64,31 +63,14 @@
 
 static QString salomeVersion()
 {
-  QString path( ::getenv( "GUI_ROOT_DIR" ) );
-  if ( !path.isEmpty() )
-    path += QDir::separator();
+  return GUI_VERSION_STR;
+}
 
-  path += QString( "bin/salome/VERSION" );
-
-  QFile vf( path );
-  if ( !vf.open( QFile::ReadOnly ) )
-    return QString();
-
-  QString line = vf.readLine( 1024 );
-  vf.close();
-
-  if ( line.isEmpty() )
-    return QString();
-
-  while ( !line.isEmpty() && line.at( line.length() - 1 ) == QChar( '\n' ) )
-    line.remove( line.length() - 1, 1 );
-
-  QString ver;
-  int idx = line.lastIndexOf( ":" );
-  if ( idx != -1 )
-    ver = line.mid( idx + 1 ).trimmed();
-
-  return ver;
+static QString getAppName( const QString& libName )
+{
+  QString appName = QFileInfo( libName ).baseName();
+  if ( appName.startsWith( "lib" ) ) appName = appName.mid( 3 );
+  return appName;
 }
 
 // static void MessageOutput( QtMsgType type, const char* msg )
@@ -191,7 +173,7 @@ int main( int argc, char* argv[] )
   bool iniFormat        = false;
   bool noSplash         = false;
   bool useLicense       = false;
-  for ( int i = 1; i < argc /*&& !noExceptHandling*/; i++ )
+  for ( int i = 1; i < argc; i++ )
   {
     if ( !strcmp( argv[i], "--noexcepthandling" ) )
       noExceptHandling = true;
@@ -199,9 +181,9 @@ int main( int argc, char* argv[] )
       iniFormat = true;
     else if ( !strcmp( argv[i], "--nosplash") )
       noSplash = true;
-        else if ( !strcmp( argv[i], "--uselicense" ) )
+    else if ( !strcmp( argv[i], "--uselicense" ) )
       useLicense = true;
-        else
+    else
       argList.append( QString( argv[i] ) );
   }
 
@@ -211,6 +193,13 @@ int main( int argc, char* argv[] )
     QApplication::addLibraryPath( QDir( qtdir ).absoluteFilePath( "plugins" ) );
   
   SUITApp_Application app( argc, argv );
+  QString cfgAppName = getAppName( argList.isEmpty() ? QString() : argList.first() );
+  // hard-coding for LightApp :( no other way to this for the moment
+  if ( cfgAppName == "LightApp" ) {
+    app.setOrganizationName( "salome" );
+    app.setApplicationName( "salome" );
+    app.setApplicationVersion( salomeVersion() );
+  }
 
   int result = -1;
 

@@ -53,6 +53,8 @@ class vtkRenderer;
 class vtkRenderWindow;
 class vtkRenderWindowInteractor;
 class vtkInteractorStyle;
+class vtkCallbackCommand;
+
 class SVTK_RenderWindowInteractor;
 class SVTK_Renderer;
 class SVTK_NonIsometricDlg;
@@ -226,6 +228,8 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   //! Redirect the request to #SVTK_MainWindow::SetZoomingStyle
   virtual void SetZoomingStyle( const int );
 
+  virtual void SetDynamicPreSelection( bool );
+
   //! Redirect the request to #SVTK_MainWindow::SetSpacemouseButtons
   virtual void SetSpacemouseButtons( const int, const int, const int );
 
@@ -260,6 +264,8 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   virtual bool eventFilter( QObject*, QEvent* );
 
   virtual void RefreshDumpImage();
+
+  void emitTransformed();
 
   //! To invoke a VTK event on #SVTK_RenderWindowInteractor instance
   void InvokeEvent(unsigned long theEvent, void* theCallData);
@@ -301,6 +307,7 @@ public slots:
 
   void onSwitchInteractionStyle(bool theOn);
   void onSwitchZoomingStyle(bool theOn);
+  void onSwitchDynamicPreSelection(bool theOn);
 
   void onStartRecording();
   void onPlayRecording();
@@ -311,6 +318,7 @@ signals:
  void selectionChanged();
  void actorAdded(VTKViewer_Actor*);
  void actorRemoved(VTKViewer_Actor*);
+ void transformed(SVTK_ViewWindow*);
 
 public slots:
   //! Redirect the request to #SVTK_Renderer::OnFrontView
@@ -354,7 +362,9 @@ public slots:
 
   //! Redirect the request to #SVTK_Renderer::OnAdjustCubeAxes
   virtual void onAdjustCubeAxes();
-
+  
+  virtual void synchronize(SVTK_ViewWindow*);
+    
 protected slots:
   void onKeyPressed(QKeyEvent* event);
   void onKeyReleased(QKeyEvent* event);
@@ -367,7 +377,13 @@ protected:
   virtual void Initialize(SVTK_View* theView,
                           SVTK_ViewModelBase* theModel);
 
-  void doSetVisualParameters( const QString& );
+  // Main process event method
+  static void ProcessEvents(vtkObject* object,
+                            unsigned long event,
+                            void* clientdata,
+                            void* calldata);
+
+  void doSetVisualParameters( const QString&, bool = false );
   void SetEventDispatcher(vtkObject* theDispatcher);
 
   QImage dumpViewContent();
@@ -385,10 +401,9 @@ protected:
          ChangeRotationPointId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ClockWiseId, AntiClockWiseId, ResetId,
 	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate,
-         ParallelModeId, ProjectionModeId, ViewParametersId, SwitchInteractionStyleId,
-         SwitchZoomingStyleId,
+         ParallelModeId, ProjectionModeId, ViewParametersId, SynchronizeId, SwitchInteractionStyleId,
+         SwitchZoomingStyleId,SwitchDynamicPreselectionId,
          StartRecordingId, PlayRecordingId, PauseRecordingId, StopRecordingId };
-
 
   SVTK_View* myView;
   //SVTK_MainWindow* myMainWindow;
@@ -401,6 +416,9 @@ protected:
   QString myVisualParams; // used for delayed setting of view parameters 
 
   vtkSmartPointer<vtkObject> myEventDispatcher;
+
+  // Used to process events
+  vtkSmartPointer<vtkCallbackCommand> myEventCallbackCommand;
 
   SVTK_NonIsometricDlg* myNonIsometricDlg;
   SVTK_UpdateRateDlg* myUpdateRateDlg;
@@ -421,6 +439,13 @@ protected:
   int myRecordingToolBar;
 
   vtkPVAxesWidget* myAxesWidget;
+
+private slots:
+  void onSynchronizeView(bool);
+  void updateSyncViews();
+
+private:
+  static void synchronizeView( SVTK_ViewWindow*, int );
 
 private:
   QImage myDumpImage;

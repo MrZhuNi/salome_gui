@@ -50,7 +50,8 @@ study is reopened, the GUI state is restored.</li>
 (separately for each component) for dumping of a study to a python script.
 If the option is disabled, the study is dumped to a single python script.</li>
 </ul>
-<li><b>External browser</b></li>
+<li><b>External browser</b></li> - allow to define which browser will 
+be used to show SALOME reference manuals: internal (built-in SALOME browser) or external (IE, Netscape, Mozilla, ...).
 <ul>
 <li>\b Application - this option allows you to set an external browser (IE,
 Netscape) which will be used for viewing SALOME reference manuals. By
@@ -90,6 +91,8 @@ dialog box press the &quot;<b>...</b>&quot; button(see the picture below).
 - <b>OCC Viewer 3d</b>
   - <b>Trihedron size</b> - this submenu allows to set the size of
   coordinate axes displayed in the viewer.
+    - <b>Relative size</b> - if checked in, trihedron axes scale to fit the
+    size of the area displayed in 3D Viewer.
   - <b>Navigation</b> - this option allows to choose one of the
   modes of work with mouse in OCC and VTK 3D viewers.
     - <b>Salome Standard Controls</b> - allows to manipulate objects in the
@@ -112,6 +115,8 @@ dialog box press the &quot;<b>...</b>&quot; button(see the picture below).
     relatively to its center.
     - <b>Relative to the cursor</b> - allows to zoom the view
     relatively to the current cursor position.
+  - <b>Show static trihedron</b> - allows to show/hide the static trihedron
+  located in the bottom-left corner of the viewer.
 - <b>VTK Viewer 3d</b>
   - <b>Projection mode</b> - allows choosing between \b Orthogonal and
   \b Perspective projection mode.
@@ -134,6 +139,7 @@ dialog box press the &quot;<b>...</b>&quot; button(see the picture below).
   and \b Geometrical progression used for zooming.
   - <b>Show static trihedron</b> - allows to show/hide the static trihedron
   located in the bottom-left corner of the viewer.
+  - <b>Dynamic pre-selection</b> - switches dynamic pre-selection on/off.
   - <b>Spacemouse</b> - a mouse-like manipulator device specially designed
   for working with 3D presentations, objects, etc. You can reassign the
   actions listed below to any of its buttons.
@@ -168,6 +174,7 @@ dialog box press the &quot;<b>...</b>&quot; button(see the picture below).
   - <b>Legend Position</b> - this submenu allows to set the default position
   of the legend, it can be located to the left, to the right, on top or
   on bottom of the graph.
+  - <b>Legend font</b> - this allows to set type and face for the font of Legend item.
   - <b>Curve Type</b> - this allows to set the representation of graphs in
   your presentations. You can see only <b>Points</b>, points connected with
   <b>Lines</b> or points connected with smooth <b>Splines</b>.
@@ -180,9 +187,12 @@ dialog box press the &quot;<b>...</b>&quot; button(see the picture below).
   of all points displayed in the viewer is greater than zero.
   If this condition is not met, the scale is switched to <b>Linear</b>
   automatically, even if it is set to <b>Logarithmic</b>.
-  - <b>Background Color</b> - this submenu allows to select the background
+  - <b>Background color</b> - this submenu allows to select the background
   color. Click on the colored line to access to the 
   \ref select_color_and_font_page "Select Color" dialog box.
+  - <b>Legend font color</b> - this allows to select the color of the font of the legend item.
+  - <b>Highlighted legend font color</b> - this submenu allows to select the color of the font of the selected legend item.
+  - <b>Selection color</b> - this submenu allows to select the color of selected object in the viewer.
 
 <br><h2>Directories Preferences</h2>
 

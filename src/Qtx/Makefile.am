@@ -38,6 +38,7 @@ salomeinclude_HEADERS =		\
 	QtxActionMgr.h		\
 	QtxActionSet.h		\
 	QtxActionToolMgr.h	\
+	QtxBiColorTool.h	\
 	QtxColorButton.h	\
 	QtxColorScale.h		\
 	QtxComboBox.h		\
@@ -76,7 +77,8 @@ salomeinclude_HEADERS =		\
 	QtxWorkspace.h		\
 	QtxWorkspaceAction.h	\
 	QtxWorkstack.h		\
-	QtxWorkstackAction.h
+	QtxWorkstackAction.h    \
+	QtxWebBrowser.h
 
 #VSR: not yet migrated to Qt4 files
 #				\
@@ -96,6 +98,7 @@ dist_libqtx_la_SOURCES =	\
 	QtxActionMgr.cxx	\
 	QtxActionSet.cxx	\
 	QtxActionToolMgr.cxx	\
+	QtxBiColorTool.cxx	\
 	QtxColorButton.cxx	\
 	QtxColorScale.cxx	\
 	QtxComboBox.cxx		\
@@ -133,7 +136,8 @@ dist_libqtx_la_SOURCES =	\
 	QtxWorkspace.cxx	\
 	QtxWorkspaceAction.cxx	\
 	QtxWorkstack.cxx	\
-	QtxWorkstackAction.cxx
+	QtxWorkstackAction.cxx  \
+	QtxWebBrowser.cxx
 
 #VSR: not yet migrated to Qt4 files
 #				\
@@ -148,6 +152,7 @@ MOC_FILES =				\
 	QtxActionMgr_moc.cxx		\
 	QtxActionSet_moc.cxx		\
 	QtxActionToolMgr_moc.cxx	\
+	QtxBiColorTool_moc.cxx		\
 	QtxColorButton_moc.cxx		\
 	QtxColorScale_moc.cxx		\
 	QtxComboBox_moc.cxx		\
@@ -181,7 +186,8 @@ MOC_FILES =				\
 	QtxWorkspace_moc.cxx		\
 	QtxWorkspaceAction_moc.cxx	\
 	QtxWorkstack_moc.cxx		\
-	QtxWorkstackAction_moc.cxx
+	QtxWorkstackAction_moc.cxx      \
+	QtxWebBrowser_moc.cxx
 
 #VSR: not yet migrated to Qt4 files
 #					\
@@ -191,7 +197,7 @@ MOC_FILES =				\
 nodist_libqtx_la_SOURCES = $(MOC_FILES)
 
 libqtx_la_CPPFLAGS = $(QT_INCLUDES)
-libqtx_la_LDFLAGS  = $(QT_MT_LIBS)
+libqtx_la_LDFLAGS  = $(QT_MT_LIBS) $(OGL_LIBS)
 
 nodist_salomeres_DATA =		\
 	Qtx_msg_fr.qm

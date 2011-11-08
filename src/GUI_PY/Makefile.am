@@ -25,12 +25,34 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 mypkgpythondir = $(salomepythondir)/salome/gui
 
 # Python modules to be installed
-mypkgpython_PYTHON = __init__.py \
-                     selectvars.py
+mypkgpython_PYTHON = \
+	__init__.py            \
+	SelectVarsDialog_ui.py \
+	selectvars.py          \
+	genericdialog_ui.py    \
+	genericdialog.py       \
+	mytestdialog_ui.py     \
+	mytestdialog.py        \
+	helper.py
 
-nodist_mypkgpython_PYTHON = SelectVarsDialog.py
-CLEANFILES  = $(nodist_mypkgpython_PYTHON)
-EXTRA_DIST += SelectVarsDialog.ui
+PYUIC_FILES = \
+	SelectVarsDialog_ui.py \
+	genericdialog_ui.py    \
+	mytestdialog_ui.py
 
-%.py:%.ui
-	$(PYUIC) $< -o $@
+nodist_mypkgpython_PYTHON = $(PYUIC_FILES)
+CLEANFILES = $(PYUIC_FILES)
+
+EXTRA_DIST += \
+	SelectVarsDialog.ui \
+	genericdialog.ui    \
+	mytestdialog.ui
+
+# This rule indicates that some python files are generated from ui
+# files using the PYUIC utility. The convention is to create a file
+# name <basename>_ui.py when the ui file name is <basename>.ui. When
+# implementing the dialog, you generally create a third file named
+# <basename>.py that uses the UI_<basename> classe defined in the
+# generated file <basename>_ui.py.
+%_ui.py:%.ui
+	$(PYUIC) -x $< -o $@

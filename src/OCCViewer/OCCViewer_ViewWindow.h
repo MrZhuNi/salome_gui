@@ -120,7 +120,7 @@ public:
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ClockWiseId, AntiClockWiseId,
 	 ResetId, CloneId, ClippingId, MemId, RestoreId,
          TrihedronShowId, AxialScaleId, GraduatedAxesId, AmbientId,
-	 SwitchInteractionStyleId, SwitchZoomingStyleId, MaximizedId, UserId };
+	 SwitchInteractionStyleId, SwitchZoomingStyleId, MaximizedId, SynchronizeId, UserId };
 
   enum OperationType{ NOTHING, PANVIEW, ZOOMVIEW, ROTATE, 
                       PANGLOBAL, WINDOWFIT, FITALLVIEW, RESETVIEW,
@@ -137,11 +137,13 @@ public:
   OCCViewer_ViewWindow(SUIT_Desktop* theDesktop, OCCViewer_Viewer* theModel);
   virtual ~OCCViewer_ViewWindow();
 
+  virtual OCCViewer_ViewWindow* getView( const int ) const;
+
   virtual OCCViewer_ViewPort3d* getViewPort();
 
   virtual bool eventFilter(QObject* watched, QEvent* e);
 
-  virtual void performRestoring( const viewAspect& );
+  virtual void performRestoring( const viewAspect&, bool = false );
   
   virtual void initLayout();
 
@@ -184,7 +186,7 @@ public:
   virtual QString backgroundImageFilename() const;
   virtual void    setBackgroundImage( const QString& ,const Aspect_FillMethod& theFillMethod);
   
-  virtual const viewAspectList&   getViewAspects();
+  virtual const   viewAspectList& getViewAspects();
   virtual void                    appendViewAspect( const viewAspect& );
   virtual void                    updateViewAspects( const viewAspectList& );
   virtual void                    clearViewAspects();
@@ -307,6 +309,13 @@ protected:
   QCursor               myCursor;
 
   double myCurScale;
+
+private slots:
+  void                  onSynchronizeView(bool);
+  void                  updateSyncViews();
+
+private:
+  static void           synchronizeView( OCCViewer_ViewWindow*, int );
 
 private:
   OCCViewer_ClippingDlg* myClippingDlg;

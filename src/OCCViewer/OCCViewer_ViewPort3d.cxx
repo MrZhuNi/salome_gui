@@ -143,6 +143,8 @@ bool OCCViewer_ViewPort3d::mapView( const Handle(V3d_View)& view )
   return true;
 }
 
+
+
 /*!
   Sets new CASCADE view on viewport. Returns the previous active view. [ public ]
 */
@@ -264,6 +266,17 @@ void OCCViewer_ViewPort3d::setZSize( double zsize )
 }
 
 /*!
+  Get axial scale to the view
+*/
+void OCCViewer_ViewPort3d::getAxialScale( double& xScale, double& yScale, double& zScale )
+{
+  xScale = yScale = zScale = 1.;
+
+  if ( !activeView().IsNull() )
+    activeView()->AxialScale( xScale, yScale, zScale );
+}
+
+/*!
   Returns the background color [ virtual public ]
 */
 QColor OCCViewer_ViewPort3d::backgroundColor() const
@@ -338,8 +351,10 @@ void OCCViewer_ViewPort3d::onUpdate()
 */
 void OCCViewer_ViewPort3d::fitRect( const QRect& rect )
 {
-  if ( !activeView().IsNull() )
+  if ( !activeView().IsNull() ) {
     activeView()->WindowFit( rect.left(), rect.top(), rect.right(), rect.bottom() );
+    emit vpTransformed( this );
+  }
 }
 
 /*!
@@ -368,6 +383,7 @@ void OCCViewer_ViewPort3d::zoom( int x0, int y0, int x, int y )
     else
 #endif
       activeView()->Zoom( x0 + y0, 0, x + y, 0 );
+    emit vpTransformed( this );
   }
 }
 
@@ -376,8 +392,10 @@ void OCCViewer_ViewPort3d::zoom( int x0, int y0, int x, int y )
 */
 void OCCViewer_ViewPort3d::setCenter( int x, int y )
 {
-  if ( !activeView().IsNull() )
+  if ( !activeView().IsNull() ) {
     activeView()->Place( x, y, myScale );
+    emit vpTransformed( this );
+  }
 }
 
 /*!
@@ -385,8 +403,10 @@ void OCCViewer_ViewPort3d::setCenter( int x, int y )
 */
 void OCCViewer_ViewPort3d::pan( int dx, int dy )
 {
-  if ( !activeView().IsNull() )
+  if ( !activeView().IsNull() ) {
     activeView()->Pan( dx, dy, 1.0 );
+    emit vpTransformed( this );
+  }
 }
 
 /*!
@@ -470,6 +490,7 @@ void OCCViewer_ViewPort3d::rotate( int x, int y,
     default:
       break;
     }
+    emit vpTransformed( this );
   }
   //  setZSize( getZSize() );
 }
@@ -486,6 +507,7 @@ void OCCViewer_ViewPort3d::endRotation()
     activeView()->ZFitAll(1.);
     activeView()->SetZSize(0.);
     activeView()->Update();
+    emit vpTransformed( this );
   }
 }
 
@@ -538,6 +560,7 @@ void OCCViewer_ViewPort3d::fitAll( bool keepScale, bool withZ, bool upd )
   Standard_Real margin = 0.01;
   activeView()->FitAll( margin, withZ, upd );
   activeView()->SetZSize(0.);
+  emit vpTransformed( this );
 }
 
 /*!
@@ -546,9 +569,11 @@ void OCCViewer_ViewPort3d::fitAll( bool keepScale, bool withZ, bool upd )
 void OCCViewer_ViewPort3d::reset()
 {
   //  double zsize = getZSize();
-  if ( !activeView().IsNull() )
+  if ( !activeView().IsNull() ) {
     activeView()->Reset();
+    emit vpTransformed( this );
   //    setZSize( zsize );
+  }
 }
 
 /*!
@@ -563,8 +588,21 @@ void OCCViewer_ViewPort3d::rotateXY( double degrees )
   double X, Y, Z;
   activeView()->Convert( x, y, X, Y, Z );
   activeView()->Rotate( 0, 0, degrees * Standard_PI180, X, Y, Z );
+  emit vpTransformed( this );
 }  
   
+/*!
+  Set axial scale to the view
+*/
+void OCCViewer_ViewPort3d::setAxialScale( double xScale, double yScale, double zScale )
+{
+  if ( activeView().IsNull() )
+    return;
+  
+  activeView()->SetAxialScale( xScale, yScale, zScale );
+  emit vpTransformed( this );
+}
+
 /*!
   Passed the handle of native window of the component to CASCADE view. [ private ]
 */
@@ -619,4 +657,48 @@ Handle(V3d_View) OCCViewer_ViewPort3d::activeView() const
 bool OCCViewer_ViewPort3d::mapped( const Handle(V3d_View)& view ) const
 {
   return ( !view.IsNull() && view->View()->IsDefined() );
+}
+
+/*!
+  Performs synchronization of view parameters with the specified view.
+  Returns \c true if synchronization is done successfully or \c false otherwise.
+  Default implementation does nothing (return \c false)
+*/
+bool OCCViewer_ViewPort3d::synchronize( OCCViewer_ViewPort* view )
+{
+  bool ok = false;
+  OCCViewer_ViewPort3d* vp3d = qobject_cast<OCCViewer_ViewPort3d*>( view );
+  if ( vp3d ) { 
+    bool blocked = blockSignals( false );
+    Handle(V3d_View) aView3d = getView();
+    Handle(V3d_View) aRefView3d = vp3d->getView();
+    aView3d->SetImmediateUpdate( Standard_False );
+    aView3d->SetViewMapping( aRefView3d->ViewMapping() );
+    aView3d->SetViewOrientation( aRefView3d->ViewOrientation() );
+    aView3d->ZFitAll();
+    aView3d->SetImmediateUpdate( Standard_True );
+    aView3d->Update();
+    blockSignals( blocked );
+    ok = true;
+  }
+  return ok;
+}
+
+/*
+ * Show/Hide static triedron
+ */
+void OCCViewer_ViewPort3d::updateStaticTriedronVisibility() {
+  OCCViewer_ViewWindow* aVW = dynamic_cast<OCCViewer_ViewWindow*>( parentWidget()->parentWidget()->parentWidget() );
+  if ( aVW ) {
+    OCCViewer_Viewer* aViewModel = dynamic_cast<OCCViewer_Viewer*>( aVW->getViewManager()->getViewModel() );
+    Handle(V3d_View) aView = activeView();
+    if ( aViewModel ){
+      if(aViewModel->isStaticTrihedronDisplayed()) {
+	aView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.05, V3d_ZBUFFER );
+      } else {
+	aView->TriedronErase();
+      }
+      aView->Update();
+    }
+  } 
 }
