@@ -46,6 +46,10 @@ public:
   virtual bool         saveAs ( const QString&, CAM_Study*, QStringList& );
   virtual bool         close  ();
   virtual bool         create ( CAM_Study* );
+  virtual bool         dumpPython( const QString&,
+				   CAM_Study*,
+				   bool,
+				   QStringList& );
   
   virtual bool         isModified () const;
   virtual bool         isSaved    () const;

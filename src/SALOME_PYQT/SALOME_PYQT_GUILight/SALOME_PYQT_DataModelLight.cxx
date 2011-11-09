@@ -116,6 +116,37 @@ bool SALOME_PYQT_DataModelLight::create( CAM_Study* study )
 }
 
 //=================================================================================
+// function : dumpPython()
+// purpose  : Re-defined from LigthApp_DataModel in order to participate 
+//            in dump study process
+//=================================================================================
+bool SALOME_PYQT_DataModelLight::dumpPython( const QString& theURL, 
+					     CAM_Study* theStudy,
+					     bool isMultiFile,
+					     QStringList& theListOfFiles )
+{
+  MESSAGE("SALOME_PYQT_DataModelLight::dumpPython()");
+  
+  LightApp_DataModel::dumpPython( theURL, theStudy, isMultiFile, theListOfFiles );
+
+  LightApp_Study* study = dynamic_cast<LightApp_Study*>( theStudy );
+  SALOME_PYQT_ModuleLight* aModule = dynamic_cast<SALOME_PYQT_ModuleLight*>(module());
+
+  if(!aModule || !study)
+    return false;
+  
+  std::string aTmpDir = study->GetTmpDir( theURL.toLatin1().constData(), isMultiFile );
+
+  theListOfFiles.append( QString( aTmpDir.c_str() ) );
+  int oldSize = theListOfFiles.size();
+
+  aModule->dumpPython( theListOfFiles );
+
+  //Return true if some items have been added, else return false 
+  return theListOfFiles.size() > oldSize;
+}
+
+//=================================================================================
 // function : isModified()
 // purpose  : default implementation, always returns false so as not to mask study's isModified()
 //=================================================================================

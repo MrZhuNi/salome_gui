@@ -123,9 +123,9 @@ public:
   void                       setPreferenceProperty( const int, const QString&, 
                                                     const QVariant& );
 
-  void                   save(QStringList& theListOfFiles);
-
-  bool                   open(QStringList theListOfFiles);
+  void                       save(QStringList& theListOfFiles);
+  bool                       open(QStringList theListOfFiles);
+  void                       dumpPython(QStringList& theListOfFiles);
 
   /*create new SALOME_PYQT_DataObjectLight and return its entry*/
   QString                   createObject(const QString& parent);
@@ -193,6 +193,7 @@ private:
   void                       connectView( const SUIT_ViewWindow* );
 
   void                       saveEvent(QStringList& theListOfFiles);
+  void                       dumpEvent(QStringList& theListOfFiles);
   void                       openEvent(QStringList theListOfFiles, bool& opened);
 
   SALOME_PYQT_DataObjectLight* findObject(const QString& entry);

@@ -2482,6 +2482,76 @@ void SALOME_PYQT_ModuleLight::saveEvent(QStringList& theListOfFiles)
 }
 
 /*
+ * Python dump request.
+ * Called when user activates dump study operation.
+ */
+void SALOME_PYQT_ModuleLight::dumpPython(QStringList& theListOfFiles)
+{
+  MESSAGE("SALOME_PYQT_ModuleLight::dumpPython()")
+  // perform synchronous request to Python event dispatcher
+  class DumpEvent: public PyInterp_LockRequest
+  {
+  public:     
+    DumpEvent(PyInterp_Interp*          _py_interp,
+              SALOME_PYQT_ModuleLight*  _obj,
+              QStringList&              _files_list)
+      : PyInterp_LockRequest( _py_interp, 0, true ), // this request should be processed synchronously (sync == true)
+        myObj( _obj ) ,
+        myFilesList(_files_list) {}
+  protected:
+    virtual void execute()
+    {
+      myObj->dumpEvent(myFilesList);
+    }
+  private:
+    SALOME_PYQT_ModuleLight* myObj;
+    QStringList&             myFilesList;
+  };
+  
+  // Posting the request only if dispatcher is not busy!
+  // Executing the request synchronously
+  if ( !PyInterp_Dispatcher::Get()->IsBusy() )
+    PyInterp_Dispatcher::Get()->Exec( new DumpEvent( myInterp, this, theListOfFiles ) );
+}
+
+void SALOME_PYQT_ModuleLight::dumpEvent(QStringList& theListOfFiles)
+{
+  MESSAGE("SALOME_PYQT_ModuleLight::dumpEvent()");
+  QStringList::Iterator it = theListOfFiles.begin();
+  // Python interpreter should be initialized and Python module should be
+  // import first
+  if ( !myInterp || !myModule || (it == theListOfFiles.end()))
+    return;
+
+  if ( PyObject_HasAttrString(myModule, (char*)"dumpStudy") ) {
+    PyObjWrapper res( PyObject_CallMethod( myModule, (char*)"dumpStudy",
+                                           (char*)"s", (*it).toLatin1().constData()));
+    if( !res ) {
+      PyErr_Print();
+    }
+    else{
+      // parse the return value
+      // result can be one string...
+      if ( PyString_Check( res ) ) {
+        QString astr = PyString_AsString( res );
+        //SCRUTE(astr);
+        theListOfFiles.append(astr);
+      }
+      //also result can be a list...
+      else if ( PyList_Check( res ) ) {
+        int size = PyList_Size( res );
+        for ( int i = 0; i < size; i++ ) {
+          PyObject* value = PyList_GetItem( res, i );
+          if( value && PyString_Check( value ) ) {
+            theListOfFiles.append( PyString_AsString( value ) );
+          }
+        }
+      }
+    }
+  }
+}
+
+/*
  * Open study request.
  * Called when user open study.
  */

@@ -812,21 +812,10 @@ void SalomeApp_Application::onDumpStudy( )
       QFileInfo aFileInfo(aFileName);
       if( aFileInfo.isDir() ) // IPAL19257
         return;
+      
+      // Issue 21377 - dump study implementation moved to SalomeApp_Study class
+      bool res = appStudy->dump( aFileName, toPublish, isMultiFile, toSaveGUI );
 
-      int savePoint;
-      _PTR(AttributeParameter) ap;
-      _PTR(IParameters) ip = ClientFactory::getIParameters(ap);
-      if(ip->isDumpPython(appStudy->studyDS())) ip->setDumpPython(appStudy->studyDS()); //Unset DumpPython flag.
-      if ( toSaveGUI ) { //SRN: Store a visual state of the study at the save point for DumpStudy method
-        ip->setDumpPython(appStudy->studyDS());
-        savePoint = SalomeApp_VisualState( this ).storeState(); //SRN: create a temporary save point
-      }
-      bool res = aStudy->DumpStudy( aFileInfo.absolutePath().toStdString(),
-                                    aFileInfo.baseName().toStdString(),
-                                    toPublish,
-                                    isMultiFile);
-      if ( toSaveGUI )
-        appStudy->removeSavePoint(savePoint); //SRN: remove the created temporary save point.
       if ( !res )
         SUIT_MessageBox::warning( desktop(),
                                   QObject::tr("WRN_WARNING"),
@@ -1220,20 +1209,6 @@ SALOME_LifeCycleCORBA* SalomeApp_Application::lcc()
 {
   static SALOME_LifeCycleCORBA _lcc( namingService() );
   return &_lcc;
-}
-
-/*!Return default engine IOR for light modules*/
-QString SalomeApp_Application::defaultEngineIOR()
-{
-  /// Look for a default module engine (needed for CORBAless modules to use SALOMEDS persistence)
-  QString anIOR( "" );
-  CORBA::Object_ptr anEngine = namingService()->Resolve( "/SalomeAppEngine" );
-  if ( !CORBA::is_nil( anEngine ) )
-  {
-    CORBA::String_var objStr = orb()->object_to_string( anEngine );
-    anIOR = QString( objStr.in() );
-  }
-  return anIOR;
 }
 
 /*!Private SLOT. On preferences.*/
