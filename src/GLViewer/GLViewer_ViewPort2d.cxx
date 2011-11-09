@@ -112,6 +112,11 @@ GLViewer_ViewPort2d::GLViewer_ViewPort2d( QWidget* parent, GLViewer_ViewFrame* t
   connect( myObjectTip, SIGNAL( maybeTip( QPoint, QString&, QFont&, QRect&, QRect& ) ),
            this, SLOT( onMaybeTip( QPoint, QString&, QFont&, QRect&, QRect& ) ) );
   //myGLWidget->installEventFilter( myObjectTip );
+
+  myIsLegendEnabled = false;
+  myLegendXOffset = 10.0;
+  myLegendYOffset = 10.0;
+  myLegendFont = QFont( "Arial", 9 );
 }
 
 /*!
@@ -1254,6 +1259,69 @@ void GLViewer_ViewPort2d::drawCompass()
 
     if ( aTextList != -1 )
         glCallList( aTextList );
+}
+
+/*!
+  Draws legend
+*/
+void GLViewer_ViewPort2d::drawLegend()
+{
+  if( !myIsLegendEnabled || myLegendText.isEmpty() )
+    return;
+
+  int w = getWidth();
+  int h = getHeight();
+
+  GLfloat xScale, yScale, xPan, yPan;
+  getScale( xScale, yScale );
+  getPan( xPan, yPan );
+
+  GLdouble x1 = -w / 2. / xScale - xPan;
+  GLdouble y1 = -h / 2. / yScale - yPan;
+  GLdouble z1 = 0;
+
+  GLint viewport[4];
+  glGetIntegerv( GL_VIEWPORT, viewport );
+
+  GLdouble modelMatrix[16], projMatrix[16];
+  glGetDoublev( GL_MODELVIEW_MATRIX, modelMatrix );
+  glGetDoublev( GL_PROJECTION_MATRIX, projMatrix );
+
+  GLdouble x2, y2, z2;
+  gluProject( x1, y1, z1, modelMatrix, projMatrix, viewport, &x2, &y2, &z2 );
+
+  glColor3f( 0.0, 0.0, 0.0 );
+
+  glMatrixMode( GL_PROJECTION );
+  glPushMatrix();
+  glLoadIdentity();
+  glOrtho( 0, viewport[2], 0, viewport[3], -100, 100 );
+  glMatrixMode( GL_MODELVIEW );
+  glPushMatrix();
+  glLoadIdentity();
+
+  QStringList aStringList = myLegendText.split( "\n" );
+
+  int aCounter = 0;
+  int aTextHeight = 0;
+  QStringListIterator anIter( aStringList );
+  anIter.toBack();
+  while( anIter.hasPrevious() )
+  {
+    const QString& aString = anIter.previous();
+    if( aCounter > 0 && aTextHeight == 0 )
+      aTextHeight = QFontMetrics( myLegendFont ).height();
+    GLViewer_Drawer::drawBitmapText( aString,
+                                     &myLegendFont,
+                                     x2 + myLegendXOffset,
+                                     y2 + myLegendYOffset + aCounter * aTextHeight );
+    aCounter++;
+  }
+
+  glMatrixMode( GL_PROJECTION );
+  glPopMatrix();
+  glMatrixMode( GL_MODELVIEW );
+  glPopMatrix();
 }
 
 /*!

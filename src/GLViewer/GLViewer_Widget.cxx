@@ -473,6 +473,8 @@ void GLViewer_Widget::paintGL()
         v->updateDrawers( GL_FALSE, myXScale, myYScale );
     else
         v->repaintView( getViewPort()->getViewFrame() );
+
+    myViewPort->drawLegend();
 }
 
 /*!

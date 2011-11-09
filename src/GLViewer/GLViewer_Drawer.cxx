@@ -797,9 +797,7 @@ void GLViewer_Drawer::drawText( const QString& text, GLfloat xPos, GLfloat yPos,
   }
   else
   {
-    glRasterPos2f( xPos, yPos );
-    glListBase( displayListBase( theFont ) );
-    glCallLists( text.length(), GL_UNSIGNED_BYTE, text.toLocal8Bit().data() );
+    drawBitmapText( text, theFont, xPos, yPos );
   }
 }
 
@@ -938,6 +936,23 @@ void GLViewer_Drawer::drawRectangle( GLViewer_Rect* rect, QColor color )
   glVertex2f( x2, y2 );
   glVertex2f( x2, y1 );
   glEnd();
+}
+
+/*!
+  Draws simple bitmap text
+  \param theText - text string
+  \param theFont - font of the text
+  \param theXPos - x coordinate of the text
+  \param theYPos - y coordinate of the text
+*/
+void GLViewer_Drawer::drawBitmapText( const QString& theText,
+                                      QFont* theFont,
+                                      GLfloat theXPos,
+                                      GLfloat theYPos )
+{
+  glRasterPos2f( theXPos, theYPos );
+  glListBase( displayListBase( theFont ) );
+  glCallLists( theText.length(), GL_UNSIGNED_BYTE, theText.toLocal8Bit().data() );
 }
 
 /*!

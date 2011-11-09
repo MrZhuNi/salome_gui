@@ -407,6 +407,12 @@ public:
   //! Draw filled rectangle with predefined color
   static void                     drawFilledRectangle( GLViewer_Rect*, QColor = Qt::black );
 
+  //! Draw simple bitmap text
+  static void                     drawBitmapText( const QString& theText,
+                                                  QFont* theFont,
+                                                  GLfloat theXPos,
+                                                  GLfloat theYPos );
+
 protected:
   static void                     drawContour( GLViewer_Rect*, QColor, GLfloat, GLushort, bool );
   static void                     drawContour( const GLViewer_PntList&, QColor, GLfloat );

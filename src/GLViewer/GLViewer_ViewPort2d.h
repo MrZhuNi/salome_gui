@@ -158,6 +158,9 @@ public:
   //! Draws compass
   void                   drawCompass();
   
+  //! Draws legend
+  void                   drawLegend();
+
   //! Returns unique ID of ViewPort
   int                    getViewPortId(){ return myViewPortId; }
   
@@ -194,6 +197,12 @@ public:
   //! Dumps contents of the scene
   QImage                 dumpContents( bool theWholeScene = false,
                                        double theScale = 1.0 );
+
+  //! Sets the legend enable state
+  void                   setLegendEnabled( const bool theState ) { myIsLegendEnabled = theState; }
+
+  //! Sets the legend text
+  void                   setLegendText( const QString& theText ) { myLegendText = theText; }
 
 signals:
   //! Emits after any transformation
@@ -282,6 +291,13 @@ protected:
   bool                   myIsMouseReleaseBlock;
 
   QRubberBand*           myRectBand; //!< selection rectangle rubber band
+
+  // legend
+  bool                   myIsLegendEnabled;
+  QString                myLegendText;
+  GLfloat                myLegendXOffset;
+  GLfloat                myLegendYOffset;
+  QFont                  myLegendFont;
 };
 
 #ifdef WIN32
