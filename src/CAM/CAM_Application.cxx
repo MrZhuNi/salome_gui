@@ -394,6 +394,7 @@ bool CAM_Application::activateModule( CAM_Module* mod )
     }
   }
 
+  updateDesktopTitle();
   updateCommandsStatus();
 
   return true;

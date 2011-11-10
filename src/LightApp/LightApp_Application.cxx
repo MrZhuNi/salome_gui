@@ -2531,9 +2531,17 @@ void LightApp_Application::updateDesktopTitle()
   QStringList anInfoList;
   modules( anInfoList, false );
 
-  LightApp_Module* aModule = ( LightApp_Module* )activeModule();
-  if( aModule && anInfoList.count() == 1 ) // to avoid a conflict between different modules
-    aTitle = aModule->updateDesktopTitle( aTitle );
+  //LightApp_Module* aModule = ( LightApp_Module* )activeModule();
+  //if( aModule && anInfoList.count() == 1 ) // to avoid a conflict between different modules
+  //  aTitle = aModule->updateDesktopTitle( aTitle );
+
+  QStringList::iterator anIter;
+  for ( anIter = anInfoList.begin(); anIter != anInfoList.end(); ++anIter )
+  {
+    LightApp_Module* aModule = dynamic_cast<LightApp_Module*>( module( *anIter ) );
+    if ( aModule )
+      aTitle = aModule->updateDesktopTitle( aTitle );
+  }
  
   desktop()->setWindowTitle( aTitle );
 }
