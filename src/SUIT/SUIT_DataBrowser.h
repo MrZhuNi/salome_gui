@@ -37,7 +37,7 @@ class SUIT_EXPORT SUIT_DataBrowser : public OB_Browser, public SUIT_PopupClient
 public:
   SUIT_DataBrowser( QWidget* = 0 );
   SUIT_DataBrowser( SUIT_DataObject*, QWidget* = 0 );
-  ~SUIT_DataBrowser();
+  virtual ~SUIT_DataBrowser();
 
   virtual QString  popupClientType() const;
 
@@ -63,6 +63,9 @@ public:
   void             setAutoSizeFirstColumn( const bool on );
   void             setAutoSizeColumns( const bool on );
   void             setResizeOnExpandItem( const bool on );
+
+  void             ensureVisible( SUIT_DataObject* );
+  void             ensureVisible( const DataObjectList& );
 
 protected:
   virtual void     contextMenuEvent( QContextMenuEvent* );
