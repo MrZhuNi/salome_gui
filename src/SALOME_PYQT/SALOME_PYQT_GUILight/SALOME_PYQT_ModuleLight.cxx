@@ -2454,8 +2454,17 @@ void SALOME_PYQT_ModuleLight::saveEvent(QStringList& theListOfFiles)
     return;
 
   if ( PyObject_HasAttrString(myModule, (char*)"saveFiles") ) {
+    // temporary set myInitModule because saveEvent() method
+    // might be called by the framework when this module is inactive,
+    // but still it should be possible to access this module's data
+    // from Python
+    myInitModule = this;
+
     PyObjWrapper res( PyObject_CallMethod( myModule, (char*)"saveFiles",
                                            (char*)"s", (*it).toLatin1().constData()));
+
+    myInitModule = 0;
+
     if( !res ) {
       PyErr_Print();
     }
@@ -2524,8 +2533,17 @@ void SALOME_PYQT_ModuleLight::dumpEvent(QStringList& theListOfFiles)
     return;
 
   if ( PyObject_HasAttrString(myModule, (char*)"dumpStudy") ) {
+    // temporary set myInitModule because dumpEvent() method
+    // might be called by the framework when this module is inactive,
+    // but still it should be possible to access this module's data
+    // from Python
+    myInitModule = this;
+
     PyObjWrapper res( PyObject_CallMethod( myModule, (char*)"dumpStudy",
                                            (char*)"s", (*it).toLatin1().constData()));
+
+    myInitModule = 0;
+
     if( !res ) {
       PyErr_Print();
     }
