@@ -128,19 +128,27 @@ public:
   void                       dumpPython(QStringList& theListOfFiles);
 
   /*create new SALOME_PYQT_DataObjectLight and return its entry*/
-  QString                   createObject(const QString& parent);
-  QString                   createObject(const QString& name, 
-                                         const QString& iconname,
-                                         const QString& tooltip,
-                                         const QString& parent);
+  QString                    createObject(const QString& parent);
+  QString                    createObject(const QString& name, 
+					  const QString& iconname,
+					  const QString& tooltip,
+					  const QString& parent);
   /*Sets Name, Icon and Tool Tip for object*/
   void                      setName(const QString& obj,const QString& iconname);
   void                      setIcon(const QString& obj,const QString& name);
-  void                      setToolTip(const QString& obj, const QString& name);
+  void                      setToolTip(const QString& obj, const QString& tooltip);
 
   /*Gets Name and Tool Tip for object*/
   QString                   getName(const QString& obj);
   QString                   getToolTip(const QString& obj);
+
+  void                      setColor(const QString& obj, const QColor& color);
+  QColor                    getColor(const QString& obj);
+
+  void                      setReference( const QString& obj, 
+					  const QString& refEntry ); 
+  QString                   getReference( const QString& obj );
+
                              /*remove object*/
   void                      removeObject(const QString& obj);
                             /*remove child*/

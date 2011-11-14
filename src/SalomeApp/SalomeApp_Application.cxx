@@ -1389,28 +1389,22 @@ void SalomeApp_Application::onRegDisplay()
 /*!find original object by double click on item */
 void SalomeApp_Application::onDblClick( SUIT_DataObject* theObj )
 {
-  SalomeApp_DataObject* obj = dynamic_cast<SalomeApp_DataObject*>( theObj );
-  SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( activeStudy() );
+  // Issue 21379: References are supported at LightApp_DataObject level
+  LightApp_DataObject* obj = dynamic_cast<LightApp_DataObject*>( theObj );
 
-  if( study && obj )
+  if( obj && obj->isReference() )
   {
-    QString entry = obj->entry();
-    _PTR(SObject) sobj = study->studyDS()->FindObjectID( entry.toStdString() ), ref;
+    QString entry = obj->refEntry();
 
-    if( sobj && sobj->ReferencedObject( ref ) )
-    {
-      entry = ref->GetID().c_str();
+    SUIT_DataOwnerPtrList aList;
+    aList.append( new LightApp_DataOwner( entry ) );
+    selectionMgr()->setSelected( aList, false );
+    
+    SUIT_DataBrowser* ob = objectBrowser();
 
-      SUIT_DataOwnerPtrList aList;
-      aList.append( new LightApp_DataOwner( entry ) );
-      selectionMgr()->setSelected( aList, false );
-
-      SUIT_DataBrowser* ob = objectBrowser();
-
-      QModelIndexList aSelectedIndexes = ob->selectedIndexes();
-      if ( !aSelectedIndexes.isEmpty() )
-        ob->treeView()->scrollTo( aSelectedIndexes.first() );
-    }
+    QModelIndexList aSelectedIndexes = ob->selectedIndexes();
+    if ( !aSelectedIndexes.isEmpty() )
+      ob->treeView()->scrollTo( aSelectedIndexes.first() );
   }
 }
 

@@ -223,15 +223,21 @@ public:
 			 
   static QString           createObject( const QString& = QString("") )  /ReleaseGIL/ ;
   static QString           createObject( const QString&,
-			                const QString&,
-					const QString&,
-					const QString& = QString("") )  /ReleaseGIL/ ;
+			                 const QString&,
+					 const QString&,
+					 const QString& = QString("") )  /ReleaseGIL/ ;
 
   static void              setName(const QString& ,const QString& ) /ReleaseGIL/ ;
   static void              setIcon(const QString& ,const QString& ) /ReleaseGIL/ ;
   static void              setToolTip(const QString& ,const QString& ) /ReleaseGIL/ ;
   static QString           getName(const QString& ) /ReleaseGIL/ ;
   static QString           getToolTip(const QString& ) /ReleaseGIL/ ;
+
+  static void              setColor( const QString&, const QColor& ) /ReleaseGIL/ ;
+  static QColor            getColor( const QString& ) /ReleaseGIL/ ;
+
+  static void              setReference( const QString& ,const QString& ) /ReleaseGIL/ ; 
+  static QString           getReference( const QString& ) /ReleaseGIL/ ;
 
   static void              removeObject(const QString&  )    /ReleaseGIL/ ;
   static void              removeChild(const QString& = QString("")  ) /ReleaseGIL/ ;

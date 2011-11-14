@@ -152,6 +152,13 @@ public:
   static QString           getName(const QString& obj);
   static QString           getToolTip(const QString& obj);
 
+  static void              setColor(const QString& obj,const QColor& color);
+  static QColor            getColor(const QString& obj);
+
+  static void              setReference( const QString& obj, 
+					 const QString& refEntry ); 
+  static QString           getReference( const QString& obj );
+
   static QIcon             loadIcon( const QString&, const QString& );
 
   static void              helpContext( const QString&, const QString& );

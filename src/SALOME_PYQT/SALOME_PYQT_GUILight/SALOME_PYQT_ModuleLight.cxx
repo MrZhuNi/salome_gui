@@ -2752,6 +2752,53 @@ void SALOME_PYQT_ModuleLight::setToolTip(const QString& obj, const QString& tool
 }
 
 /*
+ * Return color of object
+ */
+QColor SALOME_PYQT_ModuleLight::getColor(const QString& obj)
+{
+  SALOME_PYQT_DataObjectLight* dataObj = findObject( obj );
+  if( dataObj ) {
+    return dataObj->color( SUIT_DataObject::Foreground );
+  }
+  return QColor();
+}
+
+/*
+ * Set color for object
+ */
+void SALOME_PYQT_ModuleLight::setColor(const QString& obj, const QColor& color)
+{
+  SALOME_PYQT_DataObjectLight* dataObj = findObject( obj );
+  if( dataObj ) {
+    dataObj->setColor( color );
+  }
+}
+
+/*
+ * Return entry of the referenced object (if any)
+ */
+QString SALOME_PYQT_ModuleLight::getReference(const QString& obj)
+{
+  SALOME_PYQT_DataObjectLight* dataObj = findObject(obj);
+  if(dataObj) {
+    return dataObj->refEntry();
+  }
+  return QString::null;
+}
+
+
+/*
+ * Set entry of the referenced object
+ */
+void SALOME_PYQT_ModuleLight::setReference(const QString& obj, const QString& refEntry)
+{
+  SALOME_PYQT_DataObjectLight* dataObj = findObject(obj);
+  if(dataObj) {
+    dataObj->setRefEntry(refEntry);
+  }
+}
+
+/*
  * Remove object by entry
  */
 void SALOME_PYQT_ModuleLight::removeObject(const QString& obj)

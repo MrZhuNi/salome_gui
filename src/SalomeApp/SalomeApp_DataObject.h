@@ -38,9 +38,8 @@ class SALOMEAPP_EXPORT SalomeApp_DataObject : public virtual LightApp_DataObject
 public:
   //! Column id
   enum {
-    ValueId = EntryId + 1,    //!< value column
-    IORId,                    //!< IOR column
-    RefEntryId                //!< reference entry column
+    ValueId = RefEntryId + 1,    //!< value column
+    IORId                        //!< IOR column
   };
 
 public:
@@ -59,8 +58,10 @@ public:
 
   virtual _PTR(SObject)  object() const;
 
-  bool                   isReference() const;
+  virtual QString        refEntry() const;
+  virtual bool           isReference() const;
   _PTR(SObject)          referencedObject() const;
+
   bool                   hasChildren() const;
   bool                   expandable() const;
 
