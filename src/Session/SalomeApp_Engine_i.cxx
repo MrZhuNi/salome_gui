@@ -49,7 +49,7 @@ using namespace std;
 SalomeApp_Engine_i::SalomeApp_Engine_i( const char* theComponentName )
 {
   myComponentName = theComponentName;
-  MESSAGE("SalomeApp_Engine_i::SalomeApp_Engine_i(): myComponentName = "<<
+  MESSAGE("SalomeApp_Engine_i::SalomeApp_Engine_i(): myComponentName = " <<
 	  myComponentName << ", this = " << this);
 }
 
@@ -58,7 +58,7 @@ SalomeApp_Engine_i::SalomeApp_Engine_i( const char* theComponentName )
 */
 SalomeApp_Engine_i::~SalomeApp_Engine_i()
 {
-  MESSAGE("SalomeApp_Engine_i::~SalomeApp_Engine_i(): myComponentName = " << myComponentName <<
+  MESSAGE("SalomeApp_Engine_i::~SalomeApp_Engine_i(): myComponentName = " << 
 	  myComponentName << ", this = " << this);
 }
 
