@@ -39,7 +39,8 @@ public:
   //! Column id
   enum {
     ValueId = RefEntryId + 1,    //!< value column
-    IORId                        //!< IOR column
+    IORId,                       //!< IOR column
+    LastId                       //!< indicates last Id value
   };
 
 public:
