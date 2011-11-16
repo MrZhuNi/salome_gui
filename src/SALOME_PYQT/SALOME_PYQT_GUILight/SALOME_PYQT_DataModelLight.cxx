@@ -40,7 +40,8 @@
 SALOME_PYQT_DataModelLight::SALOME_PYQT_DataModelLight(CAM_Module * theModule)
   : LightApp_DataModel( theModule ),
     myFileName( "" ),
-    myStudyURL( "" )
+    myStudyURL( "" ),
+    myModified( false )
 {
   
 }
@@ -66,6 +67,8 @@ bool SALOME_PYQT_DataModelLight::open( const QString& theURL, CAM_Study* study, 
     return false;
   
   LightApp_DataModel::open( theURL, aDoc, theListOfFiles );
+
+  setModified( false );
   
   return aModule->open(theListOfFiles);
   
@@ -93,6 +96,9 @@ bool SALOME_PYQT_DataModelLight::save( QStringList& theListOfFiles)
   theListOfFiles.append(QString(aTmpDir.c_str()));
   int listSize = theListOfFiles.size();
   aModule->save(theListOfFiles);
+
+  setModified( false );
+
   //Return true if in the List of files was added item(s)
   //else return false 
   return theListOfFiles.size() > listSize;
@@ -148,22 +154,23 @@ bool SALOME_PYQT_DataModelLight::dumpPython( const QString& theURL,
 
 //=================================================================================
 // function : isModified()
-// purpose  : default implementation, always returns false so as not to mask study's isModified()
+// purpose  : returns this model's modification status that can be controlled 
+//            with help of setModified() calls by the underlying Python module
 //=================================================================================
 bool SALOME_PYQT_DataModelLight::isModified() const
 {
-  return false;
+  return myModified;
 }
 
 //=================================================================================
-// function : isSaved()
-// purpose  : default implementation, always returns true so as not to mask study's isSaved()
+// function : setModified()
+// purpose  : sets the model's modification status, should be used by 
+//            the underlying Python module when its data changes.
 //=================================================================================
-bool SALOME_PYQT_DataModelLight::isSaved() const
+void SALOME_PYQT_DataModelLight::setModified( bool flag )
 {
-  return true;
+  myModified = flag;
 }
-
 
 //=================================================================================
 // function : close()

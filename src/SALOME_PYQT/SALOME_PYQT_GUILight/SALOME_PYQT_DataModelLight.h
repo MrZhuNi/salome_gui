@@ -52,7 +52,7 @@ public:
 				   QStringList& );
   
   virtual bool         isModified () const;
-  virtual bool         isSaved    () const;
+  void                 setModified( bool );
   
   virtual void         update ( LightApp_DataObject* = 0, LightApp_Study* = 0 );
 
@@ -61,6 +61,7 @@ public:
  private:
   QString              myFileName;
   QString              myStudyURL;
+  bool                 myModified;
 };
 
 #endif // SALOME_PYQT_DATAMODELLIGHT_H

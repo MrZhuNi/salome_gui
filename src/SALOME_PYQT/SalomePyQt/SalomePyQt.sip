@@ -215,7 +215,10 @@ public:
   static const QString     getActiveComponent() /ReleaseGIL/ ;
   static SIP_PYOBJECT      getActivePythonModule() /ReleaseGIL/ ;
   static bool              activateModule( const QString& ) /ReleaseGIL/ ;
-  static void              updateObjBrowser( const int = 0, bool = true ) /ReleaseGIL/ ;
+  static void              updateObjBrowser( const int = 0, bool =  true ) /ReleaseGIL/ ;
+  
+  static bool              isModified() /ReleaseGIL/ ;
+  static void              setModified( bool ) /ReleaseGIL/ ;
 
   static QString           getFileName         ( QWidget*, const QString&, const QStringList&, const QString&, bool ) /ReleaseGIL/ ;
   static QStringList       getOpenFileNames    ( QWidget*, const QString&, const QStringList&, const QString& ) /ReleaseGIL/ ;

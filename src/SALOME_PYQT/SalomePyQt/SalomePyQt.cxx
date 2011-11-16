@@ -32,6 +32,7 @@
 #endif
 
 #include <SALOME_PYQT_ModuleLight.h> // this include must be first!!!
+#include <SALOME_PYQT_DataModelLight.h>
 #include "SalomePyQt.h"
 
 #include <QApplication>
@@ -610,6 +611,76 @@ void SalomePyQt::updateObjBrowser( const int studyId, bool updateSelection )
     }
   };
   ProcessVoidEvent( new TEvent( studyId, updateSelection ) );
+}
+
+
+/*!
+  SalomePyQt::isModified()
+  \return The modification status of the data model
+  for the currently active Python module
+  \sa setModified()
+*/
+class TIsModifiedEvent: public SALOME_Event
+{
+public:
+  typedef bool TResult;
+  TResult myResult;
+  TIsModifiedEvent() : myResult( false ) {}
+  virtual void Execute() 
+  {
+    SALOME_PYQT_ModuleLight* module = getActiveModule();
+    if ( !module )
+      return;
+    
+    SALOME_PYQT_DataModelLight* aModel =
+      dynamic_cast<SALOME_PYQT_DataModelLight*>( module->dataModel() );
+    if ( aModel )
+      myResult = aModel->isModified();
+  }
+};
+bool SalomePyQt::isModified()
+{
+  return ProcessEvent(new TIsModifiedEvent());
+}
+
+/*!
+  SalomePyQt::setModified()
+
+  Sets the modification status of the data model for 
+  the currently active Python module. This method should be used
+  by the Python code in order to enable/disable "Save" operation
+  depending on the module's data state.
+
+  \param New modification status of the data model
+
+  \sa isModified()
+*/
+void SalomePyQt::setModified( bool flag )
+{  
+  class TEvent: public SALOME_Event
+  {
+    bool myFlag;
+  public:
+    TEvent( bool flag ) 
+      : myFlag( flag ) {}
+    virtual void Execute()
+    {
+      SALOME_PYQT_ModuleLight* module = getActiveModule();
+      if ( !module )
+	return;
+
+      SALOME_PYQT_DataModelLight* aModel =
+	dynamic_cast<SALOME_PYQT_DataModelLight*>( module->dataModel() );
+      LightApp_Application* aLApp = 
+	dynamic_cast<LightApp_Application*>( module->application() );
+      if ( !aModel || !aLApp )
+	return;
+
+      aModel->setModified( myFlag );
+      aLApp->updateActions();
+    }
+  };
+  ProcessVoidEvent( new TEvent( flag ) );
 }
 
 /*!

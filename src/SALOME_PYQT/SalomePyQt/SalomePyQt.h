@@ -133,6 +133,9 @@ public:
   static bool              activateModule( const QString& );
   static void              updateObjBrowser( const int = 0, bool = true );
 
+  static bool              isModified();
+  static void              setModified( bool );
+
   static QString           getFileName         ( QWidget*, const QString&, const QStringList&, const QString&, bool );
   static QStringList       getOpenFileNames    ( QWidget*, const QString&, const QStringList&, const QString& );
   static QString           getExistingDirectory( QWidget*, const QString&, const QString& );
