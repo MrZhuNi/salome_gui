@@ -299,7 +299,7 @@ void SalomeApp_Application::createActions()
   //! Catalog Generator
   createAction( CatalogGenId, tr( "TOT_DESK_CATALOG_GENERATOR" ),  QIcon(),
                 tr( "MEN_DESK_CATALOG_GENERATOR" ), tr( "PRP_DESK_CATALOG_GENERATOR" ),
-                Qt::SHIFT+Qt::Key_G, desk, false, this, SLOT( onCatalogGen() ) );
+                Qt::ALT+Qt::SHIFT+Qt::Key_G, desk, false, this, SLOT( onCatalogGen() ) );
 
   //! Registry Display
   createAction( RegDisplayId, tr( "TOT_DESK_REGISTRY_DISPLAY" ),  QIcon(),
