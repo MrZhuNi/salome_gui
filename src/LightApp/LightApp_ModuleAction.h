@@ -40,6 +40,7 @@ class LIGHTAPP_EXPORT LightApp_ModuleAction : public QtxAction
 private:
   class ActionSet;
   class ComboAction;
+  class ActivateEvent;
 
 public:
   enum { None = 0x00, Buttons = 0x01, ComboItem = 0x02, All = Buttons | ComboItem };
@@ -67,7 +68,9 @@ protected:
   virtual void     addedTo( QWidget* );
   virtual void     removedFrom( QWidget* );
 
-signals:
+  virtual bool     event( QEvent* );
+
+Q_SIGNALS:
   void             moduleActivated( const QString& );
 
 private:
@@ -99,11 +102,11 @@ public:
 
   QList<QtxComboBox*> widgets() const;
 
+Q_SIGNALS:
+  void                activatedId( int );
+
 protected:
   virtual QWidget*    createWidget( QWidget* );
-
-signals:
-  void                activatedId( int );
 };
 
 #endif // LIGHTAPP_MODULEACTION_H
