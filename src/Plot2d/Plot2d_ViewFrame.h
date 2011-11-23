@@ -142,8 +142,7 @@ public:
   void    setEnableAxis( const QwtPlot::Axis&, const bool& );
 
   virtual bool print( const QString& file, const QString& format ) const;
-  void     printPlot( QPainter* p, const QRect& rect,
-                      const QwtPlotPrintFilter& = QwtPlotPrintFilter() ) const;
+  void     printPlot( QPainter* p, const QRectF& rect) const;
 
   QString getVisualParameters();
   void    setVisualParameters( const QString& parameters );

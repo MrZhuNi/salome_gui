@@ -54,6 +54,8 @@
 #include <qwt_scale_engine.h>
 #include <qwt_plot_zoomer.h>
 #include <qwt_curve_fitter.h>
+#include <qwt_compat.h>
+#include <qwt_plot_renderer.h>
 
 #include <iostream>
 #include <stdlib.h>
@@ -911,25 +913,27 @@ int Plot2d_ViewFrame::testOperation( const QMouseEvent& me )
   const int zoomBtn = Qt::ControlModifier | Qt::LeftButton;
   const int panBtn  = Qt::ControlModifier | Qt::MidButton;
   const int fitBtn  = Qt::ControlModifier | Qt::RightButton;
-
-  switch (btn)
-  {
-  case zoomBtn:
+  
+  if( btn == zoomBtn)
     {
       QPixmap zoomPixmap (imageZoomCursor);
       QCursor zoomCursor (zoomPixmap);
       myPlot->canvas()->setCursor( zoomCursor );
       return ZoomId;
     }
-  case panBtn:
+    else if( btn == panBtn )
+    {
     myPlot->canvas()->setCursor( QCursor( Qt::SizeAllCursor ) );
     return PanId;
-  case fitBtn:
+    }
+    else if(btn == fitBtn)
+    {
     myPlot->canvas()->setCursor( QCursor( Qt::PointingHandCursor ) );
     return FitAreaId;
-  default :
+    }
+    else
     return NoOpId;
-  }
+  
 }
 
 /*!
@@ -1178,9 +1182,10 @@ void Plot2d_ViewFrame::setMarkerSize( const int size, bool update )
       QwtPlotCurve* crv = it.key();
       if ( crv )
       {
-        QwtSymbol aSymbol = crv->symbol();
-        aSymbol.setSize( myMarkerSize, myMarkerSize );
-        crv->setSymbol( aSymbol );
+       const QwtSymbol* aSymbol = crv->symbol();
+       QwtSymbol* aSymbolNew =  new QwtSymbol( aSymbol->style(), aSymbol->brush(), aSymbol->pen(), aSymbol->size() ); 
+        aSymbolNew->setSize( myMarkerSize, myMarkerSize );
+        crv->setSymbol( aSymbolNew );
       }
     }
     if ( update )
@@ -1734,7 +1739,7 @@ Plot2d_Plot2d::Plot2d_Plot2d( QWidget* parent )
     myIsPolished( false )
 {
   myPlotZoomer = new Plot2d_QwtPlotZoomer( QwtPlot::xBottom, QwtPlot::yLeft, canvas() );
-  myPlotZoomer->setSelectionFlags( QwtPicker::DragSelection | QwtPicker::CornerToCorner );
+  //myPlotZoomer->setSelectionFlags( QwtPicker::DragSelection | QwtPicker::CornerToCorner );
   myPlotZoomer->setTrackerMode( QwtPicker::AlwaysOff );
   myPlotZoomer->setRubberBand( QwtPicker::RectRubberBand );
   myPlotZoomer->setRubberBandPen( QColor( Qt::green ) );
@@ -1984,7 +1989,8 @@ bool Plot2d_ViewFrame::print( const QString& file, const QString& format ) const
 
     if( pd )
     {
-      myPlot->print( *pd );
+      QwtPlotRenderer aRend;
+      aRend.renderTo( myPlot, *pd );
       res = true;
       delete pd;
     }
@@ -1996,10 +2002,10 @@ bool Plot2d_ViewFrame::print( const QString& file, const QString& format ) const
 /**
  * Print Plot2d window
  */
-void Plot2d_ViewFrame::printPlot( QPainter* p, const QRect& rect,
-                                  const QwtPlotPrintFilter& filter ) const
+void Plot2d_ViewFrame::printPlot( QPainter* p, const QRectF& rect) const
 {
-  myPlot->print( p, rect, filter );
+  QwtPlotRenderer aRend;
+      aRend.render( myPlot, p, rect );
 }
 
 /*!
