@@ -206,7 +206,8 @@ SVTK_View
   ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
 			  TIsSameIObject<SALOME_Actor>( theIO ),
 			  THighlightAction(theIsHighlight));
-  Repaint();
+  if( theIsUpdate )
+    Repaint();
 }
 
 /*!
