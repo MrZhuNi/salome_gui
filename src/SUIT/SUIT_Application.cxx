@@ -694,3 +694,25 @@ void SUIT_Application::setLastUsedPrinter( const QString& thePrinterName )
   if( SUIT_ResourceMgr* aResMgr = resourceMgr() )
     aResMgr->setValue( "Printer", "last_used_printer", thePrinterName );
 }
+
+/*!
+ * Curent implementation does nothing; calls 'backup' method of active study in LightApp_Application
+ */
+void SUIT_Application::backup( const QString& /*fName*/ )
+{
+}
+
+/*!
+ * SUIT_Application does nothing; LightApp_Application keeps folder to be used for restoring.
+ */
+void SUIT_Application::setRestoreFolder( const QString& /*fName*/ )
+{
+}
+
+/*!
+ * Gets backup time from preferences; this method is used by session when backup timer is created.
+ */
+double SUIT_Application::getBackupTime() const
+{
+  return 0;
+}

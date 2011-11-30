@@ -361,3 +361,11 @@ LightApp_DataObject* LightApp_DataModel::findObjectByEntry( SUIT_DataBrowser* th
   }
   return NULL;
 }
+
+/*!
+  to do:
+*/
+void LightApp_DataModel::backup( const QString& /*fName*/, QStringList& files )
+{
+  
+}

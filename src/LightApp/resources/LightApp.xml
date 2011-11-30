@@ -87,6 +87,7 @@
   <section name="Study">
     <!-- General study settings -->
     <parameter name="store_positions" value="true" />
+    <parameter name="backup_studies" value="5.0" />
   </section>
   <section name="Activate">
     <!-- StartUp settings -->

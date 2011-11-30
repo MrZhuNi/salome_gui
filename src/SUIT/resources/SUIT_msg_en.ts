@@ -131,4 +131,12 @@ Do you want to overwrite it?</translation>
         <translation>All files (*)</translation>
     </message>
 </context>
+  <context>
+    <name>SUIT_Session</name>
+    <message>
+      <source>WANT_TO_RESTORE</source>
+      <translation>Application crashed and one or several studies was unsaved.
+Do you want to restore them?</translation>
+    </message>
+  </context>
 </TS>

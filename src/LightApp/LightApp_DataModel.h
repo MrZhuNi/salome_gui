@@ -74,6 +74,8 @@ public:
   LightApp_DataObject*                findObjectByEntry( SUIT_DataBrowser* theOB, 
                                                          const QString& theEntry );
 
+  virtual void                        backup( const QString& fName, QStringList& files );
+  
 signals:
   void                                opened();
   void                                saved();

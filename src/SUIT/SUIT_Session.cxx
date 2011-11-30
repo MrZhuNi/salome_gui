@@ -18,6 +18,12 @@
 //
 #include "SUIT_Session.h"
 
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#endif
+
 #include "SUIT_Study.h"
 #include "SUIT_Tools.h"
 #include "SUIT_MessageBox.h"
@@ -25,12 +31,10 @@
 #include "SUIT_ResourceMgr.h"
 
 #include <QApplication>
-
-#ifdef WIN32
-#include <windows.h>
-#else
-#include <dlfcn.h>
-#endif
+#include <QTimer>
+#include <QFileInfo>
+#include <QDir>
+#include <QSet>
 
 SUIT_Session* SUIT_Session::mySession = 0;
 
@@ -42,7 +46,9 @@ SUIT_Session::SUIT_Session()
   myActiveApp( 0 ),
   myHandler( 0 ),
   myExitStatus( NORMAL ),
-  myExitFlags ( 0 )
+  myExitFlags ( 0 ),
+  myBTimer( 0 ),
+  myBFile( 0 )
 {
   SUIT_ASSERT( !mySession )
 
@@ -63,6 +69,12 @@ SUIT_Session::~SUIT_Session()
     myResMgr = 0;
   }
   mySession = 0;
+
+  // remove backup
+  if ( myBFile )
+    fclose( myBFile );
+  if ( !myBFolder.isEmpty() )
+    Qtx::rmDir( myBFolder );
 }
 
 /*! \retval return mySession */
@@ -119,17 +131,17 @@ SUIT_Application* SUIT_Session::startApplication( const QString& name, int /*arg
     myResMgr->loadLanguage();
   }
 
-  //jfa 22.06.2005:SUIT_Application* anApp = crtInst( args, argv );
-  SUIT_Application* anApp = crtInst();
-  if ( !anApp )
+  //jfa 22.06.2005:SUIT_Application* app = crtInst( args, argv );
+  SUIT_Application* app = crtInst();
+  if ( !app )
   {
     SUIT_MessageBox::warning( 0, tr( "Error" ), tr( "Can not create application \"%1\": %2").arg( appName ).arg( lastError() ) );
     return 0;
   }
 
-  anApp->setObjectName( appName );
+  app->setObjectName( appName );
 
-  insertApplication( anApp );
+  insertApplication( app );
 
   if ( !myHandler )
   {
@@ -143,13 +155,21 @@ SUIT_Application* SUIT_Session::startApplication( const QString& name, int /*arg
       myHandler = crtHndlr();
   }
 
-  anApp->start();
+  app->start();
 
   // Application can be closed during starting (not started).
-  if ( !myAppList.contains( anApp ) )
-    anApp = 0;
+  if ( !myAppList.contains( app ) )
+    app = 0;
 
-  return anApp;
+  if ( !myBTimer )
+  {
+    myBTimer = (QTimer*)1; // block reation on creation of new application
+    restoreBackup();
+    myBTimer = 0;
+    createBTimer();
+  }
+
+  return app;
 }
 
 /*!
@@ -355,3 +375,240 @@ void SUIT_Session::onApplicationActivated( SUIT_Application* app )
 {
   myActiveApp = app;
 }
+
+/*!
+  Gets prefix to be used for  creating backup copies
+*/
+QString SUIT_Session::getBPrefix() const
+{
+  //qint64 pId = QApplication::applicationPid();
+#ifdef WNT
+  QString usr( getenv( "USERNAME" ) );
+#else 
+  QString usr( getenv( "USER" ) );
+#endif
+
+  // Create folder
+  QString anAppName;
+  SUIT_Application* app = activeApplication();
+  if ( app )
+    anAppName = app->applicationName();
+  else 
+    anAppName = "SALOME";
+
+  QString pref = anAppName + "_" + usr;
+
+  return pref;
+}
+
+/*!
+  Gets backup interval
+*/
+double SUIT_Session::backupTime() const
+{
+  double res;
+  if ( myBTimer )
+    res = myBTimer->interval() / 60. / 10e-3;
+  else 
+    res = 0;
+  return res;
+}
+
+/*!
+  Sets backup interval; this method is used by application 
+  when the interval is changed in preferences
+*/
+void SUIT_Session::setBackupTime( const double val ) const
+{
+  int newInt = val * 60 * 1e3;
+  if ( !myBTimer || newInt == myBTimer->interval() )
+    return;
+
+  myBTimer->setInterval( newInt );
+  if ( val <= 0 )
+    myBTimer->stop();
+  else 
+    myBTimer->start();
+}
+
+/*!
+  Creates timer to be used for backup
+*/
+void SUIT_Session::createBTimer()
+{
+  if ( myBTimer )
+    return;
+
+  SUIT_Application* app = activeApplication();
+  if ( !app )
+    return;
+
+  myBTimer = new QTimer( this );
+  connect( myBTimer, SIGNAL( timeout() ), this, SLOT( onBTimer() ) );
+
+  double mSec = app->getBackupTime() * 60 * 1e3;
+  if ( mSec > 0  )
+    myBTimer->start( mSec );
+
+  QString pref = QDir::convertSeparators( QDir::tempPath() + "/" + getBPrefix() );
+  myBFolder = pref;
+  int i = 0;
+  while( QFileInfo( myBFolder ).exists() )
+  {
+    myBFolder = pref + QString( "_%1" ).arg( ++i );
+  }
+
+  if ( !QDir().mkdir( myBFolder ) )
+    myBFolder = "";
+
+  if ( !myBFolder.isEmpty() )
+  {
+    QString used = Qtx::addSlash( myBFolder ) + "used";
+    myBFile = fopen( used.toLatin1().constData(), "w" );
+  }
+}
+
+/*!
+  Slot, called when backup interval is out, iterates through all opened 
+  applications, creates 'folderName' directories for them and calls app->backup( folderName );
+*/
+void SUIT_Session::onBTimer()
+{
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  // clear folder
+  Qtx::rmDir( myBFolder );
+  QDir().mkdir( myBFolder );
+  
+  // create backup
+  QString aName;
+  QList<SUIT_Application*> aList = applications();
+  QList<SUIT_Application*>::iterator it;
+  for ( it = aList.begin(); it != aList.end(); ++it )
+  {
+    SUIT_Application* app = *it;
+    if ( app && app->activeStudy() )
+    {
+      aName = app->activeStudy()->studyName();
+      aName.replace( ":", "%" );
+      aName.replace( "/", "+" );
+      aName.replace( "\\", "+" );
+      QString aFName = QDir::convertSeparators( myBFolder + "/" + aName );
+      QDir().mkdir( aFName );
+      QFileInfo fi( aFName );
+      if ( fi.exists() &&fi.isDir() )
+        app->backup( aFName );
+    }
+  }
+
+  QApplication::restoreOverrideCursor();
+}
+
+/*!
+  Restores crashed studies from backup
+*/
+void SUIT_Session::restoreBackup()
+{
+  QString pref = getBPrefix();
+
+  // checks whether temp folder contains old backups
+  QDir tmpDir( QDir::tempPath() );
+
+  QStringList filt;
+  filt.append( pref + "*" );
+  tmpDir.setNameFilters( filt );
+
+  QStringList sess = tmpDir.entryList ( QDir::Dirs );
+  if ( sess.count() == 0  )
+    return;
+
+  QSet<QString> stdSet;
+  QList<QString> toRestore;
+  QList<QString> toRemove;
+
+  // iterate through temp folder
+  QStringList::iterator sessIter;
+  for ( sessIter = sess.begin(); sessIter != sess.end(); ++sessIter )
+  {
+    // iterate through session folder
+    const QString& stdRoot = Qtx::addSlash( QDir::tempPath() ) + *sessIter;
+
+    // checks whether folder is not currently used
+    QString testFile = Qtx::addSlash( stdRoot ) + "used";
+    QFileInfo fi( testFile );
+    if ( fi.exists() && !QFile( testFile ).remove() )
+      continue;
+
+    toRemove.append( stdRoot );
+
+    QDir sessDir( stdRoot );
+    QStringList stdList = sessDir.entryList ( QDir::Dirs );
+
+    QStringList::iterator stdIt;
+    for ( stdIt = stdList.begin(); stdIt != stdList.end(); ++stdIt )
+    {
+      const QString& locName = *stdIt;
+      if ( *stdIt == "." || *stdIt == ".." )
+        continue;
+
+      const QString& study = Qtx::addSlash( stdRoot ) + *stdIt;
+      QDir stdDir( study );
+      QStringList fList = sessDir.entryList ( QDir::AllEntries );
+      if ( fList.count() > 2 && !stdSet.contains( locName ) )
+      {
+        stdSet.insert( locName );
+        toRestore.append( study );
+      }
+    }
+  }
+
+  // restore study if necessary
+  if ( !toRestore.isEmpty() )
+  {
+    QWidget* p = activeApplication() ? (QWidget*)activeApplication()->desktop() : 0;
+    
+    int aBtn = SUIT_MessageBox::warning( p, tr( "WRN_WARNING" ), tr( "WANT_TO_RESTORE" ),
+      SUIT_MessageBox::Yes | SUIT_MessageBox::No, SUIT_MessageBox::Yes );
+    if ( aBtn == SUIT_MessageBox::Yes )
+    {
+      QStringList::iterator it;
+      bool isFirst = true;
+      for ( it = toRestore.begin(); it != toRestore.end(); ++it )
+      {
+        SUIT_Application* app = activeApplication();
+        if ( !app )
+          return;
+
+        if ( !isFirst )
+          app = startApplication( app->objectName(), 0, 0 );
+
+        isFirst = false;
+        
+        if ( !app )
+          continue;
+
+        app->setRestoreFolder( *it );
+        
+        QString fName = *it;
+        int ind = fName.lastIndexOf( "\\" );
+        if ( ind == -1 )
+          ind = fName.lastIndexOf( "/" );
+        if ( ind >= 0 )
+          fName = fName.right( fName.length() - ind -1 );
+        fName.replace( "%", ":" );
+        fName.replace( "+", "/" );
+        fName.replace( "+", QDir::separator() );
+	      if ( !app->useFile( fName ) )
+	        app->closeApplication();
+      }      
+    }
+  }
+
+  // remove all backup folders
+  QStringList::iterator it;
+  for ( it = toRemove.begin(); it != toRemove.end(); ++it )
+  {
+    Qtx::rmDir( *it );
+  }
+}
+

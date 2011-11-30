@@ -66,6 +66,9 @@ public:
   virtual void        children( const QString&, QStringList& ) const;
   virtual void        components( QStringList& ) const;
 
+  void                backup( const QString& fName);
+  void                setRestoreFolder( const QString& folder );
+
 protected:
   virtual void        saveModuleData ( QString theModuleName, QStringList theListOfFiles );
   virtual void        openModuleData ( QString theModuleName, QStringList& theListOfFiles );
@@ -87,9 +90,14 @@ signals:
   void                closed ( SUIT_Study* );
   void                created( SUIT_Study* );
 
+private:
+
+  bool                openBackupData();
+
 
 private:
   LightApp_Driver*    myDriver;
+  QString             myRestFolder;
 
   friend class LightApp_Application;
 };

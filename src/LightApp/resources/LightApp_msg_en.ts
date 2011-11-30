@@ -82,6 +82,10 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
         <translation>Store positions of windows</translation>
     </message>
     <message>
+      <source>PREF_BACKUP</source>
+      <translation>Backup every N minutes</translation>
+    </message>
+    <message>
         <source>PREF_PROJECTION_MODE</source>
         <translation>Projection mode:</translation>
     </message>

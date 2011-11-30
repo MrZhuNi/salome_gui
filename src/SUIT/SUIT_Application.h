@@ -109,6 +109,10 @@ public:
   //! Sets a name of the last used printer
   void                  setLastUsedPrinter( const QString& );
 
+  virtual void          backup( const QString& fName );
+  virtual void          setRestoreFolder( const QString& fName );
+  virtual double        getBackupTime() const;
+
 signals:
   void                  applicationClosed( SUIT_Application* );
   void                  activated( SUIT_Application* );

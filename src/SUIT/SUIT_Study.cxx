@@ -530,3 +530,4 @@ bool SUIT_Study::hasTransaction() const
 void SUIT_Study::restoreState(int /*savePoint*/)
 {
 }
+

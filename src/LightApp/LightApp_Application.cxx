@@ -290,15 +290,15 @@ LightApp_Application::LightApp_Application()
   QStringList anAddFamilies = aResMgr->stringValue( "PyConsole", "additional_families" ).split( ";", QString::SkipEmptyParts );
   QString aFamily;
   for ( QStringList::Iterator it = anAddFamilies.begin(); it != anAddFamilies.end(); ++it )
+  {
+    aFamily = *it;
+    if ( famdb.contains(aFamily) )
     {
-      aFamily = *it;
-      if ( famdb.contains(aFamily) )
-	{
-	  f.setFamily( aFamily );
-	  aResMgr->setValue( "PyConsole", "font", f );
-	  break;
-	}
+      f.setFamily( aFamily );
+      aResMgr->setValue( "PyConsole", "font", f );
+      break;
     }
+  }
 }
 
 /*!Destructor.
@@ -1826,6 +1826,7 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->addPreference( tr( "PREF_MULTI_FILE" ), studyGroup, LightApp_Preferences::Bool, "Study", "multi_file" );
   pref->addPreference( tr( "PREF_ASCII_FILE" ), studyGroup, LightApp_Preferences::Bool, "Study", "ascii_file" );
   pref->addPreference( tr( "PREF_STORE_POS" ),  studyGroup, LightApp_Preferences::Bool, "Study", "store_positions" );
+  pref->addPreference( tr( "PREF_BACKUP" ),  studyGroup, LightApp_Preferences::DblSpin, "Study", "backup_studies" );
 
   int extgroup = pref->addPreference( tr( "PREF_GROUP_EXT_BROWSER" ), genTab );
   QString platform;
@@ -2431,6 +2432,9 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
       aSStyle->polish(qApp);
     }
   }
+
+  double time = resMgr->doubleValue( "Study", "backup_studies", 0. );
+  SUIT_Session::session()->setBackupTime( time );
 }
 
 /*!
@@ -2907,6 +2911,10 @@ void LightApp_Application::createEmptyStudy()
 
   if ( objectBrowser() )
     objectBrowser()->updateTree();
+
+  LightApp_Study* aStudy = (LightApp_Study*)activeStudy();
+  aStudy->setRestoreFolder( myBFolder );
+  //myBFolder = "";
 }
 
 /*!
@@ -3230,3 +3238,32 @@ bool LightApp_Application::openAction( const int choice, const QString& aName )
 
   return res;
 }
+
+/*!
+ * Calls 'backup' method of active study
+ */
+void LightApp_Application::backup( const QString& fName )
+{
+  LightApp_Study* study = dynamic_cast<LightApp_Study*>( activeStudy() );
+  if ( study )
+    study->backup( fName );
+}
+
+/*!
+ * Keeps folder to be used for restoring.
+ */
+void LightApp_Application::setRestoreFolder( const QString& fName )
+{
+  myBFolder = fName;
+}
+
+/*!
+ * Gets backup time from preferences; this method is used by session when backup timer is created.
+*/
+double LightApp_Application::getBackupTime() const
+{
+  SUIT_ResourceMgr* resMgr = SUIT_Session::session()->resourceMgr();
+  double res = resMgr->doubleValue( "Study", "backup_studies", 0. );
+  return res;
+}
+

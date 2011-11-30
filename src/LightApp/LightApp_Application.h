@@ -144,6 +144,10 @@ public:
 
   virtual void                        updateDesktopTitle();
 
+  virtual void                        backup( const QString& fName );
+  virtual void                        setRestoreFolder( const QString& fName );
+  virtual double                      getBackupTime() const;
+
 signals:
   void                                studyOpened();
   void                                studySaved();
@@ -264,6 +268,8 @@ protected:
   static LightApp_Preferences*        _prefs_;
 
   static int                          lastStudyId;
+
+  QString                             myBFolder;
 };
 
 #ifdef WIN32

@@ -24,12 +24,14 @@
 #include "LightApp_DataModel.h"
 #include "LightApp_DataObject.h"
 #include "LightApp_HDFDriver.h"
+#include "LightApp_Module.h"
 
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_DataObjectIterator.h"
 
 #include <set>
 #include <QString>
+#include <QDir>
 
 /*!
   Constructor.
@@ -73,8 +75,17 @@ bool LightApp_Study::openDocument( const QString& theFileName )
 {
   myDriver->ClearDriverContents();
   // create files for models from theFileName
-  if( !openStudyData(theFileName))
-    return false;
+
+  if ( myRestFolder.isEmpty() )
+  {
+    if( !openStudyData(theFileName))
+      return false;
+  }
+  else 
+  {
+    // Case when study is restored from backup
+    openBackupData();
+  }
 
   setRoot( new LightApp_RootObject( this ) ); // create myRoot
 
@@ -92,6 +103,13 @@ bool LightApp_Study::openDocument( const QString& theFileName )
   bool res = CAM_Study::openDocument( theFileName );
 
   emit opened( this );
+
+  if ( !myRestFolder.isEmpty() )
+  {
+    setIsSaved( false );
+    //myRestFolder = "";
+  }
+
   return res;
 }
 
@@ -458,3 +476,181 @@ void LightApp_Study::components( QStringList& comp ) const
       comp.append( obj->entry() );
   }
 }
+
+/*!
+ * Keeps folder to be used for restoring.
+ */
+void LightApp_Study::setRestoreFolder( const QString& folder )
+{
+  myRestFolder = folder;
+}
+
+/*!
+  * - Call LightApp_DataModel::backup() for each data model
+  * - Creates "data" file in backup folder; this file contains name of opened 
+  *    HDF-file if study was stored or opened, name of temporary folder used 
+  *    by LightApp_Driver for study opening, list of backup files created by each model
+ */
+void LightApp_Study::backup( const QString& fName )
+{
+  QList<CAM_DataModel*> list; 
+  dataModels( list );
+
+  QListIterator<CAM_DataModel*> itList( list );
+  while ( itList.hasNext() ) 
+  {
+    LightApp_DataModel* model = (LightApp_DataModel*)itList.next();
+    if ( model && model->getModule() ) 
+    {
+      // writes location of hdf-file
+      QString hdfName = QString( "HDF:" ) + studyName() + "\n";
+
+      //QString tmpName = QString( " ) + GetTmpDir( "", false ).c_str() + "\n";
+      QString tmpName( "TMP:" ); 
+      
+      LightApp_Driver::ListOfFiles files = 
+        myDriver->GetListOfFiles( model->getModule()->name().toLatin1().constData() );
+      if ( files.size() > 0 )
+        tmpName += files.front().c_str();
+      else 
+      {
+        // New (not saved study). Use backup folder as default
+        tmpName += fName;
+      }
+      tmpName += '\n';
+
+      QString dataName = Qtx::addSlash( fName ) + "data";
+      FILE* f = fopen( dataName.toLatin1().constData(), "w" );
+      if ( f )
+      {
+        fputs( hdfName.toLatin1().constData(), f );
+        fputs( tmpName.toLatin1().constData(), f );
+
+        // backup model
+        QStringList backupFiles;
+        model->backup( fName, backupFiles );
+
+        // module data string
+        CAM_Module* mod = model->module();
+        {
+          QString modStr = mod->name();
+          QStringList::iterator it;
+          for ( it = backupFiles.begin(); it != backupFiles.end(); ++it )
+          {
+            const QString& curr = * it;
+            modStr += QString( "*" ) + curr;
+          }
+          fputs( modStr.toLatin1().constData(), f );
+        }
+        fclose( f );
+      }
+    }
+  }
+}
+
+/*!
+ * Prepare files to be used by data models for restoring; these files are 
+ * created from backup files and files of previously opened study.
+ */
+bool LightApp_Study::openBackupData()
+{
+  // Case when study is restored from backup
+  // Here:
+  // tmpFolder - folder where temporary files of previously opened study was saved (ex. D:\temp\84623)
+  // hdfName – name of HDF-file of previous study, if exists.
+  // backupFolder – folder with backup files. 
+
+  // Main idea: 
+  // - Parse “data” file and gets file names, Fill driver with files of results tmpFolder.
+  // - Move all files from backup to tmp.
+  // - Open study using this files.
+  // - Redirect name of opened study to previous hdfName.
+
+  // Parse “data”
+
+  // data-file - something like this
+  // HDF:D:/sln/CATHARE/Data/1.hdf
+  // TMP:d:\temp\84623\
+  // CATHAREGUI*1.cbf
+  QString dataName = Qtx::addSlash( myRestFolder ) + "data";
+  FILE* f = fopen( dataName.toLatin1().constData(), "r" );
+  if ( !f )
+    return false;
+
+  char buff[ 1024 ];
+
+  // hdf-name
+  memset( buff, 0, 1024 );
+  fgets( buff, 1024, f );
+  QString hdfName( buff );
+  hdfName.remove( '\n' );
+  hdfName.remove( "HDF:" );
+
+  // name of temporary file
+  memset( buff, 0, 1024 );
+  fgets( buff, 1024, f );
+  QString tmpFolder( buff );
+  tmpFolder.remove( '\n' );
+  tmpFolder.remove( "TMP:" );
+
+  // list of files 
+  QString modName;
+  LightApp_Driver::ListOfFiles modFiles;
+  while( !feof( f ) )
+  {
+    modName = "";
+    modFiles.clear();
+
+    memset( buff, 0, 1024 );
+    fgets( buff, 1024, f );
+    QString modStr( buff );
+
+    QStringList lst = modStr.split( "*" );
+    QStringList::iterator it = lst.begin();
+    for ( int i = 0; it != lst.end(); ++it, ++i )
+    {
+      const QString& curr = *it;
+      if ( i == 0 )
+      {
+        modName = curr;
+        modFiles.push_back( Qtx::addSlash( tmpFolder ).toLatin1().constData() );
+        continue;
+      }
+      else 
+      modFiles.push_back( curr.toLatin1().constData() );
+    }
+
+    // fill driver
+    myDriver->SetListOfFiles( modName.toLatin1().constData(), modFiles );
+  }
+
+  fclose( f );
+
+  // Move all files from backup to tmp
+
+  if ( !QFileInfo( tmpFolder ).exists() )
+    QDir().mkdir( tmpFolder );
+
+  if ( !QFileInfo( tmpFolder ).exists() )
+    return false;
+
+  QDir restDir( myRestFolder );
+  QStringList restList = restDir.entryList ( QDir::AllEntries );
+  QStringList::iterator it;
+  for ( it = restList.begin(); it != restList.end(); ++it )
+  {
+    const QString& locName = *it;
+    if ( locName == "." || locName == ".." || locName == "data" )
+      continue;
+
+    QString oldName = QDir::convertSeparators( Qtx::addSlash( myRestFolder ) + locName );
+    QString newName = QDir::convertSeparators( Qtx::addSlash( tmpFolder ) + locName );
+    if ( oldName != newName ) // oldName == newName for non-saved study
+    {
+      QFile::remove( newName );
+      QFile::copy( oldName, newName );
+    }
+  }
+  return true;
+}
+

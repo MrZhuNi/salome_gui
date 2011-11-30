@@ -37,6 +37,7 @@
 #endif
 
 class SUIT_ResourceMgr;
+class QTimer;
 class SUIT_ExceptionHandler;
 
 #ifdef WIN32
@@ -77,6 +78,9 @@ public:
 
   void                         insertApplication( SUIT_Application* );
 
+  double                       backupTime() const;
+  void                         setBackupTime( const double val ) const;
+
 signals:
   void                         applicationClosed( SUIT_Application* );
 
@@ -86,6 +90,12 @@ protected:
 private slots:
   void                         onApplicationClosed( SUIT_Application* );
   void                         onApplicationActivated( SUIT_Application* ); 
+  void                         onBTimer();
+
+private:
+  QString                       getBPrefix() const;
+  void                          createBTimer();
+  void                          restoreBackup();
 
 private:
   typedef QList<SUIT_Application*> AppList;
@@ -107,6 +117,10 @@ private:
 
   int                          myExitStatus;
   int                          myExitFlags;
+
+  QString                      myBFolder;
+  QTimer*                      myBTimer;
+  FILE*                        myBFile;
 };
 
 #endif
