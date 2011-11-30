@@ -163,9 +163,41 @@ SUIT_Application* SUIT_Session::startApplication( const QString& name, int /*arg
 
   if ( !myBTimer )
   {
-    myBTimer = (QTimer*)1; // block reation on creation of new application
-    restoreBackup();
-    myBTimer = 0;
+    QString anHDFName;
+    QStringList anArgs = QCoreApplication::arguments();
+    QStringList::const_iterator anArgsIt = anArgs.constBegin();
+    for ( ; anArgsIt != anArgs.constEnd(); anArgsIt++ )
+    {
+      QString anArg = *anArgsIt;
+      QFileInfo aFileInfo( anArg );
+      if ( aFileInfo.exists() && aFileInfo.suffix().toLower() == "hdf" )
+      {
+        anHDFName = anArg;
+        break;
+      }
+    }
+
+    if ( !anHDFName.isEmpty() && app && app->useFile( anHDFName ) )
+    {
+      //Remove backup folders if it exists
+      QDir tmpDir( QDir::tempPath() );
+
+      QString pref = getBPrefix();
+      QFileInfoList aFolders = tmpDir.entryInfoList( QStringList() << QString( pref + "*" ),
+                                                     QDir::Dirs );
+
+      QFileInfoList::const_iterator aFoldersIt = aFolders.constBegin();
+      for ( ; aFoldersIt != aFolders.constEnd(); ++aFoldersIt )
+        Qtx::rmDir( (*aFoldersIt).absoluteFilePath() );
+    }
+    else
+    {
+      //Try to restore backup
+      myBTimer = (QTimer*)1; // block reaction on creation of new application
+      restoreBackup();
+      myBTimer = 0;
+    }
+
     createBTimer();
   }
 
