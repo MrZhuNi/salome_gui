@@ -75,6 +75,9 @@ SUIT_Session::~SUIT_Session()
     fclose( myBFile );
   if ( !myBFolder.isEmpty() )
     Qtx::rmDir( myBFolder );
+
+  // remove all unused temporary folders
+  removeTmpFiles();
 }
 
 /*! \retval return mySession */
@@ -669,13 +672,23 @@ void SUIT_Session::restoreBackup()
   }
 
   // remove all unused temporary folders
-  QString savePref = getSavePrefix();
+  removeTmpFiles();
+}
 
-  filt.clear();
+/*!
+  Remove useless unused files 
+*/
+void SUIT_Session::removeTmpFiles()
+{
+  QString savePref = getSavePrefix();
+  QDir tmpDir( QDir::tempPath() );
+
+  QStringList filt;
   filt.append( savePref + "*" );
   tmpDir.setNameFilters( filt );  
 
   QStringList tmpFolders = tmpDir.entryList( QDir::Dirs );
+  QStringList::iterator it;
   for ( it = tmpFolders.begin(); it != tmpFolders.end(); ++it )
   {
     // iterate through tmp folders
@@ -688,4 +701,3 @@ void SUIT_Session::restoreBackup()
     }
   }
 }
-

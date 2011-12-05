@@ -98,6 +98,7 @@ private slots:
 private:
   void                          createBackupTimer();
   void                          restoreBackup();
+  void                          removeTmpFiles();
 
 private:
   typedef QList<SUIT_Application*> AppList;
