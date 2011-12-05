@@ -81,6 +81,9 @@ public:
   double                       backupTime() const;
   void                         setBackupTime( const double val ) const;
 
+  QString                      getBackupPrefix() const;
+  QString                      getSavePrefix() const;
+
 signals:
   void                         applicationClosed( SUIT_Application* );
 
@@ -93,8 +96,7 @@ private slots:
   void                         onBTimer();
 
 private:
-  QString                       getBPrefix() const;
-  void                          createBTimer();
+  void                          createBackupTimer();
   void                          restoreBackup();
 
 private:

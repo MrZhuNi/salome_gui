@@ -86,6 +86,7 @@ protected:
   typedef std::map<std::string, ListOfFiles> MapOfListOfFiles;
   MapOfListOfFiles                           myMap;
   std::string                                myTmpDir;
+  FILE*                                      myBloc;
 
 private:
   bool                                       myIsTemp;

@@ -182,7 +182,7 @@ SUIT_Application* SUIT_Session::startApplication( const QString& name, int /*arg
       //Remove backup folders if it exists
       QDir tmpDir( QDir::tempPath() );
 
-      QString pref = getBPrefix();
+      QString pref = getBackupPrefix();
       QFileInfoList aFolders = tmpDir.entryInfoList( QStringList() << QString( pref + "*" ),
                                                      QDir::Dirs );
 
@@ -198,7 +198,7 @@ SUIT_Application* SUIT_Session::startApplication( const QString& name, int /*arg
       myBTimer = 0;
     }
 
-    createBTimer();
+    createBackupTimer();
   }
 
   return app;
@@ -411,9 +411,8 @@ void SUIT_Session::onApplicationActivated( SUIT_Application* app )
 /*!
   Gets prefix to be used for  creating backup copies
 */
-QString SUIT_Session::getBPrefix() const
+QString SUIT_Session::getBackupPrefix() const
 {
-  //qint64 pId = QApplication::applicationPid();
 #ifdef WNT
   QString usr( getenv( "USERNAME" ) );
 #else 
@@ -428,7 +427,32 @@ QString SUIT_Session::getBPrefix() const
   else 
     anAppName = "SALOME";
 
-  QString pref = anAppName + "_" + usr;
+  QString pref = anAppName + "_backup_" + usr + "_";
+
+  return pref;
+}
+
+/*!
+  Gets prefix for study saving; this method is used by storage 
+  driver and the session to clear useless files after crash.
+*/
+QString SUIT_Session::getSavePrefix() const
+{
+#ifdef WNT
+  QString usr( getenv( "USERNAME" ) );
+#else 
+  QString usr( getenv( "USER" ) );
+#endif
+
+  // Create folder
+  QString anAppName;
+  SUIT_Application* app = activeApplication();
+  if ( app )
+    anAppName = app->applicationName();
+  else 
+    anAppName = "SALOME";
+
+  QString pref = anAppName + "_study_" + usr + "_";
 
   return pref;
 }
@@ -466,7 +490,7 @@ void SUIT_Session::setBackupTime( const double val ) const
 /*!
   Creates timer to be used for backup
 */
-void SUIT_Session::createBTimer()
+void SUIT_Session::createBackupTimer()
 {
   if ( myBTimer )
     return;
@@ -482,20 +506,21 @@ void SUIT_Session::createBTimer()
   if ( mSec > 0  )
     myBTimer->start( mSec );
 
-  QString pref = QDir::convertSeparators( QDir::tempPath() + "/" + getBPrefix() );
+  QString pref = QDir::convertSeparators( QDir::tempPath() + "/" + getBackupPrefix() );
   myBFolder = pref;
   int i = 0;
-  while( QFileInfo( myBFolder ).exists() )
+  do
   {
-    myBFolder = pref + QString( "_%1" ).arg( ++i );
+    myBFolder = pref + QString( "%1" ).arg( ++i );
   }
+  while( QFileInfo( myBFolder ).exists() );
 
   if ( !QDir().mkdir( myBFolder ) )
     myBFolder = "";
 
   if ( !myBFolder.isEmpty() )
   {
-    QString used = Qtx::addSlash( myBFolder ) + "used";
+    QString used = Qtx::addSlash( myBFolder ) + "used_by_salome";
     myBFile = fopen( used.toLatin1().constData(), "w" );
   }
 }
@@ -541,7 +566,7 @@ void SUIT_Session::onBTimer()
 */
 void SUIT_Session::restoreBackup()
 {
-  QString pref = getBPrefix();
+  QString pref = getBackupPrefix();
 
   // checks whether temp folder contains old backups
   QDir tmpDir( QDir::tempPath() );
@@ -566,7 +591,7 @@ void SUIT_Session::restoreBackup()
     const QString& stdRoot = Qtx::addSlash( QDir::tempPath() ) + *sessIter;
 
     // checks whether folder is not currently used
-    QString testFile = Qtx::addSlash( stdRoot ) + "used";
+    QString testFile = Qtx::addSlash( stdRoot ) + "used_by_salome";
     QFileInfo fi( testFile );
     if ( fi.exists() && !QFile( testFile ).remove() )
       continue;
@@ -641,6 +666,26 @@ void SUIT_Session::restoreBackup()
   for ( it = toRemove.begin(); it != toRemove.end(); ++it )
   {
     Qtx::rmDir( *it );
+  }
+
+  // remove all unused temporary folders
+  QString savePref = getSavePrefix();
+
+  filt.clear();
+  filt.append( savePref + "*" );
+  tmpDir.setNameFilters( filt );  
+
+  QStringList tmpFolders = tmpDir.entryList( QDir::Dirs );
+  for ( it = tmpFolders.begin(); it != tmpFolders.end(); ++it )
+  {
+    // iterate through tmp folders
+    const QString& currF = Qtx::addSlash( QDir::tempPath() ) + *it;
+    QString blocName = Qtx::addSlash( currF ) + "used_by_salome";
+    if ( QFileInfo( blocName ).exists() && QFile::remove( blocName )  )
+    {
+      // unused non-removed folder
+      Qtx::rmDir( currF );
+    }
   }
 }
 

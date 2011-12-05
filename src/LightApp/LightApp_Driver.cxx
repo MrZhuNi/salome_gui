@@ -31,6 +31,8 @@
 
 #ifdef WIN32
 #include <time.h>
+#include <Qtx.h>
+#include <SUIT_Session.h>
 #endif
 
 /*! Constructor.*/
@@ -44,7 +46,8 @@ LightApp_Driver::LightApp_Driver()
   myFileSizes( 0 ),
   myFileNameSizes( 0 ),
   myCurrOFile( 0 ),
-  myNbFilles( 0 )
+  myNbFilles( 0 ),
+  myBloc( 0 )
 {
 }
  
@@ -232,6 +235,12 @@ void LightApp_Driver::SetListOfFiles( const char* theModuleName, const ListOfFil
 {
   std::string aName (theModuleName);
   myMap[aName] = theListOfFiles;
+
+  if ( myBloc )
+    fclose( myBloc );
+
+  QString fName = Qtx::addSlash( theListOfFiles.front().c_str() ) + "used_by_salome";
+  myBloc = fopen( fName.toLatin1().constData(), "w" );
 }
 
 /*!
@@ -285,8 +294,15 @@ void LightApp_Driver::RemoveTemporaryFiles( const char* theModuleName, const boo
   ListOfFiles aFiles = myMap[aModuleName];
   // aFiles must contain temporary directory name in its first item
   // and names of files (relatively the temporary directory) in the others
-  RemoveFiles( aFiles, IsDirDeleted );
 
+  if ( myBloc )
+  {
+    fclose( myBloc );
+    QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome";
+    QFile::remove( fName );
+  }
+
+  RemoveFiles( aFiles, IsDirDeleted );
 }
 
 /*!
@@ -340,28 +356,22 @@ std::string LightApp_Driver::GetTmpDir()
     aTmpDir = TCollection_AsciiString("/tmp/");
 #endif
   }
+  
+  // create temporary folder
+  QString pref = Qtx::addSlash( aTmpDir.ToCString() ) + 
+    SUIT_Session::session()->getSavePrefix();
+  int i = 0;
+  QString tmpDir;
+  do 
+  {
+    tmpDir = pref + QString( "%1" ).arg( ++i );
+  }
+  while ( QFileInfo( tmpDir ).exists() );
 
-  srand((unsigned int)time(NULL));
-  int aRND = 999 + (int)(100000.0*rand()/(RAND_MAX+1.0)); //Get a random number to present a name of a sub directory
-  TCollection_AsciiString aSubDir(aRND);
-  if(aSubDir.Length() <= 1) aSubDir = TCollection_AsciiString("123409876");
-
-  aTmpDir += aSubDir; //Get RND sub directory
-
-#ifdef WIN32
-  if(aTmpDir.Value(aTmpDir.Length()) != '\\') aTmpDir+='\\';
-#else
-  if(aTmpDir.Value(aTmpDir.Length()) != '/') aTmpDir+='/';
-#endif
+  aTmpDir = Qtx::addSlash(tmpDir).toLatin1().constData();
 
   OSD_Path aPath(aTmpDir);
   OSD_Directory aDir(aPath);
-
-  for(aRND = 0; aDir.Exists(); aRND++) {
-    aTmpDir.Insert((aTmpDir.Length() - 1), TCollection_AsciiString(aRND));  //Build a unique directory name
-    aPath = OSD_Path(aTmpDir);
-    aDir = OSD_Directory(aPath);
-  }
 
 #ifdef WIN32
   // Workaround for OSD_Protection bug on Windows
@@ -370,9 +380,13 @@ std::string LightApp_Driver::GetTmpDir()
   OSD_Protection aProtection(OSD_RX, OSD_RWXD, OSD_RX, OSD_RX);
 #endif
   aDir.Build(aProtection);
-
   myTmpDir = aTmpDir.ToCString();
 
+  if ( myBloc )
+    fclose( myBloc );
+  QString blocName = Qtx::addSlash(tmpDir) + "used_by_salome";
+  myBloc = fopen( blocName.toLatin1().constData(), "w" );
+  
   return aTmpDir.ToCString();
 }
 
