@@ -18,6 +18,10 @@
 //
 #include "LightApp_Driver.h"
 
+#ifdef WIN32
+#inclugde <time.h>
+#endif
+
 #include <TCollection_AsciiString.hxx> 
 
 #include <OSD_Path.hxx>
@@ -28,12 +32,8 @@
 
 #include <QFileInfo>
 #include <QDir>
-
-#ifdef WIN32
-#include <time.h>
 #include <Qtx.h>
 #include <SUIT_Session.h>
-#endif
 
 /*! Constructor.*/
 LightApp_Driver::LightApp_Driver()
