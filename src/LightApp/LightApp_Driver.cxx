@@ -19,7 +19,7 @@
 #include "LightApp_Driver.h"
 
 #ifdef WIN32
-#inclugde <time.h>
+#include <time.h>
 #endif
 
 #include <TCollection_AsciiString.hxx> 
