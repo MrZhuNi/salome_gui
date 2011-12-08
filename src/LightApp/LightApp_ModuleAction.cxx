@@ -552,6 +552,7 @@ void LightApp_ModuleAction::activate( int id, bool fromAction )
         (*it)->setChecked( true );
       checked = (*it)->isChecked();
     }
+    QApplication::processEvents();
   }
 
   QList<QtxComboBox*> widgets = myCombo->widgets();
@@ -561,6 +562,7 @@ void LightApp_ModuleAction::activate( int id, bool fromAction )
     bool blocked = cb->signalsBlocked();
     cb->blockSignals( true );
     cb->setCurrentId( checked ? id : -1 );
+    QApplication::processEvents();
     cb->blockSignals( blocked );
   }
 
