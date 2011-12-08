@@ -387,7 +387,8 @@ bool CAM_Application::activateModule( const QString& modName )
 
   // VSR 25/10/2011: prevent nested activation/deactivation
   // See issues 0021307, 0021373
-  BusyLocker lock( myBlocked );
+  //BusyLocker lock( myBlocked );
+  myBlocked = true;
 
   bool res = false;
   if ( !modName.isEmpty() )
@@ -405,6 +406,7 @@ bool CAM_Application::activateModule( const QString& modName )
   else
     res = activateModule( 0 );
 
+  myBlocked = false;
   return res;
 }
 
