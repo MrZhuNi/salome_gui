@@ -398,7 +398,12 @@ QTranslator* QtxResourceMgr::Resources::loadTranslator( const QString& sect, con
   {
     delete trans;
     trans = 0;
+
+    if ( !fname.isEmpty() )
+      qDebug() << "Translator" << fname << "not loaded";
   }
+  else
+     qDebug() << "Load translator:" << fname;
   return trans;
 }
 
@@ -507,7 +512,7 @@ bool QtxResourceMgr::IniFormat::load( const QString& fname, QMap<QString, Sectio
   \param importHistory list of already imported resources files (to prevent import loops)
   \return \c true on success or \c false on error
 */
-bool QtxResourceMgr::IniFormat::load( const QString& fname, QMap<QString, Section>& secMap, QSet<QString>& importHistory)
+bool QtxResourceMgr::IniFormat::load( const QString& fname, QMap<QString, Section>& secMap, QSet<QString>& importHistory )
 {
   QString aFName = fname.trimmed();
   if ( !QFileInfo( aFName ).exists() )
@@ -580,9 +585,10 @@ bool QtxResourceMgr::IniFormat::load( const QString& fname, QMap<QString, Sectio
     }
     else if ( section == "import" )
     {
-      QFileInfo impFInfo( data );
+      QString impFile = Qtx::makeEnvVarSubst( data, Qtx::Always );
+      QFileInfo impFInfo( impFile );
       if ( impFInfo.isRelative() )
-	impFInfo.setFile( aFinfo.absoluteDir(), data );
+	      impFInfo.setFile( aFinfo.absoluteDir(), impFile );
     
       QMap<QString, Section> impMap;
       if ( !load( impFInfo.absoluteFilePath(), impMap, importHistory ) )
@@ -591,34 +597,34 @@ bool QtxResourceMgr::IniFormat::load( const QString& fname, QMap<QString, Sectio
       }
       else 
       {
-	QMap<QString, Section>::const_iterator it = impMap.constBegin();
-	for ( ; it != impMap.constEnd() ; ++it )
-	{ 
-	  if ( !secMap.contains( it.key() ) )
-	  {
-	    // insert full section
-	    secMap.insert( it.key(), it.value() );
-	  }
-	  else
-	  {
-	    // insert all parameters from the section
-	    Section::ConstIterator paramIt = it.value().begin();
-	    for ( ; paramIt != it.value().end() ; ++paramIt )
-	    {
-	      if ( !secMap[it.key()].contains( paramIt.key() ) )
-		secMap[it.key()].insert( paramIt.key(), paramIt.value() );
-	    }
-	  }
-	}
+	      QMap<QString, Section>::const_iterator it = impMap.constBegin();
+	      for ( ; it != impMap.constEnd() ; ++it )
+	      { 
+	         if ( !secMap.contains( it.key() ) )
+	         {
+	            // insert full section
+	            secMap.insert( it.key(), it.value() );
+	         }
+	         else
+	         {
+	            // insert all parameters from the section
+	            Section::ConstIterator paramIt = it.value().begin();
+	            for ( ; paramIt != it.value().end() ; ++paramIt )
+	            {
+	               if ( !secMap[it.key()].contains( paramIt.key() ) )
+		               secMap[it.key()].insert( paramIt.key(), paramIt.value() );
+	            }
+	         }
+	      }
       }
     }
     else
     {
       res = false;
       if ( section.isEmpty() )
-	qWarning() << "QtxResourceMgr: Current section is empty";
+	      qWarning() << "QtxResourceMgr: Current section is empty";
       else
-	qWarning() << "QtxResourceMgr: Error in line:" << line;
+	      qWarning() << "QtxResourceMgr: Error in line:" << line;
     }
   }
 
@@ -804,7 +810,7 @@ bool QtxResourceMgr::XmlFormat::load( const QString& fname, QMap<QString, Sectio
           else
           {
             res = paramNode.isComment();
-            if( !res )
+            if ( !res )
               qDebug() << "QtxResourceMgr: Node is neither element nor comment in file:" << aFName;
           }
 
@@ -813,42 +819,43 @@ bool QtxResourceMgr::XmlFormat::load( const QString& fname, QMap<QString, Sectio
       }
       else if ( sectElem.tagName() == importTag() && sectElem.hasAttribute( nameAttribute() ) )
       {
-	QFileInfo impFInfo( sectElem.attribute( nameAttribute() ) );
-	if ( impFInfo.isRelative() )
-	  impFInfo.setFile( aFinfo.absoluteDir(), sectElem.attribute( nameAttribute() ) );
+         QString impFile = Qtx::makeEnvVarSubst( sectElem.attribute( nameAttribute() ), Qtx::Always );
+	      QFileInfo impFInfo( impFile );
+	      if ( impFInfo.isRelative() )
+	         impFInfo.setFile( aFinfo.absoluteDir(), impFile );
 
         QMap<QString, Section> impMap;
         if ( !load( impFInfo.absoluteFilePath(), impMap, importHistory ) )
-	{
-          qDebug() << "QtxResourceMgr: Error with importing file:" << sectElem.attribute( nameAttribute() );
-	}
-	else
-	{
-	  QMap<QString, Section>::const_iterator it = impMap.constBegin();
-	  for ( ; it != impMap.constEnd() ; ++it )
-	  {
-	    if ( !secMap.contains( it.key() ) )
-	    {
-	    // insert full section
-	      secMap.insert( it.key(), it.value() );
-	    }
-	    else
-	    {
-	      // insert all parameters from the section
-	      Section::ConstIterator paramIt = it.value().begin();
-	      for ( ; paramIt != it.value().end() ; ++paramIt )
-	      {
-		if ( !secMap[it.key()].contains( paramIt.key() ) )
-		  secMap[it.key()].insert( paramIt.key(), paramIt.value() );
-	      }
-	    }
-	  }
-        }
+	     {
+            qDebug() << "QtxResourceMgr: Error with importing file:" << sectElem.attribute( nameAttribute() );
+	     }
+	     else
+	     {
+	         QMap<QString, Section>::const_iterator it = impMap.constBegin();
+	         for ( ; it != impMap.constEnd() ; ++it )
+	         {
+	            if ( !secMap.contains( it.key() ) )
+	            {
+	               // insert full section
+	               secMap.insert( it.key(), it.value() );
+	            }
+	            else
+	            {
+	               // insert all parameters from the section
+	               Section::ConstIterator paramIt = it.value().begin();
+	               for ( ; paramIt != it.value().end() ; ++paramIt )
+	               {
+		               if ( !secMap[it.key()].contains( paramIt.key() ) )
+		                  secMap[it.key()].insert( paramIt.key(), paramIt.value() );
+	               }
+	            }
+	         }
+         }
       }
       else
       {
-        qDebug() << "QtxResourceMgr: Invalid section in file:" << aFName;
-        res = false;
+         qDebug() << "QtxResourceMgr: Invalid section in file:" << aFName;
+         res = false;
       }
     }
     else
