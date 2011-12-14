@@ -393,7 +393,7 @@ QPixmap QtxResourceMgr::Resources::loadPixmap( const QString& sect, const QStrin
 QTranslator* QtxResourceMgr::Resources::loadTranslator( const QString& sect, const QString& prefix, const QString& name ) const
 {
   QTranslator* trans = new QtxTranslator( 0 );
-  QString fname = fileName( sect, prefix, name );
+  QString fname = QDir::convertSeparators( fileName( sect, prefix, name ) );
   if ( !trans->load( Qtx::file( fname, false ), Qtx::dir( fname ) ) )
   {
     delete trans;
@@ -585,7 +585,7 @@ bool QtxResourceMgr::IniFormat::load( const QString& fname, QMap<QString, Sectio
     }
     else if ( section == "import" )
     {
-      QString impFile = Qtx::makeEnvVarSubst( data, Qtx::Always );
+      QString impFile = QDir::convertSeparators( Qtx::makeEnvVarSubst( data, Qtx::Always ) );
       QFileInfo impFInfo( impFile );
       if ( impFInfo.isRelative() )
 	      impFInfo.setFile( aFinfo.absoluteDir(), impFile );
@@ -819,7 +819,7 @@ bool QtxResourceMgr::XmlFormat::load( const QString& fname, QMap<QString, Sectio
       }
       else if ( sectElem.tagName() == importTag() && sectElem.hasAttribute( nameAttribute() ) )
       {
-         QString impFile = Qtx::makeEnvVarSubst( sectElem.attribute( nameAttribute() ), Qtx::Always );
+         QString impFile = QDir::convertSeparators( Qtx::makeEnvVarSubst( sectElem.attribute( nameAttribute() ), Qtx::Always ) );
 	      QFileInfo impFInfo( impFile );
 	      if ( impFInfo.isRelative() )
 	         impFInfo.setFile( aFinfo.absoluteDir(), impFile );
