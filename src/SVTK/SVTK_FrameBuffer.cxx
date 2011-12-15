@@ -22,7 +22,7 @@
 //
 #include "SVTK_FrameBuffer.h"
 
-#include <utilities.h>
+//#include <utilities.h>
 
 #include <cstring>
 
@@ -132,7 +132,7 @@ bool SVTK_FrameBuffer::init( const GLsizei& xSize, const GLsizei& ySize )
   if( !IsEXTInitialized ||
       strstr( ext, "GL_EXT_framebuffer_object" ) == NULL )
   {
-    MESSAGE( "Initializing OpenGL FrameBuffer extension failed" );
+    //MESSAGE( "Initializing OpenGL FrameBuffer extension failed" );
     return false;
   }
 

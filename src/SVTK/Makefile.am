@@ -58,7 +58,8 @@ salomeinclude_HEADERS= \
 	SVTK_Recorder.h \
 	SVTK_RecorderDlg.h \
 	SVTK_ImageWriter.h \
-	SVTK_ImageWriterMgr.h
+	SVTK_ImageWriterMgr.h \
+	SVTK_FrameBuffer.h
 
 dist_libSVTK_la_SOURCES= \
 	SVTK_Prs.cxx \
@@ -91,7 +92,8 @@ dist_libSVTK_la_SOURCES= \
 	SVTK_Recorder.cxx \
 	SVTK_RecorderDlg.cxx \
 	SVTK_ImageWriter.cxx \
-	SVTK_ImageWriterMgr.cxx
+	SVTK_ImageWriterMgr.cxx \
+	SVTK_FrameBuffer.cxx
 
 
 # internal headers
