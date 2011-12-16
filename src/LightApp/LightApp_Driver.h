@@ -31,6 +31,8 @@
 #pragma warning( disable:4251 )
 #endif
 
+class QString;
+
 /*!Description : Driver can save to file and read from file list of files for light modules*/
 
 class LIGHTAPP_EXPORT LightApp_Driver
@@ -81,12 +83,17 @@ protected:
 
   void                SetIsTemporary( bool theFlag ) { myIsTemp = theFlag; }
   bool                IsTemporary() const { return myIsTemp; }
+  
+  int                 lockFcntl( QString theLF );
 
 protected:
   typedef std::map<std::string, ListOfFiles> MapOfListOfFiles;
   MapOfListOfFiles                           myMap;
   std::string                                myTmpDir;
   FILE*                                      myBloc;
+#ifndef WIN32
+  FILE*                                      myBlocFcntl;
+#endif
 
 private:
   bool                                       myIsTemp;

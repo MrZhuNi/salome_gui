@@ -22,6 +22,11 @@
 #include <windows.h>
 #else
 #include <dlfcn.h>
+
+#include <cstdio>
+#include <unistd.h>
+#include <fcntl.h>
+#include <cerrno>
 #endif
 
 #include "SUIT_Study.h"
@@ -48,7 +53,8 @@ SUIT_Session::SUIT_Session()
   myExitStatus( NORMAL ),
   myExitFlags ( 0 ),
   myBTimer( 0 ),
-  myBFile( 0 )
+  myBFile( 0 ),
+  myBFileFcntl( 0 )
 {
   SUIT_ASSERT( !mySession )
 
@@ -525,7 +531,41 @@ void SUIT_Session::createBackupTimer()
   {
     QString used = Qtx::addSlash( myBFolder ) + "used_by_salome";
     myBFile = fopen( used.toLatin1().constData(), "w" );
+
+#ifndef WIN32
+    used += ".fcntl";
+    myBFileFcntl = fopen( used.toLatin1().constData(), "w" );
+#endif
+    lockFcntl( QString() );
   }
+}
+
+/*
+ * Lock theLF or myBFileFcntl if empty
+ * returns 0 on success
+ */
+int SUIT_Session::lockFcntl( QString theLF )
+{
+#ifdef WIN32
+  return 0;
+#else
+  if ( theLF.isEmpty() && !myBFileFcntl )
+    return -2;
+
+  FILE* aFD;
+  if ( theLF.isEmpty() )
+    aFD = myBFileFcntl;
+  else
+    aFD = fopen( theLF.toLatin1().constData(), "w" );
+  
+  struct flock fLock;
+  fLock.l_type = F_WRLCK;
+  fLock.l_whence = SEEK_SET;
+  fLock.l_len = 0;
+  fLock.l_start = 0;
+  return fcntl( fileno( aFD ), F_SETLK, &fLock );
+#endif
+
 }
 
 /*!
@@ -596,9 +636,18 @@ void SUIT_Session::restoreBackup()
     // checks whether folder is not currently used
     QString testFile = Qtx::addSlash( stdRoot ) + "used_by_salome";
     QFileInfo fi( testFile );
-    if ( fi.exists() && !QFile( testFile ).remove() )
-      continue;
-
+    if ( fi.exists() )
+    {
+#ifdef WIN32
+      if ( !QFile( testFile ).remove() )
+        continue;
+#else
+      testFile += ".fcntl";
+      if ( lockFcntl( testFile ) )
+        continue;
+#endif
+    }
+    
     toRemove.append( stdRoot );
 
     QDir sessDir( stdRoot );
@@ -694,7 +743,17 @@ void SUIT_Session::removeTmpFiles()
     // iterate through tmp folders
     const QString& currF = Qtx::addSlash( QDir::tempPath() ) + *it;
     QString blocName = Qtx::addSlash( currF ) + "used_by_salome";
-    if ( QFileInfo( blocName ).exists() && QFile::remove( blocName )  )
+
+
+    bool locked;
+#ifdef WIN32
+    locked = !QFile( blocName ).remove();
+#else
+      QString testFile = blocName + ".fcntl";
+      locked = lockFcntl( testFile );
+#endif
+
+    if ( QFileInfo( blocName ).exists() && !locked  )
     {
       // unused non-removed folder
       Qtx::rmDir( currF );

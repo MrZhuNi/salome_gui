@@ -20,6 +20,11 @@
 
 #ifdef WIN32
 #include <time.h>
+#else
+#include <cstdio>
+#include <unistd.h>
+#include <fcntl.h>
+#include <cerrno>
 #endif
 
 #include <TCollection_AsciiString.hxx> 
@@ -47,7 +52,8 @@ LightApp_Driver::LightApp_Driver()
   myFileNameSizes( 0 ),
   myCurrOFile( 0 ),
   myNbFilles( 0 ),
-  myBloc( 0 )
+  myBloc( 0 ),
+  myBlocFcntl( 0 )
 {
 }
  
@@ -241,7 +247,43 @@ void LightApp_Driver::SetListOfFiles( const char* theModuleName, const ListOfFil
 
   QString fName = Qtx::addSlash( theListOfFiles.front().c_str() ) + "used_by_salome";
   myBloc = fopen( fName.toLatin1().constData(), "w" );
+
+#ifndef WIN32
+  fName += ".fcntl";
+  myBlocFcntl = fopen( fName.toLatin1().constData(), "w" );
+#endif
+  lockFcntl( QString() );
+
 }
+
+/*
+ * Lock theLF or myBlockFcntl if empty
+ * returns 0 on success
+ */
+int LightApp_Driver::lockFcntl( QString theLF )
+{
+#ifdef WIN32
+  return 0;
+#else
+  if ( theLF.isEmpty() && !myBlocFcntl )
+    return -2;
+
+  FILE* aFD;
+  if ( theLF.isEmpty() )
+    aFD = myBlocFcntl;
+  else
+    aFD = fopen( theLF.toLatin1().constData(), "w" );
+  
+  struct flock fLock;
+  fLock.l_type = F_WRLCK;
+  fLock.l_whence = SEEK_SET;
+  fLock.l_len = 0;
+  fLock.l_start = 0;
+  return fcntl( fileno( aFD ), F_SETLK, &fLock );
+#endif
+
+}
+
 
 /*!
   Remove files. First item in <theFiles> is a directory with slash at the end.
@@ -386,6 +428,16 @@ std::string LightApp_Driver::GetTmpDir()
     fclose( myBloc );
   QString blocName = Qtx::addSlash(tmpDir) + "used_by_salome";
   myBloc = fopen( blocName.toLatin1().constData(), "w" );
+  
+#ifndef WIN32
+  blocName += ".fcntl";
+  if ( myBlocFcntl )
+    fclose( myBlocFcntl );
+  myBlocFcntl = fopen( blocName.toLatin1().constData(), "w" );
+#endif
+  lockFcntl( QString() );
+
+
   
   return aTmpDir.ToCString();
 }

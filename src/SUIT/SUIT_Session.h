@@ -99,6 +99,7 @@ private:
   void                          createBackupTimer();
   void                          restoreBackup();
   void                          removeTmpFiles();
+  int                           lockFcntl( QString theLF );
 
 private:
   typedef QList<SUIT_Application*> AppList;
@@ -124,6 +125,9 @@ private:
   QString                      myBFolder;
   QTimer*                      myBTimer;
   FILE*                        myBFile;
+#ifndef WIN32
+  FILE*                        myBFileFcntl;
+#endif
 };
 
 #endif
