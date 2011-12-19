@@ -52,8 +52,10 @@ LightApp_Driver::LightApp_Driver()
   myFileNameSizes( 0 ),
   myCurrOFile( 0 ),
   myNbFilles( 0 ),
-  myBloc( 0 ),
-  myBlocFcntl( 0 )
+#ifndef WIN32
+  myBlocFcntl( 0 ),
+#endif
+  myBloc( 0 )
 {
 }
  

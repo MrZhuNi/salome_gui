@@ -53,8 +53,10 @@ SUIT_Session::SUIT_Session()
   myExitStatus( NORMAL ),
   myExitFlags ( 0 ),
   myBTimer( 0 ),
-  myBFile( 0 ),
-  myBFileFcntl( 0 )
+#ifndef WIN32
+  myBFileFcntl( 0 ),
+#endif
+  myBFile( 0 )
 {
   SUIT_ASSERT( !mySession )
 
