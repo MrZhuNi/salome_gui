@@ -252,21 +252,22 @@ void LightApp_Driver::SetListOfFiles( const char* theModuleName, const ListOfFil
 
 #ifndef WIN32
   fName += ".fcntl";
+
+  if ( myBlocFcntl )
+    fclose( myBlocFcntl );
   myBlocFcntl = fopen( fName.toLatin1().constData(), "w" );
-#endif
   lockFcntl( QString() );
+#endif
 
 }
 
+#ifndef WIN32
 /*
  * Lock theLF or myBlockFcntl if empty
  * returns 0 on success
  */
 int LightApp_Driver::lockFcntl( QString theLF )
 {
-#ifdef WIN32
-  return 0;
-#else
   if ( theLF.isEmpty() && !myBlocFcntl )
     return -2;
 
@@ -282,10 +283,8 @@ int LightApp_Driver::lockFcntl( QString theLF )
   fLock.l_len = 0;
   fLock.l_start = 0;
   return fcntl( fileno( aFD ), F_SETLK, &fLock );
-#endif
-
 }
-
+#endif
 
 /*!
   Remove files. First item in <theFiles> is a directory with slash at the end.
@@ -326,6 +325,12 @@ void LightApp_Driver::RemoveFiles( const ListOfFiles& theFiles, const bool IsDir
     }
     aDir.Remove();
   }
+  //if ( IsDirDeleted )
+  //{
+//    bool ok = Qtx::rmDir( QString( theFiles[0].c_str() ) );
+    // std::cout<<"\n DEBUG: rmdir "<<theFiles[0].c_str()<<" ok: "<<ok<<std::endl;
+  //}
+
 }
 
 /*!
@@ -345,8 +350,22 @@ void LightApp_Driver::RemoveTemporaryFiles( const char* theModuleName, const boo
     QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome";
     QFile::remove( fName );
   }
+#ifndef WIN32
+  if ( myBlocFcntl )
+  {
+    fclose( myBlocFcntl );
+    QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome.fcntl";
+    QFile::remove( fName );
+  }
+#endif
 
   RemoveFiles( aFiles, IsDirDeleted );
+
+  // if ( IsDirDeleted )
+  // {
+  //   bool ok = Qtx::rmDir( QString( aFiles[0].c_str() ) );
+  //   std::cout<<"\n DEBUG: rmdir "<<aFiles[0].c_str()<<" ok: "<<std::endl;
+  // }
 }
 
 /*!
@@ -436,11 +455,8 @@ std::string LightApp_Driver::GetTmpDir()
   if ( myBlocFcntl )
     fclose( myBlocFcntl );
   myBlocFcntl = fopen( blocName.toLatin1().constData(), "w" );
-#endif
   lockFcntl( QString() );
-
-
-  
+#endif  
   return aTmpDir.ToCString();
 }
 

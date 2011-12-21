@@ -83,8 +83,9 @@ protected:
 
   void                SetIsTemporary( bool theFlag ) { myIsTemp = theFlag; }
   bool                IsTemporary() const { return myIsTemp; }
-  
+#ifndef WIN32  
   int                 lockFcntl( QString theLF );
+#endif
 
 protected:
   typedef std::map<std::string, ListOfFiles> MapOfListOfFiles;

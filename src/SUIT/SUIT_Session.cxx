@@ -27,6 +27,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <cerrno>
+
+#include <iostream>
 #endif
 
 #include "SUIT_Study.h"
@@ -537,20 +539,18 @@ void SUIT_Session::createBackupTimer()
 #ifndef WIN32
     used += ".fcntl";
     myBFileFcntl = fopen( used.toLatin1().constData(), "w" );
-#endif
     lockFcntl( QString() );
+#endif
   }
 }
 
+#ifndef WIN32
 /*
  * Lock theLF or myBFileFcntl if empty
  * returns 0 on success
  */
 int SUIT_Session::lockFcntl( QString theLF )
 {
-#ifdef WIN32
-  return 0;
-#else
   if ( theLF.isEmpty() && !myBFileFcntl )
     return -2;
 
@@ -579,8 +579,14 @@ void SUIT_Session::onBTimer()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   // clear folder
-  Qtx::rmDir( myBFolder );
-  QDir().mkdir( myBFolder );
+  QDir tmpDir( myBFolder );
+  QFileInfoList aFolders = tmpDir.entryInfoList( QDir::Dirs|QDir::NoDotAndDotDot );
+  
+  QFileInfoList::const_iterator aFoldersIt = aFolders.constBegin();
+  for ( ; aFoldersIt != aFolders.constEnd(); ++aFoldersIt )
+  {
+    Qtx::rmDir( (*aFoldersIt).absoluteFilePath() );
+  }
   
   // create backup
   QString aName;

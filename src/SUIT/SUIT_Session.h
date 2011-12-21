@@ -99,7 +99,9 @@ private:
   void                          createBackupTimer();
   void                          restoreBackup();
   void                          removeTmpFiles();
+#ifndef WIN32
   int                           lockFcntl( QString theLF );
+#endif
 
 private:
   typedef QList<SUIT_Application*> AppList;
