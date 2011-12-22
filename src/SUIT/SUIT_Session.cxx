@@ -566,9 +566,9 @@ int SUIT_Session::lockFcntl( QString theLF )
   fLock.l_len = 0;
   fLock.l_start = 0;
   return fcntl( fileno( aFD ), F_SETLK, &fLock );
-#endif
-
 }
+
+#endif
 
 /*!
   Slot, called when backup interval is out, iterates through all opened 
