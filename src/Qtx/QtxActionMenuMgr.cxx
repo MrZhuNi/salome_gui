@@ -335,6 +335,8 @@ int QtxActionMenuMgr::insert( const QString& title, const int pId, const int gro
 
   connect( ma->menu(), SIGNAL( aboutToShow() ), this, SLOT( onAboutToShow() ) );
   connect( ma->menu(), SIGNAL( aboutToHide() ), this, SLOT( onAboutToHide() ) );
+  connect( ma->menu(), SIGNAL( triggered( QAction* ) ), this, SLOT( onTriggered( QAction* ) ) );
+  connect( ma->menu(), SIGNAL( hovered( QAction* ) ), this, SLOT( onHovered( QAction* ) ) );
 
   MenuNode* node = new MenuNode( pNode, myMenus.insert( gid, ma ).key(), idx, group );
 
@@ -584,6 +586,30 @@ void QtxActionMenuMgr::onAboutToHide()
   QMenu* m = ::qobject_cast<QMenu*>( sender() );
   if ( m )
     emit menuAboutToHide( m );
+}
+
+/*!
+  \brief Called when the action in menu is triggered
+  
+  Emits the signal menuTriggered(QMenu*, QAction*).
+*/
+void QtxActionMenuMgr::onTriggered( QAction* theAction )
+{
+  QMenu* m = ::qobject_cast<QMenu*>( sender() );
+  if( m )
+    emit menuTriggered( m, theAction );
+}
+
+/*!
+  \brief Called when a menu action is highlighted
+  
+  Emits the signal menuHovered(QMenu*, QAction*).
+*/
+void QtxActionMenuMgr::onHovered( QAction* theAction )
+{
+  QMenu* m = ::qobject_cast<QMenu*>( sender() );
+  if( m )
+    emit menuHovered( m, theAction );
 }
 
 /*!

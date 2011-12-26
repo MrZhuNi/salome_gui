@@ -102,11 +102,15 @@ public:
 private slots:
   void         onAboutToShow();
   void         onAboutToHide();
+  void         onTriggered( QAction* );
+  void         onHovered( QAction* );
   void         onDestroyed( QObject* );
 
 signals:
   void         menuAboutToShow( QMenu* );
   void         menuAboutToHide( QMenu* );
+  void         menuTriggered( QMenu*, QAction* );
+  void         menuHovered( QMenu*, QAction* );
 
 protected:
   void         setMenuWidget( QWidget* );
