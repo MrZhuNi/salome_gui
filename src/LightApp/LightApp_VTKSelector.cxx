@@ -242,14 +242,19 @@ LightApp_VTKSelector
 
 	      anAppendList.Append(anIO);
 	      aSelector->AddOrRemoveIndex(anIO,anOwner->GetIds(),false);
+	    }else if(const LightApp_DataOwner* anOwner = dynamic_cast<const LightApp_DataOwner*>(aDataOwner)){
+	      Handle(SALOME_InteractiveObject) anIO = 
+      		new SALOME_InteractiveObject(anOwner->entry().toLatin1(),"");
+	      aSelector->AddIObject(anIO);
+	      anAppendList.Append(anIO);
 	    }else if(const LightApp_DataSubOwner* anOwner = dynamic_cast<const LightApp_DataSubOwner*>(aDataOwner)){
 	      Handle(SALOME_InteractiveObject) anIO = 
       		new SALOME_InteractiveObject(anOwner->entry().toLatin1(),"");
 	      aSelector->AddIObject(anIO);
 	      anAppendList.Append(anIO);
-        TColStd_IndexedMapOfInteger aMap;
-        aMap.Add( anOwner->index() );
-        aSelector->AddOrRemoveIndex( anIO,aMap, false );
+	      TColStd_IndexedMapOfInteger aMap;
+	      aMap.Add( anOwner->index() );
+	      aSelector->AddOrRemoveIndex( anIO,aMap, false );
 	    }
 	  }
 	  // To remove IOs, which is not selected.

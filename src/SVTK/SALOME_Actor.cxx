@@ -474,6 +474,8 @@ SALOME_Actor
 	  myPreHighlightActor->SetVisibility( true );
 	}
       }
+      else
+        myIsPreselected = false;
       break;
     }
     case CellSelection: 
@@ -504,6 +506,8 @@ SALOME_Actor
 	  }
 	}
       }
+      else
+        myIsPreselected = false;
       break;
     }
     case EdgeOfCellSelection:
@@ -534,6 +538,8 @@ SALOME_Actor
 	  }
 	}
       }
+      else
+        myIsPreselected = false;
       break;
     }
     case ActorSelection : 
