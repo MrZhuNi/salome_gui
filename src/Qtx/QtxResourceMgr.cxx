@@ -398,12 +398,7 @@ QTranslator* QtxResourceMgr::Resources::loadTranslator( const QString& sect, con
   {
     delete trans;
     trans = 0;
-
-    if ( !fname.isEmpty() )
-      qDebug() << "Translator" << fname << "not loaded";
   }
-  else
-     qDebug() << "Load translator:" << fname;
   return trans;
 }
 
