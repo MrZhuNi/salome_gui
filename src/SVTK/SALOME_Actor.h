@@ -44,6 +44,7 @@ class Handle(SALOME_InteractiveObject);
 
 #include <vtkSmartPointer.h>
 
+class vtkAbstractPicker;
 class vtkPointPicker;
 class vtkCellPicker;
 class vtkOutlineSource;
@@ -234,6 +235,17 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   vtkSmartPointer<VTKViewer_Actor> myOutlineActor;
   vtkSmartPointer<vtkOutlineSource> myOutline;
 };
+
+namespace SVTK
+{
+  class SVTK_EXPORT TPickLimiter
+  {
+    vtkAbstractPicker* myPicker;
+  public:
+    TPickLimiter( vtkAbstractPicker*, SALOME_Actor* );
+    ~TPickLimiter();
+  };
+}
 
 #ifdef WIN32
 //#pragma warning ( default:4251 )

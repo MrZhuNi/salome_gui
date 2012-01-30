@@ -123,6 +123,29 @@ namespace
 
 }
 
+namespace SVTK
+{
+  /*!
+    Make picker work with this actor only
+  */
+  TPickLimiter::TPickLimiter( vtkAbstractPicker* thePicker,
+                              SALOME_Actor* theActor ) : myPicker( thePicker )
+  {
+    myPicker->InitializePickList();
+    myPicker->AddPickList( theActor );
+    myPicker->SetPickFromList( true );
+  }
+
+  /*!
+    Unlimit picking
+  */
+  TPickLimiter::~TPickLimiter()
+  {
+    myPicker->SetPickFromList( false );
+    myPicker->InitializePickList();
+  }
+}
+
 bool IsThisActorPicked(SALOME_Actor *theActor, vtkActor *anAct) {
   if( anAct == theActor ) return true;
 	if( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( anAct ) )
@@ -453,6 +476,7 @@ SALOME_Actor
     switch(aSelectionMode){
     case NodeSelection: 
     {
+      SVTK::TPickLimiter aPickLimiter( myPointPicker, this );
       myPointPicker->Pick( x, y, z, aRenderer );
       
       int aVtkId = myPointPicker->GetPointId();
@@ -483,6 +507,7 @@ SALOME_Actor
     case FaceSelection:
     case VolumeSelection: 
     {
+      SVTK::TPickLimiter aPickLimiter( myCellPicker, this );
       myCellPicker->Pick( x, y, z, aRenderer );
       
       int aVtkId = myCellPicker->GetCellId();
@@ -512,6 +537,7 @@ SALOME_Actor
     }
     case EdgeOfCellSelection:
     {
+      SVTK::TPickLimiter aPickLimiter( myCellPicker, this );
       myCellPicker->Pick( x, y, z, aRenderer );
       
       int aVtkId = myCellPicker->GetCellId();
@@ -601,6 +627,7 @@ SALOME_Actor
   if( !theSelectionEvent->myIsRectangle ) {
     switch(aSelectionMode){
     case NodeSelection: {
+      SVTK::TPickLimiter aPickLimiter( myPointPicker, this );
       myPointPicker->Pick( x, y, z, aRenderer );
 
       int aVtkId = myPointPicker->GetPointId();
@@ -619,6 +646,7 @@ SALOME_Actor
     case FaceSelection:
     case VolumeSelection: 
     {
+      SVTK::TPickLimiter aPickLimiter( myCellPicker, this );
       myCellPicker->Pick( x, y, z, aRenderer );
     
       int aVtkId = myCellPicker->GetCellId();
@@ -636,6 +664,7 @@ SALOME_Actor
     }
     case EdgeOfCellSelection: 
     {
+      SVTK::TPickLimiter aPickLimiter( myCellPicker, this );
       myCellPicker->Pick( x, y, z, aRenderer );
     
       int aVtkId = myCellPicker->GetCellId();
@@ -679,8 +708,7 @@ SALOME_Actor
 
     switch(aSelectionMode){
     case NodeSelection: {
-      myPointRectPicker->InitializePickList();
-      myPointRectPicker->AddPickList(this);
+      SVTK::TPickLimiter aPickLimiter( myPointRectPicker, this );
       myPointRectPicker->Pick( x1, y1, z1, x2, y2, z2, aRenderer );
 
       const SVTK_RectPicker::TVectorIdsMap& aVectorIdsMap = myPointRectPicker->GetPointIdsMap();
@@ -740,8 +768,7 @@ SALOME_Actor
     case FaceSelection:
     case VolumeSelection: 
     {
-      myCellRectPicker->InitializePickList();
-      myCellRectPicker->AddPickList(this);
+      SVTK::TPickLimiter aPickLimiter( myCellRectPicker, this );
       myCellRectPicker->Pick( x1, y1, z1, x2, y2, z2, aRenderer );
 
       const SVTK_RectPicker::TVectorIdsMap& aVectorIdsMap = myCellRectPicker->GetCellIdsMap();
