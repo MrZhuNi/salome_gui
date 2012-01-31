@@ -82,6 +82,7 @@ public:
   void                         setBackupTime( const double val ) const;
 
   QString                      getBackupPrefix() const;
+  QString                      getBackupFolder() const;
   QString                      getSavePrefix() const;
 
 signals:
@@ -98,7 +99,7 @@ private slots:
 private:
   void                          createBackupTimer();
   void                          restoreBackup();
-  void                          removeTmpFiles();
+  void                          removeTmpFiles( const bool withBackup );
 #ifndef WIN32
   int                           lockFcntl( QString theLF );
 #endif
