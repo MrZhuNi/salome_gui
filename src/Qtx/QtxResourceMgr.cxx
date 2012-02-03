@@ -35,6 +35,7 @@
 #endif
 
 #include <stdlib.h>
+#include <QSet>
 
 /*!
   \class QtxResourceMgr::Resources
@@ -2488,6 +2489,12 @@ void QtxResourceMgr::removeTranslators( const QString& prefix )
 */
 void QtxResourceMgr::raiseTranslators( const QString& prefix )
 {
+  static QSet< QString > done;
+  if ( done.contains( prefix ) )
+    return;
+
+  done << prefix;
+
   if ( !myTranslator.contains( prefix ) )
     return;
 
