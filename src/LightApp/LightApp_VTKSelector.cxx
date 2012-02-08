@@ -249,7 +249,8 @@ LightApp_VTKSelector
 	      anAppendList.Append(anIO);
 	      TColStd_IndexedMapOfInteger aMap;
 	      aMap.Add( anOwner->index() );
-	      aSelector->AddOrRemoveIndex( anIO,aMap, false );
+	      // ouv: false has been replaced to true to allow selection of multiple sub-elements
+	      aSelector->AddOrRemoveIndex( anIO,aMap, true );
 	    }else if(const LightApp_DataOwner* anOwner = dynamic_cast<const LightApp_DataOwner*>(aDataOwner)){
 	      Handle(SALOME_InteractiveObject) anIO = 
       		new SALOME_InteractiveObject(anOwner->entry().toLatin1(),"");
