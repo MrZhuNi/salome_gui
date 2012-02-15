@@ -1052,11 +1052,14 @@ void SVTK_InteractorStyle::onFinishOperation()
               {
                 if( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( aVTKActor ) )
                 {
-                  if( anActor->Highlight( this, aSelectionEvent, true ) &&
-                      anActor->isHighlighted() )
+                  if( anActor->hasIO() )
                   {
-                    aHighlightedActor = anActor;
-                    break;
+                    if( anActor->Highlight( this, aSelectionEvent, true ) &&
+                        anActor->isHighlighted() )
+                    {
+                      aHighlightedActor = anActor;
+                      break;
+                    }
                   }
                 }
 	      }
@@ -1222,11 +1225,14 @@ void SVTK_InteractorStyle::onCursorMove(QPoint mousePos)
       {
         if( SALOME_Actor* anActor = SALOME_Actor::SafeDownCast( aVTKActor ) )
         {
-          anIsChanged = anActor->PreHighlight( this, aSelectionEvent, true );
-          if( anActor->isPreselected() )
+          if( anActor->hasIO() )
           {
-            aPreHighlightedActor = anActor;
-            break;
+            anIsChanged = anActor->PreHighlight( this, aSelectionEvent, true );
+            if( anActor->isPreselected() )
+            {
+              aPreHighlightedActor = anActor;
+              break;
+            }
           }
         }
       }
