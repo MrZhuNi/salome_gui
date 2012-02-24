@@ -756,8 +756,8 @@ void SUIT_Session::restoreBackup()
 void SUIT_Session::removeTmpFiles( const bool withBackup )
 {
   QPair< QString, QString > dirToPref[ 2 ];
-  dirToPref[ 0 ].first = getSavePrefix();
-  dirToPref[ 0 ].second= QDir::tempPath();
+  dirToPref[ 0 ].first = QDir::tempPath();
+  dirToPref[ 0 ].second= getSavePrefix();
   dirToPref[ 1 ].first = getBackupFolder();
   dirToPref[ 1 ].second= getBackupPrefix();
 
@@ -773,7 +773,7 @@ void SUIT_Session::removeTmpFiles( const bool withBackup )
     for ( it = tmpFolders.begin(); it != tmpFolders.end(); ++it )
     {
       // iterate through tmp folders
-      const QString& currF = Qtx::addSlash( QDir::tempPath() ) + *it;
+      const QString& currF = Qtx::addSlash( tmpDir.absolutePath() ) + *it;
       QString blocName = Qtx::addSlash( currF ) + "used_by_salome";
 
       bool locked;
