@@ -31,6 +31,8 @@ class QGraphicsSceneContextMenuEvent;
 class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
 
+class QtxMultiAction;
+
 class SUIT_Desktop;
 
 class GraphicsView_Viewer;
@@ -57,7 +59,9 @@ public:
 
   virtual QImage          dumpView();
 
-protected slots:
+  void                    expandToolBarActions();
+
+  protected slots:
   void                    onViewPan();
   void                    onViewZoom();
   void                    onViewFitAll();
@@ -83,11 +87,15 @@ signals:
 
 private:
   void                    createActions();
-  void                    createToolBar();
+  int                     createToolBar();
 
 private:
   GraphicsView_Viewer*    myViewer;
   GraphicsView_ViewPort*  myViewPort;
+
+  int                     myToolBarId;
+  QtxMultiAction*         myScaleAction;
+  QtxMultiAction*         myPanAction;
 };
 
 #endif

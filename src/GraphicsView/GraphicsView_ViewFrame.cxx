@@ -65,7 +65,7 @@ GraphicsView_ViewFrame::GraphicsView_ViewFrame( SUIT_Desktop* d, GraphicsView_Vi
   aLayout->addWidget( myViewPort );
 
   createActions();
-  createToolBar();
+  myToolBarId = createToolBar();
 
   connect( myViewPort, SIGNAL( vpKeyEvent( QKeyEvent* ) ),
            this, SLOT( keyEvent( QKeyEvent* ) ) );
@@ -165,24 +165,26 @@ void GraphicsView_ViewFrame::createActions()
 // Function : createToolBar
 // Purpose  : 
 //================================================================
-void GraphicsView_ViewFrame::createToolBar()
+int GraphicsView_ViewFrame::createToolBar()
 {
   int tid = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL") );
   toolMgr()->append( DumpId, tid );
 
-  QtxMultiAction* aScaleAction = new QtxMultiAction( this );
-  aScaleAction->insertAction( toolMgr()->action( FitAllId ) );
-  aScaleAction->insertAction( toolMgr()->action( FitRectId ) );
-  aScaleAction->insertAction( toolMgr()->action( FitSelectId ) );
-  aScaleAction->insertAction( toolMgr()->action( ZoomId ) );
-  toolMgr()->append( aScaleAction, tid );
+  myScaleAction = new QtxMultiAction( this );
+  myScaleAction->insertAction( toolMgr()->action( FitAllId ) );
+  myScaleAction->insertAction( toolMgr()->action( FitRectId ) );
+  myScaleAction->insertAction( toolMgr()->action( FitSelectId ) );
+  myScaleAction->insertAction( toolMgr()->action( ZoomId ) );
+  toolMgr()->append( myScaleAction, tid );
 
-  QtxMultiAction* aPanAction = new QtxMultiAction( this );
-  aPanAction->insertAction( toolMgr()->action( PanId ) );
-  aPanAction->insertAction( toolMgr()->action( GlobalPanId ) );
-  toolMgr()->append( aPanAction, tid );
+  myPanAction = new QtxMultiAction( this );
+  myPanAction->insertAction( toolMgr()->action( PanId ) );
+  myPanAction->insertAction( toolMgr()->action( GlobalPanId ) );
+  toolMgr()->append( myPanAction, tid );
 
   toolMgr()->append( toolMgr()->action( ResetId ), tid );
+
+  return tid;
 }
 
 //================================================================
@@ -192,6 +194,33 @@ void GraphicsView_ViewFrame::createToolBar()
 QImage GraphicsView_ViewFrame::dumpView()
 {
   return myViewPort->dumpView();
+}
+
+//================================================================
+// Function : expandToolBarActions
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewFrame::expandToolBarActions()
+{
+  QList<QtxMultiAction*> anExpandableActions;
+  anExpandableActions.append( myScaleAction );
+  anExpandableActions.append( myPanAction );
+
+  QListIterator<QtxMultiAction*> anIter( anExpandableActions );
+  while( anIter.hasNext() )
+  {
+    if( QtxMultiAction* aMultiAction = anIter.next() )
+    {
+      QList<QAction*> aLocalActions = aMultiAction->actions();
+      QListIterator<QAction*> aLocalIter( aLocalActions );
+      while( aLocalIter.hasNext() )
+        if( QAction* anAction = aLocalIter.next() )
+          toolMgr()->append( anAction, myToolBarId );
+
+      int anId = toolMgr()->actionId( aMultiAction );
+      toolMgr()->remove( anId, myToolBarId );
+    }
+  }
 }
 
 //================================================================
