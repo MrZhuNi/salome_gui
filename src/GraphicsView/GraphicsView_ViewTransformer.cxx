@@ -138,6 +138,10 @@ void GraphicsView_ViewTransformer::exec()
       aViewPort->fitSelect();
       onTransform( Finished );
       break;
+    case GraphicsView_Viewer::FitWidth:
+      aViewPort->fitWidth();
+      onTransform( Finished );
+      break;
     default: break;
   }
 }

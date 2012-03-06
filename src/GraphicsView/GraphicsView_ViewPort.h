@@ -144,6 +144,7 @@ public:
   void                             fitRect( const QRectF& theRect );
   void                             fitSelect();
   void                             fitAll( bool theKeepScale = false );
+  void                             fitWidth();
 
   bool                             isTransforming() const { return myIsTransforming; }
 

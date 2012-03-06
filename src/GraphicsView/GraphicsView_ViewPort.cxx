@@ -830,6 +830,30 @@ void GraphicsView_ViewPort::fitAll( bool theKeepScale )
 }
 
 //================================================================
+// Function : fitWidth
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::fitWidth()
+{
+  myIsTransforming = true;
+
+  double aGap = myFitAllGap;
+  QRectF aRect = objectsBoundingRect( true );
+
+  double aTop = aRect.top();
+  double aLeft = aRect.left();
+  double aMargin = 10;
+
+  aRect.setY( aRect.center().y() );
+  aRect.setHeight( aMargin );
+
+  fitInView( aRect.adjusted( -aGap, -aGap, aGap, aGap ), Qt::KeepAspectRatio );
+  ensureVisible( aLeft, aTop, aMargin, aMargin, 0, aGap );
+
+  myIsTransforming = false;
+}
+
+//================================================================
 // Function : currentBlock
 // Purpose  : 
 //================================================================

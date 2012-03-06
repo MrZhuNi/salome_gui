@@ -51,7 +51,7 @@ class GRAPHICSVIEW_API GraphicsView_Viewer: public SUIT_ViewModel
 
 public:
   enum TransformType { NoTransform, Reset, FitAll, FitRect, FitSelect,
-                       Zoom, PanGlobal, Pan, UserTransform = 100 };
+                       Zoom, PanGlobal, Pan, FitWidth, UserTransform = 100 };
 public:
   GraphicsView_Viewer( const QString& title );
   ~GraphicsView_Viewer();
