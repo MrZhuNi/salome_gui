@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>ERR_CANT_DUMP_VIEW</source>
-        <translation type="unfinished">Impossible de clicher le contenu de la vue au fichier.</translation>
+        <translation type="unfinished">Impossible de sauver le contenu de la vue au fichier.</translation>
     </message>
     <message>
         <source>TLT_IMAGE_FILES</source>
@@ -71,7 +71,7 @@ Faut-il le réécrire?</translation>
     </message>
     <message>
         <source>TLT_DUMP_VIEW</source>
-        <translation type="unfinished">Clicher la Vue au Fichier</translation>
+        <translation type="unfinished">Sauver la Vue au Fichier</translation>
     </message>
     <message>
         <source>PRP_DESK_WINDOW_TILE</source>

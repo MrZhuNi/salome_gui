@@ -5,7 +5,7 @@
     <name>GraphicsView_ViewFrame</name>
     <message>
         <source>DSC_DUMP_VIEW</source>
-        <translation type="unfinished">Sauvegarder la scène actuelle au fichier image</translation>
+        <translation type="unfinished">Sauver la scène actuelle au fichier image</translation>
     </message>
     <message>
         <source>DSC_FITALL</source>
@@ -41,7 +41,7 @@
     </message>
     <message>
         <source>MNU_DUMP_VIEW</source>
-        <translation type="unfinished">Sauvegarder la scène</translation>
+        <translation type="unfinished">Sauver la scène</translation>
     </message>
     <message>
         <source>MNU_FITALL</source>

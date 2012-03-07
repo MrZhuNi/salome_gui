@@ -21,7 +21,11 @@
     </message>
     <message>
         <source>MNU_DUMP_VIEW</source>
-        <translation type="unfinished">Clicher la vue...</translation>
+        <translation type="unfinished">Sauver la vue...</translation>
+    </message>
+    <message>
+        <source>MNU_PRINT_VIEW</source>
+        <translation type="unfinished">Imprimer la vue...</translation>
     </message>
     <message>
         <source>PLOT2D_SCALE_MODE_HOR</source>
@@ -125,7 +129,7 @@
     </message>
     <message>
         <source>INF_APP_DUMP_VIEW</source>
-        <translation type="unfinished">Clicher la vue</translation>
+        <translation type="unfinished">Sauver la vue</translation>
     </message>
     <message>
         <source>PLOT2D_LEGEND_POSITION_BOTTOM</source>
@@ -319,7 +323,11 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>DSC_DUMP_VIEW</source>
-        <translation type="unfinished">Sauvegarder la vue actuelle au fichier image</translation>
+        <translation type="unfinished">Sauver la vue actuelle au fichier image</translation>
+    </message>
+    <message>
+        <source>DSC_PRINT_VIEW</source>
+        <translation type="unfinished">Imprimer la vue actuelle</translation>
     </message>
     <message>
         <source>WARNING</source>
