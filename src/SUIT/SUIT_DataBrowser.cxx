@@ -117,6 +117,33 @@ void SUIT_DataBrowser::setAutoUpdate( const bool on )
 }
 
 /*!
+  \brief Get 'auto-update layout tree' flag value.
+  \return 'auto-update layout tree' flag value
+  \sa setAutoUpdateLayout(), updateTree()
+*/
+bool SUIT_DataBrowser::autoUpdateLayout() const
+{
+  SUIT_ProxyModel* m = qobject_cast<SUIT_ProxyModel*>( model() );
+  return m ? m->autoUpdateLayout() : false;
+}
+
+/*!
+  \brief Set 'auto-update layout tree' flag value.
+
+  If this flag is set to \c true (by default), the 'layoutChanged' signal is emitted 
+  for each item update automatically.
+
+  \param on 'auto-update layout tree' flag value
+  \sa autoUpdateLayout(), updateTree()
+*/
+void SUIT_DataBrowser::setAutoUpdateLayout( const bool on )
+{
+  SUIT_ProxyModel* m = qobject_cast<SUIT_ProxyModel*>( model() );
+  if ( m ) 
+    m->setAutoUpdateLayout( on );
+}
+
+/*!
   \brief Get 'updateModified' flag value.
   \return 'updateModified' flag value
 */

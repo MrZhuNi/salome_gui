@@ -451,6 +451,7 @@ SUIT_TreeModel::SUIT_TreeModel( QObject* parent )
   myRootItem( 0 ),
   myAutoDeleteTree( false ),
   myAutoUpdate( true ),
+  myAutoUpdateLayout( true ),
   myUpdateModified( false )
 {
   initialize();
@@ -467,6 +468,7 @@ SUIT_TreeModel::SUIT_TreeModel( SUIT_DataObject* root, QObject* parent )
   myRootItem( 0 ),
   myAutoDeleteTree( false ),
   myAutoUpdate( true ),
+  myAutoUpdateLayout( true ),
   myUpdateModified( false )
 {
   initialize();
@@ -1232,6 +1234,16 @@ bool SUIT_TreeModel::autoUpdate() const
 }
 
 /*!
+  \brief Get 'auto-update layout tree' flag value.
+  \return 'auto-update layout tree' flag value
+  \sa setAutoUpdateLayout(), updateItem()
+*/
+bool SUIT_TreeModel::autoUpdateLayout() const
+{
+  return myAutoUpdateLayout;
+}
+
+/*!
   \brief Set 'auto-update tree' flag value.
 
   If this flag is set to \c true (by default), the model is updated
@@ -1258,6 +1270,28 @@ void SUIT_TreeModel::setAutoUpdate( const bool on )
                               this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
 
     updateTree();
+  }
+
+}
+
+/*!
+  \brief Set 'auto-update layout tree' flag value.
+
+  If this flag is set to \c true (by default), the 'layoutChanged' signal is emitted 
+  for each item update automatically.
+
+  \param on 'auto-update layout tree' flag value
+  \sa autoUpdateLayout(), updateItem()
+*/
+void SUIT_TreeModel::setAutoUpdateLayout( const bool on )
+{
+  if ( myAutoUpdateLayout == on )
+    return;
+
+  myAutoUpdateLayout = on;
+
+  if (myAutoUpdateLayout) {
+    emit layoutChanged();
   }
 }
 
@@ -1608,7 +1642,9 @@ void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item )
   QModelIndex lastIdx  = index( obj, columnCount() - 1 );
   emit dataChanged( firstIdx, lastIdx );
   obj->setModified(false);
-  emit layoutChanged();
+  if (myAutoUpdateLayout) { // MPV 12/03/2012: update whole layout for each item is bad for performance
+    emit layoutChanged();
+  }
 }
 
 /*!
@@ -1867,6 +1903,16 @@ bool SUIT_ProxyModel::autoUpdate() const
 }
 
 /*!
+  \brief Get 'auto-update layout tree' flag value.
+  \return 'auto-update layout tree' flag value
+  \sa setAutoUpdateLayout(), updateItem()
+*/
+bool SUIT_ProxyModel::autoUpdateLayout() const
+{
+  return treeModel() ? treeModel()->autoUpdateLayout() : false;
+}
+
+/*!
   \brief Get 'updateModified' flag value.
   \return 'updateModified' flag value
 */
@@ -1901,6 +1947,21 @@ void SUIT_ProxyModel::setAutoUpdate( const bool on )
 {
   if ( treeModel() )
     treeModel()->setAutoUpdate( on );
+}
+
+/*!
+  \brief Set 'auto-update layout tree' flag value.
+
+  If this flag is set to \c true (by default), the 'layoutChanged' signal is emitted 
+  for each item update automatically.
+
+  \param on 'auto-update layout tree' flag value
+  \sa autoUpdateLayout(), updateItem()
+*/
+void SUIT_ProxyModel::setAutoUpdateLayout( const bool on )
+{
+  if ( treeModel() )
+    treeModel()->setAutoUpdateLayout( on );
 }
 
 /*!

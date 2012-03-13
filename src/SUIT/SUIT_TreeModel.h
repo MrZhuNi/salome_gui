@@ -66,6 +66,8 @@ public:
   virtual void                  setAutoDeleteTree( const bool ) = 0;
   virtual bool                  autoUpdate() const = 0;
   virtual void                  setAutoUpdate( const bool ) = 0;
+  virtual bool                  autoUpdateLayout() const = 0;
+  virtual void                  setAutoUpdateLayout( const bool ) = 0;
   virtual bool                  updateModified() const = 0;
   virtual void                  setUpdateModified( const bool ) = 0;
   virtual QAbstractItemDelegate* delegate() const = 0;
@@ -167,6 +169,8 @@ public:
 
   bool                   autoUpdate() const;
   void                   setAutoUpdate( const bool );
+  bool                   autoUpdateLayout() const;
+  void                   setAutoUpdateLayout( const bool );
 
   bool                   updateModified() const;
   void                   setUpdateModified( const bool );
@@ -230,6 +234,7 @@ private:
   VisibilityMap       myVisibilityMap;
   bool                myAutoDeleteTree;
   bool                myAutoUpdate;
+  bool                myAutoUpdateLayout;
   bool                myUpdateModified;
   QVector<ColumnInfo> myColumns;
 
@@ -257,6 +262,8 @@ public:
 
   bool                   autoUpdate() const;
   void                   setAutoUpdate( const bool );
+  bool                   autoUpdateLayout() const;
+  void                   setAutoUpdateLayout( const bool );
 
   bool                   updateModified() const;
   void                   setUpdateModified( const bool );

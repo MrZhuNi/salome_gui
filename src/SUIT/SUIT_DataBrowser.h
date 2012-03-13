@@ -48,6 +48,8 @@ public:
 
   bool             autoUpdate() const;
   void             setAutoUpdate( const bool );
+  bool             autoUpdateLayout() const;
+  void             setAutoUpdateLayout( const bool );
 
   bool             updateModified() const;
   void             setUpdateModified( const bool );
