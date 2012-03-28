@@ -775,6 +775,12 @@ void SUIT_TreeModel::setRoot( SUIT_DataObject* r )
     SUIT_DataObject::disconnect( SIGNAL( removed( SUIT_DataObject*, SUIT_DataObject* ) ),
                                  this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
     delete myRoot;
+    
+    if ( myRootItem ) {
+      QList<TreeItem*> items = myRootItem->children();
+      for ( QList<TreeItem*>::iterator anIt = items.begin(); anIt != items.end(); anIt++ )
+        delete *anIt;
+    }
   }
 
   myRoot = r;
