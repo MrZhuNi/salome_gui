@@ -102,6 +102,12 @@ public:
   void                  setCustomPersistence( const bool );
   bool                  isCustomPersistence() const;
 
+  void                  setCustomNewDoc( const bool );
+  bool                  isCustomNewDoc() const;
+
+  void                  setCustomCloseDoc( const bool );
+  bool                  isCustomCloseDoc() const;
+
 signals:
   /*!emit that view manager added*/
   void                  viewManagerAdded( SUIT_ViewManager* );
@@ -111,6 +117,8 @@ signals:
   void                  viewManagerActivated( SUIT_ViewManager* );
 
   /*!*/
+  void                  newDoc( const QString& );
+  void                  closeDoc();
   void                  openDoc();
   void                  saveDoc();
   void                  saveAsDoc();
@@ -177,6 +185,8 @@ private:
   bool                  myExitConfirm;
   bool                  myEditEnabled;
   bool                  myCustomPersistence;
+  bool                  myCustomNew;
+  bool                  myCustomClose;
 };
 
 #if defined WIN32

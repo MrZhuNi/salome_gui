@@ -50,7 +50,9 @@ STD_Application::STD_Application()
   myActiveViewMgr( 0 ),
   myExitConfirm( true ),
   myEditEnabled( true ),
-  myCustomPersistence( false )
+  myCustomPersistence( false ),
+  myCustomNew( false ),
+  myCustomClose( false )
 {
   setDesktop( new STD_MDIDesktop() );
 }
@@ -266,6 +268,12 @@ void STD_Application::onNewDoc()
 /*!Opens new application*/
 bool STD_Application::onNewDoc( const QString& name )
 {
+  if ( myCustomNew )
+  {
+    emit newDoc( name );
+    return true;
+  }
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   bool res = true;
@@ -343,6 +351,12 @@ void STD_Application::afterCloseDoc()
 /*!Close document, if it's possible.*/
 void STD_Application::onCloseDoc( bool ask )
 {
+  if ( myCustomClose )
+  {
+    emit closeDoc();
+    return;
+  }
+
   bool closePermanently = true;
 
   if ( ask && !isPossibleToClose( closePermanently ) )
@@ -965,4 +979,44 @@ void STD_Application::setCustomPersistence( const bool theVal )
 bool STD_Application::isCustomPersistence() const
 {
   return myCustomPersistence;
+}
+
+/*!
+  Replace standard SALOME open document mechanism with custom one. 
+  If custom open is set SALOME does not perform standard actions on 
+  new button pressing; it emits corresponding signal instead.
+  \sa isCustomNewDoc
+*/
+void STD_Application::setCustomNewDoc( const bool theVal )
+{
+  myCustomNew = theVal;
+}
+
+/*!
+  Check flag of custom action "New Document"
+  \sa setCustomNewDoc
+*/
+bool STD_Application::isCustomNewDoc() const
+{
+  return myCustomNew;
+}
+
+/*!
+  Replace standard SALOME close document mechanism with custom one. 
+  If custom close is set SALOME does not perform standard actions on 
+  close button pressing; it emits corresponding signal instead.
+  \sa isCustomCloseDoc
+*/
+void STD_Application::setCustomCloseDoc( const bool theVal )
+{
+  myCustomClose = theVal;
+}
+
+/*!
+  Check flag of custom action "Close Document"
+  \sa setCustomCloseDoc
+*/
+bool STD_Application::isCustomCloseDoc() const
+{
+  return myCustomClose;
 }
