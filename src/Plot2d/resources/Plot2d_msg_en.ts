@@ -475,6 +475,10 @@ Logarithmic scale for ordinate axis is not allowed.</translation>
         <source>MEN_PLOT2D_CURVES_LINES</source>
         <translation>Draw lines</translation>
     </message>
+    <message>
+      <source>TOT_PLOT2D_AUTOREPLOT</source>
+      <translation>Update automatically</translation>
+    </message>
 </context>
 <context>
     <name>Plot2d_FitDataDlg</name>

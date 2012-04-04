@@ -93,6 +93,8 @@ public slots:
   void              onDumpView();
   void              onPrintView();
 
+  void              onAutoReplot();
+
 protected:
   virtual QImage    dumpView();
   virtual bool      dumpViewToFormat( const QImage&, 

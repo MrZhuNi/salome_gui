@@ -146,6 +146,18 @@ void Plot2d_ViewWindow::contextMenuPopup( QMenu* thePopup )
   // settings
   thePopup->addAction( mgr->action( CurvSettingsId ) );
   thePopup->addAction( mgr->action( CurvesSettingsId ) );
+
+  if ( myViewFrame->isShowAutoReplot() )
+  {
+    // automatically update
+    QAction* aAutoReplot = new QAction( tr( "TOT_PLOT2D_AUTOREPLOT" ), this );
+    aAutoReplot->setCheckable( true );
+    aAutoReplot->setChecked( myViewFrame->isAutoReplot() );
+    connect( aAutoReplot, SIGNAL( triggered() ), this, SLOT( onAutoReplot() ) );
+
+    thePopup->addSeparator();
+    thePopup->addAction( aAutoReplot );
+  }
 }
 
 /*!
@@ -612,6 +624,17 @@ void Plot2d_ViewWindow::onPrintView()
   // by QwtPlotPrintFilter), and, correspondingly, to prevent drawing black frames
   // around the symbols during the next printing.
   myViewFrame->updateSymbols();
+}
+
+/*!
+  \brief Called when the "Automatically update" action is activated.
+*/
+void Plot2d_ViewWindow::onAutoReplot()
+{
+  QAction* anAct = ::qobject_cast<QAction*>( sender() );
+  if( !myViewFrame || !anAct )
+    return;
+  myViewFrame->setAutoReplot( anAct->isChecked() );
 }
 
 /*!

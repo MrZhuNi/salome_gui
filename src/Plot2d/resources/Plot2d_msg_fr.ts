@@ -477,6 +477,10 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
         <source>MEN_PLOT2D_CURVES_LINES</source>
         <translation type="unfinished">Dessiner les Lignes</translation>
     </message>
+    <message>
+        <source>TOT_PLOT2D_AUTOREPLOT</source>
+        <translation type="unfinished">Mettre à jour automatiquement</translation>
+    </message>
 </context>
 <context>
     <name>Plot2d_FitDataDlg</name>

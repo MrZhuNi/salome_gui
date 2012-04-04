@@ -173,7 +173,8 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
        myXGridMaxMinor( 5 ), myYGridMaxMinor( 5 ), myY2GridMaxMinor( 5 ),
        myXMode( 0 ), myYMode( 0 ), mySecondY( false ),
        myTitleAutoUpdate( true ), myXTitleAutoUpdate( true ), myYTitleAutoUpdate( true ),
-       myTitleChangedByUser( false ), myXTitleChangedByUser( false ), myYTitleChangedByUser( false )
+       myTitleChangedByUser( false ), myXTitleChangedByUser( false ), myYTitleChangedByUser( false ),
+       myShowAutoReplot( true ), myAutoReplot( false )
 {
   setObjectName( title );
   /* Plot 2d View */
@@ -411,6 +412,9 @@ void Plot2d_ViewFrame::readPreferences()
   myTitle = myPrefTitle;
   myXTitle = myPrefXTitle;
   myYTitle = myPrefYTitle;
+
+  if( myShowAutoReplot )
+    myAutoReplot = resMgr->integerValue( "Plot2d", "AutoReplot", myAutoReplot );
 }
 
 /*!
@@ -468,6 +472,11 @@ void Plot2d_ViewFrame::writePreferences()
   {
     myPrefYTitle = myYTitle;
     myYPrefTitleChangedByUser = true;
+  }
+
+  if( myShowAutoReplot )
+  {
+    resMgr->setValue( "Plot2d", "AutoReplot", myAutoReplot );
   }
 }
 
@@ -2243,6 +2252,8 @@ void Plot2d_ViewFrame::copyPreferences( Plot2d_ViewFrame* vf )
   myYMode = vf->myYMode;
   mySecondY = vf->mySecondY;
 
+  myAutoReplot = vf->myAutoReplot;
+
   // special fields for automatic update of viewer titles
   myTitleAutoUpdate = vf->myTitleAutoUpdate;
   myXTitleAutoUpdate = vf->myXTitleAutoUpdate;
@@ -2639,4 +2650,24 @@ void Plot2d_ViewFrame::updateSymbols()
       }
     }
   }
+}
+
+/*!
+  Sets flag for show\hide of automatic replotting of view in accordance 
+  with current selection. You should call setShowAutoReplot( false ) 
+  if your application doesn't support this functionality.
+  By default flag is true.
+*/
+void Plot2d_ViewFrame::setShowAutoReplot( const bool show )
+{
+  myShowAutoReplot = show;
+}
+
+/*!
+  Sets flag for automatic replotting of view in accordance with current selection.
+  By default flag is false.
+*/
+void Plot2d_ViewFrame::setAutoReplot( const bool replot )
+{
+  myAutoReplot = replot;
 }

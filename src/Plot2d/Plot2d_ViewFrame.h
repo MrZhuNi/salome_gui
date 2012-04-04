@@ -143,6 +143,12 @@ public:
 
   void    updateSymbols();
 
+  void    setShowAutoReplot( const bool show );
+  bool    isShowAutoReplot() const { return myShowAutoReplot; }
+
+  void    setAutoReplot( const bool replot );
+  bool    isAutoReplot() const { return myAutoReplot; }
+
 protected:
   int     testOperation( const QMouseEvent& );
   void    readPreferences();
@@ -213,6 +219,8 @@ protected:
   
   bool           myTitleAutoUpdate, myXTitleAutoUpdate, myYTitleAutoUpdate;
   bool           myTitleChangedByUser, myXTitleChangedByUser, myYTitleChangedByUser;
+
+  bool           myShowAutoReplot, myAutoReplot;
 
   static         QString myPrefTitle;
   static         QString myPrefXTitle;
