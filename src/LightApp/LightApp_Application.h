@@ -76,7 +76,6 @@ public:
 
   enum { RenameId = CAM_Application::UserID,
 	 CloseId, CloseAllId, GroupAllId,
-         RestoreDefaultId, RestoreFromPrefsId,
 	 PreferencesId, MRUId, ModulesListId,
          NewGLViewId, NewPlot2dId, NewOCCViewId, NewVTKViewId, NewQxGraphViewId,
          NewGraphicsViewId, UserID };
@@ -218,15 +217,13 @@ private slots:
   void                                onCloseWindow();
   void                                onCloseAllWindow();
   void                                onGroupAllWindow();
-  void                                onRestoreDefault();
-  void                                onRestoreFromPreferences();
 
 protected:
   void                                updateWindows();
   void                                updateViewManagers();
   void                                updateModuleActions();
 
-  void                                loadDockWindowsState( const bool theIsForced = false );
+  void                                loadDockWindowsState();
   void                                saveDockWindowsState();
 
   virtual void                        studyOpened( SUIT_Study* );

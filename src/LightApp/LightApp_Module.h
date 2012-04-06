@@ -93,9 +93,6 @@ public:
   virtual QString                     updateDesktopTitle( const QString& );
   // Custom update desktop title
 
-  virtual bool                        defaultWindowsState();
-  // Custom restore the default windows state
-
 public slots:
   virtual bool                        activateModule( SUIT_Study* );
   virtual bool                        deactivateModule( SUIT_Study* );

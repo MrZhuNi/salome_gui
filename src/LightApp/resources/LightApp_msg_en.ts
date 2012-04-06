@@ -534,34 +534,6 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
         <translation>Group all windows</translation>
     </message>
     <message>
-        <source>MEN_DESK_RESTORE</source>
-        <translation>Restore windows &amp;state</translation>
-    </message>
-    <message>
-        <source>TOT_RESTORE_DEFAULT</source>
-        <translation>By Default</translation>
-    </message>
-    <message>
-        <source>MEN_DESK_RESTORE_DEFAULT</source>
-        <translation>&amp;By Default</translation>
-    </message>
-    <message>
-        <source>PRP_RESTORE_DEFAULT</source>
-        <translation>Restore windows state by default</translation>
-    </message>
-    <message>
-        <source>TOT_RESTORE_FROM_PREFERENCES</source>
-        <translation>From Preferences</translation>
-    </message>
-    <message>
-        <source>MEN_DESK_RESTORE_FROM_PREFERENCES</source>
-        <translation>&amp;From Preferences</translation>
-    </message>
-    <message>
-        <source>PRP_RESTORE_FROM_PREFERENCES</source>
-        <translation>Restore windows state from preferences file</translation>
-    </message>
-    <message>
         <source>ERR_DOC_NOT_EXISTS</source>
         <translation>Can not open %1.
 File does not exist</translation>
