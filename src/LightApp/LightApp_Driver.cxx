@@ -509,8 +509,8 @@ bool LightApp_Driver::PutFilesToFirstStream( const std::string& theModuleName, u
   TCollection_AsciiString aTmpDir(const_cast<char*>(aFiles[0].c_str()));
 
   int aNbFiles = 0;
-  myFileNameSizes = new size_t[aLength];
-  myFileSizes = new size_t[aLength];
+  myFileNameSizes = new t_size[aLength];
+  myFileSizes = new t_size[aLength];
 
   //Determine the required size of the buffer
   TCollection_AsciiString aFileName;
@@ -544,7 +544,7 @@ bool LightApp_Driver::PutFilesToFirstStream( const std::string& theModuleName, u
 
   mySizeToBeWritten += 4;      //4 bytes for a number of the files that will be written to the stream;
 
-  size_t aCurrSize = mySizeToBeWritten <= GetMaxBuffSize() ? mySizeToBeWritten : GetMaxBuffSize();
+  t_size aCurrSize = mySizeToBeWritten <= GetMaxBuffSize() ? mySizeToBeWritten : GetMaxBuffSize();
   theBuffer = new unsigned char[ aCurrSize ];
   myCurrBuff = theBuffer;
 
@@ -609,7 +609,7 @@ bool LightApp_Driver::PutFilesToFirstStream( const std::string& theModuleName, u
       {
         myCurrIFile->seekg(0, ios::beg);
         int aPos = myCurrIFile->tellg();
-        size_t aSizeToRead = GetMaxBuffSize() - myCurrPos;
+        t_size aSizeToRead = GetMaxBuffSize() - myCurrPos;
         if ( aSizeToRead > myFileSizes[myCurrFileIndex] - myCurrIFile->tellg() )
           aSizeToRead = myFileSizes[myCurrFileIndex] - myCurrIFile->tellg();
         myCurrIFile->read((char *)(theBuffer + myCurrPos), aSizeToRead );
@@ -666,7 +666,7 @@ bool LightApp_Driver::PutFilesToNextStream( const std::string& theModuleName, un
 
   TCollection_AsciiString aTmpDir(const_cast<char*>(aFiles[0].c_str()));
 
-  size_t aCurrSize = mySizeToBeWritten <= GetMaxBuffSize() ? mySizeToBeWritten : GetMaxBuffSize();
+  t_size aCurrSize = mySizeToBeWritten <= GetMaxBuffSize() ? mySizeToBeWritten : GetMaxBuffSize();
 
   for ( ; myCurrFileIndex < aLength; myCurrFileIndex++ ) 
   {
@@ -713,7 +713,7 @@ bool LightApp_Driver::PutFilesToNextStream( const std::string& theModuleName, un
     if ( aCurrSize < GetMaxBuffSize() )
     {
       //myCurrIFile->seekg(0, ios::beg);
-      size_t aSizeToRead = myFileSizes[myCurrFileIndex] - myCurrIFile->tellg();
+      t_size aSizeToRead = myFileSizes[myCurrFileIndex] - myCurrIFile->tellg();
       myCurrIFile->read((char *)(theBuffer + myCurrPos), aSizeToRead );
       myCurrIFile->close();
       delete(myCurrIFile);
@@ -724,8 +724,8 @@ bool LightApp_Driver::PutFilesToNextStream( const std::string& theModuleName, un
     else // new code for big files
     {
       int aPos = myCurrIFile->tellg();
-      size_t aFileSize = myFileSizes[myCurrFileIndex];
-      size_t aSizeToRead = GetMaxBuffSize() - myCurrPos;
+      t_size aFileSize = myFileSizes[myCurrFileIndex];
+      t_size aSizeToRead = GetMaxBuffSize() - myCurrPos;
       if ( aSizeToRead > myFileSizes[myCurrFileIndex] - myCurrIFile->tellg() )
         aSizeToRead = myFileSizes[myCurrFileIndex] - myCurrIFile->tellg();
       myCurrIFile->read((char *)(theBuffer + myCurrPos), aSizeToRead );
@@ -792,8 +792,8 @@ void LightApp_Driver::PutFirstStreamToFiles( ListOfFiles& theListOfFiles,
 
   const int n = myNbFilles + 1;
   theListOfFiles.resize( n );
-  myFileSizes = new size_t[ n ];
-  myFileNameSizes = new size_t[ n ];
+  myFileSizes = new t_size[ n ];
+  myFileNameSizes = new t_size[ n ];
   theListOfFiles[ 0 ] = aDir;
   myFileSizes[ 0 ] = 0;
   myFileNameSizes[ 0 ] = 0;
@@ -840,7 +840,7 @@ void LightApp_Driver::PutFirstStreamToFiles( ListOfFiles& theListOfFiles,
       else 
       {
         // old code for big files
-        size_t aSize = theBufferSize - myCurrPos;
+        t_size aSize = theBufferSize - myCurrPos;
         myCurrOFile->write((char *)( theBuffer + myCurrPos ), aSize );
         myFileSizes[ myCurrFileIndex ] -= aSize;
         myCurrPos = 0;
@@ -922,8 +922,8 @@ void LightApp_Driver::PutNextStreamToFiles( ListOfFiles& theListOfFiles,
     else 
     {
       // old code for big files
-      size_t aFileSize = myFileSizes[ myCurrFileIndex ];
-      size_t aSize = theBufferSize - myCurrPos;
+      t_size aFileSize = myFileSizes[ myCurrFileIndex ];
+      t_size aSize = theBufferSize - myCurrPos;
       myCurrOFile->write((char *)( theBuffer + myCurrPos ), aSize );
       myFileSizes[ myCurrFileIndex ] -= aSize;
       myCurrPos = 0;
