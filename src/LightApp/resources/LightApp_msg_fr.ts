@@ -86,6 +86,10 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
         <translation type="unfinished">Retenir les positions des fenêtres</translation>
     </message>
     <message>
+      <source>PREF_BACKUP</source>
+      <translation>Sauvegarde chaque dix minutes</translation>
+    </message>
+    <message>
         <source>PREF_PROJECTION_MODE</source>
         <translation type="unfinished">Mode de Projection:</translation>
     </message>
