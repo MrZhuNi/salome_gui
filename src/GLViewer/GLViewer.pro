@@ -75,7 +75,8 @@ SOURCES += GLViewer_Viewer2d.cxx
 SOURCES += GLViewer_Widget.cxx
 
 TRANSLATIONS = resources/GLViewer_images.ts \
-               resources/GLViewer_msg_en.ts
+               resources/GLViewer_msg_en.ts \
+               resources/GLViewer_msg_fr.ts
 
 ICONS   = resources/*.png
 
