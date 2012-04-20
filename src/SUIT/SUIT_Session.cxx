@@ -433,9 +433,6 @@ QString SUIT_Session::getBackupFolder() const
   if ( var )
     aRes = var;
 
-  if ( aRes.isEmpty() || !QFileInfo( aRes ).exists() )
-    aRes = QDir::tempPath();
-
   return aRes;
 }
 
@@ -637,9 +634,13 @@ void SUIT_Session::restoreBackup()
 {
   QString pref = getBackupPrefix();
 
+  QString bkpFold = getBackupFolder();
+  if ( bkpFold .isEmpty() )
+    return;
+  
   // checks whether temp folder contains old backups
-  QDir bkpDir( getBackupFolder() );
-
+  QDir bkpDir( bkpFold );
+  
   QStringList filt;
   filt.append( pref + "*" );
   bkpDir.setNameFilters( filt );

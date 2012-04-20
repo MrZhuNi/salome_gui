@@ -1846,7 +1846,9 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->addPreference( tr( "PREF_MULTI_FILE" ), studyGroup, LightApp_Preferences::Bool, "Study", "multi_file" );
   pref->addPreference( tr( "PREF_ASCII_FILE" ), studyGroup, LightApp_Preferences::Bool, "Study", "ascii_file" );
   pref->addPreference( tr( "PREF_STORE_POS" ),  studyGroup, LightApp_Preferences::Bool, "Study", "store_positions" );
-  pref->addPreference( tr( "PREF_BACKUP" ),  studyGroup, LightApp_Preferences::DblSpin, "Study", "backup_studies" );
+
+  if ( !SUIT_Session::session()->getBackupFolder().isEmpty() )
+    pref->addPreference( tr( "PREF_BACKUP" ),  studyGroup, LightApp_Preferences::DblSpin, "Study", "backup_studies" );
 
   int extgroup = pref->addPreference( tr( "PREF_GROUP_EXT_BROWSER" ), genTab );
   QString platform;
@@ -2123,14 +2125,27 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   }
 
   // Default Module Preferences
-  int moduleGroup = pref->addPreference( tr( "PREF_DEFAULT_MODULE" ), genTab );
-  int moduleNameCombo = pref->addPreference( tr( "PREF_DEF_MODULE_NAME" ), moduleGroup, LightApp_Preferences::Selector, "Activate", "def_module" );
-  aValuesList.clear();
-  anIndicesList.clear();
-  aValuesList   << tr("PREF_DEF_MODULE_NONE") << tr("PREF_DEF_MODULE_CATHARE") << tr("PREF_DEF_MODULE_DIAGRAM");
-  anIndicesList << 0                        << 1                         << 2                       ;
-  pref->setItemProperty( "strings", aValuesList,   moduleNameCombo );
-  pref->setItemProperty( "indexes", anIndicesList, moduleNameCombo );
+  QStringList aModuleNames;
+  modules( aModuleNames, false ); 
+  if ( aModuleNames.count() > 1 )
+  {
+    int moduleGroup = pref->addPreference( tr( "PREF_DEFAULT_MODULE" ), genTab );
+    int moduleNameCombo = pref->addPreference( tr( "PREF_DEF_MODULE_NAME" ), moduleGroup, LightApp_Preferences::Selector, "Activate", "def_module" );
+    aValuesList.clear();
+    anIndicesList.clear();
+    aValuesList.append( tr("PREF_DEF_MODULE_NONE") );
+    anIndicesList.append( 0 );
+    QStringList::iterator it = aModuleNames.begin();
+    for ( int ind = 1; it != aModuleNames.end(); ++it, ++ind )
+    {
+      const QString& modName = *it;
+      aValuesList.append( modName );
+      anIndicesList.append( ind );
+    }
+    
+    pref->setItemProperty( "strings", aValuesList,   moduleNameCombo );
+    pref->setItemProperty( "indexes", anIndicesList, moduleNameCombo );
+  }
 
   // theme values
   Style_Model* aSModel = 0;
