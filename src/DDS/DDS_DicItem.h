@@ -95,7 +95,7 @@ public:
   Standard_EXPORT TCollection_AsciiString            GetComponent() const;
 
   Standard_EXPORT TCollection_AsciiString            GetUnits() const;
-  Standard_EXPORT TCollection_AsciiString            GetUnits( const UnitSystem& ) const;
+  Standard_EXPORT virtual TCollection_AsciiString    GetUnits( const UnitSystem& ) const;
 
   Standard_EXPORT TCollection_ExtendedString         GetDefaultValue() const;
   Standard_EXPORT TCollection_ExtendedString         GetDefaultValue( const UnitSystem& ) const;
