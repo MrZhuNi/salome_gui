@@ -81,7 +81,7 @@ public:
   virtual QPixmap               columnIcon( const QString& name ) const = 0;
   virtual void                  setAppropriate( const QString& name, const Qtx::Appropriate appr ) = 0;
   virtual Qtx::Appropriate      appropriate( const QString& name ) const = 0;
-  virtual void                  setVisibilityState(const QString& id, Qtx::VisibilityState state) = 0;
+  virtual void                  setVisibilityState(const QString& id, Qtx::VisibilityState state, bool emitChanged = true) = 0;
   virtual void                  setVisibilityStateForAll(Qtx::VisibilityState state) = 0;
   virtual Qtx::VisibilityState  visibilityState(const QString& id) const = 0;
   virtual void                  setHeaderFlags( const QString& name, const Qtx::HeaderViewFlags flags ) = 0;
@@ -151,7 +151,7 @@ public:
   virtual QPixmap          columnIcon( const QString& name ) const;
   virtual void             setAppropriate( const QString& name, const Qtx::Appropriate appr );
   virtual Qtx::Appropriate appropriate( const QString& name ) const;
-  virtual void                  setVisibilityState(const QString& id, Qtx::VisibilityState state);
+  virtual void                  setVisibilityState(const QString& id, Qtx::VisibilityState state, bool emitChanged = true);
   virtual void                  setVisibilityStateForAll(Qtx::VisibilityState state);
   virtual Qtx::VisibilityState  visibilityState(const QString& id) const;
   virtual void                  setHeaderFlags( const QString& name, const Qtx::HeaderViewFlags flags );
@@ -209,6 +209,7 @@ private:
 private slots:
   void                   onInserted( SUIT_DataObject*, SUIT_DataObject* );
   void                   onRemoved( SUIT_DataObject*, SUIT_DataObject* );
+  void                   onModified( SUIT_DataObject* );
 
 private:
   typedef QMap<SUIT_DataObject*, TreeItem*> ItemMap;
@@ -271,7 +272,7 @@ public:
   virtual QPixmap          columnIcon( const QString& name ) const;
   virtual void             setAppropriate( const QString& name, const Qtx::Appropriate appr );
   virtual Qtx::Appropriate appropriate( const QString& name ) const;
-  virtual void                  setVisibilityState(const QString& id, Qtx::VisibilityState state);
+  virtual void                  setVisibilityState(const QString& id, Qtx::VisibilityState state, bool emitChanged = true);
   virtual void                  setVisibilityStateForAll(Qtx::VisibilityState state);
   virtual Qtx::VisibilityState  visibilityState(const QString& id) const;
   virtual void                  setHeaderFlags( const QString& name, const Qtx::HeaderViewFlags flags );
