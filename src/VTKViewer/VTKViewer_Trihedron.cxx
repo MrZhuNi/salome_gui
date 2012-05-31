@@ -19,6 +19,8 @@
 #include "VTKViewer_Trihedron.h"
 #include "VTKViewer_Actor.h"
 
+#include "vtkArcSource.h" // local class
+
 // VTK Includes
 #include <vtkMath.h>
 #include <vtkMapper.h>
@@ -120,6 +122,10 @@ VTKViewer_Axis::VTKViewer_Axis()
   myLineSource = vtkLineSource::New();
   myLineSource->SetPoint1(0.0,0.0,0.0);
   
+  myArcSource = vtkArcSource::New();
+  myArcSource->SetResolution(96);
+  myArcSource->SetCenter(0.0,0.0,0.0);
+  
   myMapper[0] = vtkPolyDataMapper::New();
   myMapper[0]->SetInput(myLineSource->GetOutput());
   
@@ -160,6 +166,8 @@ VTKViewer_Axis::VTKViewer_Axis()
   
   /*! \li Initialise visibility param.*/
   myVisibility = VTKViewer_Trihedron::eOn;
+
+  myIsCircular = false;
 }
 
 /*!
@@ -190,6 +198,7 @@ VTKViewer_Axis::~VTKViewer_Axis()
   myMapper[2]->Delete();
   
   myLineSource->Delete();
+  myArcSource->Delete();
 }
 
 /*! Add to renderer
@@ -253,13 +262,26 @@ void VTKViewer_Axis::SetSize(vtkFloatingPointType theSize)
 {
   vtkFloatingPointType aPosition[3] = {myDir[0]*theSize, myDir[1]*theSize, myDir[2]*theSize};
   myLineSource->SetPoint2(aPosition);
-  
+
+  vtkFloatingPointType anArcPosition1[3] = { aPosition[0] / 2.,
+                                             aPosition[1] / 2.,
+                                             aPosition[2] / 2. };
+
+  // note: a small gap is added here to draw an arc instead a singular line
+  vtkFloatingPointType anArcPosition2[3] = { anArcPosition1[0],
+                                             anArcPosition1[1] - 0.001,
+                                             anArcPosition1[2]};
+
+  myArcSource->SetPoint1(anArcPosition1);
+  myArcSource->SetPoint2(anArcPosition2);
+  myArcSource->NegativeOn();
+
   myArrowActor->SetPosition(0.0,0.0,0.0);
-  myArrowActor->AddPosition(aPosition);
+  myArrowActor->AddPosition(myIsCircular ? anArcPosition1 : aPosition);
   myArrowActor->SetOrientation(myRot);
   
   myLabelActor->SetPosition(0.0,0.0,0.0);
-  myLabelActor->AddPosition(aPosition);
+  myLabelActor->AddPosition(myIsCircular ? anArcPosition1 : aPosition);
 }
 
 /*! Check if actor belongs to the axis object
@@ -271,6 +293,26 @@ bool VTKViewer_Axis::OwnActor(const vtkActor* theActor)
   return theActor == myLineActor  || 
          theActor == myArrowActor ||
          theActor == myLabelActor;
+}
+
+/*! Makes the axis circular.
+ * \param theFlag - boolean value
+ */
+void VTKViewer_Axis::SetIsCircular(const bool theFlag)
+{
+  myIsCircular = theFlag;
+  if( myIsCircular )
+    myMapper[0]->SetInput(myArcSource->GetOutput());
+  else
+    myMapper[0]->SetInput(myLineSource->GetOutput());
+}
+
+/*! Sets the label text.
+ * \param theText - string value
+ */
+void VTKViewer_Axis::SetLabelText(const char* theText)
+{
+  myVectorText->SetText(theText);
 }
 
 /*! \class VTKViewer_XAxis
@@ -309,6 +351,8 @@ protected:
 public:
   vtkTypeMacro(VTKViewer_YAxis,VTKViewer_Axis);
   static VTKViewer_YAxis *New();
+public:
+  virtual void SetIsCircular(const bool theFlag);
 };
 
 vtkStandardNewMacro(VTKViewer_YAxis);
@@ -323,6 +367,24 @@ VTKViewer_YAxis::VTKViewer_YAxis()
   aProperty->SetColor(0.0,1.0,0.0);
   SetProperty(aProperty);
   aProperty->Delete();
+}
+
+/*! Makes the axis circular.
+ * \param theFlag - boolean value
+ */
+void VTKViewer_YAxis::SetIsCircular(const bool theFlag)
+{
+  VTKViewer_Axis::SetIsCircular( theFlag );
+  if( theFlag )
+  {
+    myDir[0] = 1.0; myDir[1] = 0.0; myDir[2] = 0.0;
+    myRot[0] = 0.0; myRot[1] = 0.0; myRot[2] = 90.;
+  }
+  else
+  {
+    myDir[0] = 0.0; myDir[1] = 1.0; myDir[2] = 0.0;
+    myRot[0] = 0.0; myRot[1] = 0.0; myRot[2] = 90.;
+  }
 }
 
 /*! \class VTKViewer_ZAxis
@@ -359,6 +421,7 @@ vtkStandardNewMacro(VTKViewer_Trihedron);
 */
 VTKViewer_Trihedron::VTKViewer_Trihedron()
 {
+  myIsCylindrical = false;
   myPresent = vtkActorCollection::New();
   myAxis[0] = VTKViewer_XAxis::New();
   myAxis[1] = VTKViewer_YAxis::New();
@@ -376,6 +439,18 @@ VTKViewer_Trihedron::~VTKViewer_Trihedron()
   myPresent->Delete();
   for(int i = 0; i < 3; i++)
     myAxis[i]->Delete();
+}
+
+/*! Makes the trihedron cylindrical.
+ * \param theFlag - boolean value
+ */
+void VTKViewer_Trihedron::SetIsCylindrical(const bool theFlag)
+{
+  myIsCylindrical = theFlag;
+  myAxis[1]->SetIsCircular(theFlag);
+
+  myAxis[0]->SetLabelText(theFlag ? "R" : "X");
+  myAxis[1]->SetLabelText(theFlag ? "O" : "Y"); // to do: replace "O" with THETA symbol
 }
 
 /*! Set size of axes

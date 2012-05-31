@@ -48,7 +48,8 @@ salomeinclude_HEADERS =				\
 	VTKViewer_ViewWindow.h			\
 	VTKViewer_Functor.h			\
         VTKViewer_MergeFilter.h			\
-        VTKViewer_PassThroughFilter.h
+        VTKViewer_PassThroughFilter.h		\
+	vtkArcSource.h
 
 dist_libVTKViewer_la_SOURCES =			\
 	VTKViewer_CellLocationsArray.cxx	\
@@ -70,7 +71,8 @@ dist_libVTKViewer_la_SOURCES =			\
 	VTKViewer_ConvexTool.cxx		\
 	VTKViewer_ViewWindow.cxx		\
         VTKViewer_MergeFilter.cxx		\
-        VTKViewer_PassThroughFilter.cxx
+        VTKViewer_PassThroughFilter.cxx		\
+	vtkArcSource.cxx
 
 MOC_FILES =						\
 	VTKViewer_RenderWindow_moc.cxx			\

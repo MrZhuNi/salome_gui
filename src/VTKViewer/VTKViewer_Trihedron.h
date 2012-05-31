@@ -33,6 +33,8 @@ class vtkLineSource;
 class vtkConeSource;
 class vtkVectorText;
 
+class vtkArcSource;
+
 class VTKViewer_Axis;
 
 /*! \class vtkFollower
@@ -130,7 +132,17 @@ public:
   
   /*!Create new instance of VTKViewer_Trihedron.*/
   static VTKViewer_Trihedron *New();
-  
+
+  /*! Makes the trihedron cylindrical.
+   * \param theFlag - boolean value
+   */
+  virtual void        SetIsCylindrical(const bool theFlag);
+
+  /*! Checks that the trihedron is cylindrical.
+   * \retval theFlag - boolean value
+   */
+  virtual bool        IsCylindrical() const { return myIsCylindrical; }
+
   /*!Sets size of trihedron.
    * \param theSize - vtkFloatingPointType value
    */
@@ -188,6 +200,9 @@ protected:
   
   /*! Common size for trihedron, for each axis.*/
   vtkFloatingPointType mySize;
+
+  /*! Type of the trihedron (cylindrical or rectangular).*/
+  bool                myIsCylindrical;
 };
 
 /*!The base class for concreate Axis.
@@ -247,6 +262,16 @@ public:
    */
   virtual bool OwnActor(const vtkActor* theActor);
   
+  /*! Makes the axis circular.
+   * \param theFlag - boolean value
+   */
+  virtual void SetIsCircular(const bool theFlag);
+
+  /*! Sets the label text.
+   * \param theText - string value
+   */
+  virtual void SetLabelText(const char* theText);
+
 protected:
   /*! Visibility flag.
    */
@@ -259,6 +284,11 @@ protected:
    * Orientation vector
    */
   vtkFloatingPointType myDir[3], myRot[3];
+
+  /*! \var myIsCircular
+   * Type of the axis (circular or linear)
+   */
+  bool myIsCircular;
   
   /*! VTKViewer_LineActor actor pointer
    */
@@ -281,6 +311,10 @@ protected:
   /*! vtkLineSource pointer (Line)
    */
   vtkLineSource *myLineSource;
+
+  /*! vtkArcSource pointer (Arc)
+   */
+  vtkArcSource *myArcSource;
 
   /*! vtkConeSource pointer (Arrow)
    */
