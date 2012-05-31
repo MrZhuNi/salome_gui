@@ -3703,8 +3703,7 @@ bool LightApp_Application::checkDataObject(LightApp_DataObject* theObj)
   if (theObj)
     {
       bool isSuitable = !theObj->entry().isEmpty() &&
-                        !theObj->componentDataType().isEmpty() &&
-                        !theObj->name().isEmpty();
+                        !theObj->componentDataType().isEmpty();
       return isSuitable;
     }
 
