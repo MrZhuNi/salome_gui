@@ -32,6 +32,7 @@
 //#include "SVTK_MainWindow.h"
 #include "SVTK_Prs.h"
 
+#include "VTKViewer_Algorithm.h"
 #include "VTKViewer_ViewModel.h"
 
 #include "SUIT_ViewModel.h"
@@ -500,7 +501,8 @@ void SVTK_Viewer::EraseAll( const bool forced )
     if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(aViews.at(i)))
       if(SVTK_View* aView = aViewWindow->getView()){
 	vtkRenderer* aRenderer =  aView->getRenderer();
-	vtkActorCollection* anActorCollection = aRenderer->GetActors();
+	VTK::ActorCollectionCopy aCopy(aRenderer->GetActors());
+	vtkActorCollection* anActorCollection = aCopy.GetActors();
 	anActorCollection->InitTraversal();
 	while(vtkActor* anActor = anActorCollection->GetNextActor()){
 	  if(SALOME_Actor* anAct = SALOME_Actor::SafeDownCast(anActor)){
@@ -543,7 +545,8 @@ SALOME_Prs* SVTK_Viewer::CreatePrs( const char* entry )
     if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(getViewManager()->getActiveView()))
       if(SVTK_View* aView = aViewWindow->getView()){
 	vtkRenderer* aRenderer =  aView->getRenderer();
-	vtkActorCollection* theActors = aRenderer->GetActors();
+	VTK::ActorCollectionCopy aCopy(aRenderer->GetActors());
+	vtkActorCollection* theActors = aCopy.GetActors();
 	theActors->InitTraversal();
 	vtkActor* ac;
 	while( ( ac = theActors->GetNextActor() ) ) {
