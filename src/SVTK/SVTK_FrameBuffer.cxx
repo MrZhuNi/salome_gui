@@ -91,7 +91,7 @@ static PFNGLDELETERENDERBUFFERSEXTPROC vglDeleteRenderbuffersEXT = NULL;
 #define GL_GetProcAddress( x ) wglGetProcAddress( (const LPCSTR)x )
 #endif
 
-bool InitializeEXT()
+bool SVTK_InitializeEXT()
 {
   vglGenFramebuffersEXT = (PFNGLGENFRAMEBUFFERSEXTPROC)GL_GetProcAddress( "glGenFramebuffersEXT" );
   vglBindFramebufferEXT = (PFNGLBINDFRAMEBUFFEREXTPROC)GL_GetProcAddress( "glBindFramebufferEXT" );
@@ -112,7 +112,7 @@ bool InitializeEXT()
   return ok;
 }
 
-static bool IsEXTInitialized = InitializeEXT();
+static bool IsEXTInitialized = SVTK_InitializeEXT();
 
 SVTK_FrameBuffer::SVTK_FrameBuffer()
   : textureId( 0 ),

@@ -89,7 +89,7 @@ static PFNGLDELETERENDERBUFFERSEXTPROC vglDeleteRenderbuffersEXT = NULL;
 #define GL_GetProcAddress( x ) wglGetProcAddress( (const LPCSTR)x )
 #endif
 
-bool InitializeEXT()
+bool GLViewer_InitializeEXT()
 {
   vglGenFramebuffersEXT = (PFNGLGENFRAMEBUFFERSEXTPROC)GL_GetProcAddress( "glGenFramebuffersEXT" );
   vglBindFramebufferEXT = (PFNGLBINDFRAMEBUFFEREXTPROC)GL_GetProcAddress( "glBindFramebufferEXT" );
@@ -125,7 +125,7 @@ GLViewer_FrameBuffer::~GLViewer_FrameBuffer()
 
 bool GLViewer_FrameBuffer::init( const GLsizei& xSize, const GLsizei& ySize )
 {
-  myIsInitializeEXT = InitializeEXT();
+  myIsInitializeEXT = GLViewer_InitializeEXT();
   char* ext = (char*)glGetString( GL_EXTENSIONS );
   if( !myIsInitializeEXT || strstr( ext, "GL_EXT_framebuffer_object" ) == NULL )
     return false;
