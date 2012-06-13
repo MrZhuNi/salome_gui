@@ -450,7 +450,7 @@ void VTKViewer_Trihedron::SetIsCylindrical(const bool theFlag)
   myAxis[1]->SetIsCircular(theFlag);
 
   myAxis[0]->SetLabelText(theFlag ? "R" : "X");
-  myAxis[1]->SetLabelText(theFlag ? "O" : "Y"); // to do: replace "O" with THETA symbol
+  myAxis[1]->SetLabelText(theFlag ? "Q" : "Y"); // to do: replace "Q" with THETA symbol
 }
 
 /*! Set size of axes
