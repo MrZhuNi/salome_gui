@@ -1221,6 +1221,7 @@ void SUIT_TreeModel::setAutoUpdate( const bool on )
                               this, SLOT( onRemoved( SUIT_DataObject*, SUIT_DataObject* ) ) );
 
     updateTree();
+    emit layoutChanged();
   }
 }
 
