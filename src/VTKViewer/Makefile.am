@@ -49,6 +49,7 @@ salomeinclude_HEADERS =				\
 	VTKViewer_Functor.h			\
         VTKViewer_MergeFilter.h			\
         VTKViewer_PassThroughFilter.h		\
+        VTKViewer_Glyph3D.h			\
 	vtkArcSource.h
 
 dist_libVTKViewer_la_SOURCES =			\
@@ -73,6 +74,7 @@ dist_libVTKViewer_la_SOURCES =			\
 	VTKViewer_ViewWindow.cxx		\
         VTKViewer_MergeFilter.cxx		\
         VTKViewer_PassThroughFilter.cxx		\
+        VTKViewer_Glyph3D.cxx			\
 	vtkArcSource.cxx
 
 MOC_FILES =						\
