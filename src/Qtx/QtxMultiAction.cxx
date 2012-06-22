@@ -84,7 +84,7 @@ protected:
       {
         QHelpEvent* help = static_cast<QHelpEvent*>( e );
         QWidget* w = QApplication::widgetAt( help->globalPos() );
-        if ( w && Qtx::isParent( w, this ) )
+        if ( w && w != this && Qtx::isParent( w, this ) )
         {
           QHelpEvent he( help->type(), w->mapFromGlobal( help->globalPos() ), help->globalPos() );
           QApplication::sendEvent( w, &he );

@@ -34,6 +34,7 @@
 
 #include <vtkObject.h>
 #include <vtkSmartPointer.h>
+#include <vtkCellPicker.h>
 
 class vtkRenderer;
 class vtkCallbackCommand;
@@ -41,7 +42,6 @@ class vtkRenderWindowInteractor;
 
 class vtkPicker;
 class vtkPointPicker;
-class vtkCellPicker;
 class vtkProperty;
 
 class SVTK_RectPicker;
@@ -51,6 +51,7 @@ class VTKViewer_Transform;
 class SVTK_CubeAxesActor2D;
 class VTKViewer_Actor;
 class SVTK_Selector;
+class SVTK_CellPicker;
 
 #ifdef WIN32
 #pragma warning ( disable:4251 )
@@ -236,7 +237,7 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
   //----------------------------------------------------------------------------
   // Highlight/ Prehighlight devices
   vtkSmartPointer<vtkPointPicker> myPointPicker;
-  vtkSmartPointer<vtkCellPicker> myCellPicker;
+  vtkSmartPointer<SVTK_CellPicker> myCellPicker;
 
   vtkSmartPointer<SVTK_RectPicker> myPointRectPicker;
   vtkSmartPointer<SVTK_RectPicker> myCellRectPicker;
@@ -250,6 +251,33 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
   vtkFloatingPointType myTrihedronSize;
   bool myIsTrihedronRelative;
   vtkFloatingPointType myBndBox[6];
+};
+
+/*! 
+  \class SVTK_CellPicker
+  The class is intended to redefine the IntersectWithLine()
+  to correct the mechanism of picking coincident cells
+*/
+class SVTK_CellPicker : public vtkCellPicker
+{
+public:
+  static SVTK_CellPicker* New();
+  vtkTypeMacro(SVTK_CellPicker,vtkCellPicker);
+
+protected:
+  SVTK_CellPicker();
+  ~SVTK_CellPicker();
+
+  virtual double IntersectWithLine(double p1[3], double p2[3], double tol, 
+                                   vtkAssemblyPath *path, vtkProp3D *p, 
+                                   vtkAbstractMapper3D *m);
+
+private:
+  vtkGenericCell *Cell; //used to accelerate picking
+
+private:
+  SVTK_CellPicker(const SVTK_CellPicker&);  // Not implemented.
+  void operator=(const SVTK_CellPicker&);  // Not implemented.
 };
 
 #ifdef WIN32

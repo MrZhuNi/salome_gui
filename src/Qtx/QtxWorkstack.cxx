@@ -38,6 +38,8 @@
 #include <QStackedWidget>
 #include <QAbstractButton>
 
+#include <stdio.h>
+
 /*!
   \class QtxWorkstackArea::WidgetEvent
   \internal

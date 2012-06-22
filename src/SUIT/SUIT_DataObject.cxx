@@ -23,6 +23,8 @@
 #include "SUIT_DataObject.h"
 #include "SUIT_DataObjectKey.h"
 
+#include <stdio.h>
+
 SUIT_DataObject::Signal* SUIT_DataObject::mySignal = 0;
 
 /*!
