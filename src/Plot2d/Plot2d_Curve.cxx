@@ -207,6 +207,14 @@ void Plot2d_Curve::clearAllPoints()
 }
 
 /*!
+  Set curve's data : abscissas of points
+*/
+void Plot2d_Curve::setPointList( const pointList& thePoints )
+{
+  myPoints = thePoints;
+}
+
+/*!
   Gets curve's data : abscissas of points
 */
 pointList Plot2d_Curve::getPointList() const

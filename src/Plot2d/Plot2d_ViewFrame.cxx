@@ -1523,9 +1523,14 @@ void Plot2d_ViewFrame::setHorScaleMode( const int mode, bool update )
   // san -- Protection against QwtCurve bug in Qwt 0.4.x: 
   // it crashes if switched to X/Y logarithmic mode, when one or more points have
   // non-positive X/Y coordinate
-  if ( mode && !isXLogEnabled() ){
-    SUIT_MessageBox::warning(this, tr("WARNING"), tr("WRN_XLOG_NOT_ALLOWED"));
-    return;
+  if ( mode && !isXLogEnabled() ) {
+    int answer = SUIT_MessageBox::question( this, tr( "TITLE_LOG_NOT_ALLOWED" ), 
+                                            tr( "QUESTION_XLOG_NOT_ALLOWED" ), 
+                                            SUIT_MessageBox::Yes | SUIT_MessageBox::No );
+    if( answer == SUIT_MessageBox::No )
+      return;
+
+    doXLogEnabled();
   }
 
   myXMode = mode;
@@ -1548,7 +1553,13 @@ void Plot2d_ViewFrame::setVerScaleMode( const int mode, bool update )
   // it crashes if switched to X/Y logarithmic mode, when one or more points have
   // non-positive X/Y coordinate
   if ( mode && !isYLogEnabled() ){
-    SUIT_MessageBox::warning(this, tr("WARNING"), tr("WRN_YLOG_NOT_ALLOWED"));
+    int answer = SUIT_MessageBox::question( this, tr( "TITLE_LOG_NOT_ALLOWED" ), 
+                                            tr( "QUESTION_YLOG_NOT_ALLOWED" ), 
+                                            SUIT_MessageBox::Yes | SUIT_MessageBox::No );
+    if( answer == SUIT_MessageBox::No )
+      return;
+
+    doYLogEnabled();
     return;
   }
 
@@ -1799,6 +1810,14 @@ bool Plot2d_ViewFrame::isXLogEnabled() const
 }
 
 /*!
+  Remove all non-positive abscissa values
+*/
+void Plot2d_ViewFrame::doXLogEnabled()
+{
+  doLogEnabled( true );
+}
+
+/*!
   Precaution for logarithmic Y scale
 */
 bool Plot2d_ViewFrame::isYLogEnabled() const
@@ -1808,6 +1827,49 @@ bool Plot2d_ViewFrame::isYLogEnabled() const
   for ( ; allPositive && it != myPlot->getCurves().end(); it++ )
     allPositive = ( it.value()->getMinY() > 0. );
   return allPositive;
+}
+
+/*!
+  Remove all non-positive ordinate values
+*/
+void Plot2d_ViewFrame::doYLogEnabled()
+{
+  doLogEnabled( false );
+}
+
+/*!
+  Remove all non-positive abscissa or ordinate values
+*/
+void Plot2d_ViewFrame::doLogEnabled( const bool theIsAbscissa )
+{
+  CurveDict::ConstIterator it = myPlot->getCurves().begin();
+  for ( ; it != myPlot->getCurves().end(); it++ )
+  {
+    Plot2d_CurvePtr aCurve = it.value();
+    pointList aPointList = aCurve->getPointList();
+
+    bool isHasNegative = false;
+    pointList::iterator aPointIt = aPointList.begin();
+    for ( ; aPointIt != aPointList.end(); )
+    {
+      if( ( theIsAbscissa ? aPointIt->x : aPointIt->y ) > 0 )
+      {
+        aPointIt++;
+        continue;
+      }
+
+      aPointIt = aPointList.erase( aPointIt );
+      isHasNegative = true;
+    }
+
+    if( !isHasNegative )
+      continue;
+
+    aCurve->setPointList( aPointList );
+    updateCurve( aCurve, false );
+  }
+
+  myPlot->replot();
 }
 
 class Plot2d_QwtPlotZoomer : public QwtPlotZoomer

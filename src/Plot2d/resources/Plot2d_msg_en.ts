@@ -278,14 +278,22 @@
         <translation>Background color:</translation>
     </message>
     <message>
-        <source>WRN_XLOG_NOT_ALLOWED</source>
-        <translation>Some points with non-positive abscissa values have been detected.
-Logarithmic scale for abscissa axis is not allowed.</translation>
+        <source>TITLE_LOG_NOT_ALLOWED</source>
+        <translation>Logarithmic scaling not allowed</translation>
     </message>
     <message>
-        <source>WRN_YLOG_NOT_ALLOWED</source>
+        <source>QUESTION_XLOG_NOT_ALLOWED</source>
+        <translation>Some points with non-positive abscissa values have been detected.
+It is necessary to remove these points before Logarithmic scaling
+will be allowed. Some information will be lost.
+Are you sure you want to continue?</translation>
+    </message>
+    <message>
+        <source>QUESTION_YLOG_NOT_ALLOWED</source>
         <translation>Some points with non-positive ordinate values have been detected.
-Logarithmic scale for ordinate axis is not allowed.</translation>
+It is necessary to remove these points before Logarithmic scaling
+will be allowed. Some information will be lost.
+Are you sure you want to continue?</translation>
     </message>
     <message>
         <source>DSC_FITRECT</source>

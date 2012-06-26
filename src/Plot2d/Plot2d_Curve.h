@@ -63,6 +63,7 @@ public:
   void               insertPoint( int, double, double, const QString& = QString() );
   void               deletePoint( int );
   void               clearAllPoints();
+  void               setPointList( const pointList& thePoints );
   pointList          getPointList() const;
 
   void               setData( const double*, const double*, 

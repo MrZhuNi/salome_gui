@@ -127,7 +127,10 @@ public:
   // it crashes if switched to X/Y logarithmic mode, when one or more points have
   // non-positive X/Y coordinate
   bool    isXLogEnabled() const;
+  void    doXLogEnabled();
+
   bool    isYLogEnabled() const;
+  void    doYLogEnabled();
 
   virtual bool print( const QString& file = QString::null,
                       const QString& format = QString::null ) const;
@@ -158,6 +161,7 @@ protected:
   QwtPlotCurve* getPlotCurve( Plot2d_Curve* curve );
   bool    hasPlotCurve( Plot2d_Curve* curve );
   void    setCurveType( QwtPlotCurve* curve, int curveType );
+  void    doLogEnabled( const bool theIsAbscissa );
 
 public slots:
   void    onViewPan(); 
