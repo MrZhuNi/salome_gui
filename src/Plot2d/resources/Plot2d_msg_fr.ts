@@ -77,7 +77,7 @@
     </message>
     <message>
         <source>FIT_DATA_TLT</source>
-        <translation type="unfinished">Montrer le diapason des données</translation>
+        <translation type="unfinished">Montrer le plage des données</translation>
     </message>
     <message>
         <source>MNU_ZOOM_VIEW</source>
@@ -359,7 +359,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>TOT_PLOT2D_FITDATA</source>
-        <translation type="unfinished">Montrer le Diapason</translation>
+        <translation type="unfinished">Montrer le plage</translation>
     </message>
     <message>
         <source>PLOT2D_CURVE_TYPE_POINTS</source>
@@ -383,7 +383,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>PRP_PLOT2D_FITDATA</source>
-        <translation type="unfinished">Monter le diapason de données indiqué</translation>
+        <translation type="unfinished">Monter le plage de données indiqué</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_MODE_LINEAR_VER</source>
@@ -447,7 +447,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>CIRCLE_MARKER_LBL</source>
-        <translation>Circle</translation>
+        <translation>Cercle</translation>
     </message>
     <message>
         <source>LBL_TOOLBAR_LABEL</source>
