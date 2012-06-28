@@ -21,7 +21,7 @@
 
 #include "VTKViewer.h"
 
-#include <vtkGlyph3d.h>
+#include <vtkGlyph3D.h>
 
 class VTKVIEWER_EXPORT VTKViewer_Glyph3D : public vtkGlyph3D
 {
