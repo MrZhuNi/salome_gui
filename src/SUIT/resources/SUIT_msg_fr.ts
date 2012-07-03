@@ -4,6 +4,98 @@
 <context>
     <name>@default</name>
     <message>
+        <source>Save</source>
+        <translation type="unfinished">Sauvegarder</translation>
+    </message>
+    <message>
+        <source>Discard</source>
+        <translation type="unfinished">Jeter</translation>
+    </message>
+    <message>
+        <source>&amp;Open</source>
+        <translation type="unfinished">&amp;Ouvrir</translation>
+    </message>
+    <message>
+        <source>&amp;Save</source>
+        <translation type="unfinished">&amp;Sauvegarder</translation>
+    </message>
+    <message>
+        <source>&amp;Choose</source>
+        <translation type="unfinished">&amp;Choisir</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Annuler</translation>
+    </message>
+    <message>
+        <source>File &amp;name:</source>
+        <translation type="unfinished">&amp;Nom du fichier:</translation>
+    </message>
+    <message>
+        <source>Directory:</source>
+        <translation type="unfinished">&amp;Répertoire:</translation>
+    </message>
+    <message>
+        <source>Look in:</source>
+        <translation type="unfinished">Consulter:</translation>
+    </message>
+    <message>
+        <source>Files of type:</source>
+        <translation type="unfinished">Fichiers du type:</translation>
+    </message>
+    <message>
+        <source>All Files (*)</source>
+        <translation type="unfinished">Tous les Fichiers (*)</translation>
+    </message>
+    <message>
+        <source>Directories</source>
+        <translation type="unfinished">Répertoires</translation>
+    </message>
+    <message>
+        <source>&amp;Rename</source>
+        <translation type="unfinished">&amp;Renommer</translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation type="unfinished">&amp;Supprimer</translation>
+    </message>
+    <message>
+        <source>Show &amp;hidden files</source>
+        <translation type="unfinished">Montrer les fichiers &amp;cachés</translation>
+    </message>
+    <message>
+        <source>&amp;New Folder</source>
+        <translation type="unfinished">&amp;Nouveau Répertoire</translation>
+    </message>
+    <message>
+        <source>Recent Places</source>
+        <translation type="unfinished">Dossiers récents</translation>
+    </message>
+    <message>
+        <source>Back</source>
+        <translation type="unfinished">Précédent</translation>
+    </message>
+    <message>
+        <source>Forward</source>
+        <translation type="unfinished">Suivant</translation>
+    </message>
+    <message>
+        <source>Parent Directory</source>
+        <translation type="unfinished">Répertoire père</translation>
+    </message>
+    <message>
+        <source>Create New Folder</source>
+        <translation type="unfinished">Créer un Nouveau Répertoire</translation>
+    </message>
+    <message>
+        <source>List View</source>
+        <translation type="unfinished">Vue de Liste</translation>
+    </message>
+    <message>
+        <source>Detail View</source>
+        <translation type="unfinished">Vue de Détail</translation>
+    </message>
+    <message>
         <source>MEN_DESK_WINDOW</source>
         <translation type="unfinished">&amp;Fenêtre</translation>
     </message>

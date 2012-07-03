@@ -280,6 +280,23 @@
         <translation type="unfinished">Couleur d&apos;arrière-plan:</translation>
     </message>
     <message>
+        <source>TITLE_LOG_NOT_ALLOWED</source>
+        <translation>L&apos;échelle logarithmique n&apos;est pas permise</translation>
+    </message>
+    <message>
+        <source>QUESTION_XLOG_NOT_ALLOWED</source>
+        <translation>Quelques points dont les valeurs de l&apos;abscisse ne sont pas positives ont été détectées.
+Il est nécessaire d&apos;éliminer ces points avant que l&apos;échelle logarithmique soit permise.
+Les données y liées seront perdues. Voulez-vouz procéder?</translation>
+    </message>
+    <message>
+        <source>QUESTION_YLOG_NOT_ALLOWED</source>
+        <translation>Quelques points dont les valeurs de l&apos;ordonnée ne sont pas positives ont été détectées.
+Il est nécessaire d&apos;éliminer ces points avant que l&apos;échelle logarithmique soit permise.
+Les données y liées seront perdues. Voulez-vouz procéder?
+</translation>
+    </message>
+    <message>
         <source>WRN_XLOG_NOT_ALLOWED</source>
         <translation type="unfinished">On a détecté des points avec les valeurs non-positives sur l&apos;abscisse.
 L&apos;échelle logarithmique de l&apos;abscisse n&apos;est pas permise.</translation>
