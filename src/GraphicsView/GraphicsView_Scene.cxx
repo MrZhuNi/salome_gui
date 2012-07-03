@@ -143,7 +143,7 @@ void GraphicsView_Scene::wheelEvent( QGraphicsSceneWheelEvent* e )
 
   // accept the event to prevent calling QAbstractScrollArea::wheelEvent()
   // from QGraphicsView::wheelEvent(), which will change values of scroll-bars
-  e->accept();
+  // e->accept();
 
   //QGraphicsScene::wheelEvent( e ); // don't uncomment
 }
