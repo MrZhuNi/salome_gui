@@ -56,6 +56,7 @@
 #include <qwt_curve_fitter.h>
 #include <qwt_compat.h>
 #include <qwt_plot_renderer.h>
+#include <qwt_plot_layout.h>
 
 #include <iostream>
 #include <stdlib.h>
@@ -180,7 +181,7 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
   /* Initial Setup - get from the preferences */
   readPreferences();
 
-  myPlot->setMargin( 5 );
+  aLayout->setMargin( 5 );
   setCurveType( myCurveType, false );
   setXGrid( myXGridMajorEnabled, myXGridMaxMajor, myXGridMinorEnabled, myXGridMaxMinor, false );
   setYGrid( myYGridMajorEnabled, myYGridMaxMajor, myYGridMinorEnabled, myYGridMaxMinor,
@@ -1832,10 +1833,12 @@ void Plot2d_Plot2d::setPickerMousePattern( int button, int state )
 /*!
   Sets the flag saying that QwtPlot geometry has been fully defined.
 */
-void Plot2d_Plot2d::polish()
+bool Plot2d_Plot2d::event( QEvent* e )
 {
-  QwtPlot::polish();
-  myIsPolished = true;
+  if( e->type() == QEvent::Polish ){
+    myIsPolished = true;
+  }
+  return QwtPlot::event( e );
 }
 
 

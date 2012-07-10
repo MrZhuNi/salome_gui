@@ -247,9 +247,8 @@ public:
   QwtPlotGrid*        grid() { return myGrid; };
 
   QwtPlotZoomer*      getZoomer() { return myPlotZoomer; }
-
-public slots:
-  virtual void polish();
+  //to handle QEvent::Polish
+  virtual bool        event( QEvent* );
 
 protected:
   QwtPlotGrid*       myGrid;
