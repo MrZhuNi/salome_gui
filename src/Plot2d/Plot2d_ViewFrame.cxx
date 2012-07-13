@@ -915,26 +915,29 @@ int Plot2d_ViewFrame::testOperation( const QMouseEvent& me )
   const int panBtn  = Qt::ControlModifier | Qt::MidButton;
   const int fitBtn  = Qt::ControlModifier | Qt::RightButton;
   
-  if( btn == zoomBtn)
-    {
-      QPixmap zoomPixmap (imageZoomCursor);
-      QCursor zoomCursor (zoomPixmap);
-      myPlot->canvas()->setCursor( zoomCursor );
-      return ZoomId;
-    }
-    else if( btn == panBtn )
-    {
+  if ( btn == zoomBtn ) {
+    QPixmap zoomPixmap( imageZoomCursor );
+    QCursor zoomCursor( zoomPixmap );
+    myPlot->canvas()->setCursor( zoomCursor );
+    return ZoomId;
+  } else if ( btn == panBtn ) {
     myPlot->canvas()->setCursor( QCursor( Qt::SizeAllCursor ) );
     return PanId;
-    }
-    else if(btn == fitBtn)
-    {
+  } else if ( btn == fitBtn ) {
     myPlot->canvas()->setCursor( QCursor( Qt::PointingHandCursor ) );
     return FitAreaId;
-    }
-    else
+  } else {
     return NoOpId;
-  
+  }
+}
+/*!
+  Protected virtual method called by onSettings() slot, 
+  can be redefined to customize the dialog box appearance.
+  \param theDlg a pointer to the 2D plot settings dialog box instance
+  \sa onSettings()
+*/
+void Plot2d_ViewFrame::setupSettingsDlg( Plot2d_SetupViewDlg* /*theDlg*/ )
+{
 }
 
 /*!
@@ -982,6 +985,10 @@ void Plot2d_ViewFrame::onSettings()
 #endif
   
   Plot2d_SetupViewDlg* dlg = new Plot2d_SetupViewDlg( this, true, mySecondY );
+
+  // Allow derived classes to customize the dialog box appearance
+  setupSettingsDlg( dlg );
+
   dlg->setMainTitle( myTitleEnabled, myTitle );
   dlg->setXTitle( myXTitleEnabled, myXTitle );
   dlg->setYTitle( myYTitleEnabled, myYTitle );
