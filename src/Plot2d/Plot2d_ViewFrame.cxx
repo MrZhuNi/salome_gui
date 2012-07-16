@@ -1560,7 +1560,6 @@ void Plot2d_ViewFrame::setVerScaleMode( const int mode, bool update )
       return;
 
     doYLogEnabled();
-    return;
   }
 
   myYMode = mode;
