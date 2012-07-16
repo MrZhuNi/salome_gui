@@ -5,11 +5,11 @@
     <name>GLViewer_ViewFrame</name>
     <message>
         <source>DSC_DUMP_VIEW</source>
-        <translation type="unfinished">Sauver la scène actuelle au fichier image</translation>
+        <translation type="unfinished">Sauver la vue actuelle au fichier image</translation>
     </message>
     <message>
         <source>MNU_DUMP_VIEW</source>
-        <translation type="unfinished">Sauver la scène</translation>
+        <translation type="unfinished">Sauver la vue</translation>
     </message>
     <message>
         <source>DSC_RESET_VIEW</source>
@@ -39,7 +39,7 @@
     <name>GLViewer_ViewManager</name>
     <message>
         <source>GL_VIEW_TITLE</source>
-        <translation type="unfinished">GL scène:%M - visualisateur:%V</translation>
+        <translation type="unfinished">GL vue:%M - visualisateur:%V</translation>
     </message>
 </context>
 </TS>
