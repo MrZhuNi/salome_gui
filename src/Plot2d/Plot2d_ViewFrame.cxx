@@ -1987,7 +1987,10 @@ void Plot2d_Plot2d::getNextMarker( QwtSymbol::Style& typeMarker, QColor& color, 
     int aGreen  = (int)( 256.0 * rand() / RAND_MAX);    // ...
     int aBlue   = (int)( 256.0 * rand() / RAND_MAX);    // ...
     int aMarker = (int)( 9.0 * rand() / RAND_MAX) + 1;  // 9 markers types ( not including empty )
-    int aLine   = (int)( 5.0 * rand() / RAND_MAX) + 1;  // 5 line types ( not including empty )
+
+    // non-solid lines are disabled in GUITHARE
+    // (see the issue 0001211: External 20622 regression: Multi Fort21 XUSER)
+    int aLine   = Qt::SolidLine;//(int)( 5.0 * rand() / RAND_MAX) + 1;  // 5 line types ( not including empty )
 
     
     typeMarker = Plot2d::plot2qwtMarker( (Plot2d::MarkerType)aMarker );
