@@ -120,16 +120,16 @@ signals:
   void                  newDoc( const QString& );
   void                  closeDoc();
   void                  openDoc();
-  void                  saveDoc();
-  void                  saveAsDoc();
+  void                  saveDoc( bool exit );
+  void                  saveAsDoc( bool exit );
 
 public slots:
   virtual void          onNewDoc();
   virtual bool          onNewDoc( const QString& );
 
   virtual void          onCloseDoc( bool ask = true );
-  virtual void          onSaveDoc();
-  virtual bool          onSaveAsDoc();
+  virtual void          onSaveDoc( bool exit = false );
+  virtual bool          onSaveAsDoc( bool exit = false );
 
   virtual void          onOpenDoc();
   virtual bool          onOpenDoc( const QString& );

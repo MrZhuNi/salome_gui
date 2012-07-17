@@ -437,8 +437,8 @@ bool STD_Application::closeAction( const int choice, bool& closePermanently )
   {
   case CloseSave:
     if ( activeStudy()->isSaved() )
-      onSaveDoc();
-    else if ( !onSaveAsDoc() )
+      onSaveDoc( true );
+    else if ( !onSaveAsDoc( true ) )
       res = false;
     break;
   case CloseDiscard:
@@ -504,14 +504,14 @@ bool STD_Application::openAction( const int choice, const QString& aName )
 }
 
 /*!Save document if all ok, else error message.*/
-void STD_Application::onSaveDoc()
+void STD_Application::onSaveDoc( bool exit )
 {
   if ( !activeStudy() )
     return;
 
   if ( myCustomPersistence )
   {
-    emit saveDoc();
+    emit saveDoc( exit );
     return;
   }
 
@@ -540,11 +540,11 @@ void STD_Application::onSaveDoc()
   if ( isOk )
     studySaved( activeStudy() );
   else
-    onSaveAsDoc();
+    onSaveAsDoc( exit );
 }
 
 /*! \retval TRUE, if doument saved successful, else FALSE.*/
-bool STD_Application::onSaveAsDoc()
+bool STD_Application::onSaveAsDoc( bool exit )
 {
   SUIT_Study* study = activeStudy();
   if ( !study )
@@ -552,7 +552,7 @@ bool STD_Application::onSaveAsDoc()
 
   if ( myCustomPersistence )
   {
-    emit saveAsDoc();
+    emit saveAsDoc( exit );
     return true;
   }
 
