@@ -469,8 +469,8 @@ void LightApp_Application::createActions()
     if ( QFileInfo( root + aFileName ).exists() ) {
       a = createAction( id, tr( QString("GUI Help").toLatin1().constData() ),
 			resMgr->loadPixmap( "STD", tr( "ICON_HELP" ), false ),
-			tr( QString("GUI Help").toLatin1().constData() ),
-			tr( QString("GUI Help").toLatin1().constData() ),
+			tr( QString("GUI").toLatin1().constData() ),
+			tr( QString("GUI").toLatin1().constData() ),
 			0, desk, false, this, SLOT( onHelpContentsModule() ) );
       a->setObjectName( QString("GUI") );
       createMenu( a, helpModuleMenu, -1 );
@@ -484,8 +484,8 @@ void LightApp_Application::createActions()
     if ( QFileInfo( root + aFileName ).exists() ) {
       a = createAction( id, tr( QString("KERNEL Help").toLatin1().constData() ),
 			resMgr->loadPixmap( "STD", tr( "ICON_HELP" ), false ),
-			tr( QString("KERNEL Help").toLatin1().constData() ),
-			tr( QString("KERNEL Help").toLatin1().constData() ),
+			tr( QString("KERNEL").toLatin1().constData() ),
+			tr( QString("KERNEL").toLatin1().constData() ),
 			0, desk, false, this, SLOT( onHelpContentsModule() ) );
       a->setObjectName( QString("KERNEL") );
       createMenu( a, helpModuleMenu, -1 );
@@ -509,8 +509,8 @@ void LightApp_Application::createActions()
 
 	QAction* a = createAction( id, tr( (moduleTitle(modName) + QString(" Help")).toLatin1().constData() ),
 				   resMgr->loadPixmap( "STD", tr( "ICON_HELP" ), false ),
-				   tr( (moduleTitle(modName) + QString(" Help")).toLatin1().constData() ),
-				   tr( (moduleTitle(modName) + QString(" Help")).toLatin1().constData() ),
+				   tr( (moduleTitle(modName) + QString("")).toLatin1().constData() ),
+				   tr( (moduleTitle(modName) + QString("")).toLatin1().constData() ),
 				   0, desk, false, this, SLOT( onHelpContentsModule() ) );
 	a->setObjectName( modName );
 	createMenu( a, helpModuleMenu, -1 );
