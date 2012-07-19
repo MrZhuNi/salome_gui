@@ -1079,6 +1079,7 @@ void Plot2d_ViewFrame::onCurvesSettings()
   QVector< QString > aTexts( nbCurves );
   QVector< QColor > aColors( nbCurves );
   QVector< int > nbMarkers( nbCurves );
+  QVector< int > aWidths( nbCurves );
 
   QList< Plot2d_Curve* > aCurves;
 
@@ -1096,16 +1097,18 @@ void Plot2d_ViewFrame::onCurvesSettings()
       aText = aCurve->getVerTitle();
     QColor aColor = aCurve->getColor();
     int nbMarker = aCurve->getNbMarkers();
+    int aWidth = aCurve->getLineWidth();
 
     aMarkers[ i ] = aMarkerType;
     aTexts[ i ] = aText;
     aColors[ i ] = aColor;
     nbMarkers[ i ] = nbMarker;
+    aWidths[ i ] = aWidth + 1; // 0 'system' width corresponds to 1 'user' width
 
     aCurves.append( aCurve );
   }
 
-  aDlg->SetParameters( aMarkers, aTexts, aColors, nbMarkers );
+  aDlg->SetParameters( aMarkers, aTexts, aColors, nbMarkers, aWidths );
 
   if ( aDlg->exec() != QDialog::Accepted ) 
     return;
@@ -1134,7 +1137,7 @@ void Plot2d_ViewFrame::onCurvesSettings()
     anIndexToCurve[ i ] = *aCurvIter;
   }
 
-  aDlg->GetParameters( aMarkers, aTexts, aColors, nbMarkers );
+  aDlg->GetParameters( aMarkers, aTexts, aColors, nbMarkers, aWidths );
 
   int n;
   for ( i = 0, n = aMarkers.size(); i < n; i++ )
@@ -1153,6 +1156,7 @@ void Plot2d_ViewFrame::onCurvesSettings()
     }
     QColor anOldColor = aCurve->getColor();
     int anOldNbMarker = aCurve->getNbMarkers();
+    int anOldWidth = aCurve->getLineWidth();
 
     // new values
 
@@ -1160,6 +1164,7 @@ void Plot2d_ViewFrame::onCurvesSettings()
     QString aText = aTexts[ i ];
     QColor aColor = aColors[ i ];
     int nbMarker = nbMarkers[ i ];
+    int aWidth = aWidths[ i ];
 
     bool toUpdate = false;
 
@@ -1184,6 +1189,12 @@ void Plot2d_ViewFrame::onCurvesSettings()
     if ( anOldNbMarker != nbMarker )
     {
       aCurve->setNbMarkers( nbMarker );
+      toUpdate = true;
+    }
+
+    if ( anOldWidth != aWidth )
+    {
+      aCurve->setLine( aCurve->getLine(), aWidth - 1 );
       toUpdate = true;
     }
 

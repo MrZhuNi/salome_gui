@@ -2,6 +2,10 @@
 <context>
     <name>@default</name>
     <message>
+      <source>BUT_OK</source>
+      <translation>&amp;OK</translation>
+    </message>
+    <message>
         <source>PLOT2D_CURVE_TYPE_LBL</source>
         <translation>Curve type:</translation>
     </message>
@@ -537,6 +541,14 @@ Are you sure you want to continue?</translation>
 <context>
     <name>Plot2d_SetupCurvesDlg</name>
     <message>
+      <source>PLOT2D_ENTER_VALID_DATA</source>
+      <translation>Please enter valid data and try again.</translation>
+    </message>
+    <message>
+      <source>PLOT2D_INSUFFICIENT_DATA</source>
+      <translation>Insufficient input data</translation>
+    </message>
+    <message>
         <source>SETUP_CURVES</source>
         <translation>Setup curves</translation>
     </message>
@@ -563,6 +575,10 @@ Are you sure you want to continue?</translation>
     <message>
         <source>NB_MARKERS</source>
         <translation>Nb markers</translation>
+    </message>
+    <message>
+      <source>LINE_WIDTH</source>
+      <translation>Line width</translation>
     </message>
 </context>
 </TS>

@@ -54,12 +54,14 @@ public:
   void                      SetParameters( const QVector< int >& theMarker,
                                            const QVector< QString >& theText,
                                            const QVector< QColor >& theColor,
-                                           const QVector< int >& theNbMarkers );
+                                           const QVector< int >& theNbMarkers,
+                                           const QVector< int >& theWidth );
 
   void                      GetParameters( QVector< int >& theMarker,
                                            QVector< QString >& theText,
                                            QVector< QColor >& theColor,
-                                           QVector< int >& theNbMarkers ) const;
+                                           QVector< int >& theNbMarkers,
+                                           QVector< int >& theWidth ) const;
 
   const QList< int >&       GetRemovedIndexes() const;
 

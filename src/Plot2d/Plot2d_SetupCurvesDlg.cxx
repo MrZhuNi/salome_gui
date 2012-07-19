@@ -49,6 +49,7 @@
 #define MARKER_COL      2
 #define COLOR_COL       3
 #define NB_MARKERS_COL  4
+#define LINE_WIDTH_COL  5
 
 
 Plot2d_PixmapWg::Plot2d_PixmapWg( QWidget* theParent )
@@ -149,7 +150,7 @@ Plot2d_SetupCurvesDlg::Plot2d_SetupCurvesDlg( QWidget* theParent )
   aLay->addWidget( myTable );
 
   myTable->setRowCount( 0 );
-  myTable->setColumnCount( 5 );
+  myTable->setColumnCount( 6 );
 
   QStringList aLabels;
   aLabels.append( tr( "FIG" ) );
@@ -157,6 +158,7 @@ Plot2d_SetupCurvesDlg::Plot2d_SetupCurvesDlg( QWidget* theParent )
   aLabels.append( tr( "MARKER" ) );
   aLabels.append( tr( "COLOR" ) );
   aLabels.append( tr( "NB_MARKERS" ) );
+  aLabels.append( tr( "LINE_WIDTH" ) );
   myTable->setHorizontalHeaderLabels( aLabels );
   myTable->verticalHeader()->hide();
   myTable->setSelectionMode( QTableWidget::NoSelection );
@@ -175,6 +177,7 @@ Plot2d_SetupCurvesDlg::Plot2d_SetupCurvesDlg( QWidget* theParent )
   myTable->horizontalHeader()->setResizeMode( MARKER_COL, QHeaderView::Fixed );
   myTable->horizontalHeader()->setResizeMode( COLOR_COL, QHeaderView::Fixed );
   myTable->horizontalHeader()->setResizeMode( NB_MARKERS_COL, QHeaderView::Fixed );
+  myTable->horizontalHeader()->setResizeMode( LINE_WIDTH_COL, QHeaderView::Fixed );
   myTable->horizontalHeader()->setHighlightSections( false );
 
   // Minus button
@@ -189,6 +192,9 @@ Plot2d_SetupCurvesDlg::Plot2d_SetupCurvesDlg( QWidget* theParent )
 
   setButtonPosition( Right, Cancel );
   setMinimumHeight( 250 );
+
+  // TO DO: for PRECOS only
+  myTable->setColumnHidden( NB_MARKERS_COL, true );
 }
 
 /*!
@@ -247,10 +253,13 @@ void Plot2d_SetupCurvesDlg::setText( const int theRow,
 void Plot2d_SetupCurvesDlg::SetParameters( const QVector< int >& theMarker,
                                            const QVector< QString >& theText,
                                            const QVector< QColor >& theColor,
-                                           const QVector< int >& theNbMarkers )
+                                           const QVector< int >& theNbMarkers,
+                                           const QVector< int >& theWidth )
 {
-  int nbRows = qMax( qMax( theMarker.size(), theText.size()), 
-                     qMax( theColor.size(), theNbMarkers.size() ) );
+  int nbRows = qMin( qMin( theMarker.size(), theText.size()), 
+                     qMin( theColor.size(), theNbMarkers.size() ) );
+
+  nbRows = qMin( nbRows, theWidth.size() );
   
   myTable->setRowCount( nbRows );
 
@@ -289,6 +298,9 @@ void Plot2d_SetupCurvesDlg::SetParameters( const QVector< int >& theMarker,
 
     // Nb markers
     setText( i, NB_MARKERS_COL, QString( "%1" ).arg( theNbMarkers[ i ] ) );
+    
+    // Line width
+    setText( i, LINE_WIDTH_COL, QString( "%1" ).arg( theWidth[ i ] ) );
   }
 
   myTable->setColumnWidth( PIXMAP_COL, 24 );
@@ -296,9 +308,10 @@ void Plot2d_SetupCurvesDlg::SetParameters( const QVector< int >& theMarker,
   myTable->setColumnWidth( MARKER_COL, strWidth + 10 );
   myTable->setColumnWidth( COLOR_COL, fm.width( tr( "COLOR" ) ) + 10 );
   myTable->setColumnWidth( NB_MARKERS_COL, fm.width( tr( "NB_MARKERS" ) ) + 10 );
+  myTable->setColumnWidth( LINE_WIDTH_COL, fm.width( tr( "LINE_WIDTH" ) ) + 10 );
   int aWidth = myTable->columnWidth( PIXMAP_COL ) + myTable->columnWidth( TEXT_COL )+
                myTable->columnWidth( MARKER_COL ) + myTable->columnWidth( COLOR_COL ) +
-               myTable->columnWidth( NB_MARKERS_COL );
+               myTable->columnWidth( NB_MARKERS_COL ) + myTable->columnWidth( LINE_WIDTH_COL );
 
   QFrame* aWg = (QFrame*)myTable->viewport()->parentWidget();
 
@@ -320,7 +333,8 @@ void Plot2d_SetupCurvesDlg::SetParameters( const QVector< int >& theMarker,
 void Plot2d_SetupCurvesDlg::GetParameters( QVector< int >& theMarkers,
                                            QVector< QString >& theTexts,
                                            QVector< QColor >& theColors,
-                                           QVector< int >& theNbMarkers ) const
+                                           QVector< int >& theNbMarkers,
+                                           QVector< int >& theWidth ) const
 {
   int nbRows = myTable->rowCount();
 
@@ -328,6 +342,7 @@ void Plot2d_SetupCurvesDlg::GetParameters( QVector< int >& theMarkers,
   theTexts.resize( nbRows );
   theColors.resize( nbRows );
   theNbMarkers.resize( nbRows );
+  theWidth.resize( nbRows );
 
   for ( int i = 0; i < nbRows; i++ )
   {
@@ -357,6 +372,15 @@ void Plot2d_SetupCurvesDlg::GetParameters( QVector< int >& theMarkers,
       theNbMarkers[ i ] = nbMarkers;
     else 
       theNbMarkers[ i ] = -1;
+
+    // Line width
+    it = myTable->item( i, LINE_WIDTH_COL );
+    aStr = it ? it->text() : "";
+    int aWidth = aStr.toInt( &isOk );
+    if ( isOk )
+      theWidth[ i ] = aWidth;
+    else 
+      theWidth[ i ] = -1;
   }
 }
 
@@ -375,19 +399,27 @@ const QList< int >& Plot2d_SetupCurvesDlg::GetRemovedIndexes() const
 //=============================================================================
 bool Plot2d_SetupCurvesDlg::acceptData() const
 {
+  QList< int > toCheck;
+  toCheck << NB_MARKERS_COL << LINE_WIDTH_COL;
+
   ((Plot2d_SetupCurvesDlg*)this)->setButtonFocus( OK );
   int nbRows = myTable->rowCount();
   for ( int i = 0; i < nbRows; i++ )
   {
-    QTableWidgetItem* it = myTable->item( i, NB_MARKERS_COL );
-    QString aStr = it ? it->text() : "";
-    bool isOk = false;
-    int nbMarkers = aStr.toInt( &isOk );
-    if ( !isOk || nbMarkers<= 0 )
+    QList< int >::iterator colIt;
+    for ( colIt = toCheck.begin(); colIt != toCheck.end(); ++colIt )
     {
-      SUIT_MessageBox::information( (QWidget*)this, tr( "PLOT2D_INSUFFICIENT_DATA" ), 
-        tr( "PLOT2D_ENTER_VALID_DATA" ), tr( "BUT_OK" ) );
-      return false;
+      int col = *colIt;
+      QTableWidgetItem* it = myTable->item( i, col );
+      QString aStr = it ? it->text() : "";
+      bool isOk = false;
+      int aVal = aStr.toInt( &isOk );
+      if ( !isOk || aVal <= 0 )
+      {
+        SUIT_MessageBox::information( (QWidget*)this, tr( "PLOT2D_INSUFFICIENT_DATA" ), 
+          tr( "PLOT2D_ENTER_VALID_DATA" ), tr( "BUT_OK" ) );
+        return false;
+      }
     }
   }
 

@@ -4,6 +4,10 @@
 <context>
     <name>@default</name>
     <message>
+      <source>BUT_OK</source>
+      <translation>&amp;OK</translation>
+    </message>
+    <message>
         <source>PLOT2D_CURVE_TYPE_LBL</source>
         <translation type="unfinished">Type de Courbe:</translation>
     </message>
@@ -548,6 +552,14 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
 <context>
     <name>Plot2d_SetupCurvesDlg</name>
     <message>
+      <source>PLOT2D_ENTER_VALID_DATA</source>
+      <translation>Entrez les données valides et essayez de nouveau.</translation>
+    </message>
+    <message>
+      <source>PLOT2D_INSUFFICIENT_DATA</source>
+      <translation>Les données d&apos;entrée ne sont pas suffisantes.</translation>
+    </message>
+    <message>
         <source>SETUP_CURVES</source>
         <translation type="unfinished">Définir les courbes</translation>
     </message>
@@ -574,6 +586,10 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     <message>
         <source>NB_MARKERS</source>
         <translation type="unfinished">Numéro de repères</translation>
+    </message>
+    <message>
+      <source>LINE_WIDTH</source>
+      <translation>Largeur de ligne</translation>
     </message>
 </context>
 </TS>
