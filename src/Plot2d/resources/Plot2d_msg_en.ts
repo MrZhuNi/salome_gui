@@ -2,6 +2,10 @@
 <context>
     <name>@default</name>
     <message>
+      <source>BUT_OK</source>
+      <translation>&amp;OK</translation>
+    </message>
+    <message>
         <source>PLOT2D_CURVE_TYPE_LBL</source>
         <translation>Curve type:</translation>
     </message>
@@ -524,6 +528,14 @@ Logarithmic scale for ordinate axis is not allowed.</translation>
 </context>
 <context>
     <name>Plot2d_SetupCurvesDlg</name>
+    <message>
+      <source>PLOT2D_ENTER_VALID_DATA</source>
+      <translation>Please enter valid data and try again.</translation>
+    </message>
+    <message>
+      <source>PLOT2D_INSUFFICIENT_DATA</source>
+      <translation>Insufficient input data</translation>
+    </message>
     <message>
         <source>SETUP_CURVES</source>
         <translation>Setup curves</translation>
