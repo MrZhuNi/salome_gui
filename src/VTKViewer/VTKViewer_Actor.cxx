@@ -439,7 +439,9 @@ vtkFloatingPointType*
 VTKViewer_Actor
 ::GetNodeCoord(int theObjID)
 {
-  return GetInput()->GetPoint(theObjID);
+  if( theObjID >= 0 )
+    return GetInput()->GetPoint(theObjID);
+  return 0;
 }
 
 /*!
@@ -449,7 +451,9 @@ vtkCell*
 VTKViewer_Actor
 ::GetElemCell(int theObjID)
 {
-  return GetInput()->GetCell(theObjID);
+  if( theObjID >= 0 )
+    return GetInput()->GetCell(theObjID);
+  return 0;
 }
 
 /*!
