@@ -94,7 +94,7 @@ public:
   Standard_EXPORT TCollection_ExtendedString         GetShortDescription() const;
   Standard_EXPORT TCollection_AsciiString            GetComponent() const;
 
-  Standard_EXPORT TCollection_AsciiString            GetUnits() const;
+  Standard_EXPORT virtual TCollection_AsciiString    GetUnits() const;
   Standard_EXPORT virtual TCollection_AsciiString    GetUnits( const UnitSystem& ) const;
 
   Standard_EXPORT TCollection_ExtendedString         GetDefaultValue() const;
@@ -106,10 +106,10 @@ public:
   Standard_EXPORT Standard_Real                      GetMaxValue() const;
   Standard_EXPORT Standard_Real                      GetMaxValue( const UnitSystem& ) const;
 
-  Standard_EXPORT Standard_Integer                   GetPrecision() const;
+  Standard_EXPORT virtual Standard_Integer           GetPrecision() const;
   Standard_EXPORT virtual Standard_Integer           GetPrecision( const UnitSystem& ) const;
 
-  Standard_EXPORT TCollection_AsciiString            GetFormat( const Standard_Boolean = Standard_True ) const;
+  Standard_EXPORT virtual TCollection_AsciiString    GetFormat( const Standard_Boolean = Standard_True ) const;
   Standard_EXPORT virtual TCollection_AsciiString    GetFormat( const UnitSystem&,
                                                                 const Standard_Boolean = Standard_True ) const;
   Standard_EXPORT TCollection_ExtendedString         GetNameOfValues() const;
@@ -124,8 +124,8 @@ public:
   Standard_EXPORT Standard_Real                      GetMaxZoom() const;
   Standard_EXPORT Standard_Real                      GetZoomOrder() const;
 
-  Standard_EXPORT Standard_Real                      ToSI( const Standard_Real ) const;
-  Standard_EXPORT Standard_Real                      FromSI( const Standard_Real ) const;
+  Standard_EXPORT virtual Standard_Real              ToSI( const Standard_Real ) const;
+  Standard_EXPORT virtual Standard_Real              FromSI( const Standard_Real ) const;
 
   Standard_EXPORT virtual Standard_Real              ToSI( const Standard_Real, const UnitSystem& ) const;
   Standard_EXPORT virtual Standard_Real              FromSI( const Standard_Real, const UnitSystem& ) const;
