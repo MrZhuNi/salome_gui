@@ -1087,7 +1087,7 @@ void QDS_Datum::addTo( QHBoxLayout* l )
   if ( wrapper( Control ) )
     l->addWidget( wrapper( Control ) );
   if ( wrapper( Units ) )
-    l->addWidget( unitsWidget() );
+    l->addWidget( wrapper( Units ) );
 }
 
 /*!
