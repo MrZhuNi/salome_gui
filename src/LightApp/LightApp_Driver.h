@@ -31,6 +31,8 @@
 #pragma warning( disable:4251 )
 #endif
 
+typedef unsigned int t_size;
+
 class QString;
 
 /*!Description : Driver can save to file and read from file list of files for light modules*/
@@ -76,7 +78,7 @@ protected:
   void                PutNextStreamToFiles( ListOfFiles& theListOfFiles, const unsigned char* theBuffer,
                                             const long theBufferSize, bool theNamesOnly = false);
 
-  inline static size_t GetMaxBuffSize();
+  inline static t_size GetMaxBuffSize();
 
   std::string GetTmpDir();
   std::string GetDirFromPath(const std::string& thePath);
@@ -103,26 +105,26 @@ private:
   int                                        myCurrFileIndex;
   
   // writing
-  size_t                                     myCurrPos;
+  t_size                                     myCurrPos;
   unsigned char*                             myCurrBuff;
   ifstream*                                  myCurrIFile;
-  size_t                                     mySizeToBeWritten;
-  size_t*                                    myFileSizes;
-  size_t*                                    myFileNameSizes;
+  t_size                                     mySizeToBeWritten;
+  t_size*                                    myFileSizes;
+  t_size*                                    myFileNameSizes;
 
   // reading
   ofstream*                                  myCurrOFile;
   long                                       myNbFilles;
 };
 
-inline size_t LightApp_Driver::GetMaxBuffSize()
+inline t_size LightApp_Driver::GetMaxBuffSize()
 {
-  static size_t aValue = 0;
+  static t_size aValue = 0;
   if ( !aValue )
   {
     char* aVar = getenv( "HDF_BUFFER_SIZE" );
     if ( aVar )
-      aValue = (size_t)atol( aVar );
+      aValue = (t_size)atol( aVar );
     else
       aValue = 50000000;
   }

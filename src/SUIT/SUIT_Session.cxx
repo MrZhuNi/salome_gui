@@ -433,9 +433,6 @@ QString SUIT_Session::getBackupFolder() const
   if ( var )
     aRes = var;
 
-  if ( aRes.isEmpty() || !QFileInfo( aRes ).exists() )
-    aRes = QDir::tempPath();
-
   return aRes;
 }
 
@@ -530,6 +527,10 @@ void SUIT_Session::createBackupTimer()
   if ( !app )
     return;
 
+  QString backupFolder = getBackupFolder();
+  if ( backupFolder.isEmpty() )
+    return;
+
   myBTimer = new QTimer( this );
   connect( myBTimer, SIGNAL( timeout() ), this, SLOT( onBTimer() ) );
 
@@ -537,7 +538,7 @@ void SUIT_Session::createBackupTimer()
   if ( mSec > 0  )
     myBTimer->start( mSec );
 
-  QString pref = QDir::convertSeparators( getBackupFolder() + "/" + getBackupPrefix() );
+  QString pref = QDir::convertSeparators( backupFolder + "/" + getBackupPrefix() );
   myBFolder = pref;
   int i = 0;
   do
@@ -637,9 +638,13 @@ void SUIT_Session::restoreBackup()
 {
   QString pref = getBackupPrefix();
 
+  QString bkpFold = getBackupFolder();
+  if ( bkpFold .isEmpty() )
+    return;
+  
   // checks whether temp folder contains old backups
-  QDir bkpDir( getBackupFolder() );
-
+  QDir bkpDir( bkpFold );
+  
   QStringList filt;
   filt.append( pref + "*" );
   bkpDir.setNameFilters( filt );
