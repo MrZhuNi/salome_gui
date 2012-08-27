@@ -34,6 +34,7 @@
 #include "GLViewer_Grid.h"
 #include "GLViewer_Drawer.h"
 #include "GLViewer_FrameBuffer.h"
+#include "GLViewer_Group.h"
 
 #include <QtxToolTip.h>
 
@@ -447,17 +448,42 @@ void GLViewer_ViewPort2d::mouseReleaseEvent( QMouseEvent* e )
       bool isAnyMoved = false;
       GLViewer_Viewer2d* aViewer = (GLViewer_Viewer2d*)getViewFrame()->getViewer();
       GLViewer_Context* aContext = aViewer->getGLContext();
-      GLViewer_Object* aMovingObject;
+
+      ObjList anObjects;
       for( aContext->InitSelected(); aContext->MoreSelected(); aContext->NextSelected() )
       {
-        aMovingObject = aContext->SelectedObject();
-        if( aMovingObject )
-          isAnyMoved = aMovingObject->finishMove() || isAnyMoved;
+        if( GLViewer_Object* anObject = aContext->SelectedObject() )
+        {
+          if( !anObjects.contains( anObject ) )
+            anObjects.append( anObject );
+          if( GLViewer_Group* aGroup = anObject->getGroup() )
+          {
+            OGList aList = aGroup->getObjects();
+            for( OGIterator anIter = aList.begin(); anIter != aList.end(); ++anIter )
+              if( GLViewer_Object* aGroupObject = *anIter )
+                if( !anObjects.contains( aGroupObject ) )
+                  anObjects.append( aGroupObject );
+          }
+        }
       }
 
-      aMovingObject = aContext->getCurrentObject();
-      if( aMovingObject )
-        isAnyMoved = aMovingObject->finishMove() || isAnyMoved;
+      if( GLViewer_Object* anObject = aContext->getCurrentObject() )
+      {
+        if( !anObjects.contains( anObject ) )
+          anObjects.append( anObject );
+        if( GLViewer_Group* aGroup = anObject->getGroup() )
+        {
+          OGList aList = aGroup->getObjects();
+          for( OGIterator anIter = aList.begin(); anIter != aList.end(); ++anIter )
+            if( GLViewer_Object* aGroupObject = *anIter )
+              if( !anObjects.contains( aGroupObject ) )
+                anObjects.append( aGroupObject );
+        }
+      }
+
+      for( ObjList::Iterator anIter = anObjects.begin(); anIter != anObjects.end(); ++anIter )
+        if( GLViewer_Object* anObject = *anIter )
+          isAnyMoved = anObject->finishMove() || isAnyMoved;
 
       myIsDragProcess = noDrag;
       //myCurDragMousePos.setX( 0 );
