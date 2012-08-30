@@ -39,6 +39,7 @@
 #include <QWheelEvent>
 #include <QRect>
 #include <QRubberBand>
+#include <QToolBar>
 
 /* used for sketching */
 static QEvent* l_mbPressEvent = 0;
@@ -95,6 +96,17 @@ void GLViewer_Viewer::contextMenuPopup( QMenu* thePopup )
       thePopup->addSeparator();
 
   thePopup->addAction( tr( "CHANGE_BGCOLOR" ), this, SLOT( onChangeBgColor() ) );
+
+  thePopup->addSeparator();
+
+  if( GLViewer_ViewFrame* aView = getActiveView() )
+  {
+    QList<QToolBar*> aList = qFindChildren<QToolBar*>( aView );
+    QListIterator<QToolBar*> anIter( aList );
+    while( anIter.hasNext() )
+      if( QToolBar* aToolBar = anIter.next() )
+        thePopup->addAction( aToolBar->toggleViewAction() );
+  }
 }
 
 /*!
