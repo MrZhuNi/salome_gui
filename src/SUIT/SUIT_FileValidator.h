@@ -34,7 +34,7 @@ public:
   SUIT_FileValidator( QWidget* = 0 );
   
   virtual bool    canOpen( const QString&, bool = true );
-  virtual bool    canSave( const QString&, bool = true );
+  virtual bool    canSave( const QString&, bool = true, bool = false );
 
   virtual bool    canReadDir( const QString&, bool = true );
   virtual bool    canWriteDir( const QString&, bool = true );

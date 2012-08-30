@@ -81,18 +81,22 @@ bool SUIT_FileValidator::canOpen( const QString& fileName, bool checkPermission 
 
   \param fileName file path
   \param checkPermission if \c true (default) check also file permissions
+  \param quietMode if \c true notification that the file exists is not shown
   \return \c false if file exists and user rejects file overwriting 
   or if file does not have write permissions (if \a checkPermission is \c true)
 */
-bool SUIT_FileValidator::canSave( const QString& fileName, bool checkPermission ) 
+bool SUIT_FileValidator::canSave( const QString& fileName,
+                                  bool checkPermission,
+                                  bool quietMode ) 
 {
   if ( QFile::exists( fileName ) ) {
-    if ( parent() )
-      if ( SUIT_MessageBox::question( parent(), QObject::tr( "WRN_WARNING" ),
-				      QObject::tr( "QUE_DOC_FILEEXISTS" ).arg( fileName ),
-				      SUIT_MessageBox::Yes | SUIT_MessageBox::No,
-				      SUIT_MessageBox::No ) != SUIT_MessageBox::Yes )
-	return false;
+    if ( !quietMode )
+      if ( parent() )
+        if ( SUIT_MessageBox::question( parent(), QObject::tr( "WRN_WARNING" ),
+				        QObject::tr( "QUE_DOC_FILEEXISTS" ).arg( fileName ),
+				        SUIT_MessageBox::Yes | SUIT_MessageBox::No,
+				        SUIT_MessageBox::No ) != SUIT_MessageBox::Yes )
+	  return false;
     
     if ( checkPermission && !QFileInfo( fileName ).isWritable() ) {
       if ( parent() ) 

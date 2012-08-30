@@ -61,6 +61,8 @@
   in subclasses:
   - setCheckPermissions() - to enable/disable check of files/directories
     permissions
+  - setQuietMode() - to enable/disable notification that the file to be
+    saved already exists
   - setValidator() - to use custom file validator
   - addWidgets() - to add custom widgets to the lower part of the 
     dialog box
@@ -114,7 +116,8 @@ SUIT_FileDlg::SUIT_FileDlg( QWidget* parent, bool open, bool showQuickDir, bool 
   myQuickLab( 0 ),
   myQuickCombo( 0 ),
   myQuickButton( 0 ),
-  myCheckPermissions( true )
+  myCheckPermissions( true ),
+  myQuietMode( false )
 {
   setModal( modal );
   setSizeGripEnabled( true );
@@ -207,6 +210,31 @@ bool SUIT_FileDlg::checkPermissions() const
 void SUIT_FileDlg::setCheckPermissions( const bool checkPerm )
 {
   myCheckPermissions = checkPerm;
+}
+
+/*!
+  \brief Get 'quiet mode' flag.
+  \return flag value
+  \sa setQuietMode()
+*/
+bool SUIT_FileDlg::quietMode() const
+{
+  return myQuietMode;
+}
+
+/*!
+  \brief Set 'quiet mode' flag.
+ 
+  If this flag is set and file validator is not null,
+  the validator will not show the notice that the
+  chosen file exists and have to be overwritten.
+
+  \param quietMode new flag value
+  \sa quietMode()
+*/
+void SUIT_FileDlg::setQuietMode( const bool quietMode )
+{
+  myQuietMode = quietMode;
 }
 
 /*!
@@ -432,7 +460,7 @@ bool SUIT_FileDlg::acceptData()
       // validation is not required
       if ( validator() ) {
 	bOk = isOpenDlg() ? validator()->canOpen( fn, checkPermissions() ) : 
-	                    validator()->canSave( fn, checkPermissions() );
+	                    validator()->canSave( fn, checkPermissions(), quietMode() );
       }
       break;
     }

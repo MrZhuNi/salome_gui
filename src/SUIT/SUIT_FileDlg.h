@@ -46,6 +46,9 @@ public:
   bool                checkPermissions() const;
   void                setCheckPermissions( const bool );
 
+  bool                quietMode() const;
+  void                setQuietMode( const bool );
+
   SUIT_FileValidator* validator() const;
   void                setValidator( SUIT_FileValidator* );
 
@@ -117,6 +120,7 @@ private:
   QComboBox*          myQuickCombo;       //!< quick dir combo box
   QPushButton*        myQuickButton;      //!< quick dir add button
   bool                myCheckPermissions; //!< check permissions option
+  bool                myQuietMode;        //!< quiet mode option
   static QString      myLastVisitedPath;  //!< last visited path
 };
 
