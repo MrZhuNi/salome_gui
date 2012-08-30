@@ -245,7 +245,10 @@ void LightApp_Driver::SetListOfFiles( const char* theModuleName, const ListOfFil
   myMap[aName] = theListOfFiles;
 
   if ( myBloc )
+  {
     fclose( myBloc );
+    myBloc = 0;
+  }
 
   QString fName = Qtx::addSlash( theListOfFiles.front().c_str() ) + "used_by_salome";
   myBloc = fopen( fName.toLatin1().constData(), "w" );
@@ -254,7 +257,10 @@ void LightApp_Driver::SetListOfFiles( const char* theModuleName, const ListOfFil
   fName += ".fcntl";
 
   if ( myBlocFcntl )
+  {
     fclose( myBlocFcntl );
+    myBlocFcntl = 0;
+  }
   myBlocFcntl = fopen( fName.toLatin1().constData(), "w" );
   lockFcntl( QString() );
 #endif
@@ -347,6 +353,7 @@ void LightApp_Driver::RemoveTemporaryFiles( const char* theModuleName, const boo
   if ( myBloc )
   {
     fclose( myBloc );
+    myBloc = 0;
     QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome";
     QFile::remove( fName );
   }
@@ -354,6 +361,7 @@ void LightApp_Driver::RemoveTemporaryFiles( const char* theModuleName, const boo
   if ( myBlocFcntl )
   {
     fclose( myBlocFcntl );
+    myBlocFcntl = 0;
     QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome.fcntl";
     QFile::remove( fName );
   }
@@ -446,14 +454,20 @@ std::string LightApp_Driver::GetTmpDir()
   myTmpDir = aTmpDir.ToCString();
 
   if ( myBloc )
+  {
     fclose( myBloc );
+    myBloc = 0;
+  }
   QString blocName = Qtx::addSlash(tmpDir) + "used_by_salome";
   myBloc = fopen( blocName.toLatin1().constData(), "w" );
   
 #ifndef WIN32
   blocName += ".fcntl";
   if ( myBlocFcntl )
+  {
     fclose( myBlocFcntl );
+    myBlocFcntl = 0;
+  }
   myBlocFcntl = fopen( blocName.toLatin1().constData(), "w" );
   lockFcntl( QString() );
 #endif  
