@@ -118,7 +118,11 @@ QString SUIT_Application::applicationVersion() const
 void SUIT_Application::start()
 {
   if ( desktop() )
-    desktop()->show();
+  {
+    // sln: BATCH_MODE is used to launch application without desktop for automatic tests
+    if ( !getenv( "SALOME_BATCH_MODE" ) )
+      desktop()->show();
+  }
 }
 
 /*!
