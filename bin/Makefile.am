@@ -30,4 +30,5 @@ nodist_salomescript_DATA = VERSION
 # distributed files
 dist_salomescript_SCRIPTS =	\
 	runLightSalome.csh	\
+	runLightSalome2.csh \
 	runLightSalome.sh
