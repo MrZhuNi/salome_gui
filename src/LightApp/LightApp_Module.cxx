@@ -125,12 +125,6 @@ void LightApp_Module::windows( QMap<int, int>& ) const
 }
 
 /*!NOT IMPLEMENTED*/
-bool LightApp_Module::defaultWindowsState()
-{
-  return false;
-}
-
-/*!NOT IMPLEMENTED*/
 void LightApp_Module::viewManagers( QStringList& ) const
 {
 }

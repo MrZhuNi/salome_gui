@@ -31,6 +31,8 @@
 #include <QApplication>
 #include <QRegExp>
 
+#include <stdio.h>
+
 #ifdef WIN32
 #include <windows.h>
 #else

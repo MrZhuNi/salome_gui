@@ -171,6 +171,11 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
 	       SVTK_SelectionEvent* theSelectionEvent,
 	       bool theIsHighlight);
 
+  //! Returns id of the prehighlighted cell (-1 if no cell is highlighted)
+  virtual
+  int
+  GetPrehighlightedCellId() const;
+
   //! To process highlight (called from #SVTK_InteractorStyle)
   virtual 
   bool
@@ -213,6 +218,8 @@ class SVTK_EXPORT SALOME_Actor : public VTKViewer_Actor
   vtkRenderer* myRenderer;
 
   Handle(SALOME_InteractiveObject) myIO;
+
+  int myPrehighlightedCellId;
 
   SALOME_Actor();
   ~SALOME_Actor();

@@ -37,25 +37,26 @@
 #include "VTKViewer_Transform.h"
 #include "VTKViewer_Utilities.h"
 
+#include <vtkAbstractVolumeMapper.h>
+#include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
+#include <vtkDataSet.h>
+#include <vtkGenericCell.h>
+#include <vtkMapper.h>
+#include <vtkPicker.h>
+#include <vtkPointPicker.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkTextProperty.h>
 #include <vtkObjectFactory.h>
-#include <vtkCallbackCommand.h>
-
-#include <vtkPicker.h>
-#include <vtkPointPicker.h>
-#include <vtkCellPicker.h>
-
-#include <vtkProperty.h>
 
 // undefining min and max because CASCADE's defines them and
 // it clashes with std::min(), std::max() included in utilities.h
 #undef min
 #undef max
 
-
 vtkStandardNewMacro(SVTK_Renderer);
+vtkStandardNewMacro(SVTK_CellPicker);
 
 /*!
   Constructor
@@ -67,7 +68,7 @@ SVTK_Renderer
   myPriority(0.0),
   myEventCallbackCommand(vtkCallbackCommand::New()),
   myPointPicker(vtkPointPicker::New()),
-  myCellPicker(vtkCellPicker::New()),
+  myCellPicker(SVTK_CellPicker::New()),
   myPointRectPicker(SVTK_RectPicker::New()),
   myCellRectPicker(SVTK_RectPicker::New()),
   myPreHighlightProperty(vtkProperty::New()),
@@ -750,4 +751,109 @@ SVTK_Renderer
   aCamera->SetViewUp(0,0,1);
   aCamera->SetFocalPoint(0,0,0);
   this->OnFitAll();
+}
+
+/*!
+  SVTK_CellPicker constructor
+*/
+SVTK_CellPicker::SVTK_CellPicker()
+{
+  this->Cell = vtkGenericCell::New();
+}
+
+/*!
+  SVTK_CellPicker destructor
+*/
+SVTK_CellPicker::~SVTK_CellPicker()
+{
+  this->Cell->Delete();
+}
+
+/*!
+  Redefined virtual method of the vtkCellPicker class
+*/
+double SVTK_CellPicker::IntersectWithLine(double p1[3], double p2[3], double tol, 
+                                          vtkAssemblyPath *path, 
+                                          vtkProp3D *prop3D, 
+                                          vtkAbstractMapper3D *m)
+{
+  vtkIdType numCells, cellId, minCellId;
+  int i, minSubId, subId;
+  double x[3], tMin, t, pcoords[3], minXYZ[3], minPcoords[3];
+  vtkDataSet *input;
+  vtkMapper *mapper;
+  vtkAbstractVolumeMapper *volumeMapper;
+
+  // Get the underlying dataset
+  if ( (mapper=vtkMapper::SafeDownCast(m)) != NULL )
+    {
+    input = mapper->GetInput();
+    }
+  else if ( (volumeMapper=vtkAbstractVolumeMapper::SafeDownCast(m)) != NULL )
+    {
+    input = volumeMapper->GetDataSetInput();
+    }
+  else
+    {
+    return VTK_DOUBLE_MAX;
+    }
+
+  if ( (numCells = input->GetNumberOfCells()) < 1 )
+    {
+    return 2.0;
+    }
+
+  // Intersect each cell with ray.  Keep track of one closest to
+  // the eye (within the tolerance tol) and within the clipping range). 
+  // Note that we fudge the "closest to" (tMin+this->Tolerance) a little and
+  // keep track of the cell with the best pick based on parametric
+  // coordinate (pick the minimum, maximum parametric distance). This 
+  // breaks ties in a reasonable way when cells are the same distance 
+  // from the eye (like cells lying on a 2D plane).
+  //
+  minCellId = -1;
+  minSubId = -1;
+  pcoords[0] = pcoords[1] = pcoords[2] = 0;
+  double pDistMin=VTK_DOUBLE_MAX, pDist;
+  for (tMin=VTK_DOUBLE_MAX,cellId=0; cellId<numCells; cellId++) 
+    {
+    input->GetCell(cellId, this->Cell);
+
+    if ( this->Cell->IntersectWithLine(p1, p2, tol, t, x, pcoords, subId) 
+    && t <= (tMin+this->Tolerance) )
+      {
+      pDist = this->Cell->GetParametricDistance(pcoords);
+      // This is the only difference of this method from the vtkCellPicker's one
+      static double aTolerance = 1E-7;
+      //if ( pDist < pDistMin || (pDist == pDistMin && t < tMin ) )
+      if ( pDist < pDistMin || (pDist == pDistMin && t < tMin + aTolerance ) )
+        {
+        minCellId = cellId;
+        minSubId = subId;
+        for (i=0; i<3; i++)
+          {
+          minXYZ[i] = x[i];
+          minPcoords[i] = pcoords[i];
+          }
+        tMin = t;
+        pDistMin = pDist;
+//        cout << "cell id: " << minCellId << "\n";
+        }//if minimum, maximum
+      }//if a close cell
+    }//for all cells
+  
+  //  Now compare this against other actors.
+  //
+  if ( minCellId>(-1) && tMin < this->GlobalTMin ) 
+    {
+    this->MarkPicked(path, prop3D, m, tMin, minXYZ);
+    this->CellId = minCellId;
+    this->SubId = minSubId;
+    for (i=0; i<3; i++)
+      {
+      this->PCoords[i] = minPcoords[i];
+      }
+    vtkDebugMacro("Picked cell id= " << minCellId);
+    }
+  return tMin;
 }

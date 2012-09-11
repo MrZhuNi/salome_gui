@@ -28,6 +28,8 @@
 #include <QMessageBox>
 #include <QDesktopWidget>
 
+#include <stdio.h>
+
 /*!
   \class ProgressEvent
   \internal

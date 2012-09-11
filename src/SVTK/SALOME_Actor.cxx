@@ -163,6 +163,7 @@ SALOME_Actor
 ::SALOME_Actor():
   myRenderer(NULL),
   myInteractor(NULL),
+  myPrehighlightedCellId(-1),
   mySelectionMode(ActorSelection),
   myPreHighlightActor(SVTK_Actor::New()),
   myHighlightActor(SVTK_Actor::New()),
@@ -448,6 +449,7 @@ SALOME_Actor
 	       SVTK_SelectionEvent* theSelectionEvent,
 	       bool theIsHighlight)
 {
+  myPrehighlightedCellId = -1;
   if ( !GetPickable() )
     return false;
       
@@ -517,6 +519,7 @@ SALOME_Actor
 	if ( anObjId >= 0 ) {
 	  myIsPreselected = CheckDimensionId(aSelectionMode,this,anObjId);
 	  if(myIsPreselected){
+	    myPrehighlightedCellId = anObjId;
 	    const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
 	    int anExtent = aMapIndex.Extent();
 	    anIsChanged |= (anExtent == 0 || anExtent > 0 && anObjId != aMapIndex(1));
@@ -592,6 +595,16 @@ SALOME_Actor
   anIsChanged |= (anIsPreselected != myIsPreselected);
 
   return anIsChanged;
+}
+
+/*!
+  Returns id of the prehighlighted cell (-1 if no cell is highlighted)
+*/
+int
+SALOME_Actor
+::GetPrehighlightedCellId() const
+{
+  return myPrehighlightedCellId;
 }
 
 /*!
