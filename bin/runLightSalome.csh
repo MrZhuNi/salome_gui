@@ -144,4 +144,8 @@ if ( "${PYTHONPATH}" != "" ) setenv PYTHONPATH ${MY_PYTHONPATH}:${PYTHONPATH}
 # start application
 ###
 
-SUITApp LightApp -style salome $* &
+if ( ! $?SALOME_BATCH_MODE ) then
+	SUITApp LightApp -style salome $* &
+else 
+	SUITApp LightApp -style salome $*
+endif
