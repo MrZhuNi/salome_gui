@@ -344,20 +344,7 @@ void LightApp_Driver::RemoveTemporaryFiles( const char* theModuleName, const boo
   // aFiles must contain temporary directory name in its first item
   // and names of files (relatively the temporary directory) in the others
 
-  if ( myBloc )
-  {
-    fclose( myBloc );
-    QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome";
-    QFile::remove( fName );
-  }
-#ifndef WIN32
-  if ( myBlocFcntl )
-  {
-    fclose( myBlocFcntl );
-    QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome.fcntl";
-    QFile::remove( fName );
-  }
-#endif
+  FreeTemporaryFiles( theModuleName );
 
   RemoveFiles( aFiles, IsDirDeleted );
 
@@ -930,4 +917,28 @@ void LightApp_Driver::PutNextStreamToFiles( ListOfFiles& theListOfFiles,
       break;
     }
   } // for
+}
+
+/*!
+  Free locked directory with temporary files
+*/
+void LightApp_Driver::FreeTemporaryFiles( const char* theModuleName )
+{
+  std::string aModuleName(theModuleName);
+  ListOfFiles aFiles = myMap[aModuleName];
+
+  if ( myBloc )
+  {
+    fclose( myBloc );
+    QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome";
+    QFile::remove( fName );
+  }
+#ifndef WIN32
+  if ( myBlocFcntl )
+  {
+    fclose( myBlocFcntl );
+    QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome.fcntl";
+    QFile::remove( fName );
+  }
+#endif
 }

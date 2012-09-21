@@ -57,6 +57,8 @@ public:
 
   virtual void        ClearDriverContents();
 
+  void                FreeTemporaryFiles( const char* theModuleName );
+
 protected:
   /*
   void                PutFilesToStream(const std::string& theModuleName, unsigned char*& theBuffer,
