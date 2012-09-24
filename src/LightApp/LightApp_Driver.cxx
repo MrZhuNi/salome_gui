@@ -930,6 +930,7 @@ void LightApp_Driver::FreeTemporaryFiles( const char* theModuleName )
   if ( myBloc )
   {
     fclose( myBloc );
+    myBloc = 0;
     QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome";
     QFile::remove( fName );
   }
@@ -937,6 +938,7 @@ void LightApp_Driver::FreeTemporaryFiles( const char* theModuleName )
   if ( myBlocFcntl )
   {
     fclose( myBlocFcntl );
+    myBlocFcntl = 0;
     QString fName = Qtx::addSlash( aFiles.front().c_str() ) + "used_by_salome.fcntl";
     QFile::remove( fName );
   }
