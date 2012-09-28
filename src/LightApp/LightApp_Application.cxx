@@ -585,6 +585,7 @@ void LightApp_Application::createActions()
   // New window
   int windowMenu = createMenu( tr( "MEN_DESK_WINDOW" ), -1, MenuWindowId, 100 );
   int newWinMenu = createMenu( tr( "MEN_DESK_NEWWINDOW" ), windowMenu, -1, 0 );
+  int restoreWinMenu = createMenu( tr( "MEN_DESK_RESTORE" ), windowMenu, -1, 0 );
 
   createAction( CloseId, tr( "TOT_CLOSE" ), QIcon(), tr( "MEN_DESK_CLOSE" ), tr( "PRP_CLOSE" ),
                 Qt::SHIFT+Qt::Key_C, desk, false, this, SLOT( onCloseWindow() ) );
@@ -616,6 +617,17 @@ void LightApp_Application::createActions()
 #ifndef DISABLE_GRAPHICSVIEWER
   createActionForViewer( NewGraphicsViewId, newWinMenu, QString::number( 5 ), Qt::ALT+Qt::Key_R );
 #endif
+
+  createAction( RestoreDefaultId, tr( "TOT_RESTORE_DEFAULT" ), QIcon(), 
+                tr( "MEN_DESK_RESTORE_DEFAULT" ), tr( "PRP_RESTORE_DEFAULT" ),
+                0, desk, false, this, SLOT( onRestoreDefault() ) );
+
+  createAction( RestoreFromPrefsId, tr( "TOT_RESTORE_FROM_PREFERENCES" ), QIcon(), 
+                tr( "MEN_DESK_RESTORE_FROM_PREFERENCES" ), tr( "PRP_RESTORE_FROM_PREFERENCES" ),
+                0, desk, false, this, SLOT( onRestoreFromPreferences() ) );
+  
+  createMenu( RestoreDefaultId, restoreWinMenu, -1 );
+  createMenu( RestoreFromPrefsId, restoreWinMenu, -1 );
 
   createAction( RenameId, tr( "TOT_RENAME" ), QIcon(), tr( "MEN_DESK_RENAME" ), tr( "PRP_RENAME" ),
 		Qt::SHIFT+Qt::Key_R, desk, false, this, SLOT( onRenameWindow() ) );
@@ -853,6 +865,14 @@ void LightApp_Application::updateCommandsStatus()
   if( a )
     a->setEnabled( activeStudy() );
 #endif
+
+  a = action( RestoreDefaultId );
+  if( a )
+    a->setEnabled( activeStudy() );
+
+  a = action( RestoreFromPrefsId );
+  if( a )
+    a->setEnabled( activeStudy() );
 }
 
 /*!
@@ -2713,13 +2733,13 @@ void LightApp_Application::updateViewManagers()
 /*!
   Loads windows geometry
 */
-void LightApp_Application::loadDockWindowsState()
+void LightApp_Application::loadDockWindowsState( const bool theIsForced )
 {
   if ( !desktop() )
     return;
 
   bool store = resourceMgr()->booleanValue( "Study", "store_positions", true );
-  if( !store )
+  if ( !theIsForced && !store )
     return;
 
   QString modName;
@@ -3060,6 +3080,76 @@ void LightApp_Application::onGroupAllWindow()
   QtxWorkstack* wgStack = desk->workstack();
   if ( wgStack )
     wgStack->stack();
+}
+
+/*!
+  Restore default state of application windows
+*/
+void LightApp_Application::onRestoreDefault()
+{
+  if ( !activeStudy() || !desktop() )
+    return;
+
+  QMap<int, int> winMap;
+  bool restored = false;
+
+  if ( activeModule() && activeModule()->inherits( "LightApp_Module" ) )
+  {
+   ((LightApp_Module*)activeModule())->windows( winMap );
+    restored = ((LightApp_Module*)activeModule())->defaultWindowsState();
+  }
+  
+  if ( !restored )
+  {
+    if( winMap.isEmpty() )
+      defaultWindows( winMap );
+
+    QMap<int, int>::const_iterator winMapIt = winMap.constBegin();
+    for ( ; winMapIt != winMap.constEnd(); ++winMapIt )
+    {
+      QWidget* win = dockWindow( winMapIt.key() );
+      QDockWidget* dock = ::qobject_cast<QDockWidget*>( win );
+      if ( !dock )
+        dock = windowDock( win );
+
+      if ( dock  )
+      {
+        if ( !dock->isVisible() )
+          dock->setVisible( true );
+
+        if ( dock->isFloating() )
+          dock->setFloating( false );
+          
+        desktop()->addDockWidget( (Qt::DockWidgetArea)winMapIt.value(), dock );
+      }
+    }
+
+    QList<QToolBar*> tbList = qFindChildren<QToolBar*>( desktop() );
+    for ( QList<QToolBar*>::iterator tit = tbList.begin(); tit != tbList.end(); ++tit )
+    {
+      QToolBar* tb = *tit;
+
+      QObject* po = Qtx::findParent( tb, "QMainWindow" );
+      if ( po != desktop() )
+        continue;
+
+      if ( !tb->isVisible() )
+        tb->setVisible( true );
+
+      desktop()->addToolBar( Qt::TopToolBarArea, tb );
+    }
+  }
+}
+
+/*!
+  Restore application windows state from preferences file
+*/
+void LightApp_Application::onRestoreFromPreferences()
+{
+  if ( !activeStudy() || !desktop() )
+    return;
+
+  loadDockWindowsState( true );
 }
 
 /*!
