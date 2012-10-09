@@ -16,6 +16,9 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
+
+#ifndef DISABLE_HDF
+
 #ifndef LIGHTAPP_HDFDRIVER_H
 #define LIGHTAPP_HDFDRIVER_H
 
@@ -39,3 +42,5 @@ public:
 };
 
 #endif
+
+#endif //DISABLE_HDF

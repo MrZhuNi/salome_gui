@@ -16,6 +16,9 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
+
+#ifndef DISABLE_HDF
+
 #include "LightApp_HDFDriver.h"
 
 #include "HDFexplorer.hxx"
@@ -375,3 +378,5 @@ bool LightApp_HDFDriver::ReadDatasFromFile( const char* theFileName, bool isMult
 
   return !isError;
 }
+
+#endif //DISABLE_HDF

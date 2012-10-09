@@ -40,8 +40,11 @@ LightApp_Study::LightApp_Study( SUIT_Application* app )
 : CAM_Study( app )
 {
   // HDF persistence
+#ifndef DISABLE_HDF
   myDriver = new LightApp_HDFDriver();
-  //myDriver = new LightApp_Driver();
+#else
+  myDriver = new LightApp_Driver();
+#endif 
 }
 
 /*!
