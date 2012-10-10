@@ -70,6 +70,12 @@ else
     DISABLE_OCCVIEWER="yes"
 fi
 
+if test "x${enable_HDF}" != "xno" ; then
+    DISABLE_HDF="no"
+else 
+    DISABLE_HDF="yes"
+fi
+
 if test "x${enable_vtkViewer}" != "xno" ; then
     DISABLE_VTKVIEWER="no"
 else 
@@ -419,6 +425,15 @@ echo "DISABLE_OCCVIEWER = "$DISABLE_OCCVIEWER
 
 echo
 echo ---------------------------------------------
+echo Testing HDF
+echo ---------------------------------------------
+echo
+
+CHECK_HDF
+echo "DISABLE_HDF = "$DISABLE_HDF
+
+echo
+echo ---------------------------------------------
 echo Testing VTKViewer
 echo ---------------------------------------------
 echo
@@ -463,6 +478,10 @@ if test "x${GUI_DISABLE_CORBA}" != "xyes" ; then
   fi
   if test "x${DISABLE_OCCVIEWER}" == "xyes" ; then
     echo "failed : for full configuration of GUI module necessary enable OCCViewer !"
+    exit
+  fi
+  if test "x${DISABLE_HDF}" == "xyes" ; then
+    echo "failed : for full configuration of GUI module necessary enable HDF !"
     exit
   fi
   if test "x${DISABLE_VTKVIEWER}" == "xyes" ; then
@@ -572,6 +591,7 @@ AM_CONDITIONAL(ENABLE_GRAPHICSVIEW, [test "$DISABLE_GRAPHICSVIEW" = no])
 AM_CONDITIONAL(ENABLE_PLOT2DVIEWER, [test "$DISABLE_PLOT2DVIEWER" = no])
 AM_CONDITIONAL(ENABLE_SUPERVGRAPHVIEWER, [test "$DISABLE_SUPERVGRAPHVIEWER" = no])
 AM_CONDITIONAL(ENABLE_OCCVIEWER, [test "$DISABLE_OCCVIEWER" = no])
+AM_CONDITIONAL(ENABLE_HDF, [test "$DISABLE_HDF" = no])
 AM_CONDITIONAL(ENABLE_VTKVIEWER, [test "$DISABLE_VTKVIEWER" = no])
 AM_CONDITIONAL(ENABLE_SALOMEOBJECT, [test "$DISABLE_SALOMEOBJECT" = no])
 AM_CONDITIONAL(ENABLE_QXGRAPHVIEWER, [test "$DISABLE_QXGRAPHVIEWER" = no])

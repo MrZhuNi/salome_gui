@@ -25,6 +25,7 @@ check_GraphicsView.m4		\
 check_GUI.m4			\
 check_msg2qm.m4			\
 check_OCCViewer.m4		\
+check_HDF.m4		\
 check_opengl.m4			\
 check_Plot2dViewer.m4		\
 check_PyConsole.m4		\

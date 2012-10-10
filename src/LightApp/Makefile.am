@@ -163,7 +163,7 @@ nodist_salomeres_DATA =		\
 	LightApp_msg_fr.qm
 
 libLightApp_la_CPPFLAGS = $(PYTHON_INCLUDES) $(QT_INCLUDES) $(CAS_CPPFLAGS)		\
-	$(HDF5_INCLUDES) @KERNEL_CXXFLAGS@ -I$(srcdir)/../SUIT -I$(srcdir)/../STD	\
+	@KERNEL_CXXFLAGS@ -I$(srcdir)/../SUIT -I$(srcdir)/../STD	\
 	-I$(srcdir)/../CAM -I$(srcdir)/../ObjBrowser -I$(srcdir)/../LogWindow		\
 	-I$(srcdir)/../Prs -I$(srcdir)/../Qtx -I$(srcdir)/../Event -I$(srcdir)/../Style
 libLightApp_la_LDFLAGS = $(QT_MT_LIBS)
@@ -182,6 +182,11 @@ if ENABLE_OCCVIEWER
   libLightApp_la_CPPFLAGS += -I$(srcdir)/../OCCViewer
 else !ENABLE_OCCVIEWER
   libLightApp_la_CPPFLAGS += -DDISABLE_OCCVIEWER
+endif
+if ENABLE_HDF
+  libLightApp_la_CPPFLAGS += $(HDF5_INCLUDES)
+else !ENABLE_HDF
+  libLightApp_la_CPPFLAGS += -DDISABLE_HDF
 endif
 if ENABLE_PYCONSOLE
   libLightApp_la_CPPFLAGS += $(PYTHON_INCLUDES) -I$(srcdir)/../PyConsole -I$(srcdir)/../PyInterp
@@ -230,9 +235,8 @@ endif
 libLightApp_la_LIBADD = ../SUIT/libsuit.la ../STD/libstd.la ../CAM/libCAM.la			\
 	../LogWindow/libLogWindow.la $(CAS_KERNEL)						\
 	../Prs/libSalomePrs.la ../ObjBrowser/libObjBrowser.la ../Style/libSalomeStyle.la	\
-	../Event/libEvent.la									\
-	$(HDF5_LIBS) $(KERNEL_LDFLAGS) -lSalomeHDFPersist
-
+	../Event/libEvent.la									
+	
 if ENABLE_SALOMEOBJECT
   libLightApp_la_LIBADD += ../OBJECT/libSalomeObject.la
 endif
@@ -242,6 +246,11 @@ if ENABLE_SALOMEOBJECT
   libLightApp_la_LIBADD += ../SVTK/libSVTK.la
 endif
 endif
+
+if ENABLE_HDF
+  libLightApp_la_LIBADD += $(HDF5_LIBS) $(KERNEL_LDFLAGS) -lSalomeHDFPersist
+endif
+
 if ENABLE_OCCVIEWER
   libLightApp_la_LIBADD += ../OCCViewer/libOCCViewer.la
 if ENABLE_SALOMEOBJECT
