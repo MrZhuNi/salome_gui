@@ -69,7 +69,8 @@ class SALOMEAPP_EXPORT SalomeApp_Application : public LightApp_Application
 public:
   enum { MenuToolsId = 5 };
   enum { DumpStudyId = LightApp_Application::UserID, LoadScriptId, PropertiesId,
-         CatalogGenId, RegDisplayId, SaveGUIStateId, FileLoadId, NoteBookId, UserID };
+         CatalogGenId, RegDisplayId, SaveGUIStateId, FileLoadId, NoteBookId, UserID,
+         SimanCheckInId, SimanLocalCheckInId };
 
 protected:
   enum { OpenRefresh = LightApp_Application::OpenReload + 1 };
@@ -120,11 +121,14 @@ public slots:
   virtual void                        onNewWithScript();
   virtual bool                        onLoadDoc( const QString& );
   virtual void                        onCloseDoc( bool ask = true);
+  virtual void                        onLoadDocMessage(const QString&);
 
   virtual void                        onExit();
   virtual void                        onCopy();
   virtual void                        onPaste();
   void                                onSaveGUIState();// called from VISU
+  virtual void                        onCheckIn();
+  virtual void                        onLocalCheckIn();
 
 protected slots:
   void                                onStudyCreated( SUIT_Study* );
@@ -179,6 +183,7 @@ private:
 private:
   SalomeApp_NoteBookDlg*              myNoteBook;
   QMap<QString, QAction*>             myExtActions; // Map <AttributeUserID, QAction>
+  bool                                myIsSiman; // application corresponds to the siman study flag
 };
 
 #ifdef WIN32

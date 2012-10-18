@@ -302,9 +302,9 @@ void SALOME_Session_i::emitMessage(const char* theMessage)
     if ( SUIT_Session::session()->activeApplication() ) {
       if ( SUIT_Session::session()->activeApplication()->desktop() ) {
         ProcessVoidEvent( new TEvent(theMessage) );
-      }
-    }
-  }
+      } else MESSAGE("try to emit message '"<<theMessage<<"' but there is no desktop")
+    } else MESSAGE("try to emit message '"<<theMessage<<"' but there is no application")
+  } else MESSAGE("try to emit message '"<<theMessage<<"' but there is no session")
 }
 
 void SALOME_Session_i::emitMessageOneWay(const char* theMessage)
