@@ -21,6 +21,9 @@
 //
 
 #include "SUIT_Tools.h"
+#include "SUIT_Application.h"
+#include "SUIT_Desktop.h"
+#include "SUIT_ViewWindow.h"
 
 #include <QDir>
 
@@ -87,4 +90,25 @@ QString SUIT_Tools::fontToString( const QFont& font )
 void SUIT_Tools::centerWidget( QWidget* src, const QWidget* ref )
 {
   SUIT_Tools::alignWidget( src, ref, Qt::AlignCenter );
+}
+
+/*!
+  Get view windows - children of application \a app -
+  compatible to camera properties specified with \a props.
+*/
+QList<SUIT_ViewWindow*> SUIT_Tools::compatibleViews( SUIT_Application* app, const SUIT_CameraProperties& props )
+{
+  QList<SUIT_ViewWindow*> views;
+  if ( app && props.isValid() ) {
+    SUIT_Desktop* d = app->desktop();
+    if ( d ) {
+      QList<SUIT_ViewWindow*> allViews = qFindChildren<SUIT_ViewWindow*>( d );
+      foreach( SUIT_ViewWindow* view, allViews ) {
+	SUIT_CameraProperties otherProps = view->cameraProperties();
+	if ( otherProps.isCompatible( props ) )
+	  views << view;
+      }
+    }
+  }
+  return views;
 }

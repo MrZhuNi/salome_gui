@@ -62,7 +62,8 @@ salomeinclude_HEADERS =			\
 	SUIT_ViewManager.h		\
 	SUIT_ViewModel.h		\
 	SUIT_ViewWindow.h		\
-	SUIT_ShortcutMgr.h
+	SUIT_ShortcutMgr.h		\
+	SUIT_CameraProperties.h
 
 dist_libsuit_la_SOURCES =		\
 	SUIT_Accel.cxx			\
@@ -94,7 +95,8 @@ dist_libsuit_la_SOURCES =		\
 	SUIT_ViewManager.cxx		\
 	SUIT_ViewModel.cxx		\
 	SUIT_ViewWindow.cxx		\
-	SUIT_ShortcutMgr.cxx
+	SUIT_ShortcutMgr.cxx		\
+	SUIT_CameraProperties.cxx
 
 MOC_FILES =				\
 	SUIT_Accel_moc.cxx		\
@@ -124,11 +126,11 @@ nodist_salomeres_DATA =			\
 	SUIT_msg_en.qm			\
 	SUIT_msg_fr.qm                  \
 	SUIT_images.qm
-		
+
 dist_salomeres_DATA =                     \
 	resources/icon_visibility_on.png  \
-	resources/icon_visibility_off.png
-				
+	resources/icon_visibility_off.png \
+	resources/view_sync.png
 
 libsuit_la_CPPFLAGS = $(QT_INCLUDES) -I$(srcdir)/../Qtx -I$(srcdir)/../ObjBrowser
 

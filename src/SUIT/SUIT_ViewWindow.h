@@ -26,6 +26,7 @@
 #define SUIT_VIEWWINDOW_H
 
 #include "SUIT.h"
+#include "SUIT_CameraProperties.h"
 
 #include <QMainWindow>
 #include <QList>
@@ -71,6 +72,9 @@ public:
   virtual void      setDropDownButtons( bool );
   bool              dropDownButtons() const;
 
+  virtual SUIT_CameraProperties cameraProperties();
+  virtual QAction*  synchronizeAction();
+
 public slots:
   virtual void      onDumpView();
 
@@ -85,7 +89,8 @@ signals:
   void              keyPressed( SUIT_ViewWindow*, QKeyEvent* );
   void              keyReleased( SUIT_ViewWindow*, QKeyEvent* );
   void              contextMenuRequested( QContextMenuEvent *e );
-
+  void              viewModified( SUIT_ViewWindow* );
+  
 protected:
   void              closeEvent( QCloseEvent* );
   virtual void      contextMenuEvent( QContextMenuEvent* );
@@ -93,15 +98,24 @@ protected:
   virtual bool      action( const int );
   virtual bool      dumpViewToFormat( const QImage&, const QString& fileName, const QString& format );
 
+  static void       synchronizeView( SUIT_ViewWindow* viewWindow, int id );
+  
   SUIT_Desktop*     myDesktop;
   SUIT_ViewManager* myManager;
 
+protected slots:
+  void              updateSyncViews();
+  void              onSynchronizeView(bool);
+  virtual void      synchronize( SUIT_ViewWindow* );
+  void              emitViewModified();
+  
 private:
   typedef QMap< int, QList<QtxMultiAction*> > ActionsMap;
 
   QtxActionToolMgr* myToolMgr;
   bool              myIsDropDown;
   ActionsMap        myMultiActions;
+  QAction*          mySyncAction;
 };
 
 #endif // SUIT_VIEWWINDOW_H

@@ -30,6 +30,11 @@
 #include <QRect>
 #include <QString>
 #include <QFont>
+#include <QList>
+
+class SUIT_Application;
+class SUIT_CameraProperties;
+class SUIT_ViewWindow;
 
 /*!
   \class SUIT_Tools
@@ -45,6 +50,8 @@ public:
   static QFont   stringToFont( const QString& fontDescription );
 
   static void    centerWidget( QWidget* src, const QWidget* ref );
+
+  static QList<SUIT_ViewWindow*> compatibleViews( SUIT_Application* app, const SUIT_CameraProperties& props );
 };
 
 #endif
