@@ -197,7 +197,6 @@ Handle(V3d_Viewer) OCCViewer_ViewPort3d::getViewer() const
 */
 bool OCCViewer_ViewPort3d::syncronize( const OCCViewer_ViewPort3d* ref )
 {
-  printf("OCCViewer_ViewPort3d::syncronize(WRONG): %x\n", this);
   OCCViewer_ViewPort3d* ref3d = (OCCViewer_ViewPort3d*)ref;
   Handle(V3d_View) refView = ref3d->getView();
   Handle(V3d_View) tgtView = getView();

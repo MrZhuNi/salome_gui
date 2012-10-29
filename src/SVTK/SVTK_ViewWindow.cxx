@@ -1023,7 +1023,6 @@ void SVTK_ViewWindow::onAdjustCubeAxes()
 
 void SVTK_ViewWindow::synchronize(SVTK_ViewWindow* otherViewWindow )
 {
-  printf("SVTK_ViewWindow::synchronize(WRONG): %x\n", this);
   if ( otherViewWindow ) {
     bool blocked = blockSignals( true );
     doSetVisualParameters( otherViewWindow->getVisualParameters(), true );
@@ -2419,7 +2418,6 @@ SUIT_CameraProperties SVTK_ViewWindow::cameraProperties()
 */
 void SVTK_ViewWindow::synchronize( SUIT_ViewWindow* theView )
 {
-  printf("SVTK_ViewWindow::synchronize: %x\n", this);
   bool blocked = blockSignals( true );
 
   SUIT_CameraProperties aProps = theView->cameraProperties();

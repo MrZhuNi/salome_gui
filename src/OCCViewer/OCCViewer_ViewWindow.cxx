@@ -2560,7 +2560,6 @@ SUIT_CameraProperties OCCViewer_ViewWindow::cameraProperties()
 */
 void OCCViewer_ViewWindow::synchronize( SUIT_ViewWindow* theView )
 {
-  printf("OCCViewer_ViewWindow::synchronize: %x\n", this);
   bool blocked = blockSignals( true );
 
   SUIT_CameraProperties aProps = theView->cameraProperties();
