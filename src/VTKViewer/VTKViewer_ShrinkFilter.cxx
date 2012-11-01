@@ -76,6 +76,8 @@ int VTKViewer_ShrinkFilter::RequestData(
   vtkIdType tenth;
   vtkFloatingPointType decimal;
 
+  vtkIdType* pointMap = new vtkIdType[input->GetNumberOfPoints()];
+
   vtkDebugMacro(<<"Shrinking cells");
 
   numCells=input->GetNumberOfCells();
@@ -150,9 +152,25 @@ int VTKViewer_ShrinkFilter::RequestData(
       newId = newPts->InsertNextPoint(pt);
       if(myStoreMapping)
 	myVTK2ObjIds.push_back(oldId);
-      newPtIds->InsertId(i,newId);
 
       outPD->CopyData(pd, oldId, newId);
+
+      pointMap[oldId] = newId;
+      }
+
+    // special handling for polyhedron cells
+    if (vtkUnstructuredGrid::SafeDownCast(input) &&
+        input->GetCellType(cellId) == VTK_POLYHEDRON)
+      {
+      vtkUnstructuredGrid::SafeDownCast(input)->GetFaceStream(cellId, newPtIds);
+      vtkUnstructuredGrid::ConvertFaceStreamPointIds(newPtIds, pointMap);
+      }
+    else
+      {
+      for(vtkIdType i=0; i < numIds; ++i)
+        {
+        newPtIds->InsertId(i, pointMap[ptIds->GetId(i)]);
+        }
       }
     output->InsertNextCell(input->GetCellType(cellId), newPtIds);
     }//for all cells
@@ -167,6 +185,8 @@ int VTKViewer_ShrinkFilter::RequestData(
   ptIds->Delete();
   newPtIds->Delete();
   newPts->Delete();
+
+  delete [] pointMap;
   
   return 1;
 }
