@@ -64,6 +64,8 @@ SUIT_CameraProperties::SUIT_CameraProperties()
   myDimension   = DimNone;        // none dimension by default
   myProjection  = PrjOrthogonal;  // orthogonal projection by default
   myViewSide    = ViewNone;       // no side view by default
+  
+  myViewAngle = 45.0;
 }
 
 /*!
@@ -371,4 +373,24 @@ void SUIT_CameraProperties::setAxialScale(const double theScaleX, const double t
   myAxialScale[0] = theScaleX;
   myAxialScale[1] = theScaleY;
   myAxialScale[2] = theScaleZ;
+}
+
+/*!
+  \brief get angle (typically in degrees) of view for perpective projection mode.
+  \return the angle of view.
+  \sa setViewAngle()
+*/
+double SUIT_CameraProperties::getViewAngle() const
+{
+  return myViewAngle;
+}
+
+/*!
+  \brief set angle (typically in degrees) of view for perpective projection mode.
+  \param theViewAngle [in] the angle of view.
+  \sa getViewAngle()
+*/
+void SUIT_CameraProperties::setViewAngle(const double theViewAngle)
+{
+  myViewAngle = theViewAngle;
 }

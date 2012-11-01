@@ -1542,7 +1542,10 @@ void OCCViewer_ViewWindow::onAxialScale()
     myScalingDlg = new OCCViewer_AxialScaleDlg( this );
   
   if ( !myScalingDlg->isVisible() )
+  {
+    myScalingDlg->Update();
     myScalingDlg->show();
+  }
 }
 
 /*!
@@ -2513,15 +2516,25 @@ SUIT_CameraProperties OCCViewer_ViewWindow::cameraProperties()
   Standard_Real aPrjDir[3];
   Standard_Real aMapScale[2];
   Standard_Real aTranslation[3];
-
+  Standard_Real anAxialScale[3];
+  
   aSourceView->Up(anUpDir[0], anUpDir[1], anUpDir[2]);
   aSourceView->Proj(aPrjDir[0], aPrjDir[1], aPrjDir[2]);
   aSourceView->At(aTranslation[0], aTranslation[1], aTranslation[2]);
   aSourceView->Size(aMapScale[0], aMapScale[1]);
 
+  getViewPort()->getAxialScale(anAxialScale[0], anAxialScale[1], anAxialScale[2]);
+
+  // we use similar depth to the one used in perspective projection 
+  // to proivde a convinience synchronization with other camera views that
+  // can switch between orthogonal & perspective projection. otherwise,
+  // the camera will get to close when switching from orthogonal to perspective.
+  Standard_Real aCameraDepth = aSourceView->Depth() + aSourceView->ZSize() * 0.5;
+
   // store common props
   aProps.setViewUp(anUpDir[0], anUpDir[1], anUpDir[2]);
   aProps.setMappingScale(aMapScale[1] / 2.0);
+  aProps.setAxialScale(anAxialScale[0], anAxialScale[1], anAxialScale[2]);
   
   // generate view orientation matrix for transforming OCC projection reference point
   // into a camera (eye) position.
@@ -2539,14 +2552,14 @@ SUIT_CameraProperties OCCViewer_ViewWindow::cameraProperties()
   Graphic3d_Vertex aProjRef = aSourceView->ViewMapping().ProjectionReferencePoint();
   
   // transform to world-space coordinate system
-  gp_Pnt aPosition = gp_Pnt(aProjRef.X(), aProjRef.Y(), aProjRef.Z()).Transformed(aTrsf);
+  gp_Pnt aPosition = gp_Pnt(aProjRef.X(), aProjRef.Y(), aCameraDepth).Transformed(aTrsf);
   
   // compute focal point
   double aFocalPoint[3];
 
-  aFocalPoint[0] = aPosition.X() - aPrjDir[0] * aProjRef.Z();
-  aFocalPoint[1] = aPosition.Y() - aPrjDir[1] * aProjRef.Z();
-  aFocalPoint[2] = aPosition.Z() - aPrjDir[2] * aProjRef.Z();
+  aFocalPoint[0] = aPosition.X() - aPrjDir[0] * aCameraDepth;
+  aFocalPoint[1] = aPosition.Y() - aPrjDir[1] * aCameraDepth;
+  aFocalPoint[2] = aPosition.Z() - aPrjDir[2] * aCameraDepth;
 
   aProps.setFocalPoint(aFocalPoint[0], aFocalPoint[1], aFocalPoint[2]);
   aProps.setPosition(aPosition.X(), aPosition.Y(), aPosition.Z());
@@ -2564,19 +2577,21 @@ void OCCViewer_ViewWindow::synchronize( SUIT_ViewWindow* theView )
 
   SUIT_CameraProperties aProps = theView->cameraProperties();
 
-  Handle(V3d_View) aSourceView = getViewPort()->getView();
+  Handle(V3d_View) aDestView = getViewPort()->getView();
 
-  aSourceView->SetImmediateUpdate( Standard_False );
+  aDestView->SetImmediateUpdate( Standard_False );
 
   double anUpDir[3];
   double aPosition[3];
   double aFocalPoint[3];
   double aMapScaling;
+  double anAxialScale[3];
 
   // get common properties
   aProps.getFocalPoint(aFocalPoint[0], aFocalPoint[1], aFocalPoint[2]);
   aProps.getPosition(aPosition[0], aPosition[1], aPosition[2]);
   aProps.getViewUp(anUpDir[0], anUpDir[1], anUpDir[2]);
+  aProps.getAxialScale(anAxialScale[0], anAxialScale[1], anAxialScale[2]);
   aMapScaling = aProps.getMappingScale() * 2.0;
 
   gp_Dir aProjDir(aPosition[0] - aFocalPoint[0],
@@ -2585,7 +2600,7 @@ void OCCViewer_ViewWindow::synchronize( SUIT_ViewWindow* theView )
   
   // get custom view translation
   Standard_Real aTranslation[3];
-  aSourceView->At(aTranslation[0], aTranslation[1], aTranslation[2]);
+  aDestView->At(aTranslation[0], aTranslation[1], aTranslation[2]);
 
   gp_Dir aLeftDir = gp_Dir(anUpDir[0], anUpDir[1], anUpDir[2]).Crossed(
     gp_Dir(aProjDir.X(), aProjDir.Y(), aProjDir.Z()));
@@ -2603,26 +2618,41 @@ void OCCViewer_ViewWindow::synchronize( SUIT_ViewWindow* theView )
   gp_Pnt aProjRef(aPosition[0], aPosition[1], aPosition[2]);
   aProjRef.Transform(aTrsf);
 
-  aSourceView->SetProj(aProjDir.X(), aProjDir.Y(), aProjDir.Z());
+  // set view camera properties using low-level approach. this is done
+  // in order to avoid interference with static variables in v3d view used
+  // when rotation is in process in another view.
+  Visual3d_ViewMapping aMapping = aDestView->View()->ViewMapping();
+  Visual3d_ViewOrientation anOrientation = aDestView->View()->ViewOrientation();
 
-  aSourceView->SetUp((Standard_Real)anUpDir[0],
-                     (Standard_Real)anUpDir[1],
-                     (Standard_Real)anUpDir[2]);
+  Graphic3d_Vector aMappingProj(aProjDir.X(), aProjDir.Y(), aProjDir.Z());
+  Graphic3d_Vector aMappingUp(anUpDir[0], anUpDir[1], anUpDir[2]);
+
+  aMappingProj.Normalize();
+  aMappingUp.Normalize();
+
+  anOrientation.SetViewReferencePlane(aMappingProj);
+  anOrientation.SetViewReferenceUp(aMappingUp);
+
+  aDestView->SetViewMapping(aMapping);
+  aDestView->SetViewOrientation(anOrientation);
 
   // set panning
-  aSourceView->SetCenter(aProjRef.X(), aProjRef.Y());
+  aDestView->SetCenter(aProjRef.X(), aProjRef.Y());
 
   // set mapping scale
   Standard_Real aWidth, aHeight;
-  aSourceView->Size(aWidth, aHeight);
+  aDestView->Size(aWidth, aHeight);
   
   if ( aWidth > aHeight )
-    aSourceView->SetSize (aMapScaling * (aWidth / aHeight));
+    aDestView->SetSize (aMapScaling * (aWidth / aHeight));
   else
-    aSourceView->SetSize (aMapScaling);
+    aDestView->SetSize (aMapScaling);
 
-  aSourceView->Update();
-  aSourceView->SetImmediateUpdate( Standard_True );
+  getViewPort()->setAxialScale(anAxialScale[0], anAxialScale[1], anAxialScale[2]);
+
+  aDestView->ZFitAll();
+  aDestView->SetImmediateUpdate( Standard_True );
+  aDestView->Redraw();
 
   blockSignals( blocked );
 }

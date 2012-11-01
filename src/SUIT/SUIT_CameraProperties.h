@@ -65,6 +65,9 @@ public:
   void       getAxialScale(double& theScaleX, double& theScaleY, double& theScaleZ);
   void       setAxialScale(const double theScaleX, const double theScaleY, const double theScaleZ);
 
+  double     getViewAngle() const;
+  void       setViewAngle(const double theViewAngle);
+  
 // common properties for all viewers
 private:
   Dimension  myDimension;        //!< dimension
@@ -76,6 +79,7 @@ private:
   double     myClippingRange[2]; //!< distance to front and back clipping planes
   double     myMappingScale;     //!< window mapping scale (parallel projection scale)
   double     myAxialScale[3];    //!< scaling factors for world axes
+  double     myViewAngle;        //!< perspective view angle in degrees
 };
 
 #endif // SUIT_CAMERAPROPERITES_H
