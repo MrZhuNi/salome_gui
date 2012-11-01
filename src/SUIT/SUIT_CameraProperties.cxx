@@ -51,10 +51,7 @@ SUIT_CameraProperties::SUIT_CameraProperties()
   myFocalPoint[0] = 0.0;
   myFocalPoint[1] = 0.0;
   myFocalPoint[2] = 0.0;
-  
-  myClippingRange[0] = 0.01;
-  myClippingRange[1] = 1000;
-  
+    
   myAxialScale[0] = 1.0;
   myAxialScale[1] = 1.0;
   myAxialScale[2] = 1.0;
@@ -281,42 +278,6 @@ void SUIT_CameraProperties::setFocalPoint(const double theX, const double theY, 
   myFocalPoint[0] = theX;
   myFocalPoint[1] = theY;
   myFocalPoint[2] = theZ;
-}
-
-/*!
-  \brief get clipping range.
-
-  The clipping range defines distances to near and far planes of 
-  a clipping volume from a camera plane.
-
-  The values should be higher than 0. 
-  
-  \param theNear [out] distance to the near clipping plane.
-  \param theFar [out] distance to the far clipping plane.
-  \sa setClippingRange()
-*/
-void SUIT_CameraProperties::getClippingRange(double& theNear, double& theFar) const
-{
-  theNear = myClippingRange[0];
-  theFar  = myClippingRange[1];
-}
-
-/*!
-  \brief set clipping range.
-
-  The clipping range defines distances to near and far planes of
-  a clipping volume from a camera plane.
-
-  The values should be higher than 0. 
-
-  \param theNear [in] distance to the near clipping plane.
-  \param theFar [in] distance to the far clipping plane.
-  \sa getClippingRange()
-*/
-void SUIT_CameraProperties::setClippingRange(const double theNear, const double theFar)
-{
-  myClippingRange[0] = theNear;
-  myClippingRange[1] = theFar;
 }
 
 /*!

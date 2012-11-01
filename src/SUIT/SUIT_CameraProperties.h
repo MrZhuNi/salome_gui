@@ -56,9 +56,6 @@ public:
   void       getFocalPoint(double& theX, double& theY, double& theZ) const;
   void       setFocalPoint(const double theX, const double theY, const double theZ);
 
-  void       getClippingRange(double& theNear, double& theFar) const;
-  void       setClippingRange(const double theNear, const double theFar);
-
   double     getMappingScale() const;
   void       setMappingScale(const double theScale);
 
@@ -76,7 +73,6 @@ private:
   double     myUpDir[3];         //!< camera up vector
   double     myPosition[3];      //!< camera position (eye).
   double     myFocalPoint[3];    //!< focal point position in world-space coordinates
-  double     myClippingRange[2]; //!< distance to front and back clipping planes
   double     myMappingScale;     //!< window mapping scale (parallel projection scale)
   double     myAxialScale[3];    //!< scaling factors for world axes
   double     myViewAngle;        //!< perspective view angle in degrees
