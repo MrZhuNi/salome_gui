@@ -31,7 +31,7 @@ AC_DEFUN([OPTIONS_VTK], [
               [with_vtk=$withval], [with_vtk=""])
 
   AC_ARG_WITH([vtk-version],
-              [AC_HELP_STRING([--with-vtk-version], [VTK include directory name is vtk-suffix, e.g. vtk-5.2/. What is the suffix? (Default "yes" means taking from environment variable)])],
+              [AC_HELP_STRING([--with-vtk-version], [VTK include directory name is vtk-suffix, e.g. vtk-5.8/. What is the suffix? (Default "yes" means taking from environment variable)])],
               [vtk_suffix=$withval], [vtk_suffix="yes"])
 ])
 
@@ -102,7 +102,7 @@ if test "x$vtk_suffix" != "xyes" ; then
 else
   dnl in case user wrote --with-vtk-version=yes, get the suffix from env
   if test -z $VTKSUFFIX ; then
-    VTKSUFFIX="-5.2"
+    VTKSUFFIX="-5.8"
   fi
 fi
 
@@ -131,10 +131,10 @@ else
         VTKHOME="${d}"
         break
       else
-        if test -f ${d}/include/vtk-5.2/vtkPlane.h ; then
+        if test -f ${d}/include/vtk-5.8/vtkPlane.h ; then
           AC_MSG_RESULT(trying ${d})
           VTKHOME="${d}"
-          VTKSUFFIX="-5.2"
+          VTKSUFFIX="-5.8"
           break
         else
           if test -f ${d}/include/vtk/vtkPlane.h ; then
