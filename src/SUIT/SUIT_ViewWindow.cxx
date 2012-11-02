@@ -262,7 +262,7 @@ QtxActionToolMgr* SUIT_ViewWindow::toolMgr() const
 }
 
 /*!
-  \brief Set buttons mode to drop-down (\a on = \c true) or ligned (\a on = \c false) 
+  \brief Set buttons mode to drop-down (\a on = \c true) or ligned (\a on = \c false)
   \param on new buttons mode
   \sa dropDownButtons()
 */
@@ -323,7 +323,7 @@ bool SUIT_ViewWindow::dropDownButtons() const
 }
 
 /*!
-  \return window unique identifier  
+  \return window unique identifier
 */
 int SUIT_ViewWindow::getId() const
 {
@@ -342,7 +342,7 @@ SUIT_CameraProperties SUIT_ViewWindow::cameraProperties()
 
 /*!
   Synchronize this view window's camera properties with specified
-  view window. 
+  view window.
 
   This method is a part of general views synchronization mechanism.
   It should be redefined in successors. Base imlementation does nothing.
@@ -392,23 +392,49 @@ void SUIT_ViewWindow::emitViewModified()
 */
 void SUIT_ViewWindow::updateSyncViews()
 {
+  SUIT_CameraProperties props = cameraProperties();
+  if ( !props.isValid() )
+    return;
+
   QAction* anAction = synchronizeAction();
   if ( anAction && anAction->menu() ) {
     int currentId = anAction->data().toInt();
     anAction->menu()->clear();
     SUIT_Application* app = SUIT_Session::session()->activeApplication();
-    if ( app ) { 
-      QList<SUIT_ViewWindow*> views = SUIT_Tools::compatibleViews( app, cameraProperties() );
-      foreach ( SUIT_ViewWindow* view, views ) {
-	if ( !view || view == this ) continue;
-	QAction* a = anAction->menu()->addAction( view->windowTitle() );
-	if ( view->getId() == currentId ) {
-	  QFont f = a->font();
-	  f.setBold( true );
-	  a->setFont( f );
+    if ( app ) {
+      SUIT_Desktop* d = app->desktop();
+      QList<SUIT_ViewWindow*> allViews = qFindChildren<SUIT_ViewWindow*>( d );
+      foreach( SUIT_ViewWindow* vw, allViews ) {
+	if ( !vw || vw == this ) continue; // skip invalid views and this one
+	SUIT_CameraProperties otherProps = vw->cameraProperties();
+	if ( otherProps.isCompatible( props ) ) {
+	  QAction* a = anAction->menu()->addAction( vw->windowTitle() );
+	  if ( vw->getId() == currentId ) {
+	    QFont f = a->font();
+	    f.setBold( true );
+	    a->setFont( f );
+	  }
+	  a->setData( vw->getId() );
+	  connect( a, SIGNAL( triggered( bool ) ), this, SLOT( onSynchronizeView( bool ) ) );
 	}
-	a->setData( view->getId() );
-	connect( a, SIGNAL( triggered( bool ) ), this, SLOT( onSynchronizeView( bool ) ) );
+	else if ( vw->getId() == currentId ) {
+	  // other view, this one is being currently synchronized to, seems has become incompatible
+	  // we have to break synchronization
+	  vw->disconnect( SIGNAL( viewModified( SUIT_ViewWindow* ) ), this, SLOT( synchronize( SUIT_ViewWindow* ) ) );
+	  this->disconnect( SIGNAL( viewModified( SUIT_ViewWindow* ) ), vw, SLOT( synchronize( SUIT_ViewWindow* ) ) );
+	  // 
+	  bool blocked = anAction->blockSignals( true );
+	  anAction->setChecked( false );
+	  anAction->blockSignals( blocked );
+	  anAction->setData( 0 );
+	  //
+	  QAction* a = vw->synchronizeAction();
+	  if ( a ) {
+	    blocked = a->blockSignals( true );
+	    a->setChecked( false );
+	    a->blockSignals( blocked );
+	  }
+	}
       }
     }
     if ( anAction->menu()->actions().isEmpty() ) {
@@ -430,7 +456,7 @@ void SUIT_ViewWindow::onSynchronizeView( bool checked )
 }
 
 /*!
-  Synchronize camera properties of view \a viewWindow with 
+  Synchronize camera properties of view \a viewWindow with
   camera properties of view specified via \a id
 */
 void SUIT_ViewWindow::synchronizeView( SUIT_ViewWindow* viewWindow, int id )
@@ -441,7 +467,7 @@ void SUIT_ViewWindow::synchronizeView( SUIT_ViewWindow* viewWindow, int id )
   bool isSync = viewWindow->synchronizeAction() && viewWindow->synchronizeAction()->isChecked();
 
   int vwid = viewWindow->getId();
-  
+
   SUIT_Application* app = SUIT_Session::session()->activeApplication();
   if ( !app ) return;
   SUIT_Desktop* d = app->desktop();
@@ -449,9 +475,9 @@ void SUIT_ViewWindow::synchronizeView( SUIT_ViewWindow* viewWindow, int id )
 
   QList<SUIT_ViewWindow*> allViews = qFindChildren<SUIT_ViewWindow*>( d );
   foreach( SUIT_ViewWindow* vw, allViews ) {
-    if ( !vw->cameraProperties().isValid() ) 
+    if ( !vw->cameraProperties().isValid() )
       continue;                    // omit views not supporting camera properties
-    if ( vw->getId() == id ) 
+    if ( vw->getId() == id )
       sourceView = vw;             // remember source view
     else if ( vw != viewWindow )
       otherViews.append( vw );     // collect all remaining views

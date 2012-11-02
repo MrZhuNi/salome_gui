@@ -2576,6 +2576,12 @@ void OCCViewer_ViewWindow::synchronize( SUIT_ViewWindow* theView )
   bool blocked = blockSignals( true );
 
   SUIT_CameraProperties aProps = theView->cameraProperties();
+  if ( !cameraProperties().isCompatible( aProps ) ) {
+    // other view, this one is being currently synchronized to, seems has become incompatible
+    // we have to break synchronization
+    updateSyncViews();
+    return;
+  }
 
   Handle(V3d_View) aDestView = getViewPort()->getView();
 

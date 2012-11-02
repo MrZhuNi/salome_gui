@@ -1844,6 +1844,8 @@ void SVTK_ViewWindow::onPerspectiveMode()
   vtkCamera* aCamera = getRenderer()->GetActiveCamera();
   aCamera->SetParallelProjection(anIsParallelMode);
   GetInteractor()->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
+
+  emit transformed( this );
 }
 
 void SVTK_ViewWindow::SetEventDispatcher(vtkObject* theDispatcher)
@@ -2430,6 +2432,12 @@ void SVTK_ViewWindow::synchronize( SUIT_ViewWindow* theView )
   bool blocked = blockSignals( true );
 
   SUIT_CameraProperties aProps = theView->cameraProperties();
+  if ( !cameraProperties().isCompatible( aProps ) ) {
+    // other view, this one is being currently synchronized to, seems has become incompatible
+    // we have to break synchronization
+    updateSyncViews();
+    return;
+  }
 
   // get camera
   vtkCamera* aCamera = getRenderer()->GetActiveCamera();
