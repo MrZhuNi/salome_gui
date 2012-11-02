@@ -228,6 +228,8 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
 
   GetInteractor()->GetInteractorStyle()->AddObserver(SVTK::OperationFinished, 
 						     myEventCallbackCommand.GetPointer(), 0.0);
+  myKeyFreeInteractorStyle->AddObserver(SVTK::OperationFinished, 
+					myEventCallbackCommand.GetPointer(), 0.0);
 
 
   
