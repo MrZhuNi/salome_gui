@@ -149,3 +149,4 @@ if ( ! $?SALOME_BATCH_MODE ) then
 else 
 	SUITApp LightApp -style salome $*
 endif
+
