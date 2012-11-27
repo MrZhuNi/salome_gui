@@ -83,6 +83,12 @@ SUIT_Session::~SUIT_Session()
   // remove backup
   if ( myBFile )
     fclose( myBFile );
+
+#ifndef WIN32
+  if ( myBFileFcntl )
+    fclose( myBFileFcntl );
+#endif
+
   if ( !myBFolder.isEmpty() )
     Qtx::rmDir( myBFolder );
 
@@ -576,14 +582,20 @@ int SUIT_Session::lockFcntl( QString theLF )
   if ( theLF.isEmpty() )
     aFD = myBFileFcntl;
   else
+  {
     aFD = fopen( theLF.toLatin1().constData(), "w" );
+    if ( !aFD )
+      return -1;
+  }
   
   struct flock fLock;
   fLock.l_type = F_WRLCK;
   fLock.l_whence = SEEK_SET;
   fLock.l_len = 0;
   fLock.l_start = 0;
-  return fcntl( fileno( aFD ), F_SETLK, &fLock );
+
+  int ret = fcntl( fileno( aFD ), F_SETLK, &fLock );
+  return ret;
 }
 
 #endif
@@ -787,7 +799,13 @@ void SUIT_Session::removeTmpFiles( const bool withBackup )
       if ( !QFileInfo( blocName ).exists() || !locked  )
       {
         // unused non-removed folder
+#ifdef WIN32
         Qtx::rmDir( currF );
+#else 
+        // use the system call Qtx::rmDir() may not work on Linux
+        QString cmd = QString( "rm -rf " ) + currF.toLatin1().constData();
+        system( cmd.toLatin1().constData() );
+#endif
       }
     }
   }
