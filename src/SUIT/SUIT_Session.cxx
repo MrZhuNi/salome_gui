@@ -799,13 +799,7 @@ void SUIT_Session::removeTmpFiles( const bool withBackup )
       if ( !QFileInfo( blocName ).exists() || !locked  )
       {
         // unused non-removed folder
-#ifdef WIN32
         Qtx::rmDir( currF );
-#else 
-        // use the system call Qtx::rmDir() may not work on Linux
-        QString cmd = QString( "rm -rf " ) + currF.toLatin1().constData();
-        system( cmd.toLatin1().constData() );
-#endif
       }
     }
   }
