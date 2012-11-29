@@ -507,7 +507,7 @@ VTKViewer_GeometryFilter
                   {
                     for (i = 0; i < numFacePts; i++)
                       aNewPts[i] = ptIds[pt0 + i];
-                    newCellId = output->InsertNextCell(aCellType, numFacePts, aNewPts);
+                    newCellId = output->InsertNextCell(aCellType, numFacePts, (vtkIdType*)aNewPts);
                     if (myStoreMapping)
                       myVTK2ObjIds.push_back(cellId);
                     outputCD->CopyData(cd, cellId, newCellId);
