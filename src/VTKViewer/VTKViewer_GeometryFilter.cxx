@@ -468,6 +468,53 @@ VTKViewer_GeometryFilter
             }
           break;
 	}
+        // from CATHAREGUI_GeometryFilter.cxx
+        case VTK_POLYHEDRON:
+          {
+            vtkIdType nFaces = 0;
+            vtkIdType* ptIds = 0;
+            int idp = 0;
+            input->GetFaceStream(cellId, nFaces, ptIds);
+            for (faceId = 0; faceId < nFaces; faceId++)
+              {
+                faceIds->Reset();
+                numFacePts = ptIds[idp];
+                int pt0 = ++idp;
+                for (i = 0; i < numFacePts; i++)
+                  {
+                  faceIds->InsertNextId(ptIds[idp + i]);
+                  }
+                idp += numFacePts;
+                switch (numFacePts)
+                  {
+                  case 3:
+                    aCellType = VTK_TRIANGLE;
+                    break;
+                  case 4:
+                    aCellType = VTK_QUAD;
+                    break;
+                  default:
+                    aCellType = VTK_POLYGON;
+                    break;
+                  }
+                // See VTKViewer_GeometryFilter.cxx, revision 1.7.2.5.8.8
+                bool myAppendCoincident3D = true;
+                // TODO understand and fix display of several polyhedrons                
+                //input->GetCellNeighbors(cellId, faceIds, cellIds);
+                bool process = true;//cellIds->GetNumberOfIds() <= 0 ? true : myAppendCoincident3D;
+                if ( process || myShowInside || 
+                     (!allVisible && !cellVis[cellIds->GetId(0)]) )
+                  {
+                    for (i = 0; i < numFacePts; i++)
+                      aNewPts[i] = ptIds[pt0 + i];
+                    newCellId = output->InsertNextCell(aCellType, numFacePts, aNewPts);
+                    if (myStoreMapping)
+                      myVTK2ObjIds.push_back(cellId);
+                    outputCD->CopyData(cd, cellId, newCellId);
+                  }
+              }
+            break;
+          }
         //Quadratic cells
         case VTK_QUADRATIC_EDGE:
         case VTK_QUADRATIC_TRIANGLE:
