@@ -48,7 +48,7 @@ TEST_CPPFLAGS = \
 	-I.
 
 TEST_LDFLAGS  = \
-	$(CORBA_LIBS) $(QT_LIBS) \
+	$(CORBA_LIBS) $(QT_LIBS) $(VTK_LIBS) \
 	$(top_builddir)/src/TreeData/libSalomeTreeData.la \
 	$(top_builddir)/src/GuiHelpers/libSalomeGuiHelpers.la \
 	$(KERNEL_LDFLAGS) -lSalomeLifeCycleCORBA -lSalomeKernelHelpers
