@@ -348,6 +348,8 @@ void SUIT_ViewManager::closeAllViews()
     closeView( myViews[0] );
   myViews.clear();*/
 
+  // GUITHARE internal issue 0001490: Crash on Check GUITHARE 3D
+  myActiveView = 0;
 }
 
 /*!
