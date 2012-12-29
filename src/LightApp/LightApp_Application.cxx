@@ -3476,6 +3476,15 @@ void LightApp_Application::removeViewManager( SUIT_ViewManager* vm )
   if (aStudy )
     aStudy->removeViewMgr(vm->getGlobalId());
 
+  LightApp_SelectionMgr* selMgr = selectionMgr();
+  QList<SUIT_Selector*> selectors;
+  selMgr->selectors( selectors );
+  foreach( SUIT_Selector* selector, selectors ) {
+    if ( selector->owner() == vm->getViewModel() ) {
+      delete selector;
+    }
+  }
+
   STD_Application::removeViewManager( vm );
 
   // IPAL22894: Crash on closing OCC view
