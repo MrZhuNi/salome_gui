@@ -428,7 +428,11 @@ QString GLViewer_ViewFrame::getVisualParameters()
     GLfloat xSc, ySc, xPan, yPan;
     vp2d->getScale( xSc, ySc );
     vp2d->getPan( xPan, yPan );
-    retStr.sprintf( "%.12e*%.12e*%.12e*%.12e", xSc, ySc, xPan, yPan );
+
+    QColor aBgColor = vp2d->backgroundColor();
+    int r = aBgColor.red(), g = aBgColor.green(), b = aBgColor.blue();
+
+    retStr.sprintf( "%.12e*%.12e*%.12e*%.12e*%d*%d*%d", xSc, ySc, xPan, yPan, r, g, b );
   }
   return retStr;
 }
@@ -439,7 +443,7 @@ QString GLViewer_ViewFrame::getVisualParameters()
 void GLViewer_ViewFrame::setVisualParameters( const QString& parameters )
 {
   QStringList paramsLst = parameters.split( '*' );
-  if ( myVP && myVP->inherits( "GLViewer_ViewPort2d" ) && paramsLst.size() == 4) {
+  if ( myVP && myVP->inherits( "GLViewer_ViewPort2d" ) && paramsLst.size() == 7) {
     GLViewer_ViewPort2d* vp2d = (GLViewer_ViewPort2d*)myVP;
 
     GLfloat xSc, ySc, xPan, yPan;
@@ -450,5 +454,10 @@ void GLViewer_ViewFrame::setVisualParameters( const QString& parameters )
 
     vp2d->getGLWidget()->setScale( xSc, ySc, 1. );
     vp2d->getGLWidget()->setPan( xPan, yPan, 0. );
+
+    int r = paramsLst[4].toInt();
+    int g = paramsLst[5].toInt();
+    int b = paramsLst[6].toInt();
+    vp2d->setBackgroundColor( QColor( r, g, b ) );
   }
 }

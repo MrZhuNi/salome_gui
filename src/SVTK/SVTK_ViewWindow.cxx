@@ -54,6 +54,7 @@
 #include "QtxActionToolMgr.h"
 #include "QtxMultiAction.h"
 
+#include "VTKViewer_Trihedron.h"
 #include "VTKViewer_Utilities.h"
 
 #include "SVTK_View.h"
@@ -1306,6 +1307,12 @@ QString SVTK_ViewWindow::getVisualParameters()
   parScale = camera->GetParallelScale();
   GetScale( scale );
 
+  QColor aBgColor = backgroundColor();
+
+  int aThrihedronVisibility = VTKViewer_Trihedron::eOn;
+  if( VTKViewer_Trihedron* aTrihedron = GetTrihedron() )
+    aThrihedronVisibility = (int)aTrihedron->GetVisibility();
+
   // Parameters are given in the following format:view position (3 digits), focal point position (3 digits)
   // view up values (3 digits), parallel scale (1 digit), scale (3 digits, 
   // Graduated axes parameters (X, Y, Z axes parameters)
@@ -1351,6 +1358,16 @@ QString SVTK_ViewWindow::getVisualParameters()
     getGradAxisVisualParams(aWriter, gradAxesActor->GetZAxisActor2D(), "Z");
   }
 
+  aWriter.writeStartElement("BackgroundColor");
+  aWriter.writeAttribute("R", QString::number(aBgColor.red()));
+  aWriter.writeAttribute("G", QString::number(aBgColor.green()));
+  aWriter.writeAttribute("B", QString::number(aBgColor.blue()));
+  aWriter.writeEndElement();
+
+  aWriter.writeStartElement("Trihedron");
+  aWriter.writeAttribute("Visibility", QString::number(aThrihedronVisibility));
+  aWriter.writeEndElement();
+
   aWriter.writeEndElement();
   aWriter.writeEndDocument();
 
@@ -1391,6 +1408,7 @@ void SVTK_ViewWindow::setVisualParameters( const QString& parameters )
 void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
 {
   double pos[3], focalPnt[3], viewUp[3], parScale, scale[3];
+  QColor aBgColor;
 
   QXmlStreamReader aReader(parameters);
   SVTK_CubeAxesActor2D* gradAxesActor = GetCubeAxes();
@@ -1433,6 +1451,14 @@ void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
 	  setGradAxisVisualParams(aReader, gradAxesActor->GetYAxisActor2D());
 	else if(aAttr.value("Axis") == "Z")
 	  setGradAxisVisualParams(aReader, gradAxesActor->GetZAxisActor2D());
+      } else if (aReader.name() == "BackgroundColor") {
+        aBgColor.setRed(aAttr.value("R").toString().toInt());
+        aBgColor.setGreen(aAttr.value("G").toString().toInt());
+        aBgColor.setBlue(aAttr.value("B").toString().toInt());
+      } else if (aReader.name() == "Trihedron") {
+        int aThrihedronVisibility = aAttr.value("Visibility").toString().toInt();
+        if( VTKViewer_Trihedron* aTrihedron = GetTrihedron() )
+          aTrihedron->SetVisibility((VTKViewer_Trihedron::TVisibility)aThrihedronVisibility);
       }
     } 
   }
@@ -1443,6 +1469,7 @@ void SVTK_ViewWindow::doSetVisualParameters( const QString& parameters )
     camera->SetViewUp( viewUp );
     camera->SetParallelScale( parScale );
     SetScale( scale );
+    setBackgroundColor( aBgColor );
   } else {
     QStringList paramsLst = parameters.split( '*' );
     if ( paramsLst.size() >= nNormalParams ) {
