@@ -36,7 +36,7 @@
 
 #include <SUIT_DataObject.h>
 
-#include <CORBA.h>
+#include <omniORB4/CORBA.h>
 
 //#include <SALOMEconfig.h>
 //#include CORBA_CLIENT_HEADER(SALOMEDS)
