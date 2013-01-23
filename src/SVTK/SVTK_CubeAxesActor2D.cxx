@@ -61,9 +61,9 @@ SVTK_CubeAxesActor2D::SVTK_CubeAxesActor2D()
   this->rgridMapperYZ = vtkPolyDataMapper::New();
   this->rgridMapperXZ = vtkPolyDataMapper::New();
 
-  this->rgridMapperXY->SetInput(this->planeXY->GetOutput());
-  this->rgridMapperYZ->SetInput(this->planeYZ->GetOutput());
-  this->rgridMapperXZ->SetInput(this->planeXZ->GetOutput());
+  this->rgridMapperXY->SetInputConnection(this->planeXY->GetOutputPort());
+  this->rgridMapperYZ->SetInputConnection(this->planeYZ->GetOutputPort());
+  this->rgridMapperXZ->SetInputConnection(this->planeXZ->GetOutputPort());
 
   this->wireActorXY->SetMapper(rgridMapperXY);
   this->wireActorYZ->SetMapper(rgridMapperYZ);
@@ -467,9 +467,9 @@ int SVTK_CubeAxesActor2D::RenderOpaqueGeometry(vtkViewport *viewport)
   rgrid->SetYCoordinates(YCoords);
   rgrid->SetZCoordinates(ZCoords);
 
-  this->planeXY->SetInput(rgrid);
-  this->planeYZ->SetInput(rgrid);
-  this->planeXZ->SetInput(rgrid);
+  this->planeXY->SetInputData(rgrid);
+  this->planeYZ->SetInputData(rgrid);
+  this->planeXZ->SetInputData(rgrid);
 
   rgrid->Delete();
 

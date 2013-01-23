@@ -89,7 +89,7 @@ void VTKViewer_UnScaledActor::Render(vtkRenderer *theRenderer)
     int* aSize = theRenderer->GetRenderWindow()->GetSize();
     vtkFloatingPointType aWinDiag = sqrt(vtkFloatingPointType(aSize[0]*aSize[0]+aSize[1]*aSize[1]));
     vtkDataSet* aDataSet = GetMapper()->GetInput();
-    aDataSet->Update();
+    GetMapper()->Update();
     vtkFloatingPointType aLength = aDataSet->GetLength();
     vtkFloatingPointType aPrecision = 1.0E-3;
     vtkFloatingPointType aZeroTol   = 1.0E-12;
@@ -140,7 +140,7 @@ VTKViewer_Axis::VTKViewer_Axis()
   myLineSource->SetPoint1(0.0,0.0,0.0);
   
   myMapper[0] = vtkPolyDataMapper::New();
-  myMapper[0]->SetInput(myLineSource->GetOutput());
+  myMapper[0]->SetInputConnection(myLineSource->GetOutputPort());
   
   myLineActor = VTKViewer_LineActor::New();
   myLineActor->SetMapper(myMapper[0]);
@@ -153,7 +153,7 @@ VTKViewer_Axis::VTKViewer_Axis()
   myConeSource->SetCenter(-0.5,0.0,0.0);
   
   myMapper[1] = vtkPolyDataMapper::New();
-  myMapper[1]->SetInput(myConeSource->GetOutput());
+  myMapper[1]->SetInputConnection(myConeSource->GetOutputPort());
   
   myArrowActor = vtkFollower::New();
   myArrowActor->SetMapper(myMapper[1]);
@@ -179,7 +179,7 @@ VTKViewer_Axis::VTKViewer_Axis()
   myVectorText = vtkVectorText::New();
   
   myMapper[2] = vtkPolyDataMapper::New();
-  myMapper[2]->SetInput(myVectorText->GetOutput());
+  myMapper[2]->SetInputConnection(myVectorText->GetOutputPort());
   
   myLabelActor = VTKViewer_UnScaledActor::New();
   myLabelActor->SetMapper(myMapper[2]);

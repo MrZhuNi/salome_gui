@@ -292,7 +292,7 @@ VTKViewer_ArcBuilder::VTKViewer_ArcBuilder(const Pnt& thePnt1,
       vtkUnstructuredGrid* aTransformedGrid;
       if(needRotation) {
         aTransformedGrid = TransformGrid(aGrid,aAxis,anAngle);    
-        aTransformedGrid->Update();
+        //aTransformedGrid->Update(); // OUV_PORTING_VTK6: seems to be useless
 #ifdef _MY_DEBUG_
         cout<<"Need Rotation!!!"<<endl;
 #endif
@@ -316,7 +316,7 @@ VTKViewer_ArcBuilder::VTKViewer_ArcBuilder(const Pnt& thePnt1,
       vtkUnstructuredGrid* anTransArc;
       if(needRotation) {
         anTransArc = TransformGrid(anArc,aAxis,-anAngle);
-        anTransArc->Update();
+        //anTransArc->Update(); // OUV_PORTING_VTK6: seems to be useless
       }
       else
         anTransArc = anArc;
@@ -335,7 +335,7 @@ VTKViewer_ArcBuilder::VTKViewer_ArcBuilder(const Pnt& thePnt1,
     aList.push_back(thePnt2);
     aList.push_back(thePnt3);
     vtkUnstructuredGrid* aGrid = BuildGrid(aList);
-    aGrid->Update();
+    //aGrid->Update(); // OUV_PORTING_VTK6: seems to be useless
     myPoints = aGrid->GetPoints();
 
     myScalarValues.clear();
@@ -397,7 +397,7 @@ VTKViewer_ArcBuilder::TransformGrid(vtkUnstructuredGrid* theGrid,
   aTransform->RotateWXYZ(angle, theAxis.GetXYZ().X(), theAxis.GetXYZ().Y(), theAxis.GetXYZ().Z());
   vtkTransformFilter* aTransformFilter  = vtkTransformFilter::New();
   aTransformFilter->SetTransform(aTransform);
-  aTransformFilter->SetInput(theGrid);
+  aTransformFilter->SetInputData(theGrid);
   aTransform->Delete();
   return aTransformFilter->GetUnstructuredGridOutput();
 }
@@ -472,8 +472,8 @@ vtkUnstructuredGrid* VTKViewer_ArcBuilder::BuildArc(std::vector<double>& theScal
   
   /*  double aTotalAngle =  fabs(angle3 - angle1);
   
-  if (aTotalAngle > vtkMath::DoublePi())
-    aTotalAngle = 2*vtkMath::DoublePi()-aTotalAngle;
+  if (aTotalAngle > vtkMath::Pi())
+    aTotalAngle = 2*vtkMath::Pi()-aTotalAngle;
   */
   
   double aTotalAngle = 0;
@@ -541,8 +541,8 @@ GetPointAngleOnCircle(const double theXCenter, const double theYCenter,
                       const double theXPoint, const double theYPoint){
   double result = atan2(theYCenter - theYPoint, theXPoint - theXCenter);
   if(result < 0 )
-    result = result+vtkMath::DoublePi()*2;
-  return vtkMath::DoublePi()*2-result;
+    result = result+vtkMath::Pi()*2;
+  return vtkMath::Pi()*2-result;
   return result;
 }
 
@@ -562,11 +562,11 @@ VTKViewer_ArcBuilder::IncOrder VTKViewer_ArcBuilder::GetArcAngle( const double& 
     aResult = VTKViewer_ArcBuilder::PLUS;
   }
   else if((P1 < P3 && P3 < P2) || (P2 < P1 && P1 < P3)){
-    *Ang = 2*vtkMath::DoublePi() - P3 + P1;
+    *Ang = 2*vtkMath::Pi() - P3 + P1;
     aResult = VTKViewer_ArcBuilder::MINUS;
   }
   else if((P2 < P3 && P3 < P1) || (P3 < P1 && P1 < P2)){
-    *Ang = 2*vtkMath::DoublePi() - P1 + P3;
+    *Ang = 2*vtkMath::Pi() - P1 + P3;
     aResult = VTKViewer_ArcBuilder::PLUS;
   }
   else if(P3 < P2 && P2 < P1){

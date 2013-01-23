@@ -185,7 +185,7 @@ SALOME_Actor
   myOutline->Delete();
 
   vtkPolyDataMapper* anOutlineMapper = vtkPolyDataMapper::New();
-  anOutlineMapper->SetInput(myOutline->GetOutput());
+  anOutlineMapper->SetInputConnection(myOutline->GetOutputPort());
 
   myOutlineActor->Delete();
   myOutlineActor->SetMapper( anOutlineMapper );

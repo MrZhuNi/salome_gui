@@ -53,7 +53,7 @@ VTKViewer_FramedTextActor::VTKViewer_FramedTextActor()
   myTransparency=0.;
   myBar = vtkPolyData::New();
   myBarMapper = vtkPolyDataMapper2D::New();
-  myBarMapper->SetInput(myBar);
+  myBarMapper->SetInputData(myBar);
   myBarActor = vtkActor2D::New();
   myBarActor->SetMapper(myBarMapper);
   myBarActor->GetProperty()->SetOpacity(1.-myTransparency);  

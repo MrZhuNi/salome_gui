@@ -88,11 +88,12 @@ dist_libSVTK_la_SOURCES= \
 	SVTK_RecorderDlg.cxx \
 	SVTK_ImageWriter.cxx \
 	SVTK_ImageWriterMgr.cxx \
-	SVTK_Utils.cxx \
-	vtkPVAxesActor.h \
-	vtkPVAxesActor.cxx \
-	vtkPVAxesWidget.h \
-	vtkPVAxesWidget.cxx
+	SVTK_Utils.cxx
+# OUV_PORTING_VTK6: to do
+#	vtkPVAxesActor.h \
+#	vtkPVAxesActor.cxx \
+#	vtkPVAxesWidget.h \
+#	vtkPVAxesWidget.cxx
 
 
 # internal headers
@@ -148,7 +149,8 @@ libSVTK_la_CPPFLAGS =		\
 	-I$(srcdir)/../OBJECT	\
 	-I$(srcdir)/../Prs 	\
 	-I$(srcdir)/../VTKViewer \
-	-I$(srcdir)/../OpenGLUtils
+	-I$(srcdir)/../OpenGLUtils \
+	-DvtkRenderingCore_AUTOINIT="2(vtkInteractionStyle,vtkRenderingOpenGL)"
 
 libSVTK_la_LDFLAGS =			\
 	$(VTK_LIBS) $(OGL_LIBS)		\

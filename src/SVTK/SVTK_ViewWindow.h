@@ -66,7 +66,8 @@ class SVTK_KeyFreeInteractorStyle;
 class SVTK_ViewParameterDlg;
 class SVTK_Recorder;
 
-class vtkPVAxesWidget;
+// OUV_PORTING_VTK6: to do
+//class vtkPVAxesWidget;
 
 class vtkObject;
 class QtxAction;
@@ -446,7 +447,8 @@ protected:
   int myToolBar;
   int myRecordingToolBar;
 
-  vtkPVAxesWidget* myAxesWidget;
+  // OUV_PORTING_VTK6: to do
+  //vtkPVAxesWidget* myAxesWidget;
   Qtx::BackgroundData myBackground;
 
 private:

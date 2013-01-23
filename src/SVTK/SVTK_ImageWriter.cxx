@@ -62,13 +62,16 @@ SVTK_ImageWriter
 ::run()
 {
   vtkJPEGWriter *aWriter = vtkJPEGWriter::New();
-  vtkImageData *anImageData = myImageData;
+  vtkAlgorithmOutput *anImageData = 0;
   vtkSmartPointer<vtkImageClip> anImageClip;
   //
   if(myConstraint16Flag){ 
     int uExtent[6];
+    // OUV_PORTING_VTK6: to do
+    /*
     myImageData->UpdateInformation();
     myImageData->GetUpdateExtent(uExtent);
+    */
     unsigned int width = uExtent[1] - uExtent[0] + 1;
     unsigned int height = uExtent[3] - uExtent[2] + 1;
     width = (width / 16) * 16;
@@ -79,17 +82,20 @@ SVTK_ImageWriter
     anImageClip = vtkImageClip::New();
     anImageClip->Delete();
 
-    anImageClip->SetInput(myImageData);
+    anImageClip->SetInputData(myImageData);
     anImageClip->SetOutputWholeExtent(uExtent);
     anImageClip->ClipDataOn();
-    anImageData = anImageClip->GetOutput();
+    anImageData = anImageClip->GetOutputPort();
   }
   //
   aWriter->WriteToMemoryOff();
   aWriter->SetFileName(myName.c_str());
   aWriter->SetQuality(myQuality);
   aWriter->SetProgressive(myProgressive);
-  aWriter->SetInput(anImageData);
+  if(myConstraint16Flag)
+    aWriter->SetInputConnection(anImageData);
+  else
+    aWriter->SetInputData(myImageData);
   aWriter->Write();
 
   aWriter->Delete();

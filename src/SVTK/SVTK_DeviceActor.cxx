@@ -120,28 +120,29 @@ SVTK_DeviceActor
 {
   if(theMapper){
     int anId = 0;
-    myPassFilter[ anId ]->SetInput( theMapper->GetInput() );
-    myPassFilter[ anId + 1]->SetInput( myPassFilter[ anId ]->GetOutput() );
+    myPassFilter[ anId ]->SetInputData( theMapper->GetInput() );
+    myPassFilter[ anId + 1]->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
     
     anId++; // 1
-    myGeomFilter->SetInput( myPassFilter[ anId ]->GetOutput() );
+    myGeomFilter->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
 
     anId++; // 2
-    myPassFilter[ anId ]->SetInput( myGeomFilter->GetOutput() ); 
-    myPassFilter[ anId + 1 ]->SetInput( myPassFilter[ anId ]->GetOutput() );
+    myPassFilter[ anId ]->SetInputConnection( myGeomFilter->GetOutputPort() ); 
+    myPassFilter[ anId + 1 ]->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
 
     anId++; // 3
-    myTransformFilter->SetInput( myPassFilter[ anId ]->GetPolyDataOutput() );
+    myTransformFilter->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
 
     anId++; // 4
-    myPassFilter[ anId ]->SetInput( myTransformFilter->GetOutput() );
-    myPassFilter[ anId + 1 ]->SetInput( myPassFilter[ anId ]->GetOutput() );
+    myPassFilter[ anId ]->SetInputConnection( myTransformFilter->GetOutputPort() );
+    myPassFilter[ anId + 1 ]->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
 
     anId++; // 5
+    // OUV_PORTING_VTK6: to check
     if(VTKViewer_DataSetMapper* aMapper = dynamic_cast<VTKViewer_DataSetMapper*>(theMapper)){
-      aMapper->SetInput(myPassFilter[anId]->GetOutput());
+      aMapper->SetInputConnection(myPassFilter[anId]->GetOutputPort());
     }else if(VTKViewer_PolyDataMapper* aMapper = dynamic_cast<VTKViewer_PolyDataMapper*>(theMapper)){
-      aMapper->SetInput(myPassFilter[anId]->GetPolyDataOutput());
+      aMapper->SetInputConnection(myPassFilter[anId]->GetOutputPort());
     }
   }
   Superclass::SetMapper(theMapper);
@@ -164,7 +165,7 @@ void
 SVTK_DeviceActor
 ::SetInput(vtkDataSet* theDataSet)
 {
-  myMapper->SetInput(theDataSet);
+  myMapper->SetInputData(theDataSet);
   InitPipeLine(myMapper);
 }
 
@@ -256,16 +257,19 @@ SVTK_DeviceActor
   if ( !myIsShrinkable ) 
     return;
   
-  if ( vtkDataSet* aDataSet = myPassFilter[ 0 ]->GetOutput() )
+  if ( vtkAlgorithmOutput* aDataSet = myPassFilter[ 0 ]->GetOutputPort() )
   {     
-    aDataSet->Update();
+    myPassFilter[ 0 ]->Update();
+    // OUV_PORTING_VTK6: to do
+    /*
     int numCells=aDataSet->GetNumberOfCells();
     int numPts = aDataSet->GetNumberOfPoints();
     //It's impossible to use to apply "shrink" for "empty" dataset
     if (numCells < 1 || numPts < 1)
             return;
-    myShrinkFilter->SetInput( aDataSet );
-    myPassFilter[ 1 ]->SetInput( myShrinkFilter->GetOutput() );
+    */
+    myShrinkFilter->SetInputConnection( aDataSet );
+    myPassFilter[ 1 ]->SetInputConnection( myShrinkFilter->GetOutputPort() );
     myIsShrunk = true;
   }
 }
@@ -278,9 +282,9 @@ SVTK_DeviceActor
 ::UnShrink() 
 {
   if ( !myIsShrunk ) return;
-  if ( vtkDataSet* aDataSet = myPassFilter[ 0 ]->GetOutput() )
+  if ( vtkAlgorithmOutput* aDataSet = myPassFilter[ 0 ]->GetOutputPort() )
   {    
-    myPassFilter[ 1 ]->SetInput( aDataSet );
+    myPassFilter[ 1 ]->SetInputConnection( aDataSet );
     myIsShrunk = false;
   }
 }
@@ -348,18 +352,18 @@ SVTK_DeviceActor
   if ( !myIsFeatureEdgesAllowed || myIsFeatureEdgesEnabled == theIsFeatureEdgesEnabled ) 
     return;
 
-  if ( vtkPolyData* aPolyData = myPassFilter[ 2 ]->GetPolyDataOutput() )
+  if ( vtkAlgorithmOutput* aPolyData = myPassFilter[ 2 ]->GetOutputPort() )
   {
     if( theIsFeatureEdgesEnabled )
     {
-      aPolyData->Update();
-      myFeatureEdges->SetInput( aPolyData );
-      myPassFilter[ 3 ]->SetInput( myFeatureEdges->GetOutput() );
+      myPassFilter[ 2 ]->Update();
+      myFeatureEdges->SetInputConnection( aPolyData );
+      myPassFilter[ 3 ]->SetInputConnection( myFeatureEdges->GetOutputPort() );
       myIsFeatureEdgesEnabled = true;
     }
     else
     {
-      myPassFilter[3]->SetInput( aPolyData );
+      myPassFilter[3]->SetInputConnection( aPolyData );
       myIsFeatureEdgesEnabled = false;
     }
     myIsFeatureEdgesEnabled = theIsFeatureEdgesEnabled;

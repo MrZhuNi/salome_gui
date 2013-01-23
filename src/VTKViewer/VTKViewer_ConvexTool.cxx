@@ -697,8 +697,8 @@ VTKViewer_DelaunayTriangulator
   myUnstructuredGrid->Allocate();
   myUnstructuredGrid->SetPoints(myPoints);
 
-  myDelaunay3D->SetInput(myUnstructuredGrid);
-  myGeometryFilter->SetInput(myDelaunay3D->GetOutput());
+  myDelaunay3D->SetInputData(myUnstructuredGrid);
+  myGeometryFilter->SetInputConnection(myDelaunay3D->GetOutputPort());
   myPolyData = myGeometryFilter->GetOutput();
 }
 

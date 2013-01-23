@@ -92,9 +92,10 @@ namespace VTK
     anImageData->Delete();
 
     anImageData->SetExtent( 0, aWidth-1, 0, aHeight-1, 0, 0 );
-    anImageData->SetScalarTypeToUnsignedChar();
-    anImageData->SetNumberOfScalarComponents( 4 );
-    anImageData->AllocateScalars();
+    // OUV_PORTING_VTK6: to do (see Scalars Manipulation Functions)
+    //anImageData->SetScalarTypeToUnsignedChar();
+    //anImageData->SetNumberOfScalarComponents( 4 );
+    //anImageData->AllocateScalars();
 
     unsigned char* aDataPtr = (unsigned char*)anImageData->GetScalarPointer();
 
@@ -109,7 +110,7 @@ namespace VTK
       aDataPtr[ anId++ ] = aValue * aCoef;
       aDataPtr[ anId++ ] = aValue;
     }
-    anImageData->Update();
+    //anImageData->Update(); // OUV_PORTING_VTK6: seems to be useless
 
     return anImageData;
   }

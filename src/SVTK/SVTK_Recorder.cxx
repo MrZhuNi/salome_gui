@@ -396,12 +396,15 @@ SVTK_Recorder
     myErrorStatus = 20;
     return;
   }
+  // OUV_PORTING_VTK6: to do
+  /*
   anImageData->UpdateInformation();
   int *anExtent = anImageData->GetWholeExtent();
   anImageData->SetUpdateExtent(anExtent[0], anExtent[1],
                                anExtent[2], anExtent[3],
                                0,0);
   anImageData->UpdateData();
+  */
 }
 
 

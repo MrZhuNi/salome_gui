@@ -180,29 +180,30 @@ VTKViewer_Actor
 {
   if(theMapper){
     int anId = 0;
-    myPassFilter[ anId ]->SetInput( theMapper->GetInput() );
-    myPassFilter[ anId + 1]->SetInput( myPassFilter[ anId ]->GetOutput() );
+    myPassFilter[ anId ]->SetInputData( theMapper->GetInput() );
+    myPassFilter[ anId + 1]->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
     
     anId++; // 1
     myGeomFilter->SetStoreMapping( myStoreMapping );
-    myGeomFilter->SetInput( myPassFilter[ anId ]->GetOutput() );
+    myGeomFilter->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
 
     anId++; // 2
-    myPassFilter[ anId ]->SetInput( myGeomFilter->GetOutput() ); 
-    myPassFilter[ anId + 1 ]->SetInput( myPassFilter[ anId ]->GetOutput() );
+    myPassFilter[ anId ]->SetInputConnection( myGeomFilter->GetOutputPort() ); 
+    myPassFilter[ anId + 1 ]->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
 
     anId++; // 3
-    myTransformFilter->SetInput( myPassFilter[ anId ]->GetPolyDataOutput() );
+    myTransformFilter->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
 
     anId++; // 4
-    myPassFilter[ anId ]->SetInput( myTransformFilter->GetOutput() );
-    myPassFilter[ anId + 1 ]->SetInput( myPassFilter[ anId ]->GetOutput() );
+    myPassFilter[ anId ]->SetInputConnection( myTransformFilter->GetOutputPort() );
+    myPassFilter[ anId + 1 ]->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
 
     anId++; // 5
+    // OUV_PORTING_VTK6: to check
     if(vtkDataSetMapper* aMapper = dynamic_cast<vtkDataSetMapper*>(theMapper)){
-      aMapper->SetInput(myPassFilter[anId]->GetOutput());
+      aMapper->SetInputConnection(myPassFilter[anId]->GetOutputPort());
     }else if(vtkPolyDataMapper* aMapper = dynamic_cast<vtkPolyDataMapper*>(theMapper)){
-      aMapper->SetInput(myPassFilter[anId]->GetPolyDataOutput());
+      aMapper->SetInputConnection(myPassFilter[anId]->GetOutputPort());
     }
   }
   Superclass::SetMapper(theMapper);

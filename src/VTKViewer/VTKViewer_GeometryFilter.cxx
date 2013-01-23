@@ -190,7 +190,7 @@ VTKViewer_GeometryFilter
   // from ParaView-3.4.0 compiled on 64-bit Debian platform with VTK_USE_64BIT_IDS = ON
   vtkIdType aNewPts[VTK_CELL_SIZE];
   // ghost cell stuff
-  unsigned char  updateLevel = (unsigned char)(output->GetUpdateGhostLevel());
+  unsigned char  updateLevel = (unsigned char)(GetUpdateGhostLevel());
   unsigned char  *cellGhostLevels = 0;
 
   PixelConvert[0] = 0;
