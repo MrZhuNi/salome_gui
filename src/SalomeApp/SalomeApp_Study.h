@@ -106,6 +106,7 @@ protected:
 						SUIT_DataObject* theParent ) const;
 protected slots:
   virtual void        updateModelRoot( const CAM_DataModel* );
+  void                onNoteBookVarUpdate( QString theVarName );
 
 private:
   QString             newStudyName() const;
@@ -113,6 +114,9 @@ private:
 private:
   _PTR(Study)         myStudyDS;
   Observer_i*         myObserver;
+
+ signals:
+  void                notebookVarUpdated( QString theVarName );
 };
 
 #ifdef WIN32

@@ -318,6 +318,11 @@ public:
         }
         break;
       }
+    case 6: //NoteBook variables were modified
+      {
+	myStudy->onNoteBookVarUpdate( QString( theID.c_str() ) );
+	break;
+      }
     default:MESSAGE("Unknown event: "  << event);break;
     } //switch
   } //notifyObserverID_real
@@ -379,6 +384,11 @@ SalomeApp_Study::~SalomeApp_Study()
     PortableServer::ObjectId_var oid = myObserver->_default_POA()->servant_to_id( myObserver );
     myObserver->_default_POA()->deactivate_object( oid.in() );
   }
+}
+
+void SalomeApp_Study::onNoteBookVarUpdate( QString theVarName)
+{
+  emit notebookVarUpdated( theVarName );
 }
 
 /*!
