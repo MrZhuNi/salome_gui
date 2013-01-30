@@ -60,7 +60,7 @@ class SVTK_EXPORT vtkPVAxesActor : public vtkProp3D
 {
 public:
   static vtkPVAxesActor *New();
-  vtkTypeRevisionMacro(vtkPVAxesActor,vtkProp3D);
+  vtkTypeMacro(vtkPVAxesActor,vtkProp3D);
   void PrintSelf(ostream& os, vtkIndent indent);
 
 

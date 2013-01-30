@@ -292,7 +292,7 @@ SVTK_DeviceActor
 /*!
   \return shrink factor
 */
-vtkFloatingPointType
+double
 SVTK_DeviceActor
 ::GetShrinkFactor()
 {
@@ -305,7 +305,7 @@ SVTK_DeviceActor
 */
 void 
 SVTK_DeviceActor
-::SetShrinkFactor(vtkFloatingPointType theValue)
+::SetShrinkFactor(double theValue)
 {
   myShrinkFilter->SetShrinkFactor(theValue);
 }
@@ -373,7 +373,7 @@ SVTK_DeviceActor
 /*!
   \return angle of feature edges' filter
 */
-vtkFloatingPointType
+double
 SVTK_DeviceActor
 ::GetFeatureEdgesAngle()
 {
@@ -386,7 +386,7 @@ SVTK_DeviceActor
 */
 void
 SVTK_DeviceActor
-::SetFeatureEdgesAngle(vtkFloatingPointType theAngle)
+::SetFeatureEdgesAngle(double theAngle)
 {
   myFeatureEdges->SetFeatureAngle(theAngle);
 }
@@ -529,7 +529,7 @@ SVTK_DeviceActor
 /*!
   \return default point size
 */
-vtkFloatingPointType
+double
 SVTK_DeviceActor
 ::GetDefaultPointSize()
 {
@@ -539,7 +539,7 @@ SVTK_DeviceActor
 /*!
   \return default line width
 */
-vtkFloatingPointType
+double
 SVTK_DeviceActor
 ::GetDefaultLineWidth()
 {
@@ -580,7 +580,7 @@ SVTK_DeviceActor
 /*!
   Get coordinates of a node for given object index
 */
-vtkFloatingPointType* 
+double* 
 SVTK_DeviceActor
 ::GetNodeCoord(int theObjID)
 {
@@ -617,7 +617,7 @@ SVTK_DeviceActor
 {
   if(myIsResolveCoincidentTopology){
     int aResolveCoincidentTopology = vtkMapper::GetResolveCoincidentTopology();
-    vtkFloatingPointType aFactor, aUnit; 
+    double aFactor, aUnit; 
     vtkMapper::GetResolveCoincidentTopologyPolygonOffsetParameters(aFactor,aUnit);
     
     vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
@@ -638,8 +638,8 @@ SVTK_DeviceActor
 */
 void
 SVTK_DeviceActor
-::SetPolygonOffsetParameters(vtkFloatingPointType factor, 
-                             vtkFloatingPointType units)
+::SetPolygonOffsetParameters(double factor, 
+                             double units)
 {
   myPolygonOffsetFactor = factor;
   myPolygonOffsetUnits = units;
@@ -651,8 +651,8 @@ SVTK_DeviceActor
 */
 void
 SVTK_DeviceActor
-::GetPolygonOffsetParameters(vtkFloatingPointType& factor, 
-                             vtkFloatingPointType& units)
+::GetPolygonOffsetParameters(double& factor, 
+                             double& units)
 {
   factor = myPolygonOffsetFactor;
   units = myPolygonOffsetUnits;
@@ -679,14 +679,14 @@ bool SVTK_DeviceActor::GetQuadraticArcMode(){
 /*!
  * Set Max angle for representation 2D quadratic element as arked polygon
  */
-void SVTK_DeviceActor::SetQuadraticArcAngle(vtkFloatingPointType theMaxAngle){
+void SVTK_DeviceActor::SetQuadraticArcAngle(double theMaxAngle){
   myGeomFilter->SetQuadraticArcAngle(theMaxAngle);
 }
 
 /*!
  * Return Max angle of the representation 2D quadratic element as arked polygon
  */
-vtkFloatingPointType SVTK_DeviceActor::GetQuadraticArcAngle(){
+double SVTK_DeviceActor::GetQuadraticArcAngle(){
   return myGeomFilter->GetQuadraticArcAngle();
 }
 

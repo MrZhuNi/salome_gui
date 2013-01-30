@@ -579,7 +579,7 @@ VTKViewer_ArcBuilder::IncOrder VTKViewer_ArcBuilder::GetArcAngle( const double& 
 //------------------------------------------------------------------------
 Pnt CreatePnt(vtkCell* cell, vtkDataArray* scalars, vtkIdType index)
 {
-  vtkFloatingPointType coord[3];
+  double coord[3];
   cell->GetPoints()->GetPoint(index, coord);
   vtkIdType pointId = cell->GetPointId(index);
   double scalarValue = scalars ? scalars->GetTuple1(pointId) : 0;
@@ -590,7 +590,7 @@ Pnt CreatePnt(vtkCell* cell, vtkDataArray* scalars, vtkIdType index)
 //------------------------------------------------------------------------
 vtkIdType Build1DArc(vtkIdType cellId, vtkUnstructuredGrid* input, 
                      vtkPolyData *output,vtkIdType *pts, 
-                     vtkFloatingPointType myMaxArcAngle){
+                     double myMaxArcAngle){
   
   vtkIdType aResult = -1;
   vtkIdType *aNewPoints;

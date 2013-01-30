@@ -217,7 +217,7 @@ VTKViewer_Actor
 ::Render(vtkRenderer *ren, vtkMapper* m)
 {
   if(vtkDataSet* aDataSet = GetInput()){
-    static vtkFloatingPointType PERCENTS_OF_DETAILS = 0.50;
+    static double PERCENTS_OF_DETAILS = 0.50;
     vtkIdType aNbOfPoints = vtkIdType(aDataSet->GetNumberOfPoints()*PERCENTS_OF_DETAILS);
     if(aNbOfPoints > 0)
       SetNumberOfCloudPoints(aNbOfPoints);
@@ -225,7 +225,7 @@ VTKViewer_Actor
 
   if(myIsResolveCoincidentTopology){
     int aResolveCoincidentTopology = vtkMapper::GetResolveCoincidentTopology();
-    vtkFloatingPointType aFactor, aUnit; 
+    double aFactor, aUnit; 
     vtkMapper::GetResolveCoincidentTopologyPolygonOffsetParameters(aFactor,aUnit);
     
     vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
@@ -257,8 +257,8 @@ VTKViewer_Actor
 */
 void
 VTKViewer_Actor
-::SetPolygonOffsetParameters(vtkFloatingPointType factor, 
-                             vtkFloatingPointType units)
+::SetPolygonOffsetParameters(double factor, 
+                             double units)
 {
   myPolygonOffsetFactor = factor;
   myPolygonOffsetUnits = units;
@@ -270,8 +270,8 @@ VTKViewer_Actor
 */
 void
 VTKViewer_Actor
-::GetPolygonOffsetParameters(vtkFloatingPointType& factor, 
-                             vtkFloatingPointType& units)
+::GetPolygonOffsetParameters(double& factor, 
+                             double& units)
 {
   factor = myPolygonOffsetFactor;
   units = myPolygonOffsetUnits;
@@ -280,7 +280,7 @@ VTKViewer_Actor
 /*!
   \return shrink factor
 */
-vtkFloatingPointType
+double
 VTKViewer_Actor
 ::GetShrinkFactor() 
 { 
@@ -434,7 +434,7 @@ VTKViewer_Actor
 /*!
   Get coordinates of a node for given object index
 */
-vtkFloatingPointType* 
+double* 
 VTKViewer_Actor
 ::GetNodeCoord(int theObjID)
 {
@@ -495,14 +495,14 @@ VTKViewer_Actor
   if(myIsInfinite)
     return true;
 
-  static vtkFloatingPointType MAX_DISTANCE = 0.9*VTK_LARGE_FLOAT;
-  vtkFloatingPointType aBounds[6];
+  static double MAX_DISTANCE = 0.9*VTK_LARGE_FLOAT;
+  double aBounds[6];
   GetBounds(aBounds);
   for(int i = 0; i < 6; i++)
     if(fabs(aBounds[i]) > MAX_DISTANCE)
       return true;
   
-  static vtkFloatingPointType MIN_DISTANCE = 1.0/VTK_LARGE_FLOAT;
+  static double MIN_DISTANCE = 1.0/VTK_LARGE_FLOAT;
   if(GetLength() < MIN_DISTANCE)
     return true;
   
@@ -512,7 +512,7 @@ VTKViewer_Actor
 /*!
   \return current bounding box
 */
-vtkFloatingPointType* 
+double* 
 VTKViewer_Actor
 ::GetBounds()
 {
@@ -525,7 +525,7 @@ VTKViewer_Actor
 */
 void
 VTKViewer_Actor
-::GetBounds(vtkFloatingPointType theBounds[6])
+::GetBounds(double theBounds[6])
 {
   Superclass::GetBounds(theBounds);
 }
@@ -547,7 +547,7 @@ VTKViewer_Actor
 
 void
 VTKViewer_Actor
-::SetSize( const vtkFloatingPointType ) 
+::SetSize( const double ) 
 {}
 
 
@@ -559,13 +559,13 @@ VTKViewer_Actor
 
 void
 VTKViewer_Actor
-::SetOpacity(vtkFloatingPointType theOpacity)
+::SetOpacity(double theOpacity)
 { 
   myOpacity = theOpacity;
   GetProperty()->SetOpacity(theOpacity);
 }
 
-vtkFloatingPointType
+double
 VTKViewer_Actor
 ::GetOpacity()
 {
@@ -578,9 +578,9 @@ VTKViewer_Actor
 */
 void
 VTKViewer_Actor
-::SetColor(vtkFloatingPointType r,
-           vtkFloatingPointType g,
-           vtkFloatingPointType b)
+::SetColor(double r,
+           double g,
+           double b)
 {
   GetProperty()->SetColor(r,g,b);
 }
@@ -590,7 +590,7 @@ VTKViewer_Actor
 */
 void
 VTKViewer_Actor
-::SetColor(const vtkFloatingPointType theRGB[3])
+::SetColor(const double theRGB[3])
 { 
   SetColor(theRGB[0],theRGB[1],theRGB[2]);
 }
@@ -600,11 +600,11 @@ VTKViewer_Actor
 */
 void
 VTKViewer_Actor
-::GetColor(vtkFloatingPointType& r,
-           vtkFloatingPointType& g,
-           vtkFloatingPointType& b)
+::GetColor(double& r,
+           double& g,
+           double& b)
 {
-  vtkFloatingPointType aColor[3];
+  double aColor[3];
   GetProperty()->GetColor(aColor);
   r = aColor[0];
   g = aColor[1];
@@ -729,14 +729,14 @@ bool VTKViewer_Actor::GetQuadraticArcMode() const{
 /*!
  * Set Max angle for representation 2D quadratic element as arked polygon
  */
-void VTKViewer_Actor::SetQuadraticArcAngle(vtkFloatingPointType theMaxAngle){
+void VTKViewer_Actor::SetQuadraticArcAngle(double theMaxAngle){
   myGeomFilter->SetQuadraticArcAngle(theMaxAngle);
 }
 
 /*!
  * Return Max angle of the representation 2D quadratic element as arked polygon
  */
-vtkFloatingPointType VTKViewer_Actor::GetQuadraticArcAngle() const{
+double VTKViewer_Actor::GetQuadraticArcAngle() const{
   return myGeomFilter->GetQuadraticArcAngle();
 }
 

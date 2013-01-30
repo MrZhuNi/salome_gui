@@ -23,7 +23,6 @@
 #include <vtkDataSetSurfaceFilter.h>
 #include <vtkObjectFactory.h>
 
-vtkCxxRevisionMacro(VTKViewer_DataSetMapper, "Revision$");
 vtkStandardNewMacro(VTKViewer_DataSetMapper);
 
 //----------------------------------------------------------------------------

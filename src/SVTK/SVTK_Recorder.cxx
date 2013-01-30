@@ -68,7 +68,6 @@ namespace
 }
 
 //----------------------------------------------------------------------------
-vtkCxxRevisionMacro(SVTK_Recorder,"$Revision$");
 vtkStandardNewMacro(SVTK_Recorder);
 
 
