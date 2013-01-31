@@ -1982,10 +1982,10 @@ bool SalomeApp_Application::onRestoreStudy( const QString& theDumpScript,
   {
     _PTR(Study) aStudyDS = newStudy->studyDS();
     app->getNoteBook()->Init( aStudyDS );
-    if( theIsStudySaved ) {
-      newStudy->markAsSavedIn( theStudyName );
-      newStudy->Modified();
-    }
+    newStudy->updateFromNotebook(theStudyName, theIsStudySaved);
+    newStudy->Modified();
+    updateDesktopTitle();
+    updateActions();
   }
   else
     ok = false;

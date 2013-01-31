@@ -1134,10 +1134,11 @@ void SalomeApp_Study::RemoveTemporaryFiles ( const char* theModuleName, const bo
   Mark the study as saved in the file
   \param theFileName - the name of file
 */
-void SalomeApp_Study::markAsSavedIn(QString theFileName)
+void SalomeApp_Study::updateFromNotebook( const QString& theFileName, bool isSaved )
 {
   setStudyName(theFileName);
-  setIsSaved(true);
+  studyDS()->Name(theFileName.toStdString());
+  setIsSaved( isSaved );
 }
 
 LightApp_DataObject* SalomeApp_Study::findObjectByEntry( const QString& theEntry )

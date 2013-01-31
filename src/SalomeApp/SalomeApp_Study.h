@@ -83,7 +83,7 @@ public:
   void                setNameOfSavePoint(int savePoint, const QString& nameOfSavePoint);
 
   virtual void        restoreState(int savePoint);
-  void                markAsSavedIn(QString theFileName);
+  void                updateFromNotebook(const QString&, bool);
 
   virtual LightApp_DataObject* findObjectByEntry( const QString& theEntry );
 
