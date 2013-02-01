@@ -91,9 +91,8 @@
 #include "SVTK_Recorder.h"
 #include "SVTK_RecorderDlg.h"
 
-// OUV_PORTING_VTK6: to do
-//#include "vtkPVAxesWidget.h"
-//#include "vtkPVAxesActor.h"
+#include "vtkPVAxesWidget.h"
+#include "vtkPVAxesActor.h"
 
 #include "SALOME_ListIteratorOfListIO.hxx"
 
@@ -201,8 +200,6 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
   
   setCentralWidget(myInteractor);
   
-  // OUV_PORTING_VTK6: to do
-  /*
   myAxesWidget = vtkPVAxesWidget::New();
   myAxesWidget->SetParentRenderer(aRenderer->GetDevice());
   myAxesWidget->SetViewport(0, 0, 0.25, 0.25);
@@ -220,7 +217,6 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
   anAxesActor->GetZAxisTipProperty()->SetColor(   0.0, 0.0, 1.0 );
   anAxesActor->GetZAxisShaftProperty()->SetColor( 0.0, 0.0, 1.0 );
   anAxesActor->GetZAxisLabelProperty()->SetColor( 0.0, 0.0, 1.0 );
-  */
 
   myView = new SVTK_View(this);
   Initialize(myView,theModel);
@@ -274,8 +270,7 @@ void SVTK_ViewWindow::Initialize(SVTK_View* theView,
 SVTK_ViewWindow::~SVTK_ViewWindow()
 {
   myRecorder->Delete();
-  // OUV_PORTING_VTK6: to do
-  //myAxesWidget->Delete();
+  myAxesWidget->Delete();
 }
 
 
@@ -1249,9 +1244,7 @@ void SVTK_ViewWindow::SetSelectionTolerance(const double& theTolNodes,
 */
 bool SVTK_ViewWindow::IsStaticTrihedronVisible() const
 {
-  // OUV_PORTING_VTK6: to do
-  //return (bool)myAxesWidget->GetEnabled();
-  return false;
+  return (bool)myAxesWidget->GetEnabled();
 }
 
 /*!
@@ -1259,8 +1252,7 @@ bool SVTK_ViewWindow::IsStaticTrihedronVisible() const
 */
 void SVTK_ViewWindow::SetStaticTrihedronVisible( const bool theIsVisible )
 {
-  // OUV_PORTING_VTK6: to do
-  //myAxesWidget->SetEnabled( (int)theIsVisible );
+  myAxesWidget->SetEnabled( (int)theIsVisible );
 }
 
 /*!

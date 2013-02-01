@@ -199,12 +199,7 @@ VTKViewer_Actor
     myPassFilter[ anId + 1 ]->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
 
     anId++; // 5
-    // OUV_PORTING_VTK6: to check
-    if(vtkDataSetMapper* aMapper = dynamic_cast<vtkDataSetMapper*>(theMapper)){
-      aMapper->SetInputConnection(myPassFilter[anId]->GetOutputPort());
-    }else if(vtkPolyDataMapper* aMapper = dynamic_cast<vtkPolyDataMapper*>(theMapper)){
-      aMapper->SetInputConnection(myPassFilter[anId]->GetOutputPort());
-    }
+    theMapper->SetInputConnection(myPassFilter[anId]->GetOutputPort());
   }
   Superclass::SetMapper(theMapper);
 }

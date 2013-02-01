@@ -292,7 +292,6 @@ VTKViewer_ArcBuilder::VTKViewer_ArcBuilder(const Pnt& thePnt1,
       vtkUnstructuredGrid* aTransformedGrid;
       if(needRotation) {
         aTransformedGrid = TransformGrid(aGrid,aAxis,anAngle);    
-        //aTransformedGrid->Update(); // OUV_PORTING_VTK6: seems to be useless
 #ifdef _MY_DEBUG_
         cout<<"Need Rotation!!!"<<endl;
 #endif
@@ -314,10 +313,8 @@ VTKViewer_ArcBuilder::VTKViewer_ArcBuilder(const Pnt& thePnt1,
       std::vector<double> aScalarValues;
       vtkUnstructuredGrid* anArc = BuildArc(aScalarValues);
       vtkUnstructuredGrid* anTransArc;
-      if(needRotation) {
+      if(needRotation)
         anTransArc = TransformGrid(anArc,aAxis,-anAngle);
-        //anTransArc->Update(); // OUV_PORTING_VTK6: seems to be useless
-      }
       else
         anTransArc = anArc;
       
@@ -335,7 +332,6 @@ VTKViewer_ArcBuilder::VTKViewer_ArcBuilder(const Pnt& thePnt1,
     aList.push_back(thePnt2);
     aList.push_back(thePnt3);
     vtkUnstructuredGrid* aGrid = BuildGrid(aList);
-    //aGrid->Update(); // OUV_PORTING_VTK6: seems to be useless
     myPoints = aGrid->GetPoints();
 
     myScalarValues.clear();

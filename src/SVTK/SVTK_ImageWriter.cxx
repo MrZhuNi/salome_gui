@@ -21,6 +21,7 @@
 
 #include <QSemaphore>
 
+#include <vtkAlgorithm.h>
 #include <vtkImageData.h>
 #include <vtkImageClip.h>
 #include <vtkJPEGWriter.h>
@@ -36,11 +37,13 @@ static int MYDEBUG = 0;
 //----------------------------------------------------------------------------
 SVTK_ImageWriter
 ::SVTK_ImageWriter(QSemaphore* theSemaphore,
+                   vtkAlgorithm* theAlgorithm,
                    vtkImageData* theImageData,
                    const std::string& theName,
                    int theProgressive,
                    int theQuality):
   mySemaphore(theSemaphore),
+  myAlgorithm(theAlgorithm),
   myImageData(theImageData),
   myName(theName),
   myProgressive(theProgressive),
@@ -67,11 +70,8 @@ SVTK_ImageWriter
   //
   if(myConstraint16Flag){ 
     int uExtent[6];
-    // OUV_PORTING_VTK6: to do
-    /*
-    myImageData->UpdateInformation();
-    myImageData->GetUpdateExtent(uExtent);
-    */
+    myAlgorithm->UpdateInformation();
+    myAlgorithm->GetUpdateExtent(uExtent);
     unsigned int width = uExtent[1] - uExtent[0] + 1;
     unsigned int height = uExtent[3] - uExtent[2] + 1;
     width = (width / 16) * 16;

@@ -138,12 +138,7 @@ SVTK_DeviceActor
     myPassFilter[ anId + 1 ]->SetInputConnection( myPassFilter[ anId ]->GetOutputPort() );
 
     anId++; // 5
-    // OUV_PORTING_VTK6: to check
-    if(VTKViewer_DataSetMapper* aMapper = dynamic_cast<VTKViewer_DataSetMapper*>(theMapper)){
-      aMapper->SetInputConnection(myPassFilter[anId]->GetOutputPort());
-    }else if(VTKViewer_PolyDataMapper* aMapper = dynamic_cast<VTKViewer_PolyDataMapper*>(theMapper)){
-      aMapper->SetInputConnection(myPassFilter[anId]->GetOutputPort());
-    }
+    theMapper->SetInputConnection(myPassFilter[anId]->GetOutputPort());
   }
   Superclass::SetMapper(theMapper);
 }
@@ -257,18 +252,18 @@ SVTK_DeviceActor
   if ( !myIsShrinkable ) 
     return;
   
-  if ( vtkAlgorithmOutput* aDataSet = myPassFilter[ 0 ]->GetOutputPort() )
+  if ( vtkAlgorithmOutput* anOutput = myPassFilter[ 0 ]->GetOutputPort() )
   {     
     myPassFilter[ 0 ]->Update();
-    // OUV_PORTING_VTK6: to do
-    /*
-    int numCells=aDataSet->GetNumberOfCells();
-    int numPts = aDataSet->GetNumberOfPoints();
-    //It's impossible to use to apply "shrink" for "empty" dataset
-    if (numCells < 1 || numPts < 1)
-            return;
-    */
-    myShrinkFilter->SetInputConnection( aDataSet );
+    if ( vtkDataSet* aDataSet = myPassFilter[ 0 ]->GetOutput() )
+    {
+      int numCells=aDataSet->GetNumberOfCells();
+      int numPts = aDataSet->GetNumberOfPoints();
+      //It's impossible to use to apply "shrink" for "empty" dataset
+      if (numCells < 1 || numPts < 1)
+        return;
+    }
+    myShrinkFilter->SetInputConnection( anOutput );
     myPassFilter[ 1 ]->SetInputConnection( myShrinkFilter->GetOutputPort() );
     myIsShrunk = true;
   }
@@ -282,9 +277,9 @@ SVTK_DeviceActor
 ::UnShrink() 
 {
   if ( !myIsShrunk ) return;
-  if ( vtkAlgorithmOutput* aDataSet = myPassFilter[ 0 ]->GetOutputPort() )
+  if ( vtkAlgorithmOutput* anOutput = myPassFilter[ 0 ]->GetOutputPort() )
   {    
-    myPassFilter[ 1 ]->SetInputConnection( aDataSet );
+    myPassFilter[ 1 ]->SetInputConnection( anOutput );
     myIsShrunk = false;
   }
 }
