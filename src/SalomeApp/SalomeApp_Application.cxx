@@ -159,12 +159,10 @@ extern "C" SALOMEAPP_EXPORT SUIT_Application* createApplication()
 
 /*!Constructor.*/
 SalomeApp_Application::SalomeApp_Application()
-  : LightApp_Application()
+  : LightApp_Application(), myNoteBook( 0 )
 {
   connect( desktop(), SIGNAL( windowActivated( SUIT_ViewWindow* ) ),
            this,      SLOT( onWindowActivated( SUIT_ViewWindow* ) ), Qt::UniqueConnection );
-
-  setNoteBook(0);
 }
 
 /*!Destructor.
@@ -945,12 +943,12 @@ QWidget* SalomeApp_Application::createWindow( const int flag )
     SalomeApp_Study* appStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
     if ( appStudy ) {
       _PTR(Study) aStudy = appStudy->studyDS();
-      myNoteBook = new SalomeApp_NoteBook( desktop(), aStudy );
+      setNoteBook( new SalomeApp_NoteBook( desktop(), aStudy ) );
       //to receive signal in NoteBook that it's variable was modified
-      connect( this, SIGNAL(notebookVarUpdated(QString)), 
-	       myNoteBook, SLOT(onVarUpdate(QString)) );
+      connect( this, SIGNAL( notebookVarUpdated( QString ) ), 
+	       getNoteBook(), SLOT( onVarUpdate( QString ) ) );
     }
-    wid = myNoteBook;
+    wid = getNoteBook();
   }
   return wid;
 }
@@ -1608,7 +1606,10 @@ void SalomeApp_Application::objectBrowserColumnsVisibility()
 }
 
 /*! Set SalomeApp_NoteBook pointer */
-void SalomeApp_Application::setNoteBook(SalomeApp_NoteBook* theNoteBook){
+void SalomeApp_Application::setNoteBook( SalomeApp_NoteBook* theNoteBook )
+{
+  if ( myNoteBook && myNoteBook != theNoteBook )
+    delete myNoteBook;
   myNoteBook = theNoteBook;
 }
 
@@ -1822,24 +1823,25 @@ bool SalomeApp_Application::renameObject( const QString& entry, const QString& n
 /*!
   \return default windows( Object Browser, Python Console )
   Adds to map \a aMap.
- */
+*/
 void SalomeApp_Application::defaultWindows( QMap<int, int>& aMap ) const
 {
-    LightApp_Application::defaultWindows(aMap);
-    if(!aMap.contains(WT_NoteBook)) { 
-      if(!myNoteBook) {
-       aMap.insert( WT_NoteBook, Qt::LeftDockWidgetArea );
-      }
+  LightApp_Application::defaultWindows(aMap);
+  if ( !aMap.contains( WT_NoteBook ) ) { 
+    if ( !myNoteBook ) {
+      aMap.insert( WT_NoteBook, Qt::LeftDockWidgetArea );
     }
+  }
 }
 
 /*!
   Gets current windows.
   \param winMap - output current windows map.
 */
-void SalomeApp_Application::currentWindows(QMap<int, int>& aMap) const {
-  LightApp_Application::currentWindows(aMap);
-  if(!aMap.contains(WT_NoteBook) && myNoteBook)
+void SalomeApp_Application::currentWindows(QMap<int, int>& aMap) const
+{
+  LightApp_Application::currentWindows( aMap );
+  if ( !aMap.contains( WT_NoteBook) && myNoteBook )
     aMap.insert( WT_NoteBook, Qt::LeftDockWidgetArea );
 }
 
@@ -1867,7 +1869,7 @@ void SalomeApp_Application::onUpdateStudy()
 bool SalomeApp_Application::updateStudy()
 {
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( activeStudy() );
-  if( !study )
+  if ( !study || !myNoteBook )
     return false;
 
   myNoteBook->setIsDumpedStudySaved( study->isSaved() );
@@ -1999,9 +2001,10 @@ bool SalomeApp_Application::onRestoreStudy( const QString& theDumpScript,
 void SalomeApp_Application::closeApplication()
 {
   // emit signal to restore study from Python script
-  emit dumpedStudyClosed( myNoteBook->getDumpedStudyScript(), 
-			  myNoteBook->getDumpedStudyName(), 
-			  myNoteBook->isDumpedStudySaved() );
-
+  if ( myNoteBook ) {
+    emit dumpedStudyClosed( myNoteBook->getDumpedStudyScript(), 
+			    myNoteBook->getDumpedStudyName(), 
+			    myNoteBook->isDumpedStudySaved() );
+  }
   LightApp_Application::closeApplication();
 }
