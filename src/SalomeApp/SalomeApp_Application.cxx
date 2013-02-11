@@ -899,6 +899,15 @@ void SalomeApp_Application::onLoadScript( )
   QString anInitialPath = "";
   if ( SUIT_FileDlg::getLastVisitedPath().isEmpty() )
     anInitialPath = QDir::currentPath();
+  
+  // MPV: if it is SIMAN study, make the initial path as the path to the Siman scripts storage
+  if (myIsSiman) {
+    SALOMEDSClient_StudyManager* aMgr = studyMgr();
+    aMgr->GetSimanStudy()->StudyId();
+    anInitialPath = QString(QDir::separator()) + "tmp" + QDir::separator() + "SimanSalome" + QDir::separator() + 
+      aMgr->GetSimanStudy()->StudyId().c_str() + QDir::separator() +
+      aMgr->GetSimanStudy()->ScenarioId().c_str() + QDir::separator() + aMgr->GetSimanStudy()->UserId().c_str();
+  }
 
   QString aFile = SUIT_FileDlg::getFileName( desktop(), anInitialPath, filtersList, tr( "TOT_DESK_FILE_LOAD_SCRIPT" ), true, true );
 
