@@ -2,7 +2,7 @@
 #define ___CLASSNAME___HXX
 
 #include <QtGui>
-#include "ui___CLASSNAME__.hxx"
+#include "ui___CLASSNAME__.h"
 #include "GenericDialog.hxx"
 
 class __CLASSNAME__ : public GenericDialog

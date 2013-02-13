@@ -20,14 +20,6 @@
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-# moc-files generation (using MOC)
-%_moc.cxx: %.hxx
-	$(MOC) $< -o $@
-
-# Qt form files generation (using UIC)
-ui_%.hxx: %.ui
-	$(UIC) -o $@ $<
-
 # Program targets
 bin_PROGRAMS = qtester gtester
 
