@@ -28,7 +28,7 @@ SET(qtester_SOURCES
   )
 
 SET(qtester_HEADERS 
-  ${CMAKE_CURRENT_BINARY_DIR}/QDialogTest.hxx
+  ${CMAKE_CURRENT_BINARY_DIR}/QDialogTest.h
   )
 
 SET(qtester_FORMS
@@ -41,7 +41,7 @@ SET(gtester_SOURCES
   )
 
 SET(gtester_HEADERS 
-  ${CMAKE_CURRENT_BINARY_DIR}/GDialogTest.hxx
+  ${CMAKE_CURRENT_BINARY_DIR}/GDialogTest.h
   )
 
 SET(gtester_FORMS
@@ -49,7 +49,7 @@ SET(gtester_FORMS
   )
 
 SET(GenericDialog_HEADERS 
-  GenericDialog.hxx
+  GenericDialog.h
   )
 
 SET(GenericDialog_FORMS
@@ -58,11 +58,11 @@ SET(GenericDialog_FORMS
   
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
-ADD_CUSTOM_COMMAND( OUTPUT QDialogTest.cxx  QDialogTest.hxx  QDialogTest.ui
+ADD_CUSTOM_COMMAND( OUTPUT QDialogTest.cxx  QDialogTest.h  QDialogTest.ui
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/dlgfactory.py -s -n QDialogTest -t qdialog
   )
 
-ADD_CUSTOM_COMMAND( OUTPUT GDialogTest.cxx  GDialogTest.hxx  GDialogTest.ui
+ADD_CUSTOM_COMMAND( OUTPUT GDialogTest.cxx  GDialogTest.h  GDialogTest.ui
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/dlgfactory.py -s -n GDialogTest -t gdialog
   )
 

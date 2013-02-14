@@ -20,10 +20,6 @@
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-# meta object implementation files generation (moc)
-%_moc.cxx: %.hxx
-	$(MOC) $(MOC_FLAGS) $< -o $@
-
 # Program targets
 bin_PROGRAMS = qtester gtester
 
@@ -45,10 +41,10 @@ MOC_FILES_GDIALOG= \
 	GenericDialog_moc.cxx \
 	GDialogTest_moc.cxx
 
-QDIALOG_TEMPLATES = __QDIALOG__.ui __QDIALOG__.hxx __QDIALOG__.cxx
-GDIALOG_TEMPLATES = __GDIALOG__.ui __GDIALOG__.hxx __GDIALOG__.cxx
-QDIALOG_FILES = QDialogTest.hxx QDialogTest.cxx QDialogTest.ui
-GDIALOG_FILES = GDialogTest.hxx GDialogTest.cxx GDialogTest.ui 
+QDIALOG_TEMPLATES = __QDIALOG__.ui __QDIALOG__.h __QDIALOG__.cxx
+GDIALOG_TEMPLATES = __GDIALOG__.ui __GDIALOG__.h __GDIALOG__.cxx
+QDIALOG_FILES = QDialogTest.h QDialogTest.cxx QDialogTest.ui
+GDIALOG_FILES = GDialogTest.h GDialogTest.cxx GDialogTest.ui 
 
 # generated sources
 BUILT_SOURCES = $(UIC_FILES_QDIALOG) $(UIC_FILES_GDIALOG)
@@ -86,7 +82,7 @@ qtester_LDFLAGS = \
 
 gtester_SOURCES = \
 	gtester.cxx \
-	GenericDialog.hxx \
+	GenericDialog.h \
 	GenericDialog.cxx
 nodist_gtester_SOURCES = \
 	GDialogTest.cxx \
