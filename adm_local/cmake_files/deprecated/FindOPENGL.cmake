@@ -1,4 +1,4 @@
-# Copyright (C) 2012  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2007-2012  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,21 +17,11 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-ADD_SUBDIRECTORY(deprecated)
-
-# ===============================================================
-# Files to be installed
-# ===============================================================
-
-# These files are data, module or lib files
-SET(DATA
-  FindCAS.cmake
-  FindOPENGL.cmake
-  FindQT4.cmake
-  UseQT4EXT.cmake
-  FindQWT.cmake
-  FindSIPPYQT.cmake
-  FindVTK.cmake
-  FindGUI.cmake  
-)
-INSTALL(FILES ${DATA} DESTINATION ${GUI_admlocalcmake})
+IF(${WINDOWS})
+  FIND_LIBRARY(OpenGL_LIB OpenGL32 "C:/Program Files/Microsoft SDKs/Windows/v6.0A/lib")
+  FIND_LIBRARY(GlU_LIB GlU32 "C:/Program Files/Microsoft SDKs/Windows/v6.0A/lib")
+ELSE(${WINDOWS})
+  FIND_LIBRARY(OpenGL_LIB GL)
+  FIND_LIBRARY(GlU_LIB GLU)
+ENDIF(${WINDOWS})
+SET(OGL_LIBS ${OpenGL_LIB} ${GlU_LIB})

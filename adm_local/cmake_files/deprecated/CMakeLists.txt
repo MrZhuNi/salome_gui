@@ -17,8 +17,6 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-ADD_SUBDIRECTORY(deprecated)
-
 # ===============================================================
 # Files to be installed
 # ===============================================================
@@ -26,12 +24,12 @@ ADD_SUBDIRECTORY(deprecated)
 # These files are data, module or lib files
 SET(DATA
   FindCAS.cmake
+  FindGUI.cmake
   FindOPENGL.cmake
   FindQT4.cmake
-  UseQT4EXT.cmake
   FindQWT.cmake
   FindSIPPYQT.cmake
   FindVTK.cmake
-  FindGUI.cmake  
+  UseQT4EXT.cmake
 )
-INSTALL(FILES ${DATA} DESTINATION ${GUI_admlocalcmake})
+INSTALL(FILES ${DATA} DESTINATION ${GUI_admlocalcmake}/deprecated)

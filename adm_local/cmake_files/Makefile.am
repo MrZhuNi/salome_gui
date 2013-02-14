@@ -19,6 +19,8 @@
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
+SUBDIRS = deprecated
+
 dist_admlocal_cmake_DATA = \
 FindCAS.cmake \
 FindOPENGL.cmake \

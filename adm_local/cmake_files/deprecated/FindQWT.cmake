@@ -1,4 +1,4 @@
-# Copyright (C) 2012  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2007-2012  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,21 +17,25 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-ADD_SUBDIRECTORY(deprecated)
+FILE(TO_CMAKE_PATH "$ENV{QWTHOME}" QWTHOME)
+IF(NOT QWTHOME)
+  SET(QWTHOME /usr)
+ENDIF(NOT QWTHOME)
 
-# ===============================================================
-# Files to be installed
-# ===============================================================
+FIND_PATH(QWT_INCLUDE_DIR qwt_plot.h PATHS ${QWTHOME}/include ${QWTHOME}/include/qwt)
+SET(QWT_INCLUDES -I${QWT_INCLUDE_DIR}) # to remove
+SET(QWT_INCLUDE_DIRS ${QWT_INCLUDE_DIR})
+IF(WINDOWS)
+SET(QWT_INCLUDES ${QWT_INCLUDES} -DQWT_DLL) # to remove
+SET(QWT_DEFINITIONS "-DQWT_DLL")
+ENDIF(WINDOWS)
 
-# These files are data, module or lib files
-SET(DATA
-  FindCAS.cmake
-  FindOPENGL.cmake
-  FindQT4.cmake
-  UseQT4EXT.cmake
-  FindQWT.cmake
-  FindSIPPYQT.cmake
-  FindVTK.cmake
-  FindGUI.cmake  
-)
-INSTALL(FILES ${DATA} DESTINATION ${GUI_admlocalcmake})
+IF(WINDOWS)
+IF(CMAKE_BUILD_TYPE STREQUAL Debug)
+FIND_LIBRARY(QWT_LIBS qwtd5 ${QWTHOME}/lib)
+ELSE(CMAKE_BUILD_TYPE STREQUAL Debug)
+FIND_LIBRARY(QWT_LIBS qwt5 ${QWTHOME}/lib)
+ENDIF(CMAKE_BUILD_TYPE STREQUAL Debug)
+ELSE(WINDOWS)
+FIND_LIBRARY(QWT_LIBS qwt HINTS ${QWTHOME} PATH_SUFFIXES lib lib64)
+ENDIF(WINDOWS)
