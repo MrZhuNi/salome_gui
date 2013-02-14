@@ -3,7 +3,7 @@
 
 #include <QtGui>
 #include "ui___CLASSNAME__.h"
-#include "GenericDialog.hxx"
+#include "GenericDialog.h"
 
 class __CLASSNAME__ : public GenericDialog
 {
