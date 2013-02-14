@@ -22,6 +22,8 @@
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
+admlocal_cmake_deprecateddir = $(prefix)/adm_local/cmake_files/deprecated
+
 dist_admlocal_cmake_deprecated_DATA = \
     FindCAS.cmake \
     FindGUI.cmake \
