@@ -40,7 +40,7 @@ private:
   QString myFilter;    //!< string filter
 };
 
-class QDS_DoubleValidator : public QDoubleValidator
+class QDS_EXPORT QDS_DoubleValidator : public QDoubleValidator
 {
 public:
   QDS_DoubleValidator( QObject* p = 0 );
