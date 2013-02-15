@@ -25,4 +25,10 @@ dist_admlocal_cmake_DATA = \
 FindCAS.cmake \
 UseQT4EXT.cmake \
 FindQWT.cmake \
-FindGUI.cmake
+FindGUI.cmake \
+FindSalomeCAS.cmake \
+FindSalomePYQT4.cmake \
+FindSalomeQT4.cmake \
+FindSalomeQWT.cmake \
+FindSalomeSIP.cmake \
+FindSalomeVTK.cmake
