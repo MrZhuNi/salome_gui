@@ -585,7 +585,7 @@ QString QDS_Datum::stringValue() const
 {
   initDatum();
 
-  if ( getString() == myTargetValue )
+  if ( !myTargetValue.isNull() && myTargetValue == getString() )
     return mySourceValue;
   else
     return getString();
