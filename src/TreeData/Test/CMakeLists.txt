@@ -42,12 +42,9 @@ SET(GUI_FORMS mainwindow.ui)
 QT4_WRAP_UI(GUI_FORMS_HEADERS ${GUI_FORMS})
 
 SET(TreeData_guitester_SOURCES
-  testhelper.hxx
   testhelper.cxx
   guitester.cxx
-  mainwindow.hxx
   mainwindow.cxx
-  MyDataModel.hxx
   MyDataModel.cxx
 )
 
