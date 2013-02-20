@@ -28,7 +28,6 @@
 #include <Basics_OCCTVersion.hxx>
 
 #if OCC_VERSION_LARGE > 0x06050400
-#error OCC_VERSION_LARGE
 
 //
 // new code, changed in OCCT v6.6.0
