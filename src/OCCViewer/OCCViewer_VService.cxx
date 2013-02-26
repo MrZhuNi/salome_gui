@@ -27,7 +27,7 @@
 
 #include <Basics_OCCTVersion.hxx>
 
-#if OCC_VERSION_LARGE > 0x06050400
+#if OCC_VERSION_LARGE > 0x06050500
 
 //
 // new code, changed in OCCT v6.6.0
@@ -42,7 +42,7 @@
 #include <Xw_Window.hxx>
 #endif
 
-#else // #if OCC_VERSION_LARGE > 0x06050400
+#else // #if OCC_VERSION_LARGE > 0x06050500
 
 //
 // obsolete code (before OCCT v6.6.0); to be removed
@@ -56,7 +56,7 @@
 #include <Graphic3d_GraphicDevice.hxx>
 #endif
 
-#endif // #if OCC_VERSION_LARGE > 0x06050400
+#endif // #if OCC_VERSION_LARGE > 0x06050500
 
 /*!
     Create native view window for CasCade view [ static ]
@@ -64,7 +64,7 @@
 Handle(Aspect_Window) OCCViewer_VService::CreateWindow( const Handle(V3d_View)& view,
 							WId winId )
 {
-#if OCC_VERSION_LARGE > 0x06050400
+#if OCC_VERSION_LARGE > 0x06050500
 
 //
 // new code, changed in OCCT v6.6.0
@@ -78,7 +78,7 @@ Handle(Aspect_Window) OCCViewer_VService::CreateWindow( const Handle(V3d_View)& 
 #endif
   return viewWindow;
 
-#else // #if OCC_VERSION_LARGE > 0x06050400
+#else // #if OCC_VERSION_LARGE > 0x06050500
 
 //
 // obsolete code (before OCCT v6.6.0); to be removed
@@ -96,7 +96,7 @@ Handle(Aspect_Window) OCCViewer_VService::CreateWindow( const Handle(V3d_View)& 
 #endif
   return viewWindow;
 
-#endif // #if OCC_VERSION_LARGE > 0x06050400
+#endif // #if OCC_VERSION_LARGE > 0x06050500
 }
 
 /*!
@@ -144,7 +144,7 @@ Handle(V3d_Viewer) OCCViewer_VService::Viewer3d( const Standard_CString aDisplay
 						 const Standard_Boolean ComputedMode,
 						 const Standard_Boolean aDefaultComputedMode )
 {
-#if OCC_VERSION_LARGE > 0x06050400
+#if OCC_VERSION_LARGE > 0x06050500
 
 //
 // new code, changed in OCCT v6.6.0
@@ -164,7 +164,7 @@ Handle(V3d_Viewer) OCCViewer_VService::Viewer3d( const Standard_CString aDisplay
 			 Quantity_NOC_GRAY30, V3d_ZBUFFER, V3d_GOURAUD, V3d_WAIT,
 			 ComputedMode, aDefaultComputedMode, V3d_TEX_NONE );
   
-#else // #if OCC_VERSION_LARGE > 0x06050400
+#else // #if OCC_VERSION_LARGE > 0x06050500
 
 //
 // obsolete code (before OCCT v6.6.0); to be removed
@@ -186,5 +186,5 @@ Handle(V3d_Viewer) OCCViewer_VService::Viewer3d( const Standard_CString aDisplay
 			 ComputedMode, aDefaultComputedMode, V3d_TEX_NONE);
 #endif  // WNT
 
-#endif // #if OCC_VERSION_LARGE > 0x06050400
+#endif // #if OCC_VERSION_LARGE > 0x06050500
 }
