@@ -1539,7 +1539,10 @@ void Plot2d_ViewFrame::setHorScaleMode( const int mode, bool update )
                                             tr( "QUESTION_XLOG_NOT_ALLOWED" ), 
                                             SUIT_MessageBox::Yes | SUIT_MessageBox::No );
     if( answer == SUIT_MessageBox::No )
+    {
+      emit vpModeHorChanged();
       return;
+    }
 
     doXLogEnabled();
   }
@@ -1568,7 +1571,10 @@ void Plot2d_ViewFrame::setVerScaleMode( const int mode, bool update )
                                             tr( "QUESTION_YLOG_NOT_ALLOWED" ), 
                                             SUIT_MessageBox::Yes | SUIT_MessageBox::No );
     if( answer == SUIT_MessageBox::No )
+    {
+      emit vpModeVerChanged();
       return;
+    }
 
     doYLogEnabled();
   }
