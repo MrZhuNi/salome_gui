@@ -475,6 +475,7 @@ SALOME_Actor
   vtkDataSet * aDataSet = GetHighlightedDataSet();
   aDataSet->GetBounds(aBounds);
   myOutline->SetBounds(aBounds);
+  myOutline->Update();
   myOutlineActor->SetVisibility( GetVisibility() && theIsHighlight );
 
   Superclass::highlight(theIsHighlight);
