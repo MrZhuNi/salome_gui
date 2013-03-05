@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>PLOT2D_CURVE_TYPE_LBL</source>
-        <translation type="unfinished">Type de Courbe:</translation>
+        <translation type="unfinished">Type de courbe:</translation>
     </message>
     <message>
         <source>ERROR</source>
@@ -17,11 +17,11 @@
     </message>
     <message>
         <source>PLOT2D_SET_AS_DEFAULT_CHECK</source>
-        <translation type="unfinished">Enregistrer comme les paramètres de defaut</translation>
+        <translation type="unfinished">Enregistrer en tant que paramètres par défaut</translation>
     </message>
     <message>
         <source>TLT_SETUP_CURVE</source>
-        <translation type="unfinished">Initialiser une Courbe</translation>
+        <translation type="unfinished">Initialiser une courbe</translation>
     </message>
     <message>
         <source>MNU_DUMP_VIEW</source>
@@ -33,11 +33,11 @@
     </message>
     <message>
         <source>PLOT2D_SCALE_MODE_HOR</source>
-        <translation type="unfinished">Axe Horizontale:</translation>
+        <translation type="unfinished">Axe Horizontal:</translation>
     </message>
     <message>
         <source>PLOT2D_SCALE_MODE_VER</source>
-        <translation type="unfinished">Axe Verticale:</translation>
+        <translation type="unfinished">Axe Vertical:</translation>
     </message>
     <message>
         <source>MNU_PAN_VIEW</source>
@@ -57,31 +57,31 @@
     </message>
     <message>
         <source>PRP_PLOT2D_MODE_LINEAR_VER</source>
-        <translation type="unfinished">Changer la vue au mode d&apos;échelle linéaire au long de l&apos;axe verticale</translation>
+        <translation type="unfinished">Passer en mode "échelle linéaire le long de l&apos;axe vertical"</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_MODE_LINEAR_HOR</source>
-        <translation type="unfinished">Changer la vue au mode d&apos;échelle linéaire au long de l&apos;axe horizontale</translation>
+        <translation type="unfinished">Passer en mode "échelle linéaire le long de l&apos;axe horizontal"</translation>
     </message>
     <message>
         <source>CURVE_LINE_WIDTH_LAB</source>
-        <translation type="unfinished">Largeur de la Ligne:</translation>
+        <translation type="unfinished">Largeur de la ligne:</translation>
     </message>
     <message>
         <source>CURVE_TYPE_POPUP</source>
-        <translation type="unfinished">Type de Courbe</translation>
+        <translation type="unfinished">Type de courbe</translation>
     </message>
     <message>
         <source>TOT_PLOT2D_MODE_LINEAR_VER</source>
-        <translation type="unfinished">Axe verticale: linéaire</translation>
+        <translation type="unfinished">Axe vertical: linéaire</translation>
     </message>
     <message>
         <source>TOT_PLOT2D_MODE_LINEAR_HOR</source>
-        <translation type="unfinished">Axe horizontale: linéaire</translation>
+        <translation type="unfinished">Axe horizontal: linéaire</translation>
     </message>
     <message>
         <source>FIT_DATA_TLT</source>
-        <translation type="unfinished">Montrer le plage des données</translation>
+        <translation type="unfinished">Afficher le panel des données</translation>
     </message>
     <message>
         <source>MNU_ZOOM_VIEW</source>
@@ -101,7 +101,7 @@
     </message>
     <message>
         <source>PRP_PLOT2D_CURVES_SPLINES</source>
-        <translation type="unfinished">Changer le mode de vue aux splines</translation>
+        <translation type="unfinished">Changer la vue en mode spline</translation>
     </message>
     <message>
         <source>INF_AXES_X</source>
@@ -113,19 +113,19 @@
     </message>
     <message>
         <source>DSC_FITALL</source>
-        <translation type="unfinished">Montrer tous les objets</translation>
+        <translation type="unfinished">Afficher tous les objets</translation>
     </message>
     <message>
         <source>MNU_FITALL</source>
-        <translation type="unfinished">Montrer tous</translation>
+        <translation type="unfinished">Afficher tous</translation>
     </message>
     <message>
         <source>TOT_PLOT2D_MODE_LOGARITHMIC_HOR</source>
-        <translation type="unfinished">Axe horizontale: logarithmique</translation>
+        <translation type="unfinished">Axe horizontal: logarithmique</translation>
     </message>
     <message>
         <source>TOT_PLOT2D_MODE_LOGARITHMIC_VER</source>
-        <translation type="unfinished">Axe Verticale: logarithmique</translation>
+        <translation type="unfinished">Axe Vertical: logarithmique</translation>
     </message>
     <message>
         <source>MNU_GLOBALPAN_VIEW</source>
@@ -137,7 +137,7 @@
     </message>
     <message>
         <source>PLOT2D_LEGEND_POSITION_BOTTOM</source>
-        <translation type="unfinished">Dessous</translation>
+        <translation type="unfinished">Au Dessous</translation>
     </message>
     <message>
         <source>INF_COORDINATES</source>
@@ -153,11 +153,11 @@
     </message>
     <message>
         <source>DTRIANGLE_MARKER_LBL</source>
-        <translation type="unfinished">Triangle orienté en bas</translation>
+        <translation type="unfinished">Triangle orienté vers le bas</translation>
     </message>
     <message>
         <source>UTRIANGLE_MARKER_LBL</source>
-        <translation type="unfinished">Triangle orienté en haut</translation>
+        <translation type="unfinished">Triangle orienté vers la haut</translation>
     </message>
     <message>
         <source>LTRIANGLE_MARKER_LBL</source>
@@ -165,7 +165,7 @@
     </message>
     <message>
         <source>RTRIANGLE_MARKER_LBL</source>
-        <translation type="unfinished">Triangle orienté à droit</translation>
+        <translation type="unfinished">Triangle orienté à droite</translation>
     </message>
     <message>
         <source>RECTANGLE_MARKER_LBL</source>
@@ -177,7 +177,7 @@
     </message>
     <message>
         <source>CURVE_LINE_TYPE_LAB</source>
-        <translation type="unfinished">Type de la Ligne:</translation>
+        <translation type="unfinished">Type de ligne:</translation>
     </message>
     <message>
         <source>CROSS_MARKER_LBL</source>
@@ -189,11 +189,11 @@
     </message>
     <message>
         <source>PLOT2D_ENABLE_VER_TITLE</source>
-        <translation type="unfinished">Titre de l&apos;axe Verticale</translation>
+        <translation type="unfinished">Titre de l&apos;axe Vertical</translation>
     </message>
     <message>
         <source>PLOT2D_ENABLE_HOR_TITLE</source>
-        <translation type="unfinished">Titre d&apos;Axe Horizontale</translation>
+        <translation type="unfinished">Titre de l&apos;Axe Horizontal</translation>
     </message>
     <message>
         <source>TOT_PLOT2D_SETTINGS</source>
@@ -205,15 +205,15 @@
     </message>
     <message>
         <source>MEN_PLOT2D_CURVES_SPLINES</source>
-        <translation type="unfinished">Dessiner les Splines</translation>
+        <translation type="unfinished">Dessiner des Splines</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_MODE_LOGARITHMIC_HOR</source>
-        <translation type="unfinished">Changer la vue au mode d&apos;échelle logarithmique au long de l&apos;axe horizontale</translation>
+        <translation type="unfinished">Passer en mode échelle logarithmique le long de l&apos;axe horizontal</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_MODE_LOGARITHMIC_VER</source>
-        <translation type="unfinished">Changer la vue au mode d&apos;échelle logarithmique au long de l&apos;axe verticale</translation>
+        <translation type="unfinished">Passer en mode échelle logarithmique le long de l&apos;axe vertical</translation>
     </message>
     <message>
         <source>PLOT2D_IMAGE_FILES</source>
@@ -241,7 +241,7 @@
     </message>
     <message>
         <source>PLOT2D_LEGEND_POSITION_TOP</source>
-        <translation type="unfinished">Dessus</translation>
+        <translation type="unfinished">En Dessus</translation>
     </message>
     <message>
         <source>TOT_PLOT2D_CHANGE_BACKGROUND</source>
@@ -249,7 +249,7 @@
     </message>
     <message>
         <source>MEN_PLOT2D_CHANGE_BACKGROUND</source>
-        <translation type="unfinished">Changer l&apos;Arrère-Plan...</translation>
+        <translation type="unfinished">Changer l&apos;Arrière-Plan...</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_CHANGE_BACKGROUND</source>
@@ -265,7 +265,7 @@
     </message>
     <message>
         <source>PLOT2D_GRID_ENABLE_HOR_MAJOR</source>
-        <translation type="unfinished">La horizontale majeure</translation>
+        <translation type="unfinished">L&apos;Horizontale majeure</translation>
     </message>
     <message>
         <source>PLOT2D_GRID_ENABLE_VER_MINOR</source>
@@ -273,11 +273,11 @@
     </message>
     <message>
         <source>TOT_PLOT2D_CURVES_POINTS</source>
-        <translation type="unfinished">Dessiner points</translation>
+        <translation type="unfinished">Dessiner des points</translation>
     </message>
     <message>
         <source>PLOT2D_GRID_ENABLE_HOR_MINOR</source>
-        <translation type="unfinished">La horizontale mineure</translation>
+        <translation type="unfinished">L&apos;Horizontale mineure</translation>
     </message>
     <message>
         <source>PLOT2D_BACKGROUND_COLOR_LBL</source>
@@ -289,38 +289,29 @@
     </message>
     <message>
         <source>QUESTION_XLOG_NOT_ALLOWED</source>
-        <translation>Quelques points dont les valeurs de l&apos;abscisse ne sont pas positives ont été détectées.
-Il est nécessaire d&apos;éliminer ces points avant que l&apos;échelle logarithmique soit permise.
-Les données y liées seront perdues. Voulez-vouz procéder?</translation>
+        <translation type="unfinished">Certains points présentent des valeurs d'abscisse non strictement positives. 
+Il est nécessaire d'éliminer ces points avant de passer en échelle logarithmique. 
+Les données associées seront perdues pour ce graphique, mais resteront accessibles 
+dans les fichiers de résultats. Souhaitez-vous poursuivre?</translation>
     </message>
     <message>
         <source>QUESTION_YLOG_NOT_ALLOWED</source>
-        <translation>Quelques points dont les valeurs de l&apos;ordonnée ne sont pas positives ont été détectées.
-Il est nécessaire d&apos;éliminer ces points avant que l&apos;échelle logarithmique soit permise.
-Les données y liées seront perdues. Voulez-vouz procéder?
-</translation>
-    </message>
-    <message>
-        <source>WRN_XLOG_NOT_ALLOWED</source>
-        <translation type="unfinished">On a détecté des points avec les valeurs non-positives sur l&apos;abscisse.
-L&apos;échelle logarithmique de l&apos;abscisse n&apos;est pas permise.</translation>
-    </message>
-    <message>
-        <source>WRN_YLOG_NOT_ALLOWED</source>
-        <translation type="unfinished">On a détecté des points avec les valeurs non-positives sur l&apos;ordonnée.
-L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</translation>
+        <translation type="unfinished">Certains points présentent des valeurs d'abscisse non strictement positives.
+Il est nécessaire d'éliminer ces points avant de passer en échelle logarithmique.
+Les données associées seront perdues pour ce graphique, mais resteront accessibles 
+dans les fichiers de résultats. Souhaitez-vous poursuivre?</translation>
     </message>
     <message>
         <source>DSC_FITRECT</source>
-        <translation type="unfinished">Montrer la zone choisie par l&apos;encadré</translation>
+        <translation type="unfinished">Afficher la zone choisie par l&apos;encadré</translation>
     </message>
     <message>
         <source>PLOT2D_LEGEND_POSITION_LEFT</source>
-        <translation type="unfinished">Gauche</translation>
+        <translation type="unfinished">A Gauche</translation>
     </message>
     <message>
         <source>MNU_FITRECT</source>
-        <translation type="unfinished">Montrer la Zone</translation>
+        <translation type="unfinished">Afficher la Zone</translation>
     </message>
     <message>
         <source>DOT_LINE_LBL</source>
@@ -332,7 +323,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>PRP_PLOT2D_CURVES_POINTS</source>
-        <translation type="unfinished">Changer le mode de vue aux points</translation>
+        <translation type="unfinished">Changer la vue en mode point</translation>
     </message>
     <message>
         <source>PLOT2D_SCALE_MODE_LOGARITHMIC</source>
@@ -340,15 +331,15 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>PLOT2D_LEGEND_POSITION_RIGHT</source>
-        <translation type="unfinished">Droit</translation>
+        <translation type="unfinished">A droite</translation>
     </message>
     <message>
         <source>DSC_DUMP_VIEW</source>
-        <translation type="unfinished">Sauver la vue actuelle au fichier image</translation>
+        <translation type="unfinished">Sauvegarder la vue dans un fichier Image</translation>
     </message>
     <message>
         <source>DSC_PRINT_VIEW</source>
-        <translation type="unfinished">Imprimer la vue actuelle</translation>
+        <translation type="unfinished">Imprimer la vue courante</translation>
     </message>
     <message>
         <source>WARNING</source>
@@ -356,7 +347,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>PLOT2D_ENABLE_LEGEND</source>
-        <translation type="unfinished">Montrer la légende</translation>
+        <translation type="unfinished">Afficher la légende</translation>
     </message>
     <message>
         <source>DSC_ZOOM_VIEW</source>
@@ -380,7 +371,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>TOT_PLOT2D_FITDATA</source>
-        <translation type="unfinished">Montrer le plage</translation>
+        <translation type="unfinished">Montrer le Diapason</translation>
     </message>
     <message>
         <source>PLOT2D_CURVE_TYPE_POINTS</source>
@@ -396,23 +387,23 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>MEN_PLOT2D_MODE_LOGARITHMIC_HOR</source>
-        <translation type="unfinished">Axe Horizontale: Logarithmique</translation>
+        <translation type="unfinished">Axe Horizontal: Logarithmique</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_MODE_LOGARITHMIC_VER</source>
-        <translation type="unfinished">Axe Verticale: Logarithmique</translation>
+        <translation type="unfinished">Axe Vertical: Logarithmique</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_FITDATA</source>
-        <translation type="unfinished">Monter le plage de données indiqué</translation>
+        <translation type="unfinished">Monter le diapason de données indiqué</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_MODE_LINEAR_VER</source>
-        <translation type="unfinished">Axe Verticale: Linéaire</translation>
+        <translation type="unfinished">Axe Vertical: Linéaire</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_MODE_LINEAR_HOR</source>
-        <translation type="unfinished">Axe Horizontale: Linéaire</translation>
+        <translation type="unfinished">Axe Horizontal: Linéaire</translation>
     </message>
     <message>
         <source>NONE_MARKER_LBL</source>
@@ -424,7 +415,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>MEN_PLOT2D_SHOW_LEGEND</source>
-        <translation type="unfinished">Montrer &amp;Légende</translation>
+        <translation type="unfinished">Afficher &amp;Légende</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_SHOW_LEGEND</source>
@@ -432,7 +423,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>TOT_PLOT2D_SHOW_LEGEND</source>
-        <translation type="unfinished">Montrer la Légende</translation>
+        <translation type="unfinished">Afficher la Légende</translation>
     </message>
     <message>
         <source>INF_AXES_Y_RIGHT</source>
@@ -444,7 +435,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>TOT_PLOT2D_CURVES_SPLINES</source>
-        <translation type="unfinished">Dessiner splines</translation>
+        <translation type="unfinished">Dessiner les splines</translation>
     </message>
     <message>
         <source>CURVE_MARKER_TYPE_LAB</source>
@@ -488,15 +479,15 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>TOT_PLOT2D_CURVES_LINES</source>
-        <translation type="unfinished">Dessiner Lignes</translation>
+        <translation type="unfinished">Dessiner des lignes</translation>
     </message>
     <message>
         <source>PRP_PLOT2D_CURVES_LINES</source>
-        <translation type="unfinished">Changer le mode de vue aux lignes</translation>
+        <translation type="unfinished">Changer la vue en mode ligne</translation>
     </message>
     <message>
         <source>MEN_PLOT2D_CURVES_LINES</source>
-        <translation type="unfinished">Dessiner les Lignes</translation>
+        <translation type="unfinished">Dessiner des lignes</translation>
     </message>
     <message>
         <source>TOT_PLOT2D_AUTOREPLOT</source>
@@ -507,7 +498,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     <name>Plot2d_FitDataDlg</name>
     <message>
         <source>FIT_HORIZONTAL</source>
-        <translation type="unfinished">Montrer horizontale</translation>
+        <translation type="unfinished">Affichage horizontale</translation>
     </message>
     <message>
         <source>MIN_VALUE_LAB</source>
@@ -515,7 +506,7 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>VERTICAL_AXIS</source>
-        <translation type="unfinished">Axe Verticale</translation>
+        <translation type="unfinished">Axe Vertical</translation>
     </message>
     <message>
         <source>MAX_VALUE_LAB</source>
@@ -523,23 +514,23 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     </message>
     <message>
         <source>HORIZONTAL_AXIS</source>
-        <translation type="unfinished">Axe Horizontale</translation>
+        <translation type="unfinished">Axe Horizontal</translation>
     </message>
     <message>
         <source>VERTICAL_LEFT_AXIS</source>
-        <translation type="unfinished">Axe Gauche Verticale</translation>
+        <translation type="unfinished">Axe Vertical Gauche</translation>
     </message>
     <message>
         <source>FIT_ALL</source>
-        <translation type="unfinished">Montrer tous</translation>
+        <translation type="unfinished">Afficher tous</translation>
     </message>
     <message>
         <source>VERTICAL_RIGHT_AXIS</source>
-        <translation type="unfinished">Axe droite verticale</translation>
+        <translation type="unfinished">Axe Vertical Droit</translation>
     </message>
     <message>
         <source>FIT_VERTICAL</source>
-        <translation type="unfinished">Montrer verticale</translation>
+        <translation type="unfinished">Affichage Vertical</translation>
     </message>
 </context>
 <context>

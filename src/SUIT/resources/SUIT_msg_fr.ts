@@ -101,7 +101,7 @@
     </message>
     <message>
         <source>ERR_CANT_DUMP_VIEW</source>
-        <translation type="unfinished">Impossible de sauver le contenu de la vue au fichier.</translation>
+        <translation type="unfinished">Impossible de sauver le contenu de la vue dans un fichier.</translation>
     </message>
     <message>
         <source>TLT_IMAGE_FILES</source>
@@ -137,7 +137,7 @@
     </message>
     <message>
         <source>QUE_DOC_FILEEXISTS</source>
-        <translation type="unfinished">Le fichier %1 déjà existe. Faut-il le réécrire?</translation>
+        <translation type="unfinished">Le fichier %1 déjà existe. Voulez-vous le remplacer?</translation>
     </message>
     <message>
         <source>PRP_DESK_WINDOW_ACTIVATE</source>
@@ -145,8 +145,7 @@
     </message>
     <message>
         <source>ERR_PERMISSION_DENIED</source>
-        <translation type="unfinished">Impossible de sauvegarder le fichier &quot;%1&quot;.
-Autorisation interdite.</translation>
+        <translation type="unfinished">Impossible de sauvegarder le fichier &quot;%1&quot;.Operation interdite.</translation>
     </message>
     <message>
                <source>ERR_ERROR</source>
@@ -154,8 +153,7 @@ Autorisation interdite.</translation>
     </message>
     <message>
         <source>QUE_FILE_EXISTS</source>
-        <translation type="unfinished">Le fichier &quot;%1&quot; déjà existe.
-Faut-il le réécrire?</translation>
+        <translation type="unfinished">Le fichier &quot;%1&quot; déjà existe. Voulez-vous le remplacer?</translation>
     </message>
     <message>
         <source>WRN_WARNING</source>
@@ -163,7 +161,7 @@ Faut-il le réécrire?</translation>
     </message>
     <message>
         <source>TLT_DUMP_VIEW</source>
-        <translation type="unfinished">Sauver la Vue au Fichier</translation>
+        <translation type="unfinished">Sauvegarder la vue dans un fichier.</translation>
     </message>
     <message>
         <source>PRP_DESK_WINDOW_TILE</source>
@@ -198,7 +196,7 @@ Faut-il le réécrire?</translation>
     </message>
     <message>
         <source>PREVIOUS_NOT_FINISHED</source>
-        <translation type="unfinished">L&apos;opération précédente n&apos;est pas aboutie et sera interrompue</translation>
+        <translation type="unfinished">L&apos;opération précédente n&apos;a pas pu aboutir. Opération interrompue.</translation>
     </message>
 </context>
 <context>

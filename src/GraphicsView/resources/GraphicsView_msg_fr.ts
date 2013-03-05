@@ -5,19 +5,19 @@
     <name>GraphicsView_ViewFrame</name>
     <message>
         <source>DSC_DUMP_VIEW</source>
-        <translation type="unfinished">Sauver la vue actuelle au fichier image</translation>
+        <translation type="unfinished">Sauver la scène courante dans un fichier image</translation>
     </message>
     <message>
         <source>DSC_FITALL</source>
-        <translation type="unfinished">Redimensionner la scène pour montrer tous les objets </translation>
+        <translation type="unfinished">Redimensionner la scène pour afficher tous les objets </translation>
     </message>
     <message>
         <source>DSC_FITRECT</source>
-        <translation type="unfinished">Redimensionner la scène pour ne montrer que sa partie choisie par l&apos;encadré</translation>
+        <translation type="unfinished">Redimensionner la scène pour n'afficher que la partie encadrée</translation>
     </message>
     <message>
         <source>DSC_FITSELECT</source>
-        <translation type="unfinished">Redimensionner la scène pour montrer la sélection.</translation>
+        <translation type="unfinished">Redimensionner la scène pour afficher la sélection.</translation>
     </message>
     <message>
         <source>DSC_GLOBALPAN_VIEW</source>
@@ -41,15 +41,15 @@
     </message>
     <message>
         <source>MNU_DUMP_VIEW</source>
-        <translation type="unfinished">Sauver la vue...</translation>
+        <translation type="unfinished">Sauvergarder la scène</translation>
     </message>
     <message>
         <source>MNU_FITALL</source>
-        <translation type="unfinished">Montrer tous</translation>
+        <translation type="unfinished">Afficher la scène</translation>
     </message>
     <message>
         <source>MNU_FITRECT</source>
-        <translation type="unfinished">Montrer l&apos;encadré</translation>
+        <translation type="unfinished">Afficher l&apos;encadré</translation>
     </message>
     <message>
         <source>MNU_FITSELECT</source>

@@ -21,35 +21,35 @@
     </message>
     <message>
       <source>MEN_APP_EDIT_UNDO</source>
-      <translation type="unfinished">&amp;Défaire</translation>
+      <translation type="unfinished">&amp;Annuler</translation>
     </message>
     <message>
       <source>MEN_APP_EDIT_REDO</source>
-      <translation type="unfinished">&amp;Refaire</translation>
+      <translation type="unfinished">&amp;Rétablir</translation>
     </message>
     <message>
       <source>PRP_APP_EDIT_REDO</source>
-      <translation type="unfinished">Refaire la dernière opération</translation>
+      <translation type="unfinished">Rétablir la dernière opération</translation>
     </message>
     <message>
       <source>PRP_APP_EDIT_UNDO</source>
-      <translation type="unfinished">Défaire la dernière opération</translation>
+      <translation type="unfinished">Annuler la dernière opération</translation>
     </message>
     <message>
       <source>TOT_APP_EDIT_REDO</source>
-      <translation type="unfinished">Refaire</translation>
+      <translation type="unfinished">Rétablir</translation>
     </message>
     <message>
       <source>TOT_APP_EDIT_UNDO</source>
-      <translation type="unfinished">Défaire</translation>
+      <translation type="unfinished">Annuler</translation>
     </message>
     <message>
       <source>INF_APP_REDOACTIONS</source>
-      <translation type="unfinished"> Refait %1 action(s) </translation>
+      <translation type="unfinished"> Rétablir %1 action(s) </translation>
     </message>
     <message>
       <source>INF_APP_UNDOACTIONS</source>
-      <translation type="unfinished"> Défait %1 action(s) </translation>
+      <translation type="unfinished"> Annuler %1 action(s) </translation>
     </message>
     <message>
       <source>ABOUT_INFO</source>

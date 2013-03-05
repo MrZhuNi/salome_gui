@@ -43,7 +43,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_SHOW_LEGEND</source>
-        <translation type="unfinished">Montrer la légende</translation>
+        <translation type="unfinished">Afficher la légende</translation>
     </message>
     <message>
         <source>MEN_DESK_RENAME</source>
@@ -51,7 +51,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_MULTI_FILE</source>
-        <translation type="unfinished">Sauvegarder multi-fichier</translation>
+        <translation type="unfinished">Sauvegarde multi-fichier</translation>
     </message>
     <message>
         <source>MEN_DESK_PREFERENCES</source>
@@ -59,7 +59,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_TRIHEDRON_SHOW</source>
-        <translation type="unfinished">Montrer le trièdre</translation>
+        <translation type="unfinished">Afficher le trièdre</translation>
     </message>
     <message>
         <source>PREF_TRIHEDRON_SIZE</source>
@@ -75,7 +75,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_GROUP_DIRECTORIES</source>
-        <translation type="unfinished">Liste rapide de répertoires</translation>
+        <translation type="unfinished">Courte liste de répertoires</translation>
     </message>
     <message>
         <source>PREF_GROUP_VTKVIEWER</source>
@@ -107,7 +107,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_STANDARD_STYLE</source>
-        <translation type="unfinished">Contrôls standards Salomé</translation>
+        <translation type="unfinished">Contrôles standards Salome</translation>
     </message>
     <message>
         <source>PREF_KEYFREE_STYLE</source>
@@ -131,15 +131,15 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_FRAME_SPACEMOUSE</source>
-        <translation type="unfinished">Souris Spaciale</translation>
+        <translation type="unfinished">Souris Spatiale</translation>
     </message>
     <message>
         <source>PREF_SPACEMOUSE_FUNC_1</source>
-        <translation type="unfinished">Rediure l&apos;incrément de vitesse</translation>
+        <translation type="unfinished">Reduire l&apos;incrément de vitesse</translation>
     </message>
     <message>
         <source>PREF_SPACEMOUSE_FUNC_2</source>
-        <translation type="unfinished">Rediure l&apos;incrément de vitesse</translation>
+        <translation type="unfinished">Augmenter l&apos;incrément de vitesse</translation>
     </message>
     <message>
         <source>PREF_SPACEMOUSE_FUNC_3</source>
@@ -191,7 +191,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_FRAME_RECORDING</source>
-        <translation type="unfinished">Renregistrement AVI</translation>
+        <translation type="unfinished">Enregistrement AVI</translation>
     </message>
     <message>
         <source>PREF_ALL_DISLPAYED_FRAMES</source>
@@ -243,7 +243,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PRP_MODULE</source>
-        <translation type="unfinished">Changer au module &quot;%1&quot;</translation>
+        <translation type="unfinished">Passer au module &quot;%1&quot;</translation>
     </message>
     <message>
         <source>PREF_ASCII_FILE</source>
@@ -251,7 +251,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREFERENCES_NOT_LOADED</source>
-        <translation type="unfinished">Les préférences du module &quot;&lt;b&gt;%N&lt;/b&gt;&quot; seront accessibles aussitôt que le module soit choisi</translation>
+        <translation type="unfinished">Les préférences du module &quot;&lt;b&gt;%N&lt;/b&gt;&quot; seront accessibles dés que le module sera chargé</translation>
     </message>
     <message>
         <source>PREF_LINEAR</source>
@@ -291,11 +291,11 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PRP_APP_MODULE</source>
-        <translation type="unfinished">Tourner au point neutre de la plate-forme SALOME</translation>
+        <translation type="unfinished">Passer au mode neutre de la plate-forme SALOME</translation>
     </message>
     <message>
         <source>PREF_GROUP_PY_CONSOLE</source>
-        <translation type="unfinished">Propriétés du console Python</translation>
+        <translation type="unfinished">Propriétés de la console Python</translation>
     </message>
     <message>
         <source>PREF_GROUP_STYLE</source>
@@ -307,7 +307,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_MARKER_SIZE</source>
-        <translation type="unfinished">Taille de repère:</translation>
+        <translation type="unfinished">Taille du repère:</translation>
     </message>
     <message>
         <source>PREF_TAB_VIEWERS</source>
@@ -403,15 +403,15 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_VERT_AXIS_SCALE</source>
-        <translation type="unfinished">Echelle de l&apos;axe verticale:</translation>
+        <translation type="unfinished">Echelle de l&apos;axe vertical:</translation>
     </message>
     <message>
         <source>PREF_HOR_AXIS_SCALE</source>
-        <translation type="unfinished">Echelle de l&apos;axe horizontale:</translation>
+        <translation type="unfinished">Echelle de l&apos;axe horizontal:</translation>
     </message>
     <message>
         <source>PREF_GROUP_STUDY</source>
-        <translation type="unfinished">Propiétés d&apos;une Etude</translation>
+        <translation type="unfinished">Propriétés d&apos;une Etude</translation>
     </message>
     <message>
         <source>PREF_CATEGORY_SALOME</source>
@@ -439,7 +439,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_RIGHT</source>
-        <translation type="unfinished">Droit</translation>
+        <translation type="unfinished">Droite</translation>
     </message>
     <message>
         <source>PREF_LINES</source>
@@ -459,7 +459,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>PREF_GROUP_DEF_COLUMNS</source>
-        <translation type="unfinished">Colonnnes de Défaut </translation>
+        <translation type="unfinished">Colonnes par Défaut </translation>
     </message>
     <message>
         <source>PREF_GROUP_PLOT2DVIEWER</source>
@@ -475,7 +475,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>DEFINE_EXTERNAL_BROWSER</source>
-        <translation type="unfinished">Le navigateur externe n&apos;est pas trouvé. Voulez-vous le définir dans les préférences?</translation>
+        <translation type="unfinished">Le navigateur externe n&apos;a pas été trouvé. Voulez-vous le définir dans les préférences?</translation>
     </message>
     <message>
         <source>PREF_AUTO_SIZE</source>
@@ -567,12 +567,11 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>ERR_DOC_NOT_EXISTS</source>
-        <translation type="unfinished">Impossible d&apos;ouvrir %1.
-Le fichier n&apos;existe pas</translation>
+        <translation type="unfinished">Impossible d&apos;ouvrir %1. Le fichier n&apos;existe pas</translation>
     </message>
     <message>
         <source>PREF_GROUP_MRU</source>
-        <translation type="unfinished">Montrer les objets MRU</translation>
+        <translation type="unfinished">Afficher les objets MRU</translation>
     </message>
     <message>
         <source>PREF_MRU_VISIBLE_COUNT</source>
@@ -580,11 +579,11 @@ Le fichier n&apos;existe pas</translation>
     </message>
     <message>
         <source>PREF_MRU_INSERT_MODE</source>
-        <translation type="unfinished">Mode d&apos;Insértion </translation>
+        <translation type="unfinished">Mode d&apos;Insertion </translation>
     </message>
     <message>
         <source>PREF_MRU_MOVE_FIRST</source>
-        <translation type="unfinished">Placer au commencement</translation>
+        <translation type="unfinished">Placer au début</translation>
     </message>
     <message>
         <source>PREF_MRU_MOVE_LAST</source>
@@ -592,7 +591,7 @@ Le fichier n&apos;existe pas</translation>
     </message>
     <message>
         <source>PREF_MRU_ADD_FIRST</source>
-        <translation type="unfinished">Ajouter au commencement</translation>
+        <translation type="unfinished">Ajouter au début</translation>
     </message>
     <message>
         <source>PREF_MRU_ADD_LAST</source>
@@ -616,11 +615,11 @@ Le fichier n&apos;existe pas</translation>
     </message>
     <message>
         <source>PREF_DEFAULT_MODULE</source>
-        <translation>Options de Commencement</translation>
+        <translation>Options de démarrage</translation>
     </message>
     <message>
         <source>PREF_DEF_MODULE_NAME</source>
-        <translation type="unfinished">Lancer le module défaut:</translation>
+        <translation type="unfinished">Lancer le module par défaut:</translation>
     </message>
     <message>
         <source>PREF_DEF_MODULE_NONE</source>
@@ -643,15 +642,15 @@ Le fichier n&apos;existe pas</translation>
     </message>
     <message>
         <source>TOP_DISPLAY_ONLY</source>
-        <translation type="unfinished">Montrer seulement</translation>
+        <translation type="unfinished">Seulement afficher</translation>
     </message>
     <message>
         <source>STB_DISPLAY_ONLY</source>
-        <translation type="unfinished">Montrer seulement</translation>
+        <translation type="unfinished">Seulement afficher</translation>
     </message>
     <message>
         <source>MEN_DISPLAY_ONLY</source>
-        <translation type="unfinished">Montrer Seulement</translation>
+        <translation type="unfinished">Seulement afficher</translation>
     </message>
     <message>
         <source>TOP_HIDE</source>
@@ -667,15 +666,15 @@ Le fichier n&apos;existe pas</translation>
     </message>
     <message>
         <source>STB_SHOW</source>
-        <translation type="unfinished">Montrer</translation>
+        <translation type="unfinished">Afficher</translation>
     </message>
     <message>
         <source>TOP_SHOW</source>
-        <translation type="unfinished">Montrer</translation>
+        <translation type="unfinished">Afficher</translation>
     </message>
     <message>
         <source>MEN_SHOW</source>
-        <translation type="unfinished">Montrer</translation>
+        <translation type="unfinished">Afficher</translation>
     </message>
     <message>
         <source>STB_ERASE_ALL</source>
@@ -733,11 +732,11 @@ Le fichier n&apos;existe pas</translation>
     </message>
     <message>
         <source>DEFAULT_QUESTION</source>
-        <translation type="unfinished">Voulez-vous restaurer les préférences de défaut?</translation>
+        <translation type="unfinished">Voulez-vous restaurer les préférences par défaut?</translation>
     </message>
     <message>
         <source>DEFAULT_BTN_TEXT</source>
-        <translation type="unfinished">Defauts</translation>
+        <translation type="unfinished">Défauts</translation>
     </message>
 </context>
 </TS>

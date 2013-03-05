@@ -65,7 +65,7 @@
     </message>
     <message>
         <source>QUE_DESK_EXIT</source>
-        <translation type="unfinished">Etes-vous sûr que vous voulez abandonner?</translation>
+        <translation type="unfinished">Etes-vous sûr de vouloir quitter l'application?</translation>
     </message>
     <message>
         <source>INF_INFO</source>
@@ -99,7 +99,7 @@
     </message>
     <message>
         <source>MEN_DESK_VIEW_STATUSBAR</source>
-        <translation type="unfinished">&amp;Barre de Status</translation>
+        <translation type="unfinished">&amp;Barre de Statut</translation>
     </message>
     <message>
         <source>MEN_DESK_NEWWINDOW</source>
@@ -107,12 +107,12 @@
     </message>
     <message>
         <source>PRP_DESK_VIEW_STATUSBAR</source>
-        <translation type="unfinished">Activer ou désactiver la barre de status</translation>
+        <translation type="unfinished">Activer ou désactiver la barre de statut</translation>
     </message>
     <message>
         <source>ERR_DOC_DIRWITHNAMEEXIST_SAVE</source>
         <translation type="unfinished">Impossible de sauvegarder le fichier %1.
-Le répertoir avec ce nom existe sur la disque. Essayez d&apos;utiliser un autre nom</translation>
+Le répertoire avec ce nom existe sur la disque. Essayez d&apos;utiliser un autre nom</translation>
     </message>
     <message>
         <source>BUT_NO</source>
@@ -156,7 +156,7 @@ Le répertoir avec ce nom existe sur la disque. Essayez d&apos;utiliser un autre
     </message>
     <message>
         <source>MEN_DESK_FILE_MRU</source>
-        <translation type="unfinished">&amp;Fichiers Recents</translation>
+        <translation type="unfinished">&amp;Fichiers Récents</translation>
     </message>
     <message>
         <source>TOT_DESK_EDIT_PASTE</source>
@@ -176,7 +176,7 @@ Le répertoir avec ce nom existe sur la disque. Essayez d&apos;utiliser un autre
     </message>
     <message>
         <source>PRP_DESK_HELP_ABOUT</source>
-        <translation type="unfinished">Montre la dialogue &apos;A propos&apos;</translation>
+        <translation type="unfinished">A propos&apos;</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE</source>
@@ -204,8 +204,7 @@ Le répertoir avec ce nom existe sur la disque. Essayez d&apos;utiliser un autre
     </message>
     <message>
         <source>QUE_DOC_ALREADYOPEN</source>
-        <translation type="unfinished">Le document %1 est déjà ouvert.
-Voulez-vous le rouvrir?</translation>
+        <translation type="unfinished">Le document %1 est déjà ouvert.Voulez-vous le rouvrir?</translation>
     </message>
     <message>
         <source>BUT_APPLY</source>
@@ -217,7 +216,7 @@ Voulez-vous le rouvrir?</translation>
     </message>
     <message>
         <source>INF_DESK_EXIT</source>
-        <translation type="unfinished">Abandonner</translation>
+        <translation type="unfinished">Quitter</translation>
     </message>
     <message>
         <source>ERR_UNKNOWN</source>
@@ -233,7 +232,7 @@ Voulez-vous le rouvrir?</translation>
     </message>
     <message>
         <source>PRP_DESK_FILE_PRINT</source>
-        <translation type="unfinished">imprimer le document actuel</translation>
+        <translation type="unfinished">Imprimer le document actuel</translation>
     </message>
     <message>
         <source>WRN_WARNING</source>
@@ -277,7 +276,7 @@ Voulez-vous le rouvrir?</translation>
     </message>
     <message>
         <source>INF_CANCELLED</source>
-        <translation type="unfinished">Annulé</translation>
+        <translation type="unfinished">Annuler</translation>
     </message>
     <message>
         <source>PRP_DESK_WINDOW_VSPLIT</source>
@@ -297,7 +296,7 @@ Voulez-vous le rouvrir?</translation>
     </message>
     <message>
         <source>PRP_DESK_HELP_CONTENTS</source>
-        <translation type="unfinished">Montre le sommaire de la référence documentaire</translation>
+        <translation type="unfinished">Voir le contenu complet de l'aide.</translation>
     </message>
     <message>
         <source>MEN_DESK_WINDOW_HTILE</source>
@@ -309,13 +308,11 @@ Voulez-vous le rouvrir?</translation>
     </message>
     <message>
         <source>ERR_DOC_PERMISSIONDENIED_SAVE</source>
-        <translation type="unfinished">Impossible de sauvegardet le fichier %1. Authorisaton refusée.</translation>
+        <translation type="unfinished">Impossible de sauvegardet le fichier %1. Opération interdite.</translation>
     </message>
     <message>
         <source>INF_DESK_DOCALREADYOPEN</source>
-        <translation type="unfinished">Impossible de sauvegarder le document sous un nom du document déjà ouvert.
-Indiquez un autre nom du document que vous allez sauvegarder.
-( %1 )</translation>
+        <translation type="unfinished">Impossible de sauvegarder le document sous un nom de fichier ouvert. Indiquer un autre nom.(%1)</translation>
     </message>
     <message>
         <source>TIT_FILE_SAVEAS</source>
@@ -327,8 +324,7 @@ Indiquez un autre nom du document que vous allez sauvegarder.
     </message>
     <message>
         <source>MSG_FILE_EXISTS</source>
-        <translation type="unfinished">Le Fichier &quot;%1&quot; déjà existe.
-Voulez-vous le réécrire?</translation>
+        <translation type="unfinished">Le Fichier &quot;%1&quot; existe déjà.Voulez-vous le remplacer?</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE_PRINT</source>
@@ -336,7 +332,7 @@ Voulez-vous le réécrire?</translation>
     </message>
     <message>
         <source>MEN_DESK_HELP_SEARCH</source>
-        <translation type="unfinished">&amp;Recherche...</translation>
+        <translation type="unfinished">&amp;Rechercher...</translation>
     </message>
     <message>
         <source>MEN_DESK_VIEW_STDTOOLBAR</source>
@@ -352,19 +348,19 @@ Voulez-vous le réécrire?</translation>
     </message>
     <message>
         <source>TOT_DESK_FILE_SAVE</source>
-        <translation type="unfinished">Enregistrer un document</translation>
+        <translation type="unfinished">Enregistrer le document</translation>
     </message>
     <message>
         <source>TOT_DESK_FILE_EXIT</source>
-        <translation type="unfinished">Abandonner l&apos;application</translation>
+        <translation type="unfinished">Quitter l&apos;application</translation>
     </message>
     <message>
         <source>TOT_DESK_FILE_LOAD</source>
-        <translation type="unfinished">Ouvrir le document</translation>
+        <translation type="unfinished">Charger le document</translation>
     </message>
     <message>
         <source>TOT_DESK_FILE_OPEN</source>
-        <translation type="unfinished">Ouvrir un document</translation>
+        <translation type="unfinished">Ouvrir le document</translation>
     </message>
     <message>
         <source>PRP_DESK_FILE_EXIT</source>
@@ -380,7 +376,7 @@ Voulez-vous le réécrire?</translation>
     </message>
     <message>
         <source>PRP_DESK_FILE_LOAD</source>
-        <translation type="unfinished">Ouvrir un document</translation>
+        <translation type="unfinished">Charger un document</translation>
     </message>
     <message>
         <source>PRP_DESK_WINDOW_HTILE</source>
@@ -392,7 +388,7 @@ Voulez-vous le réécrire?</translation>
     </message>
     <message>
         <source>MEN_DESK_WINDOW_TILE</source>
-        <translation type="unfinished">&amp;Pavé</translation>
+        <translation type="unfinished">&amp;Paver</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE_EXIT</source>
@@ -416,15 +412,14 @@ Voulez-vous le réécrire?</translation>
     </message>
     <message>
         <source>MEN_STUDIES_CHOICE</source>
-        <translation type="unfinished">Choisir l&apos;Etude Existante</translation>
+        <translation type="unfinished">Choisir une étude existante</translation>
     </message>
 </context>
 <context>
     <name>STD_Application</name>
     <message>
         <source>INF_DOC_MODIFIED</source>
-        <translation type="unfinished">Le document a été modifié.
-Voulez-vous sauvegarder les changements?</translation>
+        <translation type="unfinished">Le document a été modifié. Voulez-vous sauvegarder les changements?</translation>
     </message>
     <message>
         <source>INF_DOC_SAVING</source>
@@ -448,18 +443,16 @@ Voulez-vous sauvegarder les changements?</translation>
     </message>
     <message>
         <source>INF_DOC_SAVING_FAILS</source>
-        <translation type="unfinished">Impossible de sauvegarder le fichier &quot;%1&quot;.
-Probablement, cela n&apos;est pas authorisé ou il n&apos;y a pas d&apos;espace sur la disquel.
-Essayez d&apos;utiliser un autre nom de fichier.</translation>
+        <translation type="unfinished">Impossible de sauvegarder le fichier %1. Opération interdite ou espace disque insuffisant. 
+            Veuillez entrer un autre nom de fichier.</translation>
     </message>
     <message>
         <source>INF_DOCUMENT_MODIFIED</source>
-        <translation type="unfinished">Le document &quot;%1&quot; a été modifié.
-Voulez-vous sauvegarder les changements?</translation>
+        <translation type="unfinished">Le document &quot;%1&quot; a été modifié. Voulez-vous sauvegarder les changements?</translation>
     </message>
     <message>
         <source>CLOSE_STUDY</source>
-        <translation type="unfinished">Fermer l&apos;étude actuelle</translation>
+        <translation type="unfinished">Fermer l&apos;étude courante</translation>
     </message>
     <message>
         <source>CLOSE_QUESTION</source>

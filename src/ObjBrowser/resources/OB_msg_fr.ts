@@ -32,7 +32,7 @@
     </message>
     <message>
         <source>IS_REG_EXP</source>
-        <translation type="unfinished">Expression Régulaire</translation>
+        <translation type="unfinished">Expression Réguliaire</translation>
     </message>
 </context>
 </TS>

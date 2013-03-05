@@ -78,7 +78,7 @@
     </message>
     <message>
         <source>File \&quot;%1\&quot; already exist. Do you want to overwrite it?</source>
-        <translation>Le fichier \&quot;%1\&quot; existe déjà. Voulez-vous l&apos;écraser ?</translation>
+        <translation>Le fichier \&quot;%1\&quot; existe déjà. Voulez-vous le remplacer ?</translation>
     </message>
     <message>
         <source>Directory \&quot;%1\&quot; does not exist</source>
@@ -86,7 +86,7 @@
     </message>
     <message>
         <source>Directory \&quot;%1\&quot; can&apos;t be created because file with the same name exist</source>
-        <translation>Il est impossible de créer le répertoire \&quot;%1\&quot; parce qu&apos;un fichier avec ce nom existe déjà</translation>
+        <translation>Impossible de créer le répertoire car un fichier de même nom existe déjà.</translation>
     </message>
     <message>
         <source>Directory \&quot;%1\&quot; not empty. Do you want to remove all files in this directory?</source>
@@ -105,22 +105,22 @@
     <name>QtxFontEdit</name>
     <message>
         <source>B</source>
-        <translatorcomment>Bold</translatorcomment>
+        <translatorcomment>Gras</translatorcomment>
         <translation>G</translation>
     </message>
     <message>
         <source>I</source>
-        <translatorcomment>Italic</translatorcomment>
+        <translatorcomment>Italique</translatorcomment>
         <translation>I</translation>
     </message>
     <message>
         <source>U</source>
-        <translatorcomment>Underline</translatorcomment>
+        <translatorcomment>Souligner</translatorcomment>
         <translation>S</translation>
     </message>
     <message>
         <source>S</source>
-        <translatorcomment>Strikethrough</translatorcomment>
+        <translatorcomment>Rayer</translatorcomment>
         <translation>R</translation>
     </message>
 </context>
