@@ -452,11 +452,12 @@ Le répertoire avec ce nom existe sur la disque. Essayez d&apos;utiliser un autr
     </message>
     <message>
         <source>CLOSE_STUDY</source>
-        <translation type="unfinished">Fermer l&apos;étude courante</translation>
+        <translation type="unfinished">Enregistrement des modifications</translation>
     </message>
     <message>
         <source>CLOSE_QUESTION</source>
-        <translation type="unfinished">Voulez-vous sauvegarder l&apos;étude avant de quitter?</translation>
+        <translation type="unfinished">Des objets ont été modifiés. Souhaitez-vous sauvegarder 
+les modifications avant de quitter?</translation>
     </message>
 </context>
 </TS>
