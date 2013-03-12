@@ -175,6 +175,15 @@ QtxWorkstack* STD_TabDesktop::workstack() const
 }
 
 /*!
+  \brief set subwindow of the desktop to be the active one.
+  \param theWnd the window to be set as active.
+*/
+void STD_TabDesktop::setActiveWindow( QWidget* theWnd )
+{
+  workstack()->setActiveWindow( theWnd );
+}
+
+/*!
   Emit window activated.
 */
 void STD_TabDesktop::onWindowActivated( QWidget* w )

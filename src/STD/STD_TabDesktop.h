@@ -55,6 +55,9 @@ public:
 
   QtxWorkstack*            workstack() const;
 
+public slots:
+  void                     setActiveWindow( QWidget* );
+
 private slots:
   void                     onWindowActivated( QWidget* );
 

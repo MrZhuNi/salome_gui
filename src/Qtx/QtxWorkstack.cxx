@@ -2543,6 +2543,31 @@ void QtxWorkstack::splitHorizontal()
 }
 
 /*!
+  \brief Activates window, make its container tab active.
+  \param theWnd window to activate.
+*/
+void QtxWorkstack::setActiveWindow( QWidget* theWnd )
+{
+  QtxWorkstackArea* aWndArea = wgArea( theWnd );
+  if ( aWndArea == 0 )
+    return;
+
+  aWndArea->setActiveWidget( theWnd );
+
+  QWidget* aCurrFocus = QApplication::focusWidget();
+  if ( !theWnd->isAncestorOf( aCurrFocus ) )
+  {
+    QWidget* aLastSubFocus = theWnd->focusWidget();
+    if ( aLastSubFocus )
+      aLastSubFocus->setFocus();
+    else
+      theWnd->setFocus();
+  }
+
+  setActiveArea( aWndArea );
+}
+
+/*!
   \brief Called when user activates "Rename" menu item.
 
   Changes widget title.

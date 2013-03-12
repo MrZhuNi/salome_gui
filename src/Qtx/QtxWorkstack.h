@@ -126,6 +126,7 @@ signals:
 public slots:
   void                splitVertical();
   void                splitHorizontal();
+  void                setActiveWindow( QWidget* );
 
 private slots:
   void                onRename();
