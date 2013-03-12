@@ -364,7 +364,7 @@ Le répertoire avec ce nom existe sur la disque. Essayez d&apos;utiliser un autr
     </message>
     <message>
         <source>PRP_DESK_FILE_EXIT</source>
-        <translation type="unfinished">Abandonner l&apos;application</translation>
+        <translation type="unfinished">Quitter l&apos;application</translation>
     </message>
     <message>
         <source>PRP_DESK_FILE_OPEN</source>
@@ -392,7 +392,7 @@ Le répertoire avec ce nom existe sur la disque. Essayez d&apos;utiliser un autr
     </message>
     <message>
         <source>MEN_DESK_FILE_EXIT</source>
-        <translation type="unfinished">A&amp;bandonner</translation>
+        <translation type="unfinished">&amp;Quitter</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE_OPEN</source>
