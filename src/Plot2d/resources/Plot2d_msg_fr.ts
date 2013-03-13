@@ -221,7 +221,7 @@
     </message>
     <message>
         <source>PLOT2D_MAX_INTERVALS</source>
-        <translation type="unfinished">Intervalles Maximaux</translation>
+        <translation type="unfinished">Nombre de graduations</translation>
     </message>
     <message>
         <source>INF_AXES_Y_LEFT</source>
@@ -261,15 +261,15 @@
     </message>
     <message>
         <source>PLOT2D_GRID_ENABLE_VER_MAJOR</source>
-        <translation type="unfinished">La Verticale majeure</translation>
+        <translation type="unfinished">Graduation principale</translation>
     </message>
     <message>
         <source>PLOT2D_GRID_ENABLE_HOR_MAJOR</source>
-        <translation type="unfinished">L&apos;Horizontale majeure</translation>
+        <translation type="unfinished">Graduation principale</translation>
     </message>
     <message>
         <source>PLOT2D_GRID_ENABLE_VER_MINOR</source>
-        <translation type="unfinished">La Verticale mineure</translation>
+        <translation type="unfinished">Graduation secondaire</translation>
     </message>
     <message>
         <source>TOT_PLOT2D_CURVES_POINTS</source>
@@ -277,7 +277,7 @@
     </message>
     <message>
         <source>PLOT2D_GRID_ENABLE_HOR_MINOR</source>
-        <translation type="unfinished">L&apos;Horizontale mineure</translation>
+        <translation type="unfinished">Graduation secondaire</translation>
     </message>
     <message>
         <source>PLOT2D_BACKGROUND_COLOR_LBL</source>
@@ -371,7 +371,7 @@ dans les fichiers de résultats. Souhaitez-vous poursuivre?</translation>
     </message>
     <message>
         <source>TOT_PLOT2D_FITDATA</source>
-        <translation type="unfinished">Montrer le Diapason</translation>
+        <translation type="unfinished">Plage des données"</translation>
     </message>
     <message>
         <source>PLOT2D_CURVE_TYPE_POINTS</source>
