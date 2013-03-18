@@ -168,6 +168,7 @@ public:
 public slots:
   virtual bool               activateModule( SUIT_Study* );
   virtual bool               deactivateModule( SUIT_Study* );
+  virtual void               onModelClosed();
   void                       preferenceChanged( const QString&, 
                                                 const QString&, 
                                                 const QString& );
@@ -187,6 +188,7 @@ private:
   void                       init( CAM_Application* );
   void                       activate( SUIT_Study* );
   void                       deactivate( SUIT_Study* );
+  void                       closeStudy( SUIT_Study* );
   bool                       lastActivationStatus() const;
   void                       customize( SUIT_Study* );
   void                       studyChanged( SUIT_Study* );

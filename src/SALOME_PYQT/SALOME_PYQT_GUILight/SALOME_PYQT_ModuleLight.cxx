@@ -522,6 +522,90 @@ bool SALOME_PYQT_ModuleLight::deactivateModule( SUIT_Study* theStudy )
 }
 
 /*!
+  \brief Close of the module.
+
+  This function is usually used in order to close the module's 
+  specific menus and toolbars and perform other such actions
+  required when the module is closed.
+*/
+void SALOME_PYQT_ModuleLight::onModelClosed()
+{
+  FuncMsg fmsg( "SALOME_PYQT_ModuleLight::onModelClosed()" );
+  
+  // call base implementation
+  LightApp_Module::onModelClosed();
+
+  // perform internal closures
+  // StudyClosedReq: request class for internal closeStudy() operation
+  class StudyClosedReq : public PyInterp_LockRequest
+  {
+  public:
+    StudyClosedReq( PyInterp_Interp*         _py_interp,
+                    SUIT_Study*              _study,
+                    SALOME_PYQT_ModuleLight* _obj ) 
+        : PyInterp_LockRequest( _py_interp, 0, true ), // this request should be processed synchronously (sync == true)
+        myStudy ( _study ),
+        myObj   ( _obj ) {}
+
+  protected:
+    virtual void execute()
+    {
+      myObj->closeStudy( myStudy );
+    }
+
+  private:
+    SUIT_Study*         myStudy;
+    SALOME_PYQT_ModuleLight* myObj;
+  };
+
+  // Post request
+  PyInterp_Dispatcher::Get()->Exec( new StudyClosedReq( myInterp, application()->activeStudy(), this ) );
+}
+
+/*!
+  \brief Internal closure:
+
+  Performs the following actions:
+  - call Python module's closeStudy() method
+
+  \param theStudy parent study object
+*/
+void SALOME_PYQT_ModuleLight::closeStudy( SUIT_Study* theStudy )
+{
+  FuncMsg fmsg( "SALOME_PYQT_ModuleLight::closeStudy()" );
+
+  // Get study Id
+  LightApp_Study* aStudy = dynamic_cast<LightApp_Study*>( theStudy );
+  int aStudyId = aStudy ? aStudy->id() : 0;
+
+  // Initialize Python subinterpreter (on per study) and put it in <myInterp> variable
+  initInterp( aStudyId );
+  if ( !myInterp )
+    return; // Error
+
+  // Import Python GUI module
+  importModule();
+  if ( !myModule )
+    return; // Error
+
+  if ( IsCallOldMethods ) {
+    // Call Python module's setWorkspace() method
+    setWorkSpace();
+  }
+
+  // Get python lock
+  PyLockWrapper aLock = myInterp->GetLockWrapper();
+
+  // Call Python module's closeStudy() method
+  if ( PyObject_HasAttrString( myModule, (char*)"closeStudy" ) ) {
+    PyObjWrapper res( PyObject_CallMethod( myModule, (char*)"closeStudy", (char*)"i", aStudyId ) );
+    if( !res ) {
+      PyErr_Print();
+    }
+  }
+}
+
+/*!
  \brief Get last activation status.
  \return status of last module activation operation
  \sa activateModule()
