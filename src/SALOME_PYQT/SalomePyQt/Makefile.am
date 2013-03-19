@@ -30,10 +30,11 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 SIP_SRC = sipAPISalomePyQt.h			\
 	  sipSalomePyQtSalomePyQt.cc		\
 	  sipSalomePyQtSALOME_Selection.cc	\
-	  sipSalomePyQtQtxAction.cc		\
+	  sipSalomePyQtQtxAction.cc		    \
 	  sipSalomePyQtQtxActionGroup.cc	\
 	  sipSalomePyQtQtxActionSet.cc		\
-	  sipSalomePyQtcmodule.cc
+	  sipSalomePyQtcmodule.cc           \
+	  sipSalomePyQtPlot2d_Curve.cc
 
 # Sip definition file
 SIP_FILES = SalomePyQt.sip
