@@ -3256,17 +3256,15 @@ void Plot2d_ViewFrame::updateTitles()
 */
 bool Plot2d_ViewFrame::print( const QString& file, const QString& format ) const
 {
-#ifdef WIN32
-  return false;
-
-#else
   bool res = false;
   if( myPlot )
   {
     QPaintDevice* pd = 0;
-    if( format=="PS" || format=="EPS" )
+    if( format=="PS" || format=="EPS" || format == "PDF")
     {
       QPrinter* pr = new QPrinter( QPrinter::HighResolution );
+      if(format == "PDF")
+    	  pr->setOutputFormat(QPrinter::PdfFormat);
       pr->setPageSize( QPrinter::A4 );
       pr->setOutputFileName( file );
       pr->setPrintProgram( "" );
@@ -3281,7 +3279,6 @@ bool Plot2d_ViewFrame::print( const QString& file, const QString& format ) const
     }
   }
   return res;
-#endif
 }
 
 /**

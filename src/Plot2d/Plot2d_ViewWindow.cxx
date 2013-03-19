@@ -528,7 +528,7 @@ void Plot2d_ViewWindow::setVisualParameters( const QString& parameters )
 */
 void Plot2d_ViewWindow::RefreshDumpImage()
 {
-  QPixmap px = QPixmap::grabWindow( myViewFrame->winId() );
+  QPixmap px = QPixmap::grabWidget( myViewFrame );
   myDumpImage = px.toImage();
 }
 
@@ -742,7 +742,7 @@ void Plot2d_ViewWindow::onDumpView()
 QImage Plot2d_ViewWindow::dumpView()
 {
   if ( getToolBar()->underMouse() || myDumpImage.isNull() ) {
-    QPixmap px = QPixmap::grabWindow( myViewFrame->winId() );
+    QPixmap px = QPixmap::grabWidget( myViewFrame );
     return px.toImage();
   }
   
