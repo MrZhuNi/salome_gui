@@ -557,6 +557,10 @@ bool SalomeApp_Study::loadDocument( const QString& theStudyName )
 #endif
 
   bool res = CAM_Study::openDocument( theStudyName );
+  
+  //rnv: to fix the "0051779: TC7.2.0: Save operation works incorrectly for study loaded from data server"
+  //     mark study as "not saved" after call openDocument( ... ) method.
+  setIsSaved(false);
   emit opened( this );
 
   bool restore = application()->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
