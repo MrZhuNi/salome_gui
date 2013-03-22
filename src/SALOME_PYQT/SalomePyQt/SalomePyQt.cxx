@@ -3431,6 +3431,38 @@ void SalomePyQt::updateCurves(const int id)
 }
 
 /*!
+  \fn QString SalomePyQt::getPlot2dTitle( const int id, ObjectType type = MainTitle )
+  \brief Get title of corresponding type
+  \param id window identifier
+  \param type is type of title
+  \return title of corresponding type
+*/
+
+class TGetPlot2dTitle: public SALOME_Event
+{
+public:
+  typedef QString TResult;
+  TResult myResult;
+  int myWndId;
+  ObjectType myType;
+  TGetPlot2dTitle(const int id, ObjectType type) :
+	  myWndId(id),
+	  myType(type) {}
+  virtual void Execute() {
+	Plot2d_ViewWindow* wnd = dynamic_cast<Plot2d_ViewWindow*>(getWnd( myWndId ));
+	if ( wnd )
+	{
+	  myResult = wnd->getViewFrame()->getTitle((Plot2d_ViewFrame::ObjectType)myType);
+	}
+  }
+};
+QString SalomePyQt::getPlot2dTitle(const int id, ObjectType type)
+{
+	return ProcessEvent( new TGetPlot2dTitle(id, type) ); 
+}
+
+
+/*!
   \fn void SalomePyQt::setPlot2dTitle( const int id, const QString& title, ObjectType type = MainTitle, bool show = true )
   \brief Set title of corresponding type
   \param id window identifier

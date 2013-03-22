@@ -277,6 +277,7 @@ public:
   static void              eraseCurve(const int, Plot2d_Curve*);
   static void              eraseCurve(Plot2d_Curve*);
   static void              updateCurves( const int );
+  static QString           getPlot2dTitle(const int, ObjectType = MainTitle);
   static void              setPlot2dTitle(const int, const QString&, ObjectType = MainTitle, bool = true);
   static QList<double>     getPlot2dFitRangeByCurves(const int);
   static QList<double>     getPlot2dFitRangeCurrent(const int);

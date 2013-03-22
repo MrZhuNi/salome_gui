@@ -400,6 +400,7 @@ public:
   static void              eraseCurve(const int, Plot2d_Curve*) /ReleaseGIL/ ;
   static void              eraseCurve(Plot2d_Curve*) /ReleaseGIL/ ;
   static void              updateCurves( const int ) /ReleaseGIL/ ;
+  static QString           getPlot2dTitle(const int, ObjectType = MainTitle) /ReleaseGIL/ ;
   static void              setPlot2dTitle(const int, const QString&, ObjectType = MainTitle, bool = true) /ReleaseGIL/ ;
   static QList<double>     getPlot2dFitRangeByCurves(const int) /ReleaseGIL/ ;
   static QList<double>     getPlot2dFitRangeCurrent(const int) /ReleaseGIL/ ;
