@@ -53,8 +53,6 @@ public:
   Handle(V3d_View)      setView( const Handle(V3d_View)& );
   Handle(V3d_Viewer)    getViewer() const;
 
-  void                  setAnimationMode(bool theDegenerated);
-
   virtual void          setBackgroundColor( const QColor& color);    // obsolete
   virtual QColor        backgroundColor() const;                     // obsolete
   void                  setBackground( const Qtx::BackgroundData& color);
@@ -121,8 +119,6 @@ private:
   Handle(V3d_View)      myOrthoView;
   Handle(V3d_View)      myPerspView;
   Handle(V3d_View)      myActiveView;
-  bool                  myDegenerated;
-  bool                  myAnimate;
   bool                  myBusy;
   double                myScale;
   bool                  myIsAdvancedZoomingEnabled;
