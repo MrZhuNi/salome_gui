@@ -33,6 +33,7 @@
 #include "SVTK_ViewModel.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_View.h"
+#include "SVTK_Renderer.h"
 //#include "SVTK_MainWindow.h"
 #include "SVTK_Prs.h"
 
@@ -665,8 +666,9 @@ void SVTK_Viewer::EraseAll( const bool forced )
             //Handle(SALOME_InteractiveObject) anObj = anAct->getIO();
             //if(!anObj.IsNull() && anObj->hasEntry() && aStudy)
             //  ToolsGUI::SetVisibility(aStudy,anObj->getEntry(),false,this);
-            if(forced)
-              aRenderer->RemoveActor(anAct);
+            if(forced) 
+              if(SVTK_Renderer* aRnd = aView->GetRenderer())
+                aRnd->RemoveActor(anAct);
             else{
               // just erase actor
               anAct->SetVisibility( false );
