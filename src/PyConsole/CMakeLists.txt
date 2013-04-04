@@ -27,9 +27,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../Qtx
   ${CMAKE_CURRENT_SOURCE_DIR}/../SUIT
   ${CMAKE_CURRENT_SOURCE_DIR}/../PyInterp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../Event
 )
 
-SET(COMMON_LIBS ${PYTHON_LIBRARIES} ${QT_LIBRARIES} ${SALOMELocalTrace} qtx suit PyInterp)
+SET(COMMON_LIBS ${PYTHON_LIBRARIES} ${QT_LIBRARIES} ${SALOMELocalTrace} qtx suit PyInterp Event)
 
 SET(GUI_HEADERS   
   PyConsole_Editor.h
@@ -41,6 +42,8 @@ SET(PyConsole_SOURCES
   PyConsole_Console.cxx
   PyConsole_Editor.cxx
   PyConsole_Interp.cxx
+  PyConsole_Event.cxx
+  PyConsole_Request.cxx
 )
 
 SET(GUITS_SOURCES
@@ -59,6 +62,8 @@ SET(COMMON_HEADERS_H
   PyConsole_Console.h
   PyConsole_Editor.h
   PyConsole_Interp.h
+  PyConsole_Event.h
+  PyConsole_Request.h
 )
 INSTALL(FILES ${COMMON_HEADERS_H} DESTINATION ${GUI_salomeinclude_HEADERS})
 QT4_INSTALL_TS_RESOURCES("${GUITS_SOURCES}" "${GUI_salomeres_DATA}")
