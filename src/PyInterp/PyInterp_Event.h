@@ -55,7 +55,8 @@ class PYINTERP_EXPORT PyInterp_Event : public QEvent
 
 public:
   //Execution state
-  enum { ES_NOTIFY = QEvent::User + 5000, ES_OK, ES_ERROR, ES_INCOMPLETE, ES_LAST };
+  enum { ES_NOTIFY = QEvent::User + 5000, ES_OK, ES_ERROR, ES_INCOMPLETE,
+         ES_TAB_COMPLETE_OK, ES_TAB_COMPLETE_ERR, ES_LAST };
 
   PyInterp_Event( int type, PyInterp_Request* request )
     : QEvent( (QEvent::Type)type ), myRequest( request ) {}

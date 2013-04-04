@@ -23,9 +23,9 @@
 #ifndef _LIGHTAPP_PYINTERP_H_
 #define _LIGHTAPP_PYINTERP_H_
 
-#include <PyConsole_Interp.h> // this include must be first (see PyInterp_base.h)!
+#include <PyConsole_EnhInterp.h> // this include must be first (see PyInterp_base.h)!
 
-class LightApp_PyInterp : public PyConsole_Interp
+class LightApp_PyInterp : public PyConsole_EnhInterp
 {
 public:
   LightApp_PyInterp();

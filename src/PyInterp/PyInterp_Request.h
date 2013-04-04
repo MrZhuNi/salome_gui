@@ -67,7 +67,7 @@ protected:
   virtual void    execute() = 0;
   // Should be redefined in successors, contains actual request code
 
-  virtual QEvent* createEvent() const;
+  virtual QEvent* createEvent();
   // This method can be overridden to customize notification event creation
 
   virtual void    processEvent( QObject* );

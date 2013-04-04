@@ -23,8 +23,8 @@
 
 #include "PyInterp_Event.h"
 #include "PyConsole_Event.h"
-#include "PyInterp_Interp.h"
-#include "PyConsole_Editor.h"
+#include "PyConsole_EnhInterp.h"
+#include "PyConsole_EnhEditor.h"
 
 #include <QCoreApplication>
 
@@ -48,9 +48,40 @@ void ExecCommand::execute()
     }
 }
 
-QEvent* ExecCommand::createEvent() const
+QEvent* ExecCommand::createEvent()
 {
   if ( IsSync() )
     QCoreApplication::sendPostedEvents( listener(), PrintEvent::EVENT_ID );
-  return new PyInterp_Event( myState, (PyInterp_Request*)this );
+  return new PyInterp_Event( myState, this );
 }
+
+
+
+CompletionCommand::CompletionCommand( PyConsole_EnhInterp*  theInterp,
+               const QString&          input,
+               const QString&         startMatch,
+               PyConsole_EnhEditor*           theListener,
+               bool                    sync)
+     : PyInterp_LockRequest( theInterp, theListener, sync ),
+       _tabSuccess(false), _dirArg(input), _startMatch(startMatch)
+{}
+
+void CompletionCommand::execute()
+{
+  PyConsole_EnhInterp * interp = static_cast<PyConsole_EnhInterp *>(getInterp());
+    int ret = interp->runDirCommand( _dirArg,  _startMatch);
+    if (ret == 0)
+      _tabSuccess = true;
+    else
+      _tabSuccess = false;
+}
+
+QEvent* CompletionCommand::createEvent()
+{
+  int typ = _tabSuccess ? PyInterp_Event::ES_TAB_COMPLETE_OK : PyInterp_Event::ES_TAB_COMPLETE_ERR;
+
+  return new PyInterp_Event( typ, this);
+}
+
+
+

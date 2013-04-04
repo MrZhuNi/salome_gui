@@ -24,6 +24,8 @@
 #ifndef PYCONSOLE_EVENT_H
 #define PYCONSOLE_EVENT_H
 
+#include "PyConsole.h"
+
 #include <QEvent>
 #include <QString>
 
@@ -40,6 +42,7 @@ public:
   /*!
     \brief Constructor
     \param c message text (python trace)
+    \param isError default to false - if true indicates that an error is being printed.
   */
   PrintEvent( const char* c, bool isError = false) :
     QEvent( (QEvent::Type)EVENT_ID ), myText( c ), errorFlag(isError)
@@ -50,6 +53,10 @@ public:
     \return message text (python trace)
   */
   QString text() const { return myText; }
+
+  /**
+   * @return true if this is an error message
+   */
   bool isError() const { return errorFlag; }
 
 protected:

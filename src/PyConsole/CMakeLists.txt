@@ -34,6 +34,7 @@ SET(COMMON_LIBS ${PYTHON_LIBRARIES} ${QT_LIBRARIES} ${SALOMELocalTrace} qtx suit
 
 SET(GUI_HEADERS   
   PyConsole_Editor.h
+  PyConsole_EnhEditor.h
   PyConsole_Console.h
 )
 QT4_WRAP_CPP(GUI_HEADERS_MOC ${GUI_HEADERS})
@@ -41,7 +42,9 @@ QT4_WRAP_CPP(GUI_HEADERS_MOC ${GUI_HEADERS})
 SET(PyConsole_SOURCES
   PyConsole_Console.cxx
   PyConsole_Editor.cxx
+  PyConsole_EnhEditor.cxx
   PyConsole_Interp.cxx
+  PyConsole_EnhInterp.cxx
   PyConsole_Event.cxx
   PyConsole_Request.cxx
 )
@@ -61,7 +64,9 @@ SET(COMMON_HEADERS_H
   PyConsole.h
   PyConsole_Console.h
   PyConsole_Editor.h
+  PyConsole_EnhEditor.h
   PyConsole_Interp.h
+  PyConsole_EnhInterp.h
   PyConsole_Event.h
   PyConsole_Request.h
 )

@@ -23,8 +23,10 @@
 #ifndef PYCONSOLE_REQUEST_H_
 #define PYCONSOLE_REQUEST_H_
 
+#include "PyConsole.h"
 #include "PyInterp_Request.h"
 
+#include <vector>
 #include <QString>
 #include <QEvent>
 
@@ -64,12 +66,46 @@ protected:
     \brief Create and return a notification event.
     \return new notification event
   */
-  virtual QEvent* createEvent() const;
+  virtual QEvent* createEvent();
 
 private:
   QString myCommand;   //!< Python command
   int     myState;     //!< Python command execution status
 };
 
+class PyConsole_EnhInterp;
+class PyConsole_EnhEditor;
+
+class CompletionCommand : public PyInterp_LockRequest
+{
+public:
+  /*!
+    Constructor.
+    Creates a new python completion request.
+    \param theInterp   python interpreter
+    \param input  string containing the dir() command to be executed
+    \param startMatch  part to be matched with the results of the dir() command
+    \param theListener widget to get the notification messages
+    \param sync        if True the request is processed synchronously
+  */
+  CompletionCommand( PyConsole_EnhInterp*      theInterp,
+               const QString&          input,
+               const QString&          startMatch,
+               PyConsole_EnhEditor*    theListener,
+               bool                    sync = false );
+
+
+protected:
+  /** List of separators identifying the last parsable token for completion */
+  static const std::vector<QString> SEPARATORS;
+
+  QString _dirArg;
+  QString _startMatch;
+  bool _tabSuccess;
+
+  virtual void execute();
+  virtual QEvent* createEvent();
+
+};
 
 #endif /* PYCONSOLE_REQUEST_H_ */
