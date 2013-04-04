@@ -315,6 +315,8 @@ void PyConsole_Editor::addText( const QString& str,
   \brief Convenient method for executing a Python command,
   as if the user typed it manually.
   \param command python command to be executed
+
+  !!! WARNING: doesn't work properly with multi-line commands. !!!
 */
 void PyConsole_Editor::exec( const QString& command )
 {
@@ -395,6 +397,9 @@ void PyConsole_Editor::execAndWait( const QString& command )
 */
 void PyConsole_Editor::handleReturn()
 {
+  // Position cursor at the end
+  textCursor().movePosition(QTextCursor::End);
+
   // get last line
   QTextBlock par = document()->end().previous();
   if ( !par.isValid() ) return;

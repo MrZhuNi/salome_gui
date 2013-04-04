@@ -26,6 +26,7 @@
 
 #include "PyConsole_Editor.h"
 #include <QObject>
+#include <queue>
 
 class PyConsole_EnhInterp;
 
@@ -66,13 +67,17 @@ protected:
   /** Cursor position when <TAB> is hit */
   int _cursor_pos;
 
-//  std::stack<QString> _multi_line_content;
+  /** Are we currently pasting several lines */
+  bool _multi_line_paste;
+
+  /** Queue of lines being pasted */
+  std::queue<QString> _multi_line_content;
 
   // Overrides:
   virtual void   keyPressEvent ( QKeyEvent* event);
   virtual void   customEvent( QEvent* event);
   virtual void   mousePressEvent( QMouseEvent* event );
-//  virtual void   insertFromMimeData(const QMimeData * source);
+  virtual void   insertFromMimeData(const QMimeData * source);
 
   virtual PyInterp_Request* createTabRequest( const QString& input );
   virtual void handleTab();
@@ -80,7 +85,9 @@ protected:
   virtual void clearCompletion();
   virtual void formatCompletion(const std::vector<QString> & matches, QString & result) const;
   virtual QString formatDocHTML(const QString & doc) const;
-//  virtual void multilinePaste();
+
+  virtual void multilinePaste(const QString & s);
+  virtual void multiLineProcessNextLine();
 
 private:
   void extractCommon(const std::vector<QString> & matches, QString & result) const;

@@ -46,7 +46,9 @@ const std::vector<QString> PyConsole_EnhEditor::SEPARATORS = \
 PyConsole_EnhEditor::PyConsole_EnhEditor(PyConsole_EnhInterp * interp, QWidget * parent) :
      PyConsole_Editor(interp, parent),
      _tab_mode(false),
-     _cursor_pos(-1)
+     _cursor_pos(-1),
+     _multi_line_paste(false),
+     _multi_line_content()
 {
   document()->setUndoRedoEnabled(true);
 }
@@ -318,9 +320,14 @@ void PyConsole_EnhEditor::customEvent( QEvent* event )
       _tab_mode = false;
       _cursor_pos = -1;
       break;
-//    case PyEnhInterp_Event::ES_MULTI_PASTE:
-//      multilinePaste();
-//      break;
+    case PyInterp_Event::ES_OK:
+    case PyInterp_Event::ES_ERROR:
+    case PyInterp_Event::ES_INCOMPLETE:
+      // Before everything else, call super()
+      PyConsole_Editor::customEvent(event);
+      // If we are in multi_paste_mode, process the next item:
+      multiLineProcessNextLine();
+      break;
     default:
       PyConsole_Editor::customEvent( event );
       break;
@@ -387,4 +394,81 @@ QString PyConsole_EnhEditor::formatDocHTML(const QString & doc) const
   fst = fst.replace("\n", " ");
   rest = rest.replace("\n", " ");
   return templ.arg(fst).arg(rest);
+}
+
+/**
+ * Handle properly multi-line pasting. Qt4 doc recommends overriding this function.
+ * If the pasted text doesn't contain a line return, no special treatment is done.
+ * @param source
+ */
+void PyConsole_EnhEditor::insertFromMimeData(const QMimeData * source)
+{
+  if (_multi_line_paste)
+    return;
+
+  if (source->hasText())
+    {
+      QString s = source->text();
+      if (s.contains("\n"))
+        multilinePaste(s);
+      else
+        PyConsole_Editor::insertFromMimeData(source);
+    }
+  else
+    {
+      PyConsole_Editor::insertFromMimeData(source);
+    }
+}
+
+
+void PyConsole_EnhEditor::multilinePaste(const QString & s)
+{
+  // Turn on multi line pasting mode
+  _multi_line_paste = true;
+
+  // Split the string:
+  QString s2 = s;
+  s2.replace("\r", ""); // Windows string format converted to Unix style
+
+  QStringList lst = s2.split(QChar('\n'), QString::KeepEmptyParts);
+
+  // Perform the proper paste operation for the first line to handle the case where
+  // sth was already there:
+  QMimeData source;
+  source.setText(lst[0]);
+  PyConsole_Editor::insertFromMimeData(&source);
+
+  // Prepare what will have to be executed after the first line:
+  _multi_line_content = std::queue<QString>();
+  for (int i = 1; i < lst.size(); ++i)
+    _multi_line_content.push(lst[i]);
+
+  // Trigger the execution of the first (mixed) line
+  handleReturn();
+
+  // See customEvent() and multiLineProcessNext() for the rest of the handling.
+}
+
+/**
+ * Process the next line in the queue of a multiple copy/paste:
+ */
+void PyConsole_EnhEditor::multiLineProcessNextLine()
+{
+  if (!_multi_line_paste)
+    return;
+
+  QString line(_multi_line_content.front());
+  _multi_line_content.pop();
+  if (!_multi_line_content.size())
+    {
+      // last line in the queue, just paste it
+      addText(line, false, false);
+      _multi_line_paste = false;
+    }
+  else
+    {
+      // paste the line and simulate a <RETURN> key stroke
+      addText(line, false, false);
+      handleReturn();
+    }
 }
