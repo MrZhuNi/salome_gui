@@ -47,7 +47,10 @@ protected:
   PyInterp_Request* myRequest;
 };
 
-
+/**
+ * Events thrown by the interpreter having executed a command and indicating
+ * the return status.
+ */
 class PYINTERP_EXPORT PyInterp_Event : public QEvent
 {
   PyInterp_Event();

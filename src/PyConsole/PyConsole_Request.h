@@ -79,15 +79,6 @@ class PyConsole_EnhEditor;
 class CompletionCommand : public PyInterp_LockRequest
 {
 public:
-  /*!
-    Constructor.
-    Creates a new python completion request.
-    \param theInterp   python interpreter
-    \param input  string containing the dir() command to be executed
-    \param startMatch  part to be matched with the results of the dir() command
-    \param theListener widget to get the notification messages
-    \param sync        if True the request is processed synchronously
-  */
   CompletionCommand( PyConsole_EnhInterp*      theInterp,
                const QString&          input,
                const QString&          startMatch,
@@ -99,8 +90,11 @@ protected:
   /** List of separators identifying the last parsable token for completion */
   static const std::vector<QString> SEPARATORS;
 
+  /** String to be passed to the dir() command */
   QString _dirArg;
+  /** Begining of the command (as typed by the user) */
   QString _startMatch;
+  /** was the completion command successful */
   bool _tabSuccess;
 
   virtual void execute();

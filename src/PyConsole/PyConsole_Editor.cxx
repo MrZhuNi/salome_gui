@@ -116,6 +116,7 @@
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextStream>
+#include <QChar>
 
 static QString READY_PROMPT = ">>> ";
 static QString DOTS_PROMPT  = "... ";
@@ -544,7 +545,9 @@ void PyConsole_Editor::keyPressEvent( QKeyEvent* event )
   }
 
   // check for printed key
-  aKey = ( aKey < Qt::Key_Space || aKey > Qt::Key_ydiaeresis ) ? aKey : 0;
+  // #### aKey = ( aKey < Qt::Key_Space || aKey > Qt::Key_ydiaeresis ) ? aKey : 0;
+  // Better:
+  aKey = !(QChar(aKey).isPrint()) ? aKey : 0;
 
   switch ( aKey ) {
   case 0 :
