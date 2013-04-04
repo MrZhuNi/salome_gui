@@ -398,7 +398,9 @@ void PyConsole_Editor::execAndWait( const QString& command )
 void PyConsole_Editor::handleReturn()
 {
   // Position cursor at the end
-  textCursor().movePosition(QTextCursor::End);
+  QTextCursor curs(textCursor());
+  curs.movePosition(QTextCursor::End);
+  setTextCursor(curs);
 
   // get last line
   QTextBlock par = document()->end().previous();
