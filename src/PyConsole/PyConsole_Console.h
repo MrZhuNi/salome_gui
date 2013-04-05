@@ -28,13 +28,13 @@
 
 #include "PyConsole.h"
 
-#include "PyConsole_EnhInterp.h"
 #include <SUIT_PopupClient.h>
 #include <QWidget>
 #include <QMap>
 
 class PyConsole_Interp;
 class PyConsole_Editor;
+class PyConsole_EnhInterp;
 
 class PYCONSOLE_EXPORT PyConsole_Console : public QWidget, public SUIT_PopupClient
 {
