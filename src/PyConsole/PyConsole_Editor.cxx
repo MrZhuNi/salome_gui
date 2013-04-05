@@ -86,11 +86,6 @@
   - <Ctrl><C>            : copy
   - <Ctrl><X>            : cut
   - <Ctrl><V>            : paste
-
-  TODO:
-  - paste multiline text: process each line as separate command
-    (including mouse middle-button click pasting)
-  - the same for drag-n-drop of multiline text
 */
 
 #include "PyConsole_Interp.h"   // !!! WARNING !!! THIS INCLUDE MUST BE THE VERY FIRST !!!
@@ -469,11 +464,6 @@ void PyConsole_Editor::mouseReleaseEvent( QMouseEvent* event )
     //copy();
   }
   else if ( event->button() == Qt::MidButton ) {
-    QString text;
-    if ( QApplication::clipboard()->supportsSelection() )
-      text = QApplication::clipboard()->text( QClipboard::Selection );
-    if ( text.isEmpty() )
-      text = QApplication::clipboard()->text( QClipboard::Clipboard );
     QTextCursor cur = cursorForPosition( event->pos() );
     // if the position is not in the last line move it to the end of the command line
     if ( cur.position() < document()->end().previous().position() + promptSize() ) {
@@ -482,8 +472,10 @@ void PyConsole_Editor::mouseReleaseEvent( QMouseEvent* event )
     else {
       setTextCursor( cur );
     }
-    textCursor().clearSelection();
-    textCursor().insertText( text );
+    const QMimeData* md = QApplication::clipboard()->mimeData( QApplication::clipboard()->supportsSelection() ? 
+							       QClipboard::Selection : QClipboard::Clipboard );
+    if ( md )
+      insertFromMimeData( md );
   }
   else {
     QTextEdit::mouseReleaseEvent( event );
