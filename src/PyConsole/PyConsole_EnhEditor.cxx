@@ -84,7 +84,9 @@ void PyConsole_EnhEditor::keyPressEvent ( QKeyEvent* event)
           clearCompletion();
           _cursor_pos = -1;
         }
-      PyConsole_Editor::keyPressEvent(event);
+      // Discard ctrl pressed alone:
+      if (event->key() != Qt::Key_Control)
+        PyConsole_Editor::keyPressEvent(event);
     }
 }
 
@@ -259,6 +261,7 @@ void PyConsole_EnhEditor::customEvent( QEvent* event )
   QTextBlockFormat bf;
   QTextCharFormat cf;
   PyConsole_EnhInterp * interp = static_cast<PyConsole_EnhInterp *>(myInterp);
+  int cursorPos;
 
   switch( event->type() )
   {
@@ -303,6 +306,7 @@ void PyConsole_EnhEditor::customEvent( QEvent* event )
             }
 
           // Print all matching completion in a "undo-able" block
+          cursorPos = cursor.position();
           cursor.insertBlock();
           cursor.beginEditBlock();
 
@@ -313,6 +317,10 @@ void PyConsole_EnhEditor::customEvent( QEvent* event )
           formatCompletion(matches, comple_text);
           cursor.insertText(comple_text);
           cursor.endEditBlock();
+
+          // Position cursor where it was before inserting the completion list:
+          cursor.setPosition(cursorPos);
+          setTextCursor(cursor);
         }
       break;
     case PyInterp_Event::ES_TAB_COMPLETE_ERR:
