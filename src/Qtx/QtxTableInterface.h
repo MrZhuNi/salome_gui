@@ -24,6 +24,8 @@
 
 #include "Qtx.h"
 
+#include <QModelIndexList>
+
 class QVariant;
 class QItemSelectionModel;
 
