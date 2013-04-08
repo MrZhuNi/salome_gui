@@ -108,7 +108,7 @@ public:
   virtual QItemSelectionModel* selectionModel() const = 0;
 
   /**
-   *
+   * Returns a list of selected indexes
    */
   virtual QModelIndexList getSelectedIndexes() const = 0;
 
