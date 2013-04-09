@@ -291,8 +291,8 @@ void TableViewer_ViewWindow::selectionChanged()
 {
   QModelIndexList anItems = myTable->getSelectedIndexes();
   bool anEnable = anItems.count() > 0;
-  bool aCopyEnable = anEnable && myCopyLst.count() > 0,
-       aPasteEnable = anEnable;
+  bool aCopyEnable = anEnable,
+       aPasteEnable = anEnable && myCopyLst.count() > 0;
   QModelIndexList::const_iterator anIt = anItems.begin(), aLast = anItems.end();
   int aRow, aCol;
   for ( anIt = anItems.begin(); anIt != aLast; ++anIt ) {
