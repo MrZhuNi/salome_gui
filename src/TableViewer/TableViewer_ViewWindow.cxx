@@ -289,9 +289,20 @@ QtxAction* TableViewer_ViewWindow::createAction( const int id, const QString& me
 
 void TableViewer_ViewWindow::selectionChanged()
 {
-  bool anEnable = myTable->getSelectedIndexes().count() > 0;
-  myActionsMap[CopyId]->setEnabled( anEnable );
-  myActionsMap[PasteId]->setEnabled( anEnable && myCopyLst.count() > 0 );
+  QModelIndexList anItems = myTable->getSelectedIndexes();
+  bool anEnable = anItems.count() > 0;
+  bool aCopyEnable = anEnable && myCopyLst.count() > 0,
+       aPasteEnable = anEnable;
+  QModelIndexList::const_iterator anIt = anItems.begin(), aLast = anItems.end();
+  int aRow, aCol;
+  for ( anIt = anItems.begin(); anIt != aLast; ++anIt ) {
+    aRow = (*anIt).row();
+    aCol = (*anIt).column();
+    aCopyEnable = aCopyEnable || canCopy( aRow, aCol );
+    aPasteEnable = aPasteEnable && canPaste( aRow, aCol, "" ); // this should be the cell value
+  }
+  myActionsMap[CopyId]->setEnabled( aCopyEnable );
+  myActionsMap[PasteId]->setEnabled( aPasteEnable );
 }
 
 void TableViewer_ViewWindow::onActivated()
@@ -376,7 +387,7 @@ void TableViewer_ViewWindow::copyData()
   for ( ; anIt != aLast; ++anIt ) {
     aRow = (*anIt).row();
     aCol = (*anIt).column();
-    if ( !canPaste( aRow, aCol, "" ) )
+    if ( !canCopy( aRow, aCol ) )
       continue;
     if ( aCol < aLeftCol )
       aLeftCol = aCol;
