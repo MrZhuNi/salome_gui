@@ -152,6 +152,8 @@ protected:
   QwtPlotCurve* getPlotCurve( Plot2d_Curve* curve );
   bool    hasPlotCurve( Plot2d_Curve* curve );
   void    setCurveType( QwtPlotCurve* curve, int curveType );
+  void    cutCurveNonPositiveValues( const bool theIsXAxis,
+                                     const bool theIsReplaceWithSmallValues );
 
 public slots:
   void    onViewPan(); 

@@ -23,6 +23,8 @@
 #include "Plot2d_Curve.h"
 #include <QColor>
 
+#include <float.h>
+
 /*!
   Constructor
 */
@@ -210,6 +212,14 @@ void Plot2d_Curve::clearAllPoints()
   Gets curve's data : abscissas of points
 */
 pointList Plot2d_Curve::getPointList() const
+{
+  return myPoints;
+}
+
+/*!
+  Gets curve's data : abscissas of points
+*/
+pointList& Plot2d_Curve::getPointList()
 {
   return myPoints;
 }
@@ -440,6 +450,36 @@ double Plot2d_Curve::getMaxY() const
       aMaxY = (*aIt).y;
   }
   return aMaxY;
+}
+
+/*!
+  Gets curve's minimal positive abscissa
+*/
+double Plot2d_Curve::getMinPositiveX() const
+{
+  pointList::const_iterator aIt;
+  double aMinX = 1e150;
+  //int aCurrent = 0;
+  for(aIt = myPoints.begin(); aIt != myPoints.end(); ++aIt) {
+    if ( (*aIt).x < aMinX && (*aIt).x > DBL_MIN )
+      aMinX = (*aIt).x;
+  }
+  return aMinX;
+}
+
+/*!
+  Gets curve's minimal positive ordinate
+*/
+double Plot2d_Curve::getMinPositiveY() const
+{
+  pointList::const_iterator aIt;
+  double aMinY = 1e150;
+  //int aCurrent = 0;
+  for(aIt = myPoints.begin(); aIt != myPoints.end(); ++aIt) {
+    if ( (*aIt).y < aMinY && (*aIt).y > DBL_MIN )
+      aMinY = (*aIt).y;
+  }
+  return aMinY;
 }
 
 /*!

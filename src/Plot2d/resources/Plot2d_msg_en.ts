@@ -284,12 +284,22 @@
     <message>
         <source>WRN_XLOG_NOT_ALLOWED</source>
         <translation>Some points with non-positive abscissa values have been detected.
-Logarithmic scale for abscissa axis is not allowed.</translation>
+Do you want to remove these points from the curve presentation or
+to replace the non-positive values with negligible positive values?</translation>
     </message>
     <message>
         <source>WRN_YLOG_NOT_ALLOWED</source>
         <translation>Some points with non-positive ordinate values have been detected.
-Logarithmic scale for ordinate axis is not allowed.</translation>
+Do you want to remove these points from the curve presentation or
+to replace the non-positive values with negligible positive values?</translation>
+    </message>
+    <message>
+        <source>REMOVE_POINTS</source>
+        <translation>Remove points</translation>
+    </message>
+    <message>
+        <source>REPLACE_VALUES</source>
+        <translation>Replace values</translation>
     </message>
     <message>
         <source>DSC_FITRECT</source>

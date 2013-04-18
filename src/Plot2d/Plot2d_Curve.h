@@ -64,6 +64,7 @@ public:
   void               deletePoint( int );
   void               clearAllPoints();
   pointList          getPointList() const;
+  pointList&         getPointList();
 
   void               setData( const double*, const double*, 
 			      long, const QStringList& = QStringList() );
@@ -105,6 +106,11 @@ public:
   // after curve with small values
   double             getMaxX() const;
   double             getMaxY() const;
+
+  // Values required for calculating a "negligible" value, by which the non-positive
+  // values will be replaced during switch to logarithmic scale mode
+  double             getMinPositiveX() const;
+  double             getMinPositiveY() const;
 
 protected:
   bool               myAutoAssign;

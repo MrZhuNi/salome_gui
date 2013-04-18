@@ -57,6 +57,7 @@
 #include <qwt_curve_fitter.h>
 
 #include <iostream>
+#include <float.h>
 #include <stdlib.h>
 #include <QPrinter>
 
@@ -68,6 +69,8 @@
 #define MIN_RECT_SIZE          11    // min sensibility area size
 
 #define FITALL_EVENT           ( QEvent::User + 9999 )
+
+#define NEGLIGIBLE_VALUE 1e-6
 
 const char* imageZoomCursor[] = { 
 "32 32 3 1",
@@ -1504,6 +1507,63 @@ void Plot2d_ViewFrame::setFont( const QFont& font, ObjectType type, bool update)
     myPlot->replot();
 }
 /*!
+  Remove the curve's non-positive values or replace them by a negligible small value
+  (to make it possible to enable logarithmic scale mode).
+*/
+void Plot2d_ViewFrame::cutCurveNonPositiveValues( const bool theIsXAxis,
+                                                  const bool theIsReplaceWithSmallValues )
+{
+  const CurveDict& aCurves = myPlot->getCurves();
+  CurveDict::ConstIterator it, itEnd = aCurves.end();
+
+  double aSmallValue = NEGLIGIBLE_VALUE;
+  if( theIsReplaceWithSmallValues )
+  {
+    // first, calculate the value the non-positive values will be cut to
+    for( it = aCurves.begin(); it != itEnd; it++ )
+    {
+      if( Plot2d_Curve* aCurve = it.value() )
+      {
+        double aMinPositiveValue = theIsXAxis ?
+          aCurve->getMinPositiveX() : aCurve->getMinPositiveY();
+
+        if( aMinPositiveValue < aSmallValue )
+        {
+          double aLog = log10( aMinPositiveValue );
+          double aFloor = floor( aLog );
+          aSmallValue = pow( 10, aFloor );
+        }
+      }
+    }
+  }
+
+  for( it = aCurves.begin(); it != itEnd; it++ )
+  {
+    if( Plot2d_Curve* aCurve = it.value() )
+    {
+      pointList& aPointList = aCurve->getPointList();
+      pointList::iterator pIt, pItEnd = aPointList.end();
+      for( pIt = aPointList.begin(); pIt != pItEnd; )
+      {
+        Plot2d_Point& aPoint = *pIt;
+        double& value = theIsXAxis ? aPoint.x : aPoint.y;
+        if( value < DBL_MIN )
+        {
+          if( theIsReplaceWithSmallValues )
+            value = aSmallValue;
+          else // remove value
+          {
+            pIt = aPointList.erase( pIt );
+            continue; // do not increment the iterator
+          }
+        }
+        pIt++;
+      }
+      updateCurve( aCurve, false );
+    }
+  }
+}
+/*!
   Sets scale mode for horizontal axis: 0 - linear, 1 - logarithmic
 */
 void Plot2d_ViewFrame::setHorScaleMode( const int mode, bool update )
@@ -1515,8 +1575,15 @@ void Plot2d_ViewFrame::setHorScaleMode( const int mode, bool update )
   // it crashes if switched to X/Y logarithmic mode, when one or more points have
   // non-positive X/Y coordinate
   if ( mode && !isXLogEnabled() ){
-    SUIT_MessageBox::warning(this, tr("WARNING"), tr("WRN_XLOG_NOT_ALLOWED"));
-    return;
+    int answer = SUIT_MessageBox::question(this, tr("WARNING"), tr("WRN_XLOG_NOT_ALLOWED"),
+                                           tr("REMOVE_POINTS"), tr("REPLACE_VALUES"),
+                                           tr("CANCEL"), 2, 2);
+    if( answer == 0 )
+      cutCurveNonPositiveValues( true, false );
+    else if( answer == 1 )
+      cutCurveNonPositiveValues( true, true );
+    else
+      return;
   }
 
   myXMode = mode;
@@ -1539,8 +1606,15 @@ void Plot2d_ViewFrame::setVerScaleMode( const int mode, bool update )
   // it crashes if switched to X/Y logarithmic mode, when one or more points have
   // non-positive X/Y coordinate
   if ( mode && !isYLogEnabled() ){
-    SUIT_MessageBox::warning(this, tr("WARNING"), tr("WRN_YLOG_NOT_ALLOWED"));
-    return;
+    int answer = SUIT_MessageBox::question(this, tr("WARNING"), tr("WRN_YLOG_NOT_ALLOWED"),
+                                           tr("REMOVE_POINTS"), tr("REPLACE_VALUES"),
+                                           tr("CANCEL"), 2, 2);
+    if( answer == 0 )
+      cutCurveNonPositiveValues( false, false );
+    else if( answer == 1 )
+      cutCurveNonPositiveValues( false, true );
+    else
+      return;
   }
 
   myYMode = mode;
