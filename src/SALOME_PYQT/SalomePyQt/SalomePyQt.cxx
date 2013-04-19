@@ -41,6 +41,7 @@
 #include <QImage>
 #include <QStringList>
 #include <QAction>
+#include <QPaintEvent>
 
 #include <SALOME_Event.h>
 
@@ -2245,19 +2246,24 @@ public:
 	}
     if ( wnd ) {
       QString fmt = SUIT_Tools::extension( myFileName ).toUpper();
+      Plot2d_ViewWindow* wnd2D = dynamic_cast<Plot2d_ViewWindow*>(wnd);
       if(fmt == "PS" || fmt == "EPS" || fmt == "PDF") {
-    	Plot2d_ViewWindow* wnd2D = dynamic_cast<Plot2d_ViewWindow*>(wnd);
     	if(wnd2D) {
     	  myResult = wnd2D->getViewFrame()->print(myFileName, fmt);
     	} else {
     	  myResult = false;
     	}
       } else {
-    	QImage im = wnd->dumpView();
-        if ( !im.isNull() && !myFileName.isEmpty() ) {
-          if ( fmt.isEmpty() ) fmt = QString( "BMP" ); // default format
-          if ( fmt == "JPG" )  fmt = "JPEG";
-          myResult = im.save( myFileName, fmt.toLatin1() );
+	if(wnd2D) {
+	  qApp->postEvent( wnd2D->getViewFrame(), new QPaintEvent( QRect( 0, 0, wnd2D->getViewFrame()->width(), wnd2D->getViewFrame()->height() ) ) );
+	  qApp->postEvent( wnd2D, new QPaintEvent( QRect( 0, 0, wnd2D->width(), wnd2D->height() ) ) );
+	  qApp->processEvents();
+	}
+	QImage im = wnd->dumpView();
+	if ( !im.isNull() && !myFileName.isEmpty() ) {
+	  if ( fmt.isEmpty() ) fmt = QString( "BMP" ); // default format
+	  if ( fmt == "JPG" )  fmt = "JPEG";
+	  myResult = im.save( myFileName, fmt.toLatin1() );
         }
       }
     }
