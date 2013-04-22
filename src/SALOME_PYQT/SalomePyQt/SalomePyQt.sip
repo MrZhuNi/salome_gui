@@ -248,6 +248,9 @@ public:
     sipCpp->addPoint(aX, aY);
   }
 %End
+  void insertPoint( int, double, double );
+  void deletePoint( int );
+  void clearAllPoints();
 };
 
 class SalomePyQt
