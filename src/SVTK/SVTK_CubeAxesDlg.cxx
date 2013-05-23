@@ -475,6 +475,14 @@ void SVTK_CubeAxesDlg::Update()
 }
 
 /*!
+  Show/hide tab with Z-dimension controls
+*/
+void SVTK_CubeAxesDlg::SetDimensionZEnabled( const bool theIsEnabled )
+{
+  myTabWg->setTabEnabled( 2, theIsEnabled );
+}
+
+/*!
   Verify validity of entry data
 */
 bool SVTK_CubeAxesDlg::isValid() const

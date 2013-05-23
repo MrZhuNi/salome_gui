@@ -32,8 +32,8 @@
 #include "SVTK_DialogBase.h"
 
 class SVTK_ViewWindow;
+class SVTK_DoubleSpinBox;
 
-class QtxDoubleSpinBox;
 class QtxAction;
 
 class QPushButton;
@@ -55,9 +55,9 @@ public:
 protected:
   SVTK_ViewWindow *m_MainWindow;
 
-  QtxDoubleSpinBox* m_sbXcoeff;
-  QtxDoubleSpinBox* m_sbYcoeff;
-  QtxDoubleSpinBox* m_sbZcoeff;
+  SVTK_DoubleSpinBox* m_sbXcoeff;
+  SVTK_DoubleSpinBox* m_sbYcoeff;
+  SVTK_DoubleSpinBox* m_sbZcoeff;
   QPushButton* m_bReset;
 
 protected slots:

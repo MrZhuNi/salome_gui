@@ -16,29 +16,21 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-#ifndef SVTK_VIEWMANAGER_H
-#define SVTK_VIEWMANAGER_H
+#include "Plot3d_ViewManager.h"
+#include "Plot3d_ViewModel.h"
 
-#include "SUIT_ViewManager.h"
-#include "SVTK.h"
-
-class SUIT_Desktop;
-
-//! Extend SUIT_ViewManager to deal with SVTK_Viewer
-class SVTK_EXPORT SVTK_ViewManager : public SUIT_ViewManager
+/*!
+  Constructor
+*/
+Plot3d_ViewManager::Plot3d_ViewManager( SUIT_Study* study, SUIT_Desktop* theDesktop ) 
+: SVTK_ViewManager( study, theDesktop, new Plot3d_Viewer() )
 {
-  Q_OBJECT
+  setTitle( Plot3d_ViewManager::tr( "PLOT3D_VIEW_TITLE" ) );
+}
 
-public:
-  //! Construct the view manager
-  SVTK_ViewManager( SUIT_Study*,
-                    SUIT_Desktop*,
-                    SUIT_ViewModel* = 0 );
-
-  //! Destroy the view manager
-  virtual ~SVTK_ViewManager();
-
-  SUIT_Desktop* getDesktop();
-};
-
-#endif
+/*!
+  Destructor
+*/
+Plot3d_ViewManager::~Plot3d_ViewManager()
+{
+}

@@ -49,5 +49,9 @@
         <source>ICON_SVTK_RECORDING_STOP</source>
         <translation>vtk_view_recording_stop.png</translation>
     </message>
+    <message>
+        <source>ICON_SVTK_MODE_2D</source>
+        <translation>vtk_view_mode_2d.png</translation>
+    </message>
 </context>
 </TS>

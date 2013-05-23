@@ -177,6 +177,14 @@
         <source>MNU_SVTK_STYLE_SWITCH</source>
         <translation>Interaction Style Switch</translation>
     </message>
+    <message>
+        <source>DSC_SVTK_MODE_2D</source>
+        <translation>Toggle 2D mode</translation>
+    </message>
+    <message>
+        <source>MNU_SVTK_MODE_2D</source>
+        <translation>Toggle 2D mode</translation>
+    </message>
 </context>
 <context>
     <name>SVTK_CubeAxesDlg</name>
@@ -609,4 +617,11 @@ Please, refer to the documentation.</translation>
         <translation>Change background...</translation>
     </message>
 </context>
+  <context>
+    <name>Plot3d_ViewManager</name>
+    <message>
+      <source>PLOT3D_VIEW_TITLE</source>
+      <translation>Plot3d scene:%M - viewer:%V</translation>
+    </message>
+  </context>
 </TS>

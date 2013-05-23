@@ -519,6 +519,20 @@ SVTK_Renderer
 }
 
 /*!
+  Set trihedron displayed on/off
+  \param theState - trihedron display state
+*/
+void
+SVTK_Renderer
+::SetTrihedronDisplayed( const bool theState )
+{
+  if( theState )
+    myTrihedron->VisibilityOn();
+  else
+    myTrihedron->VisibilityOff();
+}
+
+/*!
   Toggle trihedron visibility
 */
 void 
@@ -559,6 +573,20 @@ SVTK_Renderer
 ::IsCubeAxesDisplayed()
 {
   return myCubeAxes->GetVisibility() == 1;
+}
+
+/*!
+  Set graduated rules displayed on/off
+  \param theState - graduated rules display state
+*/
+void
+SVTK_Renderer
+::SetCubeAxesDisplayed( const bool theState )
+{
+  if( theState )
+    myCubeAxes->VisibilityOn();
+  else
+    myCubeAxes->VisibilityOff();
 }
 
 /*!

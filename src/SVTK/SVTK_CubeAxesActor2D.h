@@ -82,7 +82,10 @@ public:
 
   void SetTransform(VTKViewer_Transform* theTransform);
   VTKViewer_Transform* GetTransform();
-  
+
+  vtkSetMacro(IsInvertedGrid, bool);
+  vtkGetMacro(IsInvertedGrid, bool);
+
 protected:
   SVTK_CubeAxesActor2D();
   ~SVTK_CubeAxesActor2D();
@@ -105,6 +108,9 @@ private:
   vtkPolyDataMapper *rgridMapperXZ;
   
   vtkSmartPointer<VTKViewer_Transform> m_Transform;
+
+  bool IsInvertedGrid;
+
 private:
   SVTK_CubeAxesActor2D(const SVTK_CubeAxesActor2D&);  // Not implemented.
   void operator=(const SVTK_CubeAxesActor2D&);  // Not implemented.

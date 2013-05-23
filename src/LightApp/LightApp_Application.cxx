@@ -95,6 +95,15 @@
 #endif
 #endif
 
+#ifndef DISABLE_PLOT3DVIEWER
+#ifndef DISABLE_SALOMEOBJECT
+  #include <Plot3d_ViewModel.h>
+  #include <Plot3d_ViewManager.h>
+  #include "LightApp_VTKSelector.h"
+  #include <VTKViewer_ViewModel.h>
+#endif
+#endif
+
 #ifndef DISABLE_OCCVIEWER
   #include <OCCViewer_ViewManager.h>
 #ifndef DISABLE_SALOMEOBJECT
@@ -605,17 +614,20 @@ void LightApp_Application::createActions()
 #ifndef DISABLE_PLOT2DVIEWER
   createActionForViewer( NewPlot2dId, newWinMenu, QString::number( 1 ), Qt::ALT+Qt::Key_P );
 #endif
+#ifndef DISABLE_PLOT3DVIEWER
+  createActionForViewer( NewPlot3dId, newWinMenu, QString::number( 2 ), Qt::ALT+Qt::Key_L );
+#endif
 #ifndef DISABLE_OCCVIEWER
-  createActionForViewer( NewOCCViewId, newWinMenu, QString::number( 2 ), Qt::ALT+Qt::Key_O );
+  createActionForViewer( NewOCCViewId, newWinMenu, QString::number( 3 ), Qt::ALT+Qt::Key_O );
 #endif
 #ifndef DISABLE_VTKVIEWER
-  createActionForViewer( NewVTKViewId, newWinMenu, QString::number( 3 ), Qt::ALT+Qt::Key_K );
+  createActionForViewer( NewVTKViewId, newWinMenu, QString::number( 4 ), Qt::ALT+Qt::Key_K );
 #endif
 #ifndef DISABLE_QXGRAPHVIEWER
-  createActionForViewer( NewQxGraphViewId, newWinMenu, QString::number( 4 ), Qt::ALT+Qt::Key_C );
+  createActionForViewer( NewQxGraphViewId, newWinMenu, QString::number( 5 ), Qt::ALT+Qt::Key_C );
 #endif
 #ifndef DISABLE_GRAPHICSVIEWER
-  createActionForViewer( NewGraphicsViewId, newWinMenu, QString::number( 5 ), Qt::ALT+Qt::Key_R );
+  createActionForViewer( NewGraphicsViewId, newWinMenu, QString::number( 6 ), Qt::ALT+Qt::Key_R );
 #endif
 
   createAction( RestoreDefaultId, tr( "TOT_RESTORE_DEFAULT" ), QIcon(), 
@@ -716,6 +728,11 @@ void LightApp_Application::onNewWindow()
 #ifndef DISABLE_PLOT2DVIEWER
   case NewPlot2dId:
     type = Plot2d_Viewer::Type();
+    break;
+#endif
+#ifndef DISABLE_PLOT3DVIEWER
+  case NewPlot3dId:
+    type = Plot3d_Viewer::Type();
     break;
 #endif
 #ifndef DISABLE_OCCVIEWER
@@ -838,6 +855,12 @@ void LightApp_Application::updateCommandsStatus()
 
 #ifndef DISABLE_PLOT2DVIEWER
   a = action( NewPlot2dId );
+  if( a )
+    a->setEnabled( activeStudy() );
+#endif
+
+#ifndef DISABLE_PLOT3DVIEWER
+  a = action( NewPlot3dId );
   if( a )
     a->setEnabled( activeStudy() );
 #endif
@@ -1330,6 +1353,29 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
       frame->setBackgroundColor( resMgr->colorValue( "Plot2d", "Background", frame->backgroundColor() ) );
     }
   }
+#endif
+#ifndef DISABLE_PLOT3DVIEWER
+#ifndef DISABLE_SALOMEOBJECT
+  if ( vmType == Plot3d_Viewer::Type() )
+  {
+    viewMgr = new Plot3d_ViewManager( activeStudy(), desktop() );
+    Plot3d_Viewer* vm = dynamic_cast<Plot3d_Viewer*>( viewMgr->getViewModel() );
+    if( vm )
+    {
+      vm->setProjectionMode( resMgr->integerValue( "VTKViewer", "projection_mode", vm->projectionMode() ) );
+      vm->setBackgroundColor( resMgr->colorValue( "VTKViewer", "background", vm->backgroundColor() ) );
+      vm->setTrihedronSize( resMgr->doubleValue( "VTKViewer", "trihedron_size", vm->trihedronSize() ),
+			    resMgr->booleanValue( "VTKViewer", "relative_size", vm->trihedronRelative() ) );
+      vm->setInteractionStyle( resMgr->integerValue( "VTKViewer", "navigation_mode", vm->interactionStyle() ) );
+      vm->setIncrementalSpeed( resMgr->integerValue( "VTKViewer", "speed_value", vm->incrementalSpeed() ),
+			       resMgr->integerValue( "VTKViewer", "speed_mode", vm->incrementalSpeedMode() ) );
+      vm->setSpacemouseButtons( resMgr->integerValue( "VTKViewer", "spacemouse_func1_btn", vm->spacemouseBtn(1) ),
+				resMgr->integerValue( "VTKViewer", "spacemouse_func2_btn", vm->spacemouseBtn(2) ),
+				resMgr->integerValue( "VTKViewer", "spacemouse_func5_btn", vm->spacemouseBtn(3) ) );
+      new LightApp_VTKSelector( vm, mySelMgr );
+    }
+  }
+#endif
 #endif
   //#ifndef DISABLE_SUPERVGRAPHVIEWER
   //  if( vmType == SUPERVGraph_Viewer::Type() )

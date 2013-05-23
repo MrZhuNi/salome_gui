@@ -24,8 +24,10 @@
 /*!
   Constructor
 */
-SVTK_ViewManager::SVTK_ViewManager( SUIT_Study* study, SUIT_Desktop* theDesktop ) 
-: SUIT_ViewManager( study, theDesktop, new SVTK_Viewer() )
+SVTK_ViewManager::SVTK_ViewManager( SUIT_Study* theStudy,
+                                    SUIT_Desktop* theDesktop,
+                                    SUIT_ViewModel* theViewModel ) 
+: SUIT_ViewManager( theStudy, theDesktop, theViewModel ? theViewModel : new SVTK_Viewer() )
 {
   setTitle( VTKViewer_ViewManager::tr( "VTK_VIEW_TITLE" ) );
 }

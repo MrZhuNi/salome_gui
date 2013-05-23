@@ -114,10 +114,13 @@ SVTK_ViewWindow::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
   //myMainWindow(0),
   myView(NULL),
   myDumpImage(QImage()),
-  myKeyFreeInteractorStyle(SVTK_KeyFreeInteractorStyle::New())
+  myStandardInteractorStyle(SVTK_InteractorStyle::New()),
+  myKeyFreeInteractorStyle(SVTK_KeyFreeInteractorStyle::New()),
+  myMode2D( false )
 {
   setWindowFlags( windowFlags() & ~Qt::Window );
   // specific of vtkSmartPointer
+  myStandardInteractorStyle->Delete();
   myKeyFreeInteractorStyle->Delete();
 }
 
@@ -169,9 +172,7 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
   myViewParameterDlg = new SVTK_ViewParameterDlg
     ( getAction( ViewParametersId ), this, "SVTK_ViewParameterDlg" );
   
-  SVTK_InteractorStyle* aStyle = SVTK_InteractorStyle::New();
-  myInteractor->PushInteractorStyle(aStyle);
-  aStyle->Delete();
+  myInteractor->PushInteractorStyle(myStandardInteractorStyle);
   
   myRecorder = SVTK_Recorder::New();
   
@@ -717,6 +718,112 @@ void SVTK_ViewWindow::onSwitchInteractionStyle(bool theOn)
   // update action state if method is called outside
   QtxAction* a = getAction( SwitchInteractionStyleId );
   if ( a->isChecked() != theOn ) a->setChecked( theOn );
+}
+
+/*!
+  Toggle 2D mode on/off
+*/
+void SVTK_ViewWindow::onMode2D( bool theOn )
+{
+  myMode2D = theOn;
+
+  getAction( ViewTrihedronId )->setVisible( !theOn );
+  getAction( ChangeRotationPointId )->setVisible( !theOn );
+  getAction( RotationId )->setVisible( !theOn );
+  myViewsAction->setVisible( !theOn );
+  getAction( ResetId )->setVisible( !theOn );
+
+  SVTK_ComboAction* a = ::qobject_cast<SVTK_ComboAction*>( toolMgr()->action( ProjectionModeId ) );
+  if( a )
+    a->setVisible( !theOn );
+
+  if( theOn )
+  {
+    myCubeAxesDlg->SetDimensionZEnabled( false );
+    if( SVTK_CubeAxesActor2D* aCubeAxes = GetRenderer()->GetCubeAxes() )
+    {
+      aCubeAxes->SetIsInvertedGrid( true );
+      if( vtkAxisActor2D* aZAxis = aCubeAxes->GetZAxisActor2D() )
+      {
+        aZAxis->SetTitleVisibility( 0 );
+        aZAxis->SetLabelVisibility( 0 );
+        aZAxis->SetTickVisibility( 0 );
+      }
+    }
+
+    storeViewState( myStored3DViewState );
+    if( !restoreViewState( myStored2DViewState ) )
+    {
+      // first time the action is toggled
+      GetRenderer()->SetTrihedronDisplayed( false );
+      onTopView();
+      onFitAll();
+    }
+
+    myStandardInteractorStyle->SetIsRotationEnabled( false );
+    myKeyFreeInteractorStyle->SetIsRotationEnabled( false );
+  }
+  else
+  {
+    myCubeAxesDlg->SetDimensionZEnabled( true );
+    if( SVTK_CubeAxesActor2D* aCubeAxes = GetRenderer()->GetCubeAxes() )
+    {
+      aCubeAxes->SetIsInvertedGrid( false );
+      if( vtkAxisActor2D* aZAxis = aCubeAxes->GetZAxisActor2D() )
+      {
+        aZAxis->SetTitleVisibility( 1 );
+        aZAxis->SetLabelVisibility( 1 );
+        aZAxis->SetTickVisibility( 1 );
+      }
+    }
+
+    storeViewState( myStored2DViewState );
+    restoreViewState( myStored3DViewState );
+
+    myStandardInteractorStyle->SetIsRotationEnabled( true );
+    myKeyFreeInteractorStyle->SetIsRotationEnabled( true );
+  }
+}
+
+/*!
+  Store 2D/3D view state
+  \param theViewState - view state to be stored
+*/
+void SVTK_ViewWindow::storeViewState( ViewState& theViewState )
+{
+  vtkCamera* aCamera = getRenderer()->GetActiveCamera();
+
+  theViewState.IsInitialized = true;
+
+  aCamera->GetPosition( theViewState.Position );
+  aCamera->GetFocalPoint( theViewState.FocalPoint );
+  aCamera->GetViewUp( theViewState.ViewUp );
+  theViewState.ParallelScale = aCamera->GetParallelScale();
+
+  theViewState.IsTrihedronDisplayed = GetRenderer()->IsTrihedronDisplayed();
+}
+
+/*!
+  Restore 2D/3D view state
+  \param theViewState - view state to be restored
+  \return true if the view state is initialized and can be restored
+*/
+bool SVTK_ViewWindow::restoreViewState( ViewState theViewState )
+{
+  vtkCamera* aCamera = getRenderer()->GetActiveCamera();
+  if( theViewState.IsInitialized )
+  {
+    GetRenderer()->SetTrihedronDisplayed( theViewState.IsTrihedronDisplayed );
+
+    aCamera->SetPosition( theViewState.Position );
+    aCamera->SetFocalPoint( theViewState.FocalPoint );
+    aCamera->SetViewUp( theViewState.ViewUp );
+    aCamera->SetParallelScale( theViewState.ParallelScale );
+    Repaint();
+
+    return true;
+  }
+  return false;
 }
 
 /*!
@@ -1771,6 +1878,15 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchInteractionStyle(bool)));
   mgr->registerAction( anAction, SwitchInteractionStyleId );
 
+  // Switch between 3D (default) and 2D modes
+  anAction = new QtxAction(tr("MNU_SVTK_MODE_2D"), 
+			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_MODE_2D" ) ),
+			   tr( "MNU_SVTK_MODE_2D" ), 0, this);
+  anAction->setStatusTip(tr("DSC_SVTK_MODE_2D"));
+  anAction->setCheckable(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onMode2D(bool)));
+  mgr->registerAction( anAction, Mode2DId );
+
   // Start recording
   myStartAction = new QtxAction(tr("MNU_SVTK_RECORDING_START"), 
 				theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_RECORDING_START" ) ),
@@ -1815,6 +1931,7 @@ void SVTK_ViewWindow::createToolBar()
   QtxActionToolMgr* mgr = toolMgr();
   
   mgr->append( DumpId, myToolBar );
+  mgr->append( Mode2DId, myToolBar );
   mgr->append( SwitchInteractionStyleId, myToolBar );
   mgr->append( ViewTrihedronId, myToolBar );
 
@@ -1833,14 +1950,14 @@ void SVTK_ViewWindow::createToolBar()
 
   mgr->append( RotationId, myToolBar );
 
-  QtxMultiAction* aViewsAction = new QtxMultiAction( this );
-  aViewsAction->insertAction( getAction( FrontId ) );
-  aViewsAction->insertAction( getAction( BackId ) );
-  aViewsAction->insertAction( getAction( TopId ) );
-  aViewsAction->insertAction( getAction( BottomId ) );
-  aViewsAction->insertAction( getAction( LeftId ) );
-  aViewsAction->insertAction( getAction( RightId ) );
-  mgr->append( aViewsAction, myToolBar );
+  myViewsAction = new QtxMultiAction( this );
+  myViewsAction->insertAction( getAction( FrontId ) );
+  myViewsAction->insertAction( getAction( BackId ) );
+  myViewsAction->insertAction( getAction( TopId ) );
+  myViewsAction->insertAction( getAction( BottomId ) );
+  myViewsAction->insertAction( getAction( LeftId ) );
+  myViewsAction->insertAction( getAction( RightId ) );
+  mgr->append( myViewsAction, myToolBar );
 
   mgr->append( ResetId, myToolBar );
 
@@ -1855,6 +1972,9 @@ void SVTK_ViewWindow::createToolBar()
   mgr->append( PlayRecordingId, myRecordingToolBar );
   mgr->append( PauseRecordingId, myRecordingToolBar );
   mgr->append( StopRecordingId, myRecordingToolBar );
+
+  // the Mode2D action is enabled on demand
+  getAction( Mode2DId )->setVisible( false );
 }
 
 void SVTK_ViewWindow::onUpdateRate(bool theIsActivate)
@@ -2020,3 +2140,10 @@ void SVTK_ViewWindow::hideEvent( QHideEvent * theEvent )
   emit Hide( theEvent );
 }
 
+/*!
+  Show/hide the Mode2D action
+*/
+void SVTK_ViewWindow::SetMode2DEnabled( const bool theIsEnabled )
+{
+  getAction( Mode2DId )->setVisible( theIsEnabled );
+}

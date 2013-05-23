@@ -343,26 +343,30 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>NEW_WINDOW_0</source>
-        <translation type="unfinished">Vue &amp;GL </translation>
+        <translation type="unfinished">Vue &amp;GL</translation>
     </message>
     <message>
         <source>NEW_WINDOW_1</source>
-        <translation type="unfinished">Vue &amp;Plot2d </translation>
+        <translation type="unfinished">Vue &amp;Plot2d</translation>
     </message>
     <message>
         <source>NEW_WINDOW_2</source>
-        <translation type="unfinished">Vue &amp;OCC</translation>
+        <translation type="unfinished">Vue P&amp;lot3d</translation>
     </message>
     <message>
         <source>NEW_WINDOW_3</source>
-        <translation type="unfinished">Vue VT&amp;K</translation>
+        <translation type="unfinished">Vue &amp;OCC</translation>
     </message>
     <message>
         <source>NEW_WINDOW_4</source>
-        <translation type="unfinished">Vue &amp;QxGraph</translation>
+        <translation type="unfinished">Vue VT&amp;K</translation>
     </message>
     <message>
         <source>NEW_WINDOW_5</source>
+        <translation type="unfinished">Vue &amp;QxGraph</translation>
+    </message>
+    <message>
+        <source>NEW_WINDOW_6</source>
         <translation type="unfinished">Vue Qx&amp;Scene</translation>
     </message>
     <message>

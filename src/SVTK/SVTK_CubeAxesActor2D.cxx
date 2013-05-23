@@ -127,6 +127,7 @@ SVTK_CubeAxesActor2D::SVTK_CubeAxesActor2D()
   
   aTLProp->Delete();
   
+  this->IsInvertedGrid = false;
 }
 
 SVTK_CubeAxesActor2D::~SVTK_CubeAxesActor2D()
@@ -462,9 +463,9 @@ int SVTK_CubeAxesActor2D::RenderOpaqueGeometry(vtkViewport *viewport)
   // YCoords coordinates for Y grid
   vtkFloatArray *YCoords = vtkFloatArray::New();
 #ifndef WIN32
-  for(int i=0;i<numOfLabelsX;i++){
+  for(int i=0;i<numOfLabelsY;i++){
 #else
-  for(i=0;i<numOfLabelsX;i++){
+  for(i=0;i<numOfLabelsY;i++){
 #endif
     vtkFloatingPointType val = bounds[2]+i*(bounds[3]-bounds[2])/(numOfLabelsY-1);
     YCoords->InsertNextValue(val);
@@ -548,6 +549,13 @@ int SVTK_CubeAxesActor2D::RenderOpaqueGeometry(vtkViewport *viewport)
     replaceYZ = true;
   if ( vtkMath::Dot(vecs[4],aCDirection) < vtkMath::Dot(vecs[5],aCDirection))
     replaceXZ = true;
+
+  if( GetIsInvertedGrid() )
+  {
+    replaceXY = !replaceXY;
+    replaceYZ = !replaceYZ;
+    replaceXZ = !replaceXZ;
+  }
 
   if(replaceXY) this->planeXY->SetExtent(0,numOfLabelsX, 0,numOfLabelsY, numOfLabelsZ,numOfLabelsZ);
   else this->planeXY->SetExtent(0,numOfLabelsX, 0,numOfLabelsY, 0,0);

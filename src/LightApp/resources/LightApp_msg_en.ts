@@ -351,18 +351,22 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>NEW_WINDOW_2</source>
-        <translation>&amp;OCC view</translation>
+        <translation>P&amp;lot3d view</translation>
     </message>
     <message>
         <source>NEW_WINDOW_3</source>
-        <translation>VT&amp;K view</translation>
+        <translation>&amp;OCC view</translation>
     </message>
     <message>
         <source>NEW_WINDOW_4</source>
-        <translation>&amp;QxGraph view</translation>
+        <translation>VT&amp;K view</translation>
     </message>
     <message>
         <source>NEW_WINDOW_5</source>
+        <translation>&amp;QxGraph view</translation>
+    </message>
+    <message>
+        <source>NEW_WINDOW_6</source>
         <translation>G&amp;raphics view</translation>
     </message>
     <message>

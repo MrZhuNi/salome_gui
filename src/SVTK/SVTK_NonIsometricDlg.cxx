@@ -29,8 +29,8 @@
 #include "SVTK_NonIsometricDlg.h"
 #include "SVTK_ViewWindow.h"
 #include "SVTK_Renderer.h"
+#include "SVTK_DoubleSpinBox.h"
 
-#include "QtxDoubleSpinBox.h"
 #include "QtxAction.h"
 
 #include <QGroupBox>
@@ -63,32 +63,35 @@ SVTK_NonIsometricDlg
   // Create croup box with grid layout
   QGroupBox* aGroupBox = new QGroupBox(this);
   aGroupBox->setObjectName("GroupBox");
-  QHBoxLayout* aHBoxLayout = new QHBoxLayout(aGroupBox);
-  aHBoxLayout->setMargin(11);
-  aHBoxLayout->setSpacing(6);
+  QGridLayout* aGridLayout = new QGridLayout(aGroupBox);
+  aGridLayout->setMargin(11);
+  aGridLayout->setSpacing(6);
 
   // "X" scaling
   QLabel* TextLabelX = new QLabel (tr("LBL_X"), aGroupBox);
   TextLabelX->setObjectName("TextLabelX");
   TextLabelX->setFixedWidth(15);
-  m_sbXcoeff = new QtxDoubleSpinBox(-VTK_LARGE_FLOAT, VTK_LARGE_FLOAT, 0.1, aGroupBox);
-  m_sbXcoeff->setMinimumWidth(80);
+  //m_sbXcoeff = new QtxDoubleSpinBox(-VTK_LARGE_FLOAT, VTK_LARGE_FLOAT, 0.1, aGroupBox);
+  m_sbXcoeff = new SVTK_DoubleSpinBox(aGroupBox, 0, VTK_DOUBLE_MAX, 0.1, 37, 1E-37 );
+  m_sbXcoeff->setMinimumWidth(300);
   m_sbXcoeff->setValue(1.0);
 
   // "Y" scaling
   QLabel* TextLabelY = new QLabel (tr("LBL_Y"), aGroupBox);
   TextLabelY->setObjectName("TextLabelY");
   TextLabelY->setFixedWidth(15);
-  m_sbYcoeff = new QtxDoubleSpinBox(-VTK_LARGE_FLOAT, VTK_LARGE_FLOAT, 0.1, aGroupBox);
-  m_sbYcoeff->setMinimumWidth(80);
+  //m_sbYcoeff = new QtxDoubleSpinBox(-VTK_LARGE_FLOAT, VTK_LARGE_FLOAT, 0.1, aGroupBox);
+  m_sbYcoeff = new SVTK_DoubleSpinBox(aGroupBox, 0, VTK_DOUBLE_MAX, 0.1, 37, 1E-37 );
+  m_sbYcoeff->setMinimumWidth(300);
   m_sbYcoeff->setValue(1.0);
 
   // "Z" scaling
   QLabel* TextLabelZ = new QLabel (tr("LBL_Z"), aGroupBox);
   TextLabelZ->setObjectName("TextLabelZ");
   TextLabelZ->setFixedWidth(15);
-  m_sbZcoeff = new QtxDoubleSpinBox(-VTK_LARGE_FLOAT, VTK_LARGE_FLOAT, 0.1, aGroupBox);
-  m_sbZcoeff->setMinimumWidth(80);
+  //m_sbZcoeff = new QtxDoubleSpinBox(-VTK_LARGE_FLOAT, VTK_LARGE_FLOAT, 0.1, aGroupBox);
+  m_sbZcoeff = new SVTK_DoubleSpinBox(aGroupBox, 0, VTK_DOUBLE_MAX, 0.1, 37, 1E-37 );
+  m_sbZcoeff->setMinimumWidth(300);
   m_sbZcoeff->setValue(1.0);
 
   // Create <Reset> button
@@ -96,14 +99,14 @@ SVTK_NonIsometricDlg
   m_bReset->setObjectName("m_bReset");
 
   // Layout widgets in the group box
-  aHBoxLayout->addWidget(TextLabelX);
-  aHBoxLayout->addWidget(m_sbXcoeff);
-  aHBoxLayout->addWidget(TextLabelY);
-  aHBoxLayout->addWidget(m_sbYcoeff);
-  aHBoxLayout->addWidget(TextLabelZ);
-  aHBoxLayout->addWidget(m_sbZcoeff);
-  //aHBoxLayout->addStretch();
-  aHBoxLayout->addWidget(m_bReset);
+  aGridLayout->addWidget(TextLabelX, 0, 0);
+  aGridLayout->addWidget(m_sbXcoeff, 0, 1);
+  aGridLayout->addWidget(TextLabelY, 1, 0);
+  aGridLayout->addWidget(m_sbYcoeff, 1, 1);
+  aGridLayout->addWidget(TextLabelZ, 2, 0);
+  aGridLayout->addWidget(m_sbZcoeff, 2, 1);
+  //aGridLayout->addStretch();
+  aGridLayout->addWidget(m_bReset, 3, 0, 1, 2);
 
   // OK, CANCEL, Apply button
   QGroupBox* aGroupBox2 = new QGroupBox(this);

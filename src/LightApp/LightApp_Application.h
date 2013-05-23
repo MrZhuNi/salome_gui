@@ -78,7 +78,8 @@ public:
 	 CloseId, CloseAllId, GroupAllId,
          RestoreDefaultId, RestoreFromPrefsId,
 	 PreferencesId, MRUId, ModulesListId,
-         NewGLViewId, NewPlot2dId, NewOCCViewId, NewVTKViewId, NewQxGraphViewId,
+         NewGLViewId, NewPlot2dId, NewPlot3dId,
+         NewOCCViewId, NewVTKViewId, NewQxGraphViewId,
          NewGraphicsViewId, UserID };
 
 protected:

@@ -152,6 +152,10 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
   bool 
   IsTrihedronDisplayed();
 
+  //! Set trihedron displayed on/off
+  void 
+  SetTrihedronDisplayed( const bool theState );
+
   //! Toggle trihedron visibility
   void 
   OnViewTrihedron(); 
@@ -168,6 +172,10 @@ class SVTK_EXPORT SVTK_Renderer : public vtkObject
   //! Is graduated rules displayed
   bool 
   IsCubeAxesDisplayed();
+
+  //! Set graduated rules displayed on/off
+  void 
+  SetCubeAxesDisplayed( const bool theState );
 
   //! Toggle graduated rules visibility
   void 

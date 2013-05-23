@@ -55,12 +55,14 @@ class SVTK_NonIsometricDlg;
 class SVTK_UpdateRateDlg;
 class SVTK_CubeAxesDlg;
 class SVTK_SetRotationPointDlg;
+class SVTK_InteractorStyle;
 class SVTK_KeyFreeInteractorStyle;
 class SVTK_ViewParameterDlg;
 class SVTK_Recorder;
 
 class vtkObject;
 class QtxAction;
+class QtxMultiAction;
 
 namespace SVTK
 {
@@ -246,6 +248,9 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   //! To invoke a VTK event on #SVTK_RenderWindowInteractor instance
   void InvokeEvent(unsigned long theEvent, void* theCallData);
   
+  //! Show/hide the Mode2D action
+  void SetMode2DEnabled( const bool theIsEnabled );
+
  signals:
   void Show( QShowEvent * );
   void Hide( QHideEvent * );
@@ -282,6 +287,7 @@ public slots:
   void onViewParameters(bool theIsActivate);
 
   void onSwitchInteractionStyle(bool theOn);
+  void onMode2D(bool theOn);
 
   void onStartRecording();
   void onPlayRecording();
@@ -345,6 +351,25 @@ protected:
   void doSetVisualParameters( const QString& );
   void SetEventDispatcher(vtkObject* theDispatcher);
 
+  struct ViewState
+  {
+    bool IsInitialized;
+    double Position[3];
+    double FocalPoint[3];
+    double ViewUp[3];
+    double ParallelScale;
+    bool IsTrihedronDisplayed;
+
+    ViewState()
+    {
+      IsInitialized = false;
+      ParallelScale = 0.0;
+      IsTrihedronDisplayed = false;
+    }
+  };
+  void storeViewState( ViewState& theViewState );
+  bool restoreViewState( ViewState theViewState );
+
   QImage dumpViewContent();
 
   virtual QString filter() const;
@@ -360,7 +385,7 @@ protected:
 	 ChangeRotationPointId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
 	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate,
-	 ProjectionModeId, ViewParametersId, SwitchInteractionStyleId,
+	 ProjectionModeId, ViewParametersId, SwitchInteractionStyleId, Mode2DId,
 	 StartRecordingId, PlayRecordingId, PauseRecordingId, StopRecordingId };
 
 
@@ -369,6 +394,7 @@ protected:
   SVTK_ViewModelBase* myModel;
 
   SVTK_RenderWindowInteractor* myInteractor;
+  vtkSmartPointer<SVTK_InteractorStyle> myStandardInteractorStyle;
   vtkSmartPointer<SVTK_KeyFreeInteractorStyle> myKeyFreeInteractorStyle;
 
   QString myVisualParams; // used for delayed setting of view parameters 
@@ -384,6 +410,8 @@ protected:
   QSize myPreRecordingMinSize;
   QSize myPreRecordingMaxSize;
 
+  QtxMultiAction* myViewsAction;
+
   SVTK_Recorder* myRecorder;
   QtxAction* myStartAction;
   QtxAction* myPlayAction;
@@ -392,6 +420,10 @@ protected:
 
   int myToolBar;
   int myRecordingToolBar;
+
+  bool myMode2D;
+  ViewState myStored2DViewState;
+  ViewState myStored3DViewState;
 
 private:
   QImage myDumpImage;

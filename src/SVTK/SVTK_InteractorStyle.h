@@ -228,6 +228,9 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
 
   int   CurrentState() const { return State; }
 
+  //! Enable/disable rotation
+  void SetIsRotationEnabled( const bool theState );
+
   protected:
   SVTK_InteractorStyle();
   ~SVTK_InteractorStyle();
@@ -350,6 +353,8 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   bool                            myBBFirstCheck;
 
   QRubberBand*                    myRectBand; //!< selection rectangle rubber band
+
+  bool                            myIsRotationEnabled;
 };
 
 #ifdef WIN32

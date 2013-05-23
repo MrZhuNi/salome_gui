@@ -16,29 +16,31 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-#ifndef SVTK_VIEWMANAGER_H
-#define SVTK_VIEWMANAGER_H
+#include "Plot3d_ViewModel.h"
 
-#include "SUIT_ViewManager.h"
-#include "SVTK.h"
+#include "SVTK_ViewWindow.h"
 
-class SUIT_Desktop;
-
-//! Extend SUIT_ViewManager to deal with SVTK_Viewer
-class SVTK_EXPORT SVTK_ViewManager : public SUIT_ViewManager
+/*!
+  Constructor
+*/
+Plot3d_Viewer::Plot3d_Viewer()
 {
-  Q_OBJECT
+}
 
-public:
-  //! Construct the view manager
-  SVTK_ViewManager( SUIT_Study*,
-                    SUIT_Desktop*,
-                    SUIT_ViewModel* = 0 );
+/*!
+  Destructor
+*/
+Plot3d_Viewer::~Plot3d_Viewer() 
+{
+}
 
-  //! Destroy the view manager
-  virtual ~SVTK_ViewManager();
-
-  SUIT_Desktop* getDesktop();
-};
-
-#endif
+/*!Create new instance of view window on desktop \a theDesktop.
+ *\retval SUIT_ViewWindow* - created view window pointer.
+ */
+SUIT_ViewWindow* Plot3d_Viewer::createView( SUIT_Desktop* theDesktop )
+{
+  SUIT_ViewWindow* aViewWindow = SVTK_Viewer::createView( theDesktop );
+  if( SVTK_ViewWindow* aSVTKViewWindow = dynamic_cast<SVTK_ViewWindow*>( aViewWindow ) )
+    aSVTKViewWindow->SetMode2DEnabled( true );
+  return aViewWindow;
+}

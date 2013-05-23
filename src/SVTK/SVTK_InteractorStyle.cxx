@@ -93,7 +93,8 @@ SVTK_InteractorStyle::SVTK_InteractorStyle():
   myControllerIncrement(SVTK_ControllerIncrement::New()),
   myControllerOnKeyDown(SVTK_ControllerOnKeyDown::New()),
   myHighlightSelectionPointActor(SVTK_Actor::New()),
-  myRectBand(0)
+  myRectBand(0),
+  myIsRotationEnabled( true )
 {
   myPointPicker->Delete();
 
@@ -198,6 +199,9 @@ SVTK_SelectionEvent* SVTK_InteractorStyle::GetSelectionEventFlipY()
 
 void SVTK_InteractorStyle::RotateXY(int dx, int dy)
 {
+  if( !myIsRotationEnabled )
+    return;
+
   /*   if(GetCurrentRenderer() == NULL)
     return;
   
@@ -940,8 +944,11 @@ void SVTK_InteractorStyle::setCursor(const int operation)
       myCursorState = true;
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_ROTATE:
-      GetRenderWidget()->setCursor(myRotateCursor); 
-      myCursorState = true;
+      if( myIsRotationEnabled )
+      {
+        GetRenderWidget()->setCursor(myRotateCursor); 
+        myCursorState = true;
+      }
       break;
     case VTK_INTERACTOR_STYLE_CAMERA_SPIN:
       GetRenderWidget()->setCursor(mySpinCursor); 
@@ -1707,6 +1714,14 @@ void SVTK_InteractorStyle::SetIncrementSpeed(const int theValue, const int theMo
 
   SetControllerIncrement(c);
   c->Delete();
+}
+
+/*!
+  Enable/disable rotation
+*/
+void SVTK_InteractorStyle::SetIsRotationEnabled( const bool theState )
+{
+  myIsRotationEnabled = theState;
 }
 
 /*!
