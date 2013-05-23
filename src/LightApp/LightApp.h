@@ -43,5 +43,6 @@
 #endif
 
 #define APP_VERSION "0.1"
+#define QT48_PORTING
 
 #endif  // LIGHTAPP_H
