@@ -59,7 +59,8 @@ salomeinclude_HEADERS= \
 	SVTK_RecorderDlg.h \
 	SVTK_ImageWriter.h \
 	SVTK_ImageWriterMgr.h \
-	SVTK_FrameBuffer.h
+	SVTK_FrameBuffer.h\
+	SVTK_DoubleSpinBox.h
 
 dist_libSVTK_la_SOURCES= \
 	SVTK_Prs.cxx \
@@ -93,7 +94,8 @@ dist_libSVTK_la_SOURCES= \
 	SVTK_RecorderDlg.cxx \
 	SVTK_ImageWriter.cxx \
 	SVTK_ImageWriterMgr.cxx \
-	SVTK_FrameBuffer.cxx
+	SVTK_FrameBuffer.cxx \
+	SVTK_DoubleSpinBox.cxx
 
 
 # internal headers
@@ -115,7 +117,8 @@ MOC_FILES= \
 	SVTK_SetRotationPointDlg_moc.cxx \
 	SVTK_ViewParameterDlg_moc.cxx \
 	SVTK_ComboAction_moc.cxx \
-	SVTK_RecorderDlg_moc.cxx
+	SVTK_RecorderDlg_moc.cxx \
+	SVTK_DoubleSpinBox_moc.cxx
 nodist_libSVTK_la_SOURCES= $(MOC_FILES)
 
 dist_salomeres_DATA=\
