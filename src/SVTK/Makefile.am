@@ -138,7 +138,8 @@ dist_salomeres_DATA=\
 	resources/vtk_view_recording_start.png \
 	resources/vtk_view_recording_play.png \
 	resources/vtk_view_recording_pause.png \
-	resources/vtk_view_recording_stop.png
+	resources/vtk_view_recording_stop.png \
+	resources/vtk_view_mode_2d.png
 
 nodist_salomeres_DATA =	\
 	SVTK_msg_en.qm	\
