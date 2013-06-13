@@ -110,7 +110,7 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
   //Initialize 4 bytes of the buffer by 0
   memset(aFileBuffer, 0, 4); 
   //Copy the number of modules that will be written to the stream
-  memcpy(aFileBuffer, &aNbModules, ((sizeof(int) > 4) ? 4 : sizeof(int)));
+  memcpy(aFileBuffer, &aNbModules, 4);
   aCurrentPos += 4;
 
   int aBufferNameSize = 0;
@@ -119,7 +119,7 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
     //Initialize 4 bytes of the buffer by 0
     memset((aFileBuffer + aCurrentPos), 0, 4); 
     //Copy the length of the module name to the buffer
-    memcpy((aFileBuffer + aCurrentPos), &aBufferNameSize, ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+    memcpy((aFileBuffer + aCurrentPos), &aBufferNameSize, 4); 
     aCurrentPos += 4;
     //Copy the module name to the buffer
     memcpy((aFileBuffer + aCurrentPos), aModuleName[i], aBufferNameSize);
@@ -128,7 +128,7 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
     //Initialize 8 bytes of the buffer by 0
     memset((aFileBuffer + aCurrentPos), 0, 8);
     //Copy the length of the module buffer to the buffer
-    memcpy((aFileBuffer + aCurrentPos), (aBufferSize + i), ((sizeof(long) > 8) ? 8 : sizeof(long)));
+    memcpy((aFileBuffer + aCurrentPos), (aBufferSize + i), 4);
     aCurrentPos += 8;
     //Copy the module buffer to the buffer
     memcpy((aFileBuffer + aCurrentPos), aBuffer[i], aBufferSize[i]);
@@ -179,7 +179,7 @@ bool LightApp_Driver::ReadDatasFromFile( const char* theFileName, bool isMultiFi
 
   for (int i = 0; i < aNbModules; i++) {
     //Put a length of the module name to aModuleNameSize
-    memcpy(&aModuleNameSize, (aFileBuffer + aCurrentPos), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+    memcpy(&aModuleNameSize, (aFileBuffer + aCurrentPos), 4); 
     aCurrentPos += 4;
 
     char *aModuleName = new char[aModuleNameSize];
@@ -189,7 +189,7 @@ bool LightApp_Driver::ReadDatasFromFile( const char* theFileName, bool isMultiFi
 
     //Put a length of the file buffer to aBufferSize
     long aBufferSize;
-    memcpy(&aBufferSize, (aFileBuffer + aCurrentPos), ((sizeof(long) > 8) ? 8 : sizeof(long))); 
+    memcpy(&aBufferSize, (aFileBuffer + aCurrentPos), 4); 
     aCurrentPos += 8;
     unsigned char *aBuffer = new unsigned char[aBufferSize];
  
@@ -565,7 +565,7 @@ bool LightApp_Driver::PutFilesToFirstStream( const std::string& theModuleName, u
   //Initialize 4 bytes of the buffer by 0
   memset( theBuffer, 0, 4); 
   //Copy the number of files that will be written to the stream
-  memcpy( theBuffer, &aNbFiles, ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+  memcpy( theBuffer, &aNbFiles, 4); 
 
   myCurrPos = 4;
   int aCurrnetBuff = 0;
@@ -590,7 +590,7 @@ bool LightApp_Driver::PutFilesToFirstStream( const std::string& theModuleName, u
     memset( (theBuffer + myCurrPos), 0, 4); 
         
     //Copy the length of the file name to the buffer
-    memcpy((theBuffer + myCurrPos), (myFileNameSizes + myCurrFileIndex), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+    memcpy((theBuffer + myCurrPos), (myFileNameSizes + myCurrFileIndex), 4); 
     myCurrPos += 4;
     
     //Copy the file name to the buffer
@@ -604,8 +604,7 @@ bool LightApp_Driver::PutFilesToFirstStream( const std::string& theModuleName, u
       memset( myCurrBuff + myCurrPos, 0, 8 ); 
 
       //Copy the length of the file to the buffer
-      memcpy( myCurrBuff + myCurrPos,  
-              (unsigned char*)(myFileSizes + myCurrFileIndex), ((sizeof(long) > 8) ? 8 : sizeof(long)));
+      memcpy( myCurrBuff + myCurrPos, (unsigned char*)(myFileSizes + myCurrFileIndex), 4 ); // to do
       myCurrPos += 8;
       
       // old code for small files
@@ -705,7 +704,7 @@ bool LightApp_Driver::PutFilesToNextStream( const std::string& theModuleName, un
       //Initialize 4 bytes of the buffer by 0
       memset( (myCurrBuff + myCurrPos), 0, 4); 
       //Copy the length of the file name to the buffer
-      memcpy((myCurrBuff + myCurrPos), ( myFileNameSizes + myCurrFileIndex ), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+      memcpy((myCurrBuff + myCurrPos), ( myFileNameSizes + myCurrFileIndex ), 4 ); 
       myCurrPos += 4;
 
       //Copy the file name to the buffer
@@ -718,8 +717,7 @@ bool LightApp_Driver::PutFilesToNextStream( const std::string& theModuleName, un
       memset( myCurrBuff + myCurrPos, 0, 8 ); 
       
       //Copy the length of the file to the buffer
-      memcpy( myCurrBuff + myCurrPos,  
-        (unsigned char*)(myFileSizes + myCurrFileIndex), ((sizeof(long) > 8) ? 8 : sizeof(long)));
+      memcpy( myCurrBuff + myCurrPos,  (unsigned char*)(myFileSizes + myCurrFileIndex), 4 );
       myCurrPos += 8;
     }
 
@@ -815,7 +813,7 @@ void LightApp_Driver::PutFirstStreamToFiles( ListOfFiles& theListOfFiles,
   for( myCurrFileIndex = 1; myCurrFileIndex <= myNbFilles; myCurrFileIndex++) 
   {
     //Put a length of the file name to myFileNameSizes[ myCurrFileIndex ]
-    memcpy(&myFileNameSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+    memcpy(&myFileNameSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), 4); 
     myCurrPos += 4;
 
     char *aFileName = new char[ myFileNameSizes[ myCurrFileIndex ] ];
@@ -826,7 +824,7 @@ void LightApp_Driver::PutFirstStreamToFiles( ListOfFiles& theListOfFiles,
     //Put a length of the file to myFileSizes
     if (!theNamesOnly) 
     {
-      memcpy(&myFileSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), ((sizeof(long) > 8) ? 8 : sizeof(long)));
+      memcpy(&myFileSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), 4 );
       myCurrPos += 8;    
       
       TCollection_AsciiString aFullPath = aTmpDir + aFileName;
@@ -890,7 +888,7 @@ void LightApp_Driver::PutNextStreamToFiles( ListOfFiles& theListOfFiles,
     {
       //Put a length of the file name to myFileNameSizes
       //int myFileNameSizes;
-      memcpy(&myFileNameSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), ((sizeof(int) > 4) ? 4 : sizeof(int))); 
+      memcpy(&myFileNameSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), 4); 
       myCurrPos += 4;
 
       char *aFileName = new char[ myFileNameSizes[ myCurrFileIndex ] ];
@@ -908,7 +906,7 @@ void LightApp_Driver::PutNextStreamToFiles( ListOfFiles& theListOfFiles,
         continue;
       }
 
-      memcpy(&myFileSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), ((sizeof(long) > 8) ? 8 : sizeof(long)));
+      memcpy(&myFileSizes[ myCurrFileIndex ], (theBuffer + myCurrPos), 4 );
       myCurrPos += 8;    
 
       TCollection_AsciiString aFullPath = aTmpDir + aFileName;
