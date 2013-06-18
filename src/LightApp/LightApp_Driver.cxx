@@ -173,7 +173,7 @@ bool LightApp_Driver::ReadDatasFromFile( const char* theFileName, bool isMultiFi
 
   int aNbModules = 0;
   //Copy the number of files in the stream
-  memcpy(&aNbModules, aFileBuffer, sizeof(int));
+  memcpy(&aNbModules, aFileBuffer, 4 );
   long aCurrentPos = 4;
   int aModuleNameSize;
 
@@ -800,7 +800,7 @@ void LightApp_Driver::PutFirstStreamToFiles( ListOfFiles& theListOfFiles,
   myCurrPos = 4;
   
   //Copy the number of files in the stream
-  memcpy(&myNbFilles, theBuffer, sizeof(int)); 
+  memcpy(&myNbFilles, theBuffer, 4); 
 
   const int n = myNbFilles + 1;
   theListOfFiles.resize( n );
