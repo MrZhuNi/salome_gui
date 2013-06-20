@@ -500,7 +500,7 @@ Les modifications seront appliquées à la prochaine session.</translation>
     </message>
     <message>
         <source>NEW_WINDOW_5</source>
-        <translation>Scène Qx&amp;Scene</translation>
+        <translation>Scène G&amp;raphics</translation>
     </message>
     <message>
         <source>CREATING_NEW_WINDOW</source>

@@ -68,6 +68,12 @@ else
     DISABLE_GLVIEWER="yes"
 fi
 
+if test "x${enable_graphicsView}" != "xno" ; then
+    DISABLE_GRAPHICSVIEW="no"
+else 
+    DISABLE_GRAPHICSVIEW="yes"
+fi
+
 if test "x${enable_plot2dViewer}" != "xno" ; then
     DISABLE_PLOT2DVIEWER="no"
 else 
@@ -395,6 +401,15 @@ echo "DISABLE_GLVIEWER = "$DISABLE_GLVIEWER
 
 echo
 echo ---------------------------------------------
+echo Testing GraphicsView
+echo ---------------------------------------------
+echo
+
+CHECK_GRAPHICSVIEW
+echo "DISABLE_GRAPHICSVIEW = "$DISABLE_GRAPHICSVIEW
+
+echo
+echo ---------------------------------------------
 echo Testing Plot2dViewer
 echo ---------------------------------------------
 echo
@@ -569,6 +584,7 @@ fi
 AM_CONDITIONAL(GUI_ENABLE_CORBA, [test "$GUI_DISABLE_CORBA" = no])
 AM_CONDITIONAL(ENABLE_PYCONSOLE, [test "$DISABLE_PYCONSOLE" = no])
 AM_CONDITIONAL(ENABLE_GLVIEWER, [test "$DISABLE_GLVIEWER" = no])
+AM_CONDITIONAL(ENABLE_GRAPHICSVIEW, [test "$DISABLE_GRAPHICSVIEW" = no])
 AM_CONDITIONAL(ENABLE_PLOT2DVIEWER, [test "$DISABLE_PLOT2DVIEWER" = no])
 AM_CONDITIONAL(ENABLE_SUPERVGRAPHVIEWER, [test "$DISABLE_SUPERVGRAPHVIEWER" = no])
 AM_CONDITIONAL(ENABLE_OCCVIEWER, [test "$DISABLE_OCCVIEWER" = no])
@@ -644,6 +660,7 @@ AC_OUTPUT([ \
   src/OBJECT/Makefile \
   src/ViewerTools/Makefile \
   src/GLViewer/Makefile \
+  src/GraphicsView/Makefile \
   src/VTKViewer/Makefile \
   src/SVTK/Makefile \
   src/OCCViewer/Makefile \

@@ -216,6 +216,11 @@ if ENABLE_GLVIEWER
 else !ENABLE_GLVIEWER
   libLightApp_la_CPPFLAGS += -DDISABLE_GLVIEWER
 endif
+if ENABLE_GRAPHICSVIEW
+  libLightApp_la_CPPFLAGS += -I$(srcdir)/../GraphicsView
+else !ENABLE_GRAPHICSVIEW
+  libLightApp_la_CPPFLAGS += -DDISABLE_GRAPHICSVIEWER
+endif
 if ENABLE_SUPERVGRAPHVIEWER
   libLightApp_la_CPPFLAGS += -I$(srcdir)/../SUPERVGraph
 else !ENABLE_SUPERVGRAPHVIEWER
@@ -269,6 +274,9 @@ endif
 endif
 if ENABLE_GLVIEWER
   libLightApp_la_LIBADD += ../GLViewer/libGLViewer.la
+endif
+if ENABLE_GRAPHICSVIEW
+  libLightApp_la_LIBADD += ../GraphicsView/libGraphicsView.la
 endif
 if ENABLE_PLOT2DVIEWER
   libLightApp_la_LIBADD += ../Plot2d/libPlot2d.la
