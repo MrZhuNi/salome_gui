@@ -70,11 +70,13 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${KERNEL_ROOT_DIR}/salome_adm/cmake_f
 
 find_package(PLATFORM)
 
-
 # Threads
-SET(CMAKE_THREAD_PREFER_PTHREAD)
-find_package(Threads REQUIRED)
-
+if(WINDOWS)
+  find_package(SalomePTHREAD REQUIRED)
+else(WINDOWS)
+  SET(CMAKE_THREAD_PREFER_PTHREAD)
+  find_package(Threads REQUIRED)
+endif(WINDOWS)
 
 # required prerequisites from KERNEL
 
