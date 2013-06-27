@@ -99,6 +99,14 @@ protected slots:
 
   virtual void                  onChangeBgColor();
 
+  // testing ImageViewer
+  void                          onAddImage();
+  void                          onRemoveImages();
+  void                          onBringForward();
+  void                          onSendBackward();
+  void                          onPrsProperties();
+  void                          onTestImageComposition();
+
 private:
   void                          handleKeyPress( QKeyEvent* );
   void                          handleKeyRelease( QKeyEvent* );

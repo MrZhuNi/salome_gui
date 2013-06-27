@@ -27,7 +27,6 @@ lib_LTLIBRARIES = libGraphicsView.la
 
 salomeinclude_HEADERS =		\
 GraphicsView_Defs.h	\
-GraphicsView_Geom.h	\
 GraphicsView.h	\
 GraphicsView_Object.h	\
 GraphicsView_Scene.h	\
@@ -36,7 +35,10 @@ GraphicsView_Viewer.h	\
 GraphicsView_ViewFrame.h	\
 GraphicsView_ViewManager.h	\
 GraphicsView_ViewPort.h	\
-GraphicsView_ViewTransformer.h
+GraphicsView_ViewTransformer.h \
+GraphicsView_PrsImage.h \
+GraphicsView_PrsImageFrame.h \
+GraphicsView_PrsPropDlg.h
 
 dist_libGraphicsView_la_SOURCES =		\
 GraphicsView_Object.cxx	\
@@ -46,7 +48,10 @@ GraphicsView_Viewer.cxx	\
 GraphicsView_ViewFrame.cxx	\
 GraphicsView_ViewManager.cxx	\
 GraphicsView_ViewPort.cxx	\
-GraphicsView_ViewTransformer.cxx
+GraphicsView_ViewTransformer.cxx \
+GraphicsView_PrsImage.cxx \
+GraphicsView_PrsImageFrame.cxx \
+GraphicsView_PrsPropDlg.cxx
 
 MOC_FILES =				\
 GraphicsView_ViewManager_moc.cxx \
@@ -54,7 +59,8 @@ GraphicsView_Viewer_moc.cxx \
 GraphicsView_ViewFrame_moc.cxx \
 GraphicsView_Selector_moc.cxx \
 GraphicsView_ViewPort_moc.cxx \
-GraphicsView_Scene_moc.cxx
+GraphicsView_Scene_moc.cxx \
+GraphicsView_PrsPropDlg_moc.cxx
 
 nodist_libGraphicsView_la_SOURCES = $(MOC_FILES)
 
@@ -67,6 +73,7 @@ resources/graphics_view_fitselect.png	\
 resources/graphics_view_glpan.png	\
 resources/graphics_view_pan.png	\
 resources/graphics_view_reset.png	\
+resources/graphics_view_rotate.png	\
 resources/graphics_view_zoom.png
 
 nodist_salomeres_DATA =		\
@@ -74,6 +81,6 @@ nodist_salomeres_DATA =		\
 	GraphicsView_msg_en.qm	\
 	GraphicsView_msg_fr.qm
 
-libGraphicsView_la_CPPFLAGS = $(QT_INCLUDES) -I$(srcdir)/../SUIT -I$(srcdir)/../Qtx
-libGraphicsView_la_LDFLAGS  = $(QT_MT_LIBS)
+libGraphicsView_la_CPPFLAGS = $(QT_INCLUDES) $(CAS_CPPFLAGS) -I$(srcdir)/../SUIT -I$(srcdir)/../Qtx
+libGraphicsView_la_LDFLAGS  = $(QT_MT_LIBS) $(CAS_KERNEL)
 libGraphicsView_la_LIBADD   = ../SUIT/libsuit.la

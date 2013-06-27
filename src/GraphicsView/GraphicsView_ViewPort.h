@@ -290,6 +290,9 @@ private:
   // pulling
   bool                             myIsPulling;
   GraphicsView_Object*             myPullingObject;
+
+  // cursor
+  QCursor                          myStoredCursor;
 };
 
 #endif

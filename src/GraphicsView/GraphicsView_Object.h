@@ -27,6 +27,8 @@
 
 #include <QGraphicsItemGroup>
 
+class GraphicsView_ViewPort;
+
 /*
   Class       : GraphicsView_Object
   Description : Base class for all objects displayed at the scene
@@ -38,6 +40,9 @@ public:
   ~GraphicsView_Object();
 
   virtual void               compute() = 0;
+
+  virtual void               addTo( GraphicsView_ViewPort* theViewPort );
+  virtual void               removeFrom( GraphicsView_ViewPort* theViewPort );
 
   const QString&             getName() const { return myName; }
   virtual void               setName( const QString& theName );
@@ -52,6 +57,8 @@ public:
 
   virtual QRectF             getRect() const;
 
+  virtual bool               checkHighlight( double theX, double theY, QCursor& theCursor ) const;
+
   virtual bool               highlight( double theX, double theY );
   virtual void               unhighlight();
   virtual bool               isHighlighted() const { return myIsHighlighted; }
@@ -63,6 +70,7 @@ public:
 
   virtual void               move( double theDX, double theDY, bool theIsAtOnce = false );
   virtual bool               finishMove();
+  virtual bool               isMoving() const { return myIsMoving; }
   virtual bool               isMovingByXAllowed( double theDX ) { return true; }
   virtual bool               isMovingByYAllowed( double theDY ) { return true; }
 
@@ -79,8 +87,13 @@ public:
   virtual bool               handleMouseMove( QGraphicsSceneMouseEvent* ) { return false; }
   virtual bool               handleMouseRelease( QGraphicsSceneMouseEvent* ) { return false; }
 
+  virtual QPointF            centerPoint();
+
+public:
+  static void                setRotationAroundCenter( QGraphicsItem* theItem, double theAngle );
+
 protected:
-  virtual bool               checkHighlight( double theX, double theY ) const;
+  QCursor*                   getHighlightCursor() const { return myHighlightCursor; }
 
 protected:
   QString                    myName;
@@ -90,6 +103,11 @@ protected:
 
   bool                       myIsHighlighted;
   bool                       myIsSelected;
+
+  bool                       myIsMoving;
+
+private:
+  QCursor*                   myHighlightCursor;
 };
 
 #endif

@@ -37,5 +37,9 @@
         <source>ICON_GV_FITAREA</source>
         <translation>graphics_view_fitarea.png</translation>
     </message>
+    <message>
+        <source>ICON_GV_ROTATE</source>
+        <translation>graphics_view_rotate.png</translation>
+    </message>
 </context>
 </TS>

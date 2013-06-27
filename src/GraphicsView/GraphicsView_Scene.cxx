@@ -25,7 +25,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsSceneWheelEvent>
 
-//#define VIEWER_DEBUG
+#define VIEWER_DEBUG // testing ImageViewer
 
 //=======================================================================
 // Name    : GraphicsView_Scene
@@ -42,7 +42,13 @@ GraphicsView_Scene::GraphicsView_Scene( QObject* theParent )
 
   connect( this, SIGNAL( sceneRectChanged( const QRectF& ) ),
            this, SLOT( onSceneRectChanged( const QRectF& ) ) );
+
+  QGraphicsEllipseItem* aCenterItem = new QGraphicsEllipseItem( 0, 0, 5, 5 );
+  aCenterItem->setBrush( QBrush( Qt::red ) );
+  addItem( aCenterItem );
 #endif
+
+  setSceneRect( -500, -500, 3000, 3000 ); // testing ImageViewer
 }
 
 //=======================================================================

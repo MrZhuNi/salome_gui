@@ -38,6 +38,11 @@
 #include <QKeyEvent>
 #include <QMenu>
 
+// testing ImageViewer
+#include "GraphicsView_PrsImage.h"
+#include "GraphicsView_PrsPropDlg.h"
+#include <QFileDialog>
+
 //=======================================================================
 // Name    : GraphicsView_Viewer
 // Purpose : Constructor
@@ -97,6 +102,32 @@ void GraphicsView_Viewer::contextMenuPopup( QMenu* thePopup )
 {
   if( thePopup->actions().count() > 0 )
     thePopup->addSeparator();
+
+  // testing ImageViewer
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  {
+    int aNbSelected = aViewPort->nbSelected();
+    if( aNbSelected == 0 )
+    {
+      thePopup->addAction( tr( "ADD_IMAGE" ), this, SLOT( onAddImage() ) );
+      thePopup->addSeparator();
+
+      thePopup->addAction( tr( "TEST_IMAGE_COMPOSITION" ), this, SLOT( onTestImageComposition() ) );
+    }
+    else
+    {
+      if( aNbSelected == 1 )
+      {
+        thePopup->addAction( tr( "BRING_FORWARD" ), this, SLOT( onBringForward() ) );
+        thePopup->addAction( tr( "SEND_BACKWARD" ), this, SLOT( onSendBackward() ) );
+        thePopup->addSeparator();
+        thePopup->addAction( tr( "PROPERTIES" ), this, SLOT( onPrsProperties() ) );
+        thePopup->addSeparator();
+      }
+      thePopup->addAction( tr( "REMOVE_IMAGES" ), this, SLOT( onRemoveImages() ) );
+    }
+    thePopup->addSeparator();
+  }
 
   thePopup->addAction( tr( "CHANGE_BGCOLOR" ), this, SLOT( onChangeBgColor() ) );
 }
@@ -501,4 +532,126 @@ void GraphicsView_Viewer::onChangeBgColor()
 void GraphicsView_Viewer::onSelectionCancel()
 {
   emit selectionChanged( GVSCS_Invalid );
+}
+
+//================================================================
+// Function : onAddImage
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onAddImage()
+{
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  {
+    QString aFileName = QFileDialog::getOpenFileName();
+    if( aFileName.isEmpty() )
+      return;
+
+    GraphicsView_PrsImage* aPrs = new GraphicsView_PrsImage();
+
+    QImage anImage( aFileName );
+    aPrs->setImage( anImage );
+
+    aPrs->compute();
+
+    aViewPort->addItem( aPrs );
+    aViewPort->fitAll();
+  }
+}
+
+//================================================================
+// Function : onRemoveImages
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onRemoveImages()
+{
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  {
+    for( aViewPort->initSelected(); aViewPort->moreSelected(); aViewPort->nextSelected() )
+    {
+      if( GraphicsView_Object* anObject = aViewPort->selectedObject() )
+      {
+        if( GraphicsView_PrsImage* aPrs = dynamic_cast<GraphicsView_PrsImage*>( anObject ) )
+        {
+          aViewPort->removeItem( aPrs );
+          delete aPrs;
+        }
+      }
+    }
+  }
+}
+
+//================================================================
+// Function : onBringForward
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onBringForward()
+{
+  // to do
+}
+
+//================================================================
+// Function : onSendBackward
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onSendBackward()
+{
+  // to do
+}
+
+//================================================================
+// Function : onPrsProperties
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onPrsProperties()
+{
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  {
+    aViewPort->initSelected();
+    if( GraphicsView_Object* anObject = aViewPort->selectedObject() )
+    {
+      if( GraphicsView_PrsImage* aPrs = dynamic_cast<GraphicsView_PrsImage*>( anObject ) )
+      {
+        double aPosX, aPosY, aScaleX, aScaleY, aRotationAngle;
+        aPrs->getPosition( aPosX, aPosY );
+        aPrs->getScaling( aScaleX, aScaleY );
+        aPrs->getRotationAngle( aRotationAngle );
+
+        GraphicsView_PrsPropDlg aDlg( aViewPort );
+        aDlg.setData( aPosX, aPosY, aScaleX, aScaleY, aRotationAngle );
+        if( aDlg.exec() )
+        {
+          aDlg.getData( aPosX, aPosY, aScaleX, aScaleY, aRotationAngle );
+          aPrs->setPosition( aPosX, aPosY );
+          aPrs->setScaling( aScaleX, aScaleY );
+          aPrs->setRotationAngle( aRotationAngle );
+          aPrs->compute();
+        }
+      }
+    }
+  }
+}
+
+//================================================================
+// Function : onTestImageComposition
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onTestImageComposition()
+{
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  {
+    GraphicsView_ObjectList aList = aViewPort->getObjects();
+    GraphicsView_ObjectListIterator anIter( aList );
+    while( anIter.hasNext() )
+    {
+      if( GraphicsView_Object* anObject = anIter.next() )
+      {
+        if( GraphicsView_PrsImage* aPrs = dynamic_cast<GraphicsView_PrsImage*>( anObject ) )
+        {
+          QImage anImage = aPrs->getImage();
+          QTransform aTransform = aPrs->getTransform();
+          // ...
+        }
+      }
+    }
+  }
 }

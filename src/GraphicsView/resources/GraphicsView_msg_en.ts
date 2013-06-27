@@ -77,12 +77,63 @@
       <source>CHANGE_BGCOLOR</source>
       <translation>Change background...</translation>
     </message>
+    <message>
+      <source>ADD_IMAGE</source>
+      <translation>Add image</translation>
+    </message>
+    <message>
+      <source>REMOVE_IMAGES</source>
+      <translation>Remove image(s)</translation>
+    </message>
+    <message>
+      <source>BRING_FORWARD</source>
+      <translation>Bring forward</translation>
+    </message>
+    <message>
+      <source>SEND_BACKWARD</source>
+      <translation>Send backward</translation>
+    </message>
+    <message>
+      <source>PROPERTIES</source>
+      <translation>Properties</translation>
+    </message>
+    <message>
+      <source>TEST_IMAGE_COMPOSITION</source>
+      <translation>Test image composition</translation>
+    </message>
   </context>
   <context>
     <name>GraphicsView_ViewManager</name>
     <message>
       <source>GRAPHICS_VIEW_TITLE</source>
       <translation>Graphics scene:%M - viewer:%V</translation>
+    </message>
+  </context>
+  <context>
+    <name>GraphicsView_PrsPropDlg</name>
+    <message>
+      <source>PROPERTIES</source>
+      <translation>Properties</translation>
+    </message>
+    <message>
+      <source>POSITION_X</source>
+      <translation>Position X</translation>
+    </message>
+    <message>
+      <source>POSITION_Y</source>
+      <translation>Position Y</translation>
+    </message>
+    <message>
+      <source>SCALING_X</source>
+      <translation>Scaling X</translation>
+    </message>
+    <message>
+      <source>SCALING_Y</source>
+      <translation>Scaling Y</translation>
+    </message>
+    <message>
+      <source>ROTATION_ANGLE</source>
+      <translation>Rotation angle</translation>
     </message>
   </context>
 </TS>

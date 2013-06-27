@@ -23,6 +23,7 @@
 #include "GraphicsView_Object.h"
 
 #include "GraphicsView_Scene.h"
+#include "GraphicsView_ViewPort.h"
 
 //=======================================================================
 // Name    : GraphicsView_Object
@@ -33,8 +34,10 @@ GraphicsView_Object::GraphicsView_Object( QGraphicsItem* theParent )
   myPriority( 0 ),
   myIsOnTop( false ),
   myIsHighlighted( false ),
-  myIsSelected( false )
+  myIsSelected( false ),
+  myIsMoving( false )
 {
+  myHighlightCursor = new QCursor( Qt::OpenHandCursor );
 }
 
 //=======================================================================
@@ -43,6 +46,31 @@ GraphicsView_Object::GraphicsView_Object( QGraphicsItem* theParent )
 //=======================================================================
 GraphicsView_Object::~GraphicsView_Object()
 {
+  if( myHighlightCursor )
+  {
+    delete myHighlightCursor;
+    myHighlightCursor = 0;
+  }
+}
+
+//================================================================
+// Function : addTo
+// Purpose  : 
+//================================================================
+void GraphicsView_Object::addTo( GraphicsView_ViewPort* theViewPort )
+{
+  if( QGraphicsScene* aScene = theViewPort->scene() )
+    aScene->addItem( this );
+}
+
+//================================================================
+// Function : removeFrom
+// Purpose  : 
+//================================================================
+void GraphicsView_Object::removeFrom( GraphicsView_ViewPort* theViewPort )
+{
+  if( QGraphicsScene* aScene = theViewPort->scene() )
+    aScene->removeItem( this );
 }
 
 //================================================================
@@ -67,9 +95,9 @@ QRectF GraphicsView_Object::getRect() const
 // Function : checkHighlight
 // Purpose  : 
 //================================================================
-bool GraphicsView_Object::checkHighlight( double theX, double theY ) const
+bool GraphicsView_Object::checkHighlight( double theX, double theY, QCursor& theCursor ) const
 {
-  return getRect().contains( theX, theY );
+  return !getRect().isNull() && getRect().contains( theX, theY );
 }
 
 //================================================================
@@ -78,8 +106,9 @@ bool GraphicsView_Object::checkHighlight( double theX, double theY ) const
 //================================================================
 bool GraphicsView_Object::highlight( double theX, double theY )
 {
+  QCursor aCursor;
   if( myIsHighlighted = isVisible() )
-    myIsHighlighted = checkHighlight( theX, theY );
+    myIsHighlighted = checkHighlight( theX, theY, aCursor );
   return myIsHighlighted;
 }
 
@@ -98,12 +127,13 @@ void GraphicsView_Object::unhighlight()
 //================================================================
 bool GraphicsView_Object::select( double theX, double theY, const QRectF& theRect )
 {
+  QCursor aCursor;
   if( myIsSelected = isVisible() )
   {
     if( !theRect.isNull() )
       myIsSelected = theRect.contains( getRect() );
     else
-      myIsSelected = checkHighlight( theX, theY );
+      myIsSelected = checkHighlight( theX, theY, aCursor );
   }
   return myIsSelected;
 }
@@ -123,9 +153,14 @@ void GraphicsView_Object::unselect()
 //================================================================
 void GraphicsView_Object::move( double theDX, double theDY, bool theIsAtOnce )
 {
-  moveBy( theDX, theDY );
   if( theIsAtOnce )
+  {
     finishMove();
+    return;
+  }
+
+  myIsMoving = true;
+  moveBy( theDX, theDY );
 }
 
 //================================================================
@@ -134,7 +169,51 @@ void GraphicsView_Object::move( double theDX, double theDY, bool theIsAtOnce )
 //================================================================
 bool GraphicsView_Object::finishMove()
 {
+  myIsMoving = false;
   if( GraphicsView_Scene* aScene = dynamic_cast<GraphicsView_Scene*>( scene() ) )
     aScene->processRectChanged();
   return true;
+}
+
+//================================================================
+// Function : centerPoint
+// Purpose  : 
+//================================================================
+QPointF GraphicsView_Object::centerPoint()
+{
+  QRectF aRect = getRect();
+  double aCenterX = aRect.width() / 2.;
+  double aCenterY = aRect.height() / 2.;
+  return QPointF( aCenterX, aCenterY );
+}
+
+//================================================================
+// Function : setRotationAroundCenter
+// Purpose  : 
+//================================================================
+void GraphicsView_Object::setRotationAroundCenter( QGraphicsItem* theItem, double theAngle )
+{
+  if( !theItem )
+    return;
+
+  QRectF aRect = theItem->boundingRect();
+  double aCenterX = aRect.width() / 2.;
+  double aCenterY = aRect.height() / 2.;
+  if( GraphicsView_Object* anObject = dynamic_cast<GraphicsView_Object*>( theItem ) )
+  {
+    aCenterX = anObject->centerPoint().x();
+    aCenterY = anObject->centerPoint().y();
+  }
+  else if( QGraphicsPixmapItem* aPixmapItem = dynamic_cast<QGraphicsPixmapItem*>( theItem ) )
+  {
+    QPoint aPoint = aPixmapItem->pixmap().rect().center();
+    aCenterX = aPoint.x();
+    aCenterY = aPoint.y();
+  }
+
+  QTransform aTransform;
+  aTransform.translate( aCenterX, aCenterY );
+  aTransform.rotate( theAngle );
+  aTransform.translate( -aCenterX, -aCenterY );
+  theItem->setTransform( aTransform, false );
 }

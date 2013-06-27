@@ -135,7 +135,8 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   myIsDragging( false ),
   myIsDragPositionInitialized( false ),
   myIsPulling( false ),
-  myPullingObject( 0 )
+  myPullingObject( 0 ),
+  myStoredCursor( Qt::ArrowCursor )
 {
   // scene
   myScene = new GraphicsView_Scene( this );
@@ -143,7 +144,7 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
 
   mySceneGap = 20;
   myFitAllGap = 40;
-  myIsTraceBoundingRectEnabled = true;
+  myIsTraceBoundingRectEnabled = false; // testing ImageViewer
 
   // interaction flags
   myInteractionFlags = AllFlags;
@@ -247,8 +248,10 @@ void GraphicsView_ViewPort::addItem( QGraphicsItem* theItem )
       }
     }
     myObjects.insert( anIter, anObject );
+    anObject->addTo( this );
   }
-  myScene->addItem( theItem );
+  else
+    myScene->addItem( theItem );
   onBoundingRectChanged();
 }
 
@@ -264,8 +267,10 @@ void GraphicsView_ViewPort::removeItem( QGraphicsItem* theItem )
       myHighlightedObject = 0;
     mySelectedObjects.removeAll( anObject );
     myObjects.removeAll( anObject );
+    anObject->removeFrom( this );
   }
-  myScene->removeItem( theItem );
+  else
+    myScene->removeItem( theItem );
   onBoundingRectChanged();
 }
 
@@ -886,7 +891,9 @@ void GraphicsView_ViewPort::highlight( double theX, double theY )
   GraphicsView_Object* aPreviousHighlightedObject = myHighlightedObject;
   GraphicsView_Object* aHighlightedObject = 0;
 
-  GraphicsView_ObjectList aList = getObjects( true );
+  QCursor aCursor;
+
+  GraphicsView_ObjectList aList = getObjects( false );
   GraphicsView_ObjectListIterator anIter( aList );
   anIter.toBack(); // objects with higher priority have to be checked earlier
   while( anIter.hasPrevious() )
@@ -895,8 +902,7 @@ void GraphicsView_ViewPort::highlight( double theX, double theY )
     {
       if( anObject->isVisible() && anObject->isSelectable() )
       {
-        QRectF aRect = anObject->getRect();
-        if( !aRect.isNull() && aRect.contains( theX, theY ) )
+        if( anObject->checkHighlight( theX, theY, aCursor ) )
         {
           anIsOnObject = true;
           anIsHighlighted = anObject->highlight( theX, theY );
@@ -910,6 +916,8 @@ void GraphicsView_ViewPort::highlight( double theX, double theY )
       }
     }
   }
+
+  setCursor( aCursor );
 
   if( !anIsOnObject )
   {
@@ -1320,7 +1328,7 @@ bool GraphicsView_ViewPort::startPulling( const QPointF& thePoint )
       {
         myIsPulling = true;
         myPullingObject = anObject;
-        setCursor( *getHandCursor() );
+        //setCursor( *getHandCursor() ); // testing ImageViewer
         return true;
       }
     }
@@ -1414,7 +1422,11 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
               getHighlightedObject()->isMovable() &&
               !( anAccel || e->button() == Qt::RightButton ) ) ||
             ( nbSelected() && !anAccel && e->button() == Qt::MidButton ) )
-        myIsDragging = true;
+        {
+          myIsDragging = true;
+          myStoredCursor = cursor();
+          setCursor( Qt::ClosedHandCursor );
+        }
       }
       break;
     }
@@ -1450,6 +1462,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
 
         myIsDragging = false;
         myDragPosition = QPointF();
+        setCursor( myStoredCursor );
 
         emit vpObjectAfterMoving( anIsMoved );
       }
