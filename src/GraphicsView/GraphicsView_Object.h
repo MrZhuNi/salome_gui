@@ -25,6 +25,8 @@
 
 #include "GraphicsView.h"
 
+#include "GraphicsView_Defs.h"
+
 #include <QGraphicsItemGroup>
 
 class GraphicsView_ViewPort;
@@ -79,8 +81,10 @@ public:
   virtual QRectF             getPullingRect() const { return getRect(); }
   virtual bool               portContains( const QPointF& ) { return false; }
   virtual bool               startPulling( const QPointF& ) { return false; }
-  virtual void               pull( const QPointF&, GraphicsView_Object* ) {}
-  virtual void               finishPulling() {}
+  virtual void               pull( const QPointF&,
+                                   GraphicsView_Object*,
+                                   const GraphicsView_ObjectList& ) {}
+  virtual void               finishPulling( const GraphicsView_ObjectList& ) {}
   virtual bool               isPulling() { return false; }
 
   virtual bool               handleMousePress( QGraphicsSceneMouseEvent* ) { return false; }

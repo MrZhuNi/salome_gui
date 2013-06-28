@@ -1361,7 +1361,7 @@ void GraphicsView_ViewPort::drawPulling( const QPointF& thePoint )
     }
   }
 
-  myPullingObject->pull( thePoint, aLockedObject );
+  myPullingObject->pull( thePoint, aLockedObject, getSelectedObjects() );
 }
 
 //================================================================
@@ -1371,7 +1371,7 @@ void GraphicsView_ViewPort::drawPulling( const QPointF& thePoint )
 void GraphicsView_ViewPort::finishPulling()
 {
   myIsPulling = false;
-  myPullingObject->finishPulling();
+  myPullingObject->finishPulling( getSelectedObjects() );
   setCursor( *getDefaultCursor() );
 }
 

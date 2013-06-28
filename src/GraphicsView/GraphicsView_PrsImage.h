@@ -80,16 +80,21 @@ public:
 
 protected:
   void                            processResize( const int theAnchor,
-                                                 const QPointF& thePoint1,
-                                                 const QPointF& thePoint2 );
+                                                 const double theDX,
+                                                 const double theDY );
   void                            finishResize();
 
-  void                            processRotate( const QPointF& thePoint1,
-                                                 const QPointF& thePoint2 );
+  double                          computeRotationAngle( const QPointF& thePoint1,
+                                                        const QPointF& thePoint2 ) const;
+
+  void                            processRotate( const double theAngle );
   void                            finishRotate();
 
 protected:
   void                            enablePreview( const bool theState );
+
+  static double                   computeAngle( const QVector2D& theVector1,
+                                                const QVector2D& theVector2 );
 
 protected:
   QPixmap                         myPixmap;

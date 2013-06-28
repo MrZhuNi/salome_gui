@@ -29,11 +29,11 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPainter>
-
-#include <gp_Vec2d.hxx>
+#include <QVector2D>
 
 #include <math.h>
 
+#define EPSILON 1e-6
 #define PI 3.14159265359
 
 //=======================================================================
@@ -364,31 +364,22 @@ QPointF GraphicsView_PrsImage::centerPoint()
 // Purpose  : 
 //================================================================
 void GraphicsView_PrsImage::processResize( const int theAnchor,
-                                           const QPointF& thePoint1,
-                                           const QPointF& thePoint2 )
+                                           const double theDX,
+                                           const double theDY )
 {
-  if( thePoint1 == thePoint2 )
+  if( fabs( theDX ) < EPSILON && fabs( theDY ) < EPSILON )
     return;
 
   if( !myPreviewPixmapItem->isVisible() )
     enablePreview( true );
 
-  QPixmap aCurrentPixmap = myPixmapItem->pixmap();
-  int aWidth = aCurrentPixmap.width();
-  int aHeight = aCurrentPixmap.height();
-
-  double aDX = thePoint2.x() - thePoint1.x();
-  double aDY = thePoint2.y() - thePoint1.y();
-
   double anAngle = -1 * myRotationAngle * PI / 180.;
 
-  gp_Pnt2d aPnt1( thePoint1.x(), thePoint1.y() );
-  gp_Pnt2d aPnt2( thePoint2.x(), thePoint2.y() );
-  gp_Vec2d aVec( aPnt1, aPnt2 );
-  gp_Vec2d aVecHor( 10, 0 );
+  QVector2D aVec( theDX, theDY );
+  QVector2D aVecHor( 10, 0 );
 
-  double aDist = aPnt1.Distance( aPnt2 );
-  double anAngle1 = aVec.Angle( aVecHor );
+  double aDist = sqrt( theDX * theDX + theDY * theDY );
+  double anAngle1 = computeAngle( aVec, aVecHor );
   double anAngle2 = anAngle1 - anAngle;
 
   double aSizeDX = aDist * cos( anAngle2 );
@@ -415,7 +406,7 @@ void GraphicsView_PrsImage::processResize( const int theAnchor,
       aSizeShift = QPointF( aSizeDX, 0 );
       break;
     case GraphicsView_PrsImageFrame::TopLeft:
-      aPosShift = QPointF( aDX, aDY );
+      aPosShift = QPointF( theDX, theDY );
       aSizeShift = QPointF( -aSizeDX, -aSizeDY );
       break;
     case GraphicsView_PrsImageFrame::TopRight:
@@ -432,12 +423,16 @@ void GraphicsView_PrsImage::processResize( const int theAnchor,
       break;
   }
 
-  aWidth += (int)aSizeShift.x();
-  aHeight += (int)aSizeShift.y();
-  if( aWidth < 10 || aHeight < 10 ) // tmp
+  QPixmap aCurrentPixmap = myPixmapItem->pixmap();
+  int aWidth = aCurrentPixmap.width();
+  int aHeight = aCurrentPixmap.height();
+
+  int aNewWidth = aWidth + (int)aSizeShift.x();
+  int aNewHeight = aHeight + (int)aSizeShift.y();
+  if( aNewWidth < 10 || aNewHeight < 10 ) // tmp
     return;
 
-  QPixmap aPixmap = myPixmap.scaled( aWidth, aHeight );
+  QPixmap aPixmap = myPixmap.scaled( aNewWidth, aNewHeight );
   myPreviewPixmapItem->setPixmap( aPixmap );
 
   myPreviewPixmapItem->setPos( pos() + aPosShift );
@@ -480,32 +475,36 @@ void GraphicsView_PrsImage::finishResize()
 }
 
 //================================================================
+// Function : computeRotationAngle
+// Purpose  : 
+//================================================================
+double GraphicsView_PrsImage::computeRotationAngle( const QPointF& thePoint1,
+                                                    const QPointF& thePoint2 ) const
+{
+  QRectF aRect = getRect();
+  QPointF aCenter = aRect.center();
+
+  QVector2D aVec1( thePoint1 - aCenter );
+  QVector2D aVec2( thePoint2 - aCenter );
+
+  double anAngle = computeAngle( aVec1, aVec2 );
+  double anAngleDeg = anAngle / PI * 180.;
+  return anAngleDeg;
+}
+
+//================================================================
 // Function : processRotate
 // Purpose  : 
 //================================================================
-void GraphicsView_PrsImage::processRotate( const QPointF& thePoint1,
-                                           const QPointF& thePoint2 )
+void GraphicsView_PrsImage::processRotate( const double theAngle )
 {
-  if( thePoint1 == thePoint2 )
+  if( fabs( theAngle ) < EPSILON )
     return;
 
   if( !myPreviewPixmapItem->isVisible() )
     enablePreview( true );
 
-  QRectF aRect = getRect();
-  QPointF aCenter = aRect.center();
-
-  gp_Pnt2d aPnt0( aCenter.x(), aCenter.y() );
-  gp_Pnt2d aPnt1( thePoint1.x(), thePoint1.y() );
-  gp_Pnt2d aPnt2( thePoint2.x(), thePoint2.y() );
-
-  gp_Vec2d aVec1( aPnt0, aPnt1 );
-  gp_Vec2d aVec2( aPnt0, aPnt2 );
-
-  double anAngle = aVec1.Angle( aVec2 );
-  double anAngleDeg = anAngle / PI * 180.;
-
-  myPreviewRotationAngle = myRotationAngle + anAngleDeg;
+  myPreviewRotationAngle = myRotationAngle + theAngle;
   setRotationAroundCenter( myPreviewPixmapItem, myPreviewRotationAngle );
 }
 
@@ -541,4 +540,26 @@ void GraphicsView_PrsImage::enablePreview( const bool theState )
   }
   else
     myPreviewPixmapItem->setVisible( false );
+}
+
+//================================================================
+// Function : computeAngle
+// Purpose  : 
+//================================================================
+double GraphicsView_PrsImage::computeAngle( const QVector2D& theVector1,
+                                            const QVector2D& theVector2 )
+{
+  if( theVector1.isNull() || theVector2.isNull() )
+    return 0.0;
+
+  double aDotProduct = QVector2D::dotProduct( theVector1, theVector2 );
+  double aCos = aDotProduct / theVector1.length() / theVector2.length();
+
+  double aCrossProduct = theVector1.x() * theVector2.y() - theVector1.y() * theVector2.x();
+
+  double anAngle = acos( aCos );
+  if( aCrossProduct < 0 )
+    anAngle *= -1;
+
+  return anAngle;
 }

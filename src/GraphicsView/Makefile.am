@@ -81,6 +81,6 @@ nodist_salomeres_DATA =		\
 	GraphicsView_msg_en.qm	\
 	GraphicsView_msg_fr.qm
 
-libGraphicsView_la_CPPFLAGS = $(QT_INCLUDES) $(CAS_CPPFLAGS) -I$(srcdir)/../SUIT -I$(srcdir)/../Qtx
-libGraphicsView_la_LDFLAGS  = $(QT_MT_LIBS) $(CAS_KERNEL)
+libGraphicsView_la_CPPFLAGS = $(QT_INCLUDES) -I$(srcdir)/../SUIT -I$(srcdir)/../Qtx
+libGraphicsView_la_LDFLAGS  = $(QT_MT_LIBS)
 libGraphicsView_la_LIBADD   = ../SUIT/libsuit.la

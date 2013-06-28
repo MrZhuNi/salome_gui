@@ -30,6 +30,10 @@
 #include <QCursor>
 #include <QPainter>
 
+#include <math.h>
+
+#define PI 3.14159265359
+
 #define ANCHOR_RADIUS 10
 
 //=======================================================================
@@ -208,22 +212,64 @@ bool GraphicsView_PrsImageFrame::startPulling( const QPointF& thePoint )
 // Function : pull
 // Purpose  : 
 //================================================================
-void GraphicsView_PrsImageFrame::pull( const QPointF& thePoint, GraphicsView_Object* )
+void GraphicsView_PrsImageFrame::pull( const QPointF& thePoint,
+                                       GraphicsView_Object* theLockedObject, // unused
+                                       const GraphicsView_ObjectList& theSyncObjects )
 {
   if( !myPrsImage )
     return;
 
+  if( thePoint == myPullingPoint )
+    return;
+
+  double aDX = thePoint.x() - myPullingPoint.x();
+  double aDY = thePoint.y() - myPullingPoint.y();
+
+  double aDAngle = myPrsImage->computeRotationAngle( myPullingPoint, thePoint );
+
   if( myPullingAnchor >= Top && myPullingAnchor <= BottomRight )
-    myPrsImage->processResize( myPullingAnchor, myPullingPoint, thePoint );
+    myPrsImage->processResize( myPullingAnchor, aDX, aDY );
   else if( myPullingAnchor == TopMost )
-    myPrsImage->processRotate( myPullingPoint, thePoint );
+    myPrsImage->processRotate( aDAngle );
+
+  QRectF aRect = myPrsImage->getRect();
+  double anAngle = 0;
+  myPrsImage->getRotationAngle( anAngle );
+
+  GraphicsView_ObjectListIterator anIter( theSyncObjects );
+  while( anIter.hasNext() )
+  {
+    if( GraphicsView_PrsImage* aPrsImage = dynamic_cast<GraphicsView_PrsImage*>( anIter.next() ) )
+    {
+      if( aPrsImage != myPrsImage )
+      {
+        if( myPullingAnchor >= Top && myPullingAnchor <= BottomRight )
+        {
+          QRectF aRectRef = aPrsImage->getRect();
+          double anAngleRef = 0;
+          aPrsImage->getRotationAngle( anAngleRef );
+
+          double aDXRef = aDX * aRectRef.width() / aRect.width();
+          double aDYRef = aDY * aRectRef.height() / aRect.height();
+
+          double anAngleDiff = ( anAngleRef - anAngle ) * PI / 180.;
+          double aDXRefTrans = aDXRef * cos( anAngleDiff ) - aDYRef * sin( anAngleDiff );
+          double aDYRefTrans = aDXRef * sin( anAngleDiff ) + aDYRef * cos( anAngleDiff );
+
+          aPrsImage->processResize( myPullingAnchor, aDXRefTrans, aDYRefTrans );
+        }
+        else if( myPullingAnchor == TopMost )
+          aPrsImage->processRotate( aDAngle );
+      }
+    }
+  }
 }
 
 //================================================================
 // Function : finishPulling
 // Purpose  : 
 //================================================================
-void GraphicsView_PrsImageFrame::finishPulling()
+void GraphicsView_PrsImageFrame::finishPulling( const GraphicsView_ObjectList& theSyncObjects )
 {
   if( !myPrsImage )
     return;
@@ -232,6 +278,21 @@ void GraphicsView_PrsImageFrame::finishPulling()
     myPrsImage->finishResize();
   else if( myPullingAnchor == TopMost )
     myPrsImage->finishRotate();
+
+  GraphicsView_ObjectListIterator anIter( theSyncObjects );
+  while( anIter.hasNext() )
+  {
+    if( GraphicsView_PrsImage* aPrsImage = dynamic_cast<GraphicsView_PrsImage*>( anIter.next() ) )
+    {
+      if( aPrsImage != myPrsImage )
+      {
+        if( myPullingAnchor >= Top && myPullingAnchor <= BottomRight )
+          aPrsImage->finishResize();
+        else if( myPullingAnchor == TopMost )
+          aPrsImage->finishRotate();
+      }
+    }
+  }
 }
 
 //================================================================

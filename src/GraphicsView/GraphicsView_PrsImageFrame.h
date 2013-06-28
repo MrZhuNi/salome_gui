@@ -65,8 +65,10 @@ public:
   virtual QRectF                  getPullingRect() const;
   virtual bool                    portContains( const QPointF& ) { return false; } // useless
   virtual bool                    startPulling( const QPointF& );
-  virtual void                    pull( const QPointF&, GraphicsView_Object* );
-  virtual void                    finishPulling();
+  virtual void                    pull( const QPointF&,
+                                        GraphicsView_Object*,
+                                        const GraphicsView_ObjectList& );
+  virtual void                    finishPulling( const GraphicsView_ObjectList& );
   virtual bool                    isPulling() { return myIsPulling; }
 
   virtual QPointF                 centerPoint();
