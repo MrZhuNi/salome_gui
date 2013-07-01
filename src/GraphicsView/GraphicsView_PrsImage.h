@@ -54,6 +54,9 @@ public:
   void                            setRotationAngle( const double theRotationAngle );
   void                            getRotationAngle( double& theRotationAngle ) const;
 
+  void                            setIsLockAspectRatio( const bool theIsLockAspectRatio );
+  bool                            getIsLockAspectRatio() const;
+
 public:
   // from QGraphicsItem
   virtual QRectF                  boundingRect() const;
@@ -98,6 +101,8 @@ protected:
 
 protected:
   QPixmap                         myPixmap;
+
+  bool                            myIsLockAspectRatio;
 
   QGraphicsPixmapItem*            myPixmapItem;
   QGraphicsPixmapItem*            myPreviewPixmapItem;

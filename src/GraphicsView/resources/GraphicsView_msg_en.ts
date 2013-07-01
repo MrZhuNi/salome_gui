@@ -86,6 +86,14 @@
       <translation>Remove image(s)</translation>
     </message>
     <message>
+      <source>BRING_TO_FRONT</source>
+      <translation>Bring to front</translation>
+    </message>
+    <message>
+      <source>SEND_TO_BACK</source>
+      <translation>Send to back</translation>
+    </message>
+    <message>
       <source>BRING_FORWARD</source>
       <translation>Bring forward</translation>
     </message>
@@ -134,6 +142,18 @@
     <message>
       <source>ROTATION_ANGLE</source>
       <translation>Rotation angle</translation>
+    </message>
+    <message>
+      <source>Z_VALUE</source>
+      <translation>Z value</translation>
+    </message>
+    <message>
+      <source>OPACITY</source>
+      <translation>Opacity</translation>
+    </message>
+    <message>
+      <source>LOCK_ASPECT_RATIO</source>
+      <translation>Lock aspect ratio</translation>
     </message>
   </context>
 </TS>

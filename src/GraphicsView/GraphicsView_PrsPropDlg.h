@@ -27,6 +27,8 @@
 
 #include <QtxDialog.h>
 
+class QCheckBox;
+
 class QtxDoubleSpinBox;
 
 /*
@@ -46,13 +48,19 @@ public:
                                     const double thePositionY,
                                     const double theScalingX,
                                     const double theScalingY,
-                                    const double theRotationAngle );
+                                    const double theRotationAngle,
+                                    const double theZValue,
+                                    const double theOpacity,
+                                    const bool theIsLockAspectRatio );
 
   void                     getData( double& thePositionX,
                                     double& thePositionY,
                                     double& theScalingX,
                                     double& theScalingY,
-                                    double& theRotationAngle ) const;
+                                    double& theRotationAngle,
+                                    double& theZValue,
+                                    double& theOpacity,
+                                    bool& theIsLockAspectRatio ) const;
 
 private:
   QtxDoubleSpinBox*        myPositionX;
@@ -60,6 +68,9 @@ private:
   QtxDoubleSpinBox*        myScalingX;
   QtxDoubleSpinBox*        myScalingY;
   QtxDoubleSpinBox*        myRotationAngle;
+  QtxDoubleSpinBox*        myOpacity;
+  QtxDoubleSpinBox*        myZValue;
+  QCheckBox*               myIsLockAspectRatio;
 };
 
 #endif

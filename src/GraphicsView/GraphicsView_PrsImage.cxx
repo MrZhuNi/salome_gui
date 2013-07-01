@@ -33,6 +33,7 @@
 
 #include <math.h>
 
+#define PREVIEW_Z_VALUE 2000
 #define EPSILON 1e-6
 #define PI 3.14159265359
 
@@ -42,6 +43,7 @@
 //=======================================================================
 GraphicsView_PrsImage::GraphicsView_PrsImage()
 : GraphicsView_Object(),
+  myIsLockAspectRatio( false ),
   myPixmapItem( 0 ),
   myPreviewPixmapItem( 0 ),
   myImageFrame( 0 ),
@@ -179,6 +181,24 @@ void GraphicsView_PrsImage::getRotationAngle( double& theRotationAngle ) const
 }
 
 //================================================================
+// Function : setIsLockAspectRatio
+// Purpose  : 
+//================================================================
+void GraphicsView_PrsImage::setIsLockAspectRatio( const bool theIsLockAspectRatio )
+{
+  myIsLockAspectRatio = theIsLockAspectRatio;
+}
+
+//================================================================
+// Function : getIsLockAspectRatio
+// Purpose  : 
+//================================================================
+bool GraphicsView_PrsImage::getIsLockAspectRatio() const
+{
+  return myIsLockAspectRatio;
+}
+
+//================================================================
 // Function : boundingRect
 // Purpose  : 
 //================================================================
@@ -209,8 +229,6 @@ void GraphicsView_PrsImage::compute()
     myImageFrame->setPrsImage( this );
   }
 
-  setZValue( 0 );
-
   QSize aSourceSize = myPixmap.size();
   QSize aScaledSize( aSourceSize.width() * myScaleX,
                      aSourceSize.height() * myScaleY );
@@ -235,6 +253,18 @@ void GraphicsView_PrsImage::addTo( GraphicsView_ViewPort* theViewPort )
   GraphicsView_Object::addTo( theViewPort );
   theViewPort->addItem( myImageFrame );
   theViewPort->addItem( myPreviewPixmapItem );
+
+  double aZValue = 0;
+  GraphicsView_ObjectListIterator anIter( theViewPort->getObjects() );
+  while( anIter.hasNext() )
+  {
+    if( GraphicsView_PrsImage* aPrs = dynamic_cast<GraphicsView_PrsImage*>( anIter.next() ) )
+    {
+      double aZValueRef = aPrs->zValue();
+      aZValue = qMax( aZValue, aZValueRef );
+    }
+  }
+  setZValue( aZValue + 1 );
 }
 
 //================================================================
@@ -529,7 +559,7 @@ void GraphicsView_PrsImage::enablePreview( const bool theState )
 {
   if( theState )
   {
-    myPreviewPixmapItem->setZValue( 100 );
+    myPreviewPixmapItem->setZValue( PREVIEW_Z_VALUE );
     myPreviewPixmapItem->setOpacity( opacity() / 2. );
 
     myPreviewPixmapItem->setPos( pos() );

@@ -32,9 +32,9 @@
 
 #include <math.h>
 
-#define PI 3.14159265359
-
+#define FRAME_Z_VALUE 1000
 #define ANCHOR_RADIUS 10
+#define PI 3.14159265359
 
 //=======================================================================
 // name    : GraphicsView_PrsImageFrame
@@ -137,7 +137,7 @@ void GraphicsView_PrsImageFrame::compute()
     }
   }
 
-  setZValue( 1000 );
+  setZValue( FRAME_Z_VALUE );
 
   computeAnchorItems();
   updateAnchorItems();

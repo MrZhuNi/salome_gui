@@ -116,14 +116,18 @@ void GraphicsView_Viewer::contextMenuPopup( QMenu* thePopup )
     }
     else
     {
+      thePopup->addAction( tr( "BRING_TO_FRONT" ), this, SLOT( onBringToFront() ) );
+      thePopup->addAction( tr( "SEND_TO_BACK" ), this, SLOT( onSendToBack() ) );
+      thePopup->addAction( tr( "BRING_FORWARD" ), this, SLOT( onBringForward() ) );
+      thePopup->addAction( tr( "SEND_BACKWARD" ), this, SLOT( onSendBackward() ) );
+      thePopup->addSeparator();
+
       if( aNbSelected == 1 )
       {
-        thePopup->addAction( tr( "BRING_FORWARD" ), this, SLOT( onBringForward() ) );
-        thePopup->addAction( tr( "SEND_BACKWARD" ), this, SLOT( onSendBackward() ) );
-        thePopup->addSeparator();
         thePopup->addAction( tr( "PROPERTIES" ), this, SLOT( onPrsProperties() ) );
         thePopup->addSeparator();
       }
+
       thePopup->addAction( tr( "REMOVE_IMAGES" ), this, SLOT( onRemoveImages() ) );
     }
     thePopup->addSeparator();
@@ -581,12 +585,30 @@ void GraphicsView_Viewer::onRemoveImages()
 }
 
 //================================================================
+// Function : onBringToFront
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onBringToFront()
+{
+  processQueueOperation( BringToFront );
+}
+
+//================================================================
+// Function : onSendToBack
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onSendToBack()
+{
+  processQueueOperation( SendToBack );
+}
+
+//================================================================
 // Function : onBringForward
 // Purpose  : 
 //================================================================
 void GraphicsView_Viewer::onBringForward()
 {
-  // to do
+  processQueueOperation( BringForward );
 }
 
 //================================================================
@@ -595,7 +617,89 @@ void GraphicsView_Viewer::onBringForward()
 //================================================================
 void GraphicsView_Viewer::onSendBackward()
 {
-  // to do
+  processQueueOperation( SendBackward );
+}
+
+//================================================================
+// Function : processQueueOperation
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::processQueueOperation( const QueueOperation theOperation )
+{
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  {
+    const GraphicsView_ObjectList& aSelectedList = aViewPort->getSelectedObjects();
+
+    GraphicsView_ObjectList aSortedList;
+
+    GraphicsView_ObjectList aList = aViewPort->getObjects();
+    GraphicsView_ObjectListIterator anIter( aList );
+    while( anIter.hasNext() )
+    {
+      if( GraphicsView_Object* anObject = anIter.next() )
+      {
+        if( !anObject->hasSpecificZValue() )
+        {
+          double aZValue = anObject->zValue();
+          GraphicsView_ObjectList::iterator anIter1, anIter1End = aSortedList.end();
+          for( anIter1 = aSortedList.begin(); anIter1 != anIter1End; anIter1++ )
+            if( GraphicsView_Object* anObjectRef = *anIter1 )
+              if( !anObjectRef->hasSpecificZValue() && anObjectRef->zValue() > aZValue )
+                break;
+          aSortedList.insert( anIter1, anObject );
+        }
+      }
+    }
+
+    QList<int> anIndicesToMove;
+
+    int anIndex = 0;
+    anIter = aSortedList;
+    while( anIter.hasNext() )
+    {
+      if( GraphicsView_Object* anObject = anIter.next() )
+        if( aSelectedList.contains( anObject ) )
+          anIndicesToMove.append( anIndex );
+      anIndex++;
+    }
+
+    bool anIsReverse = theOperation == BringToFront || theOperation == BringForward;
+    QListIterator<int> anIndicesIter( anIndicesToMove );
+    if( anIsReverse )
+      anIndicesIter.toBack();
+
+    int aShiftForMultiple = 0;
+    int anObjectCount = aSortedList.count();
+    while( anIsReverse ? anIndicesIter.hasPrevious() : anIndicesIter.hasNext() )
+    {
+      int anIndex = anIsReverse ? anIndicesIter.previous() : anIndicesIter.next();
+      int aNewIndex = anIndex;
+      switch( theOperation )
+      {
+        case BringToFront: aNewIndex = anObjectCount - 1 - aShiftForMultiple; break;
+        case SendToBack:   aNewIndex = aShiftForMultiple; break;
+        case BringForward: aNewIndex = anIndex + 1; break;
+        case SendBackward: aNewIndex = anIndex - 1; break;
+      }
+      aShiftForMultiple++;
+
+      if( aNewIndex < 0 || aNewIndex > anObjectCount - 1 )
+        break;
+
+      aSortedList.move( anIndex, aNewIndex );
+    }
+
+    double aZValue = 1.0;
+    anIter = aSortedList;
+    while( anIter.hasNext() )
+    {
+      if( GraphicsView_Object* anObject = anIter.next() )
+      {
+        anObject->setZValue( aZValue );
+        aZValue += 1.0;
+      }
+    }
+  }
 }
 
 //================================================================
@@ -616,14 +720,28 @@ void GraphicsView_Viewer::onPrsProperties()
         aPrs->getScaling( aScaleX, aScaleY );
         aPrs->getRotationAngle( aRotationAngle );
 
+        double aZValue = aPrs->zValue();
+        double anOpacity = aPrs->opacity();
+
+        bool anIsLockAspectRatio = aPrs->getIsLockAspectRatio();
+
         GraphicsView_PrsPropDlg aDlg( aViewPort );
-        aDlg.setData( aPosX, aPosY, aScaleX, aScaleY, aRotationAngle );
+        aDlg.setData( aPosX, aPosY, aScaleX, aScaleY, aRotationAngle,
+                      aZValue, anOpacity, anIsLockAspectRatio );
         if( aDlg.exec() )
         {
-          aDlg.getData( aPosX, aPosY, aScaleX, aScaleY, aRotationAngle );
+          aDlg.getData( aPosX, aPosY, aScaleX, aScaleY, aRotationAngle,
+                        aZValue, anOpacity, anIsLockAspectRatio );
+
           aPrs->setPosition( aPosX, aPosY );
           aPrs->setScaling( aScaleX, aScaleY );
           aPrs->setRotationAngle( aRotationAngle );
+
+          aPrs->setZValue( aZValue );
+          aPrs->setOpacity( anOpacity );
+
+          aPrs->setIsLockAspectRatio( anIsLockAspectRatio );
+
           aPrs->compute();
         }
       }

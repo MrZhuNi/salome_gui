@@ -82,7 +82,8 @@ public:
   void                             addItem( QGraphicsItem* theItem );
   void                             removeItem( QGraphicsItem* theItem );
 
-  GraphicsView_ObjectList          getObjects( bool theIsSortSelected = false ) const;
+  enum SortType { NoSorting, SelectedFirst, SortByZLevel };
+  GraphicsView_ObjectList          getObjects( SortType theSortType = NoSorting ) const;
 
   QRectF                           objectsBoundingRect( bool theOnlyVisible = false ) const;
 
@@ -169,7 +170,6 @@ public:
   GraphicsView_Object*             selectedObject();
 
   const GraphicsView_ObjectList&   getSelectedObjects() const { return mySelectedObjects; }
-
 
   // rectangle selection
   void                             startSelectByRect( int x, int y );

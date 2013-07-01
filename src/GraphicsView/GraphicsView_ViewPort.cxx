@@ -278,57 +278,80 @@ void GraphicsView_ViewPort::removeItem( QGraphicsItem* theItem )
 // Function : getObjects
 // Purpose  : 
 //================================================================
-GraphicsView_ObjectList GraphicsView_ViewPort::getObjects( bool theIsSortSelected ) const
+GraphicsView_ObjectList GraphicsView_ViewPort::getObjects( SortType theSortType ) const
 {
-  if( !theIsSortSelected )
-    return myObjects;
-
-  // to append selected objects after their non-selected siblings with similar priority
-  int aCurrentPriority = -1;
-  GraphicsView_ObjectList aSelectedObjects;
-  GraphicsView_ObjectList aTopmostObjects;
-
-  GraphicsView_ObjectList aList;
-  GraphicsView_ObjectListIterator anIter( myObjects );
-  while( anIter.hasNext() )
+  if( theSortType == SelectedFirst )
   {
-    if( GraphicsView_Object* anObject = anIter.next() )
+    // to append selected objects after their non-selected siblings with similar priority
+    int aCurrentPriority = -1;
+    GraphicsView_ObjectList aSelectedObjects;
+    GraphicsView_ObjectList aTopmostObjects;
+
+    GraphicsView_ObjectList aList;
+    GraphicsView_ObjectListIterator anIter( myObjects );
+    while( anIter.hasNext() )
     {
-      if( anObject->isOnTop() )
+      if( GraphicsView_Object* anObject = anIter.next() )
       {
-        aTopmostObjects.append( anObject );
-        continue;
-      }
-
-      int aPriority = anObject->getPriority();
-      if( aPriority > aCurrentPriority  )
-      {
-        if( !aSelectedObjects.isEmpty() )
+        if( anObject->isOnTop() )
         {
-          aList.append( aSelectedObjects );
-          aSelectedObjects.clear();
+          aTopmostObjects.append( anObject );
+          continue;
         }
-        aCurrentPriority = aPriority;
+
+        int aPriority = anObject->getPriority();
+        if( aPriority > aCurrentPriority  )
+        {
+          if( !aSelectedObjects.isEmpty() )
+          {
+            aList.append( aSelectedObjects );
+            aSelectedObjects.clear();
+          }
+          aCurrentPriority = aPriority;
+        }
+
+        if( anObject->isSelected() )
+          aSelectedObjects.append( anObject );
+        else
+          aList.append( anObject );
       }
-
-      if( anObject->isSelected() )
-        aSelectedObjects.append( anObject );
-      else
-        aList.append( anObject );
     }
+
+    // for selected objects with highest priority,
+    // which were not pushed to the result list yet
+    if( !aSelectedObjects.isEmpty() )
+    {
+      aList.append( aSelectedObjects );
+      aSelectedObjects.clear();
+    }
+
+    aList.append( aTopmostObjects );
+
+    return aList;
   }
 
-  // for selected objects with highest priority,
-  // which were not pushed to the result list yet
-  if( !aSelectedObjects.isEmpty() )
+  if( theSortType == SortByZLevel ) // double loop, needs to be optimized
   {
-    aList.append( aSelectedObjects );
-    aSelectedObjects.clear();
+    GraphicsView_ObjectList aList;
+
+    GraphicsView_ObjectListIterator anIter( myObjects );
+    while( anIter.hasNext() )
+    {
+      if( GraphicsView_Object* anObject = anIter.next() )
+      {
+        double aZValue = anObject->zValue();
+        GraphicsView_ObjectList::iterator anIter1, anIter1End = aList.end();
+        for( anIter1 = aList.begin(); anIter1 != anIter1End; anIter1++ )
+          if( GraphicsView_Object* anObjectRef = *anIter1 )
+            if( anObjectRef->zValue() > aZValue )
+              break;
+        aList.insert( anIter1, anObject );
+      }
+    }
+    return aList;
   }
 
-  aList.append( aTopmostObjects );
-
-  return aList;
+  return myObjects; // theSortType == NoSorting
 }
 
 //================================================================
@@ -893,7 +916,7 @@ void GraphicsView_ViewPort::highlight( double theX, double theY )
 
   QCursor aCursor;
 
-  GraphicsView_ObjectList aList = getObjects( false );
+  GraphicsView_ObjectList aList = getObjects( SortByZLevel );
   GraphicsView_ObjectListIterator anIter( aList );
   anIter.toBack(); // objects with higher priority have to be checked earlier
   while( anIter.hasPrevious() )

@@ -102,6 +102,8 @@ protected slots:
   // testing ImageViewer
   void                          onAddImage();
   void                          onRemoveImages();
+  void                          onBringToFront();
+  void                          onSendToBack();
   void                          onBringForward();
   void                          onSendBackward();
   void                          onPrsProperties();
@@ -114,6 +116,10 @@ private:
   void                          handleMousePress( QGraphicsSceneMouseEvent* );
   void                          handleMouseRelease( QGraphicsSceneMouseEvent* );
   void                          handleWheel( QGraphicsSceneWheelEvent* );
+
+  // testing ImageViewer
+  enum QueueOperation { BringToFront, SendToBack, BringForward, SendBackward };
+  void                          processQueueOperation( const QueueOperation );
 
 protected:
   GraphicsView_Selector*        mySelector;

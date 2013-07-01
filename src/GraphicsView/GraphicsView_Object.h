@@ -54,6 +54,8 @@ public:
   virtual bool               isOnTop() const { return myIsOnTop; }
   virtual void               setIsOnTop( bool theIsOnTop ) { myIsOnTop = theIsOnTop; }
 
+  virtual bool               hasSpecificZValue() const { return false; }
+
   virtual bool               isSelectable() const { return true; }
   virtual bool               isMovable() const { return true; }
 

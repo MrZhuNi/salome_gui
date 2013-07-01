@@ -58,6 +58,8 @@ public:
   // from GraphicsView_Object
   virtual void                    compute();
 
+  virtual bool                    hasSpecificZValue() const { return true; }
+
   virtual bool                    isMovable() const { return false; }
 
   virtual bool                    checkHighlight( double theX, double theY, QCursor& theCursor ) const;
