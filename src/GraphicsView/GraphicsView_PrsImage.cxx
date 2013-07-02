@@ -116,10 +116,14 @@ QTransform GraphicsView_PrsImage::getTransform() const
   getScaling( aScaleX, aScaleY );
   getRotationAngle( aRotationAngle );
 
+  QPointF aCenter = myPixmapItem->pixmap().rect().center();
+
   QTransform aTransform;
-  aTransform.translate( aPosX, aPosY );
-  aTransform.scale( aScaleX, aScaleY );
+  aTransform.translate( aCenter.x(), aCenter.y() );
   aTransform.rotate( aRotationAngle );
+  aTransform.scale( aScaleX, aScaleY );
+  aTransform.translate( -aCenter.x() * aScaleX, -aCenter.y() * aScaleY );
+  aTransform.translate( aPosX, aPosY );
   return aTransform;
 }
 

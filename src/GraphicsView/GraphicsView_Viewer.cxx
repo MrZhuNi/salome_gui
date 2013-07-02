@@ -31,6 +31,8 @@
 
 #include <SUIT_ViewManager.h>
 
+#include <ImageComposer_Image.h>
+
 #include <QApplication>
 #include <QColorDialog>
 #include <QGraphicsSceneMouseEvent>
@@ -544,6 +546,26 @@ void GraphicsView_Viewer::onSelectionCancel()
 //================================================================
 void GraphicsView_Viewer::onAddImage()
 {
+  /*GraphicsView_ViewFrame* aViewFrame = getActiveView();
+  GraphicsView_ViewPort* aViewPort = getActiveViewPort();
+
+  GraphicsView_PrsImage* aPrs1 = new GraphicsView_PrsImage();
+  QImage anImage1( "D:\\asl\\hydro\\dev\\HYDRO_SRC\\examples\\example1.png" );
+  aPrs1->setImage( anImage1 );
+  aPrs1->compute();
+  aViewPort->addItem( aPrs1 );
+
+  GraphicsView_PrsImage* aPrs2 = new GraphicsView_PrsImage();
+  QImage anImage2( "D:\\asl\\hydro\\dev\\HYDRO_SRC\\examples\\example2.png" );
+  aPrs2->setImage( anImage2 );
+  aPrs2->setRotationAngle( 30 );
+  aPrs2->setPosition( 200, 50 );
+  aPrs2->compute();
+  aViewPort->addItem( aPrs2 );
+
+  aViewPort->fitAll();
+  return;*/
+
   if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
   {
     QString aFileName = QFileDialog::getOpenFileName();
@@ -758,18 +780,26 @@ void GraphicsView_Viewer::onTestImageComposition()
   if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
   {
     GraphicsView_ObjectList aList = aViewPort->getObjects();
-    GraphicsView_ObjectListIterator anIter( aList );
-    while( anIter.hasNext() )
-    {
-      if( GraphicsView_Object* anObject = anIter.next() )
-      {
-        if( GraphicsView_PrsImage* aPrs = dynamic_cast<GraphicsView_PrsImage*>( anObject ) )
-        {
-          QImage anImage = aPrs->getImage();
-          QTransform aTransform = aPrs->getTransform();
-          // ...
-        }
-      }
-    }
+    int aCount = aList.count();
+    GraphicsView_PrsImage* anObj1 = dynamic_cast<GraphicsView_PrsImage*>( aList[0] );
+    GraphicsView_PrsImage* anObj2 = dynamic_cast<GraphicsView_PrsImage*>( aList[2] );
+
+    ImageComposer_Image anImage1;
+    anImage1 = anObj1->getImage();
+    anImage1.setTransform( anObj1->getTransform() );
+
+    ImageComposer_Image anImage2;
+    anImage2 = anObj2->getImage();
+    anImage2.setTransform( anObj2->getTransform() );
+
+    ImageComposer_Image aResult = anImage1 | anImage2;
+    GraphicsView_PrsImage* aResPrs = new GraphicsView_PrsImage();
+    aResPrs->setImage( aResult );
+    aResPrs->setTransform( aResult.transform() );
+    aResPrs->compute();    
+
+    aViewPort->addItem( aResPrs );
+    aViewPort->removeItem( anObj1 );
+    aViewPort->removeItem( anObj2 );
   }
 }
