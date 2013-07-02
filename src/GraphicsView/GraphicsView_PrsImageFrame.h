@@ -40,9 +40,8 @@ class GRAPHICSVIEW_API GraphicsView_PrsImageFrame : public GraphicsView_Object
 public:
   class UnscaledGraphicsEllipseItem;
 
-  enum AnchorType { Undefined = 0, Top, Bottom, Left, Right,
-                    TopLeft, TopRight, BottomLeft, BottomRight,
-                    TopMost };
+  enum AnchorType { Undefined = 0, TopMost, Top, Bottom, Left, Right,
+                    TopLeft, TopRight, BottomLeft, BottomRight };
 
   typedef QMap        <int, UnscaledGraphicsEllipseItem*> AnchorMap;
   typedef QMapIterator<int, UnscaledGraphicsEllipseItem*> AnchorMapIterator;
@@ -80,6 +79,8 @@ public:
 
   void                            computeAnchorItems();
   void                            updateAnchorItems();
+
+  void                            setRotationAngle( const double theRotationAngle );
 
 protected:
   QCursor*                        getVerCursor() const { return myVerCursor; }
@@ -121,11 +122,21 @@ public:
   void           setBasePoint( const QPointF& thePoint ) { myBasePoint = thePoint; }
   const QPointF& getBasePoint() const { return myBasePoint; }
 
+  void           setOffset( const QPointF& theOffset ) { myOffset = theOffset; }
+  const QPointF& getOffset() const { return myOffset; }
+
+  void           setRotationAngle( const double theAngle ) { myRotationAngle = theAngle; }
+
 public:
+  virtual QRectF boundingRect() const;
   virtual void   paint( QPainter*, const QStyleOptionGraphicsItem*, QWidget* );
 
 private:
   QPointF        myBasePoint;
+  QPointF        myOffset;
+
+  double         myRotationAngle;
+  double         myScale;
 };
 
 #endif

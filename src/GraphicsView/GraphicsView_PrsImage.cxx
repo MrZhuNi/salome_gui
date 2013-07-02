@@ -106,7 +106,7 @@ QImage GraphicsView_PrsImage::getImage() const
 }
 
 //================================================================
-// Function : getTransformation
+// Function : getTransform
 // Purpose  : 
 //================================================================
 QTransform GraphicsView_PrsImage::getTransform() const
@@ -551,6 +551,8 @@ void GraphicsView_PrsImage::finishRotate()
   myRotationAngle = myPreviewRotationAngle;
   setRotationAroundCenter( this, myRotationAngle );
   setRotationAroundCenter( myImageFrame, myRotationAngle );
+
+  myImageFrame->setRotationAngle( myRotationAngle ); // for anchors
 
   enablePreview( false );
 }

@@ -33,7 +33,7 @@
 #include <math.h>
 
 #define FRAME_Z_VALUE 1000
-#define ANCHOR_RADIUS 10
+#define ANCHOR_RADIUS 3
 #define PI 3.14159265359
 
 //=======================================================================
@@ -121,10 +121,9 @@ void GraphicsView_PrsImageFrame::compute()
 {
   if( myAnchorMap.isEmpty() )
   {
-    for( int aType = Top; aType <= TopMost; aType++ )
+    for( int aType = TopMost; aType <= BottomRight; aType++ )
     {
       UnscaledGraphicsEllipseItem* anAnchorItem = new UnscaledGraphicsEllipseItem( this );
-      //anAnchorItem->setFlag( QGraphicsItem::ItemIgnoresTransformations, true );
 
       Qt::GlobalColor aColor = Qt::white;
       if( aType == TopMost )
@@ -305,7 +304,7 @@ QPointF GraphicsView_PrsImageFrame::centerPoint()
   QPointF aPoint2 = myAnchorMap[ Bottom ]->getBasePoint();
   QPointF aPoint3 = myAnchorMap[ Left ]->getBasePoint();
   QPointF aPoint4 = myAnchorMap[ Right ]->getBasePoint();
-  return ( aPoint1 + aPoint2 + aPoint3 + aPoint4 ) /4.;
+  return ( aPoint1 + aPoint2 + aPoint3 + aPoint4 ) / 4.;
 }
 
 //================================================================
@@ -329,6 +328,7 @@ void GraphicsView_PrsImageFrame::computeAnchorItems()
   QRectF aRect = myPrsImage->boundingRect();
 
   QMap<int, QPointF> anAnchorPointMap;
+  anAnchorPointMap[ TopMost ] = ( aRect.topLeft() + aRect.topRight() ) / 2;
   anAnchorPointMap[ Top ] = ( aRect.topLeft() + aRect.topRight() ) / 2;
   anAnchorPointMap[ Bottom ] = ( aRect.bottomLeft() + aRect.bottomRight() ) / 2;
   anAnchorPointMap[ Left ] = ( aRect.topLeft() + aRect.bottomLeft() ) / 2;
@@ -337,10 +337,6 @@ void GraphicsView_PrsImageFrame::computeAnchorItems()
   anAnchorPointMap[ TopRight ] = aRect.topRight();
   anAnchorPointMap[ BottomLeft ] = aRect.bottomLeft();
   anAnchorPointMap[ BottomRight ] = aRect.bottomRight();
-
-  // tmp
-  anAnchorPointMap[ TopMost ] = ( aRect.topLeft() + aRect.topRight() ) / 2 -
-                                QPointF( 0, 4 * ANCHOR_RADIUS );
 
   qreal ar = ANCHOR_RADIUS;
   QMapIterator<int, QPointF> anIter( anAnchorPointMap );
@@ -352,6 +348,9 @@ void GraphicsView_PrsImageFrame::computeAnchorItems()
     QRectF anAnchorRect( anAnchorPoint - QPointF( ar, ar ), QSizeF( ar * 2, ar * 2 ) );
     myAnchorMap[ anAnchorType ]->setRect( anAnchorRect );
     myAnchorMap[ anAnchorType ]->setBasePoint( anAnchorPoint );
+
+    if( anAnchorType == TopMost )
+      myAnchorMap[ anAnchorType ]->setOffset( QPointF( 0, -6 * ANCHOR_RADIUS ) );
   }
 }
 
@@ -375,6 +374,18 @@ void GraphicsView_PrsImageFrame::updateAnchorItems()
     setRotationAroundCenter( this, aRotationAngle );
   }
   setVisible( anIsSelected );
+}
+
+//================================================================
+// Function : setRotationAngle
+// Purpose  : 
+//================================================================
+void GraphicsView_PrsImageFrame::setRotationAngle( const double theRotationAngle )
+{
+  AnchorMapIterator anIter( myAnchorMap );
+  while( anIter.hasNext() )
+    if( UnscaledGraphicsEllipseItem* anAnchorItem = anIter.next().value() )
+      anAnchorItem->setRotationAngle( theRotationAngle );
 }
 
 //================================================================
@@ -434,7 +445,9 @@ QCursor* GraphicsView_PrsImageFrame::getResizeCursor( const int theAnchor ) cons
 // Purpose : Constructor
 //=======================================================================
 GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::UnscaledGraphicsEllipseItem( QGraphicsItem* theParent )
-: QGraphicsEllipseItem( theParent )
+: QGraphicsEllipseItem( theParent ),
+  myRotationAngle( 0.0 ),
+  myScale( 1.0 )
 {
 }
 
@@ -444,6 +457,30 @@ GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::UnscaledGraphicsEllipse
 //=======================================================================
 GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::~UnscaledGraphicsEllipseItem()
 {
+}
+
+//================================================================
+// Function : boundingRect
+// Purpose  : 
+//================================================================
+QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::boundingRect() const
+{
+  QRectF aRect = QGraphicsEllipseItem::boundingRect();
+
+  if( fabs( myScale ) < 1e-10 )
+    return aRect;
+
+  QPointF aCenter = aRect.center();
+  double aWidth = aRect.width() / myScale;
+  double aHeight = aRect.height() / myScale;
+
+  double anOffsetX = myOffset.x() / myScale;
+  double anOffsetY = myOffset.y() / myScale;
+
+  aRect = QRectF( aCenter.x() - aWidth / 2 + anOffsetX,
+                  aCenter.y() - aHeight / 2 + anOffsetY,
+                  aWidth, aHeight );
+  return aRect;
 }
 
 //================================================================
@@ -471,9 +508,22 @@ void GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::paint(
   const QStyleOptionGraphicsItem* theOption,
   QWidget* theWidget )
 {
-  //thePainter->save();
-  //thePainter->setTransform( GenerateTranslationOnlyTransform( thePainter->transform(),
-  //                                                            myBasePoint ) );
+  QTransform aTransform = thePainter->transform();
+  aTransform.rotate( -myRotationAngle ); // exclude rotation from matrix
+  myScale = aTransform.m11(); // same as m22(), viewer specific
+
+  // draw a connection line (mainly, for top-most anchor)
+  thePainter->drawLine( myBasePoint, boundingRect().center() );
+
+  thePainter->save();
+  thePainter->setTransform( GenerateTranslationOnlyTransform( thePainter->transform(),
+                                                              myBasePoint ) );
+
+  double anAngle = myRotationAngle * PI / 180.;
+  double aDX = myOffset.x() * cos( anAngle ) - myOffset.y() * sin( anAngle );
+  double aDY = myOffset.x() * sin( anAngle ) + myOffset.y() * cos( anAngle );
+  thePainter->translate( aDX, aDY );
+
   QGraphicsEllipseItem::paint( thePainter, theOption, theWidget );
-  //thePainter->restore();
+  thePainter->restore();
 }
