@@ -47,7 +47,11 @@
 
 #ifdef WIN32
 #include <UserEnv.h>
+#else 
+#include <sys/types.h>
+#include <unistd.h>
 #endif
+
 
 static QString salomeVersion()
 {
