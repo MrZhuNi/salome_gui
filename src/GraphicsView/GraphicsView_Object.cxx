@@ -176,6 +176,15 @@ bool GraphicsView_Object::finishMove()
 }
 
 //================================================================
+// Function : setViewTransform
+// Purpose  : 
+//================================================================
+void GraphicsView_Object::setViewTransform( const QTransform& theTransform )
+{
+  myViewTransform = theTransform;
+}
+
+//================================================================
 // Function : centerPoint
 // Purpose  : 
 //================================================================

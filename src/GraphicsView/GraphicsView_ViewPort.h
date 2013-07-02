@@ -149,6 +149,8 @@ public:
 
   bool                             isTransforming() const { return myIsTransforming; }
 
+  void                             applyTransform();
+
   // block status
   BlockStatus                      currentBlock();
 

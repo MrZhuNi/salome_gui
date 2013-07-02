@@ -446,8 +446,7 @@ QCursor* GraphicsView_PrsImageFrame::getResizeCursor( const int theAnchor ) cons
 //=======================================================================
 GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::UnscaledGraphicsEllipseItem( QGraphicsItem* theParent )
 : QGraphicsEllipseItem( theParent ),
-  myRotationAngle( 0.0 ),
-  myScale( 1.0 )
+  myRotationAngle( 0.0 )
 {
 }
 
@@ -467,19 +466,26 @@ QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::boundingRect() c
 {
   QRectF aRect = QGraphicsEllipseItem::boundingRect();
 
-  if( fabs( myScale ) < 1e-10 )
+  GraphicsView_Object* aParent = dynamic_cast<GraphicsView_Object*>( parentItem() );
+  if( !aParent )
+    return aRect;
+
+  QTransform aTransform = aParent->getViewTransform();
+  double aScale = aTransform.m11(); // same as m22(), viewer specific
+  if( fabs( aScale ) < 1e-10 )
     return aRect;
 
   QPointF aCenter = aRect.center();
-  double aWidth = aRect.width() / myScale;
-  double aHeight = aRect.height() / myScale;
+  double aWidth = aRect.width() / aScale;
+  double aHeight = aRect.height() / aScale;
 
-  double anOffsetX = myOffset.x() / myScale;
-  double anOffsetY = myOffset.y() / myScale;
+  double anOffsetX = myOffset.x() / aScale;
+  double anOffsetY = myOffset.y() / aScale;
 
   aRect = QRectF( aCenter.x() - aWidth / 2 + anOffsetX,
                   aCenter.y() - aHeight / 2 + anOffsetY,
                   aWidth, aHeight );
+
   return aRect;
 }
 
@@ -508,10 +514,6 @@ void GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::paint(
   const QStyleOptionGraphicsItem* theOption,
   QWidget* theWidget )
 {
-  QTransform aTransform = thePainter->transform();
-  aTransform.rotate( -myRotationAngle ); // exclude rotation from matrix
-  myScale = aTransform.m11(); // same as m22(), viewer specific
-
   // draw a connection line (mainly, for top-most anchor)
   thePainter->drawLine( myBasePoint, boundingRect().center() );
 

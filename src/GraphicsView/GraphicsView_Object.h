@@ -93,6 +93,9 @@ public:
   virtual bool               handleMouseMove( QGraphicsSceneMouseEvent* ) { return false; }
   virtual bool               handleMouseRelease( QGraphicsSceneMouseEvent* ) { return false; }
 
+  virtual QTransform         getViewTransform() const { return myViewTransform; }
+  virtual void               setViewTransform( const QTransform& theTransform );
+
   virtual QPointF            centerPoint();
 
 public:
@@ -111,6 +114,8 @@ protected:
   bool                       myIsSelected;
 
   bool                       myIsMoving;
+
+  QTransform                 myViewTransform;
 
 private:
   QCursor*                   myHighlightCursor;

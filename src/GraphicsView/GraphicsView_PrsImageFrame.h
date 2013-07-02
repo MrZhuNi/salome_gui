@@ -136,7 +136,6 @@ private:
   QPointF        myOffset;
 
   double         myRotationAngle;
-  double         myScale;
 };
 
 #endif

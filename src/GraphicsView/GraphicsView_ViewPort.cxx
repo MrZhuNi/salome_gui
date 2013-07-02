@@ -754,6 +754,8 @@ void GraphicsView_ViewPort::pan( double theDX, double theDY )
     myNameLabel->setAcceptMoveEvents( true );
 
   myIsTransforming = false;
+
+  applyTransform();
 }
 
 //================================================================
@@ -768,6 +770,8 @@ void GraphicsView_ViewPort::setCenter( double theX, double theY )
   centerOn( theX, theY );
 
   myIsTransforming = false;
+
+  applyTransform();
 }
 
 //================================================================
@@ -793,6 +797,8 @@ void GraphicsView_ViewPort::zoom( double theX1, double theY1, double theX2, doub
     setTransform( aTransform );
 
   myIsTransforming = false;
+
+  applyTransform();
 }
 
 //================================================================
@@ -806,6 +812,8 @@ void GraphicsView_ViewPort::fitRect( const QRectF& theRect )
   fitInView( theRect, Qt::KeepAspectRatio );
 
   myIsTransforming = false;
+
+  applyTransform();
 }
 
 //================================================================
@@ -837,6 +845,8 @@ void GraphicsView_ViewPort::fitSelect()
   }
 
   myIsTransforming = false;
+
+  applyTransform();
 }
 
 //================================================================
@@ -855,6 +865,8 @@ void GraphicsView_ViewPort::fitAll( bool theKeepScale )
   fitInView( aRect.adjusted( -aGap, -aGap, aGap, aGap ), Qt::KeepAspectRatio );
 
   myIsTransforming = false;
+
+  applyTransform();
 }
 
 //================================================================
@@ -879,6 +891,20 @@ void GraphicsView_ViewPort::fitWidth()
   ensureVisible( aLeft, aTop, aMargin, aMargin, 0, aGap );
 
   myIsTransforming = false;
+
+  applyTransform();
+}
+
+//================================================================
+// Function : applyTransform
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::applyTransform()
+{
+  GraphicsView_ObjectListIterator anIter( getObjects() );
+  while( anIter.hasNext() )
+    if( GraphicsView_Object* anObject = anIter.next() )
+      anObject->setViewTransform( transform() );
 }
 
 //================================================================
