@@ -47,9 +47,15 @@ GraphicsView_PrsImage::GraphicsView_PrsImage()
   myPixmapItem( 0 ),
   myPreviewPixmapItem( 0 ),
   myImageFrame( 0 ),
+  myPosX( 0.0 ),
+  myPosY( 0.0 ),
   myScaleX( 1.0 ),
   myScaleY( 1.0 ),
   myRotationAngle( 0.0 ),
+  myPreviewPosX( 0.0 ),
+  myPreviewPosY( 0.0 ),
+  myPreviewScaleX( 1.0 ),
+  myPreviewScaleY( 1.0 ),
   myPreviewRotationAngle( 0.0 )
 {
 }
@@ -60,6 +66,7 @@ GraphicsView_PrsImage::GraphicsView_PrsImage()
 //=======================================================================
 GraphicsView_PrsImage::~GraphicsView_PrsImage()
 {
+  /* to be revised
   if( myPreviewPixmapItem )
   {
     delete myPreviewPixmapItem;
@@ -71,6 +78,7 @@ GraphicsView_PrsImage::~GraphicsView_PrsImage()
     delete myImageFrame;
     myImageFrame = 0;
   }
+  */
 
   QListIterator<QGraphicsItem*> aChildIter( children() );
   while( aChildIter.hasNext() )
@@ -84,6 +92,25 @@ GraphicsView_PrsImage::~GraphicsView_PrsImage()
       aChild = 0;
     }
   }
+}
+
+//================================================================
+// Function : updateTransform
+// Purpose  : 
+//================================================================
+void GraphicsView_PrsImage::updateTransform()
+{
+  QTransform aTransform = getTransform();
+
+  setTransform( aTransform );
+  myImageFrame->setTransform( aTransform );
+
+  // for anchors
+  myImageFrame->setScaling( myScaleX, myScaleY );
+  myImageFrame->setRotationAngle( myRotationAngle );
+
+  aTransform = getTransform( true );
+  myPreviewPixmapItem->setTransform( aTransform );
 }
 
 //================================================================
@@ -101,29 +128,25 @@ void GraphicsView_PrsImage::setImage( const QImage& theImage )
 //================================================================
 QImage GraphicsView_PrsImage::getImage() const
 {
-  QImage anImage = myPixmap.toImage();
-  return anImage;
+  return myPixmap.toImage();
 }
 
 //================================================================
 // Function : getTransform
 // Purpose  : 
 //================================================================
-QTransform GraphicsView_PrsImage::getTransform() const
+QTransform GraphicsView_PrsImage::getTransform( const bool theIsPreview ) const
 {
-  double aPosX, aPosY, aScaleX, aScaleY, aRotationAngle;
-  getPosition( aPosX, aPosY );
-  getScaling( aScaleX, aScaleY );
-  getRotationAngle( aRotationAngle );
-
-  QPointF aCenter = myPixmapItem->pixmap().rect().center();
+  double aPosX = theIsPreview ? myPreviewPosX : myPosX;
+  double aPosY = theIsPreview ? myPreviewPosY : myPosY;
+  double aScaleX = theIsPreview ? myPreviewScaleX : myScaleX;
+  double aScaleY = theIsPreview ? myPreviewScaleY : myScaleY;
+  double aRotationAngle = theIsPreview ? myPreviewRotationAngle : myRotationAngle;
 
   QTransform aTransform;
-  aTransform.translate( aCenter.x(), aCenter.y() );
+  aTransform.translate( aPosX, aPosY );
   aTransform.rotate( aRotationAngle );
   aTransform.scale( aScaleX, aScaleY );
-  aTransform.translate( -aCenter.x() * aScaleX, -aCenter.y() * aScaleY );
-  aTransform.translate( aPosX, aPosY );
   return aTransform;
 }
 
@@ -133,7 +156,8 @@ QTransform GraphicsView_PrsImage::getTransform() const
 //================================================================
 void GraphicsView_PrsImage::setPosition( const double thePosX, const double thePosY )
 {
-  setPos( thePosX, thePosY );
+  myPosX = thePosX;
+  myPosY = thePosY;
 }
 
 //================================================================
@@ -142,8 +166,8 @@ void GraphicsView_PrsImage::setPosition( const double thePosX, const double theP
 //================================================================
 void GraphicsView_PrsImage::getPosition( double& thePosX, double& thePosY ) const
 {
-  thePosX = pos().x();
-  thePosY = pos().y();
+  thePosX = myPosX;
+  thePosY = myPosY;
 }
 
 //================================================================
@@ -233,19 +257,14 @@ void GraphicsView_PrsImage::compute()
     myImageFrame->setPrsImage( this );
   }
 
-  QSize aSourceSize = myPixmap.size();
-  QSize aScaledSize( aSourceSize.width() * myScaleX,
-                     aSourceSize.height() * myScaleY );
+  myPixmapItem->setPixmap( myPixmap );
 
-  QPixmap aPixmap = myPixmap.scaled( aScaledSize );
-  myPixmapItem->setPixmap( aPixmap );
-
-  myPreviewPixmapItem->setPixmap( aPixmap );
+  myPreviewPixmapItem->setPixmap( myPixmap );
   myPreviewPixmapItem->setVisible( false );
 
-  setRotationAroundCenter( this, myRotationAngle );
-
   myImageFrame->compute();
+
+  updateTransform();
 }
 
 //================================================================
@@ -299,25 +318,6 @@ bool GraphicsView_PrsImage::checkHighlight( double theX, double theY, QCursor& t
 }
 
 //================================================================
-// Function : highlight
-// Purpose  : 
-//================================================================
-bool GraphicsView_PrsImage::highlight( double theX, double theY )
-{
-  bool anIsHighlighted = GraphicsView_Object::highlight( theX, theY );
-  return anIsHighlighted;
-}
-
-//================================================================
-// Function : unhighlight
-// Purpose  : 
-//================================================================
-void GraphicsView_PrsImage::unhighlight()
-{
-  GraphicsView_Object::unhighlight();
-}
-
-//================================================================
 // Function : select
 // Purpose  : 
 //================================================================
@@ -364,7 +364,10 @@ void GraphicsView_PrsImage::move( double theDX, double theDY, bool theIsAtOnce )
     enablePreview( true );
 
   myIsMoving = true;
-  myPreviewPixmapItem->moveBy( theDX, theDY );
+
+  myPreviewPosX += theDX;
+  myPreviewPosY += theDY;
+  updateTransform();
 }
 
 //================================================================
@@ -375,22 +378,13 @@ bool GraphicsView_PrsImage::finishMove()
 {
   if( myIsMoving )
   {
-    setPos( myPreviewPixmapItem->pos() );
-    myImageFrame->setPos( pos() );
+    myPosX = myPreviewPosX;
+    myPosY = myPreviewPosY;
+    updateTransform();
 
     enablePreview( false );
   }
   return GraphicsView_Object::finishMove();
-}
-
-//================================================================
-// Function : centerPoint
-// Purpose  : 
-//================================================================
-QPointF GraphicsView_PrsImage::centerPoint()
-{
-  QPointF aPoint = myPixmapItem->boundingRect().center();
-  return aPoint;
 }
 
 //================================================================
@@ -457,19 +451,19 @@ void GraphicsView_PrsImage::processResize( const int theAnchor,
       break;
   }
 
-  QPixmap aCurrentPixmap = myPixmapItem->pixmap();
-  int aWidth = aCurrentPixmap.width();
-  int aHeight = aCurrentPixmap.height();
+  double aWidth = (double)myPixmap.width() * myScaleX;
+  double aHeight = (double)myPixmap.height() * myScaleY;
 
-  int aNewWidth = aWidth + (int)aSizeShift.x();
-  int aNewHeight = aHeight + (int)aSizeShift.y();
-  if( aNewWidth < 10 || aNewHeight < 10 ) // tmp
-    return;
+  double aNewWidth = aWidth + aSizeShift.x();
+  double aNewHeight = aHeight + aSizeShift.y();
 
-  QPixmap aPixmap = myPixmap.scaled( aNewWidth, aNewHeight );
-  myPreviewPixmapItem->setPixmap( aPixmap );
+  myPreviewScaleX = myScaleX * aNewWidth / aWidth;
+  myPreviewScaleY = myScaleY * aNewHeight / aHeight;
 
-  myPreviewPixmapItem->setPos( pos() + aPosShift );
+  myPreviewPosX = myPosX + aPosShift.x();
+  myPreviewPosY = myPosY + aPosShift.y();
+
+  updateTransform();
 }
 
 //================================================================
@@ -478,32 +472,12 @@ void GraphicsView_PrsImage::processResize( const int theAnchor,
 //================================================================
 void GraphicsView_PrsImage::finishResize()
 {
-  QSize aSourceSize = myPixmap.size();
-  QSize aScaledSize = myPreviewPixmapItem->pixmap().size();
+  myPosX = myPreviewPosX;
+  myPosY = myPreviewPosY;
 
-  myScaleX = ( (double)aScaledSize.width() ) / ( (double)aSourceSize.width() );
-  myScaleY = ( (double)aScaledSize.height() ) / ( (double)aSourceSize.height() );
-
-  QPointF aSceneCenter = myPixmapItem->sceneBoundingRect().center();
-  QPointF aPreviewSceneCenter = myPreviewPixmapItem->sceneBoundingRect().center();
-
-  QPointF aCenter = myPixmapItem->pixmap().rect().center();
-  QPointF aPreviewCenter = myPreviewPixmapItem->pixmap().rect().center();
-
-  QPointF aCenterShift = aSceneCenter - aCenter;
-  QPointF aPreviewCenterShift = aPreviewSceneCenter - aPreviewCenter;
-
-  QPointF aPosShift = myPreviewPixmapItem->pos() - pos();
-  QPointF aShift = aPreviewCenterShift - aCenterShift - aPosShift;
-
-  myPixmapItem->setPixmap( myPreviewPixmapItem->pixmap() );
-  myImageFrame->computeAnchorItems();
-
-  setPos( myPreviewPixmapItem->pos() + aShift );
-  setRotationAroundCenter( this, myRotationAngle );
-
-  myImageFrame->setPos( myPreviewPixmapItem->pos() + aShift );
-  setRotationAroundCenter( myImageFrame, myRotationAngle );
+  myScaleX = myPreviewScaleX;
+  myScaleY = myPreviewScaleY;
+  updateTransform();
 
   enablePreview( false );
 }
@@ -539,7 +513,23 @@ void GraphicsView_PrsImage::processRotate( const double theAngle )
     enablePreview( true );
 
   myPreviewRotationAngle = myRotationAngle + theAngle;
-  setRotationAroundCenter( myPreviewPixmapItem, myPreviewRotationAngle );
+
+  QPointF aCenter( (double)myPixmap.width() / 2.,
+                   (double)myPixmap.height() / 2. );
+
+  myPreviewPosX = myPosX;
+  myPreviewPosY = myPosY;
+  QTransform aTransform1 = getTransform();
+  QTransform aTransform2 = getTransform( true );
+
+  QPointF aPoint1 = aTransform1.map( aCenter );
+  QPointF aPoint2 = aTransform2.map( aCenter );
+  QPointF aDiff = aPoint2 - aPoint1;
+
+  myPreviewPosX = myPosX - aDiff.x();
+  myPreviewPosY = myPosY - aDiff.y();
+
+  updateTransform();
 }
 
 //================================================================
@@ -548,11 +538,10 @@ void GraphicsView_PrsImage::processRotate( const double theAngle )
 //================================================================
 void GraphicsView_PrsImage::finishRotate()
 {
+  myPosX = myPreviewPosX;
+  myPosY = myPreviewPosY;
   myRotationAngle = myPreviewRotationAngle;
-  setRotationAroundCenter( this, myRotationAngle );
-  setRotationAroundCenter( myImageFrame, myRotationAngle );
-
-  myImageFrame->setRotationAngle( myRotationAngle ); // for anchors
+  updateTransform();
 
   enablePreview( false );
 }
@@ -568,8 +557,10 @@ void GraphicsView_PrsImage::enablePreview( const bool theState )
     myPreviewPixmapItem->setZValue( PREVIEW_Z_VALUE );
     myPreviewPixmapItem->setOpacity( opacity() / 2. );
 
-    myPreviewPixmapItem->setPos( pos() );
-    setRotationAroundCenter( myPreviewPixmapItem, myRotationAngle );
+    myPreviewPosX = myPosX;
+    myPreviewPosY = myPosY;
+    myPreviewScaleX = myScaleX;
+    myPreviewScaleY = myScaleY;
     myPreviewRotationAngle = myRotationAngle;
 
     myPreviewPixmapItem->setVisible( true );

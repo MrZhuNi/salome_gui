@@ -546,26 +546,6 @@ void GraphicsView_Viewer::onSelectionCancel()
 //================================================================
 void GraphicsView_Viewer::onAddImage()
 {
-  /*GraphicsView_ViewFrame* aViewFrame = getActiveView();
-  GraphicsView_ViewPort* aViewPort = getActiveViewPort();
-
-  GraphicsView_PrsImage* aPrs1 = new GraphicsView_PrsImage();
-  QImage anImage1( "D:\\asl\\hydro\\dev\\HYDRO_SRC\\examples\\example1.png" );
-  aPrs1->setImage( anImage1 );
-  aPrs1->compute();
-  aViewPort->addItem( aPrs1 );
-
-  GraphicsView_PrsImage* aPrs2 = new GraphicsView_PrsImage();
-  QImage anImage2( "D:\\asl\\hydro\\dev\\HYDRO_SRC\\examples\\example2.png" );
-  aPrs2->setImage( anImage2 );
-  aPrs2->setRotationAngle( 30 );
-  aPrs2->setPosition( 200, 50 );
-  aPrs2->compute();
-  aViewPort->addItem( aPrs2 );
-
-  aViewPort->fitAll();
-  return;*/
-
   if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
   {
     QString aFileName = QFileDialog::getOpenFileName();
@@ -795,8 +775,17 @@ void GraphicsView_Viewer::onTestImageComposition()
     ImageComposer_Image aResult = anImage1 | anImage2;
     GraphicsView_PrsImage* aResPrs = new GraphicsView_PrsImage();
     aResPrs->setImage( aResult );
-    aResPrs->setTransform( aResult.transform() );
-    aResPrs->compute();    
+
+    double aPosX, aPosY, aScaleX, aScaleY, aRotationAngle;
+    anObj1->getPosition( aPosX, aPosY );
+    anObj1->getScaling( aScaleX, aScaleY );
+    anObj1->getRotationAngle( aRotationAngle );
+
+    aResPrs->setPosition( aResult.transform().dx(), aResult.transform().dy() );
+    aResPrs->setScaling( aScaleX, aScaleY );
+    aResPrs->setRotationAngle( aRotationAngle );
+
+    aResPrs->compute();
 
     aViewPort->addItem( aResPrs );
     aViewPort->removeItem( anObj1 );

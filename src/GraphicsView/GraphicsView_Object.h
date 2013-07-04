@@ -96,11 +96,6 @@ public:
   virtual QTransform         getViewTransform() const { return myViewTransform; }
   virtual void               setViewTransform( const QTransform& theTransform );
 
-  virtual QPointF            centerPoint();
-
-public:
-  static void                setRotationAroundCenter( QGraphicsItem* theItem, double theAngle );
-
 protected:
   QCursor*                   getHighlightCursor() const { return myHighlightCursor; }
 

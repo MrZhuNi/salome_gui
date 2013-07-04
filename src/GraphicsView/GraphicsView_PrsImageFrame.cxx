@@ -295,19 +295,6 @@ void GraphicsView_PrsImageFrame::finishPulling( const GraphicsView_ObjectList& t
 }
 
 //================================================================
-// Function : centerPoint
-// Purpose  : 
-//================================================================
-QPointF GraphicsView_PrsImageFrame::centerPoint()
-{
-  QPointF aPoint1 = myAnchorMap[ Top ]->getBasePoint();
-  QPointF aPoint2 = myAnchorMap[ Bottom ]->getBasePoint();
-  QPointF aPoint3 = myAnchorMap[ Left ]->getBasePoint();
-  QPointF aPoint4 = myAnchorMap[ Right ]->getBasePoint();
-  return ( aPoint1 + aPoint2 + aPoint3 + aPoint4 ) / 4.;
-}
-
-//================================================================
 // Function : setPrsImage
 // Purpose  : 
 //================================================================
@@ -364,16 +351,20 @@ void GraphicsView_PrsImageFrame::updateAnchorItems()
     return;
 
   bool anIsSelected = myPrsImage->isSelected();
-  if( anIsSelected )
-  {
-    double aPosX, aPosY, aRotationAngle;
-    myPrsImage->getPosition( aPosX, aPosY );
-    myPrsImage->getRotationAngle( aRotationAngle );
-
-    setPos( aPosX, aPosY );
-    setRotationAroundCenter( this, aRotationAngle );
-  }
   setVisible( anIsSelected );
+}
+
+//================================================================
+// Function : setScaling
+// Purpose  : 
+//================================================================
+void GraphicsView_PrsImageFrame::setScaling( const double theScaleX,
+                                             const double theScaleY )
+{
+  AnchorMapIterator anIter( myAnchorMap );
+  while( anIter.hasNext() )
+    if( UnscaledGraphicsEllipseItem* anAnchorItem = anIter.next().value() )
+      anAnchorItem->setScaling( theScaleX, theScaleY );
 }
 
 //================================================================
@@ -397,13 +388,15 @@ QCursor* GraphicsView_PrsImageFrame::getResizeCursor( const int theAnchor ) cons
   if( !myPrsImage )
     return 0;
 
-  double aRotationAngle = 0;
+  double aScaleX, aScaleY, aRotationAngle;
+  myPrsImage->getScaling( aScaleX, aScaleY );
   myPrsImage->getRotationAngle( aRotationAngle );
 
-  int anAngle = (int)aRotationAngle;
-  anAngle = anAngle % 360;
-  anAngle += 360; // to avoid negative values
-  anAngle = anAngle % 360; // 0 <= anAngle <= 359
+  int anAngle = (int)aRotationAngle; // -inf <= anAngle <= inf
+  anAngle = anAngle % 360;           // -359 <= anAngle <= 359
+  anAngle = ( anAngle + 360 ) % 360; //    0 <= anAngle <= 359
+
+  int aSign = aScaleX * aScaleY < 0 ? -1 : 1;
 
   int aShift = 0;
   switch( theAnchor )
@@ -417,8 +410,8 @@ QCursor* GraphicsView_PrsImageFrame::getResizeCursor( const int theAnchor ) cons
     case Left:        aShift = 270; break;
     case TopLeft:     aShift = 315; break;
   }
-  anAngle += aShift;
-  anAngle = anAngle % 360;
+  anAngle += aSign * aShift;         // -315 <= anAngle <= 674
+  anAngle = ( anAngle + 360 ) % 360; //    0 <= anAngle <= 359
 
   // 360 = 8 sectors of 45 degrees
   if( anAngle <= 22 || anAngle >= 338 )
@@ -446,6 +439,8 @@ QCursor* GraphicsView_PrsImageFrame::getResizeCursor( const int theAnchor ) cons
 //=======================================================================
 GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::UnscaledGraphicsEllipseItem( QGraphicsItem* theParent )
 : QGraphicsEllipseItem( theParent ),
+  myScaleX( 1.0 ),
+  myScaleY( 1.0 ),
   myRotationAngle( 0.0 )
 {
 }
@@ -462,6 +457,27 @@ GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::~UnscaledGraphicsEllips
 // Function : boundingRect
 // Purpose  : 
 //================================================================
+void GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::
+  setScaling( const double theScaleX, const double theScaleY )
+{
+  myScaleX = theScaleX;
+  myScaleY = theScaleY;
+}
+
+//================================================================
+// Function : boundingRect
+// Purpose  : 
+//================================================================
+void GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::
+  setRotationAngle( const double theRotationAngle )
+{
+  myRotationAngle = theRotationAngle;
+}
+
+//================================================================
+// Function : boundingRect
+// Purpose  : 
+//================================================================
 QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::boundingRect() const
 {
   QRectF aRect = QGraphicsEllipseItem::boundingRect();
@@ -472,15 +488,17 @@ QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::boundingRect() c
 
   QTransform aTransform = aParent->getViewTransform();
   double aScale = aTransform.m11(); // same as m22(), viewer specific
-  if( fabs( aScale ) < 1e-10 )
+  if( fabs( aScale ) < 1e-10 ||
+      fabs( myScaleX ) < 1e-10 ||
+      fabs( myScaleY ) < 1e-10 )
     return aRect;
 
   QPointF aCenter = aRect.center();
-  double aWidth = aRect.width() / aScale;
-  double aHeight = aRect.height() / aScale;
+  double aWidth = aRect.width() / aScale / myScaleX;
+  double aHeight = aRect.height() / aScale / myScaleY;
 
-  double anOffsetX = myOffset.x() / aScale;
-  double anOffsetY = myOffset.y() / aScale;
+  double anOffsetX = myOffset.x() / aScale / fabs( myScaleX );
+  double anOffsetY = myOffset.y() / aScale / fabs( myScaleY );
 
   aRect = QRectF( aCenter.x() - aWidth / 2 + anOffsetX,
                   aCenter.y() - aHeight / 2 + anOffsetY,
@@ -515,15 +533,22 @@ void GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::paint(
   QWidget* theWidget )
 {
   // draw a connection line (mainly, for top-most anchor)
-  thePainter->drawLine( myBasePoint, boundingRect().center() );
+  //thePainter->drawLine( myBasePoint, boundingRect().center() );
 
   thePainter->save();
   thePainter->setTransform( GenerateTranslationOnlyTransform( thePainter->transform(),
                                                               myBasePoint ) );
 
+  double anOffsetX = myOffset.x();
+  double anOffsetY = myOffset.y();
+  if( myScaleX < 0 )
+    anOffsetX *= -1;
+  if( myScaleY < 0 )
+    anOffsetY *= -1;
+
   double anAngle = myRotationAngle * PI / 180.;
-  double aDX = myOffset.x() * cos( anAngle ) - myOffset.y() * sin( anAngle );
-  double aDY = myOffset.x() * sin( anAngle ) + myOffset.y() * cos( anAngle );
+  double aDX = anOffsetX * cos( anAngle ) - anOffsetY * sin( anAngle );
+  double aDY = anOffsetX * sin( anAngle ) + anOffsetY * cos( anAngle );
   thePainter->translate( aDX, aDY );
 
   QGraphicsEllipseItem::paint( thePainter, theOption, theWidget );

@@ -100,6 +100,7 @@ protected slots:
   virtual void                  onChangeBgColor();
 
   // testing ImageViewer
+  void                          onTestImageComposition();
   void                          onAddImage();
   void                          onRemoveImages();
   void                          onBringToFront();
@@ -107,7 +108,6 @@ protected slots:
   void                          onBringForward();
   void                          onSendBackward();
   void                          onPrsProperties();
-  void                          onTestImageComposition();
 
 private:
   void                          handleKeyPress( QKeyEvent* );

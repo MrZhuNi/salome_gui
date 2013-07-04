@@ -248,6 +248,7 @@ void GraphicsView_ViewPort::addItem( QGraphicsItem* theItem )
       }
     }
     myObjects.insert( anIter, anObject );
+    anObject->setViewTransform( transform() );
     anObject->addTo( this );
   }
   else

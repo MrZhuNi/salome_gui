@@ -22,6 +22,7 @@
 
 #include "GraphicsView_Scene.h"
 
+#include <QGraphicsLineItem>
 #include <QGraphicsRectItem>
 #include <QGraphicsSceneWheelEvent>
 
@@ -43,12 +44,18 @@ GraphicsView_Scene::GraphicsView_Scene( QObject* theParent )
   connect( this, SIGNAL( sceneRectChanged( const QRectF& ) ),
            this, SLOT( onSceneRectChanged( const QRectF& ) ) );
 
-  QGraphicsEllipseItem* aCenterItem = new QGraphicsEllipseItem( 0, 0, 5, 5 );
-  aCenterItem->setBrush( QBrush( Qt::red ) );
-  addItem( aCenterItem );
 #endif
 
-  setSceneRect( -500, -500, 3000, 3000 ); // testing ImageViewer
+  // testing ImageViewer
+  setSceneRect( -2000, -2000, 4000, 4000 );
+
+  QGraphicsLineItem* aHorLineItem = new QGraphicsLineItem( -2000, 0, 2000, 0 );
+  aHorLineItem->setPen( QPen( Qt::red ) );
+  addItem( aHorLineItem );
+
+  QGraphicsLineItem* aVerLineItem = new QGraphicsLineItem( 0, -2000, 0, 2000 );
+  aVerLineItem->setPen( QPen( Qt::red ) );
+  addItem( aVerLineItem );
 }
 
 //=======================================================================

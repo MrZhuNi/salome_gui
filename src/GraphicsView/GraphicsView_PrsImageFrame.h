@@ -72,14 +72,13 @@ public:
   virtual void                    finishPulling( const GraphicsView_ObjectList& );
   virtual bool                    isPulling() { return myIsPulling; }
 
-  virtual QPointF                 centerPoint();
-
 public:
   void                            setPrsImage( GraphicsView_PrsImage* );
 
   void                            computeAnchorItems();
   void                            updateAnchorItems();
 
+  void                            setScaling( const double theScaleX, const double theScaleY );
   void                            setRotationAngle( const double theRotationAngle );
 
 protected:
@@ -125,7 +124,8 @@ public:
   void           setOffset( const QPointF& theOffset ) { myOffset = theOffset; }
   const QPointF& getOffset() const { return myOffset; }
 
-  void           setRotationAngle( const double theAngle ) { myRotationAngle = theAngle; }
+  void           setScaling( const double theScaleX, const double theScaleY );
+  void           setRotationAngle( const double theRotationAngle );
 
 public:
   virtual QRectF boundingRect() const;
@@ -135,6 +135,8 @@ private:
   QPointF        myBasePoint;
   QPointF        myOffset;
 
+  double         myScaleX;
+  double         myScaleY;
   double         myRotationAngle;
 };
 

@@ -40,10 +40,12 @@ public:
   virtual ~GraphicsView_PrsImage();
 
 public:
+  void                            updateTransform();
+
   void                            setImage( const QImage& theImage );
   QImage                          getImage() const;
 
-  QTransform                      getTransform() const;
+  QTransform                      getTransform( const bool theIsPreview = false ) const;
 
   void                            setPosition( const double thePosX, const double thePosY );
   void                            getPosition( double& thePosX, double& thePosY ) const;
@@ -69,17 +71,12 @@ public:
 
   virtual bool                    checkHighlight( double theX, double theY, QCursor& theCursor ) const;
 
-  virtual bool                    highlight( double theX, double theY );
-  virtual void                    unhighlight();
-
   virtual bool                    select( double theX, double theY, const QRectF& theRect );
   virtual void                    unselect();
   virtual void                    setSelected( bool theState );
 
   virtual void                    move( double theDX, double theDY, bool theIsAtOnce = false );
   virtual bool                    finishMove();
-
-  virtual QPointF                 centerPoint();
 
 protected:
   void                            processResize( const int theAnchor,
@@ -109,10 +106,16 @@ protected:
 
   GraphicsView_PrsImageFrame*     myImageFrame;
 
+  double                          myPosX;
+  double                          myPosY;
   double                          myScaleX;
   double                          myScaleY;
-
   double                          myRotationAngle;
+
+  double                          myPreviewPosX;
+  double                          myPreviewPosY;
+  double                          myPreviewScaleX;
+  double                          myPreviewScaleY;
   double                          myPreviewRotationAngle;
 
 private:
