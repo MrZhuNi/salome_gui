@@ -51,6 +51,19 @@ GraphicsView_Object::~GraphicsView_Object()
     delete myHighlightCursor;
     myHighlightCursor = 0;
   }
+
+  QListIterator<QGraphicsItem*> aChildIter( children() );
+  while( aChildIter.hasNext() )
+  {
+    if( QGraphicsItem* aChild = aChildIter.next() )
+    {
+      removeFromGroup( aChild );
+      if( QGraphicsScene* aScene = aChild->scene() )
+        aScene->removeItem( aChild );
+      delete aChild;
+      aChild = 0;
+    }
+  }
 }
 
 //================================================================

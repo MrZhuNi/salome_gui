@@ -26,7 +26,6 @@
 #include "GraphicsView_ViewPort.h"
 
 #include <QCursor>
-#include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPainter>
 #include <QVector2D>
@@ -34,8 +33,8 @@
 #include <math.h>
 
 #define PREVIEW_Z_VALUE 2000
-#define EPSILON 1e-6
-#define PI 3.14159265359
+#define EPSILON         1e-6
+#define PI              3.14159265359
 
 //=======================================================================
 // name    : GraphicsView_PrsImage
@@ -46,7 +45,7 @@ GraphicsView_PrsImage::GraphicsView_PrsImage()
   myIsLockAspectRatio( false ),
   myPixmapItem( 0 ),
   myPreviewPixmapItem( 0 ),
-  myImageFrame( 0 ),
+  myPrsImageFrame( 0 ),
   myPosX( 0.0 ),
   myPosY( 0.0 ),
   myScaleX( 1.0 ),
@@ -66,31 +65,10 @@ GraphicsView_PrsImage::GraphicsView_PrsImage()
 //=======================================================================
 GraphicsView_PrsImage::~GraphicsView_PrsImage()
 {
-  /* to be revised
-  if( myPreviewPixmapItem )
+  if( myPrsImageFrame )
   {
-    delete myPreviewPixmapItem;
-    myPreviewPixmapItem = 0;
-  }
-
-  if( myImageFrame )
-  {
-    delete myImageFrame;
-    myImageFrame = 0;
-  }
-  */
-
-  QListIterator<QGraphicsItem*> aChildIter( children() );
-  while( aChildIter.hasNext() )
-  {
-    if( QGraphicsItem* aChild = aChildIter.next() )
-    {
-      removeFromGroup( aChild );
-      if( QGraphicsScene* aScene = aChild->scene() )
-        aScene->removeItem( aChild );
-      delete aChild;
-      aChild = 0;
-    }
+    delete myPrsImageFrame;
+    myPrsImageFrame = 0;
   }
 }
 
@@ -103,11 +81,11 @@ void GraphicsView_PrsImage::updateTransform()
   QTransform aTransform = getTransform();
 
   setTransform( aTransform );
-  myImageFrame->setTransform( aTransform );
+  myPrsImageFrame->setTransform( aTransform );
 
   // for anchors
-  myImageFrame->setScaling( myScaleX, myScaleY );
-  myImageFrame->setRotationAngle( myRotationAngle );
+  myPrsImageFrame->setScaling( myScaleX, myScaleY );
+  myPrsImageFrame->setRotationAngle( myRotationAngle );
 
   aTransform = getTransform( true );
   myPreviewPixmapItem->setTransform( aTransform );
@@ -251,10 +229,10 @@ void GraphicsView_PrsImage::compute()
     myPreviewPixmapItem = new QGraphicsPixmapItem();
     //addToGroup( myPreviewPixmapItem ); // don't add
   }
-  if( !myImageFrame )
+  if( !myPrsImageFrame )
   {
-    myImageFrame = new GraphicsView_PrsImageFrame();
-    myImageFrame->setPrsImage( this );
+    myPrsImageFrame = new GraphicsView_PrsImageFrame();
+    myPrsImageFrame->setPrsImage( this );
   }
 
   myPixmapItem->setPixmap( myPixmap );
@@ -262,7 +240,7 @@ void GraphicsView_PrsImage::compute()
   myPreviewPixmapItem->setPixmap( myPixmap );
   myPreviewPixmapItem->setVisible( false );
 
-  myImageFrame->compute();
+  myPrsImageFrame->compute();
 
   updateTransform();
 }
@@ -274,7 +252,7 @@ void GraphicsView_PrsImage::compute()
 void GraphicsView_PrsImage::addTo( GraphicsView_ViewPort* theViewPort )
 {
   GraphicsView_Object::addTo( theViewPort );
-  theViewPort->addItem( myImageFrame );
+  theViewPort->addItem( myPrsImageFrame );
   theViewPort->addItem( myPreviewPixmapItem );
 
   double aZValue = 0;
@@ -297,7 +275,7 @@ void GraphicsView_PrsImage::addTo( GraphicsView_ViewPort* theViewPort )
 void GraphicsView_PrsImage::removeFrom( GraphicsView_ViewPort* theViewPort )
 {
   GraphicsView_Object::removeFrom( theViewPort );
-  theViewPort->removeItem( myImageFrame );
+  theViewPort->removeItem( myPrsImageFrame );
   theViewPort->removeItem( myPreviewPixmapItem );
 }
 
@@ -324,7 +302,7 @@ bool GraphicsView_PrsImage::checkHighlight( double theX, double theY, QCursor& t
 bool GraphicsView_PrsImage::select( double theX, double theY, const QRectF& theRect )
 {
   bool anIsSelected = GraphicsView_Object::select( theX, theY, theRect );
-  myImageFrame->updateAnchorItems();
+  myPrsImageFrame->updateVisibility();
   return anIsSelected;
 }
 
@@ -335,7 +313,7 @@ bool GraphicsView_PrsImage::select( double theX, double theY, const QRectF& theR
 void GraphicsView_PrsImage::unselect()
 {
   GraphicsView_Object::unselect();
-  myImageFrame->updateAnchorItems();
+  myPrsImageFrame->updateVisibility();
 }
 
 //================================================================
@@ -345,7 +323,7 @@ void GraphicsView_PrsImage::unselect()
 void GraphicsView_PrsImage::setSelected( bool theState )
 {
   GraphicsView_Object::setSelected( theState );
-  myImageFrame->updateAnchorItems();
+  myPrsImageFrame->updateVisibility();
 }
 
 //================================================================

@@ -76,7 +76,7 @@ public:
   void                            setPrsImage( GraphicsView_PrsImage* );
 
   void                            computeAnchorItems();
-  void                            updateAnchorItems();
+  void                            updateVisibility();
 
   void                            setScaling( const double theScaleX, const double theScaleY );
   void                            setRotationAngle( const double theRotationAngle );

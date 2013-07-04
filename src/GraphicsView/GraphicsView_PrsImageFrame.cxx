@@ -32,9 +32,9 @@
 
 #include <math.h>
 
-#define FRAME_Z_VALUE 1000
-#define ANCHOR_RADIUS 3
-#define PI 3.14159265359
+#define FRAME_Z_VALUE   1000
+#define ANCHOR_RADIUS   3
+#define PI              3.14159265359
 
 //=======================================================================
 // name    : GraphicsView_PrsImageFrame
@@ -139,7 +139,7 @@ void GraphicsView_PrsImageFrame::compute()
   setZValue( FRAME_Z_VALUE );
 
   computeAnchorItems();
-  updateAnchorItems();
+  updateVisibility();
 }
 
 //================================================================
@@ -342,16 +342,12 @@ void GraphicsView_PrsImageFrame::computeAnchorItems()
 }
 
 //================================================================
-// Function : updateAnchorItems
+// Function : updateVisibility
 // Purpose  : 
 //================================================================
-void GraphicsView_PrsImageFrame::updateAnchorItems()
+void GraphicsView_PrsImageFrame::updateVisibility()
 {
-  if( !myPrsImage )
-    return;
-
-  bool anIsSelected = myPrsImage->isSelected();
-  setVisible( anIsSelected );
+  setVisible( myPrsImage && myPrsImage->isSelected() );
 }
 
 //================================================================
@@ -504,6 +500,10 @@ QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::boundingRect() c
                   aCenter.y() - aHeight / 2 + anOffsetY,
                   aWidth, aHeight );
 
+  // to do
+  //QRectF aBaseRect( myBasePoint, QSizeF( 1, 1 ) );
+  //aRect |= aBaseRect;
+
   return aRect;
 }
 
@@ -553,4 +553,10 @@ void GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::paint(
 
   QGraphicsEllipseItem::paint( thePainter, theOption, theWidget );
   thePainter->restore();
+
+  // for debug
+  //thePainter->save();
+  //thePainter->setPen( QPen( Qt::magenta ) );
+  //thePainter->drawRect( boundingRect() );
+  //thePainter->restore();
 }

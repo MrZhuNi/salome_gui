@@ -104,7 +104,7 @@ protected:
   QGraphicsPixmapItem*            myPixmapItem;
   QGraphicsPixmapItem*            myPreviewPixmapItem;
 
-  GraphicsView_PrsImageFrame*     myImageFrame;
+  GraphicsView_PrsImageFrame*     myPrsImageFrame;
 
   double                          myPosX;
   double                          myPosY;
