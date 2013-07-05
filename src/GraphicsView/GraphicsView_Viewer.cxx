@@ -334,6 +334,27 @@ void GraphicsView_Viewer::onWheelEvent( QGraphicsSceneWheelEvent* e )
 //================================================================
 void GraphicsView_Viewer::handleKeyPress( QKeyEvent* e )
 {
+  if( e->key() == Qt::Key_Escape )
+  {
+    // Cancel current operation
+    bool anIsCancelled = false;
+    if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+    {
+      anIsCancelled = aViewPort->cancelCurrentOperation();
+
+      // Unselect all objects (if there is no operation to cancel)
+      if( !anIsCancelled )
+      {
+        aViewPort->finishSelectByRect();
+        aViewPort->clearSelected();
+      }
+    }
+
+    // Emit unselection signal
+    if( !anIsCancelled )
+      if( GraphicsView_Selector* aSelector = getSelector() )
+        aSelector->unselectAll();
+  }
 }
 
 //================================================================
@@ -455,7 +476,7 @@ void GraphicsView_Viewer::handleMouseRelease( QGraphicsSceneMouseEvent* e )
   {
     if( aViewPort->isPulling() )
     {
-      aViewPort->finishPulling();
+      aViewPort->finishPulling( true );
     }
     else if( !aViewPort->getHighlightedObject() )
     {
@@ -572,15 +593,13 @@ void GraphicsView_Viewer::onRemoveImages()
 {
   if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
   {
-    for( aViewPort->initSelected(); aViewPort->moreSelected(); aViewPort->nextSelected() )
+    GraphicsView_ObjectListIterator anIter( aViewPort->getSelectedObjects() );
+    while( anIter.hasNext() )
     {
-      if( GraphicsView_Object* anObject = aViewPort->selectedObject() )
+      if( GraphicsView_PrsImage* aPrs = dynamic_cast<GraphicsView_PrsImage*>( anIter.next() ) )
       {
-        if( GraphicsView_PrsImage* aPrs = dynamic_cast<GraphicsView_PrsImage*>( anObject ) )
-        {
-          aViewPort->removeItem( aPrs );
-          delete aPrs;
-        }
+        aViewPort->removeItem( aPrs );
+        delete aPrs;
       }
     }
   }

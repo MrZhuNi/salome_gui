@@ -129,6 +129,7 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   myHighlightedObject( 0 ),
   myHighlightX( 0 ),
   myHighlightY( 0 ),
+  myIsHighlighting( false ),
   mySelectionIterator( 0 ),
   myRectBand( 0 ),
   myAreSelectionPointsInitialized( false ),
@@ -932,6 +933,7 @@ GraphicsView_ViewPort::BlockStatus GraphicsView_ViewPort::currentBlock()
 //================================================================
 void GraphicsView_ViewPort::highlight( double theX, double theY )
 {
+  myIsHighlighting = true;
   myHighlightX = theX;
   myHighlightY = theY;
 
@@ -1018,6 +1020,9 @@ void GraphicsView_ViewPort::clearHighlighted()
 //================================================================
 int GraphicsView_ViewPort::select( const QRectF& theRect, bool theIsAppend )
 {
+  if( !myIsHighlighting )
+    return GVSS_NoChanged;
+
   GV_SelectionStatus aStatus = GVSS_Invalid;
   if( theRect.isNull() ) // point selection
   {
@@ -1109,7 +1114,7 @@ int GraphicsView_ViewPort::select( const QRectF& theRect, bool theIsAppend )
         {
           bool anIsSelected = false;
           QRectF aRect = anObject->getRect();
-          if( theRect.contains( aRect ) )
+          if( theRect.contains( aRect ) && myIsHighlighting )
             anIsSelected = anObject->select( myHighlightX, myHighlightY, theRect );
 
           if( anIsSelected && mySelectedObjects.indexOf( anObject ) == -1 )
@@ -1418,11 +1423,45 @@ void GraphicsView_ViewPort::drawPulling( const QPointF& thePoint )
 // Function : finishPulling
 // Purpose  : 
 //================================================================
-void GraphicsView_ViewPort::finishPulling()
+void GraphicsView_ViewPort::finishPulling( bool theStatus )
 {
   myIsPulling = false;
-  myPullingObject->finishPulling( getSelectedObjects() );
+  myPullingObject->finishPulling( theStatus, getSelectedObjects() );
   setCursor( *getDefaultCursor() );
+}
+
+//================================================================
+// Function : cancelCurrentOperation
+// Purpose  : 
+//================================================================
+bool GraphicsView_ViewPort::cancelCurrentOperation()
+{
+  myIsHighlighting = false;
+
+  if( isDragging() )
+  {
+    for( initSelected(); moreSelected(); nextSelected() )
+      if( GraphicsView_Object* aMovingObject = selectedObject() )
+        aMovingObject->finishMove( false );
+
+    if( GraphicsView_Object* aMovingObject = getHighlightedObject() )
+      aMovingObject->finishMove( false );
+
+    myIsDragging = false;
+    myDragPosition = QPointF();
+    //setCursor( myStoredCursor );
+    setCursor( *getDefaultCursor() );
+
+    return true;
+  }
+
+  if( isPulling() )
+  {
+    finishPulling( false );
+    return true;
+  }
+
+  return false;
 }
 
 //================================================================
@@ -1505,10 +1544,10 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
         bool anIsMoved = false;
         for( initSelected(); moreSelected(); nextSelected() )
           if( GraphicsView_Object* aMovingObject = selectedObject() )
-            anIsMoved = aMovingObject->finishMove() || anIsMoved;
+            anIsMoved = aMovingObject->finishMove( true ) || anIsMoved;
 
         if( GraphicsView_Object* aMovingObject = getHighlightedObject() )
-          anIsMoved = aMovingObject->finishMove() || anIsMoved;
+          anIsMoved = aMovingObject->finishMove( true ) || anIsMoved;
 
         myIsDragging = false;
         myDragPosition = QPointF();

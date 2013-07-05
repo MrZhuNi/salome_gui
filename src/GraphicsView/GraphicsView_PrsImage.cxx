@@ -355,7 +355,7 @@ void GraphicsView_PrsImage::move( double theDX, double theDY, bool theIsAtOnce )
 {
   if( theIsAtOnce )
   {
-    finishMove();
+    finishMove( true );
     return;
   }
 
@@ -373,17 +373,19 @@ void GraphicsView_PrsImage::move( double theDX, double theDY, bool theIsAtOnce )
 // Function : finishMove
 // Purpose  : 
 //================================================================
-bool GraphicsView_PrsImage::finishMove()
+bool GraphicsView_PrsImage::finishMove( bool theStatus )
 {
   if( myIsMoving )
   {
-    myPosX = myPreviewPosX;
-    myPosY = myPreviewPosY;
-    updateTransform();
-
+    if( theStatus )
+    {
+      myPosX = myPreviewPosX;
+      myPosY = myPreviewPosY;
+      updateTransform();
+    }
     enablePreview( false );
   }
-  return GraphicsView_Object::finishMove();
+  return GraphicsView_Object::finishMove( theStatus );
 }
 
 //================================================================

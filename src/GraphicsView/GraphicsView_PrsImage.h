@@ -79,7 +79,7 @@ public:
   virtual void                    setSelected( bool theState );
 
   virtual void                    move( double theDX, double theDY, bool theIsAtOnce = false );
-  virtual bool                    finishMove();
+  virtual bool                    finishMove( bool theStatus );
 
 protected:
   void                            processResize( const int theAnchor,

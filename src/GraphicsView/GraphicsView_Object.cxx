@@ -168,7 +168,7 @@ void GraphicsView_Object::move( double theDX, double theDY, bool theIsAtOnce )
 {
   if( theIsAtOnce )
   {
-    finishMove();
+    finishMove( true );
     return;
   }
 
@@ -180,11 +180,12 @@ void GraphicsView_Object::move( double theDX, double theDY, bool theIsAtOnce )
 // Function : finishMove
 // Purpose  : 
 //================================================================
-bool GraphicsView_Object::finishMove()
+bool GraphicsView_Object::finishMove( bool theStatus )
 {
   myIsMoving = false;
-  if( GraphicsView_Scene* aScene = dynamic_cast<GraphicsView_Scene*>( scene() ) )
-    aScene->processRectChanged();
+  if( theStatus )
+    if( GraphicsView_Scene* aScene = dynamic_cast<GraphicsView_Scene*>( scene() ) )
+      aScene->processRectChanged();
   return true;
 }
 

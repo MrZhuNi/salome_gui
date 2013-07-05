@@ -186,8 +186,11 @@ public:
   // pulling
   bool                             startPulling( const QPointF& );
   void                             drawPulling( const QPointF& );
-  void                             finishPulling();
+  void                             finishPulling( bool theStatus );
   bool                             isPulling() const { return myIsPulling; }
+
+  // other
+  bool                             cancelCurrentOperation();
 
 public:
   static void                      createCursors();
@@ -273,6 +276,7 @@ private:
   GraphicsView_Object*             myHighlightedObject;
   double                           myHighlightX;
   double                           myHighlightY;
+  bool                             myIsHighlighting;
 
   // selection
   GraphicsView_ObjectList          mySelectedObjects;

@@ -69,7 +69,7 @@ public:
   virtual void                    pull( const QPointF&,
                                         GraphicsView_Object*,
                                         const GraphicsView_ObjectList& );
-  virtual void                    finishPulling( const GraphicsView_ObjectList& );
+  virtual void                    finishPulling( bool, const GraphicsView_ObjectList& );
   virtual bool                    isPulling() { return myIsPulling; }
 
 public:

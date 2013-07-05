@@ -269,10 +269,17 @@ void GraphicsView_PrsImageFrame::pull( const QPointF& thePoint,
 // Function : finishPulling
 // Purpose  : 
 //================================================================
-void GraphicsView_PrsImageFrame::finishPulling( const GraphicsView_ObjectList& theSyncObjects )
+void GraphicsView_PrsImageFrame::finishPulling( bool theStatus,
+                                                const GraphicsView_ObjectList& theSyncObjects )
 {
   if( !myPrsImage )
     return;
+
+  if( !theStatus )
+  {
+    myPrsImage->enablePreview( false );
+    return;
+  }
 
   if( myPullingAnchor >= Top && myPullingAnchor <= BottomRight )
     myPrsImage->finishResize();

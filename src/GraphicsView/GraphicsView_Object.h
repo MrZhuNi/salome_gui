@@ -73,7 +73,7 @@ public:
   virtual void               setSelected( bool theState ) { myIsSelected = theState; }
 
   virtual void               move( double theDX, double theDY, bool theIsAtOnce = false );
-  virtual bool               finishMove();
+  virtual bool               finishMove( bool theStatus );
   virtual bool               isMoving() const { return myIsMoving; }
   virtual bool               isMovingByXAllowed( double theDX ) { return true; }
   virtual bool               isMovingByYAllowed( double theDY ) { return true; }
@@ -86,7 +86,7 @@ public:
   virtual void               pull( const QPointF&,
                                    GraphicsView_Object*,
                                    const GraphicsView_ObjectList& ) {}
-  virtual void               finishPulling( const GraphicsView_ObjectList& ) {}
+  virtual void               finishPulling( bool, const GraphicsView_ObjectList& ) {}
   virtual bool               isPulling() { return false; }
 
   virtual bool               handleMousePress( QGraphicsSceneMouseEvent* ) { return false; }
