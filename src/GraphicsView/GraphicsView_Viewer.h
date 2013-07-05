@@ -76,9 +76,6 @@ public:
   bool                          isInitialized() const { return myIsInitialized; }
   void                          setIsInitialized( bool );
 
-  bool                          isImmediateSelectionEnabled() const { return myIsImmediateSelectionEnabled; }
-  void                          setIsImmediateSelectionEnabled( bool );
-
 signals:
   void                          selectionChanged( GV_SelectionChangeStatus );
   void                          wheelScaleChanged();
@@ -126,7 +123,6 @@ protected:
   GraphicsView_ViewTransformer* myTransformer;
 
   bool                          myIsInitialized;
-  bool                          myIsImmediateSelectionEnabled;
 };
 
 #endif

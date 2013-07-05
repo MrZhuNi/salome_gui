@@ -53,8 +53,7 @@ GraphicsView_Viewer::GraphicsView_Viewer( const QString& title )
 : SUIT_ViewModel(),
   mySelector( 0 ),
   myTransformer( 0 ),
-  myIsInitialized( false ),
-  myIsImmediateSelectionEnabled( false )
+  myIsInitialized( false )
 {
 }
 
@@ -225,15 +224,6 @@ void GraphicsView_Viewer::setIsInitialized( bool theFlag )
 }
 
 //================================================================
-// Function : setIsImmediateSelectionEnabled
-// Purpose  : 
-//================================================================
-void GraphicsView_Viewer::setIsImmediateSelectionEnabled( bool theFlag )
-{
-  myIsImmediateSelectionEnabled = theFlag;
-}
-
-//================================================================
 // Function : createTransformer
 // Purpose  : 
 //================================================================
@@ -385,7 +375,7 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
     if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
     {
       if( e->button() == Qt::RightButton &&
-          isImmediateSelectionEnabled() &&
+          aViewPort->hasInteractionFlag( GraphicsView_ViewPort::ImmediateSelection ) &&
           aViewPort->nbSelected() < 1 )
       {
         // If the 'immediate selection' mode is enabled,
@@ -394,7 +384,7 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
         getSelector()->select( QRectF(), append );
       }
       else if( e->button() == Qt::LeftButton &&
-               aViewPort->testInteractionFlags( GraphicsView_ViewPort::Pulling ) &&
+               aViewPort->hasInteractionFlag( GraphicsView_ViewPort::Pulling ) &&
                !aViewPort->isSelectByRect() && 
                !aViewPort->isDragging() &&
                aViewPort->startPulling( e->scenePos() ) )
@@ -436,7 +426,7 @@ void GraphicsView_Viewer::handleMouseMove( QGraphicsSceneMouseEvent* e )
       aViewPort->drawPulling( e->scenePos() );
     }
     else if( e->button() == Qt::LeftButton &&
-             aViewPort->testInteractionFlags( GraphicsView_ViewPort::Pulling ) &&
+             aViewPort->hasInteractionFlag( GraphicsView_ViewPort::Pulling ) &&
              !aViewPort->isSelectByRect() &&
              !aViewPort->isDragging() &&
              aViewPort->startPulling( e->scenePos() ) )
@@ -500,7 +490,7 @@ void GraphicsView_Viewer::handleWheel( QGraphicsSceneWheelEvent* e )
 {
   if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
   {
-    if( aViewPort->testInteractionFlags( GraphicsView_ViewPort::WheelScaling ) )
+    if( aViewPort->hasInteractionFlag( GraphicsView_ViewPort::WheelScaling ) )
     {
       bool anIsScaleUp = e->delta() > 0;
       bool anIsCtrl = e->modifiers() & Qt::ControlModifier;

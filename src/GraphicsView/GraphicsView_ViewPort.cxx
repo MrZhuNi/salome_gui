@@ -120,6 +120,7 @@ void GraphicsView_ViewPort::destroyCursors()
 //=======================================================================
 GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
 : QGraphicsView( theParent ),
+  myInteractionFlags( 0 ),
   myNameLabel( 0 ),
   myNamePosition( NP_None ),
   myNameLayout( 0 ),
@@ -145,10 +146,12 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
 
   mySceneGap = 20;
   myFitAllGap = 40;
-  myIsTraceBoundingRectEnabled = false; // testing ImageViewer
 
   // interaction flags
-  myInteractionFlags = AllFlags;
+  setInteractionFlags( EditFlags );
+  //setInteractionFlag( TraceBoundingRect );
+  //setInteractionFlag( DraggingByMiddleButton );
+  //setInteractionFlag( ImmediateSelection );
 
   // background
   setBackgroundBrush( QBrush( Qt::white ) );
@@ -443,39 +446,43 @@ void GraphicsView_ViewPort::setFitAllGap( double theFitAllGap )
 }
 
 //================================================================
-// Function : setTraceBoundingRectEnabled
+// Function : interactionFlags
 // Purpose  : 
 //================================================================
-void GraphicsView_ViewPort::setTraceBoundingRectEnabled( bool theState )
+int GraphicsView_ViewPort::interactionFlags() const
 {
-  myIsTraceBoundingRectEnabled = theState;
+  return myInteractionFlags;
+}
+
+//================================================================
+// Function : hasInteractionFlag
+// Purpose  : 
+//================================================================
+bool GraphicsView_ViewPort::hasInteractionFlag( InteractionFlag theFlag )
+{
+  return ( interactionFlags() & theFlag ) == theFlag;
+}
+
+//================================================================
+// Function : setInteractionFlag
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setInteractionFlag( InteractionFlag theFlag,
+                                                bool theIsEnabled )
+{
+  if( theIsEnabled )
+    setInteractionFlags( myInteractionFlags | theFlag );
+  else
+    setInteractionFlags( myInteractionFlags & ~theFlag );
 }
 
 //================================================================
 // Function : setInteractionFlags
 // Purpose  : 
 //================================================================
-void GraphicsView_ViewPort::setInteractionFlags( const int theFlags )
+void GraphicsView_ViewPort::setInteractionFlags( InteractionFlags theFlags )
 {
-  myInteractionFlags |= theFlags;
-}
-
-//================================================================
-// Function : clearInteractionFlags
-// Purpose  : 
-//================================================================
-void GraphicsView_ViewPort::clearInteractionFlags( const int theFlags )
-{
-  myInteractionFlags &= ~theFlags;
-}
-
-//================================================================
-// Function : testInteractionFlags
-// Purpose  : 
-//================================================================
-bool GraphicsView_ViewPort::testInteractionFlags( const int theFlags ) const
-{
-  return ( myInteractionFlags & theFlags ) == theFlags;
+  myInteractionFlags = theFlags;
 }
 
 //================================================================
@@ -1321,7 +1328,8 @@ void GraphicsView_ViewPort::dragObjects( QGraphicsSceneMouseEvent* e )
     else
       anObjectsToMove.append( anObject );
   }
-  else if( nbSelected() && ( e->buttons() & Qt::MidButton ) )
+  else if( hasInteractionFlag( DraggingByMiddleButton ) &&
+           nbSelected() && ( e->buttons() & Qt::MidButton ) )
   {
     for( initSelected(); moreSelected(); nextSelected() )
       if( GraphicsView_Object* aMovingObject = selectedObject() )
@@ -1470,7 +1478,7 @@ bool GraphicsView_ViewPort::cancelCurrentOperation()
 //================================================================
 void GraphicsView_ViewPort::onBoundingRectChanged()
 {
-  if( myIsTraceBoundingRectEnabled )
+  if( hasInteractionFlag( TraceBoundingRect ) )
   {
     QRectF aRect = objectsBoundingRect();
     myScene->setSceneRect( aRect.adjusted( -mySceneGap, -mySceneGap, mySceneGap, mySceneGap ) );
@@ -1499,18 +1507,19 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
   {
     case QEvent::GraphicsSceneMousePress:
     {
-      if( testInteractionFlags( EditFlags ) && nbSelected() )
+      if( hasInteractionFlag( EditFlags ) && nbSelected() )
         for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
           if( GraphicsView_Object* anObject = selectedObject() )
             anIsHandled = anObject->handleMousePress( e );
 
-      if( !anIsHandled && testInteractionFlags( Dragging ) )
+      if( !anIsHandled && hasInteractionFlag( Dragging ) )
       {
         bool anAccel = e->modifiers() & GraphicsView_ViewTransformer::accelKey();
         if( ( getHighlightedObject() &&
               getHighlightedObject()->isMovable() &&
-              !( anAccel || e->button() == Qt::RightButton ) ) ||
-            ( nbSelected() && !anAccel && e->button() == Qt::MidButton ) )
+              !( anAccel || e->button() != Qt::LeftButton ) ) ||
+            ( hasInteractionFlag( DraggingByMiddleButton ) &&
+              nbSelected() && !anAccel && e->button() == Qt::MidButton ) )
         {
           myIsDragging = true;
           myStoredCursor = cursor();
@@ -1521,7 +1530,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
     }
     case QEvent::GraphicsSceneMouseMove:
     {
-      if( testInteractionFlags( EditFlags ) && nbSelected() )
+      if( hasInteractionFlag( EditFlags ) && nbSelected() )
         for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
           if( GraphicsView_Object* anObject = selectedObject() )
             anIsHandled = anObject->handleMousePress( e );
@@ -1532,7 +1541,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
     }
     case QEvent::GraphicsSceneMouseRelease:
     {
-      if( testInteractionFlags( EditFlags ) && nbSelected() )
+      if( hasInteractionFlag( EditFlags ) && nbSelected() )
         for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
           if( GraphicsView_Object* anObject = selectedObject() )
             anIsHandled = anObject->handleMousePress( e );

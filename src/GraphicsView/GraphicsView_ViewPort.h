@@ -46,16 +46,19 @@ class GRAPHICSVIEW_API GraphicsView_ViewPort : public QGraphicsView
 public:
   class NameLabel;
 
-  enum InteractionFlags
+  enum InteractionFlag
   {
-    Highlighting = 0x0001, // not implemented yet
-    Selecting    = 0x0002, // not implemented yet
-    Dragging     = 0x0004,
-    Pulling      = 0x0008,
-    WheelScaling = 0x0010,
-    EditFlags    = Dragging | Pulling | WheelScaling,
-    AllFlags     = Highlighting | Selecting | Dragging | Pulling | WheelScaling
+    // main flags
+    Dragging               = 0x0001,
+    Pulling                = 0x0002,
+    WheelScaling           = 0x0004,
+    EditFlags              = Dragging | Pulling | WheelScaling,
+    // advanced flags
+    TraceBoundingRect      = 0x0008,
+    DraggingByMiddleButton = 0x0010,
+    ImmediateSelection     = 0x0020
   };
+  Q_DECLARE_FLAGS( InteractionFlags, InteractionFlag )
 
   enum BlockStatus
   {
@@ -94,12 +97,13 @@ public:
   // scene
   void                             setSceneGap( double theSceneGap );
   void                             setFitAllGap( double theFitAllGap );
-  void                             setTraceBoundingRectEnabled( bool theState );
 
   // interaction flags
-  void                             setInteractionFlags( const int );
-  void                             clearInteractionFlags( const int );
-  bool                             testInteractionFlags( const int ) const;
+  int                              interactionFlags() const;
+  bool                             hasInteractionFlag( InteractionFlag theFlag );
+  void                             setInteractionFlag( InteractionFlag theFlag,
+                                                       bool theIsEnabled = true );
+  void                             setInteractionFlags( InteractionFlags theFlags );
 
   // view name
   void                             setViewNamePosition( NamePosition thePosition,
@@ -241,11 +245,10 @@ private:
   GraphicsView_Scene*              myScene;
   double                           mySceneGap;
   double                           myFitAllGap;
-  bool                             myIsTraceBoundingRectEnabled;
   GraphicsView_ObjectList          myObjects;
 
   // interaction flags
-  int                              myInteractionFlags;
+  InteractionFlags                 myInteractionFlags;
 
   // view name
   NameLabel*                       myNameLabel;
@@ -300,5 +303,7 @@ private:
   // cursor
   QCursor                          myStoredCursor;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( GraphicsView_ViewPort::InteractionFlags )
 
 #endif
