@@ -40,59 +40,80 @@ GraphicsView_PrsPropDlg::GraphicsView_PrsPropDlg( QWidget* theParent )
 
   QFrame* aMainFrame = mainFrame();
 
-  QGroupBox* aPropGroup = new QGroupBox( aMainFrame );
+  // Geometry
+  QGroupBox* aGeomGroup = new QGroupBox( tr( "GEOMETRY" ), aMainFrame );
 
-  QLabel* aPositionXLabel = new QLabel( tr( "POSITION_X" ), aPropGroup );
-  myPositionX = new QtxDoubleSpinBox( -1e6, 1e6, 1, aPropGroup );
+  QLabel* aPositionXLabel = new QLabel( tr( "POSITION_X" ), aGeomGroup );
+  myPositionX = new QtxDoubleSpinBox( -1e6, 1e6, 1, aGeomGroup );
 
-  QLabel* aPositionYLabel = new QLabel( tr( "POSITION_Y" ), aPropGroup );
-  myPositionY = new QtxDoubleSpinBox( -1e6, 1e6, 1, aPropGroup );
+  QLabel* aPositionYLabel = new QLabel( tr( "POSITION_Y" ), aGeomGroup );
+  myPositionY = new QtxDoubleSpinBox( -1e6, 1e6, 1, aGeomGroup );
 
-  QLabel* aScalingXLabel = new QLabel( tr( "SCALING_X" ), aPropGroup );
-  myScalingX = new QtxDoubleSpinBox( 1e-6, 1e6, 1, aPropGroup );
+  QLabel* aScalingXLabel = new QLabel( tr( "SCALING_X" ), aGeomGroup );
+  myScalingX = new QtxDoubleSpinBox( -1e6, 1e6, 1, aGeomGroup );
 
-  QLabel* aScalingYLabel = new QLabel( tr( "SCALING_Y" ), aPropGroup );
-  myScalingY = new QtxDoubleSpinBox( 1e-6, 1e6, 1, aPropGroup );
+  QLabel* aScalingYLabel = new QLabel( tr( "SCALING_Y" ), aGeomGroup );
+  myScalingY = new QtxDoubleSpinBox( -1e6, 1e6, 1, aGeomGroup );
 
-  QLabel* aRotationAngleLabel = new QLabel( tr( "ROTATION_ANGLE" ), aPropGroup );
-  myRotationAngle = new QtxDoubleSpinBox( -1e6, 1e6, 1, aPropGroup );
+  QLabel* aRotationAngleLabel = new QLabel( tr( "ROTATION_ANGLE" ), aGeomGroup );
+  myRotationAngle = new QtxDoubleSpinBox( -1e6, 1e6, 1, aGeomGroup );
 
-  QLabel* anOpacityLabel = new QLabel( tr( "OPACITY" ), aPropGroup );
-  myOpacity = new QtxDoubleSpinBox( 0, 1, 0.1, aPropGroup );
+  QGridLayout* aGeomLayout = new QGridLayout( aGeomGroup );
+  aGeomLayout->setMargin( 5 );
+  aGeomLayout->setSpacing( 5 );
+  aGeomLayout->addWidget( aPositionXLabel,     0, 0 );
+  aGeomLayout->addWidget( myPositionX,         0, 1 );
+  aGeomLayout->addWidget( aPositionYLabel,     1, 0 );
+  aGeomLayout->addWidget( myPositionY,         1, 1 );
+  aGeomLayout->addWidget( aScalingXLabel,      2, 0 );
+  aGeomLayout->addWidget( myScalingX,          2, 1 );
+  aGeomLayout->addWidget( aScalingYLabel,      3, 0 );
+  aGeomLayout->addWidget( myScalingY,          3, 1 );
+  aGeomLayout->addWidget( aRotationAngleLabel, 4, 0 );
+  aGeomLayout->addWidget( myRotationAngle,     4, 1 );
+  aGeomLayout->setColumnStretch( 1, 1 );
 
-  QLabel* aZValueLabel = new QLabel( tr( "Z_VALUE" ), aPropGroup );
-  myZValue = new QtxDoubleSpinBox( -1e6, 1e6, 1, aPropGroup );
+  // Representation
+  QGroupBox* aReprGroup = new QGroupBox( tr( "REPRESENTATION" ), aMainFrame );
 
-  myIsLockAspectRatio = new QCheckBox( tr( "LOCK_ASPECT_RATIO" ), aPropGroup );
+  QLabel* aZValueLabel = new QLabel( tr( "Z_VALUE" ), aReprGroup );
+  myZValue = new QtxDoubleSpinBox( -1e6, 1e6, 1, aReprGroup );
 
-  QGridLayout* aPropLayout = new QGridLayout( aPropGroup );
-  aPropLayout->setMargin( 5 );
-  aPropLayout->setSpacing( 5 );
-  aPropLayout->addWidget( aPositionXLabel,     0, 0 );
-  aPropLayout->addWidget( myPositionX,         0, 1 );
-  aPropLayout->addWidget( aPositionYLabel,     1, 0 );
-  aPropLayout->addWidget( myPositionY,         1, 1 );
-  aPropLayout->addWidget( aScalingXLabel,      2, 0 );
-  aPropLayout->addWidget( myScalingX,          2, 1 );
-  aPropLayout->addWidget( aScalingYLabel,      3, 0 );
-  aPropLayout->addWidget( myScalingY,          3, 1 );
-  aPropLayout->addWidget( aRotationAngleLabel, 4, 0 );
-  aPropLayout->addWidget( myRotationAngle,     4, 1 );
-  aPropLayout->addWidget( aZValueLabel,        5, 0 );
-  aPropLayout->addWidget( myZValue,            5, 1 );
-  aPropLayout->addWidget( anOpacityLabel,      6, 0 );
-  aPropLayout->addWidget( myOpacity,           6, 1 );
-  aPropLayout->addWidget( myIsLockAspectRatio, 7, 0, 1, 2 );
-  aPropLayout->setColumnStretch( 1, 1 );
+  QLabel* anOpacityLabel = new QLabel( tr( "OPACITY" ), aReprGroup );
+  myOpacity = new QtxDoubleSpinBox( 0, 1, 0.1, aReprGroup );
+
+  QGridLayout* aReprLayout = new QGridLayout( aReprGroup );
+  aReprLayout->setMargin( 5 );
+  aReprLayout->setSpacing( 5 );
+  aReprLayout->addWidget( aZValueLabel,   0, 0 );
+  aReprLayout->addWidget( myZValue,       0, 1 );
+  aReprLayout->addWidget( anOpacityLabel, 1, 0 );
+  aReprLayout->addWidget( myOpacity,      1, 1 );
+  aReprLayout->setColumnStretch( 1, 1 );
+
+  // Interaction
+  QGroupBox* anInterGroup = new QGroupBox( tr( "INTERACTION" ), aMainFrame );
+
+  myIsLockAspectRatio = new QCheckBox( tr( "LOCK_ASPECT_RATIO" ), anInterGroup );
+  myIsSmoothTransformation = new QCheckBox( tr( "SMOOTH_TRANSFORMATION" ), anInterGroup );
+
+  QGridLayout* anInterLayout = new QGridLayout( anInterGroup );
+  anInterLayout->setMargin( 5 );
+  anInterLayout->setSpacing( 5 );
+  anInterLayout->addWidget( myIsLockAspectRatio,      0, 0 );
+  anInterLayout->addWidget( myIsSmoothTransformation, 1, 0 );
+  anInterLayout->setColumnStretch( 1, 1 );
 
   QVBoxLayout* aMainLayout = new QVBoxLayout( aMainFrame );
   aMainLayout->setMargin( 5 );
   aMainLayout->setSpacing( 5 );
-  aMainLayout->addWidget( aPropGroup );
+  aMainLayout->addWidget( aGeomGroup );
+  aMainLayout->addWidget( aReprGroup );
+  aMainLayout->addWidget( anInterGroup );
 
   setButtonPosition( Center, OK );
   setButtonPosition( Center, Cancel );
-  setMinimumWidth( 300 );
+  setMinimumWidth( 250 );
 }
 
 //================================================================
@@ -114,7 +135,8 @@ void GraphicsView_PrsPropDlg::setData( const double thePositionX,
                                        const double theRotationAngle,
                                        const double theZValue,
                                        const double theOpacity,
-                                       const bool theIsLockAspectRatio )
+                                       const bool theIsLockAspectRatio,
+                                       const bool theIsSmoothTransformation )
 {
   myPositionX->setValue( thePositionX );
   myPositionY->setValue( thePositionY );
@@ -124,6 +146,7 @@ void GraphicsView_PrsPropDlg::setData( const double thePositionX,
   myZValue->setValue( theZValue );
   myOpacity->setValue( theOpacity );
   myIsLockAspectRatio->setChecked( theIsLockAspectRatio );
+  myIsSmoothTransformation->setChecked( theIsSmoothTransformation );
 }
 
 //=============================================================================
@@ -137,7 +160,8 @@ void GraphicsView_PrsPropDlg::getData( double& thePositionX,
                                        double& theRotationAngle,
                                        double& theZValue,
                                        double& theOpacity,
-                                       bool& theIsLockAspectRatio ) const
+                                       bool& theIsLockAspectRatio,
+                                       bool& theIsSmoothTransformation ) const
 {
   thePositionX = myPositionX->value();
   thePositionY = myPositionY->value();
@@ -147,4 +171,5 @@ void GraphicsView_PrsPropDlg::getData( double& thePositionX,
   theZValue = myZValue->value();
   theOpacity = myOpacity->value();
   theIsLockAspectRatio = myIsLockAspectRatio->isChecked();
+  theIsSmoothTransformation = myIsSmoothTransformation->isChecked();
 }

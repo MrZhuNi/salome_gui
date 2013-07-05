@@ -124,6 +124,10 @@
       <translation>Properties</translation>
     </message>
     <message>
+      <source>GEOMETRY</source>
+      <translation>Geometry</translation>
+    </message>
+    <message>
       <source>POSITION_X</source>
       <translation>Position X</translation>
     </message>
@@ -144,6 +148,10 @@
       <translation>Rotation angle</translation>
     </message>
     <message>
+      <source>REPRESENTATION</source>
+      <translation>Representation</translation>
+    </message>
+    <message>
       <source>Z_VALUE</source>
       <translation>Z value</translation>
     </message>
@@ -152,8 +160,16 @@
       <translation>Opacity</translation>
     </message>
     <message>
+      <source>INTERACTION</source>
+      <translation>Interaction</translation>
+    </message>
+    <message>
       <source>LOCK_ASPECT_RATIO</source>
       <translation>Lock aspect ratio</translation>
+    </message>
+    <message>
+      <source>SMOOTH_TRANSFORMATION</source>
+      <translation>Smooth transformation</translation>
     </message>
   </context>
 </TS>

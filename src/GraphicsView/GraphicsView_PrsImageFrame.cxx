@@ -34,6 +34,7 @@
 
 #define FRAME_Z_VALUE   1000
 #define ANCHOR_RADIUS   3
+#define EPSILON         1e-6
 #define PI              3.14159265359
 
 //=======================================================================
@@ -484,9 +485,9 @@ QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::boundingRect() c
 
   QTransform aTransform = aParent->getViewTransform();
   double aScale = aTransform.m11(); // same as m22(), viewer specific
-  if( fabs( aScale ) < 1e-10 ||
-      fabs( myScaleX ) < 1e-10 ||
-      fabs( myScaleY ) < 1e-10 )
+  if( fabs( aScale ) < EPSILON ||
+      fabs( myScaleX ) < EPSILON ||
+      fabs( myScaleY ) < EPSILON )
     return aRect;
 
   QPointF aCenter = aRect.center();

@@ -59,6 +59,9 @@ public:
   void                            setIsLockAspectRatio( const bool theIsLockAspectRatio );
   bool                            getIsLockAspectRatio() const;
 
+  void                            setIsSmoothTransformation( const bool theIsSmoothTransformation );
+  bool                            getIsSmoothTransformation() const;
+
 public:
   // from QGraphicsItem
   virtual QRectF                  boundingRect() const;

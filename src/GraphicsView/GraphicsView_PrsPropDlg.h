@@ -51,7 +51,8 @@ public:
                                     const double theRotationAngle,
                                     const double theZValue,
                                     const double theOpacity,
-                                    const bool theIsLockAspectRatio );
+                                    const bool theIsLockAspectRatio,
+                                    const bool theIsSmoothTransformation );
 
   void                     getData( double& thePositionX,
                                     double& thePositionY,
@@ -60,7 +61,8 @@ public:
                                     double& theRotationAngle,
                                     double& theZValue,
                                     double& theOpacity,
-                                    bool& theIsLockAspectRatio ) const;
+                                    bool& theIsLockAspectRatio,
+                                    bool& theIsSmoothTransformation ) const;
 
 private:
   QtxDoubleSpinBox*        myPositionX;
@@ -68,9 +70,12 @@ private:
   QtxDoubleSpinBox*        myScalingX;
   QtxDoubleSpinBox*        myScalingY;
   QtxDoubleSpinBox*        myRotationAngle;
+
   QtxDoubleSpinBox*        myOpacity;
   QtxDoubleSpinBox*        myZValue;
+
   QCheckBox*               myIsLockAspectRatio;
+  QCheckBox*               myIsSmoothTransformation;
 };
 
 #endif

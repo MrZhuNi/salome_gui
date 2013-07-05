@@ -726,14 +726,17 @@ void GraphicsView_Viewer::onPrsProperties()
         double anOpacity = aPrs->opacity();
 
         bool anIsLockAspectRatio = aPrs->getIsLockAspectRatio();
+        bool anIsSmoothTransformation = aPrs->getIsSmoothTransformation();
 
         GraphicsView_PrsPropDlg aDlg( aViewPort );
         aDlg.setData( aPosX, aPosY, aScaleX, aScaleY, aRotationAngle,
-                      aZValue, anOpacity, anIsLockAspectRatio );
+                      aZValue, anOpacity, anIsLockAspectRatio,
+                      anIsSmoothTransformation );
         if( aDlg.exec() )
         {
           aDlg.getData( aPosX, aPosY, aScaleX, aScaleY, aRotationAngle,
-                        aZValue, anOpacity, anIsLockAspectRatio );
+                        aZValue, anOpacity, anIsLockAspectRatio,
+                        anIsSmoothTransformation );
 
           aPrs->setPosition( aPosX, aPosY );
           aPrs->setScaling( aScaleX, aScaleY );
@@ -743,6 +746,7 @@ void GraphicsView_Viewer::onPrsProperties()
           aPrs->setOpacity( anOpacity );
 
           aPrs->setIsLockAspectRatio( anIsLockAspectRatio );
+          aPrs->setIsSmoothTransformation( anIsSmoothTransformation );
 
           aPrs->compute();
         }

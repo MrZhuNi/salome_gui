@@ -205,6 +205,26 @@ bool GraphicsView_PrsImage::getIsLockAspectRatio() const
 }
 
 //================================================================
+// Function : setIsSmoothTransformation
+// Purpose  : 
+//================================================================
+void GraphicsView_PrsImage::setIsSmoothTransformation( const bool theIsSmoothTransformation )
+{
+  Qt::TransformationMode aMode = theIsSmoothTransformation ?
+    Qt::SmoothTransformation : Qt::FastTransformation;
+  myPixmapItem->setTransformationMode( aMode );
+}
+
+//================================================================
+// Function : getIsSmoothTransformation
+// Purpose  : 
+//================================================================
+bool GraphicsView_PrsImage::getIsSmoothTransformation() const
+{
+  return myPixmapItem->transformationMode() == Qt::SmoothTransformation;
+}
+
+//================================================================
 // Function : boundingRect
 // Purpose  : 
 //================================================================
@@ -227,6 +247,7 @@ void GraphicsView_PrsImage::compute()
   if( !myPreviewPixmapItem )
   {
     myPreviewPixmapItem = new QGraphicsPixmapItem();
+    myPreviewPixmapItem->setTransformationMode( Qt::FastTransformation ); // always
     //addToGroup( myPreviewPixmapItem ); // don't add
   }
   if( !myPrsImageFrame )
@@ -391,42 +412,17 @@ void GraphicsView_PrsImage::processResize( const int theAnchor,
   double aSizeDX = aDist * cos( anAngle2 );
   double aSizeDY = -aDist * sin( anAngle2 );
 
-  QPointF aPosShift;
   QPointF aSizeShift;
   switch( theAnchor )
   {
-    case GraphicsView_PrsImageFrame::Top:
-      aPosShift = QPointF( aSizeDY * sin( anAngle ), aSizeDY * cos( anAngle ) );
-      aSizeShift = QPointF( 0, -aSizeDY );
-      break;
-    case GraphicsView_PrsImageFrame::Bottom:
-      aPosShift = QPointF( 0, 0 );
-      aSizeShift = QPointF( 0, aSizeDY );
-      break;
-    case GraphicsView_PrsImageFrame::Left:
-      aPosShift = QPointF( aSizeDX * cos( anAngle ), -aSizeDX * sin( anAngle ) );
-      aSizeShift = QPointF( -aSizeDX, 0 );
-      break;
-    case GraphicsView_PrsImageFrame::Right:
-      aPosShift = QPointF( 0, 0 );
-      aSizeShift = QPointF( aSizeDX, 0 );
-      break;
-    case GraphicsView_PrsImageFrame::TopLeft:
-      aPosShift = QPointF( theDX, theDY );
-      aSizeShift = QPointF( -aSizeDX, -aSizeDY );
-      break;
-    case GraphicsView_PrsImageFrame::TopRight:
-      aPosShift = QPointF( aSizeDY * sin( anAngle ), aSizeDY * cos( anAngle ) );
-      aSizeShift = QPointF( aSizeDX, -aSizeDY );
-      break;
-    case GraphicsView_PrsImageFrame::BottomLeft:
-      aPosShift = QPointF( aSizeDX * cos( anAngle ), -aSizeDX * sin( anAngle ) );
-      aSizeShift = QPointF( -aSizeDX, aSizeDY );
-      break;
-    case GraphicsView_PrsImageFrame::BottomRight:
-      aPosShift = QPointF( 0, 0 );
-      aSizeShift = QPointF( aSizeDX, aSizeDY );
-      break;
+    case GraphicsView_PrsImageFrame::Top:         aSizeShift = QPointF( 0, -aSizeDY ); break;
+    case GraphicsView_PrsImageFrame::Bottom:      aSizeShift = QPointF( 0, aSizeDY ); break;
+    case GraphicsView_PrsImageFrame::Left:        aSizeShift = QPointF( -aSizeDX, 0 ); break;
+    case GraphicsView_PrsImageFrame::Right:       aSizeShift = QPointF( aSizeDX, 0 ); break;
+    case GraphicsView_PrsImageFrame::TopLeft:     aSizeShift = QPointF( -aSizeDX, -aSizeDY ); break;
+    case GraphicsView_PrsImageFrame::TopRight:    aSizeShift = QPointF( aSizeDX, -aSizeDY ); break;
+    case GraphicsView_PrsImageFrame::BottomLeft:  aSizeShift = QPointF( -aSizeDX, aSizeDY ); break;
+    case GraphicsView_PrsImageFrame::BottomRight: aSizeShift = QPointF( aSizeDX, aSizeDY ); break;
   }
 
   double aWidth = (double)myPixmap.width() * myScaleX;
@@ -435,11 +431,67 @@ void GraphicsView_PrsImage::processResize( const int theAnchor,
   double aNewWidth = aWidth + aSizeShift.x();
   double aNewHeight = aHeight + aSizeShift.y();
 
-  myPreviewScaleX = myScaleX * aNewWidth / aWidth;
-  myPreviewScaleY = myScaleY * aNewHeight / aHeight;
+  double aRatio = fabs( aHeight ) > EPSILON ? aWidth / aHeight : 1.0;
+  double aNewRatio = fabs( aNewHeight ) > EPSILON ? aNewWidth / aNewHeight : 1.0;
+
+  double aDiffX = 0, aDiffY = 0; // only for TopLeft anchor
+  if( myIsLockAspectRatio && fabs( aRatio ) > EPSILON &&
+      ( theAnchor == GraphicsView_PrsImageFrame::TopLeft ||
+        theAnchor == GraphicsView_PrsImageFrame::TopRight ||
+        theAnchor == GraphicsView_PrsImageFrame::BottomLeft ||
+        theAnchor == GraphicsView_PrsImageFrame::BottomRight ) )
+  {
+    double aCurrentSizeShiftX = aSizeShift.x();
+    double aCurrentSizeShiftY = aSizeShift.y();
+
+    double aSign = myScaleX * myScaleY > 0 ? 1.0 : -1.0;
+    if( aSign * aNewRatio > aSign * aRatio )
+      aSizeShift.setY( aSizeShift.x() / aRatio );
+    else
+      aSizeShift.setX( aSizeShift.y() * aRatio );
+
+    aDiffX = aSizeShift.x() - aCurrentSizeShiftX;
+    aDiffY = aSizeShift.y() - aCurrentSizeShiftY;
+
+    aNewWidth = aWidth + aSizeShift.x();
+    aNewHeight = aHeight + aSizeShift.y();
+  }
+
+  QPointF aPosShift;
+  switch( theAnchor )
+  {
+    case GraphicsView_PrsImageFrame::Top:
+      aPosShift = QPointF( -aSizeShift.y() * sin( anAngle ), -aSizeShift.y() * cos( anAngle ) );
+      break;
+    case GraphicsView_PrsImageFrame::Bottom:
+      aPosShift = QPointF( 0, 0 );
+      break;
+    case GraphicsView_PrsImageFrame::Left:
+      aPosShift = QPointF( -aSizeShift.x() * cos( anAngle ), aSizeShift.x() * sin( anAngle ) );
+      break;
+    case GraphicsView_PrsImageFrame::Right:
+      aPosShift = QPointF( 0, 0 );
+      break;
+    case GraphicsView_PrsImageFrame::TopLeft:
+      aPosShift = QPointF( theDX - aDiffX * cos( anAngle ) - aDiffY * sin( anAngle ),
+                           theDY + aDiffX * sin( anAngle ) - aDiffY * cos( anAngle ) );
+      break;
+    case GraphicsView_PrsImageFrame::TopRight:
+      aPosShift = QPointF( -aSizeShift.y() * sin( anAngle ), -aSizeShift.y() * cos( anAngle ) );
+      break;
+    case GraphicsView_PrsImageFrame::BottomLeft:
+      aPosShift = QPointF( -aSizeShift.x() * cos( anAngle ), aSizeShift.x() * sin( anAngle ) );
+      break;
+    case GraphicsView_PrsImageFrame::BottomRight:
+      aPosShift = QPointF( 0, 0 );
+      break;
+  }
 
   myPreviewPosX = myPosX + aPosShift.x();
   myPreviewPosY = myPosY + aPosShift.y();
+
+  myPreviewScaleX = myScaleX * aNewWidth / aWidth;
+  myPreviewScaleY = myScaleY * aNewHeight / aHeight;
 
   updateTransform();
 }
