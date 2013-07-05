@@ -127,6 +127,9 @@ public:
   void           setScaling( const double theScaleX, const double theScaleY );
   void           setRotationAngle( const double theRotationAngle );
 
+  QRectF         highlightRect() const;
+  QRectF         sceneHighlightRect() const;
+
 public:
   virtual QRectF boundingRect() const;
   virtual void   paint( QPainter*, const QStyleOptionGraphicsItem*, QWidget* );

@@ -153,9 +153,9 @@ bool GraphicsView_PrsImageFrame::checkHighlight( double theX, double theY, QCurs
   while( anIter.hasNext() )
   {
     int aType = anIter.next().key();
-    if( QGraphicsEllipseItem* anAnchorItem = anIter.value() )
+    if( UnscaledGraphicsEllipseItem* anAnchorItem = anIter.value() )
     {
-      QRectF aRect = anAnchorItem->sceneBoundingRect();
+      QRectF aRect = anAnchorItem->sceneHighlightRect();
       if( aRect.contains( QPointF( theX, theY ) ) )
       {
         if( aType >= Top && aType <= BottomRight )
@@ -196,7 +196,7 @@ bool GraphicsView_PrsImageFrame::startPulling( const QPointF& thePoint )
     int aType = anIter.next().key();
     if( UnscaledGraphicsEllipseItem* anAnchorItem = anIter.value() )
     {
-      QRectF aRect = anAnchorItem->sceneBoundingRect();
+      QRectF aRect = anAnchorItem->sceneHighlightRect();
       if( aRect.contains( thePoint ) )
       {
         myPullingAnchor = aType;
@@ -479,10 +479,10 @@ void GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::
 }
 
 //================================================================
-// Function : boundingRect
+// Function : highlightRect
 // Purpose  : 
 //================================================================
-QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::boundingRect() const
+QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::highlightRect() const
 {
   QRectF aRect = QGraphicsEllipseItem::boundingRect();
 
@@ -507,12 +507,29 @@ QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::boundingRect() c
   aRect = QRectF( aCenter.x() - aWidth / 2 + anOffsetX,
                   aCenter.y() - aHeight / 2 + anOffsetY,
                   aWidth, aHeight );
-
-  // to do
-  //QRectF aBaseRect( myBasePoint, QSizeF( 1, 1 ) );
-  //aRect |= aBaseRect;
-
   return aRect;
+}
+
+//================================================================
+// Function : sceneHighlightRect
+// Purpose  : 
+//================================================================
+QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::sceneHighlightRect() const
+{
+  if( QGraphicsItem* aParentItem = parentItem() )
+    return aParentItem->sceneTransform().mapRect( highlightRect() );
+  return sceneBoundingRect();
+}
+
+//================================================================
+// Function : boundingRect
+// Purpose  : 
+//================================================================
+QRectF GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::boundingRect() const
+{
+  QRectF aHighlightRect = highlightRect();
+  QRectF aBaseRect( myBasePoint, QSizeF( 1, 1 ) );
+  return aHighlightRect | aBaseRect;
 }
 
 //================================================================
@@ -541,7 +558,7 @@ void GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::paint(
   QWidget* theWidget )
 {
   // draw a connection line (mainly, for top-most anchor)
-  //thePainter->drawLine( myBasePoint, boundingRect().center() );
+  thePainter->drawLine( myBasePoint, highlightRect().center() );
 
   thePainter->save();
   thePainter->setTransform( GenerateTranslationOnlyTransform( thePainter->transform(),
@@ -563,8 +580,15 @@ void GraphicsView_PrsImageFrame::UnscaledGraphicsEllipseItem::paint(
   thePainter->restore();
 
   // for debug
-  //thePainter->save();
-  //thePainter->setPen( QPen( Qt::magenta ) );
-  //thePainter->drawRect( boundingRect() );
-  //thePainter->restore();
+  /*
+  thePainter->save();
+  thePainter->setPen( QPen( Qt::magenta ) );
+  thePainter->drawRect( boundingRect() );
+  thePainter->restore();
+
+  thePainter->save();
+  thePainter->setPen( QPen( Qt::blue ) );
+  thePainter->drawRect( highlightRect() );
+  thePainter->restore();
+  */
 }
