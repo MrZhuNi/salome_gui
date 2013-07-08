@@ -374,16 +374,8 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
   {
     if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
     {
-      if( e->button() == Qt::RightButton &&
-          aViewPort->hasInteractionFlag( GraphicsView_ViewPort::ImmediateSelection ) &&
-          aViewPort->nbSelected() < 1 )
-      {
-        // If the 'immediate selection' mode is enabled,
-        // try to perform selection before invoking context menu
-        bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
-        getSelector()->select( QRectF(), append );
-      }
-      else if( e->button() == Qt::LeftButton &&
+      bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
+      if( e->button() == Qt::LeftButton &&
                aViewPort->hasInteractionFlag( GraphicsView_ViewPort::Pulling ) &&
                !aViewPort->isSelectByRect() && 
                !aViewPort->isDragging() &&
@@ -399,6 +391,23 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
         // Start rectangular selection if pulling was not started
         QPoint p = aViewPort->mapFromScene( e->scenePos() );
         aViewPort->startSelectByRect( p.x(), p.y() );
+      }
+      else if( !append &&
+               e->button() != Qt::MidButton &&
+               aViewPort->hasInteractionFlag( GraphicsView_ViewPort::ImmediateSelection ) &&
+               aViewPort->nbSelected() < 2 )
+      {
+        // Do not perform 'immediate selection' if the multiple objects are already selected
+        getSelector()->select( QRectF(), append );
+      }
+      else if( e->button() == Qt::RightButton &&
+               aViewPort->hasInteractionFlag( GraphicsView_ViewPort::ImmediateContextMenu ) &&
+               aViewPort->nbSelected() < 1 )
+      {
+        // If the 'immediate context menu' mode is enabled,
+        // try to perform selection before invoking context menu
+        //bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
+        getSelector()->select( QRectF(), append );
       }
     }
   }

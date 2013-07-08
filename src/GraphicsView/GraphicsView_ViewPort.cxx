@@ -151,7 +151,8 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   setInteractionFlags( EditFlags );
   //setInteractionFlag( TraceBoundingRect );
   //setInteractionFlag( DraggingByMiddleButton );
-  //setInteractionFlag( ImmediateSelection );
+  //setInteractionFlag( ImmediateContextMenu );
+  setInteractionFlag( ImmediateSelection );
 
   // background
   setBackgroundBrush( QBrush( Qt::white ) );

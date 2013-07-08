@@ -56,7 +56,8 @@ public:
     // advanced flags
     TraceBoundingRect      = 0x0008,
     DraggingByMiddleButton = 0x0010,
-    ImmediateSelection     = 0x0020
+    ImmediateContextMenu   = 0x0020,
+    ImmediateSelection     = 0x0040,
   };
   Q_DECLARE_FLAGS( InteractionFlags, InteractionFlag )
 
