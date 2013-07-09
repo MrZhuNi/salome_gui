@@ -1401,7 +1401,7 @@ void GraphicsView_ViewPort::drawSketching( const QPointF& thePoint )
 //================================================================
 void GraphicsView_ViewPort::finishSketching( bool theStatus )
 {
-  prepareToSketch( false ); // just in case
+  prepareToSketch( false );
 
   mySketchingItem->setVisible( false );
   myIsSketching = false;
@@ -1591,6 +1591,12 @@ bool GraphicsView_ViewPort::cancelCurrentOperation()
   if( isPulling() )
   {
     finishPulling( false );
+    return true;
+  }
+
+  if( isSketching() || isPrepareToSketch() )
+  {
+    finishSketching( false );
     return true;
   }
 
