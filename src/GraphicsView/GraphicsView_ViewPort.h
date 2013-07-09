@@ -58,6 +58,7 @@ public:
     DraggingByMiddleButton = 0x0010,
     ImmediateContextMenu   = 0x0020,
     ImmediateSelection     = 0x0040,
+    Sketching              = 0x0080
   };
   Q_DECLARE_FLAGS( InteractionFlags, InteractionFlag )
 
@@ -185,6 +186,15 @@ public:
   bool                             isSelectByRect() const;
   QRect                            selectionRect();
 
+  // sketching
+  void                             prepareToSketch( bool theStatus );
+  bool                             isPrepareToSketch();
+  void                             startSketching( const QPointF& thePoint,
+                                                   bool theIsPath );
+  void                             drawSketching( const QPointF& thePoint );
+  void                             finishSketching( bool theStatus );
+  bool                             isSketching( bool* theIsPath = 0 ) const;
+
   // dragging
   bool                             isDragging() { return myIsDragging; }
 
@@ -205,6 +215,7 @@ public:
   static QCursor*                  getPanCursor() { return panCursor; }
   static QCursor*                  getPanglCursor() { return panglCursor; }
   static QCursor*                  getZoomCursor() { return zoomCursor; }
+  static QCursor*                  getSketchCursor() { return sketchCursor; }
 
 public slots:
   void                             onBoundingRectChanged();
@@ -224,6 +235,8 @@ signals:
   void                             vpWheelEvent( QGraphicsSceneWheelEvent* );
   void                             vpContextMenuEvent( QGraphicsSceneContextMenuEvent* );
 
+  void                             vpSketchingFinished( QPainterPath );
+
   void                             vpObjectBeforeMoving();
   void                             vpObjectAfterMoving( bool );
 
@@ -240,6 +253,7 @@ private:
   static QCursor*                  panCursor;
   static QCursor*                  panglCursor;
   static QCursor*                  zoomCursor;
+  static QCursor*                  sketchCursor;
 
 private:
   // scene
@@ -291,6 +305,13 @@ private:
   QPoint                           myFirstSelectionPoint;
   QPoint                           myLastSelectionPoint;
   bool                             myAreSelectionPointsInitialized;
+
+  // sketching
+  QGraphicsPathItem*               mySketchingItem;
+  QPointF                          mySketchingPoint;
+  bool                             myIsPrepareToSketch;
+  bool                             myIsSketching;
+  bool                             myIsSketchingByPath;
 
   // dragging
   int                              myIsDragging;

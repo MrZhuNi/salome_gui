@@ -40,12 +40,17 @@
 
 #include <math.h>
 
+#define FOREGROUND_Z_VALUE -2
+#define GRID_Z_VALUE       -1
+#define SKETCH_Z_VALUE     3000
+
 int GraphicsView_ViewPort::nCounter = 0;
 QCursor* GraphicsView_ViewPort::defCursor = 0;
 QCursor* GraphicsView_ViewPort::handCursor = 0;
 QCursor* GraphicsView_ViewPort::panCursor = 0;
 QCursor* GraphicsView_ViewPort::panglCursor = 0;
 QCursor* GraphicsView_ViewPort::zoomCursor = 0;
+QCursor* GraphicsView_ViewPort::sketchCursor = 0;
 
 //=======================================================================
 // Name    : GraphicsView_ViewPort::NameLabel
@@ -99,6 +104,8 @@ void GraphicsView_ViewPort::createCursors ()
 
   SUIT_ResourceMgr* rmgr = SUIT_Session::session()->resourceMgr();
   zoomCursor   = new QCursor( rmgr->loadPixmap( "GraphicsView", tr( "ICON_GV_CURSOR_ZOOM" ) ) );
+
+  sketchCursor = new QCursor( Qt::CrossCursor );
 }
 
 //================================================================
@@ -107,11 +114,12 @@ void GraphicsView_ViewPort::createCursors ()
 //================================================================
 void GraphicsView_ViewPort::destroyCursors()
 {
-  delete defCursor;   defCursor   = 0;
-  delete handCursor;  handCursor  = 0;
-  delete panCursor;   panCursor   = 0;
-  delete panglCursor; panglCursor = 0;
-  delete zoomCursor;  zoomCursor  = 0;
+  delete defCursor;    defCursor    = 0;
+  delete handCursor;   handCursor   = 0;
+  delete panCursor;    panCursor    = 0;
+  delete panglCursor;  panglCursor  = 0;
+  delete zoomCursor;   zoomCursor   = 0;
+  delete sketchCursor; sketchCursor = 0;
 }
 
 //=======================================================================
@@ -134,6 +142,10 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   mySelectionIterator( 0 ),
   myRectBand( 0 ),
   myAreSelectionPointsInitialized( false ),
+  mySketchingItem( 0 ),
+  myIsPrepareToSketch( false ),
+  myIsSketching( false ),
+  myIsSketchingByPath( false ),
   myIsDragging( false ),
   myIsDragPositionInitialized( false ),
   myIsPulling( false ),
@@ -152,7 +164,8 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   //setInteractionFlag( TraceBoundingRect );
   //setInteractionFlag( DraggingByMiddleButton );
   //setInteractionFlag( ImmediateContextMenu );
-  setInteractionFlag( ImmediateSelection );
+  setInteractionFlag( ImmediateSelection ); // testing ImageViewer
+  setInteractionFlag( Sketching ); // testing ImageViewer
 
   // background
   setBackgroundBrush( QBrush( Qt::white ) );
@@ -621,7 +634,7 @@ void GraphicsView_ViewPort::updateForeground()
   {
     if( !myForegroundItem )
       myForegroundItem = myScene->addRect( QRectF(), QPen(), QBrush( Qt::white ) );
-    myForegroundItem->setZValue( -2 );
+    myForegroundItem->setZValue( FOREGROUND_Z_VALUE );
 
     QPointF aPoint = QPointF();
     QRectF aRect( aPoint, myForegroundSize );
@@ -697,7 +710,7 @@ void GraphicsView_ViewPort::updateGrid()
   {
     if( !myGridItem )
       myGridItem = myScene->addPath( QPainterPath() );
-    myGridItem->setZValue( -1 );
+    myGridItem->setZValue( GRID_Z_VALUE );
 
     double aWidth = myForegroundSize.width();
     double aHeight = myForegroundSize.height();
@@ -1303,6 +1316,117 @@ QRect GraphicsView_ViewPort::selectionRect()
 }
 
 //================================================================
+// Function : prepareToSketch
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::prepareToSketch( bool theStatus )
+{
+  myIsPrepareToSketch = theStatus;
+  if( theStatus )
+    setCursor( *getSketchCursor() );
+}
+
+//================================================================
+// Function : isPrepareToSketch
+// Purpose  : 
+//================================================================
+bool GraphicsView_ViewPort::isPrepareToSketch()
+{
+  return myIsPrepareToSketch;
+}
+
+//================================================================
+// Function : startSketching
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::startSketching( const QPointF& thePoint,
+                                            bool theIsPath )
+{
+  prepareToSketch( false );
+
+  if( !mySketchingItem )
+  {
+    mySketchingItem = new QGraphicsPathItem();
+    mySketchingItem->setZValue( SKETCH_Z_VALUE );
+
+    QPen aPen = mySketchingItem->pen();
+    aPen.setStyle( Qt::DotLine );
+    mySketchingItem->setPen( aPen );
+
+    addItem( mySketchingItem );
+  }
+
+  mySketchingPoint = thePoint;
+
+  QPainterPath aPath;
+  aPath.moveTo( mySketchingPoint );
+  mySketchingItem->setPath( aPath );
+  mySketchingItem->setVisible( true );
+
+  myIsSketching = true;
+  myIsSketchingByPath = theIsPath;
+}
+
+//================================================================
+// Function : drawSketching
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::drawSketching( const QPointF& thePoint )
+{
+  bool anIsPath = false;
+  if( mySketchingItem && isSketching( &anIsPath ) )
+  {
+    QPainterPath aPath = mySketchingItem->path();
+    if( anIsPath ) // arbitrary path
+      aPath.lineTo( thePoint );
+    else // rectangle
+    {
+      // make a valid rectangle
+      double x1 = mySketchingPoint.x(), y1 = mySketchingPoint.y();
+      double x2 = thePoint.x(), y2 = thePoint.y();
+      QPointF aPoint1( qMin( x1, x2 ), qMin( y1, y2 ) );
+      QPointF aPoint2( qMax( x1, x2 ), qMax( y1, y2 ) );
+      QRectF aRect( aPoint1, aPoint2 );
+
+      aPath = QPainterPath();
+      aPath.addRect( aRect );
+    }
+    mySketchingItem->setPath( aPath );
+  }
+}
+
+//================================================================
+// Function : finishSketching
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::finishSketching( bool theStatus )
+{
+  prepareToSketch( false ); // just in case
+
+  mySketchingItem->setVisible( false );
+  myIsSketching = false;
+
+  setCursor( *getDefaultCursor() );
+
+  if( theStatus )
+  {
+    QPainterPath aPath = mySketchingItem->path();
+    emit vpSketchingFinished( aPath );
+  }
+}
+
+//================================================================
+// Function : isSketching
+// Purpose  : 
+//================================================================
+bool GraphicsView_ViewPort::isSketching( bool* theIsPath ) const
+{
+  if( theIsPath )
+    *theIsPath = myIsSketchingByPath;
+  return myIsSketching;
+}
+
+//================================================================
 // Function : dragObjects
 // Purpose  : 
 //================================================================
@@ -1534,7 +1658,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
       if( hasInteractionFlag( EditFlags ) && nbSelected() )
         for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
           if( GraphicsView_Object* anObject = selectedObject() )
-            anIsHandled = anObject->handleMousePress( e );
+            anIsHandled = anObject->handleMouseMove( e );
 
       if( !anIsHandled && !isPulling() && myIsDragging )
         dragObjects( e );
@@ -1545,7 +1669,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
       if( hasInteractionFlag( EditFlags ) && nbSelected() )
         for( initSelected(); moreSelected() && !anIsHandled; nextSelected() )
           if( GraphicsView_Object* anObject = selectedObject() )
-            anIsHandled = anObject->handleMousePress( e );
+            anIsHandled = anObject->handleMouseRelease( e );
 
       if( !anIsHandled && !isPulling() && myIsDragging )
       {

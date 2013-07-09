@@ -29,6 +29,8 @@
 
 #include <SUIT_ViewModel.h>
 
+#include <QPainterPath>
+
 class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
 class QKeyEvent;
@@ -91,13 +93,14 @@ protected slots:
   virtual void                  onMouseEvent( QGraphicsSceneMouseEvent* );
   virtual void                  onWheelEvent( QGraphicsSceneWheelEvent* );
 
+  virtual void                  onSketchingFinished( QPainterPath );
+
   virtual void                  onSelectionDone( GV_SelectionChangeStatus );
   virtual void                  onSelectionCancel();
 
   virtual void                  onChangeBgColor();
 
   // testing ImageViewer
-  void                          onTestImageComposition();
   void                          onAddImage();
   void                          onRemoveImages();
   void                          onBringToFront();
@@ -105,6 +108,9 @@ protected slots:
   void                          onBringForward();
   void                          onSendBackward();
   void                          onPrsProperties();
+  void                          onTestFuseOperator();
+  void                          onTestCropOperatorPrepare();
+  void                          onTestCropOperatorPerform( QPainterPath thePath );
 
 private:
   void                          handleKeyPress( QKeyEvent* );

@@ -92,6 +92,9 @@ SUIT_ViewWindow* GraphicsView_Viewer::createView( SUIT_Desktop* theDesktop )
   connect( aViewFrame, SIGNAL( wheeling( QGraphicsSceneWheelEvent* ) ),
            this, SLOT( onWheelEvent( QGraphicsSceneWheelEvent* ) ) );
 
+  connect( aViewFrame, SIGNAL( sketchingFinished( QPainterPath ) ),
+           this, SLOT( onSketchingFinished( QPainterPath ) ) );
+
   return aViewFrame;
 }
 
@@ -113,7 +116,8 @@ void GraphicsView_Viewer::contextMenuPopup( QMenu* thePopup )
       thePopup->addAction( tr( "ADD_IMAGE" ), this, SLOT( onAddImage() ) );
       thePopup->addSeparator();
 
-      thePopup->addAction( tr( "TEST_IMAGE_COMPOSITION" ), this, SLOT( onTestImageComposition() ) );
+      thePopup->addAction( tr( "TEST_FUSE_OPERATOR" ), this, SLOT( onTestFuseOperator() ) );
+      thePopup->addAction( tr( "TEST_CROP_OPERATOR" ), this, SLOT( onTestCropOperatorPrepare() ) );
     }
     else
     {
@@ -376,6 +380,13 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
     {
       bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
       if( e->button() == Qt::LeftButton &&
+          aViewPort->hasInteractionFlag( GraphicsView_ViewPort::Sketching ) &&
+          aViewPort->isPrepareToSketch() )
+      {
+        // Use 'append' flag for sketching by arbitrary path
+        aViewPort->startSketching( e->scenePos(), append );
+      }
+      else if( e->button() == Qt::LeftButton &&
                aViewPort->hasInteractionFlag( GraphicsView_ViewPort::Pulling ) &&
                !aViewPort->isSelectByRect() && 
                !aViewPort->isDragging() &&
@@ -392,8 +403,7 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
         QPoint p = aViewPort->mapFromScene( e->scenePos() );
         aViewPort->startSelectByRect( p.x(), p.y() );
       }
-      else if( !append &&
-               e->button() != Qt::MidButton &&
+      else if( e->button() != Qt::MidButton && !append &&
                aViewPort->hasInteractionFlag( GraphicsView_ViewPort::ImmediateSelection ) &&
                aViewPort->nbSelected() < 2 )
       {
@@ -406,7 +416,6 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
       {
         // If the 'immediate context menu' mode is enabled,
         // try to perform selection before invoking context menu
-        //bool append = bool ( e->modifiers() & GraphicsView_Selector::getAppendKey() );
         getSelector()->select( QRectF(), append );
       }
     }
@@ -419,20 +428,27 @@ void GraphicsView_Viewer::handleMousePress( QGraphicsSceneMouseEvent* e )
 //================================================================
 void GraphicsView_Viewer::handleMouseMove( QGraphicsSceneMouseEvent* e )
 {
+  GraphicsView_ViewPort* aViewPort = getActiveViewPort();
+
   // highlight for selection
-  bool dragged = ( e->buttons() & ( Qt::LeftButton | Qt::MidButton | Qt::RightButton ) );
-  if ( !dragged )
+  bool anIsDragged = ( e->buttons() & ( Qt::LeftButton | Qt::MidButton | Qt::RightButton ) );
+  bool anIsPrepareToSketch = aViewPort && aViewPort->isPrepareToSketch();
+  if ( !anIsDragged && !anIsPrepareToSketch )
   {
     if ( getSelector() )
       getSelector()->detect( e->scenePos().x(), e->scenePos().y() );
   }
 
   // try to activate other operations
-  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  if( aViewPort )
   {
     if( aViewPort->isPulling() )
     {
       aViewPort->drawPulling( e->scenePos() );
+    }
+    else if( aViewPort->isSketching() )
+    {
+      aViewPort->drawSketching( e->scenePos() );
     }
     else if( e->button() == Qt::LeftButton &&
              aViewPort->hasInteractionFlag( GraphicsView_ViewPort::Pulling ) &&
@@ -477,6 +493,10 @@ void GraphicsView_Viewer::handleMouseRelease( QGraphicsSceneMouseEvent* e )
     {
       aViewPort->finishPulling( true );
     }
+    else if( aViewPort->isSketching() )
+    {
+      aViewPort->finishSketching( true );
+    }
     else if( !aViewPort->getHighlightedObject() )
     {
       QRect aSelRect = aViewPort->selectionRect();
@@ -516,6 +536,16 @@ void GraphicsView_Viewer::handleWheel( QGraphicsSceneWheelEvent* e )
       }
     }
   }
+}
+
+//================================================================
+// Function : onSketchingFinished
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onSketchingFinished( QPainterPath thePath )
+{
+  // testing ImageViewer
+  onTestCropOperatorPerform( thePath );
 }
 
 //================================================================
@@ -774,15 +804,17 @@ void GraphicsView_Viewer::onPrsProperties()
 }
 
 //================================================================
-// Function : onTestImageComposition
+// Function : onTestFuseOperator
 // Purpose  : 
 //================================================================
-void GraphicsView_Viewer::onTestImageComposition()
+void GraphicsView_Viewer::onTestFuseOperator()
 {
   if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
   {
     GraphicsView_ObjectList aList = aViewPort->getObjects();
-    int aCount = aList.count();
+    if( aList.count() < 3 )
+      return;
+
     GraphicsView_PrsImage* anObj1 = dynamic_cast<GraphicsView_PrsImage*>( aList[0] );
     GraphicsView_PrsImage* anObj2 = dynamic_cast<GraphicsView_PrsImage*>( aList[2] );
 
@@ -812,5 +844,53 @@ void GraphicsView_Viewer::onTestImageComposition()
     aViewPort->addItem( aResPrs );
     aViewPort->removeItem( anObj1 );
     aViewPort->removeItem( anObj2 );
+  }
+}
+
+//================================================================
+// Function : onTestCropOperatorPrepare
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onTestCropOperatorPrepare()
+{
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+    aViewPort->prepareToSketch( true );
+}
+
+//================================================================
+// Function : onTestCropOperatorPerform
+// Purpose  : 
+//================================================================
+void GraphicsView_Viewer::onTestCropOperatorPerform( QPainterPath thePath )
+{
+  if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
+  {
+    GraphicsView_ObjectList aList = aViewPort->getObjects();
+    if( aList.count() < 1 )
+      return;
+
+    GraphicsView_PrsImage* anObj = dynamic_cast<GraphicsView_PrsImage*>( aList[0] );
+
+    ImageComposer_Image anImage;
+    anImage = anObj->getImage();
+    anImage.setTransform( anObj->getTransform() );
+
+    ImageComposer_Image aResult = anImage & thePath;
+    GraphicsView_PrsImage* aResPrs = new GraphicsView_PrsImage();
+    aResPrs->setImage( aResult );
+
+    double aPosX, aPosY, aScaleX, aScaleY, aRotationAngle;
+    anObj->getPosition( aPosX, aPosY );
+    anObj->getScaling( aScaleX, aScaleY );
+    anObj->getRotationAngle( aRotationAngle );
+
+    aResPrs->setPosition( aResult.transform().dx(), aResult.transform().dy() );
+    aResPrs->setScaling( aScaleX, aScaleY );
+    aResPrs->setRotationAngle( aRotationAngle );
+
+    aResPrs->compute();
+
+    aViewPort->addItem( aResPrs );
+    aViewPort->removeItem( anObj );
   }
 }

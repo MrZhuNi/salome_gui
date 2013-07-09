@@ -85,6 +85,8 @@ signals:
   void                    mouseDoubleClicked( QGraphicsSceneMouseEvent* );
   void                    wheeling( QGraphicsSceneWheelEvent* );
 
+  void                    sketchingFinished( QPainterPath );
+
 private:
   void                    createActions();
   int                     createToolBar();

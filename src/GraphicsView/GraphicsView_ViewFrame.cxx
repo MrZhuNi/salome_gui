@@ -75,6 +75,9 @@ GraphicsView_ViewFrame::GraphicsView_ViewFrame( SUIT_Desktop* d, GraphicsView_Vi
            this, SLOT( wheelEvent( QGraphicsSceneWheelEvent* ) ) );
   connect( myViewPort, SIGNAL( vpContextMenuEvent( QGraphicsSceneContextMenuEvent* ) ),
            this, SLOT( contextMenuEvent( QGraphicsSceneContextMenuEvent* ) ) );
+
+  connect( myViewPort, SIGNAL( vpSketchingFinished( QPainterPath ) ),
+           this, SIGNAL( sketchingFinished( QPainterPath ) ) );
 }
 
 //=======================================================================
