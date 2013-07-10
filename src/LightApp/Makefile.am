@@ -79,6 +79,9 @@ endif
 if ENABLE_GLVIEWER
   salomeinclude_HEADERS += LightApp_GLSelector.h
 endif
+if ENABLE_GRAPHICSVIEW
+  salomeinclude_HEADERS += LightApp_GVSelector.h
+endif
 if ENABLE_PLOT2DVIEWER
   salomeinclude_HEADERS += LightApp_Plot2dSelector.h
 endif
@@ -128,6 +131,9 @@ endif
 if ENABLE_GLVIEWER
   dist_libLightApp_la_SOURCES += LightApp_GLSelector.cxx
 endif
+if ENABLE_GRAPHICSVIEW
+  dist_libLightApp_la_SOURCES += LightApp_GVSelector.cxx
+endif
 if ENABLE_PLOT2DVIEWER
   dist_libLightApp_la_SOURCES += LightApp_Plot2dSelector.cxx
 endif
@@ -161,6 +167,9 @@ if ENABLE_OCCVIEWER
 endif
 if ENABLE_GLVIEWER
   MOC_FILES += LightApp_GLSelector_moc.cxx
+endif
+if ENABLE_GRAPHICSVIEW
+  MOC_FILES += LightApp_GVSelector_moc.cxx
 endif
 if ENABLE_PLOT2DVIEWER
   MOC_FILES += LightApp_Plot2dSelector_moc.cxx
@@ -219,7 +228,7 @@ endif
 if ENABLE_GRAPHICSVIEW
   libLightApp_la_CPPFLAGS += -I$(srcdir)/../GraphicsView
 else !ENABLE_GRAPHICSVIEW
-  libLightApp_la_CPPFLAGS += -DDISABLE_GRAPHICSVIEWER
+  libLightApp_la_CPPFLAGS += -DDISABLE_GRAPHICSVIEW
 endif
 if ENABLE_SUPERVGRAPHVIEWER
   libLightApp_la_CPPFLAGS += -I$(srcdir)/../SUPERVGraph

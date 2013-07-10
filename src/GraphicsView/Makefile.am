@@ -16,10 +16,6 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-#  File   : Makefile.in
-#  Author : Vladimir Klyachin (OCN)
-#  Module : caf
-#  $Header$
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
@@ -81,6 +77,6 @@ nodist_salomeres_DATA =		\
 	GraphicsView_msg_en.qm	\
 	GraphicsView_msg_fr.qm
 
-libGraphicsView_la_CPPFLAGS = $(QT_INCLUDES) -I$(srcdir)/../SUIT -I$(srcdir)/../Qtx
+libGraphicsView_la_CPPFLAGS = $(QT_INCLUDES) -I$(srcdir)/../SUIT -I$(srcdir)/../Qtx -I$(srcdir)/../ImageComposer
 libGraphicsView_la_LDFLAGS  = $(QT_MT_LIBS)
-libGraphicsView_la_LIBADD   = ../SUIT/libsuit.la
+libGraphicsView_la_LIBADD   = ../SUIT/libsuit.la ../ImageComposer/libImageComposer.la

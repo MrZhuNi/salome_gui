@@ -29,7 +29,7 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 # Common packages
 ##
 
-SUBDIRS_COMMON = CASCatch Qtx Style DDS QDS ObjBrowser SUIT SUITApp STD CAF CAM LogWindow Prs Event OpenGLUtils GUI_PY
+SUBDIRS_COMMON = CASCatch Qtx Style DDS QDS ObjBrowser SUIT SUITApp STD CAF CAM LogWindow Prs Event OpenGLUtils ImageComposer GUI_PY
 
 ##
 # SALOME object
@@ -131,7 +131,7 @@ SUBDIRS = $(SUBDIRS_COMMON) $(SUBDIRS_OBJECT) $(SUBDIRS_VIEWERTOOLS) $(SUBDIRS_G
           $(SUBDIRS_OCCVIEWER) $(SUBDIRS_PLOT2DVIEWER) $(SUBDIRS_SUPERVGRAPHVIEWER) $(SUBDIRS_QXGRAPHVIEWER) \
           $(SUBDIRS_PYCONSOLE) $(SUBDIRS_LIGHT) $(SUBDIRS_CORBA) $(SUBDIRS_PY_LIGHT)
 
-DIST_SUBDIRS = CASCatch Qtx Style DDS QDS ObjBrowser SUIT SUITApp STD CAF CAM LogWindow Prs Event OpenGLUtils \
+DIST_SUBDIRS = CASCatch Qtx Style DDS QDS ObjBrowser SUIT SUITApp STD CAF CAM LogWindow Prs Event OpenGLUtils ImageComposer \
                OBJECT ViewerTools GLViewer GraphicsView VTKViewer SVTK OCCViewer SOCC Plot2d SPlot2d SUPERVGraph QxGraph QxScene \
                PyInterp PyConsole LightApp ResExporter TOOLSGUI Session SalomeApp GuiHelpers TreeData \
                SALOME_SWIG SALOME_PY SALOME_PYQT GUI_PY

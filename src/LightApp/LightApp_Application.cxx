@@ -154,9 +154,10 @@
   #include <QxScene_ViewWindow.h>
 #endif
 
-#ifndef DISABLE_GRAPHICSVIEWER
+#ifndef DISABLE_GRAPHICSVIEW
   #include <GraphicsView_Viewer.h>
   #include <GraphicsView_ViewManager.h>
+  #include "LightApp_GVSelector.h"
 #endif
 
 
@@ -674,7 +675,7 @@ void LightApp_Application::createActions()
 //  createActionForViewer( NewQxGraphViewId, newWinMenu, QString::number( 4 ), Qt::ALT+Qt::Key_C );
   createActionForViewer( NewQxSceneViewId, newWinMenu, QString::number( 4 ), Qt::ALT+Qt::Key_S );
 #endif
-#ifndef DISABLE_GRAPHICSVIEWER
+#ifndef DISABLE_GRAPHICSVIEW
   createActionForViewer( NewGraphicsViewId, newWinMenu, QString::number( 5 ), Qt::ALT+Qt::Key_R );
 #endif
 
@@ -795,7 +796,7 @@ void LightApp_Application::onNewWindow()
     type = QxScene_Viewer::Type();
     break;
 #endif
-#ifndef DISABLE_GRAPHICSVIEWER
+#ifndef DISABLE_GRAPHICSVIEW
   case NewGraphicsViewId:
     type = GraphicsView_Viewer::Type();
     break;
@@ -926,7 +927,7 @@ void LightApp_Application::updateCommandsStatus()
     a->setEnabled( activeStudy() );
 #endif
 
-#ifndef DISABLE_GRAPHICSVIEWER
+#ifndef DISABLE_GRAPHICSVIEW
   a = action( NewGraphicsViewId );
   if( a )
     a->setEnabled( activeStudy() );
@@ -1505,10 +1506,11 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
 #endif
   }
 #endif
-#ifndef DISABLE_GRAPHICSVIEWER
+#ifndef DISABLE_GRAPHICSVIEW
   if( vmType == GraphicsView_Viewer::Type() )
   {
     viewMgr = new GraphicsView_ViewManager( activeStudy(), desktop() );
+    new LightApp_GVSelector( (GraphicsView_Viewer*)viewMgr->getViewModel(), mySelMgr );
   }
 #endif
 
