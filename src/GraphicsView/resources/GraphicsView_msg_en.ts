@@ -106,8 +106,12 @@
       <translation>Properties</translation>
     </message>
     <message>
-      <source>TEST_IMAGE_COMPOSITION</source>
-      <translation>Test image composition</translation>
+      <source>TEST_FUSE_OPERATOR</source>
+      <translation>Test Fuse operator</translation>
+    </message>
+    <message>
+      <source>TEST_CROP_OPERATOR</source>
+      <translation>Test Crop operator</translation>
     </message>
   </context>
   <context>
