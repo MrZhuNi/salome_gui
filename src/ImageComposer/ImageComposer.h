@@ -1,7 +1,7 @@
 
 #ifdef WIN32
 
-  #ifdef IMAGECOMPOSER_EXPORTS
+  #ifdef IMAGE_COMPOSER_EXPORTS
     #define IMAGE_COMPOSER_API __declspec( dllexport )
   #else
     #define IMAGE_COMPOSER_API __declspec( dllimport )

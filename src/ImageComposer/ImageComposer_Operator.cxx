@@ -6,10 +6,9 @@
 
 /**
   Constructor
-  @param theBackground the background color for result image
 */
-ImageComposer_Operator::ImageComposer_Operator( const QColor& theBackground )
-: myBackground( theBackground )
+ImageComposer_Operator::ImageComposer_Operator()
+: myBackground( TRANSPARENT )
 {
 }
 
@@ -18,6 +17,15 @@ ImageComposer_Operator::ImageComposer_Operator( const QColor& theBackground )
 */
 ImageComposer_Operator::~ImageComposer_Operator()
 {
+}
+
+/**
+  Set operator arguments
+  @param theBackground the background color for result image
+*/
+void ImageComposer_Operator::setArgs( const QColor& theBackground )
+{
+  myBackground = theBackground;
 }
 
 /**
@@ -72,4 +80,44 @@ ImageComposer_Image ImageComposer_Operator::process( const ImageComposer_Image& 
   aResultTransform.translate( aBounds.left(), aBounds.top() );
   aResult.setTransform( aResultTransform );
   return aResult;
+}
+
+/**
+  Get the operator's arguments in the form of a binary array
+  @return the binary array with arguments
+*/
+QByteArray ImageComposer_Operator::getBinArgs() const
+{
+  QByteArray aData;
+  QDataStream aStream( &aData, QIODevice::WriteOnly );
+  storeArgs( aStream );
+  return aData;
+}
+
+/**
+  Set the operator's arguments in the form of a binary array
+  @param theData the binary array with arguments
+*/
+void ImageComposer_Operator::setBinArgs( const QByteArray& theData )
+{
+  QDataStream aStream( theData );
+  restoreArgs( aStream );
+}
+
+/**
+  Store the operator's arguments to the stream
+  @param theStream the stream for storing
+*/
+void ImageComposer_Operator::storeArgs( QDataStream& theStream ) const
+{
+  theStream << myBackground;
+}
+
+/**
+  Restore the operator's arguments from the stream
+  @param theStream the stream for restoring
+*/
+void ImageComposer_Operator::restoreArgs( QDataStream& theStream )
+{
+  theStream >> myBackground;
 }

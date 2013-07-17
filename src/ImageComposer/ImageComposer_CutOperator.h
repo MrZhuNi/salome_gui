@@ -12,7 +12,7 @@
 class IMAGE_COMPOSER_API ImageComposer_CutOperator : public ImageComposer_Operator
 {
 public:
-  ImageComposer_CutOperator( const QColor& theBackground );
+  ImageComposer_CutOperator();
   virtual ~ImageComposer_CutOperator();
 
   virtual QString name() const;

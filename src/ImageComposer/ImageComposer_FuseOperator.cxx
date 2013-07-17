@@ -7,10 +7,9 @@
 
 /**
   Constructor
-  @param theBackground the background color for result image
 */
-ImageComposer_FuseOperator::ImageComposer_FuseOperator( const QColor& theBackground )
-  : ImageComposer_Operator( theBackground )
+ImageComposer_FuseOperator::ImageComposer_FuseOperator()
+  : ImageComposer_Operator()
 {
 }
 

@@ -12,7 +12,7 @@
 class IMAGE_COMPOSER_API ImageComposer_FuseOperator : public ImageComposer_Operator
 {
 public:
-  ImageComposer_FuseOperator( const QColor& theBackground );
+  ImageComposer_FuseOperator();
   virtual ~ImageComposer_FuseOperator();
 
   virtual QString name() const;

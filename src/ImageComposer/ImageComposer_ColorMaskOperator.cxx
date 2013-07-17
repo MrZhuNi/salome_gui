@@ -8,19 +8,11 @@
 
 /**
   Constructor
-  @param theRefColor the color to the searched (the color for mask)
-  @param isMakeTransparent the boolean flag controlling if the pixels with matching color
-                           should be made transparent or one with non-matching color
-  @param theRGBThreshold the threshold for RGB components
-  @param theAlphaThreshold the threshold for Alpha component
 */
-ImageComposer_ColorMaskOperator::ImageComposer_ColorMaskOperator( const QColor& theRefColor,
-                                                                  bool isMakeTransparent,
-                                                                  int theRGBThreshold,
-                                                                  int theAlphaThreshold )
-: ImageComposer_Operator( TRANSPARENT ),
-  myRefColor( theRefColor ), myIsMakeTransparent( isMakeTransparent ),
-  myRGBThreshold( theRGBThreshold ), myAlphaThreshold( theAlphaThreshold )
+ImageComposer_ColorMaskOperator::ImageComposer_ColorMaskOperator()
+: ImageComposer_Operator(),
+  myRefColor( Qt::black ), myIsMakeTransparent( false ),
+  myRGBThreshold( 0 ), myAlphaThreshold( 0 )
 {
 }
 
@@ -28,6 +20,25 @@ ImageComposer_ColorMaskOperator::ImageComposer_ColorMaskOperator( const QColor& 
 */
 ImageComposer_ColorMaskOperator::~ImageComposer_ColorMaskOperator()
 {
+}
+
+/**
+  Set operator arguments
+  @param theRefColor the color to the searched (the color for mask)
+  @param isMakeTransparent the boolean flag controlling if the pixels with matching color
+                           should be made transparent or one with non-matching color
+  @param theRGBThreshold the threshold for RGB components
+  @param theAlphaThreshold the threshold for Alpha component
+*/
+void ImageComposer_ColorMaskOperator::setArgs( const QColor& theRefColor,
+                                               bool isMakeTransparent,
+                                               int theRGBThreshold,
+                                               int theAlphaThreshold )
+{
+  myRefColor = theRefColor;
+  myIsMakeTransparent = isMakeTransparent;
+  myRGBThreshold = theRGBThreshold;
+  myAlphaThreshold = theAlphaThreshold;
 }
 
 /**
@@ -83,4 +94,22 @@ void ImageComposer_ColorMaskOperator::drawResult( QPainter& thePainter,
   aResult = anImage;
   aResult.setTransform( theImage1.transform() );
   aResult.draw( thePainter );
+}
+
+void ImageComposer_ColorMaskOperator::storeArgs( QDataStream& theStream ) const
+{
+  ImageComposer_Operator::storeArgs( theStream );
+  theStream << myRefColor;
+  theStream << myIsMakeTransparent;
+  theStream << myRGBThreshold;
+  theStream << myAlphaThreshold;
+}
+
+void ImageComposer_ColorMaskOperator::restoreArgs( QDataStream& theStream )
+{
+  ImageComposer_Operator::restoreArgs( theStream );
+  theStream >> myRefColor;
+  theStream >> myIsMakeTransparent;
+  theStream >> myRGBThreshold;
+  theStream >> myAlphaThreshold;
 }

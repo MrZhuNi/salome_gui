@@ -20,8 +20,12 @@ const QColor TRANSPARENT( 255, 255, 255, 0 );
 class IMAGE_COMPOSER_API ImageComposer_Operator
 {
 public:
-  ImageComposer_Operator( const QColor& theBackground );
+  ImageComposer_Operator();
   virtual ~ImageComposer_Operator();
+
+  void setArgs( const QColor& theBackground );
+  QByteArray getBinArgs() const;
+  void setBinArgs( const QByteArray& );
 
   virtual QString name() const;
   virtual ImageComposer_Image process( const ImageComposer_Image& theImage1,
@@ -46,7 +50,12 @@ protected:
   virtual void drawResult( QPainter& thePainter, const ImageComposer_Image& theImage1,
                                                  const ImageComposer_Image& theImage2 ) const = 0;
 
+  virtual void storeArgs( QDataStream& theStream ) const;
+  virtual void restoreArgs( QDataStream& theStream );
+
 private:
+  friend class ImageComposerTests_TestOperators;
+
   QColor myBackground;  ///< the background color for result image
 };
 

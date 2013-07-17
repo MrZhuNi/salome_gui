@@ -6,30 +6,39 @@
 
 /**
   Constructor
-  @param theBackground the background color for result image
-  @param theRect the cropping rectangle (in the global CS)
 */
-ImageComposer_CropOperator::ImageComposer_CropOperator( const QColor& theBackground, const QRect& theRect )
-: ImageComposer_Operator( theBackground )
+ImageComposer_CropOperator::ImageComposer_CropOperator()
+: ImageComposer_Operator()
 {
-  myClipPath.addRect( theRect );
-}
-
-/**
-  Constructor
-  @param theBackground the background color for result image
-  @param thePath the cropping path (in the global CS)
-*/
-ImageComposer_CropOperator::ImageComposer_CropOperator( const QColor& theBackground, const QPainterPath& thePath )
-: ImageComposer_Operator( theBackground )
-{
-  myClipPath = thePath;
 }
 
 /**
 */
 ImageComposer_CropOperator::~ImageComposer_CropOperator()
 {
+}
+
+/**
+  Set operator arguments
+  @param theBackground the background color for result image
+  @param theRect the cropping rectangle (in the global CS)
+*/
+void ImageComposer_CropOperator::setArgs( const QColor& theBackground, const QRect& theRect )
+{
+  ImageComposer_Operator::setArgs( theBackground );
+  myClipPath = QPainterPath();
+  myClipPath.addRect( theRect );
+}
+
+/**
+  Set operator arguments
+  @param theBackground the background color for result image
+  @param thePath the cropping path (in the global CS)
+*/
+void ImageComposer_CropOperator::setArgs( const QColor& theBackground, const QPainterPath& thePath )
+{
+  ImageComposer_Operator::setArgs( theBackground );
+  myClipPath = thePath;
 }
 
 /**
@@ -83,4 +92,17 @@ ImageComposer_Image ImageComposer_CropOperator::process( const ImageComposer_Ima
     theImage1.transform().inverted().map( myClipPath.intersected( anImageBoundsPath ) );
 
   return ImageComposer_Operator::process( theImage1, theImage2 );
+}
+
+
+void ImageComposer_CropOperator::storeArgs( QDataStream& theStream ) const
+{
+  ImageComposer_Operator::storeArgs( theStream );
+  theStream << myClipPath;
+}
+
+void ImageComposer_CropOperator::restoreArgs( QDataStream& theStream )
+{
+  ImageComposer_Operator::restoreArgs( theStream );
+  theStream >> myClipPath;
 }
