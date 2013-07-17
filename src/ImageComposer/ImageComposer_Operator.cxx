@@ -64,7 +64,7 @@ ImageComposer_Image ImageComposer_Operator::process( const ImageComposer_Image& 
   anImage1.setTransform( anImage1.transform() * aTranslate );
   anImage2.setTransform( anImage2.transform() * aTranslate );
 
-  QPixmap aResultImage( aBounds.width(), aBounds.height() );
+  QPixmap aResultImage( int(aBounds.width()), int(aBounds.height()) );
   aResultImage.fill( myBackground );
 
   QPainter aPainter( &aResultImage );

@@ -28,8 +28,7 @@ ImageComposer_CropOperator.h		\
 ImageComposer_CutOperator.h		\
 ImageComposer_FuseOperator.h		\
 ImageComposer_Image.h			\
-ImageComposer_Operator.h		\
-ImageComposer_Tools.h
+ImageComposer_Operator.h
 
 dist_libImageComposer_la_SOURCES =	\
 ImageComposer_ColorMaskOperator.cxx	\
@@ -37,8 +36,7 @@ ImageComposer_CropOperator.cxx		\
 ImageComposer_CutOperator.cxx		\
 ImageComposer_FuseOperator.cxx		\
 ImageComposer_Image.cxx			\
-ImageComposer_Operator.cxx		\
-ImageComposer_Tools.cxx
+ImageComposer_Operator.cxx
 
 libImageComposer_la_CPPFLAGS = $(QT_INCLUDES)
 libImageComposer_la_LDFLAGS  = $(QT_MT_LIBS)
