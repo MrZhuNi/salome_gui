@@ -72,6 +72,7 @@ SET(COMMON_LIBS
   SalomePrs
   SPlot2d
   GLViewer
+  GraphicsView
   OCCViewer
   VTKViewer
   SalomeObject

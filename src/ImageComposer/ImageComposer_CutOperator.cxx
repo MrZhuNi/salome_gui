@@ -1,6 +1,6 @@
 
-#include <ImageComposer_CutOperator.h>
-#include <ImageComposer_Image.h>
+#include "ImageComposer_CutOperator.h"
+#include "ImageComposer_Image.h"
 #include <QString>
 #include <QPixmap>
 #include <QPainter>

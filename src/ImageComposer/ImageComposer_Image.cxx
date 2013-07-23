@@ -1,8 +1,8 @@
 
-#include <ImageComposer_Image.h>
-#include <ImageComposer_CropOperator.h>
-#include <ImageComposer_CutOperator.h>
-#include <ImageComposer_FuseOperator.h>
+#include "ImageComposer_Image.h"
+#include "ImageComposer_CropOperator.h"
+#include "ImageComposer_CutOperator.h"
+#include "ImageComposer_FuseOperator.h"
 #include <QPainter>
 
 QColor ImageComposer_Image::myDefaultBackground = TRANSPARENT;

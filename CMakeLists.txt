@@ -45,6 +45,7 @@ OPTION(SALOME_USE_VTKVIEWER "Enable VTK visualization (Mandatory in classic conf
 OPTION(SALOME_USE_SALOMEOBJECT "Enable Salome Object (Mandatory in classic configurations)" ON)
 OPTION(SALOME_USE_OCCVIEWER "Enable OCC visualization (Mandatory in classic configurations)" ON)
 OPTION(SALOME_USE_GLVIEWER "Enable OpenGL visualization (Mandatory in classic configurations)" ON)
+OPTION(SALOME_USE_GRAPHICSVIEW "Enable GraphicsView visualization (Mandatory in classic configurations)" ON)
 OPTION(SALOME_USE_PLOT2DVIEWER "Enable Plot2D visualization (Mandatory in classic configurations)" ON)
 OPTION(SALOME_USE_PYCONSOLE "Enable Python GUI interface (Mandatory in classic configurations)" ON)
 OPTION(SALOME_USE_SUPERVGRAPHVIEWER "Enable Supervision visualization (Mandatory in classic configurations)" ON)

@@ -23,6 +23,7 @@
 SET(dist_admlocalm4_DATA
   check_disable_Corba.m4
   check_GLViewer.m4
+  check_GraphicsView.m4
   check_GUI.m4
   check_msg2qm.m4
   check_OCCViewer.m4

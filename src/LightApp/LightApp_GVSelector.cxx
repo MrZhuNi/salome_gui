@@ -20,7 +20,7 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-#include <LightApp_GVSelector.h>
+#include "LightApp_GVSelector.h"
 
 #include <GraphicsView_Object.h>
 #include <GraphicsView_Selector.h>

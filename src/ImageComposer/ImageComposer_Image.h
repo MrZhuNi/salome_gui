@@ -3,7 +3,7 @@
 #define IMAGE_COMPOSER_IMAGE_HEADER
 
 #include <QImage>
-#include <ImageComposer.h>
+#include "ImageComposer.h"
 
 class ImageComposer_Operator;
 

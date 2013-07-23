@@ -2,7 +2,7 @@
 #ifndef IMAGE_COMPOSER_OPERATOR_HEADER
 #define IMAGE_COMPOSER_OPERATOR_HEADER
 
-#include <ImageComposer.h>
+#include "ImageComposer.h"
 #include <QColor>
 
 class QString;

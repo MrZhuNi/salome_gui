@@ -2,7 +2,7 @@
 #ifndef IMAGE_COMPOSER_COLOR_MASK_OPERATOR_HEADER
 #define IMAGE_COMPOSER_COLOR_MASK_OPERATOR_HEADER
 
-#include <ImageComposer_Operator.h>
+#include "ImageComposer_Operator.h"
 #include <QColor>
 
 /**
