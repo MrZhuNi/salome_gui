@@ -22,7 +22,7 @@
 
 #ifdef WIN32
 
-#ifdef GRAPHICSVIEW_EXPORTS
+#if defined GRAPHICSVIEW_EXPORTS || defined GraphicsView_EXPORTS
 #define GRAPHICSVIEW_API __declspec(dllexport)
 #else
 #define GRAPHICSVIEW_API __declspec(dllimport)
