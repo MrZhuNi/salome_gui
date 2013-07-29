@@ -50,6 +50,10 @@ OPTION(SALOME_USE_PYCONSOLE "Enable Python GUI interface (Mandatory in classic c
 OPTION(SALOME_USE_SUPERVGRAPHVIEWER "Enable Supervision visualization (Mandatory in classic configurations)" ON)
 OPTION(SALOME_USE_QXGRAPHVIEWER "Enable QX graph visualization (Mandatory in classic configurations)" ON)
 
+# Build with GUI observers feature
+ADD_DEFINITIONS(-DWITH_SALOMEDS_OBSERVER)
+
+
 ENABLE_TESTING()
 SET(VERSION "7.2.0")
 SET(VERSION_DEV "0")
