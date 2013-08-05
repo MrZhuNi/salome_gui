@@ -30,21 +30,7 @@
 #include <SUIT_DataOwner.h>
 #include <GraphicsView_Defs.h>
 
-class GraphicsView_Object;
 class GraphicsView_Viewer;
-
-class LIGHTAPP_EXPORT LightApp_GVDataOwner : public SUIT_DataOwner
-{
-public:
-  LightApp_GVDataOwner( GraphicsView_Object* );
-  virtual ~LightApp_GVDataOwner();
-
-  virtual QString keyString() const;
-  GraphicsView_Object* object() const;
-
-private:
-  GraphicsView_Object* myObject;
-};
 
 class LIGHTAPP_EXPORT LightApp_GVSelector : public QObject, public SUIT_Selector
 {
@@ -61,9 +47,9 @@ protected:
   virtual void setSelection( const SUIT_DataOwnerPtrList& );
 
 protected slots:
-  void OnSelectionDone( GV_SelectionChangeStatus );
+  void onSelectionChanged( GV_SelectionChangeStatus );
 
-private:
+protected:
   GraphicsView_Viewer* myViewer;
 };
 

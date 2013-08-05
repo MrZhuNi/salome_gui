@@ -41,9 +41,11 @@
 #include <QMenu>
 
 // testing ImageViewer
+/*
 #include "GraphicsView_PrsImage.h"
 #include "GraphicsView_PrsPropDlg.h"
 #include <QFileDialog>
+*/
 
 //=======================================================================
 // Name    : GraphicsView_Viewer
@@ -108,6 +110,7 @@ void GraphicsView_Viewer::contextMenuPopup( QMenu* thePopup )
     thePopup->addSeparator();
 
   // testing ImageViewer
+  /*
   if( GraphicsView_ViewPort* aViewPort = getActiveViewPort() )
   {
     int aNbSelected = aViewPort->nbSelected();
@@ -137,6 +140,7 @@ void GraphicsView_Viewer::contextMenuPopup( QMenu* thePopup )
     }
     thePopup->addSeparator();
   }
+  */
 
   thePopup->addAction( tr( "CHANGE_BGCOLOR" ), this, SLOT( onChangeBgColor() ) );
 }
@@ -545,7 +549,7 @@ void GraphicsView_Viewer::handleWheel( QGraphicsSceneWheelEvent* e )
 void GraphicsView_Viewer::onSketchingFinished( QPainterPath thePath )
 {
   // testing ImageViewer
-  onTestCropOperatorPerform( thePath );
+  //onTestCropOperatorPerform( thePath );
 }
 
 //================================================================
@@ -590,6 +594,7 @@ void GraphicsView_Viewer::onSelectionCancel()
   emit selectionChanged( GVSCS_Invalid );
 }
 
+/*
 //================================================================
 // Function : onAddImage
 // Purpose  : 
@@ -894,3 +899,4 @@ void GraphicsView_Viewer::onTestCropOperatorPerform( QPainterPath thePath )
     aViewPort->removeItem( anObj );
   }
 }
+*/

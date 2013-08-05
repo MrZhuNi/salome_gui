@@ -22,36 +22,19 @@
 
 #include "LightApp_GVSelector.h"
 
+#include "LightApp_DataOwner.h"
+
 #include <GraphicsView_Object.h>
-#include <GraphicsView_Selector.h>
 #include <GraphicsView_ViewPort.h>
 #include <GraphicsView_Viewer.h>
 
-LightApp_GVDataOwner::LightApp_GVDataOwner( GraphicsView_Object* theObject )
-: myObject( theObject )
-{
-}
-
-LightApp_GVDataOwner::~LightApp_GVDataOwner()
-{
-}
-
-QString LightApp_GVDataOwner::keyString() const
-{
-  return myObject->getName();
-}
-
-GraphicsView_Object* LightApp_GVDataOwner::object() const
-{
-  return myObject;
-}
-
 LightApp_GVSelector::LightApp_GVSelector( GraphicsView_Viewer* theViewer,
                                           SUIT_SelectionMgr* theSelMgr )
-: SUIT_Selector( theSelMgr ), myViewer( theViewer )
+: SUIT_Selector( theSelMgr, theViewer ),
+  myViewer( theViewer )
 {
-  connect( theViewer->getSelector(), SIGNAL( selSelectionDone( GV_SelectionChangeStatus ) ),
-           this, SLOT( OnSelectionDone( GV_SelectionChangeStatus ) ) );
+  connect( theViewer, SIGNAL( selectionChanged( GV_SelectionChangeStatus ) ),
+          this, SLOT( onSelectionChanged( GV_SelectionChangeStatus ) ) );
 }
 
 LightApp_GVSelector::~LightApp_GVSelector()
@@ -65,16 +48,16 @@ QString LightApp_GVSelector::type() const
 
 void LightApp_GVSelector::getSelection( SUIT_DataOwnerPtrList& theList ) const
 {
-  GraphicsView_ViewPort* aViewport = myViewer->getActiveViewPort();
-  for( aViewport->initSelected(); aViewport->moreSelected(); aViewport->nextSelected() )
-    theList.append( new LightApp_GVDataOwner( aViewport->selectedObject() ) );
+  if( GraphicsView_ViewPort* aViewport = myViewer->getActiveViewPort() )
+    for( aViewport->initSelected(); aViewport->moreSelected(); aViewport->nextSelected() )
+      theList.append( new LightApp_DataOwner( aViewport->selectedObject()->getName() ) );
 }
 
-void LightApp_GVSelector::setSelection( const SUIT_DataOwnerPtrList& )
+void LightApp_GVSelector::setSelection( const SUIT_DataOwnerPtrList& theList )
 {
 }
 
-void LightApp_GVSelector::OnSelectionDone( GV_SelectionChangeStatus )
+void LightApp_GVSelector::onSelectionChanged( GV_SelectionChangeStatus )
 {
   selectionChanged();
 }

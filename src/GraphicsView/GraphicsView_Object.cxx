@@ -37,7 +37,6 @@ GraphicsView_Object::GraphicsView_Object( QGraphicsItem* theParent )
   myIsSelected( false ),
   myIsMoving( false )
 {
-  myHighlightCursor = new QCursor( Qt::OpenHandCursor );
 }
 
 //=======================================================================
@@ -46,12 +45,6 @@ GraphicsView_Object::GraphicsView_Object( QGraphicsItem* theParent )
 //=======================================================================
 GraphicsView_Object::~GraphicsView_Object()
 {
-  if( myHighlightCursor )
-  {
-    delete myHighlightCursor;
-    myHighlightCursor = 0;
-  }
-
   QListIterator<QGraphicsItem*> aChildIter( children() );
   while( aChildIter.hasNext() )
   {

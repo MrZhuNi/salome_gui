@@ -101,6 +101,7 @@ protected slots:
   virtual void                  onChangeBgColor();
 
   // testing ImageViewer
+  /*
   void                          onAddImage();
   void                          onRemoveImages();
   void                          onBringToFront();
@@ -111,6 +112,7 @@ protected slots:
   void                          onTestFuseOperator();
   void                          onTestCropOperatorPrepare();
   void                          onTestCropOperatorPerform( QPainterPath thePath );
+  */
 
 private:
   void                          handleKeyPress( QKeyEvent* );

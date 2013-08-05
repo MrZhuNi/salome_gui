@@ -53,21 +53,20 @@ QCursor* GraphicsView_ViewPort::zoomCursor = 0;
 QCursor* GraphicsView_ViewPort::sketchCursor = 0;
 
 //=======================================================================
-// Name    : GraphicsView_ViewPort::NameLabel
+// Name    : GraphicsView_ViewPort::ViewLabel
 // Purpose : Wrapper for label, which can ignore move events sent from
 //           QGraphicsView::scrollContentsBy() method, which,
 //           in its turn, called from GraphicsView_ViewPort::pan()
 //=======================================================================
-class GraphicsView_ViewPort::NameLabel : public QLabel
+class GraphicsView_ViewPort::ViewLabel : public QLabel
 {
 public:
-  NameLabel( QWidget* theParent ) 
-    : 
-  QLabel( theParent ),
-  myAcceptMoveEvents( false )
+  ViewLabel( QWidget* theParent )
+  : QLabel( theParent ),
+    myAcceptMoveEvents( false )
   {
   }
-  ~NameLabel() {}
+  ~ViewLabel() {}
 
   void setAcceptMoveEvents( bool theFlag )
   {
@@ -129,9 +128,10 @@ void GraphicsView_ViewPort::destroyCursors()
 GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
 : QGraphicsView( theParent ),
   myInteractionFlags( 0 ),
-  myNameLabel( 0 ),
-  myNamePosition( NP_None ),
-  myNameLayout( 0 ),
+  myViewLabel( 0 ),
+  myViewLabelPosition( VLP_None ),
+  myViewLabelLayout( 0 ),
+  myIsMousePositionEnabled( false ),
   myForegroundItem( 0 ),
   myGridItem( 0 ),
   myIsTransforming( false ),
@@ -164,8 +164,8 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   //setInteractionFlag( TraceBoundingRect );
   //setInteractionFlag( DraggingByMiddleButton );
   //setInteractionFlag( ImmediateContextMenu );
-  setInteractionFlag( ImmediateSelection ); // testing ImageViewer
-  setInteractionFlag( Sketching ); // testing ImageViewer
+  //setInteractionFlag( ImmediateSelection ); // testing ImageViewer
+  //setInteractionFlag( Sketching ); // testing ImageViewer
 
   // background
   setBackgroundBrush( QBrush( Qt::white ) );
@@ -500,56 +500,75 @@ void GraphicsView_ViewPort::setInteractionFlags( InteractionFlags theFlags )
 }
 
 //================================================================
-// Function : setViewNameEnabled
+// Function : setViewLabelPosition
 // Purpose  : 
 //================================================================
-void GraphicsView_ViewPort::setViewNamePosition( NamePosition thePosition,
-                                                 bool theIsForced )
+void GraphicsView_ViewPort::setViewLabelPosition( ViewLabelPosition thePosition,
+                                                  bool theIsForced )
 {
-  if( theIsForced && !myNameLabel )
-    myNameLabel = new NameLabel( viewport() );
+  if( theIsForced && !myViewLabel )
+    myViewLabel = new ViewLabel( viewport() );
 
-  if( !myNameLabel )
+  if( !myViewLabel )
     return;
 
-  if( thePosition == NP_None )
+  if( thePosition == VLP_None )
   {
-    myNameLabel->setVisible( false );
+    myViewLabel->setVisible( false );
     return;
   }
 
-  if( myNameLayout )
-    delete myNameLayout;
+  if( myViewLabelLayout )
+    delete myViewLabelLayout;
 
-  myNameLayout = new QGridLayout( viewport() );
-  myNameLayout->setMargin( 10 );
-  myNameLayout->setSpacing( 0 );
+  myViewLabelLayout = new QGridLayout( viewport() );
+  myViewLabelLayout->setMargin( 10 );
+  myViewLabelLayout->setSpacing( 0 );
 
   int aRow = 0, aColumn = 0;
   switch( thePosition )
   {
-    case NP_TopLeft:     aRow = 0; aColumn = 0; break;
-    case NP_TopRight:    aRow = 0; aColumn = 1; break;
-    case NP_BottomLeft:  aRow = 1; aColumn = 0; break;
-    case NP_BottomRight: aRow = 1; aColumn = 1; break;
+    case VLP_TopLeft:     aRow = 0; aColumn = 0; break;
+    case VLP_TopRight:    aRow = 0; aColumn = 1; break;
+    case VLP_BottomLeft:  aRow = 1; aColumn = 0; break;
+    case VLP_BottomRight: aRow = 1; aColumn = 1; break;
     default: break;
   }
 
-  myNameLayout->addWidget( myNameLabel, aRow, aColumn );
-  myNameLayout->setRowStretch( 1 - aRow, 1 );
-  myNameLayout->setColumnStretch( 1 - aColumn, 1 );
+  myViewLabelLayout->addWidget( myViewLabel, aRow, aColumn );
+  myViewLabelLayout->setRowStretch( 1 - aRow, 1 );
+  myViewLabelLayout->setColumnStretch( 1 - aColumn, 1 );
 
-  myNameLabel->setVisible( true );
+  myViewLabel->setVisible( true );
 }
 
 //================================================================
-// Function : setViewName
+// Function : setViewLabelText
 // Purpose  : 
 //================================================================
-void GraphicsView_ViewPort::setViewName( const QString& theName )
+void GraphicsView_ViewPort::setViewLabelText( const QString& theText )
 {
-  if( myNameLabel )
-    myNameLabel->setText( theName );
+  if( myViewLabel )
+    myViewLabel->setText( theText );
+}
+
+//================================================================
+// Function : setMousePositionEnabled
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewPort::setMousePositionEnabled( bool theState )
+{
+  myIsMousePositionEnabled = theState;
+
+  if( theState )
+  {
+    setViewLabelPosition( VLP_BottomLeft, true );
+
+    int aMouseX = 0, aMouseY = 0;
+    setViewLabelText( QString( "(%1, %2)" ).arg( aMouseX ).arg( aMouseY ) );
+  }
+  else
+    setViewLabelPosition( VLP_None );
 }
 
 //================================================================
@@ -765,16 +784,16 @@ void GraphicsView_ViewPort::pan( double theDX, double theDY )
 {
   myIsTransforming = true;
 
-  if( myNameLabel )
-    myNameLabel->setAcceptMoveEvents( false );
+  if( myViewLabel )
+    myViewLabel->setAcceptMoveEvents( false );
 
   if( QScrollBar* aHBar = horizontalScrollBar() )
     aHBar->setValue( aHBar->value() - theDX );
   if( QScrollBar* aVBar = verticalScrollBar() )
     aVBar->setValue( aVBar->value() + theDY );
 
-  if( myNameLabel )
-    myNameLabel->setAcceptMoveEvents( true );
+  if( myViewLabel )
+    myViewLabel->setAcceptMoveEvents( true );
 
   myIsTransforming = false;
 
@@ -1702,6 +1721,13 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
     default:
       break;
   }
+
+  if( myIsMousePositionEnabled )
+  {
+    int aMouseX = (int)e->scenePos().x();
+    int aMouseY = (int)e->scenePos().y();
+    setViewLabelText( QString( "(%1, %2)" ).arg( aMouseX ).arg( aMouseY ) );
+  }
 }
 
 //================================================================
@@ -1728,11 +1754,11 @@ void GraphicsView_ViewPort::onContextMenuEvent( QGraphicsSceneContextMenuEvent* 
 //================================================================
 void GraphicsView_ViewPort::scrollContentsBy( int theDX, int theDY )
 {
-  if( myNameLabel )
-    myNameLabel->setAcceptMoveEvents( false );
+  if( myViewLabel )
+    myViewLabel->setAcceptMoveEvents( false );
 
   QGraphicsView::scrollContentsBy( theDX, theDY );
 
-  if( myNameLabel )
-    myNameLabel->setAcceptMoveEvents( true );
+  if( myViewLabel )
+    myViewLabel->setAcceptMoveEvents( true );
 }

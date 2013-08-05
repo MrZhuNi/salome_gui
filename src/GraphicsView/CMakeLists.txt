@@ -33,7 +33,6 @@ SET(COMMON_LIBS
 )
 
 SET(GUI_HEADERS
-  GraphicsView_PrsPropDlg.h
   GraphicsView_Scene.h
   GraphicsView_Selector.h
   GraphicsView_ViewFrame.h
@@ -53,9 +52,6 @@ SET(GraphicsView_SOURCES
   GraphicsView_ViewManager.cxx
   GraphicsView_ViewPort.cxx
   GraphicsView_ViewTransformer.cxx
-  GraphicsView_PrsImage.cxx
-  GraphicsView_PrsImageFrame.cxx
-  GraphicsView_PrsPropDlg.cxx
 )
 
 SET(GUITS_SOURCES

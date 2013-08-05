@@ -97,9 +97,6 @@ public:
   virtual void               setViewTransform( const QTransform& theTransform );
 
 protected:
-  QCursor*                   getHighlightCursor() const { return myHighlightCursor; }
-
-protected:
   QString                    myName;
 
   int                        myPriority;
@@ -111,9 +108,6 @@ protected:
   bool                       myIsMoving;
 
   QTransform                 myViewTransform;
-
-private:
-  QCursor*                   myHighlightCursor;
 };
 
 #endif

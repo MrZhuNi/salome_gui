@@ -44,7 +44,7 @@ class GRAPHICSVIEW_API GraphicsView_ViewPort : public QGraphicsView
   Q_OBJECT
 
 public:
-  class NameLabel;
+  class ViewLabel;
 
   enum InteractionFlag
   {
@@ -69,13 +69,13 @@ public:
     BS_Dragging  = 0x0002  // currently unused
   };
 
-  enum NamePosition
+  enum ViewLabelPosition
   {
-    NP_None         = 0,
-    NP_TopLeft      = 1,
-    NP_TopRight     = 2,
-    NP_BottomLeft   = 3,
-    NP_BottomRight  = 4
+    VLP_None         = 0,
+    VLP_TopLeft      = 1,
+    VLP_TopRight     = 2,
+    VLP_BottomLeft   = 3,
+    VLP_BottomRight  = 4
   };
 
 public:
@@ -107,10 +107,13 @@ public:
                                                        bool theIsEnabled = true );
   void                             setInteractionFlags( InteractionFlags theFlags );
 
-  // view name
-  void                             setViewNamePosition( NamePosition thePosition,
-                                                        bool theIsForced = false );
-  void                             setViewName( const QString& theName );
+  // view label
+  void                             setViewLabelPosition( ViewLabelPosition thePosition,
+                                                         bool theIsForced = false );
+  void                             setViewLabelText( const QString& theText );
+
+  // displaying mouse position (currently, overlaps with view label feature)
+  void                             setMousePositionEnabled( bool theState );
 
   // background / foreground
   QColor                           backgroundColor() const;
@@ -265,10 +268,13 @@ private:
   // interaction flags
   InteractionFlags                 myInteractionFlags;
 
-  // view name
-  NameLabel*                       myNameLabel;
-  NamePosition                     myNamePosition;
-  QGridLayout*                     myNameLayout;
+  // view label
+  ViewLabel*                       myViewLabel;
+  ViewLabelPosition                myViewLabelPosition;
+  QGridLayout*                     myViewLabelLayout;
+
+  // displaying mouse position (currently, overlaps with view label feature)
+  bool                             myIsMousePositionEnabled;
 
   // foreground
   bool                             myIsForegroundEnabled;
