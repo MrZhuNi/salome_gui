@@ -29,7 +29,7 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 # Common packages
 ##
 
-SUBDIRS_COMMON = CASCatch Qtx Style DDS QDS ObjBrowser SUIT SUITApp STD CAF CAM LogWindow Prs Event OpenGLUtils GUI_PY
+SUBDIRS_COMMON = CASCatch Qtx Style DDS QDS ObjBrowser SUIT SUITApp STD CAF CAM LogWindow Prs Event OpenGLUtils ImageComposer GUI_PY
 
 ##
 # SALOME object
@@ -43,6 +43,13 @@ endif
 ##
 if ENABLE_GLVIEWER
   SUBDIRS_GLVIEWER = GLViewer
+endif
+
+##
+# Graphics viewer
+##
+if ENABLE_GRAPHICSVIEW
+  SUBDIRS_GRAPHICSVIEW = GraphicsView
 endif
 
 ##
@@ -120,11 +127,11 @@ if ENABLE_PYCONSOLE
   SUBDIRS_PY_LIGHT = SALOME_SWIG SALOME_PY SALOME_PYQT
 endif
 
-SUBDIRS = $(SUBDIRS_COMMON) $(SUBDIRS_OBJECT) $(SUBDIRS_VIEWERTOOLS) $(SUBDIRS_GLVIEWER) $(SUBDIRS_VTKVIEWER) \
+SUBDIRS = $(SUBDIRS_COMMON) $(SUBDIRS_OBJECT) $(SUBDIRS_VIEWERTOOLS) $(SUBDIRS_GLVIEWER) $(SUBDIRS_GRAPHICSVIEW) $(SUBDIRS_VTKVIEWER) \
           $(SUBDIRS_OCCVIEWER) $(SUBDIRS_PLOT2DVIEWER) $(SUBDIRS_SUPERVGRAPHVIEWER) $(SUBDIRS_QXGRAPHVIEWER) \
           $(SUBDIRS_PYCONSOLE) $(SUBDIRS_LIGHT) $(SUBDIRS_CORBA) $(SUBDIRS_PY_LIGHT)
 
-DIST_SUBDIRS = CASCatch Qtx Style DDS QDS ObjBrowser SUIT SUITApp STD CAF CAM LogWindow Prs Event OpenGLUtils \
-               OBJECT ViewerTools GLViewer VTKViewer SVTK OCCViewer SOCC Plot2d SPlot2d SUPERVGraph QxGraph QxScene \
+DIST_SUBDIRS = CASCatch Qtx Style DDS QDS ObjBrowser SUIT SUITApp STD CAF CAM LogWindow Prs Event OpenGLUtils ImageComposer \
+               OBJECT ViewerTools GLViewer GraphicsView VTKViewer SVTK OCCViewer SOCC Plot2d SPlot2d SUPERVGraph QxGraph QxScene \
                PyInterp PyConsole LightApp ResExporter TOOLSGUI Session SalomeApp GuiHelpers TreeData \
                SALOME_SWIG SALOME_PY SALOME_PYQT GUI_PY

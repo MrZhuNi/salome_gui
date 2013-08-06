@@ -154,6 +154,12 @@
   #include <QxScene_ViewWindow.h>
 #endif
 
+#ifndef DISABLE_GRAPHICSVIEW
+  #include <GraphicsView_Viewer.h>
+  #include <GraphicsView_ViewManager.h>
+  #include "LightApp_GVSelector.h"
+#endif
+
 
 #define VISIBILITY_COLUMN_WIDTH 25
 
@@ -669,6 +675,9 @@ void LightApp_Application::createActions()
 //  createActionForViewer( NewQxGraphViewId, newWinMenu, QString::number( 4 ), Qt::ALT+Qt::Key_C );
   createActionForViewer( NewQxSceneViewId, newWinMenu, QString::number( 4 ), Qt::ALT+Qt::Key_S );
 #endif
+#ifndef DISABLE_GRAPHICSVIEW
+  createActionForViewer( NewGraphicsViewId, newWinMenu, QString::number( 5 ), Qt::ALT+Qt::Key_R );
+#endif
 
   createAction( RenameId, tr( "TOT_RENAME" ), QIcon(), tr( "MEN_DESK_RENAME" ), tr( "PRP_RENAME" ),
                 Qt::ALT+Qt::SHIFT+Qt::Key_R, desk, false, this, SLOT( onRenameWindow() ) );
@@ -785,6 +794,11 @@ void LightApp_Application::onNewWindow()
 //    break;
   case NewQxSceneViewId:
     type = QxScene_Viewer::Type();
+    break;
+#endif
+#ifndef DISABLE_GRAPHICSVIEW
+  case NewGraphicsViewId:
+    type = GraphicsView_Viewer::Type();
     break;
 #endif
   }
@@ -909,6 +923,12 @@ void LightApp_Application::updateCommandsStatus()
 //VSR: QxGraph has been replaced by QxScene
 //  a = action( NewQxGraphViewId );
   a = action( NewQxSceneViewId );
+  if( a )
+    a->setEnabled( activeStudy() );
+#endif
+
+#ifndef DISABLE_GRAPHICSVIEW
+  a = action( NewGraphicsViewId );
   if( a )
     a->setEnabled( activeStudy() );
 #endif
@@ -1484,6 +1504,13 @@ SUIT_ViewManager* LightApp_Application::createViewManager( const QString& vmType
     if ( vm )
       vm->setBackground( resMgr->backgroundValue( "VTKViewer", "background", vm->background() ) );
 #endif
+  }
+#endif
+#ifndef DISABLE_GRAPHICSVIEW
+  if( vmType == GraphicsView_Viewer::Type() )
+  {
+    viewMgr = new GraphicsView_ViewManager( activeStudy(), desktop() );
+    new LightApp_GVSelector( (GraphicsView_Viewer*)viewMgr->getViewModel(), mySelMgr );
   }
 #endif
 

@@ -500,7 +500,7 @@ The changes will be applied on the next application session.</translation>
     </message>
     <message>
         <source>NEW_WINDOW_5</source>
-        <translation>Qx&amp;Scene 2D view</translation>
+        <translation>G&amp;raphics view</translation>
     </message>
     <message>
         <source>CREATING_NEW_WINDOW</source>
