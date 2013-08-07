@@ -164,8 +164,8 @@ GraphicsView_ViewPort::GraphicsView_ViewPort( QWidget* theParent )
   //setInteractionFlag( TraceBoundingRect );
   //setInteractionFlag( DraggingByMiddleButton );
   //setInteractionFlag( ImmediateContextMenu );
-  //setInteractionFlag( ImmediateSelection ); // testing ImageViewer
-  //setInteractionFlag( Sketching ); // testing ImageViewer
+  //setInteractionFlag( ImmediateSelection );
+  //setInteractionFlag( Sketching );
 
   // background
   setBackgroundBrush( QBrush( Qt::white ) );

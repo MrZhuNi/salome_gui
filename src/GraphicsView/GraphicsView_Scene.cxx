@@ -26,7 +26,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsSceneWheelEvent>
 
-#define VIEWER_DEBUG // testing ImageViewer
+//#define VIEWER_DEBUG
 
 //=======================================================================
 // Name    : GraphicsView_Scene
@@ -44,9 +44,6 @@ GraphicsView_Scene::GraphicsView_Scene( QObject* theParent )
   connect( this, SIGNAL( sceneRectChanged( const QRectF& ) ),
            this, SLOT( onSceneRectChanged( const QRectF& ) ) );
 
-#endif
-
-  // testing ImageViewer
   setSceneRect( -2000, -2000, 4000, 4000 );
 
   QGraphicsLineItem* aHorLineItem = new QGraphicsLineItem( -2000, 0, 2000, 0 );
@@ -56,6 +53,7 @@ GraphicsView_Scene::GraphicsView_Scene( QObject* theParent )
   QGraphicsLineItem* aVerLineItem = new QGraphicsLineItem( 0, -2000, 0, 2000 );
   aVerLineItem->setPen( QPen( Qt::red ) );
   addItem( aVerLineItem );
+#endif
 }
 
 //=======================================================================
