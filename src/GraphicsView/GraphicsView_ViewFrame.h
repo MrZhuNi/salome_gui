@@ -59,9 +59,12 @@ public:
 
   virtual QImage          dumpView();
 
+  virtual QString         getVisualParameters();
+  virtual void            setVisualParameters( const QString& theParameters );
+
   void                    expandToolBarActions();
 
-  protected slots:
+protected slots:
   void                    onViewPan();
   void                    onViewZoom();
   void                    onViewFitAll();

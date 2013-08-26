@@ -200,6 +200,50 @@ QImage GraphicsView_ViewFrame::dumpView()
 }
 
 //================================================================
+// Function : getVisualParameters
+// Purpose  : 
+//================================================================
+QString GraphicsView_ViewFrame::getVisualParameters()
+{
+  QTransform aTransform = myViewPort->transform();
+
+  QString aString;
+  aString.sprintf( "%.3f*%.3f*%.3f*%.3f*%.3f*%.3f*%.3f*%.3f*%.3f",
+    aTransform.m11(), aTransform.m12(), aTransform.m13(),
+    aTransform.m21(), aTransform.m22(), aTransform.m23(),
+    aTransform.m31(), aTransform.m32(), aTransform.m33() );
+  return aString;
+}
+
+//================================================================
+// Function : setVisualParameters
+// Purpose  : 
+//================================================================
+void GraphicsView_ViewFrame::setVisualParameters( const QString& theParameters )
+{
+  QStringList aList = theParameters.split( '*' );
+  if( aList.size() < 9 )
+    return;
+
+  bool anIsOk[9];
+  QTransform aTransform( aList[0].toDouble( &anIsOk[0] ),
+                         aList[1].toDouble( &anIsOk[1] ),
+                         aList[2].toDouble( &anIsOk[2] ),
+                         aList[3].toDouble( &anIsOk[3] ),
+                         aList[4].toDouble( &anIsOk[4] ),
+                         aList[5].toDouble( &anIsOk[5] ),
+                         aList[6].toDouble( &anIsOk[6] ),
+                         aList[7].toDouble( &anIsOk[7] ),
+                         aList[8].toDouble( &anIsOk[8] ) );
+  for( int i = 0; i < 9; i++ )
+    if( !anIsOk[ i ] )
+      return;
+
+  myViewPort->setTransform( aTransform );
+  myViewPort->applyTransform();
+}
+
+//================================================================
 // Function : expandToolBarActions
 // Purpose  : 
 //================================================================
