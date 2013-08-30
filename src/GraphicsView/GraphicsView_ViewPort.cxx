@@ -1630,7 +1630,7 @@ void GraphicsView_ViewPort::onBoundingRectChanged()
 {
   if( hasInteractionFlag( TraceBoundingRect ) )
   {
-    QRectF aRect = objectsBoundingRect();
+    QRectF aRect = objectsBoundingRect( true );
     myScene->setSceneRect( aRect.adjusted( -mySceneGap, -mySceneGap, mySceneGap, mySceneGap ) );
   }
 }
