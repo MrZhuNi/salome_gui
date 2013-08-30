@@ -174,6 +174,10 @@ protected:
 
   void                      initDatum() const;
 
+  virtual QString           formatValue( const int ) const;
+  virtual QString           formatValue( const double ) const;
+  virtual QString           formatValue( const QString& ) const;
+
 private:
   void                      initialize();
 

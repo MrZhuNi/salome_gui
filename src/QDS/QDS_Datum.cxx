@@ -431,7 +431,7 @@ QString QDS_Datum::minimumValue() const
 
   QString min;
   if ( !myDicItem.IsNull() && myDicItem->HasData( DDS_DicItem::MinValue ) )
-      min = format( format(), type(), myDicItem->GetMinValue() );
+      min = formatValue( (double)myDicItem->GetMinValue() );
   return min;
 }
 
@@ -445,7 +445,7 @@ QString QDS_Datum::maximumValue() const
 
   QString max;
   if ( !myDicItem.IsNull() && myDicItem->HasData( DDS_DicItem::MaxValue ) )
-    max = format( format(), type(), myDicItem->GetMaxValue() );
+    max = formatValue( myDicItem->GetMaxValue() );
   return max;
 }
 
@@ -684,7 +684,7 @@ void QDS_Datum::reset()
   initDatum();
 
   mySourceValue = defaultValue();
-  setString( format( ( myFlags & NotFormat ) ? (QString) "" : format(), type(), mySourceValue ) );
+  setString( formatValue( mySourceValue ) );
   invalidateCache();
 
   onParamChanged();
@@ -767,7 +767,7 @@ void QDS_Datum::setStringValue( const QString& txt )
   initDatum();
 
   mySourceValue = txt;
-  QString aStr = format( ( flags() & NotFormat ) ? (QString) "" : format(), type(), txt );
+  QString aStr = formatValue( txt );
   setString( aStr );
   myTargetValue = aStr;
 
@@ -795,7 +795,7 @@ void QDS_Datum::setDoubleValue( const double num )
   if ( !myDicItem.IsNull() && !( flags() & NotConvert ) )
     val = myDicItem->FromSI( val );
 
-  QString aStr = format( ( flags() & NotFormat ) ? (QString) "" : format(), type(), val );
+  QString aStr = formatValue( val );
   setString( aStr );
   myTargetValue = aStr;
 
@@ -823,7 +823,7 @@ void QDS_Datum::setIntegerValue( const int num )
   if ( !myDicItem.IsNull() && !( flags() & NotConvert ) )
     val = myDicItem->FromSI( val );
 
-  QString aStr = format( ( flags() & NotFormat ) ? (QString) "" : format(), type(), val );
+  QString aStr = formatValue( val );
   setString( aStr );
   myTargetValue = aStr;
 
@@ -1935,6 +1935,39 @@ void QDS_Datum::initDatum() const
 
   if ( parent() )
     parent()->removeEventFilter( (QObject*)this );
+}
+
+/*!
+  \brief Format integer value according to datum formatting and type.
+  \internal
+  \param theValue the value being formatted.
+  \return formatted string value.
+*/
+QString QDS_Datum::formatValue( const int theValue ) const
+{
+  return format( flags() & NotFormat ? "" : format(), type(), theValue );
+}
+
+/*!
+  \brief Format double value according to datum formatting and type.
+  \internal
+  \param theValue the value being formatted.
+  \return formatted string value.
+*/
+QString QDS_Datum::formatValue( const double theValue ) const
+{
+  return format( flags() & NotFormat ? "" : format(), type(), theValue );
+}
+
+/*!
+  \brief Format string value according to datum formatting and type.
+  \internal
+  \param theValue the value being formatted.
+  \return formatted string value.
+*/
+QString QDS_Datum::formatValue( const QString& theValue ) const
+{
+  return format( flags() & NotFormat ? "" : format(), type(), theValue );
 }
 
 /*!

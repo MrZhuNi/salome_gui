@@ -25,7 +25,7 @@
 
 #include "QDS_Datum.h"
 
-class QLineEdit;
+#include <QLineEdit>
 
 class QDS_EXPORT QDS_LineEdit : public QDS_Datum
 {
@@ -33,7 +33,7 @@ class QDS_EXPORT QDS_LineEdit : public QDS_Datum
 
   Q_PROPERTY( bool Selection READ hasSelection WRITE setSelection )
 
-protected:
+public:
   class Editor;
 
 public:
@@ -65,6 +65,29 @@ protected:
   virtual void         setString( const QString& );
 
   virtual void         unitSystemChanged( const QString& );
+};
+
+class QDS_LineEdit::Editor : public QLineEdit
+{
+public:
+  Editor( QWidget* parent = 0 ) : QLineEdit( parent ), myNumber( 2 ) {};
+  virtual ~Editor() {};
+
+  void setNumber( const int num ) { myNumber = num; };
+
+  virtual QSize minimumSizeHint() const
+  {
+    return QLineEdit::minimumSizeHint().
+      expandedTo( QSize( fontMetrics().width( "0" ) * myNumber, 0 ) );
+  }
+  
+  virtual QSize sizeHint() const
+  {
+    return minimumSizeHint();
+  }
+
+private:
+  int           myNumber;
 };
 
 #endif

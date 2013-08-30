@@ -25,35 +25,6 @@
 #include <QLineEdit>
 #include <QValidator>
 
-/*!
-  \class QDS_LineEdit::Editor
-  \internal
-  \brief Improved version of QLineEdit.
-*/
-
-class QDS_LineEdit::Editor : public QLineEdit
-{
-public:
-  Editor( QWidget* parent = 0 ) : QLineEdit( parent ), myNumber( 2 ) {};
-  virtual ~Editor() {};
-
-  void setNumber( const int num ) { myNumber = num; };
-
-  virtual QSize minimumSizeHint() const
-  {
-    return QLineEdit::minimumSizeHint().
-      expandedTo( QSize( fontMetrics().width( "0" ) * myNumber, 0 ) );
-  }
-  
-  virtual QSize sizeHint() const
-  {
-    return minimumSizeHint();
-  }
-
-private:
-  int           myNumber;
-};
-
 /*
   \class QDS_LineEdit
   
@@ -130,9 +101,9 @@ void QDS_LineEdit::unitSystemChanged( const QString& system )
       num += aLen.toInt();
   }
   
-  int zeroLen = format( format(), type(), 0 ).length();
-  int minLen  = format( format(), type(), minValue() ).length();
-  int maxLen  = format( format(), type(), maxValue() ).length();
+  int zeroLen = formatValue( 0 ).length();
+  int minLen  = formatValue( minValue() ).length();
+  int maxLen  = formatValue( maxValue() ).length();
 
   num = qMax( qMax( num, zeroLen ), qMax( minLen, maxLen ) );
   ((Editor*)le)->setNumber( num );
