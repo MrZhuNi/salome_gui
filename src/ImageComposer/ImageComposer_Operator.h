@@ -23,7 +23,9 @@ public:
   ImageComposer_Operator();
   virtual ~ImageComposer_Operator();
 
+  void getArgs( QColor& theBackground ) const;
   void setArgs( const QColor& theBackground );
+
   QByteArray getBinArgs() const;
   void setBinArgs( const QByteArray& );
 

@@ -20,6 +20,15 @@ ImageComposer_Operator::~ImageComposer_Operator()
 }
 
 /**
+  Get operator arguments
+  @param theBackground the background color for result image
+*/
+void ImageComposer_Operator::getArgs( QColor& theBackground ) const
+{
+  theBackground = myBackground;
+}
+
+/**
   Set operator arguments
   @param theBackground the background color for result image
 */
