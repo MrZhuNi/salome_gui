@@ -29,6 +29,13 @@ public:
   QByteArray getBinArgs() const;
   void setBinArgs( const QByteArray& );
 
+  /**
+    Dumps arguments of operator to python script representation
+    @param theArrayName name of result \c QByteArray array variable
+    @return list of strings with python representation
+  **/
+  QStringList dumpArgsToPython( QString& theArrayName ) const;
+
   virtual QString name() const;
   virtual ImageComposer_Image process( const ImageComposer_Image& theImage1,
                                        const ImageComposer_Image& theImage2 ) const;

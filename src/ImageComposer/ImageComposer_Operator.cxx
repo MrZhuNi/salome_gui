@@ -113,6 +113,31 @@ void ImageComposer_Operator::setBinArgs( const QByteArray& theData )
   restoreArgs( aStream );
 }
 
+QStringList ImageComposer_Operator::dumpArgsToPython( QString& theArrayName ) const
+{
+  QStringList aResList;
+
+  if ( theArrayName.isEmpty() )
+    theArrayName = "composer_args";
+
+  QString aStreamName = theArrayName + "_stream";
+
+  aResList << QString( "%1 = QByteArray();" ).arg( theArrayName );
+  aResList << QString( "%1 = QDataStream( %2, QIODevice.WriteOnly );" )
+              .arg( aStreamName ).arg( theArrayName );
+
+  //Dump background color
+  aResList << QString( "" );
+
+  aResList << QString( "background_color = QColor( %1, %2, %3, %4 );" )
+              .arg( myBackground.red() ).arg( myBackground.green() )
+              .arg( myBackground.blue() ).arg( myBackground.alpha() );
+
+  aResList << QString( "%1 << background_color;" ).arg( aStreamName );
+
+  return aResList;
+}
+
 /**
   Store the operator's arguments to the stream
   @param theStream the stream for storing
