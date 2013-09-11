@@ -104,5 +104,6 @@ void ImageComposer_CropOperator::storeArgs( QDataStream& theStream ) const
 void ImageComposer_CropOperator::restoreArgs( QDataStream& theStream )
 {
   ImageComposer_Operator::restoreArgs( theStream );
+  myClipPath = QPainterPath();
   theStream >> myClipPath;
 }
