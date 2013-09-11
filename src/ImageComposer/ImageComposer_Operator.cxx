@@ -38,15 +38,6 @@ void ImageComposer_Operator::setArgs( const QColor& theBackground )
 }
 
 /**
-  Return name of the operator
-   @return name of the operator
-*/
-QString ImageComposer_Operator::name() const
-{
-  return "";
-}
-
-/**
   Perform the composing of images
   @param theImage1 the first image to compose
   @param theImage2 the second image to compose

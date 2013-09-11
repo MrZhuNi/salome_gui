@@ -23,7 +23,7 @@ ImageComposer_FuseOperator::~ImageComposer_FuseOperator()
 */
 QString ImageComposer_FuseOperator::name() const
 {
-  return "fuse";
+  return Type();
 }
 
 /**

@@ -54,7 +54,7 @@ QPainterPath ImageComposer_CropOperator::clipPath() const
 */
 QString ImageComposer_CropOperator::name() const
 {
-  return "crop";
+  return Type();
 }
 
 /**

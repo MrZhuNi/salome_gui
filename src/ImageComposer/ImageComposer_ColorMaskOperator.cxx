@@ -45,7 +45,7 @@ void ImageComposer_ColorMaskOperator::setArgs( const QColor& theRefColor,
 */
 QString ImageComposer_ColorMaskOperator::name() const
 {
-  return "colormask";
+  return Type();
 }
 
 QStringList ImageComposer_ColorMaskOperator::dumpArgsToPython( QString& theArrayName ) const

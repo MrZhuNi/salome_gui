@@ -20,6 +20,8 @@ public:
                 int theRGBThreshold,
                 int theAlphaThreshold );
 
+  static QString Type() { return "colormask"; }
+
   virtual QString name() const;
 
   /**

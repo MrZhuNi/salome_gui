@@ -23,7 +23,7 @@ ImageComposer_CutOperator::~ImageComposer_CutOperator()
 */
 QString ImageComposer_CutOperator::name() const
 {
-  return "cut";
+  return Type();
 }
 
 /**

@@ -15,6 +15,8 @@ public:
   ImageComposer_CutOperator();
   virtual ~ImageComposer_CutOperator();
 
+  static QString Type() { return "cut"; }
+
   virtual QString name() const;
 
 protected:

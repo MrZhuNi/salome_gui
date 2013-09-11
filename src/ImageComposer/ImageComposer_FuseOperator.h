@@ -15,6 +15,8 @@ public:
   ImageComposer_FuseOperator();
   virtual ~ImageComposer_FuseOperator();
 
+  static QString Type() { return "fuse"; }
+
   virtual QString name() const;
 
 protected:

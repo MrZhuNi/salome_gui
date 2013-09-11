@@ -21,7 +21,10 @@ public:
 
   QPainterPath clipPath() const;
 
+  static QString Type() { return "crop"; }
+
   virtual QString name() const;
+
   virtual ImageComposer_Image process( const ImageComposer_Image& theImage1,
                                        const ImageComposer_Image& theImage2 ) const;
 

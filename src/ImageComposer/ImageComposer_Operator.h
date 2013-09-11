@@ -36,7 +36,12 @@ public:
   **/
   QStringList dumpArgsToPython( QString& theArrayName ) const;
 
-  virtual QString name() const;
+  /**
+    Return name of the operator.
+    @return name of the operator
+  */
+  virtual QString name() const = 0;
+
   virtual ImageComposer_Image process( const ImageComposer_Image& theImage1,
                                        const ImageComposer_Image& theImage2 ) const;
 
