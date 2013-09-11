@@ -48,6 +48,34 @@ QString ImageComposer_ColorMaskOperator::name() const
   return "colormask";
 }
 
+QStringList ImageComposer_ColorMaskOperator::dumpArgsToPython( QString& theArrayName ) const
+{
+  QStringList aResList = ImageComposer_Operator::dumpArgsToPython( theArrayName );
+
+  QString aStreamName = theArrayName + "_stream";
+
+  //Dump operator arguments
+  aResList << QString( "" );
+  aResList << QString( "mask_color = QColor( %1, %2, %3, %4 );" )
+              .arg( myRefColor.red() ).arg( myRefColor.green() )
+              .arg( myRefColor.blue() ).arg( myRefColor.alpha() );
+  aResList << QString( "%1 << mask_color;" ).arg( aStreamName );
+
+  aResList << QString( "" );
+  aResList << QString( "make_transparent = %1;" ).arg( myIsMakeTransparent );
+  aResList << QString( "%1 << make_transparent;" ).arg( aStreamName );
+
+  aResList << QString( "" );
+  aResList << QString( "rgb_threshold = %1;" ).arg( myRGBThreshold );
+  aResList << QString( "%1 << rgb_threshold;" ).arg( aStreamName );
+
+  aResList << QString( "" );
+  aResList << QString( "alpha_threshold = %1;" ).arg( myAlphaThreshold );
+  aResList << QString( "%1 << alpha_threshold;" ).arg( aStreamName );
+
+  return aResList;
+}
+
 /**
 */
 QRectF ImageComposer_ColorMaskOperator::calcResultBoundingRect( const QRectF& theImage1Bounds, 

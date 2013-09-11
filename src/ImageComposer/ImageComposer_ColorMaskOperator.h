@@ -22,6 +22,13 @@ public:
 
   virtual QString name() const;
 
+  /**
+    Dumps arguments of operator to python script representation
+    @param theArrayName name of result \c QByteArray array variable
+    @return list of strings with python representation
+  **/
+  QStringList dumpArgsToPython( QString& theArrayName ) const;
+
 protected:
   virtual QRectF calcResultBoundingRect( const QRectF& theImage1Bounds, 
                                          const QRectF& theImage2Bounds ) const;
