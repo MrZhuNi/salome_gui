@@ -1,6 +1,6 @@
 
 #include "ImageComposer_Operator.h"
-#include "ImageComposer_Image.h"
+#include "ImageComposer_MetaTypes.h"
 #include <QPixmap>
 #include <QPainter>
 
@@ -39,25 +39,33 @@ void ImageComposer_Operator::setArgs( const QColor& theBackground )
 
 /**
   Perform the composing of images
-  @param theImage1 the first image to compose
-  @param theImage2 the second image to compose
+  @param theObj1 the first object to compose
+  @param theObj2 the second object to compose
   @return the result image
 */
-ImageComposer_Image ImageComposer_Operator::process( const ImageComposer_Image& theImage1,
-                                                     const ImageComposer_Image& theImage2 ) const
+ImageComposer_Image ImageComposer_Operator::process( const QVariant& theObj1,
+                                                     const QVariant& theObj2 ) const
 {
-  ImageComposer_Image anImage1 = theImage1;
-  ImageComposer_Image anImage2 = theImage2;
+  ImageComposer_Image aResult;
+  if ( theObj1.isNull() || !theObj1.canConvert<ImageComposer_Image>() )
+    return aResult;
+
+  ImageComposer_Image anImage1 = theObj1.value<ImageComposer_Image>();
+
+  ImageComposer_Image anImage2;
+  if ( !theObj1.isNull() && theObj2.canConvert<ImageComposer_Image>() )
+    anImage2 = theObj2.value<ImageComposer_Image>();
+
   QTransform aInvTransform = anImage1.transform().inverted();
   anImage1.setTransform( anImage1.transform() * aInvTransform );
   if( !anImage2.isNull() )
     anImage2.setTransform( anImage2.transform() * aInvTransform );
   
-  QRectF aBounds1 = anImage1.boundingRect();
-  QRectF aBounds2;
-  if( !anImage2.isNull() )
-    aBounds2 = anImage2.boundingRect();
-  QRectF aBounds = calcResultBoundingRect( aBounds1, aBounds2 );
+  QVariant anImage1Var, anImage2Var;
+  anImage1Var.setValue<ImageComposer_Image>( anImage1 );
+  anImage2Var.setValue<ImageComposer_Image>( anImage2 );
+
+  QRectF aBounds = calcResultBoundingRect( anImage1Var, !anImage2.isNull() ? anImage2Var : theObj2 );
 
   QTransform aTranslate;
   aTranslate.translate( -aBounds.left(), -aBounds.top() );
@@ -72,13 +80,19 @@ ImageComposer_Image ImageComposer_Operator::process( const ImageComposer_Image& 
   aPainter.setRenderHint( QPainter::Antialiasing, true );
   aPainter.setRenderHint( QPainter::HighQualityAntialiasing, true );
 
-  drawResult( aPainter, anImage1, anImage2 );
+  anImage1Var.setValue<ImageComposer_Image>( anImage1 );
+  anImage2Var.setValue<ImageComposer_Image>( anImage2 );
 
-  ImageComposer_Image aResult;
-  aResult = aResultImage.toImage();
-  QTransform aResultTransform = theImage1.transform();
+  drawResult( aPainter, anImage1Var, !anImage2.isNull() ? anImage2Var : theObj2 );
+
+  anImage1 = theObj1.value<ImageComposer_Image>();
+
+  QTransform aResultTransform = anImage1.transform();
   aResultTransform.translate( aBounds.left(), aBounds.top() );
+
+  aResult = aResultImage.toImage();
   aResult.setTransform( aResultTransform );
+
   return aResult;
 }
 

@@ -42,6 +42,7 @@ INSTALL(TARGETS ImageComposer DESTINATION ${GUI_salomelib_LIBS})
 
 SET(COMMON_HEADERS_H
   ImageComposer.h
+  ImageComposer_MetaTypes.h
   ImageComposer_ColorMaskOperator.h
   ImageComposer_CropOperator.h
   ImageComposer_CutOperator.h

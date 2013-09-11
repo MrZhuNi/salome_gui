@@ -1,6 +1,6 @@
 
 #include "ImageComposer_ColorMaskOperator.h"
-#include "ImageComposer_Image.h"
+#include "ImageComposer_MetaTypes.h"
 #include <QRectF>
 #include <QRgb>
 #include <QPixmap>
@@ -78,19 +78,31 @@ QStringList ImageComposer_ColorMaskOperator::dumpArgsToPython( QString& theArray
 
 /**
 */
-QRectF ImageComposer_ColorMaskOperator::calcResultBoundingRect( const QRectF& theImage1Bounds, 
-                                                                const QRectF& ) const
+QRectF ImageComposer_ColorMaskOperator::calcResultBoundingRect( const QVariant& theObj1, 
+                                                                const QVariant& ) const
 {
-  return theImage1Bounds;
+  QRectF aResRect;
+  if ( !theObj1.isNull() && theObj1.canConvert<ImageComposer_Image>() )
+  {
+    ImageComposer_Image anImage1 = theObj1.value<ImageComposer_Image>();
+    aResRect = anImage1.boundingRect();
+  }
+  return aResRect;
 }
 
 /**
 */
-void ImageComposer_ColorMaskOperator::drawResult( QPainter& thePainter,
-                                                  const ImageComposer_Image& theImage1,
-                                                  const ImageComposer_Image& ) const
+void ImageComposer_ColorMaskOperator::drawResult( QPainter&       thePainter,
+                                                  const QVariant& theObj1,
+                                                  const QVariant& ) const
 {
-  QImage anImage = theImage1.convertToFormat( QImage::Format_ARGB32 );
+  if ( theObj1.isNull() || !theObj1.canConvert<ImageComposer_Image>() )
+    return;
+
+  ImageComposer_Image anImage1 = theObj1.value<ImageComposer_Image>();
+
+  QImage anImage = anImage1.convertToFormat( QImage::Format_ARGB32 );
+
   int aRMin = myRefColor.red()    - myRGBThreshold;
   int aRMax = myRefColor.red()    + myRGBThreshold;
   int aGMin = myRefColor.green()  - myRGBThreshold;
@@ -120,7 +132,7 @@ void ImageComposer_ColorMaskOperator::drawResult( QPainter& thePainter,
 
   ImageComposer_Image aResult;
   aResult = anImage;
-  aResult.setTransform( theImage1.transform() );
+  aResult.setTransform( anImage1.transform() );
   aResult.draw( thePainter );
 }
 

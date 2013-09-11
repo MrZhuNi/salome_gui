@@ -3,6 +3,8 @@
 #include "ImageComposer_CropOperator.h"
 #include "ImageComposer_CutOperator.h"
 #include "ImageComposer_FuseOperator.h"
+#include "ImageComposer_MetaTypes.h"
+
 #include <QPainter>
 
 QColor ImageComposer_Image::myDefaultBackground = TRANSPARENT;
@@ -11,6 +13,23 @@ QColor ImageComposer_Image::myDefaultBackground = TRANSPARENT;
   Constructor
 */
 ImageComposer_Image::ImageComposer_Image()
+{
+}
+
+/**
+  Copy constructor
+*/
+ImageComposer_Image::ImageComposer_Image( const ImageComposer_Image& theImage )
+ : QImage( theImage ),
+   myTransform( theImage.myTransform )
+{
+}
+
+/**
+  Copy constructor
+*/
+ImageComposer_Image::ImageComposer_Image( const QImage& theImage )
+ : QImage( theImage )
 {
 }
 
@@ -107,9 +126,12 @@ const QImage& ImageComposer_Image::operator = ( const QImage& theImage )
   @return the result image
 */
 ImageComposer_Image ImageComposer_Image::apply( const ImageComposer_Operator& theOperator,
-                                                const ImageComposer_Image& theImage ) const
+                                                const QVariant&               theOtherObj ) const
 {
-  return theOperator.process( *this, theImage );
+  QVariant aVarData;
+  aVarData.setValue<ImageComposer_Image>( *this );
+
+  return theOperator.process( aVarData, theOtherObj );
 }
 
 /**
@@ -137,9 +159,9 @@ void ImageComposer_Image::setDefaultBackground( const QColor& theDefaultBackgrou
 */
 ImageComposer_Image ImageComposer_Image::operator & ( const QRect& theRect ) const
 {
-  ImageComposer_CropOperator anOp;
-  anOp.setArgs( myDefaultBackground, theRect );
-  return apply( anOp );
+  QPainterPath aPath;
+  aPath.addRect( theRect );
+  return operator &( aPath );
 }
 
 /**
@@ -150,8 +172,12 @@ ImageComposer_Image ImageComposer_Image::operator & ( const QRect& theRect ) con
 ImageComposer_Image ImageComposer_Image::operator & ( const QPainterPath& thePath ) const
 {
   ImageComposer_CropOperator anOp;
-  anOp.setArgs( myDefaultBackground, thePath );
-  return apply( anOp );
+  anOp.setArgs( myDefaultBackground );
+
+  QVariant aVarData;
+  aVarData.setValue<QPainterPath>( thePath );
+
+  return apply( anOp, aVarData );
 }
 
 /**
@@ -163,7 +189,11 @@ ImageComposer_Image ImageComposer_Image::operator & ( const ImageComposer_Image&
 {
   ImageComposer_CutOperator anOp;
   anOp.setArgs( myDefaultBackground );
-  return apply( anOp, theImage );
+
+  QVariant aVarData;
+  aVarData.setValue<ImageComposer_Image>( theImage );
+
+  return apply( anOp, aVarData );
 }
 
 /**
@@ -175,5 +205,9 @@ ImageComposer_Image ImageComposer_Image::operator | ( const ImageComposer_Image&
 {
   ImageComposer_FuseOperator anOp;
   anOp.setArgs( myDefaultBackground );
-  return apply( anOp, theImage );
+
+  QVariant aVarData;
+  aVarData.setValue<ImageComposer_Image>( theImage );
+
+  return apply( anOp, aVarData );
 }

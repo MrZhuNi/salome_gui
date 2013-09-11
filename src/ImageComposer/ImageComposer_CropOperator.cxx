@@ -1,6 +1,8 @@
 
 #include "ImageComposer_CropOperator.h"
 #include "ImageComposer_Image.h"
+#include "ImageComposer_MetaTypes.h"
+
 #include <QPixmap>
 #include <QPainter>
 
@@ -19,38 +21,6 @@ ImageComposer_CropOperator::~ImageComposer_CropOperator()
 }
 
 /**
-  Set operator arguments
-  @param theBackground the background color for result image
-  @param theRect the cropping rectangle (in the global CS)
-*/
-void ImageComposer_CropOperator::setArgs( const QColor& theBackground, const QRect& theRect )
-{
-  ImageComposer_Operator::setArgs( theBackground );
-  myClipPath = QPainterPath();
-  myClipPath.addRect( theRect );
-}
-
-/**
-  Set operator arguments
-  @param theBackground the background color for result image
-  @param thePath the cropping path (in the global CS)
-*/
-void ImageComposer_CropOperator::setArgs( const QColor& theBackground, const QPainterPath& thePath )
-{
-  ImageComposer_Operator::setArgs( theBackground );
-  myClipPath = thePath;
-}
-
-/**
-  Return clipping path
-  @return clipping path
-*/
-QPainterPath ImageComposer_CropOperator::clipPath() const
-{
-  return myClipPath;
-}
-
-/**
 */
 QString ImageComposer_CropOperator::name() const
 {
@@ -59,51 +29,65 @@ QString ImageComposer_CropOperator::name() const
 
 /**
 */
-QRectF ImageComposer_CropOperator::calcResultBoundingRect( const QRectF&, const QRectF& ) const
+QRectF ImageComposer_CropOperator::calcResultBoundingRect( const QVariant&, 
+                                                           const QVariant& theObj2 ) const
 {
-  return myImgClipPath.boundingRect();
+  QRectF aResRect;
+  if ( !theObj2.isNull() && theObj2.canConvert<QPainterPath>() )
+  {
+    QPainterPath aCropPath = theObj2.value<QPainterPath>();
+    aResRect = aCropPath.boundingRect();
+  }
+  return aResRect;
 }
 
 /**
 */
-void ImageComposer_CropOperator::drawResult( QPainter& thePainter,
-                                             const ImageComposer_Image& theImage1,
-                                             const ImageComposer_Image& ) const
+void ImageComposer_CropOperator::drawResult( QPainter&       thePainter,
+                                             const QVariant& theObj1,
+                                             const QVariant& theObj2 ) const
 {
-  QRectF aBounds = myImgClipPath.boundingRect();
+  if ( theObj1.isNull() || !theObj1.canConvert<ImageComposer_Image>() ||
+       theObj2.isNull() || !theObj2.canConvert<QPainterPath>() )
+    return;
+
+  ImageComposer_Image anImage1 = theObj1.value<ImageComposer_Image>();
+  QPainterPath anImgClipPath = theObj2.value<QPainterPath>();
+
+  QRectF aBounds = anImgClipPath.boundingRect();
+
   QTransform aTranslate;
   aTranslate.translate( -aBounds.left(), -aBounds.top() );
-  QPainterPath aClipPath = aTranslate.map( myImgClipPath );
+
+  QPainterPath aClipPath = aTranslate.map( anImgClipPath );
   thePainter.setClipPath( aClipPath );
-  theImage1.draw( thePainter );
+
+  anImage1.draw( thePainter );
   //thePainter.fillPath( aClipPath, Qt::red );
 }
 
 /**
 */
-ImageComposer_Image ImageComposer_CropOperator::process( const ImageComposer_Image& theImage1,
-                                                         const ImageComposer_Image& theImage2 ) const
+ImageComposer_Image ImageComposer_CropOperator::process( const QVariant& theObj1,
+                                                         const QVariant& theObj2 ) const
 {
-  QRect anImageRect( 0, 0, theImage1.width(), theImage1.height() );
+  ImageComposer_Image aResult;
+  if ( theObj1.isNull() || !theObj1.canConvert<ImageComposer_Image>() ||
+       theObj2.isNull() || !theObj2.canConvert<QPainterPath>() )
+    return aResult;
+
+  ImageComposer_Image anImage1 = theObj1.value<ImageComposer_Image>();
+  QPainterPath aCropPath = theObj2.value<QPainterPath>();
+
+  QRect anImageRect( 0, 0, anImage1.width(), anImage1.height() );
+
   QPainterPath anImageBoundsPath;
-  anImageBoundsPath.addPolygon( theImage1.transform().mapToPolygon( anImageRect ) );
+  anImageBoundsPath.addPolygon( anImage1.transform().mapToPolygon( anImageRect ) );
 
-  const_cast<ImageComposer_CropOperator*>( this )->myImgClipPath =
-    theImage1.transform().inverted().map( myClipPath.intersected( anImageBoundsPath ) );
+  // clipping path mapped to first image's local CS
+  QVariant anImgClipPath;
+  anImgClipPath.setValue<QPainterPath>( 
+    anImage1.transform().inverted().map( aCropPath.intersected( anImageBoundsPath ) ) );
 
-  return ImageComposer_Operator::process( theImage1, theImage2 );
-}
-
-
-void ImageComposer_CropOperator::storeArgs( QDataStream& theStream ) const
-{
-  ImageComposer_Operator::storeArgs( theStream );
-  theStream << myClipPath;
-}
-
-void ImageComposer_CropOperator::restoreArgs( QDataStream& theStream )
-{
-  ImageComposer_Operator::restoreArgs( theStream );
-  myClipPath = QPainterPath();
-  theStream >> myClipPath;
+  return ImageComposer_Operator::process( theObj1, anImgClipPath );
 }

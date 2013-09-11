@@ -3,12 +3,14 @@
 #define IMAGE_COMPOSER_OPERATOR_HEADER
 
 #include "ImageComposer.h"
+
 #include <QColor>
 
 class QString;
 class QRectF;
 class QPainter;
 class QTransform;
+class QVariant;
 class ImageComposer_Image;
 
 const QColor TRANSPARENT( 255, 255, 255, 0 );
@@ -42,27 +44,27 @@ public:
   */
   virtual QString name() const = 0;
 
-  virtual ImageComposer_Image process( const ImageComposer_Image& theImage1,
-                                       const ImageComposer_Image& theImage2 ) const;
+  virtual ImageComposer_Image process( const QVariant& theObj1,
+                                       const QVariant& theObj2 ) const;
 
 protected:
   /**
     Calculate bounding rectangle for the result image
-    @param theImage1Bounds bounding rectangle of the first image
-    @param theImage2Bounds bounding rectangle of the second image
+    @param theObj1 first object to calculate
+    @param theObj2 second object to calculate
     @return calculated bounding rectangle
   */
-  virtual QRectF calcResultBoundingRect( const QRectF& theImage1Bounds, 
-                                         const QRectF& theImage2Bounds ) const = 0;
+  virtual QRectF calcResultBoundingRect( const QVariant& theObj1, 
+                                         const QVariant& theObj2 ) const = 0;
 
   /**
     Draw result image using the given painter
     @param thePainter the painter on the result image
-    @param theImage1 the first image to compose
-    @param theImage2 the second image to compose
+    @param theObj1 the first object to compose
+    @param theObj2 the second object to compose
   */
-  virtual void drawResult( QPainter& thePainter, const ImageComposer_Image& theImage1,
-                                                 const ImageComposer_Image& theImage2 ) const = 0;
+  virtual void drawResult( QPainter& thePainter, const QVariant& theObj1,
+                                                 const QVariant& theObj2 ) const = 0;
 
   virtual void storeArgs( QDataStream& theStream ) const;
   virtual void restoreArgs( QDataStream& theStream );

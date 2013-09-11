@@ -2,9 +2,11 @@
 #ifndef IMAGE_COMPOSER_IMAGE_HEADER
 #define IMAGE_COMPOSER_IMAGE_HEADER
 
-#include <QImage>
 #include "ImageComposer.h"
 
+#include <QImage>
+
+class QVariant;
 class ImageComposer_Operator;
 
 /**
@@ -15,6 +17,8 @@ class IMAGE_COMPOSER_API ImageComposer_Image : public QImage
 {
 public:
   ImageComposer_Image();
+  ImageComposer_Image( const ImageComposer_Image& theImage );
+  ImageComposer_Image( const QImage& theImage );
   ~ImageComposer_Image();
 
   void draw( QPainter& thePainter ) const;
@@ -29,7 +33,7 @@ public:
   const QImage& operator = ( const QImage& theImage );
 
   ImageComposer_Image apply( const ImageComposer_Operator& theOperator,
-                             const ImageComposer_Image& theImage = ImageComposer_Image() ) const;
+                             const QVariant&               theOtherObj ) const;
 
   static QColor defaultBackground();
   static void setDefaultBackground( const QColor& );

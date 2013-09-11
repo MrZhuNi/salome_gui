@@ -32,10 +32,10 @@ public:
   QStringList dumpArgsToPython( QString& theArrayName ) const;
 
 protected:
-  virtual QRectF calcResultBoundingRect( const QRectF& theImage1Bounds, 
-                                         const QRectF& theImage2Bounds ) const;
-  virtual void drawResult( QPainter& thePainter, const ImageComposer_Image& theImage1,
-                                                 const ImageComposer_Image& theImage2 ) const;
+  virtual QRectF calcResultBoundingRect( const QVariant& theObj1, 
+                                         const QVariant& theObj2 ) const;
+  virtual void drawResult( QPainter& thePainter, const QVariant& theObj1,
+                                                 const QVariant& theObj2 ) const;
 
   virtual void storeArgs( QDataStream& theStream ) const;
   virtual void restoreArgs( QDataStream& theStream );

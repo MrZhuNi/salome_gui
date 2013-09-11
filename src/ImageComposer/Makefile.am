@@ -21,21 +21,22 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
 lib_LTLIBRARIES = libImageComposer.la
 
-salomeinclude_HEADERS =			\
-ImageComposer.h				\
+salomeinclude_HEADERS =             \
+ImageComposer.h                     \
+ImageComposer_MetaTypes.h           \
 ImageComposer_ColorMaskOperator.h	\
-ImageComposer_CropOperator.h		\
-ImageComposer_CutOperator.h		\
-ImageComposer_FuseOperator.h		\
-ImageComposer_Image.h			\
+ImageComposer_CropOperator.h        \
+ImageComposer_CutOperator.h         \
+ImageComposer_FuseOperator.h        \
+ImageComposer_Image.h               \
 ImageComposer_Operator.h
 
-dist_libImageComposer_la_SOURCES =	\
-ImageComposer_ColorMaskOperator.cxx	\
-ImageComposer_CropOperator.cxx		\
-ImageComposer_CutOperator.cxx		\
-ImageComposer_FuseOperator.cxx		\
-ImageComposer_Image.cxx			\
+dist_libImageComposer_la_SOURCES =  \
+ImageComposer_ColorMaskOperator.cxx \
+ImageComposer_CropOperator.cxx      \
+ImageComposer_CutOperator.cxx       \
+ImageComposer_FuseOperator.cxx      \
+ImageComposer_Image.cxx             \
 ImageComposer_Operator.cxx
 
 libImageComposer_la_CPPFLAGS = $(QT_INCLUDES)

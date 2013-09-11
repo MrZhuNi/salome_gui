@@ -1,6 +1,6 @@
 
 #include "ImageComposer_FuseOperator.h"
-#include "ImageComposer_Image.h"
+#include "ImageComposer_MetaTypes.h"
 #include <QString>
 #include <QPixmap>
 #include <QPainter>
@@ -28,18 +28,36 @@ QString ImageComposer_FuseOperator::name() const
 
 /**
 */
-QRectF ImageComposer_FuseOperator::calcResultBoundingRect( const QRectF& theImage1Bounds, 
-                                                           const QRectF& theImage2Bounds ) const
+QRectF ImageComposer_FuseOperator::calcResultBoundingRect( const QVariant& theObj1, 
+                                                           const QVariant& theObj2 ) const
 {
-  return theImage1Bounds.united( theImage2Bounds );
+  QRectF aResRect;
+  if ( !theObj1.isNull() && theObj1.canConvert<ImageComposer_Image>() &&
+       !theObj2.isNull() && theObj2.canConvert<ImageComposer_Image>() )
+  {
+    ImageComposer_Image anImage1 = theObj1.value<ImageComposer_Image>();
+    ImageComposer_Image anImage2 = theObj2.value<ImageComposer_Image>();
+
+    aResRect = anImage1.boundingRect().united( anImage2.boundingRect() );
+  }
+  return aResRect;
 }
 
 /**
 */
-void ImageComposer_FuseOperator::drawResult( QPainter& thePainter,
-                                             const ImageComposer_Image& theImage1,
-                                             const ImageComposer_Image& theImage2 ) const
+void ImageComposer_FuseOperator::drawResult( QPainter&       thePainter,
+                                             const QVariant& theObj1,
+                                             const QVariant& theObj2 ) const
 {
-  theImage1.draw( thePainter );
-  theImage2.draw( thePainter );
+  if ( !theObj1.isNull() && theObj1.canConvert<ImageComposer_Image>() )
+  {
+    ImageComposer_Image anImage1 = theObj1.value<ImageComposer_Image>();
+    anImage1.draw( thePainter );
+  }
+
+  if ( !theObj2.isNull() && theObj2.canConvert<ImageComposer_Image>() )
+  {
+    ImageComposer_Image anImage2 = theObj2.value<ImageComposer_Image>();
+    anImage2.draw( thePainter );
+  }
 }

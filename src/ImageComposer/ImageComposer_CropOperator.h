@@ -16,32 +16,21 @@ public:
   ImageComposer_CropOperator();
   virtual ~ImageComposer_CropOperator();
 
-  void setArgs( const QColor& theBackground, const QRect& );
-  void setArgs( const QColor& theBackground, const QPainterPath& );
-
-  QPainterPath clipPath() const;
-
   static QString Type() { return "crop"; }
 
   virtual QString name() const;
 
-  virtual ImageComposer_Image process( const ImageComposer_Image& theImage1,
-                                       const ImageComposer_Image& theImage2 ) const;
+  virtual ImageComposer_Image process( const QVariant& theObj1,
+                                       const QVariant& theObj2 ) const;
 
 protected:
-  virtual QRectF calcResultBoundingRect( const QRectF& theImage1Bounds, 
-                                         const QRectF& theImage2Bounds ) const;
-  virtual void drawResult( QPainter& thePainter, const ImageComposer_Image& theImage1,
-                                                 const ImageComposer_Image& theImage2 ) const;
-
-  virtual void storeArgs( QDataStream& theStream ) const;
-  virtual void restoreArgs( QDataStream& theStream );
+  virtual QRectF calcResultBoundingRect( const QVariant& theObj1, 
+                                         const QVariant& theObj2 ) const;
+  virtual void drawResult( QPainter& thePainter, const QVariant& theObj1,
+                                                 const QVariant& theObj2 ) const;
 
 private:
   friend class ImageComposerTests_TestOperators;
-
-  QPainterPath myClipPath;     ///< the clipping path specified initially
-  QPainterPath myImgClipPath;  ///< the clipping path mapped to first image's local CS
 };
 
 #endif
