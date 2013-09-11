@@ -53,25 +53,27 @@ Handle(Aspect_Window) OCCViewer_VService::CreateWindow( const Handle(V3d_View)& 
 /*!
     Creates viewer 3d [ static ]
 */
-Handle(V3d_Viewer) OCCViewer_VService::Viewer3d( const Standard_CString aDisplay,
-						 const Standard_ExtString aName,
-						 const Standard_CString aDomain,
-						 const Standard_Real ViewSize ,
-						 const V3d_TypeOfOrientation ViewProj,
-						 const Standard_Boolean ComputedMode,
-						 const Standard_Boolean aDefaultComputedMode )
+Handle(V3d_Viewer) OCCViewer_VService::CreateViewer( const Standard_ExtString name,
+						     const Standard_CString displayName,
+						     const Standard_CString domain,
+						     const Standard_Real viewSize ,
+						     const V3d_TypeOfOrientation viewProjection,
+						     const Standard_Boolean computedMode,
+						     const Standard_Boolean defaultComputedMode )
 {
   static Handle(Graphic3d_GraphicDriver) aGraphicDriver;
   if (aGraphicDriver.IsNull())
   {
     Handle(Aspect_DisplayConnection) aDisplayConnection;
 #ifndef WNT
-    aDisplayConnection = new Aspect_DisplayConnection( aDisplay );
+    aDisplayConnection = new Aspect_DisplayConnection( displayName );
+#else
+    aDisplayConnection = new Aspect_DisplayConnection();
 #endif
     aGraphicDriver = Graphic3d::InitGraphicDriver( aDisplayConnection );
   }
 
-  return new V3d_Viewer( aGraphicDriver, aName, aDomain, ViewSize, ViewProj,
+  return new V3d_Viewer( aGraphicDriver, name, domain, viewSize, viewProjection,
 			 Quantity_NOC_GRAY30, V3d_ZBUFFER, V3d_GOURAUD, V3d_WAIT,
-			 ComputedMode, aDefaultComputedMode, V3d_TEX_NONE );
+			 computedMode, defaultComputedMode, V3d_TEX_NONE );
 }
