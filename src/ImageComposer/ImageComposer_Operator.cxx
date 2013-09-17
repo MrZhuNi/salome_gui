@@ -73,15 +73,12 @@ ImageComposer_Image ImageComposer_Operator::process( const QVariant& theObj1,
   anImage2.setTransform( anImage2.transform() * aTranslate );
 
   QImage aResultImage( int(aBounds.width()), int(aBounds.height()), QImage::Format_ARGB32 );
-  //QPixmap aResultImage( int(aBounds.width()), int(aBounds.height()) );
-  //aResultImage.fill( myBackground );
+  aResultImage.fill( myBackground );
 
   QPainter aPainter( &aResultImage );
   //aPainter.setRenderHint( QPainter::SmoothPixmapTransform, true );
   aPainter.setRenderHint( QPainter::Antialiasing, true );
   aPainter.setRenderHint( QPainter::HighQualityAntialiasing, true );
-
-  aPainter.fillRect( QRect( 0, 0, int(aBounds.width()), int(aBounds.height()) ), myBackground );
 
   anImage1Var.setValue<ImageComposer_Image>( anImage1 );
   anImage2Var.setValue<ImageComposer_Image>( anImage2 );
