@@ -1541,9 +1541,9 @@ void Plot2d_ViewFrame::cutCurveNonPositiveValues( const bool theIsXAxis,
   {
     if( Plot2d_Curve* aCurve = it.value() )
     {
-      pointList& aPointList = aCurve->getPointList();
-      pointList::iterator pIt, pItEnd = aPointList.end();
-      for( pIt = aPointList.begin(); pIt != pItEnd; )
+      QList<Plot2d_Point>& aPointList = aCurve->getPointList();
+      QList<Plot2d_Point>::iterator pIt;
+      for( pIt = aPointList.begin(); pIt != aPointList.end(); )
       {
         Plot2d_Point& aPoint = *pIt;
         double& value = theIsXAxis ? aPoint.x : aPoint.y;
