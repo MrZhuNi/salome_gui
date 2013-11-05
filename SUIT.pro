@@ -35,22 +35,3 @@ SUBDIRS = src/Qtx \
           src/OCCViewer
 
 #--------------------------------------------------------------------------------------
-unix {
-  install_binaries.files = $$(BIN_DIR) $$(LIB_DIR)
-  install_binaries.path = $$(TARGET_DIR)/$$(config_id)
-  INSTALLS *= install_binaries
-
-  install_resources.files = $$(RES_DIR)
-  install_resources.path = $$(TARGET_DIR)
-  INSTALLS *= install_resources
-
-  install_config_run.files = $$(ROOT_DIR)/run.config/*.*
-  install_config_run.path = $$(TARGET_DIR)
-  INSTALLS *= install_config_run
-
-  install_addons.files = $$(ROOT_DIR)/launcher_config.py $$(ROOT_DIR)/launcher_engine.py $$(ROOT_DIR)/launcher_env.py
-  install_addons.path = $$(TARGET_DIR)
-  INSTALLS *= install_addons
-}
-
-#--------------------------------------------------------------------------------------
