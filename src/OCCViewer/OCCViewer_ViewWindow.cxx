@@ -45,6 +45,9 @@
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 
+//Required by gcc version 4.4.6
+#include <cstdio>
+
 const char* imageZoomCursor[] = { 
 "32 32 3 1",
 ". c None",

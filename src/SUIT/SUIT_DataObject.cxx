@@ -23,6 +23,9 @@
 #include "SUIT_DataObject.h"
 #include "SUIT_DataObjectKey.h"
 
+//Required by gcc version 4.4.6
+#include <cstdio>
+
 SUIT_DataObject::Signal* SUIT_DataObject::mySignal = 0;
 
 /*!

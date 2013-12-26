@@ -35,6 +35,8 @@
 #include <Xw_Window.hxx>
 #endif
 
+//Required by gcc version 4.4.6
+#include <cstdio>
 /*!
     Constructor
 */

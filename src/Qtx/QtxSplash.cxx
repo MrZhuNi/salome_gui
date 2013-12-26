@@ -28,6 +28,9 @@
 #include <QMessageBox>
 #include <QDesktopWidget>
 
+//Required by gcc version 4.4.6
+#include <cstdio>
+
 /*!
   \class ProgressEvent
   \internal

@@ -29,6 +29,8 @@
 #include <QTextDocument>
 
 #include <math.h>
+//Required by gcc version 4.4.6
+#include <cstdio>
 
 /*!
   \class QtxColorScale

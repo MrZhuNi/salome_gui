@@ -39,6 +39,9 @@
 #include <QStackedWidget>
 #include <QAbstractButton>
 
+//Required by gcc version 4.4.6
+#include <cstdio>
+
 /*!
   \class QtxWorkstackArea::WidgetEvent
   \internal

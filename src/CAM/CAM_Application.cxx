@@ -39,6 +39,9 @@
 #include <dlfcn.h>
 #endif
 
+//Required by gcc version 4.4.6
+#include <cstdio>
+
 /*!
   \brief Create new instance of CAM_Application.
   \return new instance of CAM_Application class

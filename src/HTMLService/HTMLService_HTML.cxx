@@ -12,6 +12,9 @@
 #include <Standard_TypeDef.hxx>
 #include <Standard_ExtCharacter.hxx>
 
+//Required by gcc version 4.4.6
+#include <cstdio>
+
 IMPLEMENT_STANDARD_HANDLE(HTMLService_HTML, MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(HTMLService_HTML, MMgt_TShared)
 
