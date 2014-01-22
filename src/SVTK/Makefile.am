@@ -61,6 +61,7 @@ salomeinclude_HEADERS= \
 	SVTK_ImageWriterMgr.h \
 	SVTK_FrameBuffer.h\
 	SVTK_DoubleSpinBox.h \
+	Plot3d_Actor.h \
 	Plot3d_ViewManager.h \
 	Plot3d_ViewModel.h 
 
@@ -98,6 +99,7 @@ dist_libSVTK_la_SOURCES= \
 	SVTK_ImageWriterMgr.cxx \
 	SVTK_FrameBuffer.cxx \
 	SVTK_DoubleSpinBox.cxx \
+	Plot3d_Actor.cxx \
 	Plot3d_ViewManager.cxx \
 	Plot3d_ViewModel.cxx 
 
