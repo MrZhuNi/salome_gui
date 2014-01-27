@@ -1864,8 +1864,8 @@ void SalomeApp_Application::updateVisibilityState( DataObjectList& theList,
           else
             anObjState = Qtx::HiddenState;
         }
+	aStudy->setVisibilityState( obj->entry(), anObjState ); // Do not change modules without displayer
       }
-      aStudy->setVisibilityState( obj->entry(), anObjState );
     }
   }
 }
