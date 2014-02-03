@@ -116,6 +116,7 @@ SVTK_ViewWindow::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
   myDumpImage(QImage()),
   myStandardInteractorStyle(SVTK_InteractorStyle::New()),
   myKeyFreeInteractorStyle(SVTK_KeyFreeInteractorStyle::New()),
+  myViewsAction( NULL ),
   myMode2D( false )
 {
   setWindowFlags( windowFlags() & ~Qt::Window );
@@ -155,8 +156,11 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
   myToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL"), -1, this );
   myRecordingToolBar = toolMgr()->createToolBar( tr("LBL_TOOLBAR_RECORD_LABEL"), -1, this );
   
-  createActions( SUIT_Session::session()->activeApplication()->resourceMgr() );
-  createToolBar();
+  if( SUIT_Session* aSession = SUIT_Session::session() )
+  {
+    createActions( aSession->activeApplication()->resourceMgr() );
+    createToolBar();
+  }
   
   SetEventDispatcher(myInteractor->GetDevice());
   myInteractor->setBackgroundRole( QPalette::NoRole );//NoBackground
@@ -727,11 +731,16 @@ void SVTK_ViewWindow::onMode2D( bool theOn )
 {
   myMode2D = theOn;
 
-  getAction( ViewTrihedronId )->setVisible( !theOn );
-  getAction( ChangeRotationPointId )->setVisible( !theOn );
-  getAction( RotationId )->setVisible( !theOn );
-  myViewsAction->setVisible( !theOn );
-  getAction( ResetId )->setVisible( !theOn );
+  if( getAction( ViewTrihedronId ) )
+    getAction( ViewTrihedronId )->setVisible( !theOn );
+  if( getAction( ViewTrihedronId ) )
+    getAction( ViewTrihedronId )->setVisible( !theOn );
+  if( getAction( ChangeRotationPointId ) )
+    getAction( ChangeRotationPointId )->setVisible( !theOn );
+  if( myViewsAction )
+    myViewsAction->setVisible( !theOn );
+  if( getAction( ViewTrihedronId ) )
+    getAction( ViewTrihedronId )->setVisible( !theOn );
 
   SVTK_ComboAction* a = ::qobject_cast<SVTK_ComboAction*>( toolMgr()->action( ProjectionModeId ) );
   if( a )

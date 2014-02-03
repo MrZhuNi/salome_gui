@@ -1230,6 +1230,16 @@ void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item )
   emit dataChanged( firstIdx, lastIdx );
 }
 
+void SUIT_TreeModel::updateItem( SUIT_DataObject* obj)
+{
+  if(obj)
+  {
+    QModelIndex firstIdx = index( obj, 0 );
+    QModelIndex lastIdx  = index( obj, columnCount() - 1 );
+    emit dataChanged( firstIdx, lastIdx );
+  }
+}
+
 /*!
   \brief Remove tree item (recursively).
   \param item tree item to be removed

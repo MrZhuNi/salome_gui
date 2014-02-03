@@ -151,7 +151,9 @@ public:
                              int row, int column, const QModelIndex& parent );
   bool                     getObjects( const QMimeData* data, QList<SUIT_DataObject*>& ) const;
   void                     setDropAccepted( const bool );
-  
+
+  void                     updateItem( SUIT_DataObject* object);
+
 public slots:
   virtual void           updateTree( const QModelIndex& );
   virtual void           updateTree( SUIT_DataObject* = 0 );
