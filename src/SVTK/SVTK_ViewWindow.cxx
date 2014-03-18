@@ -191,7 +191,8 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
   
   //myView = new SVTK_View(myMainWindow);
   myView = new SVTK_View(this);
-  Initialize(myView,theModel);
+  if(theModel)
+    Initialize(myView,theModel);
   
   myInteractor->getRenderWindow()->Render();
   onResetView();
