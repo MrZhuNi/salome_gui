@@ -117,7 +117,8 @@ SVTK_ViewWindow::SVTK_ViewWindow(SUIT_Desktop* theDesktop):
   myStandardInteractorStyle(SVTK_InteractorStyle::New()),
   myKeyFreeInteractorStyle(SVTK_KeyFreeInteractorStyle::New()),
   myViewsAction( NULL ),
-  myMode2D( false )
+  myMode2D( false ),
+  myMode2DNormalAxis( AxisZ )
 {
   setWindowFlags( windowFlags() & ~Qt::Window );
   // specific of vtkSmartPointer
@@ -730,6 +731,7 @@ void SVTK_ViewWindow::onSwitchInteractionStyle(bool theOn)
 */
 void SVTK_ViewWindow::onMode2D( bool theOn )
 {
+  bool anIsModeChanged = theOn != myMode2D;
   myMode2D = theOn;
 
   if( getAction( ViewTrihedronId ) )
@@ -749,24 +751,44 @@ void SVTK_ViewWindow::onMode2D( bool theOn )
 
   if( theOn )
   {
-    myCubeAxesDlg->SetDimensionZEnabled( false );
+    myCubeAxesDlg->SetDimensionXEnabled( myMode2DNormalAxis != AxisX );
+    myCubeAxesDlg->SetDimensionYEnabled( myMode2DNormalAxis != AxisY );
+    myCubeAxesDlg->SetDimensionZEnabled( myMode2DNormalAxis != AxisZ );
     if( SVTK_CubeAxesActor2D* aCubeAxes = GetRenderer()->GetCubeAxes() )
     {
       aCubeAxes->SetIsInvertedGrid( true );
+      if( vtkAxisActor2D* aXAxis = aCubeAxes->GetXAxisActor2D() )
+      {
+        aXAxis->SetTitleVisibility( myMode2DNormalAxis != AxisX );
+        aXAxis->SetLabelVisibility( myMode2DNormalAxis != AxisX );
+        aXAxis->SetTickVisibility( myMode2DNormalAxis != AxisX );
+      }
+      if( vtkAxisActor2D* aYAxis = aCubeAxes->GetYAxisActor2D() )
+      {
+        aYAxis->SetTitleVisibility( myMode2DNormalAxis != AxisY );
+        aYAxis->SetLabelVisibility( myMode2DNormalAxis != AxisY );
+        aYAxis->SetTickVisibility( myMode2DNormalAxis != AxisY );
+      }
       if( vtkAxisActor2D* aZAxis = aCubeAxes->GetZAxisActor2D() )
       {
-        aZAxis->SetTitleVisibility( 0 );
-        aZAxis->SetLabelVisibility( 0 );
-        aZAxis->SetTickVisibility( 0 );
+        aZAxis->SetTitleVisibility( myMode2DNormalAxis != AxisZ );
+        aZAxis->SetLabelVisibility( myMode2DNormalAxis != AxisZ );
+        aZAxis->SetTickVisibility( myMode2DNormalAxis != AxisZ );
       }
     }
 
-    storeViewState( myStored3DViewState );
+    if( anIsModeChanged )
+      storeViewState( myStored3DViewState );
     if( !restoreViewState( myStored2DViewState ) )
     {
       // first time the action is toggled
       GetRenderer()->SetTrihedronDisplayed( false );
-      onTopView();
+      switch( myMode2DNormalAxis )
+      {
+        case AxisX: onFrontView(); break;
+        case AxisY: onLeftView(); break;
+        case AxisZ: onTopView(); break;
+      }
       onFitAll();
     }
 
@@ -775,10 +797,24 @@ void SVTK_ViewWindow::onMode2D( bool theOn )
   }
   else
   {
+    myCubeAxesDlg->SetDimensionXEnabled( true );
+    myCubeAxesDlg->SetDimensionYEnabled( true );
     myCubeAxesDlg->SetDimensionZEnabled( true );
     if( SVTK_CubeAxesActor2D* aCubeAxes = GetRenderer()->GetCubeAxes() )
     {
       aCubeAxes->SetIsInvertedGrid( false );
+      if( vtkAxisActor2D* aXAxis = aCubeAxes->GetXAxisActor2D() )
+      {
+        aXAxis->SetTitleVisibility( 1 );
+        aXAxis->SetLabelVisibility( 1 );
+        aXAxis->SetTickVisibility( 1 );
+      }
+      if( vtkAxisActor2D* aYAxis = aCubeAxes->GetYAxisActor2D() )
+      {
+        aYAxis->SetTitleVisibility( 1 );
+        aYAxis->SetLabelVisibility( 1 );
+        aYAxis->SetTickVisibility( 1 );
+      }
       if( vtkAxisActor2D* aZAxis = aCubeAxes->GetZAxisActor2D() )
       {
         aZAxis->SetTitleVisibility( 1 );
@@ -793,6 +829,15 @@ void SVTK_ViewWindow::onMode2D( bool theOn )
     myStandardInteractorStyle->SetIsRotationEnabled( true );
     myKeyFreeInteractorStyle->SetIsRotationEnabled( true );
   }
+}
+
+/*!
+  Check that 2D mode is active
+  \return true if 2D mode is active
+*/
+bool SVTK_ViewWindow::isMode2D() const
+{
+  return myMode2D;
 }
 
 /*!
@@ -834,6 +879,18 @@ bool SVTK_ViewWindow::restoreViewState( ViewState theViewState )
     return true;
   }
   return false;
+}
+
+/*!
+  Clear 2D/3D view state
+  \param theIs2D flag used to indicate which state has to be cleared
+*/
+void SVTK_ViewWindow::clearViewState( const bool theIs2D )
+{
+  if( theIs2D )
+    myStored2DViewState.IsInitialized = false;
+  else
+    myStored3DViewState.IsInitialized = false;
 }
 
 /*!
@@ -2156,4 +2213,12 @@ void SVTK_ViewWindow::hideEvent( QHideEvent * theEvent )
 void SVTK_ViewWindow::SetMode2DEnabled( const bool theIsEnabled )
 {
   getAction( Mode2DId )->setVisible( theIsEnabled );
+}
+
+/*!
+  Set the normal axis for the Mode2D
+*/
+void SVTK_ViewWindow::SetMode2DNormalAxis( const int theAxis )
+{
+  myMode2DNormalAxis = theAxis;
 }

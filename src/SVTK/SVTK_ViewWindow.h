@@ -76,6 +76,9 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   Q_OBJECT;
 
  public:
+  enum Axis { AxisX = 0, AxisY, AxisZ };
+
+ public:
   //! To construct #SVTK_ViewWindow instance
   SVTK_ViewWindow(SUIT_Desktop* theDesktop);
 
@@ -251,6 +254,15 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   //! Show/hide the Mode2D action
   void SetMode2DEnabled( const bool theIsEnabled );
 
+  //! Set the normal axis for the 2D mode
+  void SetMode2DNormalAxis( const int theAxis );
+
+  //! Check that 2D mode is active
+  bool isMode2D() const;
+
+  //! Clear 2D/3D view state
+  void clearViewState( const bool theIs2D );
+
  signals:
   void Show( QShowEvent * );
   void Hide( QHideEvent * );
@@ -422,6 +434,7 @@ protected:
   int myRecordingToolBar;
 
   bool myMode2D;
+  int myMode2DNormalAxis;
   ViewState myStored2DViewState;
   ViewState myStored3DViewState;
 

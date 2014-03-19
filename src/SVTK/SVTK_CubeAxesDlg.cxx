@@ -475,6 +475,22 @@ void SVTK_CubeAxesDlg::Update()
 }
 
 /*!
+  Show/hide tab with X-dimension controls
+*/
+void SVTK_CubeAxesDlg::SetDimensionXEnabled( const bool theIsEnabled )
+{
+  myTabWg->setTabEnabled( 0, theIsEnabled );
+}
+
+/*!
+  Show/hide tab with Y-dimension controls
+*/
+void SVTK_CubeAxesDlg::SetDimensionYEnabled( const bool theIsEnabled )
+{
+  myTabWg->setTabEnabled( 1, theIsEnabled );
+}
+
+/*!
   Show/hide tab with Z-dimension controls
 */
 void SVTK_CubeAxesDlg::SetDimensionZEnabled( const bool theIsEnabled )

@@ -59,6 +59,8 @@ public:
 
   void            Update();
 
+  void            SetDimensionXEnabled( const bool theIsEnabled );
+  void            SetDimensionYEnabled( const bool theIsEnabled );
   void            SetDimensionZEnabled( const bool theIsEnabled );
 
 private slots:
