@@ -16,8 +16,8 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-#ifndef PLOT3D_VIEWMODEL_H
-#define PLOT3D_VIEWMODEL_H
+#ifndef PLOT3D_ACTOR_H
+#define PLOT3D_ACTOR_H
 
 #include "SVTK.h"
 

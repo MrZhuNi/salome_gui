@@ -41,6 +41,9 @@ SUIT_ViewWindow* Plot3d_Viewer::createView( SUIT_Desktop* theDesktop )
 {
   SUIT_ViewWindow* aViewWindow = SVTK_Viewer::createView( theDesktop );
   if( SVTK_ViewWindow* aSVTKViewWindow = dynamic_cast<SVTK_ViewWindow*>( aViewWindow ) )
-    aSVTKViewWindow->SetMode2DEnabled( true );
+  {
+    aSVTKViewWindow->SetActionVisible( SVTK_ViewWindow::Mode2DId, true );
+    aSVTKViewWindow->SetActionVisible( SVTK_ViewWindow::SurfacesSettingsId, true );
+  }
   return aViewWindow;
 }

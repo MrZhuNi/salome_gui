@@ -34,6 +34,10 @@
         <translation>vtk_view_style_switch.png</translation>
     </message>
     <message>
+        <source>ICON_SVTK_SURFACES_SETTINGS</source>
+        <translation>vtk_view_surfaces_settings.png</translation>
+    </message>
+    <message>
         <source>ICON_SVTK_RECORDING_START</source>
         <translation>vtk_view_recording_start.png</translation>
     </message>
@@ -52,6 +56,10 @@
     <message>
         <source>ICON_SVTK_MODE_2D</source>
         <translation>vtk_view_mode_2d.png</translation>
+    </message>
+    <message>
+        <source>ICON_SVTK_MINUS</source>
+        <translation>vtk_view_minus.png</translation>
     </message>
 </context>
 </TS>

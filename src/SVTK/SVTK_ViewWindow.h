@@ -76,6 +76,14 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   Q_OBJECT;
 
  public:
+  enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, 
+         ChangeRotationPointId, RotationId,
+         FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
+         ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate,
+         ProjectionModeId, ViewParametersId, SwitchInteractionStyleId,
+         Mode2DId, SurfacesSettingsId,
+         StartRecordingId, PlayRecordingId, PauseRecordingId, StopRecordingId };
+
   enum Axis { AxisX = 0, AxisY, AxisZ };
 
  public:
@@ -251,8 +259,9 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   //! To invoke a VTK event on #SVTK_RenderWindowInteractor instance
   void InvokeEvent(unsigned long theEvent, void* theCallData);
   
-  //! Show/hide the Mode2D action
-  void SetMode2DEnabled( const bool theIsEnabled );
+  //! Show/hide the specified action
+  void SetActionVisible( const int theActionId,
+                         const bool theIsVisible );
 
   //! Set the normal axis for the 2D mode
   void SetMode2DNormalAxis( const int theAxis );
@@ -300,6 +309,8 @@ public slots:
 
   void onSwitchInteractionStyle(bool theOn);
   void onMode2D(bool theOn);
+
+  void onSurfacesSettings();
 
   void onStartRecording();
   void onPlayRecording();
@@ -392,14 +403,6 @@ protected:
   QtxAction* getAction( int ) const;
   void createToolBar();
   void createActions(SUIT_ResourceMgr* theResourceMgr);
-
-  enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, 
-	 ChangeRotationPointId, RotationId,
-         FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
-	 ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate,
-	 ProjectionModeId, ViewParametersId, SwitchInteractionStyleId, Mode2DId,
-	 StartRecordingId, PlayRecordingId, PauseRecordingId, StopRecordingId };
-
 
   SVTK_View* myView;
   //SVTK_MainWindow* myMainWindow;

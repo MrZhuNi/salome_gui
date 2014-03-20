@@ -23,6 +23,9 @@
 #include "SVTK_SetRotationPointDlg.h"
 #include "SVTK_ViewParameterDlg.h"
 
+#include "Plot3d_Actor.h"
+#include "Plot3d_SetupSurfacesDlg.h"
+
 #include "SALOME_Actor.h"
 
 #include <QToolBar>
@@ -1936,6 +1939,15 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onViewParameters(bool)));
   mgr->registerAction( anAction, ViewParametersId );
 
+  // Switch between 3D (default) and 2D modes
+  anAction = new QtxAction(tr("MNU_SVTK_MODE_2D"), 
+			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_MODE_2D" ) ),
+			   tr( "MNU_SVTK_MODE_2D" ), 0, this);
+  anAction->setStatusTip(tr("DSC_SVTK_MODE_2D"));
+  anAction->setCheckable(true);
+  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onMode2D(bool)));
+  mgr->registerAction( anAction, Mode2DId );
+
   // Switch between interaction styles
   anAction = new QtxAction(tr("MNU_SVTK_STYLE_SWITCH"), 
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_STYLE_SWITCH" ) ),
@@ -1945,14 +1957,13 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
   connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchInteractionStyle(bool)));
   mgr->registerAction( anAction, SwitchInteractionStyleId );
 
-  // Switch between 3D (default) and 2D modes
-  anAction = new QtxAction(tr("MNU_SVTK_MODE_2D"), 
-			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_MODE_2D" ) ),
-			   tr( "MNU_SVTK_MODE_2D" ), 0, this);
-  anAction->setStatusTip(tr("DSC_SVTK_MODE_2D"));
-  anAction->setCheckable(true);
-  connect(anAction, SIGNAL(toggled(bool)), this, SLOT(onMode2D(bool)));
-  mgr->registerAction( anAction, Mode2DId );
+  // Surfaces settings
+  anAction = new QtxAction(tr("MNU_SVTK_SURFACES_SETTINGS"), 
+			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_SVTK_SURFACES_SETTINGS" ) ),
+			   tr( "MNU_SVTK_SURFACES_SETTINGS" ), 0, this);
+  anAction->setStatusTip(tr("DSC_SVTK_SURFACES_SETTINGS"));
+  connect(anAction, SIGNAL(activated()), this, SLOT(onSurfacesSettings()));
+  mgr->registerAction( anAction, SurfacesSettingsId );
 
   // Start recording
   myStartAction = new QtxAction(tr("MNU_SVTK_RECORDING_START"), 
@@ -2033,6 +2044,7 @@ void SVTK_ViewWindow::createToolBar()
   mgr->append( GraduatedAxes, myToolBar );
 
   mgr->append( ViewParametersId, myToolBar );
+  mgr->append( SurfacesSettingsId, myToolBar );
   mgr->append( ProjectionModeId, myToolBar );
 
   mgr->append( StartRecordingId, myRecordingToolBar );
@@ -2040,8 +2052,9 @@ void SVTK_ViewWindow::createToolBar()
   mgr->append( PauseRecordingId, myRecordingToolBar );
   mgr->append( StopRecordingId, myRecordingToolBar );
 
-  // the Mode2D action is enabled on demand
+  // the following actions are enabled on demand
   getAction( Mode2DId )->setVisible( false );
+  getAction( SurfacesSettingsId )->setVisible( false );
 }
 
 void SVTK_ViewWindow::onUpdateRate(bool theIsActivate)
@@ -2208,11 +2221,13 @@ void SVTK_ViewWindow::hideEvent( QHideEvent * theEvent )
 }
 
 /*!
-  Show/hide the Mode2D action
+  Show/hide the specified action
 */
-void SVTK_ViewWindow::SetMode2DEnabled( const bool theIsEnabled )
+void SVTK_ViewWindow::SetActionVisible( const int theActionId,
+                                        const bool theIsVisible )
 {
-  getAction( Mode2DId )->setVisible( theIsEnabled );
+  if( QtxAction* anAction = getAction( theActionId ) )
+    anAction->setVisible( theIsVisible );
 }
 
 /*!
@@ -2221,4 +2236,106 @@ void SVTK_ViewWindow::SetMode2DEnabled( const bool theIsEnabled )
 void SVTK_ViewWindow::SetMode2DNormalAxis( const int theAxis )
 {
   myMode2DNormalAxis = theAxis;
+}
+
+/*!
+  Change the surfaces settings
+*/
+void SVTK_ViewWindow::onSurfacesSettings()
+{
+  vtkRenderer* aRenderer = getRenderer();
+  if( !aRenderer )
+    return;
+
+  QList< Plot3d_Actor* > aSurfaces;
+  QStringList aNameList;
+  vtkActor* anActor = 0;
+
+  VTK::ActorCollectionCopy aCopy( aRenderer->GetActors() );
+  vtkActorCollection* aCollection = aCopy.GetActors();
+  aCollection->InitTraversal();
+  while( anActor = aCollection->GetNextActor() )
+  {
+    if( Plot3d_Actor* aSurface = dynamic_cast<Plot3d_Actor*>( anActor ) )
+    {
+      aSurfaces << aSurface;
+      aNameList << aSurface->getName();
+    }
+  }
+
+  QVector< QString > aTexts = aNameList.toVector();
+
+  Plot3d_SetupSurfacesDlg aDlg;
+  aDlg.SetParameters( aTexts );
+
+  if ( aDlg.exec() != QDialog::Accepted ) 
+    return;
+
+  // Note: Indexes retrieved from dialog do not correspond to the real indexes of 
+  // plot 3d surfaces. They correspond to the user actions. For example, if user removes 
+  // first surface in dialog's table two times. Then contents of list of indexes is 
+  // equal (1, 1) although first and surfaces curves must be removed.
+  const QList< int >& toRemove = aDlg.GetRemovedIndexes();
+  QList< int >::const_iterator aRemIter;
+  for ( aRemIter = toRemove.begin(); aRemIter != toRemove.end(); ++aRemIter )
+  {
+    int anIndex = *aRemIter;
+    if ( anIndex >= 0 && anIndex < (int)aSurfaces.count() )  
+    {
+      Plot3d_Actor* aSurface = aSurfaces[ anIndex ];
+      aSurfaces.removeAt( anIndex );
+      aSurface->RemoveFromRender( aRenderer );
+    }
+  }
+
+  QMap< int, Plot3d_Actor* > anIndexToSurface;
+  QList< Plot3d_Actor* >::iterator aSurfIter;
+  int i;
+  for ( i = 0, aSurfIter = aSurfaces.begin(); aSurfIter != aSurfaces.end(); ++aSurfIter, ++i )
+    anIndexToSurface[ i ] = *aSurfIter;
+
+  aDlg.GetParameters( aTexts );
+
+  int n;
+  for ( i = 0, n = aTexts.size(); i < n; i++ )
+  {
+    Plot3d_Actor* aSurface = anIndexToSurface[ i ];
+    QString aText = aTexts[ i ];
+    aSurface->setName( aText.toLatin1().constData() );
+  }
+
+  vtkFloatingPointType aGlobalBounds[6] = { VTK_DOUBLE_MAX, VTK_DOUBLE_MIN,
+                                            VTK_DOUBLE_MAX, VTK_DOUBLE_MIN,
+                                            VTK_DOUBLE_MAX, VTK_DOUBLE_MIN };
+
+  for ( i = 0, aSurfIter = aSurfaces.begin(); aSurfIter != aSurfaces.end(); ++aSurfIter, ++i )
+  {
+    if( Plot3d_Actor* aSurface = *aSurfIter )
+    {
+      vtkFloatingPointType aBounds[6];
+      aSurface->GetBounds( aBounds );
+      aGlobalBounds[0] = qMin( aGlobalBounds[0], aBounds[0] );
+      aGlobalBounds[1] = qMax( aGlobalBounds[1], aBounds[1] );
+      aGlobalBounds[2] = qMin( aGlobalBounds[2], aBounds[2] );
+      aGlobalBounds[3] = qMax( aGlobalBounds[3], aBounds[3] );
+      aGlobalBounds[4] = qMin( aGlobalBounds[4], aBounds[4] );
+      aGlobalBounds[5] = qMax( aGlobalBounds[5], aBounds[5] );
+    }
+  }
+
+  double aDX = aGlobalBounds[1] - aGlobalBounds[0];
+  double aDY = aGlobalBounds[3] - aGlobalBounds[2];
+  double aDZ = aGlobalBounds[5] - aGlobalBounds[4];
+
+  double aScale[3];
+  GetScale( aScale ); // take into account the current scale
+  aDX = fabs( aScale[0] ) > DBL_EPSILON ? aDX / aScale[0] : aDX;
+  aDY = fabs( aScale[1] ) > DBL_EPSILON ? aDY / aScale[1] : aDY;
+  aDZ = fabs( aScale[2] ) > DBL_EPSILON ? aDZ / aScale[2] : aDZ;
+
+  aScale[0] = fabs( aDX ) > DBL_EPSILON ? 1.0 / aDX : 1.0;
+  aScale[1] = fabs( aDY ) > DBL_EPSILON ? 1.0 / aDY : 1.0;
+  aScale[2] = fabs( aDZ ) > DBL_EPSILON ? 1.0 / aDZ : 1.0;
+  SetScale( aScale );
+  onFitAll();
 }
