@@ -97,6 +97,9 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   //! To initialize #SVTK_ViewWindow instance
   virtual void Initialize(SVTK_ViewModelBase* theModel);
 
+  //! Fill the context menu
+  void contextMenuPopup( QMenu* thePopup );
+
   //! Get #SVTK_View
   SVTK_View* getView();
 
@@ -311,6 +314,8 @@ public slots:
   void onMode2D(bool theOn);
 
   void onSurfacesSettings();
+
+  void onFitData();
 
   void onStartRecording();
   void onPlayRecording();

@@ -647,6 +647,30 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\SVTK\Plot3d_FitDataDlg.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\src\SVTK\Plot3d_SetupSurfacesDlg.h"
 				>
 				<FileConfiguration
@@ -1608,6 +1632,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\SVTK\Plot3d_FitDataDlg.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\SVTK\Plot3d_SetupSurfacesDlg.cxx"
 				>
 			</File>
@@ -1760,6 +1788,10 @@
 			Name="Meta Object Files"
 			Filter="moc_*.cxx"
 			>
+			<File
+				RelativePath="..\..\moc\moc_Plot3d_FitDataDlg.cxx"
+				>
+			</File>
 			<File
 				RelativePath="..\..\moc\moc_Plot3d_SetupSurfacesDlg.cxx"
 				>

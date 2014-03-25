@@ -324,6 +324,13 @@ void SVTK_Viewer::setViewManager(SUIT_ViewManager* theViewManager)
 */
 void SVTK_Viewer::contextMenuPopup( QMenu* thePopup )
 {
+  SVTK_ViewWindow* aView = (SVTK_ViewWindow*)myViewManager->getActiveView();
+  if( aView )
+    aView->contextMenuPopup( thePopup );
+
+  if( !thePopup->isEmpty() )
+    thePopup->addSeparator();
+
   thePopup->addAction( VTKViewer_Viewer::tr( "MEN_DUMP_VIEW" ), this, SLOT( onDumpView() ) );
   thePopup->addAction( VTKViewer_Viewer::tr( "MEN_CHANGE_BACKGROUD" ), this, SLOT( onChangeBgColor() ) );
 

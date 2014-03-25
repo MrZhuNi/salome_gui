@@ -343,6 +343,10 @@
         <translation>Tool jpeg2yuv, necessary for AVI recording, is not available.
 Please, refer to the documentation.</translation>
     </message>
+    <message>
+        <source>TOT_SVTK_FITDATA</source>
+        <translation>Fit range</translation>
+    </message>
 </context>
 <context>
     <name>SVTK_NonIsometricDlg</name>
@@ -623,6 +627,45 @@ Please, refer to the documentation.</translation>
     <message>
         <source>MEN_CHANGE_BACKGROUD</source>
         <translation>Change background...</translation>
+    </message>
+</context>
+<context>
+    <name>Plot3d_FitDataDlg</name>
+    <message>
+        <source>FIT_HORIZONTAL</source>
+        <translation>Fit horizontally</translation>
+    </message>
+    <message>
+        <source>MIN_VALUE_LAB</source>
+        <translation>Min:</translation>
+    </message>
+    <message>
+        <source>VERTICAL_AXIS</source>
+        <translation>Vertical axis</translation>
+    </message>
+    <message>
+        <source>MAX_VALUE_LAB</source>
+        <translation>Max:</translation>
+    </message>
+    <message>
+        <source>HORIZONTAL_AXIS</source>
+        <translation>Horizontal axis</translation>
+    </message>
+    <message>
+        <source>VERTICAL_LEFT_AXIS</source>
+        <translation>Vertical left axis</translation>
+    </message>
+    <message>
+        <source>FIT_ALL</source>
+        <translation>Fit both</translation>
+    </message>
+    <message>
+        <source>VERTICAL_RIGHT_AXIS</source>
+        <translation>Vertical right axis</translation>
+    </message>
+    <message>
+        <source>FIT_VERTICAL</source>
+        <translation>Fit vertically</translation>
     </message>
 </context>
 <context>

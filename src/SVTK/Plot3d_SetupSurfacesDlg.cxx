@@ -95,7 +95,7 @@ Plot3d_SetupSurfacesDlg::Plot3d_SetupSurfacesDlg( QWidget* theParent )
   connect( myTable, SIGNAL( valueChanged( int, int ) ), SLOT( onValueChanged( int, int ) ) );
 
   setButtonPosition( Right, Cancel );
-  setMinimumWidth( 500 );
+  setMinimumWidth( 300 );
   setMinimumHeight( 250 );
 }
 

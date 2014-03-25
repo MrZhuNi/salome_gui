@@ -24,10 +24,12 @@
 #include "SVTK_ViewParameterDlg.h"
 
 #include "Plot3d_Actor.h"
+#include "Plot3d_FitDataDlg.h"
 #include "Plot3d_SetupSurfacesDlg.h"
 
 #include "SALOME_Actor.h"
 
+#include <QMenu>
 #include <QToolBar>
 #include <QEvent>
 #include <QXmlStreamWriter>
@@ -44,6 +46,7 @@
 #include <vtkAxisActor2D.h>
 #include <vtkGL2PSExporter.h>
 #include <vtkInteractorStyle.h>
+#include <vtkScalarBarActor.h>
 
 #include "QtxAction.h"
 
@@ -233,6 +236,15 @@ void SVTK_ViewWindow::Initialize(SVTK_View* theView,
 SVTK_ViewWindow::~SVTK_ViewWindow()
 {}
 
+/*!
+  Fill the context menu
+  \param thePopup context menu
+*/
+void SVTK_ViewWindow::contextMenuPopup( QMenu* thePopup )
+{
+  if( myMode2D )
+    thePopup->addAction( tr( "TOT_SVTK_FITDATA" ), this, SLOT( onFitData() ) );
+}
 
 /*!
   \return corresponding view
@@ -2259,7 +2271,8 @@ void SVTK_ViewWindow::onSurfacesSettings()
     if( Plot3d_Actor* aSurface = dynamic_cast<Plot3d_Actor*>( anActor ) )
     {
       aSurfaces << aSurface;
-      aNameList << aSurface->getName();
+      if( vtkScalarBarActor* aScalarBar = aSurface->GetScalarBarActor().GetPointer() )
+        aNameList << aScalarBar->GetTitle();
     }
   }
 
@@ -2285,6 +2298,7 @@ void SVTK_ViewWindow::onSurfacesSettings()
       Plot3d_Actor* aSurface = aSurfaces[ anIndex ];
       aSurfaces.removeAt( anIndex );
       aSurface->RemoveFromRender( aRenderer );
+      aSurface->Delete();
     }
   }
 
@@ -2301,7 +2315,8 @@ void SVTK_ViewWindow::onSurfacesSettings()
   {
     Plot3d_Actor* aSurface = anIndexToSurface[ i ];
     QString aText = aTexts[ i ];
-    aSurface->setName( aText.toLatin1().constData() );
+    if( vtkScalarBarActor* aScalarBar = aSurface->GetScalarBarActor().GetPointer() )
+      aScalarBar->SetTitle( aText.toLatin1().constData() );
   }
 
   vtkFloatingPointType aGlobalBounds[6] = { VTK_DOUBLE_MAX, VTK_DOUBLE_MIN,
@@ -2338,4 +2353,12 @@ void SVTK_ViewWindow::onSurfacesSettings()
   aScale[2] = fabs( aDZ ) > DBL_EPSILON ? 1.0 / aDZ : 1.0;
   SetScale( aScale );
   onFitAll();
+}
+
+/*!
+  Fit 2D surfaces to the specified data range
+*/
+void SVTK_ViewWindow::onFitData()
+{
+  // to do
 }
