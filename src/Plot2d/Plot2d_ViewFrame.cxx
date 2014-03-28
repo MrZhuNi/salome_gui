@@ -278,14 +278,7 @@ void Plot2d_ViewFrame::Display( const Plot2d_Prs* prs )
   if ( !prs || prs->IsNull() )
     return;
 
-  if (prs->isSecondY()) {
-    myPlot->enableAxis(QwtPlot::yRight, true);
-    mySecondY = true;
-  }
-  else {
-    myPlot->enableAxis(QwtPlot::yRight, false);
-    mySecondY = false;
-  }
+  setSecondY( prs->isSecondY() );
 
   // display all curves from presentation
   curveList aCurves = prs->getCurves();
@@ -293,6 +286,15 @@ void Plot2d_ViewFrame::Display( const Plot2d_Prs* prs )
   setXGrid( myXGridMajorEnabled, myXGridMaxMajor, myXGridMinorEnabled, myXGridMaxMinor, true );
   setYGrid( myYGridMajorEnabled, myYGridMaxMajor, myYGridMinorEnabled, myYGridMaxMinor,
             myY2GridMajorEnabled, myY2GridMaxMajor, myY2GridMinorEnabled, myY2GridMaxMinor, true );
+}
+
+/*!
+  Set second Y
+*/
+void Plot2d_ViewFrame::setSecondY( const bool& theSecondY )
+{
+  myPlot->enableAxis(QwtPlot::yRight, theSecondY);
+  mySecondY = theSecondY;
 }
 
 /*!

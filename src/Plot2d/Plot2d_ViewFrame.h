@@ -110,6 +110,8 @@ public:
   void    setTitle( bool enabled, const QString& title, ObjectType type, bool update = true );
   QString getTitle( ObjectType type ) const;
 
+  void    setSecondY( const bool& theSecondY );
+
   bool    isTitleChangedByUser( const ObjectType type );
   void    forgetLocalUserChanges( const ObjectType type );
 
