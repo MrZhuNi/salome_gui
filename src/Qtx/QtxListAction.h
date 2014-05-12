@@ -40,6 +40,7 @@ class QTX_EXPORT QtxListAction : public QtxAction
 
   class ListFrame;
   class ListWidget;
+  class SizeGrip;
   class ScrollEvent;
 
 public:
@@ -70,6 +71,9 @@ public:
   void             setLinesNumber( const int );
   void             setCharsNumber( const int );
 
+  void             setHorizontalScrollBarPolicy( Qt::ScrollBarPolicy );
+  void             setVerticalScrollBarPolicy  ( Qt::ScrollBarPolicy );
+
 signals:
   void             triggered( int );
 
@@ -90,6 +94,7 @@ private:
   ListFrame*       myFrame;   //!< list of actions shown as submenu
 
   friend class QtxListAction::ListFrame;
+  friend class QtxListAction::SizeGrip;
 };
 
 #ifdef WIN32

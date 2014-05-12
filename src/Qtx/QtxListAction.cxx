@@ -28,6 +28,7 @@
 #include <QMenu>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QSizeGrip>
 #include <QMouseEvent>
 #include <QListWidget>
 #include <QToolButton>
@@ -75,6 +76,100 @@ protected:
 };
 
 /*!
+  \class QtxListAction::SizeGrip
+  \internal
+  \brief Custom size grip widget.
+*/
+class QtxListAction::SizeGrip : public QSizeGrip
+{
+public:
+  SizeGrip(QWidget* parent);
+  ~SizeGrip();
+
+protected:
+
+  virtual void mousePressEvent  (QMouseEvent * e);
+  virtual void mouseMoveEvent   (QMouseEvent * e);
+  virtual void mouseReleaseEvent(QMouseEvent * e);
+
+private:
+  QPoint myPos;
+  bool   myMouseClick;
+
+};
+
+/*!
+  \brief Constructor.
+*/
+QtxListAction::SizeGrip::SizeGrip(QWidget* parent)
+: QSizeGrip( parent ), 
+  myMouseClick( false )
+{
+}
+
+/*!
+  \brief Destructor.
+*/
+QtxListAction::SizeGrip::~SizeGrip()
+{
+}
+
+/*!
+  \brief Reimplementation of mouse press event on the SizeGrip area
+  \param e event
+*/
+void QtxListAction::SizeGrip::mousePressEvent(QMouseEvent * e)
+  {
+    if (e->button() != Qt::LeftButton)
+    {
+      QWidget::mousePressEvent(e);
+      return;
+    }
+    else
+    {
+      myPos = e->pos();
+      myMouseClick = true;
+    }
+  };
+
+/*!
+  \brief Reimplementation of mouse move event on the SizeGrip area
+  \param e event
+*/
+void QtxListAction::SizeGrip::mouseMoveEvent(QMouseEvent * e)
+  {
+    if (myMouseClick)
+    {
+      QWidget* aWidget = this->parentWidget();
+      while (aWidget && aWidget->parentWidget())
+        aWidget = aWidget->parentWidget();
+
+      aWidget->setGeometry(aWidget->frameGeometry().topLeft().x(), 
+                           aWidget->frameGeometry().topLeft().y(), 
+                           aWidget->frameGeometry().width() + e->pos().x() - myPos.x(), 
+                           aWidget->frameGeometry().height() + e->pos().y() - myPos.y());
+    }
+  };
+
+/*!
+  \brief Reimplementation of mouse release event on the SizeGrip area
+  \param e event
+*/
+void QtxListAction::SizeGrip::mouseReleaseEvent(QMouseEvent * e)
+  {
+    if (e->button() != Qt::LeftButton)
+    {
+      QWidget::mouseReleaseEvent(e);
+      myMouseClick = false;
+      return;
+    }
+    else
+    {
+      myMouseClick = false;
+    }
+  };
+
+/*!
   \class QtxListAction::ListFrame
   \internal
   \brief Expanding frame with action list and comment.
@@ -109,6 +204,9 @@ public:
 
   virtual void            setVisible( bool );
 
+  void                    setHorizontalScrollBarPolicy ( Qt::ScrollBarPolicy );
+  void                    setVerticalScrollBarPolicy   ( Qt::ScrollBarPolicy );
+
 protected:
   virtual void            keyPressEvent( QKeyEvent* );
 
@@ -116,7 +214,7 @@ private:
   void                    accept();
   void                    updateComment();
   void                    setNames( const QStringList& );
-  void                    removePostedEvens( QObject*, int );
+  void                    removePostedEvents( QObject*, int );
 
 private:
   QListWidget*            myList;
@@ -165,11 +263,19 @@ QtxListAction::ListFrame::ListFrame( QtxListAction* a, QWidget* parent )
 
   myComment = new QLabel( main );
   myComment->setFrameStyle( QFrame::Panel | QFrame::Sunken );
+  myComment->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
   myComment->setAlignment( Qt::AlignCenter );
   myMultipleComment = "%1";
 
   base->addWidget( myList );
-  base->addWidget( myComment );
+
+  SizeGrip* aGrip = new SizeGrip( main );
+  aGrip->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum);
+  QHBoxLayout* bottom = new QHBoxLayout ( this );
+  bottom->addWidget( myComment, 1 );
+  bottom->addWidget( aGrip, 0, Qt::AlignBottom | Qt::AlignRight );
+
+  base->addLayout ( bottom );
 }
 
 /*!
@@ -186,6 +292,22 @@ void QtxListAction::ListFrame::clear()
 {
   myNames.clear();
   setNames( myNames );
+}
+
+/*!
+  \brief Sets horizontal scroll bar policy
+*/
+void QtxListAction::ListFrame::setHorizontalScrollBarPolicy (Qt::ScrollBarPolicy thePolicy)
+{
+  myList->setHorizontalScrollBarPolicy (thePolicy);
+}
+
+/*!
+  \brief Sets vertical scroll bar policy
+*/
+void QtxListAction::ListFrame::setVerticalScrollBarPolicy (Qt::ScrollBarPolicy thePolicy)
+{
+  myList->setVerticalScrollBarPolicy (thePolicy);
 }
 
 /*!
@@ -534,7 +656,7 @@ void QtxListAction::ListFrame::setSelected( const int lastSel )
   myList->scrollToItem( myList->item( item ) );
   myList->clearFocus();
 
-  removePostedEvens( myList->viewport(), ScrollEvent::Scroll );
+  removePostedEvents( myList->viewport(), ScrollEvent::Scroll );
 
   updateComment();
 }
@@ -544,7 +666,7 @@ void QtxListAction::ListFrame::setSelected( const int lastSel )
   \param o object
   \param type event type to be filtered
 */
-void QtxListAction::ListFrame::removePostedEvens( QObject* o, int type )
+void QtxListAction::ListFrame::removePostedEvents( QObject* o, int type )
 {
   class Filter : public QObject
   {
@@ -713,6 +835,22 @@ void QtxListAction::addNames( const QStringList& names, bool clear )
   myFrame->addNames( names );
 
   onChanged();
+}
+
+/*!
+  \brief Sets horizontal scroll bar policy
+*/
+void QtxListAction::setHorizontalScrollBarPolicy (Qt::ScrollBarPolicy thePolicy)
+{
+  myFrame->setHorizontalScrollBarPolicy (thePolicy);
+}
+
+/*!
+  \brief Sets vertical scroll bar policy
+*/
+void QtxListAction::setVerticalScrollBarPolicy (Qt::ScrollBarPolicy thePolicy)
+{
+  myFrame->setVerticalScrollBarPolicy (thePolicy);
 }
 
 /*!
