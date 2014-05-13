@@ -714,8 +714,10 @@ void SUIT_Session::restoreBackup()
   {
     QWidget* p = activeApplication() ? (QWidget*)activeApplication()->desktop() : 0;
     
-    int aBtn = SUIT_MessageBox::warning( p, tr( "WRN_WARNING" ), tr( "WANT_TO_RESTORE" ),
-      SUIT_MessageBox::Yes | SUIT_MessageBox::No, SUIT_MessageBox::Yes );
+    int aBtn = SUIT_MessageBox::No;
+    if ( !getenv( "SALOME_BATCH_MODE" ) )
+      aBtn = SUIT_MessageBox::warning( p, tr( "WRN_WARNING" ), tr( "WANT_TO_RESTORE" ),
+        SUIT_MessageBox::Yes | SUIT_MessageBox::No, SUIT_MessageBox::Yes );
     if ( aBtn == SUIT_MessageBox::Yes )
     {
       QStringList::iterator it;
