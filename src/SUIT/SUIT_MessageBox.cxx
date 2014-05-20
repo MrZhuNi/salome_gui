@@ -162,6 +162,8 @@ void SUIT_MessageBox::setButtonText( StandardButton btn, const QString& text )
 SUIT_MessageBox::StandardButton SUIT_MessageBox::critical( QWidget* parent, const QString& title, const QString& text,
                                                            StandardButtons buttons, StandardButton defaultButton )
 {
+  if ( getenv( "SALOME_BATCH_MODE" ) )
+    return defaultButton;
   SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
   return QMessageBox::critical( parent, title, text, buttons, defaultButton );
 }
@@ -178,6 +180,8 @@ SUIT_MessageBox::StandardButton SUIT_MessageBox::critical( QWidget* parent, cons
 SUIT_MessageBox::StandardButton SUIT_MessageBox::warning( QWidget* parent, const QString& title, const QString& text,
                                                           SUIT_MessageBox::StandardButtons buttons, StandardButton defaultButton )
 {
+  if ( getenv( "SALOME_BATCH_MODE" ) )
+    return defaultButton;
   SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
   return QMessageBox::warning( parent, title, text, buttons, defaultButton );
 }
@@ -194,6 +198,8 @@ SUIT_MessageBox::StandardButton SUIT_MessageBox::warning( QWidget* parent, const
 SUIT_MessageBox::StandardButton SUIT_MessageBox::information( QWidget* parent, const QString& title, const QString& text,
                                                               StandardButtons buttons, StandardButton defaultButton )
 {
+  if ( getenv( "SALOME_BATCH_MODE" ) )
+    return defaultButton;
   SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
   return QMessageBox::information( parent, title, text, buttons, defaultButton );
 }
@@ -210,6 +216,8 @@ SUIT_MessageBox::StandardButton SUIT_MessageBox::information( QWidget* parent, c
 SUIT_MessageBox::StandardButton SUIT_MessageBox::question( QWidget* parent, const QString& title, const QString& text,
                                                            StandardButtons buttons, StandardButton defaultButton )
 {
+  if ( getenv( "SALOME_BATCH_MODE" ) )
+    return defaultButton;
   SUIT_OverrideCursor cw( parent ? parent->cursor() : Qt::ArrowCursor );
   return QMessageBox::question( parent, title, text, buttons, defaultButton );
 }
@@ -953,6 +961,9 @@ int SUIT_MessageBox::messageBox( Icon icon, QWidget* parent,
 				 const int defaultButton, 
 				 const int escapeButton )
 {
+  if ( getenv( "SALOME_BATCH_MODE" ) )
+    return defaultButton;
+
   SUIT_MessageBox msgBox( icon, title, text, NoButton, parent );
 
   QMap<QAbstractButton*, int> bm;
