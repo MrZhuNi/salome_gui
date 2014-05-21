@@ -76,15 +76,14 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   Q_OBJECT;
 
  public:
-  enum { DumpId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, 
+  enum { FirstId = 0,
+         DumpId = FirstId, FitAllId, FitRectId, ZoomId, PanId, GlobalPanId, 
          ChangeRotationPointId, RotationId,
          FrontId, BackId, TopId, BottomId, LeftId, RightId, ResetId, 
          ViewTrihedronId, NonIsometric, GraduatedAxes, UpdateRate,
          ProjectionModeId, ViewParametersId, SwitchInteractionStyleId,
-         Mode2DId, SurfacesSettingsId,
-         StartRecordingId, PlayRecordingId, PauseRecordingId, StopRecordingId };
-
-  enum Axis { AxisX = 0, AxisY, AxisZ };
+         StartRecordingId, PlayRecordingId, PauseRecordingId, StopRecordingId,
+         LastId };
 
  public:
   //! To construct #SVTK_ViewWindow instance
@@ -98,7 +97,7 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   virtual void Initialize(SVTK_ViewModelBase* theModel);
 
   //! Fill the context menu
-  void contextMenuPopup( QMenu* thePopup );
+  virtual void contextMenuPopup( QMenu* thePopup );
 
   //! Get #SVTK_View
   SVTK_View* getView();
@@ -262,19 +261,6 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   //! To invoke a VTK event on #SVTK_RenderWindowInteractor instance
   void InvokeEvent(unsigned long theEvent, void* theCallData);
   
-  //! Show/hide the specified action
-  void SetActionVisible( const int theActionId,
-                         const bool theIsVisible );
-
-  //! Set the normal axis for the 2D mode
-  void SetMode2DNormalAxis( const int theAxis );
-
-  //! Check that 2D mode is active
-  bool isMode2D() const;
-
-  //! Clear 2D/3D view state
-  void clearViewState( const bool theIs2D );
-
  signals:
   void Show( QShowEvent * );
   void Hide( QHideEvent * );
@@ -311,11 +297,6 @@ public slots:
   void onViewParameters(bool theIsActivate);
 
   void onSwitchInteractionStyle(bool theOn);
-  void onMode2D(bool theOn);
-
-  void onSurfacesSettings();
-
-  void onFitData();
 
   void onStartRecording();
   void onPlayRecording();
@@ -379,25 +360,6 @@ protected:
   void doSetVisualParameters( const QString& );
   void SetEventDispatcher(vtkObject* theDispatcher);
 
-  struct ViewState
-  {
-    bool IsInitialized;
-    double Position[3];
-    double FocalPoint[3];
-    double ViewUp[3];
-    double ParallelScale;
-    bool IsTrihedronDisplayed;
-
-    ViewState()
-    {
-      IsInitialized = false;
-      ParallelScale = 0.0;
-      IsTrihedronDisplayed = false;
-    }
-  };
-  void storeViewState( ViewState& theViewState );
-  bool restoreViewState( ViewState theViewState );
-
   QImage dumpViewContent();
 
   virtual QString filter() const;
@@ -406,8 +368,8 @@ protected:
   virtual bool action( const int );
   
   QtxAction* getAction( int ) const;
-  void createToolBar();
-  void createActions(SUIT_ResourceMgr* theResourceMgr);
+  virtual void createToolBar();
+  virtual void createActions(SUIT_ResourceMgr* theResourceMgr);
 
   SVTK_View* myView;
   //SVTK_MainWindow* myMainWindow;
@@ -440,11 +402,6 @@ protected:
 
   int myToolBar;
   int myRecordingToolBar;
-
-  bool myMode2D;
-  int myMode2DNormalAxis;
-  ViewState myStored2DViewState;
-  ViewState myStored3DViewState;
 
 private:
   QImage myDumpImage;

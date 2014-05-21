@@ -282,54 +282,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\SVTK\resources\vtk_view_minus.png"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\SVTK\resources\vtk_view_mode_2d.png"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\src\SVTK\resources\vtk_view_parallel.png"
 				>
 				<FileConfiguration
@@ -570,30 +522,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\SVTK\resources\vtk_view_surfaces_settings.png"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\src\Svtk\resources\vtk_view_update_rate.png"
 				>
 				<FileConfiguration
@@ -622,126 +550,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
-			<File
-				RelativePath="..\..\src\SVTK\Plot3d_Actor.h"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputName)$(InputExt)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Update $(InputName)$(InputExt)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\SVTK\Plot3d_FitDataDlg.h"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\SVTK\Plot3d_SetupSurfacesDlg.h"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\SVTK\Plot3d_ViewManager.h"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\SVTK\Plot3d_ViewModel.h"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
-					/>
-				</FileConfiguration>
-			</File>
 			<File
 				RelativePath="..\..\src\Svtk\SALOME_Actor.h"
 				>
@@ -1137,6 +945,26 @@
 			<File
 				RelativePath="..\..\src\Svtk\SVTK_KeyFreeInteractorStyle.h"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\Svtk\SVTK_NonIsometricDlg.h"
@@ -1628,26 +1456,6 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="..\..\src\SVTK\Plot3d_Actor.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\SVTK\Plot3d_FitDataDlg.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\SVTK\Plot3d_SetupSurfacesDlg.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\SVTK\Plot3d_ViewManager.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\SVTK\Plot3d_ViewModel.cxx"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\Svtk\SALOME_Actor.cxx"
 				>
 			</File>
@@ -1788,22 +1596,6 @@
 			Name="Meta Object Files"
 			Filter="moc_*.cxx"
 			>
-			<File
-				RelativePath="..\..\moc\moc_Plot3d_FitDataDlg.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\moc\moc_Plot3d_SetupSurfacesDlg.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\moc\moc_Plot3d_ViewManager.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\moc\moc_Plot3d_ViewModel.cxx"
-				>
-			</File>
 			<File
 				RelativePath="..\..\moc\moc_SVTK_ComboAction.cxx"
 				>

@@ -45,7 +45,7 @@ class SVTK_ViewWindow;
  * Class       : SVTK_CubeAxesDlg
  * Description : Dialog for specifynig cube axes properties
  */
-class SVTK_CubeAxesDlg : public SVTK_DialogBase
+class SVTK_EXPORT SVTK_CubeAxesDlg : public SVTK_DialogBase
 {
   Q_OBJECT
 
