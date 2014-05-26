@@ -7,6 +7,18 @@
       <translation>Error</translation>
     </message>
     <message>
+      <source>INCORRECT_RANGE</source>
+      <translation>Logarithmic scale could not be used when the 
+minimum value of the range is less or equal zero.
+The scale has been switched to linear.</translation>
+    </message>
+    <message>
+      <source>INCORRECT_RANGE_WITH_QUESTION</source>
+      <translation>Logarithmic scale could not be used when the 
+minimum value of the range is less or equal zero.
+Correct the range or switch to linear scale?</translation>
+    </message>
+    <message>
       <source>WARNING</source>
       <translation>Warning</translation>
     </message>
@@ -79,12 +91,6 @@
     <message>
       <source>CUSTOM</source>
       <translation>Custom</translation>
-    </message>
-    <message>
-      <source>INCORRECT_RANGE</source>
-      <translation>Logarithmic scale could not be used when the 
-minimum value of the range is less or equal zero.
-Correct the range or switch to linear scale?</translation>
     </message>
     <message>
       <source>LINEAR</source>
@@ -200,14 +206,12 @@ Correct the range or switch to linear scale?</translation>
     <message>
       <source>WRN_INCORRECT_RANGE_MIN_MAX</source>
       <translation>The minimum value of the range should not be greater
-or equal the maximum value.
-      </translation>
+or equal the maximum value.</translation>
     </message>
     <message>
       <source>WRN_INCORRECT_RANGE_LOGARITHMIC</source>
       <translation>The minimum value of the range should not be less
-or equal zero in case of logarithmic interpolation.
-      </translation>
+or equal zero in case of logarithmic interpolation.</translation>
     </message>
     <message>
       <source>WRN_INCONSISTENT_VALUES</source>
@@ -227,6 +231,10 @@ or equal zero in case of logarithmic interpolation.
     <message>
       <source>EDIT</source>
       <translation>Edit</translation>
+    </message>
+    <message>
+      <source>EDIT_GLOBAL_COLOR_SCALE</source>
+      <translation>Edit global color scale</translation>
     </message>
     <message>
       <source>PARAMETERS</source>
@@ -251,6 +259,10 @@ or equal zero in case of logarithmic interpolation.
   <context>
     <name>Plot3d_ViewWindow</name>
     <message>
+      <source>DSC_PLOT3D_MERGE_SCALAR_BARS</source>
+      <translation>Merge scalar bars</translation>
+    </message>
+    <message>
       <source>DSC_PLOT3D_MODE_2D</source>
       <translation>Toggle 2D mode</translation>
     </message>
@@ -261,6 +273,10 @@ or equal zero in case of logarithmic interpolation.
     <message>
       <source>FIT_RANGE</source>
       <translation>Fit range</translation>
+    </message>
+    <message>
+      <source>MNU_PLOT3D_MERGE_SCALAR_BARS</source>
+      <translation>Merge scalar bars</translation>
     </message>
     <message>
       <source>MNU_PLOT3D_MODE_2D</source>

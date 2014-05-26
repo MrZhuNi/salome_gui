@@ -44,6 +44,9 @@ Plot3d_Actor::Plot3d_Actor()
 {
   myColorDic = new Plot3d_ColorDic();
 
+  myIsGlobalColorDic = false;
+  myGlobalColorDic = 0;
+
   myIsDistance = false;
 
   myStartPoint = 0;
@@ -181,6 +184,33 @@ Plot3d_ColorDic* Plot3d_Actor::GetColorDic()
   return myColorDic;
 }
 
+//=======================================================================
+//function : SetIsGlobalColorDic
+//purpose  : 
+//=======================================================================
+void Plot3d_Actor::SetIsGlobalColorDic( const bool theIsGlobalColorDic )
+{
+  myIsGlobalColorDic = theIsGlobalColorDic;
+}
+
+//=======================================================================
+//function : IsGlobalColorDic
+//purpose  : 
+//=======================================================================
+bool Plot3d_Actor::IsGlobalColorDic() const
+{
+  return myIsGlobalColorDic;
+}
+
+//=============================================================================
+// Function : SetGlobalColorDic
+// Purpose  : 
+//=============================================================================
+void Plot3d_Actor::SetGlobalColorDic( Plot3d_ColorDic* theColorDic )
+{
+  myGlobalColorDic = theColorDic;
+}
+
 //=============================================================================
 // Function : GetScalarBarActor
 // Purpose  : 
@@ -273,19 +303,20 @@ void Plot3d_Actor::Build( const int theNX,
 //=============================================================================
 void Plot3d_Actor::RecomputeLookupTable()
 {
-  if( !myColorDic )
+  Plot3d_ColorDic* aColorDic = IsGlobalColorDic() && myGlobalColorDic ? myGlobalColorDic : myColorDic;
+  if( !aColorDic )
     return;
 
   vtkPolyDataMapper* aMapper = dynamic_cast<vtkPolyDataMapper*>( GetMapper() );
   if( !aMapper )
     return;
 
-  double myMinimum = myColorDic->GetMin();
-  double myMaximum = myColorDic->GetMax();
+  double myMinimum = aColorDic->GetMin();
+  double myMaximum = aColorDic->GetMax();
 
-  int aScaleMode = (int)myColorDic->GetScaleMode();
+  int aScaleMode = (int)aColorDic->GetScaleMode();
 
-  int nbColors = myColorDic->GetNumber();
+  int nbColors = aColorDic->GetNumber();
   if ( aScaleMode == Plot3d_ColorDic::Specific )
   {
     nbColors = 1000;
@@ -303,7 +334,7 @@ void Plot3d_Actor::RecomputeLookupTable()
   double range[2] = { aMin, aMax };
 
   double aHueMin, aHueMax, aSaturationMin, aSaturationMax, aValueMin, aValueMax;
-  myColorDic->GetHSVRange( aHueMin, aHueMax, aSaturationMin, aSaturationMax, aValueMin, aValueMax );
+  aColorDic->GetHSVRange( aHueMin, aHueMax, aSaturationMin, aSaturationMax, aValueMin, aValueMax );
 
   double range1[2] = { 0, 0 };
   if ( aScaleMode == Plot3d_ColorDic::Linear ||
@@ -341,7 +372,7 @@ void Plot3d_Actor::RecomputeLookupTable()
   {
     if ( aScaleMode == Plot3d_ColorDic::Specific )
     {
-      const Value2ColorList& aSpecificScale = myColorDic->GetSpecificScale();
+      const Value2ColorList& aSpecificScale = aColorDic->GetSpecificScale();
       if ( aSpecificScale.size() < 2 )
         return;
 

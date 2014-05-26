@@ -198,47 +198,48 @@ public:
   // Erase Display functions
   //! To erase all existing VTK presentations
   void
-  EraseAll();
+  EraseAll(const bool theIsUpdate = true);
 
   //! To display all existing VTK presentations
   void
-  DisplayAll();
+  DisplayAll(const bool theIsUpdate = true);
 
   //! To remove from the view all existing VTK presentations
   void
-  RemoveAll( const bool immediatly );
+  RemoveAll(const bool theIsUpdate = true);
 
   //! To erase VTK presentation with defined #SALOME_InteractiveObject
   void
   Erase(const Handle(SALOME_InteractiveObject)& IObject, 
-	bool immediatly = true);
+	const bool theIsUpdate = true);
   void
   Remove(const Handle(SALOME_InteractiveObject)& IObject, 
-	 bool immediatly = true);
+	 const bool theIsUpdate = true);
 
   //! To display VTK presentation with defined #SALOME_InteractiveObject
   void
   Display(const Handle(SALOME_InteractiveObject)& IObject, 
-	  bool immediatly = true);
+	  const bool theIsUpdate = true);
 
   //! To display VTK presentation with defined #SALOME_InteractiveObject and erase all anothers
   void
-  DisplayOnly(const Handle(SALOME_InteractiveObject)& IObject);
+  DisplayOnly(const Handle(SALOME_InteractiveObject)& IObject, 
+	      const bool theIsUpdate = true);
 
   //! To display the VTK presentation
   void
   Display(SALOME_Actor* SActor, 
-	  bool immediatly = true);
+	  const bool theIsUpdate = true);
 
   //! To erase the VTK presentation
   void
   Erase(SALOME_Actor* SActor, 
-	bool immediatly = true);
+	const bool theIsUpdate = true);
 
   //! To remove the VTK presentation
   void
   Remove(SALOME_Actor* SActor, 
-	 bool updateViewer = true);
+	 const bool theIsUpdate = true);
 
   //----------------------------------------------------------------------------
   //! Redirect the request to #SVTK_Renderer::SetPreselectionProp

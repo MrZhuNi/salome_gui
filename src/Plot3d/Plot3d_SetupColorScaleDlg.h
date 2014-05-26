@@ -48,6 +48,21 @@ struct ColorDicData
   TCollection_AsciiString Quantity;
   int ColorMode;
   QColor CustomColors[2];
+
+  ColorDicData()
+  {
+    Num = 99;
+    Min = 0;
+    Max = 1;
+    HueMin = 0.667;
+    HueMax = 0;
+    SaturationMin = 1;
+    SaturationMax = 1;
+    ValueMin = 1;
+    ValueMax = 1;
+    TimeStep = 0;
+    ColorMode = 0;
+  };
 };
 
 typedef QList        < ColorDicData > ColorDicDataList;
@@ -65,7 +80,8 @@ public:
   enum { BlueRed = 0, BlueWhite, Monochrome, Custom };
 
 public:
-  Plot3d_SetupColorScaleDlg( QWidget* theParent = 0 );
+  Plot3d_SetupColorScaleDlg( QWidget* theParent = 0,
+                             bool theIsGlobal = false );
   virtual ~Plot3d_SetupColorScaleDlg();
 
   void                      setData( const ColorDicData& theColorDicData );
@@ -91,6 +107,8 @@ private:
   void                      updateMinMax();
 
 private:
+  bool                      myIsGlobal;
+
   QtxIntSpinBox*            myInterval;
 
   QComboBox*                myColorMode;

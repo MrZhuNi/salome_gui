@@ -57,6 +57,11 @@ public:
 
   Plot3d_ColorDic*                    GetColorDic();
 
+  void                                SetIsGlobalColorDic( const bool );
+  bool                                IsGlobalColorDic() const;
+
+  void                                SetGlobalColorDic( Plot3d_ColorDic* );
+
   vtkSmartPointer<vtkScalarBarActor>  GetScalarBarActor() const;
   void                                DisplayScalarBar( const bool );
 
@@ -82,6 +87,9 @@ public:
 
 protected:
   Plot3d_ColorDic*                    myColorDic;
+
+  bool                                myIsGlobalColorDic;
+  Plot3d_ColorDic*                    myGlobalColorDic;
 
   vtkLookupTable*                     myLookupTable;
 

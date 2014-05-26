@@ -234,6 +234,30 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\Plot3d\resources\plot3d_merge_scalar_bars.png"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\src\Plot3d\resources\plot3d_minus.png"
 				>
 				<FileConfiguration
