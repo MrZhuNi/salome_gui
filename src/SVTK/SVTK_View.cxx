@@ -431,12 +431,13 @@ namespace SVTK
 */
 void
 SVTK_View
-::EraseAll()
+::EraseAll(const bool theIsUpdate)
 {   
   using namespace SVTK;
   ForEach<SALOME_Actor>(getRenderer()->GetActors(),
 			TErase());
-  Repaint();
+  if(theIsUpdate)
+    Repaint();
 }
 
 /*!
@@ -444,12 +445,13 @@ SVTK_View
 */
 void
 SVTK_View
-::DisplayAll()
+::DisplayAll(const bool theIsUpdate)
 { 
   using namespace SVTK;
   ForEach<SALOME_Actor>(getRenderer()->GetActors(),
 			TSetVisibility<SALOME_Actor>(true));
-  Repaint();
+  if(theIsUpdate)
+    Repaint();
 }
 
 /*!
@@ -460,7 +462,7 @@ SVTK_View
 void
 SVTK_View
 ::Erase(SALOME_Actor* theActor, 
-	bool theIsUpdate)
+	const bool theIsUpdate)
 {
   SVTK::TErase()(theActor);
 
@@ -477,7 +479,7 @@ SVTK_View
 void
 SVTK_View
 ::Erase(const Handle(SALOME_InteractiveObject)& theIObject, 
-	bool theIsUpdate)
+	const bool theIsUpdate)
 {
   using namespace SVTK;
   ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
@@ -493,7 +495,7 @@ SVTK_View
 void
 SVTK_View
 ::Display(SALOME_Actor* theActor, 
-	  bool theIsUpdate)
+	  const bool theIsUpdate)
 {
   GetRenderer()->AddActor(theActor);
   theActor->SetVisibility(true);
@@ -508,7 +510,7 @@ SVTK_View
 void
 SVTK_View
 ::Display(const Handle(SALOME_InteractiveObject)& theIObject, 
-	  bool theIsUpdate)
+	  const bool theIsUpdate)
 {
   using namespace SVTK;
   ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
@@ -524,10 +526,11 @@ SVTK_View
 */
 void
 SVTK_View
-::DisplayOnly(const Handle(SALOME_InteractiveObject)& theIObject)
+::DisplayOnly(const Handle(SALOME_InteractiveObject)& theIObject,
+              const bool theIsUpdate)
 {
-  EraseAll();
-  Display(theIObject);
+  EraseAll(theIsUpdate);
+  Display(theIObject, theIsUpdate);
 }
 
 
@@ -553,7 +556,7 @@ namespace SVTK
 void
 SVTK_View
 ::Remove(const Handle(SALOME_InteractiveObject)& theIObject, 
-	 bool theIsUpdate)
+	 const bool theIsUpdate)
 {
   using namespace SVTK;
   ForEachIf<SALOME_Actor>(getRenderer()->GetActors(),
@@ -569,7 +572,7 @@ SVTK_View
 void
 SVTK_View
 ::Remove(SALOME_Actor* theActor, 
-	 bool theIsUpdate)
+	 const bool theIsUpdate)
 {
   GetRenderer()->RemoveActor(theActor);
   if(theIsUpdate)
@@ -581,7 +584,7 @@ SVTK_View
 */
 void
 SVTK_View
-::RemoveAll(bool theIsUpdate)
+::RemoveAll(const bool theIsUpdate)
 {
   vtkRenderer* aRenderer = getRenderer();
   if(vtkActorCollection* anActors = aRenderer->GetActors()){

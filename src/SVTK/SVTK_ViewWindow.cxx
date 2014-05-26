@@ -458,48 +458,52 @@ Handle(SALOME_InteractiveObject) SVTK_ViewWindow::FindIObject(const char* theEnt
 /*!
   Display object
   \param theIO - object
-  \param theImmediatly - update viewer
+  \param theIsUpdate - update viewer
 */
 void SVTK_ViewWindow::Display(const Handle(SALOME_InteractiveObject)& theIO,
-			      bool theImmediatly) 
+			      bool theIsUpdate) 
 {
-  myView->Display(theIO,theImmediatly);
+  myView->Display(theIO,theIsUpdate);
 }
 
 /*!
   Erase object
   \param theIO - object
-  \param theImmediatly - update viewer
+  \param theIsUpdate - update viewer
 */
 void SVTK_ViewWindow::Erase(const Handle(SALOME_InteractiveObject)& theIO,
-			    bool theImmediatly) 
+			    bool theIsUpdate) 
 {
-  myView->Erase(theIO,theImmediatly);
+  myView->Erase(theIO,theIsUpdate);
 }
 
 /*!
   Display only passed object
   \param theIO - object
+  \param theIsUpdate - update viewer
 */
-void SVTK_ViewWindow::DisplayOnly(const Handle(SALOME_InteractiveObject)& theIO) 
+void SVTK_ViewWindow::DisplayOnly(const Handle(SALOME_InteractiveObject)& theIO,
+			          bool theIsUpdate) 
 {
-  myView->DisplayOnly(theIO);
+  myView->DisplayOnly(theIO,theIsUpdate);
 }
 
 /*!
   Display all objects in view
+  \param theIsUpdate - update viewer
 */
-void SVTK_ViewWindow::DisplayAll() 
+void SVTK_ViewWindow::DisplayAll(bool theIsUpdate) 
 {
-  myView->DisplayAll();
+  myView->DisplayAll(theIsUpdate);
 }
 
 /*!
   Erase all objects in view
+  \param theIsUpdate - update viewer
 */
-void SVTK_ViewWindow::EraseAll() 
+void SVTK_ViewWindow::EraseAll(bool theIsUpdate) 
 {
-  myView->EraseAll();
+  myView->EraseAll(theIsUpdate);
 }
 
 /*!
@@ -580,11 +584,13 @@ void SVTK_ViewWindow::GetScale( double theScale[3] )
 /*!
   Redirect the request to #SVTK_Renderer::SetScale
 */
-void SVTK_ViewWindow::SetScale( double theScale[3] ) 
+void SVTK_ViewWindow::SetScale( double theScale[3],
+                                bool theIsUpdate ) 
 {
   //myMainWindow->SetScale( theScale );
   GetRenderer()->SetScale( theScale );
-  Repaint();
+  if( theIsUpdate )
+    Repaint();
 }
 
 /*!

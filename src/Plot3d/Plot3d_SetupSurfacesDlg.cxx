@@ -48,15 +48,16 @@ Plot3d_SetupSurfacesDlg::Plot3d_SetupSurfacesDlg( QWidget* theParent )
   QVBoxLayout* aMainLay = new QVBoxLayout( aMainFrame );
   aMainLay->setMargin( 5 );
 
-  myGrp = new QtxGroupBox( aMainFrame ); 
-  myGrp->setTitle( tr( "PARAMETERS" ) );
-  aMainLay->addWidget( myGrp );
+  QtxGroupBox* aParamGrp = new QtxGroupBox( aMainFrame ); 
+  aParamGrp->setTitle( tr( "PARAMETERS" ) );
+  aMainLay->addWidget( aParamGrp );
 
-  QVBoxLayout* aLay = new QVBoxLayout( myGrp );
-  aLay->setMargin( 0 );
+  QVBoxLayout* aLay = new QVBoxLayout( aParamGrp );
+  aLay->setMargin( 5 );
+  aLay->setSpacing( 5 );
 
   // Create table
-  myTable = new QTableWidget( myGrp );
+  myTable = new QTableWidget( aParamGrp );
   myTable->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
   aLay->addWidget( myTable );
@@ -85,12 +86,18 @@ Plot3d_SetupSurfacesDlg::Plot3d_SetupSurfacesDlg( QWidget* theParent )
 
   // Minus button
   QPixmap minusPix = aResMgr->loadPixmap( "VTKViewer", tr( "ICON_PLOT3D_MINUS" ) );
-  myRemoveBtn = new QToolButton( 0 );
-  myRemoveBtn->setIcon( minusPix );
-  myRemoveBtn->setFixedSize( minusPix.size() );
-  myGrp->insertTitleWidget( myRemoveBtn );
+  QToolButton* aRemoveBtn = new QToolButton( 0 );
+  aRemoveBtn->setIcon( minusPix );
+  aRemoveBtn->setFixedSize( minusPix.size() );
+  aParamGrp->insertTitleWidget( aRemoveBtn );
 
-  connect( myRemoveBtn, SIGNAL( clicked() ), SLOT( onRemove() ) );
+  connect( aRemoveBtn, SIGNAL( clicked() ), SLOT( onRemove() ) );
+
+  // "Edit global color scale" button
+  QPushButton* anEditGlobalBtn = new QPushButton( tr( "EDIT_GLOBAL_COLOR_SCALE" ), aParamGrp ); 
+  aLay->addWidget( anEditGlobalBtn );
+
+  connect( anEditGlobalBtn, SIGNAL( clicked() ), SLOT( onGlobalColorScale() ) );
 
   setButtonPosition( Right, Cancel );
   setMinimumWidth( 300 );
@@ -128,7 +135,8 @@ void Plot3d_SetupSurfacesDlg::setText( const int theRow,
 // Purpose  : 
 //=============================================================================
 void Plot3d_SetupSurfacesDlg::SetParameters( const QStringList& theTexts,
-                                             const ColorDicDataList& theColorDicDataList )
+                                             const ColorDicDataList& theColorDicDataList,
+                                             const ColorDicData& theGlobalColorDicData )
 {
   int nbRows = theTexts.size();
   
@@ -147,6 +155,8 @@ void Plot3d_SetupSurfacesDlg::SetParameters( const QStringList& theTexts,
 
   myColorDicDataList = theColorDicDataList;
 
+  myGlobalColorDicData = theGlobalColorDicData;
+
   myRemovedIndexes.clear();
 }
 
@@ -155,7 +165,8 @@ void Plot3d_SetupSurfacesDlg::SetParameters( const QStringList& theTexts,
 // Purpose  : 
 //=============================================================================
 void Plot3d_SetupSurfacesDlg::GetParameters( QStringList& theTexts,
-                                             ColorDicDataList& theColorDicDataList ) const
+                                             ColorDicDataList& theColorDicDataList,
+                                             ColorDicData& theGlobalColorDicData ) const
 {
   int nbRows = myTable->rowCount();
 
@@ -170,6 +181,8 @@ void Plot3d_SetupSurfacesDlg::GetParameters( QStringList& theTexts,
   }
 
   theColorDicDataList = myColorDicDataList;
+
+  theGlobalColorDicData = myGlobalColorDicData;
 }
 
 //=============================================================================
@@ -264,4 +277,17 @@ void Plot3d_SetupSurfacesDlg::onColorScaleBtn()
     aColorDicData = aDlg.getData();
     myColorDicDataList[ aRow ] = aColorDicData;
   }
+}
+
+//=============================================================================
+// Function : onGlobalColorScale
+// Purpose  : 
+//=============================================================================
+void Plot3d_SetupSurfacesDlg::onGlobalColorScale()
+{
+  Plot3d_SetupColorScaleDlg aDlg( this, true );
+  aDlg.setData( myGlobalColorDicData );
+
+  if( aDlg.exec() )
+    myGlobalColorDicData = aDlg.getData();
 }

@@ -27,6 +27,7 @@
 #include <QtxActionToolMgr.h>
 #include <QtxMultiAction.h>
 
+#include <SUIT_MessageBox.h>
 #include <SUIT_ResourceMgr.h>
 
 #include <SVTK_ComboAction.h>
@@ -42,9 +43,14 @@
 
 #include <vtkAxisActor2D.h>
 #include <vtkCamera.h>
+#include <vtkLookupTable.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkScalarBarActor.h>
+#include <vtkScalarBarWidget.h>
+#include <vtkTextProperty.h>
+
+#include <Precision.hxx>
 
 /*!
   Constructor
@@ -54,6 +60,56 @@ Plot3d_ViewWindow::Plot3d_ViewWindow( SUIT_Desktop* theDesktop ):
   myMode2D( false ),
   myMode2DNormalAxis( AxisZ )
 {
+  // Global scalar bar
+  myColorDic = new Plot3d_ColorDic();
+
+  myToDisplayScalarBar = false;
+
+  myScalarBarActor = vtkScalarBarActor::New();
+  myScalarBarActor->SetTitle( "All surfaces" );
+  myScalarBarActor->SetVisibility( false );
+
+  // Title props
+  QColor aTextColor = Qt::white;
+
+  vtkTextProperty* aScalarBarTitleProp = vtkTextProperty::New();
+  aScalarBarTitleProp->SetColor( aTextColor.redF(), aTextColor.greenF(), aTextColor.blueF() );
+  aScalarBarTitleProp->SetFontFamilyToArial();
+  int aSize = 24;
+  aScalarBarTitleProp->SetFontSize( aSize );
+  myScalarBarActor->SetTitleTextProperty( aScalarBarTitleProp );
+  aScalarBarTitleProp->Delete();
+
+  // Label props
+  vtkTextProperty* aScalarBarLabelProp = vtkTextProperty::New();
+  aScalarBarLabelProp->SetColor( aTextColor.redF(), aTextColor.greenF(), aTextColor.blueF() );
+  aScalarBarLabelProp->SetFontFamilyToArial();
+  myScalarBarActor->SetLabelTextProperty( aScalarBarLabelProp );
+  aScalarBarLabelProp->Delete();
+
+  // Position
+  double aXPos = 0.01, aYPos = 0.1;
+  myScalarBarActor->SetPosition( aXPos, aYPos );
+
+  // Width
+  double aWidth = 0.10, aHeight = 0.80;
+  myScalarBarActor->SetWidth( aWidth );
+  myScalarBarActor->SetHeight( aHeight );
+
+  // Number of labels and Maximum number of colors
+  myScalarBarActor->SetNumberOfLabels( 5 );
+  myScalarBarActor->SetMaximumNumberOfColors( 99 );  
+
+  // ScalarBar widget
+  myScalarBarWg = vtkScalarBarWidget::New();
+  myScalarBarWg->SetScalarBarActor( myScalarBarActor.GetPointer() );
+  
+  // Lookup table
+  myLookupTable = vtkLookupTable::New();
+  myLookupTable->SetHueRange( 0.667, 0.0 );
+  myLookupTable->ForceBuild();
+
+  myScalarBarActor->SetLookupTable( myLookupTable );
 }
 
 /*!
@@ -61,6 +117,15 @@ Plot3d_ViewWindow::Plot3d_ViewWindow( SUIT_Desktop* theDesktop ):
 */
 Plot3d_ViewWindow::~Plot3d_ViewWindow()
 {
+  myScalarBarWg->EnabledOff();
+  if( vtkRenderer* aRenderer = getRenderer() )
+    aRenderer->RemoveActor( myScalarBarActor.GetPointer() );
+
+  if( myColorDic )
+  {
+    delete myColorDic;
+    myColorDic = 0;
+  }
 }
 
 /*!
@@ -71,6 +136,20 @@ void Plot3d_ViewWindow::Initialize( SVTK_ViewModelBase* theModel )
   myPlot3dToolBar = toolMgr()->createToolBar( tr( "PLOT3D" ), -1, this );
 
   SVTK_ViewWindow::Initialize( theModel );
+
+  // Initialize global scalar bar
+  if( vtkRenderWindow* aRenderWindow = getRenderWindow() )
+  {
+    if( vtkRenderWindowInteractor* aRWI = aRenderWindow->GetInteractor() ) 
+    {
+      myScalarBarWg->SetInteractor( aRWI );
+      if( myToDisplayScalarBar )
+        myScalarBarWg->EnabledOn();
+    }
+  }
+
+  if( vtkRenderer* aRenderer = getRenderer() )
+    aRenderer->AddActor( myScalarBarActor.GetPointer() );
 }
 
 /*!
@@ -109,6 +188,14 @@ void Plot3d_ViewWindow::createActions( SUIT_ResourceMgr* theResourceMgr )
   anAction->setStatusTip( tr( "DSC_PLOT3D_SURFACES_SETTINGS" ) );
   connect( anAction, SIGNAL( activated() ), this, SLOT( onSurfacesSettings() ) );
   mgr->registerAction( anAction, SurfacesSettingsId );
+
+  anAction = new QtxAction( tr( "MNU_PLOT3D_MERGE_SCALAR_BARS" ),
+			    theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_PLOT3D_MERGE_SCALAR_BARS" ) ),
+			    tr( "MNU_PLOT3D_MERGE_SCALAR_BARS" ), 0, this );
+  anAction->setStatusTip( tr( "DSC_PLOT3D_MERGE_SCALAR_BARS" ) );
+  anAction->setCheckable( true );
+  connect( anAction, SIGNAL( toggled( bool ) ), this, SLOT( onMergeScalarBars( bool ) ) );
+  mgr->registerAction( anAction, MergeScalarBarsId );
 }
 
 /*!
@@ -122,6 +209,7 @@ void Plot3d_ViewWindow::createToolBar()
   
   mgr->append( Mode2DId, myPlot3dToolBar );
   mgr->append( SurfacesSettingsId, myPlot3dToolBar );
+  mgr->append( MergeScalarBarsId, myPlot3dToolBar );
 }
 
 /*!
@@ -258,12 +346,11 @@ void Plot3d_ViewWindow::onSurfacesSettings()
   QList< Plot3d_Actor* > aSurfaces;
   QStringList aTexts;
   ColorDicDataList aColorDicDataList;
-  vtkActor* anActor = 0;
 
   VTK::ActorCollectionCopy aCopy( aRenderer->GetActors() );
   vtkActorCollection* aCollection = aCopy.GetActors();
   aCollection->InitTraversal();
-  while( anActor = aCollection->GetNextActor() )
+  while( vtkActor* anActor = aCollection->GetNextActor() )
   {
     if( Plot3d_Actor* aSurface = dynamic_cast<Plot3d_Actor*>( anActor ) )
     {
@@ -297,13 +384,27 @@ void Plot3d_ViewWindow::onSurfacesSettings()
     }
   }
 
+  ColorDicData aGlobalColorDicData;
+  if( myColorDic )
+  {
+    aGlobalColorDicData.Num = myColorDic->GetNumber();
+    aGlobalColorDicData.Min = myColorDic->GetMin(); // non-editable, just to check log scale
+    aGlobalColorDicData.Max = myColorDic->GetMax(); // non-editable, just to check log scale
+    myColorDic->GetHSVRange( aGlobalColorDicData.HueMin, aGlobalColorDicData.HueMax,
+                             aGlobalColorDicData.SaturationMin, aGlobalColorDicData.SaturationMax,
+                             aGlobalColorDicData.ValueMin, aGlobalColorDicData.ValueMax );
+    aGlobalColorDicData.ScaleMode = myColorDic->GetScaleMode();
+    aGlobalColorDicData.ColorMode = myColorDic->GetColorMode();
+    myColorDic->GetCustomColors( aGlobalColorDicData.CustomColors[0], aGlobalColorDicData.CustomColors[1] );
+  }
+
   Plot3d_SetupSurfacesDlg aDlg( this );
-  aDlg.SetParameters( aTexts, aColorDicDataList );
+  aDlg.SetParameters( aTexts, aColorDicDataList, aGlobalColorDicData );
 
   if ( aDlg.exec() != QDialog::Accepted ) 
     return;
 
-  aDlg.GetParameters( aTexts, aColorDicDataList );
+  aDlg.GetParameters( aTexts, aColorDicDataList, aGlobalColorDicData );
 
   // Note: Indexes retrieved from dialog do not correspond to the real indexes of 
   // plot 3d surfaces. They correspond to the user actions. For example, if user removes 
@@ -368,6 +469,19 @@ void Plot3d_ViewWindow::onSurfacesSettings()
     }
   }
 
+  if( myColorDic )
+  {
+    myColorDic->SetNumber( aGlobalColorDicData.Num );
+    myColorDic->SetHSVRange( aGlobalColorDicData.HueMin, aGlobalColorDicData.HueMax,
+                             aGlobalColorDicData.SaturationMin, aGlobalColorDicData.SaturationMax,
+                             aGlobalColorDicData.ValueMin, aGlobalColorDicData.ValueMax );
+    myColorDic->SetScaleMode( aGlobalColorDicData.ScaleMode );
+    myColorDic->SetColorMode( aGlobalColorDicData.ColorMode );
+    myColorDic->SetCustomColors( aGlobalColorDicData.CustomColors[0], aGlobalColorDicData.CustomColors[1] );
+  }
+
+  UpdateScalarBar( false );
+
   vtkFloatingPointType aGlobalBounds[6] = { VTK_DOUBLE_MAX, VTK_DOUBLE_MIN,
                                             VTK_DOUBLE_MAX, VTK_DOUBLE_MIN,
                                             VTK_DOUBLE_MAX, VTK_DOUBLE_MIN };
@@ -400,8 +514,17 @@ void Plot3d_ViewWindow::onSurfacesSettings()
   aScale[0] = fabs( aDX ) > DBL_EPSILON ? 1.0 / aDX : 1.0;
   aScale[1] = fabs( aDY ) > DBL_EPSILON ? 1.0 / aDY : 1.0;
   aScale[2] = fabs( aDZ ) > DBL_EPSILON ? 1.0 / aDZ : 1.0;
-  SetScale( aScale );
+  SetScale( aScale, false );
   onFitAll();
+}
+
+/*!
+  Merge the scalar bars of all surfaces to a global scalar bar
+*/
+void Plot3d_ViewWindow::onMergeScalarBars( bool theOn )
+{
+  myToDisplayScalarBar = theOn;
+  UpdateScalarBar();
 }
 
 /*!
@@ -463,4 +586,101 @@ void Plot3d_ViewWindow::clearViewState( const bool theIs2D )
     myStored2DViewState.IsInitialized = false;
   else
     myStored3DViewState.IsInitialized = false;
+}
+
+/*!
+  Get actor of the global scalar bar
+  \return actor of the global scalar bar
+*/
+vtkSmartPointer<vtkScalarBarActor> Plot3d_ViewWindow::GetScalarBarActor() const
+{
+  return myScalarBarActor;
+}
+
+/*!
+  Update representation of the global scalar bar
+  \param theIsRepaint flag used to repaint the view
+*/
+void Plot3d_ViewWindow::UpdateScalarBar( const bool theIsRepaint )
+{
+  vtkRenderer* aRenderer = getRenderer();
+  if( !aRenderer )
+    return;
+
+  QList< Plot3d_Actor* > aSurfaces;
+
+  double aMin = VTK_DOUBLE_MAX;
+  double aMax = VTK_DOUBLE_MIN;
+
+  VTK::ActorCollectionCopy aCopy( aRenderer->GetActors() );
+  vtkActorCollection* aCollection = aCopy.GetActors();
+  aCollection->InitTraversal();
+  while( vtkActor* anActor = aCollection->GetNextActor() )
+  {
+    if( Plot3d_Actor* aSurface = dynamic_cast<Plot3d_Actor*>( anActor ) )
+    {
+      if( aSurface->GetVisibility() )
+      {
+        if( Plot3d_ColorDic* aColorDic = aSurface->GetColorDic() )
+        {
+          aSurfaces << aSurface;
+          aMin = qMin( aMin, aColorDic->GetMin() );
+          aMax = qMax( aMax, aColorDic->GetMax() );
+        }
+      }
+    }
+  }
+
+  bool anIsDisplayedSurfaces = !aSurfaces.isEmpty();
+  if( anIsDisplayedSurfaces )
+  {
+    // check the range and reset the scale mode to linear if necessary
+    if( myColorDic->GetScaleMode() == Plot3d_ColorDic::Logarithmic )
+    {
+      bool isMinIncorrect = aMin < 0 || fabs( aMin ) < Precision::Confusion();
+      bool isMaxIncorrect = aMax < 0 || fabs( aMax ) < Precision::Confusion();
+      if( isMinIncorrect || isMaxIncorrect )
+      {
+        SUIT_MessageBox::warning( this, tr( "WARNING" ), tr( "INCORRECT_RANGE" ) );
+        myColorDic->SetScaleMode( Plot3d_ColorDic::Linear );
+        myLookupTable->SetScale( (int)myColorDic->GetScaleMode() );
+      }
+    }
+
+    myColorDic->SetRange( aMin, aMax );
+
+    myLookupTable->SetRange( aMin, aMax );
+
+    myLookupTable->SetNumberOfTableValues( myColorDic->GetNumber() );
+
+    double aHueMin, aHueMax, aSaturationMin, aSaturationMax, aValueMin, aValueMax;
+    myColorDic->GetHSVRange( aHueMin, aHueMax, aSaturationMin, aSaturationMax, aValueMin, aValueMax );
+    myLookupTable->SetHueRange( aHueMin, aHueMax );
+    myLookupTable->SetSaturationRange( aSaturationMin, aSaturationMax );
+    myLookupTable->SetValueRange( aValueMin, aValueMax );
+
+    myLookupTable->SetScale( (int)myColorDic->GetScaleMode() );
+    myLookupTable->ForceBuild();
+  }
+
+  bool anIsDisplayScalarBar = myToDisplayScalarBar && anIsDisplayedSurfaces;
+
+  myScalarBarActor->SetVisibility( anIsDisplayScalarBar );
+  myScalarBarWg->SetEnabled( anIsDisplayScalarBar );
+
+  QListIterator< Plot3d_Actor* > aSurfaceIter( aSurfaces );
+  while( aSurfaceIter.hasNext() )
+  {
+    if( Plot3d_Actor* aSurface = aSurfaceIter.next() )
+    {
+      aSurface->SetIsGlobalColorDic( myToDisplayScalarBar );
+      aSurface->SetGlobalColorDic( myColorDic );
+
+      aSurface->RecomputeLookupTable();
+      aSurface->DisplayScalarBar( !anIsDisplayScalarBar );
+    }
+  }
+
+  if( theIsRepaint )
+    Repaint();
 }

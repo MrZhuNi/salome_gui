@@ -23,13 +23,19 @@
 
 #include <SVTK_ViewWindow.h>
 
+class vtkLookupTable;
+class vtkScalarBarActor;
+class vtkScalarBarWidget;
+
+class Plot3d_ColorDic;
+
 class PLOT3D_EXPORT Plot3d_ViewWindow : public SVTK_ViewWindow
 {
   Q_OBJECT
 
 public:
   enum { FirstId = SVTK_ViewWindow::LastId,
-         Mode2DId, SurfacesSettingsId,
+         Mode2DId, SurfacesSettingsId, MergeScalarBarsId,
          LastId };
 
   enum Axis { AxisX = 0, AxisY, AxisZ };
@@ -48,9 +54,13 @@ public:
 
   void clearViewState( const bool theIs2D );
 
+  vtkSmartPointer<vtkScalarBarActor> GetScalarBarActor() const;
+  void UpdateScalarBar( const bool theIsRepaint = true );
+
 public slots:
   void onMode2D( bool theOn );
   void onSurfacesSettings();
+  void onMergeScalarBars( bool theOn );
   void onFitData();
 
 protected:
@@ -83,6 +93,12 @@ protected:
   int myMode2DNormalAxis;
   ViewState myStored2DViewState;
   ViewState myStored3DViewState;
+
+  Plot3d_ColorDic* myColorDic;
+  vtkSmartPointer<vtkLookupTable> myLookupTable;
+  vtkSmartPointer<vtkScalarBarActor> myScalarBarActor;
+  vtkSmartPointer<vtkScalarBarWidget> myScalarBarWg;
+  bool myToDisplayScalarBar;
 };
 
 #endif

@@ -34,7 +34,8 @@ salomeinclude_HEADERS= \
 	Plot3d_SetupSpecificColorScaleDlg.h \
 	Plot3d_SetupSurfacesDlg.h \
 	Plot3d_ViewManager.h \
-	Plot3d_ViewModel.h
+	Plot3d_ViewModel.h \
+	Plot3d_ViewWindow.h
 
 dist_libPlot3d_la_SOURCES= \
 	Plot3d_Actor.cxx \
@@ -44,17 +45,21 @@ dist_libPlot3d_la_SOURCES= \
 	Plot3d_SetupSpecificColorScaleDlg.cxx \
 	Plot3d_SetupSurfacesDlg.cxx \
 	Plot3d_ViewManager.cxx \
-	Plot3d_ViewModel.cxx
+	Plot3d_ViewModel.cxx \
+	Plot3d_ViewWindow.cxx
 
 MOC_FILES= \
+	Plot3d_FitDataDlg_moc.cxx \
 	Plot3d_SetupColorScaleDlg_moc.cxx \
 	Plot3d_SetupSpecificColorScaleDlg_moc.cxx \
 	Plot3d_SetupSurfacesDlg_moc.cxx \
 	Plot3d_ViewManager_moc.cxx \
-	Plot3d_ViewModel_moc.cxx
+	Plot3d_ViewModel_moc.cxx \
+	Plot3d_ViewWindow_moc.cxx
 nodist_libPlot3d_la_SOURCES= $(MOC_FILES)
 
 dist_salomeres_DATA=\
+	resources/plot3d_merge_scalar_bars.png \
 	resources/plot3d_minus.png \
 	resources/plot3d_mode_2d.png \
 	resources/plot3d_surfaces_settings.png
@@ -72,16 +77,13 @@ libPlot3d_la_CPPFLAGS =		\
 	-I$(srcdir)/../SUIT	\
 	-I$(srcdir)/../OBJECT	\
 	-I$(srcdir)/../Prs 	\
-	-I$(srcdir)/../VTKViewer
+	-I$(srcdir)/../VTKViewer \
+	-I$(srcdir)/../SVTK
 
 libPlot3d_la_LDFLAGS =			\
 	$(QT_MT_LIBS)			\
-	$(CAS_KERNEL) $(CAS_VIEWER)	\
+	$(CAS_KERNEL) $(CAS_VIEWER) -lTKCDF \
 	$(VTK_LIBS) $(OGL_LIBS)
 
 libPlot3d_la_LIBADD = ../Qtx/libqtx.la ../SUIT/libsuit.la ../OBJECT/libSalomeObject.la \
-		    ../Prs/libSalomePrs.la ../VTKViewer/libVTKViewer.la
-
-Plot3d_CPPFLAGS = $(libPlot3d_la_CPPFLAGS)
-Plot3d_LDFLAGS  = $(libPlot3d_la_LDFLAGS)
-Plot3d_LDADD    = libPlot3d.la $(libPlot3d_la_LIBADD)
+		    ../Prs/libSalomePrs.la ../VTKViewer/libVTKViewer.la ../SVTK/libSVTK.la

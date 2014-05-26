@@ -178,6 +178,11 @@ if ENABLE_PLOT2DVIEWER
 else
   libLightApp_la_CPPFLAGS += -DDISABLE_PLOT2DVIEWER
 endif
+if ENABLE_PLOT3DVIEWER
+  libLightApp_la_CPPFLAGS += -I$(srcdir)/../Plot3d
+else
+  libLightApp_la_CPPFLAGS += -DDISABLE_PLOT3DVIEWER
+endif
 if ENABLE_OCCVIEWER
   libLightApp_la_CPPFLAGS += -I$(srcdir)/../OCCViewer
 else !ENABLE_OCCVIEWER
@@ -256,6 +261,9 @@ if ENABLE_PLOT2DVIEWER
 if ENABLE_SALOMEOBJECT
   libLightApp_la_LIBADD += ../SPlot2d/libSPlot2d.la
 endif
+endif
+if ENABLE_PLOT3DVIEWER
+  libLightApp_la_LIBADD += ../Plot3d/libPlot3d.la
 endif
 if ENABLE_PYCONSOLE
   libLightApp_la_LIBADD += ../PyInterp/libPyInterp.la ../PyConsole/libPyConsole.la

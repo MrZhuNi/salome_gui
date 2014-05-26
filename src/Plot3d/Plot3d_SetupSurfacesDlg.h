@@ -24,13 +24,10 @@
 #include "Plot3d_SetupColorScaleDlg.h"
 
 #include <QtxDialog.h>
-#include <QVector>
+
 #include <QList>
 
-class QtxGroupBox;
 class QTableWidget;
-class QwtLegend;
-class QToolButton;
 
 /*
   Class       : Plot3d_SetupSurfacesDlg
@@ -45,27 +42,29 @@ public:
   virtual ~Plot3d_SetupSurfacesDlg();
 
   void                      SetParameters( const QStringList& theTexts,
-                                           const ColorDicDataList& theColorDicDataList );
+                                           const ColorDicDataList& theColorDicDataList,
+                                           const ColorDicData& theGlobalColorDicData );
+
   void                      GetParameters( QStringList& theTexts,
-                                           ColorDicDataList& theColorDicDataList ) const;
+                                           ColorDicDataList& theColorDicDataList,
+                                           ColorDicData& theGlobalColorDicData ) const;
 
   const QList< int >&       GetRemovedIndexes() const;
 
 private slots:
   void                      onRemove();
   void                      onColorScaleBtn();
+  void                      onGlobalColorScale();
 
 private:
   void                      setText( const int theRow,
                                      const int theCol,
                                      const QString& theText );
 private:
-
-  QtxGroupBox*              myGrp;
   QTableWidget*             myTable;
-  QToolButton*              myRemoveBtn;
 
   ColorDicDataList          myColorDicDataList;
+  ColorDicData              myGlobalColorDicData;
 
   QList< int >              myRemovedIndexes;
 };

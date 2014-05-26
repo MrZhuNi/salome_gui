@@ -42,8 +42,10 @@
 // Function : Plot3d_SetupColorScaleDlg
 // Purpose  : Constructor
 //=============================================================================
-Plot3d_SetupColorScaleDlg::Plot3d_SetupColorScaleDlg( QWidget* theParent )
-: QtxDialog( theParent, true, false, QtxDialog::OKCancel )
+Plot3d_SetupColorScaleDlg::Plot3d_SetupColorScaleDlg( QWidget* theParent,
+                                                      bool theIsGlobal )
+: QtxDialog( theParent, true, false, QtxDialog::OKCancel ),
+  myIsGlobal( theIsGlobal )
 {
   setWindowTitle( tr( "SETUP_COLOR_SCALE" ) );
 
@@ -143,6 +145,10 @@ Plot3d_SetupColorScaleDlg::Plot3d_SetupColorScaleDlg( QWidget* theParent )
   connect( myColorScaleMode, SIGNAL( buttonClicked( int ) ), this, SLOT( onColorScaleModeChanged( int ) ) );
   connect( aScaleModeSpecific, SIGNAL( toggled( bool ) ), aScaleModeSpecificSetup, SLOT( setEnabled( bool ) ) );
   connect( aScaleModeSpecificSetup, SIGNAL( clicked() ), this, SLOT( onColorScaleSpecificSetup() ) );
+
+  aScaleModeSpecific->setVisible( !myIsGlobal );
+  aScaleModeSpecificSetup->setVisible( !myIsGlobal );
+  aRangeGroup->setVisible( !myIsGlobal );
 
   onColorModeChanged( 0 ); // Blue-Red by default
 
@@ -334,26 +340,35 @@ int Plot3d_SetupColorScaleDlg::checkScaleMode()
     bool isMaxIncorrect = aMax < 0 || fabs( aMax ) < Precision::Confusion();
     if ( isMinIncorrect || isMaxIncorrect )
     {
-      if ( SUIT_MessageBox::warning( this, tr( "WARNING" ), tr( "INCORRECT_RANGE" ),
-                                     tr( "CORRECT_RANGE" ), tr( "SWITCH_TO_LINEAR" ), 0, 1 ) == 0 )
-      { // correct range
-        if ( isMinIncorrect )
-          aMin = aCorrectValue;
-
-        if ( isMaxIncorrect )
-          aMax = aCorrectValue;
-
-        bool minBlock = myMinLimit->blockSignals( true );
-        bool maxBlock = myMaxLimit->blockSignals( true );
-
-        myMinLimit->setValue( aMin );
-        myMaxLimit->setValue( aMax );
-
-        myMinLimit->blockSignals( minBlock );
-        myMaxLimit->blockSignals( maxBlock );
-      }
-      else // switch to linear mode
+      int anAnswer = 0;
+      if( myIsGlobal )
+      {
+        SUIT_MessageBox::warning( this, tr( "WARNING" ), tr( "INCORRECT_RANGE" ) );
         setColorScaleMode( Plot3d_ColorDic::Linear );
+      }
+      else
+      {
+        if ( SUIT_MessageBox::warning( this, tr( "WARNING" ), tr( "INCORRECT_RANGE" ),
+                                       tr( "CORRECT_RANGE" ), tr( "SWITCH_TO_LINEAR" ), 0, 1 ) == 0 )
+        { // correct range
+          if ( isMinIncorrect )
+            aMin = aCorrectValue;
+
+          if ( isMaxIncorrect )
+            aMax = aCorrectValue;
+
+          bool minBlock = myMinLimit->blockSignals( true );
+          bool maxBlock = myMaxLimit->blockSignals( true );
+
+          myMinLimit->setValue( aMin );
+          myMaxLimit->setValue( aMax );
+
+          myMinLimit->blockSignals( minBlock );
+          myMaxLimit->blockSignals( maxBlock );
+        }
+        else // switch to linear mode
+          setColorScaleMode( Plot3d_ColorDic::Linear );
+      }
     }
   }
   return colorScaleMode();

@@ -59,6 +59,11 @@ if ENABLE_SALOMEOBJECT
     SUBDIRS += SPlot2d
 endif
 endif
+if ENABLE_PLOT3DVIEWER
+if ENABLE_SALOMEOBJECT
+  SUBDIRS += Plot3d
+endif
+endif
 if ENABLE_SUPERVGRAPHVIEWER
   SUBDIRS += SUPERVGraph
 endif
@@ -72,5 +77,5 @@ if GUI_ENABLE_CORBA
 endif
 
 DIST_SUBDIRS = CASCatch Qtx Style DDS QDS ObjBrowser SUIT SUITApp STD CAF CAM LogWindow Prs Event \
-               OBJECT GLViewer GraphicsView VTKViewer SVTK OCCViewer SOCC PyInterp PyConsole Plot2d SPlot2d SUPERVGraph \
+               OBJECT GLViewer GraphicsView VTKViewer SVTK OCCViewer SOCC PyInterp PyConsole Plot2d SPlot2d Plot3d SUPERVGraph \
                QxGraph LightApp ResExporter TOOLSGUI Session SalomeApp SALOME_SWIG SALOME_PY SALOME_PYQT

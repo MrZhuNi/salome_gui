@@ -58,6 +58,12 @@ else
     DISABLE_PLOT2DVIEWER="yes"
 fi
 
+if test "x${enable_plot3dViewer}" != "xno" ; then
+    DISABLE_PLOT3DVIEWER="no"
+else 
+    DISABLE_PLOT3DVIEWER="yes"
+fi
+
 if test "x${enable_supervGraphViewer}" != "xno" ; then
     DISABLE_SUPERVGRAPHVIEWER="no"
 else 
@@ -457,6 +463,10 @@ if test "x${GUI_DISABLE_CORBA}" != "xyes" ; then
     echo "failed : for full configuration of GUI module necessary enable Plot2dViewer !"
     exit
   fi
+  if test "x${DISABLE_PLOT3DVIEWER}" == "xyes" ; then
+    echo "failed : for full configuration of GUI module necessary enable Plot3dViewer !"
+    exit
+  fi
   if test "x${DISABLE_SUPERVGRAPHVIEWER}" == "xyes" ; then
     echo "failed : for full configuration of GUI module necessary enable SupervGraphViewer !"
     exit
@@ -570,6 +580,7 @@ AM_CONDITIONAL(ENABLE_PYCONSOLE, [test "$DISABLE_PYCONSOLE" = no])
 AM_CONDITIONAL(ENABLE_GLVIEWER, [test "$DISABLE_GLVIEWER" = no])
 AM_CONDITIONAL(ENABLE_GRAPHICSVIEW, [test "$DISABLE_GRAPHICSVIEW" = no])
 AM_CONDITIONAL(ENABLE_PLOT2DVIEWER, [test "$DISABLE_PLOT2DVIEWER" = no])
+AM_CONDITIONAL(ENABLE_PLOT3DVIEWER, [test "$DISABLE_PLOT3DVIEWER" = no])
 AM_CONDITIONAL(ENABLE_SUPERVGRAPHVIEWER, [test "$DISABLE_SUPERVGRAPHVIEWER" = no])
 AM_CONDITIONAL(ENABLE_OCCVIEWER, [test "$DISABLE_OCCVIEWER" = no])
 AM_CONDITIONAL(ENABLE_VTKVIEWER, [test "$DISABLE_VTKVIEWER" = no])
@@ -631,6 +642,7 @@ AC_OUTPUT([ \
   ./src/PyConsole/Makefile \
   ./src/Plot2d/Makefile \
   ./src/SPlot2d/Makefile \
+  ./src/Plot3d/Makefile \
   ./src/SUPERVGraph/Makefile \
   ./src/QxGraph/Makefile \
   ./src/LightApp/Makefile \

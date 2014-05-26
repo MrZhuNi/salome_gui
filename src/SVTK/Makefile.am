@@ -60,11 +60,7 @@ salomeinclude_HEADERS= \
 	SVTK_ImageWriter.h \
 	SVTK_ImageWriterMgr.h \
 	SVTK_FrameBuffer.h\
-	SVTK_DoubleSpinBox.h \
-	Plot3d_Actor.h \
-	Plot3d_ViewManager.h \
-	Plot3d_ViewModel.h  \
-	Plot3d_SetupSurfacesDlg.h
+	SVTK_DoubleSpinBox.h
 
 dist_libSVTK_la_SOURCES= \
 	SVTK_Prs.cxx \
@@ -99,11 +95,7 @@ dist_libSVTK_la_SOURCES= \
 	SVTK_ImageWriter.cxx \
 	SVTK_ImageWriterMgr.cxx \
 	SVTK_FrameBuffer.cxx \
-	SVTK_DoubleSpinBox.cxx \
-	Plot3d_Actor.cxx \
-	Plot3d_ViewManager.cxx \
-	Plot3d_ViewModel.cxx \
-	Plot3d_SetupSurfacesDlg.cxx
+	SVTK_DoubleSpinBox.cxx
 
 # internal headers
 EXTRA_DIST += SVTK_SelectorDef.h SVTK_Trihedron.h
@@ -125,10 +117,7 @@ MOC_FILES= \
 	SVTK_ViewParameterDlg_moc.cxx \
 	SVTK_ComboAction_moc.cxx \
 	SVTK_RecorderDlg_moc.cxx \
-	SVTK_DoubleSpinBox_moc.cxx \
-	Plot3d_ViewManager_moc.cxx \
-	Plot3d_ViewModel_moc.cxx \
-	Plot3d_SetupSurfacesDlg_moc.cxx
+	SVTK_DoubleSpinBox_moc.cxx
 nodist_libSVTK_la_SOURCES= $(MOC_FILES)
 
 dist_salomeres_DATA=\

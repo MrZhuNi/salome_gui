@@ -171,27 +171,29 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   //----------------------------------------------------------------------------
   //! Redirect the request to #SVTK_View::Display (to support old code)
   virtual void Display(const Handle(SALOME_InteractiveObject)& theIObject,
-		       bool theImmediatly = true);
+		       bool theIsUpdate = true);
 
   //! Redirect the request to #SVTK_View::DisplayOnly (to support old code)
-  virtual void DisplayOnly(const Handle(SALOME_InteractiveObject)& theIObject);
+  virtual void DisplayOnly(const Handle(SALOME_InteractiveObject)& theIObject,
+                           bool theIsUpdate = true);
 
   //! Redirect the request to #SVTK_View::Erase (to support old code)
   virtual void Erase(const Handle(SALOME_InteractiveObject)& theIObject,
-		     bool theImmediatly = true);
+		     bool theIsUpdate = true);
 
   //! Redirect the request to #SVTK_View::DisplayAll (to support old code)
-  virtual void DisplayAll();
+  virtual void DisplayAll(bool theIsUpdate = true);
 
   //! Redirect the request to #SVTK_View::EraseAll (to support old code)
-  virtual void EraseAll();
+  virtual void EraseAll(bool theIsUpdate = true);
 
   //! To repaint the viewer
   virtual void Repaint(bool theUpdateTrihedron = true);
 
   //----------------------------------------------------------------------------
   //! Redirect the request to #SVTK_Renderer::SetScale
-  virtual void SetScale( double theScale[3] );
+  virtual void SetScale( double theScale[3],
+                         bool theIsUpdate = true );
 
   //! Redirect the request to #SVTK_Renderer::GetScale
   virtual void GetScale( double theScale[3] );
