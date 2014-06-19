@@ -159,7 +159,7 @@ Plot2d_SetupCurvesDlg::Plot2d_SetupCurvesDlg( QWidget* theParent )
   aLabels.append( tr( "NB_MARKERS" ) );
   myTable->setHorizontalHeaderLabels( aLabels );
   myTable->verticalHeader()->hide();
-  myTable->setSelectionMode( QTableWidget::NoSelection );
+  myTable->setSelectionMode( QTableWidget::ExtendedSelection );
 
   QComboBox* aCombo = new QComboBox( 0 );
   myTable->verticalHeader()->setDefaultSectionSize( aCombo->sizeHint().height() );
@@ -437,7 +437,7 @@ void Plot2d_SetupCurvesDlg::onRemove( )
   for ( selIter = aRegs.begin(); selIter != aRegs.end(); ++selIter )
   {
     const QTableWidgetSelectionRange& aReg = *selIter;
-    for ( int i = aReg.topRow(), n = aReg.bottomRow(); i < n; i++ )
+    for ( int i = aReg.topRow(), n = aReg.bottomRow(); i <= n; i++ )
       aSelRows.insert( i );
   }
 
