@@ -242,7 +242,9 @@ QtxListAction::ListFrame::ListFrame( QtxListAction* a, QWidget* parent )
   myLines( 5 ),
   myChars( 5 )
 {
-  QVBoxLayout* top = new QVBoxLayout( this );
+  QVBoxLayout* top = new QVBoxLayout();
+  this->setLayout(top);
+
   top->setMargin( 0 );
   QFrame* main = new QFrame( this );
   main->setFrameStyle( QFrame::Panel | QFrame::Raised );
@@ -271,7 +273,7 @@ QtxListAction::ListFrame::ListFrame( QtxListAction* a, QWidget* parent )
 
   SizeGrip* aGrip = new SizeGrip( main );
   aGrip->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum);
-  QHBoxLayout* bottom = new QHBoxLayout ( this );
+  QHBoxLayout* bottom = new QHBoxLayout ();
   bottom->addWidget( myComment, 1 );
   bottom->addWidget( aGrip, 0, Qt::AlignBottom | Qt::AlignRight );
 
