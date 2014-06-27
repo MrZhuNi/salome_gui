@@ -201,6 +201,15 @@ ComputeTrihedronSize( vtkRenderer* theRenderer,
     bnd[ 1 ] = bnd[ 3 ] = bnd[ 5 ] = 100;
     bnd[ 0 ] = bnd[ 2 ] = bnd[ 4 ] = 0;
   }
+
+  if( bnd[ 1 ] < bnd[ 0 ] ||
+      bnd[ 3 ] < bnd[ 2 ] ||
+      bnd[ 5 ] < bnd[ 4 ] )
+  {
+    theNewSize = 1;
+    return false;
+  }
+
   vtkFloatingPointType aLength = 0;
 
   aLength = bnd[ 1 ]-bnd[ 0 ];

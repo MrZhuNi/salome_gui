@@ -110,6 +110,16 @@ Plot3d_ViewWindow::Plot3d_ViewWindow( SUIT_Desktop* theDesktop ):
   myLookupTable->ForceBuild();
 
   myScalarBarActor->SetLookupTable( myLookupTable );
+
+  // Fit data parameters
+  myIsFitDataInitialized = false;
+  myIsFitDataEnabled = false;
+  myFitDataBounds[0] = 0;
+  myFitDataBounds[1] = -1;
+  myFitDataBounds[2] = 0;
+  myFitDataBounds[3] = -1;
+  myFitDataBounds[4] = 0;
+  myFitDataBounds[5] = -1;
 }
 
 /*!
@@ -159,9 +169,7 @@ void Plot3d_ViewWindow::Initialize( SVTK_ViewModelBase* theModel )
 void Plot3d_ViewWindow::contextMenuPopup( QMenu* thePopup )
 {
   thePopup->addAction( tr( "MNU_PLOT3D_SURFACES_SETTINGS" ), this, SLOT( onSurfacesSettings() ) );
-
-  if( myMode2D )
-    thePopup->addAction( tr( "FIT_RANGE" ), this, SLOT( onFitData() ) );
+  thePopup->addAction( tr( "MNU_PLOT3D_FIT_RANGE" ),         this, SLOT( onFitData() ) );
 }
 
 /*!
@@ -481,40 +489,8 @@ void Plot3d_ViewWindow::onSurfacesSettings()
   }
 
   UpdateScalarBar( false );
-
-  vtkFloatingPointType aGlobalBounds[6] = { VTK_DOUBLE_MAX, VTK_DOUBLE_MIN,
-                                            VTK_DOUBLE_MAX, VTK_DOUBLE_MIN,
-                                            VTK_DOUBLE_MAX, VTK_DOUBLE_MIN };
-
-  for ( i = 0, aSurfIter = aSurfaces.begin(); aSurfIter != aSurfaces.end(); ++aSurfIter, ++i )
-  {
-    if( Plot3d_Actor* aSurface = *aSurfIter )
-    {
-      vtkFloatingPointType aBounds[6];
-      aSurface->GetBounds( aBounds );
-      aGlobalBounds[0] = qMin( aGlobalBounds[0], aBounds[0] );
-      aGlobalBounds[1] = qMax( aGlobalBounds[1], aBounds[1] );
-      aGlobalBounds[2] = qMin( aGlobalBounds[2], aBounds[2] );
-      aGlobalBounds[3] = qMax( aGlobalBounds[3], aBounds[3] );
-      aGlobalBounds[4] = qMin( aGlobalBounds[4], aBounds[4] );
-      aGlobalBounds[5] = qMax( aGlobalBounds[5], aBounds[5] );
-    }
-  }
-
-  double aDX = aGlobalBounds[1] - aGlobalBounds[0];
-  double aDY = aGlobalBounds[3] - aGlobalBounds[2];
-  double aDZ = aGlobalBounds[5] - aGlobalBounds[4];
-
-  double aScale[3];
-  GetScale( aScale ); // take into account the current scale
-  aDX = fabs( aScale[0] ) > DBL_EPSILON ? aDX / aScale[0] : aDX;
-  aDY = fabs( aScale[1] ) > DBL_EPSILON ? aDY / aScale[1] : aDY;
-  aDZ = fabs( aScale[2] ) > DBL_EPSILON ? aDZ / aScale[2] : aDZ;
-
-  aScale[0] = fabs( aDX ) > DBL_EPSILON ? 1.0 / aDX : 1.0;
-  aScale[1] = fabs( aDY ) > DBL_EPSILON ? 1.0 / aDY : 1.0;
-  aScale[2] = fabs( aDZ ) > DBL_EPSILON ? 1.0 / aDZ : 1.0;
-  SetScale( aScale, false );
+  UpdateFitData( false );
+  NormalizeSurfaces( false );
   onFitAll();
 }
 
@@ -532,7 +508,110 @@ void Plot3d_ViewWindow::onMergeScalarBars( bool theOn )
 */
 void Plot3d_ViewWindow::onFitData()
 {
-  // to do
+  vtkRenderer* aRenderer = getRenderer();
+  if( !aRenderer )
+    return;
+
+  QList< Plot3d_Actor* > aSurfaces;
+  VTK::ActorCollectionCopy aCopy( aRenderer->GetActors() );
+  vtkActorCollection* aCollection = aCopy.GetActors();
+  aCollection->InitTraversal();
+  while( vtkActor* anActor = aCollection->GetNextActor() )
+    if( Plot3d_Actor* aSurface = dynamic_cast<Plot3d_Actor*>( anActor ) )
+      aSurfaces << aSurface;
+
+  if( aSurfaces.isEmpty() )
+  {
+    SUIT_MessageBox::warning( this, tr( "WARNING" ), tr( "NO_OBJECTS_TO_FIT" ) );
+    return;
+  }
+
+  // check that the bounds are not yet initialized
+  if( !myIsFitDataInitialized/* ||
+      myFitDataBounds[1] < myFitDataBounds[0] ||
+      myFitDataBounds[3] < myFitDataBounds[2] ||
+      myFitDataBounds[5] < myFitDataBounds[4]*/ )
+  {
+    myFitDataBounds[0] = VTK_DOUBLE_MAX;
+    myFitDataBounds[1] = VTK_DOUBLE_MIN;
+    myFitDataBounds[2] = VTK_DOUBLE_MAX;
+    myFitDataBounds[3] = VTK_DOUBLE_MIN;
+    myFitDataBounds[4] = VTK_DOUBLE_MAX;
+    myFitDataBounds[5] = VTK_DOUBLE_MIN;
+
+    QListIterator< Plot3d_Actor* > anIter( aSurfaces );
+    while( anIter.hasNext() )
+    {
+      if( Plot3d_Actor* aSurface = anIter.next() )
+      {
+        vtkFloatingPointType aBounds[6];
+        aSurface->GetBounds( aBounds );
+        myFitDataBounds[0] = qMin( myFitDataBounds[0], aBounds[0] );
+        myFitDataBounds[1] = qMax( myFitDataBounds[1], aBounds[1] );
+        myFitDataBounds[2] = qMin( myFitDataBounds[2], aBounds[2] );
+        myFitDataBounds[3] = qMax( myFitDataBounds[3], aBounds[3] );
+        myFitDataBounds[4] = qMin( myFitDataBounds[4], aBounds[4] );
+        myFitDataBounds[5] = qMax( myFitDataBounds[5], aBounds[5] );
+      }
+    }
+
+    double aScale[3];
+    GetScale( aScale ); // take into account the current scale
+    myFitDataBounds[0] = fabs( aScale[0] ) > DBL_EPSILON ? myFitDataBounds[0] / aScale[0] : myFitDataBounds[0];
+    myFitDataBounds[1] = fabs( aScale[0] ) > DBL_EPSILON ? myFitDataBounds[1] / aScale[0] : myFitDataBounds[1];
+    myFitDataBounds[2] = fabs( aScale[1] ) > DBL_EPSILON ? myFitDataBounds[2] / aScale[1] : myFitDataBounds[2];
+    myFitDataBounds[3] = fabs( aScale[1] ) > DBL_EPSILON ? myFitDataBounds[3] / aScale[1] : myFitDataBounds[3];
+    myFitDataBounds[4] = fabs( aScale[2] ) > DBL_EPSILON ? myFitDataBounds[4] / aScale[2] : myFitDataBounds[4];
+    myFitDataBounds[5] = fabs( aScale[2] ) > DBL_EPSILON ? myFitDataBounds[5] / aScale[2] : myFitDataBounds[5];
+
+    myIsFitDataInitialized = true;
+  }
+
+  Plot3d_FitDataDlg aDlg( this, !myMode2D );
+
+  if( SVTK_CubeAxesActor2D* aCubeAxes = GetRenderer()->GetCubeAxes() )
+  {
+    if( aCubeAxes->GetVisibility() )
+    {
+      vtkAxisActor2D* aXAxis = aCubeAxes->GetXAxisActor2D();
+      vtkAxisActor2D* aYAxis = aCubeAxes->GetYAxisActor2D();
+      vtkAxisActor2D* aZAxis = aCubeAxes->GetZAxisActor2D();
+      if( aXAxis && aYAxis && aZAxis )
+        aDlg.setAxisTitles( aXAxis->GetTitle(),
+                            aYAxis->GetTitle(),
+                            aZAxis->GetTitle() );
+    }
+  }
+
+  aDlg.setRange( myIsFitDataEnabled,
+                 myFitDataBounds[0],
+                 myFitDataBounds[1],
+                 myFitDataBounds[2],
+                 myFitDataBounds[3],
+                 myFitDataBounds[4],
+                 myFitDataBounds[5] );
+
+  if( aDlg.exec() == QDialog::Accepted ) 
+  {
+    double aZMin = 0, aZMax = 0;
+    aDlg.getRange( myIsFitDataEnabled,
+                   myFitDataBounds[0],
+                   myFitDataBounds[1],
+                   myFitDataBounds[2],
+                   myFitDataBounds[3],
+                   aZMin,
+                   aZMax );
+
+    if( !myMode2D )
+    {
+      myFitDataBounds[4] = aZMin;
+      myFitDataBounds[5] = aZMax;
+    }
+
+    UpdateFitData( false );
+    NormalizeSurfaces( false );
+    onFitAll();
+  }
 }
 
 /*!
@@ -680,6 +759,104 @@ void Plot3d_ViewWindow::UpdateScalarBar( const bool theIsRepaint )
       aSurface->DisplayScalarBar( !anIsDisplayScalarBar );
     }
   }
+
+  if( theIsRepaint )
+    Repaint();
+}
+
+/*!
+  Apply fit data bounds to all displayed actors
+*/
+void Plot3d_ViewWindow::UpdateFitData( const bool theIsRepaint )
+{
+  if( !myIsFitDataInitialized )
+    return;
+
+  vtkRenderer* aRenderer = getRenderer();
+  if( !aRenderer )
+    return;
+
+  QList< Plot3d_Actor* > aSurfaces;
+  VTK::ActorCollectionCopy aCopy( aRenderer->GetActors() );
+  vtkActorCollection* aCollection = aCopy.GetActors();
+  aCollection->InitTraversal();
+  while( vtkActor* anActor = aCollection->GetNextActor() )
+    if( Plot3d_Actor* aSurface = dynamic_cast<Plot3d_Actor*>( anActor ) )
+      aSurfaces << aSurface;
+
+  if( aSurfaces.isEmpty() )
+  {
+    myIsFitDataInitialized = false;
+    myIsFitDataEnabled = false;
+    return;
+  }
+
+  QListIterator< Plot3d_Actor* > anIter( aSurfaces );
+  while( anIter.hasNext() )
+  {
+    if( Plot3d_Actor* aSurface = anIter.next() )
+    {
+      aSurface->SetClippingPlanes( myFitDataBounds[0],
+                                   myFitDataBounds[1],
+                                   myFitDataBounds[2],
+                                   myFitDataBounds[3],
+                                   myFitDataBounds[4],
+                                   myFitDataBounds[5] );
+      aSurface->SetClippingPlanesEnabled( myIsFitDataEnabled );
+    }
+  }
+
+  if( theIsRepaint )
+    Repaint();
+}
+
+/*!
+  Arrange the view scale to normalize the displayed surfaces
+*/
+void Plot3d_ViewWindow::NormalizeSurfaces( const bool theIsRepaint )
+{
+  vtkRenderer* aRenderer = getRenderer();
+  if( !aRenderer )
+    return;
+
+  vtkFloatingPointType aGlobalBounds[6] = { VTK_DOUBLE_MAX, VTK_DOUBLE_MIN,
+                                            VTK_DOUBLE_MAX, VTK_DOUBLE_MIN,
+                                            VTK_DOUBLE_MAX, VTK_DOUBLE_MIN };
+
+  VTK::ActorCollectionCopy aCopy( aRenderer->GetActors() );
+  vtkActorCollection* aCollection = aCopy.GetActors();
+  aCollection->InitTraversal();
+  while( vtkActor* anActor = aCollection->GetNextActor() )
+  {
+    if( Plot3d_Actor* aSurface = dynamic_cast<Plot3d_Actor*>( anActor ) )
+    {
+      vtkFloatingPointType aBounds[6];
+      //aSurface->GetRealBounds( aBounds );
+      aSurface->GetBounds( aBounds );
+      aGlobalBounds[0] = qMin( aGlobalBounds[0], aBounds[0] );
+      aGlobalBounds[1] = qMax( aGlobalBounds[1], aBounds[1] );
+      aGlobalBounds[2] = qMin( aGlobalBounds[2], aBounds[2] );
+      aGlobalBounds[3] = qMax( aGlobalBounds[3], aBounds[3] );
+      aGlobalBounds[4] = qMin( aGlobalBounds[4], aBounds[4] );
+      aGlobalBounds[5] = qMax( aGlobalBounds[5], aBounds[5] );
+    }
+  }
+
+  double aDX = aGlobalBounds[1] - aGlobalBounds[0];
+  double aDY = aGlobalBounds[3] - aGlobalBounds[2];
+  double aDZ = aGlobalBounds[5] - aGlobalBounds[4];
+
+  double aScale[3];
+
+  GetScale( aScale ); // take into account the current scale
+  aDX = fabs( aScale[0] ) > DBL_EPSILON ? aDX / aScale[0] : aDX;
+  aDY = fabs( aScale[1] ) > DBL_EPSILON ? aDY / aScale[1] : aDY;
+  aDZ = fabs( aScale[2] ) > DBL_EPSILON ? aDZ / aScale[2] : aDZ;
+
+  aScale[0] = fabs( aDX ) > DBL_EPSILON ? 1.0 / aDX : 1.0;
+  aScale[1] = fabs( aDY ) > DBL_EPSILON ? 1.0 / aDY : 1.0;
+  aScale[2] = fabs( aDZ ) > DBL_EPSILON ? 1.0 / aDZ : 1.0;
+  SetScale( aScale, false );
 
   if( theIsRepaint )
     Repaint();

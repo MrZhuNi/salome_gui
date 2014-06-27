@@ -19,6 +19,10 @@ minimum value of the range is less or equal zero.
 Correct the range or switch to linear scale?</translation>
     </message>
     <message>
+      <source>NO_OBJECTS_TO_FIT</source>
+      <translation>No objects to fit</translation>
+    </message>
+    <message>
       <source>WARNING</source>
       <translation>Warning</translation>
     </message>
@@ -30,20 +34,12 @@ Correct the range or switch to linear scale?</translation>
   <context>
     <name>Plot3d_FitDataDlg</name>
     <message>
-      <source>FIT_ALL</source>
-      <translation>Fit both</translation>
+      <source>ENABLE</source>
+      <translation>Enable</translation>
     </message>
     <message>
-      <source>FIT_HORIZONTAL</source>
-      <translation>Fit horizontally</translation>
-    </message>
-    <message>
-      <source>FIT_VERTICAL</source>
-      <translation>Fit vertically</translation>
-    </message>
-    <message>
-      <source>HORIZONTAL_AXIS</source>
-      <translation>Horizontal axis</translation>
+      <source>FIT_DATA_TLT</source>
+      <translation>Fit Data Range</translation>
     </message>
     <message>
       <source>MAX_VALUE_LAB</source>
@@ -52,18 +48,6 @@ Correct the range or switch to linear scale?</translation>
     <message>
       <source>MIN_VALUE_LAB</source>
       <translation>Min:</translation>
-    </message>
-    <message>
-      <source>VERTICAL_AXIS</source>
-      <translation>Vertical axis</translation>
-    </message>
-    <message>
-      <source>VERTICAL_LEFT_AXIS</source>
-      <translation>Vertical left axis</translation>
-    </message>
-    <message>
-      <source>VERTICAL_RIGHT_AXIS</source>
-      <translation>Vertical right axis</translation>
     </message>
   </context>
   <context>
@@ -271,7 +255,7 @@ or equal zero in case of logarithmic interpolation.</translation>
       <translation>Surfaces settings</translation>
     </message>
     <message>
-      <source>FIT_RANGE</source>
+      <source>MNU_PLOT3D_FIT_RANGE</source>
       <translation>Fit range</translation>
     </message>
     <message>

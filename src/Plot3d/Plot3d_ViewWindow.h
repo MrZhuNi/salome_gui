@@ -57,6 +57,10 @@ public:
   vtkSmartPointer<vtkScalarBarActor> GetScalarBarActor() const;
   void UpdateScalarBar( const bool theIsRepaint = true );
 
+  void UpdateFitData( const bool theIsRepaint = true );
+
+  void NormalizeSurfaces( const bool theIsRepaint = true );
+
 public slots:
   void onMode2D( bool theOn );
   void onSurfacesSettings();
@@ -99,6 +103,10 @@ protected:
   vtkSmartPointer<vtkScalarBarActor> myScalarBarActor;
   vtkSmartPointer<vtkScalarBarWidget> myScalarBarWg;
   bool myToDisplayScalarBar;
+
+  bool myIsFitDataInitialized;
+  bool myIsFitDataEnabled;
+  double myFitDataBounds[6];
 };
 
 #endif

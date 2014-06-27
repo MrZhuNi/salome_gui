@@ -24,7 +24,7 @@
 #include <QDialog>
 
 class QGroupBox;
-class QRadioButton;
+class QLabel;
 class QLineEdit;
 class QPushButton;
 
@@ -33,44 +33,47 @@ class PLOT3D_EXPORT Plot3d_FitDataDlg : public QDialog
   Q_OBJECT
 
 public:
-// constuctor
-  Plot3d_FitDataDlg( QWidget* parent, bool secondAxisY );
+  Plot3d_FitDataDlg( QWidget* theParent, bool theIs3D );
 
-// sets range
-  void setRange(const double xMin, 
-                const double xMax,
-                const double yMin,
-                const double yMax,
-                const double y2Min = 0,
-                const double y2Max = 0);
-// gets range, returns mode (see getMode())
-  int getRange(double& xMin, 
-               double& xMax,
-               double& yMin,
-               double& yMax,
-               double& y2Min,
-               double& y2Max);
-// gets mode : 0 - Fit all; 1 - Fit horizontal, 2 - Fit vertical
-  int getMode();
+  void setAxisTitles( const QString& theXTitle,
+                      const QString& theYTitle,
+                      const QString& theZTitle );
 
-protected slots:
-// called when range mode changed
-  void onModeChanged(int);
+  void setRange( const bool theIsEnabled,
+                 const double xMin,
+                 const double xMax,
+                 const double yMin,
+                 const double yMax,
+                 const double zMin = 0,
+                 const double zMax = 0 );
+
+  void getRange( bool& theIsEnabled,
+                 double& xMin,
+                 double& xMax,
+                 double& yMin,
+                 double& yMax,
+                 double& zMin,
+                 double& zMax );
 
 private:
   QGroupBox*              myRangeGrp;
-  QRadioButton*           myModeAllRB;
-  QRadioButton*           myModeHorRB;
-  QRadioButton*           myModeVerRB;
+
+  QLabel*                 myXLabel;
   QLineEdit*              myXMinEdit;
-  QLineEdit*              myYMinEdit;
-  QLineEdit*              myY2MinEdit;
   QLineEdit*              myXMaxEdit;
+
+  QLabel*                 myYLabel;
+  QLineEdit*              myYMinEdit;
   QLineEdit*              myYMaxEdit;
-  QLineEdit*              myY2MaxEdit;
+
+  QLabel*                 myZLabel;
+  QLineEdit*              myZMinEdit;
+  QLineEdit*              myZMaxEdit;
+
   QPushButton*            myOkBtn;
   QPushButton*            myCancelBtn;
-  bool                    mySecondAxisY;
+
+  bool                    myIs3D;
 };
 
 #endif

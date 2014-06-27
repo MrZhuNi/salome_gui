@@ -20,18 +20,24 @@
 
 #include "Plot3d_ColorDic.h"
 
+#include "SALOME_ExtractGeometry.h"
+
+#include <vtkDataSetMapper.h>
 #include <vtkFloatArray.h>
+#include <vtkImplicitBoolean.h>
+#include <vtkImplicitFunctionCollection.h>
 #include <vtkLookupTable.h>
 #include <vtkObjectFactory.h>
+#include <vtkPlane.h>
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkScalarBarActor.h>
 #include <vtkScalarBarWidget.h>
 #include <vtkTextProperty.h>
+#include <vtkUnstructuredGrid.h>
 #include <vtkWarpScalar.h>
 
 vtkStandardNewMacro(Plot3d_Actor);
@@ -42,6 +48,31 @@ vtkStandardNewMacro(Plot3d_Actor);
 //=============================================================================
 Plot3d_Actor::Plot3d_Actor()
 {
+  // Pipeline
+  myWarpScalar = vtkWarpScalar::New();
+  myWarpScalar->Delete();
+  myWarpScalar->SetScaleFactor( 1 );
+
+  myImplicitBoolean = vtkImplicitBoolean::New();
+  myImplicitBoolean->Delete();
+  myImplicitBoolean->SetOperationTypeToIntersection();
+
+  for( int anIndex = 1; anIndex <= 6; anIndex++ )
+  {
+    vtkSmartPointer<vtkPlane> aPlane = vtkPlane::New();
+    aPlane->Delete();
+    myImplicitBoolean->GetFunction()->AddItem( aPlane );
+  }
+
+  myExtractGeometry = SALOME_ExtractGeometry::New();
+  myExtractGeometry->Delete();
+  myExtractGeometry->SetImplicitFunction( myImplicitBoolean );
+  myExtractGeometry->SetExtractInside( 1 );
+
+  myMapper = vtkDataSetMapper::New();
+  myMapper->Delete();
+
+  // Other
   myColorDic = new Plot3d_ColorDic();
 
   myIsGlobalColorDic = false;
@@ -99,7 +130,16 @@ Plot3d_Actor::Plot3d_Actor()
 
   // Lookup table
   myLookupTable = vtkLookupTable::New();
+  myLookupTable->Delete();
   myLookupTable->SetHueRange( 0.667, 0.0 );
+
+  // Real (non-clipped) bounds
+  myRealBounds[0] = VTK_DOUBLE_MAX;
+  myRealBounds[1] = VTK_DOUBLE_MIN;
+  myRealBounds[2] = VTK_DOUBLE_MAX;
+  myRealBounds[3] = VTK_DOUBLE_MIN;
+  myRealBounds[4] = VTK_DOUBLE_MAX;
+  myRealBounds[5] = VTK_DOUBLE_MIN;
 }
 
 //=============================================================================
@@ -113,8 +153,6 @@ Plot3d_Actor::~Plot3d_Actor()
     delete myColorDic;
     myColorDic = 0;
   }
-
-  myLookupTable->Delete();
 }
 
 //=============================================================================
@@ -173,6 +211,68 @@ void Plot3d_Actor::RemoveFromRender( vtkRenderer* theRenderer )
   theRenderer->RemoveActor( myScalarBarActor.GetPointer() );
 
   Superclass::RemoveFromRender( theRenderer );
+}
+
+//=============================================================================
+// Function : SetClippingPlanesEnabled
+// Purpose  : 
+//=============================================================================
+void Plot3d_Actor::SetClippingPlanesEnabled( const bool theState )
+{
+  if( theState )
+  {
+    myWarpScalar->Update();
+    myExtractGeometry->SetInput( myWarpScalar->GetPolyDataOutput() );
+    myExtractGeometry->Update();
+    myMapper->SetInput( myExtractGeometry->GetOutput() );
+  }
+  else
+    myMapper->SetInput( myWarpScalar->GetPolyDataOutput() );
+  SetMapper( myMapper );
+  myMapper->Update();
+}
+
+//=============================================================================
+// Function : SetClippingPlanes
+// Purpose  : 
+//=============================================================================
+void Plot3d_Actor::SetClippingPlanes( const double theXMin,
+                                      const double theXMax,
+                                      const double theYMin,
+                                      const double theYMax,
+                                      const double theZMin,
+                                      const double theZMax )
+{
+  if( vtkPlane* aPlaneXMin = vtkPlane::SafeDownCast( myImplicitBoolean->GetFunction()->GetItemAsObject( 0 ) ) )
+  {
+    aPlaneXMin->SetNormal( -1, 0, 0 );
+    aPlaneXMin->SetOrigin( theXMin, 0, 0 );
+  }
+  if( vtkPlane* aPlaneXMax = vtkPlane::SafeDownCast( myImplicitBoolean->GetFunction()->GetItemAsObject( 1 ) ) )
+  {
+    aPlaneXMax->SetNormal( 1, 0, 0 );
+    aPlaneXMax->SetOrigin( theXMax, 0, 0 );
+  }
+  if( vtkPlane* aPlaneYMin = vtkPlane::SafeDownCast( myImplicitBoolean->GetFunction()->GetItemAsObject( 2 ) ) )
+  {
+    aPlaneYMin->SetNormal( 0, -1, 0 );
+    aPlaneYMin->SetOrigin( 0, theYMin, 0 );
+  }
+  if( vtkPlane* aPlaneYMax = vtkPlane::SafeDownCast( myImplicitBoolean->GetFunction()->GetItemAsObject( 3 ) ) )
+  {
+    aPlaneYMax->SetNormal( 0, 1, 0 );
+    aPlaneYMax->SetOrigin( 0, theYMax, 0 );
+  }
+  if( vtkPlane* aPlaneZMin = vtkPlane::SafeDownCast( myImplicitBoolean->GetFunction()->GetItemAsObject( 4 ) ) )
+  {
+    aPlaneZMin->SetNormal( 0, 0, -1 );
+    aPlaneZMin->SetOrigin( 0, 0, theZMin );
+  }
+  if( vtkPlane* aPlaneZMax = vtkPlane::SafeDownCast( myImplicitBoolean->GetFunction()->GetItemAsObject( 5 ) ) )
+  {
+    aPlaneZMax->SetNormal( 0, 0, 1 );
+    aPlaneZMax->SetOrigin( 0, 0, theZMax );
+  }
 }
 
 //=============================================================================
@@ -242,6 +342,13 @@ void Plot3d_Actor::Build( const int theNX,
                           const double theMinValue,
                           const double theMaxValue )
 {
+  myRealBounds[0] = VTK_DOUBLE_MAX;
+  myRealBounds[1] = VTK_DOUBLE_MIN;
+  myRealBounds[2] = VTK_DOUBLE_MAX;
+  myRealBounds[3] = VTK_DOUBLE_MIN;
+  myRealBounds[4] = theMinValue;
+  myRealBounds[5] = theMaxValue;
+
   vtkPolyData* aPointSet = vtkPolyData::New();
   aPointSet->Allocate( ( theNX - 1 ) * ( theNY - 1 ) );
 
@@ -250,7 +357,14 @@ void Plot3d_Actor::Build( const int theNX,
   while( aPntIter.hasNext() )
   {
     const QPointF& aPnt = aPntIter.next();
-    aPoints->InsertNextPoint( aPnt.x(), aPnt.y(), 0 );
+    double x = aPnt.x();
+    double y = aPnt.y();
+    aPoints->InsertNextPoint( x, y, 0 );
+
+    myRealBounds[0] = qMin( myRealBounds[0], x );
+    myRealBounds[1] = qMax( myRealBounds[1], x );
+    myRealBounds[2] = qMin( myRealBounds[2], y );
+    myRealBounds[3] = qMax( myRealBounds[3], y );
   }
   aPointSet->SetPoints( aPoints );
 
@@ -278,15 +392,12 @@ void Plot3d_Actor::Build( const int theNX,
   vtkPointData* aPointData = aPointSet->GetPointData();
   aPointData->SetScalars( aFloatArray );
 
-  vtkWarpScalar* aWarpScalar = vtkWarpScalar::New();
-  aWarpScalar->SetInput( aPointSet );
-  aWarpScalar->SetScaleFactor( 1 );
+  myWarpScalar->SetInput( aPointSet );
 
-  vtkPolyDataMapper* aMapper = vtkPolyDataMapper::New();
-  aMapper->SetInput( aWarpScalar->GetPolyDataOutput() );
-  aMapper->SetScalarRange( theMinValue, theMaxValue );
+  myMapper->SetInput( myWarpScalar->GetPolyDataOutput() );
+  myMapper->SetScalarRange( theMinValue, theMaxValue );
 
-  SetMapper( aMapper );
+  SetMapper( myMapper );
 
   aPoints->Delete();
   aFloatArray->Delete();
@@ -307,7 +418,7 @@ void Plot3d_Actor::RecomputeLookupTable()
   if( !aColorDic )
     return;
 
-  vtkPolyDataMapper* aMapper = dynamic_cast<vtkPolyDataMapper*>( GetMapper() );
+  vtkDataSetMapper* aMapper = dynamic_cast<vtkDataSetMapper*>( GetMapper() );
   if( !aMapper )
     return;
 
@@ -515,4 +626,18 @@ void Plot3d_Actor::SetTextColor( const QColor& theColor )
 
   vtkTextProperty* aScalarBarLabelProp = myScalarBarActor->GetLabelTextProperty();
   aScalarBarLabelProp->SetColor( theColor.redF(), theColor.greenF(), theColor.blueF() );
+}
+
+//=============================================================================
+// Function : GetRealBounds
+// Purpose  : 
+//=============================================================================
+void Plot3d_Actor::GetRealBounds( double theBounds[6] )
+{
+  theBounds[0] = myRealBounds[0];
+  theBounds[1] = myRealBounds[1];
+  theBounds[2] = myRealBounds[2];
+  theBounds[3] = myRealBounds[3];
+  theBounds[4] = myRealBounds[4];
+  theBounds[5] = myRealBounds[5];
 }

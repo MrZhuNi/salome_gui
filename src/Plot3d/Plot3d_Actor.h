@@ -28,9 +28,14 @@
 #include <QPointF>
 #include <QString>
 
+class vtkDataSetMapper;
+class vtkImplicitBoolean;
 class vtkLookupTable;
 class vtkScalarBarActor;
 class vtkScalarBarWidget;
+class vtkWarpScalar;
+
+class SALOME_ExtractGeometry;
 
 class Plot3d_ColorDic;
 
@@ -48,12 +53,20 @@ public:
   Plot3d_Actor();
   virtual ~Plot3d_Actor();
 
-  virtual void                        AddToRender( vtkRenderer* theRender ); 
-  virtual void                        RemoveFromRender(vtkRenderer* theRendere);
+  virtual void                        AddToRender( vtkRenderer* theRenderer ); 
+  virtual void                        RemoveFromRender( vtkRenderer* theRenderer );
 
   virtual void                        SetVisibility( int );
 
   virtual void                        SetMapper( vtkMapper* theMapper ); 
+
+  void                                SetClippingPlanesEnabled( const bool theState );
+  void                                SetClippingPlanes( const double theXMin,
+                                                         const double theXMax,
+                                                         const double theYMin,
+                                                         const double theYMax,
+                                                         const double theZMin,
+                                                         const double theZMax );
 
   Plot3d_ColorDic*                    GetColorDic();
 
@@ -85,13 +98,22 @@ public:
 
   void                                SetTextColor( const QColor& theColor );
 
+  void                                GetRealBounds( double theBounds[6] );
+
 protected:
+  vtkSmartPointer<vtkWarpScalar>      myWarpScalar;
+
+  vtkSmartPointer<vtkImplicitBoolean> myImplicitBoolean;
+  vtkSmartPointer<SALOME_ExtractGeometry> myExtractGeometry;
+
+  vtkSmartPointer<vtkDataSetMapper>   myMapper;
+
   Plot3d_ColorDic*                    myColorDic;
 
   bool                                myIsGlobalColorDic;
   Plot3d_ColorDic*                    myGlobalColorDic;
 
-  vtkLookupTable*                     myLookupTable;
+  vtkSmartPointer<vtkLookupTable>     myLookupTable;
 
   vtkSmartPointer<vtkScalarBarActor>  myScalarBarActor;
   vtkSmartPointer<vtkScalarBarWidget> myScalarBarWg;
@@ -102,6 +124,8 @@ protected:
 
   int                                 myStartPoint;
   int                                 myEndPoint;
+
+  double                              myRealBounds[6];
 };
 
 #endif
