@@ -35,7 +35,8 @@ salomeinclude_HEADERS= \
 	Plot3d_SetupSurfacesDlg.h \
 	Plot3d_ViewManager.h \
 	Plot3d_ViewModel.h \
-	Plot3d_ViewWindow.h
+	Plot3d_ViewWindow.h \
+	SALOME_ExtractGeometry.h
 
 dist_libPlot3d_la_SOURCES= \
 	Plot3d_Actor.cxx \
@@ -46,7 +47,8 @@ dist_libPlot3d_la_SOURCES= \
 	Plot3d_SetupSurfacesDlg.cxx \
 	Plot3d_ViewManager.cxx \
 	Plot3d_ViewModel.cxx \
-	Plot3d_ViewWindow.cxx
+	Plot3d_ViewWindow.cxx \
+	SALOME_ExtractGeometry.cxx
 
 MOC_FILES= \
 	Plot3d_FitDataDlg_moc.cxx \
