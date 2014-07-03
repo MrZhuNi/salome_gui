@@ -33,9 +33,9 @@
   #include <SALOME_InteractiveObject.hxx>
   #include <QMap>
   #include <NCollection_DataMap.hxx>
+  #include <NCollection_IndexedMap.hxx>
 
   class SALOME_ListIO;
-  class TColStd_IndexedMapOfInteger;
   class TColStd_MapOfInteger;
   class TCollection_AsciiString;
 #else
@@ -61,16 +61,16 @@ public:
   virtual void           setSelected( const SUIT_DataOwnerPtrList&, const bool = false );
 
 #ifndef DISABLE_SALOMEOBJECT
-  typedef NCollection_DataMap< Handle(SALOME_InteractiveObject), TColStd_IndexedMapOfInteger > MapIOOfMapOfInteger;
-  typedef NCollection_DataMap< TCollection_AsciiString, TColStd_IndexedMapOfInteger > MapEntryOfMapOfInteger;
+  typedef NCollection_DataMap< Handle(SALOME_InteractiveObject), NCollection_IndexedMap<Standard_Integer> > MapIOOfMapOfInteger;
+  typedef NCollection_DataMap< TCollection_AsciiString, NCollection_IndexedMap<Standard_Integer> > MapEntryOfMapOfInteger;
 
   void                   selectedObjects( SALOME_ListIO&, const QString& = QString(), const bool = true ) const;
   void                   setSelectedObjects( const SALOME_ListIO&, const bool = false );
 
   void                   GetIndexes( const Handle(SALOME_InteractiveObject)& IObject, 
-                                     TColStd_IndexedMapOfInteger& theIndex );
+                                     NCollection_IndexedMap<Standard_Integer>& theIndex );
   void                   GetIndexes( const QString& theEntry, 
-                                     TColStd_IndexedMapOfInteger& theIndex );
+                                     NCollection_IndexedMap<Standard_Integer>& theIndex );
 
   //bool                   AddOrRemoveIndex( const Handle(SALOME_InteractiveObject)& IObject, 
   void                   AddOrRemoveIndex( const Handle(SALOME_InteractiveObject)& IObject, 
@@ -78,7 +78,7 @@ public:
                                            bool modeShift );
 
   void                   selectObjects( const Handle(SALOME_InteractiveObject)& IObject, 
-                                        TColStd_IndexedMapOfInteger theIndex, bool append );
+                                        NCollection_IndexedMap<Standard_Integer> theIndex, bool append );
   void                   selectObjects( MapIOOfMapOfInteger theMapIO, bool append );
 
   void                   selectedSubOwners( MapEntryOfMapOfInteger& theMap );

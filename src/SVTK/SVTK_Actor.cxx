@@ -96,7 +96,7 @@ SVTK_Actor
 {
 }
 
-const TColStd_IndexedMapOfInteger&
+const NCollection_IndexedMap<Standard_Integer>&
 SVTK_Actor
 ::GetMapIndex() const
 {
@@ -106,7 +106,7 @@ SVTK_Actor
 void
 SVTK_Actor
 ::MapCells(SALOME_Actor* theMapActor,
-           const TColStd_IndexedMapOfInteger& theMapIndex)
+           const NCollection_IndexedMap<Standard_Integer>& theMapIndex)
 {
   myUnstructuredGrid->Initialize();
   myUnstructuredGrid->Allocate();
@@ -148,7 +148,7 @@ SVTK_Actor
 void 
 SVTK_Actor
 ::MapPoints(SALOME_Actor* theMapActor,
-            const TColStd_IndexedMapOfInteger& theMapIndex)
+            const NCollection_IndexedMap<Standard_Integer>& theMapIndex)
 {
   myUnstructuredGrid->Initialize();
   myUnstructuredGrid->Allocate();
@@ -177,7 +177,7 @@ SVTK_Actor
 void
 SVTK_Actor
 ::MapEdge(SALOME_Actor* theMapActor,
-          const TColStd_IndexedMapOfInteger& theMapIndex)
+          const NCollection_IndexedMap<Standard_Integer>& theMapIndex)
 {
   myUnstructuredGrid->Initialize();
   myUnstructuredGrid->Allocate();

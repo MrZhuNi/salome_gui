@@ -32,7 +32,7 @@
 #include "SALOME_ListIO.hxx"
 
 #include <TColStd_MapOfInteger.hxx>
-#include <TColStd_IndexedMapOfInteger.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 #include <vtkObject.h>
 
@@ -128,13 +128,13 @@ public:
   virtual
   void 
   GetIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-            TColStd_IndexedMapOfInteger& theIndex ) = 0;
+            NCollection_IndexedMap<Standard_Integer>& theIndex ) = 0;
         
   //! Change indices of subselection for given #SALOME_InteractiveObject
   virtual
   bool 
   AddOrRemoveIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-                    const TColStd_IndexedMapOfInteger& theIndices, 
+                    const NCollection_IndexedMap<Standard_Integer>& theIndices,
                     bool theIsModeShift) = 0;
 
   //! Change indexes of subslection for given #SALOME_InteractiveObject

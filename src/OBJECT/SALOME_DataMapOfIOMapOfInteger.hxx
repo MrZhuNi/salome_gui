@@ -30,6 +30,9 @@
 #ifndef _TCollection_BasicMap_HeaderFile
 #include <TCollection_BasicMap.hxx>
 #endif
+#ifndef NCollection_IndexedMap_HeaderFile
+#include <NCollection_IndexedMap.hxx>
+#endif
 #ifndef _Handle_SALOME_InteractiveObject_HeaderFile
 #include "Handle_SALOME_InteractiveObject.hxx"
 #endif
@@ -46,7 +49,6 @@
 class Standard_DomainError;
 class Standard_NoSuchObject;
 class SALOME_InteractiveObject;
-class TColStd_IndexedMapOfInteger;
 class TColStd_MapTransientHasher;
 class SALOME_DataMapNodeOfDataMapOfIOMapOfInteger;
 class SALOME_DataMapIteratorOfDataMapOfIOMapOfInteger;
@@ -93,17 +95,17 @@ Standard_EXPORT   void Clear() ;
   Clear();
 }
 
-Standard_EXPORT   Standard_Boolean Bind(const Handle(SALOME_InteractiveObject)& K,const TColStd_IndexedMapOfInteger& I) ;
+Standard_EXPORT   Standard_Boolean Bind(const Handle(SALOME_InteractiveObject)& K,const NCollection_IndexedMap<Standard_Integer>& I) ;
 Standard_EXPORT   Standard_Boolean IsBound(const Handle(SALOME_InteractiveObject)& K) const;
 Standard_EXPORT   Standard_Boolean UnBind(const Handle(SALOME_InteractiveObject)& K) ;
-Standard_EXPORT  const TColStd_IndexedMapOfInteger& Find(const Handle(SALOME_InteractiveObject)& K) const;
- const TColStd_IndexedMapOfInteger& operator()(const Handle(SALOME_InteractiveObject)& K) const
+Standard_EXPORT  const NCollection_IndexedMap<Standard_Integer>& Find(const Handle(SALOME_InteractiveObject)& K) const;
+ const NCollection_IndexedMap<Standard_Integer>& operator()(const Handle(SALOME_InteractiveObject)& K) const
 {
   return Find(K);
 }
 
-Standard_EXPORT   TColStd_IndexedMapOfInteger& ChangeFind(const Handle(SALOME_InteractiveObject)& K) ;
-  TColStd_IndexedMapOfInteger& operator()(const Handle(SALOME_InteractiveObject)& K) 
+Standard_EXPORT   NCollection_IndexedMap<Standard_Integer>& ChangeFind(const Handle(SALOME_InteractiveObject)& K) ;
+NCollection_IndexedMap<Standard_Integer>& operator()(const Handle(SALOME_InteractiveObject)& K)
 {
   return ChangeFind(K);
 }

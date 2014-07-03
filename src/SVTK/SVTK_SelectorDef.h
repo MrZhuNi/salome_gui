@@ -30,7 +30,7 @@
 #include <set>
 #include <map>
 
-#include <TColStd_IndexedMapOfInteger.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <vtkSmartPointer.h>
 
@@ -106,12 +106,12 @@ public:
   virtual
   void 
   GetIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-            TColStd_IndexedMapOfInteger& theIndex );
+            NCollection_IndexedMap<Standard_Integer>& theIndex );
         
   virtual
   bool 
   AddOrRemoveIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-                    const TColStd_IndexedMapOfInteger& theIndices, 
+                    const NCollection_IndexedMap<Standard_Integer>& theIndices,
                     bool theIsModeShift);
   virtual
   bool 
@@ -219,7 +219,7 @@ private:
 
   struct TIndexedMapOfInteger
   {
-    TColStd_IndexedMapOfInteger myMap;
+    NCollection_IndexedMap<Standard_Integer> myMap;
     TIndexedMapOfInteger()
     {}
     TIndexedMapOfInteger(const TIndexedMapOfInteger& theIndexedMapOfInteger)

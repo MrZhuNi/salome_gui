@@ -37,7 +37,6 @@
   // Open CASCADE Include
   #include <TColStd_MapOfInteger.hxx>
   #include <TColStd_MapIteratorOfMapOfInteger.hxx>
-  #include <TColStd_IndexedMapOfInteger.hxx>
   #include <TCollection_AsciiString.hxx>
 #endif
 
@@ -262,7 +261,7 @@ void LightApp_SelectionMgr::selectionChanged( SUIT_Selector* theSel )
   get map of indexes for the given SALOME_InteractiveObject
 */
 void LightApp_SelectionMgr::GetIndexes( const Handle(SALOME_InteractiveObject)& IObject,
-                                        TColStd_IndexedMapOfInteger& theIndex)
+                                        NCollection_IndexedMap<Standard_Integer>& theIndex)
 {
   theIndex.Clear();
 
@@ -280,7 +279,7 @@ void LightApp_SelectionMgr::GetIndexes( const Handle(SALOME_InteractiveObject)& 
 /*!
   get map of indexes for the given entry of SALOME_InteractiveObject
 */
-void LightApp_SelectionMgr::GetIndexes( const QString& theEntry, TColStd_IndexedMapOfInteger& theIndex )
+void LightApp_SelectionMgr::GetIndexes( const QString& theEntry, NCollection_IndexedMap<Standard_Integer>& theIndex )
 {
   theIndex.Clear();
 
@@ -343,7 +342,7 @@ void LightApp_SelectionMgr::AddOrRemoveIndex( const Handle(SALOME_InteractiveObj
   emit currentSelectionChanged();
 
   // Bug 17269: To avoid calling of selected(aList)
-  //TColStd_IndexedMapOfInteger anIndexes;
+  //NCollection_IndexedMap<Standard_Integer> anIndexes;
   //GetIndexes( IObject, anIndexes );
   //return !anIndexes.IsEmpty();
 }
@@ -352,7 +351,7 @@ void LightApp_SelectionMgr::AddOrRemoveIndex( const Handle(SALOME_InteractiveObj
   select 'subobjects' with given indexes
 */
 void LightApp_SelectionMgr::selectObjects( const Handle(SALOME_InteractiveObject)& IObject,
-                                            TColStd_IndexedMapOfInteger theIndex, bool append )
+                                           NCollection_IndexedMap<Standard_Integer> theIndex, bool append )
 {
   SUIT_DataOwnerPtrList aList;
 
@@ -398,7 +397,7 @@ void LightApp_SelectionMgr::selectedSubOwners( MapEntryOfMapOfInteger& theMap )
 {
   theMap.Clear();
 
-  TColStd_IndexedMapOfInteger anIndexes;
+  NCollection_IndexedMap<Standard_Integer> anIndexes;
 
   SUIT_DataOwnerPtrList aList;
   selected( aList );

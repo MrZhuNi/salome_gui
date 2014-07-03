@@ -36,7 +36,7 @@ class QContextMenuEvent;
 // Open CASCADE Includes
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
-#include <TColStd_IndexedMapOfInteger.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 class vtkPicker;
 class vtkCellPicker;
@@ -104,15 +104,15 @@ public:
   
   /** @name Selection Management */
   //@{
-  bool highlightCell(const TColStd_IndexedMapOfInteger& MapIndex,
+  bool highlightCell(const NCollection_IndexedMap<Standard_Integer>& MapIndex,
                      VTKViewer_Actor* theMapActor,
                      bool hilight,
                      bool update = true );
-  bool highlightEdge(const TColStd_IndexedMapOfInteger& MapIndex,
+  bool highlightEdge(const NCollection_IndexedMap<Standard_Integer>& MapIndex,
                      VTKViewer_Actor* theMapActor,
                      bool hilight,
                      bool update = true );
-  bool highlightPoint(const TColStd_IndexedMapOfInteger& MapIndex,
+  bool highlightPoint(const NCollection_IndexedMap<Standard_Integer>& MapIndex,
                       VTKViewer_Actor* theMapActor,
                       bool hilight,
                       bool update = true );
@@ -174,7 +174,7 @@ public:
                     VTKViewer_Actor* theMapActor,
                     VTKViewer_Actor* theActor) {}
 
-  typedef void (*TUpdateActor)(const TColStd_IndexedMapOfInteger& theMapIndex,
+  typedef void (*TUpdateActor)(const NCollection_IndexedMap<Standard_Integer>& theMapIndex,
                                VTKViewer_Actor* theMapActor,
                                VTKViewer_Actor* theActor);
  protected:
@@ -184,10 +184,10 @@ public:
 
   VTKViewer_InteractorStyle* myInteractorStyle;
 
-  bool highlight(const TColStd_IndexedMapOfInteger& theMapIndex,
+  bool highlight(const NCollection_IndexedMap<Standard_Integer>& theMapIndex,
                  VTKViewer_Actor* theMapActor, VTKViewer_Actor* theActor,
                  TUpdateActor theFun, bool hilight, bool update);
-  void setActorData(const TColStd_IndexedMapOfInteger& theMapIndex,
+  void setActorData(const NCollection_IndexedMap<Standard_Integer>& theMapIndex,
                     VTKViewer_Actor* theMapActor,
                     VTKViewer_Actor *theActor,
                     TUpdateActor theFun);

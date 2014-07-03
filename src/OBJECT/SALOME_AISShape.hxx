@@ -40,6 +40,9 @@
 #ifndef _Handle_SALOME_InteractiveObject_HeaderFile
 #include <Handle_SALOME_InteractiveObject.hxx>
 #endif
+#ifndef NCollection_IndexedMap_HeaderFile
+#include <NCollection_IndexedMap.hxx>
+#endif
 // #ifndef _AIS_Shape_HeaderFile
 // #include <AIS_Shape.hxx>
 // #endif
@@ -55,7 +58,6 @@
 
 class SALOME_InteractiveObject;
 class TopoDS_Shape;
-class TColStd_IndexedMapOfInteger;
 
 
 class SALOME_AISShape : public ViewerData_AISShape {
@@ -89,7 +91,7 @@ Standard_EXPORT virtual  Standard_Boolean toActivate() = 0;
 Standard_EXPORT virtual  void setTopLevel(Standard_Boolean) = 0;
 Standard_EXPORT virtual  Standard_CString getName() = 0;
 Standard_EXPORT virtual  void setName(const Standard_CString aName) = 0;
-Standard_EXPORT virtual  void highlightSubShapes(const TColStd_IndexedMapOfInteger& aIndexMap, const Standard_Boolean aHighlight ) = 0;
+Standard_EXPORT virtual  void highlightSubShapes(const NCollection_IndexedMap<Standard_Integer>& aIndexMap, const Standard_Boolean aHighlight ) = 0;
 Standard_EXPORT ~SALOME_AISShape();
 
 

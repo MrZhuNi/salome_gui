@@ -66,7 +66,7 @@
 #include <vtkPassThroughFilter.h>
 
 #include <TColStd_MapOfInteger.hxx>
-#include <TColStd_IndexedMapOfInteger.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 #include <math.h>
 #include <QPoint>
@@ -445,7 +445,7 @@ SALOME_Actor
 
   if(mySelector.GetPointer()){
     if(mySelectionMode != ActorSelection){
-      TColStd_IndexedMapOfInteger aMapIndex;
+      NCollection_IndexedMap<Standard_Integer> aMapIndex;
       mySelector->GetIndex( getIO(), aMapIndex );
       switch( mySelectionMode ){
       case NodeSelection:
@@ -540,11 +540,11 @@ SALOME_Actor
         int anObjId = GetNodeObjId( aVtkId );
         myIsPreselected = (anObjId >= 0);
         if(myIsPreselected){
-          const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
+          const NCollection_IndexedMap<Standard_Integer>& aMapIndex = myPreHighlightActor->GetMapIndex();
           int anExtent = aMapIndex.Extent();
           anIsChanged |= (anExtent == 0 || (anExtent > 0 && anObjId != aMapIndex(1)));
           if(anIsChanged){
-            TColStd_IndexedMapOfInteger aMapIndex;
+            NCollection_IndexedMap<Standard_Integer> aMapIndex;
             aMapIndex.Add( anObjId );
             
             myPreHighlightActor->GetProperty()->SetRepresentationToPoints();
@@ -571,11 +571,11 @@ SALOME_Actor
         if ( anObjId >= 0 ) {
           myIsPreselected = CheckDimensionId(aSelectionMode,this,anObjId);
           if(myIsPreselected){
-            const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
+            const NCollection_IndexedMap<Standard_Integer>& aMapIndex = myPreHighlightActor->GetMapIndex();
             int anExtent = aMapIndex.Extent();
             anIsChanged |= (anExtent == 0 || (anExtent > 0 && anObjId != aMapIndex(1)));
             if(anIsChanged){
-              TColStd_IndexedMapOfInteger aMapIndex;
+              NCollection_IndexedMap<Standard_Integer> aMapIndex;
               aMapIndex.Add( anObjId );
               
               myPreHighlightActor->GetProperty()->SetRepresentationToSurface();
@@ -599,12 +599,12 @@ SALOME_Actor
           int anEdgeId = GetEdgeId(this,myCellPicker.GetPointer(),anObjId);
           myIsPreselected = anEdgeId < 0;
           if(myIsPreselected){
-            const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
+            const NCollection_IndexedMap<Standard_Integer>& aMapIndex = myPreHighlightActor->GetMapIndex();
             int anExtent = aMapIndex.Extent();
             anIsChanged |= (anExtent == 0 || anExtent == 1);
             anIsChanged |= (anExtent == 2 && (anObjId != aMapIndex(1) || anEdgeId != aMapIndex(2)));
             if(anIsChanged){
-              TColStd_IndexedMapOfInteger aMapIndex;
+              NCollection_IndexedMap<Standard_Integer> aMapIndex;
               aMapIndex.Add( anObjId );
               aMapIndex.Add( anEdgeId );
 

@@ -30,6 +30,9 @@
 #ifndef _TCollection_BasicMapIterator_HeaderFile
 #include <TCollection_BasicMapIterator.hxx>
 #endif
+#ifndef NCollection_IndexedMap_HeaderFile
+#include <NCollection_IndexedMap.hxx>
+#endif
 #ifndef _Handle_SALOME_InteractiveObject_HeaderFile
 #include "Handle_SALOME_InteractiveObject.hxx"
 #endif
@@ -38,7 +41,6 @@
 #endif
 class Standard_NoSuchObject;
 class SALOME_InteractiveObject;
-class TColStd_IndexedMapOfInteger;
 class TColStd_MapTransientHasher;
 class SALOME_DataMapOfIOMapOfInteger;
 class SALOME_DataMapNodeOfDataMapOfIOMapOfInteger;
@@ -77,7 +79,7 @@ Standard_EXPORT SALOME_DataMapIteratorOfDataMapOfIOMapOfInteger();
 Standard_EXPORT SALOME_DataMapIteratorOfDataMapOfIOMapOfInteger(const SALOME_DataMapOfIOMapOfInteger& aMap);
 Standard_EXPORT   void Initialize(const SALOME_DataMapOfIOMapOfInteger& aMap) ;
 Standard_EXPORT  const Handle_SALOME_InteractiveObject& Key() const;
-Standard_EXPORT  const TColStd_IndexedMapOfInteger& Value() const;
+Standard_EXPORT  const NCollection_IndexedMap<Standard_Integer>& Value() const;
 
 
 

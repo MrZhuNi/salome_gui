@@ -133,7 +133,7 @@ bool SOCC_Viewer::highlight( const Handle(SALOME_InteractiveObject)& obj,
         /*if ( ite.Value()->IsKind( STANDARD_TYPE( SALOME_AISShape ) ) )
         {
           Handle(SALOME_AISShape) aSh = Handle(SALOME_AISShape)::DownCast( ite.Value() );
-          TColStd_IndexedMapOfInteger MapIndex;
+          NCollection_IndexedMap<Standard_Integer> MapIndex;
           Sel->GetIndex( IObject, MapIndex );
           aSh->highlightSubShapes( MapIndex, highlight );
         }*/

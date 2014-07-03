@@ -1368,7 +1368,7 @@ void SVTK_InteractorStyle::onCursorMove(QPoint mousePos)
           if ( aVtkId >= 0 ) {
             int anObjId = anActor->GetNodeObjId( aVtkId );
 
-            TColStd_IndexedMapOfInteger aMapIndex;
+            NCollection_IndexedMap<Standard_Integer> aMapIndex;
             aMapIndex.Add( anObjId );
             myHighlightSelectionPointActor->MapPoints( anActor, aMapIndex );
 

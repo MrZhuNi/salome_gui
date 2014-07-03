@@ -32,7 +32,7 @@
 class SUIT_Desktop;
 
 #ifndef DISABLE_VTKVIEWER
-  #include <TColStd_IndexedMapOfInteger.hxx>
+  #include <NCollection_IndexedMap.hxx>
   #include "SVTK_Selection.h"
 #ifndef DISABLE_SALOMEOBJECT
   #include "SALOME_InteractiveObject.hxx"
@@ -57,7 +57,7 @@ class LIGHTAPP_EXPORT LightApp_SVTKDataOwner : public LightApp_DataOwner
    #endif
 
     /*!Gets dataowners ids list.*/
-    const TColStd_IndexedMapOfInteger& GetIds() const;
+    const NCollection_IndexedMap<Standard_Integer>& GetIds() const;
 
     /*!Gets selection mode.*/
     Selection_Mode GetMode() const;
@@ -66,7 +66,7 @@ class LIGHTAPP_EXPORT LightApp_SVTKDataOwner : public LightApp_DataOwner
     SALOME_Actor* GetActor() const;
 
  protected:
-    mutable TColStd_IndexedMapOfInteger myIds;
+    mutable NCollection_IndexedMap<Standard_Integer> myIds;
 
     SVTK_ViewWindow* GetActiveViewWindow() const;
     SUIT_Desktop* myDesktop;

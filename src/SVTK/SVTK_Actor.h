@@ -23,7 +23,7 @@
 #ifndef SVTK_ACTOR_H
 #define SVTK_ACTOR_H
 
-#include <TColStd_IndexedMapOfInteger.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 class vtkRenderer;
 class vtkShrinkFilter;
@@ -71,23 +71,23 @@ public:
   //! Allow to recostruct selected cells from source SALOME_Actor and map of subindexes
   virtual void
   MapCells(SALOME_Actor* theMapActor, 
-           const TColStd_IndexedMapOfInteger& theMapIndex);
+           const NCollection_IndexedMap<Standard_Integer>& theMapIndex);
 
   //! Allow to recostruct selected points from source SALOME_Actor and map of subindexes
   virtual void 
   MapPoints(SALOME_Actor* theMapActor, 
-            const TColStd_IndexedMapOfInteger& theMapIndex);
+            const NCollection_IndexedMap<Standard_Integer>& theMapIndex);
 
   //! Allow to recostruct selected edges from source SALOME_Actor and map of subindexes
   virtual void 
   MapEdge(SALOME_Actor* theMapActor, 
-          const TColStd_IndexedMapOfInteger& theMapIndex);
+          const NCollection_IndexedMap<Standard_Integer>& theMapIndex);
 
-  const TColStd_IndexedMapOfInteger&
+  const NCollection_IndexedMap<Standard_Integer>&
   GetMapIndex() const;
 
  protected:
-  TColStd_IndexedMapOfInteger myMapIndex;
+  NCollection_IndexedMap<Standard_Integer> myMapIndex;
 
   vtkSmartPointer<vtkUnstructuredGrid> myUnstructuredGrid;
 

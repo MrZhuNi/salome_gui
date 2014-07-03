@@ -33,8 +33,8 @@
 #ifndef _SALOME_InteractiveObject_HeaderFile
 #include "SALOME_InteractiveObject.hxx"
 #endif
-#ifndef _TColStd_IndexedMapOfInteger_HeaderFile
-#include <TColStd_IndexedMapOfInteger.hxx>
+#ifndef NCollection_IndexedMap_HeaderFile
+#include <NCollection_IndexedMap.hxx>
 #endif
 #ifndef _TColStd_MapTransientHasher_HeaderFile
 #include <TColStd_MapTransientHasher.hxx>
@@ -116,8 +116,8 @@ Standard_Boolean SALOME_DataMapNodeOfDataMapOfIOMapOfInteger::IsKind(const Handl
 Handle_SALOME_DataMapNodeOfDataMapOfIOMapOfInteger::~Handle_SALOME_DataMapNodeOfDataMapOfIOMapOfInteger() {}
 #define TheKey Handle_SALOME_InteractiveObject
 #define TheKey_hxx "SALOME_InteractiveObject.hxx"
-#define TheItem TColStd_IndexedMapOfInteger
-#define TheItem_hxx <TColStd_IndexedMapOfInteger.hxx>
+#define TheItem NCollection_IndexedMap<Standard_Integer>
+#define TheItem_hxx <NCollection_IndexedMap.hxx>
 #define Hasher TColStd_MapTransientHasher
 #define Hasher_hxx <TColStd_MapTransientHasher.hxx>
 #define TCollection_DataMapNode SALOME_DataMapNodeOfDataMapOfIOMapOfInteger

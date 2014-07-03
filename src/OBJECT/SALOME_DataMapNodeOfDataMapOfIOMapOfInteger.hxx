@@ -37,8 +37,8 @@
 #ifndef _Handle_SALOME_InteractiveObject_HeaderFile
 #include "Handle_SALOME_InteractiveObject.hxx"
 #endif
-#ifndef _TColStd_IndexedMapOfInteger_HeaderFile
-#include <TColStd_IndexedMapOfInteger.hxx>
+#ifndef NCollection_IndexedMap_HeaderFile
+#include <NCollection_IndexedMap.hxx>
 #endif
 #ifndef _TCollection_MapNode_HeaderFile
 #include <TCollection_MapNode.hxx>
@@ -47,7 +47,6 @@
 #include <TCollection_MapNodePtr.hxx>
 #endif
 class SALOME_InteractiveObject;
-class TColStd_IndexedMapOfInteger;
 class TColStd_MapTransientHasher;
 class SALOME_DataMapOfIOMapOfInteger;
 class SALOME_DataMapIteratorOfDataMapOfIOMapOfInteger;
@@ -75,9 +74,9 @@ public:
 //      }
  // Methods PUBLIC
  // 
-Standard_EXPORT inline SALOME_DataMapNodeOfDataMapOfIOMapOfInteger(const Handle(SALOME_InteractiveObject)& K,const TColStd_IndexedMapOfInteger& I,const TCollection_MapNodePtr& n);
+Standard_EXPORT inline SALOME_DataMapNodeOfDataMapOfIOMapOfInteger(const Handle(SALOME_InteractiveObject)& K,const NCollection_IndexedMap<Standard_Integer>& I,const TCollection_MapNodePtr& n);
 Standard_EXPORT inline   Handle_SALOME_InteractiveObject& Key() const;
-Standard_EXPORT inline   TColStd_IndexedMapOfInteger& Value() const;
+Standard_EXPORT inline   NCollection_IndexedMap<Standard_Integer>& Value() const;
 Standard_EXPORT ~SALOME_DataMapNodeOfDataMapOfIOMapOfInteger();
 
 
@@ -108,15 +107,15 @@ private:
  // Fields PRIVATE
  //
 Handle_SALOME_InteractiveObject myKey;
-TColStd_IndexedMapOfInteger myValue;
+NCollection_IndexedMap<Standard_Integer> myValue;
 
 
 };
 
 #define TheKey Handle_SALOME_InteractiveObject
 #define TheKey_hxx "SALOME_InteractiveObject.hxx"
-#define TheItem TColStd_IndexedMapOfInteger
-#define TheItem_hxx <TColStd_IndexedMapOfInteger.hxx>
+#define TheItem NCollection_IndexedMap<Standard_Integer>
+#define TheItem_hxx <NCollection_IndexedMap.hxx>
 #define Hasher TColStd_MapTransientHasher
 #define Hasher_hxx <TColStd_MapTransientHasher.hxx>
 #define TCollection_DataMapNode SALOME_DataMapNodeOfDataMapOfIOMapOfInteger
