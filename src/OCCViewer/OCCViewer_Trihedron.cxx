@@ -69,17 +69,13 @@ OCCViewer_Trihedron::~OCCViewer_Trihedron()
 /*!
  * Sets the bounding box (MinMax values).
  */
-void OCCViewer_Trihedron::bounds( Graphic3d_CBounds& aMinMax ) const
+void OCCViewer_Trihedron::bounds( Graphic3d_BndBox4f& theMinMax ) const
 {
-  Standard_Real aXMin = -1, aYMin = -1, aZMin = -1;
-  Standard_Real aXMax =  1, aYMax =  1, aZMax =  1;
-  
-  if( aMinMax.XMin > aXMin ) aMinMax.XMin = aXMin;
-  if( aMinMax.YMin > aYMin ) aMinMax.YMin = aYMin;
-  if( aMinMax.ZMin > aZMin ) aMinMax.ZMin = aZMin;
-  if( aMinMax.XMax < aXMax ) aMinMax.XMax = aXMax;
-  if( aMinMax.YMax < aYMax ) aMinMax.YMax = aYMax;
-  if( aMinMax.ZMax < aZMax ) aMinMax.ZMax = aZMax;
+  Graphic3d_Vec4 aMinPt (-1.f, -1.f, -1.f, 1.f);
+  Graphic3d_Vec4 aMaxPt (1.f, 1.f, 1.f, 1.f);
+
+  theMinMax.Add (aMinPt);
+  theMinMax.Add (aMaxPt);
 }
 
 /*!

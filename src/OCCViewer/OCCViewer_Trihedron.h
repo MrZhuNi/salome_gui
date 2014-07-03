@@ -23,7 +23,7 @@
 #include "OCCViewer.h"
 
 #include <AIS_InteractiveObject.hxx>
-#include <Graphic3d_CBounds.hxx>
+#include <Graphic3d_BndBox4f.hxx>
 #include <Standard_DefineHandle.hxx>
 
 /*!
@@ -43,7 +43,7 @@ public:
   virtual void           ComputeSelection( const Handle( SelectMgr_Selection )&,
                                            const Standard_Integer );
 
-  virtual void           bounds( Graphic3d_CBounds& ) const;
+  virtual void           bounds( Graphic3d_BndBox4f& ) const;
 
   virtual void           display();
 
