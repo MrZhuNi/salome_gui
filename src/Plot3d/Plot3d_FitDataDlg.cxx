@@ -155,7 +155,8 @@ void Plot3d_FitDataDlg::setAxisTitles( const QString& theXTitle,
 {
   myXLabel->setText( theXTitle );
   myYLabel->setText( theYTitle );
-  myZLabel->setText( theZTitle );
+  if( myIs3D )
+    myZLabel->setText( theZTitle );
 }
 
 /*!
