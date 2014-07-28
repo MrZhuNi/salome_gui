@@ -259,8 +259,8 @@ public:
                                    int xAxis = xBottom, 
                                    int yAxis = yLeft );
 
-  bool                setCurveNbMarkers( Plot2d_Curve* curve, const int nb );
-  int                 curveNbMarkers( Plot2d_Curve* curve ) const;
+  bool                setCurveNbMarkers( Plot2d_Curve* curve, const double nb );
+  double              curveNbMarkers( Plot2d_Curve* curve ) const;
 
   void                setZoomBase( const bool doReplot = true );
 
@@ -291,8 +291,8 @@ public:
   Plot2d_PlotCurve( const QString &title );
   virtual ~Plot2d_PlotCurve();
 
-  void                setNbMarkers( const int );
-  int                 nbMarkers() const;
+  void                setNbMarkers( const double );
+  double              nbMarkers() const;
 
 protected:
 
@@ -301,7 +301,7 @@ protected:
         int from, int to) const;
 
 private:
-  int myNbMarkers;
+  double myNbMarkers;
 };
 
 #endif

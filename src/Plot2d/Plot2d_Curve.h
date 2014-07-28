@@ -86,8 +86,8 @@ public:
   void               setMarker( Plot2d::MarkerType );
   Plot2d::MarkerType getMarker() const;
 
-  void               setNbMarkers( const int );
-  int                getNbMarkers() const;
+  void               setNbMarkers( const double );
+  double             getNbMarkers() const;
 
   void               setLine( Plot2d::LineType, const int = 0 );
   Plot2d::LineType   getLine() const;
@@ -120,7 +120,7 @@ protected:
   QString            myVerUnits;
   QColor             myColor;
   Plot2d::MarkerType myMarker;
-  int                myNbMarkers;
+  double             myNbMarkers;
   Plot2d::LineType   myLine;
   int                myLineWidth;
   QwtPlot::Axis      myYAxis;

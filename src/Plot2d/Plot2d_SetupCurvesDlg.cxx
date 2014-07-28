@@ -247,7 +247,7 @@ void Plot2d_SetupCurvesDlg::setText( const int theRow,
 void Plot2d_SetupCurvesDlg::SetParameters( const QVector< int >& theMarker,
                                            const QVector< QString >& theText,
                                            const QVector< QColor >& theColor,
-                                           const QVector< int >& theNbMarkers )
+                                           const QVector< double >& theNbMarkers )
 {
   int nbRows = qMax( qMax( theMarker.size(), theText.size()), 
                      qMax( theColor.size(), theNbMarkers.size() ) );
@@ -320,7 +320,7 @@ void Plot2d_SetupCurvesDlg::SetParameters( const QVector< int >& theMarker,
 void Plot2d_SetupCurvesDlg::GetParameters( QVector< int >& theMarkers,
                                            QVector< QString >& theTexts,
                                            QVector< QColor >& theColors,
-                                           QVector< int >& theNbMarkers ) const
+                                           QVector< double >& theNbMarkers ) const
 {
   int nbRows = myTable->rowCount();
 
@@ -352,7 +352,7 @@ void Plot2d_SetupCurvesDlg::GetParameters( QVector< int >& theMarkers,
     it = myTable->item( i, NB_MARKERS_COL );
     QString aStr = it ? it->text() : "";
     bool isOk = false;
-    int nbMarkers = aStr.toInt( &isOk );
+    double nbMarkers = aStr.toDouble( &isOk );
     if ( isOk )
       theNbMarkers[ i ] = nbMarkers;
     else 
@@ -382,7 +382,7 @@ bool Plot2d_SetupCurvesDlg::acceptData() const
     QTableWidgetItem* it = myTable->item( i, NB_MARKERS_COL );
     QString aStr = it ? it->text() : "";
     bool isOk = false;
-    int nbMarkers = aStr.toInt( &isOk );
+    double nbMarkers = aStr.toDouble( &isOk );
     if ( !isOk || nbMarkers<= 0 )
     {
       SUIT_MessageBox::information( (QWidget*)this, tr( "PLOT2D_INSUFFICIENT_DATA" ), 

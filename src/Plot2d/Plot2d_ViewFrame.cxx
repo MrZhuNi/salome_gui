@@ -1074,7 +1074,7 @@ void Plot2d_ViewFrame::onCurvesSettings()
   QVector< int > aMarkers( nbCurves );
   QVector< QString > aTexts( nbCurves );
   QVector< QColor > aColors( nbCurves );
-  QVector< int > nbMarkers( nbCurves );
+  QVector< double > nbMarkers( nbCurves );
 
   QList< Plot2d_Curve* > aCurves;
 
@@ -1091,7 +1091,7 @@ void Plot2d_ViewFrame::onCurvesSettings()
     if ( aText.isEmpty() )
       aText = aCurve->getVerTitle();
     QColor aColor = aCurve->getColor();
-    int nbMarker = aCurve->getNbMarkers();
+    double nbMarker = aCurve->getNbMarkers();
 
     aMarkers[ i ] = aMarkerType;
     aTexts[ i ] = aText;
@@ -1148,14 +1148,14 @@ void Plot2d_ViewFrame::onCurvesSettings()
       isHorTitle = false;
     }
     QColor anOldColor = aCurve->getColor();
-    int anOldNbMarker = aCurve->getNbMarkers();
+    double anOldNbMarker = aCurve->getNbMarkers();
 
     // new values
 
     Plot2d::MarkerType aMarker = (Plot2d::MarkerType)aMarkers[ i ];
     QString aText = aTexts[ i ];
     QColor aColor = aColors[ i ];
-    int nbMarker = nbMarkers[ i ];
+    double nbMarker = nbMarkers[ i ];
 
     bool toUpdate = false;
 
@@ -1910,7 +1910,7 @@ Plot2d_PlotCurve::~Plot2d_PlotCurve()
   (for example) then markers are displayed for steps and two markers are 
   displayed between side by side steps. 
 */
-void Plot2d_PlotCurve::setNbMarkers( const int theNbMarkers )
+void Plot2d_PlotCurve::setNbMarkers( const double theNbMarkers )
 {
   myNbMarkers = theNbMarkers;
 }
@@ -1921,7 +1921,7 @@ void Plot2d_PlotCurve::setNbMarkers( const int theNbMarkers )
   (for example) then markers are displayed for steps and two markers are 
   displayed between side by side steps. 
 */
-int Plot2d_PlotCurve::nbMarkers() const
+double Plot2d_PlotCurve::nbMarkers() const
 {
   return myNbMarkers;
 }
@@ -1945,34 +1945,44 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
   }
   else
   {
+    double aTail = 0.0;
     for ( int i = from; i <= to; i++ )
     {
-      const int u = xMap.transform(x(i));
-      const int v = yMap.transform(y(i));
+      double u1 = xMap.transform( x( i ) );
+      double v1 = yMap.transform( y( i ) );
 
-      rect.moveCenter( QPoint( u, v ) );
-      symbol.draw( p, rect );
-
-      // draw markers between current and previous step
-      if ( myNbMarkers > 1 && i >= 1 )
+      if ( i == to && myNbMarkers > 0 )
       {
-        int u_1 = xMap.transform( x( i - 1 ) );
-        int v_1 = yMap.transform( y( i - 1 ) );
+        rect.moveCenter( QPoint( u1, v1 ) );
+        symbol.draw( p, rect );
+      }
 
-        if ( u_1 == u )
+      if ( i > from && myNbMarkers > 0 )
+      {
+        double u0 = xMap.transform( x( i - 1 ) );
+        double v0 = yMap.transform( y( i - 1 ) );
+
+        if ( u1 == u0 && v1 == v0 )
           continue;
 
-        double k = ( (double)( v_1 - v ) ) / ( u_1 - u );
-        double b = v - k * u;
-        double step = ( (double)( u - u_1 ) ) / myNbMarkers;
-        for ( int ind = 1; ind < myNbMarkers; ind++ )
-        {
-          int X = (int)( u_1 + step * ind );
-          int Y = (int)( k * X + b );
+        double dX = ( u1 - u0 ) / myNbMarkers;
+        double dY = ( v1 - v0 ) / myNbMarkers;
 
-          rect.moveCenter( QPoint( X, Y ) );
+        double u = u0 + dX * aTail;
+        double v = v0 + dY * aTail;
+
+        while ( aTail >= 0 && u <= u1 && v <= v1 )
+        {
+          rect.moveCenter( QPoint( u, v ) );
           symbol.draw( p, rect );
+          
+          u += dX;
+          v += dY;
+
+          aTail += 1;
         }
+
+        aTail -= myNbMarkers;
       }
     }
   }
@@ -2204,7 +2214,7 @@ Plot2d_Curve* Plot2d_Plot2d::getClosestCurve( QPoint p, double& distance, int& i
   (for example) then markers are displayed for steps and two markers are 
   displayed between side by side steps. 
 */
-bool Plot2d_Plot2d::setCurveNbMarkers( Plot2d_Curve* curve, const int nb )
+bool Plot2d_Plot2d::setCurveNbMarkers( Plot2d_Curve* curve, const double nb )
 {
   Plot2d_PlotCurve* aPlotCurve = 
     dynamic_cast<Plot2d_PlotCurve*>( myCurves.findKey( curve ) );
@@ -2224,7 +2234,7 @@ bool Plot2d_Plot2d::setCurveNbMarkers( Plot2d_Curve* curve, const int nb )
   (for example) then markers are displayed for steps and two markers are 
   displayed between side by side steps. 
 */
-int Plot2d_Plot2d::curveNbMarkers( Plot2d_Curve* curve ) const
+double Plot2d_Plot2d::curveNbMarkers( Plot2d_Curve* curve ) const
 {
   Plot2d_PlotCurve* aPlotCurve = 
     dynamic_cast<Plot2d_PlotCurve*>( myCurves.findKey( curve ) );

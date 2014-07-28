@@ -330,7 +330,7 @@ Plot2d::MarkerType Plot2d_Curve::getMarker() const
 /*!
   Sets number of markers per step ( and resets AutoAssign flag ). 
 */
-void Plot2d_Curve::setNbMarkers( const int nbMarkers )
+void Plot2d_Curve::setNbMarkers( const double nbMarkers )
 {
   myNbMarkers = nbMarkers;
   myAutoAssign = false;
@@ -339,7 +339,7 @@ void Plot2d_Curve::setNbMarkers( const int nbMarkers )
 /*!
   Gets number of markers per step ( and resets AutoAssign flag ). 
 */
-int Plot2d_Curve::getNbMarkers() const
+double Plot2d_Curve::getNbMarkers() const
 {
   return myNbMarkers;
 }
