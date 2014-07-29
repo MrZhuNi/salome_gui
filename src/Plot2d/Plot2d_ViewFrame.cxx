@@ -1971,7 +1971,9 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
         double u = u0 + dX * aTail;
         double v = v0 + dY * aTail;
 
-        while ( aTail >= 0 && u <= u1 && v <= v1 )
+        while ( aTail >= 0 &&
+          ( ( dX >= 0 && u <= u1 ) || ( dX <= 0 && u1 <= u ) ) &&
+          ( ( dY >= 0 && v <= v1 ) || ( dY <= 0 && v1 <= v ) )    )
         {
           rect.moveCenter( QPoint( u, v ) );
           symbol.draw( p, rect );
