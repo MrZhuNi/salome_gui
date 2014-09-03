@@ -111,6 +111,7 @@ public:
   QString getTitle( ObjectType type ) const;
 
   void    setSecondY( const bool& theSecondY );
+  bool    getSecondY();
 
   bool    isTitleChangedByUser( const ObjectType type );
   void    forgetLocalUserChanges( const ObjectType type );

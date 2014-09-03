@@ -298,6 +298,14 @@ void Plot2d_ViewFrame::setSecondY( const bool& theSecondY )
 }
 
 /*!
+  Get second Y
+*/
+bool Plot2d_ViewFrame::getSecondY()
+{
+  return mySecondY;
+}
+
+/*!
   Erase presentation
 */
 void Plot2d_ViewFrame::Erase( const Plot2d_Prs* prs, const bool )
@@ -632,6 +640,8 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
     }
     setCurveType( aPCurve, myCurveType );
     aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
+    if ( mySecondY )
+      aPCurve->setYAxis( QwtPlot::yRight );
   }
   updateTitles();
   if ( update )
@@ -721,6 +731,7 @@ void Plot2d_ViewFrame::updateCurve( Plot2d_Curve* curve, bool update )
     }
     aPCurve->setTitle( curve->getVerTitle() );
     aPCurve->setVisible( true );
+    aPCurve->setYAxis( mySecondY ? QwtPlot::yRight : QwtPlot::yLeft );
     if ( update )
       myPlot->replot();
   }
