@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2013  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2014  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -6,7 +6,7 @@
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
-// version 2.1 of the License.
+// version 2.1 of the License, or (at your option) any later version.
 //
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -433,7 +433,6 @@ void Plot2d_ViewWindow::createActions()
   mgr->registerAction( aAction, CurvSettingsId );
 
   // 9. Analytical curves
-#ifndef DISABLE_PYCONSOLE
   aAction = new QtxAction( tr( "TOT_PLOT2D_ANALYTICAL_CURVES" ),
                            aResMgr->loadPixmap( "Plot2d", tr( "ICON_PLOT2D_ANALYTICAL_CURVES" ) ),
                            tr( "MEN_PLOT2D_ANALYTICAL_CURVES" ),
@@ -442,7 +441,6 @@ void Plot2d_ViewWindow::createActions()
   aAction->setStatusTip( tr( "PRP_PLOT2D_ANALYTICAL_CURVES" ) );
   connect( aAction, SIGNAL( triggered( bool ) ), myViewFrame, SLOT( onAnalyticalCurve() ) );
   mgr->registerAction( aAction, AnalyticalCurveId );
-#endif
 
   // 10. Clone
   aAction = new QtxAction( tr( "MNU_CLONE_VIEW" ),
@@ -477,7 +475,9 @@ void Plot2d_ViewWindow::createActions()
 void Plot2d_ViewWindow::createToolBar()
 {
   QtxActionToolMgr* mgr = toolMgr();
-  myToolBar = mgr->createToolBar( tr( "LBL_TOOLBAR_LABEL" ), false );
+  myToolBar = mgr->createToolBar( tr( "LBL_TOOLBAR_LABEL" ),         // title (language-dependant) 
+				  QString( "Plot2dViewOperations" ), // name (language-independant)
+				  false );                           // disable floatable toolbar
   mgr->append( DumpId, myToolBar );
   mgr->append( ScaleOpId, myToolBar );
   mgr->append( MoveOpId, myToolBar );
@@ -742,10 +742,10 @@ void Plot2d_ViewWindow::onDumpView()
 QImage Plot2d_ViewWindow::dumpView()
 {
   if ( getToolBar()->underMouse() || myDumpImage.isNull() ) {
-    QPixmap px = QPixmap::grabWindow( myViewFrame->winId() );
+    QPixmap px(myViewFrame->size());
+    myViewFrame->render(&px);
     return px.toImage();
   }
-  
   return myDumpImage;
 }
 
@@ -866,7 +866,7 @@ void Plot2d_ViewWindow::onPrintView()
   }
 
   QMap< QwtPlotCurve*, QPen > aCurvToPen;
-  QMap< QwtPlotCurve*, QwtSymbol > aCurvToSymbol;
+  QMap< QwtPlotCurve*, QwtSymbol* > aCurvToSymbol;
 
   if ( needColorCorrection )
   {
@@ -891,12 +891,12 @@ void Plot2d_ViewWindow::onPrintView()
       aCurve->setPen( aPen );
 
       // symbol
-      QwtSymbol aSymbol = aCurve->symbol();
+      QwtSymbol*  aSymbol = const_cast<QwtSymbol*>( aCurve->symbol() );
       aCurvToSymbol[ aCurve ] = aSymbol;
-      aPen = aSymbol.pen();
+      aPen = aSymbol->pen();
       aPen.setColor( QColor( 0, 0, 0 ) );
       aPen.setWidthF( 1.5 );
-      aSymbol.setPen( aPen );
+      aSymbol->setPen( aPen );
 
       aCurve->setSymbol( aSymbol );
     }
