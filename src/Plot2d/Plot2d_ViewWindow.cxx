@@ -742,10 +742,11 @@ void Plot2d_ViewWindow::onDumpView()
 QImage Plot2d_ViewWindow::dumpView()
 {
   if ( getToolBar()->underMouse() || myDumpImage.isNull() ) {
-    QPixmap px = QPixmap::grabWindow( myViewFrame->winId() );
+    //QPixmap px = QPixmap::grabWindow( myViewFrame->winId() );
+    QPixmap px(myViewFrame->size());
+    myViewFrame->render(&px);
     return px.toImage();
   }
-  
   return myDumpImage;
 }
 
@@ -928,3 +929,4 @@ void Plot2d_ViewWindow::onPrintView()
   \fn void Plot2d_ViewWindow::cloneView();
   \brief Emitted when the "Clone View" action is activated.
 */
+
