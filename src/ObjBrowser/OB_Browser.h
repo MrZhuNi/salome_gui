@@ -118,12 +118,12 @@ public:
   typedef QMap<QString, bool> MapOfOpenStates;
   void                   openStates( bool isGet, MapOfOpenStates&, const QModelIndex& theIndex, int theColumn );
 
-signals:
+Q_SIGNALS:
   void                   selectionChanged();
   //void                   doubleClicked( SUIT_DataObject* );
   //void                   dropped( DataObjectList, SUIT_DataObject*, int );
 
-private slots:
+private Q_SLOTS:
   void                   onExpandAll();
   void                   onCollapseAll();
   virtual void           onExpanded( const QModelIndex& ) {}

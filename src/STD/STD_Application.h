@@ -104,7 +104,7 @@ public:
 
   virtual void          updateDesktopTitle();
 
-signals:
+Q_SIGNALS:
   /*!emit that view manager added*/
   void                  viewManagerAdded( SUIT_ViewManager* );
   /*!emit that view manager removed*/
@@ -112,7 +112,7 @@ signals:
   /*!emit that view manager activated*/
   void                  viewManagerActivated( SUIT_ViewManager* );
 
-public slots:
+public Q_SLOTS:
   virtual void          onNewDoc();
   virtual bool          onNewDoc( const QString& );
 
@@ -137,7 +137,7 @@ public slots:
   virtual void          onDesktopClosing( SUIT_Desktop*, QCloseEvent* );
   virtual void          onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* );
 
-private slots:
+private Q_SLOTS:
   virtual void          onViewManagerActivated( SUIT_ViewManager* );
 
 protected:

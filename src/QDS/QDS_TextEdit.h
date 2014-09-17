@@ -37,10 +37,10 @@ public:
 
   virtual QString                 getString() const;
 
-signals:
+Q_SIGNALS:
   void                            returnPressed();
 
-private slots:
+private Q_SLOTS:
   void                            onTextChanged();
 
 protected:

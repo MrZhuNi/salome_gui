@@ -41,7 +41,7 @@ public:
 public:
   void                       processRectChanged();
 
-protected slots:
+protected Q_SLOTS:
   void                       onSceneRectChanged( const QRectF& theRect ); // for debug
 
 protected:
@@ -59,7 +59,7 @@ protected:
   virtual void               dragMoveEvent( QGraphicsSceneDragDropEvent* );
   virtual void               dropEvent( QGraphicsSceneDragDropEvent* );
 
-signals:
+Q_SIGNALS:
   void                       gsKeyEvent( QKeyEvent* );
   void                       gsMouseEvent( QGraphicsSceneMouseEvent* );
   void                       gsWheelEvent( QGraphicsSceneWheelEvent* );

@@ -74,12 +74,12 @@ public:
     void              createItem( const int = -1 );
     void              deleteItem( const int = -1 );
 
-signals:
+Q_SIGNALS:
     void              itemEdited( int );
     void              itemEdited( QListWidgetItem* );
     void              itemMoved( int, int );
 
-public slots:
+public Q_SLOTS:
     virtual void      setEditEnabled( bool );
     virtual void      setDefaultEditAction( bool );
     virtual void      setModificationEnabled( bool );
@@ -88,7 +88,7 @@ public slots:
     virtual void      setValidator( const QValidator* );
     virtual void      setContentsPos( int, int );
 
-private slots:
+private Q_SLOTS:
     void              onContentsMoving( int, int );
 
 protected:

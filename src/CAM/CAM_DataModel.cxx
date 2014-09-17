@@ -103,7 +103,7 @@ void CAM_DataModel::setRoot( const CAM_DataObject* newRoot )
     myRoot->connect( SIGNAL( destroyed( SUIT_DataObject* ) ), 
                      this, SLOT( onDestroyed( SUIT_DataObject* ) ) );
 
-  emit rootChanged( this );
+  Q_EMIT rootChanged( this );
 }
 
 /*!

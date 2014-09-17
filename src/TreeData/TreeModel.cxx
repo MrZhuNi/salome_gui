@@ -29,7 +29,7 @@ TreeModel::TreeModel(const QStringList &headers, QObject *parent)
   : QAbstractItemModel(parent)
 {
   QVector<QVariant> rootData;
-  foreach (QString header, headers)
+  Q_FOREACH (QString header, headers)
     rootData << header;
 
   // _MEM_ We have to specify a string identifier for each item so
@@ -161,7 +161,7 @@ bool TreeModel::setData(const QModelIndex &index, const QVariant &value,
   bool result = item->setData(index.column(), value);
 
   if (result)
-    emit dataChanged(index, index);
+    Q_EMIT dataChanged(index, index);
 
   return result;
 }
@@ -175,7 +175,7 @@ bool TreeModel::setHeaderData(int section, Qt::Orientation orientation,
   bool result = _rootItem->setData(section, value);
 
   if (result)
-    emit headerDataChanged(orientation, section, section);
+    Q_EMIT headerDataChanged(orientation, section, section);
 
   return result;
 }

@@ -565,7 +565,7 @@ void LightApp_ModuleAction::activate( int id, bool fromAction )
     cb->blockSignals( blocked );
   }
 
-  emit moduleActivated( activeModule() );
+  Q_EMIT moduleActivated( activeModule() );
 }
 
 /*!

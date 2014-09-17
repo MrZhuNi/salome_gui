@@ -50,7 +50,7 @@ public:
 private:
   virtual void     keyPressEvent( QKeyEvent* );
 
-protected slots:
+protected Q_SLOTS:
   void             onStart();
   void             onClose();
   void             onHelp();

@@ -67,7 +67,7 @@ GraphicsView_Scene::~GraphicsView_Scene()
 //================================================================
 void GraphicsView_Scene::processRectChanged()
 {
-  emit gsBoundingRectChanged();
+  Q_EMIT gsBoundingRectChanged();
 }
 
 //================================================================
@@ -87,7 +87,7 @@ void GraphicsView_Scene::onSceneRectChanged( const QRectF& theRect )
 //================================================================
 void GraphicsView_Scene::keyPressEvent( QKeyEvent* e )
 {
-  emit gsKeyEvent( e );
+  Q_EMIT gsKeyEvent( e );
   QGraphicsScene::keyPressEvent( e );
 }
 
@@ -97,7 +97,7 @@ void GraphicsView_Scene::keyPressEvent( QKeyEvent* e )
 //================================================================
 void GraphicsView_Scene::keyReleaseEvent( QKeyEvent* e )
 {
-  emit gsKeyEvent( e );
+  Q_EMIT gsKeyEvent( e );
   QGraphicsScene::keyReleaseEvent( e );
 }
 
@@ -107,7 +107,7 @@ void GraphicsView_Scene::keyReleaseEvent( QKeyEvent* e )
 //================================================================
 void GraphicsView_Scene::mousePressEvent( QGraphicsSceneMouseEvent* e )
 {
-  emit gsMouseEvent( e );
+  Q_EMIT gsMouseEvent( e );
   QGraphicsScene::mousePressEvent( e );
 }
 
@@ -117,7 +117,7 @@ void GraphicsView_Scene::mousePressEvent( QGraphicsSceneMouseEvent* e )
 //================================================================
 void GraphicsView_Scene::mouseMoveEvent( QGraphicsSceneMouseEvent* e )
 {
-  emit gsMouseEvent( e );
+  Q_EMIT gsMouseEvent( e );
   QGraphicsScene::mouseMoveEvent( e );
 }
 
@@ -127,7 +127,7 @@ void GraphicsView_Scene::mouseMoveEvent( QGraphicsSceneMouseEvent* e )
 //================================================================
 void GraphicsView_Scene::mouseReleaseEvent( QGraphicsSceneMouseEvent* e )
 {
-  emit gsMouseEvent( e );
+  Q_EMIT gsMouseEvent( e );
   QGraphicsScene::mouseReleaseEvent( e );
 }
 
@@ -137,7 +137,7 @@ void GraphicsView_Scene::mouseReleaseEvent( QGraphicsSceneMouseEvent* e )
 //================================================================
 void GraphicsView_Scene::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* e )
 {
-  emit gsMouseEvent( e );
+  Q_EMIT gsMouseEvent( e );
   QGraphicsScene::mouseDoubleClickEvent( e );
 }
 
@@ -147,7 +147,7 @@ void GraphicsView_Scene::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* e )
 //================================================================
 void GraphicsView_Scene::wheelEvent( QGraphicsSceneWheelEvent* e )
 {
-  emit gsWheelEvent( e );
+  Q_EMIT gsWheelEvent( e );
 
   // accept the event to prevent calling QAbstractScrollArea::wheelEvent()
   // from QGraphicsView::wheelEvent(), which will change values of scroll-bars
@@ -162,7 +162,7 @@ void GraphicsView_Scene::wheelEvent( QGraphicsSceneWheelEvent* e )
 //================================================================
 void GraphicsView_Scene::contextMenuEvent( QGraphicsSceneContextMenuEvent* e )
 {
-  emit gsContextMenuEvent( e );
+  Q_EMIT gsContextMenuEvent( e );
   QGraphicsScene::contextMenuEvent( e );
 }
 

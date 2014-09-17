@@ -179,11 +179,11 @@ public:
 
   void    initView( OCCViewer_ViewWindow* view );
 
-signals:
+Q_SIGNALS:
   void selectionChanged();
   void deselection();
 
-protected slots:
+protected Q_SLOTS:
   virtual void onMousePress(SUIT_ViewWindow*, QMouseEvent*);
   virtual void onMouseMove(SUIT_ViewWindow*, QMouseEvent*);
   virtual void onMouseRelease(SUIT_ViewWindow*, QMouseEvent*);

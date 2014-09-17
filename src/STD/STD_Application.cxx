@@ -756,7 +756,7 @@ void STD_Application::addViewManager( SUIT_ViewManager* vm )
              this, SLOT( onViewManagerActivated( SUIT_ViewManager* ) ) );
     vm->connectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
 
-    emit viewManagerAdded( vm );
+    Q_EMIT viewManagerAdded( vm );
   }
 /*
   if ( !activeViewManager() && myViewMgrs.count() == 1 )
@@ -772,7 +772,7 @@ void STD_Application::removeViewManager( SUIT_ViewManager* vm )
 
   vm->closeAllViews();
 
-  emit viewManagerRemoved( vm );
+  Q_EMIT viewManagerRemoved( vm );
 
   vm->disconnectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
   disconnect( vm, SIGNAL( activated( SUIT_ViewManager* ) ),
@@ -839,7 +839,7 @@ void STD_Application::setActiveViewManager( SUIT_ViewManager* vm )
     return;
 
   myActiveViewMgr = vm;
-  emit viewManagerActivated( vm );
+  Q_EMIT viewManagerActivated( vm );
 }
 
 /*!Public slot. */

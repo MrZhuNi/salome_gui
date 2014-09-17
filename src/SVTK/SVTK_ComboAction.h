@@ -44,7 +44,7 @@ public:
   void setCurrentIndex( const int );
   int  currentIndex() const;
 
-signals:
+Q_SIGNALS:
   void triggered( int );
 
 protected:

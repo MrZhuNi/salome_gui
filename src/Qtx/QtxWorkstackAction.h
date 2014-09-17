@@ -74,7 +74,7 @@ public:
 
   void          perform( const int );
 
-private slots:
+private Q_SLOTS:
   void          onAboutToShow();
   void          onTriggered( int );
 
@@ -135,7 +135,7 @@ private :
   QMap<QComboBox*, ViewMode> myMapComboBoxMode;
   QMap<ViewMode, bool> myMapModeIsBusy;
 
-private slots:
+private Q_SLOTS:
 
   void onChangeIcons();
   void onSplitChanged(int);

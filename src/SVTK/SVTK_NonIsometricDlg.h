@@ -58,7 +58,7 @@ protected:
   QtxDoubleSpinBox* m_sbZcoeff;
   QPushButton* m_bReset;
 
-protected slots:
+protected Q_SLOTS:
   void onClickApply();
   void onClickReset();
   void onClickOk();

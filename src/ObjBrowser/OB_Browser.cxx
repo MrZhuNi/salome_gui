@@ -463,7 +463,7 @@ void OB_Browser::select( const QModelIndexList& indexes, const bool on, const bo
   }
 
   myView->blockSignals( blocked );
-  emit( selectionChanged() );
+  Q_EMIT( selectionChanged() );
 }
 
 /*!
@@ -594,7 +594,7 @@ void OB_Browser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
   setModified();
 
   if ( selNum != numberOfSelected() )
-    emit selectionChanged();
+    Q_EMIT selectionChanged();
 
 //  QTime t2 = QTime::currentTime();
 //  qDebug( QString( "update tree time = %1 msecs" ).arg( t1.msecsTo( t2 ) ) );
@@ -639,7 +639,7 @@ void OB_Browser::replaceTree( SUIT_DataObject* src, SUIT_DataObject* trg )
   setModified();
 
   if ( selNum != numberOfSelected() )
-    emit selectionChanged();
+    Q_EMIT selectionChanged();
 }
 */
 /*!
@@ -896,12 +896,12 @@ void OB_Browser::onExpandAll()
   disconnect( treeView(), SIGNAL( expanded( const QModelIndex& ) ), 
            this,       SLOT( onExpanded( const QModelIndex& ) ) );
   
-  foreach ( index, indexes ) {
+  Q_FOREACH ( index, indexes ) {
     myView->expandAll( index );
   }
   connect( treeView(), SIGNAL( expanded( const QModelIndex& ) ), 
            this,       SLOT( onExpanded( const QModelIndex& ) ) );
-  emit(onExpanded( index));
+  Q_EMIT(onExpanded( index));
 }
 
 /*!
@@ -914,7 +914,7 @@ void OB_Browser::onCollapseAll()
   QModelIndexList indexes = selectedIndexes();
   QModelIndex index;
 
-  foreach ( index, indexes ) {
+  Q_FOREACH ( index, indexes ) {
     myView->collapseAll( index );
   }
 }
@@ -952,7 +952,7 @@ void OB_Browser::onDropped( QPtrList<QListViewItem> items, QListViewItem* item, 
   }
 
   if ( !lst.isEmpty() )
-    emit dropped( lst, obj, action );
+    Q_EMIT dropped( lst, obj, action );
 }
 */
 /*!
@@ -1186,7 +1186,7 @@ void OB_Browser::openBranch( QListViewItem* item, const int level )
 void OB_Browser::onDoubleClicked( QListViewItem* item )
 {
   if ( item )
-    emit doubleClicked( dataObject( item ) );
+    Q_EMIT doubleClicked( dataObject( item ) );
 }
 */
 

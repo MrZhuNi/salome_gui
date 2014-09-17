@@ -85,10 +85,10 @@ public:
   void           setSizes( const QList<int>& = QList<int>() );
   QList<int>     sizes() const;
 
-signals:
+Q_SIGNALS:
   void           changed( const QFont& );
 
-private slots:
+private Q_SLOTS:
   void           onPreview( bool );
   void           onFontChanged( const QFont& );
   void           onPropertyChanged();

@@ -158,7 +158,7 @@ public:
   //! Set all object selection buttons to inactive state
   void deactivateAll();
 
-signals:
+Q_SIGNALS:
   //! selection in certain widget is changed
   void selectionChanged ( int );
 
@@ -250,7 +250,7 @@ protected:
   //! Check the "read only" state of object selection line edit
   bool           isReadOnly( const int ) const;
   
-private slots:
+private Q_SLOTS:
   //! emits if the object selection button changes state
   void onToggled( bool );
 

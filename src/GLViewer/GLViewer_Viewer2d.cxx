@@ -1011,7 +1011,7 @@ void GLViewer_Viewer2d::startOperations( QWheelEvent* e )
         update = anObject->updateZoom( zoomIn ) || update;
     }
 
-    emit wheelZoomChange( zoomIn );
+    Q_EMIT wheelZoomChange( zoomIn );
 
     if( update )
         updateAll();

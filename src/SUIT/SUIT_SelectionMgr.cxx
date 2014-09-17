@@ -163,7 +163,7 @@ void SUIT_SelectionMgr::selectionChanged( SUIT_Selector* sel )
   }
   myIsSelChangeEnabled = true;
 
-  emit selectionChanged();
+  Q_EMIT selectionChanged();
 }
 
 /*!

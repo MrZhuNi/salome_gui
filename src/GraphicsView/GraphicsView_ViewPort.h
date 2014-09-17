@@ -218,10 +218,10 @@ public:
   static QCursor*                  getZoomCursor() { return zoomCursor; }
   static QCursor*                  getSketchCursor() { return sketchCursor; }
 
-public slots:
+public Q_SLOTS:
   void                             onBoundingRectChanged();
 
-protected slots:
+protected Q_SLOTS:
   void                             onKeyEvent( QKeyEvent* );
   void                             onMouseEvent( QGraphicsSceneMouseEvent* );
   void                             onWheelEvent( QGraphicsSceneWheelEvent* );
@@ -230,7 +230,7 @@ protected slots:
 protected:
   virtual void                     scrollContentsBy( int theDX, int theDY );
 
-signals:
+Q_SIGNALS:
   void                             vpKeyEvent( QKeyEvent* );
   void                             vpMouseEvent( QGraphicsSceneMouseEvent* );
   void                             vpWheelEvent( QGraphicsSceneWheelEvent* );

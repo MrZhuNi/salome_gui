@@ -191,8 +191,8 @@ void QtxListBox::endEdition( const bool action )
 
     setCurrentItem( cur );
 
-    emit itemEdited( idx );
-    emit itemEdited( item( idx ) );
+    Q_EMIT itemEdited( idx );
+    Q_EMIT itemEdited( item( idx ) );
   }
 }
 
@@ -293,7 +293,7 @@ void QtxListBox::moveItem( const int idx, const int step )
   updateEditor();
 
   if ( idx != pos )
-    emit itemMoved( idx, pos );
+    Q_EMIT itemMoved( idx, pos );
 }
 
 /*!

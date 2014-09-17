@@ -58,16 +58,16 @@ public:
   QString            filter() const;
   void               setFilter( const QString& );
 
-signals:
+Q_SIGNALS:
   void               fileNameChanged( QString );
 
-public slots:
+public Q_SLOTS:
   virtual void       setVisible( bool );
 
-protected slots:
+protected Q_SLOTS:
   void               validate();
 
-private slots:
+private Q_SLOTS:
   void               onBrowse();
   void               onReturnPressed();
   void               onTextChanged( const QString& );

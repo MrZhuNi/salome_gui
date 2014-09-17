@@ -94,7 +94,7 @@ public:
   LightApp_VTKSelector( SUIT_SelectionMgr* );
 #endif
 
-private slots:
+private Q_SLOTS:
   void              onSelectionChanged();
 
 #ifndef DISABLE_VTKVIEWER

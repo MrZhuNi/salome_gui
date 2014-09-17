@@ -49,7 +49,7 @@ public:
 
   virtual QString type() const { return GLViewer_Viewer2d::Type(); }
 
-private slots:
+private Q_SLOTS:
   void                onSelectionChanged();
 
 protected:

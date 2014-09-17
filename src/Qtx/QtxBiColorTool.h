@@ -55,7 +55,7 @@ public:
 
   QLabel*          label();
 
-private slots:
+private Q_SLOTS:
   void             updateState();
 
 private:

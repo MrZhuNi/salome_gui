@@ -1772,12 +1772,12 @@ void SalomeApp_Application::createExtraActions()
 
   QStringList aModules;
   modules(aModules, false);
-  foreach(QString aModile, aModules) {
+  Q_FOREACH(QString aModile, aModules) {
     QString aModName = moduleName(aModile);
     QString aSectionStr = resMgr->stringValue(aModName, "popupitems", QString());
     if (!aSectionStr.isNull()) {
       QStringList aSections = aSectionStr.split(':');
-      foreach(QString aSection, aSections) {
+      Q_FOREACH(QString aSection, aSections) {
         QString aTitle = resMgr->stringValue(aSection, "title",    QString());
         QString aId    = resMgr->stringValue(aSection, "objectid", QString());
         QString aSlot  = resMgr->stringValue(aSection, "method",   QString());
@@ -2039,7 +2039,7 @@ void SalomeApp_Application::afterCloseDoc()
 #ifndef DISABLE_PYCONSOLE
   // emit signal to restore study from Python script
   if ( myNoteBook ) {
-    emit dumpedStudyClosed( myNoteBook->getDumpedStudyScript(),
+    Q_EMIT dumpedStudyClosed( myNoteBook->getDumpedStudyScript(),
                             myNoteBook->getDumpedStudyName(),
                             myNoteBook->isDumpedStudySaved() );
   }

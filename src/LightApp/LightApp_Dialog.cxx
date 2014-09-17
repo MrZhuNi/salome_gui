@@ -243,7 +243,7 @@ void LightApp_Dialog::clearSelection( const int id )
     myObjects[ id ].myNames.clear();
     
     myObjects[ id ].myEdit->setText( QString() );
-    emit selectionChanged( id );
+    Q_EMIT selectionChanged( id );
   }
 }
 
@@ -568,10 +568,10 @@ void LightApp_Dialog::onToggled( bool on )
     if( on )
     {
       updateButtons( id );
-      emit objectActivated( id );
+      Q_EMIT objectActivated( id );
     }
     else
-      emit objectDeactivated( id );
+      Q_EMIT objectDeactivated( id );
   }
 }
 
@@ -588,7 +588,7 @@ void LightApp_Dialog::updateObject( const int id, bool emit_signal )
     filterTypes( id, obj.myNames, obj.myTypes, obj.myIds );
     obj.myEdit->setText( selectionDescription( obj.myNames, obj.myTypes, obj.myNI ) );
     if( emit_signal )
-      emit selectionChanged( id );
+      Q_EMIT selectionChanged( id );
   }
 }
 
@@ -860,7 +860,7 @@ void LightApp_Dialog::selectObject( const int id, const QStringList& _names, con
   obj.myIds = ids;
   obj.myNames = names;
 
-  emit selectionChanged( id );
+  Q_EMIT selectionChanged( id );
 }
 
 /*!
@@ -909,7 +909,7 @@ void LightApp_Dialog::onTextChanged( const QString& text )
     if( id>=0 && !isReadOnly( id ) )
     {
       QStringList list = text.split( " ", QString::SkipEmptyParts );
-      emit objectChanged( id, list );
+      Q_EMIT objectChanged( id, list );
     }
   }
 

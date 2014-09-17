@@ -64,7 +64,7 @@ public:
 
   QMainWindow* mainWindow() const;
 
-private slots:
+private Q_SLOTS:
   void         onAboutToShow();
 
 protected:

@@ -79,7 +79,7 @@ public:
 
   virtual QImage          dumpView();
 
-signals:
+Q_SIGNALS:
   void                    vfDrawExternal( QPainter* );
   void                    vfViewClosing( QCloseEvent* );
 
@@ -91,7 +91,7 @@ public:
   //ViewType       getTypeView() const { return VIEW_GL; };
   QWidget*       getViewWidget() { return ( QWidget* )getViewPort(); };
 
-protected slots:
+protected Q_SLOTS:
   void           onViewPan();
   void           onViewZoom();
   void           onViewFitAll();
@@ -108,7 +108,7 @@ protected slots:
   void           onViewTop() {};
   void           onViewTrihedron() {};
 
-private slots:
+private Q_SLOTS:
   void           keyEvent( QKeyEvent* );
   void           mouseEvent( QMouseEvent* );
   void           wheelEvent( QWheelEvent* );

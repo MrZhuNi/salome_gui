@@ -142,10 +142,10 @@ private:
 
   OCCViewer_ClipPlaneInteractor* myInteractor;
 
-public slots:
+public Q_SLOTS:
   void onApply();
 
-private slots:
+private Q_SLOTS:
 
   void ClickOnNew();
   void ClickOnDelete();

@@ -95,13 +95,13 @@ protected:
 //  void                             onCreatePopup( QPopupMenu* );
 //  void                             onDestroyPopup( QPopupMenu* );
 
-public slots:
+public Q_SLOTS:
   virtual bool                   synchronize( OCCViewer_ViewPort* );
 
-protected slots:
+protected Q_SLOTS:
   virtual void                   onChangeBackground();
 
-signals:
+Q_SIGNALS:
   void                           vpKeyEvent( QKeyEvent* );
   void                           vpMouseEvent( QMouseEvent* );
   void                           vpDrawExternal( QPainter* );

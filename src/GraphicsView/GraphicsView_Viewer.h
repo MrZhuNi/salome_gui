@@ -75,7 +75,7 @@ public:
   bool                          isInitialized() const { return myIsInitialized; }
   void                          setIsInitialized( bool );
 
-signals:
+Q_SIGNALS:
   void                          selectionChanged( GV_SelectionChangeStatus );
   void                          wheelScaleChanged();
 
@@ -85,7 +85,7 @@ protected:
   virtual void                  onTransformationStarted();
   virtual void                  onTransformationFinished();
 
-protected slots:
+protected Q_SLOTS:
   virtual void                  onKeyEvent( QKeyEvent* );
   virtual void                  onMouseEvent( QGraphicsSceneMouseEvent* );
   virtual void                  onWheelEvent( QGraphicsSceneWheelEvent* );

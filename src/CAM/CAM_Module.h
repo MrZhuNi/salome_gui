@@ -114,7 +114,7 @@ public:
 
   static QAction*        separator();
 
-public slots:
+public Q_SLOTS:
   virtual bool           activateModule( SUIT_Study* );
   virtual bool           deactivateModule( SUIT_Study* );
 
@@ -125,7 +125,7 @@ public slots:
 
   virtual void           onApplicationClosed( SUIT_Application* );
 
-private slots:
+private Q_SLOTS:
   void                   onInfoChanged( QString );
 
 protected: 

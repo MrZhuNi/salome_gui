@@ -669,37 +669,37 @@ void VTKViewer_ViewWindow::onAdjustTrihedron(){
 /*!Emit key pressed.*/
 void VTKViewer_ViewWindow::onKeyPressed(QKeyEvent* event)
 {
-  emit keyPressed( this, event );
+  Q_EMIT keyPressed( this, event );
 }
 
 /*!Emit key released.*/
 void VTKViewer_ViewWindow::onKeyReleased(QKeyEvent* event)
 {
-  emit keyReleased( this, event );
+  Q_EMIT keyReleased( this, event );
 }
 
 /*!Emit key pressed.*/
 void VTKViewer_ViewWindow::onMousePressed(QMouseEvent* event)
 {
-  emit mousePressed(this, event);
+  Q_EMIT mousePressed(this, event);
 }
 
 /*!Emit mouse released.*/
 void VTKViewer_ViewWindow::onMouseReleased(QMouseEvent* event)
 {
-  emit mouseReleased( this, event );
+  Q_EMIT mouseReleased( this, event );
 }
 
 /*!Emit mouse moving.*/
 void VTKViewer_ViewWindow::onMouseMoving(QMouseEvent* event)
 {
-  emit mouseMoving( this, event );
+  Q_EMIT mouseMoving( this, event );
 }
 
 /*!Emit mouse double clicked.*/
 void VTKViewer_ViewWindow::onMouseDoubleClicked( QMouseEvent* event )
 {
-  emit mouseDoubleClicked( this, event );
+  Q_EMIT mouseDoubleClicked( this, event );
 }
 
 /*!Insert actor to renderer and transformation filter.

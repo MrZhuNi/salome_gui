@@ -82,10 +82,10 @@ public:
   Qtx::BackgroundData      background() const;
   void                     setBackground( const Qtx::BackgroundData& );
 
-signals:
+Q_SIGNALS:
   void                     selectionChanged();
 
-protected slots:
+protected Q_SLOTS:
   void                     onMousePress( SUIT_ViewWindow*, QMouseEvent* );
   void                     onMouseMove( SUIT_ViewWindow*, QMouseEvent* );
   void                     onMouseRelease( SUIT_ViewWindow*, QMouseEvent* );

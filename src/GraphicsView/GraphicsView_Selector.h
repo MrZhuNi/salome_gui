@@ -57,7 +57,7 @@ public:
 
   virtual void               checkSelection( int, bool, int );
 
-signals:
+Q_SIGNALS:
   void                       selSelectionDone( GV_SelectionChangeStatus );
   void                       selSelectionCancel();
 

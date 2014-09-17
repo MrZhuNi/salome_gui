@@ -260,7 +260,7 @@ Plot2d_AnalyticalCurveDlg::~Plot2d_AnalyticalCurveDlg()
 void Plot2d_AnalyticalCurveDlg::init()
 {
   AnalyticalCurveList curves = myContainer->getAnalyticalCurves();
-  foreach ( Plot2d_AnalyticalCurve* curve, curves ) {
+  Q_FOREACH ( Plot2d_AnalyticalCurve* curve, curves ) {
     QListWidgetItem* item = new QListWidgetItem( curve->getName() );
     item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
     item->setCheckState( curve->isActive() ? Qt::Checked : Qt::Unchecked );
@@ -361,7 +361,7 @@ void Plot2d_AnalyticalCurveDlg::apply() {
       f->updateAnalyticalCurves();
     
     AnalyticalCurveList curves = myContainer->getAnalyticalCurves();
-    foreach ( Plot2d_AnalyticalCurve* curve, curves ) {
+    Q_FOREACH ( Plot2d_AnalyticalCurve* curve, curves ) {
       initPropsFromCurve(curve);
     }
     selectionChanged();
@@ -424,7 +424,7 @@ void Plot2d_AnalyticalCurveDlg::addCurve()
 void Plot2d_AnalyticalCurveDlg::removeCurve()
 {
   QList<QListWidgetItem*> items = myCurvesList->selectedItems();
-  foreach( QListWidgetItem* item, items ) {
+  Q_FOREACH( QListWidgetItem* item, items ) {
     Plot2d_AnalyticalCurve* curve = (Plot2d_AnalyticalCurve*)( item->data( Qt::UserRole ).value<void*>() );
     delete item;
     if ( propStatus( curve ) == ItemAdded ) {

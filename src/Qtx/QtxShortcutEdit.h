@@ -44,7 +44,7 @@ public:
   static bool    isValidKey( int );
 
 
-private slots:
+private Q_SLOTS:
   void           onCliked();
   void           onEditingFinished();
 
@@ -76,7 +76,7 @@ protected:
   virtual void              focusOutEvent( QFocusEvent* );
   virtual bool              checkUniqueness( QTreeWidgetItem*, const QString& );
 
-private slots:
+private Q_SLOTS:
   void                      onCurrentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* );
 
 private:

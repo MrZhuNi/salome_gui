@@ -281,7 +281,7 @@ class Plot2d_QwtPlotCurve::Plot2d_DeviationData {
 public:
   Plot2d_DeviationData(const double *min, const double *max,const QList<int>& idx)
   {
-    foreach(int index,idx) {
+    Q_FOREACH(int index,idx) {
       myMin[index] = min[index];
       myMax[index] = max[index];
     }

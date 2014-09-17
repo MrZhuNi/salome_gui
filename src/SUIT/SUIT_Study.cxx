@@ -185,7 +185,7 @@ void SUIT_Study::update()
  */
 void SUIT_Study::sendChangesNotification()
 {
-  emit studyModified( this );
+  Q_EMIT studyModified( this );
 }
 
 /*!
@@ -310,7 +310,7 @@ bool SUIT_Study::start( SUIT_Operation* theOp, const bool toCheck )
   theOp->setState( SUIT_Operation::Running );
   myOperations.append( theOp );
  
-  emit theOp->started( theOp );
+  Q_EMIT theOp->started( theOp );
   operationStarted( theOp );
   theOp->startOperation();
 
@@ -334,7 +334,7 @@ bool SUIT_Study::abort( SUIT_Operation* theOp )
 
   theOp->abortOperation();
   operationAborted( theOp );
-  emit theOp->aborted( theOp );
+  Q_EMIT theOp->aborted( theOp );
 
   stop( theOp );
 
@@ -358,11 +358,11 @@ bool SUIT_Study::commit( SUIT_Operation* theOp )
 
   theOp->commitOperation();
   operationCommited( theOp );
-  emit theOp->committed( theOp );
+  Q_EMIT theOp->committed( theOp );
 
   stop( theOp );
 
-  emit studyModified( this );
+  Q_EMIT studyModified( this );
 
   return true;
 }
@@ -382,7 +382,7 @@ bool SUIT_Study::suspend( SUIT_Operation* theOp )
 
   theOp->setState( SUIT_Operation::Suspended );
   theOp->suspendOperation();
-  emit theOp->suspended( theOp );
+  Q_EMIT theOp->suspended( theOp );
   return true;
 }
 
@@ -413,7 +413,7 @@ bool SUIT_Study::resume( SUIT_Operation* theOp )
   myOperations.removeAll( theOp );
   myOperations.append( theOp );
 
-  emit theOp->resumed( theOp );
+  Q_EMIT theOp->resumed( theOp );
   return true;
 }
 
@@ -446,7 +446,7 @@ void SUIT_Study::stop( SUIT_Operation* theOp )
 
   theOp->stopOperation();
   operationStopped( theOp );
-  emit theOp->stopped( theOp );
+  Q_EMIT theOp->stopped( theOp );
 
   if ( aResultOp )
     resume( aResultOp );

@@ -114,7 +114,7 @@ public:
 
   int             find( QToolBar* ) const;
 
-protected slots:
+protected Q_SLOTS:
   void            onToolBarDestroyed();
 
 protected:

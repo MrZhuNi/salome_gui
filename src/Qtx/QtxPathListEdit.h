@@ -70,7 +70,7 @@ public:
 
   bool              eventFilter( QObject*, QEvent* );
 
-protected slots:
+protected Q_SLOTS:
   void              onUp( bool = false );
   void              onDown( bool = false );
   void              onInsert( bool = false );

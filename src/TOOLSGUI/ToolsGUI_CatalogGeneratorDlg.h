@@ -53,7 +53,7 @@ public:
     QString getCompType();
     QString getCompMultiStd();
 
-protected slots:
+protected Q_SLOTS:
     void    onBrowseBtnClicked();
     void    updateButtonState();
     void    onApply();

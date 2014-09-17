@@ -56,7 +56,7 @@ public:
   QColor             getColor() const;
 
 
-private slots:
+private Q_SLOTS:
   void               updatePreview();
 
 private:

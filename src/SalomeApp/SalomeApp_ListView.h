@@ -107,7 +107,7 @@ protected:
 // enables/disables mouse events (excluding MouseMove)
   void enableMouse(bool enable);
   
-protected slots:
+protected Q_SLOTS:
 // called when selection changed in list
   virtual void onSelectionChanged();
 // called when user finishes in editing of item
@@ -135,7 +135,7 @@ public:
 protected:
   void keyPressEvent(QKeyEvent* e);
   
-signals:
+Q_SIGNALS:
   void escapePressed();
 };
 
@@ -219,12 +219,12 @@ public:
 protected:
   void keyPressEvent ( QKeyEvent * e);
 
-private slots:
+private Q_SLOTS:
   void onComboActivated(const QString&);
   void onTextChanged(const QString&);
   void onApply();
   void onCancel();
-signals:
+Q_SIGNALS:
   void returnPressed();
   void escapePressed();
 

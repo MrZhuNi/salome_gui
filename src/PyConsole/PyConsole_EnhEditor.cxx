@@ -285,9 +285,9 @@ void PyConsole_EnhEditor::customEvent( QEvent* event )
           cursor.insertText(first_match);
           _tab_mode = false;
           if (doc == QString(""))
-            emit updateDoc(formatDocHTML("(no documentation available)\n"));
+            Q_EMIT updateDoc(formatDocHTML("(no documentation available)\n"));
           else
-            emit updateDoc(formatDocHTML(doc));
+            Q_EMIT updateDoc(formatDocHTML(doc));
         }
       else
         {
@@ -302,7 +302,7 @@ void PyConsole_EnhEditor::customEvent( QEvent* event )
           if (base == matches[0])
             {
               doc = formatDocHTML(doc);
-              emit updateDoc(doc);
+              Q_EMIT updateDoc(doc);
             }
 
           // Print all matching completion in a "undo-able" block

@@ -121,7 +121,7 @@ void SalomeApp_ListView::updateViewer()
   update( contentsRect() );//updateContents();
   // connecting again selection changed SIGNAL
   blockSignals(false);
-  emit itemSelectionChanged();
+  Q_EMIT itemSelectionChanged();
 }
 
 /*!
@@ -137,7 +137,7 @@ void SalomeApp_ListView::updateSelected()
   update( contentsRect() );//updateContents();
   // connecting again selection changed SIGNAL
   blockSignals(false);
-  emit itemSelectionChanged();
+  Q_EMIT itemSelectionChanged();
 }
 
 /*!
@@ -935,7 +935,7 @@ QLineEdit(parent)
 void SalomeApp_EditBox::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Escape )
-    emit escapePressed();
+    Q_EMIT escapePressed();
   else
     QLineEdit::keyPressEvent( e );
   e->accept();
@@ -1359,7 +1359,7 @@ void SalomeApp_EntityEdit::onCancel()
     myApplyBtn->setEnabled(false);
   if (myCancelBtn)
     myCancelBtn->setEnabled(false);
-  emit escapePressed();
+  Q_EMIT escapePressed();
 }
 
 /*!
@@ -1372,7 +1372,7 @@ void SalomeApp_EntityEdit::onApply()
     myApplyBtn->setEnabled(false);
   if (myCancelBtn)
     myCancelBtn->setEnabled(false);
-  emit returnPressed();
+  Q_EMIT returnPressed();
 }
 
 /*!

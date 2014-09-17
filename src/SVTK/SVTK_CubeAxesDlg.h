@@ -70,7 +70,7 @@ public:
 
   virtual void    Update();
 
-private slots:
+private Q_SLOTS:
   virtual bool    onApply();
 
 private:

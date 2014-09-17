@@ -213,7 +213,7 @@ void Plot2d_Viewer::onCloneView( Plot2d_ViewFrame* clonedVF, Plot2d_ViewFrame* n
     
     // emits signal
     if ( p && p->inherits( "SUIT_ViewWindow" ) )
-      emit viewCloned( (SUIT_ViewWindow*)p );
+      Q_EMIT viewCloned( (SUIT_ViewWindow*)p );
   }
 }
 

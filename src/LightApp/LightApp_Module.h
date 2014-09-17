@@ -108,7 +108,7 @@ public:
 
   virtual void                        updateModuleVisibilityState();
 
-public slots:
+public Q_SLOTS:
   virtual bool                        activateModule( SUIT_Study* );
   virtual bool                        deactivateModule( SUIT_Study* );
   virtual void                        studyClosed( SUIT_Study* );
@@ -116,7 +116,7 @@ public slots:
 
   void                                MenuItem();
 
-protected slots:
+protected Q_SLOTS:
   virtual void                        onModelSaved();
   virtual void                        onModelOpened();
   virtual void                        onModelClosed();

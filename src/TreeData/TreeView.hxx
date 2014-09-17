@@ -51,10 +51,10 @@ private:
   
   // ---
 
-private slots:
+private Q_SLOTS:
   void processMenuAction(QAction * actionSelected);
   
-signals:
+Q_SIGNALS:
   void itemListToProcess(QStringList itemNameIdList, int actionId);
 };
 

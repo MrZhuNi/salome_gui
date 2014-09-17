@@ -77,7 +77,7 @@ public:
     static int            appendKey() { return apppendKey; }
     static void           setAppendKey( int k ) { apppendKey = k; }
 
-signals:
+Q_SIGNALS:
     void                  selSelectionCancel();
     void                  selSelectionDone( bool append, SelectionChangeStatus status );
 

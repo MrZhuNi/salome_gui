@@ -80,7 +80,7 @@ void QtxIntSpinSlider::IntSpinHasChanged( int theValue )
   mySlider->blockSignals( true );
   mySlider->setValue( theValue );
   mySlider->blockSignals( false );
-  emit valueChanged( theValue );
+  Q_EMIT valueChanged( theValue );
 }
 
 /*!

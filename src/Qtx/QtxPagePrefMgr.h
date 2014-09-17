@@ -69,12 +69,12 @@ public:
 
   virtual void     updateContents();
 
-signals:
+Q_SIGNALS:
   void             resourceChanged( int );
   void             resourceChanged( QString&, QString& );
   void             resourcesChanged( const QMap<int, QString>& );
 
-public slots:
+public Q_SLOTS:
   virtual void     setVisible( bool );
 
 protected:
@@ -171,7 +171,7 @@ public:
   bool             isFixedSize() const;
   void             setFixedSize( const bool );
 
-private slots:
+private Q_SLOTS:
   void             onItemSelectionChanged();
 
 protected:
@@ -458,7 +458,7 @@ protected:
   virtual QVariant optionValue( const QString& ) const;
   virtual void     setOptionValue( const QString&, const QVariant& );
 
-private slots:
+private Q_SLOTS:
   void             setIcon( int );
 
 private:

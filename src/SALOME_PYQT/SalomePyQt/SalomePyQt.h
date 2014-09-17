@@ -60,10 +60,10 @@ public:
   void ClearIObjects();
   void ClearFilters();
 
-signals:
+Q_SIGNALS:
   void currentSelectionChanged();
 
-private slots:
+private Q_SLOTS:
   void onSelMgrDestroyed();
 
 private:

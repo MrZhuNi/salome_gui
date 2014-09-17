@@ -81,7 +81,7 @@ public:
 
   virtual void      restoreState(int savePoint);
 
-signals:
+Q_SIGNALS:
   void              studyModified( SUIT_Study* );
 
 protected:

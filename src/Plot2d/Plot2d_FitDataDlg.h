@@ -56,7 +56,7 @@ public:
 // gets mode : 0 - Fit all; 1 - Fit horizontal, 2 - Fit vertical
   int getMode();
 
-protected slots:
+protected Q_SLOTS:
 // called when range mode changed
   void onModeChanged(int);
 

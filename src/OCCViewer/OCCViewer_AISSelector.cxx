@@ -111,14 +111,14 @@ bool OCCViewer_AISSelector::checkSelection ( AIS_StatusOfPick status,
   myNumSelected = myAISContext->NbCurrents(); /* update after the last selection */
   
   if ( status == AIS_SOP_NothingSelected && !hadSelection ) {
-    emit selSelectionCancel( addTo );
+    Q_EMIT selSelectionCancel( addTo );
   }
   else if ( status == AIS_SOP_NothingSelected && hadSelection ) {
-    emit selSelectionCancel( addTo ); /* unselected now */
+    Q_EMIT selSelectionCancel( addTo ); /* unselected now */
   }
   else if ( status == AIS_SOP_OneSelected || status == AIS_SOP_SeveralSelected )
   {
-    emit selSelectionDone( addTo ); /* selected ( the same object, may be ) */
+	  Q_EMIT selSelectionDone( addTo ); /* selected ( the same object, may be ) */
   }
   return ( status != AIS_SOP_Error && status != AIS_SOP_NothingSelected );
 }

@@ -55,7 +55,7 @@ public:
 
   virtual void setModel( QAbstractItemModel* );
 
-protected slots:
+protected Q_SLOTS:
   void     onHeaderClicked( int );
   void     rowsAboutToBeRemoved( const QModelIndex&, int, int );
   void     selectionChanged( const QItemSelection&, const QItemSelection& );
@@ -64,7 +64,7 @@ protected slots:
 protected:
   void     setOpened( const QModelIndex&, const int, bool );
 
-signals:
+Q_SIGNALS:
   void     sortingEnabled( bool );
   void     selectionChanged();
 

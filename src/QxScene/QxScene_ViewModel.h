@@ -45,7 +45,7 @@ class QXSCENE_EXPORT QxScene_Viewer: public SUIT_ViewModel
  protected:
   void initView(QxScene_ViewWindow* view);
 
- protected slots:
+ protected Q_SLOTS:
   void onShowToolbar();
   void onChangeBgColor();
 

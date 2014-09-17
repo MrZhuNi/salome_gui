@@ -82,7 +82,7 @@ public:
   QMap<int, int>             windows() const;
   QStringList                viewManagers() const;
 
-public slots:
+public Q_SLOTS:
   void                       initialize( CAM_Application* );
   bool                       activate( SUIT_Study* study );
   bool                       deactivate( SUIT_Study* study );

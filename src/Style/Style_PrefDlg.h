@@ -67,10 +67,10 @@ private:
   
   QString            findUniqueName( const QString&, QListWidgetItem* = 0, bool = false );
 
-signals:
+Q_SIGNALS:
   void               styleChanged();
 
-private slots:
+private Q_SLOTS:
   void               onApply();
   void               onHelp();
 
@@ -131,11 +131,11 @@ private:
   static QString     idToName( int );
   QWidget*           line();
 
-private slots:
+private Q_SLOTS:
   void               onQuick();
   void               onAuto();
 
-signals:
+Q_SIGNALS:
   void               changed();
 
 private:

@@ -163,7 +163,7 @@ void GLViewer_Selector2d::unselectAll()
 //     bool lcOpen = ( myAISContext->IndexOfCurrentLocal() != -1 );
 //     lcOpen ? myAISContext->ClearSelected( updateViewer ) :    
 //              myAISContext->ClearCurrent( updateViewer );     
-  if ( hadSelection ) emit selSelectionCancel();
+  if ( hadSelection ) Q_EMIT selSelectionCancel();
 }
 
 /*!
@@ -174,16 +174,16 @@ void GLViewer_Selector2d::checkSelection( int selBefore, bool append, int aStatu
 {
     int selAfter = numSelected();
     if ( selBefore > 0 && selAfter < 1 )     
-        emit selSelectionCancel();
+      Q_EMIT selSelectionCancel();
     else if ( selAfter > 0 )
     {
         switch( aStatus )
         {
         case SS_LocalChanged:
-            emit selSelectionDone( selAfter > 1, SCS_Local );
+            Q_EMIT selSelectionDone( selAfter > 1, SCS_Local );
             break;
         case SS_GlobalChanged:
-            emit selSelectionDone( selAfter > 1, SCS_Global );
+            Q_EMIT selSelectionDone( selAfter > 1, SCS_Global );
             break;
         }
     }

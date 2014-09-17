@@ -99,7 +99,7 @@ bool SUIT_Application::isPossibleToClose( bool& )
 */
 void SUIT_Application::closeApplication()
 {
-  emit applicationClosed( this );
+  Q_EMIT applicationClosed( this );
 }
 
 /*!
@@ -214,7 +214,7 @@ void SUIT_Application::putInfo( const QString& msg, const int msec )
     QTimer::singleShot( msec <= 0 ? DEFAULT_MESSAGE_DELAY : msec, this, SLOT( onInfoClear() ) );
 
   if ( prev != msg )
-    emit infoChanged( msg );
+    Q_EMIT infoChanged( msg );
 }
 
 /*!
@@ -228,7 +228,7 @@ void SUIT_Application::onInfoClear()
   bool changed = !myStatusLabel->text().isEmpty();
   myStatusLabel->clear();
   if ( changed )
-    emit infoChanged( QString() );
+    Q_EMIT infoChanged( QString() );
 }
 
 /*!
@@ -686,7 +686,7 @@ QAction* SUIT_Application::separator()
 
 void SUIT_Application::onDesktopActivated()
 {
-  emit activated( this );
+  Q_EMIT activated( this );
 }
 
 /*!

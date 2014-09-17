@@ -90,7 +90,7 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
   //! Get paint engine for the scene
   virtual QPaintEngine* paintEngine() const;
 
- public slots:
+ public Q_SLOTS:
    //! Need for initial contents display on Win32
   virtual void show();
 
@@ -200,7 +200,7 @@ class SVTK_EXPORT SVTK_RenderWindowInteractor: public QVTK_RenderWindowInteracto
   onEmitSelectionChanged();
 
  public:
- signals:
+ Q_SIGNALS:
   void MouseMove( QMouseEvent* );
   void MouseButtonPressed( QMouseEvent* );
   void MouseButtonReleased( QMouseEvent* );

@@ -186,11 +186,11 @@ public:
   virtual bool           dropMimeData (const QMimeData *data, Qt::DropAction action,
                                        int row, int column, const QModelIndex &parent);
 
-public slots:
+public Q_SLOTS:
   virtual void           updateTree( const QModelIndex& );
   virtual void           updateTree( SUIT_DataObject* = 0 );
 
-signals:
+Q_SIGNALS:
   void modelUpdated();
   void clicked( SUIT_DataObject*, int );
   void dropped( const QList<SUIT_DataObject*>&, SUIT_DataObject*, int, Qt::DropAction );
@@ -209,7 +209,7 @@ private:
   void                   updateItem( TreeItem*, bool emitLayoutChanged );
   void                   removeItem( TreeItem* );
 
-private slots:
+private Q_SLOTS:
   void                   onInserted( SUIT_DataObject*, SUIT_DataObject* );
   void                   onRemoved( SUIT_DataObject*, SUIT_DataObject* );
   void                   onModified( SUIT_DataObject* );
@@ -288,12 +288,12 @@ public:
 
   QAbstractItemDelegate* delegate() const;
 
-public slots:
+public Q_SLOTS:
   virtual void           updateTree( const QModelIndex& );
   virtual void           updateTree( SUIT_DataObject* = 0 );
   void                   setSortingEnabled( bool );
 
-signals:
+Q_SIGNALS:
   void modelUpdated();
   void clicked( SUIT_DataObject*, int );
   void dropped( const QList<SUIT_DataObject*>&, SUIT_DataObject*, int, Qt::DropAction );

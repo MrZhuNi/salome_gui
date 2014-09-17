@@ -88,13 +88,13 @@ public:
   virtual void loadLinks( QtxResourceMgr*, const QString&, const bool = true );
   virtual void saveLinks( QtxResourceMgr*, const QString&, const bool = true ) const;
 
-public slots:
+public Q_SLOTS:
   void         clear();
 
-signals:
+Q_SIGNALS:
   void         activated( const QString& );
 
-private slots:
+private Q_SLOTS:
   void         onActivated();
   void         onAboutToShow();
   void         onCleared( bool );

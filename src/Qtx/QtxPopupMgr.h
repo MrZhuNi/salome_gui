@@ -93,7 +93,7 @@ private:
   bool               result( QtxEvalParser* p ) const;
   QVariant           parameter( const QString&, const int = -1 ) const;
 
-private slots:
+private Q_SLOTS:
   void               onSelectionDestroyed( QObject* );
 
 private:

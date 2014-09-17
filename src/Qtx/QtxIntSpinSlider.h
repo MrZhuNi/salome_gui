@@ -46,13 +46,13 @@ public:
   
   void setUnit( QString& );
 
-public slots:
+public Q_SLOTS:
   void setValue( int );
 
-signals:
+Q_SIGNALS:
   void valueChanged( int );
   
-private slots:
+private Q_SLOTS:
   void IntSpinHasChanged( int );
 
 private:

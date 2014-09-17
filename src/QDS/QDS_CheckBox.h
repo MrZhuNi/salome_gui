@@ -42,10 +42,10 @@ public:
 
   virtual void         clear();
 
-signals:
+Q_SIGNALS:
   void                 toggled( bool );
 
-private slots:
+private Q_SLOTS:
   void                 onParamChanged();
   void                 onStateChanged( int );
 

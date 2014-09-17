@@ -63,7 +63,7 @@ public:
 protected:
   virtual bool      event( QEvent* );
 
-private slots:
+private Q_SLOTS:
   void              onDestroyed( QObject* );
 
 private:

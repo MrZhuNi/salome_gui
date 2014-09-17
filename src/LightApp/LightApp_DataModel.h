@@ -71,7 +71,7 @@ public:
   void registerColumn( SUIT_DataBrowser*, const QString&, const int );
   void unregisterColumn( SUIT_DataBrowser*, const QString& );
 
-signals:
+Q_SIGNALS:
   void                                opened();
   void                                saved();
   void                                closed();

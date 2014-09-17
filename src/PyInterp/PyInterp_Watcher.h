@@ -42,7 +42,7 @@ public:
   PyInterp_Watcher() : QObject( 0 ) {}
   virtual ~PyInterp_Watcher() {}
 
-public slots:
+public Q_SLOTS:
   void onDestroyed( QObject* o ) { PyInterp_Dispatcher::Get()->objectDestroyed( o ); }
 };
 

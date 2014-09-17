@@ -523,7 +523,7 @@ bool OCCViewer_ClipPlaneInteractor::mousePress( QMouseEvent* theEvent,
   if ( myIsClickable )
   {
     myViewer->getAISContext()->SetSelected( aPlane );
-    emit planeClicked( aPlane );
+    Q_EMIT planeClicked( aPlane );
   }
 
   myIsDraggable = isDraggable( aPlane );
@@ -590,7 +590,7 @@ bool OCCViewer_ClipPlaneInteractor::mouseMove( QMouseEvent* theEvent,
   // performing dragging operation
   performDragging( myDragPos, myPerformingOp, myInteractedPlane, aView3D );
 
-  emit planeDragged( myInteractedPlane );
+  Q_EMIT planeDragged( myInteractedPlane );
 
   return true;
 }

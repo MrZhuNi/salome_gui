@@ -123,17 +123,17 @@ public:
   bool isCustomTr() const;
   void enableCustomTr( const bool );
 
-signals:
+Q_SIGNALS:
   void                      paramChanged();
   void                      paramChanged( QString& );
 
-public slots:
+public Q_SLOTS:
   void                      setEnabled( bool );
 
-protected slots:
+protected Q_SLOTS:
   virtual void              onParamChanged();
 
-private slots:
+private Q_SLOTS:
   void                      onInitDatum();
   void                      onDestroyed( QObject* );
 

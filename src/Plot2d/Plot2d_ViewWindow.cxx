@@ -185,13 +185,13 @@ bool Plot2d_ViewWindow::eventFilter( QObject* watched, QEvent* e )
   if ( watched == myViewFrame ) {
     switch( e->type() ) {
     case QEvent::MouseButtonPress:
-      emit mousePressed( this, (QMouseEvent*)e );
+      Q_EMIT mousePressed( this, (QMouseEvent*)e );
       return true;
     case QEvent::MouseButtonRelease:
-      emit mouseReleased( this, (QMouseEvent*)e );
+      Q_EMIT mouseReleased( this, (QMouseEvent*)e );
       return true;
     case QEvent::MouseMove:
-      emit mouseMoving( this, (QMouseEvent*)e );
+      Q_EMIT mouseMoving( this, (QMouseEvent*)e );
       return true;
     default:
       break;

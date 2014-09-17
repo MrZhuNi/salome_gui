@@ -182,14 +182,14 @@ public:
 
   virtual bool                        checkExistingDoc();
 
-signals:
+Q_SIGNALS:
   void                                studyOpened();
   void                                studySaved();
   void                                studyClosed();
   void                                preferenceChanged( const QString&, const QString&, const QString& );
   void                                operationFinished( const QString&, const QString&, const QStringList& );
 
-public slots:
+public Q_SLOTS:
   virtual void                        onHelpContentsModule();
   virtual void                        onHelpContextModule( const QString&, const QString&, const QString& = QString() );
   virtual void                        onNewDoc();
@@ -230,7 +230,7 @@ protected:
   virtual QMap<int, QString>          activateModuleActions() const;
   virtual void                        moduleActionSelected( const int );
 
-protected slots:
+protected Q_SLOTS:
   virtual void                        onDesktopActivated();
   virtual void                        onViewManagerRemoved( SUIT_ViewManager* );
   virtual void                        onWindowActivated( SUIT_ViewWindow* theViewWindow );
@@ -253,7 +253,7 @@ protected slots:
 
   virtual void                        onDesktopMessage( const QString& );
 
-private slots:
+private Q_SLOTS:
   void                                onSelection();
   void                                onRefresh();
   void                                onDropped( const QList<SUIT_DataObject*>&, SUIT_DataObject*, int, Qt::DropAction );

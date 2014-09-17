@@ -72,7 +72,7 @@ public:
   void                     emitActivated();
   void                     emitMessage( const QString& );
 
-signals:
+Q_SIGNALS:
   void                     activated();
   void                     deactivated();
   void                     windowActivated( SUIT_ViewWindow* );

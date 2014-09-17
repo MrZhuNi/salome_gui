@@ -121,14 +121,14 @@ public:
   void SetRelativePosition( QWidget* wid, const Qt::Orientation o, const double pos );
   void SetRelativePositionInSplitter( QWidget* wid, const double pos );
 
-signals:
+Q_SIGNALS:
   void                windowActivated( QWidget* );
 
-public slots:
+public Q_SLOTS:
   void                splitVertical();
   void                splitHorizontal();
 
-private slots:
+private Q_SLOTS:
   void                onRename();
   void                onCloseWindow();
   void                onDestroyed( QObject* );
@@ -244,12 +244,12 @@ public:
   void                saveState( QDataStream& ) const;
   bool                restoreState( QDataStream&, QMap<QString, QtxWorkstackChild*>& );
 
-signals:
+Q_SIGNALS:
   void                activated( QWidget* );
   void                contextMenuRequested( QWidget*, QPoint );
   void                deactivated( QtxWorkstackArea* );
 
-private slots:
+private Q_SLOTS:
   void                onClose();
   void                onCurrentChanged( int );
 
@@ -320,13 +320,13 @@ public:
 
   virtual bool        eventFilter( QObject*, QEvent* );
 
-signals:
+Q_SIGNALS:
   void                shown( QtxWorkstackChild* );
   void                hidden( QtxWorkstackChild* );
   void                activated( QtxWorkstackChild* );
   void                captionChanged( QtxWorkstackChild* );
 
-private slots:
+private Q_SLOTS:
   void                onDestroyed( QObject* );
 
 protected:
@@ -354,11 +354,11 @@ public:
 
   void                updateActiveState();
 
-signals:
+Q_SIGNALS:
   void                dragActiveTab();
   void                contextMenuRequested( QPoint );
 
-private slots:
+private Q_SLOTS:
   void                onCurrentChanged( int );
 
 protected:

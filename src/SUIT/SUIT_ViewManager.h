@@ -85,11 +85,11 @@ public:
 
   int              getGlobalId() const;
 
-public slots:
+public Q_SLOTS:
   void             createView();
   void             closeAllViews();
 
-signals:
+Q_SIGNALS:
   void             lastViewClosed(SUIT_ViewManager*);
   void             tryCloseView(SUIT_ViewWindow*);
   void             deleteView(SUIT_ViewWindow*);
@@ -103,13 +103,13 @@ signals:
   void             keyRelease(SUIT_ViewWindow*, QKeyEvent*);
   void             activated(SUIT_ViewManager*);
 
-protected slots:
+protected Q_SLOTS:
   void             onWindowActivated(SUIT_ViewWindow*);
   void             onClosingView( SUIT_ViewWindow* );
   void             onMousePressed(SUIT_ViewWindow*, QMouseEvent* );
   void             onDeleteStudy();
 
-private slots:
+private Q_SLOTS:
   void             onContextMenuRequested( QContextMenuEvent* e );
 
 protected:

@@ -139,10 +139,10 @@ protected:
     virtual void                     fitSelect() = 0;
     virtual void                     fitAll( bool keepScale = false, bool withZ = true ) = 0;
 
-protected slots:
+protected Q_SLOTS:
     virtual void                     onChangeBgColor();
 
-signals:
+Q_SIGNALS:
     void                             vpKeyEvent( QKeyEvent* );
     void                             vpMouseEvent( QMouseEvent* );
     void                             vpWheelEvent( QWheelEvent* );

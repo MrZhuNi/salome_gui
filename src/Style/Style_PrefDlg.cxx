@@ -455,7 +455,7 @@ void Style_PrefDlg::PaletteEditor::onQuick()
   QColor c = QColorDialog::getColor( lastColor, this );
   if ( c.isValid() ) {
     fromColor( lastColor = c );
-    emit( changed() );
+    Q_EMIT( changed() );
   }
 }
 
@@ -465,11 +465,11 @@ void Style_PrefDlg::PaletteEditor::onQuick()
 */
 void Style_PrefDlg::PaletteEditor::onAuto()
 {
-  foreach( Btns btn, myButtons ) {
+  Q_FOREACH( Btns btn, myButtons ) {
     btn[ QPalette::Inactive ]->setEnabled( !myAutoCheck->isChecked() );
     btn[ QPalette::Disabled ]->setEnabled( !myAutoCheck->isChecked() );
   }
-  emit( changed() );
+  Q_EMIT( changed() );
 }
 
 /*!
@@ -650,7 +650,7 @@ Style_PrefDlg::Style_PrefDlg( QWidget* parent )
   item->setData( TypeRole, QVariant( Default ) );
   myStylesList->addItem( item );
   // global styles
-  foreach ( QString sname, globalStyles ) {
+  Q_FOREACH ( QString sname, globalStyles ) {
     item = new QListWidgetItem( sname );
     item->setForeground( QColor( Qt::blue ) );
     item->setData( TypeRole, QVariant( Global ) );
@@ -658,7 +658,7 @@ Style_PrefDlg::Style_PrefDlg( QWidget* parent )
     myStylesList->addItem( item );
   }
   // user styles
-  foreach ( QString sname, userStyles ) {
+  Q_FOREACH ( QString sname, userStyles ) {
     item = new QListWidgetItem( sname );
     item->setData( TypeRole, QVariant( User ) );
     item->setData( NameRole, QVariant( sname ) );
@@ -959,7 +959,7 @@ void Style_PrefDlg::onStyleChanged()
 void Style_PrefDlg::onLinesType()
 {
   myLinesTransparency->setEnabled( myLinesCombo->itemData( myLinesCombo->currentIndex() ) != Style_Model::NoLines );
-  emit( styleChanged() );
+  Q_EMIT( styleChanged() );
 }
 
 /*!
@@ -1033,6 +1033,6 @@ void Style_PrefDlg::onItemChanged( QListWidgetItem* item )
 void Style_PrefDlg::onEffectChanged( QAbstractButton* rb )
 {
   if ( rb != myCurrentEffect )
-    emit( styleChanged() );
+    Q_EMIT( styleChanged() );
   myCurrentEffect = qobject_cast<QRadioButton*>( rb );
 }

@@ -158,7 +158,7 @@ public:
   //! Transforms global rect to window rect
   QRect                  GLV2win( const GLViewer_Rect& ) const;
 
-signals:
+Q_SIGNALS:
   //! Emits after any transformation
   void                   vpUpdateValues();
 
@@ -190,7 +190,7 @@ protected:
   //! Transform view by view borders ( if \param keepScale = true, zoom does not change )
   virtual void           fitAll( bool keepScale = false, bool withZ = true );
 
-protected slots:
+protected Q_SLOTS:
   //! Initializes drag process
   void                   onStartDragObject();
   //! Pastes object from clipboard

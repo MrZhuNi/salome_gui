@@ -176,12 +176,12 @@ public:
   //! Repaints view \param theView. If \param theView = NULL repaints all views.
   void                 repaintView( GLViewer_ViewFrame* theView = NULL, bool makeCurrent = false );
 
-signals:
+Q_SIGNALS:
   //! Signal needs for optimum recompute of zoom depending objects
   //! Warning: use recompute without update viewer
   void                 wheelZoomChange( bool );
 
-public slots:
+public Q_SLOTS:
   //void                 onSketchDelObject();
   //void                 onSketchUndoLast();
   //void                 onSketchFinish();
@@ -215,7 +215,7 @@ protected:
   //! Starts any operations on mouse wheel event
   virtual void         startOperations( QWheelEvent* );
 
-protected slots:
+protected Q_SLOTS:
   void                 onMouseEvent( SUIT_ViewWindow*, QMouseEvent* );
 
 private:

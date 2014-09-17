@@ -50,7 +50,7 @@ public:
   QWidget*      widget() const;
   void          setWidget( QWidget* );
 
-public slots:
+public Q_SLOTS:
   virtual void  setVisible( bool );
 
 protected:

@@ -84,7 +84,7 @@ private:
   QColor                propColor( Plot2d_AnalyticalCurve* = 0, const QColor& def = QColor() );
   bool                  propAutoAssign( Plot2d_AnalyticalCurve* = 0, bool def = true );
 
-private slots:
+private Q_SLOTS:
   void addCurve();
   void removeCurve();
   void updateCurve();
@@ -122,7 +122,7 @@ class Plot2d_AnalyticalCurveDlg::Updater : public QObject
 public:
   Updater( QWidget* parent );
   ~Updater();
-signals:
+Q_SIGNALS:
   void update();
 };
 

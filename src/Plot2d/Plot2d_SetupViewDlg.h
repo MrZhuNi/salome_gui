@@ -110,7 +110,7 @@ public:
 
   bool            isSetAsDefault();
 
-protected slots:
+protected Q_SLOTS:
   void            onMainTitleChecked();
   void            onXTitleChecked();
   void            onYTitleChecked();

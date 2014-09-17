@@ -1315,14 +1315,14 @@ void QtxDialog::keyPressEvent( QKeyEvent* e )
     if ( testButtonFlags( OK ) || testButtonFlags( Yes ) )
       accept();
     else if ( testButtonFlags( Apply ) && isButtonEnabled( Apply ) )
-      emit dlgApply();
+      Q_EMIT dlgApply();
     e->accept();
   }
 
   if ( e->key() == Qt::Key_F1 && testButtonFlags( Help ) && isButtonEnabled( Help ) )
   {
     e->accept();
-    emit dlgHelp();
+    Q_EMIT dlgHelp();
   }
 
   if ( e->key() == Qt::Key_Tab && e->modifiers() & Qt::ControlModifier )
@@ -1450,19 +1450,19 @@ void QtxDialog::emitSignal()
   switch ( id )
   {
   case OK:
-    emit dlgOk();
+    Q_EMIT dlgOk();
     break;
   case Cancel:
-    emit dlgCancel();
+    Q_EMIT dlgCancel();
     break;
   case Close:
-    emit dlgClose();
+    Q_EMIT dlgClose();
     break;
   case Yes:
-    emit dlgYes();
+    Q_EMIT dlgYes();
     break;
   case No:
-    emit dlgNo();
+    Q_EMIT dlgNo();
     break;
   }
 }
@@ -1505,7 +1505,7 @@ void QtxDialog::onButton()
 {
   int id = buttonId( (QAbstractButton*)sender() );
   if ( id != -1 )
-    emit dlgButton( id );
+    Q_EMIT dlgButton( id );
 }
 
 /*!

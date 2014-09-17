@@ -281,11 +281,11 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
   
   virtual SUIT_CameraProperties cameraProperties();
   
- signals:
+ Q_SIGNALS:
   void Show( QShowEvent * );
   void Hide( QHideEvent * );
 
-public slots:
+public Q_SLOTS:
   virtual void showEvent( QShowEvent * );
   virtual void hideEvent( QHideEvent * );
   virtual void onSelectionChanged();
@@ -327,13 +327,13 @@ public slots:
   void onPauseRecording();
   void onStopRecording();
 
-signals:
+Q_SIGNALS:
  void selectionChanged();
  void actorAdded(VTKViewer_Actor*);
  void actorRemoved(VTKViewer_Actor*);
  void transformed(SVTK_ViewWindow*);
 
-public slots:
+public Q_SLOTS:
   //! Redirect the request to #SVTK_Renderer::OnFrontView
   virtual void onFrontView(); 
 
@@ -378,7 +378,7 @@ public slots:
   
   virtual void synchronize(SVTK_ViewWindow*);
     
-protected slots:
+protected Q_SLOTS:
   void synchronize( SUIT_ViewWindow* );
   void onKeyPressed(QKeyEvent* event);
   void onKeyReleased(QKeyEvent* event);

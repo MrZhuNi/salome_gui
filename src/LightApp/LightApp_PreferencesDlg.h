@@ -51,7 +51,7 @@ public:
   bool                  isSaved() { return mySaved; }
   void                  setSaved( bool saved ) { mySaved = saved; } 
 
-private slots:
+private Q_SLOTS:
   void                  onHelp();
   void                  onApply();
   void                  onDefault();

@@ -35,7 +35,7 @@ public:
   TreeObserver();
   void observe(TreeView * treeView);
 
-public slots:
+public Q_SLOTS:
  /* These slots should be implemented in a specialized version of
     the TreeObserver to process signals emitted from the TreeView */
   virtual void processItemList(QStringList itemNameIdList, int actionId);

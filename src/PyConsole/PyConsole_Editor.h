@@ -60,7 +60,7 @@ public:
 
   virtual QSize  sizeHint() const;
 
-public slots:
+public Q_SLOTS:
     void           cut();
     void           paste();
     void           clear();

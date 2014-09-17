@@ -177,7 +177,7 @@ void QtxToolTip::maybeTip( const QPoint& pos )
         QRect textRegion, theRegion( -1, -1, -1, -1 );
         QFont theFnt = font();
 
-    emit maybeTip( pos, text, theFnt, textRegion, theRegion );
+    Q_EMIT maybeTip( pos, text, theFnt, textRegion, theRegion );
 
     if ( theRegion.isValid() )
         {

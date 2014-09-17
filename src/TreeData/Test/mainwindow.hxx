@@ -39,10 +39,10 @@ public:
 protected:
   void contextMenuEvent(QContextMenuEvent *event);
 
-public slots:
+public Q_SLOTS:
     void updateActions();
 
-private slots:
+private Q_SLOTS:
     void insertChild();
     bool insertColumn(const QModelIndex &parent = QModelIndex());
     void insertRow();

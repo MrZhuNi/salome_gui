@@ -275,7 +275,7 @@ bool QxScene_ViewWindow::closeRequested()
 {
   DEBTRACE("QxScene_ViewWindow::closeRequested");
   bool isClosed = true;
-  emit tryClose(isClosed, this);
+  Q_EMIT tryClose(isClosed, this);
   DEBTRACE("isClosed=" << isClosed);
   return isClosed;
 }

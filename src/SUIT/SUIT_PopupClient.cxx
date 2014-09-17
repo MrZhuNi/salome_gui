@@ -86,5 +86,5 @@ SUIT_PopupClient::Signal::~Signal()
  */
 void SUIT_PopupClient::Signal::sendSignal( SUIT_PopupClient* client, QContextMenuEvent* e )
 {
-  emit contextMenuRequest( client, e );
+  Q_EMIT contextMenuRequest( client, e );
 }

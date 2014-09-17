@@ -61,7 +61,7 @@ public:
   virtual void onChangeBackgroundColor();
   virtual void contextMenuEvent( QContextMenuEvent * e );
 
- signals:
+ Q_SIGNALS:
   /*!On mouse move signal.*/
   void MouseMove( QMouseEvent* );
   /*!On mouse button pressed signal.*/

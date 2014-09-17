@@ -75,7 +75,7 @@ public:
   QString engineIOR() const;
   virtual void  windows( QMap<int, int>& theMap ) const;
 
-public slots:
+public Q_SLOTS:
   bool    deactivateModule( SUIT_Study* );
   bool    activateModule( SUIT_Study* );
 
@@ -142,7 +142,7 @@ private:
   // This part defines slots for test purposes
   // =========================================================
 
-protected slots:
+protected Q_SLOTS:
   void OnTest();
 };
 

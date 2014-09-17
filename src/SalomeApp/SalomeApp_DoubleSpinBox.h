@@ -64,7 +64,7 @@ public:
   void                      setShowTipOnValidate( const bool );
   bool                      isShowTipOnValidate() const;
 
-signals:
+Q_SIGNALS:
   void                      textChanged( const QString& );
 
 protected:
@@ -79,7 +79,7 @@ protected:
   virtual void              keyPressEvent( QKeyEvent* );
   virtual void              showEvent( QShowEvent* );
 
-protected slots:
+protected Q_SLOTS:
   void                      onEditingFinished();
   void                      onTextChanged( const QString& );
 

@@ -50,13 +50,13 @@ public:
   
   void setUnit( QString& );
 
-public slots:
+public Q_SLOTS:
   void setValue( int );
   
-private slots:
+private Q_SLOTS:
   void DoubleSpinHasChanged( double );
 
-signals:
+Q_SIGNALS:
   void valueChanged( double );
 
 private:

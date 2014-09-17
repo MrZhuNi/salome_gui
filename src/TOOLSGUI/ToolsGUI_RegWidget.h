@@ -52,7 +52,7 @@ public:
   static ToolsGUI_RegWidget* GetRegWidget( CORBA::ORB_ptr orb, 
                                            QWidget* parent = 0 );
 
-private slots:
+private Q_SLOTS:
   void                       refresh();
   void                       showDetails( QTreeWidgetItem*, int );
   void                       refreshInterval();

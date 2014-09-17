@@ -83,10 +83,10 @@ public:
   Plot2d_ViewFrame*                getActiveViewFrame();
   Handle(SALOME_InteractiveObject) FindIObject( const char* Entry );
 
-protected slots:
+protected Q_SLOTS:
   virtual void onClicked( const QVariant&, int );
 
-signals:
+Q_SIGNALS:
   void legendSelected( const QString& );
   void clearSelected();
 private:

@@ -438,7 +438,7 @@ void QtxMRUAction::onActivated()
 
   QString link = a->data().toString();
   if ( !link.isEmpty() && myLinks.contains( link ) )
-    emit activated( link );
+    Q_EMIT activated( link );
 }
 
 void QtxMRUAction::onCleared( bool )

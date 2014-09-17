@@ -788,10 +788,10 @@ void SVTK_Viewer::Repaint()
 
 void SVTK_Viewer::onActorAdded(VTKViewer_Actor* theActor)
 {
-  emit actorAdded((SVTK_ViewWindow*)sender(), theActor);
+  Q_EMIT actorAdded((SVTK_ViewWindow*)sender(), theActor);
 }
 
 void SVTK_Viewer::onActorRemoved(VTKViewer_Actor* theActor)
 {
-  emit actorRemoved((SVTK_ViewWindow*)sender(), theActor);
+  Q_EMIT actorRemoved((SVTK_ViewWindow*)sender(), theActor);
 }

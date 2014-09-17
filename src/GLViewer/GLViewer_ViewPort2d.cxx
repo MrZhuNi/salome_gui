@@ -332,7 +332,7 @@ void GLViewer_ViewPort2d::onDragObject( QMouseEvent* e )
 */
 void GLViewer_ViewPort2d::mousePressEvent( QMouseEvent* e )
 {
-    emit vpMouseEvent( e );
+    Q_EMIT vpMouseEvent( e );
 
     GLViewer_Viewer2d* aViewer = (GLViewer_Viewer2d*)getViewFrame()->getViewer();
     GLViewer_Context* aContext = aViewer->getGLContext();
@@ -354,7 +354,7 @@ void GLViewer_ViewPort2d::mousePressEvent( QMouseEvent* e )
 */
 void GLViewer_ViewPort2d::mouseMoveEvent( QMouseEvent* e )
 {
-    emit vpMouseEvent( e );
+    Q_EMIT vpMouseEvent( e );
 
     if( myIsDragProcess == inDrag )
         onDragObject( e );
@@ -400,7 +400,7 @@ void GLViewer_ViewPort2d::mouseReleaseEvent( QMouseEvent* e )
         //    popup->exec( QCursor::pos() );
         //destroyPopup( /*popup*/ );
     }
-    emit vpMouseEvent( e );
+    Q_EMIT vpMouseEvent( e );
 
     if( myIsDragProcess == inDrag )
     {
@@ -429,7 +429,7 @@ void GLViewer_ViewPort2d::mouseReleaseEvent( QMouseEvent* e )
 
       if( isAnyMoved )
       {
-        emit objectMoved();
+        Q_EMIT objectMoved();
         aViewer->updateBorders();
       }
     }
@@ -909,7 +909,7 @@ void GLViewer_ViewPort2d::fitAll( bool keepScale, bool withZ )
     myGLWidget->updateGL();
 
     if( keepScale )
-        emit vpUpdateValues();
+        Q_EMIT vpUpdateValues();
 }
 
 /*!

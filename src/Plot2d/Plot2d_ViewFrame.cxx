@@ -293,7 +293,7 @@ void Plot2d_ViewFrame::DisplayAll()
 {
   objectList olist;
   getObjects( olist );
-  foreach ( Plot2d_Object* o, olist )
+  Q_FOREACH ( Plot2d_Object* o, olist )
     updateObject( o, false );
   myPlot->replot();
   if ( myPlot->zoomer() ) myPlot->zoomer()->setZoomBase();
@@ -1124,7 +1124,7 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
 void Plot2d_ViewFrame::displayCurves( const curveList& curves, bool update )
 {
   objectList objects;
-  foreach ( Plot2d_Curve* curve, curves )
+  Q_FOREACH ( Plot2d_Curve* curve, curves )
     objects << curve;
   displayObjects( objects, update );
 }
@@ -1143,7 +1143,7 @@ void Plot2d_ViewFrame::eraseCurve( Plot2d_Curve* curve, bool update )
 void Plot2d_ViewFrame::eraseCurves( const curveList& curves, bool update )
 {
   objectList objects;
-  foreach ( Plot2d_Curve* curve, curves )
+  Q_FOREACH ( Plot2d_Curve* curve, curves )
     objects << curve;
   eraseObjects( objects, update );
 }
@@ -1296,7 +1296,7 @@ QwtPlotItem* Plot2d_ViewFrame::displayObject( Plot2d_Object* object, bool update
 void Plot2d_ViewFrame::displayObjects( const objectList& objects, bool update )
 {
   //myPlot->setUpdatesEnabled( false ); // call this function deprecate update of legend
-  foreach ( Plot2d_Object* object, objects )
+  Q_FOREACH ( Plot2d_Object* object, objects )
     displayObject( object, false );
   fitAll();
   //myPlot->setUpdatesEnabled( true );
@@ -1340,7 +1340,7 @@ void Plot2d_ViewFrame::eraseBasicObject( QwtPlotItem *object, bool update )
 */
 void Plot2d_ViewFrame::eraseObjects( const objectList& objects, bool update )
 {
-  foreach ( Plot2d_Object* object, objects )
+  Q_FOREACH ( Plot2d_Object* object, objects )
     eraseObject( object, false );
 
   //  fitAll();
@@ -1351,7 +1351,7 @@ void Plot2d_ViewFrame::eraseObjects( const objectList& objects, bool update )
 
 void Plot2d_ViewFrame::eraseBasicObjects( const QList<QwtPlotItem*> &objects, bool update)
 {
-  foreach ( QwtPlotItem* object, objects )
+  Q_FOREACH ( QwtPlotItem* object, objects )
     eraseBasicObject( object, false );
   //  fitAll();
   if ( update )
@@ -1609,7 +1609,7 @@ void Plot2d_ViewFrame::getFitRangeByMarkers(double& xMin,  double& xMax,
     return;
   if(picker->pMarkers.empty())
     return;
-  foreach(QwtPlotMarker *mrker,picker->pMarkers)
+  Q_FOREACH(QwtPlotMarker *mrker,picker->pMarkers)
     {
       bool isV2 = mrker->yAxis() == QwtPlot::yRight;
       xMin = qMin( xMin, mrker->xValue() );
@@ -1990,7 +1990,7 @@ void Plot2d_ViewFrame::setCurveType( int curveType, bool update )
   }
   if ( update )
     myPlot->replot();
-  emit vpCurveChanged();
+  Q_EMIT vpCurveChanged();
 }
 
 /*!
@@ -2438,7 +2438,7 @@ void Plot2d_ViewFrame::setHorScaleMode( const int mode, bool update )
 
   if ( update )
     fitAll();
-  emit vpModeHorChanged();
+  Q_EMIT vpModeHorChanged();
 }
 
 /*!
@@ -2488,7 +2488,7 @@ void Plot2d_ViewFrame::setVerScaleMode( const int mode, bool update )
 
   if ( update )
     fitAll();
-  emit vpModeVerChanged();
+  Q_EMIT vpModeVerChanged();
 }
 
 /*!
@@ -2511,7 +2511,7 @@ void Plot2d_ViewFrame::setNormLMaxMode( bool mode, bool update )
   processFiltering(true);
   if ( update )
     fitAll();
-  emit vpNormLModeChanged();
+  Q_EMIT vpNormLModeChanged();
 }
 
 /*!
@@ -2534,7 +2534,7 @@ void Plot2d_ViewFrame::setNormLMinMode( bool mode, bool update )
   processFiltering(true);
   if ( update )
     fitAll();
-  emit vpNormLModeChanged();
+  Q_EMIT vpNormLModeChanged();
 }
 
 /*!
@@ -2557,7 +2557,7 @@ void Plot2d_ViewFrame::setNormRMaxMode( bool mode, bool update )
   processFiltering(true);
   if ( update )
     fitAll();
-  emit vpNormRModeChanged();
+  Q_EMIT vpNormRModeChanged();
 }
 
 /*!
@@ -2580,7 +2580,7 @@ void Plot2d_ViewFrame::setNormRMinMode( bool mode, bool update )
   processFiltering(true);
   if ( update )
     fitAll();
-  emit vpNormRModeChanged();
+  Q_EMIT vpNormRModeChanged();
 }
 
 /*!
@@ -2725,7 +2725,7 @@ void Plot2d_ViewFrame::plotMouseReleased( const QMouseEvent& me )
   {
     QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
                               me.pos(), me.globalPos() );
-    emit contextMenuRequested( &aEvent );
+    Q_EMIT contextMenuRequested( &aEvent );
   }
   else {
 #ifndef NO_ANALYTICAL_CURVES
@@ -4062,7 +4062,7 @@ Plot2d_Curve* Plot2d_ViewFrame::getClosestCurve( QPoint p, double& distance, int
  \brief  Deselect all analytical curves.
 */
 void Plot2d_ViewFrame::deselectAnalyticalCurves() {
-  foreach(Plot2d_AnalyticalCurve* c, myAnalyticalCurves) {
+  Q_FOREACH(Plot2d_AnalyticalCurve* c, myAnalyticalCurves) {
    c->setSelected(false);
   }
 }

@@ -103,12 +103,12 @@ public:
   bool         isEmptyEnabled( const int ) const;
   void         setEmptyEnabled( const int, const bool );
 
-private slots:
+private Q_SLOTS:
   void         onAboutToShow();
   void         onAboutToHide();
   void         onDestroyed( QObject* );
 
-signals:
+Q_SIGNALS:
   void         menuAboutToShow( QMenu* );
   void         menuAboutToHide( QMenu* );
 

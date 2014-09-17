@@ -38,7 +38,7 @@ public:
 
   void Update();
 
-protected slots:
+protected Q_SLOTS:
   bool apply();
   void reset();
   void accept();

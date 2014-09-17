@@ -106,7 +106,7 @@ protected:
   void                setStudyDS(const _PTR(Study)& s );
   virtual CAM_ModuleObject* createModuleObject( LightApp_DataModel* theDataModel, 
 						SUIT_DataObject* theParent ) const;
-protected slots:
+protected Q_SLOTS:
   virtual void        updateModelRoot( const CAM_DataModel* );
 #ifndef DISABLE_PYCONSOLE
   void                onNoteBookVarUpdate( QString theVarName );
@@ -120,7 +120,7 @@ private:
   Observer_i*         myObserver;
 
 #ifndef DISABLE_PYCONSOLE
- signals:
+ Q_SIGNALS:
   void                notebookVarUpdated( QString theVarName );
 #endif
 };

@@ -586,7 +586,7 @@ void QtxActionMenuMgr::onAboutToShow()
 {
   QMenu* m = ::qobject_cast<QMenu*>( sender() );
   if ( m )
-    emit menuAboutToShow( m );
+    Q_EMIT menuAboutToShow( m );
 }
 
 /*!
@@ -598,7 +598,7 @@ void QtxActionMenuMgr::onAboutToHide()
 {
   QMenu* m = ::qobject_cast<QMenu*>( sender() );
   if ( m )
-    emit menuAboutToHide( m );
+    Q_EMIT menuAboutToHide( m );
 }
 
 /*!
@@ -902,7 +902,7 @@ void QtxActionMenuMgr::updateMenu( MenuNode* startNode, const bool rec, const bo
     }
   }
   QList<QAction*> alist = mw->actions();
-  foreach( a, alist ) mw->removeAction( a );
+  Q_FOREACH( a, alist ) mw->removeAction( a );
 
   // collect all registered menus by group id
   QMap<int, NodeList> idMap;
@@ -958,7 +958,7 @@ void QtxActionMenuMgr::updateMenu( MenuNode* startNode, const bool rec, const bo
   // rebuild menu: 2. insert back all foreign actions
   for( formapit = foreign.begin(); formapit != foreign.end(); ++formapit ) {
     preva = formapit.key();
-    foreach( a, formapit.value() )
+    Q_FOREACH( a, formapit.value() )
       mw->insertAction( preva, a );
   }
   

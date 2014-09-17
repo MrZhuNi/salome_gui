@@ -89,7 +89,7 @@ public:
 
     GLViewer_ViewFrame*          getActiveView() const;
 
-signals:
+Q_SIGNALS:
     void                         selectionChanged( SelectionChangeStatus );
 
 protected:
@@ -112,7 +112,7 @@ protected:
     virtual void                 finishOperations( QMouseEvent* ) {}
     virtual void                 startOperations( QWheelEvent* ) {}
 
-protected slots:
+protected Q_SLOTS:
     virtual void                 onKeyEvent( SUIT_ViewWindow*, QKeyEvent* );
     virtual void                 onMouseEvent( SUIT_ViewWindow*, QMouseEvent* );
     virtual void                 onWheelEvent( SUIT_ViewWindow*, QWheelEvent* );

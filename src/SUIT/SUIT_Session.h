@@ -81,13 +81,13 @@ public:
 
   void                         insertApplication( SUIT_Application* );
 
-signals:
+Q_SIGNALS:
   void                         applicationClosed( SUIT_Application* );
 
 protected:
   virtual SUIT_ResourceMgr*    createResourceMgr( const QString& ) const;
 
-private slots:
+private Q_SLOTS:
   void                         onApplicationClosed( SUIT_Application* );
   void                         onApplicationActivated( SUIT_Application* ); 
 

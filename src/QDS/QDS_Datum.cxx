@@ -689,8 +689,8 @@ void QDS_Datum::reset()
 
   onParamChanged();
   QString str = getString();
-  emit paramChanged();
-  emit paramChanged( str );
+  Q_EMIT paramChanged();
+  Q_EMIT paramChanged( str );
 }
 
 /*!
@@ -708,8 +708,8 @@ void QDS_Datum::clear()
 
     onParamChanged();
     QString str = getString();
-    emit paramChanged();
-    emit paramChanged( str );
+    Q_EMIT paramChanged();
+    Q_EMIT paramChanged( str );
   }
 }
 
@@ -773,8 +773,8 @@ void QDS_Datum::setStringValue( const QString& txt )
 
   onParamChanged();
   QString str = getString();
-  emit paramChanged();
-  emit paramChanged( str );
+  Q_EMIT paramChanged();
+  Q_EMIT paramChanged( str );
 }
 
 /*!
@@ -801,8 +801,8 @@ void QDS_Datum::setDoubleValue( const double num )
 
   onParamChanged();
   QString str = getString();
-  emit paramChanged();
-  emit paramChanged( str );
+  Q_EMIT paramChanged();
+  Q_EMIT paramChanged( str );
 }
 
 /*!
@@ -829,8 +829,8 @@ void QDS_Datum::setIntegerValue( const int num )
 
   onParamChanged();
   QString str = getString();
-  emit paramChanged();
-  emit paramChanged( str );
+  Q_EMIT paramChanged();
+  Q_EMIT paramChanged( str );
 }
 
 /*!

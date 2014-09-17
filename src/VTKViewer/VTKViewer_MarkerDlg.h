@@ -53,7 +53,7 @@ public:
 protected:
   void                    keyPressEvent( QKeyEvent* );
 
-private slots:
+private Q_SLOTS:
   void                    onHelp();
 
 private:

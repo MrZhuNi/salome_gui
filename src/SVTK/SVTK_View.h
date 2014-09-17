@@ -87,11 +87,11 @@ public:
   getRenderer();
 
   //----------------------------------------------------------------------------
- public slots:
+ public Q_SLOTS:
   void onSelectionChanged();
 
  public:
- signals:
+  Q_SIGNALS:
   void MouseMove( QMouseEvent* );
   void MouseButtonPressed( QMouseEvent* );
   void MouseButtonReleased( QMouseEvent* );

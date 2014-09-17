@@ -103,7 +103,7 @@ void LightApp_Preferences::changedResources( const ResourceMap& map )
     QString sec, param;
     it.key()->resource( sec, param );
     QString mod = module( it.key()->id() );
-    emit preferenceChanged( mod, sec, param );
+    Q_EMIT preferenceChanged( mod, sec, param );
   }
 }
 

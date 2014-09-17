@@ -53,11 +53,11 @@ public:
 
   void            clear();
 
-signals:
+Q_SIGNALS:
   void            triggered( int );
   void            triggered( QAction* );
 
-private slots:
+private Q_SLOTS:
   void            onChanged();
   void            onActionTriggered( bool = false );
 

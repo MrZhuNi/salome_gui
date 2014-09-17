@@ -132,7 +132,7 @@ QString SUIT_ResourceMgr::findAppropriateUserFile( const QString& fname ) const
   if ( d.exists() ) {
     d.setFilter( QDir::Files | QDir::Hidden | QDir::NoSymLinks );
     QStringList l = d.entryList();
-    foreach( QString ll, l )
+    Q_FOREACH( QString ll, l )
       all_files << d.absoluteFilePath( ll );
   }
   // backward compatibility: check also user's home directory (if it differs from above one)
@@ -140,7 +140,7 @@ QString SUIT_ResourceMgr::findAppropriateUserFile( const QString& fname ) const
   if ( home.exists() && d.canonicalPath() != home.canonicalPath() ) {
     home.setFilter( QDir::Files | QDir::Hidden | QDir::NoSymLinks );
     QStringList l = home.entryList();
-    foreach( QString ll, l )
+    Q_FOREACH( QString ll, l )
       all_files << home.absoluteFilePath( ll );
   }
 

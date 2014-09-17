@@ -127,7 +127,7 @@ public:
   uint             setAlignment( uint align );
   static  void     setUnits( QLabel*, const QString& );
   
-signals:
+Q_SIGNALS:
   void             dlgButton( int );
   void             dlgParamChanged();
   
@@ -140,15 +140,15 @@ signals:
   void             dlgClose();
   void             dlgCancel();
   
-public slots:
+public Q_SLOTS:
   void             update();
   virtual void     setVisible( bool );
 
-protected slots:
+protected Q_SLOTS:
   virtual void     accept();
   virtual void     reject();
 
-private slots:
+private Q_SLOTS:
   void             onAccept();
   void             onReject();
   void             onButton();

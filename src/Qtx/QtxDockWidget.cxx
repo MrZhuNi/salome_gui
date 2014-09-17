@@ -475,7 +475,7 @@ void QtxDockWidget::updateState()
 
   myOrientation = o;
 
-  emit orientationChanged( myOrientation );
+  Q_EMIT orientationChanged( myOrientation );
 }
 
 /*!

@@ -67,7 +67,7 @@ protected:
   // checks the status of pick and emits 'selSelectionDone' or 'selSelectionCancel'.
   bool checkSelection ( AIS_StatusOfPick status, bool hadSelection, bool addTo );
   
-signals:
+Q_SIGNALS:
   // 'selection done' signal
   void selSelectionDone( bool bAdded );
   // 'selection cancelled' signal

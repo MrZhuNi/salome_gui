@@ -318,7 +318,7 @@ void OCCViewer_Viewer::onMouseRelease(SUIT_ViewWindow* theWindow, QMouseEvent* t
   myEndPnt.setX(theEvent->x()); myEndPnt.setY(theEvent->y());
   bool aHasShift = (theEvent->modifiers() & Qt::ShiftModifier);
   
-  if (!aHasShift) emit deselection();
+  if (!aHasShift) Q_EMIT deselection();
 
   if (myStartPnt == myEndPnt)
   {
@@ -359,7 +359,7 @@ void OCCViewer_Viewer::onMouseRelease(SUIT_ViewWindow* theWindow, QMouseEvent* t
 
     myAISContext->UpdateCurrentViewer();
   }
-  emit selectionChanged();
+  Q_EMIT selectionChanged();
 }
 
 /*!
@@ -375,7 +375,7 @@ void OCCViewer_Viewer::onKeyPress(SUIT_ViewWindow* theWindow, QKeyEvent* theEven
   if (!aView || aView->interactionStyle() != SUIT_ViewModel::KEY_FREE)
     return;
 
-  emit deselection();
+  Q_EMIT deselection();
 
   if ( !isPreselectionEnabled() ) {
     Handle(V3d_View) aView3d = aView->getViewPort()->getView();
@@ -386,7 +386,7 @@ void OCCViewer_Viewer::onKeyPress(SUIT_ViewWindow* theWindow, QKeyEvent* theEven
 
   myAISContext->Select();
 
-  emit selectionChanged();
+  Q_EMIT selectionChanged();
 }
 
 void OCCViewer_Viewer::onViewClosed(OCCViewer_ViewPort3d*)
@@ -665,7 +665,7 @@ void OCCViewer_Viewer::setObjectsSelected(const AIS_ListOfInteractive& theList)
 */
 void OCCViewer_Viewer::performSelectionChanged()
 {
-    emit selectionChanged();
+  Q_EMIT selectionChanged();
 }
 
 /*!

@@ -43,7 +43,7 @@ protected:
   virtual void getSelection( SUIT_DataOwnerPtrList& ) const;
   virtual void setSelection( const SUIT_DataOwnerPtrList& );
 
-protected slots:
+protected Q_SLOTS:
   void onSelectionChanged( GV_SelectionChangeStatus );
 
 protected:

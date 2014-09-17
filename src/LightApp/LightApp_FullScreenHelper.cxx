@@ -94,7 +94,7 @@ void LightApp_FullScreenHelper::switchToFullScreen() {
   QWidget* ob = app->objectBrowser();
   QObject* obParent = ob ? ob->parent() : 0;
 
-  foreach(QDockWidget* aWidget, aDocWidgets) {
+  Q_FOREACH(QDockWidget* aWidget, aDocWidgets) {
     if(aWidget && aWidget->parent() == desktop) {
       if( aWidget->isVisible() && aWidget != obParent ) {
 	aWidget->hide();
@@ -114,7 +114,7 @@ void LightApp_FullScreenHelper::switchToFullScreen() {
   
   QList<QToolBar*> aToolBars = desktop->findChildren<QToolBar*>();
   myToolBarMap.clear();
-  foreach(QToolBar* aWidget, aToolBars )  {
+  Q_FOREACH(QToolBar* aWidget, aToolBars )  {
     if( aWidget && aWidget->parent() == desktop ) {
       if( aWidget->isVisible()) {
 	aWidget->hide();

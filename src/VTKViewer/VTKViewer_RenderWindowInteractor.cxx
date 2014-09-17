@@ -360,7 +360,7 @@ void VTKViewer_RenderWindowInteractor::TimerFunc()
   }
   
   ((vtkInteractorStyle*)this->InteractorStyle)->OnTimer() ;
-  emit RenderWindowModified() ;
+  Q_EMIT RenderWindowModified() ;
 }
 
 /*!Emit render window modified on mouse move,\n
@@ -371,7 +371,7 @@ void VTKViewer_RenderWindowInteractor::MouseMove(QMouseEvent *event) {
   }
   myInteractorStyle->OnMouseMove(0, 0, event->x(), event->y()/*this->Size[1] - event->y() - 1*/) ;
   if (myInteractorStyle->needsRedrawing() )
-    emit RenderWindowModified() ; 
+    Q_EMIT RenderWindowModified() ;
 }
 
 /*!Reaction on left button pressed.\n
@@ -455,7 +455,7 @@ void VTKViewer_RenderWindowInteractor::RightButtonReleased(const QMouseEvent *ev
   {
     QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
                               event->pos(), event->globalPos() );
-    emit contextMenuRequested( &aEvent );
+    Q_EMIT contextMenuRequested( &aEvent );
   }
 }
 
@@ -524,7 +524,7 @@ void VTKViewer_RenderWindowInteractor::ChangeRepresentationToWireframe(vtkActorC
   ForEach<VTKViewer_Actor>(theCollection,
                         TSetFunction<VTKViewer_Actor,int>
                         (&VTKViewer_Actor::setDisplayMode,0));
-  emit RenderWindowModified();
+  Q_EMIT RenderWindowModified();
 }
 
 /*!Change all actors from \a theCollection to surface and
@@ -536,7 +536,7 @@ void VTKViewer_RenderWindowInteractor::ChangeRepresentationToSurface(vtkActorCol
   ForEach<VTKViewer_Actor>(theCollection,
                         TSetFunction<VTKViewer_Actor,int>
                         (&VTKViewer_Actor::setDisplayMode,1));
-  emit RenderWindowModified();
+  Q_EMIT RenderWindowModified();
 }
 
 /*!Change all actors from \a theCollection to surface with edges and
@@ -548,7 +548,7 @@ void VTKViewer_RenderWindowInteractor::ChangeRepresentationToSurfaceWithEdges(vt
   ForEach<VTKViewer_Actor>(theCollection,
                         TSetFunction<VTKViewer_Actor,int>
                         (&VTKViewer_Actor::setDisplayMode,3));
-  emit RenderWindowModified();
+  Q_EMIT RenderWindowModified();
 }
 
 /*!Gets renderer.*/
@@ -573,7 +573,7 @@ void VTKViewer_RenderWindowInteractor::DisplayAll()
   ActorCollectionCopy aCopy(GetRenderer()->GetActors());
   ForEach<VTKViewer_Actor>(aCopy.GetActors(),TSetVisibility<VTKViewer_Actor>(true));
 
-  emit RenderWindowModified() ;
+  Q_EMIT RenderWindowModified() ;
 }
 
 /*!Do nothing*/
@@ -588,7 +588,7 @@ void VTKViewer_RenderWindowInteractor::Remove( VTKViewer_Actor* SActor, bool upd
   {
     GetRenderer()->RemoveViewProp( SActor );
     if ( updateViewer )
-      emit RenderWindowModified();
+      Q_EMIT RenderWindowModified();
   }
 }
 
@@ -612,7 +612,7 @@ void VTKViewer_RenderWindowInteractor::RemoveAll( const bool updateViewer )
     }
 
     if ( updateViewer )
-      emit RenderWindowModified();
+      Q_EMIT RenderWindowModified();
   }
 }
 
@@ -626,7 +626,7 @@ void VTKViewer_RenderWindowInteractor::Display( VTKViewer_Actor* theActor, bool 
   theActor->SetVisibility(true);
 
   if(update)
-    emit RenderWindowModified();
+    Q_EMIT RenderWindowModified();
 }
 
 /*!
@@ -654,7 +654,7 @@ void VTKViewer_RenderWindowInteractor::Update() {
 
   aRen->ResetCamera();
 
-  emit RenderWindowModified();  
+  Q_EMIT RenderWindowModified();
 }
 
 /*!Unhighlight all selection actors.*/
@@ -670,7 +670,7 @@ void VTKViewer_RenderWindowInteractor::unHighlightSubSelection(){
 bool VTKViewer_RenderWindowInteractor::unHighlightAll(){
   unHighlightSubSelection();
 
-  emit RenderWindowModified() ;
+  Q_EMIT RenderWindowModified() ;
   return false;
 }
 
@@ -695,7 +695,7 @@ bool VTKViewer_RenderWindowInteractor::highlight(const TColStd_IndexedMapOfInteg
 
   if(update){
     this->RenderWindow->Render();
-    emit RenderWindowModified() ;
+    Q_EMIT RenderWindowModified() ;
   }
 
   return false;

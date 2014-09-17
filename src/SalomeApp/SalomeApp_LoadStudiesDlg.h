@@ -42,7 +42,7 @@ public:
 
   QString        selectedStudy();
 
-private slots:
+private Q_SLOTS:
   void           updateState();
 
 private:

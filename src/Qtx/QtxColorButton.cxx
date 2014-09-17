@@ -208,7 +208,7 @@ void QtxColorButton::onAboutToShow()
 */
 void QtxColorButton::onClicked( bool )
 {
-  emit clicked( color() );
+  Q_EMIT clicked( color() );
 }
 
 /*!
@@ -240,7 +240,7 @@ void QtxColorButton::onToggled( bool on )
   updateState();
 
   if ( old != color() )
-    emit changed( color() );
+    Q_EMIT changed( color() );
 }
 
 /*!
@@ -280,7 +280,7 @@ void QtxColorButton::onDialogClicked( bool )
   setColor( c );
 
   if ( old != color() )
-    emit changed( color() );
+    Q_EMIT changed( color() );
 }
 
 /*!

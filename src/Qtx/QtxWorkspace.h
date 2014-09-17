@@ -39,7 +39,7 @@ public:
   QtxWorkspace( QWidget* = 0 );
   virtual ~QtxWorkspace();
 
-public slots:
+public Q_SLOTS:
   void        tileVertical();
   void        tileHorizontal();
 };

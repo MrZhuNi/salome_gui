@@ -244,7 +244,7 @@ void QtxComboBox::onCurrentChanged( int idx )
   if ( idx != -1 )
   {
     resetClear();
-    emit activatedId( id( idx ) );
+    Q_EMIT activatedId( id( idx ) );
   }
 }
 

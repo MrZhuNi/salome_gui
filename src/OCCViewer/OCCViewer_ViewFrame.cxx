@@ -80,7 +80,7 @@ OCCViewer_ViewWindow* OCCViewer_ViewFrame::getView( const int i ) const
 void OCCViewer_ViewFrame::setViewManager( SUIT_ViewManager* theMgr )
 {
   OCCViewer_ViewWindow::setViewManager(theMgr);
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     aView->setViewManager(theMgr); 
   }
 }
@@ -284,7 +284,7 @@ OCCViewer_ViewPort3d* OCCViewer_ViewFrame::getViewPort(int theView)
 //**************************************************************************************
 void OCCViewer_ViewFrame::updateEnabledDrawMode() 
 { 
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH (OCCViewer_ViewWindow* aView, myViews) {
     aView->updateEnabledDrawMode(); 
   }
 }
@@ -293,7 +293,7 @@ void OCCViewer_ViewFrame::updateEnabledDrawMode()
 void OCCViewer_ViewFrame::setCuttingPlane( bool on, const double x , const double y , const double z,
                                            const double dx, const double dy, const double dz)  
 { 
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     aView->setCuttingPlane(on, x, y, z, dx, dy, dz); 
     aView->update();
   }
@@ -302,7 +302,7 @@ void OCCViewer_ViewFrame::setCuttingPlane( bool on, const double x , const doubl
 //**************************************************************************************
 void OCCViewer_ViewFrame::setCuttingPlane( bool on, const gp_Pln thePln ) 
 { 
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     aView->setCuttingPlane(on, thePln); 
     aView->update();
   }
@@ -311,7 +311,7 @@ void OCCViewer_ViewFrame::setCuttingPlane( bool on, const gp_Pln thePln )
 //**************************************************************************************
 void OCCViewer_ViewFrame::setInteractionStyle( const int i ) 
 { 
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     aView->setInteractionStyle(i); 
   }
 }
@@ -319,7 +319,7 @@ void OCCViewer_ViewFrame::setInteractionStyle( const int i )
 //**************************************************************************************
 void OCCViewer_ViewFrame::setZoomingStyle( const int i ) 
 { 
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH (OCCViewer_ViewWindow* aView, myViews) {
     aView->setZoomingStyle(i); 
   }
 }
@@ -366,7 +366,7 @@ void OCCViewer_ViewFrame::setBackgroundColor( const QColor& theColor )
   if (myPopupRequestedView)
     myPopupRequestedView->setBackgroundColor(theColor); 
   else {
-    foreach (OCCViewer_ViewWindow* aView, myViews) {
+    Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
       if (aView->isVisible())
         aView->setBackgroundColor(theColor); 
     }
@@ -377,7 +377,7 @@ void OCCViewer_ViewFrame::setBackground( const Qtx::BackgroundData& theBackgroun
   if (myPopupRequestedView)
     myPopupRequestedView->setBackground(theBackground); 
   else {
-    foreach (OCCViewer_ViewWindow* aView, myViews) {
+    Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
       if (aView->isVisible())
         aView->setBackground(theBackground); 
     }
@@ -386,14 +386,14 @@ void OCCViewer_ViewFrame::setBackground( const Qtx::BackgroundData& theBackgroun
 
 void OCCViewer_ViewFrame::onViewFitAll()
 {
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     aView->onViewFitAll(); 
   }
 }
 
 void OCCViewer_ViewFrame::onFitAll()
 {
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     aView->onFitAll(); 
   }
 }
@@ -404,7 +404,7 @@ QColor OCCViewer_ViewFrame::backgroundColor() const
   if (myPopupRequestedView)
     return myPopupRequestedView->backgroundColor(); 
 
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     if (aView->isVisible())
       return aView->backgroundColor(); 
   }
@@ -416,7 +416,7 @@ Qtx::BackgroundData OCCViewer_ViewFrame::background() const
   if (myPopupRequestedView)
     return myPopupRequestedView->background(); 
 
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     if (aView->isVisible())
       return aView->background(); 
   }
@@ -428,7 +428,7 @@ void OCCViewer_ViewFrame::showStaticTrihedron( bool on )
   if ( myPopupRequestedView )
     myPopupRequestedView->showStaticTrihedron( on ); 
   else {
-    foreach ( OCCViewer_ViewWindow* aView, myViews ) {
+    Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
       aView->showStaticTrihedron( on ); 
     }
   }
@@ -436,7 +436,7 @@ void OCCViewer_ViewFrame::showStaticTrihedron( bool on )
 
 QImage OCCViewer_ViewFrame::dumpView()
 {
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     if (aView->isVisible())
       return aView->dumpView();
   }
@@ -445,7 +445,7 @@ QImage OCCViewer_ViewFrame::dumpView()
 
 bool OCCViewer_ViewFrame::dumpViewToFormat( const QImage& image, const QString& fileName, const QString& format )
 {
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     if (aView->isVisible())
       return aView->dumpViewToFormat( image, fileName, format );
   }
@@ -469,7 +469,7 @@ void OCCViewer_ViewFrame::onDumpView()
 
 void OCCViewer_ViewFrame::setDropDownButtons( bool on )
 {
-  foreach( OCCViewer_ViewWindow* aView, myViews ) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     aView->setDropDownButtons( on );
   }
   OCCViewer_ViewWindow::setDropDownButtons( on );
@@ -481,7 +481,7 @@ QString OCCViewer_ViewFrame::getVisualParameters()
   QStringList splitParams;
   if( mySplitMode != -1 && myViewsMode.count() != 0 ) {
     splitParams << QString::number( mySplitMode );
-    foreach ( int aViewMode, myViewsMode )
+    Q_FOREACH( int aViewMode, myViewsMode )
       splitParams << QString::number( aViewMode );
     params.append( splitParams.join("*") );
   }
@@ -556,14 +556,14 @@ void OCCViewer_ViewFrame::updateWindowTitle(OCCViewer_ViewWindow* theView)
 
 void OCCViewer_ViewFrame::enableSelection( bool isEnabled )
 {
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     aView->enableSelection(isEnabled); 
   }
 }
 
 void OCCViewer_ViewFrame::enablePreselection( bool isEnabled )
 {
-  foreach (OCCViewer_ViewWindow* aView, myViews) {
+  Q_FOREACH( OCCViewer_ViewWindow* aView, myViews ) {
     aView->enablePreselection(isEnabled); 
   }
 }

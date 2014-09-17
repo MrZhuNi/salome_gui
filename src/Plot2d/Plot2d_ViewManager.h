@@ -48,13 +48,13 @@ public:
 protected:
   bool         insertView(SUIT_ViewWindow* theView);
 
-public slots:
+public Q_SLOTS:
   void         createView();
 
-protected slots:
+protected Q_SLOTS:
   void         onCloneView();
 
-signals:
+Q_SIGNALS:
   void cloneView( Plot2d_ViewFrame*, Plot2d_ViewFrame* );
 };
 

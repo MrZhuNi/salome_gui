@@ -493,7 +493,7 @@ void GLViewer_ViewPort::setTransformEnabled( bool enable )
 */
 void GLViewer_ViewPort::mousePressEvent( QMouseEvent *e )
 {
-    emit vpMouseEvent( e );
+    Q_EMIT vpMouseEvent( e );
 }
 
 /*!
@@ -501,7 +501,7 @@ void GLViewer_ViewPort::mousePressEvent( QMouseEvent *e )
 */
 void GLViewer_ViewPort::mouseMoveEvent( QMouseEvent* e )
 {
-    emit vpMouseEvent( e );
+    Q_EMIT vpMouseEvent( e );
 }
 
 /*!
@@ -509,7 +509,7 @@ void GLViewer_ViewPort::mouseMoveEvent( QMouseEvent* e )
 */
 void GLViewer_ViewPort::mouseReleaseEvent( QMouseEvent *e )
 {
-    emit vpMouseEvent( e );
+    Q_EMIT vpMouseEvent( e );
 
     /* show popup menu */
     if ( e->button() == Qt::RightButton )
@@ -526,7 +526,7 @@ void GLViewer_ViewPort::mouseReleaseEvent( QMouseEvent *e )
 */
 void GLViewer_ViewPort::mouseDoubleClickEvent( QMouseEvent *e )
 {
-    emit vpMouseEvent( e );
+    Q_EMIT vpMouseEvent( e );
 }
 
 /*!
@@ -534,7 +534,7 @@ void GLViewer_ViewPort::mouseDoubleClickEvent( QMouseEvent *e )
 */
 void GLViewer_ViewPort::keyPressEvent( QKeyEvent *e )
 {
-    emit vpKeyEvent( e );
+    Q_EMIT vpKeyEvent( e );
 }
 
 /*!
@@ -542,7 +542,7 @@ void GLViewer_ViewPort::keyPressEvent( QKeyEvent *e )
 */
 void GLViewer_ViewPort::keyReleaseEvent( QKeyEvent *e )
 {
-    emit vpKeyEvent( e );
+    Q_EMIT vpKeyEvent( e );
 }
 
 /*!
@@ -550,7 +550,7 @@ void GLViewer_ViewPort::keyReleaseEvent( QKeyEvent *e )
 */
 void GLViewer_ViewPort::wheelEvent( QWheelEvent *e )
 {
-    emit vpWheelEvent( e );
+    Q_EMIT vpWheelEvent( e );
 }
 
 /*!
@@ -561,7 +561,7 @@ void GLViewer_ViewPort::paintEvent( QPaintEvent* )
     if ( myPaintersRedrawing )
     {
         QPainter p( this );
-        emit vpDrawExternal( &p );
+        Q_EMIT vpDrawExternal( &p );
         myPaintersRedrawing = false;
     }
 }
@@ -598,5 +598,5 @@ void GLViewer_ViewPort::onChangeBgColor()
 void GLViewer_ViewPort::contextMenuEvent( QContextMenuEvent* e )
 {
   //if ( e->reason() != QContextMenuEvent::Mouse )
-    emit contextMenuRequested( e );
+    Q_EMIT contextMenuRequested( e );
 }

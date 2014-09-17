@@ -235,7 +235,7 @@ public:
 
   virtual SUIT_CameraProperties   cameraProperties();
 
-public slots:
+public Q_SLOTS:
   virtual void onFrontView();
   virtual void onViewFitAll();
   virtual void onBackView();
@@ -278,7 +278,7 @@ public slots:
   virtual void onMaximizedView();
   virtual void returnTo3dView();
 
-signals:
+Q_SIGNALS:
   void vpTransformationStarted(OCCViewer_ViewWindow::OperationType type);
   void vpTransformationFinished(OCCViewer_ViewWindow::OperationType type);
   void viewCloned( SUIT_ViewWindow* );
@@ -288,7 +288,7 @@ signals:
   void maximized( OCCViewer_ViewWindow*, bool );
   void returnedTo3d( );
 
-protected slots:
+protected Q_SLOTS:
   void synchronize( SUIT_ViewWindow* );
 
 public:

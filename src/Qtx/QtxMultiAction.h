@@ -44,7 +44,7 @@ public:
   void             setActiveAction( QAction* );
   QAction*         activeAction() const;
 
-private slots:
+private Q_SLOTS:
   void             onClicked( bool );
   void             onTriggered( QAction* );
   void             onActionChanged();

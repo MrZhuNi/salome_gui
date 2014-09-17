@@ -58,7 +58,7 @@ public:
   virtual QString   type() const { return OCCViewer_Viewer::Type(); }
 #endif
 
-private slots:
+private Q_SLOTS:
   virtual void      onSelectionChanged();
   virtual void      onDeselection();
 

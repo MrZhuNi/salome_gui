@@ -533,7 +533,7 @@ void GraphicsView_Viewer::handleWheel( QGraphicsSceneWheelEvent* e )
 
       if( anIsScaleChanged )
       {
-        emit wheelScaleChanged();
+        Q_EMIT wheelScaleChanged();
         aViewPort->onBoundingRectChanged();
       }
     }
@@ -556,7 +556,7 @@ void GraphicsView_Viewer::onSketchingFinished( QPainterPath thePath )
 //================================================================
 void GraphicsView_Viewer::onSelectionDone( GV_SelectionChangeStatus theStatus )
 {
-  emit selectionChanged( theStatus );
+  Q_EMIT selectionChanged( theStatus );
 }
 
 //================================================================
@@ -589,7 +589,7 @@ void GraphicsView_Viewer::onChangeBgColor()
 //================================================================
 void GraphicsView_Viewer::onSelectionCancel()
 {
-  emit selectionChanged( GVSCS_Invalid );
+  Q_EMIT selectionChanged( GVSCS_Invalid );
 }
 
 /*

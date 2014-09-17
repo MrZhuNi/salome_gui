@@ -888,7 +888,7 @@ void QtxListAction::onMultiple( const int numActions )
     myFrame->hide();
 
   if ( numActions > 0 )
-    emit triggered( numActions );
+    Q_EMIT triggered( numActions );
 }
 
 /*!
@@ -905,7 +905,7 @@ void QtxListAction::onTriggered( bool /*on*/ )
   if ( idx < 0 )
     return;
 
-  emit triggered( idx + 1 );
+  Q_EMIT triggered( idx + 1 );
 }
 
 /*!

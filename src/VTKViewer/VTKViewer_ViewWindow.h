@@ -79,7 +79,7 @@ public:
   virtual QString   getVisualParameters();
   virtual void      setVisualParameters( const QString& parameters );
 
-public slots:
+public Q_SLOTS:
   void onFrontView();
   void onBackView();
   void onTopView();
@@ -100,7 +100,7 @@ public slots:
 protected:
   QImage dumpView();
 
-protected slots:
+protected Q_SLOTS:
   void onKeyPressed(QKeyEvent* event);
   void onKeyReleased(QKeyEvent* event);
   void onMousePressed(QMouseEvent* event);

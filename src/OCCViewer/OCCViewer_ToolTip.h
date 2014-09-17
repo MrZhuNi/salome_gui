@@ -43,7 +43,7 @@ public:
   QFont font() const;
   void  setFont( const QFont& );
 
-signals:
+Q_SIGNALS:
   /*!
     Called when owner is detected; allows to redefine tooltip text for owner
    */
@@ -53,7 +53,7 @@ signals:
    */
   void toolTipFor( const Handle_AIS_InteractiveObject&, QString& );
 
-public slots:
+public Q_SLOTS:
   void onToolTip( QPoint, QString&, QFont&, QRect&, QRect& );
 
 private:

@@ -933,7 +933,7 @@ SUIT_DataObject::Signal::~Signal()
 void SUIT_DataObject::Signal::emitCreated( SUIT_DataObject* object )
 {
   if ( object )
-    emit created( object );
+    Q_EMIT created( object );
 }
 
 /*!
@@ -951,7 +951,7 @@ void SUIT_DataObject::Signal::emitDestroyed( SUIT_DataObject* object )
       myDelLaterObjects.removeAll( object );
     else
       // object is being destroyed directly or via deleteLater()
-      emit destroyed( object );
+      Q_EMIT destroyed( object );
   }
 }
 
@@ -962,7 +962,7 @@ void SUIT_DataObject::Signal::emitDestroyed( SUIT_DataObject* object )
 */
 void SUIT_DataObject::Signal::emitInserted( SUIT_DataObject* object, SUIT_DataObject* parent )
 {
-  emit( inserted( object, parent ) );
+  Q_EMIT( inserted( object, parent ) );
 }
 
 /*!
@@ -972,7 +972,7 @@ void SUIT_DataObject::Signal::emitInserted( SUIT_DataObject* object, SUIT_DataOb
 */
 void SUIT_DataObject::Signal::emitRemoved( SUIT_DataObject* object, SUIT_DataObject* parent )
 {
-  emit( removed( object, parent ) );
+  Q_EMIT( removed( object, parent ) );
 }
 
 /*!
@@ -981,7 +981,7 @@ void SUIT_DataObject::Signal::emitRemoved( SUIT_DataObject* object, SUIT_DataObj
 */
 void SUIT_DataObject::Signal::emitModified( SUIT_DataObject* object )
 {
-  emit( modified( object ) );
+  Q_EMIT( modified( object ) );
 }
 
 /*!

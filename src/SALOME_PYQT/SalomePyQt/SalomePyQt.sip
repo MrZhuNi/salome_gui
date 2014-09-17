@@ -52,7 +52,7 @@ public:
 private:
   SALOME_Selection( QObject* /TransferThis/ );
 
-signals:
+Q_SIGNALS:
   void currentSelectionChanged();
 };
 
@@ -167,7 +167,7 @@ public:
 
   void            clear();
 
-signals:
+Q_SIGNALS:
   void            triggered( int );
   void            triggered( QAction* );
 
@@ -198,11 +198,11 @@ public:
 
   void add( QAction* );
 
-public slots:
+public Q_SLOTS:
   void setExclusive( const bool );
   void setUsesDropDown( const bool );
 
-signals:
+Q_SIGNALS:
   void selected( QAction* );
 
 private:

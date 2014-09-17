@@ -287,7 +287,7 @@ char* SalomeApp_Engine_i::getVersion()
   SalomeApp_Application::ModuleShortInfoList versions = SalomeApp_Application::getVersionInfo();
   QString version;
   SalomeApp_Application::ModuleShortInfo version_info;
-  foreach ( version_info, versions ) {
+  Q_FOREACH ( version_info, versions ) {
     if ( SalomeApp_Application::moduleName( version_info.name ) == myComponentName.c_str() ) {
       version = version_info.version;
       break;

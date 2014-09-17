@@ -169,7 +169,7 @@ SUIT_ViewWindow* SUIT_ViewManager::createViewWindow()
   //it is done automatically during creation of view
 
   aView->setViewManager( this );
-  emit viewCreated( aView );
+  Q_EMIT viewCreated( aView );
 
   // Special treatment for the case when <aView> is the first one in this view manager
   // -> call onWindowActivated() directly, because somebody may always want
@@ -281,7 +281,7 @@ void SUIT_ViewManager::closeView( SUIT_ViewWindow* theView )
   if ( !view->testAttribute( Qt::WA_DeleteOnClose ) )
     return;
 
-  emit deleteView( view );
+  Q_EMIT deleteView( view );
   removeView( view );
 
   if ( view )
@@ -298,7 +298,7 @@ void SUIT_ViewManager::removeView( SUIT_ViewWindow* theView )
   if ( myActiveView == theView )
     myActiveView = 0;
   if ( !myViews.count() )
-    emit lastViewClosed( this );
+    Q_EMIT lastViewClosed( this );
 }
 
 /*!
@@ -333,7 +333,7 @@ void SUIT_ViewManager::setShown( const bool on )
 /*!Emit on \a theEvent mouse pressed in \a theView.*/
 void SUIT_ViewManager::onMousePressed(SUIT_ViewWindow* theView, QMouseEvent* theEvent)
 {
-  emit mousePress(theView, theEvent);
+  Q_EMIT mousePress(theView, theEvent);
 }
 
 /*!Emit activated for view \a view.
@@ -345,7 +345,7 @@ void SUIT_ViewManager::onWindowActivated(SUIT_ViewWindow* view)
     for (uint i = 0; i < aSize; i++) {
       if (myViews[i] && myViews[i] == view) {
         myActiveView = view;
-        emit activated( this );
+        Q_EMIT activated( this );
         return;
       }
     }

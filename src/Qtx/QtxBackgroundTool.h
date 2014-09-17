@@ -73,7 +73,7 @@ private:
   void                init( Qt::Orientation );
   void                internalUpdate();
 
-private slots:
+private Q_SLOTS:
   void                updateState();
   void                browse();
   

@@ -418,10 +418,10 @@ void QDS_ComboBox::setString( const QString& txt )
   {
     onParamChanged();
     QString str = getString();
-    emit activated( integerValue() );
-    emit activated( str );
-    emit paramChanged();
-    emit paramChanged( str );
+    Q_EMIT activated( integerValue() );
+    Q_EMIT activated( str );
+    Q_EMIT paramChanged();
+    Q_EMIT paramChanged( str );
   }
 }
 
@@ -541,9 +541,9 @@ void QDS_ComboBox::unitSystemChanged( const QString& system )
 void QDS_ComboBox::onTextChanged( const QString& /*txt*/ )
 {
   onParamChanged();
-  emit paramChanged();
+  Q_EMIT paramChanged();
   QString str = getString();
-  emit paramChanged( str );
+  Q_EMIT paramChanged( str );
 }
 
 /*!
@@ -564,10 +564,10 @@ void QDS_ComboBox::onActivated( int idx )
   {
     onParamChanged();
     QString str = getString();
-    emit activated( id );
-    emit activated( str );
-    emit paramChanged();
-    emit paramChanged( str );
+    Q_EMIT activated( id );
+    Q_EMIT activated( str );
+    Q_EMIT paramChanged();
+    Q_EMIT paramChanged( str );
   }
 }
 

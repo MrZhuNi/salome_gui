@@ -270,7 +270,7 @@ protected:
   QString        getXmlVisualParameters();
   bool           setXmlVisualParameters(const QString&);
 
-public slots:
+public Q_SLOTS:
   void           onViewPan();
   void           onViewZoom();
   void           onViewFitAll();
@@ -295,7 +295,7 @@ protected:
   bool           plotMouseMoved( const QMouseEvent& );
   void           plotMouseReleased( const QMouseEvent& );
 
-signals:
+Q_SIGNALS:
   void           vpModeHorChanged();
   void           vpModeVerChanged();
   void           vpNormLModeChanged();

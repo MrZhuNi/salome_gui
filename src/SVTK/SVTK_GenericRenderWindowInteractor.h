@@ -74,7 +74,7 @@ class SVTK_EXPORT QVTK_GenericRenderWindowInteractor:
   int
   DestroyTimer() ; 
 
- protected slots:
+ protected Q_SLOTS:
   //! The slot connects to QTimer::timeout signal to invoke vtkCommand::TimerEvent
   void
   OnTimeOut();

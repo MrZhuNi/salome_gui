@@ -57,7 +57,7 @@ public:
 protected:
   virtual void  InitializeFamilies() = 0;
 
-protected slots:
+protected Q_SLOTS:
   void          onColor();
 
 protected:

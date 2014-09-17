@@ -124,7 +124,7 @@ class SALOMEAPP_EXPORT NoteBook_Table : public QTableWidget
 
   QList<NoteBook_TableRow*>          myRows;
 
-  public slots:
+  public Q_SLOTS:
     void onItemChanged(QTableWidgetItem* theItem);
 
  private:
@@ -159,7 +159,7 @@ class SALOMEAPP_EXPORT SalomeApp_NoteBook : public QWidget
   bool isDumpedStudySaved() { return myIsDumpedStudySaved; }
   void setIsDumpedStudySaved(bool isSaved) { myIsDumpedStudySaved = isSaved; }
   
- public slots:
+ public Q_SLOTS:
    void onApply();
    void onRemove();
    void onUpdateStudy();

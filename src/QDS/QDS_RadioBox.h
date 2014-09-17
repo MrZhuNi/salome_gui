@@ -60,10 +60,10 @@ public:
 
   virtual QString            getString() const;
 
-signals:
+Q_SIGNALS:
   void                       activated( int );
 
-protected slots:
+protected Q_SLOTS:
   virtual void               onToggled( bool );
 
 protected:

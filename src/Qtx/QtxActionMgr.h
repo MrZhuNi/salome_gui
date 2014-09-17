@@ -89,7 +89,7 @@ protected:
   void             triggerUpdate();
   virtual void     updateContent();
 
-private slots:
+private Q_SLOTS:
   void             onUpdateContent();
 
 private:

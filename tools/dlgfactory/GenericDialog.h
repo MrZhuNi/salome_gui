@@ -34,7 +34,7 @@ public:
   QFrame * getPanel();
   QDialogButtonBox * getButtonBox();
   
- protected slots:    
+ protected Q_SLOTS:
     void accept();
   //void reject();
   

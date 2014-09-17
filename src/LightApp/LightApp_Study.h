@@ -128,7 +128,7 @@ protected:
   virtual CAM_ModuleObject* createModuleObject( LightApp_DataModel* theDataModel, 
 						SUIT_DataObject* theParent ) const;
 
-signals:
+Q_SIGNALS:
   void                saved  ( SUIT_Study* );
   void                opened ( SUIT_Study* );
   void                closed ( SUIT_Study* );

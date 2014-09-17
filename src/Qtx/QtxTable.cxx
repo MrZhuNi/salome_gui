@@ -283,8 +283,8 @@ void QtxTable::endHeaderEdit( const bool accept )
 
   if ( oldTxt != newTxt )
   {
-    emit headerEdited( hdr, sec );
-    emit headerEdited( hdr == horizontalHeader() ? Horizontal : Vertical, sec );
+    Q_EMIT headerEdited( hdr, sec );
+    Q_EMIT headerEdited( hdr == horizontalHeader() ? Horizontal : Vertical, sec );
   }
 }
 

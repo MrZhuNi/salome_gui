@@ -51,7 +51,7 @@ public:
 
   virtual QValidator::State validate( QString&, int& ) const;
 
-protected slots:
+protected Q_SLOTS:
   virtual void    onTextChanged( const QString& );
 
 protected:

@@ -107,7 +107,7 @@ protected:
   void                addFilter( const QString& );
   static bool         hasWildCards( const QString& );
 
-protected slots:
+protected Q_SLOTS:
   void                accept();        
   void                quickDir( const QString& );
   void                addQuickDir();

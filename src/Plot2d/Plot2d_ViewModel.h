@@ -54,10 +54,10 @@ public:
   void         clearPrs();
   void         setAutoDel(bool theDel);
   
-signals:
+Q_SIGNALS:
   void         viewCloned( SUIT_ViewWindow* );
 
-protected slots:
+protected Q_SLOTS:
   void         onChangeBgColor();
   void         onDumpView();
   void         onShowToolbar();

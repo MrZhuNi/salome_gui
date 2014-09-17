@@ -116,8 +116,8 @@ void QDS_TextEdit::onTextChanged()
 
   QString str = getString();
 
-  emit paramChanged();
-  emit paramChanged( str );
+  Q_EMIT paramChanged();
+  Q_EMIT paramChanged( str );
 }
 
 /*!

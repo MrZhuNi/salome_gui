@@ -234,7 +234,7 @@ void LightApp_SelectionMgr::selectedObjects( QStringList& theList, const QString
 void LightApp_SelectionMgr::setSelectedObjects( const QStringList& lst, const bool append )
 {
   SUIT_DataOwnerPtrList owners;
-  foreach( const QString& aValue, lst ) {
+  Q_FOREACH( const QString& aValue, lst ) {
     if ( !aValue.isNull() )
       owners.append( new LightApp_DataOwner( aValue ) );
   }
@@ -253,7 +253,7 @@ void LightApp_SelectionMgr::selectionChanged( SUIT_Selector* theSel )
 
   myTimeStamp = QTime::currentTime();
 
-  emit currentSelectionChanged();
+  Q_EMIT currentSelectionChanged();
 }
 
 #ifndef DISABLE_SALOMEOBJECT
@@ -340,7 +340,7 @@ void LightApp_SelectionMgr::AddOrRemoveIndex( const Handle(SALOME_InteractiveObj
   bool append = false;
   setSelected( remainsOwners, append );
 
-  emit currentSelectionChanged();
+  Q_EMIT currentSelectionChanged();
 
   // Bug 17269: To avoid calling of selected(aList)
   //TColStd_IndexedMapOfInteger anIndexes;

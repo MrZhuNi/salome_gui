@@ -68,7 +68,7 @@ public:
 
   void    sendSignal( SUIT_PopupClient*, QContextMenuEvent* );
 
-signals:
+Q_SIGNALS:
   void contextMenuRequest( SUIT_PopupClient*, QContextMenuEvent* );
 };
 

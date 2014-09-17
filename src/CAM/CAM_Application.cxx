@@ -639,12 +639,12 @@ bool CAM_Application::isModuleAccessible( const QString& title )
   
   QStringList somewhereLoaded;
   QList<SUIT_Application*> apps = SUIT_Session::session()->applications();
-  foreach( SUIT_Application* app, apps ) {
+  Q_FOREACH( SUIT_Application* app, apps ) {
     CAM_Application* camApp = dynamic_cast<CAM_Application*>( app );
     if ( !camApp ) continue;
     QStringList loaded;
     camApp->modules( loaded, true );
-    foreach( QString lm, loaded ) {
+    Q_FOREACH( QString lm, loaded ) {
       if ( !somewhereLoaded.contains( lm ) ) somewhereLoaded << lm;
     }
   }

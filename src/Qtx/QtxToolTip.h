@@ -55,10 +55,10 @@ public:
   int           wakeUpDelayTime() const { return myWakeUpDelayTime; }
   int           showDelayTime() const { return myShowDelayTime; }
 
-signals:
+Q_SIGNALS:
   void          maybeTip( QPoint, QString&, QFont&, QRect&, QRect& );
 
-protected slots:
+protected Q_SLOTS:
         void          onSleepTimeOut();
         void          onWakeUpTimeOut();
 

@@ -70,10 +70,10 @@ public:
   void             setLinesNumber( const int );
   void             setCharsNumber( const int );
 
-signals:
+Q_SIGNALS:
   void             triggered( int );
 
-private slots:
+private Q_SLOTS:
   void             onChanged();
   void             onMultiple( const int );
   void             onSingle( bool = false );

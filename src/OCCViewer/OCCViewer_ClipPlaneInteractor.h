@@ -77,7 +77,7 @@ public:
   void                     setMinMax( const Bnd_Box& );
   virtual void             setEnabled( const bool );
 
-signals:
+  Q_SIGNALS:
   void                     planeClicked( const Handle_AIS_Plane& thePlane );
   void                     planeDragged( const Handle_AIS_Plane& thePlane );
 

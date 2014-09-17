@@ -917,9 +917,9 @@ void QtxSplitDlg::onSynchronize( )
     myNBSelectedViews = aCheckedNumber;
   }
   else if( myDlgMode == CreateSubViews ) {
-    foreach( QComboBox* aBox, myComboBox )
+    Q_FOREACH( QComboBox* aBox, myComboBox )
       aBox->setVisible( true );
-    foreach( QLabel* aLabel, myLabels )
+    Q_FOREACH( QLabel* aLabel, myLabels )
       aLabel->setVisible( true );
 
     for( int i = myViewsNB; i < 4; i++ ) {

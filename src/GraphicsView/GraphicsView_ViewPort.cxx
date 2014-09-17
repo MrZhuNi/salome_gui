@@ -1447,7 +1447,7 @@ void GraphicsView_ViewPort::finishSketching( bool theStatus )
   if( theStatus )
   {
     QPainterPath aPath = mySketchingItem->path();
-    emit vpSketchingFinished( aPath );
+    Q_EMIT vpSketchingFinished( aPath );
   }
 }
 
@@ -1658,7 +1658,7 @@ void GraphicsView_ViewPort::onBoundingRectChanged()
 //================================================================
 void GraphicsView_ViewPort::onKeyEvent( QKeyEvent* e )
 {
-  emit vpKeyEvent( e );
+  Q_EMIT vpKeyEvent( e );
 }
 
 //================================================================
@@ -1667,7 +1667,7 @@ void GraphicsView_ViewPort::onKeyEvent( QKeyEvent* e )
 //================================================================
 void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
 {
-  emit vpMouseEvent( e );
+  Q_EMIT vpMouseEvent( e );
 
   bool anIsHandled = false;
   switch( e->type() )
@@ -1715,7 +1715,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
 
       if( !anIsHandled && !isPulling() && myIsDragging )
       {
-        emit vpObjectBeforeMoving();
+        Q_EMIT vpObjectBeforeMoving();
 
         bool anIsMoved = false;
         for( initSelected(); moreSelected(); nextSelected() )
@@ -1729,7 +1729,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
         myDragPosition = QPointF();
         setCursor( myStoredCursor );
 
-        emit vpObjectAfterMoving( anIsMoved );
+        Q_EMIT vpObjectAfterMoving( anIsMoved );
       }
       break;
     }
@@ -1753,7 +1753,7 @@ void GraphicsView_ViewPort::onMouseEvent( QGraphicsSceneMouseEvent* e )
 //================================================================
 void GraphicsView_ViewPort::onWheelEvent( QGraphicsSceneWheelEvent* e )
 {
-  emit vpWheelEvent( e );
+  Q_EMIT vpWheelEvent( e );
 }
 
 //================================================================
@@ -1762,7 +1762,7 @@ void GraphicsView_ViewPort::onWheelEvent( QGraphicsSceneWheelEvent* e )
 //================================================================
 void GraphicsView_ViewPort::onContextMenuEvent( QGraphicsSceneContextMenuEvent* e )
 {
-  emit vpContextMenuEvent( e );
+  Q_EMIT vpContextMenuEvent( e );
 }
 
 //================================================================

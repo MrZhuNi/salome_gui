@@ -67,7 +67,7 @@ private:
   void                hideTipAndSleep();
   void                wakeup( int mseconds = TIP_TIME );
 
-private slots:
+private Q_SLOTS:
   void                showTip();
 
 private:

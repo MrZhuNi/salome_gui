@@ -55,7 +55,7 @@ public:
 
   QtxWorkspace*            workspace() const;
 
-private slots:
+private Q_SLOTS:
   void                     onWindowActivated( QWidget* );
 
 protected:

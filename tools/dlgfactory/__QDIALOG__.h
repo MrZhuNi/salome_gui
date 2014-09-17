@@ -11,7 +11,7 @@ class __CLASSNAME__ : public QDialog
  public:
   __CLASSNAME__(QDialog *parent = 0);
 
- protected slots:    
+ protected Q_SLOTS:
     void accept();
   //void reject();
   

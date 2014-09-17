@@ -47,10 +47,10 @@ public:
 
   Qt::Orientation orientation() const;
 
-signals:
+Q_SIGNALS:
   void            orientationChanged( Qt::Orientation );
 
-public slots:
+public Q_SLOTS:
   virtual void    setVisible( bool );
 
 protected:

@@ -703,7 +703,7 @@ void
 SVTK_RenderWindowInteractor
 ::onEmitSelectionChanged()
 {
-  return emit selectionChanged();
+  return Q_EMIT selectionChanged();
 }
 
 
@@ -717,7 +717,7 @@ SVTK_RenderWindowInteractor
   QVTK_RenderWindowInteractor::mouseMoveEvent(event);
 
   if(GENERATE_SUIT_EVENTS)
-    emit MouseMove( event );
+    Q_EMIT MouseMove( event );
 }
 
 
@@ -731,7 +731,7 @@ SVTK_RenderWindowInteractor
   QVTK_RenderWindowInteractor::mousePressEvent(event);
 
   if(GENERATE_SUIT_EVENTS)
-    emit MouseButtonPressed( event );
+    Q_EMIT MouseButtonPressed( event );
 }
 
 
@@ -764,10 +764,10 @@ SVTK_RenderWindowInteractor
        !( event->modifiers() & Qt::ShiftModifier ) ) {
     QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
                               event->pos(), event->globalPos() );
-    emit contextMenuRequested( &aEvent );
+    Q_EMIT contextMenuRequested( &aEvent );
   }
   if(GENERATE_SUIT_EVENTS)
-    emit MouseButtonReleased( event );
+    Q_EMIT MouseButtonReleased( event );
 }
 
 
@@ -787,7 +787,7 @@ SVTK_RenderWindowInteractor
   QVTK_RenderWindowInteractor::mouseDoubleClickEvent(event);
 
   if(GENERATE_SUIT_EVENTS)
-    emit MouseDoubleClicked( event );
+    Q_EMIT MouseDoubleClicked( event );
 }
 
 
@@ -806,7 +806,7 @@ SVTK_RenderWindowInteractor
     GetDevice()->InvokeEvent(SVTK::ZoomOutEvent,NULL);
 
   if(GENERATE_SUIT_EVENTS)
-    emit WheelMoved( event );
+    Q_EMIT WheelMoved( event );
 }
 
 /*!
@@ -819,7 +819,7 @@ SVTK_RenderWindowInteractor
   QVTK_RenderWindowInteractor::keyPressEvent(event);
 
   if(GENERATE_SUIT_EVENTS)
-    emit KeyPressed( event );
+    Q_EMIT KeyPressed( event );
 }
 
 /*!
@@ -832,6 +832,6 @@ SVTK_RenderWindowInteractor
   QVTK_RenderWindowInteractor::keyReleaseEvent(event);
 
   if(GENERATE_SUIT_EVENTS)
-    emit KeyReleased( event );
+    Q_EMIT KeyReleased( event );
 }
 

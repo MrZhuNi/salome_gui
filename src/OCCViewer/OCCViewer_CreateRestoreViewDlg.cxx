@@ -294,7 +294,7 @@ bool OCCViewer_CreateRestoreViewDlg::eventFilter( QObject* anObj, QEvent* anEv )
 */
 void OCCViewer_CreateRestoreViewDlg::OKpressed()
 {
-  emit dlgOk();
+  Q_EMIT dlgOk();
   accept();
 }
 

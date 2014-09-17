@@ -354,10 +354,10 @@ void GraphicsView_ViewFrame::keyEvent( QKeyEvent* e )
   switch ( e->type() )
   {
     case QEvent::KeyPress:
-      emit keyPressed( e );
+      Q_EMIT keyPressed( e );
       break;
     case QEvent::KeyRelease:
-      emit keyReleased( e );
+      Q_EMIT keyReleased( e );
       break;
     default:
       break;
@@ -373,16 +373,16 @@ void GraphicsView_ViewFrame::mouseEvent( QGraphicsSceneMouseEvent* e )
   switch ( e->type() )
   {
     case QEvent::GraphicsSceneMousePress:
-      emit mousePressed( e );
+      Q_EMIT mousePressed( e );
       break;
     case QEvent::GraphicsSceneMouseMove:
-      emit mouseMoving( e );
+      Q_EMIT mouseMoving( e );
       break;
     case QEvent::GraphicsSceneMouseRelease:
-      emit mouseReleased( e );
+      Q_EMIT mouseReleased( e );
       break;
     case QEvent::GraphicsSceneMouseDoubleClick:
-      emit mouseDoubleClicked( e );
+      Q_EMIT mouseDoubleClicked( e );
       break;
     default:
       break;
@@ -398,7 +398,7 @@ void GraphicsView_ViewFrame::wheelEvent( QGraphicsSceneWheelEvent* e )
   switch ( e->type() )
   {
     case QEvent::GraphicsSceneWheel:
-      emit wheeling( e );
+      Q_EMIT wheeling( e );
       break;
     default:
       break;
@@ -414,6 +414,6 @@ void GraphicsView_ViewFrame::contextMenuEvent( QGraphicsSceneContextMenuEvent* e
   QPoint aPos = myViewPort->mapFromScene( e->scenePos() );
   QContextMenuEvent* anEvent = new QContextMenuEvent( (QContextMenuEvent::Reason)e->reason(),
                                                       aPos, e->screenPos(), e->modifiers() );
-  emit contextMenuRequested( anEvent );
+  Q_EMIT contextMenuRequested( anEvent );
   delete anEvent;
 }

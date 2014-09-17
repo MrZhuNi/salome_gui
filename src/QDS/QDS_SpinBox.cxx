@@ -126,8 +126,8 @@ void QDS_SpinBox::onValueChanged( int val )
 {
   onParamChanged();
   QString str = QString::number( val );
-  emit paramChanged();
-  emit paramChanged( str );
+  Q_EMIT paramChanged();
+  Q_EMIT paramChanged( str );
 }
 
 /*!

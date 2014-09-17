@@ -79,10 +79,10 @@ bool SUIT_Desktop::event( QEvent* e )
   switch ( e->type() )
   {
   case QEvent::WindowActivate:
-    emit activated();
+    Q_EMIT activated();
     break;
   case QEvent::WindowDeactivate:
-    emit deactivated();
+    Q_EMIT deactivated();
     break;
   default:
     break;
@@ -96,7 +96,7 @@ bool SUIT_Desktop::event( QEvent* e )
 */
 void SUIT_Desktop::closeEvent( QCloseEvent* e )
 {
-  emit closing( this, e );
+  Q_EMIT closing( this, e );
   e->ignore();
 }
 
@@ -206,7 +206,7 @@ void SUIT_Desktop::logoClear()
 */
 void SUIT_Desktop::emitActivated()
 {
-  emit activated();
+  Q_EMIT activated();
 }
 
 /*!
@@ -214,5 +214,5 @@ void SUIT_Desktop::emitActivated()
 */
 void SUIT_Desktop::emitMessage( const QString& theMessage )
 {
-  emit message( theMessage );
+  Q_EMIT message( theMessage );
 }

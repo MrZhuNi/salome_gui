@@ -155,7 +155,7 @@ void QtxFontEdit::setCurrentFont( const QFont& fnt )
   myI->blockSignals( false );
   myU->blockSignals( false );
 
-  emit( changed( currentFont() ) );
+  Q_EMIT( changed( currentFont() ) );
 }
 
 /*!
@@ -212,7 +212,7 @@ void QtxFontEdit::setFontFamily( const QString& fam )
   {
     myCustomFams->setCurrentIndex( myCustomFams->findText( fam ) );
     if ( !myCustomFams->signalsBlocked() )
-      emit( changed( currentFont() ) );
+      Q_EMIT( changed( currentFont() ) );
   }
 }
 
@@ -288,12 +288,12 @@ void QtxFontEdit::onFontChanged( const QFont& /*f*/ )
   mySize->blockSignals( blocked );
 
   if ( !myFamily->signalsBlocked() )
-    emit( changed( currentFont() ) );
+    Q_EMIT( changed( currentFont() ) );
 }
 
 void QtxFontEdit::onPropertyChanged()
 {
-  emit( changed( currentFont() ) );
+  Q_EMIT( changed( currentFont() ) );
 }
 
 /*!

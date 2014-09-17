@@ -94,12 +94,12 @@ public:
 
   void                  showStaticTrihedron( bool );
 
-signals:
+Q_SIGNALS:
   void                  vpChangeBackground( const Qtx::BackgroundData& );
   void                  vpClosed(OCCViewer_ViewPort3d*);
   void                  vpMapped(OCCViewer_ViewPort3d*);
 
-public slots:
+public Q_SLOTS:
   virtual bool          synchronize( OCCViewer_ViewPort* );
 
 protected:

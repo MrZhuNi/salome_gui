@@ -61,7 +61,7 @@ private:
   void             init();
   QPixmap          markerFromData( const VTK::MarkerData& );
 
-private slots:
+private Q_SLOTS:
   void             onTypeChanged( int );
 
 private:

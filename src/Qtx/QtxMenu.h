@@ -59,7 +59,7 @@ public:
   virtual void           setTitleMode( const TitleMode );
   virtual void           setTitleAlignment( const Qt::Alignment );
 
-public slots:
+public Q_SLOTS:
   virtual void           setVisible( bool );
 
 private:

@@ -52,15 +52,15 @@ public:
 
   virtual bool     eventFilter( QObject*, QEvent* );
 
-signals:
+Q_SIGNALS:
   void             headerEdited( QHeader*, int );
   void             headerEdited( Orientation, int );
 
-public slots:
+public Q_SLOTS:
   virtual void     hide();
   virtual void     setHeaderEditable( Orientation, bool );
 
-private slots:
+private Q_SLOTS:
   void             onScrollBarMoved( int );
   void             onHeaderSizeChange( int, int, int );
 

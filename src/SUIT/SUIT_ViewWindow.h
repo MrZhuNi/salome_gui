@@ -74,10 +74,10 @@ public:
 
   virtual SUIT_CameraProperties cameraProperties();
 
-public slots:
+public Q_SLOTS:
   virtual void      onDumpView();
 
-signals:
+Q_SIGNALS:
   void              tryClosing( SUIT_ViewWindow* );
   void              closing( SUIT_ViewWindow* );
   void              mousePressed( SUIT_ViewWindow*, QMouseEvent* );
@@ -103,7 +103,7 @@ protected:
   SUIT_Desktop*     myDesktop;
   SUIT_ViewManager* myManager;
 
-protected slots:
+protected Q_SLOTS:
   void              updateSyncViews();
   void              onSynchronizeView(bool);
   virtual void      synchronize( SUIT_ViewWindow* );

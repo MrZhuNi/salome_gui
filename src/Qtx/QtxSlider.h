@@ -48,10 +48,10 @@ public:
   
   void setSingleStep( int );
   
-private slots:
+private Q_SLOTS:
   void SliderHasMoved( int );
 
-signals:
+Q_SIGNALS:
   void valueUpdated( int );
 
 protected:

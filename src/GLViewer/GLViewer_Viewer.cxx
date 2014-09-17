@@ -335,7 +335,7 @@ bool GLViewer_Viewer::eventFilter( QObject* o, QEvent* e )
 */
 void GLViewer_Viewer::onSelectionDone( bool bAdded, SelectionChangeStatus status  )
 {
-    emit selectionChanged( status );
+    Q_EMIT selectionChanged( status );
 }
 
 /*!
@@ -343,7 +343,7 @@ void GLViewer_Viewer::onSelectionDone( bool bAdded, SelectionChangeStatus status
 */
 void GLViewer_Viewer::onSelectionCancel()
 {
-    emit selectionChanged( SCS_Invalid );
+    Q_EMIT selectionChanged( SCS_Invalid );
 }
 
 /*!

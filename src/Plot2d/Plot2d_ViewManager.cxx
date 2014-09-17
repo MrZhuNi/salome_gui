@@ -107,7 +107,7 @@ Plot2d_ViewWindow* Plot2d_ViewManager::cloneView( Plot2d_ViewWindow* srcWnd )
     newWnd = ( Plot2d_ViewWindow* )vw;
   
   if( newWnd && srcWnd )
-    emit cloneView( srcWnd->getViewFrame(), newWnd->getViewFrame() );
+    Q_EMIT cloneView( srcWnd->getViewFrame(), newWnd->getViewFrame() );
 
   return newWnd;
 }

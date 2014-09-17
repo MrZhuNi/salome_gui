@@ -409,7 +409,7 @@ void SPlot2d_Viewer::onClicked( const QVariant& itemInfo, int index )
 
   bool isAnalytical = false;
   AnalyticalCurveList curves = aViewFrame->getAnalyticalCurves();
-   foreach ( Plot2d_AnalyticalCurve* curve, curves ) {
+   Q_FOREACH ( Plot2d_AnalyticalCurve* curve, curves ) {
 	   if(plotItem == curve->plotItem()) {
 		  isAnalytical = true;
 		  curve->setSelected(true);
@@ -419,7 +419,7 @@ void SPlot2d_Viewer::onClicked( const QVariant& itemInfo, int index )
    }
   if(isAnalytical) {
 	myDeselectAnalytical = false;
-	emit clearSelected();
+	Q_EMIT clearSelected();
 	aViewFrame->updateAnalyticalCurves();
 	myDeselectAnalytical = true;
 	return;
@@ -440,7 +440,7 @@ void SPlot2d_Viewer::onClicked( const QVariant& itemInfo, int index )
     }
     
     if(!anEntry.isEmpty())
-      emit legendSelected( anEntry );
+      Q_EMIT legendSelected( anEntry );
   }	
 }
 
@@ -458,7 +458,7 @@ void SPlot2d_Viewer::setObjectsSelected( SALOME_ListIO& theList ) {
     SPlot2d_Histogram* h = 0;
     SPlot2d_Curve* c =0;
     
-    foreach ( Plot2d_Object* o, allObjects ) {
+    Q_FOREACH ( Plot2d_Object* o, allObjects ) {
       isSelected = false;
       
       Handle(SALOME_InteractiveObject) io;

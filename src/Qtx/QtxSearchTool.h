@@ -117,14 +117,14 @@ public:
   virtual bool        event( QEvent* );
   virtual bool        eventFilter( QObject*, QEvent* );
 
-public slots:
+public Q_SLOTS:
   virtual void        find();
   virtual void        findNext();
   virtual void        findPrevious();
   virtual void        findFirst();
   virtual void        findLast();
 
-private slots:
+private Q_SLOTS:
   void                find( const QString&, int = fAny );
   void                modifierSwitched();
 

@@ -55,7 +55,7 @@ public:
 
   QtxWorkstack*            workstack() const;
 
-private slots:
+private Q_SLOTS:
   void                     onWindowActivated( QWidget* );
   void                     onArrangeViews();
 

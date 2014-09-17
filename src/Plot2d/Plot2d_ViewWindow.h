@@ -82,7 +82,7 @@ public:
   
   virtual void      RefreshDumpImage();
 
-public slots:
+public Q_SLOTS:
   void              onChangeHorMode();
   void              onChangeVerMode();
   void              onChangeCurveMode();
@@ -113,7 +113,7 @@ protected:
                                       const QString& );
   virtual QString   filter() const;
 
-signals:
+Q_SIGNALS:
   void              cloneView();
 
 private:

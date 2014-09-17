@@ -350,7 +350,7 @@ void SVTK_ViewWindow::onFrontView()
 {
   GetRenderer()->OnFrontView();
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -360,7 +360,7 @@ void SVTK_ViewWindow::onBackView()
 {
   GetRenderer()->OnBackView();
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -370,7 +370,7 @@ void SVTK_ViewWindow::onTopView()
 {
   GetRenderer()->OnTopView();
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -380,7 +380,7 @@ void SVTK_ViewWindow::onBottomView()
 {
   GetRenderer()->OnBottomView();
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -390,7 +390,7 @@ void SVTK_ViewWindow::onLeftView()
 {
   GetRenderer()->OnLeftView();
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -400,7 +400,7 @@ void SVTK_ViewWindow::onRightView()
 {
   GetRenderer()->OnRightView();
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -410,7 +410,7 @@ void SVTK_ViewWindow::onClockWiseView()
 {
   GetRenderer()->onClockWiseView();
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -420,7 +420,7 @@ void SVTK_ViewWindow::onAntiClockWiseView()
 {
   GetRenderer()->onAntiClockWiseView();
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -430,7 +430,7 @@ void SVTK_ViewWindow::onResetView()
 {
   GetRenderer()->OnResetView();
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -440,7 +440,7 @@ void SVTK_ViewWindow::onFitAll()
 {
   GetRenderer()->OnFitAll();
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -782,7 +782,7 @@ void SVTK_ViewWindow::SetScale( double theScale[3] )
 {
   GetRenderer()->SetScale( theScale );
   Repaint();
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 /*!
@@ -1079,7 +1079,7 @@ void SVTK_ViewWindow::synchronize(SVTK_ViewWindow* otherViewWindow )
 */
 void SVTK_ViewWindow::onKeyPressed(QKeyEvent* event)
 {
-  emit keyPressed( this, event );
+  Q_EMIT keyPressed( this, event );
 }
 
 /*!
@@ -1087,7 +1087,7 @@ void SVTK_ViewWindow::onKeyPressed(QKeyEvent* event)
 */
 void SVTK_ViewWindow::onKeyReleased(QKeyEvent* event)
 {
-  emit keyReleased( this, event );
+  Q_EMIT keyReleased( this, event );
 }
 
 /*!
@@ -1095,7 +1095,7 @@ void SVTK_ViewWindow::onKeyReleased(QKeyEvent* event)
 */
 void SVTK_ViewWindow::onMousePressed(QMouseEvent* event)
 {
-  emit mousePressed(this, event);
+  Q_EMIT mousePressed(this, event);
 }
 
 /*!
@@ -1103,7 +1103,7 @@ void SVTK_ViewWindow::onMousePressed(QMouseEvent* event)
 */
 void SVTK_ViewWindow::onMouseReleased(QMouseEvent* event)
 {
-  emit mouseReleased( this, event );
+  Q_EMIT mouseReleased( this, event );
 }
 
 /*!
@@ -1111,7 +1111,7 @@ void SVTK_ViewWindow::onMouseReleased(QMouseEvent* event)
 */
 void SVTK_ViewWindow::onMouseMoving(QMouseEvent* event)
 {
-  emit mouseMoving( this, event );
+  Q_EMIT mouseMoving( this, event );
 }
 
 /*!
@@ -1119,7 +1119,7 @@ void SVTK_ViewWindow::onMouseMoving(QMouseEvent* event)
 */
 void SVTK_ViewWindow::onMouseDoubleClicked( QMouseEvent* event )
 {
-  emit mouseDoubleClicked( this, event );
+  Q_EMIT mouseDoubleClicked( this, event );
 }
 
 /*!
@@ -1132,7 +1132,7 @@ void SVTK_ViewWindow::AddActor( VTKViewer_Actor* theActor,
   GetRenderer()->AddActor(theActor, theIsAdjustActors);
   if(theUpdate) 
     Repaint();
-  emit actorAdded(theActor);
+  Q_EMIT actorAdded(theActor);
 }
 
 /*!
@@ -1149,7 +1149,7 @@ void SVTK_ViewWindow::RemoveActor( VTKViewer_Actor* theActor,
     myKeyFreeInteractorStyle->FreeActors();
   if(theUpdate) 
     Repaint();
-  emit actorRemoved(theActor);
+  Q_EMIT actorRemoved(theActor);
 }
 
 QImage SVTK_ViewWindow::dumpViewContent()
@@ -1894,7 +1894,7 @@ void SVTK_ViewWindow::onPerspectiveMode()
   aCamera->SetParallelProjection(anIsParallelMode);
   GetInteractor()->GetDevice()->CreateTimer(VTKI_TIMER_FIRST);
 
-  emit transformed( this );
+  Q_EMIT transformed( this );
 }
 
 void SVTK_ViewWindow::SetEventDispatcher(vtkObject* theDispatcher)
@@ -2441,7 +2441,7 @@ void SVTK_ViewWindow::onViewParameters(bool theIsActivate)
 */
 void SVTK_ViewWindow::showEvent( QShowEvent * theEvent ) 
 {
-  emit Show( theEvent );
+  Q_EMIT Show( theEvent );
 }
 
 /*!
@@ -2449,7 +2449,7 @@ void SVTK_ViewWindow::showEvent( QShowEvent * theEvent )
 */
 void SVTK_ViewWindow::hideEvent( QHideEvent * theEvent ) 
 {
-  emit Hide( theEvent );
+  Q_EMIT Hide( theEvent );
 }
 
 /*!

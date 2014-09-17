@@ -49,13 +49,13 @@ public:
 
   virtual QString      getString() const;
 
-signals:
+Q_SIGNALS:
   void                 returnPressed();
 
-protected slots:
+protected Q_SLOTS:
   virtual void         onParamChanged();
 
-private slots:
+private Q_SLOTS:
   void                 onTextChanged( const QString& );
 
 protected:

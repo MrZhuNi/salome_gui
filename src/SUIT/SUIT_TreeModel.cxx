@@ -595,7 +595,7 @@ void SUIT_TreeModel::setAppropriate( const QString& name, const Qtx::Appropriate
   for ( int i = 0, n = myColumns.size(); i < n; i++ ) {
     if ( myColumns[i].myName == name && myColumns[i].myAppropriate != appr ) {
       myColumns[i].myAppropriate = appr;
-      emit headerDataChanged( Qt::Horizontal, i, i );
+      Q_EMIT headerDataChanged( Qt::Horizontal, i, i );
       break;
     }
   }
@@ -639,7 +639,7 @@ void SUIT_TreeModel::setHeaderFlags( const QString& name, const Qtx::HeaderViewF
   for ( int i = 0, n = myColumns.size(); i < n; i++ ) {
     if ( myColumns[i].myName == name && myColumns[i].myHeaderFlags != flags ) {
       myColumns[i].myHeaderFlags = flags;
-      emit headerDataChanged( Qt::Horizontal, i, i );
+      Q_EMIT headerDataChanged( Qt::Horizontal, i, i );
       break;
     }
   }
@@ -699,7 +699,7 @@ void SUIT_TreeModel::setVisibilityState( const QString& id, Qtx::VisibilityState
     }
     if ( !lst.isEmpty() ) {
       QModelIndex idx = index( lst.first().row(), SUIT_DataObject::VisibilityId, lst.first().parent() );
-      emit dataChanged( idx, idx );
+      Q_EMIT dataChanged( idx, idx );
     }
   }
 }
@@ -711,7 +711,7 @@ void SUIT_TreeModel::setVisibilityState( const QString& id, Qtx::VisibilityState
 */
 void SUIT_TreeModel::setVisibilityStateForAll( Qtx::VisibilityState state )
 {
-  foreach( QString id, myVisibilityMap.keys() )
+  Q_FOREACH( QString id, myVisibilityMap.keys() )
     setVisibilityState( id, state );
 }
 
@@ -767,7 +767,7 @@ void SUIT_TreeModel::setRoot( SUIT_DataObject* r )
 
   //initialize();
   reset();
-  emit modelUpdated();
+  Q_EMIT modelUpdated();
 }
 
 /*!
@@ -936,14 +936,14 @@ bool SUIT_TreeModel::setData( const QModelIndex& index,
         // checked state
         if ( obj->isCheckable( index.column() ) ) {
           obj->setOn( value.toBool(), index.column() );
-          emit( dataChanged( index, index ) );
+          Q_EMIT( dataChanged( index, index ) );
           return true;
         }
         break;
       case EditRole: {
 	QString val = value.toString();
         if ( !val.isEmpty() && obj->setName(val) ) {
-          emit( dataChanged( index, index ) );
+          Q_EMIT( dataChanged( index, index ) );
 	  return true;
 	}
 	return false;
@@ -1283,7 +1283,7 @@ void SUIT_TreeModel::emitClicked( SUIT_DataObject* obj, const QModelIndex& index
     id = inf.myIds[0];
   if( inf.myIds.contains( obj_group_id ) )
     id = inf.myIds[obj_group_id];
-  emit clicked(obj, id);
+  Q_EMIT clicked(obj, id);
 }
 
 /*!
@@ -1389,7 +1389,7 @@ void SUIT_TreeModel::updateTree( SUIT_DataObject* obj )
                                                             treeItem( obj ),
                                                             SUIT_TreeModel::TreeSync( this ) );
     }
-  emit modelUpdated();
+  Q_EMIT modelUpdated();
 }
 
 /*!
@@ -1592,7 +1592,7 @@ void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item, bool emitLayout
       - emit layoutChanged
   */
 
-    emit layoutAboutToBeChanged();
+    Q_EMIT layoutAboutToBeChanged();
 
     // Remember the QModelIndex that will change
     QModelIndexList fromIndexes;
@@ -1603,10 +1603,10 @@ void SUIT_TreeModel::updateItem( SUIT_TreeModel::TreeItem* item, bool emitLayout
     }
     //changePersistentIndexList(fromIndexes, toIndexes); // Limitation: can lead to loss of selection
 
-    emit dataChanged( toIndexes.first(), toIndexes.last() );
+    Q_EMIT dataChanged( toIndexes.first(), toIndexes.last() );
     obj->setModified(false);
     if ( emitLayoutChanged )
-      emit layoutChanged();
+      Q_EMIT layoutChanged();
 }
 
 /*!
@@ -1683,7 +1683,7 @@ void SUIT_TreeModel::onModified( SUIT_DataObject* obj )
   {
     QModelIndex firstIdx = index( obj, 0 );
     QModelIndex lastIdx  = index( obj, columnCount() - 1 );
-    emit dataChanged( firstIdx, lastIdx );
+    Q_EMIT dataChanged( firstIdx, lastIdx );
     obj->setModified(false);
   }
 }
@@ -1709,7 +1709,7 @@ QMimeData* SUIT_TreeModel::mimeData( const QModelIndexList& indexes ) const
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  foreach ( QModelIndex index, indexes ) {
+  Q_FOREACH ( QModelIndex index, indexes ) {
     QString id = objectId( index );
     // we have to check only 0 column in order to avoid repeating items in the drag object
     // - QTreeView tries to drag indices for all visible columns
@@ -1758,7 +1758,7 @@ bool SUIT_TreeModel::dropMimeData( const QMimeData* data, Qt::DropAction action,
   }
 
   // emit signal
-  emit dropped( objects, pobj, row, action );
+  Q_EMIT dropped( objects, pobj, row, action );
 
   // return true if there's any to drop
   return !objects.isEmpty();

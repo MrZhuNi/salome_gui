@@ -73,7 +73,7 @@ protected:
 
   void setEnabled(QGroupBox* theGrp, const bool theState);
 
-protected slots:
+protected Q_SLOTS:
   void onBBCenterChecked();
   
   void onToOrigin();

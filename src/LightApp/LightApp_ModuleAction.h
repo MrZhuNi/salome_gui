@@ -70,7 +70,7 @@ protected:
 
   virtual bool     event( QEvent* );
 
-signals:
+Q_SIGNALS:
   void             moduleActivated( const QString& );
 
 private:
@@ -82,7 +82,7 @@ private:
   QAction*         active() const;
   void             activate( int, bool = true );
 
-private slots:
+private Q_SLOTS:
   void             onChanged();
   void             onTriggered( int );
   void             onComboActivated( int );
@@ -102,7 +102,7 @@ public:
 
   QList<QtxComboBox*> widgets() const;
 
-signals:
+Q_SIGNALS:
   void                activatedId( int );
 
 protected:

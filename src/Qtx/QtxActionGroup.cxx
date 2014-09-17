@@ -205,7 +205,7 @@ void QtxActionGroup::onTriggered( QAction* a )
     }
   }
   
-  emit selected( a );
+  Q_EMIT selected( a );
 }
 
 /*!

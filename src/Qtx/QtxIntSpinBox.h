@@ -44,7 +44,7 @@ public:
     
   virtual void    stepBy( int );
   
-protected slots:
+protected Q_SLOTS:
   virtual void    onTextChanged( const QString& );
   
 protected:

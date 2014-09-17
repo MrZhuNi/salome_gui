@@ -224,7 +224,7 @@ SUIT_ResourceMgr* SUIT_Session::resourceMgr() const
 */
 void SUIT_Session::onApplicationClosed( SUIT_Application* theApp )
 {
-  emit applicationClosed( theApp );
+  Q_EMIT applicationClosed( theApp );
 
   myAppList.removeAll( theApp );
   delete theApp;

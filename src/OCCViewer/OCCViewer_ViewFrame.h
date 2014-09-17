@@ -95,7 +95,7 @@ public:
 
   virtual SUIT_CameraProperties cameraProperties();
 
-public slots:
+public Q_SLOTS:
   virtual void onFrontView() { getView(MAIN_VIEW)->onFrontView(); }
   virtual void onViewFitAll();
   virtual void onBackView() { getView(MAIN_VIEW)->onBackView(); }
@@ -133,7 +133,7 @@ protected:
   virtual QImage dumpView();
   virtual bool   dumpViewToFormat( const QImage&, const QString&, const QString& );
 
-private slots:
+private Q_SLOTS:
   void onContextMenuRequested(QContextMenuEvent*);
 
 private:

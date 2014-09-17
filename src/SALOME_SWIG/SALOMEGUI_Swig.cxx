@@ -447,7 +447,7 @@ void SALOMEGUI_Swig::Display( const char* theEntry )
 	    aStudy->children( myEntry, entries );
 	  else
 	    entries.append( myEntry );
-	  foreach( QString entry, entries )
+	  Q_FOREACH( QString entry, entries )
 	    d->Display( aStudy->referencedToEntry( entry ), false, 0 );
 	}
       }
@@ -479,7 +479,7 @@ void SALOMEGUI_Swig::DisplayOnly( const char* theEntry )
       if ( anApp && aStudy ) {
 	QStringList comps;
 	aStudy->components( comps );
-	foreach( QString comp, comps ) {
+	Q_FOREACH( QString comp, comps ) {
 	  LightApp_Displayer* d = LightApp_Displayer::FindDisplayer( anApp->moduleTitle( comp ), true );
 	  if ( d ) d->EraseAll( false, false, 0 );
 	}
@@ -492,7 +492,7 @@ void SALOMEGUI_Swig::DisplayOnly( const char* theEntry )
 	    aStudy->children( myEntry, entries );
 	  else
 	    entries.append( myEntry );
-	  foreach( QString entry, entries )
+	  Q_FOREACH( QString entry, entries )
 	    d->Display( aStudy->referencedToEntry( entry ), false, 0 );
 	}
       }
@@ -529,7 +529,7 @@ void SALOMEGUI_Swig::Erase( const char* theEntry )
 	    aStudy->children( myEntry, entries );
 	  else
 	    entries.append( myEntry );
-	  foreach( QString entry, entries )
+	  Q_FOREACH( QString entry, entries )
 	    d->Erase( aStudy->referencedToEntry( entry ), false, false, 0 );
 	}
       }
@@ -558,12 +558,12 @@ void SALOMEGUI_Swig::DisplayAll()
       if ( anApp && aStudy ) {
 	QStringList comps;
 	aStudy->components( comps );
-	foreach( QString comp, comps ) {
+	Q_FOREACH( QString comp, comps ) {
 	  LightApp_Displayer* d = LightApp_Displayer::FindDisplayer( anApp->moduleTitle( comp ), true );
 	  if ( d ) {
 	    QStringList entries;
 	    aStudy->children( aStudy->centry( comp ), entries );
-	    foreach( QString entry, entries )
+	    Q_FOREACH( QString entry, entries )
 	      d->Display( aStudy->referencedToEntry( entry ), false, 0 );
 	  }
 	}
@@ -589,7 +589,7 @@ void SALOMEGUI_Swig::EraseAll()
       if ( anApp && aStudy ) {
 	QStringList comps;
 	aStudy->components( comps );
-	foreach( QString comp, comps ) {
+	Q_FOREACH( QString comp, comps ) {
 	  LightApp_Displayer* d = LightApp_Displayer::FindDisplayer( anApp->moduleTitle( comp ), true );
 	  if ( d ) d->EraseAll( false, false, 0 );
 	}

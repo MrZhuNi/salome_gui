@@ -81,7 +81,7 @@ QtxSlider::~QtxSlider()
 */
 void QtxSlider::SliderHasMoved( int theValue )
 {
-  emit valueUpdated( theValue );
+  Q_EMIT valueUpdated( theValue );
 }
 
 /*!

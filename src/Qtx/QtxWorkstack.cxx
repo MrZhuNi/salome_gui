@@ -664,7 +664,7 @@ void QtxWorkstackArea::onContextMenuRequested( QPoint p )
   if ( idx != -1 )
     wid = widget( myBar->tabId( idx ) );
 
-  emit contextMenuRequested( wid, p );
+  Q_EMIT contextMenuRequested( wid, p );
 }
 
 /*!
@@ -953,7 +953,7 @@ void QtxWorkstackArea::customEvent( QEvent* e )
   {
   case ActivateWidget:
     myBar->updateActiveState();
-    emit activated( activeWidget() );
+    Q_EMIT activated( activeWidget() );
     break;
   case FocusWidget:
     if ( activeWidget() )
@@ -1005,7 +1005,7 @@ void QtxWorkstackArea::focusInEvent( QFocusEvent* e )
 
   myBar->updateActiveState();
 
-  emit activated( activeWidget() );
+  Q_EMIT activated( activeWidget() );
 }
 
 /*!
@@ -1016,7 +1016,7 @@ void QtxWorkstackArea::mousePressEvent( QMouseEvent* e )
 {
   QFrame::mousePressEvent( e );
 
-  emit activated( activeWidget() );
+  Q_EMIT activated( activeWidget() );
 }
 
 /*!
@@ -1037,7 +1037,7 @@ void QtxWorkstackArea::onCurrentChanged( int /*idx*/ )
 {
   updateCurrent();
 
-  emit activated( activeWidget() );
+  Q_EMIT activated( activeWidget() );
 }
 
 /*!
@@ -1249,13 +1249,13 @@ void QtxWorkstackArea::updateState()
   if ( isEmpty() )
   {
     hide();
-    emit deactivated( this );
+    Q_EMIT deactivated( this );
   }
   else
   {
     show();
     if ( prev != activeWidget() )
-      emit activated( activeWidget() );
+      Q_EMIT activated( activeWidget() );
   }
 }
 
@@ -1436,16 +1436,16 @@ bool QtxWorkstackChild::eventFilter( QObject* o, QEvent* e )
   if ( o->isWidgetType() )
   {
     if ( e->type() == QEvent::WindowTitleChange || e->type() == QEvent::WindowIconChange )
-      emit captionChanged( this );
+      Q_EMIT captionChanged( this );
 
     if ( !e->spontaneous() && e->type() == QEvent::ShowToParent )
-      emit shown( this );
+      Q_EMIT shown( this );
 
     if ( !e->spontaneous() && e->type() == QEvent::HideToParent )
-      emit hidden( this );
+      Q_EMIT hidden( this );
 
     if ( e->type() == QEvent::FocusIn )
-      emit activated( this );
+      Q_EMIT activated( this );
   }
   return QWidget::eventFilter( o, e );
 }
@@ -1614,7 +1614,7 @@ void QtxWorkstackTabBar::mouseMoveEvent( QMouseEvent* e )
   if ( myId != -1 && !tabRect( indexOf( myId ) ).contains( e->pos() ) )
   {
     myId = -1;
-    emit dragActiveTab();
+    Q_EMIT dragActiveTab();
   }
 
   QTabBar::mouseMoveEvent( e );
@@ -1643,7 +1643,7 @@ void QtxWorkstackTabBar::mouseReleaseEvent( QMouseEvent* e )
   myId = -1;
 
   if ( e->button() == Qt::RightButton )
-    emit contextMenuRequested( e->globalPos() );
+    Q_EMIT contextMenuRequested( e->globalPos() );
 }
 
 /*!
@@ -1653,7 +1653,7 @@ void QtxWorkstackTabBar::mouseReleaseEvent( QMouseEvent* e )
 void QtxWorkstackTabBar::contextMenuEvent( QContextMenuEvent* e )
 {
   if ( e->reason() != QContextMenuEvent::Mouse )
-    emit contextMenuRequested( e->globalPos() );
+    Q_EMIT contextMenuRequested( e->globalPos() );
 }
 
 /*!
@@ -2950,7 +2950,7 @@ void QtxWorkstack::setActiveArea( QtxWorkstackArea* area )
     myWin = myArea->activeWidget();
 
   if ( myWin && oldCur != myWin )
-    emit windowActivated( myWin );
+    Q_EMIT windowActivated( myWin );
 }
 
 /*!
@@ -3161,7 +3161,7 @@ void QtxWorkstack::setOpaqueResize( bool opaque )
   QList<QSplitter*> splitList;
   splitters( mySplit, splitList, true );
   splitList << mySplit;
-  foreach( QSplitter* split, splitList )
+  Q_FOREACH( QSplitter* split, splitList )
     split->setOpaqueResize( opaque );
 }
 

@@ -54,7 +54,7 @@ protected:
   SUIT_ShortcutMgr();
   virtual ~SUIT_ShortcutMgr();
 
-private slots:
+private Q_SLOTS:
   void onActionDestroyed( QObject* );
 
 private:

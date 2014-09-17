@@ -550,7 +550,7 @@ void LightApp_Application::createActions()
   int id = LightApp_Application::UserID + FIRST_HELP_ID;
 
   QString aModule;
-  foreach( aModule, aModuleList ) {
+  Q_FOREACH( aModule, aModuleList ) {
     if ( aModule.isEmpty() )                                         // module title (user name)
       continue;
     IMap <QString, QString> helpData;                                // list of help files for the module
@@ -567,7 +567,7 @@ void LightApp_Application::createActions()
     if ( !docSection.isEmpty() ) {
       helpSubMenu = resMgr->stringValue( docSection, "sub_menu", "" ).arg( aModule );
       QStringList listOfParam = resMgr->parameters( docSection );
-      foreach( QString paramName, listOfParam ) {
+      Q_FOREACH( QString paramName, listOfParam ) {
         QString valueStr = resMgr->stringValue( docSection, paramName );
         if ( !valueStr.isEmpty() ) {
           QFileInfo fi( valueStr );
@@ -606,7 +606,7 @@ void LightApp_Application::createActions()
       }
       // create sub-menus hierarchy
       int menuId = helpMenu;
-      foreach ( QString subMenu, smenus ) {
+      Q_FOREACH ( QString subMenu, smenus ) {
         menuId = createMenu( subMenu, menuId, -1, 0 );
       }
       createMenu( a, menuId, -1, 0 );
@@ -619,7 +619,7 @@ void LightApp_Application::createActions()
   createMenu( separator(), helpMenu, -1, 5 );
 
   QStringList addHelpItems = resMgr->parameters( "add_help" );
-  foreach ( QString addHelpItem, addHelpItems ) {
+  Q_FOREACH ( QString addHelpItem, addHelpItems ) {
     QString valueStr = resMgr->stringValue( "add_help", addHelpItem );
     if ( !valueStr.isEmpty() && QFile::exists( valueStr ) ) {
       QAction* a = createAction( id, addHelpItem,
@@ -1614,7 +1614,7 @@ void LightApp_Application::onStudyOpened( SUIT_Study* theStudy )
   if ( objectBrowser() )
     objectBrowser()->openLevels();
 
-  emit studyOpened();
+  Q_EMIT studyOpened();
 }
 
 /*!Protected SLOT. On study saved.*/
@@ -1624,7 +1624,7 @@ void LightApp_Application::onStudySaved( SUIT_Study* s )
   if ( mru && s )
       mru->insert( s->studyName() );
 
-  emit studySaved();
+  Q_EMIT studySaved();
 }
 
 /*!Protected SLOT. On study closed.*/
@@ -1642,7 +1642,7 @@ void LightApp_Application::onStudyClosed( SUIT_Study* s )
   mySelMgr->clearSelected();
 
   // Bug 12944: emit signal only after clear selection
-  emit studyClosed();
+  Q_EMIT studyClosed();
 
   activateModule( "" );
 }
@@ -1786,7 +1786,7 @@ void LightApp_Application::onPreferenceChanged( QString& modName, QString& secti
   else
     preferencesChanged( section, param );
   // emit signal to allow additional preferences changing processing
-  emit preferenceChanged( modName, section, param );
+  Q_EMIT preferenceChanged( modName, section, param );
 }
 
 /*!Remove all windows from study.*/
@@ -2058,7 +2058,7 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
                                           LightApp_Preferences::Selector, "language", "language" );
   QStringList aLangs = SUIT_Session::session()->resourceMgr()->stringValue( "language", "languages", "en" ).split( "," );
   QList<QVariant> aIcons;
-  foreach ( QString aLang, aLangs ) {
+  Q_FOREACH ( QString aLang, aLangs ) {
     aIcons << QPixmap( QString( ":/images/%1" ).arg( aLang ) );
   }
   pref->setItemProperty( "strings", aLangs, curLang );
@@ -2190,7 +2190,7 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   anIndicesList.clear();
   txtList.clear();
   formats = OCCViewer_Viewer::backgroundData( aValuesList, idList, txtList );
-  foreach( int gid, idList ) anIndicesList << gid;
+  Q_FOREACH( int gid, idList ) anIndicesList << gid;
   // .... -> 3D viewer background
   bgId = pref->addPreference( tr( "PREF_3DVIEWER_BACKGROUND" ), bgGroup,
                                   LightApp_Preferences::Background, "OCCViewer", "background" );
@@ -2280,7 +2280,7 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 #ifndef DISABLE_SALOMEOBJECT
   formats = SVTK_Viewer::backgroundData( aValuesList, idList, txtList );
 #endif
-  foreach( int gid, idList ) anIndicesList << gid;
+  Q_FOREACH( int gid, idList ) anIndicesList << gid;
   bgId = pref->addPreference( tr( "PREF_VIEWER_BACKGROUND" ), vtkGen,
                               LightApp_Preferences::Background, "VTKViewer", "background" );
   pref->setItemProperty( "gradient_names", aValuesList, bgId );
@@ -2561,10 +2561,10 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
   if ( sec == "viewers" && param == "drop_down_buttons" )
   {
     ViewManagerList vmlist = viewManagers();
-    foreach( SUIT_ViewManager* vm, vmlist )
+    Q_FOREACH( SUIT_ViewManager* vm, vmlist )
     {
       QVector<SUIT_ViewWindow*> vwlist = vm->getViews();
-      foreach( SUIT_ViewWindow* vw, vwlist )
+      Q_FOREACH( SUIT_ViewWindow* vw, vwlist )
         if ( vw ) vw->setDropDownButtons( resMgr->booleanValue( "viewers", "drop_down_buttons", true ) );
     }
   }
@@ -3140,7 +3140,7 @@ void LightApp_Application::updateModuleActions()
     modName = activeModule()->moduleName();
     if ( !isModuleAccessible( modName ) ) {
       QList<SUIT_Application*> apps = SUIT_Session::session()->applications();
-      foreach( SUIT_Application* app, apps ) {
+      Q_FOREACH( SUIT_Application* app, apps ) {
         LightApp_Application* lapp = dynamic_cast<LightApp_Application*>( app );
         if ( lapp && lapp != this )
           lapp->removeModuleAction( modName );
@@ -3279,7 +3279,7 @@ void LightApp_Application::loadDockWindowsState()
   QStringList mainToolbarsNames;
   mainToolbarsNames << "SalomeStandard" << "SalomeModules";
   QList<QToolBar*> mainToolbars = findToolBars( mainToolbarsNames );
-  foreach( QToolBar* tb, mainToolbars ) tb->setVisible( true );
+  Q_FOREACH( QToolBar* tb, mainToolbars ) tb->setVisible( true );
   /*
   if ( !myWinVis.contains( modName ) && aDefaultVisibility.isEmpty())
     return;
@@ -3644,7 +3644,7 @@ void LightApp_Application::removeViewManager( SUIT_ViewManager* vm )
   LightApp_SelectionMgr* selMgr = selectionMgr();
   QList<SUIT_Selector*> selectors;
   selMgr->selectors( selectors );
-  foreach( SUIT_Selector* selector, selectors ) {
+  Q_FOREACH( SUIT_Selector* selector, selectors ) {
     if ( selector->owner() == vm->getViewModel() ) {
       delete selector;
     }
@@ -3699,7 +3699,7 @@ void LightApp_Application::onCloseAllWindow()
 
   QList<SUIT_ViewWindow*> wndList = desk->windows();
   SUIT_ViewWindow* wnd;
-  foreach( wnd, wndList )
+  Q_FOREACH( wnd, wndList )
   {
     if ( wnd )
       wnd->close();
@@ -3944,7 +3944,7 @@ void LightApp_Application::clearKnownViewManagers()
   QStringList aTypesList = viewManagersTypes();
   QList<SUIT_ViewManager*> aMgrList;
   viewManagers( aMgrList );
-  foreach (SUIT_ViewManager* aMgr, aMgrList) {
+  Q_FOREACH (SUIT_ViewManager* aMgr, aMgrList) {
     if (aTypesList.contains(aMgr->getType()))
       removeViewManager(aMgr);
   }
@@ -4301,7 +4301,7 @@ void LightApp_Application::emitOperationFinished( const QString& theModuleName,
                                                   const QString& theOperationName,
                                                   const QStringList& theEntryList )
 {
-  emit operationFinished( theModuleName, theOperationName, theEntryList );
+  Q_EMIT operationFinished( theModuleName, theOperationName, theEntryList );
 }
 
 /*!

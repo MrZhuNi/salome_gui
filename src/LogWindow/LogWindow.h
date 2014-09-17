@@ -100,7 +100,7 @@ public:
   void                setMenuActions( const int );
   int                 menuActions() const;
 
-protected slots:
+protected Q_SLOTS:
   void                onSaveToFile();
   void                onSelectAll();
   void                onClear();

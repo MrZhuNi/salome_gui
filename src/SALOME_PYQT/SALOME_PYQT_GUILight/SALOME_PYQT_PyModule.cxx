@@ -339,7 +339,7 @@ void PyModuleHelper::XmlHandler::activateMenus( bool enable )
 {
   if ( module() ) {
     QtxActionMenuMgr* mgr = module()->menuMgr();
-    foreach( int id, myMenuItems ) mgr->setEmptyEnabled( id, enable );
+    Q_FOREACH( int id, myMenuItems ) mgr->setEmptyEnabled( id, enable );
   }
 }
 
@@ -895,7 +895,7 @@ bool PyModuleHelper::activate( SUIT_Study* study )
       if ( view ) activeViewChanged( view );
       // get all view currently opened in the study and connect their signals to 
       // the corresponding slots of the class.
-      foreach ( view, d->windows() ) connectView( view );
+      Q_FOREACH ( view, d->windows() ) connectView( view );
     }
     else {
       // hide menus / toolbars in case of error

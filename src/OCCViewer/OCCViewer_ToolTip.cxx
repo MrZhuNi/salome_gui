@@ -86,11 +86,11 @@ void OCCViewer_ToolTip::onToolTip( QPoint p, QString& str, QFont& f, QRect& txtR
   QString txt;
   Handle( SelectMgr_EntityOwner ) owner = aCont->DetectedOwner();
   if( !owner.IsNull() )
-    emit toolTipFor( owner, txt );
+    Q_EMIT toolTipFor( owner, txt );
 
   Handle_AIS_InteractiveObject obj = aCont->DetectedInteractive();
   if( txt.isEmpty() && !obj.IsNull() )
-    emit toolTipFor( obj, txt );
+    Q_EMIT toolTipFor( obj, txt );
 
   if( txt.isEmpty() )
     return;

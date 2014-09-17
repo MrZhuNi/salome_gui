@@ -115,16 +115,16 @@ public:
   virtual void          viewManagers( const QString&, QList<SUIT_ViewManager*>& ) const = 0;
   QAction*              action( const int ) const;
 
-signals:
+Q_SIGNALS:
   void                  applicationClosed( SUIT_Application* );
   void                  activated( SUIT_Application* );
   void                  infoChanged( QString );
 
-public slots:
+public Q_SLOTS:
   virtual void          updateCommandsStatus();
   virtual void          onHelpContextModule( const QString&, const QString&, const QString& = QString() );
 
-private slots:
+private Q_SLOTS:
   void                  onInfoClear();
 
 protected:
@@ -174,7 +174,7 @@ protected:
                                       const bool = false, QObject* = 0, const char* = 0,
 				      const QString& = QString() );
 
-protected slots:
+protected Q_SLOTS:
   virtual void          onDesktopActivated();
 
 private:

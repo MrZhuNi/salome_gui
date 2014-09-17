@@ -96,7 +96,7 @@ void GraphicsView_Selector::unselectAll()
     return;
 
   if ( numSelected() > 0 )
-    emit selSelectionCancel();
+    Q_EMIT selSelectionCancel();
 }
 
 //================================================================
@@ -107,16 +107,16 @@ void GraphicsView_Selector::checkSelection( int selBefore, bool append, int theS
 {
   int selAfter = numSelected();
   if ( selBefore > 0 && selAfter < 1 )     
-    emit selSelectionCancel();
+    Q_EMIT selSelectionCancel();
   else if ( selAfter > 0 )
   {
     switch( theStatus )
     {
       case GVSS_LocalChanged:
-        emit selSelectionDone( GVSCS_Local );
+        Q_EMIT selSelectionDone( GVSCS_Local );
         break;
       case GVSS_GlobalChanged:
-        emit selSelectionDone( GVSCS_Global );
+        Q_EMIT selSelectionDone( GVSCS_Global );
         break;
     }
   }

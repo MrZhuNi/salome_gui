@@ -150,7 +150,7 @@ QWidget* QDS_CheckBox::createControl( QWidget* parent )
 */
 void QDS_CheckBox::onParamChanged()
 {
-  emit paramChanged();
+  Q_EMIT paramChanged();
 }
 
 /*!

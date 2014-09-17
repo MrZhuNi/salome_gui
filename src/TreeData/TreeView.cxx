@@ -138,7 +138,7 @@ void TreeView::processMenuAction(QAction * actionSelected) {
   LOG("TreeView::processMenuAction: signal emitted:\n"<<
       "item list: "<<nameIdList<<"\n"<<
       "action id: "<<actionId);
-  emit itemListToProcess(nameIdList, actionId);
+  Q_EMIT itemListToProcess(nameIdList, actionId);
 
   LOG("processMenuAction: END");
 }

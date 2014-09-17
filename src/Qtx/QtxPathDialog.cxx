@@ -274,7 +274,7 @@ void QtxPathDialog::onBrowse()
   fileNameChanged( id, fName );
   
   if ( id == defaultEntry() )
-    emit fileNameChanged( fName );
+    Q_EMIT fileNameChanged( fName );
 }
 
 /*!
@@ -297,7 +297,7 @@ void QtxPathDialog::onReturnPressed()
   fileNameChanged( id, fileName( id ) );
   
   if ( id == defaultEntry() )
-    emit fileNameChanged( fileName() );
+    Q_EMIT fileNameChanged( fileName() );
 }
 
 /*!

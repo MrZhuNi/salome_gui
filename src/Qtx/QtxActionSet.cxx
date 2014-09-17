@@ -243,8 +243,8 @@ void QtxActionSet::onActionTriggered( bool /*on*/ )
 
   int id = actionId( a );
   if ( id != -1 )
-    emit triggered( id );
-  emit triggered( a );
+    Q_EMIT triggered( id );
+  Q_EMIT triggered( a );
 }
 
 /*!

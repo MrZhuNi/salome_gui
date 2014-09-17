@@ -45,7 +45,7 @@ public:
 
   int addButton( const QString&, const int = -1);
 
-public slots:
+public Q_SLOTS:
   void accept();
 
 private:

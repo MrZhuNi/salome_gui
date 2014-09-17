@@ -179,11 +179,11 @@ public:
   //! See #SALOME_View::Repaint()
   virtual void Repaint();
 
- signals:
+ Q_SIGNALS:
   void actorAdded(SVTK_ViewWindow*, VTKViewer_Actor*);
   void actorRemoved(SVTK_ViewWindow*, VTKViewer_Actor*);
 
-protected slots:
+protected Q_SLOTS:
   void onMousePress(SUIT_ViewWindow*, QMouseEvent*);
   void onMouseMove(SUIT_ViewWindow*, QMouseEvent*);
   void onMouseRelease(SUIT_ViewWindow*, QMouseEvent*);

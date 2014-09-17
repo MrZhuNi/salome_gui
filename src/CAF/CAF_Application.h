@@ -50,10 +50,10 @@ public:
 
   virtual QString             getFileFilter() const;
 
-public slots:  
+public Q_SLOTS:
   virtual void                onHelpAbout();
 
-protected slots:
+protected Q_SLOTS:
   virtual bool                onUndo( int );
   virtual bool                onRedo( int );
   

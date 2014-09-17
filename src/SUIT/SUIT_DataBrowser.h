@@ -78,13 +78,13 @@ protected:
 private:
   void             init( SUIT_DataObject* );
 
-signals:
+Q_SIGNALS:
   void             requestUpdate();
   void             requestRename();
   void             clicked( SUIT_DataObject* );
   void             doubleClicked( SUIT_DataObject* );
 
-private slots:
+private Q_SLOTS:
   void             onModelUpdated();
   void             onClicked( const QModelIndex& );
   void             onDblClicked( const QModelIndex& );

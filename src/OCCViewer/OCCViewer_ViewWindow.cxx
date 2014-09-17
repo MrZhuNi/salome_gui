@@ -360,7 +360,7 @@ bool OCCViewer_ViewWindow::eventFilter( QObject* watched, QEvent* e )
       return true;
 
     case QEvent::MouseButtonDblClick:
-      emit mouseDoubleClicked(this, (QMouseEvent*)e);
+      Q_EMIT mouseDoubleClicked(this, (QMouseEvent*)e);
       return true;
 
     case QEvent::Wheel:
@@ -381,12 +381,12 @@ bool OCCViewer_ViewWindow::eventFilter( QObject* watched, QEvent* e )
       {
         QContextMenuEvent * aEvent = (QContextMenuEvent*)e;
         if ( aEvent->reason() != QContextMenuEvent::Mouse )
-          emit contextMenuRequested( aEvent );
+          Q_EMIT contextMenuRequested( aEvent );
       }
       return true;
 
     case QEvent::KeyPress:
-      emit keyPressed(this, (QKeyEvent*) e);
+      Q_EMIT keyPressed(this, (QKeyEvent*) e);
       return true;
 
     default:
@@ -427,18 +427,18 @@ void OCCViewer_ViewWindow::vpMousePressEvent( QMouseEvent* theEvent )
   switch ( myOperation ) {
   case WINDOWFIT:
     if ( theEvent->button() == Qt::LeftButton )
-      emit vpTransformationStarted ( WINDOWFIT );
+      Q_EMIT vpTransformationStarted ( WINDOWFIT );
     break;
 
   case PANGLOBAL:
     if ( theEvent->button() == Qt::LeftButton )
-      emit vpTransformationStarted ( PANGLOBAL );
+      Q_EMIT vpTransformationStarted ( PANGLOBAL );
     break;
 
   case ZOOMVIEW:
     if ( theEvent->button() == Qt::LeftButton ) {
       myViewPort->startZoomAtPoint( myStartX, myStartY );
-      emit vpTransformationStarted ( ZOOMVIEW );
+      Q_EMIT vpTransformationStarted ( ZOOMVIEW );
     }
     break;
 
@@ -448,7 +448,7 @@ void OCCViewer_ViewWindow::vpMousePressEvent( QMouseEvent* theEvent )
       activateZoom();
     }
     else if ( theEvent->button() == Qt::LeftButton )
-      emit vpTransformationStarted ( PANVIEW );
+      Q_EMIT vpTransformationStarted ( PANVIEW );
     break;
 
   case ROTATE:
@@ -458,7 +458,7 @@ void OCCViewer_ViewWindow::vpMousePressEvent( QMouseEvent* theEvent )
     }
     else if ( theEvent->button() == Qt::LeftButton ) {
       myViewPort->startRotation(myStartX, myStartY, myCurrPointType, mySelectedPoint);
-      emit vpTransformationStarted ( ROTATE );
+      Q_EMIT vpTransformationStarted ( ROTATE );
     }
     break;
 
@@ -536,12 +536,12 @@ void OCCViewer_ViewWindow::vpMousePressEvent( QMouseEvent* theEvent )
         }
       }
       else
-        emit mousePressed(this, theEvent);
+        Q_EMIT mousePressed(this, theEvent);
       break;
     }
     /* notify that we start a transformation */
     if ( transformRequested() )
-            emit vpTransformationStarted ( myOperation );
+      Q_EMIT vpTransformationStarted ( myOperation );
   }
   if ( transformRequested() )
     setTransformInProcess( true );
@@ -909,7 +909,7 @@ void OCCViewer_ViewWindow::vpMouseMoveEvent( QMouseEvent* theEvent )
   default:
     if ( myRotationPointSelection || isSketcherStyle() )
     {
-      emit mouseMoving( this, theEvent );
+      Q_EMIT mouseMoving( this, theEvent );
     }
     else
     {
@@ -930,7 +930,7 @@ void OCCViewer_ViewWindow::vpMouseMoveEvent( QMouseEvent* theEvent )
             myViewPort->setCursor( handCursor );
           }
         }
-        emit mouseMoving( this, theEvent );
+        Q_EMIT mouseMoving( this, theEvent );
       }
       else if ( ( anInteractionStyle == SUIT_ViewModel::STANDARD &&
                 aButton == Qt::RightButton && ( aState == Qt::NoModifier || Qt::ShiftModifier ) ) ||
@@ -962,7 +962,7 @@ void OCCViewer_ViewWindow::vpMouseMoveEvent( QMouseEvent* theEvent )
         }
       }
       else
-        emit mouseMoving( this, theEvent );
+        Q_EMIT mouseMoving( this, theEvent );
     }
   }
 }
@@ -988,12 +988,12 @@ void OCCViewer_ViewWindow::vpMouseReleaseEvent(QMouseEvent* theEvent)
         }
       }
 
-      emit mouseReleased(this, theEvent);
+      Q_EMIT mouseReleased(this, theEvent);
       if(theEvent->button() == Qt::RightButton && prevState == -1)
       {
         QContextMenuEvent aEvent( QContextMenuEvent::Mouse,
                                   theEvent->pos(), theEvent->globalPos() );
-        emit contextMenuRequested( &aEvent );
+        Q_EMIT contextMenuRequested( &aEvent );
       }
     }
     break;
@@ -1067,7 +1067,7 @@ void OCCViewer_ViewWindow::resetState()
   }
 
   if ( transformRequested() )
-    emit vpTransformationFinished (myOperation);
+    Q_EMIT vpTransformationFinished (myOperation);
 
   setTransformInProcess( false );
   setTransformRequested( NOTHING );
@@ -1462,11 +1462,11 @@ void OCCViewer_ViewWindow::onViewFitAll()
 */
 void OCCViewer_ViewWindow::onFrontView()
 {
-  emit vpTransformationStarted ( FRONTVIEW );
+  Q_EMIT vpTransformationStarted ( FRONTVIEW );
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) aView3d->SetProj (V3d_Xpos);
   onViewFitAll();
-  emit vpTransformationFinished ( FRONTVIEW );
+  Q_EMIT vpTransformationFinished ( FRONTVIEW );
 }
 
 /*!
@@ -1474,11 +1474,11 @@ void OCCViewer_ViewWindow::onFrontView()
 */
 void OCCViewer_ViewWindow::onBackView()
 {
-  emit vpTransformationStarted ( BACKVIEW );
+  Q_EMIT vpTransformationStarted ( BACKVIEW );
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) aView3d->SetProj (V3d_Xneg);
   onViewFitAll();
-  emit vpTransformationFinished ( BACKVIEW );
+  Q_EMIT vpTransformationFinished ( BACKVIEW );
 }
 
 /*!
@@ -1486,11 +1486,11 @@ void OCCViewer_ViewWindow::onBackView()
 */
 void OCCViewer_ViewWindow::onTopView()
 {
-  emit vpTransformationStarted ( TOPVIEW );
+  Q_EMIT vpTransformationStarted ( TOPVIEW );
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) aView3d->SetProj (V3d_Zpos);
   onViewFitAll();
-  emit vpTransformationFinished ( TOPVIEW );
+  Q_EMIT vpTransformationFinished ( TOPVIEW );
 }
 
 /*!
@@ -1498,11 +1498,11 @@ void OCCViewer_ViewWindow::onTopView()
 */
 void OCCViewer_ViewWindow::onBottomView()
 {
-  emit vpTransformationStarted ( BOTTOMVIEW );
+  Q_EMIT vpTransformationStarted ( BOTTOMVIEW );
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) aView3d->SetProj (V3d_Zneg);
   onViewFitAll();
-  emit vpTransformationFinished ( BOTTOMVIEW );
+  Q_EMIT vpTransformationFinished ( BOTTOMVIEW );
 }
 
 /*!
@@ -1510,11 +1510,11 @@ void OCCViewer_ViewWindow::onBottomView()
 */
 void OCCViewer_ViewWindow::onLeftView()
 {
-  emit vpTransformationStarted ( LEFTVIEW );
+  Q_EMIT vpTransformationStarted ( LEFTVIEW );
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) aView3d->SetProj (V3d_Yneg);
   onViewFitAll();
-  emit vpTransformationFinished ( LEFTVIEW );
+  Q_EMIT vpTransformationFinished ( LEFTVIEW );
 }
 
 /*!
@@ -1522,11 +1522,11 @@ void OCCViewer_ViewWindow::onLeftView()
 */
 void OCCViewer_ViewWindow::onRightView()
 {
-  emit vpTransformationStarted ( RIGHTVIEW );
+  Q_EMIT vpTransformationStarted ( RIGHTVIEW );
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) aView3d->SetProj (V3d_Ypos);
   onViewFitAll();
-  emit vpTransformationFinished ( RIGHTVIEW );
+  Q_EMIT vpTransformationFinished ( RIGHTVIEW );
 }
 
 /*!
@@ -1534,9 +1534,9 @@ void OCCViewer_ViewWindow::onRightView()
 */
 void OCCViewer_ViewWindow::onClockWiseView()
 {
-  emit vpTransformationStarted ( CLOCKWISEVIEW );
+  Q_EMIT vpTransformationStarted ( CLOCKWISEVIEW );
   myViewPort->rotateXY( 90. );
-  emit vpTransformationFinished ( CLOCKWISEVIEW );
+  Q_EMIT vpTransformationFinished ( CLOCKWISEVIEW );
 }
 
 /*!
@@ -1544,9 +1544,9 @@ void OCCViewer_ViewWindow::onClockWiseView()
 */
 void OCCViewer_ViewWindow::onAntiClockWiseView()
 {
-  emit vpTransformationStarted ( ANTICLOCKWISEVIEW );
+  Q_EMIT vpTransformationStarted ( ANTICLOCKWISEVIEW );
   myViewPort->rotateXY( -90. );
-  emit vpTransformationFinished ( ANTICLOCKWISEVIEW );
+  Q_EMIT vpTransformationFinished ( ANTICLOCKWISEVIEW );
 }
 
 /*!
@@ -1556,13 +1556,13 @@ void OCCViewer_ViewWindow::onAntiClockWiseView()
 */
 void OCCViewer_ViewWindow::onResetView()
 {
-  emit vpTransformationStarted( RESETVIEW );
+  Q_EMIT vpTransformationStarted( RESETVIEW );
   bool upd = myViewPort->getView()->SetImmediateUpdate( false );
   myViewPort->getView()->Reset( false );
   myViewPort->fitAll( false, true, false );
   myViewPort->getView()->SetImmediateUpdate( upd );
   myViewPort->getView()->Update();
-  emit vpTransformationFinished( RESETVIEW );
+  Q_EMIT vpTransformationFinished( RESETVIEW );
 }
 
 /*!
@@ -1570,9 +1570,9 @@ void OCCViewer_ViewWindow::onResetView()
 */
 void OCCViewer_ViewWindow::onFitAll()
 {
-  emit vpTransformationStarted( FITALLVIEW );
+  Q_EMIT vpTransformationStarted( FITALLVIEW );
   myViewPort->fitAll();
-  emit vpTransformationFinished( FITALLVIEW );
+  Q_EMIT vpTransformationFinished( FITALLVIEW );
 }
 
 /*!
@@ -1615,7 +1615,7 @@ void OCCViewer_ViewWindow::onCloneView()
 {
   SUIT_ViewWindow* vw = myManager->createViewWindow();
   //vw->show();
-  emit viewCloned( vw );
+  Q_EMIT viewCloned( vw );
 }
 
 /*!
@@ -2300,7 +2300,7 @@ void OCCViewer_ViewWindow::setVisualParameters( const QString& parameters )
   Qtx::BackgroundData bgData;
   if ( parameters.contains( '=' )  ) // new format - "scale=1.000e+00*centerX=0.000e+00..."
   {
-    foreach( QString param, data ) {
+    Q_FOREACH( QString param, data ) {
       QString paramName  = param.section( '=', 0, 0 ).trimmed();
       QString paramValue = param.section( '=', 1, 1 ).trimmed();
       if      ( paramName == "scale" )             params.scale             = paramValue.toDouble();
@@ -2325,7 +2325,7 @@ void OCCViewer_ViewWindow::setVisualParameters( const QString& parameters )
       {
         QStringList ClipPlaneData = paramValue.split( ';' );
         OCCViewer_ClipPlane aPlane;
-        foreach( QString ClipPlaneParam, ClipPlaneData )
+        Q_FOREACH( QString ClipPlaneParam, ClipPlaneData )
         {
           QString ClipPlane_paramName  = ClipPlaneParam.section( '~', 0, 0 ).trimmed();
           QString ClipPlane_paramValue = ClipPlaneParam.section( '~', 1, 1 ).trimmed();
@@ -2442,7 +2442,7 @@ void OCCViewer_ViewWindow::setVisualParameters( const QString& parameters )
 */
 void OCCViewer_ViewWindow::showEvent( QShowEvent* theEvent )
 {
-  emit Show( theEvent );
+  Q_EMIT Show( theEvent );
 }
 
 /*!
@@ -2454,7 +2454,7 @@ void OCCViewer_ViewWindow::showEvent( QShowEvent* theEvent )
 */
 void OCCViewer_ViewWindow::hideEvent( QHideEvent* theEvent )
 {
-  emit Hide( theEvent );
+  Q_EMIT Hide( theEvent );
 }
 
 
@@ -2650,7 +2650,7 @@ void OCCViewer_ViewWindow::setReturnedTo3dView(bool isVisible3dView)
     toolMgr()->show( ReturnTo3dViewId );
   else
     toolMgr()->hide( ReturnTo3dViewId );
-  if ( isVisible3dView ) emit returnedTo3d( );
+  if ( isVisible3dView ) Q_EMIT returnedTo3d( );
 }
 
 
@@ -2666,7 +2666,7 @@ void OCCViewer_ViewWindow::setMaximized(bool toMaximize, bool toSendSignal)
     anAction->setStatusTip( tr( "DSC_MINIMIZE_VIEW" ) );
     if ( anAction2 && my2dMode != No2dMode ) toolMgr()->show( ReturnTo3dViewId );
     if (toSendSignal) {
-      emit maximized( this, true );
+      Q_EMIT maximized( this, true );
     }
   }
   else {
@@ -2676,7 +2676,7 @@ void OCCViewer_ViewWindow::setMaximized(bool toMaximize, bool toSendSignal)
     anAction->setStatusTip( tr( "DSC_MAXIMIZE_VIEW" ) );
     if ( anAction2 && my2dMode != No2dMode ) toolMgr()->hide( ReturnTo3dViewId );
     if (toSendSignal) {
-      emit maximized( this, false );
+      Q_EMIT maximized( this, false );
     }
   }
 }

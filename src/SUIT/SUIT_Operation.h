@@ -112,7 +112,7 @@ public:
 
   int               execStatus() const;
 
-signals:
+Q_SIGNALS:
   void              started( SUIT_Operation* );
   void              aborted( SUIT_Operation* );
   void              committed( SUIT_Operation* );
@@ -123,7 +123,7 @@ signals:
 
   void              callSlot();
 
-public slots:
+public Q_SLOTS:
   void              start();
   void              abort();
   void              commit();

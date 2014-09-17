@@ -42,7 +42,7 @@ public:
 
   ~ViewerTools_DialogBase();
 
-protected slots:
+protected Q_SLOTS:
   void onParentShow();
   void onParentHide();
   virtual void done( int );

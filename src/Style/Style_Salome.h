@@ -75,7 +75,7 @@ public:
                                       SubControl, const QWidget* = 0 ) const;
   virtual QRect       subElementRect( SubElement, const QStyleOption*, const QWidget* = 0 ) const;
 
-protected slots:
+protected Q_SLOTS:
   QIcon               standardIconImplementation( StandardPixmap, const QStyleOption* = 0,
                                                   const QWidget* = 0 ) const;
 private:

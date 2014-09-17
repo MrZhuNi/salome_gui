@@ -67,7 +67,7 @@ bool LightApp_Study::createDocument( const QString& theStr )
 
   bool aRet = CAM_Study::createDocument( theStr );
 
-  emit created( this );
+  Q_EMIT created( this );
 
   return aRet;
 }
@@ -97,7 +97,7 @@ bool LightApp_Study::openDocument( const QString& theFileName )
 
   bool res = CAM_Study::openDocument( theFileName );
 
-  emit opened( this );
+  Q_EMIT opened( this );
   return res;
 }
 
@@ -128,7 +128,7 @@ bool LightApp_Study::loadDocument( const QString& theStudyName )
   ((LightApp_Application*)application())->updateObjectBrowser( false ); 
 
   bool res = CAM_Study::openDocument( theStudyName );
-  emit opened( this );
+  Q_EMIT opened( this );
   //SRN: BugID IPAL9021: End
   return res;
 }
@@ -192,7 +192,7 @@ bool LightApp_Study::saveDocumentAs( const QString& theFileName )
   res = res && CAM_Study::saveDocumentAs( theFileName );
   //SRN: BugID IPAL9377, removed usage of uninitialized variable <res>
   if ( res )
-    emit saved( this );
+    Q_EMIT saved( this );
 
   return res;
 }
@@ -219,7 +219,7 @@ bool LightApp_Study::saveDocument()
   bool res = saveStudyData(studyName());
   res = res && CAM_Study::saveDocument();
   if (res)
-    emit saved( this );
+    Q_EMIT saved( this );
 
   return res;
 }
@@ -231,7 +231,7 @@ void LightApp_Study::closeDocument(bool permanently)
 {
   // Inform everybody that this study is going to close when it's most safe to,
   // i.e. in the very beginning
-  emit closed( this );
+  Q_EMIT closed( this );
 
   CAM_Study::closeDocument(permanently);
   

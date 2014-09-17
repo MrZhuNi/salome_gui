@@ -179,7 +179,7 @@ private:
 
   void deleteLater( SUIT_DataObject* );
 
-signals:
+Q_SIGNALS:
   void created( SUIT_DataObject* );
   void destroyed( SUIT_DataObject* );
   void inserted( SUIT_DataObject*, SUIT_DataObject* );

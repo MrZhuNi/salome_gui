@@ -180,7 +180,7 @@ QtxWorkstack* STD_TabDesktop::workstack() const
 void STD_TabDesktop::onWindowActivated( QWidget* w )
 {
   if ( w && w->inherits( "SUIT_ViewWindow" ) )
-    emit windowActivated( (SUIT_ViewWindow*)w );
+    Q_EMIT windowActivated( (SUIT_ViewWindow*)w );
 }
 
 /*!

@@ -486,7 +486,7 @@ bool SUIT_FileDlg::acceptData()
   }
 
   if ( bOk )
-    emit filesSelected( files );
+    Q_EMIT filesSelected( files );
 
   return bOk;
 }

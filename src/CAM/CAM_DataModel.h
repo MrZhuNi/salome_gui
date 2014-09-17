@@ -55,10 +55,10 @@ public:
 protected:
   virtual void     setRoot( const CAM_DataObject* );
 
-private slots:
+private Q_SLOTS:
   void             onDestroyed( SUIT_DataObject* );
 
-signals:
+Q_SIGNALS:
   void             rootChanged( const CAM_DataModel* );
 
 private:

@@ -120,7 +120,7 @@ public:
   virtual bool                        renameAllowed( const QString& ) const;
   virtual bool                        renameObject( const QString&, const QString& );
   
-public slots:
+public Q_SLOTS:
   virtual void                        onLoadDoc();
   virtual void                        onNewWithScript();
   virtual bool                        onLoadDoc( const QString& );
@@ -141,7 +141,7 @@ public slots:
   virtual void                        onCheckIn();
   virtual void                        onLocalCheckIn();
 
-protected slots:
+protected Q_SLOTS:
   void                                onStudyCreated( SUIT_Study* );
   void                                onStudyOpened( SUIT_Study* );
   
@@ -172,7 +172,7 @@ protected:
 
   virtual void                        afterCloseDoc();
 
-private slots:
+private Q_SLOTS:
   void                                onDeleteInvalidReferences();
   void                                onDblClick( SUIT_DataObject* );
   void                                onProperties();
@@ -197,7 +197,7 @@ private:
   QMap<QString, QAction*>             myExtActions; // Map <AttributeUserID, QAction>
   bool                                myIsSiman; // application corresponds to the siman study flag
 
-signals:
+Q_SIGNALS:
   void                                dumpedStudyClosed( const QString& theDumpScript, 
                                                          const QString& theStudyName, 
                                                          bool theIsStudySaved );

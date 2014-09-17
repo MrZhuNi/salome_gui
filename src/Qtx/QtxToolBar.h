@@ -45,7 +45,7 @@ public:
 
   QMainWindow*  mainWindow() const;
 
-public slots:
+public Q_SLOTS:
   virtual void  setVisible( bool );
 
 protected:

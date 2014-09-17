@@ -140,8 +140,8 @@ void SUIT_ViewWindow::setDestructiveClose( const bool on )
 void SUIT_ViewWindow::closeEvent( QCloseEvent* e )
 {
   e->ignore();
-  emit tryClosing( this );
-  if ( closable() ) emit closing( this );
+  Q_EMIT tryClosing( this );
+  if ( closable() ) Q_EMIT closing( this );
 }
 
 /*! Context menu requested for event \a e.
@@ -156,7 +156,7 @@ void SUIT_ViewWindow::contextMenuEvent( QContextMenuEvent* e )
     return;
 
   if ( e->reason() != QContextMenuEvent::Mouse )
-    emit contextMenuRequested( e );
+    Q_EMIT contextMenuRequested( e );
 }
 
 /*! Post events on dump view.
@@ -284,7 +284,7 @@ void SUIT_ViewWindow::setDropDownButtons( bool on )
 	  if ( alist.isEmpty() ) continue;
 	  int idx = toolMgr()->index( toolMgr()->actionId( alist[0] ), tid );
 	  if ( idx == -1 ) continue;
-	  foreach ( QAction* a, alist ) toolMgr()->remove( toolMgr()->actionId( a ), tid );
+	  Q_FOREACH ( QAction* a, alist ) toolMgr()->remove( toolMgr()->actionId( a ), tid );
 	  toolMgr()->insert( ma, tid, idx );
 	}
       }
@@ -293,18 +293,18 @@ void SUIT_ViewWindow::setDropDownButtons( bool on )
     else {
       QIntList tblist = toolMgr()->toolBarsIds();
       QIntList alist  = toolMgr()->idList();
-      foreach( int aid, alist )
+      Q_FOREACH( int aid, alist )
       {
 	QtxMultiAction* ma = qobject_cast<QtxMultiAction*>( toolMgr()->action( aid ) );
 	if ( !ma ) continue;
-	foreach( int tid, tblist )
+	Q_FOREACH( int tid, tblist )
 	{
 	  int idx = toolMgr()->index( aid, tid );
 	  if ( idx >= 0 )
 	  {
 	    myMultiActions[ tid ].append( ma );
 	    toolMgr()->remove( aid, tid );
-	    foreach( QAction* a, ma->actions() ) toolMgr()->insert( a, tid, idx++ );
+	    Q_FOREACH( QAction* a, ma->actions() ) toolMgr()->insert( a, tid, idx++ );
 	  }
 	}
       }
@@ -384,7 +384,7 @@ QAction* SUIT_ViewWindow::synchronizeAction()
 */
 void SUIT_ViewWindow::emitViewModified()
 {
-  emit viewModified( this );
+  Q_EMIT viewModified( this );
 }
 
 /*!
@@ -404,7 +404,7 @@ void SUIT_ViewWindow::updateSyncViews()
     if ( app ) {
       SUIT_Desktop* d = app->desktop();
       QList<SUIT_ViewWindow*> allViews = qFindChildren<SUIT_ViewWindow*>( d );
-      foreach( SUIT_ViewWindow* vw, allViews ) {
+      Q_FOREACH( SUIT_ViewWindow* vw, allViews ) {
 	if ( !vw || vw == this ) continue; // skip invalid views and this one
 	SUIT_CameraProperties otherProps = vw->cameraProperties();
 	if ( otherProps.isCompatible( props ) ) {
@@ -474,7 +474,7 @@ void SUIT_ViewWindow::synchronizeView( SUIT_ViewWindow* viewWindow, int id )
   if ( !d ) return;
 
   QList<SUIT_ViewWindow*> allViews = qFindChildren<SUIT_ViewWindow*>( d );
-  foreach( SUIT_ViewWindow* vw, allViews ) {
+  Q_FOREACH( SUIT_ViewWindow* vw, allViews ) {
     if ( !vw->cameraProperties().isValid() )
       continue;                    // omit views not supporting camera properties
     if ( vw->getId() == id )
@@ -485,7 +485,7 @@ void SUIT_ViewWindow::synchronizeView( SUIT_ViewWindow* viewWindow, int id )
 
   if ( isSync && id ) {
     // remove all possible disconnections
-    foreach( SUIT_ViewWindow* vw, otherViews ) {
+    Q_FOREACH( SUIT_ViewWindow* vw, otherViews ) {
       // disconnect target view
       vw->disconnect( SIGNAL( viewModified( SUIT_ViewWindow* ) ), viewWindow, SLOT( synchronize( SUIT_ViewWindow* ) ) );
       viewWindow->disconnect( SIGNAL( viewModified( SUIT_ViewWindow* ) ), vw, SLOT( synchronize( SUIT_ViewWindow* ) ) );

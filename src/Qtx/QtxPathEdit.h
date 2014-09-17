@@ -47,7 +47,7 @@ public:
   QString       pathFilter() const;
   void          setPathFilter( const QString& );
 
-private slots:
+private Q_SLOTS:
   void          onBrowse( bool = false );
 
 protected:

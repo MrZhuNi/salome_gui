@@ -317,7 +317,7 @@ void QtxTreeView::selectionChanged( const QItemSelection& selected,
                                     const QItemSelection& deselected )
 {
   QTreeView::selectionChanged( selected, deselected );
-  emit( selectionChanged() );
+  Q_EMIT( selectionChanged() );
 }
 
 /*!
@@ -376,7 +376,7 @@ void QtxTreeView::setOpened( const QModelIndex& index, const int levels, bool op
 */
 void QtxTreeView::emitSortingEnabled( bool enabled )
 {
-  emit( sortingEnabled( enabled ) );
+  Q_EMIT( sortingEnabled( enabled ) );
 }
 
 void QtxTreeView::setModel( QAbstractItemModel* m )

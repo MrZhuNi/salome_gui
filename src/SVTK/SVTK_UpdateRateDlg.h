@@ -82,7 +82,7 @@ protected:
                             void* clientdata, 
                             void* calldata);
   
-protected slots:
+protected Q_SLOTS:
   void onClickOk();
   void onClickApply();
   void onClickClose();

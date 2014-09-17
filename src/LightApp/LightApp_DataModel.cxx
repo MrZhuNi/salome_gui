@@ -57,7 +57,7 @@ LightApp_DataModel::~LightApp_DataModel()
 */
 bool LightApp_DataModel::open( const QString&, CAM_Study* study, QStringList )
 {
-  emit opened(); //TODO: is it really needed? to be removed maybe...
+  Q_EMIT opened(); //TODO: is it really needed? to be removed maybe...
   return true;
 }
 
@@ -66,7 +66,7 @@ bool LightApp_DataModel::open( const QString&, CAM_Study* study, QStringList )
 */
 bool LightApp_DataModel::save( QStringList& )
 {
-  emit saved();
+  Q_EMIT saved();
   return true;
 }
 
@@ -75,7 +75,7 @@ bool LightApp_DataModel::save( QStringList& )
 */
 bool LightApp_DataModel::saveAs( const QString&, CAM_Study*, QStringList& )
 {
-  emit saved();
+  Q_EMIT saved();
   return true;
 }
 
@@ -93,7 +93,7 @@ bool LightApp_DataModel::dumpPython( const QString&, CAM_Study*, bool, QStringLi
 */
 bool LightApp_DataModel::close()
 {
-  emit closed();
+  Q_EMIT closed();
   return true;
 }
 

@@ -62,7 +62,7 @@ protected:
   virtual bool openDataModel( const QString&, CAM_DataModel* );
   virtual bool saveDataModel( const QString&, CAM_DataModel* );
 
-protected slots:
+protected Q_SLOTS:
   virtual void updateModelRoot( const CAM_DataModel* );
 
 private:

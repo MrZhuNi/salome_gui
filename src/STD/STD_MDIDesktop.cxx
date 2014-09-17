@@ -158,7 +158,7 @@ QtxWorkspace* STD_MDIDesktop::workspace() const
 void STD_MDIDesktop::onWindowActivated( QWidget* w )
 {
   if ( w && w->inherits( "SUIT_ViewWindow" ) )
-    emit windowActivated( (SUIT_ViewWindow*)w );
+    Q_EMIT windowActivated( (SUIT_ViewWindow*)w );
 }
 
 /*!

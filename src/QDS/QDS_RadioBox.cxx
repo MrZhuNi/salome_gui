@@ -284,9 +284,9 @@ void QDS_RadioBox::setString( const QString& txt )
   {
     onParamChanged();
     QString str = getString();
-    emit activated( newId );
-    emit paramChanged();
-    emit paramChanged( str );
+    Q_EMIT activated( newId );
+    Q_EMIT paramChanged();
+    Q_EMIT paramChanged( str );
   }
 }
 
@@ -410,9 +410,9 @@ void QDS_RadioBox::onToggled( bool on )
     return;
 
   onParamChanged();
-  emit paramChanged();
+  Q_EMIT paramChanged();
   QString str = getString();
-  emit paramChanged( str );
+  Q_EMIT paramChanged( str );
 }
 
 /*!
@@ -474,8 +474,8 @@ void QDS_RadioBox::updateRadioBox()
   {
     onParamChanged();
     QString str = getString();
-    emit paramChanged();
-    emit paramChanged( str );
+    Q_EMIT paramChanged();
+    Q_EMIT paramChanged( str );
   }
 }
 

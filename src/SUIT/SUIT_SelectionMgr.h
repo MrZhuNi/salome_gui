@@ -81,7 +81,7 @@ public:
 
   bool            isSynchronizing() const;
 
-signals:
+Q_SIGNALS:
   void            selectionChanged();
 
 protected:

@@ -330,7 +330,7 @@ void OCCViewer_ViewPort::setBackgroundColor( const QColor& color )
   pal.setColor( QPalette::Background, color );
   setPalette( pal );
   repaint();
-  emit vpChangeBGColor( color );
+  Q_EMIT vpChangeBGColor( color );
 }
 
 /*!
@@ -379,7 +379,7 @@ void OCCViewer_ViewPort::setTransformEnabled( bool enable )
 */
 void OCCViewer_ViewPort::mousePressEvent( QMouseEvent *e )
 {
-    emit vpMouseEvent( e );
+  Q_EMIT vpMouseEvent( e );
 }
 
 /*!
@@ -387,7 +387,7 @@ void OCCViewer_ViewPort::mousePressEvent( QMouseEvent *e )
 */
 void OCCViewer_ViewPort::mouseMoveEvent( QMouseEvent* e )
 {
-  emit vpMouseEvent( e );
+  Q_EMIT vpMouseEvent( e );
 }
 
 /*!
@@ -395,7 +395,7 @@ void OCCViewer_ViewPort::mouseMoveEvent( QMouseEvent* e )
 */
 void OCCViewer_ViewPort::mouseReleaseEvent( QMouseEvent *e )
 {
-  emit vpMouseEvent( e );
+  Q_EMIT vpMouseEvent( e );
 }
 
 /*!
@@ -403,7 +403,7 @@ void OCCViewer_ViewPort::mouseReleaseEvent( QMouseEvent *e )
 */
 void OCCViewer_ViewPort::mouseDoubleClickEvent( QMouseEvent *e )
 {
-  emit vpMouseEvent( e );
+  Q_EMIT vpMouseEvent( e );
 }
 
 /*!
@@ -411,7 +411,7 @@ void OCCViewer_ViewPort::mouseDoubleClickEvent( QMouseEvent *e )
 */
 void OCCViewer_ViewPort::keyPressEvent( QKeyEvent *e )
 {
-  emit vpKeyEvent( e );
+  Q_EMIT vpKeyEvent( e );
 }
 
 /*!
@@ -419,7 +419,7 @@ void OCCViewer_ViewPort::keyPressEvent( QKeyEvent *e )
 */
 void OCCViewer_ViewPort::keyReleaseEvent( QKeyEvent *e )
 {
-  emit vpKeyEvent( e );
+  Q_EMIT vpKeyEvent( e );
 }
 
 /*!
@@ -430,7 +430,7 @@ void OCCViewer_ViewPort::paintEvent( QPaintEvent* )
   if ( myPaintersRedrawing )
   {
     QPainter p( this );
-    emit vpDrawExternal( &p );
+    Q_EMIT vpDrawExternal( &p );
     myPaintersRedrawing = false;
   }
 }

@@ -49,7 +49,7 @@ public:
     
   static QString  getName( QWidget* parent = 0, const QString& oldName = QString() );
     
-protected slots:
+protected Q_SLOTS:
   void accept();
   
 private:

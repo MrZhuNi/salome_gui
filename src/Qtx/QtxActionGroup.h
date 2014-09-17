@@ -48,14 +48,14 @@ public:
 
   void             setEnabled( bool );
 
-public slots:
+public Q_SLOTS:
   void             setExclusive( const bool );
   void             setUsesDropDown( const bool );
 
-signals:
+Q_SIGNALS:
   void             selected( QAction* );
 
-private slots:
+private Q_SLOTS:
   void             onActivated( int );
   void             onTriggered( QAction* );
 

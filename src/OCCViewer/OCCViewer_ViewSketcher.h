@@ -69,7 +69,7 @@ public:
   virtual bool                 isDefault() const;
   virtual bool                 eventFilter( QObject*, QEvent* );
 
-private slots:
+private Q_SLOTS:
   void                         onDrawViewPort();
 
 protected:

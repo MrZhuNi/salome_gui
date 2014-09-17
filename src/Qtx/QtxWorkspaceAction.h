@@ -70,13 +70,13 @@ public:
 
   void          perform( const int );
 
-public slots:
+public Q_SLOTS:
   void          tile();
   void          cascade();
   void          tileVertical();
   void          tileHorizontal();
 
-private slots:
+private Q_SLOTS:
   void          onAboutToShow();
   void          onTriggered( int );
 

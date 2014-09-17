@@ -51,7 +51,7 @@ public:
   unsigned long      getModifiedTime() const;
   void               setModified();
 
-private slots:
+private Q_SLOTS:
   void               onSelectionChanged();
 
 protected:

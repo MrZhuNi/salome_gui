@@ -91,7 +91,7 @@ public:
   bool                   isSelectionCacheEnabled() const;
   void                   setSelectionCacheEnabled( bool );
 
-signals:
+Q_SIGNALS:
   void                   currentSelectionChanged();
 
 private:

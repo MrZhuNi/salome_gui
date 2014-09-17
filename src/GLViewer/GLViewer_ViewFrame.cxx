@@ -349,16 +349,16 @@ void GLViewer_ViewFrame::mouseEvent( QMouseEvent* e )
   switch ( e->type() )
   {
   case QEvent::MouseButtonPress:
-    emit mousePressed( this, e );
+    Q_EMIT mousePressed( this, e );
     break;
   case QEvent::MouseButtonRelease:
-    emit mouseReleased( this, e );
+    Q_EMIT mouseReleased( this, e );
     break;
   case QEvent::MouseButtonDblClick:
-    emit mouseDoubleClicked( this, e );
+    Q_EMIT mouseDoubleClicked( this, e );
     break;
   case QEvent::MouseMove:
-    emit mouseMoving( this, e );
+    Q_EMIT mouseMoving( this, e );
     break;
   default:
     break;
@@ -373,10 +373,10 @@ void GLViewer_ViewFrame::keyEvent( QKeyEvent* e )
   switch ( e->type() )
   {
   case QEvent::KeyPress:
-    emit keyPressed( this, e );
+    Q_EMIT keyPressed( this, e );
     break;
   case QEvent::KeyRelease:
-    emit keyReleased( this, e );
+    Q_EMIT keyReleased( this, e );
     break;
   default:
     break;
@@ -391,7 +391,7 @@ void GLViewer_ViewFrame::wheelEvent( QWheelEvent* e )
   switch ( e->type() )
   {
   case QEvent::Wheel:
-    emit wheeling( this, e );
+    Q_EMIT wheeling( this, e );
     break;
   default:
     break;

@@ -207,7 +207,7 @@ void SUIT_DataBrowser::getSelected( DataObjectList& lst ) const
     QModelIndexList sel = selectedIndexes();
     QModelIndex idx;
   
-    foreach( idx, sel ) {
+    Q_FOREACH( idx, sel ) {
       SUIT_DataObject* obj = m->object( idx );
       if ( obj )
         lst.append( obj );
@@ -258,7 +258,7 @@ void SUIT_DataBrowser::setSelected( const DataObjectList& lst, const bool append
     QModelIndexList indexes;
     SUIT_DataObject* obj;
 
-    foreach( obj, lst ) {
+    Q_FOREACH( obj, lst ) {
       QModelIndex index = m->index( obj );
       if ( index.isValid() )
         indexes.append( index );
@@ -443,7 +443,7 @@ void SUIT_DataBrowser::onClicked( const QModelIndex& index )
   if ( m ) {
     SUIT_DataObject* obj = m->object( index );
     if ( obj ) { 
-      emit( clicked( obj ) );
+      Q_EMIT( clicked( obj ) );
       m->emitClicked(obj, index);
     }
   }
@@ -461,7 +461,7 @@ void SUIT_DataBrowser::onDblClicked( const QModelIndex& index )
 
   if ( m ) {
     SUIT_DataObject* obj = m->object( index );
-    if ( obj ) emit( doubleClicked( obj ) );
+    if ( obj ) Q_EMIT( doubleClicked( obj ) );
   }
 }
 

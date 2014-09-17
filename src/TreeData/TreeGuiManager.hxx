@@ -58,7 +58,7 @@ private:
   TreeModel * _dataTreeModel;
   DataModel * _dataModel;
   
-public slots:
+public Q_SLOTS:
   virtual void processItemList(QStringList itemNameIdList, int actionId);
 };
 

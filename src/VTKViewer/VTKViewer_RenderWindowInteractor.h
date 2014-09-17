@@ -212,7 +212,7 @@ public:
   /*! User for switching to stereo mode.*/
   int PositionBeforeStereo[2];
 
- public slots:
+ public Q_SLOTS:
   void MouseMove(QMouseEvent *event) ;
   void LeftButtonPressed(const QMouseEvent *event) ;
   void LeftButtonReleased(const QMouseEvent *event) ;
@@ -224,10 +224,10 @@ public:
   void ButtonReleased(const QMouseEvent *event) ;
   void KeyPressed(QKeyEvent *event) ;
 
-  private slots:
+  private Q_SLOTS:
     void TimerFunc() ;
 
-signals:
+Q_SIGNALS:
   void RenderWindowModified() ;
   void contextMenuRequested( QContextMenuEvent *e );
 

@@ -101,7 +101,7 @@ protected:
                             void* clientdata, 
                             void* calldata);
 
-protected slots:
+protected Q_SLOTS:
   void onBBCenterChecked();
   
   void onToOrigin();

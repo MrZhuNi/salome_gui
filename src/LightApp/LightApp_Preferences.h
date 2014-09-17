@@ -58,10 +58,10 @@ public:
 protected:
   void                 changedResources( const ResourceMap& );
 
-signals:
+Q_SIGNALS:
   void                 preferenceChanged( QString&, QString&, QString& );
 
-private slots:
+private Q_SLOTS:
   void                 onHelp();
   void                 onApply();
 

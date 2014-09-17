@@ -101,43 +101,43 @@ QPaintEngine* VTKViewer_RenderWindow::paintEngine() const
 /*!Emit mouse move event.*/
 void VTKViewer_RenderWindow::mouseMoveEvent(QMouseEvent* event) 
 {
-  emit MouseMove(event) ;
+  Q_EMIT MouseMove(event) ;
 }
 
 /*!Emit mouse button press event.*/
 void VTKViewer_RenderWindow::mousePressEvent(QMouseEvent* event) 
 {
-  emit MouseButtonPressed( event );
+  Q_EMIT MouseButtonPressed( event );
 }
 
 /*!Emit mouse button release event.*/
 void VTKViewer_RenderWindow::mouseReleaseEvent( QMouseEvent *event )
 {
-  emit MouseButtonReleased( event );
+  Q_EMIT MouseButtonReleased( event );
 }
 
 /*!Emit mouse button double click event.*/
 void VTKViewer_RenderWindow::mouseDoubleClickEvent( QMouseEvent* event )
 {
-  emit MouseDoubleClicked( event );
+  Q_EMIT MouseDoubleClicked( event );
 }
 
 /*!Emit key pressed event.*/
 void VTKViewer_RenderWindow::keyPressEvent (QKeyEvent* event) 
 {
-  emit KeyPressed(event) ;
+  Q_EMIT KeyPressed(event) ;
 }
 
 /*!Emit key release event.*/
 void VTKViewer_RenderWindow::keyReleaseEvent (QKeyEvent * event) 
 {
-  emit KeyReleased(event) ;
+  Q_EMIT KeyReleased(event) ;
 }
 
 /*!Emit wheel move event.*/
 void VTKViewer_RenderWindow::wheelEvent(QWheelEvent* event)
 {
-  emit WheelMoved(event) ;
+  Q_EMIT WheelMoved(event) ;
 }
 
 /*!Reaction on change background color.*/
@@ -166,5 +166,5 @@ void VTKViewer_RenderWindow::onChangeBackgroundColor()
 void VTKViewer_RenderWindow::contextMenuEvent ( QContextMenuEvent * e )
 {
   if ( e->reason() != QContextMenuEvent::Mouse )
-    emit contextMenuRequested( e );
+    Q_EMIT contextMenuRequested( e );
 }

@@ -40,7 +40,7 @@ public:
 
   virtual QString   getString() const;
 
-private slots:
+private Q_SLOTS:
   void              onValueChanged( double );
 
 protected:

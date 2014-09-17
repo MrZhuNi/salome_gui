@@ -62,7 +62,7 @@ public:
   void                    expandToolBarActions();
   int                     getToolBarId();
 
-protected slots:
+protected Q_SLOTS:
   void                    onViewPan();
   void                    onViewZoom();
   void                    onViewFitAll();
@@ -71,13 +71,13 @@ protected slots:
   void                    onViewGlobalPan();
   void                    onViewReset();
 
-private slots:
+private Q_SLOTS:
   void                    keyEvent( QKeyEvent* );
   void                    mouseEvent( QGraphicsSceneMouseEvent* );
   void                    wheelEvent( QGraphicsSceneWheelEvent* );
   void                    contextMenuEvent( QGraphicsSceneContextMenuEvent* );
 
-signals:
+Q_SIGNALS:
   void                    keyPressed( QKeyEvent* );
   void                    keyReleased( QKeyEvent* );
   void                    mousePressed( QGraphicsSceneMouseEvent* );

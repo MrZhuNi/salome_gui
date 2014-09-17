@@ -70,7 +70,7 @@ protected:
 protected:
   bool           eventFilter( QObject*, QEvent* );
 
-protected slots:
+protected Q_SLOTS:
   void           onViewCreated( SUIT_ViewWindow* );
   void           onViewRemoved( SUIT_ViewWindow* );
 

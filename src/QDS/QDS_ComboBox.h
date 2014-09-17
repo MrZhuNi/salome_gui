@@ -69,11 +69,11 @@ public:
   int                        stringToValue( const QString& ) const;
   QString                    valueToString( const int ) const;
 
-signals:
+Q_SIGNALS:
   void                       activated( int );
   void                       activated( const QString& );
 
-protected slots:
+protected Q_SLOTS:
   virtual void               onActivated( int );
   virtual void               onTextChanged( const QString& );
 

@@ -43,7 +43,7 @@ public:
   /*!Return "ObjectBrowser"*/
   virtual QString type() const { return "PLot2dViewer"; }
 
-private slots:
+private Q_SLOTS:
   void         onSelectionChanged( const QString& );
   void         onClearSelected();
 

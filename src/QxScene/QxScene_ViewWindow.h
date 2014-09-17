@@ -62,7 +62,7 @@ class QXSCENE_EXPORT QxScene_ViewWindow : public SUIT_ViewWindow {
 
   virtual void      initLayout();
 
-  void              contextPopupEvent(QContextMenuEvent* theEvent) { emit contextMenuRequested( theEvent); }
+  void              contextPopupEvent(QContextMenuEvent* theEvent) { Q_EMIT contextMenuRequested( theEvent); }
   
   void              setScene(QGraphicsScene* scene) { _scene = scene; }
   QGraphicsScene*   getScene() { return _scene; }
@@ -70,10 +70,10 @@ class QXSCENE_EXPORT QxScene_ViewWindow : public SUIT_ViewWindow {
   QGraphicsView*    getSceneView() { return _sceneView; }
   virtual bool      closeRequested();
 
- signals:
+ Q_SIGNALS:
   void              tryClose(bool &isClosed, QxScene_ViewWindow* window);
 
- public slots:
+ public Q_SLOTS:
   void              onViewFitAll();
   void              onViewFitArea();
   void              onViewZoom();

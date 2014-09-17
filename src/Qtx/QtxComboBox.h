@@ -58,10 +58,10 @@ public:
   bool         hasId( const int ) const;
   void         setId( const int, const int );
 
-signals:
+Q_SIGNALS:
   void         activatedId( int );
 
-private slots:
+private Q_SLOTS:
   void         onCurrentChanged( int );
 
 protected:

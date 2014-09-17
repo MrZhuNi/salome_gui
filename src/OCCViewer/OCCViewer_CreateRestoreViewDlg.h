@@ -53,14 +53,14 @@ public:
         viewAspect                    currentItem() const;
         virtual bool                  eventFilter( QObject*, QEvent* );
 
-public slots:
+public Q_SLOTS:
         void                          OKpressed();
         void                          clearList();
         void                          editItemText( QListWidgetItem* );
         void                          changeImage( QListWidgetItem* );
         void                          deleteSelectedItems();
 
-signals:
+Q_SIGNALS:
         void                          dlgOk();
 
 private:

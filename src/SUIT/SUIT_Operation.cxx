@@ -176,7 +176,7 @@ void SUIT_Operation::start()
   else
   {
     startOperation();
-    emit started( this );
+    Q_EMIT started( this );
   }
 }
 
@@ -194,10 +194,10 @@ void SUIT_Operation::abort()
   {
     abortOperation();
     myState = Waiting;
-    emit aborted( this );
+    Q_EMIT aborted( this );
 
     stopOperation();
-    emit stopped( this );
+    Q_EMIT stopped( this );
   }
 }
 
@@ -215,10 +215,10 @@ void SUIT_Operation::commit()
   {
     commitOperation();
     myState = Waiting;
-    emit committed( this );
+    Q_EMIT committed( this );
 
     stopOperation();
-    emit stopped( this );
+    Q_EMIT stopped( this );
   }
 }
 
@@ -237,7 +237,7 @@ void SUIT_Operation::resume()
   {
     resumeOperation();
     myState = Running;
-    emit resumed( this );
+    Q_EMIT resumed( this );
   }
 }
 
@@ -256,7 +256,7 @@ void SUIT_Operation::suspend()
   {
     suspendOperation();
     myState = Suspended;
-    emit suspended( this );
+    Q_EMIT suspended( this );
   }
 }
 
@@ -278,7 +278,7 @@ bool SUIT_Operation::isReadyToStart() const
 */
 void SUIT_Operation::startOperation()
 {
-  emit callSlot();
+  Q_EMIT callSlot();
   commit();
 }
 

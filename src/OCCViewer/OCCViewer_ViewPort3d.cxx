@@ -96,7 +96,7 @@ OCCViewer_ViewPort3d::OCCViewer_ViewPort3d( QWidget* parent, const Handle( V3d_V
 */
 OCCViewer_ViewPort3d::~OCCViewer_ViewPort3d()
 {
-  emit vpClosed(this);
+  Q_EMIT vpClosed(this);
   Handle(V3d_View) aView = activeView();
   if (!aView.IsNull())
     aView->Remove();
@@ -134,7 +134,7 @@ bool OCCViewer_ViewPort3d::mapView( const Handle(V3d_View)& view )
       view->View()->Deactivate();
   }
 
-  emit( vpMapped(this) );
+  Q_EMIT( vpMapped(this) );
 
   return true;
 }
@@ -304,7 +304,7 @@ void OCCViewer_ViewPort3d::setBackground( const Qtx::BackgroundData& bgData )
   if ( bgData.isValid() ) {
     myBackground = bgData;
     updateBackground();
-    emit vpChangeBackground( myBackground );
+    Q_EMIT vpChangeBackground( myBackground );
   }
 }
 
@@ -468,7 +468,7 @@ void OCCViewer_ViewPort3d::fitRect( const QRect& rect )
 {
   if ( !activeView().IsNull() ) {
     activeView()->WindowFit( rect.left(), rect.top(), rect.right(), rect.bottom() );
-    emit vpTransformed( this );
+    Q_EMIT vpTransformed( this );
   }
 }
 
@@ -498,7 +498,7 @@ void OCCViewer_ViewPort3d::zoom( int x0, int y0, int x, int y )
     else
 #endif
       activeView()->Zoom( x0 + y0, 0, x + y, 0 );
-    emit vpTransformed( this );
+    Q_EMIT vpTransformed( this );
   }
 }
 
@@ -509,7 +509,7 @@ void OCCViewer_ViewPort3d::setCenter( int x, int y )
 {
   if ( !activeView().IsNull() ) {
     activeView()->Place( x, y, myScale );
-    emit vpTransformed( this );
+    Q_EMIT vpTransformed( this );
   }
 }
 
@@ -520,7 +520,7 @@ void OCCViewer_ViewPort3d::pan( int dx, int dy )
 {
   if ( !activeView().IsNull() ) {
     activeView()->Pan( dx, dy, 1.0 );
-    emit vpTransformed( this );
+    Q_EMIT vpTransformed( this );
   }
 }
 
@@ -601,7 +601,7 @@ void OCCViewer_ViewPort3d::rotate( int x, int y,
     default:
       break;
     }
-    emit vpTransformed( this );
+    Q_EMIT vpTransformed( this );
   }
   //  setZSize( getZSize() );
 }
@@ -617,7 +617,7 @@ void OCCViewer_ViewPort3d::endRotation()
     activeView()->SetZSize( 0.0 );
 #endif
     activeView()->Update();
-    emit vpTransformed( this );
+    Q_EMIT vpTransformed( this );
   }
 }
 
@@ -677,7 +677,7 @@ void OCCViewer_ViewPort3d::fitAll( bool keepScale, bool withZ, bool upd )
   activeView()->FitAll( margin, withZ, upd );
 #endif
   activeView()->SetZSize(0.);
-  emit vpTransformed( this );
+  Q_EMIT vpTransformed( this );
 }
 
 /*!
@@ -688,7 +688,7 @@ void OCCViewer_ViewPort3d::reset()
   //  double zsize = getZSize();
   if ( !activeView().IsNull() ) {
     activeView()->Reset();
-    emit vpTransformed( this );
+    Q_EMIT vpTransformed( this );
   //    setZSize( zsize );
   }
 }
@@ -705,7 +705,7 @@ void OCCViewer_ViewPort3d::rotateXY( double degrees )
   double X, Y, Z;
   activeView()->Convert( x, y, X, Y, Z );
   activeView()->Rotate( 0, 0, degrees * M_PI / 180., X, Y, Z );
-  emit vpTransformed( this );
+  Q_EMIT vpTransformed( this );
 }
 
 /*!
@@ -717,7 +717,7 @@ void OCCViewer_ViewPort3d::setAxialScale( double xScale, double yScale, double z
     return;
 
   activeView()->SetAxialScale( xScale, yScale, zScale );
-  emit vpTransformed( this );
+  Q_EMIT vpTransformed( this );
 }
 
 /*!

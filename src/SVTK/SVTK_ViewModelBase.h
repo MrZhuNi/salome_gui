@@ -34,14 +34,14 @@ class SVTK_EXPORT SVTK_ViewModelBase: public SUIT_ViewModel
 {
   Q_OBJECT;
 
-public slots:
+public Q_SLOTS:
   //! To invoke Qt #selectionChanged signal
   void onSelectionChanged()
   {
-    emit selectionChanged();
+    Q_EMIT selectionChanged();
   }
 
- signals:
+ Q_SIGNALS:
   //! To declare signal on selection changed
   void selectionChanged();
 };

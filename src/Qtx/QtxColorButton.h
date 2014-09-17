@@ -51,11 +51,11 @@ public:
   QString       autoText() const;
   void          setAutoText( const QString& );
 
-signals:
+Q_SIGNALS:
   void          clicked( QColor );
   void          changed( QColor );
 
-private slots:
+private Q_SLOTS:
   void          onClicked( bool );
   void          onToggled( bool );
 

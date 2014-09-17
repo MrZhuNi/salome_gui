@@ -82,7 +82,7 @@ void QtxDoubleSpinSlider::DoubleSpinHasChanged( double theValue )
   mySlider->blockSignals( true );
   mySlider->setValue( aNewValue );
   mySlider->blockSignals( false );
-  emit valueChanged( theValue );
+  Q_EMIT valueChanged( theValue );
 }
 
 /*!

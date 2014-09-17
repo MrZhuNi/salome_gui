@@ -2277,10 +2277,10 @@ static SUIT_ViewWindow* getWnd( const int id )
   if ( app )
   {
     ViewManagerList vmlist = app->viewManagers();
-    foreach( SUIT_ViewManager* vm, vmlist )
+    Q_FOREACH( SUIT_ViewManager* vm, vmlist )
     {
       QVector<SUIT_ViewWindow*> vwlist = vm->getViews();
-      foreach ( SUIT_ViewWindow* vw, vwlist )
+      Q_FOREACH ( SUIT_ViewWindow* vw, vwlist )
       {
         if ( id == vw->getId() )
         {
@@ -2386,7 +2386,7 @@ public:
       {
         QList<SUIT_ViewWindow*> wndlist = tabDesk->windows();
         SUIT_ViewWindow* wnd;
-        foreach ( wnd, wndlist )
+        Q_FOREACH ( wnd, wndlist )
           myResult.append( wnd->getId() );
       }
     }
@@ -2548,7 +2548,7 @@ public:
       ViewManagerList vmList;
       app->viewManagers( myType, vmList );
       SUIT_ViewManager* viewMgr;
-      foreach ( viewMgr, vmList )
+      Q_FOREACH ( viewMgr, vmList )
       {
         QVector<SUIT_ViewWindow*> vec = viewMgr->getViews();
         for ( int i = 0, n = vec.size(); i < n; i++ )
@@ -3065,7 +3065,7 @@ public:
       {
         QWidgetList wgList = wStack->windowList( wnd );
         QWidget* wg;
-        foreach ( wg, wgList )
+        Q_FOREACH ( wg, wgList )
         {
           SUIT_ViewWindow* tmpWnd = dynamic_cast<SUIT_ViewWindow*>( wg );
           if ( tmpWnd && tmpWnd != wnd )
@@ -3612,7 +3612,7 @@ public:
       {
         QList<SUIT_ViewWindow*> wndlist = tabDesk->windows();
         SUIT_ViewWindow* wnd;
-        foreach ( wnd, wndlist )
+        Q_FOREACH ( wnd, wndlist )
         {
           Plot2d_ViewWindow* aP2d = dynamic_cast<Plot2d_ViewWindow*>(wnd);
           if(aP2d)

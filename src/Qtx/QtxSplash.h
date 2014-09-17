@@ -125,7 +125,7 @@ public:
   
   void              readSettings( QtxResourceMgr*, const QString& = QString() );
 
-public slots:
+public Q_SLOTS:
   void              setMessage( const QString&, 
                                 const int,
                                 const QColor& = QColor() );

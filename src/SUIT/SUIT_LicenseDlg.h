@@ -36,7 +36,7 @@ public:
   SUIT_LicenseDlg( bool firstShow = true, QWidget* = 0, const char* = 0, bool = true );
   virtual ~SUIT_LicenseDlg();
 
-private slots:
+private Q_SLOTS:
     void             onAgree();
     void             onCancel();
     void             onPrint();

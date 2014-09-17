@@ -1260,7 +1260,7 @@ QString Qtx::gradientToString( const QLinearGradient& gradient )
   }
   QGradientStops stops = gradient.stops();
   QGradientStop stop;
-  foreach ( stop, stops ) 
+  Q_FOREACH ( stop, stops )
   {
     data << QString::number( stop.first );
     data << colorToString( stop.second );
@@ -1299,7 +1299,7 @@ QString Qtx::gradientToString( const QRadialGradient& gradient )
   }
   QGradientStops stops = gradient.stops();
   QGradientStop stop;
-  foreach ( stop, stops ) 
+  Q_FOREACH ( stop, stops )
   {
     data << QString::number( stop.first );
     data << colorToString( stop.second );
@@ -1336,7 +1336,7 @@ QString Qtx::gradientToString( const QConicalGradient& gradient )
   }
   QGradientStops stops = gradient.stops();
   QGradientStop stop;
-  foreach ( stop, stops ) 
+  Q_FOREACH ( stop, stops )
   {
     data << QString::number( stop.first );
     data << colorToString( stop.second );
@@ -1631,7 +1631,7 @@ Qtx::BackgroundData Qtx::stringToBackground( const QString& str )
   else {
     QMap<QString, QString> dmap;
     // background data
-    foreach( QString d, data ) {
+    Q_FOREACH( QString d, data ) {
       QStringList items = d.split( kwSep, QString::KeepEmptyParts );
       if ( items.count() > 0 ) {
 	QString kw  = items.takeFirst().trimmed().toLower(); // keyword

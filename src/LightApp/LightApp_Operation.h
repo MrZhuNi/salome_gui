@@ -80,7 +80,7 @@ protected:
   void                      update( const int );
   void                      setAutoResumed( const bool );
       
-private slots:
+private Q_SLOTS:
 
   virtual void              onSelectionDone();
 

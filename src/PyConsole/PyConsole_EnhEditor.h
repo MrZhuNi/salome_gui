@@ -41,7 +41,7 @@ public:
   PyConsole_EnhEditor(PyConsole_EnhInterp * interp, QWidget * parent=0);
   virtual ~PyConsole_EnhEditor() {}
 
-signals:
+Q_SIGNALS:
   /**
    * Signal emitted by the editor widget when the doc string should be updated.
    * @param doc a HTML block with the formatted doc string.

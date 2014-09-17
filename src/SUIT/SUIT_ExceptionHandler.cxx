@@ -85,7 +85,7 @@ void SUIT_ExceptionHandler::removeCleanUpRoutine(CleanUpFunction p)
 
 void SUIT_ExceptionHandler::cleanUp()
 {
-  foreach( QtCleanUpFunction f, myCleanUpFunctions )
+  Q_FOREACH( QtCleanUpFunction f, myCleanUpFunctions )
   {
     f();
   }

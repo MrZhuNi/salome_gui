@@ -410,7 +410,7 @@ SalomeApp_Study::~SalomeApp_Study()
 #ifndef DISABLE_PYCONSOLE
 void SalomeApp_Study::onNoteBookVarUpdate( QString theVarName)
 {
-  emit notebookVarUpdated( theVarName );
+  Q_EMIT notebookVarUpdated( theVarName );
 }
 #endif
 
@@ -498,7 +498,7 @@ bool SalomeApp_Study::createDocument( const QString& theStr )
   myStudyDS->attach(myObserver->_this(),true);
 #endif
 
-  emit created( this );
+  Q_EMIT created( this );
 
   return aRet;
 }
@@ -555,7 +555,7 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
 
   bool res = CAM_Study::openDocument( theFileName );
 
-  emit opened( this );
+  Q_EMIT opened( this );
   study->IsSaved(true);
 
   bool restore = application()->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
@@ -613,7 +613,7 @@ bool SalomeApp_Study::loadDocument( const QString& theStudyName )
   //rnv: to fix the "0051779: TC7.2.0: Save operation works incorrectly for study loaded from data server"
   //     mark study as "not saved" after call openDocument( ... ) method.
   setIsSaved(false);
-  emit opened( this );
+  Q_EMIT opened( this );
 
   bool restore = application()->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
   if ( restore ) {
@@ -667,7 +667,7 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
   res = res && saveStudyData(theFileName);
 
   if ( res )
-    emit saved( this );
+    Q_EMIT saved( this );
 
   return res;
 }
@@ -710,7 +710,7 @@ bool SalomeApp_Study::saveDocument()
 
   res = res && saveStudyData(studyName());
   if ( res )
-    emit saved( this );
+    Q_EMIT saved( this );
 
   return res;
 }

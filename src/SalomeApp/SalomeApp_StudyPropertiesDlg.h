@@ -53,7 +53,7 @@ public:
 
   bool isChanged() { return myIsChanged; }
   
-public slots:
+public Q_SLOTS:
   void clickOnOk();
  
 private:

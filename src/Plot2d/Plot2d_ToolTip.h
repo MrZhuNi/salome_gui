@@ -40,7 +40,7 @@ public:
 
   virtual bool eventFilter( QObject*, QEvent* );
 
-public slots:
+public Q_SLOTS:
   void onToolTip( QPoint, QString&, QFont&, QRect&, QRect& );
 
 private:
