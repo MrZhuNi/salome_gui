@@ -856,6 +856,13 @@ void Plot3d_ViewWindow::NormalizeSurfaces( const bool theIsRepaint )
   aScale[0] = fabs( aDX ) > DBL_EPSILON ? 1.0 / aDX : 1.0;
   aScale[1] = fabs( aDY ) > DBL_EPSILON ? 1.0 / aDY : 1.0;
   aScale[2] = fabs( aDZ ) > DBL_EPSILON ? 1.0 / aDZ : 1.0;
+
+  // 0002304: Surface grid is destroyed
+  static double aMaxLimit = 1e8; // empiric value
+  aScale[0] = qMin( aScale[0], aMaxLimit );
+  aScale[1] = qMin( aScale[1], aMaxLimit );
+  aScale[2] = qMin( aScale[2], aMaxLimit );
+
   SetScale( aScale, false );
 
   if( theIsRepaint )
