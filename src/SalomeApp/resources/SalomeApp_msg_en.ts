@@ -13,10 +13,8 @@ Python file must include only letters, digits and underscores and start from let
         <translation>The file %1 does not exist.</translation>
     </message>
     <message>
-        <source>QUE_ACTIVEDOC_LOAD</source>
-        <translation>There is an active study in the session.
-Do you want to load it?
-</translation>
+        <source>ERR_ACTIVEDOC_LOAD</source>
+        <translation>A study is already active in your session, but you are not connected to it. Use the Connect button to load it in the interface.</translation>
     </message>
     <message>
         <source>STUDYCLOSE_DESCRIPTION</source>

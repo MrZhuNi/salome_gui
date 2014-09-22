@@ -12,8 +12,8 @@
       <translation>ファイル %1 は存在しません。</translation>
     </message>
     <message>
-      <source>QUE_ACTIVEDOC_LOAD</source>
-      <translation>セッションにスタディがあります。読み込みますか？</translation>
+      <source>ERR_ACTIVEDOC_LOAD</source>
+      <translation type="unfinished">A study is already active in your session, but you are not connected to it. Use the Connect button to load it in the interface.</translation>
     </message>
     <message>
       <source>STUDYCLOSE_DESCRIPTION</source>

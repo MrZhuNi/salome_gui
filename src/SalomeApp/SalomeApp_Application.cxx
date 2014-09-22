@@ -2119,11 +2119,7 @@ bool SalomeApp_Application::checkExistingDoc() {
     if( aMgr ) {
       std::vector<std::string> List = studyMgr()->GetOpenStudies();
       if( List.size() > 0 ) {
-        int answer = SUIT_MessageBox::question( desktop(), tr( "WRN_WARNING" ), tr( "QUE_ACTIVEDOC_LOAD" ),
-                                                SUIT_MessageBox::Yes | SUIT_MessageBox::No, SUIT_MessageBox::No );
-        if ( answer == SUIT_MessageBox::Yes ) {
-	  onLoadDoc();
-	}
+        SUIT_MessageBox::critical( desktop(), tr( "WRN_WARNING" ), tr( "ERR_ACTIVEDOC_LOAD" ));
 	result = false;
       }
     }

@@ -13,6 +13,10 @@ Un fichier Python ne doit être composé que de lettres, chiffres et tirets bas 
         <translation>Le fichier %1 n&apos;existe pas.</translation>
     </message>
     <message>
+        <source>ERR_ACTIVEDOC_LOAD</source>
+        <translation type="unfinished">A study is already active in your session, but you are not connected to it. Use the Connect button to load it in the interface.</translation>
+    </message>
+    <message>
         <source>STUDYCLOSE_DESCRIPTION</source>
         <translation type="unfinished">You already have an active study in your session. It has to be closed before working with another study.</translation>
     </message>
