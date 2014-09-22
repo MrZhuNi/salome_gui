@@ -69,8 +69,9 @@ class SALOMEAPP_EXPORT SalomeApp_Application : public LightApp_Application
 public:
   enum { MenuToolsId = 5 };
   enum { DumpStudyId = LightApp_Application::UserID, LoadScriptId, PropertiesId,
-         CatalogGenId, RegDisplayId, SaveGUIStateId, FileLoadId, UserID,
-         SimanCheckInId, SimanLocalCheckInId };
+         CatalogGenId, RegDisplayId, SaveGUIStateId, ConnectId, DisconnectId,
+         SimanCheckInId, SimanLocalCheckInId,
+         UserID };
 
   typedef enum { WT_NoteBook = LightApp_Application::WT_User,
                  WT_User
@@ -124,6 +125,7 @@ public slots:
   virtual void                        onLoadDoc();
   virtual void                        onNewWithScript();
   virtual bool                        onLoadDoc( const QString& );
+  virtual void                        onUnloadDoc( bool ask = true);
   virtual void                        onCloseDoc( bool ask = true);
   virtual void                        onLoadDocMessage(const QString&);
 

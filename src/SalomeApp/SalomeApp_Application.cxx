@@ -320,12 +320,15 @@ void SalomeApp_Application::createActions()
                 tr( "MEN_DESK_REGISTRY_DISPLAY" ), tr( "PRP_DESK_REGISTRY_DISPLAY" ),
                 /*Qt::SHIFT+Qt::Key_D*/0, desk, false, this, SLOT( onRegDisplay() ) );
 
-  //rnv commented : implementation of the mono-study in GUI
-  //
-  //createAction( FileLoadId, tr( "TOT_DESK_FILE_LOAD" ),
-  //              resourceMgr()->loadPixmap( "STD", tr( "ICON_FILE_OPEN" ) ),
-  //              tr( "MEN_DESK_FILE_LOAD" ), tr( "PRP_DESK_FILE_LOAD" ),
-  //              Qt::CTRL+Qt::Key_L, desk, false, this, SLOT( onLoadDoc() ) );
+  createAction( ConnectId, tr( "TOT_DESK_CONNECT_STUDY" ),
+                resourceMgr()->loadPixmap( "STD", tr( "ICON_FILE_OPEN" ) ),
+                tr( "MEN_DESK_CONNECT" ), tr( "PRP_DESK_CONNECT" ),
+                Qt::CTRL+Qt::Key_L, desk, false, this, SLOT( onLoadDoc() ) );
+
+  createAction( DisconnectId, tr( "TOT_DESK_DISCONNECT_STUDY" ),
+                resourceMgr()->loadPixmap( "STD", tr( "ICON_FILE_CLOSE" ) ),
+                tr( "MEN_DESK_DISCONNECT" ), tr( "PRP_DESK_DISCONNECT" ),
+                Qt::CTRL+Qt::Key_U, desk, false, this, SLOT( onUnloadDoc() ) );
 
 
 #ifdef WITH_SIMANIO
@@ -346,7 +349,9 @@ void SalomeApp_Application::createActions()
   // creation of menu item is moved to VISU
   //  createMenu( SaveGUIStateId, fileMenu, 10, -1 );
 
-  // createMenu( FileLoadId,   fileMenu, 0 );
+  createMenu( ConnectId,    fileMenu, 5 );
+  createMenu( DisconnectId, fileMenu, 5 );
+  createMenu( separator(),  fileMenu, -1, 5 );
 
 #ifdef WITH_SIMANIO
   if (myIsSiman) {
@@ -358,7 +363,6 @@ void SalomeApp_Application::createActions()
   }
 #endif
   createMenu( DumpStudyId, fileMenu, 10, -1 );
-  createMenu( separator(), fileMenu, -1, 10, -1 );
   createMenu( LoadScriptId, fileMenu, 10, -1 );
   createMenu( separator(), fileMenu, -1, 10, -1 );
   createMenu( PropertiesId, fileMenu, 10, -1 );
@@ -475,6 +479,31 @@ void SalomeApp_Application::onLoadDoc()
     updateViewManagers();
     updateObjectBrowser( true );
   }
+}
+
+/*!SLOT. Unload document.*/
+void SalomeApp_Application::onUnloadDoc( bool ask )
+{
+  if ( ask ) {
+    activeStudy()->abortAllOperations();
+    if ( activeStudy()->isModified() ) {
+      QString docName = activeStudy()->studyName().trimmed();
+      int answer = SUIT_MessageBox::question( desktop(), tr( "DISCONNECT_CAPTION" ),
+					    tr( "DISCONNECT_DESCRIPTION" ),
+					    tr( "DISCONNECT_SAVE" ), 
+					    tr( "DISCONNECT_WO_SAVE" ),
+					    tr( "APPCLOSE_CANCEL" ), 0 );
+      if ( answer == 0 ) { // save before unload
+	if ( activeStudy()->isSaved() )
+	  onSaveDoc();
+	else if ( !onSaveAsDoc() )
+	  return;
+      }
+      else if ( answer == 2 ) // Cancel
+	return;
+    }
+  }
+  closeActiveDoc( false );
 }
 
 /*!SLOT. Create new study and load script*/
@@ -770,6 +799,16 @@ void SalomeApp_Application::updateCommandsStatus()
 
   // Save GUI state menu
   a = action( SaveGUIStateId );
+  if( a )
+    a->setEnabled( activeStudy() );
+
+  // Connect study menu
+  a = action( ConnectId );
+  if( a )
+    a->setEnabled( !activeStudy() );
+
+  // Disconnect study menu
+  a = action( DisconnectId );
   if( a )
     a->setEnabled( activeStudy() );
 
@@ -1268,8 +1307,7 @@ QMap<int, QString> SalomeApp_Application::activateModuleActions() const
 {
   QMap<int, QString> opmap = LightApp_Application::activateModuleActions();
 
-  // rnv commented : implementation of the mono-study in GUI
-  // opmap.insert( LoadStudyId,     tr( "ACTIVATE_MODULE_OP_LOAD" ) );
+  opmap.insert( LoadStudyId,     tr( "ACTIVATE_MODULE_OP_LOAD" ) );
 
   opmap.insert( NewAndScriptId,  tr( "ACTIVATE_MODULE_OP_SCRIPT" ) );
   return opmap;

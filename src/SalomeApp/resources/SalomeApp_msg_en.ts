@@ -20,9 +20,7 @@ Do you want to load it?
     </message>
     <message>
         <source>STUDYCLOSE_DESCRIPTION</source>
-        <translation>You should close an existing study before.
-Do you want to close it?
-</translation>
+        <translation>You already have an active study in your session. It has to be closed before working with another study.</translation>
     </message>
     <message>
         <source>WRN_STUDY_LOCKED</source>
@@ -405,6 +403,22 @@ Do you want to reload it ?</translation>
     <message>
         <source>PRP_SIMAN_LOCAL_CHECK_IN</source>
         <translation>Check In for module</translation>
+    </message>
+    <message>
+        <source>DISCONNECT_CAPTION</source>
+        <translation>Disconnect active study</translation>
+    </message>
+    <message>
+        <source>DISCONNECT_DESCRIPTION</source>
+        <translation>Do you want to save study before disconnect?</translation>
+    </message>
+    <message>
+        <source>DISCONNECT_SAVE</source>
+        <translation>&amp;Save &amp;&amp; Disconnect</translation>
+    </message>
+    <message>
+        <source>DISCONNECT_WO_SAVE</source>
+        <translation>&amp;Disconnect w/o saving</translation>
     </message>
 </context>
 <context>

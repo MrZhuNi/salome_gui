@@ -363,8 +363,12 @@ Do you want to overwrite it?</translation>
         <translation>Exit from application</translation>
     </message>
     <message>
-        <source>TOT_DESK_FILE_LOAD</source>
-        <translation>Load document</translation>
+        <source>TOT_DESK_CONNECT_STUDY</source>
+        <translation>Connect study</translation>
+    </message>
+    <message>
+        <source>TOT_DESK_DISCONNECT_STUDY</source>
+        <translation>Disconnect study</translation>
     </message>
     <message>
         <source>TOT_DESK_FILE_OPEN</source>
@@ -391,8 +395,12 @@ Do you want to overwrite it?</translation>
         <translation>Saves the active document</translation>
     </message>
     <message>
-        <source>PRP_DESK_FILE_LOAD</source>
-        <translation>Loads a document</translation>
+        <source>PRP_DESK_CONNECT</source>
+        <translation>Connect active study</translation>
+    </message>
+    <message>
+        <source>PRP_DESK_DISCONNECT</source>
+        <translation>Disconnect the current study</translation>
     </message>
     <message>
         <source>PRP_DESK_WINDOW_HTILE</source>
@@ -419,8 +427,12 @@ Do you want to overwrite it?</translation>
         <translation>Reopen</translation>
     </message>
     <message>
-        <source>MEN_DESK_FILE_LOAD</source>
-        <translation>Conn&amp;ect...</translation>
+        <source>MEN_DESK_CONNECT</source>
+        <translation>Conn&amp;ect</translation>
+    </message>
+    <message>
+        <source>MEN_DESK_DISCONNECT</source>
+        <translation>D&amp;isconnect</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE_SAVE</source>

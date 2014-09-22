@@ -363,8 +363,12 @@ Voulez-vous l&apos;écraser ?</translation>
         <translation>Quitter l&apos;application</translation>
     </message>
     <message>
-        <source>TOT_DESK_FILE_LOAD</source>
-        <translation>Charger le document</translation>
+        <source>TOT_DESK_CONNECT_STUDY</source>
+        <translation type="unfinished">Connect study</translation>
+    </message>
+    <message>
+        <source>TOT_DESK_DISCONNECT_STUDY</source>
+        <translation type="unfinished">Disconnect study</translation>
     </message>
     <message>
         <source>TOT_DESK_FILE_OPEN</source>
@@ -391,8 +395,12 @@ Voulez-vous l&apos;écraser ?</translation>
         <translation>Sauvegarder le document actuel</translation>
     </message>
     <message>
-        <source>PRP_DESK_FILE_LOAD</source>
-        <translation>Charge un document</translation>
+        <source>PRP_DESK_CONNECT</source>
+        <translation type="unfinished">Connect active study</translation>
+    </message>
+    <message>
+        <source>PRP_DESK_DISCONNECT</source>
+        <translation type="unfinished">Disconnect the current study</translation>
     </message>
     <message>
         <source>PRP_DESK_WINDOW_HTILE</source>
@@ -419,8 +427,12 @@ Voulez-vous l&apos;écraser ?</translation>
         <translation>&amp;Réouvrir</translation>
     </message>
     <message>
-        <source>MEN_DESK_FILE_LOAD</source>
-        <translation>Connec&amp;ter...</translation>
+        <source>MEN_DESK_CONNECT</source>
+        <translation type="unfinished">Conn&amp;ect</translation>
+    </message>
+    <message>
+        <source>MEN_DESK_DISCONNECT</source>
+        <translation type="unfinished">D&amp;isconnect</translation>
     </message>
     <message>
         <source>MEN_DESK_FILE_SAVE</source>

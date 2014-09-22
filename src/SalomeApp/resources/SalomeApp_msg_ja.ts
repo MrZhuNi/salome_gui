@@ -17,8 +17,8 @@
     </message>
     <message>
       <source>STUDYCLOSE_DESCRIPTION</source>
-      <translation>既存のスタディを閉じる必要があります。閉じますか？
-</translation>
+        <translation type="unfinished">You already have an active study in your 
+session. It has to be closed before working with another study.</translation>
     </message>
     <message>
       <source>WRN_STUDY_LOCKED</source>
@@ -400,6 +400,22 @@
     <message>
       <source>PRP_SIMAN_LOCAL_CHECK_IN</source>
       <translation>モジュールにチェックイン</translation>
+    </message>
+    <message>
+      <source>DISCONNECT_CAPTION</source>
+      <translation type="unfinished">Disconnect active study</translation>
+    </message>
+    <message>
+      <source>DISCONNECT_DESCRIPTION</source>
+      <translation type="unfinished">Do you want to save study before disconnect?</translation>
+    </message>
+    <message>
+      <source>DISCONNECT_SAVE</source>
+      <translation type="unfinished">&amp;Save &amp;&amp; Disconnect</translation>
+    </message>
+    <message>
+      <source>DISCONNECT_WO_SAVE</source>
+      <translation type="unfinished">&amp;Disconnect w/o saving</translation>
     </message>
   </context>
   <context>
