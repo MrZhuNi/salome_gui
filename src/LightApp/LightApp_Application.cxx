@@ -1660,11 +1660,6 @@ void LightApp_Application::onStudyClosed( SUIT_Study* s )
   emit studyClosed();
 
   activateModule( "" );
-
-#ifndef DISABLE_PYCONSOLE
-  if( pythonConsole() )
-    pythonConsole()->getInterp()->destroy();
-#endif
 }
 
 /*!Protected SLOT.On desktop activated.*/
