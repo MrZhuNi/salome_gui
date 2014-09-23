@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="SUITApp"
-	ProjectGUID="{6755FAA7-967A-4D23-966D-DE4F66234913}"
+	Name="SUITAppCmd"
+	ProjectGUID="{5C26AD6B-39CE-4B83-BA68-1D5F8B378DB1}"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -76,7 +76,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="QtCored$(QTVER).lib QtGuid$(QTVER).lib qtmaind.lib Userenv.lib"
-				OutputFile="$(OutDir)\SuitApp.exe"
+				OutputFile="$(OutDir)\SuitAppCmd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(QTLIB)"
@@ -170,11 +170,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="QtCore$(QTVER).lib QtGui$(QTVER).lib qtmain.lib Userenv.lib"
-				OutputFile="$(OutDir)\SuitApp.exe"
+				OutputFile="$(OutDir)\SuitAppCmd.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(QTLIB)"
-				SubSystem="2"
+				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"
