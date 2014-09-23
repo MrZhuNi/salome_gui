@@ -943,7 +943,8 @@ void PyConsole_Editor::customEvent( QEvent* event )
     {
       PrintEvent* pe=(PrintEvent*)event;
       addText( pe->text(), false, pe->isError());
-      myHistory.last().output = myHistory.last().output + pe->text();
+      if ( myHistory.count() > 0 )
+        myHistory.last().output = myHistory.last().output + pe->text();
       return;
     }
   case PyInterp_Event::ES_OK:
