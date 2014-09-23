@@ -37,7 +37,7 @@
  * initstate & initcontext redefined here.
  */
 SalomeApp_PyInterp::SalomeApp_PyInterp(): 
-  PyConsole_EnhInterp(), myFirstRun( true )
+  PyConsole_EnhInterp(), myFirstRun( true ), myFirstInitStudy( false )
 {
 }
 
@@ -68,14 +68,22 @@ int SalomeApp_PyInterp::beforeRun()
     int ret = simpleRun( "from Help import *", false );
     if ( ret )
       return ret;
-    ret = simpleRun( "import salome", false );
+  }
+  if( myFirstInitStudy ) {
+    myFirstInitStudy = false;
+    int ret = simpleRun( "import salome", false );
     if (ret)
       return ret;
-    ret = simpleRun( "salome.salome_init(0,1)", false );
+    ret = simpleRun( "salome.salome_init()", false );
     if (ret)
       return ret;
   }
   return true;
+}
+
+void SalomeApp_PyInterp::initStudy()
+{
+  myFirstInitStudy = true;
 }
 
 void SalomeApp_PyInterp::closeContext()

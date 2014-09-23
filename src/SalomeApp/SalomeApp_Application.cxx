@@ -787,12 +787,12 @@ void SalomeApp_Application::updateCommandsStatus()
   // Dump study menu
   QAction* a = action( DumpStudyId );
   if ( a )
-    a->setEnabled( activeStudy() );
+    a->setEnabled( true );
 
   // Load script menu
   a = action( LoadScriptId );
-  if ( a )
-    a->setEnabled( activeStudy() );
+  if( a )
+    a->setEnabled( true );
 
   // Properties menu
   a = action( PropertiesId );
@@ -935,14 +935,14 @@ void SalomeApp_Application::onDumpStudy( )
 void SalomeApp_Application::onLoadScript( )
 {
   SalomeApp_Study* appStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
-  if ( !appStudy ) return;
-  _PTR(Study) aStudy = appStudy->studyDS();
-
-  if ( aStudy->GetProperties()->IsLocked() ) {
-    SUIT_MessageBox::warning( desktop(),
-                              QObject::tr("WRN_WARNING"),
-                              QObject::tr("WRN_STUDY_LOCKED") );
-    return;
+  if ( appStudy ) {
+    _PTR(Study) aStudy = appStudy->studyDS();
+    if ( aStudy->GetProperties()->IsLocked() ) {
+      SUIT_MessageBox::warning( desktop(),
+                                QObject::tr("WRN_WARNING"),
+                                QObject::tr("WRN_STUDY_LOCKED") );
+      return;
+    }
   }
 
   QStringList filtersList;

@@ -413,6 +413,11 @@ void LightApp_Application::start()
 {
   CAM_Application::start();
 
+#ifndef DISABLE_PYCONSOLE
+  getWindow( WT_PyConsole );
+  placeDockWindow( WT_PyConsole, Qt::BottomDockWidgetArea );
+#endif
+
   updateWindows();
   updateViewManagers();
 
@@ -1587,6 +1592,11 @@ void LightApp_Application::onStudyCreated( SUIT_Study* theStudy )
 
   if ( objectBrowser() )
     objectBrowser()->openLevels();
+
+#ifndef DISABLE_PYCONSOLE
+  if( pythonConsole() )
+    pythonConsole()->getInterp()->initStudy();
+#endif
 }
 
 /*!
@@ -1613,6 +1623,11 @@ void LightApp_Application::onStudyOpened( SUIT_Study* theStudy )
 
   if ( objectBrowser() )
     objectBrowser()->openLevels();
+
+#ifndef DISABLE_PYCONSOLE
+  if( pythonConsole() )
+    pythonConsole()->getInterp()->initStudy();
+#endif
 
   emit studyOpened();
 }
@@ -1645,6 +1660,11 @@ void LightApp_Application::onStudyClosed( SUIT_Study* s )
   emit studyClosed();
 
   activateModule( "" );
+
+#ifndef DISABLE_PYCONSOLE
+  if( pythonConsole() )
+    pythonConsole()->getInterp()->destroy();
+#endif
 }
 
 /*!Protected SLOT.On desktop activated.*/
@@ -3169,8 +3189,13 @@ void LightApp_Application::removeModuleAction( const QString& modName )
 void LightApp_Application::currentWindows( QMap<int, int>& winMap ) const
 {
   winMap.clear();
-  if ( !activeStudy() )
+  if ( !activeStudy() ) {
+#ifndef DISABLE_PYCONSOLE
+    // show python console even if there's no study opened
+    winMap.insert( WT_PyConsole, Qt::BottomDockWidgetArea );
+#endif
     return;
+  }
 
   if ( activeModule() && activeModule()->inherits( "LightApp_Module" ) )
     ((LightApp_Module*)activeModule())->windows( winMap );
@@ -3202,19 +3227,16 @@ void LightApp_Application::updateWindows()
   QMap<int, int> winMap;
   currentWindows( winMap );
 
-  if ( activeStudy() )
+  for ( QMap<int, int>::ConstIterator it = winMap.begin(); it != winMap.end(); ++it )
   {
-    for ( QMap<int, int>::ConstIterator it = winMap.begin(); it != winMap.end(); ++it )
-    {
-      if ( !dockWindow( it.key() ) )
-        getWindow( it.key() );
-    }
+    if ( !dockWindow( it.key() ) )
+      getWindow( it.key() );
   }
 
   for ( WinMap::ConstIterator it = myWin.begin(); it != myWin.end(); ++it )
   {
     QWidget* wid = it.value();
-    if ( activeStudy() )
+    if ( activeStudy() || it.key() == WT_PyConsole )
       wid->setVisible( winMap.contains( it.key() ) );
     else
       delete wid;
@@ -3222,8 +3244,15 @@ void LightApp_Application::updateWindows()
 
   if ( activeStudy() )
     loadDockWindowsState();
-  else
+  else {
+	QWidget* pythonWin = pythonConsole();
     myWin.clear();
+#ifndef DISABLE_PYCONSOLE
+    // show python console even if there's no study opened
+    if( pythonWin )
+      myWin.insert( WT_PyConsole, pythonWin );
+#endif
+  }
 }
 
 /*!
