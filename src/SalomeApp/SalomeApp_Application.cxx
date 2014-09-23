@@ -672,8 +672,10 @@ void SalomeApp_Application::onCloseDoc( bool ask )
 
     }
   }
-
+  bool isBlocked = desktop()->signalsBlocked();
+  desktop()->blockSignals( true );
   LightApp_Application::onCloseDoc( ask );
+  desktop()->blockSignals( isBlocked );
 }
 
 /*!Sets enable or disable some actions on selection changed.*/
