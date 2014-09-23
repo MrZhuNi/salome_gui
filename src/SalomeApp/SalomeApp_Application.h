@@ -127,7 +127,7 @@ public slots:
   virtual bool                        onLoadDoc( const QString& );
   virtual void                        onUnloadDoc( bool ask = true);
   virtual void                        onCloseDoc( bool ask = true);
-  virtual void                        onLoadDocMessage(const QString&);
+  virtual void                        onParseMessage(const QString&);
 
   virtual void                        onExit();
   virtual void                        onCopy();

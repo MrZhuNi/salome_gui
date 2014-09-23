@@ -165,7 +165,7 @@ SalomeApp_Application::SalomeApp_Application()
   : LightApp_Application()
 {
   connect( desktop(), SIGNAL( message( const QString& ) ),
-           this, SLOT( onLoadDocMessage( const QString& ) ), Qt::UniqueConnection );
+           this, SLOT( onParseMessage( const QString& ) ), Qt::UniqueConnection );
   myIsSiman = false; // default
 }
 
@@ -399,7 +399,7 @@ void SalomeApp_Application::setDesktop( SUIT_Desktop* desk )
 
   if ( desk ) {
     connect( desk, SIGNAL( message( const QString& ) ),
-             this, SLOT( onLoadDocMessage( const QString& ) ), Qt::UniqueConnection );
+             this, SLOT( onParseMessage( const QString& ) ), Qt::UniqueConnection );
   }
 }
 
@@ -573,7 +573,7 @@ bool SalomeApp_Application::onLoadDoc( const QString& aName )
 }
 
 /*!SLOT. Load document with a name, specified in \a aMessage.*/
-void SalomeApp_Application::onLoadDocMessage(const QString& aMessage)
+void SalomeApp_Application::onParseMessage(const QString& aMessage)
 {
   if (aMessage.indexOf("simanCheckoutDone ") == 0) {
 #ifdef WITH_SIMANIO
@@ -583,6 +583,8 @@ void SalomeApp_Application::onLoadDocMessage(const QString& aMessage)
     printf( "*    Warning: SALOME is built without SIMAN support.\n" );
     printf( "****************************************************************\n" );
 #endif
+  } else if (aMessage.indexOf("studyClosed:") == 0) {
+    onCloseDoc( false );
   }
 }
 
