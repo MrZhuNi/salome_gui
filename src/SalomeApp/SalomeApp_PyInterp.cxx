@@ -88,6 +88,7 @@ void SalomeApp_PyInterp::initStudy()
 
 void SalomeApp_PyInterp::closeContext()
 {
-    simpleRun( "import salome", false );
-    simpleRun( "salome.salome_close()", false );
+  myFirstInitStudy = false;
+  simpleRun( "import salome", false );
+  simpleRun( "salome.salome_close()", false );
 }
