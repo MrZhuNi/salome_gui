@@ -572,11 +572,12 @@ bool SalomeApp_Application::onLoadDoc( const QString& aName )
   return res;
 }
 
-/*!SLOT. Load document with a name, specified in \a aMessage.*/
+/*!SLOT. Parse message for desktop.*/
 void SalomeApp_Application::onParseMessage(const QString& aMessage)
 {
   if (aMessage.indexOf("simanCheckoutDone ") == 0) {
 #ifdef WITH_SIMANIO
+    // Load document with a name, specified in aMessage.
     onLoadDoc(aMessage.section(' ', 1));
 #else
     printf( "****************************************************************\n" );
@@ -584,7 +585,12 @@ void SalomeApp_Application::onParseMessage(const QString& aMessage)
     printf( "****************************************************************\n" );
 #endif
   } else if (aMessage.indexOf("studyClosed:") == 0) {
-    onCloseDoc( false );
+    /* aMessage also contains ID of the closed study,
+       but as soon as SALOME is mono-study application for the moment,
+       this ID is not needed now.*/
+    //long aStudyId = aMessage.section(':', 1).toLong();
+    // Disconnect GUI from active study, because it was closed on DS side.
+    closeActiveDoc( false );
   }
 }
 
