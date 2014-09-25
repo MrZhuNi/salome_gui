@@ -585,9 +585,6 @@ void SalomeApp_Application::onParseMessage(const QString& aMessage)
     printf( "****************************************************************\n" );
 #endif
   } else if (aMessage.indexOf("studyCreated:") == 0) {
-    SUIT_MessageBox::warning( desktop(),
-                              QObject::tr("WRN_WARNING"),
-                              QObject::tr("Study was created on DS") );
     // Enable 'Connect' action
     updateCommandsStatus();
   } else if (aMessage.indexOf("studyClosed:") == 0) {
