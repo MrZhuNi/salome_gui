@@ -584,6 +584,12 @@ void SalomeApp_Application::onParseMessage(const QString& aMessage)
     printf( "*    Warning: SALOME is built without SIMAN support.\n" );
     printf( "****************************************************************\n" );
 #endif
+  } else if (aMessage.indexOf("studyCreated:") == 0) {
+    SUIT_MessageBox::warning( desktop(),
+                              QObject::tr("WRN_WARNING"),
+                              QObject::tr("Study was created on DS") );
+    // Enable 'Connect' action
+    updateCommandsStatus();
   } else if (aMessage.indexOf("studyClosed:") == 0) {
     /* aMessage also contains ID of the closed study,
        but as soon as SALOME is mono-study application for the moment,
@@ -591,6 +597,10 @@ void SalomeApp_Application::onParseMessage(const QString& aMessage)
     //long aStudyId = aMessage.section(':', 1).toLong();
     // Disconnect GUI from active study, because it was closed on DS side.
     closeActiveDoc( false );
+    // Disable 'Connect' action
+    QAction* a = action( ConnectId );
+    if( a )
+      a->setEnabled( false );
   }
 }
 
@@ -812,7 +822,7 @@ void SalomeApp_Application::updateCommandsStatus()
   // Connect study menu
   a = action( ConnectId );
   if( a )
-    a->setEnabled( !activeStudy() );
+    a->setEnabled( !activeStudy() && studyMgr()->GetOpenStudies().size() > 0 );
 
   // Disconnect study menu
   a = action( DisconnectId );
