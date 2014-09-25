@@ -411,12 +411,12 @@ LightApp_Application::~LightApp_Application()
 /*!Start application.*/
 void LightApp_Application::start()
 {
-  CAM_Application::start();
 
 #ifndef DISABLE_PYCONSOLE
   getWindow( WT_PyConsole );
-  placeDockWindow( WT_PyConsole, Qt::BottomDockWidgetArea );
 #endif
+
+  CAM_Application::start();
 
   updateWindows();
   updateViewManagers();

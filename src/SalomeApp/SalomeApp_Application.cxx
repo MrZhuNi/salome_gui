@@ -320,13 +320,11 @@ void SalomeApp_Application::createActions()
                 tr( "MEN_DESK_REGISTRY_DISPLAY" ), tr( "PRP_DESK_REGISTRY_DISPLAY" ),
                 /*Qt::SHIFT+Qt::Key_D*/0, desk, false, this, SLOT( onRegDisplay() ) );
 
-  createAction( ConnectId, tr( "TOT_DESK_CONNECT_STUDY" ),
-                resourceMgr()->loadPixmap( "STD", tr( "ICON_FILE_OPEN" ) ),
+  createAction( ConnectId, tr( "TOT_DESK_CONNECT_STUDY" ), QIcon(),
                 tr( "MEN_DESK_CONNECT" ), tr( "PRP_DESK_CONNECT" ),
                 Qt::CTRL+Qt::Key_L, desk, false, this, SLOT( onLoadDoc() ) );
 
-  createAction( DisconnectId, tr( "TOT_DESK_DISCONNECT_STUDY" ),
-                resourceMgr()->loadPixmap( "STD", tr( "ICON_FILE_CLOSE" ) ),
+  createAction( DisconnectId, tr( "TOT_DESK_DISCONNECT_STUDY" ), QIcon(),
                 tr( "MEN_DESK_DISCONNECT" ), tr( "PRP_DESK_DISCONNECT" ),
                 Qt::CTRL+Qt::Key_U, desk, false, this, SLOT( onUnloadDoc() ) );
 
@@ -799,12 +797,12 @@ void SalomeApp_Application::updateCommandsStatus()
   // Dump study menu
   QAction* a = action( DumpStudyId );
   if ( a )
-    a->setEnabled( true );
+    a->setEnabled( activeStudy() );
 
   // Load script menu
   a = action( LoadScriptId );
   if( a )
-    a->setEnabled( true );
+    a->setEnabled( pythonConsole() );
 
   // Properties menu
   a = action( PropertiesId );
