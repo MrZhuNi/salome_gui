@@ -2,12 +2,9 @@
 
 \page salome_desktop_page SALOME desktop
 
-<b>Multi-Desktop Approach</b> used in Salome means that there is a separate Desktop
-for each Study and all windows connected to the same Study (viewers, dockable
+<b>Single-Desktop Approach</b> used in Salome means that there is one Desktop
+for Study and all windows connected to the Study (viewers, dockable
 windows, etc.) are placed in one container. 
-This approach positively differs from the classic multi document interface 
-if many windows are used, i.e. when one document contains a lot of
-viewers, dialogs, etc. Each desktop also has its own menu and toolbar.
 
 The main SALOME Desktop consists of the following sections and toolbars:
 
