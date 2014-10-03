@@ -383,7 +383,7 @@ bool Plot2d_SetupCurvesDlg::acceptData() const
     QString aStr = it ? it->text() : "";
     bool isOk = false;
     double nbMarkers = aStr.toDouble( &isOk );
-    if ( !isOk || nbMarkers<= 0 )
+    if ( !isOk || nbMarkers< 0 )
     {
       SUIT_MessageBox::information( (QWidget*)this, tr( "PLOT2D_INSUFFICIENT_DATA" ), 
         tr( "PLOT2D_ENTER_VALID_DATA" ), tr( "BUT_OK" ) );

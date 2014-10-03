@@ -1962,7 +1962,7 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
       double u1 = xMap.transform( x( i ) );
       double v1 = yMap.transform( y( i ) );
 
-      if ( i == to && myNbMarkers > 0 )
+      if ( (i == from || i == to) && myNbMarkers >= 0 )
       {
         rect.moveCenter( QPoint( u1, v1 ) );
         symbol.draw( p, rect );
