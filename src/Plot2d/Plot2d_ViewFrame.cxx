@@ -293,7 +293,7 @@ void Plot2d_ViewFrame::Display( const Plot2d_Prs* prs )
 */
 void Plot2d_ViewFrame::setSecondY( const bool& theSecondY )
 {
-  myPlot->enableAxis(QwtPlot::yRight, theSecondY);
+  myPlot->enableAxis(QwtPlot::yRight, theSecondY );
   mySecondY = theSecondY;
 }
 
@@ -640,8 +640,7 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
     }
     setCurveType( aPCurve, myCurveType );
     aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
-    if ( mySecondY )
-      aPCurve->setYAxis( QwtPlot::yRight );
+    aPCurve->setYAxis( curve->getYAxis() );
   }
   updateTitles();
   if ( update )
@@ -731,7 +730,7 @@ void Plot2d_ViewFrame::updateCurve( Plot2d_Curve* curve, bool update )
     }
     aPCurve->setTitle( curve->getVerTitle() );
     aPCurve->setVisible( true );
-    aPCurve->setYAxis( mySecondY ? QwtPlot::yRight : QwtPlot::yLeft );
+    aPCurve->setYAxis( curve->getYAxis() );
     if ( update )
       myPlot->replot();
   }
