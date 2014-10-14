@@ -52,6 +52,7 @@
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_Session.h"
 #include "SUIT_Tools.h"
+#include "PyConsole_Interp.h"
 #include "PyConsole_Console.h"
 
 #include <QAction>
@@ -2657,7 +2658,14 @@ public:
 };
 int SalomePyQt::createView( const QString& type, bool visible, const int width, const int height )
 {
-  return ProcessEvent( new TCreateView( type, visible, width, height ) );
+  bool impLock = PyLockWrapper::ReleaseImportLockIfLocked();
+  int ret = ProcessEvent( new TCreateView( type, visible, width, height ) );
+
+  // restore the state of the import lock
+  if (impLock)
+    PyLockWrapper::AcquireImportLock();
+
+  return ret;
 }
 
 /*!
@@ -3829,21 +3837,45 @@ void SalomePyQt::setPlot2dFitRange(const int id, const double XMin, const double
 	ProcessVoidEvent( new TPlot2dFitRange(id, XMin, XMax, YMin, YMax) ); 
 }
 
-//class TInitParaview: public SALOME_Event
-//{
-//public:
-//  TInitParaview() {}
-//  virtual void Execute() {
-//    LightApp_Application* anApp = getApplication();
-//    // Create PVViewer_ViewManager, which will initialize ParaView stuff
-//    PVViewer_ViewManager* viewMgr =
-//          dynamic_cast<PVViewer_ViewManager*>( anApp->getViewManager( PVViewer_Viewer::Type(), true ) );
-//  }
-//};
-//void SalomePyQt::initializeParaViewGUI()
-//{
-//  ProcessVoidEvent( new TInitParaview() );
-//}
+/*!
+ * Execute a Python command in the embedded console context, and in the main thread.
+ */
+class TExecutePython: public SALOME_Event
+{
+public:
+  QString myCmd;
+  PyObject * myGlobals;
+  PyObject * myLocals;
+  TExecutePython(const QString& cmd, PyObject * globals, PyObject * locals):
+    myGlobals(globals),
+    myLocals(locals)
+   {
+    myCmd = cmd;
+   }
+  virtual void Execute() {
+    // Get console interpreter
+    LightApp_Application* anApp = getApplication();
+    PyConsole_Console * console = anApp->pythonConsole(false);
+    if (console)
+      {
+        PyLockWrapper lock;
+        console->getInterp()->run( myCmd.toUtf8().data(), myGlobals, myLocals );
+      }
+  }
+};
+
+/**!
+ * Execute Python code in SALOME's main thread.
+ * This is very similar to the native "exec" statement of Python, with the specification
+ * of an execution context.
+ */
+void SalomePyQt::executePythonInMainThread(const QString& cmd, PyObject * globals, PyObject * locals)
+{
+  bool importLock = PyLockWrapper::ReleaseImportLockIfLocked();
+  ProcessVoidEvent( new TExecutePython(cmd, globals, locals) );
+  if (importLock)
+    PyLockWrapper::AcquireImportLock();
+}
 
 void SalomePyQt::processEvents()
 {

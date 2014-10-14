@@ -35,7 +35,6 @@ public:
   SalomeApp_PyInterp();
   virtual ~SalomeApp_PyInterp();
 
-  virtual void initPython();
   virtual void initStudy();
   virtual void closeContext();
 

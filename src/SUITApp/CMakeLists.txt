@@ -30,6 +30,7 @@ INCLUDE_DIRECTORIES(
   ${PROJECT_SOURCE_DIR}/src/Qtx
   ${PROJECT_SOURCE_DIR}/src/SUIT
   ${PROJECT_SOURCE_DIR}/src/Style
+  ${PROJECT_SOURCE_DIR}/src/PyInterp
 )
 
 # additional preprocessor / compiler flags
@@ -39,7 +40,7 @@ IF(ENABLE_TESTRECORDER)
 ENDIF()
 
 # libraries to link to
-SET(_link_LIBRARIES ${PLATFORM_LIBS} ${QT_LIBRARIES} qtx suit SalomeStyle)
+SET(_link_LIBRARIES ${PLATFORM_LIBS} ${QT_LIBRARIES} qtx suit SalomeStyle PyInterp)
 IF(SALOME_USE_PYCONSOLE)
   LIST(APPEND _link_LIBRARIES ${PYTHON_LIBRARIES})
 ENDIF()

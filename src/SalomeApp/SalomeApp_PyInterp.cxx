@@ -49,16 +49,6 @@ SalomeApp_PyInterp::~SalomeApp_PyInterp()
 }
  
 /*!
-  Do nothing (we could rely on the test done in the implementation of this method in the super
-  class PyInterp_Interp, but in this context we are sure the initialization has been done in main()
-  of SALOME_Session_Server)
- */
-void SalomeApp_PyInterp::initPython()
-{
-  MESSAGE("SalomeApp_PyInterp::initPython - does nothing");
-}
-
-/*!
   Called before each Python command running.
 */
 int SalomeApp_PyInterp::beforeRun()

@@ -64,11 +64,8 @@ public:
   void initialize();
   void destroy();
 
-  virtual int run(const char *command); 
+  virtual int run(const char *command, PyObject * globals=NULL, PyObject * locals=NULL);
   virtual void initStudy(){};
-
-  // [ABN] - the PyLockWrapper is no more attached to the interpreter
-  // PyLockWrapper GetLockWrapper() const;
 
   std::string getbanner() const;
   void setverrcb(PyOutChanged*,void*);
@@ -90,7 +87,7 @@ protected:
 
   virtual int beforeRun();
   virtual int afterRun();
-  int simpleRun(const char* command, const bool addToHistory = true);
+  int simpleRun(const char* command, const bool addToHistory=true, PyObject * globals=NULL, PyObject * locals=NULL);
 
   virtual void initPython();
 

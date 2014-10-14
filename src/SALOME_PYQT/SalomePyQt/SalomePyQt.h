@@ -295,8 +295,8 @@ public:
   static QList<double>     getPlot2dFitRangeCurrent(const int);
   static void              setPlot2dFitRange(const int, const double XMin, const double XMax, const double YMin, const double YMax);
 
-//  static void              initializeParaViewGUI();
   static void              processEvents();
+  static void              executePythonInMainThread(const QString& cmd, PyObject * globals, PyObject * locals);
 
   // the following methods are obsolete
   static void              addStringSetting( const QString&, const QString&, bool = true );

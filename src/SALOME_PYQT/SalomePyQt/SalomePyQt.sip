@@ -38,6 +38,7 @@
 #include <Plot2d_Curve.h>
 %End
 
+
 class SALOME_Selection : QObject
 {
 %TypeHeaderCode
@@ -466,8 +467,8 @@ public:
   static void              setPlot2dFitRange(const int, const double XMin, const double XMax, const double YMin, const double YMax ) /ReleaseGIL/ ;
 
   static void              processEvents();
+  static void              executePythonInMainThread(const QString& cmd, PyObject * globals, PyObject * locals);
   
-
   static void              startPyLog(const QString&) /ReleaseGIL/ ;
   static void              stopPyLog() /ReleaseGIL/ ;
 };

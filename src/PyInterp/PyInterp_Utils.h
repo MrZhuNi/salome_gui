@@ -27,27 +27,9 @@
 
 #include "PyInterp.h"
 #include <Python.h>
+#include <QMap>
 
-/**
- * Utility class wrapping the Python GIL acquisition. This makes use of the high level
- * API (PyGILState_Ensure and PyGILState_Release), and is hence compatible with only
- * one running Python interpreter (no call to Py_NewInterpreter()).
- * When the class is instanciated the lock is acquired. It is released at destruction time.
- * Copy construction (and hence assignation) is forbidden.
- */
-class PYINTERP_EXPORT PyLockWrapper
-{
-  PyGILState_STATE _gil_state;
-public:
-  PyLockWrapper();
-  ~PyLockWrapper();
-
-private:
-  // "Rule of 3" - Forbid usage of copy operator and copy-constructor
-  PyLockWrapper(const PyLockWrapper & another);
-  const PyLockWrapper & operator=(const PyLockWrapper & another);
-};
-
+#include <QMutex>
 
 /**
  * Utility class to properly handle the reference counting required on Python objects.
@@ -73,6 +55,44 @@ public:
     return *this;
   }
 };
+
+/**
+ * Utility class wrapping the Python GIL acquisition. This makes use of the high level
+ * API (PyGILState_Ensure and PyGILState_Release), and is hence compatible with only
+ * one running Python interpreter (no call to Py_NewInterpreter()).
+ * When the class is instanciated the lock is acquired. It is released at destruction time.
+ * Copy construction (and hence assignation) is forbidden.
+ */
+class PYINTERP_EXPORT PyLockWrapper
+{
+private:
+  PyGILState_STATE _gil_state;
+
+public:
+  PyLockWrapper();
+  ~PyLockWrapper();
+
+  static bool Initialize();
+
+  /* Import lock management - see the API of the imp module:
+   * https://docs.python.org/2/library/imp.html?highlight=imp%20module#module-imp
+   *
+   * This is mainly needed by PARAVIS/ParaView mechanisms - see function createView() and
+   * also executePythonInMainThread() in SalomePyQt.cxx
+   */
+
+  //! Acquire the import lock
+  static bool AcquireImportLock();
+  //! Release the Python import lock if it is held (and return true). Otherwise return false.
+  static bool ReleaseImportLockIfLocked();
+private:
+  // "Rule of 3" - Forbid usage of copy operator and copy-constructor
+  PyLockWrapper(const PyLockWrapper & another);
+  const PyLockWrapper & operator=(const PyLockWrapper & another);
+
+  static PyObjWrapper _imp_module;
+};
+
 
 #endif
 

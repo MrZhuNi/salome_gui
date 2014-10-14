@@ -23,11 +23,18 @@
 //
 
 #include "PyInterp_Utils.h"
+#include <SALOME_Event.h>
+#include <Utils_SALOME_Exception.hxx>
+#include <Container_init_python.hxx>
+#include <utilities.h>
+#include <iostream>
 
 /*!
   \class PyLockWrapper
   \brief Python GIL wrapper.
 */
+
+PyObjWrapper PyLockWrapper::_imp_module(NULL);
 
 /*!
   \brief Constructor. Automatically acquires GIL.
@@ -37,6 +44,58 @@ PyLockWrapper::PyLockWrapper()
   _gil_state = PyGILState_Ensure();
 }
 
+bool PyLockWrapper::Initialize()
+{
+  if (!_imp_module.get())
+    {
+      PyLockWrapper lock;
+      PyObjWrapper m2(PyImport_ImportModule("imp"));
+      _imp_module = m2;
+      if(!_imp_module)
+        {
+          PyErr_Print();
+          return false;
+        }
+    }
+  return true;
+}
+
+bool PyLockWrapper::AcquireImportLock()
+{
+  if (!_imp_module)
+    return false;
+
+  PyLockWrapper lock;
+  PyObject_CallMethod(_imp_module, (char *)"acquire_lock", NULL);
+  if (PyErr_Occurred())
+    {
+      PyErr_Print();
+      return false;
+    }
+  return true;
+}
+
+bool PyLockWrapper::ReleaseImportLockIfLocked()
+{
+  if (!_imp_module)
+    return false;
+  bool ret = false;
+
+  PyLockWrapper lock;
+  PyObjWrapper m(PyObject_CallMethod(_imp_module, (char *)"lock_held", NULL));
+  if (PyObject_IsTrue(m))
+    {
+      PyObject_CallMethod(_imp_module, (char *)"release_lock", NULL);
+      if (PyErr_Occurred())
+        {
+          PyErr_Print();
+          return false;
+        }
+      ret = true;
+    }
+
+  return ret;
+}
 /*!
   \brief Destructor. Automatically releases GIL.
 */

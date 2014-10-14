@@ -58,15 +58,16 @@ PyStdOut_write(PyStdOut *self, PyObject *args)
   int l;
   if (!PyArg_ParseTuple(args, "t#:write",&c, &l))
     return NULL;
-  if(self->_cb==NULL) {
-    if ( self->_iscerr )
-      std::cerr << c ;
-    else
-      std::cout << c ;
-  }
-  else {
+
+  // [ABN]: changed this to have Python output on both the Python console
+  // and the terminal (helps to degug the multi-thread)
+  if ( self->_iscerr )
+    std::cerr << c ;
+  else
+    std::cout << c ;
+  if(self->_cb != NULL)
     self->_cb(self->_data,c);
-  }
+
   Py_INCREF(Py_None);
   return Py_None;
 }
@@ -168,10 +169,7 @@ char* PyInterp_Interp::_argv[] = {(char*)""};
 */
 PyInterp_Interp::PyInterp_Interp():
   _vout(0), _verr(0), _local_context(0), _global_context(0)
-{
-}
-
-
+{}
 
 /*!
   \brief Destructor.
@@ -198,8 +196,6 @@ void PyInterp_Interp::initialize()
   _ith = _history.begin();
 
   initPython();  // This also inits the multi-threading for Python (but w/o acquiring GIL)
-
-  //initState(); // [ABN] OBSOLETE
 
   // ---- The rest of the initialisation process is done hodling the GIL
   PyLockWrapper lck;
@@ -244,10 +240,10 @@ void PyInterp_Interp::initPython()
     Py_SetProgramName(_argv[0]);
     Py_Initialize(); // Initialize the interpreter
     PySys_SetArgv(_argc, _argv);
-
     PyEval_InitThreads(); // Create (and acquire) the Python global interpreter lock (GIL)
     PyEval_ReleaseLock();
   }
+  PyLockWrapper::Initialize();
 }
 
 /*!
@@ -409,13 +405,15 @@ static int compile_command(const char *command, PyObject * global_ctxt, PyObject
 /*!
   \brief Run Python command - the command has to fit on a single line (no \n!).
   Use ';' if you need multiple statements evaluated at once.
+  The context dictionaries can also be passed (like for the Python 'exec' statement).
+  If not provided it will default to the current interpreter's context.
   \param command Python command
   \return command status
 */
-int PyInterp_Interp::run(const char *command)
+int PyInterp_Interp::run(const char *command, PyObject * globals, PyObject * locals)
 {
   beforeRun();
-  int ret = simpleRun(command);
+  int ret = simpleRun(command, false, globals, locals);
   afterRun();
   return ret;
 }
@@ -444,7 +442,8 @@ int PyInterp_Interp::afterRun()
   \param addToHistory if \c true (default), the command is added to the commands history
   \return command status
 */
-int PyInterp_Interp::simpleRun(const char *command, const bool addToHistory)
+int PyInterp_Interp::simpleRun(const char *command, const bool addToHistory,
+                               PyObject * globals, PyObject * locals)
 {
   if( addToHistory && strcmp(command,"") != 0 ) {
     _history.push_back(command);
@@ -462,7 +461,11 @@ int PyInterp_Interp::simpleRun(const char *command, const bool addToHistory)
   PySys_SetObject((char*)"stderr",_verr);
   PySys_SetObject((char*)"stdout",_vout);
 
-  int ier = compile_command(command, _global_context, _local_context);
+  int ier;
+  if (!globals || !locals)
+    ier = compile_command(command, _global_context, _local_context);
+  else
+    ier = compile_command(command, globals, locals);
 
   // Outputs are redirected to what they were before
   PySys_SetObject((char*)"stdout",oldOut);

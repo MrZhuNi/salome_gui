@@ -21,6 +21,7 @@
 //  Date   : 22/06/2007
 //
 #include "SUITApp_init_python.hxx"
+#include "PyInterp_Utils.h"
 
 bool SUIT_PYTHON::initialized                       = false;
 
@@ -28,6 +29,7 @@ void SUIT_PYTHON::init_python(int argc, char **argv)
 {
   if (Py_IsInitialized())
   {
+    PyLockWrapper::Initialize();
     return;
   }
   Py_SetProgramName(argv[0]);
@@ -35,6 +37,7 @@ void SUIT_PYTHON::init_python(int argc, char **argv)
   PySys_SetArgv(argc, argv);
   PyEval_InitThreads(); // Create (and acquire) the interpreter lock - can be called many times
 
+  PyLockWrapper::Initialize();
   // Py_InitThreads acquires the GIL
   PyThreadState *pts = PyGILState_GetThisThreadState(); 
   PyEval_ReleaseThread(pts);
