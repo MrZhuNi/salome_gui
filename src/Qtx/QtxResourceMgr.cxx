@@ -1411,9 +1411,11 @@ QtxResourceMgr::WorkingMode QtxResourceMgr::workingMode() const
   \param mode new working mode
   \sa workingMode(), value(), hasValue(), hasSection(), setValue()
 */
-void QtxResourceMgr::setWorkingMode( WorkingMode mode )
+QtxResourceMgr::WorkingMode QtxResourceMgr::setWorkingMode( WorkingMode mode )
 {
+  WorkingMode m = myWorkingMode;
   myWorkingMode = mode;
+  return m;
 }
 
 /*!

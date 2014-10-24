@@ -2025,7 +2025,9 @@ LightApp_Preferences* LightApp_Application::preferences( const bool crt ) const
   that->myPrefs = _prefs_;
 
   connect( myPrefs, SIGNAL( preferenceChanged( QString&, QString&, QString& ) ),
-           this, SLOT( onPreferenceChanged( QString&, QString&, QString& ) ) );
+           this, SLOT( onPreferenceChanged( QString&, QString&, QString& ) ), Qt::UniqueConnection );
+  connect( myPrefs, SIGNAL( resetToDefaults() ),
+           this, SIGNAL( preferenceResetToDefaults() ), Qt::UniqueConnection );
 
   if ( !crt )
     return myPrefs;
