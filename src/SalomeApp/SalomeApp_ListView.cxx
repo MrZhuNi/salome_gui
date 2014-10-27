@@ -25,6 +25,7 @@
 //
 #include "SalomeApp_ListView.h"
 #include "SalomeApp_Application.h"
+#include "utilities.h"
 
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_Session.h"
