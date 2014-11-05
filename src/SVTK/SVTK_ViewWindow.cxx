@@ -924,6 +924,10 @@ QImage SVTK_ViewWindow::dumpViewContent()
 
   anImage = anImage.rgbSwapped();
   anImage = anImage.mirrored();
+
+  if( aData )
+    delete aData;
+
   return anImage;
 }
 
