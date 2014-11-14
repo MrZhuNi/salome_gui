@@ -208,6 +208,7 @@ if test "x${OpenGL_libs_ok}" = "xyes" ; then
                 [OpenGL_libs_ok=yes ; OGL_LIBS="${OGL_LIBS} ${GLU_LIB_PATH} -lGLU"],
                 [OpenGL_libs_ok=no])
   fi
+  AC_CHECK_LIB( [Xmu], [XmuLookupStandardColormap], [OGL_LIBS="${OGL_LIBS} -lXmu"], [HAVE_XMU=no], [-lXt -lX11] )
   LDFLAGS="$LDFLAGS_old"
 fi
 
