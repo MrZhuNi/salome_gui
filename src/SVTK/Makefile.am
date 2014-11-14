@@ -153,7 +153,7 @@ libSVTK_la_CPPFLAGS =		\
 libSVTK_la_LDFLAGS =			\
 	$(QT_MT_LIBS)			\
 	$(CAS_KERNEL) $(CAS_VIEWER)	\
-	$(VTK_LIBS) $(OGL_LIBS)
+	$(VTK_LIBS) $(OGL_LIBS) -lXmu
 
 libSVTK_la_LIBADD = ../Qtx/libqtx.la ../SUIT/libsuit.la ../OBJECT/libSalomeObject.la \
 		    ../Prs/libSalomePrs.la ../VTKViewer/libVTKViewer.la
