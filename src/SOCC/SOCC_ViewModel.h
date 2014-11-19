@@ -31,6 +31,8 @@
 #include "SALOME_Prs.h"
 #include "OCCViewer_ViewModel.h"
 
+#include <list>
+
 class SALOME_ListIO;
 class Handle(SALOME_InteractiveObject);
 
@@ -61,6 +63,7 @@ public:
   virtual void                EraseAll( const bool = false );
   virtual SALOME_Prs*         CreatePrs( const char* entry = 0 );
 
+  virtual void                LocalSelection( const SALOME_OCCPrs*, const std::list<int> );
   virtual void                LocalSelection( const SALOME_OCCPrs*, const int );
   virtual void                GlobalSelection( const bool = false ) const;
   virtual bool                isVisible( const Handle(SALOME_InteractiveObject)& );

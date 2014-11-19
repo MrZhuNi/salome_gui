@@ -26,6 +26,13 @@
 #include "SALOME_Prs.h"
 
 /*!
+  Dispatches operation of activation of sub-shapes selection
+*/
+void SALOME_Prs::LocalSelectionIn( SALOME_View*, const std::list<int> ) const
+{
+}
+
+/*!
   Dispatches display operation to proper Display() method of SALOME_View
 */
 void SALOME_OCCPrs::DisplayIn( SALOME_View* v ) const
@@ -76,9 +83,19 @@ void SALOME_OCCPrs::AfterEraseIn( SALOME_Displayer* d, SALOME_View* v ) const
 /*!
   Dispatches operation to proper LocalSelectionIn() method of SALOME_View
 */
+void SALOME_OCCPrs::LocalSelectionIn( SALOME_View* v, const std::list<int> modes ) const
+{
+  if ( v && !modes.empty() ) v->LocalSelection( this, modes );
+}
+
+/*!
+  Dispatches operation to proper LocalSelectionIn() method of SALOME_View
+*/
 void SALOME_OCCPrs::LocalSelectionIn( SALOME_View* v, const int mode ) const
 {
-  if ( v ) v->LocalSelection( this, mode );
+  std::list<int> modes;
+  modes.push_back( mode );
+  LocalSelectionIn( v, modes );
 }
 
 /*!
@@ -236,9 +253,19 @@ void SALOME_View::Erase( const SALOME_Prs* prs, const bool forced )
 /*!
   Gives control to SALOME_Prs object, so that it could perform double dispatch
 */
+void SALOME_View::LocalSelection( const SALOME_Prs* prs, const std::list<int> modes )
+{
+  prs->LocalSelectionIn( this, modes );
+}
+
+/*!
+  Gives control to SALOME_Prs object, so that it could perform double dispatch
+*/
 void SALOME_View::LocalSelection( const SALOME_Prs* prs, const int mode )
 {
-  prs->LocalSelectionIn( this, mode );
+  std::list<int> modes;
+  modes.push_back( mode );
+  LocalSelection( prs, modes );
 }
 
 /*!
@@ -295,6 +322,15 @@ void SALOME_View::Erase( const SALOME_Prs2d*, const bool )
 void SALOME_View::EraseAll( const bool )
 {
 //  MESSAGE( "SALOME_View::EraseAll() called!" );
+}
+
+/*!
+  Virtual method, should be reimplemented in successors, by default issues a warning and does nothing.
+*/
+void SALOME_View::LocalSelection( const SALOME_OCCPrs*, const std::list<int> )
+{
+//  MESSAGE( "SALOME_View::LocalSelection( const SALOME_OCCPrs* ) called!
+//   Probably, selection is being activated in uncompatible viewframe." );
 }
 
 /*!

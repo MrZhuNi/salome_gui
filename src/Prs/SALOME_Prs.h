@@ -33,6 +33,8 @@
 #define PRS_EXPORT
 #endif
 
+#include <list>
+
 class SALOME_View;
 class SALOME_Displayer;
 class SALOME_ListIO;
@@ -79,6 +81,7 @@ public:
 
   //! Key method for double dispatch of activation of sub-shapes selection
   virtual void LocalSelectionIn( SALOME_View*, const int ) const = 0;
+  virtual void LocalSelectionIn( SALOME_View*, const std::list<int> ) const;
 
     // checks if shape is clippable
   inline bool IsClippable() const
@@ -135,6 +138,7 @@ public:
   virtual void Update( SALOME_Displayer* );
 
   //! Key method for double dispatch of activation of sub-shapes selection
+  virtual void LocalSelectionIn( SALOME_View*, const std::list<int> ) const;
   virtual void LocalSelectionIn( SALOME_View*, const int ) const;
 };
 
@@ -243,6 +247,7 @@ public:
   //! This LocalSelection() method should be called to activate sub-shapes selection
   //! created anywhere by anybody. It simply passes control to SALOME_Prs object
   //! so that it could perform double dispatch.
+  void LocalSelection( const SALOME_Prs*, const std::list<int> );
   void LocalSelection( const SALOME_Prs*, const int );
 
   // Interface for derived views
@@ -261,9 +266,10 @@ public:
   // Add new Erase() methods here...
 
   // LocalSelection() methods for ALL kinds of presentation should appear here
-  virtual void LocalSelection( const SALOME_OCCPrs*, const int );//!< Local selection SALOME_OCCPrs
-  virtual void LocalSelection( const SALOME_VTKPrs*, const int );//!< Local selection SALOME_VTKPrs
-  virtual void LocalSelection( const SALOME_Prs2d* , const int );//!< Local selection SALOME_Prs2d
+  virtual void LocalSelection( const SALOME_OCCPrs*, const std::list<int> );//!< Local selection of different types of entities SALOME_OCCPrs
+  virtual void LocalSelection( const SALOME_OCCPrs*, const int );          //!< Local selection SALOME_OCCPrs
+  virtual void LocalSelection( const SALOME_VTKPrs*, const int );          //!< Local selection SALOME_VTKPrs
+  virtual void LocalSelection( const SALOME_Prs2d* , const int );          //!< Local selection SALOME_Prs2d
 
   //! Deactivates selection of sub-shapes (must be redefined with OCC viewer)
   virtual void GlobalSelection( const bool = false ) const;
