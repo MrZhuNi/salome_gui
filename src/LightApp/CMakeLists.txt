@@ -220,7 +220,6 @@ SET(_other_RESOURCES
   resources/icon_module_big.png
   resources/icon_select.png
   resources/LightApp.ini
-  resources/LightApp.xml
 )
 
 # --- sources ---
