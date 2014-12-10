@@ -13,7 +13,7 @@
     </message>
     <message>
       <source>ERR_ACTIVEDOC_LOAD</source>
-      <translation type="unfinished">A study is already active in your session, but you are not connected to it. Use the Connect button to load it in the interface.</translation>
+      <translation>ERR_ACTIVEDOC_LOAD</translation>
     </message>
     <message>
       <source>WRN_STUDY_LOCKED</source>
@@ -111,27 +111,27 @@
     </message>
     <message>
       <source>TOT_DESK_CONNECT_STUDY</source>
-      <translation type="unfinished">Connect study</translation>
+      <translation>TOT_DESK_CONNECT_STUDY</translation>
     </message>
     <message>
       <source>TOT_DESK_DISCONNECT_STUDY</source>
-      <translation type="unfinished">Disconnect study</translation>
+      <translation>TOT_DESK_DISCONNECT_STUDY</translation>
     </message>
     <message>
       <source>PRP_DESK_CONNECT</source>
-      <translation type="unfinished">Connect active study</translation>
+      <translation>PRP_DESK_CONNECT</translation>
     </message>
     <message>
       <source>PRP_DESK_DISCONNECT</source>
-      <translation type="unfinished">Disconnect the current study</translation>
+      <translation>PRP_DESK_DISCONNECT</translation>
     </message>
     <message>
       <source>MEN_DESK_CONNECT</source>
-      <translation type="unfinished">Conn&amp;ect</translation>
+      <translation>MEN_DESK_CONNECT</translation>
     </message>
     <message>
       <source>MEN_DESK_DISCONNECT</source>
-      <translation type="unfinished">D&amp;isconnect</translation>
+      <translation>MEN_DESK_DISCONNECT</translation>
     </message>
   </context>
   <context>
@@ -141,12 +141,12 @@
       <translation>すべてのファイル (*. *)</translation>
     </message>
     <message>
-        <source>APPCLOSE_UNLOAD</source>
-        <translation type="unfinished">&amp;Disconnect w/o saving</translation>
+      <source>APPCLOSE_UNLOAD</source>
+      <translation>アンロード(&amp;U)</translation>
     </message>
     <message>
-        <source>APPCLOSE_UNLOAD_SAVE</source>
-        <translation type="unfinished">S&amp;ave &amp;&amp; Disconnect</translation>
+      <source>APPCLOSE_UNLOAD_SAVE</source>
+      <translation>APPCLOSE_UNLOAD_SAVE</translation>
     </message>
     <message>
       <source>MEN_WINDOWS_NEW</source>
@@ -378,7 +378,7 @@
     </message>
     <message>
       <source>ACTIVATE_MODULE_OP_LOAD</source>
-      <translation type="unfinished">&amp;Connect</translation>
+      <translation>読込み(&amp;L)</translation>
     </message>
     <message>
       <source>ACTIVATE_MODULE_OP_SCRIPT</source>
@@ -410,19 +410,19 @@
     </message>
     <message>
       <source>DISCONNECT_CAPTION</source>
-      <translation type="unfinished">Disconnect active study</translation>
+      <translation>DISCONNECT_CAPTION</translation>
     </message>
     <message>
       <source>DISCONNECT_DESCRIPTION</source>
-      <translation type="unfinished">Do you want to save study before disconnect?</translation>
+      <translation>DISCONNECT_DESCRIPTION</translation>
     </message>
     <message>
       <source>DISCONNECT_SAVE</source>
-      <translation type="unfinished">&amp;Save &amp;&amp; Disconnect</translation>
+      <translation>DISCONNECT_SAVE</translation>
     </message>
     <message>
       <source>DISCONNECT_WO_SAVE</source>
-      <translation type="unfinished">&amp;Disconnect w/o saving</translation>
+      <translation>DISCONNECT_WO_SAVE</translation>
     </message>
   </context>
   <context>
