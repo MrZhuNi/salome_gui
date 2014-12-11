@@ -60,15 +60,15 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
       <source>APPCLOSE_SAVE</source>
-      <translation>保存して閉じる(&amp;amp;S)</translation>
+      <translation>保存して閉じる(&amp;S)</translation>
     </message>
     <message>
       <source>APPCLOSE_CLOSE</source>
-      <translation>保存せずに閉じる(&amp;amp;C)</translation>
+      <translation>保存せずに閉じる(&amp;C)</translation>
     </message>
     <message>
       <source>APPCLOSE_CANCEL</source>
-      <translation>キャンセル(&amp;amp;C)</translation>
+      <translation>キャンセル(&amp;C)</translation>
     </message>
   </context>
   <context>

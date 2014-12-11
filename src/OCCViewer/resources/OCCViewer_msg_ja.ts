@@ -552,7 +552,7 @@
     </message>
     <message>
       <source>HELP</source>
-      <translation>ヘルプ(&amp;amp;H)</translation>
+      <translation>ヘルプ(&amp;H)</translation>
     </message>
   </context>
 </TS>

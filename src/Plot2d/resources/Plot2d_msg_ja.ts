@@ -686,7 +686,7 @@
     </message>
     <message>
       <source>MEN_PLOT2D_FITDATA</source>
-      <translation>間隔を調整します。(&amp;amp;R)</translation>
+      <translation>間隔を調整します。(&amp;R)</translation>
     </message>
     <message>
       <source>PRP_PLOT2D_FITDATA</source>
@@ -726,7 +726,7 @@
     </message>
     <message>
       <source>MEN_PLOT2D_SHOW_LEGEND</source>
-      <translation>キャプションを表示します。(&amp;amp;L)</translation>
+      <translation>キャプションを表示します。(&amp;L)</translation>
     </message>
     <message>
       <source>PRP_PLOT2D_SHOW_LEGEND</source>
@@ -742,7 +742,7 @@
     </message>
     <message>
       <source>MEN_PLOT2D_SETTINGS</source>
-      <translation>パラメーター(&amp;amp;S)</translation>
+      <translation>パラメーター(&amp;S)</translation>
     </message>
     <message>
       <source>MEN_PLOT2D_ANALYTICAL_CURVES</source>
