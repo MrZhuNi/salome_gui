@@ -5,7 +5,7 @@
     <name>@default</name>
     <message>
       <source>DASHDOT_LINE_LBL</source>
-      <translation>TiretPoint</translation>
+      <translation>DashDot</translation>
     </message>
     <message>
       <source>DASH_LINE_LBL</source>
@@ -21,7 +21,7 @@
     </message>
     <message>
       <source>DAHSDOTDOT_LINE_LBL</source>
-      <translation>TiretPointPoint</translation>
+      <translation>DashDotDot</translation>
     </message>
     <message>
       <source>NONE_LINE_LBL</source>
@@ -143,7 +143,7 @@
     </message>
     <message>
       <source>PREF_BOTTOM</source>
-      <translation>BAS</translation>
+      <translation>下</translation>
     </message>
     <message>
       <source>PREF_CURVE_TYPE</source>
