@@ -56,7 +56,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
       <source>STUDYCLOSE_DESCRIPTION</source>
-      <translation>STUDYCLOSE_DESCRIPTION</translation>
+      <translation type="unfinished">You already have an active study in your session. It has to be closed before working with another study.</translation>
     </message>
     <message>
       <source>APPCLOSE_SAVE</source>
@@ -492,7 +492,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
       <source>NEW_WINDOW_6</source>
-      <translation>NEW_WINDOW_6</translation>
+      <translation type="unfinished">ParaVie&w view</translation>
     </message>
     <message>
       <source>CREATING_NEW_WINDOW</source>

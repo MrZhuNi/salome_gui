@@ -320,7 +320,7 @@
     </message>
     <message>
       <source>PLOT2D_LEGEND_POSITION_BOTTOM</source>
-      <translation>PLOT2D_LEGEND_POSITION_BOTTOM</translation>
+      <translation type="unfinished">Bottom</translation>
     </message>
     <message>
       <source>TLT_SETUP_PLOT2D_VIEW</source>
@@ -494,7 +494,7 @@
     <name>Plot2d_ViewWindow</name>
     <message>
       <source>MNU_DUMP_VIEW</source>
-      <translation>MNU_DUMP_VIEW</translation>
+      <translation type="unfinished">Dump view...</translation>
     </message>
     <message>
       <source>MNU_PAN_VIEW</source>
@@ -502,11 +502,11 @@
     </message>
     <message>
       <source>MNU_CLONE_VIEW</source>
-      <translation>MNU_CLONE_VIEW</translation>
+      <translation type="unfinished">Clone View</translation>
     </message>
     <message>
       <source>MNU_PRINT_VIEW</source>
-      <translation>MNU_PRINT_VIEW</translation>
+      <translation type="unfinished">Print View</translation>
     </message>
     <message>
       <source>POSTSCRIPT_FILES</source>
@@ -522,31 +522,31 @@
     </message>
     <message>
       <source>DSC_GLOBALPAN_VIEW</source>
-      <translation>DSC_GLOBALPAN_VIEW</translation>
+      <translation type="unfinished">Selection of a new center of the view</translation>
     </message>
     <message>
       <source>PRP_PLOT2D_MODE_LINEAR_VER</source>
-      <translation>PRP_PLOT2D_MODE_LINEAR_VER</translation>
+      <translation type="unfinished">Switches view to linear scaling mode along vertical axis</translation>
     </message>
     <message>
       <source>PRP_PLOT2D_MODE_LINEAR_HOR</source>
-      <translation>PRP_PLOT2D_MODE_LINEAR_HOR</translation>
+      <translation type="unfinished">Switches view to linear scaling mode along horizontal axis</translation>
     </message>
     <message>
       <source>CURVE_TYPE_POPUP</source>
-      <translation>CURVE_TYPE_POPUP</translation>
+      <translation type="unfinished">Curve type</translation>
     </message>
     <message>
       <source>NORMALIZATION_TYPE_POPUP</source>
-      <translation>NORMALIZATION_TYPE_POPUP</translation>
+      <translation type="unfinished">Normalization</translation>
     </message>
     <message>
       <source>TOT_PLOT2D_MODE_LINEAR_VER</source>
-      <translation>TOT_PLOT2D_MODE_LINEAR_VER</translation>
+      <translation type="unfinished">Vertical axis: linear</translation>
     </message>
     <message>
       <source>TOT_PLOT2D_MODE_LINEAR_HOR</source>
-      <translation>TOT_PLOT2D_MODE_LINEAR_HOR</translation>
+      <translation type="unfinished">Horizontal axis: linear</translation>
     </message>
     <message>
       <source>MNU_ZOOM_VIEW</source>
@@ -558,7 +558,7 @@
     </message>
     <message>
       <source>PRP_PLOT2D_CURVES_SPLINES</source>
-      <translation>PRP_PLOT2D_CURVES_SPLINES</translation>
+      <translation type="unfinished">Switches view to splines mode</translation>
     </message>
     <message>
       <source>DSC_FITALL</source>
@@ -570,47 +570,47 @@
     </message>
     <message>
       <source>TOT_PLOT2D_MODE_LOGARITHMIC_HOR</source>
-      <translation>TOT_PLOT2D_MODE_LOGARITHMIC_HOR</translation>
+      <translation type="unfinished">Horizontal axis: logarithmic</translation>
     </message>
     <message>
       <source>TOT_PLOT2D_MODE_LOGARITHMIC_VER</source>
-      <translation>TOT_PLOT2D_MODE_LOGARITHMIC_VER</translation>
+      <translation type="unfinished">Vertical axis: logarithmic</translation>
     </message>
     <message>
       <source>MNU_GLOBALPAN_VIEW</source>
-      <translation>MNU_GLOBALPAN_VIEW</translation>
+      <translation type="unfinished">Global Panning</translation>
     </message>
     <message>
       <source>DSC_CLONE_VIEW</source>
-      <translation>DSC_CLONE_VIEW</translation>
+      <translation type="unfinished">Create new OCC viewer for the active scene</translation>
     </message>
     <message>
       <source>DSC_PRINT_VIEW</source>
-      <translation>DSC_PRINT_VIEW</translation>
+      <translation type="unfinished">Print active view</translation>
     </message>
     <message>
       <source>TOT_PLOT2D_SETTINGS</source>
-      <translation>TOT_PLOT2D_SETTINGS</translation>
+      <translation type="unfinished">Settings</translation>
     </message>
     <message>
       <source>TOT_PLOT2D_ANALYTICAL_CURVES</source>
-      <translation>TOT_PLOT2D_ANALYTICAL_CURVES</translation>
+      <translation type="unfinished">Analytical curves</translation>
     </message>
     <message>
       <source>TOT_PLOT2D_NORMALIZE_MODE_LMAX</source>
-      <translation>TOT_PLOT2D_NORMALIZE_MODE_LMAX</translation>
+      <translation type="unfinished">Left Y Axis: Normalize to global maximum</translation>
     </message>
     <message>
       <source>TOT_PLOT2D_NORMALIZE_MODE_LMIN</source>
-      <translation>TOT_PLOT2D_NORMALIZE_MODE_LMIN</translation>
+      <translation type="unfinished">Left Y Axis: Normalize to global minimum</translation>
     </message>
     <message>
       <source>TOT_PLOT2D_NORMALIZE_MODE_RMAX</source>
-      <translation>TOT_PLOT2D_NORMALIZE_MODE_RMAX</translation>
+      <translation type="unfinished">Right Y Axis: Normalize to global maximum</translation>
     </message>
     <message>
       <source>TOT_PLOT2D_NORMALIZE_MODE_RMIN</source>
-      <translation>TOT_PLOT2D_NORMALIZE_MODE_RMIN</translation>
+      <translation type="unfinished">Right Y Axis: Normalize to global minimum</translation>
     </message>
     <message>
       <source>MEN_PLOT2D_CURVES_SPLINES</source>
@@ -618,15 +618,15 @@
     </message>
     <message>
       <source>PRP_PLOT2D_MODE_LOGARITHMIC_HOR</source>
-      <translation>PRP_PLOT2D_MODE_LOGARITHMIC_HOR</translation>
+      <translation type="unfinished">Switches view to logarithmic scaling mode along horizontal axis</translation>
     </message>
     <message>
       <source>PRP_PLOT2D_MODE_LOGARITHMIC_VER</source>
-      <translation>PRP_PLOT2D_MODE_LOGARITHMIC_VER</translation>
+      <translation type="unfinished">Switches view to logarithmic scaling mode along vertical axis</translation>
     </message>
     <message>
       <source>TOT_PLOT2D_CURVES_POINTS</source>
-      <translation>TOT_PLOT2D_CURVES_POINTS</translation>
+      <translation type="unfinished">Draw points</translation>
     </message>
     <message>
       <source>DSC_FITRECT</source>
@@ -638,15 +638,15 @@
     </message>
     <message>
       <source>MEN_PLOT2D_CURVES_POINTS</source>
-      <translation>MEN_PLOT2D_CURVES_POINTS</translation>
+      <translation type="unfinished">Draw Points</translation>
     </message>
     <message>
       <source>PRP_PLOT2D_CURVES_POINTS</source>
-      <translation>PRP_PLOT2D_CURVES_POINTS</translation>
+      <translation type="unfinished">Switches view to points mode</translation>
     </message>
     <message>
       <source>DSC_DUMP_VIEW</source>
-      <translation>DSC_DUMP_VIEW</translation>
+      <translation type="unfinished">Saves the active view in the image file</translation>
     </message>
     <message>
       <source>DSC_ZOOM_VIEW</source>
@@ -654,19 +654,19 @@
     </message>
     <message>
       <source>PRP_PLOT2D_ANALYTICAL_CURVES</source>
-      <translation>PRP_PLOT2D_ANALYTICAL_CURVES</translation>
+      <translation type="unfinished">Setups analytical curves properties</translation>
     </message>
     <message>
       <source>PRP_PLOT2D_NORMALIZE_MODE_LMAX</source>
-      <translation>PRP_PLOT2D_NORMALIZE_MODE_LMAX</translation>
+      <translation type="unfinished">Switches view to maximum normalization mode by left Y axis</translation>
     </message>
     <message>
       <source>PRP_PLOT2D_NORMALIZE_MODE_LMIN</source>
-      <translation>PRP_PLOT2D_NORMALIZE_MODE_LMIN</translation>
+      <translation type="unfinished">Switches view to minimum normalization mode by left Y axis</translation>
     </message>
     <message>
       <source>PRP_PLOT2D_NORMALIZE_MODE_RMAX</source>
-      <translation>PRP_PLOT2D_NORMALIZE_MODE_RMAX</translation>
+      <translation type="unfinished">Switches view to maximum normalization mode by right Y axis</translation>
     </message>
     <message>
       <source>PRP_PLOT2D_NORMALIZE_MODE_RMIN</source>

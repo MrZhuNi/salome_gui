@@ -13,7 +13,7 @@
     </message>
     <message>
       <source>ERR_ACTIVEDOC_LOAD</source>
-      <translation>ERR_ACTIVEDOC_LOAD</translation>
+      <translation type="unfinished">A study is already active in your session, but you are not connected to it. Use the Connect button to load it in the interface.</translation>
     </message>
     <message>
       <source>WRN_STUDY_LOCKED</source>
@@ -111,27 +111,27 @@
     </message>
     <message>
       <source>TOT_DESK_CONNECT_STUDY</source>
-      <translation>TOT_DESK_CONNECT_STUDY</translation>
+      <translation type="unfinished">Connect study</translation>
     </message>
     <message>
       <source>TOT_DESK_DISCONNECT_STUDY</source>
-      <translation>TOT_DESK_DISCONNECT_STUDY</translation>
+      <translation type="unfinished">Disconnect study</translation>
     </message>
     <message>
       <source>PRP_DESK_CONNECT</source>
-      <translation>PRP_DESK_CONNECT</translation>
+      <translation type="unfinished">Connect active study</translation>
     </message>
     <message>
       <source>PRP_DESK_DISCONNECT</source>
-      <translation>PRP_DESK_DISCONNECT</translation>
+      <translation type="unfinished">Disconnect the current study</translation>
     </message>
     <message>
       <source>MEN_DESK_CONNECT</source>
-      <translation>MEN_DESK_CONNECT</translation>
+      <translation type="unfinished">Conn&ect</translation>
     </message>
     <message>
       <source>MEN_DESK_DISCONNECT</source>
-      <translation>MEN_DESK_DISCONNECT</translation>
+      <translation type="unfinished">D&isconnect</translation>
     </message>
   </context>
   <context>
@@ -146,7 +146,7 @@
     </message>
     <message>
       <source>APPCLOSE_UNLOAD_SAVE</source>
-      <translation>APPCLOSE_UNLOAD_SAVE</translation>
+      <translation type="unfinished">S&ave && Disconnect</translation>
     </message>
     <message>
       <source>MEN_WINDOWS_NEW</source>
@@ -410,19 +410,19 @@
     </message>
     <message>
       <source>DISCONNECT_CAPTION</source>
-      <translation>DISCONNECT_CAPTION</translation>
+      <translation type="unfinished">Disconnect active study</translation>
     </message>
     <message>
       <source>DISCONNECT_DESCRIPTION</source>
-      <translation>DISCONNECT_DESCRIPTION</translation>
+      <translation type="unfinished">Do you want to save study before disconnect?</translation>
     </message>
     <message>
       <source>DISCONNECT_SAVE</source>
-      <translation>DISCONNECT_SAVE</translation>
+      <translation type="unfinished">&Save && Disconnect</translation>
     </message>
     <message>
       <source>DISCONNECT_WO_SAVE</source>
-      <translation>DISCONNECT_WO_SAVE</translation>
+      <translation type="unfinished">&Disconnect w/o saving</translation>
     </message>
   </context>
   <context>

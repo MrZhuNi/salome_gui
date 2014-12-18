@@ -29,11 +29,11 @@
     </message>
     <message>
       <source>EDIT_STARTLOG_CMD</source>
-      <translation>EDIT_STARTLOG_CMD</translation>
+      <translation type="unfinished">Start &Log</translation>
     </message>
     <message>
       <source>EDIT_STOPLOG_CMD</source>
-      <translation>EDIT_STOPLOG_CMD</translation>
+      <translation type="unfinished">Stop &Log</translation>
     </message>
   </context>
   <context>
@@ -44,7 +44,7 @@
     </message>
     <message>
       <source>TOT_SAVE_PYLOG</source>
-      <translation>TOT_SAVE_PYLOG</translation>
+      <translation type="unfinished">Save log</translation>
     </message>
     <message>
       <source>PYTHON_FILES_FILTER</source>
@@ -52,11 +52,11 @@
     </message>
     <message>
       <source>LOG_FILES_FILTER</source>
-      <translation>LOG_FILES_FILTER</translation>
+      <translation type="unfinished">Log files (*.log *.txt)</translation>
     </message>
     <message>
       <source>ERR_FILE_NOT_WRITABLE</source>
-      <translation>ERR_FILE_NOT_WRITABLE</translation>
+      <translation type="unfinished">File is not writable!</translation>
     </message>
   </context>
 </TS>
