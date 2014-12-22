@@ -69,7 +69,7 @@ public:
   bool                isShowBanner() const;
   void                setIsShowBanner( const bool );
 
-  void                exec( const QString& );
+  void                exec (const QString&, const bool shouldPrint = true);
   void                execAndWait( const QString& );
 
   virtual bool        eventFilter( QObject*, QEvent* );

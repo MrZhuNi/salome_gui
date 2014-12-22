@@ -46,7 +46,7 @@ public:
   virtual void   addText( const QString& str, const bool newBlock = false ); 
   bool           isCommand( const QString& str ) const;
 
-  virtual void   exec( const QString& command );
+  virtual void   exec( const QString& command, const bool shouldPrint = true );
   void           execAndWait( const QString& command );
 
   bool           isSync() const;

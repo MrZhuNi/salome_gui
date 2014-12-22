@@ -383,7 +383,7 @@ void PyConsole_Editor::addText( const QString& str,
   as if the user typed it manually.
   \param command python command to be executed
 */
-void PyConsole_Editor::exec( const QString& command )
+void PyConsole_Editor::exec( const QString& command, const bool shouldPrint )
 {
   if ( isReadOnly() ) {
     // some interactive command is being executed in this editor...
@@ -408,7 +408,8 @@ void PyConsole_Editor::exec( const QString& command )
   for ( int i = 0; i < lines.size(); i++ ) {
     if ( !lines[i].trimmed().isEmpty() )
       myHistory.push_back( lines[i] );
-    addText( ( i == 0 ? READY_PROMPT : DOTS_PROMPT ) + lines[i], i != 0 );
+    if (shouldPrint)
+      addText( ( i == 0 ? READY_PROMPT : DOTS_PROMPT ) + lines[i], i != 0 );
   }
   // IPAL20182
   addText( "", true );

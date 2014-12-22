@@ -88,10 +88,11 @@ PyConsole_Console::~PyConsole_Console()
   \brief Execute python command in the interpreter.
   \param command string with command and arguments
 */
-void PyConsole_Console::exec( const QString& command )
+void PyConsole_Console::exec (const QString& command,
+                              const bool shouldPrint)
 {
   if ( myEditor )
-    myEditor->exec( command );
+    myEditor->exec (command, shouldPrint);
 }
 
 /*!
