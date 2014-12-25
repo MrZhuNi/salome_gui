@@ -135,6 +135,27 @@ void PyConsole_Console::setIsSync( const bool on )
 }
 
 /*!
+  \brief Get read only flag value.
+  
+  \sa setIsReadOnly()
+  \return True if python console output is in Read-only state.
+*/
+bool PyConsole_Console::isReadOnly() const
+{
+  return myEditor->isReadOnly();
+}
+
+/*!
+  \brief Set read only flag value.
+
+  \param on read only mode flag
+*/
+void PyConsole_Console::setIsReadOnly( const bool on )
+{
+  myEditor->setReadOnly( on );
+}
+
+/*!
   \brief Get suppress output flag value.
   
   \sa setIsSuppressOutput()

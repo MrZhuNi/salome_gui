@@ -63,6 +63,9 @@ public:
   bool                isSync() const;
   void                setIsSync( const bool );
 
+  bool                isReadOnly() const;
+  void                setIsReadOnly( const bool );
+
   bool                isSuppressOutput() const;
   void                setIsSuppressOutput( const bool );
 

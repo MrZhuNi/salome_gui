@@ -403,7 +403,7 @@ void PyConsole_Editor::exec( const QString& command, const bool shouldPrint )
   myCmdInHistory = -1;
   // print command line by line
   QString cmd = command;
-  if ( !cmd.endsWith( "\n" ) ) cmd += "\n";
+  if ( shouldPrint && !cmd.endsWith( "\n" ) ) cmd += "\n";
   QStringList lines = command.split( "\n" );
   for ( int i = 0; i < lines.size(); i++ ) {
     if ( !lines[i].trimmed().isEmpty() )
