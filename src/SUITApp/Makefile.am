@@ -72,7 +72,7 @@ if ENABLE_TESTRECORDER
   SUITApp_CPPFLAGS+= -DENABLE_TESTRECORDER $(TESTRECORDER_INCLUDES)
 endif
 
-SUITApp_LDADD    = libSUITApp.la  ../Qtx/libqtx.la ../SUIT/libsuit.la ../Style/libSalomeStyle.la
+SUITApp_LDADD    = libSUITApp.la  ../Qtx/libqtx.la ../SUIT/libsuit.la ../Style/libSalomeStyle.la $(QT_MT_LIBS)
 
 if ENABLE_TESTRECORDER
   SUITApp_LDADD+= $(TESTRECORDER_LIBS)
