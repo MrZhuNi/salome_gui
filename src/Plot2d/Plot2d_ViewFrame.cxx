@@ -2209,15 +2209,28 @@ Plot2d_Curve* Plot2d_Plot2d::getClosestCurve( QPoint p, double& distance, int& i
 {
   CurveDict::Iterator it = getCurves().begin();
   QwtPlotCurve* aCurve;
+  Plot2d_Curve* aClosestCurve = 0;
+  double aMinDist = -1;
+  int aClosestIndex = -1;
   for ( ; it != getCurves().end(); it++ ) {
     aCurve = it.key();
     if ( !aCurve )
       continue;
     index = aCurve->closestPoint( p, &distance );
     if ( index > -1 )
-      return it.value();
+    {
+      if (aMinDist < 0 || aMinDist > distance)
+      {
+        aMinDist = distance;
+        aClosestIndex = index;
+        aClosestCurve = it.value();
+      }
+    }
   }
-  return 0;
+  distance = aMinDist;
+  index = aClosestIndex;
+
+  return aClosestCurve;
 }
 
 /*!
