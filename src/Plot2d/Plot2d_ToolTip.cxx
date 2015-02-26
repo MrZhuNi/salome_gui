@@ -48,24 +48,40 @@ Plot2d_ToolTip::~Plot2d_ToolTip()
 
 void Plot2d_ToolTip::onToolTip( QPoint p, QString& str, QFont& f, QRect& txtRect, QRect& rect )
 {
-  int pInd;
-  double dist;
+  QList< QList< int > > pInd;
 
-  Plot2d_Curve* c = myPlot->getClosestCurve( p, dist, pInd );
-  if( !c || dist>maxDist )
+  // Get all curves points in the vicinity.
+  QList<Plot2d_Curve*> aCurves = myPlot->getClosestPoints( p, maxDist, pInd );
+  if( aCurves.isEmpty() )
     return;
+  
+  QString aTxt;
 
-  str = c->text( pInd );
+  // Produce a tooltip containing text from all found points.
+  for(int i = 0; i < aCurves.length(); i++)
+  {
+    const QList< int >& aPnts = pInd[i];
+    foreach(int j, aPnts)
+    {
+      aTxt = aCurves[i]->text( j );
+      if (!aTxt.isEmpty())
+      {
+        str += ("<p>" + aTxt + "</p>");
+      }
+    }
+  }
+
   if( str.isEmpty() )
     return;
 
+  // Compute a size according to the produced tooltip text.
   QFontMetrics m( f );
-  QStringList lst = str.split( "\n", QString::SkipEmptyParts );
+  QStringList lst = str.split( QRegExp("\n|(<p>)|(</p>)"), QString::SkipEmptyParts );
   QStringList::const_iterator anIt = lst.begin(), aLast = lst.end();
   int w = 0, h = 0;
   for( ; anIt!=aLast; anIt++ )
   {
-    if( h>0 )
+    //RKV: if( h>0 )
       h+= m.lineSpacing();
 
     QRect r = m.boundingRect( *anIt );

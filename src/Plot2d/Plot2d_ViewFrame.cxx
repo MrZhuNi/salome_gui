@@ -2234,6 +2234,59 @@ Plot2d_Curve* Plot2d_Plot2d::getClosestCurve( QPoint p, double& distance, int& i
 }
 
 /*!
+  Get list of curves located in the vicinity of the given point.
+  @param thePoint the point
+  @param theRadius the vicinity radius
+  @param thePntIndex the nearest points indexes of found curves
+  @return list of curves
+*/
+QList<Plot2d_Curve*> Plot2d_Plot2d::getClosestPoints( QPoint thePoint, double theRadius, QList< QList< int > >& thePntIndex )
+{
+  QList<Plot2d_Curve*> res;
+  thePntIndex.clear();
+  // The square of the vicinity radius.
+  const double aMaxD = theRadius * theRadius;
+  const QwtScaleMap xMap = canvasMap(QwtPlot::xBottom);
+  const QwtScaleMap yMap = canvasMap(QwtPlot::yLeft);
+
+  QwtPlotCurve* aCurve;
+  CurveDict::Iterator it = getCurves().begin();
+  // Check each curve of this plot.
+  for ( ; it != getCurves().end(); it++ ) {
+    aCurve = it.key();
+    if ( !aCurve )
+      continue;
+
+    // Gather points located in the vicinity of the given point for the current curve.
+    const pointList& aPnts = it.value()->getPointList();
+    QList< int > aPntIndex;
+
+    for (int i = 0; i < aPnts.length(); i++)
+    {
+      // Compute the square of the distance from the current curve point to the given point.
+      const double cx = xMap.xTransform(aCurve->x(i)) - thePoint.x();
+      const double cy = yMap.xTransform(aCurve->y(i)) - thePoint.y();
+      const double f = qwtSqr(cx) + qwtSqr(cy);
+
+      // If the current curve point is in the vicinity then keep its index.
+      if ( f < aMaxD )
+      {
+        aPntIndex << i;
+      }
+    }
+
+    // Keep this curve if it has points in the vicinity.
+    if (!aPntIndex.isEmpty())
+    {
+      res << it.value();
+      thePntIndex << aPntIndex;
+    }
+  }
+
+  return res;
+}
+
+/*!
   Sets number of markers for steps. If number of markers is equal to 1 then 
   markers are displayed for steps only. If number of markers is equal to 3 
   (for example) then markers are displayed for steps and two markers are 

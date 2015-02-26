@@ -255,6 +255,7 @@ public:
   QwtPlotGrid*        grid() { return myGrid; };
   CurveDict& getCurves() { return myCurves; }
   Plot2d_Curve*       getClosestCurve( QPoint p, double& distance, int& index );
+  QList<Plot2d_Curve*> getClosestPoints( QPoint thePoint, double theRadius, QList< QList< int > >& thePntIndex );
 
   long                insertCurve( const QString &title,
                                    int xAxis = xBottom, 
