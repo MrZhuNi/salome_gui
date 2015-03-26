@@ -21,35 +21,36 @@
 //
 
 #include "Plot2d_Curve.h"
+#include "Plot2d_ViewFrame.h"
 #include <QColor>
 
 #include <float.h>
 
 /*!
-  Constructor
+Constructor
 */
 Plot2d_Curve::Plot2d_Curve()
 : myHorTitle( "" ), myVerTitle( "" ), 
-  myHorUnits( "" ), myVerUnits( "" ), 
-  myAutoAssign( true ), 
-  myColor( 0,0,0 ), 
-  myMarker( Plot2d::Circle ), 
-  myLine( Plot2d::Solid ), 
-  myLineWidth( 0 ),
-  myYAxis( QwtPlot::yLeft ),
-  myNbMarkers( 1 )
+myHorUnits( "" ), myVerUnits( "" ), 
+myAutoAssign( true ), 
+myColor( 0,0,0 ), 
+myMarker( Plot2d::Circle ), 
+myLine( Plot2d::Solid ), 
+myLineWidth( 0 ),
+myYAxis( QwtPlot::yLeft ),
+myNbMarkers( 1 )
 {
 }
 
 /*!
-  Destructor
+Destructor
 */
 Plot2d_Curve::~Plot2d_Curve()
 {
 }
 
 /*!
-  Copy constructor. Makes deep copy of data.
+Copy constructor. Makes deep copy of data.
 */
 Plot2d_Curve::Plot2d_Curve( const Plot2d_Curve& curve )
 {
@@ -63,11 +64,12 @@ Plot2d_Curve::Plot2d_Curve( const Plot2d_Curve& curve )
   myLine       = curve.getLine();
   myLineWidth  = curve.getLineWidth();
   myPoints     = curve.getPointList();
+  mySymbolsColorMap = curve.getColorMap();
   myNbMarkers  = curve.getNbMarkers();
 }
 
 /*!
-  operator=. Makes deep copy of data.
+operator=. Makes deep copy of data.
 */
 Plot2d_Curve& Plot2d_Curve::operator=( const Plot2d_Curve& curve )
 {
@@ -81,12 +83,13 @@ Plot2d_Curve& Plot2d_Curve::operator=( const Plot2d_Curve& curve )
   myLine       = curve.getLine();
   myLineWidth  = curve.getLineWidth();
   myPoints     = curve.getPointList();
+  mySymbolsColorMap = curve.getColorMap();
   myNbMarkers  = curve.getNbMarkers();
   return *this;
 }
 
 /*!
-  \return title of table
+\return title of table
 */
 QString Plot2d_Curve::getTableTitle() const
 {
@@ -94,7 +97,7 @@ QString Plot2d_Curve::getTableTitle() const
 }
 
 /*!
-  Sets curve's horizontal title
+Sets curve's horizontal title
 */
 void Plot2d_Curve::setHorTitle( const QString& title )
 {
@@ -102,7 +105,7 @@ void Plot2d_Curve::setHorTitle( const QString& title )
 }
 
 /*!
-  Gets curve's horizontal title
+Gets curve's horizontal title
 */
 QString Plot2d_Curve::getHorTitle() const
 {
@@ -110,7 +113,7 @@ QString Plot2d_Curve::getHorTitle() const
 }
 
 /*!
-  Sets curve's vertical title
+Sets curve's vertical title
 */
 void Plot2d_Curve::setVerTitle( const QString& title )
 {
@@ -118,7 +121,7 @@ void Plot2d_Curve::setVerTitle( const QString& title )
 }
 
 /*!
-  Gets curve's vertical title
+Gets curve's vertical title
 */
 QString Plot2d_Curve::getVerTitle() const
 {
@@ -126,7 +129,7 @@ QString Plot2d_Curve::getVerTitle() const
 }
 
 /*!
-  Sets curve's horizontal units
+Sets curve's horizontal units
 */
 void Plot2d_Curve::setHorUnits( const QString& units )
 {
@@ -134,7 +137,7 @@ void Plot2d_Curve::setHorUnits( const QString& units )
 }
 
 /*!
-  Gets curve's horizontal units
+Gets curve's horizontal units
 */
 QString Plot2d_Curve::getHorUnits() const
 {
@@ -142,7 +145,7 @@ QString Plot2d_Curve::getHorUnits() const
 }
 
 /*!
-  Sets curve's vertical units
+Sets curve's vertical units
 */
 void Plot2d_Curve::setVerUnits( const QString& units )
 {
@@ -150,7 +153,7 @@ void Plot2d_Curve::setVerUnits( const QString& units )
 }
 
 /*!
-  Gets curve's vertical units
+Gets curve's vertical units
 */
 QString Plot2d_Curve::getVerUnits() const
 {
@@ -158,26 +161,28 @@ QString Plot2d_Curve::getVerUnits() const
 }
 
 /*!
-  Adds one point for curve.
+Adds one point for curve.
 */
-void Plot2d_Curve::addPoint(double theX, double theY, const QString& txt )
+void Plot2d_Curve::addPoint( double theX, double theY, const QString& theTxt, int theColorId )
 {
   Plot2d_Point aPoint;
   aPoint.x = theX;
   aPoint.y = theY;
-  aPoint.text = txt;
+  aPoint.text = theTxt;
+  aPoint.colorId = theColorId;
   myPoints.append(aPoint);
 }
 
 /*!
-  Insert one point for curve on some position.
+Insert one point for curve on some position.
 */
-void Plot2d_Curve::insertPoint(int thePos, double theX, double theY, const QString& txt)
+void Plot2d_Curve::insertPoint( int thePos, double theX, double theY, const QString& theTxt, int theColorId )
 {
   Plot2d_Point aPoint;
   aPoint.x = theX;
   aPoint.y = theY;
-  aPoint.text = txt;
+  aPoint.text = theTxt;
+  aPoint.colorId = theColorId;
 
   pointList::iterator aIt;
   int aCurrent = 0;
@@ -192,7 +197,7 @@ void Plot2d_Curve::insertPoint(int thePos, double theX, double theY, const QStri
 }
 
 /*!
-  Delete one point for curve on some position.
+Delete one point for curve on some position.
 */
 void Plot2d_Curve::deletePoint(int thePos)
 {
@@ -201,7 +206,7 @@ void Plot2d_Curve::deletePoint(int thePos)
 }
 
 /*!
-  Remove all points for curve.
+Remove all points for curve.
 */
 void Plot2d_Curve::clearAllPoints()
 {
@@ -209,7 +214,7 @@ void Plot2d_Curve::clearAllPoints()
 }
 
 /*!
-  Gets curve's data : abscissas of points
+Gets curve's data : abscissas of points
 */
 pointList Plot2d_Curve::getPointList() const
 {
@@ -217,7 +222,7 @@ pointList Plot2d_Curve::getPointList() const
 }
 
 /*!
-  Gets curve's data : abscissas of points
+Gets curve's data : abscissas of points
 */
 pointList& Plot2d_Curve::getPointList()
 {
@@ -225,18 +230,35 @@ pointList& Plot2d_Curve::getPointList()
 }
 
 /*!
-  Sets curve's data. 
+Gets curve's data : symbols color map
 */
-void Plot2d_Curve::setData( const double* hData, const double* vData, long size, const QStringList& lst )
+colorMap Plot2d_Curve::getColorMap() const
+{
+  return mySymbolsColorMap;
+}
+
+/*!
+Gets curve's data : symbols color map
+*/
+colorMap& Plot2d_Curve::getColorMap()
+{
+  return mySymbolsColorMap;
+}
+
+/*!
+Sets curve's data. 
+*/
+void Plot2d_Curve::setData( const double* hData, const double* vData, 
+                           long size, const QStringList& lst, const int* theColorIds )
 {
   clearAllPoints();
   QStringList::const_iterator anIt = lst.begin(), aLast = lst.end(); 
   for( long i = 0; i < size; i++, anIt++ )
-    addPoint( hData[i], vData[i], anIt==aLast ? QString() : *anIt );
+    addPoint( hData[i], vData[i], anIt>=aLast ? QString() : *anIt, ( theColorIds ? theColorIds[i] : 0 ) );
 }
 
 /*!
-  Gets curve's data : abscissas of points
+Gets curve's data : abscissas of points
 */
 double* Plot2d_Curve::horData() const
 {
@@ -249,7 +271,7 @@ double* Plot2d_Curve::horData() const
 }
 
 /*!
-  Gets curve's data : ordinates of points
+Gets curve's data : ordinates of points
 */
 double* Plot2d_Curve::verData() const
 {
@@ -262,7 +284,20 @@ double* Plot2d_Curve::verData() const
 }
 
 /*!
-  Gets curve's data : number of points
+Gets curve's data : color ids of points
+*/
+int* Plot2d_Curve::colorData() const
+{
+  int aNPoints = nbPoints();
+  int* aZ = new int[aNPoints];
+  for (int i = 0; i < aNPoints; i++) {
+    aZ[i] = myPoints[i].colorId;
+  }
+  return aZ;
+}
+
+/*!
+Gets curve's data : number of points
 */
 int Plot2d_Curve::nbPoints() const
 {
@@ -270,7 +305,7 @@ int Plot2d_Curve::nbPoints() const
 }
 
 /*!
-  Returns true if curve has no data
+Returns true if curve has no data
 */
 bool Plot2d_Curve::isEmpty() const
 {
@@ -278,7 +313,7 @@ bool Plot2d_Curve::isEmpty() const
 }
 
 /*!
-  Sets curve's AutoAssign flag - in this case attributes will be set automatically
+Sets curve's AutoAssign flag - in this case attributes will be set automatically
 */
 void Plot2d_Curve::setAutoAssign( bool on )
 {
@@ -286,7 +321,7 @@ void Plot2d_Curve::setAutoAssign( bool on )
 }
 
 /*!
-  Gets curve's AutoAssign flag state
+Gets curve's AutoAssign flag state
 */
 bool Plot2d_Curve::isAutoAssign() const
 {
@@ -294,7 +329,7 @@ bool Plot2d_Curve::isAutoAssign() const
 }
 
 /*!
-  Sets curve's color ( and resets AutoAssign flag )
+Sets curve's color ( and resets AutoAssign flag )
 */
 void Plot2d_Curve::setColor( const QColor& color )
 {
@@ -303,7 +338,7 @@ void Plot2d_Curve::setColor( const QColor& color )
 }
 
 /*!
-  Gets curve's color
+Gets curve's color
 */
 QColor Plot2d_Curve::getColor() const
 {
@@ -311,7 +346,24 @@ QColor Plot2d_Curve::getColor() const
 }
 
 /*!
-  Sets curve's marker ( and resets AutoAssign flag )
+Sets symbol's color ( and resets AutoAssign flag )
+*/
+void Plot2d_Curve::setColorById( const int theColorId, const QColor& theColor )
+{
+  mySymbolsColorMap[theColorId] = theColor;
+  myAutoAssign = false;
+}
+
+/*!
+Gets curve's color
+*/
+QColor Plot2d_Curve::getColorById( const int theColorId ) const
+{
+  return mySymbolsColorMap[theColorId];
+}
+
+/*!
+Sets curve's marker ( and resets AutoAssign flag )
 */
 void Plot2d_Curve::setMarker( Plot2d::MarkerType marker )
 {
@@ -320,7 +372,7 @@ void Plot2d_Curve::setMarker( Plot2d::MarkerType marker )
 }
 
 /*!
-  Gets curve's marker
+Gets curve's marker
 */
 Plot2d::MarkerType Plot2d_Curve::getMarker() const
 {
@@ -328,7 +380,7 @@ Plot2d::MarkerType Plot2d_Curve::getMarker() const
 }
 
 /*!
-  Sets number of markers per step ( and resets AutoAssign flag ). 
+Sets number of markers per step ( and resets AutoAssign flag ). 
 */
 void Plot2d_Curve::setNbMarkers( const double nbMarkers )
 {
@@ -337,7 +389,7 @@ void Plot2d_Curve::setNbMarkers( const double nbMarkers )
 }
 
 /*!
-  Gets number of markers per step ( and resets AutoAssign flag ). 
+Gets number of markers per step ( and resets AutoAssign flag ). 
 */
 double Plot2d_Curve::getNbMarkers() const
 {
@@ -345,11 +397,11 @@ double Plot2d_Curve::getNbMarkers() const
 }
 
 /*!
-  Sets curve's line type and width ( and resets AutoAssign flag )
-  NOTE : A line width of 0 will produce a 1 pixel wide line using a fast algorithm for diagonals. 
-         A line width of 1 will also produce a 1 pixel wide line, but uses a slower more accurate 
-         algorithm for diagonals. 
-         For horizontal and vertical lines a line width of 0 is the same as a line width of 1.
+Sets curve's line type and width ( and resets AutoAssign flag )
+NOTE : A line width of 0 will produce a 1 pixel wide line using a fast algorithm for diagonals. 
+A line width of 1 will also produce a 1 pixel wide line, but uses a slower more accurate 
+algorithm for diagonals. 
+For horizontal and vertical lines a line width of 0 is the same as a line width of 1.
 */
 void Plot2d_Curve::setLine( Plot2d::LineType line, const int lineWidth )
 {
@@ -360,7 +412,7 @@ void Plot2d_Curve::setLine( Plot2d::LineType line, const int lineWidth )
 }
 
 /*!
-  Gets curve's line type
+Gets curve's line type
 */
 Plot2d::LineType Plot2d_Curve::getLine() const
 {
@@ -368,7 +420,7 @@ Plot2d::LineType Plot2d_Curve::getLine() const
 }
 
 /*!
-  Gets curve's line width
+Gets curve's line width
 */
 int Plot2d_Curve::getLineWidth() const
 {
@@ -376,7 +428,7 @@ int Plot2d_Curve::getLineWidth() const
 }
 
 /*!
-  Sets curve's y axis
+Sets curve's y axis
 */
 void Plot2d_Curve::setYAxis(QwtPlot::Axis theYAxis)
 {
@@ -385,7 +437,7 @@ void Plot2d_Curve::setYAxis(QwtPlot::Axis theYAxis)
 }
 
 /*!
-  Gets curve's y axis
+Gets curve's y axis
 */
 QwtPlot::Axis Plot2d_Curve::getYAxis() const
 {
@@ -393,7 +445,7 @@ QwtPlot::Axis Plot2d_Curve::getYAxis() const
 }
 
 /*!
-  Gets curve's minimal abscissa
+Gets curve's minimal abscissa
 */
 double Plot2d_Curve::getMinX() const
 {
@@ -408,7 +460,7 @@ double Plot2d_Curve::getMinX() const
 }
 
 /*!
-  Gets curve's maxiaml abscissa
+Gets curve's maxiaml abscissa
 */
 double Plot2d_Curve::getMaxX() const
 {
@@ -423,7 +475,7 @@ double Plot2d_Curve::getMaxX() const
 }
 
 /*!
-  Gets curve's minimal ordinate
+Gets curve's minimal ordinate
 */
 double Plot2d_Curve::getMinY() const
 {
@@ -438,7 +490,7 @@ double Plot2d_Curve::getMinY() const
 }
 
 /*!
-  Gets curve's maximal ordinate
+Gets curve's maximal ordinate
 */
 double Plot2d_Curve::getMaxY() const
 {
@@ -453,7 +505,7 @@ double Plot2d_Curve::getMaxY() const
 }
 
 /*!
-  Gets curve's minimal positive abscissa
+Gets curve's minimal positive abscissa
 */
 double Plot2d_Curve::getMinPositiveX() const
 {
@@ -468,7 +520,7 @@ double Plot2d_Curve::getMinPositiveX() const
 }
 
 /*!
-  Gets curve's minimal positive ordinate
+Gets curve's minimal positive ordinate
 */
 double Plot2d_Curve::getMinPositiveY() const
 {
@@ -483,26 +535,87 @@ double Plot2d_Curve::getMinPositiveY() const
 }
 
 /*!
-  Changes text assigned to point of curve
-  \param ind -- index of point
-  \param txt -- new text
+Changes text assigned to point of curve
+\param theInd -- index of point
+\param theTxt -- new text
 */
-void Plot2d_Curve::setText( const int ind, const QString& txt )
+void Plot2d_Curve::setText( const int theInd, const QString& theTxt )
 {
-  if( ind<0 || ind>=myPoints.count() )
+  if( theInd < 0 || theInd >= myPoints.count() )
     return;
 
-  myPoints[ind].text = txt;
+  myPoints[theInd].text = theTxt;
 }
 
 /*!
-  \return text assigned to point
-  \param ind -- index of point
+\return text assigned to point
+\param ind -- index of point
 */
-QString Plot2d_Curve::text( const int ind ) const
+QString Plot2d_Curve::text( const int theInd ) const
 {
-  if( ind<0 || ind>=myPoints.count() )
+  if( theInd < 0 || theInd >= myPoints.count() )
     return QString();
   else
-    return myPoints[ind].text;
+    return myPoints[theInd].text;
+}
+
+/*!
+Changes symbol color id assigned to a point of the curve
+\param theInd     -- index of point
+\param theColorId -- new color id
+*/
+void Plot2d_Curve::setSymbolColorId( const int theInd, const int theColorId )
+{
+  if( theInd < 0 || theInd >= myPoints.count() )
+    return;
+
+  myPoints[theInd].colorId = theColorId;
+}
+
+/*!
+\return symbol color id assigned to point
+\param theInd -- index of point
+*/
+int Plot2d_Curve::symbolColorId( const int theInd ) const
+{
+  if( theInd < 0 || theInd >= myPoints.count() )
+    return 0;
+  else
+    return myPoints[theInd].colorId;
+}
+
+/*!
+\brief Build symbols color map generating random colors for point's ids.
+\param theBackWidget the background widget
+\param theMaxAttempts the maximum number of attepts to generate a new color different from the background
+*/
+void Plot2d_Curve::buildSymbolsColorMap( const QWidget* theBackWidget, const int theMaxAttempts )
+{
+  QColor aBackColor = ( theBackWidget ? theBackWidget->palette().color( QPalette::Background ) : Qt::white );
+  QColor aColor;
+
+  pointList::const_iterator aIt;
+  for(aIt = myPoints.begin(); aIt != myPoints.end(); ++aIt) 
+  {
+    // The zero id is mapped to the default color (black)
+    if ( !mySymbolsColorMap.contains( (*aIt).colorId ) && (*aIt).colorId > 0 )
+    {
+      bool bOk = false;
+      int cnt = 1;
+      while ( !bOk ) {
+        int aRed    = (int)( 256.0 * rand() / RAND_MAX);    // generate random color
+        int aGreen  = (int)( 256.0 * rand() / RAND_MAX);    // ...
+        int aBlue   = (int)( 256.0 * rand() / RAND_MAX);    // ...
+
+        aColor      = QColor( aRed, aGreen, aBlue );
+
+        cnt++;
+        if ( cnt ==  theMaxAttempts )
+          bOk = true;
+        else
+          bOk = !Plot2d_Plot2d::closeColors( aColor, aBackColor );
+      }
+      mySymbolsColorMap[ (*aIt).colorId ] = aColor;
+    }
+  }
 }

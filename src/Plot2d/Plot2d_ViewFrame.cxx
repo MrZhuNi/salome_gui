@@ -157,6 +157,9 @@ bool Plot2d_ViewFrame::myPrefTitleChangedByUser = false;
 bool Plot2d_ViewFrame::myXPrefTitleChangedByUser = false;
 bool Plot2d_ViewFrame::myYPrefTitleChangedByUser = false;
 
+const long COLOR_DISTANCE = 100;
+const int  MAX_ATTEMPTS   = 10;
+
 /*!
   Constructor
 */
@@ -607,7 +610,7 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
     updateCurve( curve, update );
   }
   else {
-    QwtPlotCurve* aPCurve = new Plot2d_PlotCurve( curve->getVerTitle() );
+    Plot2d_PlotCurve* aPCurve = new Plot2d_PlotCurve( curve->getVerTitle() );
     aPCurve->attach( myPlot );
     //myPlot->setCurveYAxis(curveKey, curve->getYAxis());
 
@@ -637,10 +640,13 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
                QPen( curve->getColor(), 1 ), // width's set to 1 for correct printing
                QSize( myMarkerSize, myMarkerSize ) ) );
       myPlot->setCurveNbMarkers( curve, curve->getNbMarkers() );
+      curve->buildSymbolsColorMap( myPlot, MAX_ATTEMPTS );
     }
     setCurveType( aPCurve, myCurveType );
     aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
     aPCurve->setYAxis( curve->getYAxis() );
+    aPCurve->setSymbolsColorData( curve->colorData(), curve->nbPoints() );
+    aPCurve->setSymbolsColorMap( curve->getColorMap() );
   }
   updateTitles();
   if ( update )
@@ -1937,6 +1943,29 @@ double Plot2d_PlotCurve::nbMarkers() const
 }
 
 /*!
+  Set symbols color ids for the curve.
+*/
+void Plot2d_PlotCurve::setSymbolsColorData(const int *cData, int size)
+{
+#if QT_VERSION >= 0x040000
+    mySymbolsColorIds.resize(size);
+    qMemCopy(mySymbolsColorIds.data(), cData, size * sizeof(int));
+#else
+    mySymbolsColorIds.detach();
+    mySymbolsColorIds.duplicate(cData, size);
+#endif
+    itemChanged();
+}
+
+/*!
+  Set a color map of symbols color ids to colors.
+*/
+void Plot2d_PlotCurve::setSymbolsColorMap( const colorMap& theMap )
+{
+  mySymbolsColorMap = theMap;
+}
+
+/*!
   Draws curve's markers
 */
 void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
@@ -1963,6 +1992,14 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
 
       if ( (i == from || i == to) && myNbMarkers >= 0 )
       {
+        if (!mySymbolsColorMap.isEmpty())
+        {
+          if ( mySymbolsColorMap.contains( mySymbolsColorIds.at(i) ) )
+            p->setBrush( QBrush( mySymbolsColorMap[ mySymbolsColorIds.at(i) ] ) );
+          else
+            p->setBrush( symbol.brush() );
+        }
+
         rect.moveCenter( QPoint( u1, v1 ) );
         symbol.draw( p, rect );
       }
@@ -1985,6 +2022,14 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
           ( ( dX >= 0 && u <= u1 ) || ( dX <= 0 && u1 <= u ) ) &&
           ( ( dY >= 0 && v <= v1 ) || ( dY <= 0 && v1 <= v ) )    )
         {
+          if ( !mySymbolsColorMap.isEmpty() ) 
+          {
+            if ( mySymbolsColorMap.contains( mySymbolsColorIds.at(i) ) )
+              p->setBrush( QBrush( mySymbolsColorMap[ mySymbolsColorIds.at(i) ] ) );
+            else
+              p->setBrush( symbol.brush() );
+          }
+
           rect.moveCenter( QPoint( u, v ) );
           symbol.draw( p, rect );
           
@@ -2063,9 +2108,7 @@ void Plot2d_Plot2d::replot()
   Checks if two colors are close to each other [ static ]
   uses COLOR_DISTANCE variable as max tolerance for comparing of colors
 */
-const long COLOR_DISTANCE = 100;
-const int  MAX_ATTEMPTS   = 10;
-static bool closeColors( const QColor& color1, const QColor& color2 )
+bool Plot2d_Plot2d::closeColors( const QColor& color1, const QColor& color2 )
 {
   long tol = abs( color2.red()   - color1.red() ) + 
              abs( color2.green() - color1.green() ) +

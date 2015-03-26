@@ -266,6 +266,8 @@ public:
 
   void                setZoomBase( const bool doReplot = true );
 
+  static bool         closeColors( const QColor& color1, const QColor& color2 );
+
 public slots:
   virtual void polish();
 
@@ -295,6 +297,8 @@ public:
 
   void                setNbMarkers( const double );
   double              nbMarkers() const;
+  void                setSymbolsColorData( const int *cData, int size );
+  void                setSymbolsColorMap( const colorMap& theMap );
 
 protected:
 
@@ -304,6 +308,8 @@ protected:
 
 private:
   double myNbMarkers;
+  QwtArray<int> mySymbolsColorIds;
+  colorMap mySymbolsColorMap;
 };
 
 #endif

@@ -26,18 +26,22 @@
 #include "Plot2d.h"
 
 #include <QList>
+#include <QMap>
 #include <qwt_plot.h>
 
 class QColor;
+class QWidget;
 
 typedef struct
 {
   double x;
   double y;
   QString text;
+  int     colorId;
 } Plot2d_Point;
 
 typedef QList<Plot2d_Point> pointList;
+typedef QMap< int, QColor > colorMap;
 
 class PLOT2D_EXPORT Plot2d_Curve
 {
@@ -59,20 +63,27 @@ public:
   void               setVerUnits( const QString& );
   QString            getVerUnits() const;
 
-  void               addPoint( double, double, const QString& = QString() );
-  void               insertPoint( int, double, double, const QString& = QString() );
+  void               addPoint( double, double, const QString& = QString(), int theColorId = 0 );
+  void               insertPoint( int, double, double, const QString& = QString(), int theColorId = 0 );
   void               deletePoint( int );
   void               clearAllPoints();
   pointList          getPointList() const;
   pointList&         getPointList();
 
+  colorMap           getColorMap() const;
+  colorMap&          getColorMap();
+
   void               setData( const double*, const double*, 
-			      long, const QStringList& = QStringList() );
+			                        long, const QStringList& = QStringList(), const int* theColorIds = 0 );
   double*            horData() const;
   double*            verData() const;
+  int*               colorData() const;
 
   void               setText( const int, const QString& );
   QString            text( const int ) const;
+
+  void               setSymbolColorId( const int thePointId, const int theColorId );
+  int                symbolColorId( const int thePointId ) const;
 
   int                nbPoints() const;
   bool               isEmpty() const;
@@ -82,6 +93,9 @@ public:
 
   void               setColor( const QColor& );
   QColor             getColor() const;
+
+  void               setColorById( const int theColorId, const QColor& );
+  QColor             getColorById( const int theColorId ) const;
 
   void               setMarker( Plot2d::MarkerType );
   Plot2d::MarkerType getMarker() const;
@@ -112,6 +126,9 @@ public:
   double             getMinPositiveX() const;
   double             getMinPositiveY() const;
 
+  // Build symbols color map generating random colors for point's ids.
+  void               buildSymbolsColorMap( const QWidget* theBackWidget = 0,  const int theMaxAttempts = 10);
+
 protected:
   bool               myAutoAssign;
   QString            myHorTitle;
@@ -126,6 +143,7 @@ protected:
   QwtPlot::Axis      myYAxis;
 
   pointList          myPoints;
+  colorMap           mySymbolsColorMap;
 };
 
 typedef QList<Plot2d_Curve*> curveList;
