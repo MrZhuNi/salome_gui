@@ -73,6 +73,11 @@
 #include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_ExportFormat.hxx>
+#include <Graphic3d_TextureEnv.hxx>
+
+#include <V3d_DirectionalLight.hxx>
+#include <V3d_AmbientLight.hxx>
+
 
 #include <Visual3d_View.hxx>
 #include <V3d_Plane.hxx>
@@ -1660,19 +1665,33 @@ void OCCViewer_ViewWindow::onGraduatedAxes()
 void OCCViewer_ViewWindow::onAmbientToogle()
 {
   Handle(V3d_Viewer) viewer = myViewPort->getViewer();
+  Handle(V3d_View) aView3d = myViewPort->getView();
+
   viewer->InitDefinedLights();
-  while(viewer->MoreDefinedLights())
-    {
-      Handle(V3d_Light) light = viewer->DefinedLight();
-      if(light->Type() != V3d_AMBIENT)
-        {
-          Handle(V3d_View) aView3d = myViewPort->getView();
-          if( aView3d->IsActiveLight(light) ) viewer->SetLightOff(light);
-          else viewer->SetLightOn(light);
-        }
-      viewer->NextDefinedLights();
-    }
+  while(viewer->MoreDefinedLights()) {
+    Handle(V3d_Light) light = viewer->DefinedLight();
+    viewer->SetLightOff(light);
+    viewer->NextDefinedLights();
+  }
+
+  viewer->SetLightOn( new V3d_DirectionalLight( viewer, 0, 0, 0, -50, 50, 100, Quantity_NOC_WHITE, Standard_True ) );
+  viewer->SetLightOn( new V3d_AmbientLight( viewer, Quantity_NOC_GRAY80 ) );
   viewer->Update();
+  
+  Graphic3d_RenderingParams& aParams = aView3d->ChangeRenderingParams();
+  aParams.Method = Graphic3d_RM_RAYTRACING;
+  aParams.IsShadowEnabled = Standard_True;
+  aParams.IsReflectionEnabled = Standard_True;
+  aParams.IsAntialiasingEnabled = Standard_True;
+  aParams.IsTransparentShadowEnabled = Standard_False;
+  aParams.RaytracingDepth = 5;
+  
+  Handle(Graphic3d_TextureEnv) aTexEnv = new Graphic3d_TextureEnv((Graphic3d_NameOfTextureEnv)1);
+  
+  aView3d->SetTextureEnv(aTexEnv);
+  aView3d->SetSurfaceDetail(V3d_TEX_ENVIRONMENT);
+  
+  aView3d->Redraw();  
 }
 
 /*!

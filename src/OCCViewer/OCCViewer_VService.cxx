@@ -25,6 +25,7 @@
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 
+#include <Aspect_DisplayConnection.hxx>
 #include <Basics_OCCTVersion.hxx>
 #if OCC_VERSION_LARGE > 0x06070200 // for OCC-6.7.3 and higher version
 #include <OpenGl_GraphicDriver.hxx>
@@ -32,7 +33,6 @@
 #include <Graphic3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #endif
-#include <Aspect_DisplayConnection.hxx>
 
 #ifdef WIN32
 #include <WNT_Window.hxx>
@@ -82,6 +82,7 @@ Handle(V3d_Viewer) OCCViewer_VService::CreateViewer( const Standard_ExtString na
 #endif
 #if OCC_VERSION_LARGE > 0x06070200 // for OCC-6.7.3 and higher version
     aGraphicDriver = new OpenGl_GraphicDriver(aDisplayConnection);
+    aGraphicDriver->ChangeOptions().keepArrayData = Standard_True;
 #else
     aGraphicDriver = Graphic3d::InitGraphicDriver( aDisplayConnection );
 #endif
