@@ -648,9 +648,12 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
     aPCurve->setSymbolsColorData( curve->colorData(), curve->nbPoints() );
     aPCurve->setSymbolsColorMap( curve->getColorMap() );
   }
-  updateTitles();
+
   if ( update )
+  {
+    updateTitles();
     myPlot->replot();
+  }
 
   emit curveDisplayed( curve );
 }
