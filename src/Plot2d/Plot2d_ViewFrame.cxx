@@ -649,11 +649,9 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
     aPCurve->setSymbolsColorMap( curve->getColorMap() );
   }
 
+  updateTitles( update );
   if ( update )
-  {
-    updateTitles();
     myPlot->replot();
-  }
 
   emit curveDisplayed( curve );
 }
@@ -689,7 +687,7 @@ void Plot2d_ViewFrame::eraseCurve( Plot2d_Curve* curve, bool update )
     aPCurve->hide();
     aPCurve->detach();
     myPlot->getCurves().remove( aPCurve );
-    updateTitles();
+    updateTitles( update );
     if ( update )
       myPlot->replot();
     emit curveErased( curve );
@@ -2469,7 +2467,7 @@ void Plot2d_ViewFrame::copyPreferences( Plot2d_ViewFrame* vf )
   Updates titles according to curves
 */
 #define BRACKETIZE(x) QString( "[ " ) + x + QString( " ]" )
-void Plot2d_ViewFrame::updateTitles() 
+void Plot2d_ViewFrame::updateTitles( bool update ) 
 {
   CurveDict::Iterator it = myPlot->getCurves().begin();
   //QIntDictIterator<Plot2d_Curve> it( myCurves );
@@ -2520,19 +2518,19 @@ void Plot2d_ViewFrame::updateTitles()
     yTitle += " ";
 
   if ( getAutoUpdateTitle( XTitle ) )
-    setTitle( myXTitleEnabled, xTitle + xUnits, XTitle, true );
+    setTitle( myXTitleEnabled, xTitle + xUnits, XTitle, update );
   else 
-    setTitle( myXTitleEnabled, myXTitle, XTitle, true );
+    setTitle( myXTitleEnabled, myXTitle, XTitle, update );
 
   if ( getAutoUpdateTitle( YTitle ) )
-    setTitle( myYTitleEnabled, yTitle + yUnits, YTitle, true );
+    setTitle( myYTitleEnabled, yTitle + yUnits, YTitle, update );
   else 
-    setTitle( myYTitleEnabled, myYTitle, YTitle, true );
+    setTitle( myYTitleEnabled, myYTitle, YTitle, update );
 
   if ( getAutoUpdateTitle( MainTitle ) )
-    setTitle( true, aTables.join("; "), MainTitle, true );
+    setTitle( true, aTables.join("; "), MainTitle, update );
   else 
-    setTitle( true, myTitle, MainTitle, true );
+    setTitle( true, myTitle, MainTitle, update );
 }
 
 /*!

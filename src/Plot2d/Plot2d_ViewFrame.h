@@ -66,7 +66,7 @@ public:
   virtual bool eventFilter(QObject* watched, QEvent* e);
 
   /* operations */
-  void    updateTitles();
+  void    updateTitles( bool update = true );
   void    setTitle( const QString& title );
   QString getTitle() const { return myTitle; }
   void    displayCurve( Plot2d_Curve* curve, bool update = false );
