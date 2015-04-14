@@ -185,7 +185,7 @@ Plot2d_SetupCurvesDlg::Plot2d_SetupCurvesDlg( QWidget* theParent )
   myGrp->insertTitleWidget( myRemoveBtn );
 
   connect( myRemoveBtn, SIGNAL( clicked() ), SLOT( onRemove() ) );
-  connect( myTable, SIGNAL( valueChanged( int, int ) ), SLOT( onValueChanged( int, int ) ) );
+  connect( myTable, SIGNAL( cellChanged( int, int ) ), SLOT( onValueChanged( int, int ) ) );
 
   setButtonPosition( Right, Cancel );
   setMinimumHeight( 250 );
