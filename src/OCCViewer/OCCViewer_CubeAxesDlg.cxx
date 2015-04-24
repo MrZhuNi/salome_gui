@@ -272,7 +272,7 @@ void OCCViewer_CubeAxesDlg::ApplyData( const Handle(V3d_View)& theView )
     gt.SetGridColor(Quantity_NOC_WHITE); // grid color
     // axes params
     for ( int i = 0; i < 3; i++ ) {
-      Graphic3d_AxisAspect& aspect = ( i == 0 ? gt.ChangeXAxisAspect() : ( i == 1 ? gt.ChangeYAxisAspect() : gt.ChangeZAxisAspect() ) );
+      Graphic3d_AxisAspect& aspect = gt.ChangeAxisAspect(i);
       aspect.SetName(anAxisData[i].Name.toLatin1().constData());
       aspect.SetDrawName(anAxisData[i].DrawName);
       aspect.SetDrawValues(anAxisData[i].DrawValues);
