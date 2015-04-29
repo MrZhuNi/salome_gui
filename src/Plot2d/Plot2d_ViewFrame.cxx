@@ -179,7 +179,8 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
        myXGridMaxMinor( 5 ), myYGridMaxMinor( 5 ), myY2GridMaxMinor( 5 ),
        myXMode( 0 ), myYMode( 0 ), mySecondY( false ),
        myTitleAutoUpdate( true ), myXTitleAutoUpdate( true ), myYTitleAutoUpdate( true ),
-       myTitleChangedByUser( false ), myXTitleChangedByUser( false ), myYTitleChangedByUser( false )
+       myTitleChangedByUser( false ), myXTitleChangedByUser( false ), myYTitleChangedByUser( false ),
+       myIsTimeColorization( false ), myTimePosition( -1 ), myInactiveColor( Qt::gray )
 {
   setObjectName( title );
   /* Plot 2d View */
@@ -614,6 +615,9 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
     aPCurve->attach( myPlot );
     //myPlot->setCurveYAxis(curveKey, curve->getYAxis());
 
+    // Colorize the curves by current time
+    aPCurve->setTimeColorization( myIsTimeColorization, myTimePosition, myInactiveColor );
+
     myPlot->getCurves().insert( aPCurve, curve );
     if ( curve->isAutoAssign() ) {
       QwtSymbol::Style typeMarker;
@@ -720,9 +724,13 @@ void Plot2d_ViewFrame::updateCurve( Plot2d_Curve* curve, bool update )
 {
   if ( !curve )
     return;
-  if ( hasPlotCurve( curve ) ) {
-  QwtPlotCurve* aPCurve = getPlotCurve( curve );
-    if ( !curve->isAutoAssign() ) {
+
+  if ( hasPlotCurve( curve ) )
+  {
+    QwtPlotCurve* aPCurve = getPlotCurve( curve );
+
+    if ( !curve->isAutoAssign() )
+    {
       Qt::PenStyle     ps = Plot2d::plot2qwtLine( curve->getLine() );
       QwtSymbol::Style ms = Plot2d::plot2qwtMarker( curve->getMarker() );
       aPCurve->setPen ( QPen( curve->getColor(), curve->getLineWidth(), ps ) );
@@ -733,7 +741,14 @@ void Plot2d_ViewFrame::updateCurve( Plot2d_Curve* curve, bool update )
       aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
       Plot2d_PlotCurve* aPlot2dCurve = dynamic_cast< Plot2d_PlotCurve* >( aPCurve );
       if ( aPlot2dCurve )
+      {
         aPlot2dCurve->setNbMarkers( curve->getNbMarkers() );
+
+        // Colorize the curves by current time
+        aPlot2dCurve->setTimeColorization( myIsTimeColorization,
+                                           myTimePosition,
+                                           myInactiveColor );
+      }
     }
     aPCurve->setTitle( curve->getVerTitle() );
     aPCurve->setVisible( true );
@@ -1967,6 +1982,70 @@ void Plot2d_PlotCurve::setSymbolsColorMap( const colorMap& theMap )
 }
 
 /*!
+  Set the current time position to colorize.
+*/
+void Plot2d_PlotCurve::setTimeColorization( bool isTimeColorization,
+                                            const double theTimePosition,
+                                            const QColor& theColor )
+{
+  myIsTimeColorization = isTimeColorization;
+  myTimePosition  = myIsTimeColorization ? theTimePosition : -1;
+  myInactiveColor = myIsTimeColorization ? theColor        : Qt::gray;
+}
+
+/*!
+  Return true if the curve is colored by the current time, false otherwise.
+*/
+bool Plot2d_PlotCurve::isTimeColorization() const
+{
+  if ( myIsTimeColorization && (myTimePosition != -1) && myInactiveColor.isValid() )
+    return true;
+  return false;
+}
+
+/*!
+  Return the time position.
+*/
+double Plot2d_PlotCurve::getTimePosition() const
+{
+  return myTimePosition;
+}
+
+/*!
+  Return the color is in inactive part on the plot.
+*/
+QColor Plot2d_PlotCurve::getInactiveColor() const
+{
+  return myInactiveColor;
+}
+
+/*!
+  Draw the line part (without symbols) of a curve interval.
+*/
+void Plot2d_PlotCurve::drawCurve( QPainter *p, int style,
+                                  const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                                  int from, int to) const
+{
+  if ( isTimeColorization() )
+  {
+    for ( int i = 1; i <= to; i++ )
+    {
+      // Paint the inactive part of curve
+      if ( x(i) > getTimePosition() )
+      {
+        p->setBrush( getInactiveColor() );
+        p->setPen( getInactiveColor() );
+      }
+      QwtPlotCurve::drawCurve( p, style, xMap, yMap, i-1, i );
+    }
+  }
+  else
+  {
+    QwtPlotCurve::drawCurve( p, style, xMap, yMap, from, to );
+  }
+}
+
+/*!
   Draws curve's markers
 */
 void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
@@ -1982,6 +2061,29 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
   if ( to > from && testPaintAttribute( PaintFiltered ) )
   {
     QwtPlotCurve::drawSymbols( p, symbol, xMap, yMap, from, to );
+  }
+  else if ( isTimeColorization() )
+  {
+    QRect aRect;
+    const QwtMetricsMap &aMetricsMap = QwtPainter::metricsMap();
+    aRect.setSize( aMetricsMap.screenToLayout( symbol.size() ) );
+
+    for ( int i = from; i <= to; i++ )
+    {
+      const int xi = xMap.transform( x(i) );
+      const int yi = yMap.transform( y(i) );
+
+      // Paint the inactive part of curve
+      if ( x(i) > getTimePosition() )
+      {
+        p->setBrush( getInactiveColor() );
+        p->setPen( getInactiveColor() );
+      }
+
+      // Draw the symbol
+      aRect.moveCenter( QPoint( xi, yi ) );
+      symbol.draw( p, aRect );
+    }
   }
   else
   {
@@ -2850,4 +2952,50 @@ void Plot2d_ViewFrame::updateSymbols()
       }
     }
   }
+}
+
+/*!
+  Set the given time position to colorize the curves.
+*/
+void Plot2d_ViewFrame::setTimeColorization( bool isTimeColorization,
+                                            const double theTimeValue,
+                                            const QColor& theColor )
+{
+  myIsTimeColorization = isTimeColorization;
+  myTimePosition  = myIsTimeColorization ? theTimeValue : -1;
+  myInactiveColor = myIsTimeColorization ? theColor     : Qt::gray;
+}
+
+/*!
+  Slot: Update curves by given theTimeValue time.
+*/
+void Plot2d_ViewFrame::onTimeColorizationUpdated( double theTimeValue )
+{
+  if ( isTimeColorization() )
+  {
+    setTimeValue( theTimeValue );
+    for ( CurveDict::Iterator it = myPlot->getCurves().begin();
+          it != myPlot->getCurves().end(); it++ )
+      updateCurve( it.value(), false );
+
+    myPlot->replot();
+  }
+}
+
+/*!
+  Set the time position.
+*/
+void Plot2d_ViewFrame::setTimeValue( const double theTimeValue )
+{
+  myTimePosition = theTimeValue;
+}
+
+/*!
+  Return true if the view widget colorizes curves by current time.
+*/
+bool Plot2d_ViewFrame::isTimeColorization()
+{
+  if ( myIsTimeColorization && ( myTimePosition != -1 ) && myInactiveColor.isValid() )
+    return true;
+  return false;
 }

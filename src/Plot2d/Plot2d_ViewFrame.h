@@ -89,6 +89,11 @@ public:
 		       double& yMin, double& yMax,
 		       double& y2Min, double& y2Max);
 
+  void    setTimeColorization( bool, const double theTimeValue = -1,
+                               const QColor& theColor = Qt::gray );
+  void    setTimeValue( const double theTimeValue );
+  bool    isTimeColorization();
+
   /* view parameters */
   void    copyPreferences( Plot2d_ViewFrame* );
   void    setCurveType( int curveType, bool update = true );
@@ -174,6 +179,7 @@ public slots:
   void    onPanDown();
   void    onZoomIn();
   void    onZoomOut();
+  void    onTimeColorizationUpdated( double );
 
 protected:
   virtual void customEvent( QEvent* );
@@ -226,6 +232,10 @@ protected:
   static bool    myPrefTitleChangedByUser;
   static bool    myXPrefTitleChangedByUser;
   static bool    myYPrefTitleChangedByUser;
+
+  bool           myIsTimeColorization;
+  double         myTimePosition;
+  QColor         myInactiveColor;
 };
 
 class Plot2d_Plot2d : public QwtPlot 
@@ -300,7 +310,18 @@ public:
   void                setSymbolsColorData( const int *cData, int size );
   void                setSymbolsColorMap( const colorMap& theMap );
 
+  void                setTimeColorization( bool isTimeColorization,
+                                           const double theTimeValue = -1,
+                                           const QColor& theColor = Qt::gray );
+  bool                isTimeColorization() const;
+  double              getTimePosition() const;
+  QColor              getInactiveColor() const;
+
 protected:
+
+  virtual void drawCurve( QPainter *p, int style,
+                          const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                          int from, int to) const;
 
   virtual void drawSymbols(QPainter *p, const QwtSymbol &,
         const QwtScaleMap &xMap, const QwtScaleMap &yMap,
@@ -310,6 +331,10 @@ private:
   double myNbMarkers;
   QwtArray<int> mySymbolsColorIds;
   colorMap mySymbolsColorMap;
+
+  bool    myIsTimeColorization;
+  double  myTimePosition;
+  QColor  myInactiveColor;
 };
 
 #endif
