@@ -106,7 +106,8 @@ SET(_rcc_RESOURCES Qtx.qrc)
 
 # resource files / to be processed by lrelease
 SET(_ts_RESOURCES resources/Qtx_msg_fr.ts
-  resources/Qtx_msg_ja.ts
+                  resources/Qtx_msg_ja.ts
+                  resources/Qtx_msg_fr.ts
 )
 
 # --- sources ---
