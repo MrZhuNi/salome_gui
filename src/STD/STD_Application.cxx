@@ -36,6 +36,7 @@
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QApplication>
 
 /*!Create and return new instance of STD_Application*/
@@ -321,9 +322,18 @@ void STD_Application::onOpenDoc()
 /*! \retval true, if document was opened successful, else false.*/
 bool STD_Application::onOpenDoc( const QString& aName )
 {
+  bool res = false;
+
+  if ( !QFileInfo( aName ).exists() )
+  {
+    SUIT_MessageBox::critical( desktop(), tr( "ERR_ERROR" ),
+      tr( "MSG_FILE_NOT_EXISTS" ).arg( aName ) );
+    return res;
+  }
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  bool res = openAction( openChoice( aName ), aName );
+  res = openAction( openChoice( aName ), aName );
   
   QApplication::restoreOverrideCursor();
 
