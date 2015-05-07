@@ -465,10 +465,8 @@ Do you want to save changes?</translation>
     </message>
     <message>
       <source>MSG_FILE_NOT_EXISTS</source>
-      <translation>
-        Most recent file cannot be loaded.
-        File &quot;%1&quot; not exists.
-      </translation>
+      <translation>Most recent file cannot be loaded.
+File &quot;%1&quot; not exists.</translation>
     </message>
 </context>
 </TS>
