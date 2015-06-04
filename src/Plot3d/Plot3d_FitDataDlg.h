@@ -33,7 +33,7 @@ class PLOT3D_EXPORT Plot3d_FitDataDlg : public QDialog
   Q_OBJECT
 
 public:
-  Plot3d_FitDataDlg( QWidget* theParent, bool theIs3D );
+  Plot3d_FitDataDlg( QWidget* theParent, bool theIs3D, int the2DNormalAxis );
 
   void setAxisTitles( const QString& theXTitle,
                       const QString& theYTitle,
@@ -73,7 +73,9 @@ private:
   QPushButton*            myOkBtn;
   QPushButton*            myCancelBtn;
 
-  bool                    myIs3D;
+  bool                    myIsEnableX;
+  bool                    myIsEnableY;
+  bool                    myIsEnableZ;
 };
 
 #endif

@@ -18,6 +18,8 @@
 //
 #include "Plot3d_FitDataDlg.h"
 
+#include "Plot3d_ViewWindow.h"
+
 #include <QLabel>
 #include <QLayout>
 #include <QValidator>
@@ -33,10 +35,13 @@
 /*!
   Constructor 
 */
-Plot3d_FitDataDlg::Plot3d_FitDataDlg( QWidget* theParent, bool theIs3D )
-: QDialog( theParent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint ),
-  myIs3D( theIs3D )
+Plot3d_FitDataDlg::Plot3d_FitDataDlg( QWidget* theParent, bool theIs3D, int the2DNormalAxis )
+: QDialog( theParent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint )
 {
+  myIsEnableX = theIs3D || the2DNormalAxis != Plot3d_ViewWindow::AxisX;
+  myIsEnableY = theIs3D || the2DNormalAxis != Plot3d_ViewWindow::AxisY;
+  myIsEnableZ = theIs3D || the2DNormalAxis != Plot3d_ViewWindow::AxisZ;
+
   setModal( true );
   setWindowTitle( tr( "FIT_DATA_TLT" ) );
   setSizeGripEnabled( true );
@@ -55,31 +60,38 @@ Plot3d_FitDataDlg::Plot3d_FitDataDlg( QWidget* theParent, bool theIs3D )
   aGridLayout->setSpacing( SPACING_SIZE );
 
   QDoubleValidator* aValidator = new QDoubleValidator( this );
-  myXMinEdit = new QLineEdit( myRangeGrp );
-  myXMinEdit->setValidator( aValidator );
-  myXMinEdit->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-  myXMinEdit->setMinimumSize( MIN_EDIT_SIZE, 0 );
-  myXMinEdit->setText( "0.0" );
 
-  myYMinEdit = new QLineEdit( myRangeGrp );
-  myYMinEdit->setValidator( aValidator );
-  myYMinEdit->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-  myYMinEdit->setMinimumSize( MIN_EDIT_SIZE, 0 );
-  myYMinEdit->setText( "0.0" );
+  if( myIsEnableX )
+  {
+    myXMinEdit = new QLineEdit( myRangeGrp );
+    myXMinEdit->setValidator( aValidator );
+    myXMinEdit->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    myXMinEdit->setMinimumSize( MIN_EDIT_SIZE, 0 );
+    myXMinEdit->setText( "0.0" );
 
-  myXMaxEdit = new QLineEdit( myRangeGrp );
-  myXMaxEdit->setValidator( aValidator );
-  myXMaxEdit->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-  myXMaxEdit->setMinimumSize( MIN_EDIT_SIZE, 0 );
-  myXMaxEdit->setText( "0.0" );
+    myXMaxEdit = new QLineEdit( myRangeGrp );
+    myXMaxEdit->setValidator( aValidator );
+    myXMaxEdit->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    myXMaxEdit->setMinimumSize( MIN_EDIT_SIZE, 0 );
+    myXMaxEdit->setText( "0.0" );
+  }
 
-  myYMaxEdit = new QLineEdit( myRangeGrp );
-  myYMaxEdit->setValidator( aValidator );
-  myYMaxEdit->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-  myYMaxEdit->setMinimumSize( MIN_EDIT_SIZE, 0 );
-  myYMaxEdit->setText( "0.0" );
+  if( myIsEnableY )
+  {
+    myYMinEdit = new QLineEdit( myRangeGrp );
+    myYMinEdit->setValidator( aValidator );
+    myYMinEdit->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    myYMinEdit->setMinimumSize( MIN_EDIT_SIZE, 0 );
+    myYMinEdit->setText( "0.0" );
 
-  if( myIs3D )
+    myYMaxEdit = new QLineEdit( myRangeGrp );
+    myYMaxEdit->setValidator( aValidator );
+    myYMaxEdit->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    myYMaxEdit->setMinimumSize( MIN_EDIT_SIZE, 0 );
+    myYMaxEdit->setText( "0.0" );
+  }
+
+  if( myIsEnableZ )
   {
     myZMinEdit = new QLineEdit( myRangeGrp );
     myZMinEdit->setValidator( aValidator );
@@ -94,32 +106,44 @@ Plot3d_FitDataDlg::Plot3d_FitDataDlg( QWidget* theParent, bool theIs3D )
     myZMaxEdit->setText( "0.0" );
   }
 
-  myXLabel = new QLabel( tr( "X" ), myRangeGrp );
-  myYLabel = new QLabel( tr( "Y" ), myRangeGrp );
+  myXLabel = myYLabel = myZLabel = 0;
 
-  QFont font = myXLabel->font(); font.setBold( true );
-  myXLabel->setFont( font ); myYLabel->setFont( font );
+  if( myIsEnableX )
+  {
+    myXLabel = new QLabel( tr( "X" ), myRangeGrp );
+    QFont font = myXLabel->font(); font.setBold( true );
+    myXLabel->setFont( font );
 
-  aGridLayout->addWidget( myXLabel,       0,    0 );
-  aGridLayout->addWidget( new QLabel( tr( "MIN_VALUE_LAB" ), myRangeGrp ), 
-                                          0,    1 );
-  aGridLayout->addWidget( myXMinEdit,     0,    2 );
-  aGridLayout->addWidget( new QLabel( tr( "MAX_VALUE_LAB" ), myRangeGrp ), 
-                                          0,    3 );
-  aGridLayout->addWidget( myXMaxEdit,     0,    4 );
-  aGridLayout->addWidget( myYLabel,       1,    0 );
-  aGridLayout->addWidget( new QLabel( tr( "MIN_VALUE_LAB" ), myRangeGrp ), 
-                                          1,    1 );
-  aGridLayout->addWidget( myYMinEdit,     1,    2 );
-  aGridLayout->addWidget( new QLabel( tr( "MAX_VALUE_LAB" ), myRangeGrp ), 
-                                          1,    3 );
-  aGridLayout->addWidget( myYMaxEdit,     1,    4 );
+    aGridLayout->addWidget( myXLabel,       0,    0 );
+    aGridLayout->addWidget( new QLabel( tr( "MIN_VALUE_LAB" ), myRangeGrp ), 
+                                            0,    1 );
+    aGridLayout->addWidget( myXMinEdit,     0,    2 );
+    aGridLayout->addWidget( new QLabel( tr( "MAX_VALUE_LAB" ), myRangeGrp ), 
+                                            0,    3 );
+    aGridLayout->addWidget( myXMaxEdit,     0,    4 );
+  }
 
-  myZLabel = 0;
-  if( myIs3D )
+  if( myIsEnableY )
+  {
+    myYLabel = new QLabel( tr( "Y" ), myRangeGrp );
+    QFont font = myYLabel->font(); font.setBold( true );
+    myYLabel->setFont( font );
+
+    aGridLayout->addWidget( myYLabel,       1,    0 );
+    aGridLayout->addWidget( new QLabel( tr( "MIN_VALUE_LAB" ), myRangeGrp ), 
+                                            1,    1 );
+    aGridLayout->addWidget( myYMinEdit,     1,    2 );
+    aGridLayout->addWidget( new QLabel( tr( "MAX_VALUE_LAB" ), myRangeGrp ), 
+                                            1,    3 );
+    aGridLayout->addWidget( myYMaxEdit,     1,    4 );
+  }
+
+  if( myIsEnableZ )
   {
     myZLabel = new QLabel( tr( "Z" ), myRangeGrp );
+    QFont font = myZLabel->font(); font.setBold( true );
     myZLabel->setFont( font );
+
     aGridLayout->addWidget( myZLabel,       2,    0 );
     aGridLayout->addWidget( new QLabel( tr( "MIN_VALUE_LAB" ), myRangeGrp ), 
                                             2,    1 );
@@ -153,9 +177,11 @@ void Plot3d_FitDataDlg::setAxisTitles( const QString& theXTitle,
                                        const QString& theYTitle,
                                        const QString& theZTitle )
 {
-  myXLabel->setText( theXTitle );
-  myYLabel->setText( theYTitle );
-  if( myIs3D )
+  if( myIsEnableX )
+    myXLabel->setText( theXTitle );
+  if( myIsEnableY )
+    myYLabel->setText( theYTitle );
+  if( myIsEnableZ )
     myZLabel->setText( theZTitle );
 }
 
@@ -171,11 +197,17 @@ void Plot3d_FitDataDlg::setRange( const bool theIsEnabled,
                                   const double zMax ) 
 {
   myRangeGrp->setChecked( theIsEnabled );
-  myXMinEdit->setText( QString::number( xMin ) );
-  myXMaxEdit->setText( QString::number( xMax ) );
-  myYMinEdit->setText( QString::number( yMin ) );
-  myYMaxEdit->setText( QString::number( yMax ) );
-  if( myIs3D )
+  if( myIsEnableX )
+  {
+    myXMinEdit->setText( QString::number( xMin ) );
+    myXMaxEdit->setText( QString::number( xMax ) );
+  }
+  if( myIsEnableY )
+  {
+    myYMinEdit->setText( QString::number( yMin ) );
+    myYMaxEdit->setText( QString::number( yMax ) );
+  }
+  if( myIsEnableZ )
   {
     myZMinEdit->setText( QString::number( zMin ) );
     myZMaxEdit->setText( QString::number( zMax ) );
@@ -194,18 +226,10 @@ void Plot3d_FitDataDlg::getRange( bool& theIsEnabled,
                                   double& zMax )
 {
   theIsEnabled = myRangeGrp->isChecked();
-  xMin = myXMinEdit->text().toDouble();
-  xMax = myXMaxEdit->text().toDouble();
-  yMin = myYMinEdit->text().toDouble();
-  yMax = myYMaxEdit->text().toDouble();
-  if( myIs3D )
-  {
-    zMin = myZMinEdit->text().toDouble();
-    zMax = myZMaxEdit->text().toDouble();
-  }
-  else
-  {
-    zMin = 0;
-    zMax = 0;
-  }
+  xMin = myIsEnableX ? myXMinEdit->text().toDouble() : 0;
+  xMax = myIsEnableX ? myXMaxEdit->text().toDouble() : 0;
+  yMin = myIsEnableY ? myYMinEdit->text().toDouble() : 0;
+  yMax = myIsEnableY ? myYMaxEdit->text().toDouble() : 0;
+  zMin = myIsEnableZ ? myZMinEdit->text().toDouble() : 0;
+  zMax = myIsEnableZ ? myZMaxEdit->text().toDouble() : 0;
 }
