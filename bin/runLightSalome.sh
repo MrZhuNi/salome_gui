@@ -142,4 +142,9 @@ fi
 # start application
 ###
 
-SUITApp LightApp -style salome $* &
+if [ ! -z "${SALOME_BATCH_MODE}" ] ; then
+    SUITApp LightApp -style salome $* &
+else
+    SUITApp LightApp -style salome $*
+    exit $?
+fi
