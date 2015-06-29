@@ -129,6 +129,13 @@ public:
   const ObjList&        getObjects( bool isActive = true )
                         { return isActive ? myActiveObjects : myInactiveObjects; }
 
+  //! Returns mutable list of context objects
+  /*!
+  * \return active objects if isActive = true, else inactive objects
+  */
+  ObjList&              modifyObjects( bool isActive = true )
+                        { return isActive ? myActiveObjects : myInactiveObjects; }
+
   //! Returns first active object
   GLViewer_Object*      getFirstObject() { return *( myActiveObjects.begin() ); }
 
