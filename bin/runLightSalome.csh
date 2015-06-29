@@ -148,5 +148,6 @@ if ( ! $?SALOME_BATCH_MODE ) then
 	SUITApp LightApp -style salome $* &
 else 
 	SUITApp LightApp -style salome $*
+	exit $?
 endif
 
