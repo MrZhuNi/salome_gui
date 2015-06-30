@@ -223,15 +223,18 @@ protected:
   bool           mySecondY;
   
   bool           myTitleAutoUpdate, myXTitleAutoUpdate, myYTitleAutoUpdate;
-  bool           myTitleChangedByUser, myXTitleChangedByUser, myYTitleChangedByUser;
+  bool           myTitleChangedByUser, myXTitleChangedByUser, myYTitleChangedByUser,
+                 myY2TitleChangedByUser;
 
   static         QString myPrefTitle;
   static         QString myPrefXTitle;
   static         QString myPrefYTitle;
+  static         QString myPrefY2Title;
 
   static bool    myPrefTitleChangedByUser;
   static bool    myXPrefTitleChangedByUser;
   static bool    myYPrefTitleChangedByUser;
+  static bool    myY2PrefTitleChangedByUser;
 
   bool           myIsTimeColorization;
   double         myTimePosition;
