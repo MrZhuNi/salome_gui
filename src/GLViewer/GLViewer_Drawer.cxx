@@ -1031,14 +1031,14 @@ bool GLViewer_Drawer::translateToEMF( HDC hDC, GLViewer_CoordSystem* aViewerCS, 
   \param color - color of contour
   \param lineWidth - width of line
 */
-void GLViewer_Drawer::drawContour( const GLViewer_PntList& pntList, QColor color, GLfloat lineWidth )
+void GLViewer_Drawer::drawContour( const GLViewer_PntList& pntList, QColor color, GLfloat lineWidth, bool isLoop )
 {
   glColor3f( ( GLfloat )color.red() / 255,
     ( GLfloat )color.green() / 255,
     ( GLfloat )color.blue() / 255 );
   glLineWidth( lineWidth );
   
-  glBegin( GL_LINES );
+  glBegin( isLoop ? GL_LINE_LOOP : GL_LINES );
   QList<GLViewer_Pnt>::const_iterator it = pntList.begin();
   for( ; it != pntList.end(); ++it )
     glVertex2f( (*it).x(), (*it).y() );
@@ -1054,7 +1054,7 @@ void GLViewer_Drawer::drawContour( const GLViewer_PntList& pntList, QColor color
   \param isStripe - enables line stipple
 */
 void GLViewer_Drawer::drawContour( GLViewer_Rect* rect, QColor color, GLfloat lineWidth,
-				   GLushort pattern, bool isStripe )
+                                   GLushort pattern, bool isStripe )
 {
   float x1 = rect->left();
   float x2 = rect->right();
