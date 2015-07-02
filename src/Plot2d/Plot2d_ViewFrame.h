@@ -118,6 +118,9 @@ public:
   void    setSecondY( const bool& theSecondY );
   bool    getSecondY();
 
+  bool    getKeepCurrentRange();
+  void    setKeepCurrentRange( const bool& theKeepCurrentRange );
+
   bool    isTitleChangedByUser( const ObjectType type );
   void    forgetLocalUserChanges( const ObjectType type );
 
@@ -221,6 +224,7 @@ protected:
   int            myXMode, myYMode;
   double         myXDistance, myYDistance, myYDistance2;
   bool           mySecondY;
+  bool           myKeepCurrentRange;
   
   bool           myTitleAutoUpdate, myXTitleAutoUpdate, myYTitleAutoUpdate;
   bool           myTitleChangedByUser, myXTitleChangedByUser, myYTitleChangedByUser,

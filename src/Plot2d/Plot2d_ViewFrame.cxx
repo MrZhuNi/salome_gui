@@ -179,7 +179,7 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
        myXGridMinorEnabled( false ), myYGridMinorEnabled( false ), myY2GridMinorEnabled( false ),
        myXGridMaxMajor( 8 ), myYGridMaxMajor( 8 ), myY2GridMaxMajor( 8 ),
        myXGridMaxMinor( 5 ), myYGridMaxMinor( 5 ), myY2GridMaxMinor( 5 ),
-       myXMode( 0 ), myYMode( 0 ), mySecondY( false ),
+       myXMode( 0 ), myYMode( 0 ), mySecondY( false ), myKeepCurrentRange( false ),
        myTitleAutoUpdate( true ), myXTitleAutoUpdate( true ), myYTitleAutoUpdate( true ),
        myTitleChangedByUser( false ), myXTitleChangedByUser( false ), myYTitleChangedByUser( false ),
        myY2TitleChangedByUser( false ), myIsTimeColorization( false ), myTimePosition( -1 ), myInactiveColor( Qt::gray )
@@ -309,6 +309,22 @@ void Plot2d_ViewFrame::setSecondY( const bool& theSecondY )
 bool Plot2d_ViewFrame::getSecondY()
 {
   return mySecondY;
+}
+
+/*!
+  Set flag which indicate keep current range or not
+*/
+void Plot2d_ViewFrame::setKeepCurrentRange( const bool& theKeepCurrentRange )
+{
+  myKeepCurrentRange = theKeepCurrentRange;
+}
+
+/*!
+  Get flag which indicate keep current range or not
+*/
+bool Plot2d_ViewFrame::getKeepCurrentRange()
+{
+  return myKeepCurrentRange;
 }
 
 /*!
@@ -680,7 +696,10 @@ void Plot2d_ViewFrame::displayCurves( const curveList& curves, bool update )
     aCurve = *it;
     displayCurve( aCurve, false );
   }
-  fitAll();
+
+  if ( !myKeepCurrentRange )
+    fitAll();
+
   //myPlot->setUpdatesEnabled( true );
 // update legend
   if ( update )
