@@ -628,6 +628,66 @@ Les modifications seront appliquées à la prochaine session.</translation>
         <translation>Scène OCC 3D</translation>
     </message>
     <message>
+        <source>PREF_GROUP_STEREO</source>
+        <translation type="unfinished">Stereo render</translation>
+    </message>
+    <message>
+        <source>PREF_STEREO_TYPE</source>
+        <translation type="unfinished">Stereo type</translation>
+    </message>
+    <message>
+        <source>PREF_ANAGLYPH_FILTER</source>
+        <translation type="unfinished">Anaglyph filter</translation>
+    </message>
+    <message>
+        <source>PREF_ANAGLYPH_RED_CYAN</source>
+        <translation type="unfinished">Red-Cyan</translation>
+    </message>
+    <message>
+        <source>PREF_ANAGLYPH_YELLOW_BLUE</source>
+        <translation type="unfinished">Yellow-Blue</translation>
+    </message>
+    <message>
+        <source>PREF_ANAGLYPH_GREEN_MAGENTA</source>
+        <translation type="unfinished">Green-Magenta</translation>
+    </message>
+    <message>
+        <source>PREF_FOCUS_TYPE</source>
+        <translation> type="unfinished"Convergence distance type</translation>
+    </message>
+    <message>
+        <source>PREF_FOCUS_VALUE</source>
+        <translation type="unfinished">Stereographic focus value</translation>
+    </message>
+    <message>
+        <source>PREF_IOD_TYPE</source>
+        <translation type="unfinished">IOD type</translation>
+    </message>
+    <message>
+        <source>PREF_IOD_VALUE</source>
+        <translation type="unfinished">Interocular distance (IOD) value</translation>
+    </message>
+    <message>
+        <source>PREF_ABSOLUTE</source>
+        <translation type="unfinished">Absolute</translation>
+    </message>
+    <message>
+        <source>PREF_RELATIVE</source>
+        <translation type="unfinished">Relative</translation>
+    </message>
+    <message>
+        <source>PREF_REVERSE_STEREO</source>
+        <translation type="unfinished">Reverse stereo</translation>
+    </message>
+    <message>
+        <source>PREF_ENABLE_VSYNC</source>
+        <translation type="unfinished">Enable V-Sync</translation>
+    </message>
+    <message>
+        <source>PREF_ENABLE_QUAD_BUFFER_SUPPORT</source>
+        <translation type="unfinished">Enable quad-buffer support</translation>
+    </message>
+    <message>
         <source>PREF_LOGARITHMIC</source>
         <translation>Logarithmique</translation>
     </message>
@@ -887,6 +947,14 @@ Le fichier n&apos;existe pas</translation>
     <message>
         <source>PREF_GROUP_SHORTCUTS</source>
         <translation>Réglage des raccourcis clavier</translation>
+    </message>
+    <message>
+        <source>PREF_GROUP_FULL_SCREEN</source>
+        <translation type="unfinished">Full-screen</translation>
+    </message>
+    <message>
+        <source>PREF_FULL_SCREEN_AUTO</source>
+        <translation type="unfinished">Hide object browser and viewers toolbars</translation>
     </message>
     <message>
         <source>PREF_TAB_PYEDITOR</source>
