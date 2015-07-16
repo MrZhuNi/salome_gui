@@ -329,6 +329,116 @@ void OCCViewer_ViewFrame::setProjectionType( int t)
 }
 
 //**************************************************************************************
+int OCCViewer_ViewFrame::stereoType() const
+{
+  return getView(MAIN_VIEW)->stereoType();
+}
+
+//**************************************************************************************
+void OCCViewer_ViewFrame::setStereoType( int t)
+{
+  foreach (OCCViewer_ViewWindow* aView, myViews) {
+    aView->setStereoType(t);
+  }
+}
+
+//**************************************************************************************
+int OCCViewer_ViewFrame::anaglyphFilter() const
+{
+  return getView(MAIN_VIEW)->anaglyphFilter();
+}
+
+//**************************************************************************************
+void OCCViewer_ViewFrame::setAnaglyphFilter( int t)
+{
+  foreach (OCCViewer_ViewWindow* aView, myViews) {
+    aView->setAnaglyphFilter(t);
+  }
+}
+
+//**************************************************************************************
+int OCCViewer_ViewFrame::stereographicFocusType() const
+{
+  return getView(MAIN_VIEW)->stereographicFocusType();
+}
+
+//**************************************************************************************
+double OCCViewer_ViewFrame::stereographicFocusValue() const
+{
+  return getView(MAIN_VIEW)->stereographicFocusValue();
+}
+
+//**************************************************************************************
+void OCCViewer_ViewFrame::setStereographicFocus( int t, double v)
+{
+  foreach (OCCViewer_ViewWindow* aView, myViews) {
+    aView->setStereographicFocus(t, v);
+  }
+}
+
+//**************************************************************************************
+int OCCViewer_ViewFrame::interocularDistanceType() const
+{
+  return getView(MAIN_VIEW)->interocularDistanceType();
+}
+
+//**************************************************************************************
+double OCCViewer_ViewFrame::interocularDistanceValue() const
+{
+  return getView(MAIN_VIEW)->interocularDistanceValue();
+}
+
+//**************************************************************************************
+void OCCViewer_ViewFrame::setInterocularDistance( int t, double v)
+{
+  foreach (OCCViewer_ViewWindow* aView, myViews) {
+    aView->setInterocularDistance(t, v);
+  }
+}
+
+//**************************************************************************************
+bool OCCViewer_ViewFrame::isReverseStereo() const
+{
+  return getView(MAIN_VIEW)->isReverseStereo();
+}
+
+//**************************************************************************************
+void OCCViewer_ViewFrame::setReverseStereo( bool t)
+{
+  foreach (OCCViewer_ViewWindow* aView, myViews) {
+    aView->setReverseStereo(t);
+  }
+}
+
+//**************************************************************************************
+bool OCCViewer_ViewFrame::isVSync() const
+{
+  return getView(MAIN_VIEW)->isVSync();
+}
+
+//**************************************************************************************
+void OCCViewer_ViewFrame::setVSync( bool t)
+{
+  foreach (OCCViewer_ViewWindow* aView, myViews) {
+    aView->setVSync(t);
+  }
+}
+
+//**************************************************************************************
+bool OCCViewer_ViewFrame::isQuadBufferSupport() const
+{
+  return getView(MAIN_VIEW)->isQuadBufferSupport();
+}
+
+//**************************************************************************************
+void OCCViewer_ViewFrame::setQuadBufferSupport( bool t)
+{
+  foreach (OCCViewer_ViewWindow* aView, myViews) {
+    aView->setQuadBufferSupport(t);
+  }
+}
+
+//**************************************************************************************
 void OCCViewer_ViewFrame::setZoomingStyle( const int i ) 
 { 
   foreach (OCCViewer_ViewWindow* aView, myViews) {
