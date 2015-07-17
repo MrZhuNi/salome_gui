@@ -72,7 +72,7 @@ public:
 
   virtual int projectionType() const;
   virtual void setProjectionType( int );
-#if OCC_VERSION_LARGE > 0x06090000
+
   virtual int stereoType() const;
   virtual void setStereoType( const int );
 
@@ -95,7 +95,7 @@ public:
 
   virtual bool isQuadBufferSupport() const;
   virtual void setQuadBufferSupport( const bool );
-#endif
+
   virtual int  zoomingStyle() const { return getView(MAIN_VIEW)->zoomingStyle(); }
   virtual void setZoomingStyle( const int );
 

@@ -2917,13 +2917,14 @@ int OCCViewer_ViewWindow::projectionType() const
   return mode;
 }
 
-#if OCC_VERSION_LARGE > 0x06090000
 void OCCViewer_ViewWindow::setStereoType( int type )
 {
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Graphic3d_RenderingParams* aParams = &aView3d->ChangeRenderingParams();
     aParams->StereoMode = (Graphic3d_StereoMode)type;
+  #endif
   }
 }
 
@@ -2932,8 +2933,10 @@ int OCCViewer_ViewWindow::stereoType() const
   int type = QuadBuffer;
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Graphic3d_RenderingParams* aParams = &aView3d->ChangeRenderingParams();
     type = (OCCViewer_ViewWindow::StereoType)aParams->StereoMode;
+  #endif
   }
   return type;
 }
@@ -2942,6 +2945,7 @@ void OCCViewer_ViewWindow::setAnaglyphFilter( int type )
 {
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Graphic3d_RenderingParams* aParams = &aView3d->ChangeRenderingParams();
     if (type == RedCyan)
       aParams->AnaglyphFilter = Graphic3d_RenderingParams::Anaglyph_RedCyan_Optimized;
@@ -2949,6 +2953,7 @@ void OCCViewer_ViewWindow::setAnaglyphFilter( int type )
       aParams->AnaglyphFilter = Graphic3d_RenderingParams::Anaglyph_YellowBlue_Optimized;
     if (type == GreenMagenta)
       aParams->AnaglyphFilter = Graphic3d_RenderingParams::Anaglyph_GreenMagenta_Simple;
+  #endif
   }
 }
 
@@ -2957,6 +2962,7 @@ int OCCViewer_ViewWindow::anaglyphFilter() const
   int type = RedCyan;
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Graphic3d_RenderingParams* aParams = &aView3d->ChangeRenderingParams();
     if (aParams->AnaglyphFilter == Graphic3d_RenderingParams::Anaglyph_RedCyan_Optimized)
       type = RedCyan;
@@ -2964,6 +2970,7 @@ int OCCViewer_ViewWindow::anaglyphFilter() const
       type = YellowBlue;
     if (aParams->AnaglyphFilter == Graphic3d_RenderingParams::Anaglyph_GreenMagenta_Simple)
       type = GreenMagenta;
+  #endif
   }
   return type;
 }
@@ -2972,8 +2979,10 @@ void OCCViewer_ViewWindow::setStereographicFocus( int type, double value )
 {
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Handle(Graphic3d_Camera) aCamera = aView3d->Camera();
     aCamera->SetZFocus( (Graphic3d_Camera::FocusType) type, value );
+  #endif
   }
 }
 
@@ -2982,8 +2991,10 @@ int OCCViewer_ViewWindow::stereographicFocusType() const
   int type = Relative;
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Handle(Graphic3d_Camera) aCamera = aView3d->Camera();
     type = (OCCViewer_ViewWindow::FocusIODType)aCamera->ZFocusType();
+  #endif
   }
   return type;
 }
@@ -2993,8 +3004,10 @@ double OCCViewer_ViewWindow::stereographicFocusValue() const
   double value = 1.0;
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Handle(Graphic3d_Camera) aCamera = aView3d->Camera();
     value = aCamera->ZFocus();
+  #endif
   }
   return value;
 }
@@ -3003,8 +3016,10 @@ void OCCViewer_ViewWindow::setInterocularDistance( int type, double value )
 {
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Handle(Graphic3d_Camera) aCamera = aView3d->Camera();
     aCamera->SetIOD( (Graphic3d_Camera::IODType) type, value );
+  #endif
   }
 }
 
@@ -3013,8 +3028,10 @@ int OCCViewer_ViewWindow::interocularDistanceType() const
   int type = Relative;
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Handle(Graphic3d_Camera) aCamera = aView3d->Camera();
     type = (OCCViewer_ViewWindow::FocusIODType)aCamera->GetIODType();
+  #endif
   }
   return type;
 }
@@ -3024,8 +3041,10 @@ double OCCViewer_ViewWindow::interocularDistanceValue() const
   double value = 0.05;
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Handle(Graphic3d_Camera) aCamera = aView3d->Camera();
     value = aCamera->IOD();
+  #endif
   }
   return value;
 }
@@ -3034,8 +3053,10 @@ void OCCViewer_ViewWindow::setReverseStereo( bool reverse )
 {
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Graphic3d_RenderingParams* aParams = &aView3d->ChangeRenderingParams();
     aParams->ToReverseStereo = reverse;
+  #endif
   }
 }
 
@@ -3044,8 +3065,10 @@ bool OCCViewer_ViewWindow::isReverseStereo() const
   int reverse = false;
   Handle(V3d_View) aView3d = myViewPort->getView();
   if ( !aView3d.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Graphic3d_RenderingParams* aParams = &aView3d->ChangeRenderingParams();
     reverse = aParams->ToReverseStereo;
+  #endif
   }
   return reverse;
 }
@@ -3054,9 +3077,11 @@ void OCCViewer_ViewWindow::setVSync( bool enable )
 {
   Handle(AIS_InteractiveContext) anIntCont = myModel->getAISContext();
   if ( !anIntCont.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast(anIntCont->CurrentViewer()->Driver());
     OpenGl_Caps* aCaps = &aDriver->ChangeOptions();
     aCaps->swapInterval = enable;
+  #endif
   }
 }
 
@@ -3065,9 +3090,11 @@ bool OCCViewer_ViewWindow::isVSync() const
   int enable = true;
   Handle(AIS_InteractiveContext) anIntCont = myModel->getAISContext();
   if ( !anIntCont.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast(anIntCont->CurrentViewer()->Driver());
     OpenGl_Caps* aCaps = &aDriver->ChangeOptions();
     enable = aCaps->swapInterval;
+  #endif
   }
   return enable;
 }
@@ -3076,9 +3103,11 @@ void OCCViewer_ViewWindow::setQuadBufferSupport( bool enable )
 {
   Handle(AIS_InteractiveContext) anIntCont = myModel->getAISContext();
   if ( !anIntCont.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast(anIntCont->CurrentViewer()->Driver());
     OpenGl_Caps* aCaps = &aDriver->ChangeOptions();
     aCaps->contextStereo = enable;
+  #endif
   }
 }
 
@@ -3087,13 +3116,16 @@ bool OCCViewer_ViewWindow::isQuadBufferSupport() const
   int enable = true;
   Handle(AIS_InteractiveContext) anIntCont = myModel->getAISContext();
   if ( !anIntCont.IsNull() ) {
+  #if OCC_VERSION_LARGE > 0x06090000
     Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast(anIntCont->CurrentViewer()->Driver());
     OpenGl_Caps* aCaps = &aDriver->ChangeOptions();
     enable = aCaps->contextStereo;
+  #endif
   }
   return enable;
 }
-#endif
+
+
 bool OCCViewer_ViewWindow::isOpenGlStereoSupport() const
 {
   GLboolean support[1];
