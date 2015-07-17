@@ -327,7 +327,7 @@ void OCCViewer_ViewFrame::setProjectionType( int t)
     aView->setProjectionType(t);
   }
 }
-
+#if OCC_VERSION_LARGE > 0x06090000
 //**************************************************************************************
 int OCCViewer_ViewFrame::stereoType() const
 {
@@ -437,7 +437,7 @@ void OCCViewer_ViewFrame::setQuadBufferSupport( bool t)
     aView->setQuadBufferSupport(t);
   }
 }
-
+#endif
 //**************************************************************************************
 void OCCViewer_ViewFrame::setZoomingStyle( const int i ) 
 { 

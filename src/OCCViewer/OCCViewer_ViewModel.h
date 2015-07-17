@@ -143,7 +143,7 @@ public:
 
   int                             projectionType() const;
   void                            setProjectionType( const int );
-
+#if OCC_VERSION_LARGE > 0x06090000
   int                             stereoType() const;
   void                            setStereoType( const int );
 
@@ -166,7 +166,7 @@ public:
 
   bool                            isQuadBufferSupport() const;
   void                            setQuadBufferSupport( const bool );
-
+#endif
   int                             zoomingStyle() const;
   void                            setZoomingStyle( const int );
 
@@ -243,10 +243,12 @@ protected:
   int                             myInteractionStyle;
   int                             myZoomingStyle;
   int                             myProjectionType;
+#if OCC_VERSION_LARGE > 0x06090000
   int                             myStereoType;
   int                             myAnaglyphFilter;
   int                             myStereographicFocusType;
   int                             myInterocularDistanceType;
+#endif
 
   double                          myStereographicFocusValue;
   double                          myInterocularDistanceValue;
@@ -255,9 +257,11 @@ protected:
   bool                            mySelectionEnabled;
   bool                            myMultiSelectionEnabled;
   bool                            myIsRelative;
+#if OCC_VERSION_LARGE > 0x06090000
   bool                            myToReverseStereo;
   bool                            myVSyncMode;
   bool                            myQuadBufferSupport;
+#endif
 
   int                             myTopLayerId;
 

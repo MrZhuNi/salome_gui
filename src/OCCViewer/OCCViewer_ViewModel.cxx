@@ -169,7 +169,7 @@ OCCViewer_Viewer::OCCViewer_Viewer( bool DisplayTrihedron)
 
   // set projection type to orthographic
   myProjectionType = 0;
-
+#if OCC_VERSION_LARGE > 0x06090000
   // set stereo parameters
   myStereoType = 0;
   myAnaglyphFilter = 0;
@@ -180,7 +180,7 @@ OCCViewer_Viewer::OCCViewer_Viewer( bool DisplayTrihedron)
   myInterocularDistanceType = 1;
   myStereographicFocusValue = 1.0;
   myInterocularDistanceValue = 0.05;
-
+#endif
   //set clipping color and texture to standard
   myClippingColor = QColor( 50, 50, 50 );
   myDefaultTextureUsed = true;
@@ -245,6 +245,7 @@ void OCCViewer_Viewer::initView( OCCViewer_ViewWindow* view )
     view->initSketchers();
     view->setInteractionStyle( interactionStyle() );
     view->setProjectionType( projectionType() );
+#if OCC_VERSION_LARGE > 0x06090000
     view->setStereoType( stereoType() );
     view->setAnaglyphFilter( anaglyphFilter() );
     view->setStereographicFocus( stereographicFocusType(), stereographicFocusValue() );
@@ -252,6 +253,7 @@ void OCCViewer_Viewer::initView( OCCViewer_ViewWindow* view )
     view->setReverseStereo( isReverseStereo() );
     view->setVSync( isVSync() );
     view->setQuadBufferSupport( isQuadBufferSupport() );
+#endif
     view->setZoomingStyle( zoomingStyle() );
     view->enablePreselection( isPreselectionEnabled() );
     view->enableSelection( isSelectionEnabled() );
@@ -542,7 +544,7 @@ void OCCViewer_Viewer::setProjectionType( const int theType )
     }
   }
 }
-
+#if OCC_VERSION_LARGE > 0x06090000
 /*!
   \return stereo type
 */
@@ -758,7 +760,7 @@ void OCCViewer_Viewer::setQuadBufferSupport( const bool theEnable )
       win->setQuadBufferSupport( theEnable );
   }
 }
-
+#endif
 /*!
   \return zooming style
 */
