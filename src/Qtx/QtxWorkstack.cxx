@@ -3190,21 +3190,76 @@ bool QtxWorkstack::opaqueResize() const
 }
 
 /*!
-  \brief Show/Hide active tab bar.
+  \brief Show/hide splitter state and area.
+  \param widget and parent area will be shown/hidden
+  \param split splitter will be shown/hidden
+  \param visible splitter
 */
-void QtxWorkstack::showActiveTabBar( bool visible )
+void QtxWorkstack::splitterVisible(QWidget* widget, QList<QSplitter*>& parentList, QSplitter* split, bool visible)
 {
-  QList<QtxWorkstackArea*> areaList;
-  areas( mySplit, areaList, true );
-  QList<QtxWorkstackArea*>::ConstIterator it;
-  for ( it = areaList.begin(); it != areaList.end(); ++it )
-  {
-    (*it)->showTabBar( visible );
-  }
   QList<QSplitter*> recList;
-  splitters( mySplit, recList, true );
-  for ( QList<QSplitter*>::iterator itr = recList.begin(); itr != recList.end(); ++itr )
-    (*itr)->setVisible(visible);
+  splitters( split, recList, false );
+  for ( QList<QSplitter*>::iterator itr = recList.begin(); itr != recList.end(); ++itr ) {
+    parentList.prepend( *itr );
+    splitterVisible( widget, parentList, *itr, visible );
+  }
+
+  QList<QtxWorkstackArea*> areaList;
+  areas( split, areaList, false );
+  for ( QList<QtxWorkstackArea*>::const_iterator it = areaList.begin(); it != areaList.end(); ++it ) {
+    QtxWorkstackArea* area = *it;
+    bool isCurrentWidget = false;
+    area->showTabBar(visible);
+
+    QList<QtxWorkstackChild*> childList = area->childList();
+    for ( QList<QtxWorkstackChild*>::iterator itr = childList.begin(); itr != childList.end(); ++itr ) {
+      QWidget* aCurWid = (*itr)->widget();
+      if ( aCurWid == widget ) {
+        isCurrentWidget = true;
+        aCurWid->setVisible( true );
+      }
+      else
+        aCurWid->setVisible( visible );
+    }
+
+    if ( !isCurrentWidget || visible )
+      area->setVisible( visible );
+
+    if ( isCurrentWidget || visible ) {
+      QSplitter* pSplit = splitter( area );
+      int count = pSplit->count();
+      for ( int i = 0; i < count; i++ ) {
+        if ( pSplit->indexOf( area ) == i && !visible )
+          continue;
+        pSplit->widget(i)->setVisible( visible );
+      }
+      for ( QList<QSplitter*>::iterator itr = parentList.begin(); itr != parentList.end() && pSplit != mySplit; ++itr ) {
+        if ( pSplit == *itr )
+          continue;
+        QList<QSplitter*> splitlist;
+        splitters( *itr, splitlist, false );
+        for ( QList<QSplitter*>::iterator iter = splitlist.begin(); iter != splitlist.end(); ++iter ) {
+          if ( pSplit == (*iter) ) {
+            pSplit = *itr;
+            continue;
+          }
+          (*iter)->setVisible(visible);
+        }
+      }
+    }
+  }
+}
+
+/*!
+  \brief Show/hide splitters state and area.
+  \param widget and parent area will be shown/hidden
+  \param visible splitters
+*/
+void QtxWorkstack::splittersVisible(QWidget* widget, bool visible )
+{
+  QList<QSplitter*> parentList;
+  parentList.append(mySplit);
+  splitterVisible(widget, parentList, mySplit, visible );
 }
 
 /*!

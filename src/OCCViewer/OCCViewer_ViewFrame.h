@@ -46,6 +46,8 @@ public:
 
   OCCViewer_ViewWindow*   getView( const int ) const;
 
+  OCCViewer_ViewWindow*   getActiveView() const;
+
   virtual OCCViewer_ViewPort3d* getViewPort() { return getView(MAIN_VIEW)->getViewPort(); }
   OCCViewer_ViewPort3d* getViewPort(int theView);
 
@@ -161,6 +163,7 @@ protected:
 
 private slots:
   void onContextMenuRequested(QContextMenuEvent*);
+  void onMousePressed(SUIT_ViewWindow*, QMouseEvent*);
 
 private:
   void connectViewSignals( OCCViewer_ViewWindow* theView );
@@ -171,6 +174,7 @@ private:
   QList<OCCViewer_ViewWindow*> myViews;
   QGridLayout* myLayout;
   OCCViewer_ViewWindow* myMaximizedView;
+  OCCViewer_ViewWindow* myActiveView;
   int mySplitMode;
   QList<int> myViewsMode;
 
