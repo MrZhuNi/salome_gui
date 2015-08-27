@@ -373,7 +373,9 @@ bool OCCViewer_ViewWindow::eventFilter( QObject* watched, QEvent* e )
               ic->HilightPreviousDetected( myViewPort->getView() );
             }
           }
-        } else {
+        }
+        else {
+          emit vpTransformationStarted ( ZOOMVIEW );
           myViewPort->startZoomAtPoint( aEvent->x(), aEvent->y() );
           double delta = (double)( aEvent->delta() ) / ( 15 * 8 );
           int x  = aEvent->x();
@@ -382,6 +384,7 @@ bool OCCViewer_ViewWindow::eventFilter( QObject* watched, QEvent* e )
           int y1 = (int)( aEvent->y() + height()*delta/100 );
           myViewPort->zoom( x, y, x1, y1 );
           myViewPort->getView()->ZFitAll();
+          emit vpTransformationFinished ( ZOOMVIEW );
         }
       }
       return true;
@@ -550,7 +553,7 @@ void OCCViewer_ViewWindow::vpMousePressEvent( QMouseEvent* theEvent )
     }
     /* notify that we start a transformation */
     if ( transformRequested() )
-            emit vpTransformationStarted ( myOperation );
+      emit vpTransformationStarted ( myOperation );
   }
   if ( transformRequested() )
     setTransformInProcess( true );
