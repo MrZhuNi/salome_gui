@@ -863,3 +863,14 @@ CAM_Application::ModuleShortInfoList CAM_Application::getVersionInfo()
   }  
   return info;
 }
+
+bool CAM_Application::abortAllOperations()
+{
+  bool isNextOperationAllowed = true;
+  for( QList<CAM_Module*>::const_iterator it = myModules.begin(); it != myModules.end(); ++it )
+  {
+    if( !(*it)->abortAllOperations() )
+      isNextOperationAllowed = false;
+  }
+  return isNextOperationAllowed;
+}
