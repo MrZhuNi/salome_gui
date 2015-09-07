@@ -73,6 +73,7 @@ public:
   virtual void      setVisualParameters( const QString& );
   
   virtual void      RefreshDumpImage();
+  virtual QImage    dumpView();
 
 public slots:
   void              onChangeHorMode();
@@ -94,7 +95,6 @@ public slots:
   void              onPrintView();
 
 protected:
-  virtual QImage    dumpView();
   virtual bool      dumpViewToFormat( const QImage&, 
 				      const QString&, 
 				      const QString& );
