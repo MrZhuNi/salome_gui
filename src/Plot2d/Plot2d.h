@@ -34,7 +34,6 @@
 #endif
 
 #include <qwt_symbol.h>
-#include <Qt>
 
 class QPainter;
 

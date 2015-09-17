@@ -178,6 +178,15 @@ SUIT_FileDlg::~SUIT_FileDlg()
   setValidator( 0 );
 }
 
+/*!
+  \brief Returns Rejected in batch mode.
+*/
+int SUIT_FileDlg::exec()
+{
+  if ( getenv( "SALOME_BATCH_MODE" ) )
+    return QDialog::Rejected;
+  return QFileDialog::exec();
+}
 
 /*! 
   \brief Check if the dialog box is used for opening or saving the file.

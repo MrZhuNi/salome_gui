@@ -59,6 +59,8 @@ public:
 
   void selectFile( const QString& );
 
+  int exec();
+
   static QString      getLastVisitedDirectory();
 
   static QString      getFileName( QWidget*, 

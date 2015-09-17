@@ -567,7 +567,7 @@ void Plot3d_ViewWindow::onFitData()
     myIsFitDataInitialized = true;
   }
 
-  Plot3d_FitDataDlg aDlg( this, !myMode2D );
+  Plot3d_FitDataDlg aDlg( this, !myMode2D, myMode2DNormalAxis );
 
   if( SVTK_CubeAxesActor2D* aCubeAxes = GetRenderer()->GetCubeAxes() )
   {
@@ -593,16 +593,20 @@ void Plot3d_ViewWindow::onFitData()
 
   if( aDlg.exec() == QDialog::Accepted ) 
   {
-    double aZMin = 0, aZMax = 0;
-    aDlg.getRange( myIsFitDataEnabled,
-                   myFitDataBounds[0],
-                   myFitDataBounds[1],
-                   myFitDataBounds[2],
-                   myFitDataBounds[3],
-                   aZMin,
-                   aZMax );
+    double aXMin = 0, aXMax = 0, aYMin = 0, aYMax = 0, aZMin = 0, aZMax = 0;
+    aDlg.getRange( myIsFitDataEnabled, aXMin, aXMax, aYMin, aYMax, aZMin, aZMax );
 
-    if( !myMode2D )
+    if( !myMode2D || myMode2DNormalAxis != AxisX )
+    {
+      myFitDataBounds[0] = aXMin;
+      myFitDataBounds[1] = aXMax;
+    }
+    if( !myMode2D || myMode2DNormalAxis != AxisY )
+    {
+      myFitDataBounds[2] = aYMin;
+      myFitDataBounds[3] = aYMax;
+    }
+    if( !myMode2D || myMode2DNormalAxis != AxisZ )
     {
       myFitDataBounds[4] = aZMin;
       myFitDataBounds[5] = aZMax;

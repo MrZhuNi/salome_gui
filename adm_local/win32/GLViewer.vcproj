@@ -1760,6 +1760,30 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\..\src\GLViewer\resources\GLViewer_msg_fr.ts"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+			</File>
 		</Filter>
 		<Filter
 			Name="Meta Object Files"
