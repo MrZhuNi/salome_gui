@@ -538,6 +538,34 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
         <translation type="unfinished">Grouper toutes les fenêtres</translation>
     </message>
     <message>
+	      <source>MEN_DESK_RESTORE</source>
+	      <translation>Re&amp;staurer les positions des fenêtres</translation>
+    </message>
+    <message>
+	      <source>TOT_RESTORE_DEFAULT</source>
+	      <translation>De défaut</translation>
+    </message>
+    <message>
+	      <source>MEN_DESK_RESTORE_DEFAULT</source>
+  	    <translation>&amp;De défaut</translation>
+    </message>
+    <message>
+	      <source>PRP_RESTORE_DEFAULT</source>
+	      <translation>Restaurer les positions des fenêtres de défaut</translation>
+    </message>
+    <message>
+	      <source>TOT_RESTORE_FROM_PREFERENCES</source>
+  	    <translation>A partir des préférences</translation>
+    </message>
+    <message>
+	      <source>MEN_DESK_RESTORE_FROM_PREFERENCES</source>
+	      <translation>A partir des Pré&amp;férences</translation>
+    </message>
+    <message>
+        <source>PRP_RESTORE_FROM_PREFERENCES</source>
+        <translation>Restaurer les positions des fenêtres à partir du fichier de préférences</translation>
+    </message>
+    <message>
         <source>ERR_DOC_NOT_EXISTS</source>
         <translation type="unfinished">Impossible d&apos;ouvrir %1.
 Le fichier n&apos;existe pas</translation>
