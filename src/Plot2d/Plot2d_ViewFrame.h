@@ -118,6 +118,9 @@ public:
   void    setSecondY( const bool& theSecondY );
   bool    getSecondY();
 
+  bool    getKeepCurrentRange();
+  void    setKeepCurrentRange( const bool& theKeepCurrentRange );
+
   bool    isTitleChangedByUser( const ObjectType type );
   void    forgetLocalUserChanges( const ObjectType type );
 
@@ -221,17 +224,21 @@ protected:
   int            myXMode, myYMode;
   double         myXDistance, myYDistance, myYDistance2;
   bool           mySecondY;
+  bool           myKeepCurrentRange;
   
   bool           myTitleAutoUpdate, myXTitleAutoUpdate, myYTitleAutoUpdate;
-  bool           myTitleChangedByUser, myXTitleChangedByUser, myYTitleChangedByUser;
+  bool           myTitleChangedByUser, myXTitleChangedByUser, myYTitleChangedByUser,
+                 myY2TitleChangedByUser;
 
   static         QString myPrefTitle;
   static         QString myPrefXTitle;
   static         QString myPrefYTitle;
+  static         QString myPrefY2Title;
 
   static bool    myPrefTitleChangedByUser;
   static bool    myXPrefTitleChangedByUser;
   static bool    myYPrefTitleChangedByUser;
+  static bool    myY2PrefTitleChangedByUser;
 
   bool           myIsTimeColorization;
   double         myTimePosition;

@@ -415,7 +415,7 @@ public:
 
 protected:
   static void                     drawContour( GLViewer_Rect*, QColor, GLfloat, GLushort, bool );
-  static void                     drawContour( const GLViewer_PntList&, QColor, GLfloat );
+  static void                     drawContour( const GLViewer_PntList&, QColor, GLfloat, bool );
   static void                     drawPolygon( GLViewer_Rect*, QColor, GLushort, bool );
   static void                     drawPolygon( const GLViewer_PntList&, QColor );
   static void                     drawVertex( GLfloat, GLfloat, QColor );

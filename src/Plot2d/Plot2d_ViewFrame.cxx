@@ -152,10 +152,12 @@ const char* imageCrossCursor[] = {
 QString Plot2d_ViewFrame::myPrefTitle = "";
 QString Plot2d_ViewFrame::myPrefXTitle = "";
 QString Plot2d_ViewFrame::myPrefYTitle = "";
+QString Plot2d_ViewFrame::myPrefY2Title = "";
 
 bool Plot2d_ViewFrame::myPrefTitleChangedByUser = false;
 bool Plot2d_ViewFrame::myXPrefTitleChangedByUser = false;
 bool Plot2d_ViewFrame::myYPrefTitleChangedByUser = false;
+bool Plot2d_ViewFrame::myY2PrefTitleChangedByUser = false;
 
 const long COLOR_DISTANCE = 100;
 const int  MAX_ATTEMPTS   = 10;
@@ -177,10 +179,10 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
        myXGridMinorEnabled( false ), myYGridMinorEnabled( false ), myY2GridMinorEnabled( false ),
        myXGridMaxMajor( 8 ), myYGridMaxMajor( 8 ), myY2GridMaxMajor( 8 ),
        myXGridMaxMinor( 5 ), myYGridMaxMinor( 5 ), myY2GridMaxMinor( 5 ),
-       myXMode( 0 ), myYMode( 0 ), mySecondY( false ),
+       myXMode( 0 ), myYMode( 0 ), mySecondY( false ), myKeepCurrentRange( false ),
        myTitleAutoUpdate( true ), myXTitleAutoUpdate( true ), myYTitleAutoUpdate( true ),
        myTitleChangedByUser( false ), myXTitleChangedByUser( false ), myYTitleChangedByUser( false ),
-       myIsTimeColorization( false ), myTimePosition( -1 ), myInactiveColor( Qt::gray )
+       myY2TitleChangedByUser( false ), myIsTimeColorization( false ), myTimePosition( -1 ), myInactiveColor( Qt::gray )
 {
   setObjectName( title );
   /* Plot 2d View */
@@ -310,6 +312,22 @@ bool Plot2d_ViewFrame::getSecondY()
 }
 
 /*!
+  Set flag which indicate keep current range or not
+*/
+void Plot2d_ViewFrame::setKeepCurrentRange( const bool& theKeepCurrentRange )
+{
+  myKeepCurrentRange = theKeepCurrentRange;
+}
+
+/*!
+  Get flag which indicate keep current range or not
+*/
+bool Plot2d_ViewFrame::getKeepCurrentRange()
+{
+  return myKeepCurrentRange;
+}
+
+/*!
   Erase presentation
 */
 void Plot2d_ViewFrame::Erase( const Plot2d_Prs* prs, const bool )
@@ -428,6 +446,7 @@ void Plot2d_ViewFrame::readPreferences()
   myTitle = myPrefTitle;
   myXTitle = myPrefXTitle;
   myYTitle = myPrefYTitle;
+  myY2Title = myPrefY2Title;
 }
 
 /*!
@@ -485,6 +504,11 @@ void Plot2d_ViewFrame::writePreferences()
   {
     myPrefYTitle = myYTitle;
     myYPrefTitleChangedByUser = true;
+  }
+  if ( myY2TitleChangedByUser )
+  {
+    myPrefY2Title = myY2Title;
+    myY2PrefTitleChangedByUser = true;
   }
 }
 
@@ -672,7 +696,10 @@ void Plot2d_ViewFrame::displayCurves( const curveList& curves, bool update )
     aCurve = *it;
     displayCurve( aCurve, false );
   }
-  fitAll();
+
+  if ( !myKeepCurrentRange )
+    fitAll();
+
   //myPlot->setUpdatesEnabled( true );
 // update legend
   if ( update )
@@ -1037,7 +1064,11 @@ void Plot2d_ViewFrame::onSettings()
       myYTitleChangedByUser = true;
 
     if (mySecondY) // vertical right axis title
+    {
+      isTileChanged = dlg->getY2Title() != myY2Title;
       setTitle( dlg->isY2TitleEnabled(), dlg->getY2Title(), Y2Title, false );
+      myY2TitleChangedByUser = isTileChanged ? true : myY2TitleChangedByUser;
+    }
 
     // main title
     isTileChanged = dlg->getMainTitle() != myTitle;
@@ -2563,6 +2594,7 @@ void Plot2d_ViewFrame::copyPreferences( Plot2d_ViewFrame* vf )
   myTitleChangedByUser = vf->myTitleChangedByUser;
   myXTitleChangedByUser = vf->myXTitleChangedByUser;
   myYTitleChangedByUser = vf->myYTitleChangedByUser;
+  myY2TitleChangedByUser = vf->myY2TitleChangedByUser;
 }
 
 /*!
@@ -2856,6 +2888,8 @@ bool Plot2d_ViewFrame::isTitleChangedByUser( const ObjectType type )
     return myXPrefTitleChangedByUser || myXTitleChangedByUser;
   case YTitle:
     return myYPrefTitleChangedByUser || myYTitleChangedByUser;
+  case Y2Title:
+    return myY2PrefTitleChangedByUser || myY2TitleChangedByUser;
   default:
     return false;
   }
@@ -2876,6 +2910,9 @@ void Plot2d_ViewFrame::forgetLocalUserChanges( const ObjectType type )
     break;
   case YTitle:
     myYTitleChangedByUser = false;
+    break;
+  case Y2Title:
+    myY2TitleChangedByUser = false;
     break;
   default:
     break;
