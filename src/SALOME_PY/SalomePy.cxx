@@ -227,7 +227,7 @@ public:
 #if VTK_XVERSION < 50700
       myResult = PyVTKObject_New( aPyClass, aVTKObject );
 #else
-      myResult = PyVTKObject_New( aPyClass, NULL, aVTKObject );
+      //      myResult = PyVTKObject_New( aPyClass, NULL, aVTKObject );
 #endif
     }
   }
@@ -280,7 +280,7 @@ public:
 #if VTK_XVERSION < 50700
       myResult = PyVTKObject_New( aPyClass, aVTKObject );
 #else
-      myResult = PyVTKObject_New( aPyClass, NULL, aVTKObject );
+      //      myResult = PyVTKObject_New( aPyClass, NULL, aVTKObject );
 #endif
     }
   }
@@ -333,7 +333,7 @@ public:
 #if VTK_XVERSION < 50700
       myResult = PyVTKObject_New( aPyClass, aVTKObject );
 #else
-      myResult = PyVTKObject_New( aPyClass, NULL, aVTKObject );
+      //      myResult = PyVTKObject_New( aPyClass, NULL, aVTKObject );
 #endif
     }
   }
