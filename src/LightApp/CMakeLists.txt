@@ -17,14 +17,23 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-INCLUDE(UseQt4Ext)
+INCLUDE(UseQtExt)
+IF (NOT SALOME_BUILD_WITH_QT5)
+  SET(_QT_INCLUDES ${QT_INCLUDES})
+  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
+  SET(_QT_LIBRARIES ${QT_LIBRARIES})
+ELSE()
+  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES} )
+  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
+  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
+ENDIF()
 
 # --- options ---
 
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${CAS_INCLUDE_DIRS}
-  ${QT_INCLUDES}
+  ${_QT_INCLUDES}
   ${HDF5_INCLUDE_DIRS}
   ${PTHREAD_INCLUDE_DIR}
   ${PROJECT_BINARY_DIR}
@@ -88,7 +97,7 @@ IF(SALOME_USE_PYCONSOLE)
 ENDIF()
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${CAS_DEFINITIONS} ${QT_DEFINITIONS} ${HDF5_DEFINITIONS})
+ADD_DEFINITIONS(${CAS_DEFINITIONS} ${_QT_DEFINITIONS} ${HDF5_DEFINITIONS})
 IF(SALOME_USE_PLOT2DVIEWER)
   ADD_DEFINITIONS(${QWT_DEFINITIONS})
 ENDIF()
@@ -99,7 +108,7 @@ ENDIF()
 # libraries to link to
 SET(_link_LIBRARIES
   ${CAS_KERNEL}
-  ${QT_LIBRARIES}
+  ${_QT_LIBRARIES}
   ${HDF5_LIBRARIES}
   CASCatch qtx suit std SalomeStyle SalomePrs CAM LogWindow ObjBrowser Event 
   ${KERNEL_SalomeHDFPersist} ${KERNEL_SALOMELocalTrace}
@@ -231,12 +240,17 @@ SET(_other_RESOURCES
 )
 
 # --- sources ---
-
-# sources / rcc wrappings
-QT4_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
-
-# sources / moc wrappings
-QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+IF (NOT SALOME_BUILD_WITH_QT5)
+  # sources / moc wrappings
+  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+  # sources / rcc wrappings
+  QT4_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
+ELSE()
+  # sources / moc wrappings
+  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+  # sources / rcc wrappings
+  QT5_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
+ENDIF()
 
 # sources / static
 SET(_other_SOURCES
@@ -298,6 +312,6 @@ TARGET_LINK_LIBRARIES(LightApp ${_link_LIBRARIES})
 INSTALL(TARGETS LightApp EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
 
 INSTALL(FILES ${LightApp_HEADERS} DESTINATION ${SALOME_INSTALL_HEADERS})
-QT4_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_GUI_INSTALL_RES_DATA}")
+QT_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_GUI_INSTALL_RES_DATA}")
 
 INSTALL(FILES ${_other_RESOURCES} DESTINATION ${SALOME_GUI_INSTALL_RES_DATA})

@@ -888,7 +888,7 @@ void GLViewer_ViewSketcher::onSketch( SketchState state )
 
     if ( state == Fin )
     {
-        QApplication::syncX();  /* force rectangle redrawing */
+        QApplication::sync();  /* force rectangle redrawing */
         myViewer->activateSketching( GLViewer_Viewer::NoSketching );
     }
 }

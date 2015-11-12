@@ -84,6 +84,7 @@
 #include <SALOME_LifeCycleCORBA.hxx>
 
 #include <QApplication>
+#include <QWidget>
 #include <QAction>
 #include <QRegExp>
 #include <QCheckBox>
@@ -187,9 +188,9 @@ void SalomeApp_Application::start()
     QStringList pyfiles;
     QString loadStudy;
 
-    for (int i = 1; i < qApp->argc(); i++) {
+    for (int i = 1; i < qApp->arguments().size(); i++) {
       QRegExp rxs ("--study-hdf=(.+)");
-      if ( rxs.indexIn( QString(qApp->argv()[i]) ) >= 0 && rxs.capturedTexts().count() > 1 ) {
+      if ( rxs.indexIn( QString(qApp->arguments()[i]) ) >= 0 && rxs.capturedTexts().count() > 1 ) {
         QString file = rxs.capturedTexts()[1];
         QFileInfo fi ( file );
         QString extension = fi.suffix().toLower();
@@ -198,7 +199,7 @@ void SalomeApp_Application::start()
       }
       else {
         QRegExp rxp ("--pyscript=\\[(.+)\\]");
-        if ( rxp.indexIn( QString(qApp->argv()[i]) ) >= 0 && rxp.capturedTexts().count() > 1 ) {
+        if ( rxp.indexIn( QString(qApp->arguments()[i]) ) >= 0 && rxp.capturedTexts().count() > 1 ) {
           // pyscript
           QStringList dictList = rxp.capturedTexts()[1].split("},", QString::SkipEmptyParts);
           for (int k = 0; k < dictList.count(); ++k) {
@@ -874,7 +875,7 @@ void SalomeApp_Application::onDumpStudy( )
   DumpStudyFileDlg fd( desktop() );
   fd.setValidator( new DumpStudyFileValidator( &fd ) );
   fd.setWindowTitle( tr( "TOT_DESK_FILE_DUMP_STUDY" ) );
-  fd.setFilters( aFilters );
+  fd.setNameFilters( aFilters );
   fd.myPublishChk->setChecked( anIsPublish );
   fd.myMultiFileChk->setChecked( anIsMultiFile );
   fd.mySaveGUIChk->setChecked( anIsSaveGUI );
@@ -1294,7 +1295,13 @@ void SalomeApp_Application::moduleActionSelected( const int id )
 CORBA::ORB_var SalomeApp_Application::orb()
 {
   ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
-  static CORBA::ORB_var _orb = init( qApp->argc(), qApp->argv() );
+  int size = qApp->arguments().size();
+  char* argv[size];
+  for ( int i = 0; i < size; ++i)
+  {
+    argv[i] = qApp->arguments()[i].toLatin1().data();
+  }
+  static CORBA::ORB_var _orb = init( size, argv );
   return _orb;
 }
 

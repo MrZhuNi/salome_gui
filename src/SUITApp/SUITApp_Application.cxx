@@ -43,13 +43,13 @@ SUITApp_Application::SUITApp_Application( int& argc, char** argv, SUIT_Exception
 #ifdef ENABLE_TESTRECORDER
   : TestApplication( argc, argv ),
 #else
-#ifndef WIN32
+//#ifndef WIN32
   // san: Opening an X display and choosing a visual most suitable for 3D visualization
   // in order to make SALOME viewers work with non-native X servers
-  : QApplication( (Display*)Qtx::getDisplay(), argc, argv, Qtx::getVisual() ),
-#else
+ // : QApplication( (Display*)Qtx::getDisplay(), argc, argv, Qtx::getVisual() ),
+//#else
   : QApplication( argc, argv ), 
-#endif
+//#endif
 #endif
 myExceptHandler( hand )
 {
@@ -58,7 +58,7 @@ myExceptHandler( hand )
 /*!
   Constructor
 */
-SUITApp_Application::SUITApp_Application( int& argc, char** argv, Type type, SUIT_ExceptionHandler* hand )
+/*SUITApp_Application::SUITApp_Application( int& argc, char** argv, Type type, SUIT_ExceptionHandler* hand )
 #ifdef ENABLE_TESTRECORDER
   : TestApplication( argc, argv ),
 #else
@@ -67,7 +67,7 @@ SUITApp_Application::SUITApp_Application( int& argc, char** argv, Type type, SUI
 myExceptHandler( hand )
 {
 }
-
+*/
 /*!
   Sends event to receiver
   \return the value that is returned from the receiver's event handler

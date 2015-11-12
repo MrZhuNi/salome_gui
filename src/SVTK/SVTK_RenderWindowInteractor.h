@@ -121,13 +121,12 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
   virtual void focusInEvent( QFocusEvent* );
   virtual void focusOutEvent( QFocusEvent* );
 
-  //! To handle native events (from such devices as SpaceMouse)
+/*  //! To handle native events (from such devices as SpaceMouse)
 #ifdef WIN32
   virtual bool winEvent( MSG*, long* );
 #else
   virtual bool x11Event( XEvent *e );
-#endif
-
+#endif */
   vtkSmartPointer<vtkRenderWindow> myRenderWindow;
   vtkSmartPointer<vtkGenericRenderWindowInteractor> myDevice;
 };

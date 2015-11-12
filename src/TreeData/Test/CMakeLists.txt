@@ -17,26 +17,33 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-INCLUDE(UseQt4Ext)
-
 # --- options ---
+IF (NOT SALOME_BUILD_WITH_QT5)
+  SET(_QT_INCLUDES ${QT_INCLUDES})
+  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
+  SET(_QT_LIBRARIES ${QT_LIBRARIES})
+ELSE()
+  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES})
+  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
+  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
+ENDIF()
 
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${OMNIORB_INCLUDE_DIR}
-  ${QT_INCLUDES}
+  ${_QT_INCLUDES}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}/src/GuiHelpers
   ${PROJECT_SOURCE_DIR}/src/TreeData
 )
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${OMNIORB_DEFINITIONS} ${QT_DEFINITIONS})
+ADD_DEFINITIONS(${OMNIORB_DEFINITIONS} ${_QT_DEFINITIONS})
 
 # libraries to link to
 SET(_link_LIBRARIES
   ${CORBA_LIBS}
-  ${QT_LIBRARIES}
+  ${_QT_LIBRARIES}
   SalomeTreeData SalomeGuiHelpers
   ${KERNEL_SalomeLifeCycleCORBA} ${KERNEL_SalomeKernelHelpers}
 )
@@ -51,13 +58,19 @@ SET(_uic_files mainwindow.ui)
 # header files / to be processed by moc
 SET(_moc_HEADERS mainwindow.hxx)
 
-# header files / uic wrappings
-QT4_WRAP_UI(_uic_HEADERS ${_uic_files})
+IF (NOT SALOME_BUILD_WITH_QT5)
+  # header files / uic wrappings
+  QT4_WRAP_UI(_uic_HEADERS ${_uic_files})
+  # sources / moc wrappings
+  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+ELSE()
+  # header files / uic wrappings
+  QT5_WRAP_UI(_uic_HEADERS ${_uic_files})
+  # sources / moc wrappings
+  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+ENDIF()
 
 # --- sources ---
-
-# sources / moc wrappings
-QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
 
 # sources / to compile
 SET(TreeData_guitester_SOURCES MyDataModel.cxx guitester.cxx mainwindow.cxx testhelper.cxx ${_moc_SOURCES} ${_uic_HEADERS})

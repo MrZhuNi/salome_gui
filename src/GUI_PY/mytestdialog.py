@@ -71,7 +71,7 @@ class MyTestDialog(GenericDialog):
         return name
 
 
-from PyQt4.QtCore import SIGNAL
+from PyQt5.QtCore import SIGNAL
 class MyTestDialogWithSignals(MyTestDialog):
     """
     This class is to illustrate the usage of the GenericDialog in the
@@ -104,8 +104,8 @@ class MyTestDialogWithSignals(MyTestDialog):
 
 def TEST_MyTestDialog_modal():
     import sys
-    from PyQt4.QtCore import QObject, SIGNAL, SLOT
-    from PyQt4.QtGui import QApplication
+    from PyQt5.QtCore import QObject, SIGNAL, SLOT
+    from PyQt5.QtGui import QApplication
     app = QApplication(sys.argv)
     QObject.connect(app, SIGNAL("lastWindowClosed()"), app, SLOT("quit()"))
 
@@ -126,8 +126,8 @@ class DialogListener:
 
 def TEST_MyTestDialog_non_modal():
     import sys
-    from PyQt4.QtCore import QObject, SIGNAL, SLOT
-    from PyQt4.QtGui import QApplication
+    from PyQt5.QtCore import QObject, SIGNAL, SLOT
+    from PyQt5.QtGui import QApplication
     app = QApplication(sys.argv)
     QObject.connect(app, SIGNAL("lastWindowClosed()"), app, SLOT("quit()"))
 

@@ -32,7 +32,7 @@ class QTX_EXPORT QtxTranslator : public QTranslator
 public:
   QtxTranslator( QObject* parent = 0 );
   ~QtxTranslator();
-  virtual QString translate( const char*, const char*, const char* = 0 ) const;
+  virtual QString translate( const char*, const char*, const char* = 0, int n = -1 ) const;
 };
 
 #endif

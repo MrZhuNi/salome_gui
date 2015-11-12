@@ -17,18 +17,26 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-INCLUDE(UseQt4Ext)
+IF (NOT SALOME_BUILD_WITH_QT5)
+  SET(_QT_INCLUDES ${QT_INCLUDES})
+  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
+  SET(_QT_LIBRARIES ${QT_LIBRARIES})
+ELSE()
+  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES})
+  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
+  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
+ENDIF()
 
 # additional include directories
 INCLUDE_DIRECTORIES(
-  ${QT_INCLUDES}
+  ${_QT_INCLUDES}
 )
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${QT_DEFINITIONS})
+ADD_DEFINITIONS(${_QT_DEFINITIONS})
 
 # libraries to link to
-SET(_link_LIBRARIES ${QT_LIBRARIES})
+SET(_link_LIBRARIES ${_QT_LIBRARIES})
 
 # --- headers ---
 

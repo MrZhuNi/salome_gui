@@ -40,6 +40,8 @@
 #include <qwt_legend_label.h>
 #include <qwt_plot_dict.h>
 
+#include <qdrawutil.h>
+
 const int SPACING = 10;
 const int SYMBOL_SIZE = 13;
 
@@ -88,8 +90,8 @@ Plot2d_QwtLegendLabel::Plot2d_QwtLegendLabel( QWidget* parent ) :
   mySymbolType(0),
   myPen( QPen() )
 {
-  myYAxisLeftIcon = yAxisLeft;
-  myYAxisRightIcon = yAxisRight;
+  myYAxisLeftIcon = QPixmap(yAxisLeft);
+  myYAxisRightIcon = QPixmap(yAxisRight);
   int anIconWidth = qMax( myYAxisLeftIcon.width(), myYAxisRightIcon.width() );
   setSpacing( SPACING );
 
@@ -402,7 +404,7 @@ void Plot2d_QwtPlotCurve::drawSeries( QPainter *painter,
   if(hasDeviationData()) {
     painter->save();
     int lineW = deviationMarkerLineWidth();
-    int tickSz = deviationMarkerTickSize() + qRound(lineW/2);
+    int tickSz = deviationMarkerTickSize() + qRound(double(lineW/2));
     double min, max, xi, yi;
     int xp, ytop, ybtm, tickl, tickr;
     QColor c = isSelected() ? Plot2d_Object::selectionColor() : deviationMarkerColor();

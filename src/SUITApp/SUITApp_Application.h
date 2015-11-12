@@ -51,7 +51,7 @@ class SUIT_ExceptionHandler;
 
 public:
   SUITApp_Application( int& argc, char** argv, SUIT_ExceptionHandler* = 0 );
-  SUITApp_Application( int& argc, char** argv, Type type, SUIT_ExceptionHandler* = 0 );
+  //SUITApp_Application( int& argc, char** argv, Type type, SUIT_ExceptionHandler* = 0 );
 
   virtual bool notify( QObject* receiver, QEvent* e );
 

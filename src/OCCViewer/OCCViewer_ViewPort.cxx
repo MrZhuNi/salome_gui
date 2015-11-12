@@ -41,7 +41,7 @@
 #include <stdlib.h>
 
 #if !defined WIN32
-#include <QX11Info>
+#include <QtGui/QX11Info>
 #include <GL/glx.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -115,13 +115,13 @@ static Colormap choose_cmap( Display *dpy, XVisualInfo *vi )
   //cout << "Choosing cmap for vID = " << vi->visualid << endl;
   //#endif
 
-  if ( vi->visualid == XVisualIDFromVisual( (Visual*)QX11Info::appVisual() ) )
+  /*if ( vi->visualid == XVisualIDFromVisual( (Visual*)QX11Info::appVisual() ) )
   {
 #ifdef DEBUG
 //    cout << "Using x11AppColormap" << endl;
 #endif
     return QX11Info::appColormap();
-  }
+  }*/
 
   if ( mesa_gl )
   {

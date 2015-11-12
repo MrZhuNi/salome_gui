@@ -56,7 +56,7 @@ bool operator<( const QVariant& v1, const QVariant& v2 )
       for ( ; anIt1 != aLast1 && anIt2 != aLast2;  anIt1++, anIt2++ )
       {
         if ( (*anIt1) != (*anIt2) )
-          return (*anIt1)<(*anIt2);
+          return (*anIt1)<=(*anIt2);
       }
       return anIt1 == aLast1 && anIt2 != aLast2;
     }
@@ -65,7 +65,7 @@ bool operator<( const QVariant& v1, const QVariant& v2 )
     }
   }
   return t1 < t2;
-}
+} 
 
 /*!
   \class QtxPopupMgr::PopupCreator
@@ -154,8 +154,9 @@ int QtxPopupMgr::PopupCreator::append( const QString& tag, const bool subMenu,
     }
 
     QString actLabel = strValue( attr, label );
+    QKeySequence seq = QKeySequence( strValue( attr, accel ) );
     QtxAction* newAct = new QtxAction( strValue( attr, tooltip ), set, actLabel,
-                                       QKeySequence( strValue( attr, accel ) ),
+                                       seq[0],
                                        myMgr );
     newAct->setToolTip( strValue( attr, tooltip ) );
     QString toggleact = strValue( attr, toggle );

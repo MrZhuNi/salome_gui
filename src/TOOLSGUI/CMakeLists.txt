@@ -17,11 +17,11 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-INCLUDE(UseQt4Ext)
+INCLUDE(UseQtExt)
 
 # --- options ---
 INCLUDE_DIRECTORIES(
-  ${QT_INCLUDES}
+  ${_QT_INCLUDES}
   ${CAS_INCLUDE_DIRS}
   ${OMNIORB_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
@@ -32,7 +32,7 @@ INCLUDE_DIRECTORIES(
 
 # additional preprocessor / compiler flags
 ADD_DEFINITIONS(
-  ${QT_DEFINITIONS}
+  ${_QT_DEFINITIONS}
   ${CAS_DEFINITIONS}
   ${BOOST_DEFINITIONS}
   ${OMNIORB_DEFINITIONS}
@@ -40,7 +40,7 @@ ADD_DEFINITIONS(
 
 # libraries to link to
 SET(_link_LIBRARIES
-  ${QT_LIBRARIES}
+  ${_QT_LIBRARIES}
   ${CAS_KERNEL}
   ${KERNEL_SalomeIDLKernel}
   ${KERNEL_SALOMELocalTrace}
@@ -78,7 +78,11 @@ SET(_ts_RESOURCES
 # --- sources ---
 
 # sources / moc wrappings
-QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+IF (NOT SALOME_BUILD_WITH_QT5)
+  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+ELSE()
+  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+ENDIF()
 
 # sources / static
 SET(_other_SOURCES
@@ -97,5 +101,4 @@ TARGET_LINK_LIBRARIES(ToolsGUI ${_link_LIBRARIES})
 INSTALL(TARGETS ToolsGUI EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
 
 INSTALL(FILES ${ToolsGUI_HEADERS} DESTINATION ${SALOME_INSTALL_HEADERS})
-QT4_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_GUI_INSTALL_RES_DATA}")
-
+QT_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_GUI_INSTALL_RES_DATA}")

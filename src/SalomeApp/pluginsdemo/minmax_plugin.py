@@ -25,10 +25,10 @@ def minmax(context):
   studyId = context.studyId
   sg = context.sg
 
-  from PyQt4.QtGui import QDialog
-  from PyQt4.QtGui import QMessageBox
-  from PyQt4.QtCore import Qt
-  from PyQt4.QtCore import SIGNAL
+  from PyQt5.QtGui import QDialog
+  from PyQt5.QtGui import QMessageBox
+  from PyQt5.QtCore import Qt
+  from PyQt5.QtCore import SIGNAL
 
   from minmax_dialog import Ui_Dialog
 

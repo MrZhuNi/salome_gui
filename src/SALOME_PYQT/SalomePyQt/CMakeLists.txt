@@ -17,17 +17,24 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-INCLUDE(UsePyQt4)
+INCLUDE(UsePyQt)
 IF(SALOME_USE_VTKVIEWER)
   INCLUDE(${VTK_USE_FILE})
 ENDIF()
 
 # --- options ---
+IF (NOT SALOME_BUILD_WITH_QT5)
+  SET(_QT_INCLUDES ${QT_INCLUDES})
+  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
+ELSE()
+  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES})
+  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
+ENDIF()
 
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${CAS_INCLUDE_DIRS}
-  ${QT_INCLUDES}
+  ${_QT_INCLUDES}
   ${QWT_INCLUDE_DIR}
   ${SIP_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
@@ -72,7 +79,7 @@ ENDIF(SALOME_LIGHT_ONLY)
 # additional preprocessor / compiler flags
 ADD_DEFINITIONS(
   ${QWT_DEFINITIONS}
-  ${QT_DEFINITIONS}
+  ${_QT_DEFINITIONS}
   ${CAS_DEFINITIONS}
   ${BOOST_DEFINITIONS}
   ${PYTHON_DEFINITIONS}
@@ -104,10 +111,14 @@ ENDIF(SALOME_USE_PLOT2DVIEWER)
 # --- sources ---
 
 # sources / moc wrappings
-QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+IF (NOT SALOME_BUILD_WITH_QT5)
+  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+ELSE()
+  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+ENDIF()
 
 # sources / sip wrappings
-PYQT4_WRAP_SIP(_sip_SOURCES ${_sip_files})
+PYQT_WRAP_SIP(_sip_SOURCES ${_sip_files})
 
 # sources / static
 SET(_other_SOURCES SalomePyQt.cxx)

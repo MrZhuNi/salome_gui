@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2013-2015  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,40 +16,22 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+# Author: Adrien Bruneton
+#
 
-INCLUDE(UsePyQt)
-# --- resources ---
+# PyQt5 detection for Salome
+#
+#  !! Please read the generic detection procedure in SalomeMacros.cmake !!
+#
 
-# uic files / to be processed by pyuic
-SET(_pyuic_files
-  SelectVarsDialog.ui
-  genericdialog.ui
-  mytestdialog.ui
-)
+# PyQt needs SIP, call it automatically
+FIND_PACKAGE(SalomeSIP REQUIRED)
 
-# --- scripts ---
+SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS(PyQt5 PYQT_PYUIC_EXECUTABLE 2)
+MARK_AS_ADVANCED(PYQT_PYUIC_EXECUTABLE PYQT_PYRCC_EXECUTABLE PYQT_SIPS_DIR PYQT_PYUIC_PATH PYQT_PYRCC_PATH)
 
-# scripts / pyuic wrappings
-PYQT_WRAP_UIC(_pyuic_SCRIPTS ${_pyuic_files})
-
-# scripts / static
-SET(_other_SCRIPTS 
-  __init__.py
-  genericdialog.py
-  helper.py
-  mytestdialog.py
-  selectvars.py
-  dockwidgets.py
-)
-SET(_bin_SCRIPTS
-  test_dockwidgets.py
-)
-
-# scripts / to install
-
-SET(_all_SCRIPTS ${_other_SCRIPTS} ${_pyuic_SCRIPTS})
-
-# --- rules ---
-
-SALOME_INSTALL_SCRIPTS("${_all_SCRIPTS}" ${SALOME_INSTALL_PYTHON}/salome/gui)
-SALOME_INSTALL_SCRIPTS("${_bin_SCRIPTS}" ${SALOME_INSTALL_SCRIPT_DATA})
+IF(PYQT5_FOUND) 
+  SALOME_ACCUMULATE_ENVIRONMENT(PATH ${PYQT_PYUIC_EXECUTABLE})
+  SALOME_ACCUMULATE_ENVIRONMENT(LD_LIBRARY_PATH ${PYQT_PYTHONPATH})
+  SALOME_ACCUMULATE_ENVIRONMENT(PYTHONPATH ${PYQT_PYTHONPATH})
+ENDIF()

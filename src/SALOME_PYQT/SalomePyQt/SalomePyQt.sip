@@ -28,7 +28,9 @@
 %Feature ENABLE_CORBA
 %Feature ENABLE_PLOT2D
 
-%Import QtGuimod.sip
+%Import QtGui/QtGuimod.sip
+%Import QtCore/QtCoremod.sip
+%Import QtWidgets/QtWidgetsmod.sip
 %Import QtXmlmod.sip
 
 %If (ENABLE_PLOT2D)

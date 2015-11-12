@@ -98,7 +98,7 @@
  * - get session state
  */
 
-void MessageOutput( QtMsgType type, const char* msg )
+void MessageOutput( QtMsgType type, const QMessageLogContext &context, const QString &msg )
 {
   switch ( type )
   {
@@ -106,10 +106,10 @@ void MessageOutput( QtMsgType type, const char* msg )
     //MESSAGE( "Debug: " << msg );
     break;
   case QtWarningMsg:
-    MESSAGE( "Warning: " << msg );
+    MESSAGE( "Warning: " << msg.toLatin1().data() );
     break;
   case QtFatalMsg:
-    MESSAGE( "Fatal: " << msg );
+    MESSAGE( "Fatal: " << msg.toLatin1().data() );
     break;
   }
 }
@@ -251,13 +251,13 @@ public:
   SALOME_QApplication( int& argc, char** argv ) : TestApplication( argc, argv ), myHandler ( 0 ) {}
 #else
   SALOME_QApplication( int& argc, char** argv )
-#ifndef WIN32
+//#ifndef WIN32
   // san: Opening an X display and choosing a visual most suitable for 3D visualization
   // in order to make SALOME viewers work with non-native X servers
-  : QApplication( (Display*)Qtx::getDisplay(), argc, argv, Qtx::getVisual() ),
-#else
+//  : QApplication( (Display*)Qtx::getDisplay(), argc, argv, Qtx::getVisual() ),
+//#else
   : QApplication( argc, argv ), 
-#endif
+//#endif
     myHandler ( 0 ) {}
 #endif
 
@@ -341,14 +341,14 @@ void shutdownServers( SALOME_NamingService* theNS )
 int main( int argc, char **argv )
 {
   // Install Qt debug messages handler
-  qInstallMsgHandler( MessageOutput );
+  qInstallMessageHandler( MessageOutput );
 
   //Set a "native" graphic system in case if application runs on the remote host
   QString remote(getenv("REMOTEHOST"));
   QString client(getenv("SSH_CLIENT"));
-  if(remote.length() > 0 || client.length() > 0 ) {
+  /*if(remote.length() > 0 || client.length() > 0 ) {
     QApplication::setGraphicsSystem(QLatin1String("native"));
-  }
+  }*/
   
   // add $QTDIR/plugins to the pluins search path for image plugins
   QString qtdir = qgetenv( "QT_ROOT_DIR" );
@@ -379,7 +379,7 @@ int main( int argc, char **argv )
   _qappl.setApplicationVersion( salomeVersion() );
 
   // Add application library path (to search style plugin etc...)
-  QString path = QDir::convertSeparators( SUIT_Tools::addSlash( QString( ::getenv( "GUI_ROOT_DIR" ) ) ) + QString( "bin/salome" ) );
+  QString path = QDir::toNativeSeparators( SUIT_Tools::addSlash( QString( ::getenv( "GUI_ROOT_DIR" ) ) ) + QString( "bin/salome" ) );
   _qappl.addLibraryPath( path );
 
   bool isGUI    = isFound( "GUI",    argc, argv );

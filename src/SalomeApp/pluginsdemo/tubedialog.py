@@ -19,8 +19,8 @@
 # Author : Guillaume Boulant (EDF)
 
 import sys
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtCore
 
 from tubedialog_ui import TubeDialog_UI
 

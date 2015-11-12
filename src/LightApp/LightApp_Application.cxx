@@ -2013,7 +2013,7 @@ QWidget* LightApp_Application::createWindow( const int flag )
     // Create OBSelector
     new LightApp_OBSelector( ob, mySelMgr );
 
-    ob->treeView()->header()->setResizeMode(SUIT_DataObject::VisibilityId, QHeaderView::Fixed);
+    ob->treeView()->header()->setSectionResizeMode(SUIT_DataObject::VisibilityId, QHeaderView::Fixed);
     ob->treeView()->header()->moveSection(SUIT_DataObject::NameId,SUIT_DataObject::VisibilityId);
     ob->treeView()->setColumnWidth(SUIT_DataObject::VisibilityId, VISIBILITY_COLUMN_WIDTH);
     ob->setProperty( "shortcut", QKeySequence( "Alt+Shift+O" ) );
@@ -4008,14 +4008,14 @@ void LightApp_Application::saveDockWindowsState()
   QMap<QString, bool> tbMap, dwMap;
   dockWindowsState( visArr, tbMap, dwMap );
 
-  QList<QToolBar*> tbList = qFindChildren<QToolBar*>( desktop() );
+  QList<QToolBar*> tbList = desktop()->findChildren<QToolBar*>();
   for ( QList<QToolBar*>::iterator it = tbList.begin(); it != tbList.end(); ++it )
   {
     QToolBar* tb = *it;
     tbMap.insert( tb->objectName(), tb->toggleViewAction()->isChecked() );
   }
 
-  QList<QDockWidget*> dwList = qFindChildren<QDockWidget*>( desktop() );
+  QList<QDockWidget*> dwList = desktop()->findChildren<QDockWidget*>();
   for ( QList<QDockWidget*>::iterator it = dwList.begin(); it != dwList.end(); ++it )
   {
     QDockWidget* wid = *it;
@@ -4802,7 +4802,7 @@ void LightApp_Application::onDesktopMessage( const QString& message )
 QList<QToolBar*> LightApp_Application::findToolBars( const QStringList& names )
 {
   QList<QToolBar*> aResult;
-  QList<QToolBar*> tbList = qFindChildren<QToolBar*>( desktop() );
+  QList<QToolBar*> tbList = desktop()->findChildren<QToolBar*>();
   for ( QList<QToolBar*>::iterator tit = tbList.begin(); tit != tbList.end(); ++tit ) {
     QToolBar* tb = *tit;    
     QObject* po = Qtx::findParent( tb, "QMainWindow" );

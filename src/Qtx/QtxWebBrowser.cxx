@@ -43,7 +43,7 @@
 #include <QStatusBar>
 #include <QToolBar>
 #include <QVBoxLayout>
-#include <QWebView>
+#include <QtWebKit/QWebView>
 #include <QProcess>
 
 namespace

@@ -17,14 +17,21 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-INCLUDE(UseQt4Ext)
-
 # --- options ---
+IF (NOT SALOME_BUILD_WITH_QT5)
+  SET(_QT_INCLUDES ${QT_INCLUDES})
+  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
+  SET(_QT_LIBRARIES ${QT_LIBRARIES})
+ELSE()
+  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES})
+  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
+  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
+ENDIF()
 
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${CAS_INCLUDE_DIRS}
-  ${QT_INCLUDES}
+  ${_QT_INCLUDES}
   ${PROJECT_SOURCE_DIR}/src/Qtx
   ${PROJECT_SOURCE_DIR}/src/SUIT
   ${PROJECT_SOURCE_DIR}/src/OBJECT
@@ -34,11 +41,11 @@ INCLUDE_DIRECTORIES(
 )
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${QT_DEFINITIONS} ${CAS_DEFINITIONS} ${OGL_DEFINITIONS})
+ADD_DEFINITIONS(${_QT_DEFINITIONS} ${CAS_DEFINITIONS} ${OGL_DEFINITIONS})
 
 # libraries to link to
 SET(_link_LIBRARIES
-  ${QT_LIBRARIES} ${CAS_KERNEL} ${CAS_VIEWER}
+  ${_QT_LIBRARIES} ${CAS_KERNEL} ${CAS_VIEWER}
   qtx suit SalomeObject SalomePrs OCCViewer
 )
 
@@ -62,7 +69,11 @@ SET(SOCC_HEADERS ${_moc_HEADERS} ${_other_HEADERS})
 # --- sources ---
 
 # sources / moc wrappings
-QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+IF (NOT SALOME_BUILD_WITH_QT5)
+  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+ELSE()
+  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+ENDIF()
 
 # sources / static
 SET(_other_SOURCES

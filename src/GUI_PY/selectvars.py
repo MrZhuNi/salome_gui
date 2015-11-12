@@ -21,8 +21,8 @@
 #
 
 import os
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import Qt
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtCore import Qt
 
 import salome
 from salome.kernel.studyedit import getStudyEditor

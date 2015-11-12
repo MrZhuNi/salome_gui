@@ -70,10 +70,10 @@ QtxTranslator::~QtxTranslator()
   \param comment message comment (optional)
   \return Translated text if found or \a sourceText otherwise
 */
-QString QtxTranslator::translate( const char* context, const char* sourceText, const char* comment ) const
+QString QtxTranslator::translate( const char* context, const char* sourceText, const char* comment, int n ) const
 {
-  QString res = QTranslator::translate( context, sourceText, comment );
+  QString res = QTranslator::translate( context, sourceText, comment, n );
   if( res.isNull() )
-    res = QTranslator::translate( GLOBAL_CONTEXT, sourceText, comment );
+    res = QTranslator::translate( GLOBAL_CONTEXT, sourceText, comment, n );
   return res;
 }

@@ -439,24 +439,24 @@ QVTK_RenderWindowInteractor
 #endif
 }
 
-
+/*
 #ifdef WIN32
 
 /*!
   To handle native Win32 events (from such devices as SpaceMouse)
 */
-bool QVTK_RenderWindowInteractor::winEvent( MSG* msg, long* result )
+/*bool QVTK_RenderWindowInteractor::winEvent( MSG* msg, long* result )
 {
   // TODO: Implement event handling for SpaceMouse
   return QWidget::winEvent( msg, result);
 }
 
 #else
-
+*/
 /*!
   To handle native X11 events (from such devices as SpaceMouse)
 */
-bool 
+/*bool 
 QVTK_RenderWindowInteractor
 ::x11Event( XEvent *xEvent )
 {
@@ -485,8 +485,7 @@ QVTK_RenderWindowInteractor
   return QWidget::x11Event( xEvent );
 }
 
-#endif
-
+#endif */
 /*!
   Constructor
 */

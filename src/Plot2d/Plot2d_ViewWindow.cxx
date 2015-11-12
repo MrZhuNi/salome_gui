@@ -46,8 +46,8 @@
 #include <QPaintEvent>
 #include <QActionGroup>
 #include <QPainter>
-#include <QPrinter>
-#include <QPrintDialog>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
 
 #include <qwt_plot_curve.h>
 

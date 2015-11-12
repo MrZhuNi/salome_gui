@@ -84,7 +84,7 @@ SalomeApp_ListView::SalomeApp_ListView( QWidget* parent )
   setRootIsDecorated(false);
   setAllColumnsShowFocus(false);
 //  header()->setClickEnabled(false);
-  header()->setMovable(false);
+  header()->setSectionsMovable(false);
 
   myEditedItem = 0;
   myEdit = 0;

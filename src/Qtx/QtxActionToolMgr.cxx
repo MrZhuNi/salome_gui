@@ -229,7 +229,7 @@ QToolBar* QtxActionToolMgr::find( const QString& title, QMainWindow* mw ) const
   QString pattern = title.toLower();
 
   QToolBar* res = 0;
-  QList<QToolBar*> toolbars = qFindChildren<QToolBar*>( mw );
+  QList<QToolBar*> toolbars = mw->findChildren<QToolBar*>( );
   for ( QList<QToolBar*>::iterator it = toolbars.begin(); it != toolbars.end() && !res; ++it )
   {
     if ( (*it)->windowTitle().toLower() == pattern )
@@ -858,7 +858,7 @@ int QtxActionToolMgr::ToolCreator::append( const QString& tag, const bool /*subM
       set = QIcon( pix );
 
     QtxAction* newAct = new QtxAction( strValue( attr, tooltip ), set, strValue( attr, label ),
-                                       QKeySequence( strValue( attr, accel ) ), myMgr );
+                                       QKeySequence( strValue( attr, accel ) )[0], myMgr );
     QString toggleact = strValue( attr, toggle );
     newAct->setCheckable( !toggleact.isEmpty() );
     newAct->setChecked( toggleact.toLower() == "true" );

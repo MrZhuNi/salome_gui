@@ -43,15 +43,15 @@ GraphicsView_Object::GraphicsView_Object( QGraphicsItem* theParent )
 //=======================================================================
 GraphicsView_Object::~GraphicsView_Object()
 {
-  QListIterator<QGraphicsItem*> aChildIter( children() );
-  while( aChildIter.hasNext() )
+  QList<QGraphicsItem *> aList = childItems();
+  for( QList<QGraphicsItem *>::const_iterator aChild = aList.begin(); aChild != aList.end(); ++aChild )
   {
-    if( QGraphicsItem* aChild = aChildIter.next() )
+    if( *aChild )
     {
-      removeFromGroup( aChild );
-      if( QGraphicsScene* aScene = aChild->scene() )
-        aScene->removeItem( aChild );
-      delete aChild;
+      removeFromGroup( *aChild );
+      if( QGraphicsScene* aScene = (*aChild)->scene() )
+        aScene->removeItem( *aChild );
+      delete ( *aChild );
       aChild = 0;
     }
   }

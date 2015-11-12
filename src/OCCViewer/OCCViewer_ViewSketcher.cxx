@@ -298,7 +298,7 @@ void OCCViewer_RectSketcher::onSketch( SketchState state )
 
   if ( state == Fin )
   {
-    QApplication::syncX();  /* force rectangle redrawing */
+    QApplication::sync();  /* force rectangle redrawing */
     mypViewWindow->activateSketching( OCCViewer_ViewWindow::NoSketching );
   }
 }
@@ -515,7 +515,7 @@ void OCCViewer_PolygonSketcher::onSketch( SketchState state )
         mypPolyRB->clearGeometry();
         mypPolyRB->hide();
       }
-    QApplication::syncX();
+    QApplication::sync();
     mypViewWindow->activateSketching( OCCViewer_ViewWindow::NoSketching );
   }
 }

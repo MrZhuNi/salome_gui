@@ -252,8 +252,12 @@ void Session_ServerCheck::run()
   // start check servers
   int current = 0;
   QString error;
-  int    argc = QApplication::instance()->argc();
-  char** argv = QApplication::instance()->argv();
+  int argc = QApplication::instance()->arguments().size();
+  char* argv[argc];
+  for ( int i = 0; i < argc; ++i)
+  {
+    argv[i] = QApplication::instance()->arguments()[i].toLatin1().data();
+  }
 
   // 1. Check naming service
   for ( int i = 0; i < myAttempts; i++ ) {

@@ -25,7 +25,7 @@
 
 #include "Style.h"
 
-#include <QWindowsStyle>
+#include <QCommonStyle>
 
 class Style_Model;
 
@@ -34,7 +34,7 @@ class QWidget;
 class QPainter;
 class QtxResourceMgr;
 
-class STYLE_SALOME_EXPORT Style_Salome : public QWindowsStyle
+class STYLE_SALOME_EXPORT Style_Salome : public QCommonStyle
 {
   Q_OBJECT
 

@@ -58,7 +58,7 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QContextMenuEvent>
-#include <QPrinter>
+#include <QtPrintSupport/QPrinter>
 #include <QPalette>
 #include <QLocale>
 #include <QXmlStreamWriter>
@@ -78,7 +78,7 @@
 
 #include <stdlib.h>
 #include <limits>
-#include <qprinter.h>
+#include <QtPrintSupport/qprinter.h>
 
 #include <qwt_legend.h>
 #include <qwt_scale_widget.h>
@@ -1642,7 +1642,7 @@ void Plot2d_ViewFrame::getFitRangeByMarkers(double& xMin,  double& xMax,
 */
 int Plot2d_ViewFrame::testOperation( const QMouseEvent& me )
 {
-  int btn = me.button() | me.modifiers();
+  int btn = me.buttons() | me.modifiers();
   const int zoomBtn = Qt::ControlModifier | Qt::LeftButton;
   const int panBtn  = Qt::ControlModifier | Qt::MidButton;
   const int fitBtn  = Qt::ControlModifier | Qt::RightButton;
@@ -2683,7 +2683,7 @@ void Plot2d_ViewFrame::plotMousePressed( const QMouseEvent& me )
     }
   }
   else {
-    int btn = me.button() | me.modifiers();
+    int btn = me.buttons() | me.modifiers();
     if (btn == Qt::RightButton) {
       QMouseEvent* aEvent = new QMouseEvent(QEvent::MouseButtonPress,
                                             me.pos(), me.button(), me.buttons(), me.modifiers() );

@@ -73,7 +73,7 @@ SUIT_ViewWindow* STD_MDIDesktop::activeWindow() const
 {
   SUIT_ViewWindow* wnd = 0;
 
-  QWidget* wid = myWorkspace->activeWindow();
+  QWidget* wid = (QWidget*)myWorkspace->activeSubWindow();
   if ( wid && wid->inherits( "SUIT_ViewWindow" ) )
     wnd = (SUIT_ViewWindow*)wid;
 
@@ -87,10 +87,10 @@ QList<SUIT_ViewWindow*> STD_MDIDesktop::windows() const
 {
   QList<SUIT_ViewWindow*> winList;
 
-  QWidgetList children = myWorkspace->windowList();
-  for ( QWidgetList::iterator it = children.begin(); it != children.end(); ++it )
+  QList<QMdiSubWindow *> children = myWorkspace->subWindowList();
+  for ( QList<QMdiSubWindow *>::iterator it = children.begin(); it != children.end(); ++it )
   {
-    SUIT_ViewWindow* vw = ::qobject_cast<SUIT_ViewWindow*>( *it );
+    SUIT_ViewWindow* vw = ::qobject_cast<SUIT_ViewWindow*>( (QWidget*)(*it) );
     if ( vw )
       winList.append( vw );
   }
@@ -106,7 +106,7 @@ void STD_MDIDesktop::addWindow( QWidget* w )
   if ( !w || !workspace() )
     return;
 
-  workspace()->addWindow( w );
+  workspace()->addSubWindow( w );
 }
 
 /*!Call method perform for operation \a type.*/

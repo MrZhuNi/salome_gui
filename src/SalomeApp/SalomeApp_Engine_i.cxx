@@ -305,7 +305,13 @@ CORBA::ORB_var SalomeApp_Engine_i::orb()
   ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
   // TODO: using QApplication here looks ugly, think how to
   // obtain the ORB reference in a nicer way...
-  static CORBA::ORB_var _orb = init( qApp->argc(), qApp->argv() );
+  int size = qApp->arguments().size();
+  char* argv[size];
+  for ( int i = 0; i < size; ++i)
+  {
+    argv[i] = qApp->arguments()[i].toLatin1().data();
+  }
+  static CORBA::ORB_var _orb = init( size, argv );
   return _orb;
 }
 

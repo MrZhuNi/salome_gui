@@ -17,13 +17,21 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-INCLUDE(UseQt4Ext)
-
+INCLUDE(UseQtExt)
+IF (NOT SALOME_BUILD_WITH_QT5)
+  SET(_QT_INCLUDES ${QT_INCLUDES})
+  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
+  SET(_QT_LIBRARIES ${QT_LIBRARIES})
+ELSE()
+  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES})
+  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
+  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
+ENDIF()
 # --- options ---
 
 # additional include directories
 INCLUDE_DIRECTORIES(
-  ${QT_INCLUDES}
+  ${_QT_INCLUDES}
   ${CAS_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR}/src/Qtx
   ${PROJECT_SOURCE_DIR}/src/SUIT
@@ -31,10 +39,10 @@ INCLUDE_DIRECTORIES(
 )
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${CAS_DEFINITIONS} ${QT_DEFINITIONS})
+ADD_DEFINITIONS(${CAS_DEFINITIONS} ${_QT_DEFINITIONS})
 
 # libraries to link to
-SET(_link_LIBRARIES ${QT_LIBRARIES} ${CAS_OCAF} ${CAS_OCAFVIS} qtx suit std)
+SET(_link_LIBRARIES ${_QT_LIBRARIES} ${CAS_OCAF} ${CAS_OCAFVIS} qtx suit std)
 
 # --- headers ---
 
@@ -66,7 +74,11 @@ SET(_ts_RESOURCES
 # --- sources ---
 
 # sources / moc wrappings
-QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+IF (NOT SALOME_BUILD_WITH_QT5)
+  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+ELSE()
+  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+ENDIF()
 
 # sources / static
 SET(_other_SOURCES
@@ -82,8 +94,8 @@ SET(caf_SOURCES ${_other_SOURCES} ${_moc_SOURCES})
 # --- rules ---
 
 ADD_LIBRARY(caf ${caf_SOURCES})
-TARGET_LINK_LIBRARIES(caf ${QT_LIBRARIES} ${_link_LIBRARIES})
+TARGET_LINK_LIBRARIES(caf ${_QT_LIBRARIES} ${_link_LIBRARIES})
 INSTALL(TARGETS caf EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
 
 INSTALL(FILES ${caf_HEADERS} DESTINATION ${SALOME_INSTALL_HEADERS})
-QT4_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_GUI_INSTALL_RES_DATA}")
+QT_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_GUI_INSTALL_RES_DATA}")
