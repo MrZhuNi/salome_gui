@@ -64,9 +64,9 @@ SET(PyInterp_HEADERS ${_other_HEADERS})
 
 # sources / moc wrappings
 IF (NOT SALOME_BUILD_WITH_QT5)
-  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+  QT4_WRAP_CPP(_moc_SOURCES ${_moc_internal_HEADERS})
 ELSE()
-  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
+  QT5_WRAP_CPP(_moc_SOURCES ${_moc_internal_HEADERS})
 ENDIF()
 
 # sources / static
