@@ -66,16 +66,25 @@ ADD_CUSTOM_COMMAND( OUTPUT GDialogTest.cxx  GDialogTest.h  GDialogTest.ui
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/dlgfactory.py -s -n GDialogTest -t gdialog
   )
 
-QT5_WRAP_UI(qtester_FORMS_HEADERS ${qtester_FORMS} )
-QT5_WRAP_CPP(qtester_HEADERS_MOC ${qtester_HEADERS})
+IF (NOT SALOME_BUILD_WITH_QT5)
+  QT4_WRAP_UI(qtester_FORMS_HEADERS ${qtester_FORMS} )
+  QT4_WRAP_CPP(qtester_HEADERS_MOC ${qtester_HEADERS})
 
+  QT4_WRAP_UI(gtester_FORMS_HEADERS ${gtester_FORMS} )
+  QT4_WRAP_CPP(gtester_HEADERS_MOC ${gtester_HEADERS})
 
-QT5_WRAP_UI(gtester_FORMS_HEADERS ${gtester_FORMS} )
-QT5_WRAP_CPP(gtester_HEADERS_MOC ${gtester_HEADERS})
+  QT4_WRAP_UI(GenericDialog_FORMS_HEADERS ${GenericDialog_FORMS} )
+  QT4_WRAP_CPP(GenericDialog_HEADERS_MOC ${GenericDialog_HEADERS})
+ELSE()
+  QT5_WRAP_UI(qtester_FORMS_HEADERS ${qtester_FORMS} )
+  QT5_WRAP_CPP(qtester_HEADERS_MOC ${qtester_HEADERS})
 
-QT5_WRAP_UI(GenericDialog_FORMS_HEADERS ${GenericDialog_FORMS} )
-QT5_WRAP_CPP(GenericDialog_HEADERS_MOC ${GenericDialog_HEADERS})
+  QT5_WRAP_UI(gtester_FORMS_HEADERS ${gtester_FORMS} )
+  QT5_WRAP_CPP(gtester_HEADERS_MOC ${gtester_HEADERS})
 
+  QT5_WRAP_UI(GenericDialog_FORMS_HEADERS ${GenericDialog_FORMS} )
+  QT5_WRAP_CPP(GenericDialog_HEADERS_MOC ${GenericDialog_HEADERS})
+ENDIF()
 ADD_EXECUTABLE(qtester ${qtester_SOURCES} 
     ${qtester_HEADERS_MOC} 
     ${qtester_FORMS_HEADERS}
