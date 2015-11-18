@@ -40,7 +40,9 @@
 #include <qwt_legend_label.h>
 #include <qwt_plot_dict.h>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <qdrawutil.h>
+#endif
 
 const int SPACING = 10;
 const int SYMBOL_SIZE = 13;

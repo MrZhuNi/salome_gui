@@ -1442,7 +1442,9 @@ void QtxDialog::reject()
 void QtxDialog::emitSignal()
 {
   QApplication::instance()->processEvents();
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  QApplication::syncX();
+#endif
   int id = buttonId( (QAbstractButton*)mySender );
   mySender = 0;
 

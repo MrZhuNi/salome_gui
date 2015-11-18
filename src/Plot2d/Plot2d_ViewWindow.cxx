@@ -46,8 +46,13 @@
 #include <QPaintEvent>
 #include <QActionGroup>
 #include <QPainter>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QPrinter>
+#include <QPrintDialog>
+#else
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
+#endif
 
 #include <qwt_plot_curve.h>
 

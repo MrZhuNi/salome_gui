@@ -32,7 +32,11 @@
 #include <vtkRendererCollection.h>
 #include <vtkCamera.h>
 #ifndef WIN32
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QX11Info>
+#else
 #include <QtGui/QX11Info>
+#endif
 #include <vtkXOpenGLRenderWindow.h>
 //#include <GL/gl.h>
 //#include <GL/glu.h>

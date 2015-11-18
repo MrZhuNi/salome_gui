@@ -61,7 +61,9 @@
 #include <QPixmapCache>
 
 #include <limits.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <qdrawutil.h>
+#endif
 
 #define SHADOW          1
 #define LINE_GR_MARGIN  10
@@ -204,7 +206,11 @@ Style_Model* Style_Salome::myModel = 0;
   Use Style_Salome::apply() static function to set SALOME style to the application.
 */
 Style_Salome::Style_Salome()
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  : QWindowsStyle()
+#else
   : QCommonStyle()
+#endif
 {
   // initialize SALOME style resources
   Q_INIT_RESOURCE( Style );
@@ -324,7 +330,11 @@ Style_Model* Style_Salome::model()
 */
 void Style_Salome::polish ( QApplication* app )
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  QWindowsStyle::polish( app );
+#else
   QCommonStyle::polish( app );
+#endif
 
   if ( checkDebugLevel(1) ) {
     return;
@@ -346,7 +356,11 @@ void Style_Salome::polish ( QApplication* app )
 void Style_Salome::polish ( QWidget* w )
 {
   if ( checkDebugLevel(2) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QWindowsStyle::polish( w );
+#else
     QCommonStyle::polish( w );
+#endif
     return;
   }
 
@@ -360,7 +374,11 @@ void Style_Salome::polish ( QWidget* w )
       w->setAttribute( Qt::WA_Hover );
   }
 
-  QCommonStyle::polish( w );
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QWindowsStyle::polish( w );
+#else
+    QCommonStyle::polish( w );
+#endif
 }
 
 /*!
@@ -376,7 +394,11 @@ void Style_Salome::polish ( QWidget* w )
 void Style_Salome::unpolish( QWidget* w )
 {
   if ( checkDebugLevel(3) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QWindowsStyle::unpolish( w );
+#else
     QCommonStyle::unpolish( w );
+#endif
     return;
   }
 
@@ -390,7 +412,11 @@ void Style_Salome::unpolish( QWidget* w )
       w->setAttribute( Qt::WA_Hover, false );
   }
 
-  QCommonStyle::unpolish( w );
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QWindowsStyle::unpolish( w );
+#else
+    QCommonStyle::unpolish( w );
+#endif
 }
 
 /*!
@@ -404,7 +430,11 @@ void Style_Salome::drawComplexControl( ComplexControl cc, const QStyleOptionComp
                                        QPainter* p, const QWidget* w ) const
 {
   if ( checkDebugLevel(4) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QWindowsStyle::drawComplexControl( cc, opt, p, w );
+#else
     QCommonStyle::drawComplexControl( cc, opt, p, w );
+#endif
     return;
   }
 
@@ -556,7 +586,11 @@ void Style_Salome::drawComplexControl( ComplexControl cc, const QStyleOptionComp
             if ((slider->subControls & SC_SliderGroove) && groove.isValid()) {
               QStyleOptionSlider tmpSlider = *slider;
               tmpSlider.subControls = SC_SliderGroove;
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+              QWindowsStyle::drawComplexControl(cc, &tmpSlider, p, w);
+#else
               QCommonStyle::drawComplexControl(cc, &tmpSlider, p, w);
+#endif
             }
             if (slider->subControls & SC_SliderTickmarks) {
               QStyleOptionSlider tmpSlider = *slider;
@@ -627,7 +661,11 @@ void Style_Salome::drawComplexControl( ComplexControl cc, const QStyleOptionComp
         if (w && ( qobject_cast<QToolBar *>(w->parentWidget() ) || 
                    ( toolbutton->state & State_AutoRaise && !( toolbutton->state & State_MouseOver ) ) )
             ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+          QWindowsStyle::drawComplexControl( cc, opt, p, w );
+#else
           QCommonStyle::drawComplexControl( cc, opt, p, w );
+#endif
           return;
         }
         int aMinDelta = (int)model()->widgetRounding( Style_Model::ButtonRadius );
@@ -709,7 +747,11 @@ void Style_Salome::drawComplexControl( ComplexControl cc, const QStyleOptionComp
       }
     }
     case CC_TitleBar: {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+      QWindowsStyle::drawComplexControl( cc, opt, p, w );
+#else
       QCommonStyle::drawComplexControl( cc, opt, p, w );
+#endif
       break;
     }
     case CC_GroupBox:
@@ -759,11 +801,19 @@ void Style_Salome::drawComplexControl( ComplexControl cc, const QStyleOptionComp
         break;
       }
     case CC_Dial: {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+      QWindowsStyle::drawComplexControl( cc, opt, p, w );
+#else
       QCommonStyle::drawComplexControl( cc, opt, p, w );
+#endif
       break;
     }
     default:
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+      QWindowsStyle::drawComplexControl( cc, opt, p, w );
+#else
       QCommonStyle::drawComplexControl( cc, opt, p, w );
+#endif
   }
 }
 
@@ -778,7 +828,11 @@ void Style_Salome::drawControl( ControlElement ce, const QStyleOption* opt,
                                QPainter* p, const QWidget* w ) const
 {
   if ( checkDebugLevel(5) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+	QWindowsStyle::drawControl( ce, opt, p, w );
+#else
     QCommonStyle::drawControl( ce, opt, p, w );
+#endif
     return;
   }
 
@@ -907,7 +961,11 @@ void Style_Salome::drawControl( ControlElement ce, const QStyleOption* opt,
           break;
         }
     case CE_Splitter: {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+	  QWindowsStyle::drawControl( ce, opt, p, w );
+#else
       QCommonStyle::drawControl( ce, opt, p, w );
+#endif
       QRect r = opt->rect;
       bool horiz = r.width() > r.height();
       int aLen = model()->splitHandleLength();
@@ -945,7 +1003,7 @@ void Style_Salome::drawControl( ControlElement ce, const QStyleOption* opt,
                                 aBrdTopCol, aBrdBotCol, isSelected, isLast, isHover );
           p->restore();
         } else
-           QCommonStyle::drawControl(ce, opt, p, w);
+           QCommonStyle::drawControl( ce, opt, p, w );
         break;
       }
     case CE_TabBarTabLabel:
@@ -964,10 +1022,18 @@ void Style_Salome::drawControl( ControlElement ce, const QStyleOption* opt,
           }
           QStyleOptionTab* copyTab = (QStyleOptionTab*)tab;
           copyTab->rect = oldRect;
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+          QWindowsStyle::drawControl( ce, copyTab, p, w );
+#else
           QCommonStyle::drawControl( ce, copyTab, p, w );
+#endif
         }
         else
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+          QWindowsStyle::drawControl( ce, opt, p, w );
+#else
           QCommonStyle::drawControl( ce, opt, p, w );
+#endif
         break;
       }
     case CE_MenuBarItem:
@@ -1496,7 +1562,11 @@ void Style_Salome::drawControl( ControlElement ce, const QStyleOption* opt,
     break;
   }
   default:
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QWindowsStyle::drawControl( ce, opt, p, w );
+#else
     QCommonStyle::drawControl( ce, opt, p, w );
+#endif
     break;
   }
 }
@@ -1512,7 +1582,11 @@ void Style_Salome::drawPrimitive( PrimitiveElement pe, const QStyleOption* opt,
                                   QPainter* p, const QWidget* w ) const
 {
   if ( checkDebugLevel(6) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QWindowsStyle::drawPrimitive( pe, opt, p, w );
+#else
     QCommonStyle::drawPrimitive( pe, opt, p, w );
+#endif
     return;
   }
 
@@ -1552,7 +1626,11 @@ void Style_Salome::drawPrimitive( PrimitiveElement pe, const QStyleOption* opt,
         break;
       }
       else
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+        QWindowsStyle::drawPrimitive( pe, opt, p, w );
+#else
         QCommonStyle::drawPrimitive( pe, opt, p, w );
+#endif
     }
     break;
     case PE_FrameFocusRect: {
@@ -1568,7 +1646,11 @@ void Style_Salome::drawPrimitive( PrimitiveElement pe, const QStyleOption* opt,
                               aBrdTopCol, aBrdBotCol, false, false, isHover, true );
       }
       else {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+        QWindowsStyle::drawPrimitive( pe, opt, p, w );
+#else
         QCommonStyle::drawPrimitive( pe, opt, p, w );
+#endif
       }
       break;
     }
@@ -1832,7 +1914,11 @@ void Style_Salome::drawPrimitive( PrimitiveElement pe, const QStyleOption* opt,
       break;
     }
     case PE_Widget: {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+      QWindowsStyle::drawPrimitive( pe, opt, p, w );
+#else
       QCommonStyle::drawPrimitive( pe, opt, p, w );
+#endif
       if ( !w )
         break;
       if( w->parent() && !qobject_cast<QMenuBar*>((QWidget*)w) )
@@ -1846,7 +1932,11 @@ void Style_Salome::drawPrimitive( PrimitiveElement pe, const QStyleOption* opt,
           = qstyleoption_cast<const QStyleOptionTabBarBase *>(opt)) {
         if (tbb->shape != QTabBar::RoundedNorth && tbb->shape != QTabBar::RoundedEast &&
             tbb->shape != QTabBar::RoundedSouth && tbb->shape != QTabBar::RoundedWest) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+          QWindowsStyle::drawPrimitive( pe, opt, p, w );
+#else
           QCommonStyle::drawPrimitive( pe, opt, p, w );
+#endif
           break;
         }
         QRect aSelRect = tbb->selectedTabRect;
@@ -1962,11 +2052,19 @@ void Style_Salome::drawPrimitive( PrimitiveElement pe, const QStyleOption* opt,
         aPal.setBrush( QPalette::AlternateBase, QBrush( gr_alt ) );
         aWdg->setPalette( aPal );
       }
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+      QWindowsStyle::drawPrimitive( pe, opt, p, w );
+#else
       QCommonStyle::drawPrimitive( pe, opt, p, w );
+#endif
       break;
     }
     default:
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+      QWindowsStyle::drawPrimitive( pe, opt, p, w );
+#else
       QCommonStyle::drawPrimitive( pe, opt, p, w );
+#endif
   }
 }
 
@@ -1981,10 +2079,17 @@ int Style_Salome::pixelMetric( PixelMetric metric, const QStyleOption* opt,
                                const QWidget* w ) const
 {
   if ( checkDebugLevel(7) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    return QWindowsStyle::pixelMetric( metric, opt, w );
+#else
     return QCommonStyle::pixelMetric( metric, opt, w );
+#endif
   }
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  int aRes = QWindowsStyle::pixelMetric( metric, opt, w );
+#else
   int aRes = QCommonStyle::pixelMetric( metric, opt, w );
+#endif
   switch( metric ) {
     case PM_SliderLength: {
       aRes += (int)((double)model()->sliderSize()/2);
@@ -2021,10 +2126,17 @@ QSize Style_Salome::sizeFromContents( ContentsType ct, const QStyleOption* opt,
                                       const QSize& contentsSize, const QWidget* w ) const
 {
   if ( checkDebugLevel(8) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    return QWindowsStyle::sizeFromContents( ct, opt,contentsSize, w );
+#else
     return QCommonStyle::sizeFromContents( ct, opt,contentsSize, w );
+#endif
   }
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  QSize sz = QWindowsStyle::sizeFromContents( ct, opt, contentsSize, w );
+#else
   QSize sz = QCommonStyle::sizeFromContents( ct, opt, contentsSize, w );
+#endif
   switch (ct) {
     case CT_TabBarTab:
       if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(opt)) {
@@ -2053,8 +2165,13 @@ QSize Style_Salome::sizeFromContents( ContentsType ct, const QStyleOption* opt,
           QRect res = QRect( 0, 0, sz.width(), sz.height() );
           int aHalfRect = (int)Style_Tools::getMaxRect( res, 
                              (int)model()->widgetRounding( Style_Model::EditRadius )/2 ); // left value
-          QRect old_arrow = QCommonStyle::subControlRect( CC_ComboBox, cmb,
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+          QRect old_arrow = QWindowsStyle::subControlRect( CC_ComboBox, cmb,
                                                            SC_ComboBoxArrow, w );
+#else
+          QRect old_arrow = QCommonStyle::subControlRect( CC_ComboBox, cmb,
+                                                          SC_ComboBoxArrow, w );
+#endif
           int aDelta = res.height() - old_arrow.width(); // right value
           if ( cmb->editable )
             aDelta += aHalfRect; // for right of line edit internal
@@ -2078,7 +2195,11 @@ QPixmap Style_Salome::standardPixmap(StandardPixmap stPixmap, const QStyleOption
                                      const QWidget *w) const
 {
   if ( checkDebugLevel(9) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    return QWindowsStyle::standardPixmap( stPixmap, opt, w );
+#else
     return QCommonStyle::standardPixmap( stPixmap, opt, w );
+#endif
   }
 
   switch ( stPixmap )
@@ -2093,7 +2214,11 @@ QPixmap Style_Salome::standardPixmap(StandardPixmap stPixmap, const QStyleOption
   case SP_TitleBarMinButton:
     return QPixmap( minimize_xpm );
   default:
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    return QWindowsStyle::standardPixmap( stPixmap, opt, w );
+#else
     return QCommonStyle::standardPixmap( stPixmap, opt, w );
+#endif
   }
 }
 
@@ -2109,7 +2234,11 @@ QIcon Style_Salome::standardIconImplementation( StandardPixmap standardIcon,
                                                 const QWidget* w ) const
 {
   if ( checkDebugLevel(10) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    return QWindowsStyle::standardIconImplementation( standardIcon, opt, w );
+#else
     return QCommonStyle::standardIcon( standardIcon, opt, w );
+#endif
   }
 
   switch ( standardIcon )
@@ -2125,7 +2254,11 @@ QIcon Style_Salome::standardIconImplementation( StandardPixmap standardIcon,
   default:
     break;
   }
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  return QWindowsStyle::standardIconImplementation( standardIcon, opt, w );
+#else
   return QCommonStyle::standardIcon( standardIcon, opt, w );
+#endif
 }
 
 /*!
@@ -2141,10 +2274,17 @@ int Style_Salome::styleHint( StyleHint hint, const QStyleOption* opt, const QWid
                             QStyleHintReturn* returnData ) const
 {
   if ( checkDebugLevel(11) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    return QWindowsStyle::styleHint( hint, opt, w, returnData );
+#else
     return QCommonStyle::styleHint( hint, opt, w, returnData );
+#endif
   }
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  int aRes = QWindowsStyle::styleHint( hint, opt, w, returnData );
+#else
   int aRes = QCommonStyle::styleHint( hint, opt, w, returnData );
+#endif
   switch( hint ) {
     case SH_Table_GridLineColor: {
       if ( opt )
@@ -2173,15 +2313,26 @@ QRect Style_Salome::subControlRect( ComplexControl cc, const QStyleOptionComplex
                                     SubControl sc, const QWidget* wid ) const
 {
   if ( checkDebugLevel(12) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    return QWindowsStyle::subControlRect( cc, opt, sc, wid );
+#else
     return QCommonStyle::subControlRect( cc, opt, sc, wid );
+#endif
   }
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  QRect res = QWindowsStyle::subControlRect( cc, opt, sc, wid );
+#else
   QRect res = QCommonStyle::subControlRect( cc, opt, sc, wid );
+#endif
   switch ( cc ) {
     case CC_SpinBox: {
       int x = res.x(), w = res.width(), h = res.height();
       if ( sc==SC_SpinBoxUp || sc==SC_SpinBoxDown ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+        QRect frame_r = QWindowsStyle::subControlRect( cc, opt, SC_SpinBoxFrame, wid );
+#else
         QRect frame_r = QCommonStyle::subControlRect( cc, opt, SC_SpinBoxFrame, wid );
+#endif
         h = frame_r.height();
         res.setX( x+w-h );
         res.setWidth( h );
@@ -2217,7 +2368,11 @@ QRect Style_Salome::subControlRect( ComplexControl cc, const QStyleOptionComplex
     }
     case CC_ScrollBar:
       if (const QStyleOptionSlider *scrollbar = qstyleoption_cast<const QStyleOptionSlider *>(opt)) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+        QRect slider_r = QWindowsStyle::subControlRect( cc, opt, SC_ScrollBarSlider, wid );
+#else
         QRect slider_r = QCommonStyle::subControlRect( cc, opt, SC_ScrollBarSlider, wid );
+#endif
         int aRect = Style_Tools::getMaxRect( slider_r, (int)model()->widgetRounding( Style_Model::ButtonRadius ) );
         switch( sc ) {
           case SC_ScrollBarSubPage:            // between top/left button and slider
@@ -2271,17 +2426,30 @@ QRect Style_Salome::subElementRect( SubElement se, const QStyleOption* opt,
                                    const QWidget* wid ) const
 {
   if ( checkDebugLevel(13) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    return QWindowsStyle::subElementRect( se, opt, wid );
+#else
     return QCommonStyle::subElementRect( se, opt, wid );
+#endif
   }
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  QRect res = QWindowsStyle::subElementRect( se, opt, wid );
+#else
   QRect res = QCommonStyle::subElementRect( se, opt, wid );
+#endif
   int aHalfRect = (int)Style_Tools::getMaxRect( res, (int)model()->widgetRounding( Style_Model::EditRadius )/2 );
   int w = res.width(), h = res.height();
   switch ( se ) {
     case SE_ComboBoxFocusRect: {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+      QRect old_r = QWindowsStyle::subControlRect( CC_ComboBox,
+                     qstyleoption_cast<const QStyleOptionComplex*>( opt ),
+                     SC_ComboBoxArrow, wid );
+#else
       QRect old_r = QCommonStyle::subControlRect( CC_ComboBox,
                      qstyleoption_cast<const QStyleOptionComplex*>( opt ),
                      SC_ComboBoxArrow, wid );
+#endif
       int old_w = old_r.width();
       res.setWidth( w-h+old_w-2 );
       break;

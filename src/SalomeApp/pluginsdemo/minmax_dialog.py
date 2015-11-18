@@ -21,11 +21,11 @@
 # Form implementation generated from reading ui file 'minmax.ui'
 #
 # Created: Thu Mar  1 15:23:57 2012
-#      by: PyQt5 UI code generator 5.5.0
+#      by: PyQt4 UI code generator 4.8.1
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8

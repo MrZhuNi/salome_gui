@@ -20,8 +20,8 @@
 # Author : Guillaume Boulant (EDF)
 
 import sys
-from PyQt5 import QtGui
-from PyQt5 import QtCore
+from PyQt4 import QtGui
+from PyQt4 import QtCore
 
 
 class TubeDialog_UI(QtGui.QDialog):

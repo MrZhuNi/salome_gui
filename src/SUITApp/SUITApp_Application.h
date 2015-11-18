@@ -51,8 +51,9 @@ class SUIT_ExceptionHandler;
 
 public:
   SUITApp_Application( int& argc, char** argv, SUIT_ExceptionHandler* = 0 );
-  //SUITApp_Application( int& argc, char** argv, Type type, SUIT_ExceptionHandler* = 0 );
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  SUITApp_Application( int& argc, char** argv, Type type, SUIT_ExceptionHandler* = 0 );
+#endif
   virtual bool notify( QObject* receiver, QEvent* e );
 
         SUIT_ExceptionHandler* handler() const;

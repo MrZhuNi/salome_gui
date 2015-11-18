@@ -25,7 +25,11 @@
 #include <QPushButton>
 #include <QTextStream> 
 #include <QFile>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QPrinter>
+#else
 #include <QtPrintSupport/QPrinter>
+#endif
 //#include <QSimpleRichText>
 #include <QTextDocument>
 #include <QPainter>

@@ -58,7 +58,11 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QContextMenuEvent>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QPrinter>
+#else
 #include <QtPrintSupport/QPrinter>
+#endif
 #include <QPalette>
 #include <QLocale>
 #include <QXmlStreamWriter>
@@ -78,7 +82,11 @@
 
 #include <stdlib.h>
 #include <limits>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <qprinter.h>
+#else
 #include <QtPrintSupport/qprinter.h>
+#endif
 
 #include <qwt_legend.h>
 #include <qwt_scale_widget.h>

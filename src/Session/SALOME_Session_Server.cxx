@@ -97,8 +97,11 @@
  * - stop Session ( must be idle )
  * - get session state
  */
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+void MessageOutput( QtMsgType type, const char* msg )
+#else
 void MessageOutput( QtMsgType type, const QMessageLogContext &context, const QString &msg )
+#endif
 {
   switch ( type )
   {
@@ -106,10 +109,18 @@ void MessageOutput( QtMsgType type, const QMessageLogContext &context, const QSt
     //MESSAGE( "Debug: " << msg );
     break;
   case QtWarningMsg:
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    MESSAGE( "Warning: " << msg );
+#else
     MESSAGE( "Warning: " << msg.toLatin1().data() );
+#endif
     break;
   case QtFatalMsg:
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    MESSAGE( "Fatal: " << msg );
+#else
     MESSAGE( "Fatal: " << msg.toLatin1().data() );
+#endif
     break;
   }
 }
@@ -251,13 +262,13 @@ public:
   SALOME_QApplication( int& argc, char** argv ) : TestApplication( argc, argv ), myHandler ( 0 ) {}
 #else
   SALOME_QApplication( int& argc, char** argv )
-//#ifndef WIN32
+#if !defined WIN32 && QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   // san: Opening an X display and choosing a visual most suitable for 3D visualization
   // in order to make SALOME viewers work with non-native X servers
-//  : QApplication( (Display*)Qtx::getDisplay(), argc, argv, Qtx::getVisual() ),
-//#else
+  : QApplication( (Display*)Qtx::getDisplay(), argc, argv, Qtx::getVisual() ),
+#else
   : QApplication( argc, argv ), 
-//#endif
+#endif
     myHandler ( 0 ) {}
 #endif
 
@@ -341,15 +352,20 @@ void shutdownServers( SALOME_NamingService* theNS )
 int main( int argc, char **argv )
 {
   // Install Qt debug messages handler
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  qInstallMsgHandler( MessageOutput );
+#else
   qInstallMessageHandler( MessageOutput );
+#endif
 
   //Set a "native" graphic system in case if application runs on the remote host
   QString remote(getenv("REMOTEHOST"));
   QString client(getenv("SSH_CLIENT"));
-  /*if(remote.length() > 0 || client.length() > 0 ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  if(remote.length() > 0 || client.length() > 0 ) {
     QApplication::setGraphicsSystem(QLatin1String("native"));
-  }*/
-  
+  }
+#endif
   // add $QTDIR/plugins to the pluins search path for image plugins
   QString qtdir = qgetenv( "QT_ROOT_DIR" );
   if ( qtdir.isEmpty() )

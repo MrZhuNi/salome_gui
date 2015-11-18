@@ -29,8 +29,8 @@
 #include <QFile>
 #include <QTimer>
 #ifndef QT_NO_DOM
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomNode>
+#include <QDomDocument>
+#include <QDomNode>
 #include <QCoreApplication>
 #endif
 

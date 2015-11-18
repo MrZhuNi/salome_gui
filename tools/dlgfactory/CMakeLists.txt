@@ -55,8 +55,16 @@ SET(GenericDialog_HEADERS
 SET(GenericDialog_FORMS
    GenericDialog.ui
    )
-  
-ADD_DEFINITIONS(${Qt5Widgets_DEFINITIONS})
+
+IF (NOT SALOME_BUILD_WITH_QT5)
+  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
+  SET(_QT_LIBRARIES ${QT_LIBRARIES})
+ELSE()
+  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
+  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
+ENDIF()
+
+ADD_DEFINITIONS(${_QT_DEFINITIONS})
 
 ADD_CUSTOM_COMMAND( OUTPUT QDialogTest.cxx  QDialogTest.h  QDialogTest.ui
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/dlgfactory.py -s -n QDialogTest -t qdialog
@@ -90,7 +98,8 @@ ADD_EXECUTABLE(qtester ${qtester_SOURCES}
     ${qtester_FORMS_HEADERS}
     QDialogTest.cxx
     )
-TARGET_LINK_LIBRARIES(qtester ${Qt5Widgets_LIBRARIES})
+    
+TARGET_LINK_LIBRARIES(qtester ${_QT_LIBRARIES})
 
 ADD_EXECUTABLE(gtester ${gtester_SOURCES} 
     ${gtester_HEADERS_MOC} 
@@ -99,6 +108,6 @@ ADD_EXECUTABLE(gtester ${gtester_SOURCES}
     ${GenericDialog_FORMS_HEADERS}
     GDialogTest.cxx
     )
-TARGET_LINK_LIBRARIES(gtester ${Qt5Widgets_LIBRARIES})
+TARGET_LINK_LIBRARIES(gtester ${_QT_LIBRARIES})
 
 INSTALL(TARGETS qtester gtester DESTINATION ${SALOME_INSTALL_BINS})

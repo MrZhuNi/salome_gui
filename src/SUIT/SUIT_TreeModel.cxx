@@ -515,7 +515,9 @@ void SUIT_TreeModel::registerColumn( const int group_id, const QString& name, co
     int n = myColumns.size();
     myColumns.resize( n+1 );
     myColumns[n] = inf;
-    //reset();
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    reset();
+#endif
   }
 }
 
@@ -537,7 +539,9 @@ void SUIT_TreeModel::unregisterColumn( const int group_id, const QString& name )
       myColumns[i].myIds.remove( group_id );
       if ( myColumns[i].myIds.isEmpty() ) {
 	myColumns.remove( i );
-	//reset();
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    reset();
+#endif
       }
       break;
     }
@@ -766,7 +770,9 @@ void SUIT_TreeModel::setRoot( SUIT_DataObject* r )
   myRoot = r;
 
   //initialize();
-  //reset();
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  reset();
+#endif
   emit modelUpdated();
 }
 
