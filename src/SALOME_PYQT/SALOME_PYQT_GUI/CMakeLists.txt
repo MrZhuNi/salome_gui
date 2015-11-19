@@ -17,23 +17,17 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
+INCLUDE(UseQtExt)
 IF(SALOME_USE_VTKVIEWER)
   INCLUDE(${VTK_USE_FILE})
 ENDIF()
 
 # --- options ---
-IF (NOT SALOME_BUILD_WITH_QT5)
-  SET(_QT_INCLUDES ${QT_INCLUDES})
-  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
-ELSE()
-  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES})
-  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
-ENDIF()
 
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${CAS_INCLUDE_DIRS}
-  ${_QT_INCLUDES}
+  ${QT_INCLUDES}
   ${SIP_INCLUDE_DIRS}
   ${PYTHON_INCLUDE_DIRS}
   ${PTHREAD_INCLUDE_DIR}
@@ -51,7 +45,7 @@ INCLUDE_DIRECTORIES(
 
 # additional preprocessor / compiler flags
 ADD_DEFINITIONS(
-  ${_QT_DEFINITIONS}
+  ${QT_DEFINITIONS}
   ${CAS_DEFINITIONS} 
   ${PYTHON_DEFINITIONS}
   ${BOOST_DEFINITIONS}
@@ -82,11 +76,7 @@ SET(SalomePyQtGUI_HEADERS ${_moc_HEADERS} ${_other_HEADERS})
 # --- sources ---
 
 # sources / moc wrappings
-IF (NOT SALOME_BUILD_WITH_QT5)
-  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-ELSE()
-  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-ENDIF()
+QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
 
 # sources / static
 SET(_other_SOURCES SALOME_PYQT_Module.cxx)

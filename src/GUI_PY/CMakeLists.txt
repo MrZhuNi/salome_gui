@@ -18,6 +18,7 @@
 #
 
 INCLUDE(UsePyQt)
+
 # --- resources ---
 
 # uic files / to be processed by pyuic

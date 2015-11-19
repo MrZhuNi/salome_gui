@@ -18,30 +18,22 @@
 #
 
 INCLUDE(UseQtExt)
-IF (NOT SALOME_BUILD_WITH_QT5)
-  SET(_QT_INCLUDES ${QT_INCLUDES})
-  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
-  SET(_QT_LIBRARIES ${QT_LIBRARIES})
-ELSE()
-  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES})
-  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
-  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
-ENDIF()
+
 # --- options ---
 
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${CAS_INCLUDE_DIRS}
-  ${_QT_INCLUDES}
+  ${QT_INCLUDES}
   ${PROJECT_SOURCE_DIR}/src/Qtx
   ${PROJECT_SOURCE_DIR}/src/DDS
 )
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${_QT_DEFINITIONS} ${CAS_DEFINITIONS})
+ADD_DEFINITIONS(${QT_DEFINITIONS} ${CAS_DEFINITIONS})
 
 # libraries to link to
-SET(_link_LIBRARIES ${_QT_LIBRARIES} ${CAS_KERNEL} qtx DDS)
+SET(_link_LIBRARIES ${QT_LIBRARIES} ${CAS_KERNEL} qtx DDS)
 
 # --- headers ---
 
@@ -82,11 +74,7 @@ SET(_ts_RESOURCES
 # --- sources ---
 
 # sources / moc wrappings
-IF (NOT SALOME_BUILD_WITH_QT5)
-  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-ELSE()
-  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-ENDIF()
+QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
 
 # sources / static
 SET(_other_SOURCES

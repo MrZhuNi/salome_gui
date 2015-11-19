@@ -17,6 +17,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
+INCLUDE(UseQtExt)
+
 SET(dist_salomeres_DATA
   ParaViewFilters.xml
   ParaViewSources.xml

@@ -32,7 +32,7 @@ ENDIF()
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${CAS_INCLUDE_DIRS}
-  ${_QT_INCLUDES}
+  ${QT_INCLUDES}
   ${QWT_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
   ${PTHREAD_INCLUDE_DIR}
@@ -63,7 +63,7 @@ ENDIF()
 
 # additional preprocessor / compiler flags
 ADD_DEFINITIONS(
-  ${_QT_DEFINITIONS}
+  ${QT_DEFINITIONS}
   ${OMNIORB_DEFINITIONS}
   ${QWT_DEFINITIONS}
   ${CAS_DEFINITIONS}
@@ -77,7 +77,7 @@ ENDIF()
 # libraries to link to
 SET(_link_LIBRARIES
   ${CAS_KERNEL}
-  ${_QT_LIBRARIES}
+  ${QT_LIBRARIES}
   ${PYTHON_LIBRARIES}
   ${KERNEL_OpUtil} ${KERNEL_SALOMELocalTrace} ${KERNEL_SalomeDSClient} ${KERNEL_TOOLSDS}
   CASCatch suit std CAM ObjBrowser SalomePrs Event
@@ -184,11 +184,7 @@ SET(_other_RESOURCES
 # --- sources ---
 
 # sources / moc wrappings
-IF (NOT SALOME_BUILD_WITH_QT5)
-  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-ELSE()
-  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-ENDIF()
+QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
 
 # sources / static
 SET(_other_SOURCES

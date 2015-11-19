@@ -17,17 +17,12 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-IF (NOT SALOME_BUILD_WITH_QT5)
-  SET(_QT_INCLUDES ${QT_INCLUDES})
-  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
-ELSE()
-  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES})
-  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
-ENDIF()
+INCLUDE(UseQtExt)
+
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${CAS_INCLUDE_DIRS}
-  ${_QT_INCLUDES}
+  ${QT_INCLUDES}
   ${Boost_INCLUDE_DIRS}
   ${OMNIORB_INCLUDE_DIR}
   ${PTHREAD_INCLUDE_DIR}
@@ -43,7 +38,7 @@ INCLUDE_DIRECTORIES(
 # additional preprocessor / compiler flags
 ADD_DEFINITIONS(
   ${CAS_DEFINITIONS}
-  ${_QT_DEFINITIONS}
+  ${QT_DEFINITIONS}
   ${BOOST_DEFINITIONS}
   ${OMNIORB_DEFINITIONS}
 )
@@ -76,11 +71,7 @@ SET(SalomeGuiHelpers_HEADERS ${_moc_HEADERS} ${_other_HEADERS})
 # --- sources ---
 
 # sources / moc wrappings
-IF (NOT SALOME_BUILD_WITH_QT5)
-  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-ELSE()
-  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-ENDIF()
+QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
 
 # sources / static
 SET(_other_SOURCES

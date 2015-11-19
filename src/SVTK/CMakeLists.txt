@@ -21,20 +21,11 @@ INCLUDE(UseQtExt)
 INCLUDE(${VTK_USE_FILE})
 
 # --- options ---
-IF (NOT SALOME_BUILD_WITH_QT5)
-  SET(_QT_INCLUDES ${QT_INCLUDES})
-  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
-  SET(_QT_LIBRARIES ${QT_LIBRARIES})
-ELSE()
-  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES} ${Qt5X11Extras_INCLUDES})
-  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS} ${Qt5X11Extras_DEFINITIONS})
-  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES} ${Qt5X11Extras_LIBRARIES})
-ENDIF()
 
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${CAS_INCLUDE_DIRS}
-  ${_QT_INCLUDES}
+  ${QT_INCLUDES}
   ${Boost_INCLUDE_DIRS}
   ${PTHREAD_INCLUDE_DIR}
   ${PROJECT_SOURCE_DIR}/src/Qtx
@@ -47,7 +38,7 @@ INCLUDE_DIRECTORIES(
 )
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${_QT_DEFINITIONS} ${CAS_DEFINITIONS} ${BOOST_DEFINITIONS})
+ADD_DEFINITIONS(${QT_DEFINITIONS} ${CAS_DEFINITIONS} ${BOOST_DEFINITIONS})
 
 # libraries to link to
 SET(_link_LIBRARIES 
@@ -157,11 +148,7 @@ SET(_other_RESOURCES
 # --- sources ---
 
 # sources / moc wrappings
-IF (NOT SALOME_BUILD_WITH_QT5)
-  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS} ${_moc_internal_HEADERS})
-ELSE()
-  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS} ${_moc_internal_HEADERS})
-ENDIF()
+QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS} ${_moc_internal_HEADERS})
 
 # sources / static
 SET(_other_SOURCES

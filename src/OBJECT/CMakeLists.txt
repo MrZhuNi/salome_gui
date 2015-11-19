@@ -18,13 +18,6 @@
 #
 
 # --- options ---
-IF (NOT SALOME_BUILD_WITH_QT5)
-  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
-  SET(_QT_LIBRARIES ${QT_LIBRARIES})
-ELSE()
-  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
-  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
-ENDIF()
 
 # additional include directories
 INCLUDE_DIRECTORIES(
@@ -33,10 +26,10 @@ INCLUDE_DIRECTORIES(
 )
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${_QT_DEFINITIONS} ${CAS_DEFINITIONS})
+ADD_DEFINITIONS(${QT_DEFINITIONS} ${CAS_DEFINITIONS})
 
 # libraries to link to
-SET(_link_LIBRARIES ${_QT_LIBRARIES} ${CAS_LDPATH} ${CAS_KERNEL} ${CAS_TKV3d} ViewerData)
+SET(_link_LIBRARIES ${QT_LIBRARIES} ${CAS_LDPATH} ${CAS_KERNEL} ${CAS_TKV3d} ViewerData)
 
 # --- headers ---
 

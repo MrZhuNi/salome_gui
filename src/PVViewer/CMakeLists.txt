@@ -17,10 +17,10 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-INCLUDE(UseQtExt)
-
 # Install ParaView filters, etc ...
 ADD_SUBDIRECTORY(resources)
+
+INCLUDE(UseQtExt)
 
 # --- options ---
 
@@ -78,17 +78,12 @@ SET(_ts_RESOURCES
 )
 
 # --- sources ---
-IF (NOT SALOME_BUILD_WITH_QT5)
-  # sources / moc wrappings
-  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-  # sources / rcc wrappings
-  QT4_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
-ELSE()
-  # sources / moc wrappings
-  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-  # sources / rcc wrappings
-  QT5_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
-ENDIF()
+
+# sources / moc wrappings
+QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
+
+# sources / rcc wrappings
+QT_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
 
 # sources / static
 SET(_other_SOURCES

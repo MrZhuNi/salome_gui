@@ -20,29 +20,20 @@
 #
 
 INCLUDE(UseQtExt)
-IF (NOT SALOME_BUILD_WITH_QT5)
-  SET(_QT_INCLUDES ${QT_INCLUDES})
-  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
-  SET(_QT_LIBRARIES ${QT_LIBRARIES})
-ELSE()
-  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES})
-  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
-  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
-ENDIF()
 
 # additional include directories
 INCLUDE_DIRECTORIES(
-  ${_QT_INCLUDES}
+  ${QT_INCLUDES}
   ${PROJECT_SOURCE_DIR}/src/Qtx
   ${PROJECT_SOURCE_DIR}/src/SUIT
   ${PROJECT_SOURCE_DIR}/src/PyEditor
 )
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${_QT_DEFINITIONS})
+ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 # libraries to link to
-SET(_link_LIBRARIES ${PLATFORM_LIBS} ${_QT_LIBRARIES} qtx suit PyEditor)
+SET(_link_LIBRARIES ${PLATFORM_LIBS} ${QT_LIBRARIES} qtx suit PyEditor)
 
 # header files / to be processed by moc
 SET(_moc_HEADERS
@@ -72,17 +63,12 @@ SET(_ts_RESOURCES
 SET(_rcc_RESOURCES ${RESOURCES_PATH}/PyEditor.qrc)
 
 # --- sources ---
-IF (NOT SALOME_BUILD_WITH_QT5)
-  # sources / moc wrappings
-  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-  # sources / rcc wrappings
-  QT4_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
-ELSE()
-  # sources / moc wrappings
-  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-  # sources / rcc wrappings
-  QT5_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
-ENDIF()
+
+# sources / moc wrappings
+QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
+
+# sources / rcc wrappings
+QT_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
 
 # sources / static
 SET(_other_SOURCES

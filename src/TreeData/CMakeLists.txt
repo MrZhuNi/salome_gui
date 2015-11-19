@@ -17,23 +17,16 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
+INCLUDE(UseQtExt)
+
 ADD_SUBDIRECTORY(Test)
 
 # --- options ---
-IF (NOT SALOME_BUILD_WITH_QT5)
-  SET(_QT_INCLUDES ${QT_INCLUDES})
-  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
-  SET(_QT_LIBRARIES ${QT_LIBRARIES})
-ELSE()
-  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES})
-  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
-  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
-ENDIF()
 
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${CAS_INCLUDE_DIRS}
-  ${_QT_INCLUDES}
+  ${QT_INCLUDES}
   ${OMNIORB_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
   ${PTHREAD_INCLUDE_DIR}
@@ -50,7 +43,7 @@ INCLUDE_DIRECTORIES(
 # additional preprocessor / compiler flags
 ADD_DEFINITIONS(
   ${CAS_DEFINITIONS}
-  ${_QT_DEFINITIONS}
+  ${QT_DEFINITIONS}
   ${BOOST_DEFINITIONS}
   ${OMNIORB_DEFINITIONS}
 )
@@ -58,7 +51,7 @@ ADD_DEFINITIONS(
 # libraries to link to
 SET(_link_LIBRARIES
   ${OMNIORB_LIBRARIES}
-  ${_QT_LIBRARIES}
+  ${QT_LIBRARIES}
   ${KERNEL_SalomeLifeCycleCORBA} ${KERNEL_SalomeKernelHelpers}
   qtx suit std CAM ObjBrowser LightApp SalomeApp 
 )
@@ -89,11 +82,7 @@ SET(SalomeTreeData_HEADERS ${_moc_HEADERS} ${_other_HEADERS})
 # --- sources ---
 
 # sources / moc wrappings
-IF (NOT SALOME_BUILD_WITH_QT5)
-  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-ELSE()
-  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-ENDIF()
+QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
 
 # sources / static
 SET(_other_SOURCES

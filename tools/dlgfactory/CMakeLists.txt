@@ -16,12 +16,12 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+INCLUDE(UseQtExt)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   )
-
 
 SET(qtester_SOURCES
   qtester.cxx
@@ -56,15 +56,7 @@ SET(GenericDialog_FORMS
    GenericDialog.ui
    )
 
-IF (NOT SALOME_BUILD_WITH_QT5)
-  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
-  SET(_QT_LIBRARIES ${QT_LIBRARIES})
-ELSE()
-  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS})
-  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES})
-ENDIF()
-
-ADD_DEFINITIONS(${_QT_DEFINITIONS})
+ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 ADD_CUSTOM_COMMAND( OUTPUT QDialogTest.cxx  QDialogTest.h  QDialogTest.ui
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/dlgfactory.py -s -n QDialogTest -t qdialog
@@ -74,32 +66,22 @@ ADD_CUSTOM_COMMAND( OUTPUT GDialogTest.cxx  GDialogTest.h  GDialogTest.ui
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/dlgfactory.py -s -n GDialogTest -t gdialog
   )
 
-IF (NOT SALOME_BUILD_WITH_QT5)
-  QT4_WRAP_UI(qtester_FORMS_HEADERS ${qtester_FORMS} )
-  QT4_WRAP_CPP(qtester_HEADERS_MOC ${qtester_HEADERS})
+  QT_WRAP_UIC(qtester_FORMS_HEADERS ${qtester_FORMS} )
+  QT_WRAP_MOC(qtester_HEADERS_MOC ${qtester_HEADERS})
 
-  QT4_WRAP_UI(gtester_FORMS_HEADERS ${gtester_FORMS} )
-  QT4_WRAP_CPP(gtester_HEADERS_MOC ${gtester_HEADERS})
+  QT_WRAP_UIC(gtester_FORMS_HEADERS ${gtester_FORMS} )
+  QT_WRAP_MOC(gtester_HEADERS_MOC ${gtester_HEADERS})
 
-  QT4_WRAP_UI(GenericDialog_FORMS_HEADERS ${GenericDialog_FORMS} )
-  QT4_WRAP_CPP(GenericDialog_HEADERS_MOC ${GenericDialog_HEADERS})
-ELSE()
-  QT5_WRAP_UI(qtester_FORMS_HEADERS ${qtester_FORMS} )
-  QT5_WRAP_CPP(qtester_HEADERS_MOC ${qtester_HEADERS})
+  QT_WRAP_UIC(GenericDialog_FORMS_HEADERS ${GenericDialog_FORMS} )
+  QT_WRAP_MOC(GenericDialog_HEADERS_MOC ${GenericDialog_HEADERS})
 
-  QT5_WRAP_UI(gtester_FORMS_HEADERS ${gtester_FORMS} )
-  QT5_WRAP_CPP(gtester_HEADERS_MOC ${gtester_HEADERS})
-
-  QT5_WRAP_UI(GenericDialog_FORMS_HEADERS ${GenericDialog_FORMS} )
-  QT5_WRAP_CPP(GenericDialog_HEADERS_MOC ${GenericDialog_HEADERS})
-ENDIF()
 ADD_EXECUTABLE(qtester ${qtester_SOURCES} 
     ${qtester_HEADERS_MOC} 
     ${qtester_FORMS_HEADERS}
     QDialogTest.cxx
     )
     
-TARGET_LINK_LIBRARIES(qtester ${_QT_LIBRARIES})
+TARGET_LINK_LIBRARIES(qtester ${QT_LIBRARIES})
 
 ADD_EXECUTABLE(gtester ${gtester_SOURCES} 
     ${gtester_HEADERS_MOC} 
@@ -108,6 +90,6 @@ ADD_EXECUTABLE(gtester ${gtester_SOURCES}
     ${GenericDialog_FORMS_HEADERS}
     GDialogTest.cxx
     )
-TARGET_LINK_LIBRARIES(gtester ${_QT_LIBRARIES})
+TARGET_LINK_LIBRARIES(gtester ${QT_LIBRARIES})
 
 INSTALL(TARGETS qtester gtester DESTINATION ${SALOME_INSTALL_BINS})

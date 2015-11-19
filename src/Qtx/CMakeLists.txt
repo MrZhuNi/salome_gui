@@ -18,26 +18,17 @@
 #
 
 INCLUDE(UseQtExt)
-IF (NOT SALOME_BUILD_WITH_QT5)
-  SET(_QT_INCLUDES ${QT_INCLUDES})
-  SET(_QT_DEFINITIONS ${QT_DEFINITIONS})
-  SET(_QT_LIBRARIES ${QT_LIBRARIES})
-ELSE()
-  SET(_QT_INCLUDES ${Qt5Widgets_INCLUDES} ${Qt5Xml_INCLUDES} ${Qt5WebKit_INCLUDES} ${Qt5WebKitWidgets_INCLUDES})
-  SET(_QT_DEFINITIONS ${Qt5Widgets_DEFINITIONS} ${Qt5Xml_DEFINITIONS} ${Qt5WebKit_DEFINITIONS} ${Qt5WebKitWidgets_DEFINITIONS})
-  SET(_QT_LIBRARIES ${Qt5Widgets_LIBRARIES} ${Qt5Xml_LIBRARIES} ${Qt5WebKit_LIBRARIES} ${Qt5WebKitWidgets_LIBRARIES})
-ENDIF()
 
 # --- options ---
 
 # additional include directories
-INCLUDE_DIRECTORIES(${_QT_INCLUDES})
+INCLUDE_DIRECTORIES(${QT_INCLUDES})
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${_QT_DEFINITIONS})
+ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 # libraries to link to
-SET(_link_LIBRARIES ${_QT_LIBRARIES} ${OPENGL_LIBRARIES})
+SET(_link_LIBRARIES ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
 
 # --- headers ---
 
@@ -119,17 +110,12 @@ SET(_ts_RESOURCES resources/Qtx_msg_fr.ts
 )
 
 # --- sources ---
-IF (NOT SALOME_BUILD_WITH_QT5)
-  # sources / moc wrappings
-  QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-  # sources / rcc wrappings
-  QT4_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
-ELSE()
-  # sources / moc wrappings
-  QT5_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
-  # sources / rcc wrappings
-  QT5_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
-ENDIF()
+
+# sources / moc wrappings
+QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
+
+# sources / rcc wrappings
+QT_ADD_RESOURCES(_rcc_SOURCES ${_rcc_RESOURCES})
 
 # sources / static
 SET(_other_SOURCES
