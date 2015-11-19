@@ -70,6 +70,15 @@ QtxTranslator::~QtxTranslator()
   \param comment message comment (optional)
   \return Translated text if found or \a sourceText otherwise
 */
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+QString QtxTranslator::translate( const char* context, const char* sourceText, const char* comment ) const
+{
+  QString res = QTranslator::translate( context, sourceText, comment );
+  if( res.isNull() )
+    res = QTranslator::translate( GLOBAL_CONTEXT, sourceText, comment );
+  return res;
+}
+#else
 QString QtxTranslator::translate( const char* context, const char* sourceText, const char* comment, int n ) const
 {
   QString res = QTranslator::translate( context, sourceText, comment, n );
@@ -77,3 +86,4 @@ QString QtxTranslator::translate( const char* context, const char* sourceText, c
     res = QTranslator::translate( GLOBAL_CONTEXT, sourceText, comment, n );
   return res;
 }
+#endif
