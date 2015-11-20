@@ -41,11 +41,7 @@
 #include <stdlib.h>
 
 #if !defined WIN32
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QX11Info>
-#else
-#include <QtGui/QX11Info>
-#endif
 #include <GL/glx.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
