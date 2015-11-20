@@ -38,6 +38,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QApplication>
+#include <QStatusBar>
 
 /*!
   \class PyViewer_ViewWindow
@@ -72,7 +73,7 @@ void PyViewer_ViewWindow::initLayout()
       connect( my_TextEditor->document(), SIGNAL( modificationChanged( bool ) ),
 	       this, SLOT( setWindowModified( bool ) ) );
       
-      //statusBar()->showMessage( tr("STS_READY") );
+      statusBar()->showMessage( tr("STS_READY") );
     }  
 }
 
@@ -451,8 +452,8 @@ void PyViewer_ViewWindow::loadFile( const QString &theFilePath )
 
   setCurrentFile( theFilePath );
   aFile.close();
-  /*if ( isExternal() )
-    statusBar()->showMessage( tr( "STS_F_LOADED" ), 2000 ); */
+  if ( isExternal() )
+    statusBar()->showMessage( tr( "STS_F_LOADED" ), 2000 );
 }
 
 /*!
@@ -477,8 +478,8 @@ bool PyViewer_ViewWindow::saveFile( const QString &theFilePath )
   setCurrentFile( theFilePath );
   aFile.close();
 
-  /*if ( isExternal() )
-    statusBar()->showMessage( tr( "STS_F_SAVED" ), 2000 ); */
+  if ( isExternal() )
+    statusBar()->showMessage( tr( "STS_F_SAVED" ), 2000 );
 
   return true;
 }
