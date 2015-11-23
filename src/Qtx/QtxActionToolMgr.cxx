@@ -858,7 +858,7 @@ int QtxActionToolMgr::ToolCreator::append( const QString& tag, const bool /*subM
       set = QIcon( pix );
 
     QtxAction* newAct = new QtxAction( strValue( attr, tooltip ), set, strValue( attr, label ),
-                                       QKeySequence( strValue( attr, accel ) )[0], myMgr );
+                                       QKeySequence( strValue( attr, accel ) ), myMgr );
     QString toggleact = strValue( attr, toggle );
     newAct->setCheckable( !toggleact.isEmpty() );
     newAct->setChecked( toggleact.toLower() == "true" );

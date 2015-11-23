@@ -429,7 +429,7 @@ void PyModuleHelper::XmlHandler::createMenu( QDomNode& parentNode,
                                                         icon,                   // icon
                                                         label,                  // menu text
                                                         tooltip,                // status-bar text
-                                                        QKeySequence( accel )[0],  // keyboard accelerator
+                                                        QKeySequence( accel ),  // keyboard accelerator
                                                         module(),               // action owner
                                                         toggle );               // toogled action
               myHelper->connectAction( action );
@@ -503,7 +503,7 @@ void PyModuleHelper::XmlHandler::createToolBar( QDomNode& parentNode )
                                                           icon,                   // icon
                                                           label,                  // menu text
                                                           tooltip,                // status-bar text
-                                                          QKeySequence( accel )[0],  // keyboard accelerator
+                                                          QKeySequence( accel ),  // keyboard accelerator
                                                           module(),               // action owner
                                                           toggle );               // toogled action
                 myHelper->connectAction( action );
@@ -558,7 +558,7 @@ void PyModuleHelper::XmlHandler::insertPopupItems( QDomNode& parentNode, QMenu* 
                                                     icon,                   // icon
                                                     label,                  // menu text
                                                     tooltip,                // status-bar text
-                                                    QKeySequence( accel )[0],  // keyboard accelerator
+                                                    QKeySequence( accel ),  // keyboard accelerator
                                                     module(),               // action owner
                                                     toggle );               // toogled action
           myHelper->connectAction( action );

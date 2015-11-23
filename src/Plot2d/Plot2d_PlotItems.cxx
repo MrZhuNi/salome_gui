@@ -33,16 +33,14 @@
 #include <QVariant>
 #include <QStyleOption>
 #include <QPaintEvent>
+#include <QTileRules>
+
 #include <qwt_plot.h>
 #include <qwt_painter.h>
 #include <qwt_scale_map.h>
 #include <qwt_legend.h>
 #include <qwt_legend_label.h>
 #include <qwt_plot_dict.h>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-#include <qdrawutil.h>
-#endif
 
 const int SPACING = 10;
 const int SYMBOL_SIZE = 13;
@@ -406,7 +404,7 @@ void Plot2d_QwtPlotCurve::drawSeries( QPainter *painter,
   if(hasDeviationData()) {
     painter->save();
     int lineW = deviationMarkerLineWidth();
-    int tickSz = deviationMarkerTickSize() + qRound(double(lineW/2));
+    int tickSz = deviationMarkerTickSize() + qRound(double(lineW)/2);
     double min, max, xi, yi;
     int xp, ytop, ybtm, tickl, tickr;
     QColor c = isSelected() ? Plot2d_Object::selectionColor() : deviationMarkerColor();

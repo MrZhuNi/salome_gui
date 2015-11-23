@@ -35,7 +35,7 @@ public:
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   virtual QString translate( const char*, const char*, const char* = 0 ) const;
 #else
-  virtual QString translate( const char*, const char*, const char* = 0, int n = -1 ) const;
+  virtual QString translate( const char*, const char*, const char* = 0, int = -1 ) const;
 #endif
 };
 

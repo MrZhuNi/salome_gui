@@ -59,11 +59,7 @@
 #include <QSlider>
 #include <QMainWindow>
 #include <QPixmapCache>
-
-#include <limits.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-#include <qdrawutil.h>
-#endif
+#include <QTileRules>
 
 #define SHADOW          1
 #define LINE_GR_MARGIN  10

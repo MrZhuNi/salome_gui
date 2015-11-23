@@ -302,16 +302,24 @@ char* SalomeApp_Engine_i::getVersion()
 */
 CORBA::ORB_var SalomeApp_Engine_i::orb()
 {
-  ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
-  // TODO: using QApplication here looks ugly, think how to
-  // obtain the ORB reference in a nicer way...
-  int size = qApp->arguments().size();
-  char* argv[size];
-  for ( int i = 0; i < size; ++i)
-  {
-    argv[i] = qApp->arguments()[i].toLatin1().data();
+  static CORBA::ORB_var _orb;
+
+  if ( CORBA::is_nil( _orb ) ) {
+    QStringList args = QApplication::arguments();
+    int argc = args.size();
+    std::vector<std::string> args1(argc);
+    char** argv = new char*[argc];
+    for ( int i = 0; i < argc; ++i ) {
+      args1[i] = args[i].toStdString();
+      argv[i]  = const_cast<char*>( args1[i].c_str() );
+    }
+
+    ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+    _orb = init( argc, argv );
+
+    delete [] argv;
   }
-  static CORBA::ORB_var _orb = init( size, argv );
+
   return _orb;
 }
 

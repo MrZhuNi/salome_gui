@@ -1290,7 +1290,7 @@ int QtxActionMenuMgr::MenuCreator::append( const QString& tag, const bool subMen
 
     QtxAction* newAct = new QtxAction( strValue( attr, tooltip ), set,
                                        strValue( attr, label ),
-                                       QKeySequence( strValue( attr, accel ) )[0],
+                                       QKeySequence( strValue( attr, accel ) ),
                                        myMgr );
     newAct->setToolTip( strValue( attr, tooltip ) );
     QString toggleact = strValue( attr, toggle );

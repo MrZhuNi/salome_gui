@@ -32,6 +32,7 @@
 
 #include <QFrame>
 #include <QVBoxLayout>
+#include <QMdiSubWindow>
 
 #include <stdarg.h>
 
@@ -71,13 +72,7 @@ STD_MDIDesktop::~STD_MDIDesktop()
 */
 SUIT_ViewWindow* STD_MDIDesktop::activeWindow() const
 {
-  SUIT_ViewWindow* wnd = 0;
-
-  QWidget* wid = (QWidget*)myWorkspace->activeSubWindow();
-  if ( wid && wid->inherits( "SUIT_ViewWindow" ) )
-    wnd = (SUIT_ViewWindow*)wid;
-
-  return wnd;
+  return qobject_cast<SUIT_ViewWindow*>( myWorkspace->activeSubWindow()->widget() );
 }
 
 /*!
@@ -90,7 +85,7 @@ QList<SUIT_ViewWindow*> STD_MDIDesktop::windows() const
   QList<QMdiSubWindow *> children = myWorkspace->subWindowList();
   for ( QList<QMdiSubWindow *>::iterator it = children.begin(); it != children.end(); ++it )
   {
-    SUIT_ViewWindow* vw = ::qobject_cast<SUIT_ViewWindow*>( (QWidget*)(*it) );
+    SUIT_ViewWindow* vw = ::qobject_cast<SUIT_ViewWindow*>( (*it)->widget() );
     if ( vw )
       winList.append( vw );
   }

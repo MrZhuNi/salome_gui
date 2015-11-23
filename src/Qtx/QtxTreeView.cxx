@@ -108,10 +108,10 @@ void QtxTreeView::Header::contextMenuEvent( QContextMenuEvent* e )
     QIcon icon;
     if ( iconData.isValid() ) {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-      if ( qVariantCanConvert<QIcon>( iconData ) )
-        icon = qVariantValue<QIcon>( iconData );
-      else if ( qVariantCanConvert<QPixmap>( iconData ) )
-        icon = qVariantValue<QPixmap>( iconData );
+      if ( iconData.canConvert( QVariant::Icon ) )
+        icon = iconData.value<QIcon>();
+      else if ( iconData.canConvert( QVariant::Pixmap ) )
+        icon = iconData.value<QPixmap>();
 #else
       if ( iconData.canConvert( QMetaType::QIcon ) )
         icon = iconData.value<QIcon>();

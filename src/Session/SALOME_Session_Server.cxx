@@ -106,21 +106,13 @@ void MessageOutput( QtMsgType type, const QMessageLogContext &context, const QSt
   switch ( type )
   {
   case QtDebugMsg:
-    //MESSAGE( "Debug: " << msg );
+    //MESSAGE( "Debug: " << qPrintable(msg) );
     break;
   case QtWarningMsg:
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    MESSAGE( "Warning: " << msg );
-#else
-    MESSAGE( "Warning: " << msg.toLatin1().data() );
-#endif
+    MESSAGE( "Warning: " << qPrintable(msg) );
     break;
   case QtFatalMsg:
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    MESSAGE( "Fatal: " << msg );
-#else
-    MESSAGE( "Fatal: " << msg.toLatin1().data() );
-#endif
+    MESSAGE( "Fatal: " << qPrintable(msg) );
     break;
   }
 }
@@ -358,14 +350,15 @@ int main( int argc, char **argv )
   qInstallMessageHandler( MessageOutput );
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   //Set a "native" graphic system in case if application runs on the remote host
   QString remote(getenv("REMOTEHOST"));
   QString client(getenv("SSH_CLIENT"));
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   if(remote.length() > 0 || client.length() > 0 ) {
     QApplication::setGraphicsSystem(QLatin1String("native"));
   }
 #endif
+
   // add $QTDIR/plugins to the pluins search path for image plugins
   QString qtdir = qgetenv( "QT_ROOT_DIR" );
   if ( qtdir.isEmpty() )
