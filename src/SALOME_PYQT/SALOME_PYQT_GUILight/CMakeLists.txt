@@ -17,7 +17,9 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
+INCLUDE(UseQtExt)
 INCLUDE(UsePyQt)
+
 IF(SALOME_USE_VTKVIEWER)
   INCLUDE(${VTK_USE_FILE})
 ENDIF()

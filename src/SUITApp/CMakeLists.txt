@@ -23,7 +23,7 @@ INCLUDE(UseQtExt)
 
 # additional include directories
 INCLUDE_DIRECTORIES(
-  ${QT__INCLUDES}
+  ${QT_INCLUDES}
   ${PYTHON_INCLUDE_DIRS}
   ${PTHREAD_INCLUDE_DIR}
   ${PROJECT_BINARY_DIR}
