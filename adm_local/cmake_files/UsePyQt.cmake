@@ -97,7 +97,7 @@ MACRO(PYQT_WRAP_UIC outfiles)
     STRING(REPLACE ".ui" "_ui.py" _input_name ${_input_name})
     SET(_output ${CMAKE_CURRENT_BINARY_DIR}/${_input_name})
     _PYQT_WRAP_GET_UNIQUE_TARGET_NAME(BUILD_UI_PY_FILES _TgName)
-    ADD_CUSTOM_TARGET(${_TgName} ${PYQT_PYUIC_PATH} ${_output} ${CMAKE_CURRENT_SOURCE_DIR}/${_input}
+    ADD_CUSTOM_TARGET(${_TgName} ${PYQT_PYUIC_PATH} -o ${_output} ${CMAKE_CURRENT_SOURCE_DIR}/${_input}
       DEPENDS ${_input}
       )
     SET_TARGET_PROPERTIES(${_TgName} PROPERTIES FOLDER PYQT_WRAP_UIC_TARGETS)
@@ -204,7 +204,7 @@ MACRO(PYQT_WRAP_QRC outfiles)
     SET(_output ${CMAKE_CURRENT_BINARY_DIR}/${_input_name})
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_output}
-      COMMAND ${PYQT_PYRCC_PATH} ${_output} ${CMAKE_CURRENT_SOURCE_DIR}/${_input}
+      COMMAND ${PYQT_PYRCC_PATH} -o ${_output} ${CMAKE_CURRENT_SOURCE_DIR}/${_input}
       MAIN_DEPENDENCY ${_input}
       )
     SET(${outfiles} ${${outfiles}} ${_output})
