@@ -311,11 +311,11 @@ void QtxWorkspaceAction::removedFrom( QWidget* w )
 */
 void QtxWorkspaceAction::updateContent()
 {
-  bool count = workspace() ? workspace()->subWindowList().count() : 0;
-  action( Cascade )->setEnabled( count );
-  action( Tile )->setEnabled( count );
-  action( HTile )->setEnabled( count );
-  action( VTile )->setEnabled( count );
+  bool hasWindows = workspace() && workspace()->subWindowList().count() > 0;
+  action( Cascade )->setEnabled( hasWindows );
+  action( Tile )->setEnabled( hasWindows );
+  action( HTile )->setEnabled( hasWindows );
+  action( VTile )->setEnabled( hasWindows );
 
   updateWindows();
 }

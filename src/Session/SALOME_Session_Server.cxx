@@ -52,7 +52,9 @@
 #include <Qtx.h>
 #include <QtxSplash.h>
 
+#ifdef USE_SALOME_STYLE
 #include <Style_Salome.h>
+#endif // USE_SALOME_STYLE
 
 #include "GUI_version.h"
 #include <SUIT_Tools.h>
@@ -254,6 +256,7 @@ public:
   SALOME_QApplication( int& argc, char** argv ) : TestApplication( argc, argv ), myHandler ( 0 ) {}
 #else
   SALOME_QApplication( int& argc, char** argv )
+// TODO (QT5 PORTING) Below is a temporary solution, to allow compiling with Qt 5
 #if !defined WIN32 && QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   // san: Opening an X display and choosing a visual most suitable for 3D visualization
   // in order to make SALOME viewers work with non-native X servers
@@ -350,6 +353,7 @@ int main( int argc, char **argv )
   qInstallMessageHandler( MessageOutput );
 #endif
 
+// TODO (QT5 PORTING) Below is a temporary solution, to allow compiling with Qt 5
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   //Set a "native" graphic system in case if application runs on the remote host
   QString remote(getenv("REMOTEHOST"));
@@ -575,9 +579,11 @@ int main( int argc, char **argv )
       SUIT_Application* aGUIApp = aGUISession->startApplication( "SalomeApp", 0, 0 );
       if ( aGUIApp )
       {
+#ifdef USE_SALOME_STYLE
         Style_Salome::initialize( aGUIApp->resourceMgr() );
         if ( aGUIApp->resourceMgr()->booleanValue( "Style", "use_salome_style", true ) )
           Style_Salome::apply();
+#endif // USE_SALOME_STYLE
 
         if ( !isFound( "noexcepthandler", argc, argv ) )
           _qappl.setHandler( aGUISession->handler() ); // after loading SalomeApp application

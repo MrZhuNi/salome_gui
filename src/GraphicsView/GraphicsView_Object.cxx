@@ -51,7 +51,7 @@ GraphicsView_Object::~GraphicsView_Object()
       removeFromGroup( aChild );
       if( QGraphicsScene* aScene = aChild->scene() )
         aScene->removeItem( aChild );
-      delete ( aChild );
+      delete aChild;
       aChild = 0;
     }
   }

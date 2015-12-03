@@ -442,6 +442,7 @@ static GLuint displayListBase( QFont* theFont )
     int aFontCont = 0;
     QString aFontDef = theFont->toString();
     char** xFontList = XListFonts( aDisp, aFontDef.toLatin1()/*aFindFont.myFontString.data()*/, 1, &aFontCont  );
+// TODO (QT5 PORTING) Below is a temporary solution, to allow compiling with Qt 5
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     if( !theFont->handle() )
     {

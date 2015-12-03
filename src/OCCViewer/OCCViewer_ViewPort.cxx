@@ -114,6 +114,7 @@ static Colormap choose_cmap( Display *dpy, XVisualInfo *vi )
   //#ifdef DEBUG
   //cout << "Choosing cmap for vID = " << vi->visualid << endl;
   //#endif
+// TODO (QT5 PORTING) Below is a temporary solution, to allow compiling with Qt 5
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   if ( vi->visualid == XVisualIDFromVisual( (Visual*)QX11Info::appVisual() ) )
   {

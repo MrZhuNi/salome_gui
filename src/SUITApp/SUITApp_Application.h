@@ -51,6 +51,7 @@ class SUIT_ExceptionHandler;
 
 public:
   SUITApp_Application( int& argc, char** argv, SUIT_ExceptionHandler* = 0 );
+// TODO (QT5 PORTING) Below is a temporary solution, to allow compiling with Qt 5
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   SUITApp_Application( int& argc, char** argv, Type type, SUIT_ExceptionHandler* = 0 );
 #endif

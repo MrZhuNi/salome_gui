@@ -1721,7 +1721,10 @@ void Style_Salome::drawPrimitive( PrimitiveElement pe, const QStyleOption* opt,
         p->setPen(opt->palette.text().color());
      } // Fall through!
     case PE_IndicatorViewItemCheck:
-   /* case PE_Q3CheckListIndicator: {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    case PE_Q3CheckListIndicator:
+#endif
+    {
       if (!doRestore) {
         p->save();
         doRestore = true;
@@ -1762,7 +1765,7 @@ void Style_Salome::drawPrimitive( PrimitiveElement pe, const QStyleOption* opt,
       if (doRestore)
           p->restore();
       break;
-    }*/
+    }
     case PE_IndicatorRadioButton: {
       if ( hasHover() && (opt->state & State_Enabled) && (opt->state & State_MouseOver) )
         drawHoverRect(p, w->rect(), opt->palette.color( QPalette::Window ), 

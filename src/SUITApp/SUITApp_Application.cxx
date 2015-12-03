@@ -43,6 +43,7 @@ SUITApp_Application::SUITApp_Application( int& argc, char** argv, SUIT_Exception
 #ifdef ENABLE_TESTRECORDER
   : TestApplication( argc, argv ),
 #else
+// TODO (QT5 PORTING) Below is a temporary solution, to allow compiling with Qt 5
 #if !defined(WIN32) && (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
   // san: Opening an X display and choosing a visual most suitable for 3D visualization
   // in order to make SALOME viewers work with non-native X servers
@@ -58,6 +59,7 @@ myExceptHandler( hand )
 /*!
   Constructor
 */
+// TODO (QT5 PORTING) Below is a temporary solution, to allow compiling with Qt 5
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 SUITApp_Application::SUITApp_Application( int& argc, char** argv, Type type, SUIT_ExceptionHandler* hand )
 #ifdef ENABLE_TESTRECORDER

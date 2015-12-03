@@ -62,8 +62,10 @@
 
 #include <SALOME_Event.h>
 
+#ifdef USE_SALOME_STYLE
 #include <Style_Salome.h>
 #include <Style_PrefDlg.h>
+#endif // USE_SALOME_STYLE
 
 #include <CAM_Module.h>
 #include <CAM_DataModel.h>
@@ -776,8 +778,10 @@ void LightApp_Application::createActions()
   createMenu( MRUId, fileMenu, 100, -1 );
   createMenu( separator(), fileMenu, -1, 100, -1 );
 
+#ifdef USE_SALOME_STYLE
   createAction( StyleId, tr( "TOT_THEME" ), QIcon(), tr( "MEN_DESK_THEME" ), tr( "PRP_THEME" ),
                 0, desk, false, this, SLOT( onStylePreferences() ) );
+#endif // USE_SALOME_STYLE
 
   createAction( FullScreenId, tr( "TOT_FULLSCREEN" ), QIcon(), tr( "MEN_DESK_FULLSCREEN" ), tr( "PRP_FULLSCREEN" ),
                 Qt::Key_F11, desk, false, this, SLOT( onFullScreen() ) );
@@ -785,7 +789,9 @@ void LightApp_Application::createActions()
 
   int viewMenu = createMenu( tr( "MEN_DESK_VIEW" ), -1 );
   createMenu( separator(), viewMenu, -1, 20, -1 );
+#ifdef USE_SALOME_STYLE
   createMenu( StyleId, viewMenu, 20, -1 );
+#endif // USE_SALOME_STYLE
   createMenu( FullScreenId, viewMenu, 20, -1 );
 
   int modTBar = createTool( tr( "INF_TOOLBAR_MODULES" ),    // title (language-dependant)
@@ -4248,10 +4254,12 @@ void LightApp_Application::onMRUActivated( const QString& name )
 
 void LightApp_Application::onStylePreferences()
 {
+#ifdef USE_SALOME_STYLE
   Style_PrefDlg dlg( desktop() );
   dlg.exec();
 
   resourceMgr()->setValue( "Style", "use_salome_style", Style_Salome::isActive() );
+#endif // USE_SALOME_STYLE
 }
 
 void LightApp_Application::onFullScreen(){
