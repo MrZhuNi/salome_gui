@@ -17,6 +17,10 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
+IF (QT_VERSION VERSION_LESS "5.0")
+  INCLUDE(${QT_USE_FILE})
+ENDIF()
+
 INSTALL(CODE "MACRO(QT_COMPILE_TS_ON_INSTALL MYLRELEASE MYTSFILE MYFULLDIR MYOUTQMFILE)
   FILE(MAKE_DIRECTORY \${MYFULLDIR})
   MESSAGE(STATUS \"Compiling \${MYTSFILE}\")
