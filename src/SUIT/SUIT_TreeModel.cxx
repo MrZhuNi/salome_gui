@@ -546,7 +546,7 @@ void SUIT_TreeModel::unregisterColumn( const int group_id, const QString& name )
     if ( myColumns[i].myName == name ) {
       myColumns[i].myIds.remove( group_id );
       if ( myColumns[i].myIds.isEmpty() ) {
-	    myColumns.remove( i );
+        myColumns.remove( i );
 #if QT_VERSION >= QT_VERSION_CHECK(4, 6, 0)
         endResetModel();
 #else
