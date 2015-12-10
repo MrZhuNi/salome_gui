@@ -122,7 +122,6 @@ static Colormap choose_cmap( Display *dpy, XVisualInfo *vi )
     cout << "Choosing cmap for vID = " << vi->visualid << endl;
 #endif
 
-// TODO (QT5 PORTING) Below is a temporary solution, to allow compiling with Qt 5
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     if ( vi->visualid == XVisualIDFromVisual( (Visual*)QX11Info::appVisual() ) )
     {
@@ -130,6 +129,14 @@ static Colormap choose_cmap( Display *dpy, XVisualInfo *vi )
         cout << "Using x11AppColormap" << endl;
 #endif
         return QX11Info::appColormap();
+    }
+#else
+    if ( vi->visualid == XVisualIDFromVisual( XDefaultVisual( QX11Info::display(), -1 ) ) )
+    {
+#ifdef DEBUG
+        cout << "Using XDefaultColormap" << endl;
+#endif
+        return XDefaultColormap( QX11Info::display(), -1 );
     }
 #endif
     if ( mesa_gl )
