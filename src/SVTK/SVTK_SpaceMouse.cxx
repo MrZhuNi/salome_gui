@@ -39,7 +39,6 @@
 #include <X11/Xlib.h>
 #else
 #include <xcb/xcb.h>
-#include <xcb/xcb_event.h>
 #endif
 #endif
 
@@ -333,9 +332,13 @@ int SVTK_SpaceMouseXCB::setWindow( xcb_connection_t *connection, xcb_window_t wi
 
   cookie = xcb_send_event( connection, 0, win, 0x0000, (const char *)&xcbEvent );
 
+
   if (( error = xcb_request_check( connection, cookie )))
   {
-    fprintf ( stderr, "SpaceMouse reported error = %s. Exit ... \n", xcb_event_get_label( error->response_type ) );
+    if ( error->error_code != BadWindow )
+    {
+      fprintf ( stderr, "SpaceMouse reported error = %s. Exit ... \n", "BadWindow");
+    }
     return 0;
   }
 
