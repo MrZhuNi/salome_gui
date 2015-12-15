@@ -129,6 +129,8 @@ class SVTK_EXPORT QVTK_RenderWindowInteractor: public QWidget
 #else
   virtual bool x11Event( XEvent *e );
 #endif
+#else
+  virtual bool nativeEvent( const QByteArray&, void*, long* );
 #endif
   vtkSmartPointer<vtkRenderWindow> myRenderWindow;
   vtkSmartPointer<vtkGenericRenderWindowInteractor> myDevice;
