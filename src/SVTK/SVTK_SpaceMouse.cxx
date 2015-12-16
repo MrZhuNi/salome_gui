@@ -337,7 +337,7 @@ int SVTK_SpaceMouseXCB::setWindow( xcb_connection_t *connection, xcb_window_t wi
   {
     if ( error->error_code != BadWindow )
     {
-      fprintf ( stderr, "SpaceMouse reported error = %s. Exit ... \n", "BadWindow");
+      fprintf ( stderr, "SpaceMouse reported error = %d. Exit ... \n", error->error_code);
     }
     return 0;
   }
