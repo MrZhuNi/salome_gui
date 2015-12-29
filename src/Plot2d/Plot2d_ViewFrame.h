@@ -204,7 +204,9 @@ signals:
   void	  yRangeUpdated( const double&, const double&, const double&, const double&);
   void	  bothRangesUpdated( const double&, const double&, const double&, 
                              const double&, const double&, const double& );
-  
+  void    manualTransformationApplied();
+  void    fitAllApplied();
+
 protected:
   Plot2d_Plot2d* myPlot;
   int            myOperation;
@@ -290,6 +292,9 @@ public slots:
 
 protected:
   bool       existMarker( const QwtSymbol::Style typeMarker, const QColor& color, const Qt::PenStyle typeLine );
+
+signals:
+  void                plotZoomed();
 
 protected:
   CurveDict          myCurves;

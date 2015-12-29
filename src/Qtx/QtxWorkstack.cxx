@@ -3236,6 +3236,29 @@ bool QtxWorkstack::move( QWidget* wid, QWidget* wid_to, const bool before )
 }
 
 /*!
+  \brief Moves the widget to the end of its area
+  \param wid widget to be moved
+  \return TRUE if operation is completed successfully, FALSE otherwise 
+*/
+bool QtxWorkstack::moveToEnd( QWidget* wid )
+{
+  if ( wid )
+  {
+    QtxWorkstackArea* area = wgArea( wid );
+    if ( area )
+    {
+      // find index of the second widget
+      QWidgetList wgList = area->widgetList();
+      int idx = wgList.count(); 
+      area->removeWidget( wid, true );
+      area->insertWidget( wid, idx );
+      return true;
+    }
+  }
+  return false;
+}
+
+/*!
   \brief Group all windows in one area
   \return TRUE if operation is completed successfully, FALSE otherwise 
 */

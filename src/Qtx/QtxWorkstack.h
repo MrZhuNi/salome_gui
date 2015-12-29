@@ -88,6 +88,7 @@ public:
 
   void                split( const int );
   bool                move( QWidget* wid, QWidget* wid_to, const bool before );
+  bool                moveToEnd( QWidget* wid );
   void                stack();
 
   QWidget*            addWindow( QWidget*, Qt::WindowFlags = 0 );

@@ -229,6 +229,8 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
     myYDistance2 = yMap2.s2() - yMap2.s1();
   }
   myPlot->canvas()->installEventFilter( this );
+
+  connect( myPlot, SIGNAL( plotZoomed() ), this, SIGNAL( manualTransformationApplied() ) );
 }
 /*!
   Destructor
@@ -864,6 +866,8 @@ void Plot2d_ViewFrame::fitAll()
     myPlot->setAxisScale( QwtPlot::yRight, yMap2.s1(), yMap2.s2() );
   }
   myPlot->replot();
+
+  emit fitAllApplied();
 }
 
 /*!
@@ -891,6 +895,8 @@ void Plot2d_ViewFrame::fitArea( const QRect& area )
             myPlot->invTransform( QwtPlot::xBottom, rect.left() ), 
             myPlot->invTransform( QwtPlot::xBottom, rect.right() ) );
   myPlot->replot();
+
+  emit manualTransformationApplied();
 }
 
 /*!
@@ -909,6 +915,8 @@ void Plot2d_ViewFrame::fitData(const int mode,
   if ( mode == 0 || mode == 1 ) 
     myPlot->setAxisScale( QwtPlot::xBottom, xMin, xMax ); 
   myPlot->replot();
+
+  emit manualTransformationApplied();
 }
 
 /*!
@@ -1731,6 +1739,7 @@ void Plot2d_ViewFrame::plotMousePressed( const QMouseEvent& me )
           myPlot->invTransform( QwtPlot::yRight, myPnt.y() ) - myYDistance2/2, 
           myPlot->invTransform( QwtPlot::yRight, myPnt.y() ) + myYDistance2/2 );
       myPlot->replot();
+      emit manualTransformationApplied();
     }
   }
   else {
@@ -2216,6 +2225,8 @@ Plot2d_Plot2d::Plot2d_Plot2d( QWidget* parent )
   canvas()->setMouseTracking( true );
 
   myPlotZoomer->setEnabled( true );
+
+  connect( myPlotZoomer, SIGNAL( zoomed( const QwtDoubleRect& ) ), this, SIGNAL( plotZoomed() ) );
 }
 
 /*!
@@ -2793,6 +2804,8 @@ void Plot2d_ViewFrame::incrementalPan( const int incrX, const int incrY ) {
 			  myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.s2() )-incrY ) );
   }
   myPlot->replot();
+
+  emit manualTransformationApplied();
 }
 
 /*!
@@ -2812,6 +2825,8 @@ void Plot2d_ViewFrame::incrementalZoom( const int incrX, const int incrY ) {
 			  myPlot->invTransform( QwtPlot::yRight, y2Map.transform( y2Map.s2() ) + incrY ) );
   }
   myPlot->replot();
+
+  emit manualTransformationApplied();
 }
 
 #define INCREMENT_FOR_OP 10
