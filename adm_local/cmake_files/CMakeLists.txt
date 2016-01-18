@@ -38,7 +38,6 @@ SET(_adm_data
   FindSalomeSIP.cmake
   FindSalomeGUI.cmake
   FindSalomeOpenGL.cmake
-  FindSalomeParaView.cmake
   UsePyQt.cmake
   UseQtExt.cmake
 )
