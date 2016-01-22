@@ -1813,6 +1813,7 @@ void Plot2d_ViewFrame::wheelEvent(QWheelEvent* event)
   }
   myPlot->replot();
   myPnt = event->pos();
+  emit manualTransformationApplied();
 }
 
 /*!
