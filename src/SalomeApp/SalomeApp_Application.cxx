@@ -1027,6 +1027,12 @@ QWidget* SalomeApp_Application::createWindow( const int flag )
       ob->setResizeOnExpandItem(resizeOnExpandItem);
       ob->setProperty( "shortcut", QKeySequence( "Alt+Shift+O" ) );
 
+      for ( int i = SalomeApp_DataObject::EntryId; i < SalomeApp_DataObject::LastId; i++ )
+      {
+        bool shown = resourceMgr()->booleanValue( "ObjectBrowser", QString( "visibility_column_id_%1" ).arg( i-1 ), true );
+        ob->treeView()->setColumnHidden( i, !shown );
+      }
+
       // temporary commented
       /*
       for ( int i = SalomeApp_DataObject::ValueIdx; i <= SalomeApp_DataObject::RefEntryIdx; i++ )
