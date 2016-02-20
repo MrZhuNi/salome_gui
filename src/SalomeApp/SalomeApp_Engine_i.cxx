@@ -140,6 +140,7 @@ CORBA::Boolean SalomeApp_Engine_i::Load (SALOMEDS::SComponent_ptr theComponent,
     listOfFiles[i] = std::string(aSeq[i - 1]);
 
   SetListOfFiles(listOfFiles, studyId);
+  SetSaveTypeStudy(isMultiFile, studyId);
 
   return true;
 }
@@ -162,6 +163,23 @@ void SalomeApp_Engine_i::SetListOfFiles (const ListOfFiles& theListOfFiles,
   myMap[theStudyId] = theListOfFiles;
 }
 
+bool SalomeApp_Engine_i::GetSaveTypeStudy (const int theStudyId)
+{
+  bool aSaveTypeStudy;
+
+  if (mySaveTypeMap.find(theStudyId) != mySaveTypeMap.end())
+  {
+    aSaveTypeStudy = mySaveTypeMap[theStudyId];
+  }
+
+  return aSaveTypeStudy;
+}
+
+void SalomeApp_Engine_i::SetSaveTypeStudy (const bool isMultiFile,
+                                           const int  theStudyId)
+{
+  mySaveTypeMap[theStudyId] = isMultiFile;
+}
 /*! 
  *  DumpPython implementation for light modules
  */

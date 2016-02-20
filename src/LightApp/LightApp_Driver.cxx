@@ -180,6 +180,7 @@ bool LightApp_Driver::ReadDatasFromFile( const char* theFileName, bool isMultiFi
     // Put buffer to aListOfFiles and set to myMap
     ListOfFiles aListOfFiles = PutStreamToFiles(aBuffer, aBufferSize, isMultiFile);
     SetListOfFiles(aModuleName, aListOfFiles);
+    SetSaveTypeStudy(aModuleName, isMultiFile);
 
     delete[] aModuleName;
     delete[] aBuffer;
@@ -222,6 +223,27 @@ void LightApp_Driver::SetListOfFiles( const char* theModuleName, const ListOfFil
 {
   std::string aName (theModuleName);
   myMap[aName] = theListOfFiles;
+}
+
+/*!
+  \return (single or multi file) type for save by module with name 'theModuleName'
+*/
+bool LightApp_Driver::GetSaveTypeStudy( const char* theModuleName )
+{
+  bool  isMultiFile = false;
+  std::string aName(theModuleName);
+  if (mySaveTypeMap.count(aName))
+    isMultiFile = mySaveTypeMap[aName];
+  return isMultiFile;
+}
+
+/*!
+  Sets (single or multi file) type for save by module with name 'theModuleName'
+*/
+void LightApp_Driver::SetSaveTypeStudy( const char* theModuleName, const bool isMultiFile )
+{
+  std::string aName (theModuleName);
+  mySaveTypeMap[aName] = isMultiFile;
 }
 
 /*!
@@ -467,6 +489,7 @@ void LightApp_Driver::ClearDriverContents()
     RemoveTemporaryFiles( aModuleName, IsTemporary() );
   }
   myMap.clear();  
+  mySaveTypeMap.clear();
   // Reset the "temporary" flag
   SetIsTemporary( false );
 }

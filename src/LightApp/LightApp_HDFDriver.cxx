@@ -309,6 +309,7 @@ bool LightApp_HDFDriver::ReadDatasFromFile( const char* theFileName, bool isMult
             ListOfFiles aListOfFiles = PutStreamToFiles(aStreamFile, aStreamSize, isMultiFile);
             char* aCompDataType = (char*)(mapEntryName[name].c_str());
             SetListOfFiles(aCompDataType, aListOfFiles);
+            SetSaveTypeStudy(aCompDataType, isMultiFile);
 
             delete [] aStreamFile;
           }

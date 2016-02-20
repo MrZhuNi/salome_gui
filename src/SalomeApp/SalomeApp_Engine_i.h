@@ -67,6 +67,10 @@ public:
   void                    SetListOfFiles (const ListOfFiles& theListOfFiles,
                                           const int          theStudyId);
 
+  bool                    GetSaveTypeStudy (const int        theStudyId);
+  void                    SetSaveTypeStudy (const bool       isMultiFile,
+                                            const int        theStudyId);
+
   static std::string         EngineIORForComponent( const char* theComponentName,
 						    bool toCreate );
   static SalomeApp_Engine_i* GetInstance          ( const char* theComponentName,
@@ -99,7 +103,9 @@ private:
   static SALOME_NamingService*       namingService();
 private:
   typedef std::map<int, ListOfFiles> MapOfListOfFiles;
+  typedef std::map<int, bool>        MapOfSaveTypeStudy;
   MapOfListOfFiles                   myMap;
+  MapOfSaveTypeStudy                 mySaveTypeMap;
 
   std::string                        myComponentName;
 };

@@ -888,6 +888,12 @@ void SalomeApp_Study::saveModuleData( QString theModuleName, QStringList theList
     anIndex++;
   }
   SetListOfFiles(theModuleName.toStdString().c_str(), aListOfFiles);
+
+  SUIT_ResourceMgr* resMgr = application()->resourceMgr();
+  if( !resMgr )
+    return;
+  bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false );
+  SetSaveTypeStudy(theModuleName.toStdString().c_str(), isMultiFile);
 }
 
 /*!
@@ -919,13 +925,19 @@ bool SalomeApp_Study::saveStudyData( const QString& theFileName )
   ModelList list; dataModels( list );
   QListIterator<CAM_DataModel*> it( list );
   std::vector<std::string> listOfFiles(0);
+  SUIT_ResourceMgr* resMgr = application()->resourceMgr();
+  if( !resMgr )
+    return false;
+  bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false );
   while ( it.hasNext() ){
     LightApp_DataModel* aLModel = 
       dynamic_cast<LightApp_DataModel*>( it.next() );
     // It is safe to call SetListOfFiles() for any kind of module
     // because SetListOfFiles() does nothing for full modules :)
-    if ( aLModel )
+    if ( aLModel ) {
       SetListOfFiles(aLModel->module()->name().toStdString().c_str(), listOfFiles);
+      SetSaveTypeStudy(aLModel->module()->name().toStdString().c_str(), isMultiFile);
+    }
   }
   return true;
 }
@@ -1111,7 +1123,7 @@ bool SalomeApp_Study::openDataModel( const QString& studyName, CAM_DataModel* dm
   if (dm && dm->open(studyName, this, listOfFiles)) {
     // Remove the files and temporary directory, created
     // for this module by LightApp_Engine_i::Load()
-    bool isMultiFile = false; // TODO: decide, how to access this parameter
+    bool isMultiFile = GetSaveTypeStudy( dm->module()->name().toStdString().c_str() );
     RemoveTemporaryFiles( dm->module()->name().toStdString().c_str(), isMultiFile );
 
     // Something has been read -> create data model tree
@@ -1152,7 +1164,7 @@ QString SalomeApp_Study::newStudyName() const
   \return list of files used by module: to be used by CORBAless modules
   \param theModuleName - name of module
 */
-std::vector<std::string> SalomeApp_Study::GetListOfFiles( const char* theModuleName  ) const
+std::vector<std::string> SalomeApp_Study::GetListOfFiles( const char* theModuleName ) const
 {
   // Issue 21377 - using separate engine for each type of light module
   SalomeApp_Engine_i* aDefaultEngine = SalomeApp_Engine_i::GetInstance( theModuleName, false );
@@ -1180,6 +1192,31 @@ void SalomeApp_Study::SetListOfFiles ( const char* theModuleName,
     aDefaultEngine->SetListOfFiles(theListOfFiles, id());
 }
 
+/*!
+  \return (single or multi file) type for save study used by module: to be used by CORBAless modules.
+  \param theModuleName - name of module
+*/
+bool SalomeApp_Study::GetSaveTypeStudy( const char* theModuleName ) const
+{
+  SalomeApp_Engine_i* aDefaultEngine = SalomeApp_Engine_i::GetInstance( theModuleName, false );
+  if (aDefaultEngine)
+    return aDefaultEngine->GetSaveTypeStudy(id());
+
+  return false;
+}
+
+/*!
+  Sets (single or multi file) type for save study used by module: to be used by CORBAless modules.
+  \param theModuleName - name of module
+  \param isMultiFile - save type study
+*/
+void SalomeApp_Study::SetSaveTypeStudy ( const char* theModuleName,
+                                         const bool isMultiFile )
+{
+  SalomeApp_Engine_i* aDefaultEngine = SalomeApp_Engine_i::GetInstance( theModuleName, false );
+  if (aDefaultEngine)
+    aDefaultEngine->SetSaveTypeStudy(isMultiFile, id());
+}
 /*!
   \return temporary directory for saving files of modules
 */

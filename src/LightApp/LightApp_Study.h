@@ -123,6 +123,10 @@ protected:
   virtual void        SetListOfFiles ( const char* theModuleName,
                                        const std::vector<std::string> theListOfFiles );
 
+  virtual bool        GetSaveTypeStudy ( const char* theModuleName ) const;
+  virtual void        SetSaveTypeStudy ( const char* theModuleName,
+                                         const bool  isMultiFile);
+
   virtual void        RemoveTemporaryFiles ( const char* theModuleName, const bool isMultiFile ) const;
 
 protected:

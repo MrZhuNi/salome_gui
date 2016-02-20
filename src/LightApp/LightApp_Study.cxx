@@ -341,6 +341,12 @@ void LightApp_Study::saveModuleData(QString theModuleName, QStringList theListOf
     anIndex++;
   }
   myDriver->SetListOfFiles(theModuleName.toLatin1().constData(), aListOfFiles);
+
+  SUIT_ResourceMgr* resMgr = application()->resourceMgr();
+  if( !resMgr )
+    return;
+  bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false );
+  myDriver->SetSaveTypeStudy(theModuleName.toLatin1().constData(), isMultiFile);
 }
 
 /*!
@@ -436,6 +442,27 @@ std::vector<std::string> LightApp_Study::GetListOfFiles(const char* theModuleNam
 void LightApp_Study::SetListOfFiles (const char* theModuleName, const std::vector<std::string> theListOfFiles)
 {
   myDriver->SetListOfFiles(theModuleName, theListOfFiles);
+}
+
+/*!
+  \return (single or multi file) type for save study used by module: to be used by CORBAless modules.
+  \param theModuleName - name of module
+*/
+bool LightApp_Study::GetSaveTypeStudy(const char* theModuleName) const
+{
+  bool isMultiFile = false;
+  isMultiFile = myDriver->GetSaveTypeStudy(theModuleName);
+  return isMultiFile;
+}
+
+/*!
+  Sets (single or multi file) type for save study used by module: to be used by CORBAless modules.
+  \param theModuleName - name of module
+  \param isMultiFile - type for save study
+*/
+void LightApp_Study::SetSaveTypeStudy (const char* theModuleName, const bool isMultiFile)
+{
+  myDriver->SetSaveTypeStudy(theModuleName, isMultiFile);
 }
 
 /*!

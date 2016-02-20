@@ -50,6 +50,9 @@ public:
 
   ListOfFiles         GetListOfFiles (const char* theModuleName);
   virtual void        SetListOfFiles (const char* theModuleName, const ListOfFiles theListOfFiles);
+  bool                GetSaveTypeStudy ( const char* theModuleName );
+  virtual void        SetSaveTypeStudy ( const char* theModuleName,
+                                         const bool  isMultiFile);
   virtual void        RemoveTemporaryFiles(const char* theModuleName, const bool IsDirDeleted);
   void                RemoveFiles( const ListOfFiles& theFiles, const bool IsDirDeleted);
 
@@ -69,7 +72,9 @@ protected:
 
 protected:
   typedef std::map<std::string, ListOfFiles> MapOfListOfFiles;
+  typedef std::map<std::string, bool>        MapOfSaveTypeStudy;
   MapOfListOfFiles                           myMap;
+  MapOfSaveTypeStudy                         mySaveTypeMap;
   std::string                                myTmpDir;
 
 private:
