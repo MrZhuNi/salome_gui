@@ -26,16 +26,15 @@
 #ifndef PYCONSOLE_CONSOLEBASE_H
 #define PYCONSOLE_CONSOLEBASE_H
 
-#include "PyConsole.h"
+#include "PyConsoleBase.h"
 
-#include <SUIT_PopupClient.h>
 #include <QWidget>
 #include <QMap>
 
 class PyConsole_Interp;
-class PyConsole_Editor;
+class PyConsole_EditorBase;
 
-class PYCONSOLE_EXPORT PyConsole_ConsoleBase : public QWidget
+class PYCONSOLEBASE_EXPORT PyConsole_ConsoleBase : public QWidget
 {
   Q_OBJECT
 
@@ -84,9 +83,9 @@ protected:
   void                createActions();
   void                updateActions();
 
-  PyConsole_ConsoleBase( QWidget* parent, PyConsole_Interp*,  PyConsole_Editor*);
+  PyConsole_ConsoleBase( QWidget* parent, PyConsole_Interp*,  PyConsole_EditorBase*);
 
-  PyConsole_Editor*   myEditor;    //!< python console editor widget
+  PyConsole_EditorBase*   myEditor;    //!< python console editor widget
   QMap<int, QAction*> myActions;   //!< menu actions list
 };
 
@@ -95,7 +94,7 @@ protected:
  * Similar to PyConsole_Console except that an enhanced interpreter and enhanced editor
  * are encapsulated.
  */
-class PYCONSOLE_EXPORT PyConsole_EnhConsoleBase : public PyConsole_ConsoleBase
+class PYCONSOLEBASE_EXPORT PyConsole_EnhConsoleBase : public PyConsole_ConsoleBase
 {
   Q_OBJECT
 
@@ -104,4 +103,4 @@ public:
   virtual ~PyConsole_EnhConsoleBase() {}
 };
 
-#endif // PYCONSOLE_CONSOLE_H
+#endif // PYCONSOLE_CONSOLEBASE_H

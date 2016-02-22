@@ -37,7 +37,7 @@
     </message>
 </context>
 <context>
-    <name>PyConsole_Editor</name>
+    <name>PyConsole_EditorBase</name>
     <message>
         <source>TOT_DUMP_PYCOMMANDS</source>
         <translation>Dump commands</translation>

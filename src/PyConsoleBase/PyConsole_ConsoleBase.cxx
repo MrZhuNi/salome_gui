@@ -30,7 +30,7 @@
 
 #include "PyConsole_Interp.h"   /// !!! WARNING !!! THIS INCLUDE MUST BE VERY FIRST !!!
 #include "PyConsole_ConsoleBase.h"
-#include "PyConsole_EnhEditor.h"
+#include "PyConsole_EnhEditorBase.h"
 #include "PyConsole_EnhInterp.h"
 
 #include <QAction>
@@ -58,7 +58,7 @@ PyConsole_ConsoleBase::PyConsole_ConsoleBase( QWidget* parent, PyConsole_Interp*
   // create editor console
   QVBoxLayout* lay = new QVBoxLayout( this );
   lay->setMargin( 0 );
-  myEditor = new PyConsole_Editor( anInterp, this );
+  myEditor = new PyConsole_EditorBase( anInterp, this );
   char* synchronous = getenv("PYTHON_CONSOLE_SYNC");
   if (synchronous && atoi(synchronous))
   {
@@ -73,7 +73,7 @@ PyConsole_ConsoleBase::PyConsole_ConsoleBase( QWidget* parent, PyConsole_Interp*
 /**
  * Protected constructor.
  */
-PyConsole_ConsoleBase::PyConsole_ConsoleBase( QWidget* parent, PyConsole_Interp* /*i*/,  PyConsole_Editor* e )
+PyConsole_ConsoleBase::PyConsole_ConsoleBase( QWidget* parent, PyConsole_Interp* /*i*/,  PyConsole_EditorBase* e )
   : QWidget (parent), myEditor(e)
 {}
 
@@ -336,7 +336,7 @@ PyConsole_EnhConsoleBase::PyConsole_EnhConsoleBase( QWidget* parent, PyConsole_I
   // create editor console
   QVBoxLayout* lay = new QVBoxLayout( this );
   lay->setMargin( 0 );
-  myEditor = new PyConsole_EnhEditor( anInterp, this );
+  myEditor = new PyConsole_EnhEditorBase( anInterp, this );
   char* synchronous = getenv("PYTHON_CONSOLE_SYNC");
   if (synchronous && atoi(synchronous))
   {

@@ -24,39 +24,48 @@ INCLUDE(UseQtExt)
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${QT_INCLUDES}
-  ${PYTHON_INCLUDE_DIRS}
-  ${PROJECT_SOURCE_DIR}/src/PyConsole
-  ${PROJECT_SOURCE_DIR}/src/PyConsoleBase
-  ${PROJECT_SOURCE_DIR}/src/Qtx
-  ${PROJECT_SOURCE_DIR}/src/SUIT
-  ${PROJECT_SOURCE_DIR}/src/Event
-  ${PROJECT_SOURCE_DIR}/src/PyInterp
 )
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${QT_DEFINITIONS} ${PYTHON_DEFINITIONS})
+ADD_DEFINITIONS(${QT_DEFINITIONS})
+IF(ENABLE_TESTRECORDER)
+  ADD_DEFINITIONS("-DENABLE_TESTRECORDER ${TESTRECORDER_DEFINITIONS}")
+ENDIF()
 
 # libraries to link to
-SET(_link_LIBRARIES ${QT_LIBRARIES} ${PYTHON_LIBRARIES} qtx suit PyConsoleBase)
+SET(_link_LIBRARIES ${PLATFORM_LIBS} ${QT_LIBRARIES} qtx ObjBrowser)
+IF(ENABLE_TESTRECORDER)
+  LIST(APPEND _link_LIBRARIES ${TESTRECORDER_LIBS})
+ENDIF()
 
 # --- headers ---
 
 # header files / to be processed by moc
 SET(_moc_HEADERS
-  PyConsole_Console.h
-  PyConsole_Editor.h
-  PyConsole_EnhEditor.h
+  SUIT_MessageBox.h
 )
 
 # header files / no moc processing
 SET(_other_HEADERS
-  
+  SUIT_OverrideCursor.h
+  SUIT_FileValidator.h
+  Qtxx.h
+  SUIT.h
 )
 
 # header files / to install
-SET(PyConsole_HEADERS ${_moc_HEADERS} ${_other_HEADERS})
+SET(suitt_HEADERS ${_moc_HEADERS} ${_other_HEADERS})
 
 # --- resources ---
+
+# resource files / to be processed by lrelease
+
+# resource files / static
+SET(_other_RESOURCES
+  resources/icon_visibility_on.png
+  resources/icon_visibility_off.png
+  resources/view_sync.png
+)
 
 # --- sources ---
 
@@ -65,19 +74,22 @@ QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
 
 # sources / static
 SET(_other_SOURCES
-  PyConsole_Console.cxx
-  PyConsole_EnhEditor.cxx
-  PyConsole_Editor.cxx
+  SUIT_OverrideCursor.cxx
+  SUIT_MessageBox.cxx
+  SUIT_FileValidator.cxx
+  Qtxx.cxx
 )
 
 # sources / to compile
-SET(PyConsole_SOURCES ${_other_SOURCES} ${_moc_SOURCES})
+SET(suitt_SOURCES ${_other_SOURCES} ${_moc_SOURCES})
 
 # --- rules ---
 
-ADD_LIBRARY(PyConsole ${PyConsole_SOURCES})
-TARGET_LINK_LIBRARIES(PyConsole ${_link_LIBRARIES})
-INSTALL(TARGETS PyConsole EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
+ADD_LIBRARY(suitt ${suitt_SOURCES})
+TARGET_LINK_LIBRARIES(suitt ${_link_LIBRARIES})
+INSTALL(TARGETS suitt EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
 
-INSTALL(FILES ${PyConsole_HEADERS} DESTINATION ${SALOME_INSTALL_HEADERS})
+INSTALL(FILES ${suitt_HEADERS} DESTINATION ${SALOME_INSTALL_HEADERS})
+
+INSTALL(FILES ${_other_RESOURCES} DESTINATION ${SALOME_GUI_INSTALL_RES_DATA})
 

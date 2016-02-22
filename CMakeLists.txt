@@ -310,7 +310,7 @@ INCLUDE(CMakePackageConfigHelpers)
 # They all have to be INSTALL'd with the option "EXPORT ${PROJECT_NAME}TargetGroup"
 SET(_${PROJECT_NAME}_exposed_targets 
     caf CAM CASCatch DDS Event LightApp LogWindow ObjBrowser
-    QDS qtx SalomePrs SalomeStyle std SUITApp suit ViewerTools ViewerData
+    QDS qtx suitt SalomePrs SalomeStyle std SUITApp suit ViewerTools ViewerData
     ImageComposer
 )
 
@@ -387,7 +387,7 @@ ENDIF()
 # Python-based packages specific targets:
 IF(SALOME_USE_PYCONSOLE)
   LIST(APPEND _${PROJECT_NAME}_exposed_targets 
-       PyInterp PyConsole  SalomePyQtGUILight)
+       PyInterp PyConsoleBase PyConsole SalomePyQtGUILight)
   IF(SALOME_USE_PLOT2DVIEWER)
     LIST(APPEND _${PROJECT_NAME}_exposed_targets SalomePyQt)
   ENDIF()

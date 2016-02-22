@@ -20,32 +20,39 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-//  SALOME SALOMEGUI : implementation of desktop and GUI kernel
-// File   : PyConsole_Editor.h
-// Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
+// File   : SUIT.h
+// Author : 
 //
-#ifndef PYCONSOLE_EDITOR_H
-#define PYCONSOLE_EDITOR_H
+#ifndef SUIT_H
+#define SUIT_H
 
-#include "PyConsole.h"
-#include "PyConsole_EditorBase.h"
+#if defined WIN32
+#  if defined SUIT_EXPORTS || defined suit_EXPORTS
+#    define SUIT_EXPORT __declspec( dllexport )
+#  else
+#    define SUIT_EXPORT __declspec( dllimport )
+#  endif
+#else
+#  define SUIT_EXPORT
+#endif
 
-#include <QTextEdit>
+#if defined SOLARIS
+#define bool  int
+#define false 0
+#define true  1
+#endif
 
-class PyConsole_Interp;
-class PyInterp_Request;
-class QEventLoop;
+#if defined WIN32
+#pragma warning ( disable: 4251 )
+#endif
 
-class PYCONSOLE_EXPORT PyConsole_Editor : public PyConsole_EditorBase
-{
-  Q_OBJECT;
+#if defined ( _DEBUG ) || defined ( DEBUG )
+#include <assert.h>
+#define SUIT_VERIFY(x) assert( x );
+#define SUIT_ASSERT(x) assert( x );
+#else
+#define SUIT_VERIFY(x) x
+#define SUIT_ASSERT(x)
+#endif
 
-public:
-  PyConsole_Editor( PyConsole_Interp* theInterp, QWidget *theParent = 0 );
-  ~PyConsole_Editor();
-public slots:
-    void           dump();
-    void           startLog();
-};
-
-#endif // PYCONSOLE_EDITOR_H
+#endif  // SUIT_H

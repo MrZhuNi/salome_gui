@@ -20,32 +20,32 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-//  SALOME SALOMEGUI : implementation of desktop and GUI kernel
-// File   : PyConsole_Editor.h
+// File   : SUIT_FileValidator.h
 // Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
 //
-#ifndef PYCONSOLE_EDITOR_H
-#define PYCONSOLE_EDITOR_H
+#ifndef SUIT_FILEVALIDATOR_H
+#define SUIT_FILEVALIDATOR_H
 
-#include "PyConsole.h"
-#include "PyConsole_EditorBase.h"
+#include "SUIT.h"
 
-#include <QTextEdit>
+class QWidget;
+class QString;
 
-class PyConsole_Interp;
-class PyInterp_Request;
-class QEventLoop;
-
-class PYCONSOLE_EXPORT PyConsole_Editor : public PyConsole_EditorBase
+class SUIT_EXPORT SUIT_FileValidator
 {
-  Q_OBJECT;
-
 public:
-  PyConsole_Editor( PyConsole_Interp* theInterp, QWidget *theParent = 0 );
-  ~PyConsole_Editor();
-public slots:
-    void           dump();
-    void           startLog();
+  SUIT_FileValidator( QWidget* = 0 );
+  
+  virtual bool    canOpen( const QString&, bool = true );
+  virtual bool    canSave( const QString&, bool = true );
+
+  virtual bool    canReadDir( const QString&, bool = true );
+  virtual bool    canWriteDir( const QString&, bool = true );
+
+  QWidget*        parent() const;
+  
+private:
+  QWidget*        myParent;
 };
 
-#endif // PYCONSOLE_EDITOR_H
+#endif // SUIT_FILEVALIDATOR_H

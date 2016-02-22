@@ -20,32 +20,49 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-//  SALOME SALOMEGUI : implementation of desktop and GUI kernel
-// File   : PyConsole_Editor.h
-// Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
+// File:      Qtx.h
+// Author:    Sergey TELKOV
 //
-#ifndef PYCONSOLE_EDITOR_H
-#define PYCONSOLE_EDITOR_H
+#ifndef QTXX_H
+#define QTXX_H
 
-#include "PyConsole.h"
-#include "PyConsole_EditorBase.h"
+#if defined WIN32
+#  if defined QTXX_EXPORTS || defined qtxx_EXPORTS
+#    define QTX_EXPORT _declspec( dllexport )
+#  else
+#    define QTX_EXPORT _declspec( dllimport )
+#  endif
+#else
+#  define QTX_EXPORT  
+#endif
 
-#include <QTextEdit>
+#if defined SOLARIS
+#define bool  int
+#define false 0
+#define true  1
+#endif
 
-class PyConsole_Interp;
-class PyInterp_Request;
-class QEventLoop;
+#include <QString>
+#include <QList>
+#include <QColor>
+#include <QImage>
+#include <QPixmap>
+#include <QGradient>
 
-class PYCONSOLE_EXPORT PyConsole_Editor : public PyConsole_EditorBase
+class QObject;
+class QWidget;
+class QCompleter;
+
+typedef QList<int>    QIntList;       //!< list of int values
+typedef QList<short>  QShortList;     //!< list of short int values
+typedef QList<double> QDoubleList;    //!< list of double values
+typedef QList<QColor> QColorList;     //!< list of colors
+
+class QTX_EXPORT Qtxx
 {
-  Q_OBJECT;
-
 public:
-  PyConsole_Editor( PyConsole_Interp* theInterp, QWidget *theParent = 0 );
-  ~PyConsole_Editor();
-public slots:
-    void           dump();
-    void           startLog();
+  static QString     dir( const QString&, const bool = true );
+  static QFont   stringToFont( const QString& fontDescription );
 };
 
-#endif // PYCONSOLE_EDITOR_H
+#endif

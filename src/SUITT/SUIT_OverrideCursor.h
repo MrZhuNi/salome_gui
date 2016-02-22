@@ -20,32 +20,28 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-//  SALOME SALOMEGUI : implementation of desktop and GUI kernel
-// File   : PyConsole_Editor.h
-// Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
-//
-#ifndef PYCONSOLE_EDITOR_H
-#define PYCONSOLE_EDITOR_H
+#ifndef SUIT_OVERRIDECURSOR_H
+#define SUIT_OVERRIDECURSOR_H
 
-#include "PyConsole.h"
-#include "PyConsole_EditorBase.h"
+#include "SUIT.h"
 
-#include <QTextEdit>
+#include <QList>
+#include <QCursor>
 
-class PyConsole_Interp;
-class PyInterp_Request;
-class QEventLoop;
-
-class PYCONSOLE_EXPORT PyConsole_Editor : public PyConsole_EditorBase
+/*! \brief Class used for management cursors.*/
+class SUIT_EXPORT SUIT_OverrideCursor
 {
-  Q_OBJECT;
-
 public:
-  PyConsole_Editor( PyConsole_Interp* theInterp, QWidget *theParent = 0 );
-  ~PyConsole_Editor();
-public slots:
-    void           dump();
-    void           startLog();
+  SUIT_OverrideCursor();
+  SUIT_OverrideCursor( const QCursor& );
+  virtual ~SUIT_OverrideCursor();
+
+  bool isActive() const;
+  void suspend();
+  void resume();
+
+private:
+  QList<QCursor> myCursors;
 };
 
-#endif // PYCONSOLE_EDITOR_H
+#endif

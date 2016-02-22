@@ -30,6 +30,7 @@
 
 #include "PyConsole_Interp.h"   /// !!! WARNING !!! THIS INCLUDE MUST BE VERY FIRST !!!
 #include "PyConsole_Console.h"
+#include "PyConsole_Editor.h"
 #include "PyConsole_EnhEditor.h"
 #include "PyConsole_EnhInterp.h"
 

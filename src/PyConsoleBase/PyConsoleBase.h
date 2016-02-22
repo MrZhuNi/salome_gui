@@ -20,32 +20,29 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-//  SALOME SALOMEGUI : implementation of desktop and GUI kernel
-// File   : PyConsole_Editor.h
+// File   : PyConsoleBase.h
 // Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
 //
-#ifndef PYCONSOLE_EDITOR_H
-#define PYCONSOLE_EDITOR_H
+#if !defined ( PYCONSOLEBASE_H )
+#define PYCONSOLEBASE_H
 
-#include "PyConsole.h"
-#include "PyConsole_EditorBase.h"
+// ========================================================
+// set dllexport type for Win platform 
+#ifdef WIN32
+#  if defined PYCONSOLEBASE_EXPORTS || defined PyConsoleBase_EXPORTS
+#    define PYCONSOLEBASE_EXPORT __declspec(dllexport)
+#  else
+#    define PYCONSOLEBASE_EXPORT __declspec(dllimport)
+#  endif
+#else   // WIN32
+#  define PYCONSOLEBASE_EXPORT
+#endif  // WIN32
 
-#include <QTextEdit>
+// ========================================================
+// avoid warning messages
+#ifdef WIN32
+#pragma warning (disable : 4786)
+#pragma warning (disable : 4251)
+#endif
 
-class PyConsole_Interp;
-class PyInterp_Request;
-class QEventLoop;
-
-class PYCONSOLE_EXPORT PyConsole_Editor : public PyConsole_EditorBase
-{
-  Q_OBJECT;
-
-public:
-  PyConsole_Editor( PyConsole_Interp* theInterp, QWidget *theParent = 0 );
-  ~PyConsole_Editor();
-public slots:
-    void           dump();
-    void           startLog();
-};
-
-#endif // PYCONSOLE_EDITOR_H
+#endif // PYCONSOLEBASE_H
