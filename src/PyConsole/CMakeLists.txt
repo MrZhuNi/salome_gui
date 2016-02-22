@@ -25,6 +25,7 @@ INCLUDE(UseQtExt)
 INCLUDE_DIRECTORIES(
   ${QT_INCLUDES}
   ${PYTHON_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}/src/PyConsole
   ${PROJECT_SOURCE_DIR}/src/Qtx
   ${PROJECT_SOURCE_DIR}/src/SUIT
   ${PROJECT_SOURCE_DIR}/src/Event
@@ -42,6 +43,7 @@ SET(_link_LIBRARIES ${QT_LIBRARIES} ${PYTHON_LIBRARIES} qtx suit PyInterp Event)
 # header files / to be processed by moc
 SET(_moc_HEADERS
   PyConsole_Console.h
+  PyConsole_ConsoleBase.h
   PyConsole_Editor.h
   PyConsole_EnhEditor.h
 )
@@ -75,6 +77,7 @@ QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
 # sources / static
 SET(_other_SOURCES
   PyConsole_Console.cxx
+  PyConsole_ConsoleBase.cxx
   PyConsole_Editor.cxx
   PyConsole_EnhEditor.cxx
   PyConsole_EnhInterp.cxx
