@@ -2,24 +2,24 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ja" sourcelanguage="en">
   <context>
-    <name>PyConsole_Console</name>
+    <name>PyConsole_ConsoleBase</name>
     <message>
-      <location filename="../PyConsole_Console.cxx" line="216"/>
+      <location filename="../PyConsole_ConsoleBase.cxx" line="216"/>
       <source>EDIT_COPY_CMD</source>
       <translation>コピー(&amp;C)</translation>
     </message>
     <message>
-      <location filename="../PyConsole_Console.cxx" line="221"/>
+      <location filename="../PyConsole_ConsoleBase.cxx" line="221"/>
       <source>EDIT_PASTE_CMD</source>
       <translation>貼り付け(&amp;P)</translation>
     </message>
     <message>
-      <location filename="../PyConsole_Console.cxx" line="226"/>
+      <location filename="../PyConsole_ConsoleBase.cxx" line="226"/>
       <source>EDIT_CLEAR_CMD</source>
       <translation>削除(&amp;r)</translation>
     </message>
     <message>
-      <location filename="../PyConsole_Console.cxx" line="231"/>
+      <location filename="../PyConsole_ConsoleBase.cxx" line="231"/>
       <source>EDIT_SELECTALL_CMD</source>
       <translation>すべて選択します。(&amp;A)</translation>
     </message>
