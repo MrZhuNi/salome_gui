@@ -72,6 +72,8 @@ public slots:
     void           handleReturn();
     void           onPyInterpChanged( PyConsole_Interp* );
     void           dump(const QString& fileName);
+    void           dump();
+    void           startLog();
     bool           startLog( const QString& );
     void           stopLog();
     void           putLog( const QString& );
@@ -81,6 +83,8 @@ protected:
   virtual void   mouseReleaseEvent( QMouseEvent* event );
   virtual void   keyPressEvent ( QKeyEvent* event);
   virtual void   customEvent( QEvent* event);
+  virtual void   dumpSlot();
+  virtual void   startLogSlot();
 
   virtual PyInterp_Request* createRequest( const QString& );
 

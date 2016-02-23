@@ -30,6 +30,7 @@
 #include <QMimeData>
 
 #include "PyConsole_EnhEditor.h"
+#include "PyConsole_Editor.h"
 
 /**
  * Constructor.
@@ -39,4 +40,14 @@
 PyConsole_EnhEditor::PyConsole_EnhEditor(PyConsole_Interp* interp, QWidget* parent) :
      PyConsole_EnhEditorBase(interp, parent)
 {
+}
+
+void PyConsole_EnhEditor::dumpSlot()
+{
+  PyConsole_Editor::StaticDumpSlot(this);
+}
+
+void PyConsole_EnhEditor::startLogSlot()
+{
+  PyConsole_Editor::StaticStartLogSlot(this);
 }

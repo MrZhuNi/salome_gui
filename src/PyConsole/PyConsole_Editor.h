@@ -39,13 +39,14 @@ class QEventLoop;
 class PYCONSOLE_EXPORT PyConsole_Editor : public PyConsole_EditorBase
 {
   Q_OBJECT;
-
 public:
   PyConsole_Editor( PyConsole_Interp* theInterp, QWidget *theParent = 0 );
   ~PyConsole_Editor();
-public slots:
-    void           dump();
-    void           startLog();
+  static void StaticDumpSlot(PyConsole_EditorBase *base);
+  static void StaticStartLogSlot(PyConsole_EditorBase *base);
+protected:
+  virtual void dumpSlot();
+  virtual void startLogSlot();
 };
 
 #endif // PYCONSOLE_EDITOR_H

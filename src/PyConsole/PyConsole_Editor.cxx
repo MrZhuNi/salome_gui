@@ -153,37 +153,41 @@ PyConsole_Editor::~PyConsole_Editor()
 {
 }
 
-/*!
-  \brief "Dump commands" operation.
- */
-void PyConsole_Editor::dump()
+
+void PyConsole_Editor::StaticDumpSlot(PyConsole_EditorBase *base)
 {
   QStringList aFilters;
   aFilters.append( tr( "PYTHON_FILES_FILTER" ) );
   
-  QString fileName = SUIT_FileDlg::getFileName( this, QString(),
+  QString fileName = SUIT_FileDlg::getFileName( base, QString(),
 						aFilters, tr( "TOT_DUMP_PYCOMMANDS" ),
-						false, true, new DumpCommandsFileValidator( this ) );
-  dumpImpl(fileName);
+						false, true, new DumpCommandsFileValidator( base ) );
+  base->dumpImpl(fileName);
 }
+
 /*!
-  \brief "Start log" operation.
+  \brief "Dump commands" operation.
  */
-void PyConsole_Editor::startLog()
+void PyConsole_Editor::dumpSlot()
+{
+  PyConsole_Editor::StaticDumpSlot(this);
+}
+
+void PyConsole_Editor::StaticStartLogSlot(PyConsole_EditorBase *base)
 {
   QStringList aFilters;
   aFilters.append( tr( "LOG_FILES_FILTER" ) );
 
   while (1) {
-    QString fileName = SUIT_FileDlg::getFileName( this, QString(),
+    QString fileName = SUIT_FileDlg::getFileName( base, QString(),
 						  aFilters, tr( "TOT_SAVE_PYLOG" ),
 						  false, true );
     if ( !fileName.isEmpty() ) {
-      if ( startLogImpl( fileName ) ) {
+      if ( base->startLogImpl( fileName ) ) {
 	break;
       }
       else {
-	SUIT_MessageBox::critical( this,
+	SUIT_MessageBox::critical( base,
 				   QObject::tr("ERR_ERROR"),
 				   QObject::tr("ERR_FILE_NOT_WRITABLE") );
       }
@@ -192,4 +196,12 @@ void PyConsole_Editor::startLog()
       break;
     }
   }
+}
+
+/*!
+  \brief "Start log" operation.
+ */
+void PyConsole_Editor::startLogSlot()
+{
+  StaticStartLogSlot(this);
 }

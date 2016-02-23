@@ -37,6 +37,9 @@ class PYCONSOLE_EXPORT PyConsole_EnhEditor : public PyConsole_EnhEditorBase
 public:
   PyConsole_EnhEditor(PyConsole_Interp* interp, QWidget* parent = 0);
   virtual ~PyConsole_EnhEditor() {}
+protected:
+  virtual void dumpSlot();
+  virtual void startLogSlot();
 };
 
 #endif /* PYCONSOLE_ENHEDITOR_H_ */

@@ -1159,6 +1159,19 @@ void PyConsole_EditorBase::dump(const QString& fileName)
 }
 
 /*!
+  \brief "Dump commands" operation.
+ */
+void PyConsole_EditorBase::dump()
+{
+  dumpSlot();
+}
+
+void PyConsole_EditorBase::dumpSlot()
+{
+  //TODO
+}
+
+/*!
   \brief Start python trace logging
   \param fileName the path to the log file
   \sa stopLog()
@@ -1186,6 +1199,20 @@ bool PyConsole_EditorBase::startLogImpl( const QString& fileName )
 bool PyConsole_EditorBase::startLog( const QString& fileName )
 {
   return startLogImpl(fileName);
+}
+
+/*!
+  \brief Start python trace logging
+  \sa stopLog()
+ */
+void PyConsole_EditorBase::startLog()
+{
+  startLogSlot();
+}
+
+void PyConsole_EditorBase::startLogSlot()
+{
+  //TODO
 }
 
 /*!
