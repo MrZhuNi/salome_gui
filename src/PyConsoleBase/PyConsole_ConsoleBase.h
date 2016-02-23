@@ -29,6 +29,7 @@
 #include "PyConsoleBase.h"
 
 #include <QWidget>
+#include <QMenu>
 #include <QMap>
 
 class PyConsole_Interp;
@@ -86,6 +87,8 @@ public:
 
   void                startLog( const QString& );
   void                stopLog();
+
+  virtual void        contextMenuPopup( QMenu* );
 
 protected:
   void                createActions();

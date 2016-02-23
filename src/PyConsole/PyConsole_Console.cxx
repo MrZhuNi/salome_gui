@@ -87,26 +87,9 @@ PyConsole_Console::~PyConsole_Console()
 
   \param menu context popup menu
 */
-void PyConsole_Console::contextMenuPopup( QMenu* menu )
+void PyConsole_Console::contextMenuPopup( QMenu *menu )
 {
-  if ( myEditor->isReadOnly() )
-    return;
-
-  menu->addAction( myActions[CopyId] );
-  menu->addAction( myActions[PasteId] );
-  menu->addAction( myActions[ClearId] );
-  menu->addSeparator();
-  menu->addAction( myActions[SelectAllId] );
-  menu->addSeparator();
-  menu->addAction( myActions[DumpCommandsId] );
-  if ( !myEditor->isLogging() )
-    menu->addAction( myActions[StartLogId] );
-  else
-    menu->addAction( myActions[StopLogId] );
-
-  Qtx::simplifySeparators( menu );
-
-  updateActions();
+  PyConsole_ConsoleBase::contextMenuPopup(menu);
 }
 
 /*!

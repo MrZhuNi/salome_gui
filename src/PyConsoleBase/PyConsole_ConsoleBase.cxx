@@ -33,6 +33,8 @@
 #include "PyConsole_EnhEditorBase.h"
 #include "PyConsole_EnhInterp.h"
 
+#include "Qtx.h"
+
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
@@ -332,6 +334,35 @@ void PyConsole_ConsoleBase::startLog( const QString& fileName )
 void PyConsole_ConsoleBase::stopLog()
 {
   myEditor->stopLog();
+}
+
+/*!
+  \brief Create the context popup menu.
+
+  Fill in the popup menu with the commands.
+
+  \param menu context popup menu
+*/
+void PyConsole_ConsoleBase::contextMenuPopup( QMenu *menu )
+{
+  if ( myEditor->isReadOnly() )
+    return;
+
+  menu->addAction( myActions[CopyId] );
+  menu->addAction( myActions[PasteId] );
+  menu->addAction( myActions[ClearId] );
+  menu->addSeparator();
+  menu->addAction( myActions[SelectAllId] );
+  menu->addSeparator();
+  menu->addAction( myActions[DumpCommandsId] );
+  if ( !myEditor->isLogging() )
+    menu->addAction( myActions[StartLogId] );
+  else
+    menu->addAction( myActions[StopLogId] );
+
+  Qtx::simplifySeparators( menu );
+
+  updateActions();
 }
 
 PyConsole_EditorBase *PyConsole_EnhConsoleBase::PyConsole_Interp_EnhCreatorBase::createEditor( PyConsole_Interp *interp, PyConsole_ConsoleBase *console ) const
