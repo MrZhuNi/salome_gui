@@ -50,7 +50,7 @@ SET(_moc_HEADERS
 
 # header files / no moc processing
 SET(_other_HEADERS
-  
+  PyConsole.h
 )
 
 # header files / to install
