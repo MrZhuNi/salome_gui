@@ -95,9 +95,7 @@
 #include "PyInterp_Dispatcher.h"
 #include "PyConsole_Request.h"
 
-#include "SUIT_FileValidator.h"
-#include "SUIT_MessageBox.h"
-#include "Qtxx.h"
+#include <Qtx.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -169,7 +167,7 @@ PyConsole_EditorBase::PyConsole_EditorBase( PyConsole_Interp* theInterp,
   myIsSuppressOutput( false )
 {
   QString fntSet( "" );
-  QFont aFont ( Qtxx::stringToFont(fntSet) );
+  QFont aFont ( Qtx::stringToFont(fntSet) );
   setFont( aFont );
   setUndoRedoEnabled( false );
 

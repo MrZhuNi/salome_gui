@@ -40,6 +40,12 @@
 #include <QMenu>
 #include <QVBoxLayout>
 
+PyConsole_EditorBase *PyConsole_ConsoleBase::PyConsole_Interp_CreatorBase::createEditor( PyConsole_Interp *interp, PyConsole_ConsoleBase *console ) const
+{ return new PyConsole_EditorBase(interp,console); }
+
+PyConsole_Interp *PyConsole_ConsoleBase::PyConsole_Interp_CreatorBase::createInterp( ) const
+{ return new PyConsole_Interp; }
+
 /*!
   \brief Constructor.
 
@@ -50,7 +56,16 @@
 PyConsole_ConsoleBase::PyConsole_ConsoleBase( QWidget* parent, PyConsole_Interp* interp )
 : QWidget( parent )
 {
-  PyConsole_Interp* anInterp = interp ? interp : new PyConsole_Interp();
+  PyConsole_ConsoleBase::PyConsole_Interp_CreatorBase crea;
+  defaultConstructor(interp,crea);
+}
+
+/*!
+ * MUST BE NON VIRTUAL ! (called from constructor !!!!)
+ */
+void PyConsole_ConsoleBase::defaultConstructor( PyConsole_Interp* interp, const PyConsole_Interp_CreatorBase& crea )
+{
+  PyConsole_Interp *anInterp = interp ? interp : crea.createInterp();
   
   // initialize Python interpretator
   anInterp->initialize();
@@ -58,7 +73,7 @@ PyConsole_ConsoleBase::PyConsole_ConsoleBase( QWidget* parent, PyConsole_Interp*
   // create editor console
   QVBoxLayout* lay = new QVBoxLayout( this );
   lay->setMargin( 0 );
-  myEditor = new PyConsole_EditorBase( anInterp, this );
+  myEditor = crea.createEditor( anInterp, this );
   char* synchronous = getenv("PYTHON_CONSOLE_SYNC");
   if (synchronous && atoi(synchronous))
   {
@@ -319,6 +334,12 @@ void PyConsole_ConsoleBase::stopLog()
   myEditor->stopLog();
 }
 
+PyConsole_EditorBase *PyConsole_EnhConsoleBase::PyConsole_Interp_EnhCreatorBase::createEditor( PyConsole_Interp *interp, PyConsole_ConsoleBase *console ) const
+{ return new PyConsole_EnhEditorBase(interp,console); }
+
+PyConsole_Interp *PyConsole_EnhConsoleBase::PyConsole_Interp_EnhCreatorBase::createInterp( ) const
+{ return new PyConsole_EnhInterp; }
+
 /**
  * Similar to constructor of the base class but using enhanced objects.
  * TODO: this should really be done in a factory to avoid code duplication.
@@ -328,22 +349,6 @@ void PyConsole_ConsoleBase::stopLog()
 PyConsole_EnhConsoleBase::PyConsole_EnhConsoleBase( QWidget* parent, PyConsole_Interp* interp )
   : PyConsole_ConsoleBase( parent, interp, 0 )
 {
-  PyConsole_Interp* anInterp = interp ? interp : new PyConsole_EnhInterp();
-
-  // initialize Python interpretator
-  anInterp->initialize();
-
-  // create editor console
-  QVBoxLayout* lay = new QVBoxLayout( this );
-  lay->setMargin( 0 );
-  myEditor = new PyConsole_EnhEditorBase( anInterp, this );
-  char* synchronous = getenv("PYTHON_CONSOLE_SYNC");
-  if (synchronous && atoi(synchronous))
-  {
-      myEditor->setIsSync(true);
-  }
-  myEditor->viewport()->installEventFilter( this );
-  lay->addWidget( myEditor );
-
-  createActions();
+  PyConsole_Interp_EnhCreatorBase crea;
+  defaultConstructor(interp,crea);
 }

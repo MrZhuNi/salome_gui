@@ -25,7 +25,7 @@ INCLUDE(UseQtExt)
 INCLUDE_DIRECTORIES(
   ${QT_INCLUDES}
   ${PYTHON_INCLUDE_DIRS}
-  ${PROJECT_SOURCE_DIR}/src/SUITT
+  ${PROJECT_SOURCE_DIR}/src/Qtx
   ${PROJECT_SOURCE_DIR}/src/PyConsoleBase
   ${PROJECT_SOURCE_DIR}/src/Event
   ${PROJECT_SOURCE_DIR}/src/PyInterp
@@ -35,7 +35,7 @@ INCLUDE_DIRECTORIES(
 ADD_DEFINITIONS(${QT_DEFINITIONS} ${PYTHON_DEFINITIONS})
 
 # libraries to link to
-SET(_link_LIBRARIES ${QT_LIBRARIES} ${PYTHON_LIBRARIES} PyInterp Event suitt)
+SET(_link_LIBRARIES ${QT_LIBRARIES} ${PYTHON_LIBRARIES} PyInterp Event qtx)
 
 # --- headers ---
 
@@ -49,7 +49,7 @@ SET(_moc_HEADERS
 # header files / no moc processing
 SET(_other_HEADERS
   PyConsoleBase.h
-  PyConsole_EnhInterpBase.h
+  PyConsole_EnhInterp.h
   PyConsole_Event.h
   PyConsole_Interp.h
   PyConsole_Request.h

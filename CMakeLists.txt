@@ -310,7 +310,7 @@ INCLUDE(CMakePackageConfigHelpers)
 # They all have to be INSTALL'd with the option "EXPORT ${PROJECT_NAME}TargetGroup"
 SET(_${PROJECT_NAME}_exposed_targets 
     caf CAM CASCatch DDS Event LightApp LogWindow ObjBrowser
-    QDS qtx suitt SalomePrs SalomeStyle std SUITApp suit ViewerTools ViewerData
+    QDS qtx SalomePrs SalomeStyle std SUITApp suit ViewerTools ViewerData
     ImageComposer
 )
 

@@ -39,6 +39,14 @@ class PYCONSOLE_EXPORT PyConsole_Console : public PyConsole_ConsoleBase, public 
 {
   Q_OBJECT
 public:
+
+  struct PyConsole_Interp_Creator : public PyConsole_Interp_CreatorBase
+  {
+    virtual PyConsole_EditorBase *createEditor( PyConsole_Interp *interp, PyConsole_ConsoleBase *console ) const;
+    virtual PyConsole_Interp *createInterp( ) const;
+  };
+
+public:
   PyConsole_Console( QWidget* parent, PyConsole_Interp* interp = 0 );
   virtual ~PyConsole_Console();
   //! \brief Get popup client symbolic name
@@ -57,6 +65,14 @@ protected:
 class PYCONSOLE_EXPORT PyConsole_EnhConsole : public PyConsole_Console
 {
   Q_OBJECT
+public:
+
+  struct PyConsole_Interp_EnhCreator : public PyConsole_Interp_CreatorBase
+  {
+    virtual PyConsole_EditorBase *createEditor( PyConsole_Interp *interp, PyConsole_ConsoleBase *console ) const;
+    virtual PyConsole_Interp *createInterp( ) const;
+  };
+
 public:
   PyConsole_EnhConsole( QWidget* parent, PyConsole_Interp* interp = 0 );
   virtual ~PyConsole_EnhConsole() {}

@@ -42,7 +42,6 @@ public:
   static QRect   makeRect( const int x1, const int y1, const int x2, const int y2 ); 
 
   static QString fontToString( const QFont& font );
-  static QFont   stringToFont( const QString& fontDescription );
 
   static void    centerWidget( QWidget* src, const QWidget* ref );
 };

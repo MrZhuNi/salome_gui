@@ -39,6 +39,14 @@ class PYCONSOLEBASE_EXPORT PyConsole_ConsoleBase : public QWidget
   Q_OBJECT
 
 public:
+
+  struct PyConsole_Interp_CreatorBase
+  {
+    virtual PyConsole_EditorBase *createEditor( PyConsole_Interp *interp, PyConsole_ConsoleBase *console ) const;
+    virtual PyConsole_Interp *createInterp( ) const;
+  };
+
+public:
   //! Context popup menu actions flags
   enum
   {
@@ -82,7 +90,8 @@ public:
 protected:
   void                createActions();
   void                updateActions();
-
+  //!  MUST BE NON VIRTUAL ! (called from constructor !!!!)
+  void defaultConstructor( PyConsole_Interp* interp, const PyConsole_Interp_CreatorBase& crea );
   PyConsole_ConsoleBase( QWidget* parent, PyConsole_Interp*,  PyConsole_EditorBase*);
 
   PyConsole_EditorBase*   myEditor;    //!< python console editor widget
@@ -97,6 +106,13 @@ protected:
 class PYCONSOLEBASE_EXPORT PyConsole_EnhConsoleBase : public PyConsole_ConsoleBase
 {
   Q_OBJECT
+public:
+
+  struct PyConsole_Interp_EnhCreatorBase : public PyConsole_Interp_CreatorBase
+  {
+    virtual PyConsole_EditorBase *createEditor( PyConsole_Interp *interp, PyConsole_ConsoleBase *console ) const;
+    virtual PyConsole_Interp *createInterp( ) const;
+  };
 
 public:
   PyConsole_EnhConsoleBase( QWidget* parent, PyConsole_Interp* interp = 0 );
