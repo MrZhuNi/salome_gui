@@ -36,27 +36,4 @@
         <translation>Stop &amp;Log</translation>
     </message>
 </context>
-<context>
-    <name>PyConsole_EditorBase</name>
-    <message>
-        <source>TOT_DUMP_PYCOMMANDS</source>
-        <translation>Dump commands</translation>
-    </message>
-    <message>
-        <source>TOT_SAVE_PYLOG</source>
-        <translation>Save log</translation>
-    </message>
-    <message>
-        <source>PYTHON_FILES_FILTER</source>
-        <translation>PYTHON Files (*.py)</translation>
-    </message>
-    <message>
-        <source>LOG_FILES_FILTER</source>
-        <translation>Log files (*.log *.txt)</translation>
-    </message>
-    <message>
-        <source>ERR_FILE_NOT_WRITABLE</source>
-        <translation>File is not writable!</translation>
-    </message>
-</context>
 </TS>

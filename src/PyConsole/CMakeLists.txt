@@ -59,6 +59,13 @@ SET(PyConsole_HEADERS ${_moc_HEADERS} ${_other_HEADERS})
 # --- resources ---
 
 # --- sources ---
+# resource files / to be processed by lrelease
+
+SET(_ts_RESOURCES
+  resources/PyConsole_msg_en.ts
+  resources/PyConsole_msg_fr.ts
+  resources/PyConsole_msg_ja.ts
+)
 
 # sources / moc wrappings
 QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
@@ -80,4 +87,4 @@ TARGET_LINK_LIBRARIES(PyConsole ${_link_LIBRARIES})
 INSTALL(TARGETS PyConsole EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
 
 INSTALL(FILES ${PyConsole_HEADERS} DESTINATION ${SALOME_INSTALL_HEADERS})
-
+QT_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_GUI_INSTALL_RES_DATA}")

@@ -62,9 +62,9 @@ SET(PyConsoleBase_HEADERS ${_moc_HEADERS} ${_other_HEADERS})
 
 # resource files / to be processed by lrelease
 SET(_ts_RESOURCES
-  resources/PyConsole_msg_en.ts
-  resources/PyConsole_msg_fr.ts
-  resources/PyConsole_msg_ja.ts
+  resources/PyConsoleBase_msg_en.ts
+  resources/PyConsoleBase_msg_fr.ts
+  resources/PyConsoleBase_msg_ja.ts
 )
 
 # --- sources ---
