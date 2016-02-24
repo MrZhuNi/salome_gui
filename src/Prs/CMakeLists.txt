@@ -17,6 +17,11 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
+# additional include directories
+INCLUDE_DIRECTORIES(
+  ${CAS_INCLUDE_DIRS}
+)
+
 ADD_LIBRARY(SalomePrs SALOME_Prs.cxx)
 INSTALL(TARGETS SalomePrs EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
 INSTALL(FILES SALOME_Prs.h DESTINATION ${SALOME_INSTALL_HEADERS})
