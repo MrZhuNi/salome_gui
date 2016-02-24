@@ -40,31 +40,31 @@
     <name>PyConsole_EditorBase</name>
     <message>
         <source>Choose python file where to store</source>
-        <translation>Choose python file where to store dump</translation>
+        <translation>Choisissez un fichier python où sauver le dump</translation>
     </message>
     <message>
         <source>Python scripts ext (*.py)</source>
-        <translation>Python scripts (*.py)</translation>
+        <translation>Scripts Python (*.py)</translation>
     </message>
     <message>
         <source>WARNING</source>
-        <translation>WARNING !</translation>
+        <translation>Attention !</translation>
     </message>
     <message>
         <source>Python file has not been written</source>
-        <translation>Python file has not been written !</translation>
+        <translation>Le fichier Python n'a pas été écrit !</translation>
     </message>
     <message>
         <source>Choose python file where to store log</source>
-        <translation>Choose python file where to store log</translation>
+        <translation>Choisissez un fichier python où sauver le log</translation>
     </message>
     <message>
         <source>Log files ext (*.log *.txt)</source>
-        <translation>Log files extension (*.log *.txt)</translation>
+        <translation>Extensions possible des fichiers log (*.log *.txt)</translation>
     </message>
     <message>
         <source>Log file is not writable</source>
-        <translation>Log file is not writable !</translation>
+        <translation>Le fichier log sélectionné n'est pas writable !</translation>
     </message>
 </context>
 </TS>

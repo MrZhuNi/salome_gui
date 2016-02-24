@@ -1218,9 +1218,9 @@ void PyConsole_EditorBase::startLog()
 
 void PyConsole_EditorBase::startLogSlot()
 {
-  QString fileName(QFileDialog::getSaveFileName(this,tr("Choose python file where to store log"),QString(),tr("Log files ext (*.log *.txt)")));
   while (1)
     {
+      QString fileName(QFileDialog::getSaveFileName(this,tr("Choose python file where to store log"),QString(),tr("Log files ext (*.log *.txt)")));
       if ( !fileName.isEmpty() )
         {
           if ( startLogImpl( fileName ) )
@@ -1228,6 +1228,8 @@ void PyConsole_EditorBase::startLogSlot()
           else
             QMessageBox::warning(this,tr("WARNING"),tr("Log file is not writable"));
         }
+      else
+        break;
     }
 }
 
