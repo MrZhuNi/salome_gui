@@ -110,6 +110,8 @@
 #include <QTextStream>
 #include <QChar>
 #include <QFileInfo>
+#include <QFileDialog>
+#include <QMessageBox>
 
 //VSR: uncomment below macro to support unicode text properly in SALOME
 //     current commented out due to regressions
@@ -1168,7 +1170,11 @@ void PyConsole_EditorBase::dump()
 
 void PyConsole_EditorBase::dumpSlot()
 {
-  //TODO
+  QString fileName(QFileDialog::getSaveFileName(this,tr("Choose python file where to store"),QString(),tr("Python scripts ext (*.py)")));
+  if ( !fileName.isEmpty() )
+    this->dump( fileName );
+  else
+    QMessageBox::warning(this,tr("WARNING"),tr("Python file has not been written"));
 }
 
 /*!
@@ -1212,7 +1218,17 @@ void PyConsole_EditorBase::startLog()
 
 void PyConsole_EditorBase::startLogSlot()
 {
-  //TODO
+  QString fileName(QFileDialog::getSaveFileName(this,tr("Choose python file where to store log"),QString(),tr("Log files ext (*.log *.txt)")));
+  while (1)
+    {
+      if ( !fileName.isEmpty() )
+        {
+          if ( startLogImpl( fileName ) )
+            break;
+          else
+            QMessageBox::warning(this,tr("WARNING"),tr("Log file is not writable"));
+        }
+    }
 }
 
 /*!
