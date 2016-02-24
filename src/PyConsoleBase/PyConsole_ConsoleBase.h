@@ -120,6 +120,8 @@ public:
 public:
   PyConsole_EnhConsoleBase( QWidget* parent, PyConsole_Interp* interp = 0 );
   virtual ~PyConsole_EnhConsoleBase() {}
+  virtual bool eventFilter( QObject * o, QEvent * e );
+  virtual void contextMenuRequest( QContextMenuEvent * e ) ;
 };
 
 #endif // PYCONSOLE_CONSOLEBASE_H

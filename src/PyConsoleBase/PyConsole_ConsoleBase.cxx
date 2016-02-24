@@ -40,6 +40,7 @@
 #include <QClipboard>
 #include <QEvent>
 #include <QMenu>
+#include <QContextMenuEvent>
 #include <QVBoxLayout>
 
 PyConsole_EditorBase *PyConsole_ConsoleBase::PyConsole_Interp_CreatorBase::createEditor( PyConsole_Interp *interp, PyConsole_ConsoleBase *console ) const
@@ -382,4 +383,31 @@ PyConsole_EnhConsoleBase::PyConsole_EnhConsoleBase( QWidget* parent, PyConsole_I
 {
   PyConsole_Interp_EnhCreatorBase crea;
   defaultConstructor(interp,crea);
+}
+
+/*!
+  \brief Event handler.
+
+  Handles context menu request event.
+
+  \param o object
+  \param e event
+  \return True if the event is processed and further processing should be stopped
+*/
+bool PyConsole_EnhConsoleBase::eventFilter( QObject* o, QEvent* e )
+{
+  if ( o == myEditor->viewport() && e->type() == QEvent::ContextMenu )
+  {
+    contextMenuRequest( (QContextMenuEvent*)e );
+    return true;
+  }
+  return QWidget::eventFilter( o, e );
+}
+
+void PyConsole_EnhConsoleBase::contextMenuRequest( QContextMenuEvent * e )
+{
+  QMenu *menu(new QMenu(this));
+  contextMenuPopup(menu);
+  menu->move(e->globalPos());
+  menu->show();
 }
