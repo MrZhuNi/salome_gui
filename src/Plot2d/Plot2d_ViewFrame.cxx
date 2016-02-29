@@ -1126,6 +1126,8 @@ void Plot2d_ViewFrame::onSettings()
     // update preferences
     if ( dlg->isSetAsDefault() ) 
       writePreferences();
+
+    emit settingsUpdated();
   }
   delete dlg;
 }
@@ -1301,6 +1303,7 @@ void Plot2d_ViewFrame::onChangeBackground()
   QColor selColor = QColorDialog::getColor ( backgroundColor(), this );	
   if ( selColor.isValid() ) {
     setBackgroundColor( selColor );
+    emit backgroundColorChanged( selColor );
   }
 }
 
@@ -1352,6 +1355,8 @@ void Plot2d_ViewFrame::showLegend( bool show, bool update )
     myPlot->insertLegend( 0 );
   if ( update )
     myPlot->replot();
+
+  emit legendStateChanged( myShowLegend );
 }
 
 /*!

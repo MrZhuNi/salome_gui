@@ -199,6 +199,7 @@ signals:
   void    curveDisplayed( Plot2d_Curve* );
   void    curveErased( Plot2d_Curve* );
   void    curvesErased( const curveList& );
+  void    settingsUpdated();
   void    curvesUpdated();
   void	  xRangeUpdated( const double&, const double&);
   void	  yRangeUpdated( const double&, const double&, const double&, const double&);
@@ -206,6 +207,8 @@ signals:
                              const double&, const double&, const double& );
   void    manualTransformationApplied();
   void    fitAllApplied();
+  void    backgroundColorChanged( const QColor& );
+  void    legendStateChanged( const bool );
 
 protected:
   Plot2d_Plot2d* myPlot;
