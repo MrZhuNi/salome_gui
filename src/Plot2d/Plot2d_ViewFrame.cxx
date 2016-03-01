@@ -1434,8 +1434,8 @@ QColor Plot2d_ViewFrame::backgroundColor() const
   Sets hor.axis grid parameters
 */
 void Plot2d_ViewFrame::setXGrid( bool xMajorEnabled, const int xMajorMax, 
-         bool xMinorEnabled, const int xMinorMax, 
-         bool update )
+                                 bool xMinorEnabled, const int xMinorMax, 
+                                 bool update )
 {
   myXGridMajorEnabled = xMajorEnabled;
   myXGridMinorEnabled = xMinorEnabled;
@@ -1455,10 +1455,21 @@ void Plot2d_ViewFrame::setXGrid( bool xMajorEnabled, const int xMajorMax,
     myPlot->replot();
 }
 /*!
+  Returns hor.axis grid parameters
+*/
+void Plot2d_ViewFrame::getXGrid( bool& xMajorEnabled, int& xMajorMax,
+                                 bool& xMinorEnabled, int& xMinorMax )
+{
+  xMajorEnabled = myXGridMajorEnabled;
+  xMinorEnabled = myXGridMinorEnabled;
+  xMajorMax =     myXGridMaxMajor;
+  xMinorMax =     myXGridMaxMinor;
+}
+/*!
   Sets ver.axis grid parameters
 */
-void Plot2d_ViewFrame::setYGrid( bool yMajorEnabled, const int yMajorMax, 
-                                 bool yMinorEnabled, const int yMinorMax,
+void Plot2d_ViewFrame::setYGrid( bool yMajorEnabled,  const int yMajorMax, 
+                                 bool yMinorEnabled,  const int yMinorMax,
                                  bool y2MajorEnabled, const int y2MajorMax, 
                                  bool y2MinorEnabled, const int y2MinorMax, 
                                  bool update )
@@ -1508,6 +1519,24 @@ void Plot2d_ViewFrame::setYGrid( bool yMajorEnabled, const int yMajorMax,
   }
   if ( update )
     myPlot->replot();
+}
+/*!
+  Returns ver.axis grid parameters
+*/
+void Plot2d_ViewFrame::getYGrid( bool& yMajorEnabled,  int& yMajorMax,
+                                 bool& yMinorEnabled,  int& yMinorMax,
+                                 bool& y2MajorEnabled, int& y2MajorMax,
+                                 bool& y2MinorEnabled, int& y2MinorMax )
+{
+  yMajorEnabled = myYGridMajorEnabled;
+  yMinorEnabled = myYGridMinorEnabled;
+  yMajorMax =     myYGridMaxMajor;
+  yMinorMax =     myYGridMaxMinor;
+
+  y2MajorEnabled = mySecondY ? myY2GridMajorEnabled : true;
+  y2MinorEnabled = mySecondY ? myY2GridMinorEnabled : false;
+  y2MajorMax =     mySecondY ? myY2GridMaxMajor : 8;
+  y2MinorMax =     mySecondY ? myY2GridMaxMinor : 5;
 }
 
 /*!
