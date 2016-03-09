@@ -59,6 +59,10 @@ PVViewer_GUIElements::PVViewer_GUIElements(QMainWindow* desk) :
   pqParaViewMenuBuilders::buildSourcesMenu(*sourcesMenu, desk);
   filtersMenu = new QMenu(0);
   pqParaViewMenuBuilders::buildFiltersMenu(*filtersMenu, desk);
+#ifdef PVCATALYST_ENABLED
+  catalystMenu = new QMenu(0);
+  pqParaViewMenuBuilders::buildCatalystMenu(*catalystMenu);
+#endif
   macrosMenu = new QMenu(0);
   pqParaViewMenuBuilders::buildMacrosMenu(*macrosMenu);
 

@@ -22,6 +22,17 @@ INCLUDE(UseQt4Ext)
 # Install ParaView filters, etc ...
 ADD_SUBDIRECTORY(resources)
 
+FIND_PACKAGE(ParaView COMPONENTS vtkPVCatalyst vtkPVPythonCatalyst)
+LIST(FIND VTK_MODULES_ENABLED vtkPVCatalyst vtkPVCatalyst_index)
+LIST(FIND VTK_MODULES_ENABLED vtkPVPythonCatalyst vtkPVPythonCatalyst_index)
+IF (${vtkPVCatalyst_index} GREATER -1 AND
+    ${vtkPVPythonCatalyst_index} GREATER -1)
+  SET(PVCATALYST_ENABLED yes)
+ENDIF()
+IF (PVCATALYST_ENABLED)
+  ADD_DEFINITIONS("-DPVCATALYST_ENABLED")
+ENDIF()
+
 # --- options ---
 
 INCLUDE_DIRECTORIES(
@@ -39,12 +50,12 @@ ADD_DEFINITIONS(
   ${PYTHON_DEFINITIONS}
   )
 
-SET(_link_LIBRARIES 
-  ${KERNEL_SALOMELocalTrace} 
+SET(_link_LIBRARIES
+  ${KERNEL_SALOMELocalTrace}
   ${KERNEL_OpUtil}
-  PyInterp  
-  suit 
-  Event 
+  PyInterp
+  suit
+  Event
   PVServerService
   pqApplicationComponents
   vtkRenderingFreeTypeOpenGL
@@ -95,11 +106,11 @@ SET(_other_SOURCES
   PVViewer_GUIElements.cxx
   PVViewer_Core.cxx
   )
-  
+
 # sources / to compile
-SET(PVViewer_SOURCES 
-  ${_other_SOURCES} 
-  ${_moc_SOURCES} 
+SET(PVViewer_SOURCES
+  ${_other_SOURCES}
+  ${_moc_SOURCES}
   ${_rcc_SOURCES}
   )
 

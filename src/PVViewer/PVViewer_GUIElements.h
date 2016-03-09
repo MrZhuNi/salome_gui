@@ -52,6 +52,9 @@ public:
   QMenu* getFiltersMenu() { return filtersMenu; }
   QMenu* getSourcesMenu() { return sourcesMenu; }
   QMenu* getMacrosMenu()  { return macrosMenu; }
+#ifdef PVCATALYST_ENABLED
+  QMenu* getCatalystMenu()  { return catalystMenu; }
+#endif
 
   pqVCRToolbar* getVCRToolbar() { return vcrToolbar; }
   pqAnimationTimeToolbar* getTimeToolbar() { return timeToolbar; }
@@ -76,6 +79,9 @@ private:
   QMenu* sourcesMenu;
   QMenu* filtersMenu;
   QMenu* macrosMenu;
+#ifdef PVCATALYST_ENABLED
+  QMenu* catalystMenu;
+#endif
 
   // Toolbars also need to be instanciated early:
   QToolBar* mainToolBar;
