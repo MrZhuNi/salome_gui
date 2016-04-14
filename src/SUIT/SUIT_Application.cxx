@@ -58,7 +58,8 @@ SUIT_Application::SUIT_Application()
 : QObject( 0 ),
   myStudy( 0 ),
   myDesktop( 0 ),
-  myStatusLabel( 0 )
+  myStatusLabel( 0 ),
+  myEventLoopStarted(false)
 {
   if ( SUIT_Session::session() )
     SUIT_Session::session()->insertApplication( this );
@@ -726,4 +727,11 @@ void SUIT_Application::onHelpContextModule( const QString& /*theComponentName*/,
                                             const QString& /*theFileName*/,
                                             const QString& /*theContext*/ )
 {
+}
+
+
+void SUIT_Application::onMainEventLoopStarting()
+{
+  myEventLoopStarted = true;
+  emit mainEventLoopStarting();
 }

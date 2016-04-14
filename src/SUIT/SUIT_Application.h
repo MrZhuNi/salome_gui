@@ -115,16 +115,19 @@ public:
   virtual int           viewManagerId ( const SUIT_ViewManager* ) const = 0;
   virtual void          viewManagers( const QString&, QList<SUIT_ViewManager*>& ) const = 0;
   QAction*              action( const int ) const;
+  bool                  isMainEventLoopStarted() const { return myEventLoopStarted; }
 
 signals:
   void                  applicationClosed( SUIT_Application* );
   void                  activated( SUIT_Application* );
 //  void                  moving();
   void                  infoChanged( QString );
+  void                  mainEventLoopStarting();
 
 public slots:
   virtual void          updateCommandsStatus();
   virtual void          onHelpContextModule( const QString&, const QString&, const QString& = QString() );
+  virtual void          onMainEventLoopStarting();
 
 private slots:
   void                  onInfoClear();
@@ -191,6 +194,8 @@ private:
   SUIT_ShortcutMgr*     myShortcutMgr;
 
   QLabel*               myStatusLabel;
+
+  bool                  myEventLoopStarted;
 };
 
 //! This function must return a new application instance.

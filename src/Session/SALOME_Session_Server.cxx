@@ -77,6 +77,7 @@
 #include <QWaitCondition>
 #include <QRegExp>
 #include <QTextStream>
+#include <QTimer>
 
 /*! - read arguments, define list of server to launch with their arguments.
  * - wait for naming service
@@ -577,6 +578,9 @@ int main( int argc, char **argv )
         if ( splash )
           splash->finish( aGUIApp->desktop() );
 
+        // Post an event that will be processed as soon as the main event loop is starting - useful for QtTesting
+        // test scenarios, in the MED module for example.
+        QTimer::singleShot(0, aGUIApp, SLOT(onMainEventLoopStarting()));
         result = _qappl.exec();
         
         splash = 0;
