@@ -579,7 +579,7 @@ int main( int argc, char **argv )
           splash->finish( aGUIApp->desktop() );
 
         // Post an event that will be processed as soon as the main event loop is starting - useful for QtTesting
-        // test scenarios, in the MED module for example.
+        // test scenarios, in the MED module for example, to know whether the main exec loop is running.
         QTimer::singleShot(0, aGUIApp, SLOT(onMainEventLoopStarting()));
         result = _qappl.exec();
         

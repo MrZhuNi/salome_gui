@@ -733,5 +733,4 @@ void SUIT_Application::onHelpContextModule( const QString& /*theComponentName*/,
 void SUIT_Application::onMainEventLoopStarting()
 {
   myEventLoopStarted = true;
-  emit mainEventLoopStarting();
 }

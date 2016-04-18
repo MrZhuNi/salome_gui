@@ -122,7 +122,6 @@ signals:
   void                  activated( SUIT_Application* );
 //  void                  moving();
   void                  infoChanged( QString );
-  void                  mainEventLoopStarting();
 
 public slots:
   virtual void          updateCommandsStatus();
