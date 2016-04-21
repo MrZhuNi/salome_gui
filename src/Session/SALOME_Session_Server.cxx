@@ -577,6 +577,7 @@ int main( int argc, char **argv )
         if ( splash )
           splash->finish( aGUIApp->desktop() );
 
+        QApplication::postEvent(QApplication::instance(), new QEvent((QEvent::Type)9999));
         result = _qappl.exec();
         
         splash = 0;
