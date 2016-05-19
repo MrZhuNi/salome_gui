@@ -2162,27 +2162,26 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
   }
   else
   {
-    double aTail = 0.0;
+    double aTail = 1.0;
     for ( int i = from; i <= to; i++ )
     {
       double u1 = xMap.transform( x( i ) );
       double v1 = yMap.transform( y( i ) );
 
+      if ( !mySymbolsColorMap.isEmpty() ) 
+      {
+        if ( mySymbolsColorMap.contains( mySymbolsColorIds.at(i) ) )
+          p->setBrush( QBrush( mySymbolsColorMap[ mySymbolsColorIds.at(i) ] ) );
+        else
+          p->setBrush( symbol.brush() );
+      }
+
       if ( (i == from || i == to) && myNbMarkers >= 0 )
       {
-        if (!mySymbolsColorMap.isEmpty())
-        {
-          if ( mySymbolsColorMap.contains( mySymbolsColorIds.at(i) ) )
-            p->setBrush( QBrush( mySymbolsColorMap[ mySymbolsColorIds.at(i) ] ) );
-          else
-            p->setBrush( symbol.brush() );
-        }
-
         rect.moveCenter( QPoint( u1, v1 ) );
         symbol.draw( p, rect );
       }
-
-      if ( i > from && myNbMarkers > 0 )
+      else if ( i > from && myNbMarkers > 0 )
       {
         double u0 = xMap.transform( x( i - 1 ) );
         double v0 = yMap.transform( y( i - 1 ) );
@@ -2200,14 +2199,6 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
           ( ( dX >= 0 && u <= u1 ) || ( dX <= 0 && u1 <= u ) ) &&
           ( ( dY >= 0 && v <= v1 ) || ( dY <= 0 && v1 <= v ) )    )
         {
-          if ( !mySymbolsColorMap.isEmpty() ) 
-          {
-            if ( mySymbolsColorMap.contains( mySymbolsColorIds.at(i) ) )
-              p->setBrush( QBrush( mySymbolsColorMap[ mySymbolsColorIds.at(i) ] ) );
-            else
-              p->setBrush( symbol.brush() );
-          }
-
           rect.moveCenter( QPoint( u, v ) );
           symbol.draw( p, rect );
           
