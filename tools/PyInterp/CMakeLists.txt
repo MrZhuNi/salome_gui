@@ -42,13 +42,22 @@ LIST(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../adm_local/cmake_files
 # ==============
 INCLUDE(SalomeSetupPlatform)
 
+# Options
+# =======
+OPTION(PYINTERP_BUILD_WITH_QT5 "Build PYINTERP with Qt 5" ON)
+
 #
 # Set list of prerequisites
 # =========================
 
 FIND_PACKAGE(SalomePythonInterp REQUIRED)
 FIND_PACKAGE(SalomePythonLibs REQUIRED)
-FIND_PACKAGE(SalomeQt4 REQUIRED)
+# Qt
+IF(NOT PYINTERP_BUILD_WITH_QT5)
+  FIND_PACKAGE(SalomeQt4 REQUIRED)
+ELSE()
+  FIND_PACKAGE(SalomeQt5 REQUIRED)
+ENDIF()
 
 # Detection report
 SALOME_PACKAGE_REPORT_AND_CHECK()
