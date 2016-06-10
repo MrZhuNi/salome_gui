@@ -43,8 +43,18 @@
 #include <QStatusBar>
 #include <QToolBar>
 #include <QVBoxLayout>
-#include <QWebView>
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
+  #include <QWebView>
+#else
+  #include <QWebEngineView>
+#endif
 #include <QProcess>
+
+// RNV:
+// Since from Qt 5.6.0 version was removed QtWebKit tool,
+// QtxWebBroswer is ported on QtWebEngine. So if it is built with
+// Qt5 (Qt-5.5.1, Qt-5.6.0 and newer), it uses QtWebEngine.
+// But for Qt4 QtWebKit tool is used, to provide backward compatibility.
 
 namespace
 {
@@ -105,8 +115,12 @@ bool QtxWebBrowser::Searcher::find( const QString& text, QtxSearchTool* st )
 {
   QWebPage::FindFlags fl = 0;
   if ( st->isCaseSensitive() ) fl = fl | QWebPage::FindCaseSensitively;
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0) 
   if ( st->isSearchWrapped() ) fl = fl | QWebPage::FindWrapsAroundDocument;
   return myView->findText( text, fl );
+#else
+  myView->findText( text, fl, [this](bool found) { return found; });  
+#endif    
 }
 
 /*!
@@ -132,8 +146,12 @@ bool QtxWebBrowser::Searcher::findPrevious( const QString& text, QtxSearchTool* 
 {
   QWebPage::FindFlags fl = QWebPage::FindBackward;
   if ( st->isCaseSensitive() ) fl = fl | QWebPage::FindCaseSensitively;
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0) 
   if ( st->isSearchWrapped() ) fl = fl | QWebPage::FindWrapsAroundDocument;
   return myView->findText( text, fl );
+#else
+  myView->findText( text, fl, [this](bool found) { return found; });
+#endif 
 }
 
 /*!
@@ -337,15 +355,22 @@ QtxWebBrowser::QtxWebBrowser( ) : QMainWindow( 0 )
 
   myWebView->pageAction( QWebPage::Copy )->setShortcut( QKeySequence::Copy );
   myWebView->addAction( myWebView->pageAction( QWebPage::Copy ) );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
   myWebView->pageAction( QWebPage::OpenLinkInNewWindow )->setVisible( false );
+#endif  
   myWebView->pageAction( QWebPage::Back )->setText( tr( "Go Back" ) );
   myWebView->pageAction( QWebPage::Forward )->setText( tr( "Go Forward" ) );
   myWebView->pageAction( QWebPage::Reload )->setText( tr( "Refresh" ) );
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
   myWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-
+#endif
+  
   myFindPanel = new QtxSearchTool( frame, myWebView,
-				   QtxSearchTool::Basic | QtxSearchTool::Case | QtxSearchTool::Wrap, 
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
+				   QtxSearchTool::Basic | QtxSearchTool::Case | QtxSearchTool::Wrap,
+#else
+				   QtxSearchTool::Basic | QtxSearchTool::Case,
+#endif				   
 				   Qt::Horizontal );
   myFindPanel->setFrameStyle( QFrame::NoFrame | QFrame::Plain );
   myFindPanel->setActivators( QtxSearchTool::SlashKey );
@@ -390,16 +415,26 @@ QtxWebBrowser::QtxWebBrowser( ) : QMainWindow( 0 )
   main->setSpacing( 3 );
 
   connect( myWebView, SIGNAL( titleChanged( QString ) ), SLOT( adjustTitle() ) ); 
-  connect( myWebView, SIGNAL( loadFinished( bool ) ),    SLOT( finished( bool ) ) ); 
-  connect( myWebView, SIGNAL( linkClicked( QUrl ) ),     SLOT( linkClicked( QUrl ) ) ); 
-  connect( myWebView->page(), SIGNAL( linkHovered( QString, QString, QString ) ), 
-	   SLOT( linkHovered( QString, QString, QString ) ) ); 
+  connect( myWebView, SIGNAL( loadFinished( bool ) ),    SLOT( finished( bool ) ) );
+  
   connect( myWebView->pageAction( QWebPage::DownloadLinkToDisk ), SIGNAL( triggered() ),
 	   SLOT( linkAction() ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
+  //QtWebKit case:
+  connect( myWebView, SIGNAL( linkClicked( QUrl ) ),     SLOT( linkClicked( QUrl ) ) );
+  connect( myWebView->page(), SIGNAL( linkHovered( QString, QString, QString ) ), 
+	   SLOT( linkHovered( QString, QString, QString ) ) ); 
   disconnect( myWebView->pageAction( QWebPage::OpenLink ), 0, 0, 0 );
   connect( myWebView->pageAction( QWebPage::OpenLink ), SIGNAL( triggered() ),
 	   SLOT( linkAction() ) );
-  
+#else
+  //QtWebEngine (Qt-5.6.0) case:
+  connect( myWebView->page(), SIGNAL( linkHovered( QString ) ), 
+	   SLOT( linkHovered( QString ) ) );
+  disconnect( myWebView->pageAction( QWebPage::OpenLinkInThisWindow ), 0, 0, 0 );
+  connect( myWebView->pageAction( QWebPage::OpenLinkInThisWindow ), SIGNAL( triggered() ),
+	   SLOT( linkAction() ) );
+#endif  
   setCentralWidget( frame );
   setFocusProxy( myWebView );
   setWindowIcon( QPixmap( ":/images/appicon.png" ) );
@@ -488,9 +523,13 @@ void QtxWebBrowser::about()
 */
 void QtxWebBrowser::linkClicked( const QUrl& url )
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
   myWebView->page()->setLinkDelegationPolicy( QWebPage::DontDelegateLinks );
+#endif  
   myWebView->load( url );
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)  
   myWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+#endif  
 }
 
 /*!
@@ -500,7 +539,15 @@ void QtxWebBrowser::linkClicked( const QUrl& url )
   \param content provides text within the link element, e.g., text inside an HTML anchor tag
   \internal
 */
+
+
 void QtxWebBrowser::linkHovered( const QString& link, const QString& /*title*/, const QString& /*context*/ )
+{
+  linkHovered(link);
+}
+
+void QtxWebBrowser::linkHovered( const QString& link)
+  
 {
   QUrl url = link;
   if ( !link.isEmpty() && isLocalFile( url ) ) myLastUrl = url;
@@ -543,7 +590,11 @@ void QtxWebBrowser::linkAction()
   if ( s == myWebView->pageAction( QWebPage::DownloadLinkToDisk ) ) {
     saveLink( myLastUrl.path() );
   }
-  else if ( s == myWebView->pageAction( QWebPage::OpenLink ) ) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
+  if ( s == myWebView->pageAction( QWebPage::OpenLink ) ) {
+#else
+  if ( s == myWebView->pageAction( QWebPage::OpenLinkInThisWindow ) ) {  
+#endif    
     QString fileName  = myLastUrl.path();
     QString extension = QFileInfo( fileName ).suffix();
     if ( extension != "html" && extension != "htm" ) {

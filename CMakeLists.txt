@@ -157,6 +157,13 @@ IF(NOT SALOME_BUILD_WITH_QT5)
 ELSE()
   FIND_PACKAGE(SalomeQt5 REQUIRED)
   SET(QT_SALOME_VERSION 5)
+  # Check that WebEngine component was found
+  IF(Qt5WebEngine_FOUND)
+    SET(SALOME_QT5HAVE_WEBENGINE TRUE)
+  ELSE()
+    MESSAGE("Qt5WebEngine is not found, SALOME internal help browser will be unavailable !")
+    ADD_DEFINITIONS("-DDISABLE_QTXWEBBROWSER")
+  ENDIF()
 ENDIF()
 
 # PyQt

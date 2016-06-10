@@ -29,9 +29,15 @@
 
 #include "Qtx.h"
 
+#include <QtGlobal>
 #include <QDialog>
 #include <QMainWindow>
 #include <QUrl>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+#define QWebView QWebEngineView
+#define QWebPage QWebEnginePage
+#endif
 
 class QButtonGroup;
 class QCheckBox;
@@ -70,8 +76,9 @@ public Q_SLOTS:
 protected Q_SLOTS:
   virtual void                    about();
   virtual void                    linkClicked( const QUrl& );
+  virtual void                    linkHovered( const QString& );
   virtual void                    linkHovered( const QString&, const QString&, const QString& );
-
+  
 private Q_SLOTS:
   void                            open();
   void                            adjustTitle();

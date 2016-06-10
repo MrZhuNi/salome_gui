@@ -75,12 +75,15 @@ SET(_moc_HEADERS
   QtxToolTip.h
   QtxTreeView.h
   QtxValidator.h
-  QtxWebBrowser.h
   QtxWorkspace.h
   QtxWorkspaceAction.h
   QtxWorkstack.h
   QtxWorkstackAction.h
 )
+
+IF(SALOME_BUILD_WITH_QT5 AND SALOME_QT5HAVE_WEBENGINE)
+  SET(_moc_HEADERS ${_moc_HEADERS}  QtxWebBrowser.h)
+ENDIF()
 
 # obsolete files: not migrated to Qt4
 # _moc_HEADERS << QtxListBox.h QtxTable.h
@@ -165,12 +168,15 @@ SET(_other_SOURCES
   QtxTranslator.cxx
   QtxTreeView.cxx
   QtxValidator.cxx
-  QtxWebBrowser.cxx
   QtxWorkspace.cxx
   QtxWorkspaceAction.cxx
   QtxWorkstack.cxx
   QtxWorkstackAction.cxx
 )
+
+IF(SALOME_BUILD_WITH_QT5 AND SALOME_QT5HAVE_WEBENGINE)
+  SET(_other_SOURCES ${_other_SOURCES}  QtxWebBrowser.cxx)
+ENDIF()
 
 # obsolete files: not migrated to Qt4
 # _other_SOURCES << QtxListBox.cxx QtxTable.cxx
