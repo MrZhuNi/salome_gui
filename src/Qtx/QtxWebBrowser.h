@@ -34,16 +34,21 @@
 #include <QMainWindow>
 #include <QUrl>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-#define QWebView QWebEngineView
-#define QWebPage QWebEnginePage
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
+// Web Kit
+#define WebView QWebView
+#define WebPage QWebPage
+#else
+// Web Engine
+#define WebView QWebEngineView
+#define WebPage QWebEnginePage
 #endif
 
 class QButtonGroup;
 class QCheckBox;
 class QLabel;
 class QPushButton;
-class QWebView;
+class WebView;
 class QtxResourceMgr;
 class QtxSearchTool;
 
@@ -76,9 +81,9 @@ public Q_SLOTS:
 protected Q_SLOTS:
   virtual void                    about();
   virtual void                    linkClicked( const QUrl& );
-  virtual void                    linkHovered( const QString& );
   virtual void                    linkHovered( const QString&, const QString&, const QString& );
-  
+  virtual void                    linkHovered( const QString&) ;
+
 private Q_SLOTS:
   void                            open();
   void                            adjustTitle();
@@ -88,7 +93,7 @@ private Q_SLOTS:
 private:
   static QtxWebBrowser*           myBrowser;
   static QtxResourceMgr*          myResourceMgr;
-  QWebView*                       myWebView;
+  WebView*                        myWebView;
   QtxSearchTool*                  myFindPanel;
   QUrl                            myLastUrl;
 };

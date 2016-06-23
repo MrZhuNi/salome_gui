@@ -51,10 +51,10 @@
 #include <QProcess>
 
 // RNV:
-// Since from Qt 5.6.0 version was removed QtWebKit tool,
-// QtxWebBroswer is ported on QtWebEngine. So if it is built with
-// Qt5 (Qt-5.5.1, Qt-5.6.0 and newer), it uses QtWebEngine.
-// But for Qt4 QtWebKit tool is used, to provide backward compatibility.
+// Since from Qt 5.6.0 version QtWebKit tool was removed,
+// QtxWebBroswer is ported on QtWebEngine. So if it is built with Qt-5.6.0
+// and newer, it uses QtWebEngine. But for Qt-5.5.1 and Qt4 QtWebKit tool
+// is used, to provide backward compatibility.
 
 namespace
 {
@@ -74,7 +74,7 @@ namespace
 class QtxWebBrowser::Searcher : public QtxSearchTool::Searcher
 {
 public:
-  Searcher( QWebView* );
+  Searcher( WebView* );
   ~Searcher();
 
   bool find( const QString&, QtxSearchTool* );
@@ -84,7 +84,7 @@ public:
   bool findLast( const QString&, QtxSearchTool* );
 
 private:
-  QWebView* myView;
+  WebView* myView;
 };
 
 /*!
@@ -92,7 +92,7 @@ private:
   \param view web view
   \internal
 */
-QtxWebBrowser::Searcher::Searcher( QWebView* view ) : myView( view )
+QtxWebBrowser::Searcher::Searcher( WebView* view ) : myView( view )
 {
 }
 
@@ -113,10 +113,10 @@ QtxWebBrowser::Searcher::~Searcher()
 */
 bool QtxWebBrowser::Searcher::find( const QString& text, QtxSearchTool* st )
 {
-  QWebPage::FindFlags fl = 0;
-  if ( st->isCaseSensitive() ) fl = fl | QWebPage::FindCaseSensitively;
+  WebPage::FindFlags fl = 0;
+  if ( st->isCaseSensitive() ) fl = fl | WebPage::FindCaseSensitively;
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0) 
-  if ( st->isSearchWrapped() ) fl = fl | QWebPage::FindWrapsAroundDocument;
+  if ( st->isSearchWrapped() ) fl = fl | WebPage::FindWrapsAroundDocument;
   return myView->findText( text, fl );
 #else
   myView->findText( text, fl, [this](bool found) { return found; });  
@@ -144,10 +144,10 @@ bool QtxWebBrowser::Searcher::findNext( const QString& text, QtxSearchTool* st )
 */
 bool QtxWebBrowser::Searcher::findPrevious( const QString& text, QtxSearchTool* st )
 {
-  QWebPage::FindFlags fl = QWebPage::FindBackward;
-  if ( st->isCaseSensitive() ) fl = fl | QWebPage::FindCaseSensitively;
+  WebPage::FindFlags fl = WebPage::FindBackward;
+  if ( st->isCaseSensitive() ) fl = fl | WebPage::FindCaseSensitively;
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0) 
-  if ( st->isSearchWrapped() ) fl = fl | QWebPage::FindWrapsAroundDocument;
+  if ( st->isSearchWrapped() ) fl = fl | WebPage::FindWrapsAroundDocument;
   return myView->findText( text, fl );
 #else
   myView->findText( text, fl, [this](bool found) { return found; });
@@ -351,18 +351,18 @@ QtxWebBrowser::QtxWebBrowser( ) : QMainWindow( 0 )
 
   QWidget* frame = new QWidget( this );
 
-  myWebView = new QWebView( frame );
+  myWebView = new WebView( frame );
 
-  myWebView->pageAction( QWebPage::Copy )->setShortcut( QKeySequence::Copy );
-  myWebView->addAction( myWebView->pageAction( QWebPage::Copy ) );
+  myWebView->pageAction( WebPage::Copy )->setShortcut( QKeySequence::Copy );
+  myWebView->addAction( myWebView->pageAction( WebPage::Copy ) );
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-  myWebView->pageAction( QWebPage::OpenLinkInNewWindow )->setVisible( false );
+  myWebView->pageAction( WebPage::OpenLinkInNewWindow )->setVisible( false );
 #endif  
-  myWebView->pageAction( QWebPage::Back )->setText( tr( "Go Back" ) );
-  myWebView->pageAction( QWebPage::Forward )->setText( tr( "Go Forward" ) );
-  myWebView->pageAction( QWebPage::Reload )->setText( tr( "Refresh" ) );
+  myWebView->pageAction( WebPage::Back )->setText( tr( "Go Back" ) );
+  myWebView->pageAction( WebPage::Forward )->setText( tr( "Go Forward" ) );
+  myWebView->pageAction( WebPage::Reload )->setText( tr( "Refresh" ) );
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-  myWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  myWebView->page()->setLinkDelegationPolicy( WebPage::DelegateAllLinks );
 #endif
   
   myFindPanel = new QtxSearchTool( frame, myWebView,
@@ -378,18 +378,18 @@ QtxWebBrowser::QtxWebBrowser( ) : QMainWindow( 0 )
   myFindPanel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
   QToolBar* toolbar = addToolBar( tr( "Navigation" ) );
-  toolbar->addAction( myWebView->pageAction( QWebPage::Back ) );
-  toolbar->addAction( myWebView->pageAction( QWebPage::Forward ) );
-  toolbar->addAction( myWebView->pageAction( QWebPage::Reload ) );
+  toolbar->addAction( myWebView->pageAction( WebPage::Back ) );
+  toolbar->addAction( myWebView->pageAction( WebPage::Forward ) );
+  toolbar->addAction( myWebView->pageAction( WebPage::Reload ) );
 
   QMenu* fileMenu = menuBar()->addMenu( tr( "&File" ) );
   fileMenu->addAction( QPixmap( ":/images/open.png" ), tr( "&Open..." ), 
 		       this, SLOT( open() ),
 		       QKeySequence( QKeySequence::Open ) );
   fileMenu->addSeparator();
-  fileMenu->addAction( myWebView->pageAction( QWebPage::Back ) );
-  fileMenu->addAction( myWebView->pageAction( QWebPage::Forward ) );
-  fileMenu->addAction( myWebView->pageAction( QWebPage::Reload ) );
+  fileMenu->addAction( myWebView->pageAction( WebPage::Back ) );
+  fileMenu->addAction( myWebView->pageAction( WebPage::Forward ) );
+  fileMenu->addAction( myWebView->pageAction( WebPage::Reload ) );
   fileMenu->addSeparator();
   fileMenu->addAction( tr( "&Find in text..." ),
 		       myFindPanel, SLOT( find() ),
@@ -417,22 +417,22 @@ QtxWebBrowser::QtxWebBrowser( ) : QMainWindow( 0 )
   connect( myWebView, SIGNAL( titleChanged( QString ) ), SLOT( adjustTitle() ) ); 
   connect( myWebView, SIGNAL( loadFinished( bool ) ),    SLOT( finished( bool ) ) );
   
-  connect( myWebView->pageAction( QWebPage::DownloadLinkToDisk ), SIGNAL( triggered() ),
+  connect( myWebView->pageAction( WebPage::DownloadLinkToDisk ), SIGNAL( triggered() ),
 	   SLOT( linkAction() ) );
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
   //QtWebKit case:
   connect( myWebView, SIGNAL( linkClicked( QUrl ) ),     SLOT( linkClicked( QUrl ) ) );
   connect( myWebView->page(), SIGNAL( linkHovered( QString, QString, QString ) ), 
 	   SLOT( linkHovered( QString, QString, QString ) ) ); 
-  disconnect( myWebView->pageAction( QWebPage::OpenLink ), 0, 0, 0 );
-  connect( myWebView->pageAction( QWebPage::OpenLink ), SIGNAL( triggered() ),
+  disconnect( myWebView->pageAction( WebPage::OpenLink ), 0, 0, 0 );
+  connect( myWebView->pageAction( WebPage::OpenLink ), SIGNAL( triggered() ),
 	   SLOT( linkAction() ) );
 #else
   //QtWebEngine (Qt-5.6.0) case:
   connect( myWebView->page(), SIGNAL( linkHovered( QString ) ), 
 	   SLOT( linkHovered( QString ) ) );
-  disconnect( myWebView->pageAction( QWebPage::OpenLinkInThisWindow ), 0, 0, 0 );
-  connect( myWebView->pageAction( QWebPage::OpenLinkInThisWindow ), SIGNAL( triggered() ),
+  disconnect( myWebView->pageAction( WebPage::OpenLinkInThisWindow ), 0, 0, 0 );
+  connect( myWebView->pageAction( WebPage::OpenLinkInThisWindow ), SIGNAL( triggered() ),
 	   SLOT( linkAction() ) );
 #endif  
   setCentralWidget( frame );
@@ -524,11 +524,11 @@ void QtxWebBrowser::about()
 void QtxWebBrowser::linkClicked( const QUrl& url )
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-  myWebView->page()->setLinkDelegationPolicy( QWebPage::DontDelegateLinks );
+  myWebView->page()->setLinkDelegationPolicy( WebPage::DontDelegateLinks );
 #endif  
   myWebView->load( url );
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)  
-  myWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  myWebView->page()->setLinkDelegationPolicy( WebPage::DelegateAllLinks );
 #endif  
 }
 
@@ -540,18 +540,16 @@ void QtxWebBrowser::linkClicked( const QUrl& url )
   \internal
 */
 
-
 void QtxWebBrowser::linkHovered( const QString& link, const QString& /*title*/, const QString& /*context*/ )
 {
   linkHovered(link);
 }
 
 void QtxWebBrowser::linkHovered( const QString& link)
-  
 {
   QUrl url = link;
   if ( !link.isEmpty() && isLocalFile( url ) ) myLastUrl = url;
-  statusBar()->showMessage( link );
+  statusBar()->showMessage( link );  
 }
 
 /*!
@@ -587,13 +585,13 @@ void QtxWebBrowser::finished( bool ok )
 void QtxWebBrowser::linkAction()
 {
   QObject* s = sender();
-  if ( s == myWebView->pageAction( QWebPage::DownloadLinkToDisk ) ) {
+  if ( s == myWebView->pageAction( WebPage::DownloadLinkToDisk ) ) {
     saveLink( myLastUrl.path() );
   }
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-  if ( s == myWebView->pageAction( QWebPage::OpenLink ) ) {
+  if ( s == myWebView->pageAction( WebPage::OpenLink ) ) {
 #else
-  if ( s == myWebView->pageAction( QWebPage::OpenLinkInThisWindow ) ) {  
+  if ( s == myWebView->pageAction( WebPage::OpenLinkInThisWindow ) ) {  
 #endif    
     QString fileName  = myLastUrl.path();
     QString extension = QFileInfo( fileName ).suffix();
