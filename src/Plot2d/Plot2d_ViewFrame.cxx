@@ -1126,6 +1126,8 @@ void Plot2d_ViewFrame::onSettings()
     // update preferences
     if ( dlg->isSetAsDefault() ) 
       writePreferences();
+
+    emit settingsUpdated();
   }
   delete dlg;
 }
@@ -1301,6 +1303,7 @@ void Plot2d_ViewFrame::onChangeBackground()
   QColor selColor = QColorDialog::getColor ( backgroundColor(), this );	
   if ( selColor.isValid() ) {
     setBackgroundColor( selColor );
+    emit backgroundColorChanged( selColor );
   }
 }
 
@@ -1352,6 +1355,8 @@ void Plot2d_ViewFrame::showLegend( bool show, bool update )
     myPlot->insertLegend( 0 );
   if ( update )
     myPlot->replot();
+
+  emit legendStateChanged( myShowLegend );
 }
 
 /*!
@@ -1429,8 +1434,8 @@ QColor Plot2d_ViewFrame::backgroundColor() const
   Sets hor.axis grid parameters
 */
 void Plot2d_ViewFrame::setXGrid( bool xMajorEnabled, const int xMajorMax, 
-         bool xMinorEnabled, const int xMinorMax, 
-         bool update )
+                                 bool xMinorEnabled, const int xMinorMax, 
+                                 bool update )
 {
   myXGridMajorEnabled = xMajorEnabled;
   myXGridMinorEnabled = xMinorEnabled;
@@ -1450,10 +1455,21 @@ void Plot2d_ViewFrame::setXGrid( bool xMajorEnabled, const int xMajorMax,
     myPlot->replot();
 }
 /*!
+  Returns hor.axis grid parameters
+*/
+void Plot2d_ViewFrame::getXGrid( bool& xMajorEnabled, int& xMajorMax,
+                                 bool& xMinorEnabled, int& xMinorMax )
+{
+  xMajorEnabled = myXGridMajorEnabled;
+  xMinorEnabled = myXGridMinorEnabled;
+  xMajorMax =     myXGridMaxMajor;
+  xMinorMax =     myXGridMaxMinor;
+}
+/*!
   Sets ver.axis grid parameters
 */
-void Plot2d_ViewFrame::setYGrid( bool yMajorEnabled, const int yMajorMax, 
-                                 bool yMinorEnabled, const int yMinorMax,
+void Plot2d_ViewFrame::setYGrid( bool yMajorEnabled,  const int yMajorMax, 
+                                 bool yMinorEnabled,  const int yMinorMax,
                                  bool y2MajorEnabled, const int y2MajorMax, 
                                  bool y2MinorEnabled, const int y2MinorMax, 
                                  bool update )
@@ -1503,6 +1519,24 @@ void Plot2d_ViewFrame::setYGrid( bool yMajorEnabled, const int yMajorMax,
   }
   if ( update )
     myPlot->replot();
+}
+/*!
+  Returns ver.axis grid parameters
+*/
+void Plot2d_ViewFrame::getYGrid( bool& yMajorEnabled,  int& yMajorMax,
+                                 bool& yMinorEnabled,  int& yMinorMax,
+                                 bool& y2MajorEnabled, int& y2MajorMax,
+                                 bool& y2MinorEnabled, int& y2MinorMax )
+{
+  yMajorEnabled = myYGridMajorEnabled;
+  yMinorEnabled = myYGridMinorEnabled;
+  yMajorMax =     myYGridMaxMajor;
+  yMinorMax =     myYGridMaxMinor;
+
+  y2MajorEnabled = mySecondY ? myY2GridMajorEnabled : true;
+  y2MinorEnabled = mySecondY ? myY2GridMinorEnabled : false;
+  y2MajorMax =     mySecondY ? myY2GridMaxMajor : 8;
+  y2MinorMax =     mySecondY ? myY2GridMaxMinor : 5;
 }
 
 /*!
@@ -2128,27 +2162,26 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
   }
   else
   {
-    double aTail = 0.0;
+    double aTail = 1.0;
     for ( int i = from; i <= to; i++ )
     {
       double u1 = xMap.transform( x( i ) );
       double v1 = yMap.transform( y( i ) );
 
+      if ( !mySymbolsColorMap.isEmpty() ) 
+      {
+        if ( mySymbolsColorMap.contains( mySymbolsColorIds.at(i) ) )
+          p->setBrush( QBrush( mySymbolsColorMap[ mySymbolsColorIds.at(i) ] ) );
+        else
+          p->setBrush( symbol.brush() );
+      }
+
       if ( (i == from || i == to) && myNbMarkers >= 0 )
       {
-        if (!mySymbolsColorMap.isEmpty())
-        {
-          if ( mySymbolsColorMap.contains( mySymbolsColorIds.at(i) ) )
-            p->setBrush( QBrush( mySymbolsColorMap[ mySymbolsColorIds.at(i) ] ) );
-          else
-            p->setBrush( symbol.brush() );
-        }
-
         rect.moveCenter( QPoint( u1, v1 ) );
         symbol.draw( p, rect );
       }
-
-      if ( i > from && myNbMarkers > 0 )
+      else if ( i > from && myNbMarkers > 0 )
       {
         double u0 = xMap.transform( x( i - 1 ) );
         double v0 = yMap.transform( y( i - 1 ) );
@@ -2166,14 +2199,6 @@ void Plot2d_PlotCurve::drawSymbols( QPainter *p, const QwtSymbol &symbol,
           ( ( dX >= 0 && u <= u1 ) || ( dX <= 0 && u1 <= u ) ) &&
           ( ( dY >= 0 && v <= v1 ) || ( dY <= 0 && v1 <= v ) )    )
         {
-          if ( !mySymbolsColorMap.isEmpty() ) 
-          {
-            if ( mySymbolsColorMap.contains( mySymbolsColorIds.at(i) ) )
-              p->setBrush( QBrush( mySymbolsColorMap[ mySymbolsColorIds.at(i) ] ) );
-            else
-              p->setBrush( symbol.brush() );
-          }
-
           rect.moveCenter( QPoint( u, v ) );
           symbol.draw( p, rect );
           

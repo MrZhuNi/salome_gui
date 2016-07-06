@@ -495,36 +495,45 @@ void LightApp_Study::backup( const QString& fName )
 {
   QList<CAM_DataModel*> list; 
   dataModels( list );
+  if ( list.isEmpty() )
+    return;
 
-  QListIterator<CAM_DataModel*> itList( list );
-  while ( itList.hasNext() ) 
+  QString dataName = Qtx::addSlash( fName ) + "data";
+  FILE* f = fopen( dataName.toLatin1().constData(), "w" );
+  if ( f )
   {
-    LightApp_DataModel* model = (LightApp_DataModel*)itList.next();
-    if ( model && model->getModule() ) 
+    bool header = false;
+
+    QListIterator<CAM_DataModel*> itList( list );
+    while ( itList.hasNext() ) 
     {
-      // writes location of hdf-file
-      QString hdfName = QString( "HDF:" ) + studyName() + "\n";
-
-      //QString tmpName = QString( " ) + GetTmpDir( "", false ).c_str() + "\n";
-      QString tmpName( "TMP:" ); 
-      
-      LightApp_Driver::ListOfFiles files = 
-        myDriver->GetListOfFiles( model->getModule()->name().toLatin1().constData() );
-      if ( files.size() > 0 )
-        tmpName += files.front().c_str();
-      else 
+      LightApp_DataModel* model = (LightApp_DataModel*)itList.next();
+      if ( model && model->getModule() ) 
       {
-        // New (not saved study). Use backup folder as default
-        tmpName += fName;
-      }
-      tmpName += '\n';
+        if ( !header )
+        {
+          // writes location of hdf-file
+          QString hdfName = QString( "HDF:" ) + studyName() + "\n";
 
-      QString dataName = Qtx::addSlash( fName ) + "data";
-      FILE* f = fopen( dataName.toLatin1().constData(), "w" );
-      if ( f )
-      {
-        fputs( hdfName.toLatin1().constData(), f );
-        fputs( tmpName.toLatin1().constData(), f );
+          //QString tmpName = QString( " ) + GetTmpDir( "", false ).c_str() + "\n";
+          QString tmpName( "TMP:" ); 
+          
+          LightApp_Driver::ListOfFiles files = 
+            myDriver->GetListOfFiles( model->getModule()->name().toLatin1().constData() );
+          if ( files.size() > 0 )
+            tmpName += files.front().c_str();
+          else 
+          {
+            // New (not saved study). Use backup folder as default
+            tmpName += fName;
+          }
+          tmpName += '\n';
+
+          fputs( hdfName.toLatin1().constData(), f );
+          fputs( tmpName.toLatin1().constData(), f );
+
+          header = true;
+        }
 
         // backup model
         QStringList backupFiles;
@@ -540,11 +549,16 @@ void LightApp_Study::backup( const QString& fName )
             const QString& curr = * it;
             modStr += QString( "*" ) + curr;
           }
+          modStr += '\n';
+
           fputs( modStr.toLatin1().constData(), f );
         }
-        fclose( f );
       }
     }
+
+    fclose( f );
+    if ( !header )
+      remove( dataName.toLatin1().constData() ); // Remove empty created file
   }
 }
 
@@ -604,6 +618,9 @@ bool LightApp_Study::openBackupData()
     memset( buff, 0, 1024 );
     fgets( buff, 1024, f );
     QString modStr( buff );
+    modStr.remove( '\n' );
+    if ( modStr.isEmpty() )
+      continue;
 
     QStringList lst = modStr.split( "*" );
     QStringList::iterator it = lst.begin();

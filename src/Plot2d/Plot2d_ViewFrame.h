@@ -100,18 +100,25 @@ public:
   int     getCurveType() const { return myCurveType; }
   void    setCurveTitle( Plot2d_Curve* curve, const QString& title );
   void    showLegend( bool show, bool update = true );
+  bool    isLegendShow() { return myShowLegend; };
   void    setLegendPos( int pos );
   int     getLegendPos() const { return myLegendPos; }
   void    setMarkerSize( const int size, bool update = true  );
   int     getMarkerSize() const { return myMarkerSize; }
   void    setBackgroundColor( const QColor& color );
   QColor  backgroundColor() const;
-  void    setXGrid( bool xMajorEnabled, const int xMajorMax,
-                    bool xMinorEnabled, const int xMinorMax, bool update = true );
-  void    setYGrid( bool yMajorEnabled, const int yMajorMax,
-                    bool yMinorEnabled, const int yMinorMax,
-                    bool y2MajorEnabled, const int y2MajorMax,
-                    bool y2MinorEnabled, const int y2MinorMax, bool update = true );
+  void    setXGrid( bool xMajorEnabled,  const int xMajorMax,
+                    bool xMinorEnabled,  const int xMinorMax, bool update = true );
+  void    getXGrid( bool& xMajorEnabled, int& xMajorMax,
+                    bool& xMinorEnabled, int& xMinorMax );
+  void    setYGrid( bool yMajorEnabled,   const int yMajorMax,
+                    bool yMinorEnabled,   const int yMinorMax,
+                    bool y2MajorEnabled,  const int y2MajorMax,
+                    bool y2MinorEnabled,  const int y2MinorMax, bool update = true );
+  void    getYGrid( bool& yMajorEnabled,  int& yMajorMax,
+                    bool& yMinorEnabled,  int& yMinorMax,
+                    bool& y2MajorEnabled, int& y2MajorMax,
+                    bool& y2MinorEnabled, int& y2MinorMax );
   void    setTitle( bool enabled, const QString& title, ObjectType type, bool update = true );
   QString getTitle( ObjectType type ) const;
 
@@ -132,7 +139,6 @@ public:
 
   bool    isModeHorLinear();
   bool    isModeVerLinear();
-  bool    isLegendShow() { return myShowLegend; };
 
   // Protection against QwtCurve::drawLines() bug in Qwt 0.4.x: 
   // it crashes if switched to X/Y logarithmic mode, when one or more points have
@@ -199,6 +205,7 @@ signals:
   void    curveDisplayed( Plot2d_Curve* );
   void    curveErased( Plot2d_Curve* );
   void    curvesErased( const curveList& );
+  void    settingsUpdated();
   void    curvesUpdated();
   void	  xRangeUpdated( const double&, const double&);
   void	  yRangeUpdated( const double&, const double&, const double&, const double&);
@@ -206,6 +213,8 @@ signals:
                              const double&, const double&, const double& );
   void    manualTransformationApplied();
   void    fitAllApplied();
+  void    backgroundColorChanged( const QColor& );
+  void    legendStateChanged( const bool );
 
 protected:
   Plot2d_Plot2d* myPlot;
