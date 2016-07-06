@@ -140,6 +140,9 @@ Plot3d_Actor::Plot3d_Actor()
   myRealBounds[3] = VTK_DOUBLE_MIN;
   myRealBounds[4] = VTK_DOUBLE_MAX;
   myRealBounds[5] = VTK_DOUBLE_MIN;
+
+  // Degree of the value scale factor (value = value_base * 10^degree)
+  myValueScaleFactorDegree = 0;
 }
 
 //=============================================================================
@@ -340,7 +343,8 @@ void Plot3d_Actor::Build( const int theNX,
                           const QList<QPointF>& thePntList,
                           const QList<double>& theValueList,
                           const double theMinValue,
-                          const double theMaxValue )
+                          const double theMaxValue,
+                          const int theValueScaleFactorDegree )
 {
   myRealBounds[0] = VTK_DOUBLE_MAX;
   myRealBounds[1] = VTK_DOUBLE_MIN;
@@ -348,6 +352,8 @@ void Plot3d_Actor::Build( const int theNX,
   myRealBounds[3] = VTK_DOUBLE_MIN;
   myRealBounds[4] = theMinValue;
   myRealBounds[5] = theMaxValue;
+
+  myValueScaleFactorDegree = theValueScaleFactorDegree;
 
   vtkPolyData* aPointSet = vtkPolyData::New();
   aPointSet->Allocate( ( theNX - 1 ) * ( theNY - 1 ) );
@@ -393,6 +399,12 @@ void Plot3d_Actor::Build( const int theNX,
   aPointData->SetScalars( aFloatArray );
 
   myWarpScalar->SetInput( aPointSet );
+
+  if( theValueScaleFactorDegree != 0 )
+  {
+    double aScaleFactor = pow( 0.1, (double)theValueScaleFactorDegree );
+    myWarpScalar->SetScaleFactor( aScaleFactor );
+  }
 
   myMapper->SetInput( myWarpScalar->GetPolyDataOutput() );
   myMapper->SetScalarRange( theMinValue, theMaxValue );
@@ -609,7 +621,7 @@ void Plot3d_Actor::SetBoundaryPoints( const int theStartPoint,
 // Purpose  : 
 //=============================================================================
 void Plot3d_Actor::GetBoundaryPoints( int& theStartPoint,
-                                      int& theEndPoint )
+                                      int& theEndPoint ) const
 {
   theStartPoint = myStartPoint;
   theEndPoint = myEndPoint;
@@ -632,7 +644,7 @@ void Plot3d_Actor::SetTextColor( const QColor& theColor )
 // Function : GetRealBounds
 // Purpose  : 
 //=============================================================================
-void Plot3d_Actor::GetRealBounds( double theBounds[6] )
+void Plot3d_Actor::GetRealBounds( double theBounds[6] ) const
 {
   theBounds[0] = myRealBounds[0];
   theBounds[1] = myRealBounds[1];
@@ -640,4 +652,13 @@ void Plot3d_Actor::GetRealBounds( double theBounds[6] )
   theBounds[3] = myRealBounds[3];
   theBounds[4] = myRealBounds[4];
   theBounds[5] = myRealBounds[5];
+}
+
+//=============================================================================
+// Function : GetValueScaleFactorDegree
+// Purpose  : 
+//=============================================================================
+int Plot3d_Actor::GetValueScaleFactorDegree() const
+{
+  return myValueScaleFactorDegree;
 }

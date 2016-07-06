@@ -83,7 +83,8 @@ public:
                                              const QList<QPointF>& thePntList,
                                              const QList<double>& theValueList,
                                              const double theMinValue,
-                                             const double theMaxValue );
+                                             const double theMaxValue,
+                                             const int theValueScaleFactorDegree );
 
   void                                RecomputeLookupTable();
 
@@ -94,11 +95,13 @@ public:
   bool                                GetIsDistance() const;
 
   void                                SetBoundaryPoints( const int, const int );
-  void                                GetBoundaryPoints( int&, int& );
+  void                                GetBoundaryPoints( int&, int& ) const;
 
   void                                SetTextColor( const QColor& theColor );
 
-  void                                GetRealBounds( double theBounds[6] );
+  void                                GetRealBounds( double theBounds[6] ) const;
+
+  int                                 GetValueScaleFactorDegree() const;
 
 protected:
   vtkSmartPointer<vtkWarpScalar>      myWarpScalar;
@@ -126,6 +129,8 @@ protected:
   int                                 myEndPoint;
 
   double                              myRealBounds[6];
+
+  int                                 myValueScaleFactorDegree;
 };
 
 #endif

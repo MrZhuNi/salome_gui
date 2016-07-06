@@ -827,6 +827,8 @@ void Plot3d_ViewWindow::NormalizeSurfaces( const bool theIsRepaint )
                                             VTK_DOUBLE_MAX, VTK_DOUBLE_MIN,
                                             VTK_DOUBLE_MAX, VTK_DOUBLE_MIN };
 
+  bool anIsValueScaleFactorEnabled = false;
+
   VTK::ActorCollectionCopy aCopy( aRenderer->GetActors() );
   vtkActorCollection* aCollection = aCopy.GetActors();
   aCollection->InitTraversal();
@@ -843,6 +845,8 @@ void Plot3d_ViewWindow::NormalizeSurfaces( const bool theIsRepaint )
       aGlobalBounds[3] = qMax( aGlobalBounds[3], aBounds[3] );
       aGlobalBounds[4] = qMin( aGlobalBounds[4], aBounds[4] );
       aGlobalBounds[5] = qMax( aGlobalBounds[5], aBounds[5] );
+
+      anIsValueScaleFactorEnabled |= ( aSurface->GetValueScaleFactorDegree() != 0 );
     }
   }
 
@@ -866,6 +870,14 @@ void Plot3d_ViewWindow::NormalizeSurfaces( const bool theIsRepaint )
   aScale[0] = qMin( aScale[0], aMaxLimit );
   aScale[1] = qMin( aScale[1], aMaxLimit );
   aScale[2] = qMin( aScale[2], aMaxLimit );
+
+  // If the value range is very small in relation to the values themselves (e.g. min = 500000, max = 500001),
+  // there is a problem with drawing the presentation in VTK Plot3d view. In this case we have to:
+  // 1) decrease all the values using a scale factor for WarpScalar filter (Plot3d_Actor::Build())
+  // 2) reset the Z scale of the view to 1.0 (Plot3d_ViewWindow::NormalizeSurfaces())
+  // (see 0003928: External 20834 (Bug) Plot3d, irregular scaling).
+  if( anIsValueScaleFactorEnabled )
+    aScale[2] = 1.0;
 
   SetScale( aScale, false );
 
