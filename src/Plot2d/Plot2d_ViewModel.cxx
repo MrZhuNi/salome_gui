@@ -184,6 +184,8 @@ void Plot2d_Viewer::onCloneView( Plot2d_ViewFrame* clonedVF, Plot2d_ViewFrame* n
 
   newVF->copyPreferences( clonedVF );
 
+  newVF->setSecondY( clonedVF->getSecondY() );
+
   // 2) Display all curves displayed in cloned view
 
   curveList aCurves;
@@ -193,6 +195,15 @@ void Plot2d_Viewer::onCloneView( Plot2d_ViewFrame* clonedVF, Plot2d_ViewFrame* n
   for( ; anIt!=aLast; anIt++ )
     if( clonedVF->isVisible( *anIt ) )
       newVF->displayCurve( *anIt, false );
+
+  newVF->updateTitles( false );
+
+  // 3) Copy range of the cloned view
+
+  double aXMin, aXMax, aYMin, aYMax, aY2Min, aY2Max;
+  clonedVF->getFitRanges( aXMin, aXMax, aYMin, aYMax, aY2Min, aY2Max );
+  newVF->fitData( 0, aXMin, aXMax, aYMin, aYMax, aY2Min, aY2Max );
+
   newVF->Repaint();
   
   if ( newVF )

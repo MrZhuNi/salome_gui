@@ -2644,8 +2644,10 @@ void Plot2d_ViewFrame::updateTitles( bool update )
   //QIntDictIterator<Plot2d_Curve> it( myCurves );
   QStringList aXTitles;
   QStringList aYTitles;
+  QStringList aY2Titles;
   QStringList aXUnits;
   QStringList aYUnits;
+  QStringList aY2Units;
   QStringList aTables;
   int i = 0;
 
@@ -2657,14 +2659,19 @@ void Plot2d_ViewFrame::updateTitles( bool update )
     QString yTitle = aCurve->getVerTitle().trimmed();
     QString xUnits = aCurve->getHorUnits().trimmed();
     QString yUnits = aCurve->getVerUnits().trimmed();
-    
-    aYTitles.append( yTitle );
+
+    bool anIsY2 = aCurve->getYAxis() == QwtPlot::yRight;
+
+    anIsY2 ? aY2Titles.append( yTitle ) : aYTitles.append( yTitle );
+
     if ( !aXTitles.contains( xTitle ) )
       aXTitles.append( xTitle );
     if ( !aXUnits.contains( xUnits ) )
       aXUnits.append( xUnits );
-    if ( !aYUnits.contains( yUnits ) )
-      aYUnits.append( yUnits );
+
+    QStringList& aCorrectYUnits = anIsY2 ? aY2Units : aYUnits;
+    if ( !aCorrectYUnits.contains( yUnits ) )
+      aCorrectYUnits.append( yUnits );
 
     QString aName = aCurve->getTableTitle();
     if( !aName.isEmpty() && !aTables.contains( aName ) )
@@ -2672,21 +2679,27 @@ void Plot2d_ViewFrame::updateTitles( bool update )
     ++i;
   }
   // ... and update plot 2d view
-  QString xUnits, yUnits;
+  QString xUnits, yUnits, y2Units;
   if ( aXUnits.count() == 1 && !aXUnits[0].isEmpty() )
     xUnits = BRACKETIZE( aXUnits[0] );
   if ( aYUnits.count() == 1 && !aYUnits[0].isEmpty())
     yUnits = BRACKETIZE( aYUnits[0] );
-  QString xTitle, yTitle;
+  if ( aY2Units.count() == 1 && !aY2Units[0].isEmpty())
+    y2Units = BRACKETIZE( aY2Units[0] );
+  QString xTitle, yTitle, y2Title;
   if ( aXTitles.count() == 1 && aXUnits.count() == 1 )
     xTitle = aXTitles[0];
   if ( aYTitles.count() == 1 )
     yTitle = aYTitles[0];
+  if ( aY2Titles.count() == 1 )
+    y2Title = aY2Titles[0];
 
   if ( !xTitle.isEmpty() && !xUnits.isEmpty() )
     xTitle += " ";
   if ( !yTitle.isEmpty() && !yUnits.isEmpty() )
     yTitle += " ";
+  if ( !y2Title.isEmpty() && !y2Units.isEmpty() )
+    y2Title += " ";
 
   if ( getAutoUpdateTitle( XTitle ) )
     setTitle( myXTitleEnabled, xTitle + xUnits, XTitle, update );
@@ -2697,6 +2710,11 @@ void Plot2d_ViewFrame::updateTitles( bool update )
     setTitle( myYTitleEnabled, yTitle + yUnits, YTitle, update );
   else 
     setTitle( myYTitleEnabled, myYTitle, YTitle, update );
+
+  if ( getAutoUpdateTitle( Y2Title ) )
+    setTitle( myY2TitleEnabled, y2Title + y2Units, Y2Title, update );
+  else 
+    setTitle( myY2TitleEnabled, myY2Title, Y2Title, update );
 
   if ( getAutoUpdateTitle( MainTitle ) )
     setTitle( true, aTables.join("; "), MainTitle, update );
@@ -2978,6 +2996,7 @@ void Plot2d_ViewFrame::setAutoUpdateTitle( const ObjectType type, const bool upd
     myXTitleAutoUpdate = upd;
     break;
   case YTitle:
+  case Y2Title:
     myYTitleAutoUpdate = upd;
     break;
   default:
@@ -2998,6 +3017,7 @@ bool Plot2d_ViewFrame::getAutoUpdateTitle( const ObjectType type ) const
   case XTitle:
     return myXTitleAutoUpdate;
   case YTitle:
+  case Y2Title:
     return myYTitleAutoUpdate;
   default:
     return true;
