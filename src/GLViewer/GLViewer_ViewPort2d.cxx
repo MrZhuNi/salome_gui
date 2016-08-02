@@ -660,6 +660,28 @@ QColor GLViewer_ViewPort2d::backgroundColor() const
 }
 
 /*!
+  Sets foreground frame line width
+  \theLineWidth theColor - foreground frame line width
+*/
+void GLViewer_ViewPort2d::setScale( GLfloat xSc, GLfloat ySc )
+{
+  myXScale = xSc;
+  myYScale = ySc;
+  myGLWidget->setScale( xSc, ySc, 1.0 );
+}
+
+/*!
+  Sets foreground frame line width
+  \theLineWidth theColor - foreground frame line width
+*/
+void GLViewer_ViewPort2d::setPan( GLfloat xPan, GLfloat yPan )
+{
+  myXPan = xPan;
+  myYPan = yPan;
+  myGLWidget->setPan( xPan, yPan, 0.0 );
+}
+
+/*!
   Resize view
 */
 void GLViewer_ViewPort2d::initResize( int x, int y )

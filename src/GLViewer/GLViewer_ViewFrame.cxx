@@ -452,8 +452,8 @@ void GLViewer_ViewFrame::setVisualParameters( const QString& parameters )
     xPan = paramsLst[2].toDouble();
     yPan = paramsLst[3].toDouble();
 
-    vp2d->getGLWidget()->setScale( xSc, ySc, 1. );
-    vp2d->getGLWidget()->setPan( xPan, yPan, 0. );
+    vp2d->setScale( xSc, ySc );
+    vp2d->setPan( xPan, yPan );
 
     int r = paramsLst[4].toInt();
     int g = paramsLst[5].toInt();

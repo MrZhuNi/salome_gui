@@ -134,10 +134,13 @@ public:
   //! Returns height of view
   int                    getHeight() const { return myHeight; }
 
-  
+  //! Sets scale factors
+  void                   setScale( GLfloat xSc, GLfloat ySc );
   //! Returns scale factors
   void                   getScale( GLfloat& xSc, GLfloat& ySc ) const { xSc = myXScale; ySc = myYScale; }
-  //! returns offsets
+  //! Sets offsets
+  void                   setPan( GLfloat xPan, GLfloat yPan );
+  //! Returns offsets
   void                   getPan( GLfloat& xPan, GLfloat& yPan ) const { xPan = myXPan; yPan = myYPan; }
 
   //! Resize view
