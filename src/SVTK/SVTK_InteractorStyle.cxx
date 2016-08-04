@@ -94,7 +94,8 @@ SVTK_InteractorStyle::SVTK_InteractorStyle():
   myControllerOnKeyDown(SVTK_ControllerOnKeyDown::New()),
   myHighlightSelectionPointActor(SVTK_Actor::New()),
   myRectBand(0),
-  myIsRotationEnabled( true )
+  myIsRotationEnabled( true ),
+  myIsSelectionEnabled( true )
 {
   myPointPicker->Delete();
 
@@ -522,7 +523,7 @@ void SVTK_InteractorStyle::OnLeftButtonDown(int ctrl, int shift,
 
       GetRenderWidget()->setCursor(myDefCursor); 
     }
-    else
+    else if( myIsSelectionEnabled )
       startOperation(VTK_INTERACTOR_STYLE_CAMERA_SELECT);
   }
   
@@ -1722,6 +1723,14 @@ void SVTK_InteractorStyle::SetIncrementSpeed(const int theValue, const int theMo
 void SVTK_InteractorStyle::SetIsRotationEnabled( const bool theState )
 {
   myIsRotationEnabled = theState;
+}
+
+/*!
+  Enable/disable selection
+*/
+void SVTK_InteractorStyle::SetIsSelectionEnabled( const bool theState )
+{
+  myIsSelectionEnabled = theState;
 }
 
 /*!

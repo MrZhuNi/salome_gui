@@ -23,6 +23,7 @@
 
 #include <SVTK_ViewWindow.h>
 
+class vtkCellPicker;
 class vtkLookupTable;
 class vtkScalarBarActor;
 class vtkScalarBarWidget;
@@ -54,6 +55,8 @@ public:
 
   void clearViewState( const bool theIs2D );
 
+  void putInfo( const QString& theMsg );
+
   vtkSmartPointer<vtkScalarBarActor> GetScalarBarActor() const;
   void UpdateScalarBar( const bool theIsRepaint = true );
 
@@ -66,6 +69,9 @@ public slots:
   void onSurfacesSettings();
   void onMergeScalarBars( bool theOn );
   void onFitData();
+  void onMouseMove( QMouseEvent* theEvent );
+  void onMouseButtonPressed( QMouseEvent* theEvent );
+  void onMouseButtonReleased( QMouseEvent* theEvent );
 
 protected:
   struct ViewState
@@ -107,6 +113,8 @@ protected:
   bool myIsFitDataInitialized;
   bool myIsFitDataEnabled;
   double myFitDataBounds[6];
+
+  vtkSmartPointer<vtkCellPicker> myCellPicker;
 };
 
 #endif

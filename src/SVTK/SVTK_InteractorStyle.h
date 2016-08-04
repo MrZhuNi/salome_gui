@@ -231,6 +231,9 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   //! Enable/disable rotation
   void SetIsRotationEnabled( const bool theState );
 
+  //! Enable/disable selection
+  void SetIsSelectionEnabled( const bool theState );
+
   protected:
   SVTK_InteractorStyle();
   ~SVTK_InteractorStyle();
@@ -355,6 +358,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   QRubberBand*                    myRectBand; //!< selection rectangle rubber band
 
   bool                            myIsRotationEnabled;
+  bool                            myIsSelectionEnabled;
 };
 
 #ifdef WIN32

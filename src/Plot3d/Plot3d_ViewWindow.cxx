@@ -27,6 +27,7 @@
 #include <QtxActionToolMgr.h>
 #include <QtxMultiAction.h>
 
+#include <SUIT_Desktop.h>
 #include <SUIT_MessageBox.h>
 #include <SUIT_ResourceMgr.h>
 
@@ -36,16 +37,21 @@
 #include <SVTK_InteractorStyle.h>
 #include <SVTK_KeyFreeInteractorStyle.h>
 #include <SVTK_Renderer.h>
+#include <SVTK_RenderWindowInteractor.h>
 
 #include <VTKViewer_Algorithm.h>
 
 #include <QMenu>
+#include <QMouseEvent>
+#include <QStatusBar>
 
 #include <vtkAxisActor2D.h>
 #include <vtkCamera.h>
 #include <vtkLookupTable.h>
+#include <vtkPoints.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
 #include <vtkScalarBarActor.h>
 #include <vtkScalarBarWidget.h>
 #include <vtkTextProperty.h>
@@ -120,6 +126,10 @@ Plot3d_ViewWindow::Plot3d_ViewWindow( SUIT_Desktop* theDesktop ):
   myFitDataBounds[3] = -1;
   myFitDataBounds[4] = 0;
   myFitDataBounds[5] = -1;
+
+  // Cell picker (required to display mapped coordinates in the status bar)
+  myCellPicker = vtkCellPicker::New();
+  myCellPicker->Delete();
 }
 
 /*!
@@ -157,6 +167,14 @@ void Plot3d_ViewWindow::Initialize( SVTK_ViewModelBase* theModel )
         myScalarBarWg->EnabledOn();
     }
   }
+
+  SVTK_RenderWindowInteractor* anInteractor = GetInteractor();
+  connect( anInteractor, SIGNAL( MouseMove( QMouseEvent* ) ), this, SLOT( onMouseMove( QMouseEvent* ) ) );
+  connect( anInteractor, SIGNAL( MouseButtonPressed( QMouseEvent* ) ), this, SLOT( onMouseButtonPressed( QMouseEvent* ) ) );
+  connect( anInteractor, SIGNAL( MouseButtonReleased( QMouseEvent* ) ), this, SLOT( onMouseButtonReleased( QMouseEvent* ) ) );
+
+  myStandardInteractorStyle->SetIsSelectionEnabled( false );
+  myKeyFreeInteractorStyle->SetIsSelectionEnabled( false );
 
   if( vtkRenderer* aRenderer = getRenderer() )
     aRenderer->AddActor( myScalarBarActor.GetPointer() );
@@ -619,6 +637,61 @@ void Plot3d_ViewWindow::onFitData()
 }
 
 /*!
+  Slot called when the mouse is moved.
+  \param theEvent mouse event
+*/
+void Plot3d_ViewWindow::onMouseMove( QMouseEvent* theEvent )
+{
+  QString aMsg;
+  if( theEvent->buttons() & Qt::LeftButton && !( theEvent->modifiers() & Qt::ControlModifier ) )
+  {
+    double aXPos = (double)theEvent->x();
+    double aYPos = (double)theEvent->y();
+
+    aYPos = getInteractor()->GetSize()[1] - aYPos - 1.0; // see SVTK_InteractorStyle.cxx, inline function GetEventPosition()
+
+    myCellPicker->Pick( aXPos, aYPos, 0, getRenderer() );
+    vtkPoints* aPoints = myCellPicker->GetPickedPositions();
+    if( aPoints && aPoints->GetNumberOfPoints() > 0 )
+    {
+      double* aPoint = aPoints->GetPoint( 0 );
+
+      double aScale[3];
+      GetScale( aScale ); // take into account the current scale
+
+      double aXCoord = fabs( aScale[0] ) > DBL_EPSILON ? aPoint[0] / aScale[0] : aPoint[0];
+      double aYCoord = fabs( aScale[1] ) > DBL_EPSILON ? aPoint[1] / aScale[1] : aPoint[1];
+      double aZCoord = fabs( aScale[2] ) > DBL_EPSILON ? aPoint[2] / aScale[2] : aPoint[2];
+
+      QString aXStr = QString().sprintf( "%g", aXCoord );
+      QString aYStr = QString().sprintf( "%g", aYCoord );
+      QString aZStr = QString().sprintf( "%g", aZCoord );
+
+      aMsg = tr( "INF_COORDINATES_XYZ" ).arg( aXStr, aYStr, aZStr );
+    }
+  }
+  putInfo( aMsg );
+}
+
+/*!
+  Slot called when the mouse button is pressed.
+  \param theEvent mouse event
+*/
+void Plot3d_ViewWindow::onMouseButtonPressed( QMouseEvent* theEvent )
+{
+  onMouseMove( theEvent );
+}
+
+/*!
+  Slot called when the mouse button is released.
+  \param theEvent mouse event
+*/
+void Plot3d_ViewWindow::onMouseButtonReleased( QMouseEvent* theEvent )
+{
+  putInfo( QString() );
+}
+
+/*!
   Store 2D/3D view state
   \param theViewState - view state to be stored
 */
@@ -669,6 +742,16 @@ void Plot3d_ViewWindow::clearViewState( const bool theIs2D )
     myStored2DViewState.IsInitialized = false;
   else
     myStored3DViewState.IsInitialized = false;
+}
+
+/*!
+  \brief Put message to the status bar.
+  \param theMsg message text
+*/
+void Plot3d_ViewWindow::putInfo( const QString& theMsg )
+{
+  QStatusBar* aStatusBar = myDesktop->statusBar();
+  aStatusBar->showMessage( theMsg );
 }
 
 /*!

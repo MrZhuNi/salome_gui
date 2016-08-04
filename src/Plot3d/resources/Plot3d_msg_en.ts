@@ -19,6 +19,10 @@ minimum value of the range is less or equal zero.
 Correct the range or switch to linear scale?</translation>
     </message>
     <message>
+      <source>INF_COORDINATES_XYZ</source>
+      <translation>Coordinates: X : %1, Y : %2, Z: %3</translation>
+    </message>
+    <message>
       <source>NO_OBJECTS_TO_FIT</source>
       <translation>No objects to fit</translation>
     </message>
