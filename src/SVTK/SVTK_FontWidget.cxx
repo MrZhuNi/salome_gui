@@ -29,6 +29,7 @@
 
 #include <QToolButton>
 #include <QComboBox>
+#include <QSpinBox>
 #include <QColorDialog>
 #include <QCheckBox>
 #include <QHBoxLayout>
@@ -54,14 +55,19 @@ SVTK_FontWidget::SVTK_FontWidget( QWidget* theParent )
   myFamily->insertItem( myFamily->count(), tr( "COURIER" ) );
   myFamily->insertItem( myFamily->count(), tr( "TIMES" ) );
 
+  mySize = new QSpinBox( this );
+  mySize->setRange( 8, 24 );
+
   myBold = new QCheckBox( tr( "BOLD" ), this );
   myItalic = new QCheckBox( tr( "ITALIC" ), this );
   myShadow = new QCheckBox( tr( "SHADOW" ), this );
 
   QHBoxLayout* aHBLayout = new QHBoxLayout;
+  aHBLayout->setMargin( 0 );
   aHBLayout->setSpacing( 5 );
   aHBLayout->addWidget(myColorBtn);
   aHBLayout->addWidget(myFamily);
+  aHBLayout->addWidget(mySize);
   aHBLayout->addWidget(myBold);
   aHBLayout->addWidget(myItalic);
   aHBLayout->addWidget(myShadow);
@@ -97,10 +103,11 @@ void SVTK_FontWidget::onColor()
 }
 
 void SVTK_FontWidget::SetData( const QColor& theColor,
-                              const int theFamily,
-                              const bool theBold,
-                              const bool theItalic,
-                              const bool theShadow )
+                               const int theFamily,
+                               const int theSize,
+                               const bool theBold,
+                               const bool theItalic,
+                               const bool theShadow )
 {
   SetColor( theColor );
 
@@ -111,16 +118,19 @@ void SVTK_FontWidget::SetData( const QColor& theColor,
   else
     myFamily->setCurrentIndex( 2 );
 
+  mySize->setValue( theSize );
+
   myBold->setChecked( theBold );
   myItalic->setChecked( theItalic );
   myShadow->setChecked( theShadow );
 }
 
 void SVTK_FontWidget::GetData( QColor& theColor,
-			       int& theFamily,
-			       bool& theBold,
-			       bool& theItalic,
-			       bool& theShadow ) const
+                               int& theFamily,
+                               int& theSize,
+                               bool& theBold,
+                               bool& theItalic,
+                               bool& theShadow ) const
 {
   theColor = GetColor();
 
@@ -131,6 +141,8 @@ void SVTK_FontWidget::GetData( QColor& theColor,
     theFamily = VTK_COURIER;
   else
     theFamily = VTK_TIMES;
+
+  theSize = mySize->value();
 
   theBold = myBold->isChecked();
   theItalic = myItalic->isChecked();

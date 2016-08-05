@@ -33,6 +33,7 @@
 
 class QToolButton;
 class QComboBox;
+class QSpinBox;
 class QCheckBox;
 class QColor;
 
@@ -52,9 +53,9 @@ public:
   void          SetColor( const QColor& );
   QColor        GetColor() const;
 
-  void          SetData( const QColor&, const int, const bool, const bool, const bool );
+  void          SetData( const QColor&, const int, const int, const bool, const bool, const bool );
 
-  void          GetData( QColor&, int&, bool&, bool&, bool& ) const;
+  void          GetData( QColor&, int&, int&, bool&, bool&, bool& ) const;
 
 private slots:
   void          onColor();
@@ -62,6 +63,7 @@ private slots:
 private:
   QToolButton*  myColorBtn;
   QComboBox*    myFamily;
+  QSpinBox*     mySize;
   QCheckBox*    myBold;
   QCheckBox*    myItalic;
   QCheckBox*    myShadow;

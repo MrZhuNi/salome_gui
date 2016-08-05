@@ -229,6 +229,32 @@
         <translation>Offset</translation>
     </message>
     <message>
+        <source>FORMAT</source>
+        <translation>Format</translation>
+    </message>
+    <message>
+        <source>FORMAT_TOOLTIP</source>
+        <translation>Format: %[width][.precision]specifier
+
+width
+Minimum number of characters to be printed. If the value to be printed is shorter than this number,
+the result is padded with blank spaces. The value is not truncated even if the result is larger.
+
+precision
+For integer specifier (d): precision specifies the minimum number of digits to be written.
+If the value to be written is shorter than this number, the result is padded with leading zeros.
+The value is not truncated even if the result is longer.
+A precision of 0 means that no character is written for the value 0.
+For f and e specifiers: this is the number of digits to be printed after the decimal point (by default, 6).
+For g specifier: this is the maximum number of significant digits to be printed.
+
+specifier
+d: Decimal integer (392)
+f: Decimal floating point (392.65)
+e: Scientific notation (3.9265e+2)
+g: Use the shortest representation: %e or %f (392.65)</translation>
+    </message>
+    <message>
         <source>AXIS_NAME</source>
         <translation>Axis name</translation>
     </message>

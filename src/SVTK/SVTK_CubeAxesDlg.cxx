@@ -47,6 +47,8 @@
 #include <vtkAxisActor2D.h>
 #include <vtkTextProperty.h>
 
+#define DEFAULT_FONT_SIZE 16
+
 /*!
   \class SVTK_CubeAxesDlg::AxisWidget
   \brief Axis tab widget of the "Graduated axis" dialog box
@@ -61,7 +63,7 @@ public:
 
   void             UseName( const bool );
   void             SetName( const QString& );
-  void             SetNameFont( const QColor&, const int, const bool, const bool, const bool );
+  void             SetNameFont( const QColor&, const int, const int, const bool, const bool, const bool );
   bool             ReadData( vtkAxisActor2D* );
   bool             Apply( vtkAxisActor2D* );
 
@@ -75,6 +77,7 @@ private:
   QGroupBox*       myLabelsGrp;
   QtxIntSpinBox*   myLabelNumber;
   QtxIntSpinBox*   myLabelOffset;
+  QLineEdit*       myLabelFormat;
   SVTK_FontWidget* myLabelsFont;
 
   // tick marks
@@ -100,6 +103,7 @@ SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
   QVBoxLayout* aVBox = new QVBoxLayout;
   
   QHBoxLayout* aHBox = new QHBoxLayout;
+  aHBox->setMargin(0);
   aHBox->setSpacing(5);
   QLabel* aLabel = new QLabel(SVTK_CubeAxesDlg::tr("NAME"));
   aHBox->addWidget(aLabel);
@@ -109,6 +113,7 @@ SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
   aVBox->addLayout(aHBox);
 
   aHBox = new QHBoxLayout;
+  aHBox->setMargin(0);
   aHBox->setSpacing(5);
   aLabel = new QLabel(SVTK_CubeAxesDlg::tr("FONT"));
   aHBox->addWidget(aLabel);
@@ -127,6 +132,7 @@ SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
   aVBox = new QVBoxLayout;
 
   aHBox = new QHBoxLayout;
+  aHBox->setMargin(0);
   aHBox->setSpacing(5);
   aLabel = new QLabel(SVTK_CubeAxesDlg::tr("NUMBER"));
   aHBox->addWidget(aLabel);
@@ -136,6 +142,7 @@ SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
   aVBox->addLayout(aHBox);
 
   aHBox = new QHBoxLayout;
+  aHBox->setMargin(0);
   aHBox->setSpacing(5);
   aLabel = new QLabel(SVTK_CubeAxesDlg::tr("OFFSET"));
   aHBox->addWidget(aLabel);
@@ -145,6 +152,19 @@ SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
   aVBox->addLayout(aHBox);
 
   aHBox = new QHBoxLayout;
+  aHBox->setMargin(0);
+  aHBox->setSpacing(5);
+  aLabel = new QLabel(SVTK_CubeAxesDlg::tr("FORMAT"));
+  aHBox->addWidget(aLabel);
+  myLabelFormat = new QLineEdit(myLabelsGrp);
+  aHBox->addWidget(myLabelFormat);
+  aLabels.append(aLabel);
+  aVBox->addLayout(aHBox);
+
+  myLabelFormat->setToolTip( SVTK_CubeAxesDlg::tr("FORMAT_TOOLTIP") );
+
+  aHBox = new QHBoxLayout;
+  aHBox->setMargin(0);
   aHBox->setSpacing(5);
   aLabel = new QLabel(SVTK_CubeAxesDlg::tr("FONT"));
   aHBox->addWidget(aLabel);
@@ -163,6 +183,7 @@ SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
   aVBox = new QVBoxLayout;
 
   aHBox = new QHBoxLayout;
+  aHBox->setMargin(0);
   aHBox->setSpacing(5);
   aLabel = new QLabel(SVTK_CubeAxesDlg::tr("LENGTH"));
   aHBox->addWidget(aLabel);
@@ -214,18 +235,27 @@ void SVTK_CubeAxesDlg::AxisWidget::SetName(const QString& theName)
 }
 
 void SVTK_CubeAxesDlg::AxisWidget::SetNameFont(const QColor& theColor,
-					       const int theFont,
-					       const bool theIsBold,
-					       const bool theIsItalic,
-					       const bool theIsShadow)
+                                               const int theFont,
+                                               const int theSize,
+                                               const bool theIsBold,
+                                               const bool theIsItalic,
+                                               const bool theIsShadow)
 {
-  myNameFont->SetData(theColor, theFont, theIsBold, theIsItalic, theIsShadow);
+  myNameFont->SetData(theColor, theFont, theSize, theIsBold, theIsItalic, theIsShadow);
 }
 
 bool SVTK_CubeAxesDlg::AxisWidget::ReadData(vtkAxisActor2D* theActor)
 {
   if (theActor == 0)
     return false;
+
+  // Font sizes of title and labels are calculated on the base of FontFactor and LabelFactor
+  // (vtkAxisActor2D completely ignores FontSize of the text property).
+  double aFontFactor = theActor->GetFontFactor();
+  double aLabelFactor = theActor->GetLabelFactor();
+
+  int aTitleFontSize = (int)( DEFAULT_FONT_SIZE * aFontFactor );
+  int aLabelsFontSize = (int)( aTitleFontSize * aLabelFactor );
 
   // Name
 
@@ -234,6 +264,7 @@ bool SVTK_CubeAxesDlg::AxisWidget::ReadData(vtkAxisActor2D* theActor)
 
   QColor aTitleColor(255, 255, 255);
   int aTitleFontFamily = VTK_ARIAL;
+  //int aTitleFontSize = 12;
   bool isTitleBold = false;
   bool isTitleItalic = false;
   bool isTitleShadow = false;
@@ -245,6 +276,7 @@ bool SVTK_CubeAxesDlg::AxisWidget::ReadData(vtkAxisActor2D* theActor)
     aTitleProp->GetColor(c);
     aTitleColor.setRgb((int)(c[ 0 ] * 255), (int)(c[ 1 ] * 255), (int)(c[ 2 ] * 255));
     aTitleFontFamily = aTitleProp->GetFontFamily();
+    //aTitleFontSize = aTitleProp->GetFontSize();
     isTitleBold = aTitleProp->GetBold() ? true : false;
     isTitleItalic = aTitleProp->GetItalic() ? true : false;
     isTitleShadow = aTitleProp->GetShadow() ? true : false;
@@ -252,16 +284,18 @@ bool SVTK_CubeAxesDlg::AxisWidget::ReadData(vtkAxisActor2D* theActor)
 
   myNameGrp->setChecked(useName);
   myAxisName->setText(aTitle);
-  myNameFont->SetData(aTitleColor, aTitleFontFamily, isTitleBold, isTitleItalic, isTitleShadow);
+  myNameFont->SetData(aTitleColor, aTitleFontFamily, aTitleFontSize, isTitleBold, isTitleItalic, isTitleShadow);
 
   // Labels
 
   bool useLabels = theActor->GetLabelVisibility();
   int nbLabels = theActor->GetNumberOfLabels();
   int anOffset = theActor->GetTickOffset();
+  char* aFormat = theActor->GetLabelFormat();
 
   QColor aLabelsColor(255, 255, 255);
   int aLabelsFontFamily = VTK_ARIAL;
+  //int aLabelsFontSize = 12;
   bool isLabelsBold = false;
   bool isLabelsItalic = false;
   bool isLabelsShadow = false;
@@ -273,6 +307,7 @@ bool SVTK_CubeAxesDlg::AxisWidget::ReadData(vtkAxisActor2D* theActor)
     aLabelsProp->GetColor(c);
     aLabelsColor.setRgb((int)(c[ 0 ] * 255), (int)(c[ 1 ] * 255), (int)(c[ 2 ] * 255));
     aLabelsFontFamily = aLabelsProp->GetFontFamily();
+    //aLabelsFontSize = aLabelsProp->GetFontSize();
     isLabelsBold = aLabelsProp->GetBold() ? true : false;
     isLabelsItalic = aLabelsProp->GetItalic() ? true : false;
     isLabelsShadow = aLabelsProp->GetShadow() ? true : false;
@@ -281,7 +316,8 @@ bool SVTK_CubeAxesDlg::AxisWidget::ReadData(vtkAxisActor2D* theActor)
   myLabelsGrp->setChecked(useLabels);
   myLabelNumber->setValue(nbLabels);
   myLabelOffset->setValue(anOffset);
-  myLabelsFont->SetData(aLabelsColor, aLabelsFontFamily, isLabelsBold, isLabelsItalic, isLabelsShadow);
+  myLabelFormat->setText(aFormat);
+  myLabelsFont->SetData(aLabelsColor, aLabelsFontFamily, aLabelsFontSize, isLabelsBold, isLabelsItalic, isLabelsShadow);
 
   // Tick marks
   bool useTickMarks = theActor->GetTickVisibility();
@@ -305,11 +341,12 @@ bool SVTK_CubeAxesDlg::AxisWidget::Apply(vtkAxisActor2D* theActor)
 
   QColor aTitleColor(255, 255, 255);
   int aTitleFontFamily = VTK_ARIAL;
+  int aTitleFontSize = 12;
   bool isTitleBold = false;
   bool isTitleItalic = false;
   bool isTitleShadow = false;
 
-  myNameFont->GetData(aTitleColor, aTitleFontFamily, isTitleBold, isTitleItalic, isTitleShadow);
+  myNameFont->GetData(aTitleColor, aTitleFontFamily, aTitleFontSize, isTitleBold, isTitleItalic, isTitleShadow);
   vtkTextProperty* aTitleProp = theActor->GetTitleTextProperty();
   if (aTitleProp)
   {
@@ -317,13 +354,18 @@ bool SVTK_CubeAxesDlg::AxisWidget::Apply(vtkAxisActor2D* theActor)
                           aTitleColor.green() / 255.,
                           aTitleColor.blue() / 255.);
     aTitleProp->SetFontFamily(aTitleFontFamily);
+    //aTitleProp->SetFontSize(aTitleFontSize);
 
     aTitleProp->SetBold(isTitleBold ? 1 : 0);
     aTitleProp->SetItalic(isTitleItalic ? 1 : 0);
     aTitleProp->SetShadow(isTitleShadow ? 1 : 0);
 
+    aTitleProp->Modified();
     theActor->SetTitleTextProperty(aTitleProp);
   }
+
+  double aFontFactor = (double)aTitleFontSize / (double)DEFAULT_FONT_SIZE;
+  theActor->SetFontFactor( aFontFactor );
 
   // Labels
 
@@ -335,13 +377,17 @@ bool SVTK_CubeAxesDlg::AxisWidget::Apply(vtkAxisActor2D* theActor)
   int anOffset = myLabelOffset->value();
   theActor->SetTickOffset(anOffset);
 
+  QString aFormat = myLabelFormat->text();
+  theActor->SetLabelFormat( aFormat.toLatin1().constData() );
+
   QColor aLabelsColor(255, 255, 255);
   int aLabelsFontFamily = VTK_ARIAL;
+  int aLabelsFontSize = 12;
   bool isLabelsBold = false;
   bool isLabelsItalic = false;
   bool isLabelsShadow = false;
 
-  myLabelsFont->GetData(aLabelsColor, aLabelsFontFamily, isLabelsBold, isLabelsItalic, isLabelsShadow);
+  myLabelsFont->GetData(aLabelsColor, aLabelsFontFamily, aLabelsFontSize, isLabelsBold, isLabelsItalic, isLabelsShadow);
   vtkTextProperty* aLabelsProp = theActor->GetLabelTextProperty();
   if (aLabelsProp)
   {
@@ -349,6 +395,7 @@ bool SVTK_CubeAxesDlg::AxisWidget::Apply(vtkAxisActor2D* theActor)
                           aLabelsColor.green() / 255.,
                           aLabelsColor.blue() / 255.);
     aLabelsProp->SetFontFamily(aLabelsFontFamily);
+    //aLabelsProp->SetFontSize(aLabelsFontSize);
 
     aLabelsProp->SetBold(isLabelsBold ? 1 : 0);
     aLabelsProp->SetItalic(isLabelsItalic ? 1 : 0);
@@ -358,6 +405,8 @@ bool SVTK_CubeAxesDlg::AxisWidget::Apply(vtkAxisActor2D* theActor)
     theActor->SetLabelTextProperty(aLabelsProp);
   }
 
+  double aLabelFactor = (double)aLabelsFontSize / (double)aTitleFontSize;
+  theActor->SetLabelFactor( aLabelFactor );
 
   // Tick marks
   theActor->SetTickVisibility(myTicksGrp->isChecked());
