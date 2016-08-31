@@ -16,14 +16,14 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-INCLUDE(UseQt4Ext)
+INCLUDE(UseQtExt)
 
 SET(_res
     CURVEPLOT_msg_en.ts
     CURVEPLOT_msg_fr.ts
 )
 
-QT4_INSTALL_TS_RESOURCES("${_res}" "${SALOME_CURVEPLOT_INSTALL_RES_DATA}")
+QT_INSTALL_TS_RESOURCES("${_res}" "${SALOME_CURVEPLOT_INSTALL_RES_DATA}")
 
 SET(dist_salomeres_DATA
   dump_view.png

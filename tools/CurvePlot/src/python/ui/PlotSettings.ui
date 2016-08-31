@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Plot 2D settings</string>
+   <string>CurvePlot settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
