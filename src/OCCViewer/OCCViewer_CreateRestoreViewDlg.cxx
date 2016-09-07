@@ -40,7 +40,7 @@ OCCViewer_CreateRestoreViewDlg::OCCViewer_CreateRestoreViewDlg( QWidget* aWin, O
 
   myParametersMap = theViewWindow->getViewAspects();
 
-  myKeyFlag = 0;
+//  myKeyFlag = 0;
 
   int aQuantityOfItems = myParametersMap.count();
         
@@ -70,7 +70,7 @@ OCCViewer_CreateRestoreViewDlg::OCCViewer_CreateRestoreViewDlg( QWidget* aWin, O
       myListBox->insertItem( i, myParametersMap[ i ].name );
       myListBox->item( i )->setFlags( myListBox->item( i )->flags() | Qt::ItemIsEditable );
     }
-    
+    myListBox->item( 0 )->setSelected( true );
     changeImage( myListBox->item( 0 ) );
   }
   else
@@ -78,8 +78,9 @@ OCCViewer_CreateRestoreViewDlg::OCCViewer_CreateRestoreViewDlg( QWidget* aWin, O
     myListBox->clear();
     myListBox->insertItem( 0, "No Items" );
   }
-
-  connect( myListBox, SIGNAL( itemClicked( QListWidgetItem* ) ), this, SLOT( changeImage( QListWidgetItem* ) ) );
+  myListBox->setSelectionMode( QAbstractItemView::SingleSelection );
+//  connect( myListBox, SIGNAL( itemClicked( QListWidgetItem* ) ), this, SLOT( changeImage( QListWidgetItem* ) ) );
+  connect( myListBox, SIGNAL( currentItemChanged(QListWidgetItem*, QListWidgetItem *)), this, SLOT( changeImage( QListWidgetItem* ) ) );
   connect( myListBox, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( editItemText( QListWidgetItem* ) ) );
         
   aLayout->addWidget( myListBox );
@@ -126,7 +127,7 @@ void OCCViewer_CreateRestoreViewDlg::changeImage( QListWidgetItem* curItem )
     int lowLevel  = -1;
     int highLevel = -1;
     int index = curItem->listWidget()->row( curItem );
-    if( myKeyFlag == 2 )
+ /*   if( myKeyFlag == 2 )
     {
       for( int i = 0; i < (int)myListBox->count(); i++ )
       {
@@ -151,7 +152,7 @@ void OCCViewer_CreateRestoreViewDlg::changeImage( QListWidgetItem* curItem )
           myListBox->item( i )->setSelected( true );
       }
     }
-    
+ */   
     Handle(V3d_View) aView3d = myCurViewPort->getView();
     myCurrentItem = myParametersMap[ index ];
     
@@ -260,7 +261,7 @@ void OCCViewer_CreateRestoreViewDlg::editItemText( QListWidgetItem* anItem )
 /*!
   Custom event filter
 */
-bool OCCViewer_CreateRestoreViewDlg::eventFilter( QObject* anObj, QEvent* anEv )
+/*bool OCCViewer_CreateRestoreViewDlg::eventFilter( QObject* anObj, QEvent* anEv )
 {
   if( anEv->type() == QEvent::KeyPress )
   {
@@ -287,7 +288,7 @@ bool OCCViewer_CreateRestoreViewDlg::eventFilter( QObject* anObj, QEvent* anEv )
       myListBox->setSelectionMode( QAbstractItemView::SingleSelection );
   }
   return QWidget::eventFilter( anObj, anEv );
-}
+}*/
 
 /*!
   SLOT: called on OK click, emits dlgOk() and closes dialog
