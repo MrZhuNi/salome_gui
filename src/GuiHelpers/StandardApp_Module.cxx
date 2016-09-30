@@ -304,9 +304,8 @@ bool StandardApp_Module::createStudyComponentAtActivation() {
 void StandardApp_Module::createStudyComponent(SUIT_Study* theStudy) {
 
   SALOME_NamingService *aNamingService = SalomeApp_Application::namingService();
-  CORBA::Object_var aSMObject = aNamingService->Resolve("/myStudyManager");
-  SALOMEDS::StudyManager_var aStudyManager = SALOMEDS::StudyManager::_narrow(aSMObject);
-  SALOMEDS::Study_var aDSStudy = aStudyManager->GetStudyByID(theStudy->id());
+  CORBA::Object_var aStudyObject = aNamingService->Resolve("/Study");
+  SALOMEDS::Study_var aDSStudy = SALOMEDS::Study::_narrow(aStudyObject);
 
   SALOMEDS::SComponent_var aFather = aDSStudy->FindComponent(QCHARSTAR(moduleName()));
   if (aFather->_is_nil())

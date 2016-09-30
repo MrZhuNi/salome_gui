@@ -678,26 +678,23 @@ bool SalomePyQt::activateModule( const QString& modName )
   \brief updateSelection update selection flag (not used)
   \sa getActiveStudy()
 */
-void SalomePyQt::updateObjBrowser( const int studyId, bool updateSelection )
+void SalomePyQt::updateObjBrowser( bool updateSelection )
 {  
   class TEvent: public SALOME_Event
   {
-    int  myStudyId;
     bool myUpdateSelection;
   public:
-    TEvent( const int studyId, bool updateSelection ) 
-      : myStudyId( studyId ), myUpdateSelection( updateSelection ) {}
+    TEvent( bool updateSelection )
+      : myUpdateSelection( updateSelection ) {}
     virtual void Execute()
     {
       if ( SUIT_Session::session() ) {
-        if ( getActiveStudy() && myStudyId <= 0 )
-          myStudyId = getActiveStudy()->id();
-        if ( myStudyId > 0 ) {
+        if ( getActiveStudy() ) {
           QList<SUIT_Application*> apps = SUIT_Session::session()->applications();
           QList<SUIT_Application*>::Iterator it;
           for( it = apps.begin(); it != apps.end(); ++it ) {
             LightApp_Application* anApp = dynamic_cast<LightApp_Application*>( *it );
-            if ( anApp && anApp->activeStudy() && anApp->activeStudy()->id() == myStudyId ) {
+            if ( anApp && anApp->activeStudy() ) {
               anApp->updateObjectBrowser();
               return;
             }
@@ -706,7 +703,7 @@ void SalomePyQt::updateObjBrowser( const int studyId, bool updateSelection )
       }
     }
   };
-  ProcessVoidEvent( new TEvent( studyId, updateSelection ) );
+  ProcessVoidEvent( new TEvent( updateSelection ) );
 }
 
 

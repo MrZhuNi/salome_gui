@@ -55,17 +55,15 @@ public:
                                const char* theURL, 
                                bool isMultiFile );
 
-  virtual Engines::TMPFile* DumpPython(CORBA::Object_ptr theStudy,
-                                       CORBA::Boolean isPublished,
+  virtual Engines::TMPFile* DumpPython(CORBA::Boolean isPublished,
                                        CORBA::Boolean isMultiFile,
                                        CORBA::Boolean& isValidScript);
 
 public:
   typedef std::vector<std::string> ListOfFiles;
 
-  ListOfFiles             GetListOfFiles (const int          theStudyId);
-  void                    SetListOfFiles (const ListOfFiles& theListOfFiles,
-                                          const int          theStudyId);
+  ListOfFiles             GetListOfFiles ();
+  void                    SetListOfFiles (const ListOfFiles& theListOfFiles);
 
   static std::string         EngineIORForComponent( const char* theComponentName,
 						    bool toCreate );
@@ -98,8 +96,7 @@ private:
   static PortableServer::POA_var     poa();
   static SALOME_NamingService*       namingService();
 private:
-  typedef std::map<int, ListOfFiles> MapOfListOfFiles;
-  MapOfListOfFiles                   myMap;
+  ListOfFiles                        myListOfFiles;
 
   std::string                        myComponentName;
 };

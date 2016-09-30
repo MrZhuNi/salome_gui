@@ -43,7 +43,6 @@ public:
   SalomeApp_Study( SUIT_Application* );
   virtual ~SalomeApp_Study();
 
-  virtual int         id() const;
   virtual QString     studyName() const;
 
   virtual bool        createDocument( const QString& );
@@ -111,9 +110,6 @@ protected slots:
 #ifndef DISABLE_PYCONSOLE
   void                onNoteBookVarUpdate( QString theVarName );
 #endif
-
-private:
-  QString             newStudyName() const;
 
 private:
   _PTR(Study)         myStudyDS;

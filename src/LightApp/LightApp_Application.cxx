@@ -230,8 +230,6 @@ static const char* imageEmptyIcon[] = {
 "....................",
 "...................."};
 
-int LightApp_Application::lastStudyId = 0;
-
 // Markers used to parse array with dockable windows and toolbars state.
 // For more details please see the qdockarealayout.cpp && qtoolbararealayout.cpp
 // in the Qt source code.
@@ -293,14 +291,6 @@ namespace
       result = QLocale( lang ).nativeLanguageName();
     return result;
   }
-}
-
-/*!
-  \return last global id of study
-*/
-int LightApp_Application::studyId()
-{
-  return LightApp_Application::lastStudyId;
 }
 
 /*!Create new instance of LightApp_Application.*/
@@ -1356,10 +1346,9 @@ void LightApp_Application::placeDockWindow( const int id, Qt::DockWidgetArea pla
 /*!
   Gets window.
   \param flag - key for window
-  \param studyId - study id
   Flag used how identificator of window in windows list.
 */
-QWidget* LightApp_Application::getWindow( const int flag, const int )
+QWidget* LightApp_Application::getWindow( const int flag)
 {
   QWidget* wid = dockWindow( flag );
   if ( !wid )
@@ -1987,8 +1976,6 @@ void LightApp_Application::updateActions()
 */
 SUIT_Study* LightApp_Application::createNewStudy()
 {
-  LightApp_Application::lastStudyId++;
-
   LightApp_Study* aStudy = new LightApp_Study( this );
 
   // Set up processing of major study-related events

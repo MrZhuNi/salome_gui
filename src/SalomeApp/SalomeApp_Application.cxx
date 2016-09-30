@@ -406,8 +406,6 @@ void SalomeApp_Application::onLoadDoc()
 {
   QString studyName;
 
-  std::vector<std::string> List = studyMgr()->GetOpenStudies();
-
   // rnv: According to the single-study approach on the server side
   //      can be only one study. So if it is exists connect to them,
   //      overwise show warning message: "No active study on the server"
@@ -439,14 +437,14 @@ void SalomeApp_Application::onLoadDoc()
     return;
   */
 
-  if(List.size() <= 0) {
+  if(!activeStudy()) {
     SUIT_MessageBox::warning( desktop(),
                               QObject::tr("WRN_WARNING"),
                               QObject::tr("WRN_NO_STUDY_ON SERV") );
     return;
   }
 
-  studyName = List[0].c_str();
+  studyName = activeStudy()->studyName();
 
 #ifndef WIN32
   // this code replaces marker of windows drive and path become invalid therefore
@@ -555,15 +553,10 @@ bool SalomeApp_Application::onLoadDoc( const QString& aName )
 /*!SLOT. Parse message for desktop.*/
 void SalomeApp_Application::onDesktopMessage( const QString& message )
 {
-  if (message.indexOf("studyCreated:") == 0) {
-    // Enable 'Connect' action
+  if (message.indexOf("studyCreated") == 0) {
     updateCommandsStatus();
   }
-  else if (message.indexOf("studyClosed:") == 0) {
-    /* message also contains ID of the closed study,
-       but as soon as SALOME is mono-study application for the moment,
-       this ID is not needed now.*/
-    //long aStudyId = message.section(':', 1).toLong();
+  if (message.indexOf("studyCleared") == 0) {
     // Disconnect GUI from active study, because it was closed on DS side.
     closeActiveDoc( false );
     // Disable 'Connect' action
@@ -595,7 +588,7 @@ void SalomeApp_Application::onCopy()
     {
       _PTR(SObject) so = stdDS->FindObjectID(it.Value()->getEntry());
       try {
-        studyMgr()->Copy(so);
+        stdDS->Copy(so);
         onSelectionChanged();
       }
       catch(...) {
@@ -628,7 +621,7 @@ void SalomeApp_Application::onPaste()
     {
       _PTR(SObject) so = stdDS->FindObjectID(it.Value()->getEntry());
       try {
-        studyMgr()->Paste(so);
+        stdDS->Paste(so);
         updateObjectBrowser( true );
         updateActions(); //SRN: BugID IPAL9377, case 3
       }
@@ -692,8 +685,8 @@ void SalomeApp_Application::onSelectionChanged()
          _PTR(SObject) so = stdDS->FindObjectID(it.Value()->getEntry());
 
          if ( so ) {
-           canCopy  = canCopy  || studyMgr()->CanCopy(so);
-           canPaste = canPaste || studyMgr()->CanPaste(so);
+           canCopy  = canCopy  || stdDS->CanCopy(so);
+           canPaste = canPaste || stdDS->CanPaste(so);
          }
        }
      }
@@ -804,7 +797,7 @@ void SalomeApp_Application::updateCommandsStatus()
   // Connect study menu
   a = action( ConnectId );
   if( a )
-    a->setEnabled( !activeStudy() && studyMgr()->GetOpenStudies().size() > 0 );
+    a->setEnabled( !activeStudy() );
 
   // Disconnect study menu
   a = action( DisconnectId );
@@ -1200,12 +1193,10 @@ int SalomeApp_Application::openChoice( const QString& aName )
   if ( QFileInfo( aName ).exists() ) {
     if ( choice == OpenNew ) { // The document isn't already open.
       bool exist = false;
-      std::vector<std::string> lst = studyMgr()->GetOpenStudies();
-      for ( uint i = 0; i < lst.size() && !exist; i++ ) {
-        if ( aName == QString( lst[i].c_str() ) )
-          exist = true;
-      }
-      // The document already exists in the study manager.
+      SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( activeStudy() );
+      if ( aName == study->studyDS()->Name().c_str() )
+        exist = true;
+      // The document already exists in the study.
       // Do you want to reload it?
       if ( exist ) {
         int answer = SUIT_MessageBox::question( desktop(), tr( "WRN_WARNING" ), tr( "QUE_DOC_ALREADYEXIST" ).arg( aName ),
@@ -1234,10 +1225,11 @@ bool SalomeApp_Application::openAction( const int aChoice, const QString& aName 
   {
   case OpenRefresh:
     {
-      _PTR(Study) aStudy = studyMgr()->GetStudyByName( aName.toStdString() );
+       SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( activeStudy() );
+      _PTR(Study) aStudy = study->studyDS();
       if ( aStudy )
       {
-        studyMgr()->Close( aStudy );
+    	aStudy->Clear();
         choice = OpenNew;
       }
     }
@@ -1313,11 +1305,15 @@ CORBA::ORB_var SalomeApp_Application::orb()
 }
 
 /*!Create and return SALOMEDS_StudyManager.*/
-SALOMEDSClient_StudyManager* SalomeApp_Application::studyMgr()
+SALOMEDSClient_Study* SalomeApp_Application::getStudy()
 {
-  static _PTR(StudyManager) _sm;
-  if(!_sm) _sm = ClientFactory::StudyManager();
-  return _sm.get();
+  static _PTR(Study) _study;
+  if(!_study) {
+    CORBA::Object_var aSObject = namingService()->Resolve("/Study");
+    SALOMEDS::Study_var aStudy = SALOMEDS::Study::_narrow(aSObject);
+    _study = ClientFactory::Study(aStudy);
+  }
+  return _study.get();
 }
 
 /*!Create and return SALOME_NamingService.*/
@@ -2064,7 +2060,7 @@ void SalomeApp_Application::afterCloseDoc()
 bool SalomeApp_Application::checkExistingDoc()
 {
   bool result = LightApp_Application::checkExistingDoc();
-  if ( result && !activeStudy() ) {
+  /*if ( result && !activeStudy() ) {
     SALOMEDSClient_StudyManager* aMgr = studyMgr();
     if ( aMgr ) {
       std::vector<std::string> List = studyMgr()->GetOpenStudies();
@@ -2073,7 +2069,7 @@ bool SalomeApp_Application::checkExistingDoc()
         result = false;
       }
     }
-  }
+  }*/ // NB!!!
   return result;
 }
 

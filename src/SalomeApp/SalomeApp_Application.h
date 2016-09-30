@@ -98,7 +98,7 @@ public:
   virtual bool                        checkExistingDoc();
 
   static CORBA::ORB_var               orb();
-  static SALOMEDSClient_StudyManager* studyMgr();
+  static SALOMEDSClient_Study*        getStudy();
   static SALOME_NamingService*        namingService();
   static SALOME_LifeCycleCORBA*       lcc();
 

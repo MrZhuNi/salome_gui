@@ -174,7 +174,7 @@ public:
   static const QString     getActiveComponent();
   static PyObject*         getActivePythonModule();
   static bool              activateModule( const QString& );
-  static void              updateObjBrowser( const int = 0, bool = true );
+  static void              updateObjBrowser( bool = true );
 
   static bool              isModified();
   static void              setModified( bool );

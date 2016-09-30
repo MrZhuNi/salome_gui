@@ -419,17 +419,6 @@ void SalomeApp_Study::onNoteBookVarUpdate( QString theVarName)
 #endif
 
 /*!
-  Gets study id.
-*/
-int SalomeApp_Study::id() const
-{
-  int id = -1;
-  if ( studyDS() )
-    id = studyDS()->StudyId();
-  return id;
-}
-
-/*!
   Get study name.
 */
 QString SalomeApp_Study::studyName() const
@@ -464,13 +453,13 @@ bool SalomeApp_Study::createDocument( const QString& theStr )
   MESSAGE( "createDocument" );
 
   // initialize myStudyDS, read HDF file
-  QString aName = newStudyName();
+  QString aName = studyName();
 
   _PTR(Study) study;
   bool showError = !application()->property("open_study_from_command_line").isValid() || 
     !application()->property("open_study_from_command_line").toBool();
   try {
-    study = _PTR(Study)( SalomeApp_Application::studyMgr()->NewStudy( aName.toUtf8().data() ) );
+    study = _PTR(Study)( SalomeApp_Application::getStudy() );
   }
   catch(const SALOME_Exception& ex) {
     application()->putInfo(tr(ex.what()));
@@ -521,12 +510,12 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
 {
   MESSAGE( "openDocument" );
 
-  // initialize myStudyDS, read HDF file
-  _PTR(Study) study;
-  bool showError = !application()->property("open_study_from_command_line").isValid() || 
+  // read HDF file
+  bool res = false;
+  bool showError = !application()->property("open_study_from_command_line").isValid() ||
     !application()->property("open_study_from_command_line").toBool();
   try {
-    study = _PTR(Study) ( SalomeApp_Application::studyMgr()->Open( theFileName.toUtf8().data() ) );
+    res = studyDS()->Open( theFileName.toUtf8().data() );
   }
   catch(const SALOME_Exception& ex) {
     application()->putInfo(tr(ex.what()));
@@ -534,7 +523,7 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
       SUIT_MessageBox::critical( SUIT_Session::session()->activeApplication()->desktop(),
                                  tr("ERR_ERROR"), tr(ex.what()));
     return false;
-  } 
+  }
   catch(...) {
     application()->putInfo(tr("OPEN_DOCUMENT_PROBLEM"));
     if ( showError )
@@ -543,10 +532,8 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
     return false;
   }
 
-  if ( !study )
+  if ( !res)
     return false;
-
-  setStudyDS( study );
 
   setRoot( new SalomeApp_RootObject( this ) ); // create myRoot
 
@@ -569,10 +556,10 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
   myStudyDS->attach(myObserver->_this(),true);
 #endif
 
-  bool res = CAM_Study::openDocument( theFileName );
+  res = CAM_Study::openDocument( theFileName );
 
   emit opened( this );
-  study->IsSaved(true);
+  studyDS()->IsSaved(true);
 
   bool restore = application()->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
   if ( restore ) {
@@ -594,7 +581,7 @@ bool SalomeApp_Study::loadDocument( const QString& theStudyName )
   MESSAGE( "loadDocument" );
 
   // obtain myStudyDS from StudyManager
-  _PTR(Study) study ( SalomeApp_Application::studyMgr()->GetStudyByName( theStudyName.toUtf8().data() ) );
+  _PTR(Study) study = studyDS();
   if ( !study )
     return false;
 
@@ -676,8 +663,8 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
   bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false );
   bool isAscii = resMgr->booleanValue( "Study", "ascii_file", false );
   bool res = (isAscii ?
-    SalomeApp_Application::studyMgr()->SaveAsASCII( theFileName.toUtf8().data(), studyDS(), isMultiFile ) :
-    SalomeApp_Application::studyMgr()->SaveAs     ( theFileName.toUtf8().data(), studyDS(), isMultiFile ))
+    studyDS()->SaveAsASCII( theFileName.toUtf8().data(), isMultiFile ) :
+    studyDS()->SaveAs     ( theFileName.toUtf8().data(), isMultiFile ))
     && CAM_Study::saveDocumentAs( theFileName );
 
   res = res && saveStudyData(theFileName);
@@ -721,8 +708,8 @@ bool SalomeApp_Study::saveDocument()
   bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false );
   bool isAscii = resMgr->booleanValue( "Study", "ascii_file", false );
   bool res = (isAscii ?
-    SalomeApp_Application::studyMgr()->SaveASCII( studyDS(), isMultiFile ) :
-    SalomeApp_Application::studyMgr()->Save     ( studyDS(), isMultiFile )) && CAM_Study::saveDocument();
+    studyDS()->SaveASCII( isMultiFile ) :
+    studyDS()->Save     ( isMultiFile )) && CAM_Study::saveDocument();
 
   res = res && saveStudyData(studyName());
   if ( res )
@@ -748,7 +735,7 @@ void SalomeApp_Study::closeDocument(bool permanently)
       SUIT_Desktop* desk = SUIT_Session::session()->activeApplication()->desktop();
       bool isBlocked = desk->signalsBlocked();
       desk->blockSignals( true );
-      SalomeApp_Application::studyMgr()->Close( studyPtr );
+      studyDS()->Clear();
       desk->blockSignals( isBlocked );
 #ifndef DISABLE_PYCONSOLE
       SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( application() );
@@ -1124,28 +1111,6 @@ bool SalomeApp_Study::openDataModel( const QString& studyName, CAM_DataModel* dm
 }
 
 /*!
-  Create new study name.
-*/
-QString SalomeApp_Study::newStudyName() const
-{
-  std::vector<std::string> studies = SalomeApp_Application::studyMgr()->GetOpenStudies();
-  QString prefix( "Study%1" ), newName, curName;
-  int i = 1, j, n = studies.size();
-  while ( newName.isEmpty() ){
-    curName = prefix.arg( i );
-    for ( j = 0 ; j < n; j++ ){
-      if ( !strcmp( studies[j].c_str(), curName.toLatin1() ) )
-        break;
-    }
-    if ( j == n )
-      newName = curName;
-    else
-      i++;
-  }
-  return newName;
-}
-
-/*!
   Note that this method does not create or activate SalomeApp_Engine_i instance,
   therefore it can be called safely for any kind of module, but for full
   modules it returns an empty list.
@@ -1157,7 +1122,7 @@ std::vector<std::string> SalomeApp_Study::GetListOfFiles( const char* theModuleN
   // Issue 21377 - using separate engine for each type of light module
   SalomeApp_Engine_i* aDefaultEngine = SalomeApp_Engine_i::GetInstance( theModuleName, false );
   if (aDefaultEngine)
-    return aDefaultEngine->GetListOfFiles(id());
+    return aDefaultEngine->GetListOfFiles();
 
   std::vector<std::string> aListOfFiles;
   return aListOfFiles;
@@ -1177,7 +1142,7 @@ void SalomeApp_Study::SetListOfFiles ( const char* theModuleName,
   // Issue 21377 - using separate engine for each type of light module
   SalomeApp_Engine_i* aDefaultEngine = SalomeApp_Engine_i::GetInstance( theModuleName, false );
   if (aDefaultEngine)
-    aDefaultEngine->SetListOfFiles(theListOfFiles, id());
+    aDefaultEngine->SetListOfFiles(theListOfFiles);
 }
 
 /*!
@@ -1219,8 +1184,8 @@ void SalomeApp_Study::RemoveTemporaryFiles ( const char* theModuleName, const bo
 */
 void SalomeApp_Study::updateFromNotebook( const QString& theFileName, bool isSaved )
 {
-  setStudyName(theFileName);
-  studyDS()->Name(theFileName.toStdString());
+//  setStudyName(theFileName);
+//  studyDS()->Name(theFileName.toStdString()); NB!!!
   setIsSaved( isSaved );
 }
 #endif

@@ -75,13 +75,13 @@ namespace GUI {
    * process, i.e. the SALOME_SessionServer embedding the
    * SalomeApp_Application.
    */
-  int getActiveStudyId() {
+  bool isActiveStudy() {
     SALOME::Session_var aSession = KERNEL::getSalomeSession();
     if ( CORBA::is_nil(aSession) ) {
       INFOS("ERR: can't request for active study because the session is NULL");
-      return -1;
+      return false;
     }
-    return aSession->GetActiveStudyId();
+    return true;
   }
 
   /**
@@ -89,7 +89,8 @@ namespace GUI {
    * defined in the SALOME session, returns null otherwise.
    */
   SALOMEDS::Study_ptr getActiveStudy() {
-    return KERNEL::getStudyById(getActiveStudyId());
+	if ( isActiveStudy() )
+    return KERNEL::getStudy();
   }
 
 
@@ -120,8 +121,7 @@ namespace GUI {
           // retrieve the SALOMEDS::Study servant first and the to
           // request this servant to get the SObject given its entry.
           //
-          _PTR(Study) studyClient = appStudy->studyDS();
-          SALOMEDS::Study_var study = KERNEL::getStudyManager()->GetStudyByID(studyClient->StudyId());
+          SALOMEDS::Study_var study = KERNEL::getStudy();
           SALOMEDS::SObject_ptr sobject = study->FindObjectID(iobject->getEntry());
           return sobject;
         }
