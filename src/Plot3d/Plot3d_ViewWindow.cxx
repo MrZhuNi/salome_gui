@@ -959,8 +959,12 @@ void Plot3d_ViewWindow::NormalizeSurfaces( const bool theIsRepaint )
   // 1) decrease all the values using a scale factor for WarpScalar filter (Plot3d_Actor::Build())
   // 2) reset the Z scale of the view to 1.0 (Plot3d_ViewWindow::NormalizeSurfaces())
   // (see 0003928: External 20834 (Bug) Plot3d, irregular scaling).
+
+  // But if the Z scale is less than 1.0 (e.g. if several surfaces with different Z range are displayed),
+  // we keep the computed scale without changes (see "0004068: Plot3d surfaces are destroyed").
+
   if( anIsValueScaleFactorEnabled )
-    aScale[2] = 1.0;
+    aScale[2] = qMin( aScale[2], 1.0 );
 
   SetScale( aScale, false );
 
