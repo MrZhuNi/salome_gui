@@ -511,30 +511,6 @@ QTreeView* SalomePyQt::getObjectBrowser()
 }
 
 /*!
-  \fn int SalomePyQt::getStudyId();
-  \brief Get active study's identifier.
-  \return active study ID or 0 if there is no active study
-*/
-
-class TGetStudyIdEvent: public SALOME_Event
-{
-public:
-  typedef int TResult;
-  TResult myResult;
-  TGetStudyIdEvent() : myResult( 0 ) {}
-  virtual void Execute()
-  {
-    if ( LightApp_Study* aStudy = getActiveStudy() ) {
-      myResult = aStudy->id();
-    }
-  }
-};
-int SalomePyQt::getStudyId()
-{
-  return ProcessEvent( new TGetStudyIdEvent() );
-}
-
-/*!
   \fn SALOME_Selection* SalomePyQt::getSelection();
   \brief Get the selection object for the current study.
 
@@ -667,14 +643,12 @@ bool SalomePyQt::activateModule( const QString& modName )
 }
 
 /*!
-  \brief Update an Object Browser of the specified (by identifier) study.
+  \brief Update an Object Browser of the study.
 
-  If \a studyId <= 0 the active study's object browser is updated.
   The \a updateSelection parameter is obsolete and currently is not used. 
   This parameter will be removed in future, so try to avoid its usage in 
   your code.
 
-  \brief studyId study identifier
   \brief updateSelection update selection flag (not used)
   \sa getActiveStudy()
 */

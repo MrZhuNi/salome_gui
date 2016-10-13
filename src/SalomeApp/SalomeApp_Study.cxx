@@ -573,19 +573,12 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
 }
 
 /*!
-  Connects GUI study to SALOMEDS one already loaded into StudyManager
+  Connects GUI study to SALOMEDS one
   \param theStudyName - name of study
 */
 bool SalomeApp_Study::loadDocument( const QString& theStudyName )
 {
   MESSAGE( "loadDocument" );
-
-  // obtain myStudyDS from StudyManager
-  _PTR(Study) study = studyDS();
-  if ( !study )
-    return false;
-
-  setStudyDS( study );
 
   setRoot( new SalomeApp_RootObject( this ) ); // create myRoot
 
@@ -742,8 +735,6 @@ void SalomeApp_Study::closeDocument(bool permanently)
       app->getPyInterp()->destroy();
 #endif
     }
-    SALOMEDSClient_Study* aStudy = 0;
-    setStudyDS( _PTR(Study)(aStudy) );
   }
 }
 

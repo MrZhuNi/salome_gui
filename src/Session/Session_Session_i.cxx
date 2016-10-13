@@ -245,16 +245,6 @@ SALOME::StatSession SALOME_Session_i::GetStatSession()
   return myStats._retn() ;
 }
 
-CORBA::Long SALOME_Session_i::GetActiveStudyId()
-{
-  long aStudyId=-1;
-  if ( SUIT_Session::session() && SUIT_Session::session()->activeApplication() ) {
-    if ( SUIT_Session::session()->activeApplication()->activeStudy() ) // mkr : IPAL12128
-      aStudyId = SUIT_Session::session()->activeApplication()->activeStudy()->id();
-  }
-  return aStudyId;
-}
-
 CORBA::Long SALOME_Session_i::getPID() {
   return (CORBA::Long)
 #ifndef WIN32

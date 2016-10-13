@@ -60,7 +60,6 @@ public:
   void updateObjBrowser(bool);
 
   /* get active study */
-  int getActiveStudyId();
   const char *getActiveStudyName();
 
   /* get component name/username */

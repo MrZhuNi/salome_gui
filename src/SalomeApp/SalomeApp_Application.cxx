@@ -516,10 +516,9 @@ void SalomeApp_Application::onNewWithScript()
 /*!SLOT. Load document with \a aName.*/
 bool SalomeApp_Application::onLoadDoc( const QString& aName )
 {
-#ifdef SINGLE_DESKTOP
   if ( !LightApp_Application::closeDoc() )
     return false;
-#endif
+
   bool res = true;
   if ( !activeStudy() ) {
     // if no study - load in current desktop
@@ -1304,7 +1303,7 @@ CORBA::ORB_var SalomeApp_Application::orb()
   return _orb;
 }
 
-/*!Create and return SALOMEDS_StudyManager.*/
+/*!Create and return SALOMEDS_Study.*/
 SALOMEDSClient_Study* SalomeApp_Application::getStudy()
 {
   static _PTR(Study) _study;

@@ -215,7 +215,7 @@ void Session_ServerThread::ActivateSALOMEDS(int argc,
     // counted objects, they will be deleted by the POA when they are no
     // longer needed.    
     
-//    ClientFactory::createStudyManager(_orb,_root_poa);
+//    ClientFactory::createStudyManager(_orb,_root_poa); NB!!!
   }
   catch(CORBA::SystemException&) {
     INFOS( "Caught CORBA::SystemException." );

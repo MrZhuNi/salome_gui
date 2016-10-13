@@ -37,7 +37,6 @@ public:
 
   void             updateObjBrowser( bool );
 
-  int              getActiveStudyId();
   const char*      getActiveStudyName();
 
   const char*      getComponentName( const char* );

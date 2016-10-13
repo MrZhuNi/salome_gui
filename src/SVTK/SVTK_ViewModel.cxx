@@ -50,29 +50,6 @@
 // VSR: Uncomment below line to allow texture background support in VTK viewer
 #define VTK_ENABLE_TEXTURED_BACKGROUND
 
-
-// in order NOT TO link with SalomeApp, here the code returns SALOMEDS_Study.
-// SalomeApp_Study::studyDS() does it as well, but -- here it is retrieved from 
-// SALOMEDS::StudyManager - no linkage with SalomeApp. 
-
-// Temporarily commented to avoid awful dependecy on SALOMEDS
-// TODO: better mechanism of storing display/erse status in a study
-// should be provided...
-//static _PTR(Study) getStudyDS() 
-//{
-//  SALOMEDSClient_Study* aStudy = NULL;
-//  _PTR(StudyManager) aMgr( new SALOMEDS_StudyManager() );
-  // get id of SUIT_Study, if it's a SalomeApp_Study, it will return
-  //    id of its underlying SALOMEDS::Study
-//  SUIT_Application* app = SUIT_Session::session()->activeApplication();
-//  if ( !app )  return _PTR(Study)(aStudy); 
-//  SUIT_Study* stud = app->activeStudy();
-//  if ( !stud ) return _PTR(Study)(aStudy);  
-//  const int id = stud->id(); // virtual method, must return SALOMEDS_Study id
-  // get SALOMEDS_Study with this id from StudyMgr
-//  return aMgr->GetStudyByID( id );
-//}
-
 /*!
   Constructor
 */

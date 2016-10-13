@@ -68,8 +68,6 @@ public:
   //! Unregister the servant from Naming Service
   void NSunregister();
 
-  CORBA::Long GetActiveStudyId();
-
   void ping(){};
   CORBA::Long getPID();
   char* getHostname();

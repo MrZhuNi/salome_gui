@@ -169,7 +169,6 @@ public:
   static QMenu*            getPopupMenu( const QString& );
   static QTreeView*        getObjectBrowser();
   static SALOME_Selection* getSelection();
-  static int               getStudyId();
   static void              putInfo( const QString&, const int = 0 );
   static const QString     getActiveComponent();
   static PyObject*         getActivePythonModule();

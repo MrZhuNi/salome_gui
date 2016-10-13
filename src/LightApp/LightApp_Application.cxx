@@ -922,10 +922,8 @@ void LightApp_Application::onNewWindow()
 */
 void LightApp_Application::onNewDoc()
 {
-#ifdef SINGLE_DESKTOP
   if ( !checkExistingDoc() )
     return;
-#endif
 
   //asl: fix for 0020515
   saveDockWindowsState();
@@ -940,10 +938,8 @@ void LightApp_Application::onOpenDoc()
 {
   SUIT_Study* study = activeStudy();
   
-#ifdef SINGLE_DESKTOP
   if ( !checkExistingDoc() )
     return;
-#endif
   
   CAM_Application::onOpenDoc();
   
@@ -960,10 +956,8 @@ void LightApp_Application::onOpenDoc()
 */
 bool LightApp_Application::onOpenDoc( const QString& aName )
 {
-#ifdef SINGLE_DESKTOP
   if ( !checkExistingDoc() )
     return false;
-#endif
 
   saveDockWindowsState();
 
