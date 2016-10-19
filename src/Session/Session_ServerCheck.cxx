@@ -354,7 +354,7 @@ void Session_ServerCheck::run()
       SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
       ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
       NS.init_orb( orb );
-      CORBA::Object_var obj = NS.Resolve( "/myStudy" );
+      CORBA::Object_var obj = NS.Resolve( "/Study" );
       SALOMEDS::Study_var study = SALOMEDS::Study::_narrow( obj );
       if ( !CORBA::is_nil( study ) ) {
         MESSAGE( "/myStudy is found" );
