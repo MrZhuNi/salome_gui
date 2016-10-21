@@ -182,6 +182,11 @@ void Plot2d_Viewer::onCloneView( Plot2d_ViewFrame* clonedVF, Plot2d_ViewFrame* n
 
   // 1) Copy all properties of view
 
+  // These two methods should be called before copyPreferences()
+  // because they do nothing if the mode is not changed.
+  newVF->setHorScaleMode( clonedVF->getHorScaleMode() );
+  newVF->setVerScaleMode( clonedVF->getVerScaleMode() );
+
   newVF->copyPreferences( clonedVF );
 
   newVF->setSecondY( clonedVF->getSecondY() );
