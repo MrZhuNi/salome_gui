@@ -219,6 +219,7 @@ void PyConsole_Editor::init( PyConsole_Interp* interp )
 */
 PyConsole_Editor::~PyConsole_Editor()
 {
+  delete myInterp;
   myInterp = 0;
 }
 
