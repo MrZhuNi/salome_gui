@@ -83,7 +83,6 @@ class SalomePluginManagerDialog(QDialog):
                 self.addrows(modulename, value)
             elif isinstance(value, dict):
                 # Module plugin
-                print(value.values())
                 self.addrows(modulename, value.values())
         if row is not None:
             self.plugins_list.setCurrentIndex(self.plugins_list.model()
