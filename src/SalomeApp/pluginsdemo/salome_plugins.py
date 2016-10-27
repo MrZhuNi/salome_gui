@@ -289,3 +289,15 @@ def runSalomeShellSession(context):
 salome_pluginsmanager.AddFunction('SALOME shell session',
                                   'Execute a SALOME shell session in an external xterm',
                                   runSalomeShellSession)
+
+# -------------------------------------------------------------------------
+# Example 4: SALOME Python Plugins scripts manager GUI
+# Allow to enable/disable a plugin
+def manage_plugins(context):
+    import salome_pluginsmanager_dialog
+    dialog = salome_pluginsmanager_dialog.getDialog('salome', context)
+    dialog.show()
+
+salome_pluginsmanager.AddFunction('Python Plugins Manager',
+                                  'Manage your SALOME Python plugins',
+                                  manage_plugins)

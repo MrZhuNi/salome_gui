@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>530</width>
+    <height>421</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>530</width>
+    <height>420</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>SALOME Python Plugins Manager</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;SALOME Python Plugins Manager&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="plugins_list">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>Module</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Plugin</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Activated</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Description</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pb_update">
+     <property name="text">
+      <string>Update List</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pb_remove_plugin">
+     <property name="text">
+      <string>Activate/Deactivate plugin</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pb_create_plugin">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Create plugin</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pb_import_plugin">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Import plugin</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>pb_update</tabstop>
+  <tabstop>pb_remove_plugin</tabstop>
+  <tabstop>pb_create_plugin</tabstop>
+  <tabstop>pb_import_plugin</tabstop>
+  <tabstop>plugins_list</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>227</x>
+     <y>392</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>295</x>
+     <y>398</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_create_plugin</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>createPlugin()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>502</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>526</x>
+     <y>254</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_import_plugin</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>importPlugin()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>519</x>
+     <y>297</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>524</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_remove_plugin</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>togglePluginStatus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>210</x>
+     <y>334</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>344</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>plugins_list</sender>
+   <signal>doubleClicked(QModelIndex)</signal>
+   <receiver>Dialog</receiver>
+   <slot>togglePluginStatus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>81</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_update</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>updatePluginsList()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>387</x>
+     <y>350</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>390</x>
+     <y>416</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>importPlugin()</slot>
+  <slot>createPlugin()</slot>
+  <slot>togglePluginStatus()</slot>
+  <slot>updatePluginsList()</slot>
+ </slots>
+</ui>

@@ -102,18 +102,23 @@ sg = libSALOME_Swig.SALOMEGUI_Swig()
 plugins={}
 current_plugins_manager=None
 
+
 def initialize(module,name,basemenuname,menuname):
-  if not plugins.has_key(name):
+    if not plugins.has_key(name):
+        if module:
+            plugins[name] = {}
+        else:
+            plugins[name] = []
     if module:
-      plugins[name]={}
+        d = sgPyQt.getDesktop()
+        if d in plugins[name]:
+            return
+    if module:
+        plugins[name][d] = PluginsManager(module, name, basemenuname, menuname)
     else:
-      plugins[name]=[]
-  if module:
-    d=sgPyQt.getDesktop()
-    if plugins[name].has_key(d):return
-    plugins[name][d]=PluginsManager(module,name,basemenuname,menuname)
-  else:
-    plugins[name].append(PluginsManager(module,name,basemenuname,menuname))
+        plugins[name].append(PluginsManager(module, name, basemenuname,
+                                            menuname))
+
 
 class Context:
     def __init__(self,sgpyqt):
@@ -121,21 +126,24 @@ class Context:
         self.studyId=salome.sg.getActiveStudyId()
         self.study= salome.myStudyManager.GetStudyByID(self.studyId)
 
+
 def find_menu(smenu):
-  lmenus=smenu.split("|")
-  # Take first element from the list
-  main=lmenus.pop(0).strip()
-  menu=sgPyQt.getPopupMenu(main)
-  return findMenu(lmenus,menu)
+    lmenus = smenu.split("|")
+    # Take first element from the list
+    main = lmenus.pop(0).strip()
+    menu = sgPyQt.getPopupMenu(main)
+    return findMenu(lmenus, menu)
+
 
 def findMenu(lmenu,menu):
-  if not lmenu:return menu
-  # Take first element from the list
-  m=lmenu.pop(0).strip()
-  for a in menu.actions():
-    if a.menu():
-      if a.text() == m:
-        return findMenu(lmenu,a.menu())
+    if not lmenu:
+        return menu
+    # Take first element from the list
+    m = lmenu.pop(0).strip()
+    for a in menu.actions():
+        if a.menu():
+            if a.text() == m:
+                return findMenu(lmenu, a.menu())
 
 PLUGIN_PATH_PATTERN="share/salome/plugins"
 MATCH_ENDING_PATTERN="_plugins.py"
@@ -146,13 +154,15 @@ logger=Logger("PluginsManager") #,color=GREEN)
 # VSR 21/11/2011 : do not show infos in the debug mode
 #logger.showDebug()
 
-class PluginsManager:
+
+class PluginsManager():
     def __init__(self,module,name,basemenuname,menuname):
         self.name=name
         self.basemenuname=unicode(basemenuname, "utf-8")
         self.menuname=unicode(menuname, "utf-8")
         self.module=module
         self.registry={}
+        self.desactivated=[]
         self.handlers={}
         self.entries=[]
         self.lasttime=0
@@ -199,15 +209,23 @@ class PluginsManager:
         self.basemenu = find_menu(self.basemenuname)
 
         if self.module:
-          self.menu=QMenu(self.menuname)
+          self.menu = QMenu(self.menuname)
           mid=sgPyQt.createMenu(self.menu.menuAction(),self.basemenuname)
         else:
-          self.menu=QMenu(self.menuname,self.basemenu)
+          self.menu = QMenu(self.menuname, self.basemenu)
           self.basemenu.addMenu(self.menu)
 
         self.menu.menuAction().setVisible(False)
 
         self.basemenu.aboutToShow.connect(self.importPlugins)
+        self.importPlugins()
+    
+    def toggleStatus(self, name):
+        if name in self.desactivated:
+            self.desactivated.remove(name)
+        else:
+            self.desactivated.append(name)
+        self.importPlugins()
 
     def analyseFile(self,filename):
       """
@@ -225,7 +243,8 @@ class PluginsManager:
     def AddFunction(self,name,description,script):
         """ Add a plugin function
         """
-        self.registry[name]=script,description
+
+        self.registry[name]=script,description,name not in self.desactivated
         self.entries.append(name)
 
         def handler(obj=self,script=script):
@@ -316,6 +335,7 @@ class PluginsManager:
           name=names.pop(0)
           act=parentMenu.addAction(name,self.handlers[entry])
           act.setStatusTip(self.registry[entry][1])
+          act.setEnabled(name not in self.desactivated)
 
         self.menu.menuAction().setVisible(True)
 

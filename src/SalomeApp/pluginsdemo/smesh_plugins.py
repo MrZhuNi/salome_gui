@@ -24,7 +24,7 @@ import salome_pluginsmanager
 
 DEMO_IS_ACTIVATED = True
 
-from minmax_plugin import *
+from minmax_plugin import minmax
  
 # register the function in the plugin manager
 if DEMO_IS_ACTIVATED:

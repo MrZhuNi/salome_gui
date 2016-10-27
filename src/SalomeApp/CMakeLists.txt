@@ -226,6 +226,14 @@ SET(_bin_SCRIPTS
 # scripts / python
 SET(_py_SCRIPTS
   salome_pluginsmanager.py
+  salome_pluginsmanager_dialog.py
+)
+
+# scripts / Qt designer ui files
+# Dynamically loaded by a python script
+# => Not processed by pyuic !
+SET(_ui_FILES
+  salome_pluginsmanager_dialog.ui
 )
 
 # --- rules ---
@@ -240,4 +248,5 @@ QT_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_GUI_INSTALL_RES_DATA}")
 INSTALL(FILES ${_other_RESOURCES} DESTINATION ${SALOME_GUI_INSTALL_RES_DATA})
 
 SALOME_INSTALL_SCRIPTS("${_py_SCRIPTS}"  ${SALOME_INSTALL_PYTHON})
+SALOME_INSTALL_SCRIPTS("${_ui_FILES}"  ${SALOME_INSTALL_PYTHON})
 SALOME_INSTALL_SCRIPTS("${_bin_SCRIPTS}" ${SALOME_INSTALL_SCRIPT_PYTHON})
