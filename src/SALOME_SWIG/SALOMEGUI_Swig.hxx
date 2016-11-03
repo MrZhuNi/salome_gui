@@ -35,7 +35,7 @@ public:
 
   bool             hasDesktop();
 
-  void             updateObjBrowser( bool );
+  void             updateObjBrowser();
 
   const char*      getActiveStudyName();
 

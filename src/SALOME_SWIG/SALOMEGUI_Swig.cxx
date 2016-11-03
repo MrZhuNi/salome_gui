@@ -172,9 +172,8 @@ bool SALOMEGUI_Swig::hasDesktop()
 
 /*!
   \brief Update active study's Object Browser.
-  \param updateSelection this parameter is obsolete
 */
-void SALOMEGUI_Swig::updateObjBrowser( bool /*updateSelection*/ )
+void SALOMEGUI_Swig::updateObjBrowser()
 {
   class TEvent: public SALOME_Event
   {

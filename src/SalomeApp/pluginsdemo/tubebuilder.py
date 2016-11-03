@@ -33,8 +33,7 @@ def createGeometry(study, radius=DEFAULT_RADIUS, length=DEFAULT_LENGTH, width=DE
     given parameters.
     '''
     print "TUBE: creating the geometry ..."
-    studyId = study._get_StudyId()
-    geompy = geomtools.getGeompy(studyId)
+    geompy = geomtools.getGeompy()
 
     radius_ext = radius
     radius_int = radius_ext - width
@@ -53,8 +52,7 @@ def createGeometryWithPartition(study, radius=DEFAULT_RADIUS, length=DEFAULT_LEN
 
     # We have to create a partition so that we can use an hexaedric
     # meshing algorithm.
-    studyId = study._get_StudyId()
-    geompy = geomtools.getGeompy(studyId)
+    geompy = geomtools.getGeompy()
 
     print "TUBE: creating a partition ..."
     toolPlane = geompy.MakeFaceHW(2.1*length,2.1*radius,3)
@@ -84,7 +82,7 @@ def createMesh(study, shape):
         smesh.SetName(Nb_Segments, 'Nb. Segments_1')
         smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
         smesh.SetName(Hexa_3D.GetAlgorithm(), 'Hexa_3D')
-        salome.sg.updateObjBrowser(False)
+        salome.sg.updateObjBrowser()
 
     return mesh
 

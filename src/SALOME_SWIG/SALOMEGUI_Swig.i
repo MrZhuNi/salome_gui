@@ -57,7 +57,7 @@ public:
   bool hasDesktop();
 
   /* update object browser*/
-  void updateObjBrowser(bool);
+  void updateObjBrowser();
 
   /* get active study */
   const char *getActiveStudyName();

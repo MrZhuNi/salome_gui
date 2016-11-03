@@ -173,7 +173,7 @@ public:
   static const QString     getActiveComponent();
   static PyObject*         getActivePythonModule();
   static bool              activateModule( const QString& );
-  static void              updateObjBrowser( bool = true );
+  static void              updateObjBrowser();
 
   static bool              isModified();
   static void              setModified( bool );

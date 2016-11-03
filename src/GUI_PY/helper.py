@@ -66,8 +66,7 @@ def getActiveStudy():
     study. The active study is a GUI concept: it's the study currently
     active on the desktop.
     """
-    studyId = sgPyQt.getStudyId()
-    study = services.getStudyManager().GetStudyByID( studyId )
+    study = services.getStudy()
     return study
 
 #
@@ -115,7 +114,7 @@ def deleteSObjectSelected():
         study = getActiveStudy()
         builder = study.NewBuilder()
         builder.RemoveObject( sobj )
-        SalomeGUI.updateObjBrowser(True)
+        SalomeGUI.updateObjBrowser()
     pass
 
 #

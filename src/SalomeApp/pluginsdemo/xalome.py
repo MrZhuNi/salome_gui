@@ -45,8 +45,7 @@ def addToStudy(study,shape,shapeName,folderName=None):
     created in the Geometry part of the study, and the shape study
     object is stored in this folder of the study. 
     """
-    studyId = study._get_StudyId()
-    geompy = geomtools.getGeompy(studyId)
+    geompy = geomtools.getGeompy()
 
     if folderName is None:
         # Insert the shape in the study by the standard way
@@ -55,7 +54,7 @@ def addToStudy(study,shape,shapeName,folderName=None):
         # A folder name has been specified to embed this shape. Find
         # or create a folder with this name in the Geometry study, and
         # then store the shape in this folder.
-        studyEditor = getStudyEditor(studyId)
+        studyEditor = getStudyEditor()
         geomStudyFolder = studyEditor.findOrCreateComponent("GEOM")
         shapeStudyFolder = studyEditor.findOrCreateItem(geomStudyFolder,folderName)
 
@@ -78,10 +77,9 @@ def removeFromStudy(study,shapeStudyEntry):
     erase the drawing in the viewer.
     The underlying GEOM object is returned (so that it can be destroyed)
     """
-    studyId = study._get_StudyId()
     shape = IDToObject(shapeStudyEntry)    
     studyObject = IDToSObject(shapeStudyEntry)
-    studyEditor = getStudyEditor(studyId)
+    studyEditor = getStudyEditor()
     studyEditor.removeItem(studyObject,True)
     return shape
 
@@ -163,10 +161,9 @@ def TEST_createAndDeleteShape():
     import salome
     salome.salome_init()
     study   = salome.myStudy
-    studyId = salome.myStudyId
 
     from salome.geom import geomtools
-    geompy = geomtools.getGeompy(studyId)
+    geompy = geomtools.getGeompy()
 
     # --------------------------------------------------
     # Create a first shape (GEOM object)

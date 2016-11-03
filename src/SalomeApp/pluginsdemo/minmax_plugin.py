@@ -22,9 +22,8 @@
 from qtsalome import *
 
 def minmax(context):
-  # get context study, studyId, salomeGui
+  # get context study, salomeGui
   study = context.study
-  studyId = context.studyId
   sg = context.sg
 
   from minmax_ui import Ui_Dialog

@@ -644,22 +644,13 @@ bool SalomePyQt::activateModule( const QString& modName )
 
 /*!
   \brief Update an Object Browser of the study.
-
-  The \a updateSelection parameter is obsolete and currently is not used. 
-  This parameter will be removed in future, so try to avoid its usage in 
-  your code.
-
-  \brief updateSelection update selection flag (not used)
-  \sa getActiveStudy()
 */
-void SalomePyQt::updateObjBrowser( bool updateSelection )
+void SalomePyQt::updateObjBrowser()
 {  
   class TEvent: public SALOME_Event
   {
-    bool myUpdateSelection;
   public:
-    TEvent( bool updateSelection )
-      : myUpdateSelection( updateSelection ) {}
+    TEvent() {}
     virtual void Execute()
     {
       if ( SUIT_Session::session() ) {
@@ -677,7 +668,7 @@ void SalomePyQt::updateObjBrowser( bool updateSelection )
       }
     }
   };
-  ProcessVoidEvent( new TEvent( updateSelection ) );
+  ProcessVoidEvent( new TEvent() );
 }
 
 
