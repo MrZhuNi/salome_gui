@@ -8,10 +8,6 @@
         <translation>Le fichier %1 n&apos;existe pas.</translation>
     </message>
     <message>
-        <source>ERR_ACTIVEDOC_LOAD</source>
-        <translation>Une étude est déjà chargée dans votre session mais vous n&apos;y êtes pas connectée. Utilisez le bouton &quot;Connecter&quot; pour charger l&apos;étude dans l&apos;interface.</translation>
-    </message>
-    <message>
         <source>WRN_STUDY_LOCKED</source>
         <translation>L&apos;étude est verrouillée</translation>
     </message>

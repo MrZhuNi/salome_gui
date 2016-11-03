@@ -206,7 +206,6 @@ void SalomeApp_Application::start()
 
     QString hdffile;
     QStringList pyfiles;
-    QString loadStudy;
 
     for (int i = 1; i < qApp->arguments().size(); i++) {
       QRegExp rxs ("--study-hdf=(.+)");
@@ -240,14 +239,8 @@ void SalomeApp_Application::start()
     SALOME_EventFilter::Init();
 
     setProperty("open_study_from_command_line", true);
-    if ( !hdffile.isEmpty() )       // open hdf file given as parameter
+    if ( !hdffile.isEmpty() ) // open hdf file given as parameter
       onOpenDoc( hdffile );
-    else if ( pyfiles.count() > 0 ) // create new study
-      onNewDoc();
-    else if (!loadStudy.isEmpty()) {// load study by name
-      if (onLoadDoc(loadStudy))
-        updateObjectBrowser(true);
-    }
     setProperty("open_study_from_command_line", QVariant());
 
 #ifndef DISABLE_PYCONSOLE
@@ -335,10 +328,14 @@ void SalomeApp_Application::createActions()
   createAction( ConnectId, tr( "TOT_DESK_CONNECT_STUDY" ), QIcon(),
                 tr( "MEN_DESK_CONNECT" ), tr( "PRP_DESK_CONNECT" ),
                 Qt::CTRL+Qt::Key_L, desk, false, this, SLOT( onLoadDoc() ) );
+  //no need at this action for mono-study application because study is always exists
+  action( ConnectId )->setVisible( false );
 
   createAction( DisconnectId, tr( "TOT_DESK_DISCONNECT_STUDY" ), QIcon(),
                 tr( "MEN_DESK_DISCONNECT" ), tr( "PRP_DESK_DISCONNECT" ),
                 Qt::CTRL+Qt::Key_U, desk, false, this, SLOT( onUnloadDoc() ) );
+  //no need at this action for mono-study application because study is always exists
+  action( DisconnectId )->setVisible( false );
 
 
   int fileMenu = createMenu( tr( "MEN_DESK_FILE" ), -1 );
@@ -2058,18 +2055,7 @@ void SalomeApp_Application::afterCloseDoc()
 */
 bool SalomeApp_Application::checkExistingDoc()
 {
-  bool result = LightApp_Application::checkExistingDoc();
-  /*if ( result && !activeStudy() ) {
-    SALOMEDSClient_StudyManager* aMgr = studyMgr();
-    if ( aMgr ) {
-      std::vector<std::string> List = studyMgr()->GetOpenStudies();
-      if( List.size() > 0 ) {
-        SUIT_MessageBox::critical( desktop(), tr( "WRN_WARNING" ), tr( "ERR_ACTIVEDOC_LOAD" ));
-        result = false;
-      }
-    }
-  }*/ // NB!!!
-  return result;
+  return LightApp_Application::checkExistingDoc();
 }
 
 

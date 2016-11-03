@@ -8,11 +8,6 @@
       <translation>ファイル %1 は存在しません。</translation>
     </message>
     <message>
-      <source>ERR_ACTIVEDOC_LOAD</source>
-      <translation>A study is already active in your session, but you are not connected to it. Use the Connect button to load it in the interface.
-スタディはあなたのセッション内ですでにアクティブになっていますが、接続できません。インターフェイス内でそれをロードするための接続用ボタンを使用してください。</translation>
-    </message>
-    <message>
       <source>WRN_STUDY_LOCKED</source>
       <translation>スタディがロックされています</translation>
     </message>

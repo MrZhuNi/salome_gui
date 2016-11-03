@@ -444,6 +444,8 @@ void LightApp_Application::start()
   desktop()->statusBar()->showMessage( "" );
 
   LightApp_EventFilter::Init();
+
+  onNewDoc();
 }
 
 /*!Closeapplication.*/
@@ -5095,29 +5097,28 @@ bool LightApp_Application::checkExistingDoc()
 {
   bool result = true;
   if( activeStudy() ) {
-    int answer = SUIT_MessageBox::question( desktop(), 
-					    tr( "APPCLOSE_CAPTION" ), 
+    int answer = SUIT_MessageBox::question( desktop(),
+					    tr( "APPCLOSE_CAPTION" ),
 					    tr( "STUDYCLOSE_DESCRIPTION" ),
-					    tr( "APPCLOSE_SAVE" ), 
+					    tr( "APPCLOSE_SAVE" ),
 					    tr( "APPCLOSE_CLOSE" ),
 					    tr( "APPCLOSE_CANCEL" ), 0 );
     if(answer == 0) {
       if ( activeStudy()->isSaved() ) {
-	onSaveDoc();
-	closeDoc( false );
-      } else if ( onSaveAsDoc() ) {
-	if( !closeDoc( false ) ) {
-	  result = false;
-	}
-      } else {
-	result = false;
-      }	
+	    onSaveDoc();
+	    closeDoc( false );
+      }
+      else if ( onSaveAsDoc() ) {
+	    if( !closeDoc( false ) )
+	      result = false;
+      }
+      else
+        result = false;
     }
-    else if( answer == 1 ) {
+    else if( answer == 1 )
       closeDoc( false );
-    } else if( answer == 2 ) {
+    else if( answer == 2 )
       result = false;
-    }
   }
   return result;
 }

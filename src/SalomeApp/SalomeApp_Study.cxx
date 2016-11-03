@@ -728,7 +728,7 @@ void SalomeApp_Study::closeDocument(bool permanently)
       SUIT_Desktop* desk = SUIT_Session::session()->activeApplication()->desktop();
       bool isBlocked = desk->signalsBlocked();
       desk->blockSignals( true );
-      studyDS()->Clear();
+      SalomeApp_Application::getStudy()->Clear();
       desk->blockSignals( isBlocked );
 #ifndef DISABLE_PYCONSOLE
       SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( application() );

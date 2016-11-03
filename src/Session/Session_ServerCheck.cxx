@@ -357,7 +357,7 @@ void Session_ServerCheck::run()
       CORBA::Object_var obj = NS.Resolve( "/Study" );
       SALOMEDS::Study_var study = SALOMEDS::Study::_narrow( obj );
       if ( !CORBA::is_nil( study ) ) {
-        MESSAGE( "/myStudy is found" );
+        MESSAGE( "/Study is found" );
         study->ping();
         MESSAGE( "Study was activated" );
         setStep( ++current * myAttempts );
