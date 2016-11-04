@@ -51,14 +51,23 @@ SUIT_ViewModel::SUIT_ViewModel()
     SUIT_ViewModel::myButtonMap[STANDARD][FIT_AREA] = Qt::RightButton;
 
     // "key free" interaction style
-    SUIT_ViewModel::myStateMap[KEY_FREE][ZOOM]  = Qt::NoModifier;
-    SUIT_ViewModel::myButtonMap[KEY_FREE][ZOOM] = Qt::RightButton;
+    SUIT_ViewModel::myStateMap[KEY_FREE][ZOOM]  = Qt::ControlModifier;
+    SUIT_ViewModel::myButtonMap[KEY_FREE][ZOOM] = Qt::LeftButton;
 
-    SUIT_ViewModel::myStateMap[KEY_FREE][PAN]   = Qt::NoModifier;
-    SUIT_ViewModel::myButtonMap[KEY_FREE][PAN]  = Qt::MidButton;
+    SUIT_ViewModel::myStateMap[KEY_FREE][PAN]   = Qt::AltModifier;
+    SUIT_ViewModel::myButtonMap[KEY_FREE][PAN]  = Qt::LeftButton;
 
-    SUIT_ViewModel::myStateMap[KEY_FREE][ROTATE]  = Qt::NoModifier;
+    SUIT_ViewModel::myStateMap[KEY_FREE][ROTATE]  = Qt::ShiftModifier;
     SUIT_ViewModel::myButtonMap[KEY_FREE][ROTATE] = Qt::LeftButton;
+
+//     SUIT_ViewModel::myStateMap[KEY_FREE][ZOOM]  = Qt::NoModifier;
+//     SUIT_ViewModel::myButtonMap[KEY_FREE][ZOOM] = Qt::RightButton;
+//
+//     SUIT_ViewModel::myStateMap[KEY_FREE][PAN]   = Qt::NoModifier;
+//     SUIT_ViewModel::myButtonMap[KEY_FREE][PAN]  = Qt::MidButton;
+//
+//     SUIT_ViewModel::myStateMap[KEY_FREE][ROTATE]  = Qt::NoModifier;
+//     SUIT_ViewModel::myButtonMap[KEY_FREE][ROTATE] = Qt::LeftButton;
 
     SUIT_ViewModel::myStateMap[KEY_FREE][FIT_AREA]  = Qt::NoModifier; // unused
     SUIT_ViewModel::myButtonMap[KEY_FREE][FIT_AREA] = Qt::NoButton;   // unused
