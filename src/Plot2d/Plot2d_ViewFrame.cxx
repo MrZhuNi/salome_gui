@@ -2229,12 +2229,22 @@ Plot2d_Plot2d::Plot2d_Plot2d( QWidget* parent )
 
   defaultPicker();
 
+  // custom scale draws allowing to specify the label format
+  for( int anAxisId = QwtPlot::yLeft; anAxisId < QwtPlot::axisCnt; anAxisId++ )
+  {
+    if( QwtScaleDraw* aScale = axisScaleDraw( anAxisId ) )
+    {
+      QwtScaleDraw* aCustomScale = new Plot2d_ScaleDraw();
+      setAxisScaleDraw( anAxisId, aCustomScale );
+    }
+  }
+
   // auto scaling by default
   setAxisAutoScale( QwtPlot::yLeft );
   setAxisAutoScale( QwtPlot::yRight );
   setAxisAutoScale( QwtPlot::xBottom );
 
-// grid
+  // grid
   myGrid = new QwtPlotGrid();
   QPen aMajPen = myGrid->majPen();
   aMajPen.setStyle( Qt::DashLine );
@@ -2576,6 +2586,15 @@ void Plot2d_Plot2d::polish()
   myIsPolished = true;
 }
 
+/*!
+  Sets the custom label format for the specified axis.
+*/
+void Plot2d_Plot2d::setLabelFormat( const int theAxisId, const QString& theFormat )
+{
+  if( QwtScaleDraw* aScale = axisScaleDraw( theAxisId ) )
+    if( Plot2d_ScaleDraw* aCustomScale = dynamic_cast<Plot2d_ScaleDraw*>( aScale ) )
+      aCustomScale->setLabelFormat( theFormat );
+}
 
 /*!
   Creates presentation of object
@@ -3096,4 +3115,30 @@ bool Plot2d_ViewFrame::isTimeColorization()
   if ( myIsTimeColorization && ( myTimePosition != -1 ) && myInactiveColor.isValid() )
     return true;
   return false;
+}
+
+/*!
+  Convert a numerical value to a text label using the custom format (if it is defined)
+*/
+QwtText Plot2d_ScaleDraw::label( double theValue ) const
+{
+  if( !myLabelFormat.isEmpty() )
+    return QString().sprintf( myLabelFormat.toLatin1().constData(), theValue );
+  return QwtScaleDraw::label( theValue );
+}
+
+/*!
+  Sets the label format
+*/
+void Plot2d_ScaleDraw::setLabelFormat( const QString& theFormat )
+{
+  myLabelFormat = theFormat;
+}
+
+/*!
+  Gets the label format
+*/
+const QString& Plot2d_ScaleDraw::labelFormat() const
+{
+  return myLabelFormat;
 }

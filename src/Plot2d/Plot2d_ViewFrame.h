@@ -26,6 +26,7 @@
 #include <QList>
 #include <qwt_symbol.h>
 #include <qwt_plot_curve.h>
+#include <qwt_scale_draw.h>
 
 class Plot2d_Plot2d;
 class Plot2d_Prs;
@@ -296,6 +297,8 @@ public:
 
   static bool         closeColors( const QColor& color1, const QColor& color2 );
 
+  PLOT2D_EXPORT void  setLabelFormat( const int theAxisId, const QString& theFormat );
+
 public slots:
   virtual void polish();
 
@@ -356,6 +359,27 @@ private:
   bool    myIsTimeColorization;
   double  myTimePosition;
   QColor  myInactiveColor;
+};
+
+//! The class is derived from QwtScaleDraw.
+/*!
+  The class is derived from QwtScaleDraw. Its main purpose is redefining 
+  label() virtual method in order to provide possibility to customize 
+  the numerical format of the Plot2d axis labels.
+*/
+
+class Plot2d_ScaleDraw : public QwtScaleDraw
+{
+public:
+  Plot2d_ScaleDraw() : QwtScaleDraw() {}
+
+  virtual QwtText label( double theValue ) const;
+
+  void            setLabelFormat( const QString& theFormat );
+  const QString&  labelFormat() const;
+
+private:
+  QString         myLabelFormat;
 };
 
 #endif
