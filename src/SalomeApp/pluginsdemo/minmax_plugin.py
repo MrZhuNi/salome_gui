@@ -31,7 +31,7 @@ def minmax(context):
   import salome
   import SMESH
   from salome.smesh import smeshBuilder
-  smesh = smeshBuilder.New(salome.myStudy)
+  smesh = smeshBuilder.New()
 
   controls_dict = {
     "Aspect Ratio 3D" :     SMESH.FT_AspectRatio3D,

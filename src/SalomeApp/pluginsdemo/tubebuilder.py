@@ -60,12 +60,12 @@ def createGeometryWithPartition(study, radius=DEFAULT_RADIUS, length=DEFAULT_LEN
     entry = geompy.addToStudy( partition, "TubeWithPartition" )
     return partition
     
-def createMesh(study, shape):
-    '''This function creates the mesh of the specified shape on the specified study'''
+def createMesh(shape):
+    '''This function creates the mesh of the specified shape on the current study'''
     print "TUBE: creating the mesh ..."
     import SMESH
     from salome.smesh import smeshBuilder
-    smesh = smeshBuilder.New(study)
+    smesh = smeshBuilder.New()
 
     mesh = smesh.Mesh(shape)
     Regular_1D = mesh.Segment()
@@ -96,7 +96,7 @@ def createModel(study, radius=DEFAULT_RADIUS, length=DEFAULT_LENGTH,width=DEFAUL
     shape = createGeometryWithPartition(study,radius,length,width)
 
     # Then the mesh can be defined and computed
-    mesh = createMesh(study,shape)
+    mesh = createMesh(shape)
     
 def exportModel(mesh, filename):
     '''
@@ -119,9 +119,8 @@ def TEST_createGeometry():
 
 def TEST_createMesh():
     salome.salome_init()
-    theStudy=salome.myStudy
-    shape = createGeometryWithPartition(theStudy)
-    mesh  = createMesh(theStudy, shape)
+    shape = createGeometryWithPartition(salome.myStudy)
+    mesh  = createMesh(shape)
 
 def TEST_createModel():
     salome.salome_init()
@@ -130,9 +129,8 @@ def TEST_createModel():
 
 def TEST_exportModel():
     salome.salome_init()
-    theStudy=salome.myStudy
-    shape = createGeometryWithPartition(theStudy)
-    mesh  = createMesh(theStudy, shape)
+    shape = createGeometryWithPartition(salome.myStudy)
+    mesh  = createMesh()
     exportModel(mesh,"tubemesh.med")
     
 if __name__ == "__main__":
