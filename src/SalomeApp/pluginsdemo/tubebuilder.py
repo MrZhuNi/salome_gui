@@ -27,7 +27,7 @@ DEFAULT_WIDTH  = 20
 
 from salome.geom import geomtools
 
-def createGeometry(study, radius=DEFAULT_RADIUS, length=DEFAULT_LENGTH, width=DEFAULT_WIDTH):
+def createGeometry(radius=DEFAULT_RADIUS, length=DEFAULT_LENGTH, width=DEFAULT_WIDTH):
     '''
     This function creates the geometry on the specified study and with
     given parameters.
@@ -43,12 +43,12 @@ def createGeometry(study, radius=DEFAULT_RADIUS, length=DEFAULT_LENGTH, width=DE
     Tube = geompy.MakeCut(CylinderExt, CylinderInt)
     return Tube
     
-def createGeometryWithPartition(study, radius=DEFAULT_RADIUS, length=DEFAULT_LENGTH, width=DEFAULT_WIDTH):
+def createGeometryWithPartition(radius=DEFAULT_RADIUS, length=DEFAULT_LENGTH, width=DEFAULT_WIDTH):
     '''
     This function create the geometrical shape with a partition so
     that the hexaedric algorithm could be used for meshing.
     '''
-    shape = createGeometry(study,radius,length,width)
+    shape = createGeometry(radius,length,width)
 
     # We have to create a partition so that we can use an hexaedric
     # meshing algorithm.
@@ -87,13 +87,13 @@ def createMesh(shape):
     return mesh
 
 
-def createModel(study, radius=DEFAULT_RADIUS, length=DEFAULT_LENGTH,width=DEFAULT_WIDTH):
+def createModel(radius=DEFAULT_RADIUS, length=DEFAULT_LENGTH,width=DEFAULT_WIDTH):
     '''
     This function create the geomtrical shape AND the associated mesh.
     '''
     # We first create a shape with a partition so that the hexaedric
     # algorithm could be used.
-    shape = createGeometryWithPartition(study,radius,length,width)
+    shape = createGeometryWithPartition(radius,length,width)
 
     # Then the mesh can be defined and computed
     mesh = createMesh(shape)
@@ -114,23 +114,21 @@ def exportModel(mesh, filename):
 #
 def TEST_createGeometry():
     salome.salome_init()
-    theStudy=salome.myStudy
-    createGeometry(theStudy)
+    createGeometry()
 
 def TEST_createMesh():
     salome.salome_init()
-    shape = createGeometryWithPartition(salome.myStudy)
+    shape = createGeometryWithPartition()
     mesh  = createMesh(shape)
 
 def TEST_createModel():
     salome.salome_init()
-    theStudy=salome.myStudy
-    createModel(theStudy)
+    createModel()
 
 def TEST_exportModel():
     salome.salome_init()
-    shape = createGeometryWithPartition(salome.myStudy)
-    mesh  = createMesh()
+    shape = createGeometryWithPartition()
+    mesh  = createMesh(shape)
     exportModel(mesh,"tubemesh.med")
     
 if __name__ == "__main__":

@@ -55,22 +55,6 @@ SalomeGUI = libSALOME_Swig.SALOMEGUI_Swig()
 
 #
 # ==================================================================
-# General helper function for GUI programming actions
-# ==================================================================
-# 
-# Get the active study
-#
-def getActiveStudy():
-    """
-    This returns a study object that corresponds to the active
-    study. The active study is a GUI concept: it's the study currently
-    active on the desktop.
-    """
-    study = services.getStudy()
-    return study
-
-#
-# ==================================================================
 # Functions to manipulate the objects in the browser (generic)
 # ==================================================================
 #
@@ -83,7 +67,7 @@ def getSObjectSelected():
     '''
     sobj = None
     entry = None
-    study = getActiveStudy()
+    study = services.getStudy()
     if SalomeGUI.SelectedCount() == 1:
         # We only considere the first element of the list. If you need
         # something else, create another function in your own context.
@@ -111,7 +95,7 @@ def deleteSObjectSelected():
     '''
     sobj, entry = getSObjectSelected()
     if ( sobj ):
-        study = getActiveStudy()
+        study = services.getStudy()
         builder = study.NewBuilder()
         builder.RemoveObject( sobj )
         SalomeGUI.updateObjBrowser()
@@ -129,7 +113,7 @@ def deleteSObjectSelected():
 
 #
 # Definitions:
-# - the SObject is an item in the active study (Study Object).
+# - the SObject is an item in the study (Study Object).
 # - the entry is the identifier of an item.
 # - the object (geom object or smesh object) is a CORBA servant
 #   embedded in the SALOME component container and with a reference in

@@ -36,7 +36,7 @@ from salome.geom import geomtools
 # Helper functions to add/remove a geometrical shape in/from the study
 # ======================================================================
 
-def addToStudy(study,shape,shapeName,folderName=None):
+def addToStudy(shape,shapeName,folderName=None):
     """
     Add a GEOM shape in the study. It returns the associated entry
     that corresponds to the identifier of the entry in the study. This
@@ -70,7 +70,7 @@ def addToStudy(study,shape,shapeName,folderName=None):
 
     return entry
 
-def removeFromStudy(study,shapeStudyEntry):
+def removeFromStudy(shapeStudyEntry):
     """
     This removes the specified entry from the study. Note that this
     operation does not destroy the underlying GEOM object, neither
@@ -124,7 +124,7 @@ def eraseShape_version65(shapeStudyEntry):
 # Helper functions for a complete suppression of a shape from the
 # SALOME session.
 # ======================================================================
-def deleteShape(study,shapeStudyEntry):
+def deleteShape(shapeStudyEntry):
     """
     This completly deletes a geom shape.
 
@@ -136,7 +136,7 @@ def deleteShape(study,shapeStudyEntry):
     3. destroy the underlying geom object
     """
     eraseShape(shapeStudyEntry)
-    shape = removeFromStudy(study, shapeStudyEntry)
+    shape = removeFromStudy(shapeStudyEntry)
     if shape is not None:
       shape.Destroy()
     
@@ -160,7 +160,7 @@ def TEST_createAndDeleteShape():
     """
     import salome
     salome.salome_init()
-    study   = salome.myStudy
+    study = salome.myStudy
 
     from salome.geom import geomtools
     geompy = geomtools.getGeompy()
@@ -175,7 +175,7 @@ def TEST_createAndDeleteShape():
     # folder. A name must be specified. The register operation
     # (addToStudy) returns an identifier of the entry in the study.
     cylinderName = "cyl.r%s.l%s"%(radius,length)
-    cylinderStudyEntry = addToStudy(study, cylinder, cylinderName)
+    cylinderStudyEntry = addToStudy(cylinder, cylinderName)
 
     # Display the registered shape in a viewer
     displayShape(cylinderStudyEntry)
@@ -185,7 +185,7 @@ def TEST_createAndDeleteShape():
     radius = 10
     sphere = geompy.MakeSphereR(radius)
     sphereName = "sph.r%s"%radius
-    sphereStudyEntry = addToStudy(study, sphere, sphereName)
+    sphereStudyEntry = addToStudy(sphere, sphereName)
     displayShape(sphereStudyEntry)
 
     # --------------------------------------------------
@@ -196,7 +196,7 @@ def TEST_createAndDeleteShape():
     box = geompy.MakeBoxDXDYDZ(length,length,length)
     boxName = "box.l%s"%length
     folderName = "boxset" 
-    boxStudyEntry = addToStudy(study, box, boxName, folderName)
+    boxStudyEntry = addToStudy(box, boxName, folderName)
     displayShape(boxStudyEntry,PreviewColor)
 
     # --------------------------------------------------
@@ -211,7 +211,7 @@ def TEST_createAndDeleteShape():
     # SALOME session (erase from viewer, remove from study and finnaly
     # destroy the object). This is done by a simple call to
     # deleteShape().
-    deleteShape(study,cylinderStudyEntry)
+    deleteShape(cylinderStudyEntry)
 
     # --------------------------------------------------
     # At the end of the executioon of this test, you should have in
