@@ -60,6 +60,8 @@ public:
   vtkSmartPointer<vtkScalarBarActor> GetScalarBarActor() const;
   void UpdateScalarBar( const bool theIsRepaint = true );
 
+  void SetFitData( const bool theIsEnabled,
+                   const double theBounds[6] );
   void UpdateFitData( const bool theIsRepaint = true );
 
   void NormalizeSurfaces( const bool theIsRepaint = true );

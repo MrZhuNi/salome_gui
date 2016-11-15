@@ -852,6 +852,17 @@ void Plot3d_ViewWindow::UpdateScalarBar( const bool theIsRepaint )
 }
 
 /*!
+  Set fit data
+*/
+void Plot3d_ViewWindow::SetFitData( const bool theIsEnabled,
+                                    const double theBounds[6] )
+{
+  myIsFitDataInitialized = myIsFitDataEnabled = theIsEnabled;
+  for( int i = 0; i < 6; i++ )
+    myFitDataBounds[i] = theBounds[i];
+}
+
+/*!
   Apply fit data bounds to all displayed actors
 */
 void Plot3d_ViewWindow::UpdateFitData( const bool theIsRepaint )
