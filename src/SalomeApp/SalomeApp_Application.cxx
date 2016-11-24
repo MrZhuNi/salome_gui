@@ -563,6 +563,9 @@ void SalomeApp_Application::onDesktopMessage( const QString& message )
   else if ( message.toLower() == "connect_to_study" ) {
     onLoadDoc();
   }
+  if (message.indexOf("studyNameChanged") == 0) {
+    updateDesktopTitle();
+  }
   LightApp_Application::onDesktopMessage( message );
 }
 
