@@ -44,7 +44,7 @@ name salome_plugins.py (example follows)::
   import salome_pluginsmanager
 
   def about(context):
-    from PyQt4.QtGui import QMessageBox
+    from PySide.QtGui import QMessageBox
     QMessageBox.about(None, "About SALOME pluginmanager", "SALOME plugins manager in SALOME virtual application ")
 
   salome_pluginsmanager.AddFunction('About plugins','About SALOME pluginmanager',about)
@@ -84,8 +84,8 @@ context attributes:
 """
 
 import os,sys,traceback
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PySide import QtGui
+from PySide import QtCore
 
 import salome
 

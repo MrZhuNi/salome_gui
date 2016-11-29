@@ -81,7 +81,7 @@ enum MenuName {
   Help        = 7  
 };
 
-enum {
+enum WindowType {
   WT_ObjectBrowser = LightApp_Application::WT_ObjectBrowser,
   WT_PyConsole     = LightApp_Application::WT_PyConsole,
   WT_LogWindow     = LightApp_Application::WT_LogWindow,
@@ -93,7 +93,7 @@ enum {
 #endif
 };
 
-enum { 
+enum PrefType {
   PT_Auto     = LightApp_Preferences::Auto,
   PT_Space    = LightApp_Preferences::Space,
   PT_Bool     = LightApp_Preferences::Bool, 

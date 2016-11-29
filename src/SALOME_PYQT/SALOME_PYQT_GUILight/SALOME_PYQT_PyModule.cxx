@@ -50,7 +50,14 @@
 
 #include <utilities.h>
 
+#ifdef WITH_PYQT4
 #include "sipAPISalomePyQtGUILight.h"
+#endif
+
+#ifdef WITH_PYSIDE
+#include <shiboken.h>
+#include <salomepyqtguilight_python.h>
+#endif
 
 /*!
   \brief Default menu group number.
@@ -1809,10 +1816,16 @@ void PyModuleHelper::setWorkSpace()
     if ( d )
       aWorkspace = d->workstack();
   }
+#ifdef WITH_PYQT4
 #if SIP_VERSION < 0x040800
   PyObjWrapper pyws( sipBuildResult( 0, "M", aWorkspace, sipClass_QWidget) );
 #else
   PyObjWrapper pyws( sipBuildResult( 0, "D", aWorkspace, sipType_QWidget , NULL) );
+#endif
+#endif
+  
+#ifdef WITH_PYSIDE
+  PyObjWrapper pyws(Shiboken::Converter<QWidget*>::toPython(aWorkspace));
 #endif
   // ... and finally call Python module's setWorkSpace() method (obsolete)
   if ( PyObject_HasAttrString( myPyModule, (char*)"setWorkSpace" ) ) {
@@ -1898,11 +1911,19 @@ void PyModuleHelper::internalInitialize( CAM_Application* app )
           // parse the return value
           // it should be a map: {integer:integer}
           int aKey, aValue;
+#ifdef WITH_PYQT4	  
           if( key && PyInt_Check( key ) && value && PyInt_Check( value ) ) {
-            aKey   = PyInt_AsLong( key );
+	    aKey   = PyInt_AsLong( key );
             aValue = PyInt_AsLong( value );
-            myWindowsMap[ aKey ] = aValue;
-          }
+	  }
+#endif
+#ifdef WITH_PYSIDE
+	  if( key && Shiboken::isShibokenEnum(key) && value && Shiboken::isShibokenEnum(value) ) {
+	    aKey = Shiboken::Enum::getValue(key);
+	    aValue = Shiboken::Enum::getValue(value);
+	    myWindowsMap[ aKey ] = aValue;
+	  }
+#endif
         }
       }
     }
@@ -2259,11 +2280,16 @@ void PyModuleHelper::internalContextMenu( const QString& context, QMenu* menu )
   // we create popup menus without help of QtxPopupMgr
   if ( myXmlHandler )
     myXmlHandler->createPopup( menu, aContext, aParent, aObject );
-
+#ifdef WITH_PYQT4
 #if SIP_VERSION < 0x040800
-  PyObjWrapper sipPopup( sipBuildResult( 0, "M", menu, sipClass_QMenu ) );
+  PyObjWrapper aPopup( sipBuildResult( 0, "M", menu, sipClass_QMenu ) );
 #else
-  PyObjWrapper sipPopup( sipBuildResult( 0, "D", menu, sipType_QMenu, NULL ) );
+  PyObjWrapper aPopup( sipBuildResult( 0, "D", menu, sipType_QMenu, NULL ) );
+#endif
+#endif
+
+#ifdef WITH_PYSIDE
+  PyObjWrapper aPopup( Shiboken::Converter<QMenu*>::toPython(menu) );
 #endif
 
   // then call Python module's createPopupMenu() method (for new modules)
@@ -2271,7 +2297,7 @@ void PyModuleHelper::internalContextMenu( const QString& context, QMenu* menu )
     PyObjWrapper res1( PyObject_CallMethod( myPyModule,
                                             (char*)"createPopupMenu",
                                             (char*)"Os",
-                                            sipPopup.get(),
+                                            aPopup.get(),
                                             context.toLatin1().constData() ) );
     if( !res1 ) {
       PyErr_Print();
@@ -2284,7 +2310,7 @@ void PyModuleHelper::internalContextMenu( const QString& context, QMenu* menu )
     PyObjWrapper res2( PyObject_CallMethod( myPyModule,
                                             (char*)"customPopup",
                                             (char*)"Osss",
-                                            sipPopup.get(),
+                                            aPopup.get(),
                                             aContext.toLatin1().constData(),
                                             aObject.toLatin1().constData(),
                                             aParent.toLatin1().constData() ) );
@@ -2471,14 +2497,21 @@ void PyModuleHelper::internalLoad( const QStringList& files, bool& opened )
 
   QStringList* theList = new QStringList( files );
 
+
+#ifdef WITH_PYQT4
 #if SIP_VERSION < 0x040800
-  PyObjWrapper sipList( sipBuildResult( 0, "M", theList, sipClass_QStringList ) );
+  PyObjWrapper aList( sipBuildResult( 0, "M", theList, sipClass_QStringList ) );
 #else
-  PyObjWrapper sipList( sipBuildResult( 0, "D", theList, sipType_QStringList, NULL ) );
+  PyObjWrapper aList( sipBuildResult( 0, "D", theList, sipType_QStringList, NULL ) );
+#endif
+#endif
+
+#ifdef WITH_PYSIDE
+  PyObjWrapper aList(Shiboken::Conversions::copyToPython(SbkPySide_QtCoreTypeConverters[SBK_QSTRINGLIST_IDX], &files));
 #endif
   if ( PyObject_HasAttrString(myPyModule , (char*)"openFiles") ) {
     PyObjWrapper res( PyObject_CallMethod( myPyModule, (char*)"openFiles",
-                                           (char*)"O", sipList.get()));
+                                           (char*)"O", aList.get()));
     if( !res || !PyBool_Check( res )) {
       PyErr_Print();
       opened = false;
@@ -2625,14 +2658,21 @@ void PyModuleHelper::internalDropObjects( const DataObjectList& what, SUIT_DataO
     if ( dataObject ) theList->append( dataObject->entry() );
   }
 
+#ifdef WITH_PYQT4
 #if SIP_VERSION < 0x040800
-  PyObjWrapper sipList( sipBuildResult( 0, "M", theList, sipClass_QStringList) );
+  PyObjWrapper aList( sipBuildResult( 0, "M", theList, sipClass_QStringList) );
 #else
-  PyObjWrapper sipList( sipBuildResult( 0, "D", theList, sipType_QStringList, NULL) );
+  PyObjWrapper aList( sipBuildResult( 0, "D", theList, sipType_QStringList, NULL) );
 #endif
+#endif
+
+#ifdef WITH_PYSIDE
+  PyObjWrapper aList(Shiboken::Conversions::copyToPython(SbkPySide_QtCoreTypeConverters[SBK_QSTRINGLIST_IDX], &theList));
+#endif
+
   if ( PyObject_HasAttrString(myPyModule, (char*)"dropObjects") ) {
       PyObjWrapper res( PyObject_CallMethod( myPyModule, (char*)"dropObjects", (char*)"Osii",
-                        sipList.get(),
+                        aList.get(),
                         whereObject->entry().toLatin1().constData(),
                         row, action ) );
     

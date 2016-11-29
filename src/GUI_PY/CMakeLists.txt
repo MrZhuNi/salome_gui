@@ -16,8 +16,11 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-
-INCLUDE(UsePyQt4)
+IF(SALOME_USE_PYSIDE)
+  INCLUDE(UsePySide)
+ELSE(SALOME_USE_PYSIDE)
+  INCLUDE(UsePyQt4)
+ENDIF(SALOME_USE_PYSIDE)
 
 # --- resources ---
 
@@ -32,7 +35,13 @@ SET(_pyuic_files
 
 # scripts / pyuic wrappings
 
-PYQT4_WRAP_UIC(_pyuic_SCRIPTS ${_pyuic_files})
+IF(SALOME_USE_PYSIDE)
+  PYSIDE_WRAP_UIC(_pyuic_SCRIPTS ${_pyuic_files})
+ELSE(SALOME_USE_PYSIDE)
+  PYQT4_WRAP_UIC(_pyuic_SCRIPTS ${_pyuic_files})
+ENDIF(SALOME_USE_PYSIDE)
+
+
 
 # scripts / static
 SET(_other_SCRIPTS 

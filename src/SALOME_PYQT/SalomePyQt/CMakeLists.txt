@@ -17,15 +17,19 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-INCLUDE(UsePyQt4)
+IF(SALOME_USE_PYSIDE)
+  INCLUDE(UsePySide)
+ELSE(SALOME_USE_PYSIDE)
+  INCLUDE(UsePyQt4)
+ENDIF(SALOME_USE_PYSIDE)
 IF(SALOME_USE_VTKVIEWER)
   INCLUDE(${VTK_USE_FILE})
 ENDIF()
 
 # --- options ---
 
-# additional include directories
-INCLUDE_DIRECTORIES(
+# --- common include directories ---
+SET(SalomePyQt_INCLUDE_DIRS
   ${CAS_INCLUDE_DIRS}
   ${QT_INCLUDES}
   ${QWT_INCLUDE_DIR}
@@ -48,6 +52,23 @@ INCLUDE_DIRECTORIES(
   ${PROJECT_SOURCE_DIR}/src/SUIT
 )
 
+# additional include directories
+IF(SALOME_USE_PYSIDE)
+  SET(SalomePyQt_INCLUDE_DIRS
+      ${SalomePyQt_INCLUDE_DIRS}
+      ${CMAKE_CURRENT_BINARY_DIR}/SalomePyQt
+      ${SHIBOKEN_INCLUDE_DIR}
+      ${PYSIDE_INCLUDE_DIRS})
+ELSE(SALOME_USE_PYSIDE)
+  SET(SalomePyQt_INCLUDE_DIRS
+      ${SalomePyQt_INCLUDE_DIRS}
+      ${SIP_INCLUDE_DIRS})
+ENDIF(SALOME_USE_PYSIDE)
+
+INCLUDE_DIRECTORIES(
+ ${SalomePyQt_INCLUDE_DIRS}
+)
+
 IF(SALOME_LIGHT_ONLY)
   #disable 'ENABLE_CORBA' feature
   SET(PYQT_SIPFLAGS ${PYQT_SIPFLAGS} "-xENABLE_CORBA;")
@@ -58,6 +79,15 @@ ELSE(SALOME_LIGHT_ONLY)
 ENDIF(SALOME_LIGHT_ONLY)
 
 # additional preprocessor / compiler flags
+
+# additional preprocessor / compiler flags
+IF(SALOME_USE_PYSIDE)
+  SET(PACKAGE_DEFINITIONS ${PYSIDE_DEFINITIONS})
+ELSE(SALOME_USE_PYSIDE)
+  SET(PACKAGE_DEFINITIONS ${PYQT4_DEFINITIONS})
+ENDIF(SALOME_USE_PYSIDE)
+
+
 ADD_DEFINITIONS(
   ${QWT_DEFINITIONS}
   ${QT_DEFINITIONS}
@@ -65,7 +95,7 @@ ADD_DEFINITIONS(
   ${BOOST_DEFINITIONS}
   ${PYTHON_DEFINITIONS}
   ${OMNIORB_DEFINITIONS}
-)
+  ${PACKAGE_DEFINITIONS})
 
 # libraries to link to
 SET(_link_LIBRARIES
@@ -84,15 +114,19 @@ SET(_moc_HEADERS SalomePyQt.h)
 # --- resources ---
 
 # sip files / to be processed by sip
-SET(_sip_files SalomePyQt.sip)
+IF(NOT SALOME_USE_PYSIDE)
+  SET(_sip_files SalomePyQt.sip)
+ENDIF(NOT SALOME_USE_PYSIDE)
 
 # --- sources ---
 
 # sources / moc wrappings
 QT4_WRAP_CPP(_moc_SOURCES ${_moc_HEADERS})
 
-# sources / sip wrappings
-PYQT4_WRAP_SIP(_sip_SOURCES ${_sip_files})
+IF(NOT SALOME_USE_PYSIDE)
+  # sources / sip wrappings
+  PYQT4_WRAP_SIP(_sip_SOURCES ${_sip_files})
+ENDIF(NOT SALOME_USE_PYSIDE)
 
 # sources / static
 SET(_other_SOURCES SalomePyQt.cxx)
@@ -101,16 +135,52 @@ SET(_other_SOURCES SalomePyQt.cxx)
 SET(SalomePyQt_SOURCES ${_other_SOURCES} ${_moc_SOURCES} ${_sip_SOURCES})
 
 # --- rules ---
+IF(SALOME_USE_PYSIDE)
 
-ADD_LIBRARY(SalomePyQt ${SalomePyQt_SOURCES})
-TARGET_LINK_LIBRARIES(SalomePyQt ${_link_LIBRARIES})
-INSTALL(TARGETS SalomePyQt DESTINATION ${SALOME_INSTALL_LIBS})
+  # --- list of the wrapped sources ---
+  SET(SalomePyQt_WRAPPED_SOURCES 
+  ${CMAKE_CURRENT_BINARY_DIR}/SalomePyQt/salomepyqt_module_wrapper.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/SalomePyQt/salome_selection_wrapper.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/SalomePyQt/qtxaction_wrapper.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/SalomePyQt/qtxactionset_wrapper.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/SalomePyQt/qtxactiongroup_wrapper.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/SalomePyQt/plot2d_curve_wrapper.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/SalomePyQt/salomepyqt_wrapper.cpp)
 
+  # --- module include directories ---
+  SET(SalomePy_MODULE_INCLUDES
+  ${PROJECT_SOURCE_DIR}/src/Qtx
+  ${PROJECT_SOURCE_DIR}/src/Plot2d)
+
+
+  # --- create pyside module ---
+  MESSAGE("Create pyside module in the ${CAMKE_CURRENT_SOURCE_DIR}")
+  CREATE_PYSIDE_MODULE(
+    SalomePyQt
+    ${CMAKE_CURRENT_SOURCE_DIR}/SalomePyQt_global.h
+    SalomePy_MODULE_INCLUDES
+    _link_LIBRARIES
+    ""
+    ""
+    SalomePyQt_SOURCES
+    SalomePyQt_WRAPPED_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/SalomePyQt_typesystem.xml
+  )
+
+ELSE(SALOME_USE_PYSIDE)
+  ADD_LIBRARY(SalomePyQt ${SalomePyQt_SOURCES})
+  TARGET_LINK_LIBRARIES(SalomePyQt ${_link_LIBRARIES})
+ENDIF(SALOME_USE_PYSIDE)
+
+# --- set prefix ---
+SET_TARGET_PROPERTIES(SalomePyQt PROPERTIES PREFIX "")
+
+# --- set correct names of the library on win32 platform ---
 IF(WIN32)
   SET_TARGET_PROPERTIES(SalomePyQt PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME SalomePyQt_d RELEASE_OUTPUT_NAME SalomePyQt)
-ELSE()
-  SET_TARGET_PROPERTIES(SalomePyQt PROPERTIES PREFIX "")
-ENDIF()
+ENDIF(WIN32)
+
+INSTALL(TARGETS SalomePyQt DESTINATION ${SALOME_INSTALL_LIBS})
 
 FILE(GLOB make_clean_files ${CMAKE_CURRENT_BINARY_DIR}/sip*)
 SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${make_clean_files}")

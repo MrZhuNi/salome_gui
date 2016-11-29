@@ -29,7 +29,14 @@
 #include "SUIT_DataObjectIterator.h"
 #include "LightApp_Application.h"
 #include "SUIT_DataBrowser.h"
+
+#ifdef WITH_PYQT4
 #include "sipAPISalomePyQtGUILight.h"
+#endif
+
+#ifdef WITH_PYSIDE
+#include "salomepyqtguilight_python.h"
+#endif
 
 #ifndef GUI_DISABLE_CORBA
 #include <Container_init_python.hxx>
@@ -60,12 +67,19 @@
 // and to get C API from sip : sipBuildResult for example
 //
 
-#define INIT_FUNCTION initSalomePyQtGUILight
-#if defined(SIP_STATIC_MODULE)
-extern "C" void INIT_FUNCTION();
-#else
-PyMODINIT_FUNC INIT_FUNCTION();
-#endif
+#ifdef WITH_PYQT4
+  #define INIT_FUNCTION initSalomePyQtGUILight
+    #if defined(SIP_STATIC_MODULE)
+      extern "C" void INIT_FUNCTION();
+    #else
+    PyMODINIT_FUNC INIT_FUNCTION();
+  #endif //SIP_STATIC_MODULE
+#endif //WITH_PYQT4
+
+#ifdef WITH_PYSIDE
+  #define INIT_FUNCTION initSalomePyQtGUILight
+  extern "C" void INIT_FUNCTION();
+#endif //WITH_PYSIDE
 
 /*!
   \fn CAM_Module* createModule()
