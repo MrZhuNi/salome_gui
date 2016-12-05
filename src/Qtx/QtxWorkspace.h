@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -25,13 +25,13 @@
 
 #include "Qtx.h"
 
-#include <QWorkspace>
+#include <QMdiArea>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )
 #endif
 
-class QTX_EXPORT QtxWorkspace : public QWorkspace
+class QTX_EXPORT QtxWorkspace : public QMdiArea
 {
   Q_OBJECT
 
@@ -39,9 +39,15 @@ public:
   QtxWorkspace( QWidget* = 0 );
   virtual ~QtxWorkspace();
 
+signals:
+  void        windowActivated( QWidget* );
+
 public slots:
   void        tileVertical();
   void        tileHorizontal();
+
+private slots:
+  void        onSubWindowActivated( QMdiSubWindow* );
 };
 
 #ifdef WIN32

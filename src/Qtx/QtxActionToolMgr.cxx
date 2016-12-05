@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -229,7 +229,7 @@ QToolBar* QtxActionToolMgr::find( const QString& title, QMainWindow* mw ) const
   QString pattern = title.toLower();
 
   QToolBar* res = 0;
-  QList<QToolBar*> toolbars = qFindChildren<QToolBar*>( mw );
+  QList<QToolBar*> toolbars = mw->findChildren<QToolBar*>();
   for ( QList<QToolBar*>::iterator it = toolbars.begin(); it != toolbars.end() && !res; ++it )
   {
     if ( (*it)->windowTitle().toLower() == pattern )

@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -64,7 +64,7 @@ SALOME_Session_i::SALOME_Session_i(int argc,
 {
   _argc = argc ;
   _argv = argv ;
-  _isGUI = FALSE ;
+  _isGUI = false ;
   _runningStudies= 0 ;
   _orb = CORBA::ORB::_duplicate(orb) ;
   _poa = PortableServer::POA::_duplicate(poa) ;

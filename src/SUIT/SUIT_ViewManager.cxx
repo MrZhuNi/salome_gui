@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -327,7 +327,7 @@ bool SUIT_ViewManager::isVisible() const
 void SUIT_ViewManager::setShown( const bool on )
 {
   for ( int i = 0; i < myViews.count(); i++ )
-    myViews.at( i )->setShown( on );
+    myViews.at( i )->setVisible( on );
 }
 
 /*!Emit on \a theEvent mouse pressed in \a theView.*/

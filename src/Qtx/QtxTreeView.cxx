@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -107,10 +107,10 @@ void QtxTreeView::Header::contextMenuEvent( QContextMenuEvent* e )
     QVariant appropriate = model()->headerData( i, orientation(), Qtx::AppropriateRole );
     QIcon icon;
     if ( iconData.isValid() ) {
-      if ( qVariantCanConvert<QIcon>( iconData ) )
-        icon = qVariantValue<QIcon>( iconData );
-      else if ( qVariantCanConvert<QPixmap>( iconData ) )
-        icon = qVariantValue<QPixmap>( iconData );
+      if ( iconData.canConvert( QVariant::Icon ) )
+        icon = iconData.value<QIcon>();
+      else if ( iconData.canConvert( QVariant::Pixmap ) )
+        icon = iconData.value<QPixmap>();
     }
     if( ( !lab.isEmpty() || !icon.isNull() ) && 
             appropriate.isValid() ? appropriate.toInt()==Qtx::Toggled : true )

@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2015  CEA/DEN, EDF R&D
+// Copyright (C) 2015-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -22,29 +22,40 @@
 #define PVSERVERSERVICELOADER_H_
 
 #include "PVServerServiceLoader.h"
-
-#include <SALOME_ContainerManager.hxx>
+#include <SALOMEconfig.h>
+#include CORBA_CLIENT_HEADER(SALOME_Component)
+#include <string>
+#include <exception>
 
 class SALOME_LifeCycleCORBA;
-class SALOME_NamingService;
+
+class PVSERVERSERVICELOADER_EXPORT PVServer_ServiceLoader_Exception: public std::exception
+{
+public:
+  PVServer_ServiceLoader_Exception(const std::string & what):_what(what) {}
+  ~PVServer_ServiceLoader_Exception() throw () {}
+  virtual const char* what() const throw() { return _what.c_str(); }
+private:
+  std::string _what;
+};
 
 class PVSERVERSERVICELOADER_EXPORT PVServer_ServiceLoader
 {
 public:
-  PVServer_ServiceLoader();
+  PVServer_ServiceLoader() throw(PVServer_ServiceLoader_Exception);
   virtual ~PVServer_ServiceLoader();
 
   //! Get the IOR of the CORBA service handling the PVServer
-  std::string findOrLoadService(const char * containerName);
+  std::string findOrLoadService( const std::string& );
 
 private:
-  std::string findService(const char * containerName);
-  std::string loadService(const char * containerName);
+  SALOME_LifeCycleCORBA* lcc();
+  std::string findService( const std::string& );
+  std::string loadService( const std::string& );
+  Engines::Container_ptr getContainer( const std::string&, const std::string& );
 
-  SALOME_LifeCycleCORBA * _lcc;
-  CORBA::ORB_ptr _orb;
-  SALOME_NamingService * _ns;
-  Engines::ContainerManager_ptr _cm;
+private:
+  SALOME_LifeCycleCORBA* myLcc;
 };
 
 #endif /* PVSERVERSERVICELOADER_H_ */

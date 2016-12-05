@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2010-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,12 +19,15 @@
 # Author: Adrien Bruneton
 #
 
-# Graphviz detection for salome
+# ParaView detection for salome
 #
 #  !! Please read the generic detection procedure in SalomeMacros.cmake !!
 #
 
+IF(NOT QT_VERSION)
+  MESSAGE(FATAL_ERROR "Detection of ParaView requires Qt to be detected first!")
+ENDIF()
+
 SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS(ParaView PARAVIEW_USE_FILE 4)
-#MARK_AS_ADVANCED()
 
 INCLUDE(${PARAVIEW_USE_FILE})

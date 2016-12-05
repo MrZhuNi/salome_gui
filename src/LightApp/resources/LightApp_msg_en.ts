@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>ABOUT_COPYRIGHT</source>
-        <translation>Copyright (C) 2007-2015 CEA/DEN, EDF R&amp;D, OPEN CASCADE
+        <translation>Copyright (C) 2007-2016 CEA/DEN, EDF R&amp;D, OPEN CASCADE
 
 Copyright (C) 2003-2007 OPEN CASCADE, EADS/CCR, LIP6,
 CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translation>
@@ -69,6 +69,19 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     <message>
         <source>APPCLOSE_CANCEL</source>
         <translation>&amp;Cancel</translation>
+    </message>
+    <message>
+        <source>WRN_PYTHON_FILE_NAME_BAD</source>
+        <translation>Please enter correct file name.
+Python file must include only letters, digits and underscores and start from letter or underscore.</translation>
+    </message>
+    <message>
+        <source>PYTHON_FILES_FILTER</source>
+        <translation>Python Files (*.py)</translation>
+    </message>
+    <message>
+        <source>LOG_FILES_FILTER</source>
+        <translation>Log files (*.log *.txt)</translation>
     </message>
 </context>
 <context>
@@ -410,6 +423,10 @@ The changes will be applied on the next application session.</translation>
     <message>
         <source>PREF_SHOW_BANNER</source>
         <translation>Show banner</translation>
+    </message>
+    <message>
+        <source>PREF_AUTO_COMPLETION</source>
+        <translation>Command auto-completion</translation>
     </message>
     <message>
         <source>PREF_GROUP_STYLE</source>
@@ -845,7 +862,7 @@ The changes will be applied on the next application session.</translation>
     </message>
     <message>
         <source>OCC_TEXTURE_FILES</source>
-        <translation>Image files (*.jpeg *jpg *.jpe *.png *.bmp *.gif *.ppm *.tif *.tiff* .tga *.exr)</translation>
+        <translation>Image files (*.jpeg *.jpg *.jpe *.png *.bmp *.gif *.ppm *.tif *.tiff* .tga *.exr)</translation>
     </message>
     <message>
         <source>PREF_CLIPPING_MODULATE</source>
@@ -854,6 +871,38 @@ The changes will be applied on the next application session.</translation>
     <message>
         <source>PREF_CLIPPING_SCALE</source>
         <translation>Scale factor</translation>
+    </message>
+    <message>
+        <source>PREF_GROUP_RAY_TRACING</source>
+        <translation>Ray tracing</translation>
+    </message>
+    <message>
+        <source>PREF_RAY_TRACING_DEPTH</source>
+        <translation>Depth</translation>
+    </message>
+    <message>
+        <source>PREF_RAY_TRACING_REFLECTION</source>
+        <translation>Specular reflections</translation>
+    </message>
+    <message>
+        <source>PREF_RAY_TRACING_ANTIALIASING</source>
+        <translation>Adaptive anti-aliasing</translation>
+    </message>
+    <message>
+        <source>PREF_RAY_TRACING_SHADOW</source>
+        <translation>Shadows rendering</translation>
+    </message>
+    <message>
+        <source>PREF_RAY_TRACING_TRANS_SHADOW</source>
+        <translation>Transparent shadow</translation>
+    </message>
+    <message>
+        <source>PREF_GROUP_LIGHT</source>
+        <translation>Light source</translation>
+    </message>
+    <message>
+        <source>PREF_LIGHT_COLOR</source>
+        <translation>Color</translation>
     </message>
     <message>
         <source>TOT_CLOSE</source>
@@ -1135,6 +1184,17 @@ File does not exist</translation>
     <message>
         <source>ACTIVATE_MODULE_TOP</source>
         <translation>Activate/deactivate %1 module</translation>
+    </message>
+</context>
+<context>
+    <name>LightApp_PyEditor</name>
+    <message>
+        <source>TOT_DUMP_PYCOMMANDS</source>
+        <translation>Dump commands</translation>
+    </message>
+    <message>
+        <source>TOT_SAVE_PYLOG</source>
+        <translation>Save log</translation>
     </message>
 </context>
 </TS>

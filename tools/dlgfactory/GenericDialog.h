@@ -1,4 +1,4 @@
-// Copyright (C) 2011-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2011-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -20,25 +20,28 @@
 #ifndef _GenericDialog_HXX
 #define _GenericDialog_HXX
 
-#include <QtGui>
+#include <QDialog>
+
 #include "ui_GenericDialog.h"
+
+class QFrame;
+class QDialogButtonBox;
 
 class GenericDialog : public QDialog
 {
   Q_OBJECT
-    
-public:
-  GenericDialog(QDialog *parent = 0);
 
- protected:
-  QFrame * getPanel();
+public:
+  GenericDialog(QDialog* parent = 0);
+
+protected:
+  QFrame* getPanel();
   QDialogButtonBox * getButtonBox();
-  
- protected slots:    
-    void accept();
-  //void reject();
-  
- private:
+
+protected slots:    
+  void accept();
+
+private:
   Ui_GenericDialog ui; // instance of the class defined in ui_GenericDialog.h
 };
 

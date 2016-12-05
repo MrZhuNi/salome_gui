@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -87,7 +87,7 @@ QString SUIT_ResourceMgr::userFileName( const QString& appName, const bool for_l
   // Try config file, given in arguments
   for (int i = 1; i < arguments.count(); i++) {
     QRegExp rx ("--resources=(.+)");
-    if ( rx.indexIn( arguments[i] ) >= 0 && rx.numCaptures() > 0 ) {
+    if ( rx.indexIn( arguments[i] ) >= 0 && rx.captureCount() > 0 ) {
       QString file = rx.cap(1);
       QFileInfo fi (file);
       pathName = fi.absoluteFilePath();

@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -177,12 +177,10 @@ int main( int argc, char* argv[] )
     }
   }
 
-  // add $QTDIR/plugins to the pluins search path for image plugins
-  QString qtdir = qgetenv( "QT_ROOT_DIR" );
-  if ( qtdir.isEmpty() )
-    qtdir = qgetenv( "QTDIR" );
+  // add <qtdir>/plugins directory to the pluins search path for image plugins
+  QString qtdir = Qtx::qtDir( "plugins" );
   if ( !qtdir.isEmpty() )
-    QApplication::addLibraryPath( QDir( qtdir ).absoluteFilePath( "plugins" ) );
+    QApplication::addLibraryPath( qtdir );
 
   //Set a "native" graphic system in case if application runs on the remote host
   QString remote(::getenv("REMOTEHOST"));

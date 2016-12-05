@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -48,7 +48,7 @@ Plot2d_FitDataDlg::Plot2d_FitDataDlg( QWidget* parent, bool secondAxisY )
   setObjectName( "Plot2d_FitDataDlg" );
   setModal( true );
   setWindowTitle( tr( "FIT_DATA_TLT" ) );
-  setSizeGripEnabled( TRUE );
+  setSizeGripEnabled( true );
   QGridLayout* topLayout = new QGridLayout( this ); 
   topLayout->setSpacing( SPACING_SIZE );
   topLayout->setMargin( MARGIN_SIZE );
@@ -154,11 +154,11 @@ Plot2d_FitDataDlg::Plot2d_FitDataDlg( QWidget* parent, bool secondAxisY )
   // OK/Cancel buttons
   myOkBtn = new QPushButton( tr( "BUT_OK" ), this );
   myOkBtn->setObjectName( "buttonOk" );
-  myOkBtn->setAutoDefault( TRUE );
-  myOkBtn->setDefault( TRUE );
+  myOkBtn->setAutoDefault( true );
+  myOkBtn->setDefault( true );
   myCancelBtn = new QPushButton(  tr( "BUT_CANCEL" ), this );
   myCancelBtn->setObjectName( "buttonCancel" );
-  myCancelBtn->setAutoDefault( TRUE );
+  myCancelBtn->setAutoDefault( true );
 
   topLayout->addWidget( myRangeGrp, 0, 0, 1, 3 );
   topLayout->addWidget( myOkBtn, 1, 0 );

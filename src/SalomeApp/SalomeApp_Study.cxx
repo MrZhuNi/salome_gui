@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -467,17 +467,23 @@ bool SalomeApp_Study::createDocument( const QString& theStr )
   QString aName = newStudyName();
 
   _PTR(Study) study;
+  bool showError = !application()->property("open_study_from_command_line").isValid() || 
+    !application()->property("open_study_from_command_line").toBool();
   try {
     study = _PTR(Study)( SalomeApp_Application::studyMgr()->NewStudy( aName.toUtf8().data() ) );
   }
   catch(const SALOME_Exception& ex) {
-    SUIT_MessageBox::critical( SUIT_Session::session()->activeApplication()->desktop(),
-                               tr("ERR_ERROR"), tr(ex.what()));
+    application()->putInfo(tr(ex.what()));
+    if ( showError )
+      SUIT_MessageBox::critical( SUIT_Session::session()->activeApplication()->desktop(),
+                                 tr("ERR_ERROR"), tr(ex.what()));
     return false;
   } 
   catch(...) {
-    SUIT_MessageBox::critical( SUIT_Session::session()->activeApplication()->desktop(),
-                               tr("ERR_ERROR"), tr("CREATE_DOCUMENT_PROBLEM"));
+    application()->putInfo(tr("CREATE_DOCUMENT_PROBLEM"));
+    if ( showError )
+      SUIT_MessageBox::critical( SUIT_Session::session()->activeApplication()->desktop(),
+                                 tr("ERR_ERROR"), tr("CREATE_DOCUMENT_PROBLEM"));
     return false;
   }
 
@@ -517,17 +523,23 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
 
   // initialize myStudyDS, read HDF file
   _PTR(Study) study;
+  bool showError = !application()->property("open_study_from_command_line").isValid() || 
+    !application()->property("open_study_from_command_line").toBool();
   try {
     study = _PTR(Study) ( SalomeApp_Application::studyMgr()->Open( theFileName.toUtf8().data() ) );
   }
   catch(const SALOME_Exception& ex) {
-    SUIT_MessageBox::critical( SUIT_Session::session()->activeApplication()->desktop(),
-                               tr("ERR_ERROR"), tr(ex.what()));
+    application()->putInfo(tr(ex.what()));
+    if ( showError )
+      SUIT_MessageBox::critical( SUIT_Session::session()->activeApplication()->desktop(),
+                                 tr("ERR_ERROR"), tr(ex.what()));
     return false;
   } 
   catch(...) {
-    SUIT_MessageBox::critical( SUIT_Session::session()->activeApplication()->desktop(),
-                               tr("ERR_ERROR"), tr("OPEN_DOCUMENT_PROBLEM"));
+    application()->putInfo(tr("OPEN_DOCUMENT_PROBLEM"));
+    if ( showError )
+      SUIT_MessageBox::critical( SUIT_Session::session()->activeApplication()->desktop(),
+                                 tr("ERR_ERROR"), tr("OPEN_DOCUMENT_PROBLEM"));
     return false;
   }
 

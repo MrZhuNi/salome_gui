@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -168,8 +168,8 @@ bool CAF_Study::saveDocumentAs( const QString& fname )
   bool save = false;
   if ( !stdDoc().IsNull() && stdDoc()->IsSaved() )
   {
-    QString path = QDir::convertSeparators( CAF_Tools::toQString( stdDoc()->GetPath() ) );
-    save = path == QDir::convertSeparators( fname );
+    QString path = QDir::toNativeSeparators( CAF_Tools::toQString( stdDoc()->GetPath() ) );
+    save = path == QDir::toNativeSeparators( fname );
   }
 
   bool status = false;

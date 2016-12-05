@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #  -*- coding: iso-8859-1 -*-
-# Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ def set_env( args ):
     dirs = re.split( ":|;", os.getenv( 'VTK_AUTOLOAD_PATH', vtk_overloads_dir ) )
     if vtk_overloads_dir not in dirs: dirs[0:0] = [vtk_overloads_dir]
     os.environ['VTK_AUTOLOAD_PATH'] = os.pathsep.join(dirs)
+    os.environ['QT_PLUGIN_PATH'] = ''
     return
 
 

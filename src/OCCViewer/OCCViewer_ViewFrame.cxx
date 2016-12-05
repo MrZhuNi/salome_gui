@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -23,6 +23,7 @@
 #include "OCCViewer_ViewFrame.h"
 #include "OCCViewer_ViewWindow.h"
 #include "OCCViewer_ViewModel.h"
+#include "OCCViewer_ViewPort3d.h"
 
 #include <SUIT_ViewManager.h>
 #include <SUIT_Session.h>
@@ -169,8 +170,23 @@ void OCCViewer_ViewFrame::createSubViews()
       view->setDropDownButtons( dropDownButtons() );
       connectViewSignals(view);
       view->setBackground(aModel->background(i));
+      setSubViewParams( view );
     }
   }
+}
+
+//**************************************************************************************
+void OCCViewer_ViewFrame::setSubViewParams( OCCViewer_ViewWindow* theView )
+{
+  Handle(V3d_View) aView = theView->getViewPort()->getView();
+  Handle(V3d_View) aMainView = myViews.at( MAIN_VIEW )->getViewPort()->getView();
+
+  // set ray tracing parameters
+  aView->ChangeRenderingParams() = aMainView->RenderingParams();
+
+  // set environment texture parameters
+  aView->SetTextureEnv( aMainView->TextureEnv() );
+  aView->SetSurfaceDetail( aMainView->SurfaceDetail() );
 }
 
 void OCCViewer_ViewFrame::splitSubViews()

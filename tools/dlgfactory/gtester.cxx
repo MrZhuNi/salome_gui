@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2010-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -23,15 +23,14 @@
 // (gboulant - 12/10/2010)
 //
 #include <QApplication>
-#include <QtGui>
 #include "GDialogTest.h"
 
 void TEST_show() {
-  GDialogTest * dialog = new GDialogTest();
+  GDialogTest* dialog = new GDialogTest();
   dialog->show();
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
   QApplication app(argc, argv);
   TEST_show();

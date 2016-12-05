@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -673,7 +673,7 @@ QString Qtx::findEnvVar( const QString& str, int& start, int& len )
   if ( pos != -1 )
   {
     int i = 1;
-    while ( i <= rx.numCaptures() && varName.isEmpty() )
+    while ( i <= rx.captureCount() && varName.isEmpty() )
     {
       QString capStr = rx.cap( i );
       if ( !capStr.contains( "%" ) && !capStr.contains( "$" ) )
@@ -688,7 +688,7 @@ QString Qtx::findEnvVar( const QString& str, int& start, int& len )
       int end = start + varName.length();
       if ( capIdx > 1 && rx.cap( capIdx - 1 ).contains( QRegExp( "\\$|%" ) ) )
         start = rx.pos( capIdx - 1 ) + rx.cap( capIdx - 1 ).indexOf( QRegExp( "\\$|%" ) );
-      if ( capIdx < rx.numCaptures() && !rx.cap( capIdx - 1 ).isEmpty() )
+      if ( capIdx < rx.captureCount() && !rx.cap( capIdx - 1 ).isEmpty() )
         end++;
       len = end - start;
     }
@@ -863,7 +863,7 @@ QImage Qtx::grayscale( const QImage& img )
 {
   QImage res = img;
 
-  int colNum = res.numColors();
+  int colNum = res.colorCount();
   if ( colNum )
   {
     for ( int i = 0; i < colNum; i++ )
@@ -2069,6 +2069,43 @@ long Qtx::versionToId( const QString& version )
   return id;
 }
 
+/*!
+  \brief Get Qt installation directory
+  
+  The function tries to detect qt installation directory by analyzing the system variables in the following order:
+  - QT5_ROOT_DIR
+  - QT4_ROOT_DIR
+  - QT_ROOT_DIR
+  - QTDIR
+
+  Optional parameter \a context allows obtaining subdirectory in the Qt installation directory.
+
+  \param context optional sub-directory
+  \return path to the Qt installation directory (or its sub-folder, if \a context is specified)
+*/
+
+QString Qtx::qtDir( const QString& context )
+{
+  const char* vars[] = { "QT5_ROOT_DIR", "QT4_ROOT_DIR", "QT_ROOT_DIR", "QTDIR" };
+  QString qtPath;
+  for (uint i = 0; i < sizeof(vars)/sizeof(vars[0]) && qtPath.isEmpty(); i++ )
+    qtPath = qgetenv( vars[i] );
+  if ( !qtPath.isEmpty() && !context.isEmpty() )
+    qtPath = QDir( qtPath ).absoluteFilePath( context );
+  return qtPath;
+}
+
+/*!
+  Creates font from string description
+*/
+QFont Qtx::stringToFont( const QString& fontDescription )
+{
+  QFont font;
+  if ( fontDescription.trimmed().isEmpty() || !font.fromString( fontDescription ) )
+    font = QFont( "Courier", 11 );
+  return font;
+}
+
 #ifndef WIN32
 
 #include <X11/Xlib.h>
@@ -2136,4 +2173,63 @@ Qt::HANDLE Qtx::getVisual()
  
   return res;
 }
+
 #endif // WIN32
+
+/*!
+  \class Qtx::CmdLineArgs
+  \brief Get access to the command line arguments in the C-like manner.
+
+  This class translates command line arguments stored in QApplication in form of QStrlingList
+  to the char* array, in the same way as they specified to main() function.
+
+  Constructor of class allocates required memory to store arguments; destructor deallocates it,
+  This allows using this class as a local variable:
+
+  \code
+  Qtx::CmdLineArgs args;
+  some_function(args.argc(), args.argv()); // function that has main()-like syntax.
+  \endcode
+*/
+
+/*!
+  \brief Default constructor.
+*/
+Qtx::CmdLineArgs::CmdLineArgs()
+{
+  QStringList args = QCoreApplication::arguments();
+  myArgc = args.size();
+  myArgv = new char*[myArgc];
+  for ( int i = 0; i < myArgc; i++ ) {
+    QByteArray ba = args[i].toUtf8();
+    myArgv[i] = qstrdup(ba.constData());
+  }
+}
+
+/*!
+  \brief Destructor. Deallocates the array with command line arguments
+*/
+Qtx::CmdLineArgs::~CmdLineArgs()
+{
+  for ( int i = 0; i < myArgc; i++ )
+    delete myArgv[i];
+  delete[] myArgv;
+}
+
+/*!
+  \brief Get number of command line arguments
+  \return number of arguments
+*/
+int Qtx::CmdLineArgs::argc() const
+{
+  return myArgc;
+}
+
+/*!
+  \brief Get command line arguments
+  \return command line arguments
+*/
+char** Qtx::CmdLineArgs::argv() const
+{
+  return myArgv;
+}

@@ -39,24 +39,36 @@
   <context>
     <name>PyConsole_Editor</name>
     <message>
-      <source>TOT_DUMP_PYCOMMANDS</source>
-      <translation>スクリプト コマンドを生成します。</translation>
+      <source>GET_DUMP_COMMANDS_FILENAME</source>
+      <translation type="unfinished">Dump commands to file</translation>
     </message>
     <message>
-      <source>TOT_SAVE_PYLOG</source>
-      <translation>ログの保存</translation>
+      <source>GET_PYTHON_TRACE_FILENAME</source>
+      <translation type="unfinished">Save Python trace to file</translation>
     </message>
     <message>
-      <source>PYTHON_FILES_FILTER</source>
-      <translation>ファイル (*.py) PYTHON</translation>
+      <source>PYTHON_SCRIPTS</source>
+      <translation type="unfinished">Python scripts</translation>
     </message>
     <message>
-      <source>LOG_FILES_FILTER</source>
-      <translation>ログファイル (*.log *.txt)</translation>
+      <source>WARNING</source>
+      <translation type="unfinished">Warning!</translation>
     </message>
     <message>
-      <source>ERR_FILE_NOT_WRITABLE</source>
-      <translation>ファイルが書き込み禁止です!</translation>
+      <source>LOG_FILES</source>
+      <translation type="unfinished">Log files</translation>
+    </message>
+    <message>
+      <source>ERR_FILE_NOT_WRITEABLE</source>
+      <translation type="unfinished">File is not writeable!</translation>
+    </message>
+    <message>
+      <source>TOO_MANY_MATCHES</source>
+      <translation type="unfinished">Too many matches! Displaying first ones only...</translation>
+    </message>
+    <message>
+      <source>NO_DOC_AVAILABLE</source>
+      <translation type="unfinished">no documentation available</translation>
     </message>
   </context>
 </TS>

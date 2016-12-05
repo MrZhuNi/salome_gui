@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -50,7 +50,7 @@ VTKViewer_Filter::~VTKViewer_Filter()
  * call virtual method IsValid( const int theId ).
  * \param theActor - actor
  * \param theCellId - cell id.
- * \retval TRUE - if cell id is valid, else false.
+ * \retval \c true - if cell id is valid, else \c false.
  */
 bool VTKViewer_Filter::IsValid( VTKViewer_Actor* theActor, const int theCellId )
 {

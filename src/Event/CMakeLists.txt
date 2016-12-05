@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,6 +18,9 @@
 #
 
 # --- options ---
+
+# additional include directories
+INCLUDE_DIRECTORIES(${QT_INCLUDES})
 
 # additional preprocessor / compiler flags
 ADD_DEFINITIONS(${QT_DEFINITIONS})

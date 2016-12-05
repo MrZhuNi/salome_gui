@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -524,12 +524,12 @@ QtxSplitDlg::QtxSplitDlg( QWidget* parent, QtxWorkstack* workstack, QtxSplitDlgM
 
   // Buttons for possibility of switching the variants of split
   myButtonPrevious = new QPushButton( this );
-  myButtonPrevious->setIcon( QIcon( prev_xpm ) );
+  myButtonPrevious->setIcon( QPixmap( prev_xpm ) );
   myButtonPrevious->setAutoDefault(true);
   myButtonPrevious->setEnabled( false );
 
   myButtonNext = new QPushButton( this );
-  myButtonNext->setIcon( QIcon( next_xpm ) );
+  myButtonNext->setIcon( QPixmap( next_xpm ) );
   myButtonNext->setAutoDefault(true);
   myButtonNext->setEnabled( false );
 

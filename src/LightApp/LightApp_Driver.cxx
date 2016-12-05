@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -83,7 +83,7 @@ bool LightApp_Driver::SaveDatasInFile( const char* theFileName, bool isMultiFile
   if(aFileBuffer == NULL)
     return false;
 
-  myTmpDir = QDir::convertSeparators( QFileInfo( theFileName ).absolutePath() + "/" ).toLatin1().constData() ;
+  myTmpDir = QDir::toNativeSeparators( QFileInfo( theFileName ).absolutePath() + "/" ).toLatin1().constData() ;
 
   int aCurrentPos = 0;
 
@@ -142,7 +142,7 @@ bool LightApp_Driver::ReadDatasFromFile( const char* theFileName, bool isMultiFi
   ifstream aFile(theFileName);
 #endif  
 
-  myTmpDir = QDir::convertSeparators( QFileInfo( theFileName ).absolutePath() + "/" ).toLatin1().constData() ;
+  myTmpDir = QDir::toNativeSeparators( QFileInfo( theFileName ).absolutePath() + "/" ).toLatin1().constData() ;
 
   aFile.seekg(0, ios::end);
   int aFileBufferSize = aFile.tellg();

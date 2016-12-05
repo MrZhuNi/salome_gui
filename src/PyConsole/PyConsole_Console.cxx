@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -19,28 +19,39 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-
 // File   : PyConsole_Console.cxx
 // Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
-//
-/*!
-  \class PyConsole_Console
-  \brief Python console widget.
-*/  
 
-#include "PyConsole_Interp.h"   /// !!! WARNING !!! THIS INCLUDE MUST BE VERY FIRST !!!
 #include "PyConsole_Console.h"
-#include "PyConsole_EnhEditor.h"
-#include "PyConsole_EnhInterp.h"
-
-#include <Qtx.h>
+#include "PyConsole_Interp.h"
+#include "PyConsole_Editor.h"
 
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
-#include <QEvent>
+#include <QContextMenuEvent>
 #include <QMenu>
 #include <QVBoxLayout>
+
+/*!
+  \class PyConsole_Console
+  \brief Python console widget.
+
+  To create a Python console, just use default contstructor, specifying only a parent widget:
+  \code
+  PyConsole_Console c(myWindow);
+  \endcode
+
+  This will create a console with default editor and interpreter.
+
+  To use custom editor and/or interpreter class with the console, you can use additional parameter
+  of the constructor; in this case you have to ensure that Python interpeter is initialized properly:
+  \code
+  PyConsole_Interp* interp = new PyConsole_Interp();
+  interp->initialize();
+  PyConsole_Console c(myWindow, new MyEditor(interp));
+  \endcode
+*/  
 
 /*!
   \brief Constructor.
@@ -49,49 +60,44 @@
   \param parent parent widget
   \param interp python interpreter
 */
-PyConsole_Console::PyConsole_Console( QWidget* parent, PyConsole_Interp* interp )
+PyConsole_Console::PyConsole_Console( QWidget* parent, PyConsole_Editor* editor )
 : QWidget( parent )
 {
-  PyConsole_Interp* anInterp = interp ? interp : new PyConsole_Interp();
-  
   // initialize Python interpretator
-  anInterp->initialize();
+  PyConsole_Interp* interp = editor ? editor->getInterp() : new PyConsole_Interp();
+  interp->initialize();
   
   // create editor console
   QVBoxLayout* lay = new QVBoxLayout( this );
   lay->setMargin( 0 );
-  myEditor = new PyConsole_Editor( anInterp, this );
-  char* synchronous = getenv("PYTHON_CONSOLE_SYNC");
-  if (synchronous && atoi(synchronous))
-  {
-      myEditor->setIsSync(true);
-  }
-  myEditor->viewport()->installEventFilter( this );
+  myEditor = editor ? editor : new PyConsole_Editor( interp, this );
+  myEditor->setContextMenuPolicy( Qt::NoContextMenu );
   lay->addWidget( myEditor );
 
+  // force synchronous mode
+  QString synchronous = qgetenv( "PYTHON_CONSOLE_SYNC" );
+  if ( !synchronous.isEmpty() && synchronous.toInt() > 0 )
+    setIsSync( true );
+
+  // create actions
   createActions();
 }
 
-/**
- * Protected constructor.
- */
-PyConsole_Console::PyConsole_Console( QWidget* parent, PyConsole_Interp* /*i*/,  PyConsole_Editor* e )
-  : QWidget (parent), myEditor(e)
-{}
-
 /*!
   \brief Destructor.
-
-  Does nothing for the moment.
 */
 PyConsole_Console::~PyConsole_Console()
 {
 }
 
+/*!
+  \brief Get Python interpreter
+  \return pointer to Python interpreter
+*/
 PyConsole_Interp* PyConsole_Console::getInterp() const
 {
   return myEditor ? myEditor->getInterp() : 0;
-} 
+}
 
 /*!
   \brief Execute python command in the interpreter.
@@ -120,11 +126,11 @@ void PyConsole_Console::execAndWait( const QString& command )
   \brief Get synchronous mode flag value.
   
   \sa setIsSync()
-  \return True if python console works in synchronous mode
+  \return \c true if python console works in synchronous mode
 */
 bool PyConsole_Console::isSync() const
 {
-  return myEditor->isSync();
+  return myEditor ? myEditor->isSync() : false;
 }
 
 /*!
@@ -139,31 +145,33 @@ bool PyConsole_Console::isSync() const
 */
 void PyConsole_Console::setIsSync( const bool on )
 {
-  myEditor->setIsSync( on );
+  if ( myEditor ) 
+    myEditor->setIsSync( on );
 }
 
 /*!
   \brief Get suppress output flag value.
   
   \sa setIsSuppressOutput()
-  \return True if python console output is suppressed.
+  \return \c true if python console output is suppressed.
 */
 bool PyConsole_Console::isSuppressOutput() const
 {
-  return myEditor->isSuppressOutput();
+  return myEditor ? myEditor->isSuppressOutput() : false;
 }
 
 /*!
   \brief Set suppress output flag value.
 
-  In case if suppress output flag is true, the python 
+  In case if suppress output flag is \c true, the python 
   console output suppressed.
 
   \param on suppress output flag
 */
 void PyConsole_Console::setIsSuppressOutput( const bool on )
 {
-  myEditor->setIsSuppressOutput(on);
+  if ( myEditor )
+    myEditor->setIsSuppressOutput( on );
 }
 
 /*!
@@ -174,7 +182,7 @@ void PyConsole_Console::setIsSuppressOutput( const bool on )
 */
 bool PyConsole_Console::isShowBanner() const
 {
-  return myEditor->isShowBanner();
+  return myEditor ? myEditor->isShowBanner() : false;
 }
 
 /*!
@@ -187,7 +195,28 @@ bool PyConsole_Console::isShowBanner() const
 */
 void PyConsole_Console::setIsShowBanner( const bool on )
 {
-  myEditor->setIsShowBanner( on );
+  if ( myEditor )
+    myEditor->setIsShowBanner( on );
+}
+
+/*!
+  \brief Returns \c true if auto-completion feature is switched on
+  or \c false otherwise
+  \sa setAutoCompletion()
+*/
+bool PyConsole_Console::autoCompletion() const
+{
+  return myEditor ? myEditor->autoCompletion() : false;
+}
+
+/*!
+  \brief Switch on/off commands auto-completion feature
+  \sa autoCompletion()
+*/
+void PyConsole_Console::setAutoCompletion( const bool on )
+{
+  if ( myEditor )
+    myEditor->setAutoCompletion( on );
 }
 
 /*!
@@ -196,68 +225,17 @@ void PyConsole_Console::setIsShowBanner( const bool on )
 */
 void PyConsole_Console::setFont( const QFont& f )
 {
-  if( myEditor )
+  if ( myEditor )
     myEditor->setFont( f );
 }
 
 /*!
   \brief Get python console font.
-  \return current python console's font
+  \return current python console font
 */
 QFont PyConsole_Console::font() const
 {
-  QFont res;
-  if( myEditor )
-    res = myEditor->font();
-  return res;
-}
-
-/*!
-  \brief Event handler.
-
-  Handles context menu request event.
-
-  \param o object
-  \param e event
-  \return True if the event is processed and further processing should be stopped
-*/
-bool PyConsole_Console::eventFilter( QObject* o, QEvent* e )
-{
-  if ( o == myEditor->viewport() && e->type() == QEvent::ContextMenu )
-  {
-    contextMenuRequest( (QContextMenuEvent*)e );
-    return true;
-  }
-  return QWidget::eventFilter( o, e );
-}
-
-/*!
-  \brief Create the context popup menu.
-
-  Fill in the popup menu with the commands.
-
-  \param menu context popup menu
-*/
-void PyConsole_Console::contextMenuPopup( QMenu* menu )
-{
-  if ( myEditor->isReadOnly() )
-    return;
-
-  menu->addAction( myActions[CopyId] );
-  menu->addAction( myActions[PasteId] );
-  menu->addAction( myActions[ClearId] );
-  menu->addSeparator();
-  menu->addAction( myActions[SelectAllId] );
-  menu->addSeparator();
-  menu->addAction( myActions[DumpCommandsId] );
-  if ( !myEditor->isLogging() )
-    menu->addAction( myActions[StartLogId] );
-  else
-    menu->addAction( myActions[StopLogId] );
-
-  Qtx::simplifySeparators( menu );
-
-  updateActions();
+  return myEditor ? myEditor->font() : QFont();
 }
 
 /*!
@@ -347,9 +325,9 @@ void PyConsole_Console::createActions()
 */
 void PyConsole_Console::updateActions()
 {
-  myActions[CopyId]->setEnabled( myEditor->textCursor().hasSelection() );
-  myActions[PasteId]->setEnabled( !myEditor->isReadOnly() && !QApplication::clipboard()->text().isEmpty() );
-  myActions[SelectAllId]->setEnabled( !myEditor->document()->isEmpty() );
+  myActions[CopyId]->setEnabled( myEditor && myEditor->textCursor().hasSelection() );
+  myActions[PasteId]->setEnabled( myEditor && !myEditor->isReadOnly() && !QApplication::clipboard()->text().isEmpty() );
+  myActions[SelectAllId]->setEnabled( myEditor && !myEditor->document()->isEmpty() );
 }
 
 /*!
@@ -358,7 +336,8 @@ void PyConsole_Console::updateActions()
 */
 void PyConsole_Console::startLog( const QString& fileName )
 {
-  myEditor->startLog( fileName );
+  if ( myEditor ) 
+    myEditor->startLog( fileName );
 }
 
 /*!
@@ -366,34 +345,39 @@ void PyConsole_Console::startLog( const QString& fileName )
 */
 void PyConsole_Console::stopLog()
 {
-  myEditor->stopLog();
+  if ( myEditor ) 
+    myEditor->stopLog();
 }
 
-/**
- * Similar to constructor of the base class but using enhanced objects.
- * TODO: this should really be done in a factory to avoid code duplication.
- * @param parent
- * @param interp
- */
-PyConsole_EnhConsole::PyConsole_EnhConsole( QWidget* parent, PyConsole_Interp* interp )
-  : PyConsole_Console( parent, interp, 0 )
+/*!
+  \brief Process context popup menu request
+
+  Show the context popup menu.
+
+  \param event context popup menu event
+*/
+void PyConsole_Console::contextMenuEvent( QContextMenuEvent* event )
 {
-  PyConsole_Interp* anInterp = interp ? interp : new PyConsole_EnhInterp();
+  if ( !myEditor || myEditor->isReadOnly() )
+    return;
 
-  // initialize Python interpretator
-  anInterp->initialize();
+  QMenu* menu = new QMenu( this );
+ 
+  menu->addAction( myActions[CopyId] );
+  menu->addAction( myActions[PasteId] );
+  menu->addAction( myActions[ClearId] );
+  menu->addSeparator();
+  menu->addAction( myActions[SelectAllId] );
+  menu->addSeparator();
+  menu->addAction( myActions[DumpCommandsId] );
+  if ( !myEditor->isLogging() )
+    menu->addAction( myActions[StartLogId] );
+  else
+    menu->addAction( myActions[StopLogId] );
 
-  // create editor console
-  QVBoxLayout* lay = new QVBoxLayout( this );
-  lay->setMargin( 0 );
-  myEditor = new PyConsole_EnhEditor( anInterp, this );
-  char* synchronous = getenv("PYTHON_CONSOLE_SYNC");
-  if (synchronous && atoi(synchronous))
-  {
-      myEditor->setIsSync(true);
-  }
-  myEditor->viewport()->installEventFilter( this );
-  lay->addWidget( myEditor );
+  updateActions();
 
-  createActions();
+  menu->exec( event->globalPos());
+
+  delete menu;
 }

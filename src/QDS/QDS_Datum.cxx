@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -902,7 +902,7 @@ void QDS_Datum::setShown( const bool visible, const int flags )
   while ( flag )
   {
     if ( flags & flag && widget( flag ) )
-      widget( flag )->setShown( visible );
+      widget( flag )->setVisible( visible );
     flag = flag >> 1;
   }
 }

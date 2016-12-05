@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -30,15 +30,9 @@ INCLUDE_DIRECTORIES(
 
 # additional preprocessor / compiler flags
 ADD_DEFINITIONS(${QT_DEFINITIONS})
-IF(ENABLE_TESTRECORDER)
-  ADD_DEFINITIONS("-DENABLE_TESTRECORDER ${TESTRECORDER_DEFINITIONS}")
-ENDIF()
 
 # libraries to link to
 SET(_link_LIBRARIES ${PLATFORM_LIBS} ${QT_LIBRARIES} qtx ObjBrowser)
-IF(ENABLE_TESTRECORDER)
-  LIST(APPEND _link_LIBRARIES ${TESTRECORDER_LIBS})
-ENDIF()
 
 # --- headers ---
 

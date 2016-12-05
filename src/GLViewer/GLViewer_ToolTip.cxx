@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -52,7 +52,7 @@ GLViewer_ObjectTip::GLViewer_ObjectTip( GLViewer_ViewPort2d* theParent )
                          Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool | Qt::X11BypassWindowManagerHint );
   mypLabel->setObjectName("ObjectTipText");
   mypLabel->setMargin( 1 );
-  //mypLabel->setAutoMask( FALSE );
+  //mypLabel->setAutoMask( false );
   mypLabel->setFrameStyle( QFrame::Plain | QFrame::Box );
   mypLabel->setLineWidth( 1 );
   mypLabel->setAlignment( Qt::AlignAbsolute | Qt::AlignTop );

@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -26,10 +26,10 @@ INCLUDE_DIRECTORIES(
 )
 
 # additional preprocessor / compiler flags
-ADD_DEFINITIONS(${QT_DEFINITIONS} ${CAS_DEFINITIONS})
+ADD_DEFINITIONS(${CAS_DEFINITIONS})
 
 # libraries to link to
-SET(_link_LIBRARIES ${QT_LIBRARIES} ${CAS_LDPATH} ${CAS_KERNEL} ${CAS_TKV3d} ViewerData)
+SET(_link_LIBRARIES ${CAS_LDPATH} ${CAS_KERNEL} ${CAS_TKV3d} ViewerData)
 
 # --- headers ---
 

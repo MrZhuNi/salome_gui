@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -67,7 +67,7 @@ public:
   //! Returns main widget (Desktop) of the application (if it exists)
   virtual SUIT_Desktop* desktop();
 
-  /*! Returns FALSE if application can not be closed (because of non saved data for example). 
+  /*! Returns \c false if application can not be closed (because of non saved data for example). 
       This method called by SUIT_Session whin closing of application was requested. */
   virtual bool          isPossibleToClose( bool& );
 

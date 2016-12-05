@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -60,17 +60,6 @@ void SUIT_Tools::trace( const char* lpszLog, const char* lpszFormat, ... )
 QRect SUIT_Tools::makeRect( const int x1, const int y1, const int x2, const int y2 )
 {  
   return QRect( qMin( x1, x2 ), qMin( y1, y2 ), qAbs( x2 - x1 ), qAbs( y2 - y1 ) );
-}
-
-/*!
-  Creates font from string description
-*/
-QFont SUIT_Tools::stringToFont( const QString& fontDescription )
-{
-  QFont font;
-  if ( fontDescription.trimmed().isEmpty() || !font.fromString( fontDescription ) )
-    font = QFont( "Courier", 11 );
-  return font;
 }
 
 /*!

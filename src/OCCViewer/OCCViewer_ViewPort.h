@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -90,10 +90,6 @@ protected:
   virtual void                   fitRect( const QRect& ) = 0;
   virtual void                   zoom( int, int, int, int ) = 0;
   virtual void                   fitAll( bool keepScale = false, bool withZ = true, bool upd = true ) = 0;
-
-// POPUP
-//  void                             onCreatePopup( QPopupMenu* );
-//  void                             onDestroyPopup( QPopupMenu* );
 
 public slots:
   virtual bool                   synchronize( OCCViewer_ViewPort* );

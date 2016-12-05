@@ -1,5 +1,5 @@
 <!--
-  Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+  Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 
   Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
   CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -88,6 +88,7 @@
   </section>
   <section name="PyConsole">
     <!-- Python console preferences -->
+    <parameter name="auto_completion"     value="true" />
     <parameter name="show_banner"         value="false" />
     <parameter name="font"                value="Sans Serif,12" />
     <parameter name="additional_families" value="Helvetic;Helvetica;Helvetica[Adobe];Times;Times[Adobe];Sans Serif;Serif;Monospace;Lucida"/>
@@ -161,6 +162,15 @@
     <parameter name="clipping_use_default_texture" value="true"/>
     <parameter name="clipping_modulate"   value="true"/>
     <parameter name="clipping_scale"      value="1.0"/>
+    <parameter name="rt_depth"            value="3"/>
+    <parameter name="rt_reflection"       value="true"/>
+    <parameter name="rt_antialiasing"     value="false"/>
+    <parameter name="rt_shadow"           value="true"/>
+    <parameter name="rt_trans_shadow"     value="false"/>                     
+    <parameter name="light_color"         value="255, 255, 255"/>
+    <parameter name="light_dx"            value="0.0"/>
+    <parameter name="light_dy"            value="0.0"/>
+    <parameter name="light_dz"            value="-1.0"/>
     <parameter name="background"      value="bt=2;fn=;tm=0;ts=false;c1=#cddbff;c2=#698fff;gt=1;gr=" />
     <parameter name="xz_background"   value="bt=2;fn=;tm=0;ts=false;c1=#cddbff;c2=#698fff;gt=1;gr=" />
     <parameter name="yz_background"   value="bt=2;fn=;tm=0;ts=false;c1=#cddbff;c2=#698fff;gt=1;gr=" />

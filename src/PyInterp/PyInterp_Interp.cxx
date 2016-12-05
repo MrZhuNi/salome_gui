@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -19,23 +19,23 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-
 //  File   : PyInterp_Interp.cxx
 //  Author : Christian CAREMOLI, Paul RASCLE, Adrien BRUNETON
-//  Module : SALOME
-//
+
 #include "PyInterp_Interp.h"  // !!! WARNING !!! THIS INCLUDE MUST BE THE VERY FIRST !!!
 #include "PyInterp_Utils.h"
-#include <pythread.h>
 
+#include <pythread.h>
 #include <cStringIO.h>
 #include <structmember.h>
-
 #include <string>
 #include <vector>
 #include <map>
 #include <iostream>
+#include <sstream>
 #include <algorithm>
+
+#include <QRegExp>
 
 #define TOP_HISTORY_PY   "--- top of history ---"
 #define BEGIN_HISTORY_PY "--- begin of history ---"
@@ -167,11 +167,9 @@ char* PyInterp_Interp::_argv[] = {(char*)""};
   must call virtual method initalize().
 */
 PyInterp_Interp::PyInterp_Interp():
-  _vout(0), _verr(0), _local_context(0), _global_context(0)
+  _vout(0), _verr(0), _local_context(0), _global_context(0), _initialized(false)
 {
 }
-
-
 
 /*!
   \brief Destructor.
@@ -194,12 +192,15 @@ PyInterp_Interp::~PyInterp_Interp()
 */
 void PyInterp_Interp::initialize()
 {
+  if ( initialized() )
+    return; // prevent repeating intitialization
+
+  _initialized = true;
+
   _history.clear();       // start a new list of user's commands
   _ith = _history.begin();
 
   initPython();  // This also inits the multi-threading for Python (but w/o acquiring GIL)
-
-  //initState(); // [ABN] OBSOLETE
 
   // ---- The rest of the initialisation process is done hodling the GIL
   PyLockWrapper lck;
@@ -254,7 +255,7 @@ void PyInterp_Interp::initPython()
   \brief Get embedded Python interpreter banner.
   \return banner string
  */
-std::string PyInterp_Interp::getbanner() const
+std::string PyInterp_Interp::getBanner() const
 {
   PyLockWrapper lck;
   std::string aBanner("Python ");
@@ -305,8 +306,9 @@ bool PyInterp_Interp::initContext()
 void PyInterp_Interp::closeContext()
 {
   Py_XDECREF(_global_context);
-  // both _global and _local point to the same Python object:
-  // Py_XDECREF(_local_context);
+  // both _global_context and _local_context may point to the same Python object
+  if ( _global_context != _local_context)
+    Py_XDECREF(_local_context);
 }
 
 /*!
@@ -321,12 +323,12 @@ void PyInterp_Interp::closeContext()
 static int run_command(const char *command, PyObject * global_ctxt, PyObject * local_ctxt)
 {
   PyObject *m = PyImport_AddModule("codeop");
-  if(!m) { // Fatal error. No way to go on.
+  if(!m) {
+    // Fatal error. No way to go on.
     PyErr_Print();
     return -1;
   }
 
-//  PyObjWrapper v(Py_CompileString(command, "<salome_input>", Py_file_input));
   PyObjWrapper v(PyObject_CallMethod(m,(char*)"compile_command",(char*)"s",command));
   if(!v) {
     // Error encountered. It should be SyntaxError,
@@ -362,6 +364,75 @@ void replaceAll(std::string& str, const std::string& from, const std::string& to
         start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
 }
+
+std::vector<std::string>
+__split(const std::string& str, char delimiter)
+{
+  std::vector<std::string> internal;
+  std::stringstream ss(str); // Turn the string into a stream.
+  std::string tok;
+
+  while (getline(ss, tok, delimiter)) {
+    internal.push_back(tok);
+  }
+
+  return internal;
+}
+
+std::string
+__join(const std::vector<std::string>& v, int begin=0, int end=-1)
+{
+  if (end == -1)
+    end = v.size();
+  std::stringstream ss;
+  for (size_t i = begin; i < end; ++i) {
+    if (i != begin)
+      ss << ",";
+    ss << v[i];
+  }
+  return ss.str();
+}
+
+std::vector<std::string>
+__getArgsList(std::string argsString)
+{
+  // Special process if some items of 'args:' list are themselves lists
+  // Note that an item can be a list, but not a list of lists...
+  // So we can have something like this:
+  // myscript.py args:[\'file1\',\'file2\'],\'val1\',\"done\",[1,2,3],[True,False],\"ok\",kwarg1=\'kwarg1\',kwarg2=\'kwarg2\',\'fin\'
+  // With such a call, argsString variable contains the string representing ['file1','file2'],'val1','done',[1,2,3],[True,False],'ok',kwarg1='kwarg1',kwarg2='kwarg2','fin'
+  // We have to split argsString to obtain a 9 string elements list
+  std::vector<std::string> x = __split(argsString, ',');
+  bool containsList = (argsString.find('[') != std::string::npos);
+  if (containsList) {
+    std::vector<int> listBeginIndices, listEndIndices;
+    for (int pos = 0; pos < x.size(); ++pos) {
+      if (x[pos][0] == '[')
+        listBeginIndices.push_back(pos);
+      else if (x[pos][x[pos].size()-1] == ']')
+        listEndIndices.push_back(pos);
+    }
+    std::vector<std::string> extractedArgs;
+    int start = 0;
+    for (int pos = 0; pos < listBeginIndices.size(); ++pos) {
+      int lbeg = listBeginIndices[pos];
+      int lend = listEndIndices[pos];
+      if (lbeg > start)
+        for (int k = start; k < lbeg; ++k)
+          extractedArgs.push_back(x[k]);
+      extractedArgs.push_back(__join(x, lbeg, lend+1));
+      start = lend+1;
+    }
+    if (start < x.size())
+      for (int k = start; k < x.size(); ++k)
+        extractedArgs.push_back(x[k]);
+    return extractedArgs;
+  }
+  else {
+    return x;
+  }
+}
+
 /*!
   \brief Compile Python command and evaluate it in the
          python dictionary context if possible. Command might correspond to
@@ -380,13 +451,10 @@ static int compile_command(const char *command, PyObject * global_ctxt, PyObject
   std::string singleCommand = command;
   std::string commandArgs = "";
 
-  if (singleCommand.at(singleCommand.size()-1) == '\n')
-    singleCommand.erase(singleCommand.size()-1);
-  std::size_t pos = singleCommand.find("args:");
-  if (pos != std::string::npos) {
-    commandArgs = singleCommand.substr(pos+5);
-    commandArgs = commandArgs.substr(0, commandArgs.length()-2);
-    singleCommand = singleCommand.substr(0, pos-1)+"\")";
+  QRegExp rx("execfile\\s*\\(.*(args:.*)\"\\s*\\)");
+  if (rx.indexIn(command) != -1) {
+    commandArgs = rx.cap(1).remove(0,5).toStdString(); // arguments of command
+    singleCommand = rx.cap().remove(rx.cap(1)).remove(" ").toStdString(); // command for execution without arguments
   }
 
   if (commandArgs.empty()) {
@@ -398,12 +466,17 @@ static int compile_command(const char *command, PyObject * global_ctxt, PyObject
     // process command: execfile(r"/absolute/path/to/script.py [args:arg1,...,argn]")
     std::string script = singleCommand.substr(11); // remove leading execfile(r"
     script = script.substr(0, script.length()-2); // remove trailing ")
+    std::vector<std::string> argList = __getArgsList(commandArgs);
 
     std::string preCommandBegin = "import sys; save_argv = sys.argv; sys.argv=[";
     std::string preCommandEnd = "];";
-    replaceAll(commandArgs, ",", "\",\"");
-    commandArgs = "\""+commandArgs+"\"";
-    std::string completeCommand = preCommandBegin+"\""+script+"\","+commandArgs+preCommandEnd+singleCommand+";sys.argv=save_argv";
+    std::string completeCommand = preCommandBegin+"\""+script+"\",";
+    for (std::vector<std::string>::iterator itr = argList.begin(); itr != argList.end(); ++itr) {
+      if (itr != argList.begin())
+        completeCommand += ",";
+      completeCommand = completeCommand + "\"" + *itr + "\"";
+    }
+    completeCommand = completeCommand+preCommandEnd+singleCommand+";sys.argv=save_argv";
     return run_command(completeCommand.c_str(), global_ctxt, local_ctxt);
   }
 }
@@ -522,4 +595,13 @@ void PyInterp_Interp::setverrcb(PyOutChanged* cb, void* data)
 {
   ((PyStdOut*)_verr)->_cb=cb;
   ((PyStdOut*)_verr)->_data=data;
+}
+
+/*!
+  \bried Check if the interpreter is initialized
+  \internal
+*/
+bool PyInterp_Interp::initialized() const
+{
+  return _initialized;
 }

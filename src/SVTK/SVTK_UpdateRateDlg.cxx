@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -232,7 +232,7 @@ SVTK_UpdateRateDlg
       aGridLayout->addWidget(aLabel, 0, 0);
 
       QLineEdit* aLineEdit = new QLineEdit( aGroupBox );
-      aLineEdit->setReadOnly( TRUE );
+      aLineEdit->setReadOnly( true );
       aGridLayout->addWidget(aLineEdit, 0, 1);
 
       myCurrentUpdateRateLineEdit = aLineEdit;
@@ -244,7 +244,7 @@ SVTK_UpdateRateDlg
       aGridLayout->addWidget(aLabel, 1, 0);
 
       QLineEdit* aLineEdit = new QLineEdit( aGroupBox );
-      aLineEdit->setReadOnly( TRUE );
+      aLineEdit->setReadOnly( true );
       aGridLayout->addWidget(aLineEdit, 1, 1);
 
       myNumberOfCellsLineEdit = aLineEdit;
@@ -259,23 +259,23 @@ SVTK_UpdateRateDlg
     aHBoxLayout->setSpacing(6);
     {
       QPushButton* aPushButton = new QPushButton(tr("OK"), aGroupBox);
-      aPushButton->setDefault(TRUE);
-      aPushButton->setAutoDefault(TRUE);
+      aPushButton->setDefault(true);
+      aPushButton->setAutoDefault(true);
       aHBoxLayout->addWidget(aPushButton);
       connect(aPushButton, SIGNAL(clicked()), this, SLOT(onClickOk()));
     }
     {
       QPushButton* aPushButton = new QPushButton(tr("Apply"), aGroupBox);
-      aPushButton->setDefault(TRUE);
-      aPushButton->setAutoDefault(TRUE);
+      aPushButton->setDefault(true);
+      aPushButton->setAutoDefault(true);
       aHBoxLayout->addWidget(aPushButton);
       connect(aPushButton, SIGNAL(clicked()), this, SLOT(onClickApply()));
     }
     aHBoxLayout->addStretch();
     {
       QPushButton* aPushButton = new QPushButton(tr("Close"), aGroupBox);
-      aPushButton->setDefault(TRUE);
-      aPushButton->setAutoDefault(TRUE);
+      aPushButton->setDefault(true);
+      aPushButton->setAutoDefault(true);
       aHBoxLayout->addWidget(aPushButton);
       connect(aPushButton, SIGNAL(clicked()), this, SLOT(onClickClose()));
     }

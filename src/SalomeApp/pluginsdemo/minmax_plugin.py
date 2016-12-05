@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2010-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,7 @@ def minmax(context):
   from PyQt4.QtCore import Qt
   from PyQt4.QtCore import SIGNAL
 
-  from minmax_dialog import Ui_Dialog
+  from minmax_ui import Ui_Dialog
 
   import salome
   import SMESH

@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -76,7 +76,7 @@ QVTK_GenericRenderWindowInteractor
   // Start a one-shot timer for <DELAY> ms. 
   //
   static int DELAY = 1;
-  myTimer->setSingleShot(TRUE);
+  myTimer->setSingleShot(true);
   myTimer->start(DELAY);
   return 1;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -28,8 +28,9 @@
 %Feature ENABLE_CORBA
 %Feature ENABLE_PLOT2D
 
-%Import QtGuimod.sip
-%Import QtXmlmod.sip
+%Import QtCore/QtCoremod.sip
+%Import QtGui/QtGuimod.sip
+%Import QtXml/QtXmlmod.sip
 
 %If (ENABLE_PLOT2D)
 %Include SalomePyQt_Plot2d.sip
@@ -39,6 +40,7 @@
 #include <QtxAction.h>
 #include <QtxActionSet.h>
 #include <QtxActionGroup.h>
+#include <QtxTreeView.h>
 #include <SalomePyQt.h>
 %End
 
@@ -204,6 +206,32 @@ signals:
 
 private:
   QtxActionGroup( const QtxActionGroup& );
+};
+
+class QtxTreeView : public QTreeView
+{
+%TypeHeaderCode
+#include <QtxTreeView.h>
+%End
+
+%ConvertToSubClassCode
+    if ( qobject_cast<QtxTreeView*>( sipCpp ) )
+      sipClass = sipClass_QtxTreeView;
+    else
+      sipClass = NULL;
+%End
+
+public:
+  explicit QtxTreeView( QWidget* /TransferThis/ = 0 );
+  QtxTreeView( const bool, QWidget* /TransferThis/ = 0  );
+  virtual ~QtxTreeView();
+
+signals:
+  void     sortingEnabled( bool );
+  void     selectionChanged();
+
+private:
+  QtxTreeView( const QtxTreeView& );
 };
 
 enum VisibilityState 

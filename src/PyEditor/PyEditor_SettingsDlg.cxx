@@ -1,4 +1,4 @@
-// Copyright (C) 2015 OPEN CASCADE
+// Copyright (C) 2015-2016  OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -123,12 +123,12 @@ PyEditor_SettingsDlg::PyEditor_SettingsDlg( PyEditor_Editor* theEditor, QWidget*
   aMainLayout->addStretch( 1 );
   
   myOkBtn = new QPushButton( tr( "BUT_OK" ), this );
-  myOkBtn->setAutoDefault( TRUE );
-  myOkBtn->setDefault( TRUE );
+  myOkBtn->setAutoDefault( true );
+  myOkBtn->setDefault( true );
   myCancelBtn = new QPushButton( tr( "BUT_CANCEL" ), this );
-  myCancelBtn->setAutoDefault( TRUE );
+  myCancelBtn->setAutoDefault( true );
   myHelpBtn = new QPushButton( tr( "BUT_HELP" ), this );
-  myHelpBtn->setAutoDefault( TRUE );
+  myHelpBtn->setAutoDefault( true );
   QHBoxLayout* aButtonLayout = new QHBoxLayout;
   aButtonLayout->addWidget( myOkBtn );
   aButtonLayout->addStretch();

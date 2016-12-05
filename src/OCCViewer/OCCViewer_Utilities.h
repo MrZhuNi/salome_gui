@@ -1,4 +1,4 @@
-// Copyright (C) 2014-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2014-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -54,6 +54,14 @@ public:
   static OCCViewer_ViewWindow::Mode2dType
               setViewer2DMode( OCCViewer_Viewer* theViewer,
                                const OCCViewer_ViewWindow::Mode2dType& theMode );
+
+  /*!
+   * Find dialog in the current view frame by name
+   * \param theView an OCC view
+   * \param theName name of dialog
+   * \return true/false if dialog is opened/isn't opened
+   */
+  static bool isDialogOpened( OCCViewer_ViewWindow* theView, const QString& theName );
 
 };
 

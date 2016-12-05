@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -99,6 +99,8 @@ public:
 
   void                            performSelectionChanged();
   // emit signal selectionChanged
+
+  void                            setDefaultLights();
 
   QColor                          backgroundColor() const;                              // obsolete
   void                            setBackgroundColor( const QColor& );                  // obsolete

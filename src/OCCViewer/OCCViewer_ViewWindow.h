@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -151,7 +151,7 @@ public:
 	 SwitchInteractionStyleId, SwitchZoomingStyleId, 
 	 SwitchPreselectionId, SwitchSelectionId,
 	 MaximizedId, SynchronizeId, ReturnTo3dViewId,
-	 OrthographicId, PerspectiveId, StereoId,
+	 OrthographicId, PerspectiveId, StereoId, RayTracingId, EnvTextureId, LightSourceId,
 	 UserId };
 
   enum OperationType{ NOTHING, PANVIEW, ZOOMVIEW, ROTATE, 
@@ -305,6 +305,9 @@ public slots:
   virtual void onSwitchZoomingStyle( bool on );
   virtual void onSwitchPreselection( bool on );
   virtual void onSwitchSelection( bool on );
+  virtual void onRayTracing();
+  virtual void onEnvTexture();
+  virtual void onLightSource();
 
   virtual void activateSetRotationGravity();
   virtual void activateSetRotationSelected( double theX, double theY, double theZ );

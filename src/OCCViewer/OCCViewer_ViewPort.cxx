@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -458,36 +458,6 @@ QPaintEngine* OCCViewer_ViewPort::paintEngine() const
 {
   return 0;
 }
-
-/*!
-    Creates the popup. [ virtual protected ]
-*/
-/*void OCCViewer_ViewPort::onCreatePopup( QPopupMenu* popup )
-{
-  if ( popup )
-  {
-    QtxAction* a = new QtxAction( "", tr( "MEN_VP_CHANGEBGR" ), 0, this );
-    a->setStatusTip( tr( "PRP_VP_CHANGEBGR" ) );
-    connect( a, SIGNAL( activated() ), SLOT( onChangeBgColor()));
-    myPopupActions.append( a );
-    a->addTo( popup );
-  }
-}*/
-
-/*!
-    Destroys the popup. [ virtual protected ]
-*/
-/*void OCCViewer_ViewPort::onDestroyPopup( QPopupMenu* popup )
-{
-  if ( popup )
-  {
-    for ( QtxAction* a = myPopupActions.first(); a; a = myPopupActions.next() )
-      a->removeFrom( popup );
-    //while (!myPopupActions.isEmpty())
-    //  delete myPopupActions.takeFirst();
-    myPopupActions.clear();
-  }
-}*/
 
 /*!
   Performs synchronization of view parameters with the specified view.

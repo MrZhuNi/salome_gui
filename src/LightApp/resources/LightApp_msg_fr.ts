@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>ABOUT_COPYRIGHT</source>
-        <translation>Copyright (C) 2007-2015 CEA/DEN, EDF R&amp;D, OPEN CASCADE
+        <translation>Copyright (C) 2007-2016 CEA/DEN, EDF R&amp;D, OPEN CASCADE
 
 Copyright (C) 2003-2007 OPEN CASCADE, EADS/CCR, LIP6,
 CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translation>
@@ -69,6 +69,19 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     <message>
         <source>APPCLOSE_CANCEL</source>
         <translation>&amp;Annuler</translation>
+    </message>
+    <message>
+        <source>WRN_PYTHON_FILE_NAME_BAD</source>
+        <translation>Indiquez un nom de fichier correct.
+Un fichier Python ne doit être composé que de lettres, chiffres et tirets bas et doit commencer avec une lettre ou un tiret bas.</translation>
+    </message>
+    <message>
+        <source>PYTHON_FILES_FILTER</source>
+        <translation>Fichiers Python (*.py)</translation>
+    </message>
+    <message>
+        <source>LOG_FILES_FILTER</source>
+        <translation>Fichiers de trace (*.log *.txt)</translation>
     </message>
 </context>
 <context>
@@ -410,6 +423,10 @@ Les modifications seront appliquées à la prochaine session.</translation>
     <message>
         <source>PREF_SHOW_BANNER</source>
         <translation>Afficher la bannière</translation>
+    </message>
+    <message>
+        <source>PREF_AUTO_COMPLETION</source>
+        <translation type="unfinished">Command auto-completion</translation>
     </message>
     <message>
         <source>PREF_GROUP_STYLE</source>
@@ -845,7 +862,7 @@ Les modifications seront appliquées à la prochaine session.</translation>
     </message>
     <message>
         <source>OCC_TEXTURE_FILES</source>
-        <translation>Fichiers images (*.jpeg *jpg *.jpe *.png *.bmp *.gif *.ppm *.tif *.tiff* .tga *.exr)</translation>
+        <translation>Fichiers images (*.jpeg *.jpg *.jpe *.png *.bmp *.gif *.ppm *.tif *.tiff* .tga *.exr)</translation>
     </message>
     <message>
         <source>PREF_CLIPPING_MODULATE</source>
@@ -854,6 +871,38 @@ Les modifications seront appliquées à la prochaine session.</translation>
     <message>
         <source>PREF_CLIPPING_SCALE</source>
         <translation>Facteur d&apos;échelle</translation>
+    </message>
+    <message>
+        <source>PREF_GROUP_RAY_TRACING</source>
+        <translation type="unfinished">Ray tracing</translation>
+    </message>
+    <message>
+        <source>PREF_RAY_TRACING_DEPTH</source>
+        <translation type="unfinished">Depth</translation>
+    </message>
+    <message>
+        <source>PREF_RAY_TRACING_REFLECTION</source>
+        <translation type="unfinished">Specular reflections</translation>
+    </message>
+    <message>
+        <source>PREF_RAY_TRACING_ANTIALIASING</source>
+        <translation type="unfinished">Adaptive anti-aliasing</translation>
+    </message>
+    <message>
+        <source>PREF_RAY_TRACING_SHADOW</source>
+        <translation type="unfinished">Shadows rendering</translation>
+    </message>
+    <message>
+        <source>PREF_RAY_TRACING_TRANS_SHADOW</source>
+        <translation type="unfinished">Transparent shadow</translation>
+    </message>
+    <message>
+        <source>PREF_GROUP_LIGHT</source>
+        <translation type="unfinished">Light source</translation>
+    </message>
+    <message>
+        <source>PREF_LIGHT_COLOR</source>
+        <translation type="unfinished">Color</translation>
     </message>
     <message>
         <source>TOT_CLOSE</source>
@@ -1135,6 +1184,17 @@ Le fichier n&apos;existe pas</translation>
     <message>
         <source>ACTIVATE_MODULE_TOP</source>
         <translation>Activer/désactiver le module %1</translation>
+    </message>
+</context>
+<context>
+    <name>LightApp_PyEditor</name>
+    <message>
+        <source>TOT_DUMP_PYCOMMANDS</source>
+        <translation>&amp;Générer le script des commandes</translation>
+    </message>
+    <message>
+        <source>TOT_SAVE_PYLOG</source>
+        <translation>Sauver la trace</translation>
     </message>
 </context>
 </TS>

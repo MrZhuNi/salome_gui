@@ -1,7 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
-//
-// Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
-// CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -19,31 +16,26 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
+// File   : LightApp_PyEditor.h
+// Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
 
-//  File   : PyInterp_Watcher.h
-//  Author : Sergey Anikin, OCC
-//  Module : SALOME
-//
-#ifndef PYINTERP_WATCHER_H
-#define PYINTERP_WATCHER_H
+#ifndef LIGHTAPP_PYEDITOR_H
+#define LIGHTAPP_PYEDITOR_H
 
-#include "PyInterp.h"   // !!! WARNING !!! THIS INCLUDE MUST BE THE VERY FIRST !!!
+#include "LightApp.h"
+#include "PyConsole_Editor.h"
 
-#include "PyInterp_Dispatcher.h"
-
-#include <QObject>
-
-// Private class that keeps track of destructions of request listeners
-class PYINTERP_EXPORT PyInterp_Watcher : public QObject
-{                                           
+class LIGHTAPP_EXPORT LightApp_PyEditor : public PyConsole_Editor
+{
   Q_OBJECT
 
 public:
-  PyInterp_Watcher() : QObject( 0 ) {}
-  virtual ~PyInterp_Watcher() {}
+  LightApp_PyEditor( PyConsole_Interp*, QWidget* = 0 );
+  ~LightApp_PyEditor();
 
-public slots:
-  void onDestroyed( QObject* o ) { PyInterp_Dispatcher::Get()->objectDestroyed( o ); }
+protected:
+  virtual QString getDumpFileName();
+  virtual QString getLogFileName();
 };
 
-#endif // PYINTERP_WATCHER_H
+#endif // LIGHTAPP_PYEDITOR_H

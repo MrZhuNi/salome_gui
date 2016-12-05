@@ -39,24 +39,36 @@
 <context>
     <name>PyConsole_Editor</name>
     <message>
-        <source>TOT_DUMP_PYCOMMANDS</source>
-        <translation>&amp;Générer le script des commandes</translation>
+        <source>GET_DUMP_COMMANDS_FILENAME</source>
+        <translation>Choisissez un fichier python où sauver le dump</translation>
     </message>
     <message>
-        <source>TOT_SAVE_PYLOG</source>
-        <translation>Sauver la trace</translation>
+        <source>GET_PYTHON_TRACE_FILENAME</source>
+        <translation>Choisissez un fichier où sauver le log</translation>
     </message>
     <message>
-        <source>PYTHON_FILES_FILTER</source>
-        <translation>Fichiers PYTHON (*.py)</translation>
+        <source>PYTHON_SCRIPTS</source>
+        <translation>Scripts Python</translation>
     </message>
     <message>
-        <source>LOG_FILES_FILTER</source>
-        <translation>Fichiers de trace (*.log *.txt)</translation>
+        <source>WARNING</source>
+        <translation>Attention !</translation>
     </message>
     <message>
-        <source>ERR_FILE_NOT_WRITABLE</source>
-        <translation>Le fichier n'est pas accessible en écriture!</translation>
+        <source>LOG_FILES</source>
+        <translation>Fichiers log</translation>
+    </message>
+    <message>
+        <source>ERR_FILE_NOT_WRITEABLE</source>
+        <translation>Le fichier n'a pas été écrit !</translation>
+    </message>
+    <message>
+        <source>TOO_MANY_MATCHES</source>
+        <translation type="unfinished">Too many matches! Displaying first ones only...</translation>
+    </message>
+    <message>
+        <source>NO_DOC_AVAILABLE</source>
+        <translation type="unfinished">no documentation available</translation>
     </message>
 </context>
 </TS>

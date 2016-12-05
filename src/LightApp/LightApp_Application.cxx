@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -35,8 +35,9 @@
 #endif
 
 #ifndef DISABLE_PYCONSOLE
-  #include "LightApp_PyInterp.h" // WARNING! This include must be the first!
-  #include <PyConsole_Console.h>
+  #include "LightApp_PyEditor.h"
+  #include "PyConsole_Interp.h"
+  #include "PyConsole_Console.h"
 #endif
 
 #include "LightApp_Application.h"
@@ -520,6 +521,9 @@ bool LightApp_Application::activateModule( const QString& modName )
       objectBrowser()->setRoot( activeStudy()->root() );
     updateObjectBrowser( true );
   }
+
+  if ( activeModule() ) activeModule()->updateModuleVisibilityState();
+
   return true;
 }
 
@@ -2023,15 +2027,14 @@ QWidget* LightApp_Application::createWindow( const int flag )
 #ifndef DISABLE_PYCONSOLE
   else  if ( flag == WT_PyConsole )
   {
-    PyConsole_Console* pyCons = new PyConsole_EnhConsole( desktop(), getPyInterp() );
+    PyConsole_Console* pyCons = new PyConsole_Console( desktop(), new LightApp_PyEditor( getPyInterp() ) );
     pyCons->setObjectName( "pythonConsole" );
     pyCons->setWindowTitle( tr( "PYTHON_CONSOLE" ) );
-    pyCons->setFont(resourceMgr()->fontValue( "PyConsole", "font" ));
-    pyCons->setIsShowBanner(resourceMgr()->booleanValue( "PyConsole", "show_banner", true ));
+    pyCons->setFont( resMgr->fontValue( "PyConsole", "font" ) );
+    pyCons->setIsShowBanner( resMgr->booleanValue( "PyConsole", "show_banner", true ) );
+    pyCons->setAutoCompletion( resMgr->booleanValue( "PyConsole", "auto_completion", true ) );
     pyCons->setProperty( "shortcut", QKeySequence( "Alt+Shift+P" ) );
-
     wid = pyCons;
-    pyCons->connectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
   }
 #endif
   else if ( flag == WT_LogWindow )
@@ -2266,10 +2269,13 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
 
   // ... "Python console properties" group <<start>>
   int pythonConsoleGroup = pref->addPreference( tr( "PREF_GROUP_PY_CONSOLE" ), genTab );
+  pref->setItemProperty( "columns", 2, pythonConsoleGroup );
   // .... -> font
   pref->addPreference( tr( "PREF_FONT" ), pythonConsoleGroup, LightApp_Preferences::Font, "PyConsole", "font" );
   // .... -> show banner
   pref->addPreference( tr( "PREF_SHOW_BANNER" ), pythonConsoleGroup, LightApp_Preferences::Bool, "PyConsole", "show_banner" );
+  // .... -> auto-completion
+  pref->addPreference( tr( "PREF_AUTO_COMPLETION" ), pythonConsoleGroup, LightApp_Preferences::Bool, "PyConsole", "auto_completion" );
   // ... "Python console properties" group <<end>>
 
   // ... "MRU" preferences group <<start>>
@@ -2515,6 +2521,61 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   pref->setItemProperty( "max", 1.0E03, scaleFactor );
   pref->setItemProperty( "step", 0.1, scaleFactor );
   // ... "Clipping" group <<end>>
+
+  // ... "Ray tracing" group <<start>>
+  int occRayTracingGroup = pref->addPreference( tr( "PREF_GROUP_RAY_TRACING" ), occGroup );
+  int rtPref = pref->addPreference( "", occRayTracingGroup, LightApp_Preferences::Frame );
+  pref->setItemProperty( "columns", 2, rtPref );
+  // .... -> depth
+  int rt_depth = pref->addPreference( tr( "PREF_RAY_TRACING_DEPTH" ), rtPref,
+               LightApp_Preferences::IntSpin, "OCCViewer", "rt_depth" );
+  pref->setItemProperty( "min", 1, rt_depth );
+  pref->setItemProperty( "max", 10, rt_depth );
+  pref->setItemProperty( "step", 1, rt_depth );
+  pref->addPreference( "", rtPref, LightApp_Preferences::Frame );
+  // .... -> specular reflections
+  pref->addPreference( tr( "PREF_RAY_TRACING_REFLECTION" ), rtPref,
+               LightApp_Preferences::Bool, "OCCViewer", "rt_reflection" );
+  // .... -> adaptive anti-aliasing
+  pref->addPreference( tr( "PREF_RAY_TRACING_ANTIALIASING" ), rtPref,
+               LightApp_Preferences::Bool, "OCCViewer", "rt_antialiasing" );
+  // .... -> shadows rendering
+  pref->addPreference( tr( "PREF_RAY_TRACING_SHADOW" ), rtPref,
+               LightApp_Preferences::Bool, "OCCViewer", "rt_shadow" );
+  // .... -> transparent shadow
+  pref->addPreference( tr( "PREF_RAY_TRACING_TRANS_SHADOW" ), rtPref,
+               LightApp_Preferences::Bool, "OCCViewer", "rt_trans_shadow" );
+  // ... "Ray tracing" group <<end>>
+
+  // ... "Light source" group <<start>>
+  int occLightGroup = pref->addPreference( tr( "PREF_GROUP_LIGHT" ), occGroup );
+  // .... -> light color
+  pref->addPreference( tr( "PREF_LIGHT_COLOR" ), occLightGroup,
+               LightApp_Preferences::Color, "OCCViewer", "light_color" );
+  int directionPref = pref->addPreference( "", occLightGroup, LightApp_Preferences::Frame );
+  pref->setItemProperty( "columns", 3, directionPref );
+  // .... -> light direction (dx component)
+  int light_dx = pref->addPreference( tr( "Dx" ), directionPref,
+               LightApp_Preferences::DblSpin, "OCCViewer", "light_dx" );
+  pref->setItemProperty( "precision", 2, light_dx );
+  pref->setItemProperty( "min", -1.0E03, light_dx );
+  pref->setItemProperty( "max", 1.0E03, light_dx );
+  pref->setItemProperty( "step", 0.1, light_dx );
+  // .... -> light direction (dy component)
+  int light_dy = pref->addPreference( tr( "Dy" ), directionPref,
+               LightApp_Preferences::DblSpin, "OCCViewer", "light_dy" );
+  pref->setItemProperty( "precision", 2, light_dy );
+  pref->setItemProperty( "min", -1.0E03, light_dy );
+  pref->setItemProperty( "max", 1.0E03, light_dy );
+  pref->setItemProperty( "step", 0.1, light_dy );
+  // .... -> light direction (dz component)
+  int light_dz = pref->addPreference( tr( "Dz" ), directionPref,
+               LightApp_Preferences::DblSpin, "OCCViewer", "light_dz" );
+  pref->setItemProperty( "precision", 2, light_dz );
+  pref->setItemProperty( "min", -1.0E03, light_dz );
+  pref->setItemProperty( "max", 1.0E03, light_dz );
+  pref->setItemProperty( "step", 0.1, light_dz );
+  // ... "Light source" group <<end>>
 
   // ... -> empty frame (for layout) <<start>>
   int occGen = pref->addPreference( "", occGroup, LightApp_Preferences::Frame );
@@ -3517,6 +3578,9 @@ void LightApp_Application::preferencesChanged( const QString& sec, const QString
     else if ( param=="show_banner" ) {
       pythonConsole()->setIsShowBanner( resMgr->booleanValue( "PyConsole", "show_banner", true ) );
     }
+    else if ( param=="auto_completion" ) {
+      pythonConsole()->setAutoCompletion( resMgr->booleanValue( "PyConsole", "auto_completion", true ) );
+    }
   }
 #endif
 
@@ -3956,7 +4020,7 @@ void LightApp_Application::loadDockWindowsState()
   }
 
   if(dwMap) {
-    QList<QDockWidget*> dwList = qFindChildren<QDockWidget*>( desktop() );
+    QList<QDockWidget*> dwList = desktop()->findChildren<QDockWidget*>();
     for ( QList<QDockWidget*>::iterator dit = dwList.begin(); dit != dwList.end(); ++dit )
       {
 	QDockWidget* dw = *dit;
@@ -4009,14 +4073,14 @@ void LightApp_Application::saveDockWindowsState()
   QMap<QString, bool> tbMap, dwMap;
   dockWindowsState( visArr, tbMap, dwMap );
 
-  QList<QToolBar*> tbList = qFindChildren<QToolBar*>( desktop() );
+  QList<QToolBar*> tbList = desktop()->findChildren<QToolBar*>();
   for ( QList<QToolBar*>::iterator it = tbList.begin(); it != tbList.end(); ++it )
   {
     QToolBar* tb = *it;
     tbMap.insert( tb->objectName(), tb->toggleViewAction()->isChecked() );
   }
 
-  QList<QDockWidget*> dwList = qFindChildren<QDockWidget*>( desktop() );
+  QList<QDockWidget*> dwList = desktop()->findChildren<QDockWidget*>();
   for ( QList<QDockWidget*>::iterator it = dwList.begin(); it != dwList.end(); ++it )
   {
     QDockWidget* wid = *it;
@@ -4803,7 +4867,7 @@ void LightApp_Application::onDesktopMessage( const QString& message )
 QList<QToolBar*> LightApp_Application::findToolBars( const QStringList& names )
 {
   QList<QToolBar*> aResult;
-  QList<QToolBar*> tbList = qFindChildren<QToolBar*>( desktop() );
+  QList<QToolBar*> tbList = desktop()->findChildren<QToolBar*>();
   for ( QList<QToolBar*>::iterator tit = tbList.begin(); tit != tbList.end(); ++tit ) {
     QToolBar* tb = *tit;    
     QObject* po = Qtx::findParent( tb, "QMainWindow" );
@@ -5067,14 +5131,16 @@ bool LightApp_Application::checkExistingDoc()
 PyConsole_Interp* LightApp_Application::getPyInterp()
 {
   static PyConsole_Interp* myInterp = 0;
-  if ( !myInterp )
+  if ( !myInterp ) {
     myInterp = createPyInterp();
+    myInterp->initialize();
+  }
   return myInterp;
 }
 
 PyConsole_Interp* LightApp_Application::createPyInterp()
 {
-  return new LightApp_PyInterp();
+  return new PyConsole_Interp();
 }
 
 #endif // DISABLE_PYCONSOLE

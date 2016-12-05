@@ -7,7 +7,7 @@
         <!-- used in GEOM module: to be moved there? -->
         <source>OCC_TEXTURE_FILES</source>
         <translatorcomment>Update to new supported format (see OCCT Image_AlienPixMap documentation)</translatorcomment>
-        <translation>Image files (*.jpeg *jpg *.jpe *.png *.bmp *.gif *.ppm *.tif *.tiff* .tga *.exr)</translation>
+        <translation>Image files (*.jpeg *.jpg *.jpe *.png *.bmp *.gif *.ppm *.tif *.tiff* .tga *.exr)</translation>
     </message>
 </context>
 <context>
@@ -275,6 +275,30 @@
     <message>
         <source>DSC_RETURN_3D_VIEW</source>
         <translation>Return to 3D view</translation>
+    </message>
+    <message>
+        <source>MNU_RAY_TRACING</source>
+        <translation>Ray tracing</translation>
+    </message>
+    <message>
+        <source>DSC_RAY_TRACING</source>
+        <translation>Ray tracing</translation>
+    </message>
+    <message>
+        <source>MNU_ENV_TEXTURE</source>
+        <translation>Environment texture</translation>
+    </message>
+    <message>
+        <source>DSC_ENV_TEXTURE</source>
+        <translation>Environment texture</translation>
+    </message>
+    <message>
+        <source>MNU_LIGHT_SOURCE</source>
+        <translation>Light source</translation>
+    </message>
+    <message>
+        <source>DSC_LIGHT_SOURCE</source>
+        <translation>Light source</translation>
     </message>
     <message>
         <source>OCC_IMAGE_FILES</source>
@@ -617,6 +641,115 @@
     <message>
         <source>HELP</source>
         <translation>&amp;Help</translation>
+    </message>
+</context>
+<context>
+    <name>OCCViewer_RayTracingDlg</name>
+    <message>
+        <source>RAY_TRACING</source>
+        <translation>Ray tracing</translation>
+    </message>
+    <message>
+        <source>DEPTH</source>
+        <translation>Depth</translation>
+    </message>
+    <message>
+        <source>SHADOW</source>
+        <translation>Shadows rendering</translation>
+    </message>
+    <message>
+        <source>REFLECTION</source>
+        <translation>Specular reflections</translation>
+    </message>
+    <message>
+        <source>ANTIALIASING</source>
+        <translation>Adaptive anti-aliasing</translation>
+    </message>
+    <message>
+        <source>TRANSPARENT_SHADOW</source>
+        <translation>Transparent shadow</translation>
+    </message>
+</context>
+<context>
+    <name>OCCViewer_EnvTextureDlg</name>
+    <message>
+        <source>ENV_TEXTURE</source>
+        <translation>Environment texture</translation>
+    </message>
+    <message>
+        <source>ENV_CLOUDS</source>
+        <translation>Clouds</translation>
+    </message>
+    <message>
+        <source>ENV_CV</source>
+        <translation>Cv</translation>
+    </message>
+    <message>
+        <source>ENV_MEDIT</source>
+        <translation>Medit</translation>
+    </message>
+    <message>
+        <source>ENV_PEARL</source>
+        <translation>Pearl</translation>
+    </message>
+    <message>
+        <source>ENV_SKY1</source>
+        <translation>Sky1</translation>
+    </message>
+    <message>
+        <source>ENV_SKY2</source>
+        <translation>Sky2</translation>
+    </message>
+    <message>
+        <source>ENV_LINES</source>
+        <translation>Lines</translation>
+    </message>
+    <message>
+        <source>ENV_ROAD</source>
+        <translation>Road</translation>
+    </message>
+    <message>
+        <source>ENV_CUSTOM</source>
+        <translation>Custom...</translation>
+    </message>
+</context>
+<context>
+    <name>OCCViewer_LightSourceDlg</name>
+    <message>
+        <source>LIGHT_SOURCE</source>
+        <translation>Light source</translation>
+    </message>
+    <message>
+        <source>TYPE</source>
+        <translation>Type</translation>
+    </message>
+    <message>
+        <source>DIRECTIONAL</source>
+        <translation>Directional</translation>
+    </message>
+    <message>
+        <source>DIRECTION</source>
+        <translation>Direction</translation>
+    </message>
+    <message>
+        <source>POSITIONAL</source>
+        <translation>Positional</translation>
+    </message>
+    <message>
+        <source>POSITION</source>
+        <translation>Position</translation>
+    </message>
+    <message>
+        <source>COLOR</source>
+        <translation>Color</translation>
+    </message>
+    <message>
+        <source>HEADLIGHT</source>
+        <translation>Headlight</translation>
+    </message>
+    <message>
+        <source>BUT_DEFAULT</source>
+        <translation>Default</translation>
     </message>
 </context>
 </TS>

@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -33,10 +33,6 @@
 #include <Container_init_python.hxx>
 #include <ConnectionManager_i.hxx>
 #include <RegistryService.hxx>
-
-#ifdef ENABLE_TESTRECORDER
-  #include <TestApplication.h>
-#endif
 
 #include <OpUtil.hxx>
 #include <Utils_ORB_INIT.hxx>
@@ -103,13 +99,15 @@ void MessageOutput( QtMsgType type, const char* msg )
   switch ( type )
   {
   case QtDebugMsg:
-    //MESSAGE( "Debug: " << msg );
+#ifdef QT_DEBUG_MESSAGE
+    MESSAGE( "Debug: " << qPrintable( QString(msg) ) );
+#endif
     break;
   case QtWarningMsg:
-    MESSAGE( "Warning: " << msg );
+    MESSAGE( "Warning: " << qPrintable( QString(msg) ) );
     break;
   case QtFatalMsg:
-    MESSAGE( "Fatal: " << msg );
+    MESSAGE( "Fatal: " << qPrintable( QString(msg) ) );
     break;
   }
 }
@@ -240,16 +238,9 @@ public:
   }
 };
 
-#ifdef ENABLE_TESTRECORDER
-  class SALOME_QApplication : public TestApplication
-#else
-  class SALOME_QApplication : public QApplication
-#endif
+class SALOME_QApplication : public QApplication
 {
 public:
-#ifdef ENABLE_TESTRECORDER
-  SALOME_QApplication( int& argc, char** argv ) : TestApplication( argc, argv ), myHandler ( 0 ) {}
-#else
   SALOME_QApplication( int& argc, char** argv )
 #ifndef WIN32
   // san: Opening an X display and choosing a visual most suitable for 3D visualization
@@ -259,15 +250,10 @@ public:
   : QApplication( argc, argv ), 
 #endif
     myHandler ( 0 ) {}
-#endif
 
   virtual bool notify( QObject* receiver, QEvent* e )
   {
 
-#ifdef ENABLE_TESTRECORDER
-    return myHandler ? myHandler->handle( receiver, e ) :
-      TestApplication::notify( receiver, e );
-#else
     try {
       return myHandler ? myHandler->handle( receiver, e ) : QApplication::notify( receiver, e );
     }
@@ -286,7 +272,6 @@ public:
       std::cerr << "Unknown exception caught in Qt handler: it's probably a bug in SALOME platform" << std::endl;
     }
     return false;  // return false when exception is caught
-#endif
   }
   SUIT_ExceptionHandler* handler() const { return myHandler; }
   void setHandler( SUIT_ExceptionHandler* h ) { myHandler = h; }
@@ -350,12 +335,10 @@ int main( int argc, char **argv )
     QApplication::setGraphicsSystem(QLatin1String("native"));
   }
   
-  // add $QTDIR/plugins to the pluins search path for image plugins
-  QString qtdir = qgetenv( "QT_ROOT_DIR" );
-  if ( qtdir.isEmpty() )
-    qtdir = qgetenv( "QTDIR" );
+  // add <qtdir>/plugins dir to the pluins search path for image plugins
+  QString qtdir = Qtx::qtDir( "plugins" );
   if ( !qtdir.isEmpty() )
-    QApplication::addLibraryPath( QDir( qtdir ).absoluteFilePath( "plugins" ) );
+    QApplication::addLibraryPath( qtdir );
 
   // set "C" locale if requested via preferences
   {
@@ -379,7 +362,7 @@ int main( int argc, char **argv )
   _qappl.setApplicationVersion( salomeVersion() );
 
   // Add application library path (to search style plugin etc...)
-  QString path = QDir::convertSeparators( SUIT_Tools::addSlash( QString( ::getenv( "GUI_ROOT_DIR" ) ) ) + QString( "bin/salome" ) );
+  QString path = QDir::toNativeSeparators( SUIT_Tools::addSlash( QString( ::getenv( "GUI_ROOT_DIR" ) ) ) + QString( "bin/salome" ) );
   _qappl.addLibraryPath( path );
 
   bool isGUI    = isFound( "GUI",    argc, argv );
@@ -591,10 +574,15 @@ int main( int argc, char **argv )
         }
         else {
           // desktop might be closed from:
-          // - StopSesion() /temporarily/ or
-          // - Shutdown() /permanently/
+          // - StopSesion() (temporarily) or
+          // - Shutdown() (permanently)
           stat = session->GetStatSession();
           shutdownSession = stat.state == SALOME::shutdown;
+          // normally "shutdown standalone servers" flag should be false here, if we come from
+          // StopSesion() or from Shutdown();
+          // but we also have to check if somebody explicitly programmatically closed session,
+          // asking to kill servers also
+          shutdownAll = aGUISession->exitFlags();
         }
         if ( shutdownAll || shutdownSession ) {
           _SessionMutex.lock(); // lock mutex before leaving loop - it will be unlocked later

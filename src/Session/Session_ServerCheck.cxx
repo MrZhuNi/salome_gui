@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -37,6 +37,7 @@
 #include "SALOME_NamingService.hxx"
 #include "Basics_Utils.hxx"
 #include "utilities.h"
+#include "Qtx.h"
 
 #include <QApplication> 
 #include <QWaitCondition>
@@ -71,6 +72,15 @@ const int __DEFAULT__ATTEMPTS__ = 300;
 */
 const int __DEFAULT__DELAY__ = 50000;
 
+// The exception being thrown out of a destructor,
+// that is not allowed by default in C++11.
+
+#if __cplusplus >= 201103L
+# define TYPE_NOEXCEPT noexcept(false)
+#else
+# define TYPE_NOEXCEPT
+#endif
+
 /*!
   \classSession_ServerCheck::Locker
   \brief Automatic locker/unlocker.
@@ -92,7 +102,7 @@ public:
   /*!
     \brief Destructor. Wakes the calling thread and goes sleeping.
   */
-  ~Locker()
+  ~Locker() TYPE_NOEXCEPT
   {
     myChecker->myWC->wakeAll();
     myChecker->usleep( myChecker->myDelay );
@@ -252,9 +262,8 @@ void Session_ServerCheck::run()
   // start check servers
   int current = 0;
   QString error;
-  int    argc = QApplication::instance()->argc();
-  char** argv = QApplication::instance()->argv();
-
+  Qtx::CmdLineArgs args;
+  
   // 1. Check naming service
   for ( int i = 0; i < myAttempts; i++ ) {
     Locker locker( this );
@@ -262,7 +271,8 @@ void Session_ServerCheck::run()
     setStep( current * myAttempts + i );
 
     try {
-      CORBA::ORB_var orb = CORBA::ORB_init( argc, argv );
+      ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+      CORBA::ORB_var orb = init( args.argc(), args.argv() );
       CORBA::Object_var obj = orb->resolve_initial_references( "NameService" );
       CosNaming::NamingContext_var _root_context = CosNaming::NamingContext::_narrow( obj );
       if ( !CORBA::is_nil( _root_context ) ) {
@@ -290,7 +300,8 @@ void Session_ServerCheck::run()
     setStep( current * myAttempts + i );
 
     try {
-      CORBA::ORB_var orb = CORBA::ORB_init( argc, argv );
+      ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+      CORBA::ORB_var orb = init( args.argc(), args.argv() );
       SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
       ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
       NS.init_orb( orb );
@@ -338,7 +349,8 @@ void Session_ServerCheck::run()
     setStep( current * myAttempts + i );
 
     try {
-      CORBA::ORB_var orb = CORBA::ORB_init( argc, argv );
+      ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+      CORBA::ORB_var orb = init( args.argc(), args.argv() );
       SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
       ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
       NS.init_orb( orb );
@@ -386,7 +398,8 @@ void Session_ServerCheck::run()
     setStep( current * myAttempts + i );
 
     try {
-      CORBA::ORB_var orb = CORBA::ORB_init( argc, argv );
+      ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+      CORBA::ORB_var orb = init( args.argc(), args.argv() );
       SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
       ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
       NS.init_orb( orb );
@@ -434,7 +447,8 @@ void Session_ServerCheck::run()
     setStep( current * myAttempts + i );
 
     try {
-      CORBA::ORB_var orb = CORBA::ORB_init( argc, argv );
+      ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+      CORBA::ORB_var orb = init( args.argc(), args.argv() );
       SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
       ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
       NS.init_orb( orb );
@@ -483,7 +497,8 @@ void Session_ServerCheck::run()
       setStep( current * myAttempts + i );
 
       try {
-        CORBA::ORB_var orb = CORBA::ORB_init( argc, argv );
+        ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+        CORBA::ORB_var orb = init( args.argc(), args.argv() );
         SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
         ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
         NS.init_orb( orb );
@@ -534,7 +549,8 @@ void Session_ServerCheck::run()
       setStep( current * myAttempts + i );
 
       try {
-        CORBA::ORB_var orb = CORBA::ORB_init( argc, argv );
+        ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+        CORBA::ORB_var orb = init( args.argc(), args.argv() );
         SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
         ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
         NS.init_orb( orb );
@@ -585,7 +601,8 @@ void Session_ServerCheck::run()
       setStep( current * myAttempts + i );
 
       try {
-        CORBA::ORB_var orb = CORBA::ORB_init( argc, argv );
+        ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+        CORBA::ORB_var orb = init( args.argc(), args.argv() );
         SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
         ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
         NS.init_orb( orb );

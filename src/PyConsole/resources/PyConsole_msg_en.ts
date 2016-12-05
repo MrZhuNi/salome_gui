@@ -28,7 +28,7 @@
         <translation>D&amp;ump Commands</translation>
     </message>
     <message>
-      <source>EDIT_STARTLOG_CMD</source>
+        <source>EDIT_STARTLOG_CMD</source>
         <translation>Start &amp;Log</translation>
     </message>
     <message>
@@ -39,24 +39,36 @@
 <context>
     <name>PyConsole_Editor</name>
     <message>
-        <source>TOT_DUMP_PYCOMMANDS</source>
-        <translation>Dump commands</translation>
+        <source>GET_DUMP_COMMANDS_FILENAME</source>
+        <translation>Dump commands to file</translation>
     </message>
     <message>
-        <source>TOT_SAVE_PYLOG</source>
-        <translation>Save log</translation>
+        <source>GET_PYTHON_TRACE_FILENAME</source>
+        <translation>Save Python trace to file</translation>
     </message>
     <message>
-        <source>PYTHON_FILES_FILTER</source>
-        <translation>PYTHON Files (*.py)</translation>
+        <source>PYTHON_SCRIPTS</source>
+        <translation>Python scripts</translation>
     </message>
     <message>
-        <source>LOG_FILES_FILTER</source>
-        <translation>Log files (*.log *.txt)</translation>
+        <source>WARNING</source>
+        <translation>Warning!</translation>
     </message>
     <message>
-        <source>ERR_FILE_NOT_WRITABLE</source>
-        <translation>File is not writable!</translation>
+        <source>LOG_FILES</source>
+        <translation>Log files</translation>
+    </message>
+    <message>
+        <source>ERR_FILE_NOT_WRITEABLE</source>
+        <translation>File is not writeable!</translation>
+    </message>
+    <message>
+        <source>TOO_MANY_MATCHES</source>
+        <translation>Too many matches! Displaying first ones only...</translation>
+    </message>
+    <message>
+        <source>NO_DOC_AVAILABLE</source>
+        <translation>no documentation available</translation>
     </message>
 </context>
 </TS>

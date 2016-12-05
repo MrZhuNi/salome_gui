@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -37,7 +37,7 @@ public:
   ViewerTools_DialogBase(QtxAction* theAction,
                          QWidget* theParent,
                          const char* theName = "", 
-                         bool theModal = FALSE, 
+                         bool theModal = false, 
                          Qt::WindowFlags theWFalgs = 0);
 
   ~ViewerTools_DialogBase();

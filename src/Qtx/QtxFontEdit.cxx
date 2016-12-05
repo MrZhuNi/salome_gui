@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -376,8 +376,8 @@ void QtxFontEdit::setMode( const int mode )
 
   myMode = mode;
 
-  myFamily->setShown( myMode == Native );
-  myCustomFams->setShown( myMode == Custom );
+  myFamily->setVisible( myMode == Native );
+  myCustomFams->setVisible( myMode == Custom );
 
   updateGeometry();
 }

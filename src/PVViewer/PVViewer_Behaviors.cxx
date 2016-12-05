@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2015  CEA/DEN, EDF R&D
+// Copyright (C) 2014-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -44,6 +44,7 @@
 #include <pqUndoRedoBehavior.h>
 #include <pqViewStreamingBehavior.h>
 #include <pqCollaborationBehavior.h>
+#include <pqStandardArrayColorMapsBehavior.h>
 #include <pqVerifyRequiredPluginBehavior.h>
 #include <pqPluginSettingsBehavior.h>
 #include <pqFixPathsInStateFilesBehavior.h>
@@ -117,6 +118,7 @@ void PVViewer_Behaviors::instanciateAllBehaviors(QMainWindow * desk)
       new pqObjectPickingBehavior(desk);
       new pqCollaborationBehavior(this);
       new pqViewStreamingBehavior(this);
+      new pqStandardArrayColorMapsBehavior(this);
 
       pqApplyBehavior* applyBehavior = new pqApplyBehavior(this);
       foreach (pqPropertiesPanel* ppanel, desk->findChildren<pqPropertiesPanel*>())

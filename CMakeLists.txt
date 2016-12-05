@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,7 @@ CMAKE_POLICY(SET CMP0003 NEW)
 STRING(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UC)
 
 SET(${PROJECT_NAME_UC}_MAJOR_VERSION 7)
-SET(${PROJECT_NAME_UC}_MINOR_VERSION 7)
+SET(${PROJECT_NAME_UC}_MINOR_VERSION 8)
 SET(${PROJECT_NAME_UC}_PATCH_VERSION 1)
 SET(${PROJECT_NAME_UC}_VERSION
   ${${PROJECT_NAME_UC}_MAJOR_VERSION}.${${PROJECT_NAME_UC}_MINOR_VERSION}.${${PROJECT_NAME_UC}_PATCH_VERSION})
@@ -95,7 +95,8 @@ MARK_AS_ADVANCED(SALOME_USE_SINGLE_DESKTOP)
 ##
 
 # Various
-FIND_PACKAGE(SalomePython REQUIRED)
+FIND_PACKAGE(SalomePythonInterp REQUIRED)
+FIND_PACKAGE(SalomePythonLibs REQUIRED)
 FIND_PACKAGE(SalomePThread REQUIRED)
 FIND_PACKAGE(SalomeSWIG REQUIRED)
 FIND_PACKAGE(SalomeBoost REQUIRED)
@@ -148,18 +149,31 @@ ENDIF()
 
 # Qt4
 FIND_PACKAGE(SalomeQt4 REQUIRED COMPONENTS QtCore QtGui QtXml QtWebKit QtOpenGL QtNetwork)
-INCLUDE(${QT_USE_FILE})
 
 # PyQt4
 FIND_PACKAGE(SalomePyQt4 REQUIRED)
 
-# Optional prerequisites for GUI
+# Optional packages for GUI and their pre-requisites
+
+# - GL viewer: no prereqs
 IF(NOT SALOME_USE_GLVIEWER)
   ADD_DEFINITIONS("-DDISABLE_GLVIEWER")
 ENDIF()
+
+# - OCC viewer: no prereqs
 IF(NOT SALOME_USE_OCCVIEWER)
   ADD_DEFINITIONS("-DDISABLE_OCCVIEWER")
 ENDIF()
+
+# - PV viewer: ParaView
+IF (SALOME_USE_PVVIEWER)
+  FIND_PACKAGE(SalomeParaView)
+  SALOME_LOG_OPTIONAL_PACKAGE(ParaView SALOME_USE_PVVIEWER)
+ELSE()
+  ADD_DEFINITIONS("-DDISABLE_PVVIEWER")
+ENDIF()
+
+# - VTK viewer: VTK
 IF(SALOME_USE_VTKVIEWER)
   # Required components are listed in the FindSalomeVTK.cmake file: 
   FIND_PACKAGE(SalomeVTK) 
@@ -167,33 +181,39 @@ IF(SALOME_USE_VTKVIEWER)
 ELSE()
   ADD_DEFINITIONS("-DDISABLE_VTKVIEWER")
 ENDIF()
+
+# - Plot2d viewer: Qwt
 IF(SALOME_USE_PLOT2DVIEWER)
   FIND_PACKAGE(SalomeQwt)  
   SALOME_LOG_OPTIONAL_PACKAGE(Qwt SALOME_USE_PLOT2DVIEWER)
 ELSE()
   ADD_DEFINITIONS("-DDISABLE_PLOT2DVIEWER")
 ENDIF()
-IF (SALOME_USE_PVVIEWER)
-  FIND_PACKAGE(SalomeParaView)
-  SALOME_LOG_OPTIONAL_PACKAGE(ParaView SALOME_USE_PVVIEWER)
-ELSE()
-  ADD_DEFINITIONS("-DDISABLE_PVVIEWER")
-ENDIF()
+
+# - Graphics viewer: no prereqs
 IF (NOT SALOME_USE_GRAPHICSVIEW)
   ADD_DEFINITIONS("-DDISABLE_GRAPHICSVIEW")
 ENDIF()
+
+# - Python editor: no prereqs
 IF (NOT SALOME_USE_PYVIEWER)
   ADD_DEFINITIONS("-DDISABLE_PYVIEWER")
 ENDIF()
+
+# - Python console: no prereqs
 IF(SALOME_USE_PYCONSOLE)
   # Build with obsolete Python module's methods
   ADD_DEFINITIONS(-DCALL_OLD_METHODS)
 ELSE()
   ADD_DEFINITIONS("-DDISABLE_PYCONSOLE")
 ENDIF()
+
+# - Qx viewer: no prereqs
 IF(NOT SALOME_USE_QXGRAPHVIEWER)
   ADD_DEFINITIONS("-DDISABLE_QXGRAPHVIEWER")
 ENDIF()
+
+# - SALOME object: no prereqs
 IF(NOT SALOME_USE_SALOMEOBJECT)
   ADD_DEFINITIONS("-DDISABLE_SALOMEOBJECT")
 ENDIF()
@@ -357,7 +377,7 @@ ENDIF()
 # Python-based packages specific targets:
 IF(SALOME_USE_PYCONSOLE)
   LIST(APPEND _${PROJECT_NAME}_exposed_targets 
-       PyInterp PyConsole  SalomePyQtGUILight)
+       PyInterp PyConsole SalomePyQtGUILight)
   IF(SALOME_USE_PLOT2DVIEWER)
     LIST(APPEND _${PROJECT_NAME}_exposed_targets SalomePyQt)
   ENDIF()
@@ -382,7 +402,7 @@ EXPORT(TARGETS ${_${PROJECT_NAME}_exposed_targets}
 # Create the configuration files:
 #   - in the build tree:
 
-#      Ensure the variables are always defined for the configure:
+# Ensure the variables are always defined for the configure:
 SET(KERNEL_ROOT_DIR "${KERNEL_ROOT_DIR}")
 SET(SIP_ROOT_DIR "${SIP_ROOT_DIR}")
 SET(QT4_ROOT_DIR "${QT4_ROOT_DIR}")

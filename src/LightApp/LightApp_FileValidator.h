@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -16,37 +16,21 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
+// File   : LightApp_FileValidator.h
+// Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
 
-//  Author : Roman NIKOLAEV, Open CASCADE S.A.S. (roman.nikolaev@opencascade.com)
-//  Date   : 22/06/2007
-//
-#include "LightApp_PyInterp.h"
+#ifndef LIGHTAPP_FILEVALIDATOR_H
+#define LIGHTAPP_FILEVALIDATOR_H
 
-/*!
- * constructor : Python interpreter.
- */
-LightApp_PyInterp::LightApp_PyInterp(): PyConsole_EnhInterp()
+#include "LightApp.h"
+#include "SUIT_FileValidator.h"
+
+class LIGHTAPP_EXPORT LightApp_PyFileValidator : public SUIT_FileValidator
 {
-}
+public:
+  LightApp_PyFileValidator( QWidget* );
 
-/*!
- * Destructor.
- */
-LightApp_PyInterp::~LightApp_PyInterp()
-{
-}
- 
-/*!\class LightApp_PyInterp
- * [ABN] : there is now a single Python interpreter for the whole SALOME run.
- * Different execution environment are provided to emulate independent
- * "virtual" Python interpreters.
- */
+  virtual bool canSave( const QString&, bool );
+};
 
-
-/*!
-  Do nothing
-  The initialization has been done in main - see SUITApp/SUITApp.cxx - main()
- */
-void LightApp_PyInterp::initPython()
-{
-}
+#endif // LIGHTAPP_FILEVALIDATOR_H

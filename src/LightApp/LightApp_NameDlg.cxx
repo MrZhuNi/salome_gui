@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -44,7 +44,7 @@ Qt::WindowTitleHint | Qt::WindowSystemMenuHint )
   setModal( true );
 
   setWindowTitle( tr("TLT_RENAME") );
-  setSizeGripEnabled( TRUE );
+  setSizeGripEnabled( true );
 
   QVBoxLayout* topLayout = new QVBoxLayout( this );
   topLayout->setMargin( 11 ); topLayout->setSpacing( 6 );
@@ -76,7 +76,7 @@ Qt::WindowTitleHint | Qt::WindowSystemMenuHint )
   myButtonOk = new QPushButton( GroupButtons );
   myButtonOk->setObjectName( "buttonOk" );
   myButtonOk->setText( tr( "BUT_OK"  ) );
-  myButtonOk->setAutoDefault( TRUE ); myButtonOk->setDefault( TRUE );
+  myButtonOk->setAutoDefault( true ); myButtonOk->setDefault( true );
   GroupButtonsLayout->addWidget( myButtonOk );
 
   GroupButtonsLayout->addStretch();
@@ -84,7 +84,7 @@ Qt::WindowTitleHint | Qt::WindowSystemMenuHint )
   myButtonCancel = new QPushButton( GroupButtons );
   myButtonCancel->setObjectName( "buttonCancel" );
   myButtonCancel->setText( tr( "BUT_CANCEL"  ) );
-  myButtonCancel->setAutoDefault( TRUE );
+  myButtonCancel->setAutoDefault( true );
   GroupButtonsLayout->addWidget( myButtonCancel );
   /***************************************************************/
   

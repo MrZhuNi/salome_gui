@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -377,7 +377,7 @@ QString QtxResourceMgr::Resources::fileName( const QString& sect, const QString&
   }
   if( !path.isEmpty() )
   {
-    QString fname = QDir::convertSeparators( path );
+    QString fname = QDir::toNativeSeparators( path );
     QFileInfo inf( fname );
     fname = inf.absoluteFilePath();
     return fname;
@@ -423,7 +423,7 @@ QPixmap QtxResourceMgr::Resources::loadPixmap( const QString& sect, const QStrin
 QTranslator* QtxResourceMgr::Resources::loadTranslator( const QString& sect, const QString& prefix, const QString& name ) const
 {
   QTranslator* trans = new QtxTranslator( 0 );
-  QString fname = QDir::convertSeparators( fileName( sect, prefix, name ) );
+  QString fname = QDir::toNativeSeparators( fileName( sect, prefix, name ) );
   if ( !trans->load( Qtx::file( fname, false ), Qtx::dir( fname ) ) )
   {
     delete trans;
@@ -610,7 +610,7 @@ bool QtxResourceMgr::IniFormat::load( const QString& fname, QMap<QString, Sectio
     }
     else if ( section == "import" )
     {
-      QString impFile = QDir::convertSeparators( Qtx::makeEnvVarSubst( data, Qtx::Always ) );
+      QString impFile = QDir::toNativeSeparators( Qtx::makeEnvVarSubst( data, Qtx::Always ) );
       QFileInfo impFInfo( impFile );
       if ( impFInfo.isRelative() )
 	      impFInfo.setFile( aFinfo.absoluteDir(), impFile );
@@ -848,7 +848,7 @@ bool QtxResourceMgr::XmlFormat::load( const QString& fname, QMap<QString, Sectio
       }
       else if ( sectElem.tagName() == importTag() && sectElem.hasAttribute( nameAttribute() ) )
       {
-         QString impFile = QDir::convertSeparators( Qtx::makeEnvVarSubst( sectElem.attribute( nameAttribute() ), Qtx::Always ) );
+         QString impFile = QDir::toNativeSeparators( Qtx::makeEnvVarSubst( sectElem.attribute( nameAttribute() ), Qtx::Always ) );
 	      QFileInfo impFInfo( impFile );
 	      if ( impFInfo.isRelative() )
 	         impFInfo.setFile( aFinfo.absoluteDir(), impFile );
@@ -2697,12 +2697,7 @@ void QtxResourceMgr::loadLanguage( const QString& pref, const QString& l )
   if ( pref.isEmpty() && lang != "en" ) {
     // load Qt resources
     QString qt_translations = QLibraryInfo::location( QLibraryInfo::TranslationsPath );
-    QString qt_dir_trpath = qgetenv( "QT_ROOT_DIR" );
-    if ( qt_dir_trpath.isEmpty() )
-      qt_dir_trpath = qgetenv( "QTDIR" );
-    if ( !qt_dir_trpath.isEmpty() )
-      qt_dir_trpath = QDir( qt_dir_trpath ).absoluteFilePath( "translations" );
-
+    QString qt_dir_trpath = Qtx::qtDir( "translations" );
     QTranslator* trans = new QtxTranslator( 0 );
     if ( trans->load( QString("qt_%1").arg( lang ), qt_translations ) || trans->load( QString("qt_%1").arg( lang ), qt_dir_trpath ) ) {
       if ( QApplication::instance() ) QApplication::instance()->installTranslator( trans );
@@ -2785,6 +2780,24 @@ void QtxResourceMgr::loadTranslator( const QString& prefix, const QString& name 
       if ( !myTranslator[prefix].contains( trans ) )
         myTranslator[prefix].append( trans );
       if ( QApplication::instance() ) QApplication::instance()->installTranslator( trans );
+    }
+  }
+}
+
+/*!
+  \brief Add custom translator.
+  \param prefix parameter which defines translation context (for example, package name)
+  \param translator translator being installed
+  \sa loadLanguage(), loadTranslators()
+*/
+void QtxResourceMgr::addTranslator( const QString& prefix, QTranslator* translator )
+{
+  if ( translator )
+  {
+    if ( !myTranslator[prefix].contains( translator ) ) {
+      myTranslator[prefix].append( translator );
+      if ( QApplication::instance() )
+        QApplication::instance()->installTranslator( translator );
     }
   }
 }

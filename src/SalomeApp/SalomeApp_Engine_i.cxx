@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -302,10 +302,14 @@ char* SalomeApp_Engine_i::getVersion()
 */
 CORBA::ORB_var SalomeApp_Engine_i::orb()
 {
-  ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
-  // TODO: using QApplication here looks ugly, think how to
-  // obtain the ORB reference in a nicer way...
-  static CORBA::ORB_var _orb = init( qApp->argc(), qApp->argv() );
+  static CORBA::ORB_var _orb;
+
+  if ( CORBA::is_nil( _orb ) ) {
+    Qtx::CmdLineArgs args;
+    ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+    _orb = init( args.argc(), args.argv() );
+  }
+
   return _orb;
 }
 
@@ -345,6 +349,9 @@ CORBA::Object_ptr SalomeApp_Engine_i::EngineForComponent( const char* theCompone
 {
   CORBA::Object_var anEngine;
   if ( !theComponentName || !strlen( theComponentName ) )
+    return anEngine._retn();
+
+  if ( SalomeApp_Application::moduleTitle( theComponentName ).isEmpty() )
     return anEngine._retn();
 
   std::string aPath( "/SalomeAppEngine/" );

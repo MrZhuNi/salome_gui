@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -565,7 +565,7 @@ void SVTK_Viewer::contextMenuPopup( QMenu* thePopup )
 
   if(TViewWindow* aView = dynamic_cast<TViewWindow*>(myViewManager->getActiveView())){
     //Support of several toolbars in the popup menu
-    QList<QToolBar*> lst = qFindChildren<QToolBar*>( aView );
+    QList<QToolBar*> lst = aView->findChildren<QToolBar*>();
     QList<QToolBar*>::const_iterator it = lst.begin(), last = lst.end();
     for( ; it!=last; it++ )
       thePopup->addAction( (*it)->toggleViewAction() );

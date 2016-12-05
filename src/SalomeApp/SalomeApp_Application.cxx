@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -35,9 +35,10 @@
 #endif
 
 #ifndef DISABLE_PYCONSOLE
-  #include "SalomeApp_PyInterp.h" // WARNING! This include must be the first!
-  #include <PyConsole_Console.h>
+  #include "SalomeApp_PyInterp.h"
   #include "SalomeApp_NoteBook.h"
+  #include "LightApp_PyEditor.h"
+  #include "PyConsole_Console.h"
 #endif
 #include "SalomeApp_Application.h"
 #include "SalomeApp_Study.h"
@@ -49,6 +50,7 @@
 #include "SalomeApp_ExitDlg.h"
 
 #include <LightApp_Application.h>
+#include <LightApp_FileValidator.h>
 #include <LightApp_Module.h>
 #include <LightApp_Preferences.h>
 #include <LightApp_SelectionMgr.h>
@@ -62,7 +64,6 @@
 #include <SUIT_Desktop.h>
 #include <SUIT_DataBrowser.h>
 #include <SUIT_FileDlg.h>
-#include <SUIT_FileValidator.h>
 #include <SUIT_MessageBox.h>
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_TreeModel.h>
@@ -84,6 +85,7 @@
 #include <SALOME_LifeCycleCORBA.hxx>
 
 #include <QApplication>
+#include <QWidget>
 #include <QAction>
 #include <QRegExp>
 #include <QCheckBox>
@@ -175,6 +177,25 @@ SalomeApp_Application::~SalomeApp_Application()
   //SALOME_EventFilter::Destroy();
 }
 
+QStringList __getArgsList(QString argsString)
+{
+  // Special process if some items of 'args:' list are themselves lists
+  // Note that an item can be a list, but not a list of lists...
+  // So we can have something like this:
+  // myscript.py args:['file1','file2'],val1,"done",[1,2,3],[True,False],"ok"
+  // With such a call, argsString variable contains the string representing "[file1,file2]", "val1", "done", "[1,2,3]", "[True,False]", "ok"
+  // We have to split argsString to obtain: [[file1,file2],val1,done,[1,2,3],[True,False],ok]
+  argsString.replace("\\\"", "'"); // replace escaped double quotes by simple quotes
+  bool containsList = (QRegExp("(\\[[^\\]]*\\])").indexIn(argsString) >= 0);
+  if (containsList) {
+    QStringList sl = argsString.split("\"", QString::SkipEmptyParts);
+    sl.removeAll(", ");
+    return sl;
+  }
+  else
+    return argsString.split(",", QString::SkipEmptyParts);
+}
+
 /*!Start application.*/
 void SalomeApp_Application::start()
 {
@@ -187,9 +208,9 @@ void SalomeApp_Application::start()
     QStringList pyfiles;
     QString loadStudy;
 
-    for (int i = 1; i < qApp->argc(); i++) {
+    for (int i = 1; i < qApp->arguments().size(); i++) {
       QRegExp rxs ("--study-hdf=(.+)");
-      if ( rxs.indexIn( QString(qApp->argv()[i]) ) >= 0 && rxs.capturedTexts().count() > 1 ) {
+      if ( rxs.indexIn( qApp->arguments()[i] ) >= 0 && rxs.capturedTexts().count() > 1 ) {
         QString file = rxs.capturedTexts()[1];
         QFileInfo fi ( file );
         QString extension = fi.suffix().toLower();
@@ -198,7 +219,7 @@ void SalomeApp_Application::start()
       }
       else {
         QRegExp rxp ("--pyscript=\\[(.+)\\]");
-        if ( rxp.indexIn( QString(qApp->argv()[i]) ) >= 0 && rxp.capturedTexts().count() > 1 ) {
+        if ( rxp.indexIn( qApp->arguments()[i] ) >= 0 && rxp.capturedTexts().count() > 1 ) {
           // pyscript
           QStringList dictList = rxp.capturedTexts()[1].split("},", QString::SkipEmptyParts);
           for (int k = 0; k < dictList.count(); ++k) {
@@ -218,6 +239,7 @@ void SalomeApp_Application::start()
     LightApp_Application::start();
     SALOME_EventFilter::Init();
 
+    setProperty("open_study_from_command_line", true);
     if ( !hdffile.isEmpty() )       // open hdf file given as parameter
       onOpenDoc( hdffile );
     else if ( pyfiles.count() > 0 ) // create new study
@@ -226,6 +248,7 @@ void SalomeApp_Application::start()
       if (onLoadDoc(loadStudy))
         updateObjectBrowser(true);
     }
+    setProperty("open_study_from_command_line", QVariant());
 
 #ifndef DISABLE_PYCONSOLE
     // import/execute python scripts
@@ -243,7 +266,7 @@ void SalomeApp_Application::start()
             if ( rxp.indexIn( pyfiles[j] ) >= 0 && rxp.capturedTexts().count() == 3 ) {
               QString script = rxp.capturedTexts()[1];
               QString args = "";
-              QStringList argList = rxp.capturedTexts()[2].split(",", QString::SkipEmptyParts);
+              QStringList argList = __getArgsList(rxp.capturedTexts()[2]);
               for (uint k = 0; k < argList.count(); k++ ) {
                 QString arg = argList[k].trimmed();
                 arg.remove( QRegExp("^[\"]") );
@@ -831,26 +854,6 @@ public:
   QCheckBox* mySaveGUIChk;
 };
 
-class DumpStudyFileValidator : public SUIT_FileValidator
-{
- public:
-  DumpStudyFileValidator( QWidget* parent) : SUIT_FileValidator ( parent ) {};
-  virtual ~DumpStudyFileValidator() {};
-  virtual bool canSave( const QString& file, bool permissions );
-};
-
-bool DumpStudyFileValidator::canSave(const QString& file, bool permissions)
-{
-  QFileInfo fi( file );
-  if ( !QRegExp( "[A-Za-z_][A-Za-z0-9_]*" ).exactMatch( fi.completeBaseName() ) ) {
-    SUIT_MessageBox::critical( parent(),
-                               QObject::tr("WRN_WARNING"),
-                               QObject::tr("WRN_FILE_NAME_BAD") );
-    return false;
-  }
-  return SUIT_FileValidator::canSave( file, permissions);
-}
-
 /*!Private SLOT. On dump study.*/
 void SalomeApp_Application::onDumpStudy( )
 {
@@ -872,9 +875,9 @@ void SalomeApp_Application::onDumpStudy( )
   }
 
   DumpStudyFileDlg fd( desktop() );
-  fd.setValidator( new DumpStudyFileValidator( &fd ) );
+  fd.setValidator( new LightApp_PyFileValidator( &fd ) );
   fd.setWindowTitle( tr( "TOT_DESK_FILE_DUMP_STUDY" ) );
-  fd.setFilters( aFilters );
+  fd.setNameFilters( aFilters );
   fd.myPublishChk->setChecked( anIsPublish );
   fd.myMultiFileChk->setChecked( anIsMultiFile );
   fd.mySaveGUIChk->setChecked( anIsSaveGUI );
@@ -1027,6 +1030,12 @@ QWidget* SalomeApp_Application::createWindow( const int flag )
       ob->setResizeOnExpandItem(resizeOnExpandItem);
       ob->setProperty( "shortcut", QKeySequence( "Alt+Shift+O" ) );
 
+      for ( int i = SalomeApp_DataObject::EntryId; i < SalomeApp_DataObject::LastId; i++ )
+      {
+        bool shown = resourceMgr()->booleanValue( "ObjectBrowser", QString( "visibility_column_id_%1" ).arg( i-1 ), true );
+        ob->treeView()->setColumnHidden( i, !shown );
+      }
+
       // temporary commented
       /*
       for ( int i = SalomeApp_DataObject::ValueIdx; i <= SalomeApp_DataObject::RefEntryIdx; i++ )
@@ -1048,15 +1057,14 @@ QWidget* SalomeApp_Application::createWindow( const int flag )
 #ifndef DISABLE_PYCONSOLE
   else if ( flag == WT_PyConsole )
   {
-    PyConsole_Console* pyCons = new PyConsole_EnhConsole( desktop(), getPyInterp() );
+    PyConsole_Console* pyCons = new PyConsole_Console( desktop(), new LightApp_PyEditor( getPyInterp() ) );
     pyCons->setObjectName( "pythonConsole" );
     pyCons->setWindowTitle( tr( "PYTHON_CONSOLE" ) );
     pyCons->setFont(resourceMgr()->fontValue( "PyConsole", "font" ));
     pyCons->setIsShowBanner(resourceMgr()->booleanValue( "PyConsole", "show_banner", true ));
+    pyCons->setAutoCompletion( resMgr->booleanValue( "PyConsole", "auto_completion", true ) );
     pyCons->setProperty( "shortcut", QKeySequence( "Alt+Shift+P" ) );
     wid = pyCons;
-    //pyCons->resize( pyCons->width(), desktop()->height()/4 );
-    pyCons->connectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
   }
   else if ( flag == WT_NoteBook )
   {
@@ -1293,8 +1301,14 @@ void SalomeApp_Application::moduleActionSelected( const int id )
 /*!Gets CORBA::ORB_var*/
 CORBA::ORB_var SalomeApp_Application::orb()
 {
-  ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
-  static CORBA::ORB_var _orb = init( qApp->argc(), qApp->argv() );
+  static CORBA::ORB_var _orb;
+
+  if ( CORBA::is_nil( _orb ) ) {
+    Qtx::CmdLineArgs args;
+    ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+    _orb = init( args.argc(), args.argv() );
+  }
+
   return _orb;
 }
 
@@ -1522,6 +1536,7 @@ void SalomeApp_Application::onDblClick( SUIT_DataObject* theObj )
     if ( !aSelectedIndexes.isEmpty() )
       ob->treeView()->scrollTo( aSelectedIndexes.first() );
   }
+  emit objectDoubleClicked( theObj );
 }
 
 /*!

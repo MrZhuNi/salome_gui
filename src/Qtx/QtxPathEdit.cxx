@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -211,7 +211,7 @@ void QtxPathEdit::onBrowse( bool /*on*/ )
   }
 
   if ( !path.isEmpty() )
-    myPath->setText( QDir::convertSeparators( path ) ); 
+    myPath->setText( QDir::toNativeSeparators( path ) ); 
 
   myPath->setFocus();
 

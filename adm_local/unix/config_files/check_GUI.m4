@@ -1,4 +1,4 @@
-dnl Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+dnl Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 dnl
 dnl Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 dnl CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -53,9 +53,9 @@ else
       SALOME_GUI_DIR=${GUI_ROOT_DIR}
     else
       # search Salome binaries in PATH variable
-      AC_PATH_PROG(TEMP, SUITApp)
+      AC_PATH_PROG(TEMP, suitexe)
       if test "x${TEMP}" != "x" ; then
-        AC_MSG_RESULT(SUITApp was found at : ${TEMP})
+        AC_MSG_RESULT(suitexe was found at : ${TEMP})
         SALOME_BIN_DIR=`dirname ${TEMP}`
         SALOME_GUI_DIR=`cd ${SALOME_BIN_DIR}/../..; pwd`
       fi
@@ -68,7 +68,7 @@ else
 
   # check GUI installation
   AC_CHECKING(for light GUI)
-  if test -f ${SALOME_GUI_DIR}/bin/salome/SUITApp ; then
+  if test -f ${SALOME_GUI_DIR}/bin/salome/suitexe ; then
     LightGUI_ok=yes
     AC_MSG_RESULT(Using SALOME GUI distribution in ${SALOME_GUI_DIR})
 	

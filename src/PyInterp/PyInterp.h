@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -19,10 +19,9 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-
 // File   : PyInterp.h
 // Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
-//
+
 #if !defined ( PYINTERP_H )
 #define PYINTERP_H
 
@@ -39,22 +38,9 @@
 #endif  // WIN32
 
 // ========================================================
-// little trick - if we do not have debug python libraries
-#ifdef _DEBUG
- #ifndef HAVE_DEBUG_PYTHON
-  #undef _DEBUG
- #endif
-#endif
 
 #include <Python.h>
 
-#ifdef _DEBUG
- #ifndef HAVE_DEBUG_PYTHON
-  #define _DEBUG
- #endif
-#endif
-
-// ========================================================
 // avoid warning messages
 #ifdef WIN32
 #pragma warning (disable : 4786)
