@@ -57,6 +57,9 @@ SVTK_FontWidget::SVTK_FontWidget( QWidget* theParent )
 
   mySize = new QSpinBox( this );
   mySize->setRange( 8, 24 );
+#ifndef V2_2_IMP
+  mySize->hide();
+#endif
 
   myBold = new QCheckBox( tr( "BOLD" ), this );
   myItalic = new QCheckBox( tr( "ITALIC" ), this );

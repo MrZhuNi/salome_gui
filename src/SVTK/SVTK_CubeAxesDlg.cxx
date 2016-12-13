@@ -163,6 +163,11 @@ SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
 
   myLabelFormat->setToolTip( SVTK_CubeAxesDlg::tr("FORMAT_TOOLTIP") );
 
+#ifndef V2_2_IMP
+  aLabel->hide();
+  myLabelFormat->hide();
+#endif
+
   aHBox = new QHBoxLayout;
   aHBox->setMargin(0);
   aHBox->setSpacing(5);

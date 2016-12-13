@@ -168,6 +168,7 @@ void Plot3d_ViewWindow::Initialize( SVTK_ViewModelBase* theModel )
     }
   }
 
+#ifdef V2_2_IMP
   SVTK_RenderWindowInteractor* anInteractor = GetInteractor();
   connect( anInteractor, SIGNAL( MouseMove( QMouseEvent* ) ), this, SLOT( onMouseMove( QMouseEvent* ) ) );
   connect( anInteractor, SIGNAL( MouseButtonPressed( QMouseEvent* ) ), this, SLOT( onMouseButtonPressed( QMouseEvent* ) ) );
@@ -175,6 +176,7 @@ void Plot3d_ViewWindow::Initialize( SVTK_ViewModelBase* theModel )
 
   myStandardInteractorStyle->SetIsSelectionEnabled( false );
   myKeyFreeInteractorStyle->SetIsSelectionEnabled( false );
+#endif
 
   if( vtkRenderer* aRenderer = getRenderer() )
     aRenderer->AddActor( myScalarBarActor.GetPointer() );
