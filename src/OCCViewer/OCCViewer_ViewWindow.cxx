@@ -406,7 +406,9 @@ bool OCCViewer_ViewWindow::eventFilter( QObject* watched, QEvent* e )
           int x1 = (int)( aEvent->x() + width()*delta/100 );
           int y1 = (int)( aEvent->y() + height()*delta/100 );
           myViewPort->zoom( x, y, x1, y1 );
+#if OCC_VERSION_LARGE <= 0x06070100
           myViewPort->getView()->ZFitAll();
+#endif
           emit vpTransformationFinished ( ZOOMVIEW );
         }
       }
@@ -1060,7 +1062,9 @@ void OCCViewer_ViewWindow::vpMouseReleaseEvent(QMouseEvent* theEvent)
 
   case PANVIEW:
   case ZOOMVIEW:
+#if OCC_VERSION_LARGE <= 0x06070100
     myViewPort->getView()->ZFitAll();
+#endif
     resetState();
     break;
 
@@ -3668,7 +3672,9 @@ void OCCViewer_ViewWindow::synchronize( SUIT_ViewWindow* theView )
 
   getViewPort()->setAxialScale( anAxialScale[0], anAxialScale[1], anAxialScale[2] );
 
+#if OCC_VERSION_LARGE <= 0x06070100
   aDestView->ZFitAll();
+#endif
   aDestView->SetImmediateUpdate( Standard_True );
   aDestView->Redraw();
 
