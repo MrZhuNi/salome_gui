@@ -246,7 +246,7 @@ protected slots:
   virtual void                        onWindowActivated( SUIT_ViewWindow* theViewWindow );
 
   void                                onNewWindow();
-  void                                onModuleActivation( const QString& );
+  virtual void                        onModuleActivation( const QString& );
   void                                onCloseView( SUIT_ViewManager* );
 
   virtual void                        onStudyCreated( SUIT_Study* );

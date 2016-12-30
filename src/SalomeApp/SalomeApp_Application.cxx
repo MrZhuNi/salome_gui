@@ -550,15 +550,20 @@ bool SalomeApp_Application::onLoadDoc( const QString& aName )
 void SalomeApp_Application::onDesktopMessage( const QString& message )
 {
   if (message.indexOf("studyCreated") == 0) {
-    updateCommandsStatus();
+    if (!activeStudy()) {
+      onNewDoc();
+      updateCommandsStatus();
+    }
   }
   if (message.indexOf("studyCleared") == 0) {
     // Disconnect GUI from active study, because it was closed on DS side.
-    closeActiveDoc( false );
-    // Disable 'Connect' action
-    QAction* a = action( ConnectId );
-    if ( a )
-      a->setEnabled( false );
+    if (activeStudy() && activeStudy()->isModified()) {
+      closeActiveDoc( false );
+      // Disable 'Connect' action
+      QAction* a = action( ConnectId );
+      if ( a )
+        a->setEnabled( false );
+    }
   }
   else if ( message.toLower() == "connect_to_study" ) {
     onLoadDoc();
@@ -567,6 +572,15 @@ void SalomeApp_Application::onDesktopMessage( const QString& message )
     updateDesktopTitle();
   }
   LightApp_Application::onDesktopMessage( message );
+}
+
+/*!On module activation action.*/
+void SalomeApp_Application::onModuleActivation( const QString& modName )
+{
+  if (!activeStudy() && !modName.isEmpty())
+    getStudy()->Init();
+
+  LightApp_Application::onModuleActivation( modName );
 }
 
 /*!SLOT. Copy objects to study maneger from selection maneger..*/
@@ -1138,9 +1152,9 @@ int SalomeApp_Application::closeChoice( const QString& docName )
   QStringList buttons;
   QMap<int, int> choices;
   int idx = 0;
-  buttons << tr ("APPCLOSE_SAVE");                // Save & Close
+  buttons << tr ("APPCLOSE_SAVE");                // Save & Clear
   choices.insert( idx++, CloseSave );             // ...
-  buttons << tr ("APPCLOSE_CLOSE");               // Close w/o saving
+  buttons << tr ("APPCLOSE_CLOSE");               // Clear w/o saving
   choices.insert( idx++, CloseDiscard );          // ...
   if ( myIsCloseFromExit ) {
     buttons << tr ("APPCLOSE_UNLOAD_SAVE");       // Save & Disconnect
@@ -1151,6 +1165,8 @@ int SalomeApp_Application::closeChoice( const QString& docName )
   buttons << tr ("APPCLOSE_CANCEL");              // Cancel
   choices.insert( idx++, CloseCancel );           // ...
 
+  if( !activeStudy()->isModified() )
+    return CloseCancel;
   int answer = SUIT_MessageBox::question( desktop(), tr( "APPCLOSE_CAPTION" ),
                                           tr( "APPCLOSE_DESCRIPTION" ), buttons, 0 );
   return choices[answer];
@@ -1192,8 +1208,7 @@ int SalomeApp_Application::openChoice( const QString& aName )
   if ( QFileInfo( aName ).exists() ) {
     if ( choice == OpenNew ) { // The document isn't already open.
       bool exist = false;
-      SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( activeStudy() );
-      if ( aName == study->studyDS()->Name().c_str() )
+      if ( aName == getStudy()->Name().c_str() )
         exist = true;
       // The document already exists in the study.
       // Do you want to reload it?
@@ -1224,13 +1239,7 @@ bool SalomeApp_Application::openAction( const int aChoice, const QString& aName 
   {
   case OpenRefresh:
     {
-       SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>( activeStudy() );
-      _PTR(Study) aStudy = study->studyDS();
-      if ( aStudy )
-      {
-    	aStudy->Clear();
-        choice = OpenNew;
-      }
+      choice = OpenNew;
     }
   default:
     res = LightApp_Application::openAction( choice, aName );
@@ -1304,7 +1313,7 @@ CORBA::ORB_var SalomeApp_Application::orb()
 }
 
 /*!Create and return SALOMEDS_Study.*/
-SALOMEDSClient_Study* SalomeApp_Application::getStudy()
+_PTR(Study) SalomeApp_Application::getStudy()
 {
   static _PTR(Study) _study;
   if(!_study) {
@@ -1312,7 +1321,7 @@ SALOMEDSClient_Study* SalomeApp_Application::getStudy()
     SALOMEDS::Study_var aStudy = SALOMEDS::Study::_narrow(aSObject);
     _study = ClientFactory::Study(aStudy);
   }
-  return _study.get();
+  return _study;
 }
 
 /*!Create and return SALOME_NamingService.*/

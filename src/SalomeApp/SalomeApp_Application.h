@@ -98,7 +98,7 @@ public:
   virtual bool                        checkExistingDoc();
 
   static CORBA::ORB_var               orb();
-  static SALOMEDSClient_Study*        getStudy();
+  static _PTR(Study)                  getStudy();
   static SALOME_NamingService*        namingService();
   static SALOME_LifeCycleCORBA*       lcc();
 
@@ -142,6 +142,8 @@ protected slots:
   void                                onStudyCreated( SUIT_Study* );
   void                                onStudyOpened( SUIT_Study* );
   void                                onDesktopMessage( const QString& );
+
+  virtual void                        onModuleActivation( const QString& );
 
 protected:
   virtual void                        createActions();

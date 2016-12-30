@@ -459,7 +459,7 @@ bool SalomeApp_Study::createDocument( const QString& theStr )
   bool showError = !application()->property("open_study_from_command_line").isValid() || 
     !application()->property("open_study_from_command_line").toBool();
   try {
-    study = _PTR(Study)( SalomeApp_Application::getStudy() );
+    study = SalomeApp_Application::getStudy();
   }
   catch(const SALOME_Exception& ex) {
     application()->putInfo(tr(ex.what()));
@@ -480,7 +480,7 @@ bool SalomeApp_Study::createDocument( const QString& theStr )
     return false;
 
   setStudyDS( study );
-  setStudyName( aName );
+  setStudyName( QString::fromUtf8(study->Name().c_str()) );
 
   // create myRoot
   SalomeApp_RootObject* aRoot=new SalomeApp_RootObject( this );
@@ -492,9 +492,9 @@ bool SalomeApp_Study::createDocument( const QString& theStr )
   bool aRet = CAM_Study::createDocument( theStr );
 
 #ifdef WITH_SALOMEDS_OBSERVER
-  myObserver = new Observer_i(myStudyDS,this);
+  myObserver = new Observer_i(study,this);
   //attach an observer to the study with notification of modifications
-  myStudyDS->attach(myObserver->_this(),true);
+  study->attach(myObserver->_this(),true);
 #endif
 
   emit created( this );
@@ -510,12 +510,14 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
 {
   MESSAGE( "openDocument" );
 
-  // read HDF file
+  // initialize myStudyDS, read HDF file
+  _PTR(Study) study;
   bool res = false;
   bool showError = !application()->property("open_study_from_command_line").isValid() ||
     !application()->property("open_study_from_command_line").toBool();
   try {
-    res = studyDS()->Open( theFileName.toUtf8().data() );
+    study = SalomeApp_Application::getStudy();
+    res = study->Open( theFileName.toUtf8().data() );
   }
   catch(const SALOME_Exception& ex) {
     application()->putInfo(tr(ex.what()));
@@ -534,6 +536,8 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
 
   if ( !res)
     return false;
+
+  setStudyDS( study );
 
   setRoot( new SalomeApp_RootObject( this ) ); // create myRoot
 
@@ -559,7 +563,7 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
   res = CAM_Study::openDocument( theFileName );
 
   emit opened( this );
-  studyDS()->IsSaved(true);
+  study->IsSaved(true);
 
   bool restore = application()->resourceMgr()->booleanValue( "Study", "store_visual_state", true );
   if ( restore ) {
@@ -579,6 +583,13 @@ bool SalomeApp_Study::openDocument( const QString& theFileName )
 bool SalomeApp_Study::loadDocument( const QString& theStudyName )
 {
   MESSAGE( "loadDocument" );
+
+  // obtain myStudyDS
+  _PTR(Study) study = SalomeApp_Application::getStudy();
+  if ( !study )
+    return false;
+
+  setStudyDS( study );
 
   setRoot( new SalomeApp_RootObject( this ) ); // create myRoot
 
@@ -728,12 +739,16 @@ void SalomeApp_Study::closeDocument(bool permanently)
       SUIT_Desktop* desk = SUIT_Session::session()->activeApplication()->desktop();
       bool isBlocked = desk->signalsBlocked();
       desk->blockSignals( true );
-      SalomeApp_Application::getStudy()->Clear();
+      studyPtr->Clear();
       desk->blockSignals( isBlocked );
 #ifndef DISABLE_PYCONSOLE
       SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( application() );
       app->getPyInterp()->destroy();
 #endif
+    }
+    else {
+      SALOMEDSClient_Study* aStudy = 0;
+      setStudyDS( _PTR(Study)(aStudy) );
     }
   }
 }
@@ -1175,8 +1190,8 @@ void SalomeApp_Study::RemoveTemporaryFiles ( const char* theModuleName, const bo
 */
 void SalomeApp_Study::updateFromNotebook( const QString& theFileName, bool isSaved )
 {
-//  setStudyName(theFileName);
-//  studyDS()->Name(theFileName.toStdString()); NB!!!
+  setStudyName(theFileName);
+  studyDS()->URL(theFileName.toStdString());
   setIsSaved( isSaved );
 }
 #endif
