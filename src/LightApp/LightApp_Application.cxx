@@ -5145,18 +5145,17 @@ bool LightApp_Application::checkExistingDoc()
 
 PyConsole_Interp* LightApp_Application::getPyInterp()
 {
-  static PyInterp_Auto<PyConsole_Interp> myInterp;
-  if ( myInterp.isNull() ) {
+  static PyConsole_Interp* myInterp = 0;
+  if ( !myInterp ) {
     myInterp = createPyInterp();
     myInterp->initialize();
-    myInterp->incrRef();// In Light application the PyConsole_Interp cannot been destroy. Why ?
   }
   return myInterp;
 }
 
 PyConsole_Interp* LightApp_Application::createPyInterp()
 {
-  return new PyConsole_Interp;
+  return new PyConsole_Interp();
 }
 
 #endif // DISABLE_PYCONSOLE
