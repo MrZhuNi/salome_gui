@@ -56,7 +56,6 @@ PyConsole_Interp::PyConsole_Interp()
 */
 PyConsole_Interp::~PyConsole_Interp()
 {
-  destroy();
 }
 
 /*!
