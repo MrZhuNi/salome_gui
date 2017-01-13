@@ -136,7 +136,7 @@ Un répertoire avec ce nom existe déjà sur le disque. Essayez d&apos;utiliser 
     </message>
     <message>
         <source>TOT_DESK_FILE_CLOSE</source>
-        <translation type="unfinished">Clear document</translation>
+        <translation>Fermer le document</translation>
     </message>
     <message>
         <source>TOT_DESK_FILE_NEW</source>

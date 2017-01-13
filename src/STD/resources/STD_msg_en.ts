@@ -136,7 +136,7 @@ Directory with this name exist on disc. Try to use another name</translation>
     </message>
     <message>
         <source>TOT_DESK_FILE_CLOSE</source>
-        <translation>Clear document</translation>
+        <translation>Close document</translation>
     </message>
     <message>
         <source>TOT_DESK_FILE_NEW</source>
