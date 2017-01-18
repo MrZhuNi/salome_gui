@@ -557,7 +557,7 @@ void SalomeApp_Application::onDesktopMessage( const QString& message )
   }
   if (message.indexOf("studyCleared") == 0) {
     // Disconnect GUI from active study, because it was closed on DS side.
-    if (activeStudy() && activeStudy()->isModified()) {
+    if (activeStudy()) {
       closeActiveDoc( false );
       // Disable 'Connect' action
       QAction* a = action( ConnectId );

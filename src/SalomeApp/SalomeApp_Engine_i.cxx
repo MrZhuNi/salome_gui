@@ -86,16 +86,16 @@ SALOMEDS::TMPFile* SalomeApp_Engine_i::Save (SALOMEDS::SComponent_ptr theCompone
     std::string aTmpDir = myListOfFiles[0];
 
     // Create a list to store names of created files
-    SALOMEDS::ListOfFileNames_var aSeq = new SALOMEDS::ListOfFileNames;
-    aSeq->length(n);
+    ListOfFiles aSeq;
+    aSeq.reserve(n);
     for (int i = 0; i < n; i++)
-      aSeq[i] = CORBA::string_dup(myListOfFiles[i + 1].c_str());
+      aSeq.push_back(CORBA::string_dup(myListOfFiles[i + 1].c_str()));
 
     // Convert a file to the byte stream
-    aStreamFile = SALOMEDS_Tool::PutFilesToStream(aTmpDir.c_str(), aSeq.in(), isMultiFile);
+    aStreamFile = SALOMEDS_Tool::PutFilesToStream(aTmpDir.c_str(), aSeq, isMultiFile);
 
     // Remove the files and tmp directory, created by the component storage procedure
-    if (!isMultiFile) SALOMEDS_Tool::RemoveTemporaryFiles(aTmpDir.c_str(), aSeq.in(), true);
+    if (!isMultiFile) SALOMEDS_Tool::RemoveTemporaryFiles(aTmpDir.c_str(), aSeq, true);
   }
 
   return aStreamFile._retn();
@@ -121,11 +121,11 @@ CORBA::Boolean SalomeApp_Engine_i::Load (SALOMEDS::SComponent_ptr theComponent,
 
   // Convert the byte stream theStream to a files and place them in the tmp directory.
   // The files and temporary directory must be deleted by the component loading procedure.
-  SALOMEDS::ListOfFileNames_var aSeq =
+  ListOfFiles aSeq =
     SALOMEDS_Tool::PutStreamToFiles(theFile, aTmpDir.c_str(), isMultiFile);
 
   // Store list of file names to be used by the component loading procedure
-  const int n = aSeq->length() + 1;
+  const int n = aSeq.size() + 1;
   ListOfFiles listOfFiles (n);
   listOfFiles[0] = aTmpDir;
   for (int i = 1; i < n; i++)

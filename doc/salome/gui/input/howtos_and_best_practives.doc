@@ -159,12 +159,12 @@ useCaseIter->UnRegister();
 useCaseBuilder->UnRegister();
 \endcode
 
-\section use_case_compatibility Remark about compatibility with existing studies
+\section use_case_compatibility Remark about compatibility with existing study
 
 If you decide to switch your module to the use case builder approach to provide
 customization for the data tree representation, you must take care of compatibility
 with existing SALOME studies. Basically it means that you have to add
-a simple code to  \c Load() (and \c LoadASCII() if necessary) method
+a simple code to  \c Load() method
 of your module, which adds tree node attributes to all data entities
 in the data tree of your module. The simplest way to do
 this is to iterate through all data items and recursively add them to

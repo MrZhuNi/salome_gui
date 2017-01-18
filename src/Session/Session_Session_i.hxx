@@ -92,7 +92,6 @@ protected:
   CORBA::Boolean _isGUI ;
   QMutex* _GUIMutex ;
   QWaitCondition* _GUILauncher;
-  int _runningStudies ;
   CORBA::ORB_var _orb;
   PortableServer::POA_var _poa;
   bool _isShuttingDown;

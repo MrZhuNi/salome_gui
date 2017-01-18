@@ -427,7 +427,7 @@ QString SalomeApp_Study::studyName() const
   // it can be changed outside of GUI
   // TEMPORARILY SOLUTION: better to be implemented with help of SALOMEDS observers
   if ( studyDS() ) {
-    QString newName = QString::fromUtf8(studyDS()->Name().c_str());
+    QString newName = QString::fromUtf8(studyDS()->URL().c_str());
     if ( LightApp_Study::studyName() != newName ) {
       SalomeApp_Study* that = const_cast<SalomeApp_Study*>( this );
       that->setStudyName( newName );
@@ -480,7 +480,7 @@ bool SalomeApp_Study::createDocument( const QString& theStr )
     return false;
 
   setStudyDS( study );
-  setStudyName( QString::fromUtf8(study->Name().c_str()) );
+  setStudyName( QString::fromUtf8(study->URL().c_str()) );
 
   // create myRoot
   SalomeApp_RootObject* aRoot=new SalomeApp_RootObject( this );
@@ -666,9 +666,7 @@ bool SalomeApp_Study::saveDocumentAs( const QString& theFileName )
 
   bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false );
   bool isAscii = resMgr->booleanValue( "Study", "ascii_file", false );
-  bool res = (isAscii ?
-    studyDS()->SaveAsASCII( theFileName.toUtf8().data(), isMultiFile ) :
-    studyDS()->SaveAs     ( theFileName.toUtf8().data(), isMultiFile ))
+  bool res = studyDS()->SaveAs( theFileName.toUtf8().data(), isMultiFile, isAscii )
     && CAM_Study::saveDocumentAs( theFileName );
 
   res = res && saveStudyData(theFileName);
@@ -711,9 +709,7 @@ bool SalomeApp_Study::saveDocument()
 
   bool isMultiFile = resMgr->booleanValue( "Study", "multi_file", false );
   bool isAscii = resMgr->booleanValue( "Study", "ascii_file", false );
-  bool res = (isAscii ?
-    studyDS()->SaveASCII( isMultiFile ) :
-    studyDS()->Save     ( isMultiFile )) && CAM_Study::saveDocument();
+  bool res = studyDS()->Save( isMultiFile, isAscii ) && CAM_Study::saveDocument();
 
   res = res && saveStudyData(studyName());
   if ( res )
@@ -1169,17 +1165,17 @@ void SalomeApp_Study::RemoveTemporaryFiles ( const char* theModuleName, const bo
   if (isMultiFile)
     return;
 
-  std::vector<std::string> aListOfFiles = GetListOfFiles( theModuleName );
+  SALOMEDS_Tool::ListOfFiles aListOfFiles = GetListOfFiles( theModuleName );
   if (aListOfFiles.size() > 0) {
     std::string aTmpDir = aListOfFiles[0];
 
     const int n = aListOfFiles.size() - 1;
-    SALOMEDS::ListOfFileNames_var aSeq = new SALOMEDS::ListOfFileNames;
-    aSeq->length(n);
+    std::vector<std::string> aSeq;
+    aSeq.reserve(n);
     for (int i = 0; i < n; i++)
-      aSeq[i] = CORBA::string_dup(aListOfFiles[i + 1].c_str());
+      aSeq.push_back(CORBA::string_dup(aListOfFiles[i + 1].c_str()));
 
-    SALOMEDS_Tool::RemoveTemporaryFiles(aTmpDir.c_str(), aSeq.in(), true);
+    SALOMEDS_Tool::RemoveTemporaryFiles(aTmpDir.c_str(), aSeq, true);
   }
 }
 

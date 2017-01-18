@@ -5097,7 +5097,8 @@ bool LightApp_Application::checkExistingDoc()
 {
   bool result = true;
   if( activeStudy() ) {
-    int answer = SUIT_MessageBox::question( desktop(),
+    int answer = !activeStudy()->isModified() ? 1 :
+                 SUIT_MessageBox::question( desktop(),
 					    tr( "APPCLOSE_CAPTION" ),
 					    tr( "STUDYCLOSE_DESCRIPTION" ),
 					    tr( "APPCLOSE_SAVE" ),
