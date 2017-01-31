@@ -665,11 +665,6 @@ void SVTK_Viewer::Display( const SALOME_VTKPrs* prs )
     if(aPrs->IsNull())
       return;
     if(vtkActorCollection* anActorCollection = aPrs->GetObjects()){
-      // get SALOMEDS Study
-      // Temporarily commented to avoid awful dependecy on SALOMEDS
-      // TODO: better mechanism of storing display/erse status in a study
-      // should be provided...
-      // _PTR(Study) aStudy(getStudyDS());
       anActorCollection->InitTraversal();
       while(vtkActor* anActor = anActorCollection->GetNextActor()){
         if(SALOME_Actor* anAct = SALOME_Actor::SafeDownCast(anActor)){
@@ -680,8 +675,8 @@ void SVTK_Viewer::Display( const SALOME_VTKPrs* prs )
           // TODO: better mechanism of storing display/erse status in a study
           // should be provided...
           //Handle(SALOME_InteractiveObject) anObj = anAct->getIO();
-          //if(!anObj.IsNull() && anObj->hasEntry() && aStudy){
-          //  ToolsGUI::SetVisibility(aStudy,anObj->getEntry(),true,this);
+          //if(!anObj.IsNull() && anObj->hasEntry()){
+          //  ToolsGUI::SetVisibility(anObj->getEntry(),true,this);
           //}
           // just display the object
           QVector<SUIT_ViewWindow*> aViews = myViewManager->getViews();
@@ -714,11 +709,6 @@ void SVTK_Viewer::Erase( const SALOME_VTKPrs* prs, const bool forced )
     if(aPrs->IsNull())
       return;
     if(vtkActorCollection* anActorCollection = aPrs->GetObjects()){
-      // get SALOMEDS Study
-      // Temporarily commented to avoid awful dependecy on SALOMEDS
-      // TODO: better mechanism of storing display/erase status in a study
-      // should be provided...
-      //_PTR(Study) aStudy(getStudyDS());
       anActorCollection->InitTraversal();
       while(vtkActor* anActor = anActorCollection->GetNextActor())
         if(SALOME_Actor* anAct = SALOME_Actor::SafeDownCast(anActor)){
@@ -727,8 +717,8 @@ void SVTK_Viewer::Erase( const SALOME_VTKPrs* prs, const bool forced )
           // TODO: better mechanism of storing display/erase status in a study
           // should be provided...
           //Handle(SALOME_InteractiveObject) anObj = anAct->getIO();
-          //if(!anObj.IsNull() && anObj->hasEntry() && aStudy){
-          //  ToolsGUI::SetVisibility(aStudy,anObj->getEntry(),false,this);
+          //if(!anObj.IsNull() && anObj->hasEntry()){
+          //  ToolsGUI::SetVisibility(anObj->getEntry(),false,this);
           //}
           // just display the object
           QVector<SUIT_ViewWindow*> aViews = myViewManager->getViews();
@@ -753,10 +743,6 @@ void SVTK_Viewer::Erase( const SALOME_VTKPrs* prs, const bool forced )
 */
 void SVTK_Viewer::EraseAll( SALOME_Displayer* d, const bool forced )
 {
-  // Temporarily commented to avoid awful dependecy on SALOMEDS
-  // TODO: better mechanism of storing display/erse status in a study
-  // should be provided...
-  //_PTR(Study) aStudy(getStudyDS());
   QVector<SUIT_ViewWindow*> aViews = myViewManager->getViews();
   for(int i = 0, iEnd = aViews.size(); i < iEnd; i++){
     if(SVTK_ViewWindow* aViewWindow = dynamic_cast<SVTK_ViewWindow*>(aViews.at(i)))
@@ -772,8 +758,8 @@ void SVTK_Viewer::EraseAll( SALOME_Displayer* d, const bool forced )
             // TODO: better mechanism of storing display/erse status in a study
             // should be provided...
             //Handle(SALOME_InteractiveObject) anObj = anAct->getIO();
-            //if(!anObj.IsNull() && anObj->hasEntry() && aStudy)
-            //  ToolsGUI::SetVisibility(aStudy,anObj->getEntry(),false,this);
+            //if(!anObj.IsNull() && anObj->hasEntry())
+            //  ToolsGUI::SetVisibility(anObj->getEntry(),false,this);
             if(forced){
               if(SVTK_Renderer* aRnd = aView->GetRenderer())
                 aRnd->RemoveActor(anAct);

@@ -210,7 +210,7 @@ Launch a new session or close the study.</translation>
     </message>
     <message>
         <source>QUE_DOC_ALREADYEXIST</source>
-        <translation>The document %1 already exists in study manager.
+        <translation>The document %1 already exists.
 Do you want to reload it ?</translation>
     </message>
     <message>

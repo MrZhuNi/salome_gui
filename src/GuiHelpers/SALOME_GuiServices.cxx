@@ -69,27 +69,10 @@ namespace GUI {
   // 
 
   /**
-   * This returns the current active study id if an active study is
-   * defined in the SALOME session, returns -1 otherwise. Note that
-   * the active study doesn't make sense outside of the GUI SALOME
-   * process, i.e. the SALOME_SessionServer embedding the
-   * SalomeApp_Application.
-   */
-  bool isActiveStudy() {
-    SALOME::Session_var aSession = KERNEL::getSalomeSession();
-    if ( CORBA::is_nil(aSession) ) {
-      INFOS("ERR: can't request for active study because the session is NULL");
-      return false;
-    }
-    return true;
-  }
-
-  /**
    * This returns the current active study if an active study is
    * defined in the SALOME session, returns null otherwise.
    */
-  SALOMEDS::Study_ptr getActiveStudy() {
-	if ( isActiveStudy() )
+  SALOMEDS::Study_ptr getStudy() {
     return KERNEL::getStudy();
   }
 

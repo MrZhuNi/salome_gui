@@ -210,7 +210,7 @@
     </message>
     <message>
       <source>QUE_DOC_ALREADYEXIST</source>
-      <translation>ドキュメント %1 は研究のマネージャーに既に存在します。それを再読み込みしますか。</translation>
+      <translation>ドキュメント %1 はの存在。それを再読み込みしますか。</translation>
     </message>
     <message>
       <source>MEN_RENAME_VS</source>

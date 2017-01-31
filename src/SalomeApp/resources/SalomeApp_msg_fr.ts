@@ -210,7 +210,7 @@ Lancez une nouvelle session ou fermez l&apos;étude en cours.</translation>
     </message>
     <message>
         <source>QUE_DOC_ALREADYEXIST</source>
-        <translation>Le document %1 existe déjà dans le gestionnaire d&apos;études.
+        <translation>Le document %1 existe déjà.
 Voulez-vous le recharger ?</translation>
     </message>
     <message>

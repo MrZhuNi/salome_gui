@@ -416,7 +416,7 @@ void MyModule::copyOrMove( const MYMODULE_ORB::object_list& what,
 {
   if ( CORBA::is_nil( where ) ) return; // bad parent
 
-  SALOMEDS::Study_var study = where->GetStudy();                               // study
+  SALOMEDS::Study_var study = GUI::getStudy();                              // study
   SALOMEDS::StudyBuilder_var studyBuilder = study->NewBuilder();               // study builder
   SALOMEDS::UseCaseBuilder_var useCaseBuilder = study->GetUseCaseBuilder();    // use case builder
   SALOMEDS::SComponent_var father = where->GetFatherComponent();               // father component

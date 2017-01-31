@@ -102,7 +102,7 @@ protected:
 protected:
   virtual void        dataModelInserted( const CAM_DataModel* );
   virtual bool        openDataModel( const QString&, CAM_DataModel* );
-  void                setStudyDS(const _PTR(Study)& s );
+
   virtual CAM_ModuleObject* createModuleObject( LightApp_DataModel* theDataModel, 
 						SUIT_DataObject* theParent ) const;
 protected slots:

@@ -20,6 +20,7 @@
 // Author: Guillaume Boulant (EDF/R&D)
 
 #include "SALOME_AppStudyEditor.hxx"
+#include "SALOME_GuiServices.hxx"
 
 #include <SalomeApp_Study.h>
 #include <SALOME_ListIO.hxx>
@@ -34,7 +35,7 @@ SALOME_AppStudyEditor::SALOME_AppStudyEditor(SalomeApp_Application * salomeApp)
 SALOMEDS::SObject_ptr SALOME_AppStudyEditor::IObjectToSObject(const Handle(SALOME_InteractiveObject)& iobject) {
   if (!iobject.IsNull()) {
     if (iobject->hasEntry()) {
-      SALOMEDS::SObject_var sobject = _study->FindObjectID(iobject->getEntry());
+      SALOMEDS::SObject_var sobject = GUI::getStudy()->FindObjectID(iobject->getEntry());
       return sobject._retn();
     }
   }

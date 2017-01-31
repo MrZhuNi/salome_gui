@@ -65,7 +65,7 @@ SALOMEDS::TMPFile* SalomeApp_Engine_i::Save (SALOMEDS::SComponent_ptr theCompone
 {
   SALOMEDS::TMPFile_var aStreamFile = new SALOMEDS::TMPFile;
 
-  if (CORBA::is_nil(theComponent) || CORBA::is_nil(theComponent->GetStudy()))
+  if (CORBA::is_nil(theComponent))
     return aStreamFile._retn();
 
   // Get a temporary directory to store a file
@@ -107,7 +107,7 @@ CORBA::Boolean SalomeApp_Engine_i::Load (SALOMEDS::SComponent_ptr theComponent,
                                          bool isMultiFile)
 {
   std::cout << "SalomeApp_Engine_i::Load() isMultiFile = " << isMultiFile << std::endl;
-  if (CORBA::is_nil(theComponent) || CORBA::is_nil(theComponent->GetStudy()))
+  if (CORBA::is_nil(theComponent))
     return false;
 
   // Error somewhere outside - Load() called with

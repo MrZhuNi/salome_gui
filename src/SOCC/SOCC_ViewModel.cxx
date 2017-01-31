@@ -286,12 +286,6 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
   if ( !anOCCPrs || anOCCPrs->IsNull() )
     return;
 
-  // get SALOMEDS Study
-  // Temporarily commented to avoid awful dependecy on SALOMEDS
-  // TODO: better mechanism of storing display/erse status in a study
-  // should be provided...
-  //  _PTR(Study) study(getStudyDS());
-
   // get context
   Handle (AIS_InteractiveContext) ic = getAISContext();
 
@@ -367,8 +361,7 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
       //  Handle(SALOME_InteractiveObject)::DownCast( anAIS->GetOwner() );
       //if ( !anObj.IsNull() && anObj->hasEntry() )
       //{
-      //  if ( study  )
-      //    ToolsGUI::SetVisibility( study, anObj->getEntry(), true, this );
+      //  ToolsGUI::SetVisibility( anObj->getEntry(), true, this );
       //}
 
       // Deactivate object if necessary
@@ -391,12 +384,6 @@ void SOCC_Viewer::Erase( const SALOME_OCCPrs* prs, const bool forced )
   const SOCC_Prs* anOCCPrs = dynamic_cast<const SOCC_Prs*>( prs );
   if ( !anOCCPrs || anOCCPrs->IsNull() )
     return;
-
-  // get SALOMEDS Study
-  // Temporarily commented to avoid awful dependecy on SALOMEDS
-  // TODO: better mechanism of storing display/erse status in a study
-  // should be provided...
-  //  _PTR(Study) study(getStudyDS());
 
   // get context
   Handle(AIS_InteractiveContext) ic = getAISContext();
@@ -421,8 +408,7 @@ void SOCC_Viewer::Erase( const SALOME_OCCPrs* prs, const bool forced )
       //    Handle(SALOME_InteractiveObject)::DownCast( anAIS->GetOwner() );
       //  if ( !anObj.IsNull() && anObj->hasEntry() )
       //  {
-      //  if ( study )
-      //    ToolsGUI::SetVisibility( study, anObj->getEntry(), true, this );
+      //    ToolsGUI::SetVisibility( anObj->getEntry(), true, this );
       //  }
       //}
     }
@@ -437,12 +423,6 @@ void SOCC_Viewer::Erase( const SALOME_OCCPrs* prs, const bool forced )
 */
 void SOCC_Viewer::EraseAll( SALOME_Displayer* d, const bool forced )
 {
-  // get SALOMEDS Study
-  // Temporarily commented to avoid awful dependecy on SALOMEDS
-  // TODO: better mechanism of storing display/erse status in a study
-  // should be provided...
-  //  _PTR(Study) study(getStudyDS());
-
   // get context
   Handle(AIS_InteractiveContext) ic = getAISContext();
 
@@ -470,8 +450,7 @@ void SOCC_Viewer::EraseAll( SALOME_Displayer* d, const bool forced )
     //  Handle(SALOME_InteractiveObject)::DownCast( anIO->GetOwner() );
 
     //  if ( !anObj.IsNull() && anObj->hasEntry() ) {
-    //  if ( study )
-    //    ToolsGUI::SetVisibility( study, anObj->getEntry(), true, this );
+    //    ToolsGUI::SetVisibility( anObj->getEntry(), true, this );
     //  }
     //}
   }
