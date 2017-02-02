@@ -35,7 +35,7 @@ SALOME_AppStudyEditor::SALOME_AppStudyEditor(SalomeApp_Application * salomeApp)
 SALOMEDS::SObject_ptr SALOME_AppStudyEditor::IObjectToSObject(const Handle(SALOME_InteractiveObject)& iobject) {
   if (!iobject.IsNull()) {
     if (iobject->hasEntry()) {
-      SALOMEDS::SObject_var sobject = GUI::getStudy()->FindObjectID(iobject->getEntry());
+      SALOMEDS::SObject_var sobject = GUI::getStudyServant()->FindObjectID(iobject->getEntry());
       return sobject._retn();
     }
   }

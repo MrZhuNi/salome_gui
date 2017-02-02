@@ -67,7 +67,7 @@ def getSObjectSelected():
     '''
     sobj = None
     entry = None
-    study = services.getStudy()
+    study = salome.myStudy
     if SalomeGUI.SelectedCount() == 1:
         # We only considere the first element of the list. If you need
         # something else, create another function in your own context.
@@ -95,7 +95,7 @@ def deleteSObjectSelected():
     '''
     sobj, entry = getSObjectSelected()
     if ( sobj ):
-        study = services.getStudy()
+        study = salome.myStudy
         builder = study.NewBuilder()
         builder.RemoveObject( sobj )
         SalomeGUI.updateObjBrowser()

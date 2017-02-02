@@ -72,10 +72,9 @@ namespace GUI {
    * This returns the current active study if an active study is
    * defined in the SALOME session, returns null otherwise.
    */
-  SALOMEDS::Study_ptr getStudy() {
-    return KERNEL::getStudy();
+  SALOMEDS::Study_ptr getStudyServant() {
+    return KERNEL::getStudyServant();
   }
-
 
   // __GBO__ Question: what is the difference between a
   // SALOMEDS::Study and a SalomeApp_Study?
@@ -104,8 +103,7 @@ namespace GUI {
           // retrieve the SALOMEDS::Study servant first and the to
           // request this servant to get the SObject given its entry.
           //
-          SALOMEDS::Study_var study = KERNEL::getStudy();
-          SALOMEDS::SObject_ptr sobject = study->FindObjectID(iobject->getEntry());
+          SALOMEDS::SObject_ptr sobject = KERNEL::getStudyServant()->FindObjectID(iobject->getEntry());
           return sobject;
         }
       }

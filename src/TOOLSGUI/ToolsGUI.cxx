@@ -35,7 +35,6 @@
 
 /*!
   \brief Get visibility value of the "AttributeGraphic" attribute.
-  \param theStudy study
   \param theObj object
   \param theId sub-object identifier
   \return \c true if an object (sub-object) is visible
@@ -55,7 +54,6 @@ bool ToolsGUI::GetVisibility( _PTR(SObject) theObj,
 
 /*!
   \brief Set visibility value of the "AttributeGraphic" attribute.
-  \param theStudy study
   \param theObj object
   \return theValue new visibility value
   \param theId sub-object identifier
@@ -64,7 +62,7 @@ bool ToolsGUI::SetVisibility( const char* theEntry,
                               const bool  theValue,
                               void*       theId )
 {
-  _PTR(Study) aStudy = ClientFactory::Study(KERNEL::getStudy());
+  _PTR(Study) aStudy = ClientFactory::Study(KERNEL::getStudyServant());
   _PTR(SObject) anObj ( aStudy->FindObjectID( theEntry ) );
 
   if ( anObj )
