@@ -28,7 +28,7 @@ if DEMO_IS_ACTIVATED:
   try:
     import GEOM
     from salome.geom import geomBuilder
-    geompy = geomBuilder.New(salome.myStudy)
+    geompy = geomBuilder.New()
     
     import SMESH, SALOMEDS
     from salome.smesh import smeshBuilder
@@ -48,7 +48,7 @@ if DEMO_IS_ACTIVATED:
       from salome.geom import geomBuilder
 
       # Intialize the geompy factory with the active study
-      geompy = geomBuilder.New(context.study)
+      geompy = geomBuilder.New()
 
       # Create the objects
       Vx = geompy.MakeVectorDXDYDZ(10, 0, 0)
@@ -75,7 +75,7 @@ if DEMO_IS_ACTIVATED:
       from salome.geom import geomBuilder
 
       # Intialize the geompy factory with the active study
-      geompy = geomBuilder.New(context.study)
+      geompy = geomBuilder.New()
 
       # Create the objects
       Vx = geompy.MakeVectorDXDYDZ(10, 0, 0)

@@ -73,7 +73,7 @@ namespace GUI {
    * defined in the SALOME session, returns null otherwise.
    */
   SALOMEDS::Study_ptr getStudyServant() {
-    return KERNEL::getStudyServant();
+    return SALOMEDS::Study::_duplicate(KERNEL::getStudyServant());
   }
 
   // __GBO__ Question: what is the difference between a
