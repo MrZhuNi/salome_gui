@@ -662,6 +662,9 @@ void SalomeApp_Application::onCloseDoc( bool ask )
 
   }
   LightApp_Application::onCloseDoc( ask );
+
+  // reinitialize study to have empty data
+  getStudy()->Init();
 }
 
 /*!Sets enable or disable some actions on selection changed.*/
