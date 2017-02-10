@@ -1962,9 +1962,6 @@ bool SalomeApp_Application::onRestoreStudy( const QString& theDumpScript,
 {
   bool ok = true;
 
-  // create a new study
-  onNewDoc();
-
   // get active application
   SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
 
