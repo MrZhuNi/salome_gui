@@ -28,7 +28,7 @@ ENDIF()
 
 # additional include directories
 INCLUDE_DIRECTORIES(
-  ${CAS_INCLUDE_DIRS}
+  ${OpenCASCADE_INCLUDE_DIR}
   ${QT_INCLUDES}
   ${SIP_INCLUDE_DIR}
   ${PYTHON_INCLUDE_DIRS}
@@ -51,7 +51,7 @@ INCLUDE_DIRECTORIES(
 # additional preprocessor / compiler flags
 ADD_DEFINITIONS(
   ${QT_DEFINITIONS}
-  ${CAS_DEFINITIONS}
+  ${OpenCASCADE_DEFINITIONS}
   ${PYTHON_DEFINITIONS}
 )
 
