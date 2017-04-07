@@ -64,10 +64,19 @@ void Plot2d_ToolTip::onToolTip( QPoint p, QString& str, QFont& f, QRect& txtRect
     foreach(int j, aPnts)
     {
       aTxt = aCurves[i]->text( j );
-      if (!aTxt.isEmpty())
-      {
-        str += ("<p>" + aTxt + "</p>");
-      }
+      if( !aTxt.isEmpty() )
+        str += QString( "<p>%1</p>" ).arg( aTxt );
+    }
+  }
+
+  // Produce a tooltip containing titles of all found curves.
+  if( str.isEmpty() )
+  {
+    for(int i = 0; i < aCurves.length(); i++)
+    {
+      aTxt = aCurves[i]->getVerTitle();
+      if( !aTxt.isEmpty() )
+        str += QString( "<p>%1</p>" ).arg( aTxt );
     }
   }
 
