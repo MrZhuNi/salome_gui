@@ -86,10 +86,24 @@ public:
                                              const double theMaxValue,
                                              const int theValueScaleFactorDegree );
 
+  int                                 GetNX() const { return myNX; }
+  int                                 GetNY() const { return myNY; }
+  const QList<QPointF>&               GetPntList() const { return myPntList; }
+  const QList<double>&                GetValueList() const { return myValueList; }
+  double                              GetMinValue() const { return myMinValue; }
+  double                              GetMaxValue() const { return myMaxValue; }
+  int                                 GetValueScaleFactorDegree() const { return myValueScaleFactorDegree; }
+
   void                                RecomputeLookupTable();
 
+  void                                SetObjectName( const QString& );
+  const QString&                      GetObjectName() const;
+
+  void                                SetQuantityName( const QString& );
+  const QString&                      GetQuantityName() const;
+
   void                                SetUnits( const QString& );
-  QString                             GetUnits() const;
+  const QString&                      GetUnits() const;
 
   void                                SetIsDistance( const bool );
   bool                                GetIsDistance() const;
@@ -101,9 +115,15 @@ public:
 
   void                                GetRealBounds( double theBounds[6] ) const;
 
-  int                                 GetValueScaleFactorDegree() const;
-
 protected:
+  int                                 myNX;
+  int                                 myNY;
+  QList<QPointF>                      myPntList;
+  QList<double>                       myValueList;
+  double                              myMinValue;
+  double                              myMaxValue;
+  int                                 myValueScaleFactorDegree;
+
   vtkSmartPointer<vtkWarpScalar>      myWarpScalar;
 
   vtkSmartPointer<vtkImplicitBoolean> myImplicitBoolean;
@@ -122,6 +142,8 @@ protected:
   vtkSmartPointer<vtkScalarBarWidget> myScalarBarWg;
   bool                                myToDisplayScalarBar;
 
+  QString                             myObjectName;
+  QString                             myQuantityName;
   QString                             myUnits;
   bool                                myIsDistance;
 
@@ -129,8 +151,6 @@ protected:
   int                                 myEndPoint;
 
   double                              myRealBounds[6];
-
-  int                                 myValueScaleFactorDegree;
 };
 
 #endif

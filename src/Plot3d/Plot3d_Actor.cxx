@@ -48,6 +48,13 @@ vtkStandardNewMacro(Plot3d_Actor);
 //=============================================================================
 Plot3d_Actor::Plot3d_Actor()
 {
+  // Input data
+  myNX = 0;
+  myNY = 0;
+  myMinValue = 0;
+  myMaxValue = 0;
+  myValueScaleFactorDegree = 0; // degree of the value scale factor (value = value_base * 10^degree)
+
   // Pipeline
   myWarpScalar = vtkWarpScalar::New();
   myWarpScalar->Delete();
@@ -140,9 +147,6 @@ Plot3d_Actor::Plot3d_Actor()
   myRealBounds[3] = VTK_DOUBLE_MIN;
   myRealBounds[4] = VTK_DOUBLE_MAX;
   myRealBounds[5] = VTK_DOUBLE_MIN;
-
-  // Degree of the value scale factor (value = value_base * 10^degree)
-  myValueScaleFactorDegree = 0;
 }
 
 //=============================================================================
@@ -346,14 +350,20 @@ void Plot3d_Actor::Build( const int theNX,
                           const double theMaxValue,
                           const int theValueScaleFactorDegree )
 {
+  myNX = theNX;
+  myNY = theNY;
+  myPntList = thePntList;
+  myValueList = theValueList;
+  myMinValue = theMinValue;
+  myMaxValue = theMaxValue;
+  myValueScaleFactorDegree = theValueScaleFactorDegree;
+
   myRealBounds[0] = VTK_DOUBLE_MAX;
   myRealBounds[1] = VTK_DOUBLE_MIN;
   myRealBounds[2] = VTK_DOUBLE_MAX;
   myRealBounds[3] = VTK_DOUBLE_MIN;
   myRealBounds[4] = theMinValue;
   myRealBounds[5] = theMaxValue;
-
-  myValueScaleFactorDegree = theValueScaleFactorDegree;
 
   vtkPolyData* aPointSet = vtkPolyData::New();
   aPointSet->Allocate( ( theNX - 1 ) * ( theNY - 1 ) );
@@ -570,6 +580,42 @@ void Plot3d_Actor::RecomputeLookupTable()
 }
 
 //=============================================================================
+// Function : SetObjectName
+// Purpose  : 
+//=============================================================================
+void Plot3d_Actor::SetObjectName( const QString& theObjectName )
+{
+  myObjectName = theObjectName;
+}
+
+//=============================================================================
+// Function : GetObjectName
+// Purpose  : 
+//=============================================================================
+const QString& Plot3d_Actor::GetObjectName() const
+{
+  return myObjectName;
+}
+
+//=============================================================================
+// Function : SetQuantityName
+// Purpose  : 
+//=============================================================================
+void Plot3d_Actor::SetQuantityName( const QString& theQuantityName )
+{
+  myQuantityName = theQuantityName;
+}
+
+//=============================================================================
+// Function : GetQuantityName
+// Purpose  : 
+//=============================================================================
+const QString& Plot3d_Actor::GetQuantityName() const
+{
+  return myQuantityName;
+}
+
+//=============================================================================
 // Function : SetUnits
 // Purpose  : 
 //=============================================================================
@@ -582,7 +628,7 @@ void Plot3d_Actor::SetUnits( const QString& theUnits )
 // Function : GetUnits
 // Purpose  : 
 //=============================================================================
-QString Plot3d_Actor::GetUnits() const
+const QString& Plot3d_Actor::GetUnits() const
 {
   return myUnits;
 }
@@ -652,13 +698,4 @@ void Plot3d_Actor::GetRealBounds( double theBounds[6] ) const
   theBounds[3] = myRealBounds[3];
   theBounds[4] = myRealBounds[4];
   theBounds[5] = myRealBounds[5];
-}
-
-//=============================================================================
-// Function : GetValueScaleFactorDegree
-// Purpose  : 
-//=============================================================================
-int Plot3d_Actor::GetValueScaleFactorDegree() const
-{
-  return myValueScaleFactorDegree;
 }
