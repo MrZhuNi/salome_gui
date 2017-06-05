@@ -182,18 +182,14 @@ void Plot2d_Viewer::onCloneView( Plot2d_ViewFrame* clonedVF, Plot2d_ViewFrame* n
 
   // 1) Copy all properties of view
 
-#ifdef V2_2_IMP
   // These two methods should be called before copyPreferences()
   // because they do nothing if the mode is not changed.
   newVF->setHorScaleMode( clonedVF->getHorScaleMode() );
   newVF->setVerScaleMode( clonedVF->getVerScaleMode() );
-#endif
 
   newVF->copyPreferences( clonedVF );
 
-#ifdef V2_2_IMP
   newVF->setSecondY( clonedVF->getSecondY() );
-#endif
 
   // 2) Display all curves displayed in cloned view
 
@@ -205,17 +201,13 @@ void Plot2d_Viewer::onCloneView( Plot2d_ViewFrame* clonedVF, Plot2d_ViewFrame* n
     if( clonedVF->isVisible( *anIt ) )
       newVF->displayCurve( *anIt, false );
 
-#ifdef V2_2_IMP
   newVF->updateTitles( false );
-#endif
 
   // 3) Copy range of the cloned view
 
-#ifdef V2_2_IMP
   double aXMin, aXMax, aYMin, aYMax, aY2Min, aY2Max;
   clonedVF->getFitRanges( aXMin, aXMax, aYMin, aYMax, aY2Min, aY2Max );
   newVF->fitData( 0, aXMin, aXMax, aYMin, aYMax, aY2Min, aY2Max );
-#endif
 
   newVF->Repaint();
   
