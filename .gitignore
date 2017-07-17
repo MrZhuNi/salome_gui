@@ -1,0 +1,9 @@
+Release32
+Debug32
+Release64
+Debug64
+moc
+qrc
+*.user
+*.ncb
+*.suo

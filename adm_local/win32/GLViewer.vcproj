@@ -10,14 +10,17 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
-			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			OutputDirectory="..\..\$(ConfigurationName)32\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)32\obj\$(TargetName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -49,8 +52,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include;$(QTINC);$(OCCINC)"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;WNT;_USRDLL;GLVIEWER_EXPORTS"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)32\include;$(QTINC);$(OCCINC)"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				BufferSecurityCheck="false"
@@ -110,9 +113,104 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\$(ConfigurationName)64\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)64\obj\$(TargetName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\..\..\win64\libd/GLViewer.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)64\include;$(QTINC);$(OCCINC)"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_OCC64;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4996;4251"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="QtCored$(QTVER).lib QtGuid$(QTVER).lib QtOpenGLd$(QTVER).lib TKernel.lib TKMath.lib opengl32.lib glu32.lib"
+				OutputFile="$(OutDir)/GLViewer.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(QTLIB),$(OCCLIBD)"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(OutDir)/GLViewer.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\$(ConfigurationName)\lib\salome"
-			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			OutputDirectory="..\..\$(ConfigurationName)32\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)32\obj\$(TargetName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -143,9 +241,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
-				Optimization="0"
-				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include;$(QTINC);$(OCCINC)"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WNT;_USRDLL;GLVIEWER_EXPORTS"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)32\include;$(QTINC);$(OCCINC)"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
@@ -199,6 +298,97 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\$(ConfigurationName)64\lib\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)64\obj\$(TargetName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\..\..\win64\lib/GLViewer.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)64\include;$(QTINC);$(OCCINC)"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_OCC64;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+				DisableSpecificWarnings="4996;4251"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="QtCore$(QTVER).lib QtGui$(QTVER).lib QtOpenGL$(QTVER).lib TKernel.lib TKMath.lib opengl32.lib glu32.lib"
+				OutputFile="$(OutDir)/GLViewer.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(QTLIB),$(OCCLIB)"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(OutDir)/GLViewer.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -216,8 +406,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -226,8 +426,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -240,8 +450,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -250,8 +470,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -264,8 +494,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -274,8 +514,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -288,8 +538,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -298,8 +558,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -312,8 +582,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -322,8 +602,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -336,8 +626,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -346,8 +646,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -360,8 +670,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -370,8 +690,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -384,8 +714,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -394,8 +734,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -408,8 +758,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -418,8 +778,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -432,8 +802,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -442,8 +822,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -456,8 +846,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -466,8 +866,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -480,8 +890,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -490,8 +910,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -504,8 +934,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -514,8 +954,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -528,8 +978,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -538,8 +998,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -552,8 +1022,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -562,8 +1042,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -576,8 +1066,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -586,8 +1086,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -600,8 +1110,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -610,8 +1130,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -624,8 +1154,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -634,8 +1174,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -648,8 +1198,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -658,8 +1218,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -672,8 +1242,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -682,8 +1262,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -696,8 +1286,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -706,8 +1306,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -720,8 +1330,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -730,8 +1350,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -744,8 +1374,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -754,8 +1394,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -768,8 +1418,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -778,8 +1438,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -792,8 +1462,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -802,8 +1482,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -816,8 +1506,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -826,8 +1526,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -840,8 +1550,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -850,8 +1570,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -863,177 +1593,30 @@
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_AspectLine.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_BaseDrawers.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_BaseObjects.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Compass.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Context.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_CoordSystem.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Drawer.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_FrameBuffer.cxx"
@@ -1042,77 +1625,14 @@
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Geom.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Grid.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Group.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_MimeData.cxx"
@@ -1121,327 +1641,54 @@
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Object.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Selector.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Selector2d.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Text.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Tools.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_ToolTip.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Viewer.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Viewer2d.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_ViewFrame.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_ViewManager.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_ViewPort.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_ViewPort2d.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\GLViewer\GLViewer_Widget.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -1457,8 +1704,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1467,8 +1724,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1481,8 +1748,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1491,8 +1768,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1505,8 +1792,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1515,8 +1812,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1529,8 +1836,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1539,8 +1856,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1553,8 +1880,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1563,8 +1900,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1577,8 +1924,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1587,8 +1944,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1601,8 +1968,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1611,8 +1988,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1625,8 +2012,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1635,8 +2032,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1649,8 +2056,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1659,8 +2076,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1673,8 +2100,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1683,8 +2120,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1697,8 +2144,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1707,8 +2164,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputFileName)"
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1721,8 +2188,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate $(InputName).qm..."
-						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1731,8 +2208,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate $(InputName).qm..."
-						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1745,8 +2232,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate $(InputName).qm..."
-						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1755,8 +2252,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate $(InputName).qm..."
-						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1769,8 +2276,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate $(InputName).qm..."
-						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1779,8 +2296,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate $(InputName).qm..."
-						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1792,252 +2319,42 @@
 			<File
 				RelativePath="..\..\moc\moc_GLViewer_Selector.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\moc\moc_GLViewer_Selector2d.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\moc\moc_GLViewer_ToolTip.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\moc\moc_GLViewer_Viewer.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\moc\moc_GLViewer_Viewer2d.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\moc\moc_GLViewer_ViewFrame.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\moc\moc_GLViewer_ViewManager.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\moc\moc_GLViewer_ViewPort.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\moc\moc_GLViewer_ViewPort2d.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\moc\moc_GLViewer_Widget.cxx"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;WNT;_USRDLL;GLVIEWER_EXPORTS;$(NoInherit)"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>

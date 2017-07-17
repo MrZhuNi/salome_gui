@@ -10,14 +10,17 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\$(ConfigurationName)\bin\salome"
-			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			OutputDirectory="..\..\$(ConfigurationName)32\bin\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)32\obj\$(TargetName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -49,7 +52,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,$(QTINC)"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)32\include,$(QTINC)"
 				PreprocessorDefinitions="DISABLE_TESTRECORDER;_DEBUG;WIN32;_WINDOWS;WNT;QT_DLL;QT_THREAD_SUPPORT"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -111,9 +114,105 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\$(ConfigurationName)64\bin\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)64\obj\$(TargetName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\..\..\win64\libd/SUITApp.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)64\include,$(QTINC)"
+				PreprocessorDefinitions="DISABLE_TESTRECORDER;_DEBUG;WIN32;_WINDOWS;_OCC64;WNT;QT_DLL;QT_THREAD_SUPPORT"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4996;4251"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="QtCored$(QTVER).lib QtGuid$(QTVER).lib qtmaind.lib Userenv.lib"
+				OutputFile="$(OutDir)\SuitAppCmd.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(QTLIB)"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\$(ConfigurationName)\bin\salome"
-			IntermediateDirectory="..\..\$(ConfigurationName)\obj\$(TargetName)"
+			OutputDirectory="..\..\$(ConfigurationName)32\bin\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)32\obj\$(TargetName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -146,7 +245,7 @@
 				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)\include,$(QTINC)"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)32\include,$(QTINC)"
 				PreprocessorDefinitions="DISABLE_TESTRECORDER;NDEBUG;WIN32;_WINDOWS;WNT;QT_DLL;QT_THREAD_SUPPORT"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -201,6 +300,97 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\$(ConfigurationName)64\bin\salome"
+			IntermediateDirectory="..\..\$(ConfigurationName)64\obj\$(TargetName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\..\..\win64\lib/SUITApp.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(GUI_SRC_DIR)\$(ConfigurationName)64\include,$(QTINC)"
+				PreprocessorDefinitions="DISABLE_TESTRECORDER;NDEBUG;WIN32;_WINDOWS;_OCC64;WNT;QT_DLL;QT_THREAD_SUPPORT"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+				DisableSpecificWarnings="4996;4251"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="QtCore$(QTVER).lib QtGui$(QTVER).lib qtmain.lib Userenv.lib"
+				OutputFile="$(OutDir)\SuitAppCmd.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(QTLIB)"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -218,8 +408,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe -DDISABLE_TESTRECORDER $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe -DDISABLE_TESTRECORDER $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe -DDISABLE_TESTRECORDER $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -228,8 +428,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate moc_$(InputName).cxx..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe -DDISABLE_TESTRECORDER $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
-						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe -DDISABLE_TESTRECORDER $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe -DDISABLE_TESTRECORDER $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
 			</File>
@@ -260,8 +470,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate $(InputName).qm..."
-						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -270,8 +490,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate $(InputName).qm..."
-						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm"
 					/>
 				</FileConfiguration>
 			</File>
@@ -284,8 +514,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate $(InputName).qm..."
-						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -294,8 +534,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generate $(InputName).qm..."
-						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
-						Outputs="..\..\$(ConfigurationName)\share\salome\resources\gui\$(InputName).qm"
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputName).qm"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate $(InputName).qm..."
+						CommandLine="$(QTBIN)\lrelease.exe $(InputPath) -qm ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputName).qm"
 					/>
 				</FileConfiguration>
 			</File>
@@ -318,7 +568,28 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

@@ -11,14 +11,17 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory=".\Debug32"
+			IntermediateDirectory=".\Debug32"
 			ConfigurationType="10"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -27,14 +30,14 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Coping documentation files..."
-				CommandLine="set PATH=$(windir)\system32;$(PATH)&#x0D;&#x0A;echo CVS\ &gt; ./exclude_from_copy.dat&#x0D;&#x0A;xcopy $(GUI_SRC_DIR)\doc $(GUI_SRC_DIR)\$(ConfigurationName)\doc /s /i /y /r /exclude:exclude_from_copy.dat&#x0D;&#x0A;del exclude_from_copy.dat&#x0D;&#x0A;"
+				CommandLine="set PATH=$(windir)\system32;$(PATH)&#x0D;&#x0A;echo CVS\ &gt; ./exclude_from_copy.dat&#x0D;&#x0A;xcopy $(GUI_SRC_DIR)\doc $(GUI_SRC_DIR)\$(ConfigurationName)32\doc /s /i /y /r /exclude:exclude_from_copy.dat&#x0D;&#x0A;del exclude_from_copy.dat&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Debug/All.tlb"
+				TypeLibraryName=".\Debug32/All.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -43,8 +46,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory=".\Release32"
+			IntermediateDirectory=".\Release32"
 			ConfigurationType="10"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -53,14 +56,68 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Coping documentation files..."
-				CommandLine="set PATH=$(windir)\system32;$(PATH)&#x0D;&#x0A;echo CVS\ &gt; ./exclude_from_copy.dat&#x0D;&#x0A;xcopy $(GUI_SRC_DIR)\doc $(GUI_SRC_DIR)\$(ConfigurationName)\doc /s /i /y /r /exclude:exclude_from_copy.dat&#x0D;&#x0A;del exclude_from_copy.dat&#x0D;&#x0A;"
+				CommandLine="set PATH=$(windir)\system32;$(PATH)&#x0D;&#x0A;echo CVS\ &gt; ./exclude_from_copy.dat&#x0D;&#x0A;xcopy $(GUI_SRC_DIR)\doc $(GUI_SRC_DIR)\$(ConfigurationName)32\doc /s /i /y /r /exclude:exclude_from_copy.dat&#x0D;&#x0A;del exclude_from_copy.dat&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Release/All.tlb"
+				TypeLibraryName=".\Release32/All.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory=".\Debug64"
+			IntermediateDirectory=".\Debug64"
+			ConfigurationType="10"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				Description="Coping documentation files..."
+				CommandLine="set PATH=$(windir)\system32;$(PATH)&#x0D;&#x0A;echo CVS\ &gt; ./exclude_from_copy.dat&#x0D;&#x0A;xcopy $(GUI_SRC_DIR)\doc $(GUI_SRC_DIR)\$(ConfigurationName)64\doc /s /i /y /r /exclude:exclude_from_copy.dat&#x0D;&#x0A;del exclude_from_copy.dat&#x0D;&#x0A;"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+				TypeLibraryName=".\Debug64/All.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory=".\Release64"
+			IntermediateDirectory=".\Release64"
+			ConfigurationType="10"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				Description="Coping documentation files..."
+				CommandLine="set PATH=$(windir)\system32;$(PATH)&#x0D;&#x0A;echo CVS\ &gt; ./exclude_from_copy.dat&#x0D;&#x0A;xcopy $(GUI_SRC_DIR)\doc $(GUI_SRC_DIR)\$(ConfigurationName)64\doc /s /i /y /r /exclude:exclude_from_copy.dat&#x0D;&#x0A;del exclude_from_copy.dat&#x0D;&#x0A;"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+				TypeLibraryName=".\Release64/All.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
