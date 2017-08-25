@@ -61,6 +61,7 @@ SET(_moc_HEADERS
   PVViewer_ViewWindow.h
   PVViewer_Behaviors.h
   PVViewer_GUIElements.h
+  PVViewer_InitSingleton.h
 )
 
 # header files / no moc processing
