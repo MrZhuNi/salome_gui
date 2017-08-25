@@ -96,6 +96,7 @@ SET(_other_SOURCES
   PVViewer_Behaviors.cxx
   PVViewer_GUIElements.cxx
   PVViewer_Core.cxx
+  PVViewer_InitSingleton.cxx
   )
   
 # sources / to compile
