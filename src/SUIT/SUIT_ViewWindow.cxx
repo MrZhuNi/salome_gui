@@ -27,6 +27,7 @@
 #include "SUIT_MessageBox.h"
 #include "SUIT_Application.h"
 #include "SUIT_ViewManager.h"
+#include "SUIT_Session.h"
 #include "QtxActionToolMgr.h"
 
 #include <QEvent>
@@ -171,20 +172,20 @@ bool SUIT_ViewWindow::event( QEvent* e )
   if ( e->type() == DUMP_EVENT )
   {
     bool bOk = false;
-    if ( myManager && myManager->study() && myManager->study()->application() )
+    SUIT_Application* app = SUIT_Session::session()->activeApplication();
+    if(app)
     {
       QImage im = dumpView();
 
       // get file name
-      SUIT_Application* app = myManager->study()->application();
       QString fileName = app->getFileName( false, QString(), filter(), tr( "TLT_DUMP_VIEW" ), 0 );
       if ( !fileName.isEmpty() )
       {
-	      QString fmt = SUIT_Tools::extension( fileName ).toUpper();
-	      bOk = dumpViewToFormat( im, fileName, fmt );
+        QString fmt = SUIT_Tools::extension( fileName ).toUpper();
+        bOk = dumpViewToFormat( im, fileName, fmt );
       }
       else
-	      bOk = true; // cancelled
+        bOk = true; // cancelled
     }
     if ( !bOk )
       SUIT_MessageBox::critical( this, tr( "ERROR" ), tr( "ERR_CANT_DUMP_VIEW" ) );
