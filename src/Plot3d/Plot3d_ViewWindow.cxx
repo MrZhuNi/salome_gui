@@ -212,7 +212,7 @@ void Plot3d_ViewWindow::createActions( SUIT_ResourceMgr* theResourceMgr )
 			    theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_PLOT3D_SURFACES_SETTINGS" ) ),
 			    tr( "MNU_PLOT3D_SURFACES_SETTINGS" ), 0, this );
   anAction->setStatusTip( tr( "DSC_PLOT3D_SURFACES_SETTINGS" ) );
-  connect( anAction, SIGNAL( activated() ), this, SLOT( onSurfacesSettings() ) );
+  connect( anAction, SIGNAL( triggered() ), this, SLOT( onSurfacesSettings() ) );
   mgr->registerAction( anAction, SurfacesSettingsId );
 
   anAction = new QtxAction( tr( "MNU_PLOT3D_MERGE_SCALAR_BARS" ),

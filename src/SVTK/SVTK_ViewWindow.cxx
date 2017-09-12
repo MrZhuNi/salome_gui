@@ -1621,7 +1621,7 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_DUMP" ) ),
 			   tr( "MNU_DUMP_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_DUMP_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onDumpView()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(onDumpView()));
   mgr->registerAction( anAction, DumpId );
 
   // FitAll
@@ -1629,7 +1629,7 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_FITALL" ) ),
 			   tr( "MNU_FITALL" ), 0, this);
   anAction->setStatusTip(tr("DSC_FITALL"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onFitAll()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(onFitAll()));
   mgr->registerAction( anAction, FitAllId );
 
   // FitRect
@@ -1637,7 +1637,7 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_FITAREA" ) ),
 			   tr( "MNU_FITRECT" ), 0, this);
   anAction->setStatusTip(tr("DSC_FITRECT"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(activateWindowFit()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(activateWindowFit()));
   mgr->registerAction( anAction, FitRectId );
 
   // Zoom
@@ -1645,7 +1645,7 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_ZOOM" ) ),
 			   tr( "MNU_ZOOM_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_ZOOM_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(activateZoom()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(activateZoom()));
   mgr->registerAction( anAction, ZoomId );
 
   // Panning
@@ -1653,7 +1653,7 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_PAN" ) ),
 			   tr( "MNU_PAN_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_PAN_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(activatePanning()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(activatePanning()));
   mgr->registerAction( anAction, PanId );
 
   // Global Panning
@@ -1661,7 +1661,7 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_GLOBALPAN" ) ),
 			   tr( "MNU_GLOBALPAN_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_GLOBALPAN_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(activateGlobalPanning()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(activateGlobalPanning()));
   mgr->registerAction( anAction, GlobalPanId );
 
   // Change rotation point
@@ -1678,7 +1678,7 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_ROTATE" ) ),
 			   tr( "MNU_ROTATE_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_ROTATE_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(activateRotation()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(activateRotation()));
   mgr->registerAction( anAction, RotationId );
 
   // Projections
@@ -1686,42 +1686,42 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_FRONT" ) ),
 			   tr( "MNU_FRONT_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_FRONT_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onFrontView()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(onFrontView()));
   mgr->registerAction( anAction, FrontId );
 
   anAction = new QtxAction(tr("MNU_BACK_VIEW"), 
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_BACK" ) ),
 			   tr( "MNU_BACK_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_BACK_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onBackView()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(onBackView()));
   mgr->registerAction( anAction, BackId );
 
   anAction = new QtxAction(tr("MNU_TOP_VIEW"), 
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_TOP" ) ),
 			   tr( "MNU_TOP_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_TOP_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onTopView()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(onTopView()));
   mgr->registerAction( anAction, TopId );
 
   anAction = new QtxAction(tr("MNU_BOTTOM_VIEW"), 
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_BOTTOM" ) ),
 			   tr( "MNU_BOTTOM_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_BOTTOM_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onBottomView()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(onBottomView()));
   mgr->registerAction( anAction, BottomId );
 
   anAction = new QtxAction(tr("MNU_LEFT_VIEW"), 
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_LEFT" ) ),
 			   tr( "MNU_LEFT_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_LEFT_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onLeftView()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(onLeftView()));
   mgr->registerAction( anAction, LeftId );
 
   anAction = new QtxAction(tr("MNU_RIGHT_VIEW"), 
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_RIGHT" ) ),
 			   tr( "MNU_RIGHT_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_RIGHT_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onRightView()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(onRightView()));
   mgr->registerAction( anAction, RightId );
 
   // Reset
@@ -1729,7 +1729,7 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_RESET" ) ),
 			   tr( "MNU_RESET_VIEW" ), 0, this);
   anAction->setStatusTip(tr("DSC_RESET_VIEW"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onResetView()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(onResetView()));
   mgr->registerAction( anAction, ResetId );
 
   // onViewTrihedron: Shows - Hides Trihedron
@@ -1737,7 +1737,7 @@ void SVTK_ViewWindow::createActions(SUIT_ResourceMgr* theResourceMgr)
 			   theResourceMgr->loadPixmap( "VTKViewer", tr( "ICON_VTKVIEWER_VIEW_TRIHEDRON" ) ),
 			   tr( "MNU_SHOW_TRIHEDRON" ), 0, this);
   anAction->setStatusTip(tr("DSC_SHOW_TRIHEDRON"));
-  connect(anAction, SIGNAL(activated()), this, SLOT(onViewTrihedron()));
+  connect(anAction, SIGNAL(triggered()), this, SLOT(onViewTrihedron()));
   mgr->registerAction( anAction, ViewTrihedronId );
 
   // onNonIsometric: Manage non-isometric params
