@@ -84,9 +84,11 @@ int SALOME_LINE_WIDTH = 3;
 namespace
 {
   int
-  GetEdgeId(SALOME_Actor* theActor,
-            vtkPicker* thePicker, 
-            int theObjId)
+  GetEdgeAndNodesId(SALOME_Actor* theActor,
+                    vtkPicker* thePicker,
+                    int theObjId,
+                    int& theFirstNodeId,
+                    int& theSecondNodeId)
   {
     int anEdgeId = 0;
     if (vtkCell* aPickedCell = theActor->GetElemCell(theObjId)) {
@@ -104,6 +106,8 @@ namespace
           if (aDist < aMinDist) {
             aMinDist = aDist;
             anEdgeId = -1 - i;
+            theFirstNodeId = aSelEdge->GetPointId(0);
+            theSecondNodeId = aSelEdge->GetPointId(1);
           }
         }
       }
@@ -449,12 +453,9 @@ SALOME_Actor
       mySelector->GetIndex( getIO(), aMapIndex );
       switch( mySelectionMode ){
       case NodeSelection:
+      case EdgeOfCellSelection:
         myHighlightActor->GetProperty()->SetRepresentationToPoints();
         myHighlightActor->MapPoints( this, aMapIndex );
-        break;
-      case EdgeOfCellSelection:
-        myHighlightActor->GetProperty()->SetRepresentationToWireframe();
-        myHighlightActor->MapEdge( this, aMapIndex );
         break;
       case CellSelection:
       case EdgeSelection:
@@ -597,7 +598,8 @@ SALOME_Actor
       if ( aVtkId >= 0 && mySelector->IsValid( this, aVtkId )) {
         int anObjId = GetElemObjId( aVtkId );
         if ( anObjId >= 0 ) {
-          int anEdgeId = GetEdgeId(this,myCellPicker.GetPointer(),anObjId);
+          int aFNId, aSNId;
+          int anEdgeId = GetEdgeAndNodesId(this,myCellPicker.GetPointer(),anObjId,aFNId,aSNId);
           myIsPreselected = anEdgeId < 0;
           if(myIsPreselected){
             const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
@@ -798,6 +800,48 @@ SALOME_Actor
         else if ( !anIsShift )
           mySelector->RemoveIObject( this );
       }
+      break;
+    }
+    case EdgeOfCellSelection:
+    {
+      SVTK::TPickLimiter aPickLimiter( myCellAreaPicker, this );
+      if( theSelectionEvent->myIsRectangle )
+        myCellAreaPicker->Pick( x1, y1, x2, y2, aRenderer, SVTK_AreaPicker::RectangleMode );
+      else if( theSelectionEvent->myIsPolygon )
+        myCellAreaPicker->Pick( theSelectionEvent->myPolygonPoints, aRenderer, SVTK_AreaPicker::PolygonMode );
+
+      const SVTK_AreaPicker::TVectorIdsMap& aVectorIdsMap = myCellAreaPicker->GetCellIdsMap();
+      SVTK_AreaPicker::TVectorIdsMap::const_iterator aMapIter = aVectorIdsMap.find(this);
+      TColStd_MapOfInteger anIndexes;
+      if(aMapIter != aVectorIdsMap.end()){
+        const SVTK_AreaPicker::TVectorIds& aVectorIds = aMapIter->second;
+        vtkIdType anEnd = aVectorIds.size();
+        for(vtkIdType anId = 0; anId < anEnd; anId++ ) {
+          int aCellId = aVectorIds[anId];
+          if ( !mySelector->IsValid( this, aCellId ) )
+            continue;
+
+          int anObjId = GetElemObjId( aCellId );
+          if( anObjId != -1 ) {
+            int aFNId, aSNId;
+            int anEdgeId = GetEdgeAndNodesId(this,myCellPicker.GetPointer(),anObjId,aFNId,aSNId);
+            if( anEdgeId < 0 ) {
+              anIndexes.Add(GetNodeObjId(aFNId));
+              anIndexes.Add(GetNodeObjId(aSNId));
+            }
+          }
+        }
+      }
+
+      if ( hasIO() ) {
+        if( !anIndexes.IsEmpty() ) {
+          mySelector->AddOrRemoveIndex( myIO, anIndexes, anIsShift );
+          mySelector->AddIObject( this );
+          anIndexes.Clear();
+        }
+        else if ( !anIsShift )
+          mySelector->RemoveIObject( this );
+      }
     }
     default:
       break;
@@ -850,10 +894,21 @@ SALOME_Actor
       if( aVtkId >= 0 && mySelector->IsValid( this, aVtkId ) ) {
         int anObjId = GetElemObjId( aVtkId );
         if( anObjId >= 0 ) {
-          int anEdgeId = GetEdgeId(this,myCellPicker.GetPointer(),anObjId);
+          int aFNId, aSNId;
+          int anEdgeId = GetEdgeAndNodesId(this,myCellPicker.GetPointer(),anObjId,aFNId,aSNId);
           if( hasIO() && anEdgeId < 0 ) {
-            mySelector->AddOrRemoveIndex( myIO, anObjId, false );
-            mySelector->AddOrRemoveIndex( myIO, anEdgeId, true );
+        	bool isFNSelected = mySelector->IsIndexSelected( myIO, GetNodeObjId(aFNId) );
+        	bool isSNSelected = mySelector->IsIndexSelected( myIO, GetNodeObjId(aSNId) );
+        	if ( isFNSelected == isSNSelected ) {
+              mySelector->AddOrRemoveIndex( myIO, GetNodeObjId(aFNId), anIsShift );
+              mySelector->AddOrRemoveIndex( myIO, GetNodeObjId(aSNId), true );
+        	}
+        	else if ( isFNSelected ) {
+        	  mySelector->AddOrRemoveIndex( myIO, GetNodeObjId(aSNId), anIsShift );
+        	}
+        	else if ( isSNSelected ) {
+        	  mySelector->AddOrRemoveIndex( myIO, GetNodeObjId(aFNId), anIsShift );
+        	}
             mySelector->AddIObject( this );
           }
         }
