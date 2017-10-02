@@ -625,7 +625,7 @@ public:
     if ( LightApp_Application* anApp = getApplication() ) {
       SUIT_ViewWindow* window = anApp->desktop()->activeWindow();
       if ( window ) {
-        SALOME_View* view = dynamic_cast<SALOME_View*>( window->getViewManager()->getActiveView() );
+        SALOME_View* view = dynamic_cast<SALOME_View*>( window->getViewManager()->getViewModel() );
         if ( view ) {
           SALOME_Prs* aPrs = view->CreatePrs( myEntry.toLatin1() );
           myResult = !aPrs->IsNull();
@@ -653,7 +653,7 @@ void SALOMEGUI_Swig::UpdateView()
       if ( LightApp_Application* anApp = getApplication() ) {
         SUIT_ViewWindow* window = anApp->desktop()->activeWindow();
         if ( window ) {
-          SALOME_View* view = dynamic_cast<SALOME_View*>( window->getViewManager()->getActiveView() );
+          SALOME_View* view = dynamic_cast<SALOME_View*>( window->getViewManager()->getViewModel() );
           if ( view )
             view->Repaint();
         }
