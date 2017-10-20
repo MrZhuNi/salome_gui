@@ -1514,15 +1514,21 @@ QtxWorkstack::QtxWorkstack( QWidget* parent )
   myWorkWin( 0 ),
   myWorkArea( 0 )
 {
-  myActionsMap.insert( SplitVertical,   new QtxAction( QString(), tr( "Split vertically" ), 0, this ) );
-  myActionsMap.insert( SplitHorizontal, new QtxAction( QString(), tr( "Split horizontally" ), 0, this ) );
-  myActionsMap.insert( Close,           new QtxAction( QString(), tr( "Close" ), 0, this ) );
-  myActionsMap.insert( Rename,          new QtxAction( QString(), tr( "Rename" ), 0, this ) );
+  myActionsMap.insert( SplitVertical,      new QtxAction( QString(), tr( "Split vertically"       ), 0, this ) );
+  myActionsMap.insert( SplitHorizontal,    new QtxAction( QString(), tr( "Split horizontally"     ), 0, this ) );
+  myActionsMap.insert( Close,              new QtxAction( QString(), tr( "Close"                  ), 0, this ) );
+  myActionsMap.insert( CloseAllButThis,    new QtxAction( QString(), tr( "Close All But This"     ), 0, this ) );
+  myActionsMap.insert( CloseAllToTheLeft,  new QtxAction( QString(), tr( "Close All To The Left"  ), 0, this ) );
+  myActionsMap.insert( CloseAllToTheRight, new QtxAction( QString(), tr( "Close All To The Right" ), 0, this ) );
+  myActionsMap.insert( Rename,             new QtxAction( QString(), tr( "Rename"                 ), 0, this ) );
 
-  connect( myActionsMap[SplitVertical], SIGNAL( triggered( bool ) ), this, SLOT( splitVertical() ) );
-  connect( myActionsMap[SplitHorizontal], SIGNAL( triggered( bool ) ), this, SLOT( splitHorizontal() ) );
-  connect( myActionsMap[Close], SIGNAL( triggered( bool ) ), this, SLOT( onCloseWindow() ) );
-  connect( myActionsMap[Rename], SIGNAL( triggered( bool ) ), this, SLOT( onRename() ) );
+  connect( myActionsMap[SplitVertical     ], SIGNAL( triggered( bool ) ), this, SLOT( splitVertical()        ) );
+  connect( myActionsMap[SplitHorizontal   ], SIGNAL( triggered( bool ) ), this, SLOT( splitHorizontal()      ) );
+  connect( myActionsMap[Close             ], SIGNAL( triggered( bool ) ), this, SLOT( onCloseWindow()        ) );
+  connect( myActionsMap[CloseAllButThis   ], SIGNAL( triggered( bool ) ), this, SLOT( onCloseAllButThis()    ) );
+  connect( myActionsMap[CloseAllToTheLeft ], SIGNAL( triggered( bool ) ), this, SLOT( onCloseAllToTheLeft()  ) );
+  connect( myActionsMap[CloseAllToTheRight], SIGNAL( triggered( bool ) ), this, SLOT( onCloseAllToTheRight() ) );
+  connect( myActionsMap[Rename            ], SIGNAL( triggered( bool ) ), this, SLOT( onRename()             ) );
 
   // Action shortcut will work when action added in any widget.
   for ( QMap<int, QAction*>::iterator it = myActionsMap.begin(); it != myActionsMap.end(); ++it )
@@ -2010,10 +2016,13 @@ void QtxWorkstack::setIcon( const int id, const QIcon& icon )
 */
 void QtxWorkstack::setMenuActions( const int flags )
 {
-  myActionsMap[SplitVertical]->setVisible( flags & SplitVertical );
-  myActionsMap[SplitHorizontal]->setVisible( flags & SplitHorizontal );
-  myActionsMap[Close]->setVisible( flags & Close );
-  myActionsMap[Rename]->setVisible( flags & Rename );
+  myActionsMap[SplitVertical     ]->setVisible( flags & SplitVertical      );
+  myActionsMap[SplitHorizontal   ]->setVisible( flags & SplitHorizontal    );
+  myActionsMap[Close             ]->setVisible( flags & Close              );
+  myActionsMap[CloseAllButThis   ]->setVisible( flags & CloseAllButThis    );
+  myActionsMap[CloseAllToTheLeft ]->setVisible( flags & CloseAllToTheLeft  );
+  myActionsMap[CloseAllToTheRight]->setVisible( flags & CloseAllToTheRight );
+  myActionsMap[Rename            ]->setVisible( flags & Rename             );
 }
 
 /*!
@@ -2027,10 +2036,13 @@ void QtxWorkstack::setMenuActions( const int flags )
 int QtxWorkstack::menuActions() const
 {
   int ret = 0;
-  ret = ret | ( myActionsMap[SplitVertical]->isVisible() ? SplitVertical : 0 );
-  ret = ret | ( myActionsMap[SplitHorizontal]->isVisible() ? SplitHorizontal : 0 );
-  ret = ret | ( myActionsMap[Close]->isVisible() ? Close : 0 );
-  ret = ret | ( myActionsMap[Rename]->isVisible() ? Rename : 0 );
+  ret = ret | ( myActionsMap[SplitVertical     ]->isVisible() ? SplitVertical      : 0 );
+  ret = ret | ( myActionsMap[SplitHorizontal   ]->isVisible() ? SplitHorizontal    : 0 );
+  ret = ret | ( myActionsMap[Close             ]->isVisible() ? Close              : 0 );
+  ret = ret | ( myActionsMap[CloseAllButThis   ]->isVisible() ? CloseAllButThis    : 0 );
+  ret = ret | ( myActionsMap[CloseAllToTheLeft ]->isVisible() ? CloseAllToTheLeft  : 0 );
+  ret = ret | ( myActionsMap[CloseAllToTheRight]->isVisible() ? CloseAllToTheRight : 0 );
+  ret = ret | ( myActionsMap[Rename            ]->isVisible() ? Rename             : 0 );
   return ret;
 }
 
@@ -2432,6 +2444,95 @@ void QtxWorkstack::onCloseWindow()
 }
 
 /*!
+  \brief Close all windows except active window.
+*/
+void QtxWorkstack::onCloseAllButThis()
+{
+  QtxWorkstackArea* area = myWorkArea;
+  if ( !area )
+    area = activeArea();
+  if ( !area )
+    return;
+
+  QWidgetList widgetList = area->widgetList();
+  if ( widgetList.count() < 2 )
+    return;
+
+  QWidget* curWid = myWorkWin;
+  if ( !curWid )
+    curWid = area->activeWidget();
+  if ( !curWid )
+    return;
+
+  for ( QWidgetList::iterator itr = widgetList.begin(); itr != widgetList.end(); ++itr )
+  {
+    if ( (*itr) == curWid ) continue; // Skip active window
+    (*itr)->close();
+  }
+}
+
+/*!
+  \brief Close all windows that are to the left of the active window.
+*/
+void QtxWorkstack::onCloseAllToTheLeft()
+{
+  QtxWorkstackArea* area = myWorkArea;
+  if ( !area )
+    area = activeArea();
+  if ( !area )
+    return;
+
+  QWidgetList widgetList = area->widgetList();
+  if ( widgetList.count() < 2 )
+    return;
+
+  QWidget* curWid = myWorkWin;
+  if ( !curWid )
+    curWid = area->activeWidget();
+  if ( !curWid )
+    return;
+
+  for ( QWidgetList::iterator itr = widgetList.begin(); itr != widgetList.end(); ++itr )
+  {
+    if ( (*itr) == curWid ) break; // Close all before active window
+    (*itr)->close();
+  }
+}
+
+/*!
+  \brief Close all windows that are to the right of the active window.
+*/
+void QtxWorkstack::onCloseAllToTheRight()
+{
+  QtxWorkstackArea* area = myWorkArea;
+  if ( !area )
+    area = activeArea();
+  if ( !area )
+    return;
+
+  QWidgetList widgetList = area->widgetList();
+  if ( widgetList.count() < 2 )
+    return;
+
+  QWidget* curWid = myWorkWin;
+  if ( !curWid )
+    curWid = area->activeWidget();
+  if ( !curWid )
+    return;
+
+  bool isCurrentWid = false;
+  for ( QWidgetList::iterator itr = widgetList.begin(); itr != widgetList.end(); ++itr )
+  {
+    if ( !isCurrentWid )
+    {
+      isCurrentWid = (*itr) == curWid;
+      continue; // Close all after active window
+    }
+    (*itr)->close();
+  }
+}
+
+/*!
   \brief Called when workarea is destroyed.
 
   Set input focus to the neighbour area.
@@ -2530,6 +2631,15 @@ void QtxWorkstack::onContextMenuRequested( QWidget* w, QPoint p )
   {
     if ( myActionsMap[Close]->isEnabled() )
       pm->addAction( myActionsMap[Close] );
+    if ( lst.count() > 1 )
+    {
+      if ( myActionsMap[CloseAllButThis]->isEnabled() )
+        pm->addAction( myActionsMap[CloseAllButThis] );
+      if ( myActionsMap[CloseAllToTheLeft]->isEnabled() && lst.front() != w )
+        pm->addAction( myActionsMap[CloseAllToTheLeft] );
+      if ( myActionsMap[CloseAllToTheRight]->isEnabled() && lst.last() != w )
+        pm->addAction( myActionsMap[CloseAllToTheRight] );
+    }
     if ( myActionsMap[Rename]->isEnabled() )
       pm->addAction( myActionsMap[Rename] );
   }

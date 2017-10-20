@@ -51,12 +51,18 @@ class QTX_EXPORT QtxWorkstack : public QWidget
 
 public:
   //! Workstack actions (context menu items)
-  enum { SplitVertical    = 0x01,  //!< "Split vertically" menu item
-	 SplitHorizontal  = 0x02,  //!< "Split horizontally" menu item
-	 Close            = 0x04,  //!< "Close" menu item
-	 Rename           = 0x08,  //!< "Rename" menu item
-	 All = SplitVertical | SplitHorizontal | 
-	       Close | Rename      //!< all menu items
+  enum
+  {
+    SplitVertical      = 0x01,  //!< "Split vertically" menu item
+    SplitHorizontal    = 0x02,  //!< "Split horizontally" menu item
+    Close              = 0x04,  //!< "Close" menu item
+    CloseAllButThis    = 0x08,  //!< "Close All But This" menu item
+    CloseAllToTheLeft  = 0x10,  //!< "Close All To The Left" menu item
+    CloseAllToTheRight = 0x20,  //!< "Close All To The Right" menu item
+    Rename             = 0x40,  //!< "Rename" menu item
+    All = SplitVertical | SplitHorizontal | 
+          Close | CloseAllButThis | CloseAllToTheLeft | CloseAllToTheRight |
+          Rename      //!< all menu items
   };
     
   //! Workstack splitting type
@@ -112,6 +118,9 @@ public slots:
 private slots:
   void                onRename();
   void                onCloseWindow();
+  void                onCloseAllButThis();
+  void                onCloseAllToTheLeft();
+  void                onCloseAllToTheRight();
   void                onDestroyed( QObject* );
   void                onWindowActivated( QWidget* );
   void                onContextMenuRequested( QWidget*, QPoint );
