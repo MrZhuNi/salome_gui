@@ -59,6 +59,9 @@ VTKViewer_OpenGLRenderer::VTKViewer_OpenGLRenderer()
 
 VTKViewer_OpenGLRenderer::~VTKViewer_OpenGLRenderer()
 {
+  this->OpenGLHelper.DestroyShaderProgram (this->BackgroundProgram,
+					   this->BackgroundVertexShader,
+					   this->BackgroundFragmentShader);
 }
 
 void VTKViewer_OpenGLRenderer::SetGradientType( const int theGradientType )
