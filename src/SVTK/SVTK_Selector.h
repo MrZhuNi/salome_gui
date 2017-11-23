@@ -28,6 +28,7 @@
 #define SVTK_SELECTOR_H
 
 #include "SVTK.h"
+#include "SVTK_Hash.h"
 #include "SVTK_Selection.h"
 #include "SALOME_ListIO.hxx"
 
@@ -43,6 +44,12 @@ class SALOME_Actor;
 class SVTK_SelectionEvent;
 class vtkActorCollection;
 class vtkRenderer;
+
+#include <vector>
+
+typedef std::vector<Standard_Integer> SVTK_ListOfInteger;
+typedef NCollection_DefaultHasher<SVTK_ListOfInteger> SVTK_MapOfIdsHasher;
+typedef NCollection_IndexedMap<SVTK_ListOfInteger,SVTK_MapOfIdsHasher> SVTK_IndexedMapOfIds;
 
 //! Define an abstract interface for selection in SVTK package
 /*!
@@ -167,6 +174,48 @@ public:
   virtual
   void 
   ClearIndex() = 0;
+
+  /// ! Composite indexes 
+  virtual
+  bool 
+  HasCompositeIndex(const Handle(SALOME_InteractiveObject)& theIO ) const = 0;
+
+  //! Get composite indexes of subslection for given #SALOME_InteractiveObject
+  virtual
+  void 
+  GetCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
+		     SVTK_IndexedMapOfIds& theIds ) = 0;
+        
+  //! Change composite indices of subselection for given #SALOME_InteractiveObject
+  virtual
+  bool 
+  AddOrRemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
+			     const SVTK_IndexedMapOfIds& theIds,
+			     bool theIsModeShift) = 0;
+
+  //! Change composite index of subslection for given #SALOME_InteractiveObject
+  virtual
+  bool
+  AddOrRemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
+			     SVTK_ListOfInteger ids, 
+			     bool theIsModeShift) = 0;
+
+  //! Change composite index of subslection for given #SALOME_InteractiveObject
+  virtual
+  void 
+  RemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
+			SVTK_ListOfInteger ids ) = 0;
+
+  //! Check, if the given composite index is present in subselection 
+  virtual
+  bool 
+  IsCompositeIndexSelected(const Handle(SALOME_InteractiveObject)& theIO, 
+			   SVTK_ListOfInteger ids ) const = 0;
+
+  //! Clear composite indexes subselection
+  virtual
+  void 
+  ClearCompositeIndex() = 0;
 
   //----------------------------------------------------------------------------
   typedef int TFilterID;
