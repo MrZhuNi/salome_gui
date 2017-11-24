@@ -47,6 +47,7 @@ public:
   void    setSettings( const PyEditor_Settings& );
   const PyEditor_Settings& settings() const;
   QString text() const;
+  void setCurrentLine( int );
 
   QStringList keywords() const;
   void        appendKeywords( const QStringList&, int, const QColor& = QColor() );

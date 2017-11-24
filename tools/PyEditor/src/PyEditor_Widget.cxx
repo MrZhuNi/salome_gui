@@ -267,3 +267,12 @@ const PyEditor_Settings& PyEditor_Widget::settings() const
 {
   return myEditor->settings();
 }
+
+/*!
+  \brief Sets editor's current line.
+  \param line new line number
+*/
+void PyEditor_Widget::setCurrentLine( int line )
+{
+  myEditor->setCurrentLine( line );
+}

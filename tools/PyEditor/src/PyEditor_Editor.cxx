@@ -30,6 +30,7 @@
 #include <QMenu>
 #include <QPainter>
 #include <QTextBlock>
+#include <QScrollBar>
 
 #include <iostream>
 
@@ -919,4 +920,18 @@ PyEditor_Keywords* PyEditor_Editor::userKeywords() const
 PyEditor_Keywords* PyEditor_Editor::standardKeywords() const
 {
   return myStdKeywords;
+}
+
+/*!
+  \brief Change current line number to the given one.
+  \param line new line number
+*/
+void PyEditor_Editor::setCurrentLine( int line )
+{
+  // set cursor to the given line
+  QTextCursor cursor( document()->findBlockByLineNumber( line - 1 ) );
+  setTextCursor(cursor);
+  // change scroll bar position in order to center current line
+  QScrollBar *vScrollBar = verticalScrollBar();
+  vScrollBar->setValue( line * 99 / document()->lineCount() );
 }

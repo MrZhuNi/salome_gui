@@ -55,6 +55,8 @@ public:
   int completionPolicy() const;
   void setCompletionPolicy( int );
 
+  void setCurrentLine( int );
+
 public slots:
   void find();
   void replace();
