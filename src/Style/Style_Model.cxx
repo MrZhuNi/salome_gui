@@ -454,7 +454,7 @@ QColor Style_Model::getColorValue( int theId, const bool theIsDef ) const
 
 QString Style_Model::getStringValue( int theId, const bool theIsDef ) const
 {
-  QString aRes = false;
+  QString aRes;
   QVariant aValue;
   if ( myValues.contains(theId) && myValues[theId].myType == String ) {
     if ( theIsDef )
