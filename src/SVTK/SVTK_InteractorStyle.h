@@ -33,8 +33,6 @@
 
 #include "SVTK_SelectionEvent.h"
 
-#include <boost/shared_ptr.hpp>
-
 #include <vtkInteractorStyle.h>
 #include <vtkSmartPointer.h>
 
@@ -157,9 +155,7 @@ class SVTK_EXPORT SVTK_InteractorStyle: public vtkInteractorStyle
   static SVTK_InteractorStyle *New();
   vtkTypeMacro(SVTK_InteractorStyle, vtkInteractorStyle);
 
-  typedef boost::shared_ptr<SVTK_SelectionEvent> PSelectionEvent;
-
-  
+  typedef vtkSmartPointer<SVTK_SelectionEvent> PSelectionEvent;
 
   //! Generate special #SVTK_SelectionEvent
   virtual SVTK_SelectionEvent* GetSelectionEvent();

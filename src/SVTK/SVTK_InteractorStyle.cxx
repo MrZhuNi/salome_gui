@@ -176,7 +176,7 @@ SVTK_SelectionEvent* SVTK_InteractorStyle::GetSelectionEvent()
 
   GetEventPosition( this->Interactor, mySelectionEvent->myX, mySelectionEvent->myY );
 
-  return mySelectionEvent.get();
+  return mySelectionEvent.GetPointer();
 }
 
 /*!
@@ -195,7 +195,7 @@ SVTK_SelectionEvent* SVTK_InteractorStyle::GetSelectionEventFlipY()
 
   this->Interactor->GetEventPosition(mySelectionEvent->myX, mySelectionEvent->myY);
 
-  return mySelectionEvent.get();
+  return mySelectionEvent.GetPointer();
 }
 
 void SVTK_InteractorStyle::RotateXY(int dx, int dy)
