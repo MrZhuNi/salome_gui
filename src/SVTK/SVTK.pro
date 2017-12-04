@@ -12,11 +12,9 @@ VTK_LIBS = -L$${VTKHOME}/lib/vtk -L$${VTKHOME}/lib/vtk/python -lvtkCommon -lvtkG
 CASROOT = $$(CASROOT)
 CAS_CPPFLAGS = $${CASROOT}/inc
 
-BOOST_CPPFLAGS = $$(BOOSTDIR)/include
-
 OCC_LIBS = 
 
-INCLUDEPATH += ../../include $${CAS_CPPFLAGS} $${VTK_INCLUDES} $${BOOST_CPPFLAGS} ../Qtx ../SUIT ../OBJECT ../Prs ../VTKViewer
+INCLUDEPATH += ../../include $${CAS_CPPFLAGS} $${VTK_INCLUDES} ../Qtx ../SUIT ../OBJECT ../Prs ../VTKViewer
 LIBS += -L../../lib -lqtx -lsuit -lSalomeObject -lSalomePrs -lVTKViewer $${OCC_LIBS} $${VTK_LIBS}
 
 CONFIG -= debug release debug_and_release

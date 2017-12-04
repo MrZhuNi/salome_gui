@@ -13,9 +13,7 @@ QWTHOME=$$(QWTHOME)
 QWTINC=$${QWTHOME}/include
 QWTLIB=$${QWTHOME}/lib
 
-BOOST_CPPFLAGS = $$(BOOSTDIR)/include
-
-INCLUDEPATH += ../../include $${CAS_CPPFLAGS} ../../include $${QWTINC} $${BOOST_CPPFLAGS}
+INCLUDEPATH += ../../include $${CAS_CPPFLAGS} ../../include $${QWTINC}
 INCLUDEPATH += ../Qtx ../SUIT ../Plot2d ../Prs ../OBJECT
 unix:LIBS  += -L$${QWTLIB} -lqwt
 win32:LIBS += /LIBPATH:$$(QWTLIB)

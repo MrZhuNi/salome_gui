@@ -74,7 +74,6 @@ libPlot3d_la_CPPFLAGS =		\
 	$(QT_INCLUDES)		\
 	$(CAS_CPPFLAGS)		\
 	$(VTK_INCLUDES)		\
-	$(BOOST_CPPFLAGS)		\
 	-I$(srcdir)/../Qtx	\
 	-I$(srcdir)/../SUIT	\
 	-I$(srcdir)/../OBJECT	\
