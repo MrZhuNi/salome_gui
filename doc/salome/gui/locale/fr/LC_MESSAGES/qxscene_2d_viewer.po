@@ -1,0 +1,84 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the GUI package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: GUI 8.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-12-14 15:16+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.0\n"
+
+# fe8f85d9e9b246ac91fc71d35a78b965
+#: ../../../../../../SRC/GUI_SRC/doc/salome/gui/input/qxscene_2d_viewer.rst:5
+msgid "QxScene 2D Viewer"
+msgstr ""
+
+# 4a8d804f132540c39085b145b5d59a06
+#: ../../../../../../SRC/GUI_SRC/doc/salome/gui/input/qxscene_2d_viewer.rst:8
+msgid "Operations"
+msgstr ""
+
+# 31019464b1ee41c8843b63a2c33081b8
+#: ../../../../../../SRC/GUI_SRC/doc/salome/gui/input/qxscene_2d_viewer.rst:10
+msgid ""
+"The functionalities of QxScene viewer are available via its Viewer "
+"Toolbar. Buttons marked with small downward triangles have extended "
+"functionality which can be accessed by locking on them with left mouse "
+"button."
+msgstr ""
+
+# ce8ec2678fdd48028bf802190f941e3a
+#: ../../../../../../SRC/GUI_SRC/doc/salome/gui/input/qxscene_2d_viewer.rst:24
+msgid ""
+"**Fit all** - scales the presentation so that it could fit within the "
+"Viewer boundaries."
+msgstr ""
+
+# fdb0267c07ef4cb09b5d1a3c91890272
+#: ../../../../../../SRC/GUI_SRC/doc/salome/gui/input/qxscene_2d_viewer.rst:33
+msgid ""
+"**Fit area** - resizes the view to place in the visible area only the "
+"contents of a frame drawn with pressed left mouse button."
+msgstr ""
+
+# 5829a59fbf534f73a1264da95112fc49
+#: ../../../../../../SRC/GUI_SRC/doc/salome/gui/input/qxscene_2d_viewer.rst:42
+msgid "**Zoom** - allows to zoom in and out."
+msgstr ""
+
+# e86d7b8eb6b34c3999409956d57759e4
+#: ../../../../../../SRC/GUI_SRC/doc/salome/gui/input/qxscene_2d_viewer.rst:50
+msgid ""
+"**Panning** - if the represented objects are greater that the visible "
+"area and you don't wish to use **Fit all** functionality, click on this "
+"button and you'll be able to drag the scene to see its remote parts."
+msgstr ""
+
+# 3134476fcac34bdda5d966276cf38fce
+#: ../../../../../../SRC/GUI_SRC/doc/salome/gui/input/qxscene_2d_viewer.rst:61
+msgid ""
+"**Global panning** - allows to select a point to be the center of the "
+"presentation showing all displayed objects in the visible ares."
+msgstr ""
+
+# c64ab587bf9b4d3b83519887269a5d88
+#: ../../../../../../SRC/GUI_SRC/doc/salome/gui/input/qxscene_2d_viewer.rst:70
+msgid "**Reset** - restores the default position the scene."
+msgstr ""
+
+# b4dfbbd5bd40407fb808a154c3dfc3a9
+#: ../../../../../../SRC/GUI_SRC/doc/salome/gui/input/qxscene_2d_viewer.rst:75
+msgid ""
+"For more details about QxScene viewer, refer to the SALOME YACS module "
+"User's guide."
+msgstr ""
+
