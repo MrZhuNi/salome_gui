@@ -498,7 +498,9 @@ void GLViewer_Widget::resizeGL( int w, int h )
   {
     myWidth = w;
     myHeight = h;
-    myViewPort->fitAll();
+    // The line below has been commented because it seems to be useless and
+    // leads to the bug "0004306: Restoring visual state for two GL views".
+    //myViewPort->fitAll();
     myStart = GL_FALSE;
   }
 
