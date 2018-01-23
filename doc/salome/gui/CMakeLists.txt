@@ -78,7 +78,7 @@ ADD_CUSTOM_TARGET(check_translations
 ADD_DEPENDENCIES(check_translations usr_docs)
 
 FOREACH(pofile ${POFILES})
-  GET_FILENAME_COMPONENT(fn_wo_path ${pofile} NAME)	       
+  GET_FILENAME_COMPONENT(fn_wo_path ${pofile} NAME)
   ADD_CUSTOM_COMMAND(TARGET check_translations POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E
                      copy_if_different ${pofile} ${CMAKE_CURRENT_SOURCE_DIR}/locale/fr/LC_MESSAGES/${fn_wo_path})

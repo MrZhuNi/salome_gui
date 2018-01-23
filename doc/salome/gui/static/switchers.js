@@ -43,7 +43,7 @@
     var new_url = url.replace('/gui/GUI' + current_suffix + current_language,
                               '/gui/GUI' + selected_suffix + selected_language);
     if (new_url != url) {
-      window.open(new_url);
+      window.location.href = new_url;
     }
   }
 

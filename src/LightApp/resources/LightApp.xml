@@ -250,7 +250,6 @@
     <parameter name="Developer's Guide/GUI module" value="${GUI_ROOT_DIR}/share/doc/salome/tui/GUI/index.html"/>
   </section>
   <section name="kernel_help" >
-    <parameter name="User's Guide/KERNEL module"      value="${KERNEL_ROOT_DIR}/share/doc/salome/gui/KERNEL/index.html"/>
     <parameter name="Developer's Guide/KERNEL module" value="${KERNEL_ROOT_DIR}/share/doc/salome/tui/KERNEL/index.html"/>
   </section>
   <!--Salome shortcut settings-->
