@@ -72,7 +72,6 @@ ____
 ____
 
 
-For more details about QxScene viewer, refer to the SALOME YACS module
-User's guide.
+For more details about QxScene viewer, refer to the **Help > User's guide > YACS module**.
 
 
