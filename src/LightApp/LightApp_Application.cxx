@@ -4411,26 +4411,26 @@ void LightApp_Application::contextMenuPopup( const QString& type, QMenu* thePopu
       a->setShortcut( ob->shortcutKey(SUIT_DataBrowser::UpdateShortcut) );
   }
 
-#ifndef DISABLE_SALOMEOBJECT
-  if ( selMgr && ob ) {
-    SALOME_ListIO selected;
-    selMgr->selectedObjects( selected );
-    if(selected.Extent() == 1){
-      Handle(SALOME_InteractiveObject) anIObject = selected.First();
-      SUIT_DataObject* obj = findObject(anIObject->getEntry());
-      if(obj && obj->renameAllowed()) {
-        QAction* a = new QAction(tr("MEN_RENAME_OBJ"), thePopup);
-        connect( a, SIGNAL( triggered(bool) ), ob, SLOT( onStartEditing() ) );
-        if ( ob->shortcutKey(SUIT_DataBrowser::RenameShortcut) )
-          a->setShortcut( ob->shortcutKey(SUIT_DataBrowser::RenameShortcut) );
-
-        QList<QAction*> acts = thePopup->actions();
-        QAction* firstAction = acts.count() > 0 ? acts.first() : 0;
-        thePopup->insertAction(firstAction,a);
-      }
-    }
-  }
-#endif
+// #ifndef DISABLE_SALOMEOBJECT
+//   if ( selMgr && ob ) {
+//     SALOME_ListIO selected;
+//     selMgr->selectedObjects( selected );
+//     if(selected.Extent() == 1){
+//       Handle(SALOME_InteractiveObject) anIObject = selected.First();
+//       SUIT_DataObject* obj = findObject(anIObject->getEntry());
+//       if(obj && obj->renameAllowed()) {
+//         QAction* a = new QAction(tr("MEN_RENAME_OBJ"), thePopup);
+//         connect( a, SIGNAL( triggered(bool) ), ob, SLOT( onStartEditing() ) );
+//         if ( ob->shortcutKey(SUIT_DataBrowser::RenameShortcut) )
+//           a->setShortcut( ob->shortcutKey(SUIT_DataBrowser::RenameShortcut) );
+//
+//         QList<QAction*> acts = thePopup->actions();
+//         QAction* firstAction = acts.count() > 0 ? acts.first() : 0;
+//         thePopup->insertAction(firstAction,a);
+//       }
+//     }
+//   }
+// #endif
 
   selMgr->setSelectionCacheEnabled( cacheIsOn );
 }
