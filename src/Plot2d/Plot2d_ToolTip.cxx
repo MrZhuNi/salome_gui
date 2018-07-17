@@ -76,7 +76,10 @@ void Plot2d_ToolTip::onToolTip( QPoint p, QString& str, QFont& f, QRect& txtRect
     {
       aTxt = aCurves[i]->getVerTitle();
       if( !aTxt.isEmpty() )
+      {
+        aTxt.replace( "\n", " " );
         str += QString( "<p>%1</p>" ).arg( aTxt );
+      }
     }
   }
 
