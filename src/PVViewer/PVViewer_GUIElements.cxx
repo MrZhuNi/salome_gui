@@ -122,7 +122,7 @@ void PVViewer_GUIElements::buildPVWidgets()
     // Catalyst Menu
     if (!catalystMenu) {
       catalystMenu = new QMenu(0);
-      pqParaViewMenuBuilders::buildCatalystMenu(*catalystMenu);
+      pqParaViewMenuBuilders::buildCatalystMenu(*catalystMenu, myDesktop);
     }
 
     mainToolBar = new pqMainControlsToolbar(myDesktop)
