@@ -30,7 +30,7 @@
 #  define QREMOTEFILEBROWSER_EXPORT __declspec(dllimport)
 # endif
 #else   // WIN32
-# define PYINTERP_EXPORT
+# define QREMOTEFILEBROWSER_EXPORT
 #endif  // WIN32
 
 #endif //REMOTE_FILE_BROWSER_H
