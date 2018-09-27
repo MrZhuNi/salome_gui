@@ -29,12 +29,19 @@
 
 #include "SVTK_DialogBase.h"
 
+#include <QFrame>
+
 class QWidget;
 class QPushButton;
 class QTabWidget;
 class QCheckBox;
+class QGroupBox;
+class QLineEdit;
+
+class vtkAxisActor2D;
 
 class QtxAction;
+class QtxIntSpinBox;
 class SVTK_CubeAxesActor2D;
 
 class SVTK_FontWidget;
@@ -63,6 +70,8 @@ public:
   void            SetDimensionYEnabled( const bool theIsEnabled );
   void            SetDimensionZEnabled( const bool theIsEnabled );
 
+  void            SetAdjustRangeEnabled( const bool theIsEnabled );
+
 private slots:
   void            onOk();
   bool            onApply();
@@ -84,6 +93,55 @@ private:
   QPushButton*    myApplyBtn;
   QPushButton*    myCloseBtn;
   AxisWidget*     myAxes[ 3 ];
+};
+
+/*!
+  \class SVTK_CubeAxesDlg::AxisWidget
+  \brief Axis tab widget of the "Graduated axis" dialog box
+  \internal
+*/
+
+class SVTK_CubeAxesDlg::AxisWidget : public QFrame
+{
+  Q_OBJECT
+
+public:
+  AxisWidget( QWidget* );
+  ~AxisWidget();
+
+  void             UseName( const bool );
+  void             SetName( const QString& );
+  void             SetNameFont( const QColor&, const int, const int, const bool, const bool, const bool );
+
+  void             SetAdjustRangeEnabled( const bool theIsEnabled );
+  void             SetAdjustRange( const bool theState );
+  bool             GetAdjustRange() const;
+
+  bool             ReadData( vtkAxisActor2D* );
+  bool             Apply( vtkAxisActor2D* );
+
+private slots:
+  void             onAdjustRange( bool theState );
+
+private:
+  // name
+  QGroupBox*       myNameGrp;
+  QLineEdit*       myAxisName;
+  SVTK_FontWidget* myNameFont;
+
+  // labels
+  QGroupBox*       myLabelsGrp;
+  QtxIntSpinBox*   myLabelNumber;
+  QCheckBox*       myAdjustRange;
+  QtxIntSpinBox*   myLabelOffset;
+  QLineEdit*       myLabelFormat;
+  SVTK_FontWidget* myLabelsFont;
+
+  // tick marks
+  QGroupBox*       myTicksGrp;
+  QtxIntSpinBox*   myTickLength;
+
+  friend class SVTK_CubeAxesDlg;
 };
 
 #endif

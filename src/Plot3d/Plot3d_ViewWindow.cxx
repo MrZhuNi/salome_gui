@@ -45,6 +45,8 @@
 #include <QMouseEvent>
 #include <QStatusBar>
 
+#include <qwt_scale_engine.h>
+
 #include <vtkAxisActor2D.h>
 #include <vtkCamera.h>
 #include <vtkLookupTable.h>
@@ -130,6 +132,8 @@ Plot3d_ViewWindow::Plot3d_ViewWindow( SUIT_Desktop* theDesktop ):
   // Cell picker (required to display mapped coordinates in the status bar)
   myCellPicker = vtkCellPicker::New();
   myCellPicker->Delete();
+
+  myScaleEngine = new QwtLinearScaleEngine();
 }
 
 /*!
@@ -146,6 +150,12 @@ Plot3d_ViewWindow::~Plot3d_ViewWindow()
     delete myColorDic;
     myColorDic = 0;
   }
+
+  if( myScaleEngine )
+  {
+    delete myScaleEngine;
+    myScaleEngine = 0;
+  }
 }
 
 /*!
@@ -156,6 +166,9 @@ void Plot3d_ViewWindow::Initialize( SVTK_ViewModelBase* theModel )
   myPlot3dToolBar = toolMgr()->createToolBar( tr( "PLOT3D" ), -1, this );
 
   SVTK_ViewWindow::Initialize( theModel );
+
+  // 0004389: External 20933 Plots 3D - display whole numbers on axis
+  myCubeAxesDlg->SetAdjustRangeEnabled( true );
 
   // Initialize global scalar bar
   if( vtkRenderWindow* aRenderWindow = getRenderWindow() )
@@ -508,6 +521,7 @@ void Plot3d_ViewWindow::onSurfacesSettings()
 
   UpdateScalarBar( false );
   UpdateFitData( false );
+  UpdateCubeAxes( false );
   NormalizeSurfaces( false );
   onFitAll();
 }
@@ -631,6 +645,7 @@ void Plot3d_ViewWindow::onFitData()
     }
 
     UpdateFitData( false );
+    UpdateCubeAxes( false );
     NormalizeSurfaces( false );
     onFitAll();
   }
@@ -903,6 +918,91 @@ void Plot3d_ViewWindow::UpdateFitData( const bool theIsRepaint )
       aSurface->SetClippingPlanesEnabled( myIsFitDataEnabled );
     }
   }
+
+  if( theIsRepaint )
+    Repaint();
+}
+
+/*!
+  Adjust the specified range to get a scale with "round" values
+*/
+void Plot3d_ViewWindow::AdjustRange( double& theMin, double& theMax, int& theNumberOfLabels )
+{
+  static int MaxNumSteps = 10;
+
+  double aStepSize = 1.0;
+  myScaleEngine->autoScale( MaxNumSteps, theMin, theMax, aStepSize );
+
+  if( fabs( aStepSize ) > 0 )
+  {
+    double aNumber = fabs( theMax - theMin ) / aStepSize;
+    theNumberOfLabels = int( fabs( theMax - theMin ) / aStepSize + 0.5 ) + 1;
+  }
+}
+
+/*!
+  Update CubeAxes actor
+*/
+void Plot3d_ViewWindow::UpdateCubeAxes( const bool theIsRepaint )
+{
+  SVTK_CubeAxesActor2D* aCubeAxes = GetRenderer()->GetCubeAxes();
+  if( !aCubeAxes )
+    return;
+
+  vtkAxisActor2D* aXAxis = aCubeAxes->GetXAxisActor2D();
+  vtkAxisActor2D* aYAxis = aCubeAxes->GetYAxisActor2D();
+  vtkAxisActor2D* aZAxis = aCubeAxes->GetZAxisActor2D();
+  if( !aXAxis || !aYAxis || !aZAxis )
+    return;
+
+  // Unfortunately, it is necessary to call Repaint() here, because the bounds of
+  // CubeAxes actor are recomputed in SVTK_CubeAxesActor2D::RenderOpaqueGeometry().
+  Repaint();
+
+  double* aBounds = aCubeAxes->GetBounds();
+
+  double aScale[3];
+  GetScale( aScale );
+  aBounds[0] /= aScale[0];
+  aBounds[1] /= aScale[0];
+  aBounds[2] /= aScale[1];
+  aBounds[3] /= aScale[1];
+  aBounds[4] /= aScale[2];
+  aBounds[5] /= aScale[2];
+
+  if( myIsFitDataEnabled )
+  {
+    aBounds[0] = std::max( aBounds[0], myFitDataBounds[0] );
+    aBounds[1] = std::min( aBounds[1], myFitDataBounds[1] );
+    aBounds[2] = std::max( aBounds[2], myFitDataBounds[2] );
+    aBounds[3] = std::min( aBounds[3], myFitDataBounds[3] );
+    aBounds[4] = std::max( aBounds[4], myFitDataBounds[4] );
+    aBounds[5] = std::min( aBounds[5], myFitDataBounds[5] );
+  }
+
+  int aXNumberOfLabels = aXAxis->GetNumberOfLabels();
+  double aXMin = std::min( aBounds[0], aBounds[1] );
+  double aXMax = std::max( aBounds[0], aBounds[1] );
+  if( aCubeAxes->GetAdjustXRange() )
+    AdjustRange( aXMin, aXMax, aXNumberOfLabels );
+  aXAxis->SetRange( aXMin, aXMax );
+  aXAxis->SetNumberOfLabels( aXNumberOfLabels );
+
+  int aYNumberOfLabels = aYAxis->GetNumberOfLabels();
+  double aYMin = std::min( aBounds[2], aBounds[3] );
+  double aYMax = std::max( aBounds[2], aBounds[3] );
+  if( aCubeAxes->GetAdjustYRange() )
+    AdjustRange( aYMin, aYMax, aYNumberOfLabels );
+  aYAxis->SetRange( aYMin, aYMax );
+  aYAxis->SetNumberOfLabels( aYNumberOfLabels );
+
+  int aZNumberOfLabels = aZAxis->GetNumberOfLabels();
+  double aZMin = std::min( aBounds[4], aBounds[5] );
+  double aZMax = std::max( aBounds[4], aBounds[5] );
+  if( aCubeAxes->GetAdjustZRange() )
+    AdjustRange( aZMin, aZMax, aZNumberOfLabels );
+  aZAxis->SetRange( aZMin, aZMax );
+  aZAxis->SetNumberOfLabels( aZNumberOfLabels );
 
   if( theIsRepaint )
     Repaint();

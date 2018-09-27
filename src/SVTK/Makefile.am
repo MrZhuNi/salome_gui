@@ -34,6 +34,7 @@ salomeinclude_HEADERS= \
 	SVTK_DeviceActor.h \
 	SVTK_DialogBase.h \
 	SVTK_FontWidget.h \
+	SVTK_AxisActor2D.h \
 	SVTK_CubeAxesActor2D.h \
 	SVTK_Functor.h \
 	SVTK_View.h \
@@ -68,6 +69,7 @@ dist_libSVTK_la_SOURCES= \
 	SALOME_Actor.cxx \
 	SVTK_RectPicker.cxx \
 	SVTK_DeviceActor.cxx \
+	SVTK_AxisActor2D.cxx \
 	SVTK_CubeAxesActor2D.cxx \
 	SVTK_NonIsometricDlg.cxx \
 	SVTK_UpdateRateDlg.cxx \

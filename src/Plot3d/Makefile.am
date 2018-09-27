@@ -72,6 +72,7 @@ nodist_salomeres_DATA =	\
 
 libPlot3d_la_CPPFLAGS =		\
 	$(QT_INCLUDES)		\
+	$(QWT_INCLUDES)		\
 	$(CAS_CPPFLAGS)		\
 	$(VTK_INCLUDES)		\
 	-I$(srcdir)/../Qtx	\
@@ -83,6 +84,7 @@ libPlot3d_la_CPPFLAGS =		\
 
 libPlot3d_la_LDFLAGS =			\
 	$(QT_MT_LIBS)			\
+	$(QWT_LIBS)			\
 	$(CAS_KERNEL) $(CAS_VIEWER) -lTKCDF \
 	$(VTK_LIBS) $(OGL_LIBS)
 

@@ -260,6 +260,8 @@ class SVTK_EXPORT SVTK_ViewWindow : public SUIT_ViewWindow
 
   virtual void RefreshDumpImage();
 
+  virtual void UpdateCubeAxes( const bool theIsRepaint = true );
+
   //! To invoke a VTK event on #SVTK_RenderWindowInteractor instance
   void InvokeEvent(unsigned long theEvent, void* theCallData);
   

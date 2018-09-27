@@ -86,6 +86,15 @@ public:
   vtkSetMacro(IsInvertedGrid, bool);
   vtkGetMacro(IsInvertedGrid, bool);
 
+  vtkSetMacro(AdjustXRange, bool);
+  vtkGetMacro(AdjustXRange, bool);
+
+  vtkSetMacro(AdjustYRange, bool);
+  vtkGetMacro(AdjustYRange, bool);
+
+  vtkSetMacro(AdjustZRange, bool);
+  vtkGetMacro(AdjustZRange, bool);
+
 protected:
   SVTK_CubeAxesActor2D();
   ~SVTK_CubeAxesActor2D();
@@ -110,6 +119,10 @@ private:
   vtkSmartPointer<VTKViewer_Transform> m_Transform;
 
   bool IsInvertedGrid;
+
+  bool AdjustXRange;
+  bool AdjustYRange;
+  bool AdjustZRange;
 
 private:
   SVTK_CubeAxesActor2D(const SVTK_CubeAxesActor2D&);  // Not implemented.
