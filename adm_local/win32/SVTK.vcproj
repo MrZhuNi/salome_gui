@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="SVTK"
 	ProjectGUID="{C3A1EE8B-C548-4A37-B49A-D322128EE161}"
 	RootNamespace="SVTK"
@@ -1149,6 +1149,30 @@
 						Description="Update $(InputName)$(InputExt)..."
 						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\SVTK\SVTK_AxisActor2D.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputName)$(InputExt)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputName)$(InputExt)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
 			</File>
@@ -2675,6 +2699,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\Svtk\SVTK_Actor.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\SVTK\SVTK_AxisActor2D.cxx"
 				>
 			</File>
 			<File

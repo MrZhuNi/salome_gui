@@ -27,6 +27,7 @@
 //  $Header$
 
 #include "SVTK_CubeAxesActor2D.h"
+#include "SVTK_AxisActor2D.h"
 #include "VTKViewer_Transform.h"
 
 #include <vtkPolyDataMapper.h>
@@ -51,6 +52,21 @@ vtkStandardNewMacro(SVTK_CubeAxesActor2D);
 // Instantiate this object.
 SVTK_CubeAxesActor2D::SVTK_CubeAxesActor2D()
 {
+  this->XAxis = SVTK_AxisActor2D::New();
+  this->XAxis->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+  this->XAxis->GetPosition2Coordinate()->SetCoordinateSystemToDisplay();
+  this->XAxis->AdjustLabelsOff();
+
+  this->YAxis = SVTK_AxisActor2D::New();
+  this->YAxis->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+  this->YAxis->GetPosition2Coordinate()->SetCoordinateSystemToDisplay();
+  this->YAxis->AdjustLabelsOff();
+
+  this->ZAxis = SVTK_AxisActor2D::New();
+  this->ZAxis->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+  this->ZAxis->GetPosition2Coordinate()->SetCoordinateSystemToDisplay();
+  this->ZAxis->AdjustLabelsOff();
+
   this->wireActorXY = vtkActor::New();
   this->wireActorYZ = vtkActor::New();
   this->wireActorXZ = vtkActor::New();
@@ -128,6 +144,10 @@ SVTK_CubeAxesActor2D::SVTK_CubeAxesActor2D()
   aTLProp->Delete();
   
   this->IsInvertedGrid = false;
+
+  this->AdjustXRange = false;
+  this->AdjustYRange = false;
+  this->AdjustZRange = false;
 }
 
 SVTK_CubeAxesActor2D::~SVTK_CubeAxesActor2D()
@@ -273,8 +293,38 @@ int SVTK_CubeAxesActor2D::RenderOpaqueGeometry(vtkViewport *viewport)
   
   this->RenderSomething = 1;
 
+  double aTScale[3] = { 1, 1, 1 };
+  if(m_Transform.GetPointer() != NULL)
+    m_Transform->GetMatrixScale( aTScale );
+
   // determine the bounds to use
   this->GetBounds(bounds);
+
+  // 0004389: External 20933 Plots 3D - display whole numbers on axis)
+  if( this->AdjustXRange )
+  {
+    double* aXRange = this->XAxis->GetRange();
+    double aXMin = std::min( aXRange[0], aXRange[1] );
+    double aXMax = std::max( aXRange[0], aXRange[1] );
+    bounds[0] = aXMin * aTScale[0];
+    bounds[1] = aXMax * aTScale[0];
+  }
+  if( this->AdjustYRange )
+  {
+    double* aYRange = this->YAxis->GetRange();
+    double aYMin = std::min( aYRange[0], aYRange[1] );
+    double aYMax = std::max( aYRange[0], aYRange[1] );
+    bounds[2] = aYMin * aTScale[1];
+    bounds[3] = aYMax * aTScale[1];
+  }
+  if( this->AdjustZRange )
+  {
+    double* aZRange = this->ZAxis->GetRange();
+    double aZMin = std::min( aZRange[0], aZRange[1] );
+    double aZMax = std::max( aZRange[0], aZRange[1] );
+    bounds[4] = aZMin * aTScale[2];
+    bounds[5] = aZMax * aTScale[2];
+  }
 
   // Build the axes (almost always needed so we don't check mtime)
   // Transform all points into display coordinates
@@ -426,10 +476,6 @@ int SVTK_CubeAxesActor2D::RenderOpaqueGeometry(vtkViewport *viewport)
     ChangeArrays(xCoords,yCoords,zCoords,
 		 xRange,yRange,zRange,
 		 xAxes,yAxes,zAxes);
-
-  double aTScale[3];
-  if(m_Transform.GetPointer() != NULL)
-    m_Transform->GetMatrixScale(aTScale);
 
   this->XAxis->GetPositionCoordinate()->SetValue(xCoords[0], xCoords[1]);
   this->XAxis->GetPosition2Coordinate()->SetValue(xCoords[2], xCoords[3]);

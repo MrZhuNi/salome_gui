@@ -23,6 +23,8 @@
 
 #include <SVTK_ViewWindow.h>
 
+class QwtScaleEngine;
+
 class vtkCellPicker;
 class vtkLookupTable;
 class vtkScalarBarActor;
@@ -63,6 +65,9 @@ public:
   void SetFitData( const bool theIsEnabled,
                    const double theBounds[6] );
   void UpdateFitData( const bool theIsRepaint = true );
+
+  void AdjustRange( double& theMin, double& theMax, int& theNumberOfLabels );
+  virtual void UpdateCubeAxes( const bool theIsRepaint = true );
 
   void NormalizeSurfaces( const bool theIsRepaint = true );
 
@@ -117,6 +122,8 @@ protected:
   double myFitDataBounds[6];
 
   vtkSmartPointer<vtkCellPicker> myCellPicker;
+
+  QwtScaleEngine* myScaleEngine;
 };
 
 #endif

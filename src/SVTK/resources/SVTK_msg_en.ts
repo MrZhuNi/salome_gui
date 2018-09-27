@@ -217,6 +217,10 @@
         <translation>Labels</translation>
     </message>
     <message>
+        <source>ADJUST_AUTOMATICALLY</source>
+        <translation>Adjust automatically</translation>
+    </message>
+    <message>
         <source>LENGTH</source>
         <translation>Length</translation>
     </message>

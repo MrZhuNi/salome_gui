@@ -50,44 +50,6 @@
 #define DEFAULT_FONT_SIZE 16
 
 /*!
-  \class SVTK_CubeAxesDlg::AxisWidget
-  \brief Axis tab widget of the "Graduated axis" dialog box
-  \internal
-*/
-
-class SVTK_CubeAxesDlg::AxisWidget : public QFrame
-{
-public:
-  AxisWidget( QWidget* );
-  ~AxisWidget();
-
-  void             UseName( const bool );
-  void             SetName( const QString& );
-  void             SetNameFont( const QColor&, const int, const int, const bool, const bool, const bool );
-  bool             ReadData( vtkAxisActor2D* );
-  bool             Apply( vtkAxisActor2D* );
-
-private:
-  // name
-  QGroupBox*       myNameGrp;
-  QLineEdit*       myAxisName;
-  SVTK_FontWidget* myNameFont;
-
-  // labels
-  QGroupBox*       myLabelsGrp;
-  QtxIntSpinBox*   myLabelNumber;
-  QtxIntSpinBox*   myLabelOffset;
-  QLineEdit*       myLabelFormat;
-  SVTK_FontWidget* myLabelsFont;
-
-  // tick marks
-  QGroupBox*       myTicksGrp;
-  QtxIntSpinBox*   myTickLength;
-
-  friend class SVTK_CubeAxesDlg;
-};
-
-/*!
   Constructor
 */
 SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
@@ -136,8 +98,11 @@ SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
   aHBox->setSpacing(5);
   aLabel = new QLabel(SVTK_CubeAxesDlg::tr("NUMBER"));
   aHBox->addWidget(aLabel);
-  myLabelNumber = new QtxIntSpinBox(0,25,1,myLabelsGrp);
-  aHBox->addWidget(myLabelNumber);
+  myLabelNumber = new QtxIntSpinBox(2,25,1,myLabelsGrp);
+  aHBox->addWidget(myLabelNumber, 1);
+  myAdjustRange = new QCheckBox(SVTK_CubeAxesDlg::tr("ADJUST_AUTOMATICALLY"));
+  myAdjustRange->setChecked(false);
+  aHBox->addWidget(myAdjustRange);
   aLabels.append(aLabel);
   aVBox->addLayout(aHBox);
 
@@ -208,6 +173,8 @@ SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
   myLabelsGrp->setChecked( true );
   myTicksGrp->setChecked( true );
 
+  myAdjustRange->setVisible( false );
+
   // Adjust label widths
   QList< QLabel* >::iterator anIter;
   int aMaxWidth = 0;
@@ -215,6 +182,9 @@ SVTK_CubeAxesDlg::AxisWidget::AxisWidget (QWidget* theParent)
     aMaxWidth = qMax(aMaxWidth, (*anIter)->sizeHint().width());
   for (anIter = aLabels.begin(); anIter != aLabels.end(); anIter++)
     (*anIter)->setFixedWidth(aMaxWidth);
+
+  // Connections
+  connect( myAdjustRange, SIGNAL( toggled( bool ) ), this, SLOT( onAdjustRange( bool ) ) );
 }
 
 /*!
@@ -242,6 +212,26 @@ void SVTK_CubeAxesDlg::AxisWidget::SetNameFont(const QColor& theColor,
                                                const bool theIsShadow)
 {
   myNameFont->SetData(theColor, theFont, theSize, theIsBold, theIsItalic, theIsShadow);
+}
+
+void SVTK_CubeAxesDlg::AxisWidget::SetAdjustRangeEnabled( const bool theIsEnabled )
+{
+  myAdjustRange->setVisible( theIsEnabled );
+}
+
+void SVTK_CubeAxesDlg::AxisWidget::SetAdjustRange( const bool theState )
+{
+  myAdjustRange->setChecked( theState );
+}
+
+bool SVTK_CubeAxesDlg::AxisWidget::GetAdjustRange() const
+{
+  return myAdjustRange->isChecked();
+}
+
+void SVTK_CubeAxesDlg::AxisWidget::onAdjustRange( bool theState )
+{
+  myLabelNumber->setEnabled( !theState );
 }
 
 bool SVTK_CubeAxesDlg::AxisWidget::ReadData(vtkAxisActor2D* theActor)
@@ -520,6 +510,10 @@ void SVTK_CubeAxesDlg::Update()
   myAxes[ 1 ]->ReadData(myActor->GetYAxisActor2D());
   myAxes[ 2 ]->ReadData(myActor->GetZAxisActor2D());
 
+  myAxes[ 0 ]->SetAdjustRange( myActor->GetAdjustXRange() );
+  myAxes[ 1 ]->SetAdjustRange( myActor->GetAdjustYRange() );
+  myAxes[ 2 ]->SetAdjustRange( myActor->GetAdjustZRange() );
+
   myIsVisible->setChecked(myActor->GetVisibility() ? true : false);
 }
 
@@ -548,6 +542,15 @@ void SVTK_CubeAxesDlg::SetDimensionZEnabled( const bool theIsEnabled )
 }
 
 /*!
+  Show hide the checkboxes "Adjust automatically" in each tab
+*/
+void SVTK_CubeAxesDlg::SetAdjustRangeEnabled( const bool theIsEnabled )
+{
+  for( int i = 0; i <= 2; i++ )
+    myAxes[ i ]->SetAdjustRangeEnabled( theIsEnabled );
+}
+
+/*!
   Verify validity of entry data
 */
 bool SVTK_CubeAxesDlg::isValid() const
@@ -572,16 +575,16 @@ bool SVTK_CubeAxesDlg::onApply()
     isOk = isOk && myAxes[ 1 ]->Apply(myActor->GetYAxisActor2D());
     isOk = isOk && myAxes[ 2 ]->Apply(myActor->GetZAxisActor2D());
 
+    myActor->SetAdjustXRange( myAxes[0]->GetAdjustRange() );
+    myActor->SetAdjustYRange( myAxes[1]->GetAdjustRange() );
+    myActor->SetAdjustZRange( myAxes[2]->GetAdjustRange() );
 
-    //myActor->SetXLabel(myAxes[ 0 ]->myAxisName->text());
-    //myActor->SetYLabel(myAxes[ 1 ]->myAxisName->text());
-    //myActor->SetZLabel(myAxes[ 2 ]->myAxisName->text());
-
-    //myActor->SetNumberOfLabels(myActor->GetXAxisActor2D()->GetNumberOfLabels());
     if (myIsVisible->isChecked())
       myActor->VisibilityOn();
     else
       myActor->VisibilityOff();
+
+    myMainWindow->UpdateCubeAxes( false );
 
     if (isOk)
       myMainWindow->Repaint();

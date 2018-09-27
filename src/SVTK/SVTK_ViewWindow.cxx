@@ -2041,3 +2041,11 @@ void SVTK_ViewWindow::hideEvent( QHideEvent * theEvent )
 {
   emit Hide( theEvent );
 }
+
+/*!
+  Update CubeAxes actor
+*/
+void SVTK_ViewWindow::UpdateCubeAxes( const bool theIsRepaint )
+{
+  // the base implementation does nothing
+}
