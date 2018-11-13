@@ -291,16 +291,12 @@ void VTKViewer_ViewWindow::createToolBar()
   myToolBar->addAction( myActionsMap[DumpId] );
   myToolBar->addAction( myActionsMap[TrihedronShowId] );
 
-  QtxMultiAction* aScaleAction = new QtxMultiAction( this );
-  aScaleAction->insertAction( myActionsMap[FitAllId] );
-  aScaleAction->insertAction( myActionsMap[FitRectId] );
-  aScaleAction->insertAction( myActionsMap[ZoomId] );
-  myToolBar->addAction( aScaleAction );
+  myToolBar->addAction( myActionsMap[FitAllId] );
+  myToolBar->addAction( myActionsMap[FitRectId] );
+  myToolBar->addAction( myActionsMap[ZoomId] );
 
-  QtxMultiAction* aPanningAction = new QtxMultiAction( this );
-  aPanningAction->insertAction( myActionsMap[PanId] );
-  aPanningAction->insertAction( myActionsMap[GlobalPanId] );
-  myToolBar->addAction( aPanningAction );
+  myToolBar->addAction( myActionsMap[PanId] );
+  myToolBar->addAction( myActionsMap[GlobalPanId] );
 
   myToolBar->addAction( myActionsMap[RotationId] );
 

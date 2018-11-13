@@ -28,7 +28,6 @@
 #include "GLViewer_ViewPort2d.h"
 
 #include <QtxToolBar.h>
-#include <QtxMultiAction.h>
 #include <QtxActionToolMgr.h>
 
 #include <SUIT_Desktop.h>
@@ -154,20 +153,16 @@ void GLViewer_ViewFrame::createToolBar()
 {
   int tid = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL") );
   toolMgr()->append( DumpId, tid );
-
-  QtxMultiAction* aScaleAction = new QtxMultiAction( this );
-  aScaleAction->insertAction( toolMgr()->action( FitAllId ) );
-  aScaleAction->insertAction( toolMgr()->action( FitRectId ) );
-  aScaleAction->insertAction( toolMgr()->action( FitSelectId ) );
-  aScaleAction->insertAction( toolMgr()->action( ZoomId ) );
-  toolMgr()->append( aScaleAction, tid );
-
-  QtxMultiAction* aPanAction = new QtxMultiAction( this );
-  aPanAction->insertAction( toolMgr()->action( PanId ) );
-  aPanAction->insertAction( toolMgr()->action( GlobalPanId ) );
-  toolMgr()->append( aPanAction, tid );
-
-  toolMgr()->append( toolMgr()->action( ResetId ), tid );
+  toolMgr()->append( toolMgr()->separator(), tid );
+  toolMgr()->append( FitAllId, tid );
+  toolMgr()->append( FitRectId, tid );
+  toolMgr()->append( FitSelectId, tid );
+  toolMgr()->append( ZoomId, tid );
+  toolMgr()->append( toolMgr()->separator(), tid );
+  toolMgr()->append( PanId, tid );
+  toolMgr()->append( GlobalPanId, tid );
+  toolMgr()->append( toolMgr()->separator(), tid );
+  toolMgr()->append( ResetId, tid );
 }
 
 /*!

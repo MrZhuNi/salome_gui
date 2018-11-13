@@ -1840,16 +1840,12 @@ void SVTK_ViewWindow::createToolBar()
   mgr->append( SwitchInteractionStyleId, myToolBar );
   mgr->append( ViewTrihedronId, myToolBar );
 
-  QtxMultiAction* aScaleAction = new QtxMultiAction( this );
-  aScaleAction->insertAction( getAction( FitAllId ) );
-  aScaleAction->insertAction( getAction( FitRectId ) );
-  aScaleAction->insertAction( getAction( ZoomId ) );
-  mgr->append( aScaleAction, myToolBar );
+  mgr->append( FitAllId, myToolBar );
+  mgr->append( FitRectId, myToolBar );
+  mgr->append( ZoomId, myToolBar );
 
-  QtxMultiAction* aPanningAction = new QtxMultiAction( this );
-  aPanningAction->insertAction( getAction( PanId ) );
-  aPanningAction->insertAction( getAction( GlobalPanId ) );
-  mgr->append( aPanningAction, myToolBar );
+  mgr->append( PanId, myToolBar );
+  mgr->append( GlobalPanId, myToolBar );
 
   mgr->append( ChangeRotationPointId, myToolBar );
 

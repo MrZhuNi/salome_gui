@@ -27,7 +27,6 @@
 
 #include <QtxAction.h>
 #include <QtxActionToolMgr.h>
-#include <QtxMultiAction.h>
 #include <QtxToolBar.h>
 
 #include <SUIT_Desktop.h>
@@ -169,21 +168,16 @@ int GraphicsView_ViewFrame::createToolBar()
 {
   int tid = toolMgr()->createToolBar( tr("LBL_TOOLBAR_LABEL") );
   toolMgr()->append( DumpId, tid );
-
-  myScaleAction = new QtxMultiAction( this );
-  myScaleAction->insertAction( toolMgr()->action( FitAllId ) );
-  myScaleAction->insertAction( toolMgr()->action( FitRectId ) );
-  myScaleAction->insertAction( toolMgr()->action( FitSelectId ) );
-  myScaleAction->insertAction( toolMgr()->action( ZoomId ) );
-  toolMgr()->append( myScaleAction, tid );
-
-  myPanAction = new QtxMultiAction( this );
-  myPanAction->insertAction( toolMgr()->action( PanId ) );
-  myPanAction->insertAction( toolMgr()->action( GlobalPanId ) );
-  toolMgr()->append( myPanAction, tid );
-
-  toolMgr()->append( toolMgr()->action( ResetId ), tid );
-
+  toolMgr()->append( toolMgr()->separator(), tid );
+  toolMgr()->append( FitAllId, tid );
+  toolMgr()->append( FitRectId, tid );
+  toolMgr()->append( FitSelectId, tid );
+  toolMgr()->append( ZoomId, tid );
+  toolMgr()->append( toolMgr()->separator(), tid );
+  toolMgr()->append( PanId, tid );
+  toolMgr()->append( GlobalPanId, tid );
+  toolMgr()->append( toolMgr()->separator(), tid );
+  toolMgr()->append( ResetId, tid );
   return tid;
 }
 
@@ -194,33 +188,6 @@ int GraphicsView_ViewFrame::createToolBar()
 QImage GraphicsView_ViewFrame::dumpView()
 {
   return myViewPort->dumpView();
-}
-
-//================================================================
-// Function : expandToolBarActions
-// Purpose  : 
-//================================================================
-void GraphicsView_ViewFrame::expandToolBarActions()
-{
-  QList<QtxMultiAction*> anExpandableActions;
-  anExpandableActions.append( myScaleAction );
-  anExpandableActions.append( myPanAction );
-
-  QListIterator<QtxMultiAction*> anIter( anExpandableActions );
-  while( anIter.hasNext() )
-  {
-    if( QtxMultiAction* aMultiAction = anIter.next() )
-    {
-      QList<QAction*> aLocalActions = aMultiAction->actions();
-      QListIterator<QAction*> aLocalIter( aLocalActions );
-      while( aLocalIter.hasNext() )
-        if( QAction* anAction = aLocalIter.next() )
-          toolMgr()->append( anAction, myToolBarId );
-
-      int anId = toolMgr()->actionId( aMultiAction );
-      toolMgr()->remove( anId, myToolBarId );
-    }
-  }
 }
 
 //================================================================

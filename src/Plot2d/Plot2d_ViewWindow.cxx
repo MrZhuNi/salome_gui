@@ -29,7 +29,6 @@
 #include <SUIT_Desktop.h>
 
 #include <QtxAction.h>
-#include <QtxMultiAction.h>
 #include <QtxActionToolMgr.h>
 
 #include <QStatusBar>
@@ -232,13 +231,6 @@ void Plot2d_ViewWindow::createActions()
   connect( aAction, SIGNAL( triggered( bool ) ), this, SLOT( onZoom() ) );
   mgr->registerAction( aAction, ZoomId );
 
-  // 2.4. Create multi-action for scaling operations
-  QtxMultiAction* aScaleAction = new QtxMultiAction( this );
-  aScaleAction->insertAction( mgr->action( FitAllId  ) );
-  aScaleAction->insertAction( mgr->action( FitRectId ) );
-  aScaleAction->insertAction( mgr->action( ZoomId    ) );
-  mgr->registerAction( aScaleAction, ScaleOpId );
-
   // 3. Moving operations
 
   // 3.1. Panning
@@ -258,12 +250,6 @@ void Plot2d_ViewWindow::createActions()
   aAction->setStatusTip( tr( "DSC_GLOBALPAN_VIEW" ) );
   connect( aAction, SIGNAL( triggered( bool ) ), this, SLOT( onGlobalPanning() ) );
   mgr->registerAction( aAction, GlobalPanId );
-
-  // 3.3. Create multi-action for moving operations
-  QtxMultiAction* aPanAction = new QtxMultiAction( this );
-  aPanAction->insertAction( mgr->action( PanId ) );
-  aPanAction->insertAction( mgr->action( GlobalPanId ) );
-  mgr->registerAction( aPanAction, MoveOpId );
 
   // 4. Curve type operations
   
@@ -407,8 +393,13 @@ void Plot2d_ViewWindow::createToolBar()
   myToolBar = mgr->createToolBar( tr( "LBL_TOOLBAR_LABEL" ) );
   mgr->append( DumpId, myToolBar );
   mgr->append( PrintId, myToolBar );
-  mgr->append( ScaleOpId, myToolBar );
-  mgr->append( MoveOpId, myToolBar );
+  mgr->append( toolMgr()->separator(), myToolBar );
+  mgr->append( FitAllId, myToolBar );
+  mgr->append( FitRectId, myToolBar );
+  mgr->append( ZoomId, myToolBar );
+  mgr->append( toolMgr()->separator(), myToolBar );
+  mgr->append( PanId, myToolBar );
+  mgr->append( GlobalPanId, myToolBar );
   mgr->append( toolMgr()->separator(), myToolBar );
   mgr->append( CurvPointsId, myToolBar );
   mgr->append( CurvLinesId, myToolBar );

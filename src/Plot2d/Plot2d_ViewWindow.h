@@ -45,10 +45,10 @@ class PLOT2D_EXPORT Plot2d_ViewWindow : public SUIT_ViewWindow
 
 public:
   enum { DumpId, PrintId,
-	 ScaleOpId, FitAllId, FitRectId, ZoomId,
-	 MoveOpId, PanId, GlobalPanId,
+	 FitAllId, FitRectId, ZoomId,
+	 PanId, GlobalPanId,
 	 PModeXLinearId, PModeXLogarithmicId, 
-         PModeYLinearId, PModeYLogarithmicId,
+   PModeYLinearId, PModeYLogarithmicId,
 	 CurvPointsId, CurvLinesId, CurvSplinesId, 
 	 LegendId,
 	 CurvSettingsId, CurvesSettingsId,
