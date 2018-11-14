@@ -51,7 +51,7 @@ public:
    PModeYLinearId, PModeYLogarithmicId,
 	 CurvPointsId, CurvLinesId, CurvSplinesId, 
 	 LegendId,
-	 CurvSettingsId, CurvesSettingsId,
+	 CurvSettingsId, CurvesSettingsId, CommentsSettingsId,
 	 CloneId };
 
 public:

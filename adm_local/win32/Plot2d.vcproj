@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Plot2d"
 	ProjectGUID="{D5E571BF-0C2E-4513-8BF0-A7A54E4EA973}"
 	TargetFrameworkVersion="131072"
@@ -576,6 +576,50 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\Plot2d\Plot2d_SetupCommentsDlg.h"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generate moc_$(InputName).cxx..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\src\Plot2d\Plot2d_SetupCurveDlg.h"
 				>
 				<FileConfiguration
@@ -708,6 +752,48 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\Plot2d\Plot2d_TextMarker.h"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\src\Plot2d\Plot2d_ToolTip.h"
 				>
 				<FileConfiguration
@@ -725,7 +811,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Generate moc_$(InputName).cxx..."
+						Description="Update $(InputFileName)..."
 						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
 						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
@@ -745,7 +831,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Generate moc_$(InputName).cxx..."
+						Description="Update $(InputFileName)..."
 						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;"
 						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)64\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
@@ -949,6 +1035,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\Plot2d\Plot2d_SetupCommentsDlg.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\Plot2d\Plot2d_SetupCurveDlg.cxx"
 				>
 			</File>
@@ -958,6 +1048,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\Plot2d\Plot2d_SetupViewDlg.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Plot2d\Plot2d_TextMarker.cxx"
 				>
 			</File>
 			<File
@@ -1031,6 +1125,50 @@
 			</File>
 			<File
 				RelativePath="..\..\src\Plot2d\resources\plot2d_clone.png"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)32\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Update $(InputFileName)..."
+						CommandLine="type $(InputPath) &gt; ..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="..\..\$(ConfigurationName)64\share\salome\resources\gui\$(InputFileName)"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\Plot2d\resources\plot2d_comments_settings.png"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -1960,6 +2098,10 @@
 			>
 			<File
 				RelativePath="..\..\moc\moc_Plot2d_FitDataDlg.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\moc\moc_Plot2d_SetupCommentsDlg.cxx"
 				>
 			</File>
 			<File

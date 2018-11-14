@@ -145,6 +145,7 @@ void Plot2d_ViewWindow::contextMenuPopup( QMenu* thePopup )
   // settings
   thePopup->addAction( mgr->action( CurvSettingsId ) );
   thePopup->addAction( mgr->action( CurvesSettingsId ) );
+  thePopup->addAction( mgr->action( CommentsSettingsId ) );
 }
 
 /*!
@@ -360,15 +361,23 @@ void Plot2d_ViewWindow::createActions()
   connect( aAction, SIGNAL( triggered( bool ) ), myViewFrame, SLOT( onSettings() ) );
   mgr->registerAction( aAction, CurvSettingsId );
 
-  // 8. Curves Settings
+  // 9.1. Curves Settings
   aAction = new QtxAction( tr( "TOT_CURVES_SETTINGS"),
                 aResMgr->loadPixmap("Plot2d", tr("ICON_CURVES_SETTINGS")),
                 tr("MEN_CURVES_SETTINGS"), 0, this);
   aAction->setStatusTip( tr( "PRP_CURVES_SETTINGS") );
   connect( aAction, SIGNAL( triggered( bool ) ), myViewFrame, SLOT( onCurvesSettings() ) );
   mgr->registerAction( aAction, CurvesSettingsId );
-  
-  // 9. Clone
+
+  // 9.2. Comments Settings
+  aAction = new QtxAction( tr( "TOT_COMMENTS_SETTINGS"),
+                aResMgr->loadPixmap("Plot2d", tr("ICON_COMMENTS_SETTINGS")),
+                tr("MEN_COMMENTS_SETTINGS"), 0, this);
+  aAction->setStatusTip( tr( "PRP_COMMENTS_SETTINGS") );
+  connect( aAction, SIGNAL( triggered( bool ) ), myViewFrame, SLOT( onCommentsSettings() ) );
+  mgr->registerAction( aAction, CommentsSettingsId );
+
+  // 10. Clone
   aAction = new QtxAction( tr( "MNU_CLONE_VIEW" ),
 			   aResMgr->loadPixmap( "Plot2d", tr( "ICON_PLOT2D_CLONE_VIEW" ) ),
                            tr( "MNU_CLONE_VIEW" ),
@@ -414,6 +423,7 @@ void Plot2d_ViewWindow::createToolBar()
   mgr->append( LegendId, myToolBar );
   mgr->append( CurvSettingsId, myToolBar );
   mgr->append( CurvesSettingsId, myToolBar );
+  mgr->append( CommentsSettingsId, myToolBar );
   mgr->append( CloneId, myToolBar );
 }
 

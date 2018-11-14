@@ -458,6 +458,18 @@ to replace the non-positive values with negligible positive values?</translation
         <translation>Setups curves properties</translation>
     </message>
     <message>
+        <source>TOT_COMMENTS_SETTINGS</source>
+        <translation>Comments settings</translation>
+    </message>
+    <message>
+        <source>MEN_COMMENTS_SETTINGS</source>
+        <translation>Comments settings</translation>
+    </message>
+    <message>
+        <source>PRP_COMMENTS_SETTINGS</source>
+        <translation>Setups comments properties</translation>
+    </message>
+    <message>
         <source>CIRCLE_MARKER_LBL</source>
         <translation>Circle</translation>
     </message>
@@ -575,23 +587,51 @@ to replace the non-positive values with negligible positive values?</translation
         <translation>Nb markers</translation>
     </message>
 </context>
+<context>
+    <name>Plot2d_SetupCommentsDlg</name>
+    <message>
+      <source>SETUP_COMMENTS</source>
+      <translation>Setup comments</translation>
+    </message>
+    <message>
+        <source>PARAMETERS</source>
+        <translation>Parameters</translation>
+    </message>
+    <message>
+        <source>TEXT</source>
+        <translation>Text</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation>Y</translation>
+    </message>
+    <message>
+        <source>ALIGNMENT</source>
+        <translation>Alignment</translation>
+    </message>
+    <message>
+        <source>TOP_LEFT</source>
+        <translation>Top left</translation>
+    </message>
+    <message>
+        <source>TOP_RIGHT</source>
+        <translation>Top right</translation>
+    </message>
+    <message>
+        <source>BOTTOM_LEFT</source>
+        <translation>Bottom left</translation>
+    </message>
+    <message>
+        <source>BOTTOM_RIGHT</source>
+        <translation>Bottom right</translation>
+    </message>
+    <message>
+        <source>CENTER</source>
+        <translation>Center</translation>
+    </message>
+</context>
 </TS>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

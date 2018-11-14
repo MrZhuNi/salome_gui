@@ -446,6 +446,18 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
         <translation type="unfinished">Définir les paramètres des courbes</translation>
     </message>
     <message>
+        <source>TOT_COMMENTS_SETTINGS</source>
+        <translation type="unfinished">Paramètres des commentaires</translation>
+    </message>
+    <message>
+        <source>MEN_COMMENTS_SETTINGS</source>
+        <translation type="unfinished">Paramètres des commentaires</translation>
+    </message>
+    <message>
+        <source>PRP_COMMENTS_SETTINGS</source>
+        <translation type="unfinished">Définir les paramètres des commentaires</translation>
+    </message>
+    <message>
         <source>CIRCLE_MARKER_LBL</source>
         <translation>Circle</translation>
     </message>
@@ -553,6 +565,53 @@ L&apos;échelle logarithmique de l&apos;ordonnée n&apos;est pas permise.</trans
     <message>
         <source>NB_MARKERS</source>
         <translation type="unfinished">Numéro de repères</translation>
+    </message>
+</context>
+<context>
+    <name>Plot2d_SetupCommentsDlg</name>
+    <message>
+        <source>SETUP_COMMENTS</source>
+        <translation type="unfinished">Setup comments</translation>
+    </message>
+    <message>
+        <source>PARAMETERS</source>
+        <translation type="unfinished">Parameters</translation>
+    </message>
+    <message>
+        <source>TEXT</source>
+        <translation type="unfinished">Text</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished">X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished">Y</translation>
+    </message>
+    <message>
+        <source>ALIGNMENT</source>
+        <translation type="unfinished">Alignment</translation>
+    </message>
+    <message>
+        <source>TOP_LEFT</source>
+        <translation type="unfinished">Top left</translation>
+    </message>
+    <message>
+        <source>TOP_RIGHT</source>
+        <translation type="unfinished">Top right</translation>
+    </message>
+    <message>
+        <source>BOTTOM_LEFT</source>
+        <translation type="unfinished">Bottom left</translation>
+    </message>
+    <message>
+        <source>BOTTOM_RIGHT</source>
+        <translation type="unfinished">Bottom right</translation>
+    </message>
+    <message>
+        <source>CENTER</source>
+        <translation type="unfinished">Center</translation>
     </message>
 </context>
 </TS>

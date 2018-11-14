@@ -74,6 +74,10 @@
         <translation>plot2d_curves_settings.png</translation>
     </message>
     <message>
+        <source>ICON_COMMENTS_SETTINGS</source>
+        <translation>plot2d_comments_settings.png</translation>
+    </message>
+    <message>
         <source>ICON_MINUS</source>
         <translation>plot2d_minus.png</translation>
     </message>

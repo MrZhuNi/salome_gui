@@ -20,6 +20,7 @@
 #define PLOT2D_VIEWFRAME_H
 
 #include "Plot2d_Curve.h"
+#include "Plot2d_TextMarker.h"
 #include <QtxMap.h>
 
 #include <QWidget>
@@ -37,6 +38,8 @@ class QwtPlotZoomer;
 typedef QwtPlotCurve* QwtPlotCurvePtr;
 typedef Plot2d_Curve* Plot2d_CurvePtr;
 typedef QtxMap<QwtPlotCurvePtr, Plot2d_CurvePtr> CurveDict;
+
+typedef QList<Plot2d_TextMarker*> CommentList;
 
 class PLOT2D_EXPORT Plot2d_ViewFrame : public QWidget
 { 
@@ -76,6 +79,9 @@ public:
   void    eraseCurves( const curveList& curves, bool update = false );
   int     getCurves( curveList& clist );
   const   CurveDict& getCurves();
+  void    displayComment( Plot2d_TextMarker* comment, bool update = false );
+  void    eraseComment( Plot2d_TextMarker* comment, bool update = false );
+  const   CommentList& getComments();
   bool    isVisible( Plot2d_Curve* curve );
   void    updateCurve( Plot2d_Curve* curve, bool update = false );
   void    updateLegend( const Plot2d_Prs* prs );
@@ -181,6 +187,7 @@ public slots:
   void    onViewGlobalPan(); 
   void    onSettings();
   void    onCurvesSettings();
+  void    onCommentsSettings();
   void    onFitData();
   void    onChangeBackground();
   void    onPanLeft();
@@ -282,7 +289,8 @@ public:
 
   bool                polished() const { return myIsPolished; }
   QwtPlotGrid*        grid() { return myGrid; };
-  CurveDict& getCurves() { return myCurves; }
+  CurveDict&          getCurves() { return myCurves; }
+  CommentList&        getComments() { return myComments; }
   Plot2d_Curve*       getClosestCurve( QPoint p, double& distance, int& index );
   QList<Plot2d_Curve*> getClosestPoints( QPoint thePoint, double theRadius, QList< QList< int > >& thePntIndex );
 
@@ -310,6 +318,7 @@ signals:
 
 protected:
   CurveDict          myCurves;
+  CommentList        myComments;
   QwtPlotGrid*       myGrid;
   QList<QColor>      myColors;
   bool               myIsPolished;

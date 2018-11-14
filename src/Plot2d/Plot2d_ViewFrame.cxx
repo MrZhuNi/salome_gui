@@ -21,6 +21,7 @@
 #include "Plot2d_Prs.h"
 #include "Plot2d_Curve.h"
 #include "Plot2d_SetupCurvesDlg.h"
+#include "Plot2d_SetupCommentsDlg.h"
 #include "Plot2d_FitDataDlg.h"
 #include "Plot2d_ViewWindow.h"
 #include "Plot2d_SetupViewDlg.h"
@@ -788,7 +789,7 @@ void Plot2d_ViewFrame::updateCurve( Plot2d_Curve* curve, bool update )
 }
 
 /*!
-  Gets lsit of displayed curves
+  Gets list of displayed curves
 */
 int Plot2d_ViewFrame::getCurves( curveList& clist )
 {
@@ -800,9 +801,43 @@ int Plot2d_ViewFrame::getCurves( curveList& clist )
   return clist.count();
 }
 
+/*!
+  Gets list of displayed curves
+*/
 const CurveDict& Plot2d_ViewFrame::getCurves()
 {
   return myPlot->getCurves();
+}
+
+/*!
+  Displays comment
+*/
+void Plot2d_ViewFrame::displayComment( Plot2d_TextMarker* comment, bool update )
+{
+  comment->attach( myPlot );
+  myPlot->getComments().append( comment );
+  if( update )
+    myPlot->replot();
+}
+
+/*!
+  Erases comment
+*/
+void Plot2d_ViewFrame::eraseComment( Plot2d_TextMarker* comment, bool update )
+{
+  comment->hide();
+  comment->detach();
+  myPlot->getComments().removeAll( comment );
+  if( update )
+    myPlot->replot();
+}
+
+/*!
+  Gets list of displayed comments
+*/
+const CommentList& Plot2d_ViewFrame::getComments()
+{
+  return myPlot->getComments();
 }
 
 /*!
@@ -1265,6 +1300,87 @@ void Plot2d_ViewFrame::onCurvesSettings()
   Repaint();
 
   emit curvesUpdated();
+
+  delete aDlg;
+}
+
+/*!
+  "Comments settings" toolbar action slot
+*/
+void Plot2d_ViewFrame::onCommentsSettings()
+{
+  Plot2d_SetupCommentsDlg* aDlg = new Plot2d_SetupCommentsDlg( this );
+
+  int nbComments = myPlot->getComments().count();
+  if ( nbComments == 0 )
+    return;
+
+  QVector< QString > aTextList( nbComments );
+  QVector< double > aXList( nbComments );
+  QVector< double > aYList( nbComments );
+  QVector< Qt::Alignment > anAlignmentList( nbComments );
+
+  CommentList aComments;
+
+  CommentList::Iterator it = myPlot->getComments().begin();
+  int i = 0;
+  for ( i = 0; it != myPlot->getComments().end(); it++, i++ )
+  {
+    Plot2d_TextMarker* aComment = *it;
+    if ( !aComment )
+      return;
+
+    QString aText;
+    double aX = 0, aY = 0;
+    Qt::Alignment anAlignment = Qt::AlignTop | Qt::AlignLeft;
+    aComment->getData( aText, aX, aY, anAlignment );
+
+    aTextList[ i ] = aText;
+    aXList[ i ] = aX;
+    aYList[ i ] = aY;
+    anAlignmentList[ i ] = anAlignment;
+
+    aComments.append( aComment );
+  }
+
+  aDlg->SetParameters( aTextList, aXList, aYList, anAlignmentList );
+
+  if ( aDlg->exec() != QDialog::Accepted ) 
+    return;
+
+  const QList< int >& toRemove = aDlg->GetRemovedIndexes();
+  QList< int >::const_iterator aRemIter;
+  for ( aRemIter = toRemove.begin(); aRemIter != toRemove.end(); ++aRemIter )
+  {
+    int anIndex = *aRemIter;
+    if ( anIndex >= 0 && anIndex < (int)aComments.count() )  
+    {
+      Plot2d_TextMarker* aComment = aComments[ anIndex ];
+      aComments.removeAt( anIndex );
+      eraseComment( aComment );
+    }
+  }
+
+  QMap< int, Plot2d_TextMarker* > anIndexToComment;
+  QList< Plot2d_TextMarker* >::iterator aCurvIter;
+  for ( i = 0, aCurvIter = aComments.begin(); aCurvIter != aComments.end(); ++aCurvIter, ++i )
+    anIndexToComment[ i ] = *aCurvIter;
+
+  aDlg->GetParameters( aTextList, aXList, aYList, anAlignmentList );
+
+  int n;
+  for ( i = 0, n = aTextList.size(); i < n; i++ )
+  {
+    QString aText = aTextList[ i ];
+    double aX = aXList[ i ];
+    double aY = aYList[ i ];
+    Qt::Alignment anAlignment = anAlignmentList[ i ];
+
+    if( Plot2d_TextMarker* aComment = anIndexToComment[ i ] )
+      aComment->setData( aText, aX, aY, anAlignment );
+  }
+
+  Repaint();
 
   delete aDlg;
 }
