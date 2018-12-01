@@ -185,7 +185,7 @@ void GLViewer_Viewer2d::updateBorders()
         {
             GLViewer_Object* anObject = *it;
             GLViewer_Rect* aRect = anObject->getRect();
-            if( !anObject->isScalable() || !anObject->getVisible() || aRect->isNull() )
+            if( !anObject->isScalable() || !anObject->getVisible() || aRect->isNull() || aRect->isEmpty() )
                 continue;
 
             if( border->isEmpty() )

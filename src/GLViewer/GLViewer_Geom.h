@@ -70,15 +70,10 @@ typedef QList<GLViewer_Pnt> GLViewer_PntList;
 class GLVIEWER_API GLViewer_Rect
 {
 public:
-  GLViewer_Rect(): myLeft(0.0), myRight(0.0), myBottom(0.0), myTop(0.0) {}
-  GLViewer_Rect( float theLeft, float theRight, float theBottom, float theTop )
-    : myLeft(theLeft), myRight(theRight), myBottom(theBottom), myTop(theTop) {}
-  GLViewer_Rect( QRect theRect ) {
-    myLeft = ( float )theRect.left(); myRight = ( float )theRect.right();
-    myBottom = ( float )theRect.bottom(); myTop = ( float )theRect.top(); }
-  GLViewer_Rect( QRectF theRect ) {
-    myLeft = theRect.left(); myRight = theRect.right();
-    myBottom = theRect.bottom(); myTop = theRect.top(); }
+  GLViewer_Rect();
+  GLViewer_Rect( float theLeft, float theRight, float theBottom, float theTop );
+  GLViewer_Rect( QRect theRect );
+  GLViewer_Rect( QRectF theRect );
   
   float       left() const { return myLeft; }
   float       right() const { return myRight; }

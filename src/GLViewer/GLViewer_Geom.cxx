@@ -26,6 +26,54 @@
 #define TOLERANCE 1e-3
 
 /*!
+  Contructor
+*/
+GLViewer_Rect::GLViewer_Rect()
+: myLeft( 0.0 ),
+  myRight( 0.0 ),
+  myBottom( 0.0 ),
+  myTop( 0.0 )
+{
+  myIsEmpty = false;
+}
+
+/*!
+  Contructor
+*/
+GLViewer_Rect::GLViewer_Rect( float theLeft, float theRight, float theBottom, float theTop )
+: myLeft( theLeft ),
+  myRight( theRight ),
+  myBottom( theBottom ),
+  myTop( theTop )
+{
+  myIsEmpty = false;
+}
+
+/*!
+  Contructor
+*/
+GLViewer_Rect::GLViewer_Rect( QRect theRect )
+{
+  myLeft = ( float )theRect.left();
+  myRight = ( float )theRect.right();
+  myBottom = ( float )theRect.bottom();
+  myTop = ( float )theRect.top();
+  myIsEmpty = false;
+}
+
+/*!
+  Contructor
+*/
+GLViewer_Rect::GLViewer_Rect( QRectF theRect )
+{
+  myLeft = theRect.left();
+  myRight = theRect.right();
+  myBottom = theRect.bottom();
+  myTop = theRect.top();
+  myIsEmpty = false;
+}
+
+/*!
   Checks that the rectangle contains point
 */
 bool GLViewer_Rect::contains( const GLViewer_Pnt& thePnt ) const
