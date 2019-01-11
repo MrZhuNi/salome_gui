@@ -120,7 +120,6 @@ Plot2d_SetupCommentsDlg::Plot2d_SetupCommentsDlg( QWidget* theParent )
   aMainLayout->setSpacing( 0 );
   aMainLayout->addWidget( aGrp );
 
-  connect( myTable, SIGNAL( cellChanged( int, int ) ), SLOT( onValueChanged( int, int ) ) );
   connect( aRemoveBtn, SIGNAL( clicked() ), SLOT( onRemove() ) );
 
   setButtonPosition( Right, Cancel );
