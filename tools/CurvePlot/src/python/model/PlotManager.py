@@ -1,6 +1,6 @@
-from Model import Model
-from XYPlotSetModel import XYPlotSetModel
-from utils import Logger
+from .Model import Model
+from .XYPlotSetModel import XYPlotSetModel
+from .utils import Logger
 
 class PlotManager(Model):
   def __init__(self, controller):

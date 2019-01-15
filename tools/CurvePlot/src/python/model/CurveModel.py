@@ -1,5 +1,5 @@
-from Model import Model
-from utils import toUnicodeWithWarning
+from .Model import Model
+from .utils import toUnicodeWithWarning
 
 class CurveModel(Model):  
   def __init__(self, controller, table=None, index=-1):

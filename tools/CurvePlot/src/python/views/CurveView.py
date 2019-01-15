@@ -1,5 +1,5 @@
-from View import View
-from utils import Logger
+from .View import View
+from .utils import Logger
 
 class CurveView(View):
   _PICKER_PRECISION = 20  #pts
