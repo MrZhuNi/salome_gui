@@ -270,12 +270,14 @@ class XYView(View):
     pass
 
   def autoFit(self, check=True, repaint=True):
+    import numpy as np
     if self.__repaintOK():
       self._mplAxes.relim()
       xm, xM = self._mplAxes.xaxis.get_data_interval()
       ym, yM = self._mplAxes.yaxis.get_data_interval()
       i = yM-ym
-      self._mplAxes.axis([xm, xM, ym-i*self.AUTOFIT_MARGIN, yM+i*self.AUTOFIT_MARGIN])
+      if np.isfinite(xm) and np.isfinite(xM) and np.isfinite(ym) and np.isfinite(yM):
+        self._mplAxes.axis([xm, xM, ym-i*self.AUTOFIT_MARGIN, yM+i*self.AUTOFIT_MARGIN])
       if repaint:
         self.repaint()
 
@@ -626,7 +628,8 @@ class XYView(View):
     self.changeFormatAxis()
 
     # Redo auto-fit
-    self.autoFit(repaint=False)
+    if len(self._curveViews):
+      self.autoFit(repaint=False)
     self.repaint()
 
   def onDataChange(self):
