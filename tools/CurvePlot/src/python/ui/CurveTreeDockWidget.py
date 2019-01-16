@@ -10,7 +10,7 @@ class CurveTreeDockWidget(QtWidgets.QDockWidget):
     self.treeWidget.sortByColumn(0, QtCore.Qt.AscendingOrder)
     self.treeWidget.setSortingEnabled(True);
     self.treeWidget.setColumnHidden(1, True);
-            
+
   def getTreeWidget(self):
       """
       :returns: QTreeWidget -- the (curve) browser

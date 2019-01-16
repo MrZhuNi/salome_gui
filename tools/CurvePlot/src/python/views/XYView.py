@@ -484,7 +484,7 @@ class XYView(View):
       dlg.colorCurve.setEnabled(True)
       dlg.markerCurve.setEnabled(True)
       name = curr_crv.getTitle()
-      dlg.nameCurve.setText(name)
+      dlg.setSelectedCurveName(name)
       view = self._curveViews[curr_crv.getID()]
       marker = view.getMarker()
       color = view.getColor()
@@ -495,7 +495,7 @@ class XYView(View):
     else :
       dlg.colorCurve.setEnabled(False)
       dlg.markerCurve.setEnabled(False)
-      dlg.nameCurve.setText("")
+      dlg.setSelectedCurveName("")
       view = None
     if self._legend is None:
       dlg.showLegendCheckBox.setChecked(False)
@@ -544,6 +544,10 @@ class XYView(View):
       if view:
         view.setColor(dlg.getRGB())
         view.setMarker(self.CURVE_MARKERS[dlg.markerCurve.currentIndex()])
+        crvModel = view._model
+        if dlg.nameCurve.text() != crvModel.getTitle():
+          Logger.Debug("XYView : about to cahnge crv title after settings")
+          view._model.setTitle(dlg.nameCurve.text())
       self.showHideLegend(repaint=True)
       self._mplCanvas.draw()
     pass
@@ -560,6 +564,7 @@ class XYView(View):
     pass
 
   def onCurrentCurveChange(self):
+    Logger.Debug("XYView::onCurrentCurveChange()")
     curr_crv2 = self._model.getCurrentCurve()
     if curr_crv2 != self._currCrv:
       if self._currCrv is not None:
