@@ -4134,14 +4134,21 @@ void LightApp_Application::updateWindows()
       getWindow( it.key() );
   }
 
+  QList<int> toRemove;
   for ( WinMap::ConstIterator it = myWin.begin(); it != myWin.end(); ++it )
   {
     QWidget* wid = it.value();
     if ( winMap.contains( it.key() ) )
       wid->setVisible( true );
     else
-      delete wid;
+    {
+      wid->deleteLater();
+      toRemove.append(it.key());
+    }
   }
+
+  foreach(int k, toRemove) 
+    myWin.remove(k);
 
   loadDockWindowsState();
 }
