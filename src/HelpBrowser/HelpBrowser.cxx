@@ -261,7 +261,7 @@ int main( int argc, char **argv )
 
   // Load file specified via command line
   if ( helpfile.isEmpty() ) {
-    QString docdir = qgetenv( "DOCUMENTATION_ROOT_DIR" );
+    QString docdir = Qtx::getenv( "DOCUMENTATION_ROOT_DIR" );
     if ( !docdir.isEmpty() )
       helpfile = QDir::toNativeSeparators( QString( "%1/index.html" ).arg( docdir ) );
   }
