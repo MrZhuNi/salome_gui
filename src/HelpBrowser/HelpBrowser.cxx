@@ -39,6 +39,11 @@
 
 #include <iostream>
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
+
 namespace
 {
   void printHelp()
@@ -150,6 +155,16 @@ int main( int argc, char **argv )
       helpfile = param;
     }
   }
+
+#if defined(WIN32) && defined(UNICODE)                   
+  LPWSTR *szArglist = NULL;
+  int nArgs;
+  int i;
+  szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);	      
+  helpfile = QString::fromWCharArray(szArglist[nArgs-1]);
+  // Free memory allocated for CommandLineToArgvW arguments.
+  LocalFree(szArglist);
+#endif
 
   // Show help and exit if '--help' or '-h' option has been specified via command line
   if ( showHelp )
