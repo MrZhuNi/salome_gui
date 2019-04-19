@@ -207,6 +207,9 @@ public:
   //! Sets the legend text
   void                   setLegendText( const QString& theText ) { myLegendText = theText; }
 
+  //! Sets the legend font
+  void                   setLegendFont( const QFont& theFont ) { myLegendFont = theFont; }
+
 signals:
   //! Emits after any transformation
   void                   vpUpdateValues();

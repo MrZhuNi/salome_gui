@@ -536,6 +536,13 @@ void SUIT_Session::createBackupTimer()
   if ( !app )
     return;
 
+  // With the block below, the following limitation appears:
+  // If the user changes the value of "Backup every N minutes" from 0 to some non-zero value,
+  // it is necessary to restart the application to make it generate the backup folder.
+  double aBackupTime = app->getBackupTime();
+  if( aBackupTime < 1e-3 )
+    return;
+
   myBTimer = new QTimer( this );
   connect( myBTimer, SIGNAL( timeout() ), this, SLOT( onBTimer() ) );
 

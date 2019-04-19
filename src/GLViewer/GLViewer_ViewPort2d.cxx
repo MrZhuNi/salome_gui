@@ -117,7 +117,7 @@ GLViewer_ViewPort2d::GLViewer_ViewPort2d( QWidget* parent, GLViewer_ViewFrame* t
   myIsLegendEnabled = false;
   myLegendXOffset = 10.0;
   myLegendYOffset = 10.0;
-  myLegendFont = QFont( "Arial", 9 );
+  myLegendFont = QFont( "Times", 12 );
 }
 
 /*!
