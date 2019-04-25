@@ -1605,9 +1605,14 @@ QWidget* QtxWorkstack::activeWindow() const
 /*!
   \brief Set active widget
   \param wid widget to activate
+  \param activateArea flag used to activate the widget's area if necessary
 */
-void QtxWorkstack::setActiveWindow( QWidget* wid )
+void QtxWorkstack::setActiveWindow( QWidget* wid, const bool activateArea )
 {
+  if( activateArea )
+    if( QtxWorkstackArea* area = wgArea( wid ) )
+      setActiveArea( area );
+
   if( activeArea() )
     activeArea()->setActiveWidget( wid );
 }

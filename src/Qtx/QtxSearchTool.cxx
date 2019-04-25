@@ -471,6 +471,24 @@ void QtxSearchTool::setShortcuts( const QList<QKeySequence>& accels )
 }
 
 /*!
+  \brief Set context of shortcuts.
+  \param context context of shortcuts
+  \sa shortcuts()
+*/
+void QtxSearchTool::setShortcutContext( const Qt::ShortcutContext context )
+{
+  ShortcutList::Iterator it;
+  for ( it = myShortcuts.begin(); it != myShortcuts.end(); ++it )
+  {
+    if ( !(*it).isNull() )
+    {
+      QShortcut* sc = (*it);
+      sc->setContext( context );
+    }
+  }
+}
+
+/*!
   \brief Add custom widget.
   \param w custom widget to be added
   \param id widget unique ID to be used (if < 0, automatically assigned)

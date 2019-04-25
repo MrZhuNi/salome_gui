@@ -81,7 +81,7 @@ public:
   QWidgetList         splitWindowList() const;
 
   QWidget*            activeWindow() const;
-  void                setActiveWindow( QWidget* );
+  void                setActiveWindow( QWidget*, const bool activateArea = false );
 
   int                 accel( const int ) const;
   void                setAccel( const int, const int );
