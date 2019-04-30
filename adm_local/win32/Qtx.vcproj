@@ -1902,7 +1902,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Update $(InputFileName)..."
-						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName32)\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;&#x0D;&#x0A;"
+						CommandLine="type $(InputPath) &gt; $(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName)&#x0D;&#x0A;$(QTDIR)\bin\moc.exe $(InputPath) -o ..\..\moc\moc_$(InputName).cxx&#x0D;&#x0A;&#x0D;&#x0A;"
 						Outputs="$(GUI_SRC_DIR)\$(ConfigurationName)32\include\$(InputFileName);..\..\moc\moc_$(InputName).cxx"
 					/>
 				</FileConfiguration>
