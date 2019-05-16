@@ -96,8 +96,8 @@ public:
   void                setControls( const int );
 
   QList<QKeySequence> shortcuts() const;
-  void                setShortcuts( const QKeySequence& );
-  void                setShortcuts( const QList<QKeySequence>& );
+  void                setShortcuts( const QKeySequence&, const bool = true );
+  void                setShortcuts( const QList<QKeySequence>&, const bool = true );
 
   void                setShortcutContext( const Qt::ShortcutContext );
 
@@ -134,7 +134,7 @@ private:
   void                init();
   bool                focused() const;
   void                clearShortcuts();
-  void                initShortcuts( const QList<QKeySequence>& );
+  void                initShortcuts( const QList<QKeySequence>&, const bool = true );
   void                updateShortcuts();
   void                updateControls();
 

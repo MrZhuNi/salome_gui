@@ -451,23 +451,27 @@ QList<QKeySequence> QtxSearchTool::shortcuts() const
 /*!
   \brief Set shortcuts.
   \param accel shortcut binding(s) to be used
+  \param addDefault flag used to add default shortcuts
   \sa shortcuts()
 */
-void QtxSearchTool::setShortcuts( const QKeySequence& accel )
+void QtxSearchTool::setShortcuts( const QKeySequence& accel,
+                                  const bool addDefault )
 {
   QList<QKeySequence> ks;
   ks << accel;
-  setShortcuts( ks );
+  setShortcuts( ks, addDefault );
 }
 
 /*!
   \brief Set shortcuts.
   \param accel shortcut bindings to be used
+  \param addDefault flag used to add default shortcuts
   \sa shortcuts()
 */
-void QtxSearchTool::setShortcuts( const QList<QKeySequence>& accels )
+void QtxSearchTool::setShortcuts( const QList<QKeySequence>& accels,
+                                  const bool addDefault )
 {
-  initShortcuts( accels );
+  initShortcuts( accels, addDefault );
 }
 
 /*!
@@ -1004,28 +1008,33 @@ void QtxSearchTool::clearShortcuts()
   \brief Install shortcuts.
   \internal
   \param accels shortcuts list
+  \param addDefault flag used to add default shortcuts
 */
-void QtxSearchTool::initShortcuts( const QList<QKeySequence>& accels )
+void QtxSearchTool::initShortcuts( const QList<QKeySequence>& accels,
+                                   const bool addDefault )
 {
   clearShortcuts();
 
   QWidget* p = myWatched ? myWatched : ( parentWidget() ? parentWidget() : this );
   QShortcut* sc;
 
-  sc = new QShortcut( QKeySequence::Find, p );
-  connect( sc, SIGNAL( activated() ), this, SLOT( find() ) );
-  sc->setContext( Qt::WidgetShortcut );
-  myShortcuts.append( sc );
+  if( addDefault )
+  {
+    sc = new QShortcut( QKeySequence::Find, p );
+    connect( sc, SIGNAL( activated() ), this, SLOT( find() ) );
+    sc->setContext( Qt::WidgetShortcut );
+    myShortcuts.append( sc );
 
-  sc = new QShortcut( QKeySequence::FindNext, p );
-  sc->setContext( Qt::WidgetShortcut );
-  connect( sc, SIGNAL( activated() ), this, SLOT( findNext() ) );
-  myShortcuts.append( sc );
+    sc = new QShortcut( QKeySequence::FindNext, p );
+    sc->setContext( Qt::WidgetShortcut );
+    connect( sc, SIGNAL( activated() ), this, SLOT( findNext() ) );
+    myShortcuts.append( sc );
 
-  sc = new QShortcut( QKeySequence::FindPrevious, p );
-  sc->setContext( Qt::WidgetShortcut );
-  connect( sc, SIGNAL( activated() ), this, SLOT( findPrevious() ) );
-  myShortcuts.append( sc );
+    sc = new QShortcut( QKeySequence::FindPrevious, p );
+    sc->setContext( Qt::WidgetShortcut );
+    connect( sc, SIGNAL( activated() ), this, SLOT( findPrevious() ) );
+    myShortcuts.append( sc );
+  }
 
   QList<QKeySequence>::ConstIterator it;
   for ( it = accels.begin(); it != accels.end(); ++it )
