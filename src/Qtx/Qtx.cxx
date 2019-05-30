@@ -38,9 +38,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QtDebug>
-#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
 #include <QSurfaceFormat>
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -2242,8 +2240,6 @@ Qt::HANDLE Qtx::getVisual()
 
 #endif // WIN32
 
-
-#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
 /*!
   \brief Set default QSurfaceFormat for an application.
 
@@ -2279,7 +2275,6 @@ void Qtx::initDefaultSurfaceFormat()
 
   QSurfaceFormat::setDefaultFormat(fmt);
 }
-#endif
 
 /*!
   \class Qtx::CmdLineArgs
