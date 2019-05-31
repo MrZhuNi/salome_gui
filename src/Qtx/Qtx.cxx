@@ -2106,7 +2106,6 @@ long Qtx::versionToId( const QString& version )
   
   The function tries to detect qt installation directory by analyzing the system variables in the following order:
   - QT5_ROOT_DIR
-  - QT4_ROOT_DIR
   - QT_ROOT_DIR
   - QTDIR
 
@@ -2119,7 +2118,7 @@ long Qtx::versionToId( const QString& version )
 QString Qtx::qtDir( const QString& context )
 {
 
-  QStringList vars = { "QT5_ROOT_DIR", "QT4_ROOT_DIR", "QT_ROOT_DIR", "QTDIR" };
+  QStringList vars = { "QT5_ROOT_DIR", "QT_ROOT_DIR", "QTDIR" };
   QString qtPath;
   for (uint i = 0; i < vars.length() && qtPath.isEmpty(); i++ ) {
     qtPath = getenv(vars[i]);
