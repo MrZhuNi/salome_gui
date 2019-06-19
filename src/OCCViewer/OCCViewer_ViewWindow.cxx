@@ -428,6 +428,10 @@ bool OCCViewer_ViewWindow::eventFilter( QObject* watched, QEvent* e )
       emit keyPressed(this, (QKeyEvent*) e);
       return true;
 
+    case QEvent::KeyRelease:
+      emit keyReleased(this, (QKeyEvent*) e);
+      return true;
+
     default:
       break;
     }
@@ -1472,6 +1476,14 @@ void OCCViewer_ViewWindow::createActions()
   connect(aAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchZoomingStyle(bool)));
   toolMgr()->registerAction( aAction, SwitchZoomingStyleId );
 
+  // Switch advanced selection style (poligone/circle)
+  aAction = new QtxAction(tr("MNU_SELECTION_STYLE_SWITCH"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_RECT_STYLE" ) ),
+                          tr( "MNU_SELECTION_STYLE_SWITCH" ), 0, this);
+  aAction->setStatusTip(tr("DSC_SELECTION_STYLE_SWITCH"));
+  aAction->setCheckable(true);
+  connect(aAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchSelectionStyle(bool)));
+  toolMgr()->registerAction( aAction, SwitchSelectionStyleId);
+
   // Maximized view
   aAction = new QtxAction(tr("MNU_MINIMIZE_VIEW"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_MINIMIZE" ) ),
                           tr( "MNU_MINIMIZE_VIEW" ), 0, this );
@@ -1543,6 +1555,7 @@ void OCCViewer_ViewWindow::createToolBar()
   toolMgr()->append( SwitchZoomingStyleId, tid );
   toolMgr()->append( SwitchPreselectionId, tid );
   toolMgr()->append( SwitchSelectionId, tid );
+  toolMgr()->append(SwitchSelectionStyleId, tid );
   if( myModel->trihedronActivated() )
     toolMgr()->append( TrihedronShowId, tid );
 
@@ -2186,6 +2199,26 @@ void OCCViewer_ViewWindow::onSwitchSelection( bool on )
   a = dynamic_cast<QtxAction*>( toolMgr()->action( SwitchSelectionId ) );
   if ( a && a->isChecked() != on ) {
     a->setChecked( on );
+  }
+}
+
+void OCCViewer_ViewWindow::onSwitchSelectionStyle(bool on)
+{
+  // selection
+  QtxAction* a = dynamic_cast<QtxAction*>( toolMgr()->action(SwitchSelectionStyleId) );
+  if (a) {
+    if (a->isChecked() != on) {
+      a->setChecked(on);
+    }
+    SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
+    QPixmap aIcon = on ? aResMgr->loadPixmap("OCCViewer", tr("ICON_OCCVIEWER_CIRCLE_STYLE")) :
+      aResMgr->loadPixmap("OCCViewer", tr("ICON_OCCVIEWER_RECT_STYLE"));
+    a->setIcon(aIcon);
+  }
+  OCCViewer_ViewSketcher* aSkecher = getSketcher(Polygon);
+  if (aSkecher) {
+    aSkecher->setSketcherMode(on ? OCCViewer_PolygonSketcher::Circle :
+      OCCViewer_PolygonSketcher::Poligone);
   }
 }
 

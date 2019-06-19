@@ -33,6 +33,7 @@ class QPolygon;
 
 class QtxRectRubberBand;
 class QtxPolyRubberBand;
+class QtxCircleRubberBand;
 
 #ifdef WIN32
 #pragma warning ( disable:4251 )
@@ -68,6 +69,8 @@ public:
 
   virtual bool                 isDefault() const;
   virtual bool                 eventFilter( QObject*, QEvent* );
+
+  virtual void                 setSketcherMode(int theMode) {}
 
 private slots:
   void                         onDrawViewPort();
@@ -119,8 +122,12 @@ protected:
 class OCCVIEWER_EXPORT OCCViewer_PolygonSketcher : public OCCViewer_ViewSketcher
 {
 public:
+  enum SketchMode { Poligone, Circle };
+
   OCCViewer_PolygonSketcher( OCCViewer_ViewWindow*, int );
   virtual ~OCCViewer_PolygonSketcher();
+
+  virtual void                 setSketcherMode(int theMode);
 
 protected:
   virtual bool                 onKey( QKeyEvent* );
@@ -142,6 +149,9 @@ private:
   int                          myDelButton;
   
   QtxPolyRubberBand*           mypPolyRB;
+  QtxCircleRubberBand*         mypCircleRB;
+
+  SketchMode myMode;
 };
 
 #ifdef WIN32

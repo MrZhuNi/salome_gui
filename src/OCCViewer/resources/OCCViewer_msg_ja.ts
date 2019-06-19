@@ -233,8 +233,16 @@
       <translation>ズームのスタイルを変更します。</translation>
     </message>
     <message>
+        <source>MNU_SELECTION_STYLE_SWITCH</source>
+        <translation>Advanced selection style switch</translation>
+    </message>
+    <message>
       <source>DSC_ZOOMING_STYLE_SWITCH</source>
       <translation>ズームのスタイルを変更します。</translation>
+    </message>
+    <message>
+        <source>DSC_SELECTION_STYLE_SWITCH</source>
+        <translation>Advanced selection style switch</translation>
     </message>
     <message>
       <source>MNU_ENABLE_PRESELECTION</source>

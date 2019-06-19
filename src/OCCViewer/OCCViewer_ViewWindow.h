@@ -152,6 +152,7 @@ public:
 	 SwitchPreselectionId, SwitchSelectionId,
 	 MaximizedId, SynchronizeId, ReturnTo3dViewId,
 	 OrthographicId, PerspectiveId, StereoId, RayTracingId, EnvTextureId, LightSourceId,
+   SwitchSelectionStyleId,
 	 UserId };
 
   enum OperationType{ NOTHING, PANVIEW, ZOOMVIEW, ROTATE, 
@@ -313,6 +314,7 @@ public slots:
   virtual void onSwitchZoomingStyle( bool on );
   virtual void onSwitchPreselection( bool on );
   virtual void onSwitchSelection( bool on );
+  virtual void onSwitchSelectionStyle( bool on );
   virtual void onRayTracing();
   virtual void onEnvTexture();
   virtual void onLightSource();
