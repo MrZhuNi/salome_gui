@@ -1477,12 +1477,23 @@ void OCCViewer_ViewWindow::createActions()
   toolMgr()->registerAction( aAction, SwitchZoomingStyleId );
 
   // Switch advanced selection style (poligone/circle)
-  aAction = new QtxAction(tr("MNU_SELECTION_STYLE_SWITCH"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_RECT_STYLE" ) ),
-                          tr( "MNU_SELECTION_STYLE_SWITCH" ), 0, this);
-  aAction->setStatusTip(tr("DSC_SELECTION_STYLE_SWITCH"));
+  aAction = new QtxAction(tr("MNU_RECTANGLE_SELECTION_STYLE"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_RECT_STYLE" ) ),
+                          tr( "MNU_RECTANGLE_SELECTION_STYLE" ), 0, this);
+  aAction->setStatusTip(tr("DSC_RECTANGLE_SELECTION_STYLE"));
   aAction->setCheckable(true);
-  connect(aAction, SIGNAL(toggled(bool)), this, SLOT(onSwitchSelectionStyle(bool)));
-  toolMgr()->registerAction( aAction, SwitchSelectionStyleId);
+  toolMgr()->registerAction( aAction, RectangleSelectionStyleId);
+
+  aAction = new QtxAction(tr("MNU_CIRCLE_SELECTION_STYLE"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_CIRCLE_STYLE" ) ),
+                          tr( "MNU_CIRCLE_SELECTION_STYLE" ), 0, this);
+  aAction->setStatusTip(tr("DSC_CIRCLE_SELECTION_STYLE"));
+  aAction->setCheckable(true);
+  toolMgr()->registerAction( aAction, CircleSelectionStyleId);
+
+  // - add exclusive action group
+  QActionGroup* aSelectionGroup = new QActionGroup(this);
+  aSelectionGroup->addAction(toolMgr()->action(RectangleSelectionStyleId));
+  aSelectionGroup->addAction(toolMgr()->action(CircleSelectionStyleId));
+  connect(aSelectionGroup, SIGNAL(triggered(QAction*)), this, SLOT(onSwitchSelectionStyle(QAction*)));
 
   // Maximized view
   aAction = new QtxAction(tr("MNU_MINIMIZE_VIEW"), aResMgr->loadPixmap( "OCCViewer", tr( "ICON_OCCVIEWER_MINIMIZE" ) ),
@@ -1555,7 +1566,8 @@ void OCCViewer_ViewWindow::createToolBar()
   toolMgr()->append( SwitchZoomingStyleId, tid );
   toolMgr()->append( SwitchPreselectionId, tid );
   toolMgr()->append( SwitchSelectionId, tid );
-  toolMgr()->append(SwitchSelectionStyleId, tid );
+  toolMgr()->append(RectangleSelectionStyleId, tid );
+  toolMgr()->append(CircleSelectionStyleId, tid );
   if( myModel->trihedronActivated() )
     toolMgr()->append( TrihedronShowId, tid );
 
@@ -2202,23 +2214,45 @@ void OCCViewer_ViewWindow::onSwitchSelection( bool on )
   }
 }
 
-void OCCViewer_ViewWindow::onSwitchSelectionStyle(bool on)
+/*!
+  \brief Switches style of advanced multiple selection by Poligon/Circle
+*/
+void OCCViewer_ViewWindow::onSwitchSelectionStyle(QAction* theAction)
 {
   // selection
-  QtxAction* a = dynamic_cast<QtxAction*>( toolMgr()->action(SwitchSelectionStyleId) );
-  if (a) {
-    if (a->isChecked() != on) {
-      a->setChecked(on);
-    }
-    SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
-    QPixmap aIcon = on ? aResMgr->loadPixmap("OCCViewer", tr("ICON_OCCVIEWER_CIRCLE_STYLE")) :
-      aResMgr->loadPixmap("OCCViewer", tr("ICON_OCCVIEWER_RECT_STYLE"));
-    a->setIcon(aIcon);
-  }
   OCCViewer_ViewSketcher* aSkecher = getSketcher(Polygon);
   if (aSkecher) {
-    aSkecher->setSketcherMode(on ? OCCViewer_PolygonSketcher::Circle :
-      OCCViewer_PolygonSketcher::Poligone);
+    if (theAction == toolMgr()->action(RectangleSelectionStyleId)) {
+      aSkecher->setSketcherMode(OCCViewer_PolygonSketcher::Poligone);
+    }
+    else if (theAction == toolMgr()->action(CircleSelectionStyleId)) {
+      aSkecher->setSketcherMode(OCCViewer_PolygonSketcher::Circle);
+    }
+  }
+}
+
+int OCCViewer_ViewWindow::selectionStyle() const
+{
+  OCCViewer_ViewSketcher* aSkecher = getSketcher(Polygon);
+  if (aSkecher) {
+    return aSkecher->sketcherMode();
+  }
+  return 0;
+}
+
+void OCCViewer_ViewWindow::setSelectionStyle(int theMode)
+{
+  OCCViewer_ViewSketcher* aSkecher = getSketcher(Polygon);
+  if (aSkecher) {
+    aSkecher->setSketcherMode(theMode);
+    if (theMode == 0) {
+      toolMgr()->action(RectangleSelectionStyleId)->setChecked(true);
+      toolMgr()->action(CircleSelectionStyleId)->setChecked(false);
+    }
+    else {
+      toolMgr()->action(RectangleSelectionStyleId)->setChecked(false);
+      toolMgr()->action(CircleSelectionStyleId)->setChecked(true);
+    }
   }
 }
 
@@ -3034,11 +3068,11 @@ void OCCViewer_ViewWindow::initSketchers()
   }
 }
 
-OCCViewer_ViewSketcher* OCCViewer_ViewWindow::getSketcher( const int typ )
+OCCViewer_ViewSketcher* OCCViewer_ViewWindow::getSketcher( const int typ ) const
 {
   OCCViewer_ViewSketcher* sketcher = 0;
-  QList<OCCViewer_ViewSketcher*>::Iterator it;
-  for ( it = mySketchers.begin(); it != mySketchers.end() && !sketcher; ++it )
+  QList<OCCViewer_ViewSketcher*>::ConstIterator it;
+  for ( it = mySketchers.cbegin(); it != mySketchers.cend() && !sketcher; ++it )
   {
     OCCViewer_ViewSketcher* sk = (*it);
     if ( sk->type() == typ )

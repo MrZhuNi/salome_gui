@@ -71,6 +71,7 @@ public:
   virtual bool                 eventFilter( QObject*, QEvent* );
 
   virtual void                 setSketcherMode(int theMode) {}
+  virtual int                  sketcherMode() const { return 0; }
 
 private slots:
   void                         onDrawViewPort();
@@ -128,6 +129,9 @@ public:
   virtual ~OCCViewer_PolygonSketcher();
 
   virtual void                 setSketcherMode(int theMode);
+  virtual int                  sketcherMode() const {
+    return myMode;
+  }
 
 protected:
   virtual bool                 onKey( QKeyEvent* );
