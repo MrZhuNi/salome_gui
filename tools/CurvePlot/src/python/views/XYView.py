@@ -264,7 +264,7 @@ class XYView(View):
                                         filters,
                                         trQ("DUMP_VIEW_FILE"),
                                         False )
-    name = str(fileName[0])
+    name = str(fileName)
     if name != "":
       self._mplAxes.figure.savefig(name)
     pass
