@@ -1936,7 +1936,10 @@ void OCCViewer_ViewWindow::setProjectionType( int mode )
 void OCCViewer_ViewWindow::onFitAll()
 {
   emit vpTransformationStarted( FITALLVIEW );
-  myViewPort->fitAll();
+  if (myModel->fitter())
+    myModel->fitter()->fitAll(myViewPort->getView());
+  else
+    myViewPort->fitAll();
   emit vpTransformationFinished( FITALLVIEW );
 }
 
