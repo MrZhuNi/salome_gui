@@ -172,7 +172,7 @@ private:
 
   TreeItem*              createItem( SUIT_DataObject*, TreeItem* = 0, TreeItem* = 0 );
   void                   updateItem( TreeItem* );
-  void                   removeItem( TreeItem* );
+  void                   removeItem( TreeItem*, const bool theIsOptimized = false );
 
 private slots:
   void                   onInserted( SUIT_DataObject*, SUIT_DataObject* );

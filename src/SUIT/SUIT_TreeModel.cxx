@@ -29,6 +29,8 @@
 #include <QMimeData>
 #include <QSet>
 
+#define OPTIMIZED_REMOVAL_THRESHOLD 30
+
 static const QString SUIT_DATAOBJECT_MIME_TYPE = "suit_dataobject.ptr";
 
 SUIT_AbstractModel::SUIT_AbstractModel()
@@ -1244,16 +1246,36 @@ void SUIT_TreeModel::updateItem( SUIT_DataObject* obj)
   \brief Remove tree item (recursively).
   \param item tree item to be removed
 */
-void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
+void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item, const bool theIsOptimized )
 {
   if ( !item )
     return;
+
+  // Fix for the external USUL issue "668: USUL GUI evolution in order to manage bigger series".
+  // If the item contains a lot of children, and none of them have children (we check only the first one here),
+  // then the optimized mode is enabled. In this mode, the methods beginRemoveRows() and endRemoveRows()
+  // are called only once, correspondingly before and after the recursive removeItem() is called.
+  bool anIsOptimized = false;
+  int aChildCount = item->childCount();
+  if( aChildCount > OPTIMIZED_REMOVAL_THRESHOLD )
+    if( SUIT_TreeModel::TreeItem* aChild = item->child( 0 ) )
+      if( !aChild->childCount() )
+        anIsOptimized = true;
+
+  if( anIsOptimized )
+  {
+    QModelIndex anIndex = index( object( item ) );
+    beginRemoveRows( anIndex, 0, aChildCount - 1 );
+  }
 
   // Remove list view items from <myItems> recursively for all children.
   // Otherwise, "delete item" line below will destroy all item's children,
   // and <myItems> will contain invalid pointers
   while( item->childCount() )
-    removeItem( item->child( 0 ) );
+    removeItem( item->child( 0 ), anIsOptimized );
+
+  if( anIsOptimized )
+    endRemoveRows();
 
   SUIT_DataObject* obj = object( item );
   
@@ -1263,7 +1285,8 @@ void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
   QModelIndex parentIdx = index( parentObj, 0 );
   int row = item->position();
   
-  beginRemoveRows( parentIdx, row, row );
+  if( !theIsOptimized )
+    beginRemoveRows( parentIdx, row, row );
   myItems.remove( obj );
 
   if ( obj == root() )
@@ -1273,7 +1296,8 @@ void SUIT_TreeModel::removeItem( SUIT_TreeModel::TreeItem* item )
 
   delete item;
 
-  endRemoveRows();
+  if( !theIsOptimized )
+    endRemoveRows();
 }
 
 /*!
