@@ -40,10 +40,7 @@ SET(_link_LIBRARIES
   ${KERNEL_OpUtil}
   suit 
   PVServerService
-  pqApplicationComponents
-  #vtkRenderingFreeTypeOpenGL
-  vtkRenderingFreeType
-  vtkInteractionStyle
+  ParaView::pqApplicationComponents
   )
 
 # --- headers ---
