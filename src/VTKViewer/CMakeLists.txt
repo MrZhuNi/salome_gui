@@ -39,6 +39,10 @@ SET(_link_LIBRARIES
   ${OPENGL_LIBRARIES}
   ParaView::pqApplicationComponents
   VTK::RenderingLOD
+  VTK::FiltersGeometry
+  VTK::FiltersParallel
+  VTK::RenderingFreeType
+  VTK::IOImage
   ${OpenCASCADE_FoundationClasses_LIBRARIES}
   qtx
   suit
