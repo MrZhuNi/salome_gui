@@ -41,6 +41,7 @@ SET(_link_LIBRARIES
   suit 
   PVServerService
   ParaView::pqApplicationComponents
+  ParaView::pqPython
   )
 
 # --- headers ---

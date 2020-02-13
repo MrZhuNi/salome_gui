@@ -46,6 +46,10 @@ SET(_link_LIBRARIES
   ${OpenCASCADE_FoundationClasses_LIBRARIES} ${OpenCASCADE_Visualization_LIBRARIES}
   ${KERNEL_OpUtil}
   qtx suit ViewerTools SalomeObject SalomePrs VTKViewer OpenGLUtils
+  VTK::RenderingAnnotation
+  VTK::ImagingCore
+  VTK::CommonSystem
+  VTK::IOExportGL2PS
 )
 
 # --- headers ---
