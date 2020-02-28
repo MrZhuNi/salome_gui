@@ -41,8 +41,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkCommand.h>
 #include <vtkCellData.h>
-#include "vtkUnsignedCharArray.h"
-#include "vtkIdTypeArray.h"
+#include <vtkUnsignedCharArray.h>
+#include <vtkIdTypeArray.h>
 
 #include <Basics_Utils.hxx>
 

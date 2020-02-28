@@ -494,7 +494,7 @@ int VTKViewer_ExtractUnstructuredGrid::RequestData(vtkInformation *vtkNotUsed(re
         aCellLocationsArray->SetNumberOfComponents(1);
         aCellLocationsArray->SetNumberOfTuples(newNbElems);
         aConnectivity->InitTraversal();
-	vtkIdType const *pts(nullptr);
+        vtkIdType const *pts(nullptr);
         for(vtkIdType i = 0, npts; aConnectivity->GetNextCell(npts,pts); i++){
           aCellLocationsArray->SetValue(i,aConnectivity->GetTraversalLocation(npts));
         }

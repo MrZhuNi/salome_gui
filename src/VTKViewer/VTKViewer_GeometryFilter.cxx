@@ -997,8 +997,8 @@ VTKViewer_GeometryFilter
             {
               vtkIdType arcResult = -1;
               if(myIsBuildArc) {
-		arcResult = Build1DArc(cellId, input, output, const_cast<vtkIdType *>(pts), myMaxArcAngle);
-		newCellId = arcResult;
+                arcResult = Build1DArc(cellId, input, output, const_cast<vtkIdType *>(pts), myMaxArcAngle);
+                newCellId = arcResult;
               }
               if(!myIsBuildArc || arcResult == -1) {
                 aCellType = VTK_POLY_LINE;

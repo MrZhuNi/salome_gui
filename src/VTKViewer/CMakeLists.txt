@@ -37,11 +37,11 @@ ADD_DEFINITIONS(${OpenCASCADE_DEFINITIONS} ${QT_DEFINITIONS})
 SET(_link_LIBRARIES
   ${QT_LIBRARIES}
   ${OPENGL_LIBRARIES}
-  ParaView::pqApplicationComponents
-  VTK::RenderingLOD
   VTK::FiltersGeometry
   VTK::FiltersParallel
+  VTK::RenderingLOD
   VTK::RenderingFreeType
+  VTK::RenderingOpenGL2
   VTK::IOImage
   ${OpenCASCADE_FoundationClasses_LIBRARIES}
   qtx
