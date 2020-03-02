@@ -43,6 +43,7 @@ SET(_link_LIBRARIES
   VTK::RenderingFreeType
   VTK::RenderingOpenGL2
   VTK::IOImage
+  VTK::IOXML
   ${OpenCASCADE_FoundationClasses_LIBRARIES}
   qtx
   suit
