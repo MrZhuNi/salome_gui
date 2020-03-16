@@ -34,7 +34,7 @@
 #include <QRectF>
 #include <QRubberBand>
 #include <QScrollBar>
-#include <QPrinter>
+#include <QtPrintSupport/QPrinter>
 #include <QPainter>
 
 #include <math.h>

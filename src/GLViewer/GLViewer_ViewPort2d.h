@@ -43,7 +43,7 @@
 #include "GLViewer_Widget.h"
 #include "GLViewer_Geom.h"
 
-#include <QtOpenGL>
+#include <QtOpenGL/QtOpenGL>
 #include <QColor>
 #include <QPaintDevice>
 

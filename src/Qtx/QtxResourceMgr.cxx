@@ -36,9 +36,9 @@
 #include <QLibraryInfo>
 #include <QtDebug>
 #ifndef QT_NO_DOM
-#include <QDomDocument>
-#include <QDomElement>
-#include <QDomNode>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
+#include <QtXml/QDomNode>
 #endif
 
 #include <stdlib.h>

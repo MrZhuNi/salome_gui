@@ -29,7 +29,7 @@
 
 #include "GLViewer.h"
 
-#include <QtOpenGL>
+#include <QtOpenGL/QtOpenGL>
 
 class QFile;
 

@@ -30,7 +30,7 @@
 #include "GLViewer.h"
 
 #include <QRect>
-#include <QtOpenGL>
+#include <QtOpenGL/QtOpenGL>
 #include <math.h>
 
 #ifdef WIN32

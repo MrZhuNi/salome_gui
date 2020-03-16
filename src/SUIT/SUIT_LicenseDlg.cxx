@@ -25,7 +25,7 @@
 #include <QPushButton>
 #include <QTextStream> 
 #include <QFile>
-#include <QPrinter>
+#include <QtPrintSupport/QPrinter>
 //#include <QSimpleRichText>
 #include <QTextDocument>
 #include <QPainter>

@@ -58,7 +58,7 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QContextMenuEvent>
-#include <QPrinter>
+#include <QtPrintSupport/QPrinter>
 #include <QPalette>
 #include <QLocale>
 #include <QXmlStreamWriter>
