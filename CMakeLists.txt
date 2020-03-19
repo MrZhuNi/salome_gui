@@ -69,8 +69,8 @@ SET(BUILD_SHARED_LIBS TRUE)
 
 # User options
 # ============
-OPTION(SALOME_BUILD_DOC "Generate SALOME GUI documentation" ON)
-OPTION(SALOME_BUILD_TESTS "Build SALOME tests" ON)
+OPTION(SALOME_BUILD_DOC "Generate SALOME GUI documentation" OFF)
+OPTION(SALOME_BUILD_TESTS "Build SALOME tests" OFF)
 OPTION(SALOME_GUI_USE_OBSERVERS "Use study observers in GUI (advanced)" ON)
 CMAKE_DEPENDENT_OPTION(SALOME_GUI_BUILD_FRENCH_DOC "Generate SALOME GUI French documentation" OFF
                        "SALOME_BUILD_DOC" OFF)
