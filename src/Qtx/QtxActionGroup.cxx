@@ -24,9 +24,9 @@
 
 #include "QtxComboBox.h"
 
-#include <QMenu>
-#include <QMenuBar>
-#include <QActionGroup>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QActionGroup>
 
 /*!
   \class QtxActionGroup

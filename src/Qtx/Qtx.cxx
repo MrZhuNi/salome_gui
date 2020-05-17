@@ -26,19 +26,19 @@
 #include "Qtx.h"
 
 #include <QDir>
-#include <QMenu>
+#include <QtWidgets/QMenu>
 #include <QRegExp>
-#include <QBitmap>
-#include <QWidget>
-#include <QLayout>
-#include <QPainter>
-#include <QDirModel>
+#include <QtGui/QBitmap>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLayout>
+#include <QtGui/QPainter>
+#include <QtWidgets/QDirModel>
 #include <QFileInfo>
-#include <QCompleter>
-#include <QApplication>
-#include <QDesktopWidget>
+#include <QtWidgets/QCompleter>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QDesktopWidget>
 #include <QtDebug>
-#include <QSurfaceFormat>
+#include <QtGui/QSurfaceFormat>
 
 #include <stdio.h>
 #include <stdlib.h>

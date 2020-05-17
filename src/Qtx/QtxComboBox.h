@@ -29,7 +29,7 @@
 #include "Qtx.h"
 
 #include <QMap>
-#include <QComboBox>
+#include <QtWidgets/QComboBox>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

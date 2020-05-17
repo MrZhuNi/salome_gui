@@ -23,12 +23,13 @@ INCLUDE(UseQtExt)
 
 # additional include directories
 INCLUDE_DIRECTORIES(${QT_INCLUDES})
+INCLUDE_DIRECTORIES("/usr/include/x86_64-linux-gnu/qt5/QtWidgets")
 
 # additional preprocessor / compiler flags
 ADD_DEFINITIONS(${QT_DEFINITIONS})
-
+#/usr/lib/x86_64-linux-gnu/libQt5Widgets.so
 # libraries to link to
-SET(_link_LIBRARIES ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
+SET(_link_LIBRARIES ${QT_LIBRARIES} /usr/lib/x86_64-linux-gnu/libQt5Xml.so ${OPENGL_LIBRARIES})
 
 # --- headers ---
 

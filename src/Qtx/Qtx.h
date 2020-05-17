@@ -44,11 +44,11 @@
 
 #include <QString>
 #include <QList>
-#include <QFont>
-#include <QColor>
-#include <QImage>
-#include <QPixmap>
-#include <QGradient>
+#include <QtGui/QFont>
+#include <QtGui/QColor>
+#include <QtGui/QImage>
+#include <QtGui/QPixmap>
+#include <QtGui/QGradient>
 
 class QObject;
 class QWidget;

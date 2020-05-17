@@ -27,8 +27,8 @@
 
 #include <QEvent>
 #include <QPointer>
-#include <QActionEvent>
-#include <QApplication>
+#include <QtGui/QActionEvent>
+#include <QtWidgets/QApplication>
 
 /*!
   \class QtxAction::ActionNotify

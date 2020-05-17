@@ -28,7 +28,7 @@
 
 #include "Qtx.h"
 
-#include <QWidgetAction>
+#include <QtWidgets/QWidgetAction>
 
 class QIcon;
 

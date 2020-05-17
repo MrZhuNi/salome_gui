@@ -32,7 +32,7 @@ INCLUDE_DIRECTORIES(
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 # libraries to link to
-SET(_link_LIBRARIES ${PLATFORM_LIBS} ${QT_LIBRARIES} qtx ObjBrowser)
+SET(_link_LIBRARIES ${PLATFORM_LIBS} ${QT_LIBRARIES} /usr/lib/x86_64-linux-gnu/libQt5PrintSupport.so qtx ObjBrowser)
 
 # --- headers ---
 
