@@ -4956,6 +4956,18 @@ void LightApp_Application::onDesktopMessage( const QString& message )
     if ( !vtype.isEmpty() )
       getViewManager( vtype, true );
   }
+  else if ( message.toLower().startsWith("load_module" ) ) {
+    QString moduleName = message.split( sectionSeparator ).last();
+    CAM_Module* mod = module( moduleName );
+     if ( !mod )
+        mod = module( moduleTitle( moduleName ) );
+     if ( !mod ) {
+        mod = loadModule( moduleName );
+        if ( !mod )
+          mod = loadModule( moduleTitle( moduleName) );
+        addModule(mod);
+     }
+  }
   else {
     QStringList data = message.split( sectionSeparator );
     if ( data.count() > 1 ) {
