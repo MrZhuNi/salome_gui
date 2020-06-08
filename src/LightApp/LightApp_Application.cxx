@@ -4956,7 +4956,7 @@ void LightApp_Application::onDesktopMessage( const QString& message )
     if ( !vtype.isEmpty() )
       getViewManager( vtype, true );
   }
-  else if ( message.toLower().startsWith("load_module" ) ) {
+  else if ( message.toLower().startsWith("register_module_in_study" ) ) {
     QString moduleName = message.split( sectionSeparator ).last();
     CAM_Module* mod = module( moduleName );
      if ( !mod )
@@ -4965,7 +4965,12 @@ void LightApp_Application::onDesktopMessage( const QString& message )
         mod = loadModule( moduleName );
         if ( !mod )
           mod = loadModule( moduleTitle( moduleName) );
-        addModule(mod);
+        if ( mod ) {
+          addModule(mod);
+          CAM_Study* anActiveStudy = dynamic_cast<CAM_Study*>(activeStudy());
+          if (anActiveStudy)
+            mod->connectToStudy(anActiveStudy);
+        }
      }
   }
   else {
