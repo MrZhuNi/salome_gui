@@ -4960,7 +4960,7 @@ void LightApp_Application::onDesktopMessage( const QString& message )
     QString moduleName = message.split( sectionSeparator ).last();
     // Check name of current activating module name in order to avoid ciclik 
     // call because of messages
-    if (actvatingModule().isNull()) {
+    if (!property("activateModule").toBool()) {
       CAM_Module* mod = module(moduleName);
       if (!mod)
         mod = module(moduleTitle(moduleName));

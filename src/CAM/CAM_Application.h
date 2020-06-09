@@ -94,8 +94,6 @@ protected:
 
   virtual bool        abortAllOperations();
 
-  QString             actvatingModule() const { return myActvatingModule; }
-
 private:
   void                readModuleList();
 
@@ -113,7 +111,6 @@ private:
   static ModuleInfoList myInfoList;      //!< modules info list
   bool                  myAutoLoad;      //!< auto loading flag
   bool                  myBlocked;       //!< "blocked" flag, internal usage
-  QString               myActvatingModule; //!< Name of currently activating module.
 };
 
 #ifdef WIN32

@@ -101,6 +101,7 @@ CAM_Application::CAM_Application( const bool autoLoad )
   myAutoLoad( autoLoad ),
   myBlocked( false )
 {
+  setProperty("activateModule", false);
   readModuleList();
 }
 
@@ -417,7 +418,7 @@ bool CAM_Application::activateModule( const QString& modName )
   bool res = false;
   if ( !modName.isEmpty() )
   {
-    myActvatingModule = modName;
+    setProperty("activateModule", true);
     CAM_Module* mod = module( modName );
     if ( !mod )
       mod = loadModule( modName );
@@ -425,7 +426,7 @@ bool CAM_Application::activateModule( const QString& modName )
 
     if ( mod )
       res = activateModule( mod );
-    myActvatingModule = QString();
+    setProperty("activateModule", false);
   }
   else
     res = activateModule( 0 );
