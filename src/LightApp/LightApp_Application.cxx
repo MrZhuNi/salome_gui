@@ -4958,20 +4958,24 @@ void LightApp_Application::onDesktopMessage( const QString& message )
   }
   else if ( message.toLower().startsWith("register_module_in_study" ) ) {
     QString moduleName = message.split( sectionSeparator ).last();
-    CAM_Module* mod = module( moduleName );
-     if ( !mod )
-        mod = module( moduleTitle( moduleName ) );
-     if ( !mod ) {
-        mod = loadModule( moduleName );
-        if ( !mod )
-          mod = loadModule( moduleTitle( moduleName) );
-        if ( mod ) {
+    // Check name of current activating module name in order to avoid ciclik 
+    // call because of messages
+    if (actvatingModule().isNull()) {
+      CAM_Module* mod = module(moduleName);
+      if (!mod)
+        mod = module(moduleTitle(moduleName));
+      if (!mod) {
+        mod = loadModule(moduleName);
+        if (!mod)
+          mod = loadModule(moduleTitle(moduleName));
+        if (mod) {
           addModule(mod);
           CAM_Study* anActiveStudy = dynamic_cast<CAM_Study*>(activeStudy());
           if (anActiveStudy)
             mod->connectToStudy(anActiveStudy);
         }
-     }
+      }
+    }
   }
   else {
     QStringList data = message.split( sectionSeparator );
