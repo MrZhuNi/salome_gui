@@ -4970,9 +4970,16 @@ void LightApp_Application::onDesktopMessage( const QString& message )
           mod = loadModule(moduleTitle(moduleName));
         if (mod) {
           addModule(mod);
-          CAM_Study* anActiveStudy = dynamic_cast<CAM_Study*>(activeStudy());
-          if (anActiveStudy)
-            mod->connectToStudy(anActiveStudy);
+        }
+      }
+      if (mod) {
+        CAM_Study* anActiveStudy = dynamic_cast<CAM_Study*>(activeStudy());
+        if (anActiveStudy) {
+          mod->connectToStudy(anActiveStudy);
+          LightApp_DataModel* aDM = dynamic_cast<LightApp_DataModel*>(mod->dataModel());
+          if(aDM) {
+            aDM->initRootObject();
+          }
         }
       }
     }
