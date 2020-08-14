@@ -826,6 +826,7 @@ void GLViewer_ViewPort2d::fitSelect()
 */
 void GLViewer_ViewPort2d::fitAll( bool keepScale, bool withZ )
 {
+	//GUI_UNUSED(withZ);
     //cout << "GLViewer_ViewPort2d::fitAll" << endl;
 
     float xa, xb, ya, yb;

@@ -44,6 +44,7 @@
 GLViewer_Widget::GLViewer_Widget( QWidget* parent, const char* name ):
 QGLWidget( parent, 0/*, WRepaintNoErase | WResizeNoErase*/ )
 {
+	//GUI_UNUSED(name);
   myViewPort = ( GLViewer_ViewPort2d* )parent;
 
   myXPan = 0.0;
@@ -401,7 +402,7 @@ void GLViewer_Widget::mouseReleaseEvent( QMouseEvent* e )
 /*!
   Custom enter event handler
 */
-void GLViewer_Widget::enterEvent( QEvent* e )
+void GLViewer_Widget::enterEvent( QEvent* /*e*/ )
 {
   updateGL();
 }
@@ -409,7 +410,7 @@ void GLViewer_Widget::enterEvent( QEvent* e )
 /*!
   Custom leave event handler
 */
-void GLViewer_Widget::leaveEvent( QEvent* e )
+void GLViewer_Widget::leaveEvent( QEvent* /*e*/ )
 {
   updateGL();
 }

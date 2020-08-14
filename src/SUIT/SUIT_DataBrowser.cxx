@@ -145,6 +145,7 @@ void SUIT_DataBrowser::setUpdateModified( const bool on )
 */
 void SUIT_DataBrowser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
 {
+  //GUI_UNUSED(autoOpen);
   SUIT_ProxyModel* m = qobject_cast<SUIT_ProxyModel*>( model() );
   if ( m ) {
     m->updateTree( obj );
@@ -472,6 +473,7 @@ void SUIT_DataBrowser::onDblClicked( const QModelIndex& index )
 */
 void SUIT_DataBrowser::onExpanded( const QModelIndex& index )
 {
+  //GUI_UNUSED(index);
   if (myResizeOnExpandItem) {
     adjustFirstColumnWidth();
     adjustColumnsWidth();

@@ -357,7 +357,7 @@ VTKViewer_ArcBuilder::~VTKViewer_ArcBuilder()
  */
 vtkUnstructuredGrid* VTKViewer_ArcBuilder::BuildGrid(const PntList& theList) const
 {
-  int aListsize = theList.size();  
+  int aListsize = (int)theList.size(); //!< TODO: conversion from size_t to int
   vtkUnstructuredGrid* aGrid = NULL;
   
   if(aListsize != 0) {

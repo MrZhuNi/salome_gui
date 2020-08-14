@@ -1146,6 +1146,7 @@ void CAM_Module::updateModuleVisibilityState() {
 */
 bool CAM_Module::activateOperation( int actionId )
 {
+  //GUI_UNUSED(actionId);
   return false;
 }
 
@@ -1156,6 +1157,7 @@ bool CAM_Module::activateOperation( int actionId )
 */
 bool CAM_Module::activateOperation( const QString& actionId )
 {
+  //GUI_UNUSED(actionId);
   return false;
 }
 
@@ -1167,6 +1169,7 @@ bool CAM_Module::activateOperation( const QString& actionId )
 */
 bool CAM_Module::activateOperation( const QString& actionId, const QString& pluginName )
 {
+  //GUI_UNUSED(actionId);
   return false;
 }
 

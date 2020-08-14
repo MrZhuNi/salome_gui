@@ -516,6 +516,7 @@ GLViewer_LineField::~GLViewer_LineField()
 */
 void GLViewer_LineField::addLine( FieldDim theDim, GLViewer_LineList* )
 {
+	//GUI_UNUSED(theDim);
   //not implemented
 }
 

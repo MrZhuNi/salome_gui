@@ -55,6 +55,7 @@ mySketcher( 0 ),
 myTransformer( 0 ),
 mySelMode( NoSelection )
 {
+	//GUI_UNUSED(title);
 }
 
 /*!
@@ -335,6 +336,7 @@ bool GLViewer_Viewer::eventFilter( QObject* o, QEvent* e )
 */
 void GLViewer_Viewer::onSelectionDone( bool bAdded, SelectionChangeStatus status  )
 {
+	//GUI_UNUSED(bAdded);
     emit selectionChanged( status );
 }
 

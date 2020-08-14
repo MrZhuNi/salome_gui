@@ -334,7 +334,7 @@ bool SUIT_ViewWindow::dropDownButtons() const
 */
 int SUIT_ViewWindow::getId() const
 {
-  return int(long(this));
+  return int(LONG_PTR(this));
 }
 
 /*!
@@ -456,6 +456,7 @@ void SUIT_ViewWindow::updateSyncViews()
 */
 void SUIT_ViewWindow::onSynchronizeView( bool checked )
 {
+  //GUI_UNUSED(checked);
   QAction* a = qobject_cast<QAction*>( sender() );
   if ( a ) {
     synchronizeView( this, a->data().toInt() );

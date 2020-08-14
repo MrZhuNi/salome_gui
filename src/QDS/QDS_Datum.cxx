@@ -1424,6 +1424,7 @@ void QDS_Datum::initialize()
 */
 void QDS_Datum::unitSystemChanged( const QString& unitSystem )
 {
+	//GUI_UNUSED(initSystem);
   QString labText = label();
   QString unitText = unitsToText( units() );
 
@@ -1883,7 +1884,7 @@ QString QDS_Datum::removeAccel( const QString& src )
 {
   QString trg = src;
 
-  for ( uint i = 0; i < trg.length(); )
+  for ( uint i = 0; i < (uint)trg.length(); )
   {
     if ( trg.mid( i, 2 ) == QString( "&&" ) )
       i += 2;

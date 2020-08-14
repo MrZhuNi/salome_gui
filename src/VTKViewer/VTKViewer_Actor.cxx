@@ -93,7 +93,7 @@ VTKViewer_Actor
 
   myTransformFilter->Delete();
 
-  for(int i = 0, iEnd = myPassFilter.size(); i < iEnd; i++)
+  for(size_t i = 0, iEnd = myPassFilter.size(); i < iEnd; i++)
     if(myPassFilter[i])
       myPassFilter[i]->Delete();
   

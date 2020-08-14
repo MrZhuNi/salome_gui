@@ -326,7 +326,7 @@ QValidator::State QtxDoubleSpinBox::validate( QString& str, int& pos ) const
     state = v.validate( str, pos );
   else
     {
-      if ( str.length() >= overhead && str.startsWith( pref ) &&
+      if ( (uint)str.length() >= overhead && str.startsWith( pref ) && //!< TODO: mismatch signed/unsigned
            str.right( suff.length() ) == suff )
         {
           QString core = str.mid( pref.length(), str.length() - overhead );

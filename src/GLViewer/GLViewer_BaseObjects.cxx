@@ -425,6 +425,8 @@ GLboolean GLViewer_MarkerSet::unhighlight()
 GLboolean GLViewer_MarkerSet::select( GLfloat x, GLfloat y, GLfloat tol, GLViewer_Rect rect, GLboolean isFull,
                                       GLboolean isCircle, GLboolean isShift )
 {
+	//GUI_UNUSED(isFull);
+	//GUI_UNUSED(rect);
     if( !myIsVisible )
         return false;
 //  cout << "GLViewer_MarkerSet::select " << x << " " << y << endl;
@@ -820,6 +822,7 @@ GLViewer_Polyline::GLViewer_Polyline( int number, float size, const QString& too
   myXCoord( 0 ),
   myYCoord( 0 )       
 {
+	//GUI_UNUSED(size);
   myHighFlag = GL_TRUE;
 
   myHNumbers.clear();
@@ -1006,6 +1009,8 @@ GLViewer_Drawer* GLViewer_Polyline::createDrawer()
 */
 GLboolean GLViewer_Polyline::highlight( GLfloat x, GLfloat y, GLfloat tol, GLboolean isCircle )
 {
+	//GUI_UNUSED(isCircle);
+	//GUI_UNUSED(tol);
     if( !myIsVisible )
         return false;
     GLfloat xa, xb, ya, yb, l;
@@ -1091,6 +1096,11 @@ GLboolean GLViewer_Polyline::unhighlight()
 GLboolean GLViewer_Polyline::select( GLfloat x, GLfloat y, GLfloat tol, GLViewer_Rect rect, GLboolean isFull,
                                      GLboolean isCircle, GLboolean isShift )
 {
+	//GUI_UNUSED(isCircle);
+	//GUI_UNUSED(isFull);
+	//GUI_UNUSED(isShift);
+	//GUI_UNUSED(rect);
+	//GUI_UNUSED(tol);
     if( !myIsVisible )
         return false;
     GLfloat xa, xb, ya, yb, l;
@@ -1624,6 +1634,9 @@ GLboolean GLViewer_TextObject::unhighlight()
 GLboolean GLViewer_TextObject::select( GLfloat theX, GLfloat theY, GLfloat theTol, GLViewer_Rect rect,
                                        GLboolean isFull, GLboolean isCircle, GLboolean isShift )
 { 
+	//GUI_UNUSED(isFull);
+	//GUI_UNUSED(isShift);
+	//GUI_UNUSED(rect);
     if( !myIsVisible )
         return false;
 

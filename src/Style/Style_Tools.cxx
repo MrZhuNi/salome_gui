@@ -696,6 +696,7 @@ void Style_Tools::drawSlider( QPainter* p, const QRect& r, const double rad,
                               SliderType type, const QColor& light, const QColor& dark,
                               const QColor& border_top, const QColor& border_bot )
 {
+  //GUI_UNUSED(border_top)
   p->save();
   QPainterPath path, bottomPath;
   if ( rad == 0 )

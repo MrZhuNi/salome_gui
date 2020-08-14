@@ -712,7 +712,7 @@ SALOME_Actor
       TColStd_MapOfInteger anIndexes;
       if(aMapIter != aVectorIdsMap.end()){
         const SVTK_AreaPicker::TVectorIds& aVectorIds = aMapIter->second;
-        vtkIdType anEnd = aVectorIds.size();
+        vtkIdType anEnd = (int)aVectorIds.size(); //!< TODO: conversion from size_t to int
         for(vtkIdType anId = 0; anId < anEnd; anId++ ) {
           int aPointId = aVectorIds[anId];
           if( aPointId >= 0 && mySelector->IsValid( this, aPointId, true ) ) {
@@ -788,7 +788,7 @@ SALOME_Actor
       TColStd_MapOfInteger anIndexes;
       if(aMapIter != aVectorIdsMap.end()){
         const SVTK_AreaPicker::TVectorIds& aVectorIds = aMapIter->second;
-        vtkIdType anEnd = aVectorIds.size();
+        vtkIdType anEnd = (int)aVectorIds.size(); //!< TODO: conversion from size_t to int
         for(vtkIdType anId = 0; anId < anEnd; anId++ ) {
           int aCellId = aVectorIds[anId];
           if ( !mySelector->IsValid( this, aCellId ) )
@@ -826,7 +826,7 @@ SALOME_Actor
       SVTK_IndexedMapOfIds anIndexes;
       if(aMapIter != aVectorIdsMap.end()){
         const SVTK_AreaPicker::TVectorIds& aVectorIds = aMapIter->second;
-        vtkIdType anEnd = aVectorIds.size();
+        vtkIdType anEnd = (int)aVectorIds.size(); //!< TODO: conversion from size_t to int
         for(vtkIdType anId = 0; anId < anEnd; anId++ ) {
           int aCellId = aVectorIds[anId];
           if ( !mySelector->IsValid( this, aCellId ) )

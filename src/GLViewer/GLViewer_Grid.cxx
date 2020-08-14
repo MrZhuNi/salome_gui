@@ -67,6 +67,16 @@ GLViewer_Grid::GLViewer_Grid( GLfloat width, GLfloat height,
        myLineWidth( (GLfloat)0.05 ), myCenterWidth( (GLfloat)1.5 ), myCenterRadius( (GLfloat)5.0 ), 
        myScaleFactor( 10 ), myIsUpdate( GL_FALSE )
 {
+	//GUI_UNUSED(height);
+	//GUI_UNUSED(width);
+	//GUI_UNUSED(winH);
+	//GUI_UNUSED(winW);
+	//GUI_UNUSED(xPan);
+	//GUI_UNUSED(xScale);
+	//GUI_UNUSED(xSize);
+	//GUI_UNUSED(yPan);
+	//GUI_UNUSED(yScale);
+	//GUI_UNUSED(ySize);
   myGridColor[0] = 0.5;
   myGridColor[1] = 0.5;
   myGridColor[2] = 0.5;

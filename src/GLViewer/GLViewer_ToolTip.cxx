@@ -89,7 +89,7 @@ GLViewer_ObjectTip::~GLViewer_ObjectTip()
 */
 bool GLViewer_ObjectTip::maybeTip( const QPoint &p )
 {
-
+	//GUI_UNUSED(p);
 
   GLViewer_Context* aContext = ((GLViewer_Viewer2d*)mypViewPort->getViewFrame()->getViewer())->getGLContext();
 

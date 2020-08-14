@@ -115,6 +115,8 @@ void GLViewer_Viewer2d::onChangeBgColor()
 */
 void GLViewer_Viewer2d::updateColors( QColor colorH, QColor colorS )
 {
+	//GUI_UNUSED(colorH);
+	//GUI_UNUSED(colorS);
 //  cout << "GLViewer_Viewer2d::updateColors" << endl;
 
 /*
@@ -217,6 +219,8 @@ void GLViewer_Viewer2d::updateAll()
 */
 void GLViewer_Viewer2d::updateDrawers( GLboolean update, GLfloat scX, GLfloat scY )
 {
+	//GUI_UNUSED(scX);
+	//GUI_UNUSED(scY);
 //  cout << "GLViewer_Viewer2d::updateDrawers" << endl;
 
     //myGLContext->updateScales( scX, scY );

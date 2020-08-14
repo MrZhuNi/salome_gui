@@ -172,6 +172,7 @@ void GLViewer_Selector2d::unselectAll()
 */
 void GLViewer_Selector2d::checkSelection( int selBefore, bool append, int aStatus )
 {
+	//GUI_UNUSED(append);
     int selAfter = numSelected();
     if ( selBefore > 0 && selAfter < 1 )     
         emit selSelectionCancel();

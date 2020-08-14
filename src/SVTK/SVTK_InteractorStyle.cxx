@@ -1706,7 +1706,7 @@ bool isValid( const QPolygon* thePoints, const QPoint& theCurrent )
     return true;
 
   bool res = true;
-  for ( uint i = 0; i < thePoints->count() - 1 && res; i++ )
+  for ( uint i = 0; i < (uint)thePoints->count() - 1 && res; i++ )
   {
     const QPoint& aStart = thePoints->point( i );
     const QPoint& anEnd  = thePoints->point( i + 1 );
