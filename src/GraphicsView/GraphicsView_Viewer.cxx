@@ -57,6 +57,7 @@ GraphicsView_Viewer::GraphicsView_Viewer( const QString& title, QWidget* widget 
   myWidget( widget ),
   myIsInitialized( false )
 {
+	//GUI_UNUSED(title);
 }
 
 //=======================================================================
@@ -364,7 +365,7 @@ void GraphicsView_Viewer::handleKeyPress( QKeyEvent* e )
 // Function : handleKeyRelease
 // Purpose  : 
 //================================================================
-void GraphicsView_Viewer::handleKeyRelease( QKeyEvent* e )
+void GraphicsView_Viewer::handleKeyRelease( QKeyEvent* /*e*/ ) //!< TODO: unused variable
 {
 }
 

@@ -297,9 +297,9 @@ public:
     return qwtMin(myMin.size(), myMax.size());
   }
   bool values(size_t i, double &min, double &max) {
-    if(myMin.contains(i) && myMax.contains(i)) {
-      min = myMin[i];
-      max = myMax[i];
+    if(myMin.contains((int)i) && myMax.contains((int)i)) { //!< TODO: conversion from size_t to int
+      min = myMin[(int)i];
+      max = myMax[(int)i];
       return true;
     }
     return false;
@@ -399,7 +399,7 @@ void Plot2d_QwtPlotCurve::drawSeries( QPainter *painter,
                                       int from, int to) const
 {
   if (to < 0)
-    to = dataSize() - 1;
+    to = (int)dataSize() - 1; //!< TODO: conversion from size_t to int
   QwtPlotCurve::drawSeries(painter, xMap, yMap, canvasRect, from, to);
 
   //draw deviation data

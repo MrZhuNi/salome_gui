@@ -211,7 +211,7 @@ public:
             return;
           }
 
-          int last2Pnt_pos = theID.rfind( ":" );
+          int last2Pnt_pos = (int)theID.rfind( ":" ); //!< TODO: conversion from size_t to int
           std::string parent_id = theID.substr( 0, last2Pnt_pos );
           int tag = atoi( theID.substr( last2Pnt_pos+1 ).c_str() );
 
@@ -842,7 +842,7 @@ void SalomeApp_Study::openModuleData( QString theModuleName, int type, QStringLi
 {
   std::vector<std::string> aListOfFiles = GetListOfFiles( theModuleName.toStdString().c_str(), type );
 
-  int i, aLength = aListOfFiles.size() - 1;
+  int i, aLength = (int)aListOfFiles.size() - 1; //!< TODO: conversion from size_t to int
   if ( aLength < 0 )
     return;
 
@@ -859,6 +859,7 @@ void SalomeApp_Study::openModuleData( QString theModuleName, int type, QStringLi
 */
 bool SalomeApp_Study::saveStudyData( const QString& theFileName, int type )
 {
+	//GUI_UNUSED(theFileName);
   ModelList list; dataModels( list );
   QListIterator<CAM_DataModel*> it( list );
   while ( it.hasNext() ){
@@ -1108,7 +1109,7 @@ void SalomeApp_Study::RemoveTemporaryFiles ( const char* theModuleName, bool isM
   if (aListOfFiles.size() > 0) {
     std::string aTmpDir = aListOfFiles[0];
 
-    const int n = aListOfFiles.size() - 1;
+    const int n = (int)aListOfFiles.size() - 1; //!< TODO: conversion from size_t to int
     std::vector<std::string> aSeq;
     aSeq.reserve(n);
     for (int i = 0; i < n; i++)
@@ -1157,7 +1158,7 @@ void SalomeApp_Study::deleteReferencesTo( _PTR( SObject ) obj )
 {
   _PTR(StudyBuilder) sb = studyDS()->NewBuilder();
   std::vector<_PTR(SObject)> aRefs = studyDS()->FindDependances( obj );
-  for( int i=0, n=aRefs.size(); i<n; i++ )
+  for( size_t i=0, n=aRefs.size(); i<n; i++ )
   {
     _PTR( SObject ) o = aRefs[i];
     if( o->GetFatherComponent()->ComponentDataType()==obj->GetFatherComponent()->ComponentDataType() )

@@ -1451,7 +1451,7 @@ bool OCCViewer_Viewer::computeTrihedronSize( double& theNewSize, double& theSize
 
   float aSizeInPercents = SUIT_Session::session()->resourceMgr()->doubleValue("3DViewer","trihedron_size", 100.);
 
-  static float EPS = 5.0E-3;
+  static float EPS = 5.0E-3f; 
   theSize = getTrihedron()->Size();
   theNewSize = aMaxSide*aSizeInPercents / 100.0;
 

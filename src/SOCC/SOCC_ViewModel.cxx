@@ -105,6 +105,7 @@ bool SOCC_Viewer::highlight( const Handle(SALOME_InteractiveObject)& obj,
 bool SOCC_Viewer::isInViewer( const Handle(SALOME_InteractiveObject)& obj,
                               bool onlyInViewer )
 {
+	//GUI_UNUSED(on);
   AIS_ListOfInteractive List;
   getAISContext()->DisplayedObjects(List);
   AIS_ListIteratorOfListOfInteractive ite(List);
@@ -365,6 +366,7 @@ void SOCC_Viewer::Display( const SALOME_OCCPrs* prs )
 */
 void SOCC_Viewer::Erase( const SALOME_OCCPrs* prs, const bool forced )
 {
+	//GUI_UNUSED(forced);
   // try do downcast object
   const SOCC_Prs* anOCCPrs = dynamic_cast<const SOCC_Prs*>( prs );
   if ( !anOCCPrs || anOCCPrs->IsNull() )

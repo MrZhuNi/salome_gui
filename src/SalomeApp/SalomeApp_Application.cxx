@@ -1192,6 +1192,7 @@ void SalomeApp_Application::updateDesktopTitle() {
 
 int SalomeApp_Application::closeChoice( const QString& docName )
 {
+	//GUI_UNUSED(docName);
   QStringList buttons;
   QMap<int, int> choices;
   int idx = 0;
@@ -1900,6 +1901,7 @@ bool SalomeApp_Application::renameAllowed( const QString& entry) const
 */
 bool SalomeApp_Application::renameObject( const QString& entry, const QString& name )
 {
+	//GUI_UNUSED(entry);
   SalomeApp_Study* aStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
 
   int savePoint = ::getSelectedSavePoint( selectionMgr() );

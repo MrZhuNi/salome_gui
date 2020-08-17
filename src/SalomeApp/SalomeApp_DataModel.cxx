@@ -238,6 +238,7 @@ suitPtr SalomeApp_DataModelSync::parent( const suitPtr& p ) const
 */
 void SalomeApp_DataModelSync::updateItem( const kerPtr& obj, const suitPtr& ) const
 {
+	//GUI_UNUSED(obj);
 }
 
 /*!

@@ -791,7 +791,7 @@ void OCCViewer_ClippingDlg::setPlaneParam( OCCViewer_ClipPlane& thePlane )
 void OCCViewer_ClippingDlg::synchronize()
 {
   ComboBoxPlanes->clear();
-  int aNbPlanesAbsolute = myLocalPlanes.size();
+  int aNbPlanesAbsolute = (int)myLocalPlanes.size();
 
   QString aName;
   for(int i = 1; i<=aNbPlanesAbsolute; i++ ) {

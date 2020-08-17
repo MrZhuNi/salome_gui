@@ -373,7 +373,7 @@ extern "C" SALOMEPY_EXPORT PyObject* libSalomePy_showTrihedron( PyObject* self, 
     virtual void Execute()
     {
       if( SVTK_ViewWindow* aVTKViewWindow = GetVTKViewWindow( __Find ) ) {
-        if ( aVTKViewWindow->isTrihedronDisplayed() != myShow )
+        if ( aVTKViewWindow->isTrihedronDisplayed() != (bool)myShow )
           aVTKViewWindow->onViewTrihedron(myShow);
       }
     }

@@ -105,6 +105,7 @@ void GraphicsView_Selector::unselectAll()
 //================================================================
 void GraphicsView_Selector::checkSelection( int selBefore, bool append, int theStatus )
 {
+	//GUI_UNUSED(append);
   int selAfter = numSelected();
   if ( selBefore > 0 && selAfter < 1 )     
     emit selSelectionCancel();

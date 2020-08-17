@@ -1944,7 +1944,7 @@ AnalyticalCurveList Plot2d_ViewFrame::getAnalyticalCurves() const
 Plot2d_AnalyticalCurve* Plot2d_ViewFrame::getAnalyticalCurve(QwtPlotItem * theItem) {
   AnalyticalCurveList::iterator it = myAnalyticalCurves.begin();
   for( ; it != myAnalyticalCurves.end(); it++) {
-    if((*it)->plotItem() == theItem);
+    if((*it)->plotItem() == theItem); //!< TODO: empty controlled statement found; is this the intent?
 		return (*it);
   }
   return 0;

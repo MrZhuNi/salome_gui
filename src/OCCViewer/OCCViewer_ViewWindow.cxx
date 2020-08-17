@@ -3763,7 +3763,7 @@ void OCCViewer_ViewWindow::projAndPanToGravity(V3d_TypeOfOrientation CamOri)
   if( USE_XY )
   {
     const double EPS = 1E-6;
-    int xp = myViewPort->width()/2, yp = myViewPort->height()/2, xp1, yp1;
+    int xp = myViewPort->width()/2, yp = myViewPort->height()/2, xp1, yp1; //!< TODO: unused xp1, yp1
     aView3d->Convert( xp, yp, X, Y, Z );
 
     gp_Dir d = aView3d->Camera()->Direction();

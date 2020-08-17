@@ -114,6 +114,7 @@ QPixmap SALOME_PYQT_BorrowedDataObjectLight::icon(const int index) const
 //=================================================================================
 QString SALOME_PYQT_BorrowedDataObjectLight::toolTip(const int index) const
 {
+	//GUI_UNUSED(index);
   return myToolTip;
 }
 

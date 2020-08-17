@@ -554,7 +554,7 @@ bool OCCViewer_PolygonSketcher::isValid( const QPolygon* aPoints, const QPoint& 
     return true;
 
   bool res = true;
-  for ( uint i = 0; i < aPoints->count() - 1 && res; i++ )
+  for ( uint i = 0; i < (uint)aPoints->count() - 1 && res; i++ )
   {
     const QPoint& aStart = aPoints->point( i );
     const QPoint& anEnd  = aPoints->point( i + 1 );

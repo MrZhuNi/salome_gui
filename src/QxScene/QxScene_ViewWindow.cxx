@@ -237,6 +237,7 @@ void QxScene_ViewWindow::onViewFitAll()
 */
 void QxScene_ViewWindow::setBackgroundColor( const QColor& color )
 {
+	//GUI_UNUSED(color);
   DEBTRACE("QxScene_ViewWindow::setBackgroundColor");
 }
 
@@ -255,6 +256,7 @@ QColor QxScene_ViewWindow::backgroundColor() const
 */
 void QxScene_ViewWindow::resizeEvent( QResizeEvent* theEvent )
 {
+	//GUI_UNUSED(theEvent);
   DEBTRACE("QxScene_ViewWindow::resizeEvent");
 }
 

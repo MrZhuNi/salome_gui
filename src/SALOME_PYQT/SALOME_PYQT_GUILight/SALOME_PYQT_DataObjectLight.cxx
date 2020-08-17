@@ -115,6 +115,7 @@ QPixmap SALOME_PYQT_DataObjectLight::icon(const int index) const
 //=================================================================================
 QString SALOME_PYQT_DataObjectLight::toolTip(const int index) const
 {
+	//GUI_UNUSED(index);
   return myToolTip;
 }
 

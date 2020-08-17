@@ -101,6 +101,7 @@ QRectF GraphicsView_Object::getRect() const
 //================================================================
 bool GraphicsView_Object::checkHighlight( double theX, double theY, QCursor& theCursor ) const
 {
+	/*GUI_UNUSED(theCursor);*/
   return !getRect().isNull() && getRect().contains( theX, theY );
 }
 

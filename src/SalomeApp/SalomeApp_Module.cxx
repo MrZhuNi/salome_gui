@@ -137,6 +137,7 @@ void SalomeApp_Module::extractContainers( const SALOME_ListIO& source, SALOME_Li
  */
 void SalomeApp_Module::storeVisualParameters(int savePoint)
 {
+	//GUI_UNUSED(savePoint);
 }
 
 /*!
@@ -147,4 +148,5 @@ void SalomeApp_Module::storeVisualParameters(int savePoint)
  */
 void SalomeApp_Module::restoreVisualParameters(int savePoint)
 {
+	//GUI_UNUSED(savePoint);
 }

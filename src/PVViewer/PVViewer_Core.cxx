@@ -62,6 +62,7 @@ pqPVApplicationCore * PVViewer_Core::GetPVApplication()
 */
 bool PVViewer_Core::ParaviewInitApp(QMainWindow * aDesktop)
 {
+	//GUI_UNUSED(aDesktop);
   if ( ! MyCoreApp) {
       // Obtain command-line arguments
       int argc = 0;

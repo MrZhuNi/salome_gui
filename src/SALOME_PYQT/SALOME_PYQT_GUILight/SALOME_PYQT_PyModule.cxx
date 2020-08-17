@@ -2088,6 +2088,7 @@ void PyModuleHelper::internalCustomize( SUIT_Study* study )
 */
 void PyModuleHelper::internalDeactivate( SUIT_Study* study )
 {
+	//GUI_UNUSED(study);
   FuncMsg fmsg( "--- PyModuleHelper::internalDeactivate()" );
 
   // check that Python subinterpreter is initialized and Python module is imported

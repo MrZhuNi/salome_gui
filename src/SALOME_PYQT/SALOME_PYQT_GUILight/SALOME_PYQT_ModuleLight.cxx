@@ -639,6 +639,7 @@ void SALOME_PYQT_ModuleLight::getSelected( DataObjectList& ) const
 */
 void SALOME_PYQT_ModuleLight::setSelected( const QStringList& entries, const bool isUnused)
 {
+	//GUI_UNUSED(isUnused);
   MESSAGE("setSelected");
   return myHelper->selectionUpdated(entries);
 }
