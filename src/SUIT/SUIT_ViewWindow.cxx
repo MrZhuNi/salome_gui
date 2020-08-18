@@ -334,7 +334,7 @@ bool SUIT_ViewWindow::dropDownButtons() const
 */
 int SUIT_ViewWindow::getId() const
 {
-  return int(LONG_PTR(this));
+  return *((int*)(this));
 }
 
 /*!

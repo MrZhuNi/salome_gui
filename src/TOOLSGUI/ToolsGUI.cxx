@@ -46,7 +46,7 @@ bool ToolsGUI::GetVisibility( _PTR(SObject) theObj,
   if ( theObj && theObj->FindAttribute( anAttr, "AttributeGraphic" ) )
   {
     _PTR(AttributeGraphic) aGraphic (anAttr);
-    return aGraphic->GetVisibility( (int)((ULONG_PTR)theId) ); //!< TODO: pointer truncation
+    return aGraphic->GetVisibility( *((int*)theId) ); //!< TODO: pointer truncation
   }
 
   return false;
@@ -71,13 +71,13 @@ bool ToolsGUI::SetVisibility( const char* theEntry,
     if ( anObj->FindAttribute( aGAttr, "AttributeGraphic" ) )
     {
       _PTR(AttributeGraphic) anAttr ( aGAttr );
-      anAttr->SetVisibility( (int)((ULONG_PTR)theId), theValue ); //!< TODO: pointer truncation
+      anAttr->SetVisibility( *((int*)theId), theValue ); //!< TODO: pointer truncation
     }
     else if ( theValue )
     {
       _PTR(StudyBuilder) aBuilder (aStudy->NewBuilder());
       _PTR(AttributeGraphic) anAttr (aBuilder->FindOrCreateAttribute(anObj, "AttributeGraphic"));
-      anAttr->SetVisibility( (int)((ULONG_PTR)theId), theValue ); //!< TODO: pointer truncation
+      anAttr->SetVisibility( *((int*)theId), theValue ); //!< TODO: pointer truncation
     }
     return true;
   }
