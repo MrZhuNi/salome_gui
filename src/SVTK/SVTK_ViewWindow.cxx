@@ -34,6 +34,7 @@
 
 #include <QMenu>
 #include <QToolBar>
+#include <QTimer>
 #include <QEvent>
 #include <QFileInfo>
 #include <QSignalMapper>
@@ -2835,4 +2836,11 @@ void SVTK_ViewWindow::synchronize( SUIT_ViewWindow* theView )
   Repaint( false );
 
   blockSignals( blocked );
+}
+
+void SVTK_ViewWindow::resizeEvent( QResizeEvent* theEvent )
+{
+#ifdef VGL_WORKAROUND
+  QTimer::singleShot(0, [this] () { this->Repaint(); } );
+#endif
 }
