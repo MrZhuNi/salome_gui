@@ -529,8 +529,9 @@ void SVTK_Viewer::setViewManager(SUIT_ViewManager* theViewManager)
   
   connect(theViewManager, SIGNAL(mouseRelease(SUIT_ViewWindow*, QMouseEvent*)), 
           this, SLOT(onMouseRelease(SUIT_ViewWindow*, QMouseEvent*)));
-  connect( theViewManager, SIGNAL( viewCreated( SUIT_ViewWindow* ) ), 
-	   this, SLOT( onViewCreated( SUIT_ViewWindow* ) ) );
+
+  connect(theViewManager, SIGNAL(viewCreated(SUIT_ViewWindow*)), 
+	  this, SLOT(onViewCreated(SUIT_ViewWindow*)));
 }
 
 /*!
@@ -870,10 +871,8 @@ void SVTK_Viewer::onActorRemoved(VTKViewer_Actor* theActor)
 }
 
 void SVTK_Viewer::onViewCreated( SUIT_ViewWindow* view) {
-  if ( SVTK_ViewWindow* svw = dynamic_cast<SVTK_ViewWindow*>( view ) ){
-    QTimer *timer = new QTimer(this);
-    timer->setSingleShot(true);
-    connect(timer, &QTimer::timeout, [svw] () { svw->Repaint(); } );
-    timer->start(250);
-  }
+#ifdef VGL_WORKAROUND
+  if ( SVTK_ViewWindow* svw = dynamic_cast<SVTK_ViewWindow*>( view ) )
+    QTimer::singleShot(500, [svw] () { svw->Repaint(); } );
+#endif
 }

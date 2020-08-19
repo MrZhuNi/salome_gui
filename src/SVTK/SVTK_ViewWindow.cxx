@@ -790,11 +790,13 @@ void SVTK_ViewWindow::Repaint(bool theUpdateTrihedron)
 
   SVTK_InteractorStyle* aStyle = (SVTK_InteractorStyle*)getInteractor()->GetInteractorStyle();
   if ( aStyle ) {
+#ifdef VGL_WORKAROUND
     if ( aStyle->GetCurrentRenderer() == nullptr ) {
       if( GetRenderer() ) {
-	aStyle->SetCurrentRenderer(GetRenderer()->GetDevice());
+        aStyle->SetCurrentRenderer(GetRenderer()->GetDevice());
       }
     }  
+#endif
     aStyle->OnTimer();
   }
 }
