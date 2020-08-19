@@ -789,8 +789,14 @@ void SVTK_ViewWindow::Repaint(bool theUpdateTrihedron)
   GetInteractor()->update();
 
   SVTK_InteractorStyle* aStyle = (SVTK_InteractorStyle*)getInteractor()->GetInteractorStyle();
-  if ( aStyle )
+  if ( aStyle ) {
+    if ( aStyle->GetCurrentRenderer() == nullptr ) {
+      if( GetRenderer() ) {
+	aStyle->SetCurrentRenderer(GetRenderer()->GetDevice());
+      }
+    }  
     aStyle->OnTimer();
+  }
 }
 
 /*!
