@@ -454,7 +454,7 @@ void SUIT_ViewWindow::updateSyncViews()
 /*!
   "Synchronize View" action slot.
 */
-void SUIT_ViewWindow::onSynchronizeView( bool checked )
+void SUIT_ViewWindow::onSynchronizeView( bool /*checked*/ )
 {
   //GUI_UNUSED(checked);
   QAction* a = qobject_cast<QAction*>( sender() );

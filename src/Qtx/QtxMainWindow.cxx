@@ -69,7 +69,7 @@ QtxMainWindow::Filter::Filter( QWidget* wid, QtxMainWindow* mw, QObject* parent 
   myWidget( wid )
 {
   QApplication::instance()->installEventFilter( this );
-};
+}
 
 /*!
   \brief Destructor.
@@ -142,7 +142,7 @@ QtxMainWindow::Resizer::Resizer( const QPoint& p, const Qt::Orientation o, QtxMa
   setPosition( p );
 
   myRubber->hide();
-};
+}
 
 /*!
   \brief Destructor.

@@ -984,7 +984,7 @@ bool Plot2d_HistogramItem::isCrossItems() const
   Draws bar of histogram and on it bars of histograms with lower height.
 */
 void Plot2d_HistogramItem::drawRectAndLowers( QPainter* thePainter,
-                                              Qt::Orientation theOr,
+                                              Qt::Orientation /*theOr*/,
                                               const QRect& theRect ) const
 {
   QRect aRect = theRect;
@@ -1042,7 +1042,7 @@ int Plot2d_HistogramItem::getCrossedTop( const QRect& theRect ) const
   return aRes;
 }
 
-QwtGraphic Plot2d_HistogramItem::legendIcon( int index, const QSizeF &size ) const
+QwtGraphic Plot2d_HistogramItem::legendIcon( int /*index*/, const QSizeF &size ) const
 {   
     return defaultIcon( color(), size );
 }

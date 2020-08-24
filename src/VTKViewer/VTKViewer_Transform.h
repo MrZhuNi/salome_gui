@@ -35,7 +35,7 @@ class VTKVIEWER_EXPORT VTKViewer_Transform : public vtkTransform
 public:
   /*!Create new instance of VTKViewer_Transform.*/
   static VTKViewer_Transform *New();
-  vtkTypeMacro( VTKViewer_Transform, vtkTransform );
+  vtkTypeMacro( VTKViewer_Transform, vtkTransform )
 
   int  IsIdentity();
   //merge with V2_2_0_VISU_improvements:void SetScale( float theScaleX, float theScaleY, float theScaleZ );

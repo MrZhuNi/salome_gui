@@ -905,7 +905,7 @@ void OCCViewer_ClippingDlg::updatePreview() {
     gp_Pnt aBasePnt;
     gp_Dir aNormal;
     clipPlaneParams(aClipPlane, ic, aSize, aBasePnt, aNormal, myModel->trihedronSize());
-    if(myPreviewPlaneVector.size() < clipPlanesCount()) {
+    if(myPreviewPlaneVector.size() < (size_t)clipPlanesCount()) { //TODO: mismatch signed/unsigned
       myPreviewPlaneVector.resize(clipPlanesCount());
     }
     myPreviewPlane = myPreviewPlaneVector[aCurPlaneIndex];
@@ -939,7 +939,7 @@ void OCCViewer_ClippingDlg::updatePreview() {
       myPreviewPlaneVector[aCurPlaneIndex].Nullify();
     }
   }
-  for(int i = 0; i < myPreviewPlaneVector.size(); i++) {
+  for(int i = 0; i < (int)myPreviewPlaneVector.size(); i++) {//TODO: mismatch signed/unsigned
     if( i == aCurPlaneIndex ) continue;
     if(!myPreviewPlaneVector[i].IsNull())
       ic->SetColor( myPreviewPlaneVector[i], Quantity_Color( 85 / 255., 85 / 255., 255 / 255., Quantity_TOC_RGB ), false );
@@ -969,7 +969,7 @@ void OCCViewer_ClippingDlg::erasePreview()
 
   Handle(AIS_InteractiveContext) ic = myModel->getAISContext();
 
-  for ( int i=0; i < myPreviewPlaneVector.size(); i++ ) {
+  for ( int i=0; i < (int)myPreviewPlaneVector.size(); i++ ) {//TODO: mismatch signed/unsigned
   Handle(AIS_Plane) myPreviewPlane = myPreviewPlaneVector[i];
     if ( !myPreviewPlane.IsNull() && ic->IsDisplayed( myPreviewPlane ) ) {
       ic->Erase( myPreviewPlane, false );

@@ -1728,7 +1728,7 @@ QMimeData* SUIT_TreeModel::mimeData( const QModelIndexList& indexes ) const
 }
 
 bool SUIT_TreeModel::dropMimeData( const QMimeData* data, Qt::DropAction action,
-                                   int row, int column, const QModelIndex& parent )
+                                   int row, int /*column*/, const QModelIndex& parent )
 {
   //GUI_UNUSED(column);
   if ( action == Qt::IgnoreAction )

@@ -92,7 +92,7 @@
 #endif
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-vtkStandardNewMacro(VTKViewer_GeometryFilter);
+vtkStandardNewMacro(VTKViewer_GeometryFilter)
 
 VTKViewer_GeometryFilter
 ::VTKViewer_GeometryFilter():
@@ -1229,7 +1229,7 @@ void
 VTKViewer_GeometryFilter
 ::InsertId( const vtkIdType theCellId,
             const vtkIdType theCellType,
-            TVectorId& theVTK2ObjIds,
+            TVectorId& /*theVTK2ObjIds*/,
             TMapOfVectorId& theDimension2VTK2ObjIds )
 {
   //theVTK2ObjIds.push_back( theCellId );

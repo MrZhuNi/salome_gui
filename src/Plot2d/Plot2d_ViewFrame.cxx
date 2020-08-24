@@ -2850,7 +2850,7 @@ bool Plot2d_ViewFrame::hasPlotObject( Plot2d_Object* object ) const
 /*!
   Sets curve type
 */
-void Plot2d_ViewFrame::setCurveType( QwtPlotCurve* curve, int curveType )
+void Plot2d_ViewFrame::setCurveType( QwtPlotCurve* curve, int /*curveType*/ )
 {
   if ( !curve )
     return;
@@ -3176,7 +3176,7 @@ QwtPlotMarker* Plot2d_Plot2d::createMarkerAndTooltip( QwtSymbol* symbol,
 QwtPlotGrid* Plot2d_Plot2d::grid() const
 {
   return myGrid;
-};
+}
 
 QwtPlotZoomer* Plot2d_Plot2d::zoomer() const
 {

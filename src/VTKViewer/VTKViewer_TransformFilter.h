@@ -35,7 +35,7 @@ class VTKVIEWER_EXPORT VTKViewer_TransformFilter : public vtkTransformFilter
 public:
   /*!Create new instance of VTKViewer_TransformFilter.*/
   static VTKViewer_TransformFilter *New();
-  vtkTypeMacro(VTKViewer_TransformFilter,vtkTransformFilter);
+  vtkTypeMacro(VTKViewer_TransformFilter,vtkTransformFilter)
 
 protected:
   /*!Constructor.*/

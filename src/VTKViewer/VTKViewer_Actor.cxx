@@ -54,7 +54,7 @@ int VTKViewer_POINT_SIZE = 5;
 int VTKViewer_LINE_WIDTH = 3;
 
 
-vtkStandardNewMacro(VTKViewer_Actor);
+vtkStandardNewMacro(VTKViewer_Actor)
 
 /*!
   Constructor
@@ -637,7 +637,7 @@ VTKViewer_Actor
 */
 void
 VTKViewer_Actor
-::SetMaterial(std::vector<vtkProperty*> theProps)
+::SetMaterial(std::vector<vtkProperty*> /*theProps*/)
 {
 }
 
@@ -770,4 +770,4 @@ vtkDataSet* VTKViewer_Actor::GetHighlightedDataSet() {
 
 
 
-vtkCxxSetObjectMacro(VTKViewer_Actor,PreviewProperty,vtkProperty);
+vtkCxxSetObjectMacro(VTKViewer_Actor,PreviewProperty,vtkProperty)

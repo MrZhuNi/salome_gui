@@ -103,9 +103,8 @@ void GraphicsView_Selector::unselectAll()
 // Function : checkSelection
 // Purpose  : 
 //================================================================
-void GraphicsView_Selector::checkSelection( int selBefore, bool append, int theStatus )
+void GraphicsView_Selector::checkSelection( int selBefore, bool /*append*/, int theStatus )
 {
-	//GUI_UNUSED(append);
   int selAfter = numSelected();
   if ( selBefore > 0 && selAfter < 1 )     
     emit selSelectionCancel();

@@ -143,7 +143,7 @@ void SUIT_DataBrowser::setUpdateModified( const bool on )
   \param obj starting object for updating
   \param autoOpen if \c true automatically open branches
 */
-void SUIT_DataBrowser::updateTree( SUIT_DataObject* obj, const bool autoOpen )
+void SUIT_DataBrowser::updateTree( SUIT_DataObject* obj, const bool /*autoOpen*/ )
 {
   //GUI_UNUSED(autoOpen);
   SUIT_ProxyModel* m = qobject_cast<SUIT_ProxyModel*>( model() );
@@ -471,7 +471,7 @@ void SUIT_DataBrowser::onDblClicked( const QModelIndex& index )
   \brief Called when item specified by index is expanded.
   \internal
 */
-void SUIT_DataBrowser::onExpanded( const QModelIndex& index )
+void SUIT_DataBrowser::onExpanded( const QModelIndex& /*index*/ )
 {
   //GUI_UNUSED(index);
   if (myResizeOnExpandItem) {

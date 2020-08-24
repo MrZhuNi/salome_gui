@@ -297,7 +297,7 @@ void QtxWorkstackAction::setStatusTip( const int id, const QString& txt )
   \brief Process action activated by the user.
   \param type action ID
 */
-void QtxWorkstackAction::perform( const int type )
+void QtxWorkstackAction::perform( const int /*type*/ )
 {
   /*
   switch ( type )

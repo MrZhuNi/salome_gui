@@ -207,8 +207,8 @@ QtxPathListEdit::Delegate::~Delegate()
   \param option style option
   \param index data model index
 */
-QWidget* QtxPathListEdit::Delegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option,
-                                                  const QModelIndex& index ) const
+QWidget* QtxPathListEdit::Delegate::createEditor( QWidget* parent, const QStyleOptionViewItem& /*option*/,
+                                                  const QModelIndex& /*index*/ ) const
 {
   return myPathEdit->createEditor( parent );
 }
@@ -220,7 +220,7 @@ QWidget* QtxPathListEdit::Delegate::createEditor( QWidget* parent, const QStyleO
   \param model data model
   \param index data model index
 */
-void QtxPathListEdit::Delegate::setModelData( QWidget* editor, QAbstractItemModel* model,
+void QtxPathListEdit::Delegate::setModelData( QWidget* editor, QAbstractItemModel* /*model*/,
                                               const QModelIndex& index ) const
 {
   myPathEdit->setModelData( editor, index );
@@ -270,7 +270,7 @@ void QtxPathListEdit::Delegate::paint( QPainter* painter, const QStyleOptionView
   \param rect selection rectangle
 */
 void QtxPathListEdit::Delegate::drawFocus( QPainter* painter, const QStyleOptionViewItem& option,
-                                           const QRect& rect ) const
+                                           const QRect& /*rect*/ ) const
 {
   QItemDelegate::drawFocus( painter, option, option.rect );
 }

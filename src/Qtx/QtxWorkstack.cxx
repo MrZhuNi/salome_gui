@@ -1080,7 +1080,7 @@ void QtxWorkstackArea::onChildDestroyed( QObject* obj )
   \brief Called when child widget container is shown.
   \param c child widget container being shown
 */
-void QtxWorkstackArea::onChildShown( QtxWorkstackChild* c )
+void QtxWorkstackArea::onChildShown( QtxWorkstackChild* /*c*/ )
 {
   updateState();
 }
@@ -1089,7 +1089,7 @@ void QtxWorkstackArea::onChildShown( QtxWorkstackChild* c )
   \brief Called when child widget container is hidden.
   \param c child widget container being hidden
 */
-void QtxWorkstackArea::onChildHidden( QtxWorkstackChild* c )
+void QtxWorkstackArea::onChildHidden( QtxWorkstackChild* /*c*/ )
 {
   updateState();
 }
@@ -1469,7 +1469,7 @@ bool QtxWorkstackChild::eventFilter( QObject* o, QEvent* e )
   \brief Called when child widget is destroyed.
   \param obj child widget being destroyed
 */
-void QtxWorkstackChild::onDestroyed( QObject* obj )
+void QtxWorkstackChild::onDestroyed( QObject* /*obj*/ )
 {
   deleteLater();
 }
