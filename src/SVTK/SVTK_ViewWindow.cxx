@@ -2841,6 +2841,6 @@ void SVTK_ViewWindow::synchronize( SUIT_ViewWindow* theView )
 void SVTK_ViewWindow::resizeEvent( QResizeEvent* theEvent )
 {
 #ifdef VGL_WORKAROUND
-  QTimer::singleShot(0, [this] () { this->Repaint(); } );
+  Repaint();
 #endif
 }
