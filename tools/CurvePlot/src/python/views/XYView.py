@@ -548,6 +548,7 @@ class XYView(View):
         if dlg.nameCurve.text() != crvModel.getTitle():
           Logger.Debug("XYView : about to cahnge crv title after settings")
           view._model.setTitle(dlg.nameCurve.text())
+          view.onCurveTitleChange()
       self.showHideLegend(repaint=True)
       self._mplCanvas.draw()
     pass
