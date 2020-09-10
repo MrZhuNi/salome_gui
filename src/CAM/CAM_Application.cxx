@@ -208,7 +208,8 @@ void CAM_Application::modules( QStringList& lst, const bool loaded ) const
   {
     for ( ModuleInfoList::const_iterator it = myInfoList.begin(); 
           it != myInfoList.end(); ++it )
-      lst.append( (*it).title );
+      if ( (*it).status != stNoGui )
+        lst.append( (*it).title );
   }
 }
 
@@ -674,6 +675,22 @@ QString CAM_Application::moduleLibrary( const QString& title, const bool full )
 }
 
 /*!
+  \brief Get displayer proxy for given module, by its title (user name).
+  \param title module title (user name)
+  \return name of module which provides displayer for requested module
+ */
+QString CAM_Application::moduleDisplayer( const QString& title )
+{
+  QString res;
+  for ( ModuleInfoList::const_iterator it = myInfoList.begin(); it != myInfoList.end() && res.isEmpty(); ++it )
+  {
+    if ( (*it).title == title )
+      res = (*it).displayer;
+  }
+  return res.isEmpty() ? title : res;
+}
+
+/*!
   \brief Read modules information list
 
   This function first tries to get the modules names list by parsing
@@ -756,44 +773,50 @@ void CAM_Application::readModuleList()
       continue; // omit KERNEL and GUI modules
 
     bool hasGui = resMgr->booleanValue( *it, "gui", true );
-    if ( !hasGui )
-      continue; // omit if module is explicitly declared as not having GUI
 
-    QString modTitle = resMgr->stringValue( *it, "name", QString() );
-    if ( modTitle.isEmpty() )
+    QString modTitle, modIcon, modLibrary;
+
+    if ( hasGui )
     {
-      printf( "****************************************************************\n" );
-      printf( "     Warning: module %s is improperly configured!\n", qPrintable(*it) );
-      printf( "     Module %s will not be available in GUI mode!\n", qPrintable(*it) );
-      printf( "****************************************************************\n" );
-      continue;
-    }
+      // if module has GUI, check that it is present
+      modTitle = resMgr->stringValue( *it, "name", QString() );
+      if ( modTitle.isEmpty() )
+      {
+        printf( "****************************************************************\n" );
+        printf( "     Warning: module %s is improperly configured!\n", qPrintable(*it) );
+        printf( "     Module %s will not be available in GUI mode!\n", qPrintable(*it) );
+        printf( "****************************************************************\n" );
+        continue;
+      }
 
-    QString modIcon = resMgr->stringValue( *it, "icon", QString() );
+      QString modIcon = resMgr->stringValue( *it, "icon", QString() );
 
-    QString modLibrary = resMgr->stringValue( *it, "library", QString() ).trimmed();
-    if ( !modLibrary.isEmpty() )
-    {
-      modLibrary = SUIT_Tools::file( modLibrary.trimmed() );
+      modLibrary = resMgr->stringValue( *it, "library", QString() ).trimmed();
+      if ( !modLibrary.isEmpty() )
+      {
+        modLibrary = SUIT_Tools::file( modLibrary.trimmed() );
 #if defined(WIN32)
-      QString libExt = QString( "dll" );
+        QString libExt = QString( "dll" );
 #elif defined(__APPLE__)
-      QString libExt = QString( "dylib" );
+        QString libExt = QString( "dylib" );
 #else
-      QString libExt = QString( "so" );
+        QString libExt = QString( "so" );
 #endif
-      if ( SUIT_Tools::extension( modLibrary ).toLower() == libExt )
-        modLibrary.truncate( modLibrary.length() - libExt.length() - 1 );
+        if ( SUIT_Tools::extension( modLibrary ).toLower() == libExt )
+          modLibrary.truncate( modLibrary.length() - libExt.length() - 1 );
 #ifndef WIN32
-      QString prefix = QString( "lib" );
-      if ( modLibrary.startsWith( prefix ) )
-        modLibrary.remove( 0, prefix.length() );
+        QString prefix = QString( "lib" );
+        if ( modLibrary.startsWith( prefix ) )
+          modLibrary.remove( 0, prefix.length() );
 #endif
+      }
+      else
+        modLibrary = modName;
     }
-    else
-      modLibrary = modName;
 
     QString version = resMgr->stringValue( *it, "version", QString() );
+
+    QString modDisplayer = resMgr->stringValue( *it, "displayer", QString() );
 
     ModuleInfo inf;
     inf.name = modName;
@@ -801,6 +824,7 @@ void CAM_Application::readModuleList()
     inf.status = hasGui ? stUnknown : stNoGui;
     if ( hasGui ) inf.library = modLibrary;
     inf.icon = modIcon;
+    inf.displayer = modDisplayer;
     inf.version = version;
     myInfoList.append( inf );
   }

@@ -303,28 +303,29 @@ bool LightApp_Displayer::canBeDisplayed( const QString& entry ) const
 */
 LightApp_Displayer* LightApp_Displayer::FindDisplayer( const QString& mod_name, const bool load )
 {
+  QString mname = LightApp_Application::moduleDisplayer( mod_name );
   SUIT_Session* session = SUIT_Session::session();
   SUIT_Application* sapp = session ? session->activeApplication() : 0;
   LightApp_Application* app = dynamic_cast<LightApp_Application*>( sapp );
   if( !app )
     return 0;
 
-  LightApp_Module* m = dynamic_cast<LightApp_Module*>( app ? app->module( mod_name ) : 0 );
+  LightApp_Module* m = dynamic_cast<LightApp_Module*>( app ? app->module( mname ) : 0 );
   bool wasLoaded = false;
   if( !m && load )
   {
-    m = dynamic_cast<LightApp_Module*>( app->loadModule( mod_name, false ) );
-	if( m ) {
+    m = dynamic_cast<LightApp_Module*>( app->loadModule( mname, false ) );
+    if( m ) {
       app->addModule( m );
-	  wasLoaded = true;
-	}
+      wasLoaded = true;
+    }
   }
 
   if( m )
   {
     m->connectToStudy( dynamic_cast<CAM_Study*>( app->activeStudy() ) );
-	if( wasLoaded ) 
-		m->updateModuleVisibilityState();
+    if( wasLoaded ) 
+      m->updateModuleVisibilityState();
   }
   return m ? m->displayer() : 0;
 }
