@@ -29,7 +29,7 @@
 
 #include "SVTK.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <vtkGenericRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 

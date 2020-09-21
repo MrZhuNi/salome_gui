@@ -28,8 +28,8 @@
 #include "SUIT_Study.h"
 #include "SUIT_Session.h"
 
-#include <QMap>
-#include <QRegExp>
+#include <QtCore/QMap>
+#include <QtCore/QRegExp>
 #include <QtGui/QIcon>
 
 #ifdef WIN32

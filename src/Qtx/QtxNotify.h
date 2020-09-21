@@ -25,10 +25,10 @@
 
 #include "Qtx.h"
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
-#include <QList>
-#include <QAbstractAnimation>
+#include <QtCore/QList>
+#include <QtCore/QAbstractAnimation>
 
 class QTimer;
 

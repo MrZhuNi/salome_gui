@@ -28,10 +28,10 @@
 
 #include "Qtx.h"
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 #include <QtGui/QPixmap>
 #include <QtGui/QGradient>
-#include <QMap>
+#include <QtCore/QMap>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

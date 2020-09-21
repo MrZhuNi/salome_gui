@@ -28,7 +28,7 @@
 
 #include "SUIT.h"
 
-#include <QFileDialog>
+#include <QtWidgets/QFileDialog>
 
 class QLabel;
 class QLineEdit;

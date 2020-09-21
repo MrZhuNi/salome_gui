@@ -32,8 +32,8 @@
 #include <QtxAction.h>
 #include <QtxListAction.h>
 
-#include <QMap>
-#include <QStringList>
+#include <QtCore/QMap>
+#include <QtCore/QStringList>
 
 #include <Resource_Manager.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>

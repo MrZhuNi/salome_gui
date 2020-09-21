@@ -22,11 +22,11 @@
 
 #include "ViewerTools_FontWidgetBase.h"
 
-#include <QToolButton>
-#include <QComboBox>
-#include <QColorDialog>
-#include <QCheckBox>
-#include <QHBoxLayout>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QHBoxLayout>
 
 /*!
  * Class       : ViewerTools_FontWidgetBase

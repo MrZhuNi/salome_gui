@@ -26,7 +26,7 @@
 #include "VTKViewer.h"
 #include "VTKViewer_Actor.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class QTimer;
 class QMouseEvent;

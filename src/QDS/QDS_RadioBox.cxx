@@ -25,10 +25,10 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfExtendedString.hxx>
 
-#include <QButtonGroup>
-#include <QGroupBox>
-#include <QVBoxLayout>
-#include <QRadioButton>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QRadioButton>
 
 /*
   \class QDS_RadioBox

@@ -25,10 +25,10 @@
 //
 #include "LightApp_ModuleDlg.h"
 
-#include <QLabel>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
 
 /*!
   \brief Pixmap used as default icon for the module.

@@ -39,17 +39,17 @@
 // TODO: Porting to Qt4
 //#include <QtxToolTip.h>
 
-#include <QHBoxLayout>
+#include <QtWidgets/QHBoxLayout>
 #include <QtGui/QMouseEvent>
-#include <QRect>
-//#include <QMenu>
+#include <QtCore/QRect>
+//#include <QtWidgets/QMenu>
 //#include <QToolTip>
 #include <QtWidgets/QApplication>
-#include <QClipboard>
+#include <QtGui/QClipboard>
 #include <QtGui/QBitmap>
-#include <QLabel>
-#include <QWidget>
-#include <QRubberBand>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QRubberBand>
 
 #define WIDTH       640
 #define HEIGHT      480

@@ -28,7 +28,7 @@
 #include "PyInterp.h"
 #include "PyInterp_Event.h"
 
-#include <QMutex>
+#include <QtCore/QMutex>
 
 class QObject;
 class PyInterp_Interp;

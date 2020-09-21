@@ -31,7 +31,7 @@
 #include <SUIT_Application.h>
 
 #include <QtWidgets/QDialog>
-#include <QListWidget>
+#include <QtWidgets/QListWidget>
 
 class OCCViewer_ViewPort3d;
 

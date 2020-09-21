@@ -36,11 +36,11 @@
 
 #include <sstream>
 
-#include <QGroupBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QLineEdit>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QLineEdit>
 
 #include <vtkGenericRenderWindowInteractor.h>
 #include <vtkCallbackCommand.h>

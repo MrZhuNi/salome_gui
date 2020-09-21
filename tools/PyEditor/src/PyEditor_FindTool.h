@@ -26,8 +26,8 @@
 #include "PyEditor.h"
 
 #include <QtGui/QTextDocument>
-#include <QStringListModel>
-#include <QWidget>
+#include <QtCore/QStringListModel>
+#include <QtWidgets/QWidget>
 
 class PyEditor_Editor;
 class QAction;

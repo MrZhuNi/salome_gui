@@ -30,8 +30,8 @@
 #include <QtxActionMenuMgr.h>
 #include <QtxWorkstackAction.h>
 
-#include <QFrame>
-#include <QVBoxLayout>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QVBoxLayout>
 
 #include <stdarg.h>
 

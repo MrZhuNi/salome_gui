@@ -25,12 +25,12 @@
 //
 #include "QtxListAction.h"
 
-#include <QMenu>
-#include <QLabel>
-#include <QVBoxLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 #include <QtGui/QMouseEvent>
-#include <QListWidget>
-#include <QToolButton>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QApplication>
 
 /*!

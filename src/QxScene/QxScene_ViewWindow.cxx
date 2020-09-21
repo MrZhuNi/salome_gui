@@ -31,8 +31,8 @@
 #include <QtxActionToolMgr.h>
 
 //QT Include
-#include <QToolBar>
-#include <QGraphicsRectItem>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QGraphicsRectItem>
 
 //#define _DEVDEBUG_
 #include "DebTrace.hxx"

@@ -25,7 +25,7 @@
 
 #include "Qtx.h"
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 class QTX_EXPORT QtxAbstractRubberBand : public QWidget
 {

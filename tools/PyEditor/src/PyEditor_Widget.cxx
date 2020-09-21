@@ -24,7 +24,7 @@
 #include "PyEditor_FindTool.h"
 #include "PyEditor_Widget.h"
 
-#include <QVBoxLayout>
+#include <QtWidgets/QVBoxLayout>
 
 /*!
   \class PyEditor_Widget

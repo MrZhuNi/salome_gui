@@ -28,9 +28,9 @@
 #include <SUIT_Operation.h>
 #include <SUIT_Study.h>
 
-#include <QEvent>
-#include <QWidget>
-#include <QList>
+#include <QtCore/QEvent>
+#include <QtWidgets/QWidget>
+#include <QtCore/QList>
 #include <QtWidgets/QApplication>
 
 /*!

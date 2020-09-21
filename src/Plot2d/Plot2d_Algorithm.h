@@ -26,9 +26,9 @@
 
 #include "Plot2d.h"
 
-#include <QPair>
-#include <QList>
-#include <QMap>
+#include <QtCore/QPair>
+#include <QtCore/QList>
+#include <QtCore/QMap>
 
 class Plot2d_Object;
 

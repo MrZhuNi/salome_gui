@@ -23,9 +23,9 @@
 #include "GraphicsView_ViewPort.h"
 #include "GraphicsView_Viewer.h"
 
-#include <QGraphicsSceneMouseEvent>
-#include <QRectF>
-#include <QRubberBand>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QtCore/QRectF>
+#include <QtWidgets/QRubberBand>
 
 int GraphicsView_ViewTransformer::panBtn = Qt::MidButton;
 int GraphicsView_ViewTransformer::zoomBtn = Qt::LeftButton;

@@ -28,7 +28,7 @@
 #include <stdexcept>
 #include <exception>
 
-#include <QString>
+#include <QtCore/QString>
 
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>

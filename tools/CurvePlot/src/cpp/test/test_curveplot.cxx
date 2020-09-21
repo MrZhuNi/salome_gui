@@ -30,13 +30,13 @@
 #include <PyInterp_Interp.h>  // GUI
 
 #include <QtWidgets/QApplication>
-#include <QDesktopWidget>
-#include <QMainWindow>
-#include <QList>
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QDockWidget>
-#include <QPushButton>
+#include <QtWidgets/QDesktopWidget>
+#include <QtWidgets/QMainWindow>
+#include <QtCore/QList>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QDockWidget>
+#include <QtWidgets/QPushButton>
 
 using namespace CURVEPLOT;
 

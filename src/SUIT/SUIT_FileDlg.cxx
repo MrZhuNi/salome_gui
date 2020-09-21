@@ -82,18 +82,18 @@
 #include "SUIT_FileValidator.h"
 #include "Qtx.h"
 
-#include <QDir>
-#include <QEvent>
-#include <QRegExp>
-#include <QLabel>
-#include <QComboBox>
-#include <QPushButton>
-#include <QGridLayout>
+#include <QtCore/QDir>
+#include <QtCore/QEvent>
+#include <QtCore/QRegExp>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QApplication>
-#include <QListView>
-#include <QLineEdit>
-#include <QUrl>
-#include <QStandardPaths>
+#include <QtWidgets/QListView>
+#include <QtWidgets/QLineEdit>
+#include <QtCore/QUrl>
+#include <QtCore/QStandardPaths>
 
 /*!
   \brief Defines extension behavior.

@@ -26,7 +26,7 @@
 //
 #include "SALOME_Event.h"
 
-#include <QSemaphore>
+#include <QtCore/QSemaphore>
 #include <QtWidgets/QApplication>
 
 // asv 21.02.05 : introducing multi-platform approach of thread comparison

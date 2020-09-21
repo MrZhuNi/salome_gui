@@ -32,7 +32,7 @@
 #include <CAM_Module.h>
 #include <SUIT_DataObjectKey.h>
 
-#include <QVariant>
+#include <QtCore/QVariant>
 
 #include <iostream>
 

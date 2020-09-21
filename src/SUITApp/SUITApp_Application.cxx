@@ -27,7 +27,7 @@
 
 #include <Qtx.h>
 
-#include <QDir>
+#include <QtCore/QDir>
 
 #ifdef WIN32
 #include <windows.h>

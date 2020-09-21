@@ -28,7 +28,7 @@
 
 #include "QtxDialog.h"
 
-#include <QMap>
+#include <QtCore/QMap>
 
 class QFrame;
 class QLineEdit;

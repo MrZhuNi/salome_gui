@@ -27,7 +27,7 @@
 
 #include "PyInterp.h"
 
-#include <QEvent>
+#include <QtCore/QEvent>
 
 class PyInterp_Request;
 

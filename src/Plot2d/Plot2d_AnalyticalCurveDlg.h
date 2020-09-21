@@ -30,7 +30,7 @@
 #include "Plot2d_AnalyticalCurve.h"
 
 #include <QtWidgets/QDialog>
-#include <QMap>
+#include <QtCore/QMap>
 
 class QListWidget;
 class QListWidgetItem;

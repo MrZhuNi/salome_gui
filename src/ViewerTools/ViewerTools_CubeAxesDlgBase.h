@@ -25,7 +25,7 @@
 
 #include "ViewerTools_DialogBase.h"
 
-#include <QFrame>
+#include <QtWidgets/QFrame>
 
 class QWidget;
 class QPushButton;

@@ -32,7 +32,7 @@
 #include <SALOME_InteractiveObject.hxx>
 #include <SALOME_ListIO.hxx>
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class vtkActorCollection;
 class vtkRenderer;

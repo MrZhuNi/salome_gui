@@ -25,10 +25,10 @@
 
 #include "HelpBrowser_Application.h"
 
-#include <QFile>
-#include <QFileSystemWatcher>
-#include <QTextStream>
-#include <QWidget>
+#include <QtCore/QFile>
+#include <QtCore/QFileSystemWatcher>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QWidget>
 
 /*!
   \brief Constructor

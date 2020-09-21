@@ -35,9 +35,9 @@
 #include "QtxAction.h"
 #include "QtxIntSpinBox.h"
 
-#include <QCheckBox>
-#include <QGroupBox>
-#include <QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLineEdit>
 
 #include <vtkAxisActor2D.h>
 #include <vtkTextProperty.h>

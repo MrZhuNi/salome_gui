@@ -22,7 +22,7 @@
 //
 #include "QtxWorkspace.h"
 
-#include <QMdiSubWindow>
+#include <QtWidgets/QMdiSubWindow>
 
 /*!
   \class QtxWorkspace

@@ -24,8 +24,8 @@
 
 #include <SUIT_ViewWindow.h>
 
-#include <QFrame>
-#include <QVBoxLayout>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QVBoxLayout>
 
 /*!Constructor. Create instance of QVBox*/
 STD_SDIDesktop::STD_SDIDesktop()

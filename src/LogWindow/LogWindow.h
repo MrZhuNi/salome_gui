@@ -40,9 +40,9 @@
 #include "QtxMsgHandler.h"
 #include "SUIT_PopupClient.h"
 
-#include <QWidget>
-#include <QMap>
-#include <QStringList>
+#include <QtWidgets/QWidget>
+#include <QtCore/QMap>
+#include <QtCore/QStringList>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

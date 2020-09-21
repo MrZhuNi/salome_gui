@@ -30,8 +30,8 @@
 
 // This file isn't yet ported to Qt4 => there are some corrections for OCCViewer porting  -->
 //#include <qlistbox.h>
-#include <QListWidget>
-#include <QListWidgetItem>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QListWidgetItem>
 // <--
 
 #ifdef WIN32

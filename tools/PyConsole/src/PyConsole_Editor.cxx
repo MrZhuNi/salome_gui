@@ -95,19 +95,19 @@
 #include "PyConsole_Request.h"
 
 #include <QtWidgets/QApplication>
-#include <QClipboard>
-#include <QDropEvent>
-#include <QEvent>
+#include <QtGui/QClipboard>
+#include <QtGui/QDropEvent>
+#include <QtCore/QEvent>
 #include <QtGui/QKeyEvent>
-#include <QMimeData>
+#include <QtCore/QMimeData>
 #include <QtGui/QMouseEvent>
-#include <QScrollBar>
-#include <QTextBlock>
-#include <QTextCursor>
-#include <QTextStream>
-#include <QChar>
-#include <QFileDialog>
-#include <QMessageBox>
+#include <QtWidgets/QScrollBar>
+#include <QtGui/QTextBlock>
+#include <QtGui/QTextCursor>
+#include <QtCore/QTextStream>
+#include <QtCore/QChar>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 
 //VSR: uncomment below macro to support unicode text properly in SALOME
 //     current commented out due to regressions

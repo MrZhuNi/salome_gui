@@ -23,13 +23,13 @@
 #include "QtxBiColorTool.h"
 #include "QtxColorButton.h"
 
-#include <QHBoxLayout>
-#include <QLabel>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 #include <QtGui/QPainter>
-#include <QSlider>
-#include <QStyle>
-#include <QStylePainter>
-#include <QStyleOptionButton>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStylePainter>
+#include <QtWidgets/QStyleOptionButton>
 
 const int BICOLOR_MAX_DELTA = 100;
 

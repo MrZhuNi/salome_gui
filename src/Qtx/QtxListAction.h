@@ -28,7 +28,7 @@
 
 #include "Qtx.h"
 #include "QtxAction.h"
-#include <QStringList>
+#include <QtCore/QStringList>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

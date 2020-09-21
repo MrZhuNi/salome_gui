@@ -28,7 +28,7 @@
 
 #include "Qtx.h"
 
-#include <QLabel>
+#include <QtWidgets/QLabel>
 
 class QTimer;
 

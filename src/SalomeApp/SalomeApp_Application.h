@@ -42,7 +42,7 @@
 
 #include "SALOMEDSClient.hxx"
 
-#include <QPointer>
+#include <QtCore/QPointer>
 
 class LightApp_Preferences;
 class SalomeApp_Study;

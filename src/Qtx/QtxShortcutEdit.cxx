@@ -19,14 +19,14 @@
 
 #include "QtxShortcutEdit.h"
 
-#include <QWidget>
-#include <QLayout>
-#include <QList>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLayout>
+#include <QtCore/QList>
 
-#include <QToolButton>
-#include <QLineEdit>
-#include <QTableWidgetItem>
-#include <QMessageBox>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QTableWidgetItem>
+#include <QtWidgets/QMessageBox>
 
 #include <QtGui/QKeyEvent>
 #include <QtGui/QKeySequence>

@@ -26,10 +26,10 @@
 #include "SUIT.h"
 #include "SUIT_Application.h"
 
-#include <QList>
-#include <QObject>
-#include <QString>
-#include <QStringList>
+#include <QtCore/QList>
+#include <QtCore/QObject>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 
 #ifdef WIN32
 #include <windows.h>

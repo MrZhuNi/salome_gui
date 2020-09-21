@@ -28,7 +28,7 @@
 
 #include "Qtx.h"
 
-#include <QToolBar>
+#include <QtWidgets/QToolBar>
 
 class QTX_EXPORT QtxToolBar : public QToolBar
 {

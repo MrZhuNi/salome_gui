@@ -66,12 +66,12 @@
 #include <time.h>
 
 #include <QtWidgets/QApplication>
-#include <QDir>
-#include <QFile>
-#include <QMutex>
-#include <QRegExp>
-#include <QTextStream>
-#include <QWaitCondition>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QMutex>
+#include <QtCore/QRegExp>
+#include <QtCore/QTextStream>
+#include <QtCore/QWaitCondition>
 
 //! CORBA server for SALOME GUI session
 /*!

@@ -25,8 +25,8 @@
 
 #include "SUIT.h"
 
-#include <QObject>
-#include <QMap>
+#include <QtCore/QObject>
+#include <QtCore/QMap>
 
 class QMenu;
 

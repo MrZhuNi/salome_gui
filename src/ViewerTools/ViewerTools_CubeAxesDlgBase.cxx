@@ -27,14 +27,14 @@
 #include "QtxAction.h"
 #include "QtxIntSpinBox.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QTabWidget>
-#include <QCheckBox>
-#include <QGroupBox>
-#include <QLineEdit>
-#include <QLabel>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QLabel>
 
 /*!
  * Class       : ViewerTools_AxisWidgetBase

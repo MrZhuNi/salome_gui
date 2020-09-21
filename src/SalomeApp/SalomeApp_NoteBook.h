@@ -29,9 +29,9 @@
 #include "SALOMEDSClient_ClientFactory.hxx" 
 #include CORBA_SERVER_HEADER(SALOMEDS)
 
-#include <QWidget>
-#include <QTableWidget>
-#include <QList>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QTableWidget>
+#include <QtCore/QList>
 
 class QWidget;
 class QPushButton;

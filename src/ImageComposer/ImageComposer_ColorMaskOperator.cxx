@@ -19,7 +19,7 @@
 
 #include "ImageComposer_ColorMaskOperator.h"
 #include "ImageComposer_MetaTypes.h"
-#include <QRectF>
+#include <QtCore/QRectF>
 #include <QtGui/QRgb>
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>

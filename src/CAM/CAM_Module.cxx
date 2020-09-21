@@ -35,7 +35,7 @@
 #include <SUIT_Session.h>
 #include <SUIT_ResourceMgr.h>
 
-#include <QMenu>
+#include <QtWidgets/QMenu>
 
 /*!
   \class CAM_Module

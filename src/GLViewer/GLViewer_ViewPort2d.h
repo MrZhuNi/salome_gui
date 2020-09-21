@@ -45,7 +45,7 @@
 
 #include <QtOpenGL/QtOpenGL>
 #include <QtGui/QColor>
-#include <QPaintDevice>
+#include <QtGui/QPaintDevice>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

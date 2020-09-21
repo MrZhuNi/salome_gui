@@ -60,8 +60,8 @@
 #include <QtxRubberBand.h>
 
 #include <QtGui/QPixmap>
-#include <QWidget>
-#include <QPolygon>
+#include <QtWidgets/QWidget>
+#include <QtGui/QPolygon>
 
 #include <algorithm>
 #include <iostream>

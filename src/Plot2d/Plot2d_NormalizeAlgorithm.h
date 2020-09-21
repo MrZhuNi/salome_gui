@@ -26,7 +26,7 @@
 
 #include "Plot2d.h"
 #include "Plot2d_Algorithm.h"
-#include <QList>
+#include <QtCore/QList>
 
 class Plot2d_Object;
 

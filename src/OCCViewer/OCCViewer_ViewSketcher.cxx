@@ -25,7 +25,7 @@
 
 #include <QtWidgets/QApplication>
 #include <QtGui/QPainter>
-#include <QPolygon>
+#include <QtGui/QPolygon>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QKeyEvent>
 

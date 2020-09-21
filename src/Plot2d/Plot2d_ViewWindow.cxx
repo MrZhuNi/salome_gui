@@ -37,14 +37,14 @@
 #include <QtxMultiAction.h>
 #include <QtxActionToolMgr.h>
 
-#include <QStatusBar>
-#include <QLayout>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QLayout>
 #include <QtWidgets/QApplication>
-#include <QMenu>
+#include <QtWidgets/QMenu>
 #include <QtGui/QImage>
-#include <QToolBar>
+#include <QtWidgets/QToolBar>
 #include <QtGui/QPaintEvent>
-#include <QActionGroup>
+#include <QtWidgets/QActionGroup>
 #include <QtGui/QPainter>
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>

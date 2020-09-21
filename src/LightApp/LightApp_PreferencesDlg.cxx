@@ -33,9 +33,9 @@
 #include <SUIT_MessageBox.h>
 #include <SUIT_FileDlg.h>
 
-#include <QAbstractButton>
-#include <QVBoxLayout>
-#include <QFileDialog>
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QFileDialog>
 
 /*!
   Constructor.

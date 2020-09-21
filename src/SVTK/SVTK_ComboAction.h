@@ -26,7 +26,7 @@
 
 #include "SVTK.h"
 
-#include <QWidgetAction>
+#include <QtWidgets/QWidgetAction>
 
 class QComboBox;
 class SVTK_EXPORT SVTK_ComboAction : public QWidgetAction

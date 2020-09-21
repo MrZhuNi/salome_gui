@@ -27,7 +27,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfExtendedString.hxx>
 
-#include <QLineEdit>
+#include <QtWidgets/QLineEdit>
 
 /*
   \class QDS_ComboBox

@@ -23,8 +23,8 @@
 
 #include "SVTK_ComboAction.h"
 
-#include <QComboBox>
-#include <QHBoxLayout>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QHBoxLayout>
 
 SVTK_ComboAction::SVTK_ComboAction( QObject* parent )
   : QWidgetAction( parent )

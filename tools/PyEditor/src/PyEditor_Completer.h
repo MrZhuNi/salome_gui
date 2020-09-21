@@ -23,7 +23,7 @@
 #ifndef PYEDITOR_COMPLETER_H
 #define PYEDITOR_COMPLETER_H
 
-#include <QCompleter>
+#include <QtWidgets/QCompleter>
 
 class QTimer;
 class PyEditor_Editor;

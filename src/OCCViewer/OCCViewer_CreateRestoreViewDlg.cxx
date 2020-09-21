@@ -23,11 +23,11 @@
 #include "OCCViewer_CreateRestoreViewDlg.h"
 #include "OCCViewer_ViewPort3d.h"
 
-#include <QPushButton>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QListWidgetItem>
-#include <QEvent>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QListWidgetItem>
+#include <QtCore/QEvent>
 #include <QtGui/QKeyEvent>
 
 /*!

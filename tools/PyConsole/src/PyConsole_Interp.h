@@ -28,7 +28,7 @@
 #include "PyInterp_Interp.h"
 #include "PyConsole.h"
 
-#include <QStringList>
+#include <QtCore/QStringList>
 
 class PYCONSOLE_EXPORT PyConsole_Interp : public PyInterp_Interp
 {

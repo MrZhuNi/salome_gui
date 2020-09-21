@@ -32,7 +32,7 @@
 #include "GLViewer_BaseObjects.h"
 
 // Qt includes
-#include <QColor>
+#include <QtGui/QColor>
 
 #if !defined(WIN32) && !defined(__APPLE__)
 #include <GL/glx.h>

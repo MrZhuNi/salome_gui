@@ -25,14 +25,14 @@
 #include "PyEditor_Editor.h"
 #include "PyEditor_Settings.h"
 
-#include <QCheckBox>
-#include <QComboBox>
-#include <QFontComboBox>
-#include <QGroupBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QSpinBox>
-#include <QVBoxLayout>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QFontComboBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QVBoxLayout>
 
 /*!
   \class PyEditor_SettingsDlg

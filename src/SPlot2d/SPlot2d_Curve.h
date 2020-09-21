@@ -29,7 +29,7 @@
 #include "Plot2d_Curve.h"
 #include "SALOME_InteractiveObject.hxx"
 
-#include <QSet>
+#include <QtCore/QSet>
 
 typedef QSet<QString> OwnerSet;
 

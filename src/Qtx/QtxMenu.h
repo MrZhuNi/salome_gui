@@ -25,7 +25,7 @@
 
 #include "Qtx.h"
 
-#include <QMenu>
+#include <QtWidgets/QMenu>
 
 class QWidgetAction;
 

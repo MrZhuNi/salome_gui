@@ -28,7 +28,7 @@
 
 #include "Plot2d.h"
 #include <SUIT_ViewWindow.h>
-#include <QMap>
+#include <QtCore/QMap>
 
 
 #ifdef WIN32

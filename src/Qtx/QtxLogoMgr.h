@@ -28,8 +28,8 @@
 
 #include "Qtx.h"
 
-#include <QObject>
-#include <QList>
+#include <QtCore/QObject>
+#include <QtCore/QList>
 #include <QtGui/QPixmap>
 
 class QMenuBar;

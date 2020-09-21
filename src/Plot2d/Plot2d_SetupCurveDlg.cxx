@@ -30,12 +30,12 @@
 #include <SUIT_Tools.h>
 #endif
 
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QComboBox>
-#include <QSpinBox>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QSpinBox>
 #include <QtGui/QPainter>
 
 const int MARGIN_SIZE     = 11;

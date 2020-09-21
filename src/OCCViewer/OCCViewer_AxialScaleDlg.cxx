@@ -24,11 +24,11 @@
 
 #include <QtxDoubleSpinBox.h>
 
-#include <QGroupBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
 
 /*!
   \class OCCViewer_AxialScaleDlg

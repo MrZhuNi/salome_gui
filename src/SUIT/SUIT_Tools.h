@@ -27,8 +27,8 @@
 
 #include <Qtx.h>
 
-#include <QRect>
-#include <QString>
+#include <QtCore/QRect>
+#include <QtCore/QString>
 #include <QtGui/QFont>
 
 /*!

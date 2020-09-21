@@ -25,12 +25,12 @@
 #include "PyEditor_Editor.h"
 #include "PyEditor_Keywords.h"
 
-#include <QSet>
-#include <QTimer>
-#include <QTextBlock>
-#include <QTextCursor>
+#include <QtCore/QSet>
+#include <QtCore/QTimer>
+#include <QtGui/QTextBlock>
+#include <QtGui/QTextCursor>
 #include <QtWidgets/QApplication>
-#include <QAbstractItemView>
+#include <QtWidgets/QAbstractItemView>
 #include <QtGui/QStandardItemModel>
 
 /*!

@@ -26,7 +26,7 @@
 #include "PyEditor.h"
 #include "PyEditor_Settings.h"
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 class PyEditor_Editor;
 class PyEditor_FindTool;

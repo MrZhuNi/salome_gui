@@ -30,7 +30,7 @@
 #include <vtkObjectFactory.h>
 #include <vtkCommand.h>
 
-#include <QTimer>
+#include <QtCore/QTimer>
 
 vtkStandardNewMacro(QVTK_GenericRenderWindowInteractor);
 

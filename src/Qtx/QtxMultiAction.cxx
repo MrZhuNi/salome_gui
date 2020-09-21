@@ -22,14 +22,14 @@
 //
 #include "QtxMultiAction.h"
 
-#include <QMenu>
-#include <QLayout>
-#include <QToolBar>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QToolBar>
 #include <QtGui/QPainter>
 #include <QtGui/QHelpEvent>
-#include <QToolButton>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QApplication>
-#include <QStyleOptionButton>
+#include <QtWidgets/QStyleOptionButton>
 
 /*!
   \class QtxMultiAction::Filter

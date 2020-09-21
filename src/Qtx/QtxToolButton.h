@@ -22,9 +22,9 @@
 
 #include "Qtx.h"
 
-#include <QStringList>
-#include <QToolButton>
-#include <QVariant>
+#include <QtCore/QStringList>
+#include <QtWidgets/QToolButton>
+#include <QtCore/QVariant>
 
 class QTX_EXPORT QtxToolButton : public QToolButton
 {

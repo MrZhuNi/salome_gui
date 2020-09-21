@@ -22,7 +22,7 @@
 
 #include "LightApp.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <SUIT_Selector.h>
 #include <SUIT_DataOwner.h>
 #include <GraphicsView_Defs.h>

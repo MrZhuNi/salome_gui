@@ -31,7 +31,7 @@
 #include <SUIT_Selector.h>
 #include <SUIT_DataOwner.h>
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class SUIT_DataBrowser;
 class LightApp_DataObject;

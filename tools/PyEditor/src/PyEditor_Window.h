@@ -25,8 +25,8 @@
 
 #include "PyEditor.h"
 
-#include <QMainWindow>
-#include <QMap>
+#include <QtWidgets/QMainWindow>
+#include <QtCore/QMap>
 
 class QAction;
 class PyEditor_Widget;

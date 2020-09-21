@@ -26,14 +26,14 @@
 #include "QtxResourceMgr.h"
 #include "QtxTranslator.h"
 
-#include <QSet>
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QRegExp>
-#include <QTextStream>
+#include <QtCore/QSet>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QRegExp>
+#include <QtCore/QTextStream>
 #include <QtWidgets/QApplication>
-#include <QLibraryInfo>
+#include <QtCore/QLibraryInfo>
 #include <QtDebug>
 #ifndef QT_NO_DOM
 #include <QtXml/QDomDocument>

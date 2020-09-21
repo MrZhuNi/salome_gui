@@ -24,7 +24,7 @@
 #define SUIT_EXCEPTIONHANDLER_H
 
 #include "SUIT.h"
-#include <QList>
+#include <QtCore/QList>
 
 class QEvent;
 class QObject;

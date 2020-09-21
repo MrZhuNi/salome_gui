@@ -27,7 +27,7 @@
 #include "LightApp.h"
 #include "LightApp_DataOwner.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class SUIT_Desktop;
 

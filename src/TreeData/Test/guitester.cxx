@@ -18,9 +18,9 @@
 //
 
 #include <QtWidgets/QApplication>
-#include <QMainWindow>
-#include <QDockWidget>
-#include <QTreeView>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QDockWidget>
+#include <QtWidgets/QTreeView>
 
 #include <Basics_Utils.hxx>
 

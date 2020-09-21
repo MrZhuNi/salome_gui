@@ -23,8 +23,8 @@
 
 #include "PVViewer.h"
 
-#include <QObject>
-#include <QList>
+#include <QtCore/QObject>
+#include <QtCore/QList>
 
 class QAction;
 class QMainWindow;

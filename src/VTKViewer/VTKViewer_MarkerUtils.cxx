@@ -23,10 +23,10 @@
 #include <vtkImageData.h>
 
 // QT Includes
-#include <QFile>
+#include <QtCore/QFile>
 #include <QtGui/QImage>
-#include <QString>
-#include <QTextStream>
+#include <QtCore/QString>
+#include <QtCore/QTextStream>
 
 namespace VTK
 {

@@ -32,7 +32,7 @@
 #include <Quantity_Length.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 class Standard_EXPORT OCCViewer_VService
 {

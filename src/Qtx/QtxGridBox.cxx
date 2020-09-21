@@ -22,8 +22,8 @@
 //
 #include "QtxGridBox.h"
 
-#include <QGridLayout>
-#include <QChildEvent>
+#include <QtWidgets/QGridLayout>
+#include <QtCore/QChildEvent>
 
 /*!
   \class QtxGridBox::Space

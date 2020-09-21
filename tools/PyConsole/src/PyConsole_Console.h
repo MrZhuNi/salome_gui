@@ -27,8 +27,8 @@
 
 #include "PyConsole.h"
 
-#include <QWidget>
-#include <QMap>
+#include <QtWidgets/QWidget>
+#include <QtCore/QMap>
 
 class QMenu;
 

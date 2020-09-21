@@ -23,7 +23,7 @@
 #ifndef PYEDITOR_LINENUMBERAREA_H
 #define PYEDITOR_LINENUMBERAREA_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 class PyEditor_Editor;
 

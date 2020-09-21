@@ -24,7 +24,7 @@
 
 #include "PyEditor_Keywords.h"
 
-#include <QSet>
+#include <QtCore/QSet>
 
 #define NORMAL 0
 #define TRIPLESINGLE 1

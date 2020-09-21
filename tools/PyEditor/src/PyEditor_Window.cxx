@@ -25,15 +25,15 @@
 #include "PyEditor_Settings.h"
 #include "PyEditor_SettingsDlg.h"
 
-#include <QAction>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QCloseEvent>
-#include <QFileDialog>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QStatusBar>
-#include <QTextStream>
-#include <QToolBar>
+#include <QtGui/QCloseEvent>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QStatusBar>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QToolBar>
 
 /*!
   \class PyEditor_Window

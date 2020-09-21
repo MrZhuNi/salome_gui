@@ -34,9 +34,9 @@
 
 #include <STD_TabDesktop.h>
 
-#include <QList>
+#include <QtCore/QList>
 #include <QtWidgets/QApplication>
-#include <QMultiHash>
+#include <QtCore/QMultiHash>
 
 #include <SALOMEDSClient_ClientFactory.hxx>//?
 #include <SALOMEDSClient_IParameters.hxx>//?

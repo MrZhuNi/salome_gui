@@ -30,9 +30,9 @@
 
 #include <Qtx.h>
 
-#include <QList>
-#include <QObject>
-#include <QString>
+#include <QtCore/QList>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 #include <QtGui/QPixmap>
 #include <QtGui/QFont>
 

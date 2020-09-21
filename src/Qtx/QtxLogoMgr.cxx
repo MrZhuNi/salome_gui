@@ -25,12 +25,12 @@
 //
 #include "QtxLogoMgr.h"
 
-#include <QLabel>
+#include <QtWidgets/QLabel>
 #include <QtGui/QImage>
 #include <QtGui/QBitmap>
-#include <QHBoxLayout>
-#include <QMenuBar>
-#include <QPointer>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QMenuBar>
+#include <QtCore/QPointer>
 #include <QtWidgets/QApplication>
 #include <QtGui/QMovie>
 

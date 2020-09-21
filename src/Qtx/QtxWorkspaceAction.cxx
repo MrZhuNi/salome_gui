@@ -27,8 +27,8 @@
 
 #include "QtxWorkspace.h"
 
-#include <QMenu>
-#include <QMdiSubWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMdiSubWindow>
 
 /*!
   \class QtxWorkspaceAction

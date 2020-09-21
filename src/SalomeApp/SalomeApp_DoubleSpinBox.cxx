@@ -35,9 +35,9 @@
 #include CORBA_SERVER_HEADER(SALOMEDS)
 
 #include <QtGui/QKeyEvent>
-#include <QLineEdit>
-#include <QToolTip>
-#include <QRegExp>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QToolTip>
+#include <QtCore/QRegExp>
 
 #include <string>
 

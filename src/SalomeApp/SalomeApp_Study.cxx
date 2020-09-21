@@ -36,9 +36,9 @@
 // temporary commented
 //#include <OB_Browser.h>
 
-#include <QCoreApplication>
-#include <QEvent>
-#include <QFileInfo>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QEvent>
+#include <QtCore/QFileInfo>
 #include "SALOME_Event.h"
 #include "Basics_Utils.hxx"
 

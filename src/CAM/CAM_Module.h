@@ -25,11 +25,11 @@
 
 #include "CAM.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <QtGui/QPixmap>
-#include <QString>
-#include <QMap>
-#include <QPair>
+#include <QtCore/QString>
+#include <QtCore/QMap>
+#include <QtCore/QPair>
 #include <QtGui/QKeySequence>
 
 class QAction;

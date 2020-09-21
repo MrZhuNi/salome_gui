@@ -25,7 +25,7 @@
 #include "PyInterp_Request.h"
 #include "PyInterp_Utils.h"
 
-#include <QCoreApplication>
+#include <QtCore/QCoreApplication>
 
 void PyInterp_Request::process()
 {

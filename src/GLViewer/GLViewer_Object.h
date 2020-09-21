@@ -40,7 +40,7 @@
 #include <GL/gl.h>
 #endif
 
-#include <QString>
+#include <QtCore/QString>
 
 class QFile;
 

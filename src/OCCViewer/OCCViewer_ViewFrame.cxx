@@ -32,8 +32,8 @@
 #include <QtxResourceMgr.h>
 #include <QtxWorkstackAction.h>
 
-#include <QFrame>
-#include <QLayout>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QLayout>
 #include <QtWidgets/QApplication>
 
 OCCViewer_ViewFrame::OCCViewer_ViewFrame(SUIT_Desktop* theDesktop, OCCViewer_Viewer* theModel)

@@ -28,7 +28,7 @@
 
 #include "Qtx.h"
 
-#include <QMap>
+#include <QtCore/QMap>
 #include <QtWidgets/QComboBox>
 
 #ifdef WIN32

@@ -23,7 +23,7 @@
 #include "GraphicsView.h"
 
 #include <QtGui/QCursor>
-#include <QObject>
+#include <QtCore/QObject>
 
 class QRectF;
 class QRubberBand;

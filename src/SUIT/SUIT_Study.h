@@ -25,9 +25,9 @@
 
 #include "SUIT.h"
 
-#include <QList>
-#include <QObject>
-#include <QListIterator>
+#include <QtCore/QList>
+#include <QtCore/QObject>
+#include <QtCore/QListIterator>
 
 class SUIT_DataObject;
 class SUIT_Application;

@@ -26,16 +26,16 @@
 //
 #include "LogWindow.h"
 
-#include <QAction>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QDate>
-#include <QFile>
-#include <QMenu>
-#include <QTextBlock>
-#include <QTextEdit>
-#include <QTextStream>
-#include <QTime>
-#include <QVBoxLayout>
+#include <QtCore/QDate>
+#include <QtCore/QFile>
+#include <QtWidgets/QMenu>
+#include <QtGui/QTextBlock>
+#include <QtWidgets/QTextEdit>
+#include <QtCore/QTextStream>
+#include <QtCore/QTime>
+#include <QtWidgets/QVBoxLayout>
 
 #include <SUIT_MessageBox.h>
 #include <SUIT_ResourceMgr.h>

@@ -23,8 +23,8 @@
 
 #include "RemoteFileBrowser.h"
 
-#include <QWidget>
-#include <QComboBox>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QComboBox>
 
 class QPushButton;
 class QLineEdit;

@@ -29,8 +29,8 @@
 
 #include <QtWidgets/QApplication>
 #include <QtGui/QPainter>
-#include <QMessageBox>
-#include <QDesktopWidget>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QDesktopWidget>
 
 /*!
   \class ProgressEvent

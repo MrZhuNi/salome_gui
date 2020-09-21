@@ -28,10 +28,10 @@
 
 #include "OB.h"
 
-#include <QWidget>
-#include <QMap>
-#include <QModelIndex>
-#include <QItemSelection>
+#include <QtWidgets/QWidget>
+#include <QtCore/QMap>
+#include <QtCore/QModelIndex>
+#include <QtCore/QItemSelection>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

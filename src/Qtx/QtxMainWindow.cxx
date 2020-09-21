@@ -26,16 +26,16 @@
 
 #include "QtxToolBar.h"
 
-#include <QEvent>
-#include <QPoint>
-#include <QTimer>
-#include <QLayout>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QRubberBand>
+#include <QtCore/QEvent>
+#include <QtCore/QPoint>
+#include <QtCore/QTimer>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QRubberBand>
 #include <QtGui/QMouseEvent>
 #include <QtWidgets/QApplication>
-#include <QDesktopWidget>
+#include <QtWidgets/QDesktopWidget>
 #include <cstdio>
 /*!
   \class QtxMainWindow::Filter

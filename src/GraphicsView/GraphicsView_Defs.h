@@ -20,7 +20,7 @@
 #ifndef GRAPHICSVIEW_DEFS_H
 #define GRAPHICSVIEW_DEFS_H
 
-#include <QList>
+#include <QtCore/QList>
 
 class GraphicsView_Object;
 typedef QList<GraphicsView_Object*> GraphicsView_ObjectList;

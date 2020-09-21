@@ -35,12 +35,12 @@
 #endif // USE_SALOME_STYLE
 #include "QtxSplash.h"
 
-#include <QDir>
-#include <QFile>
-#include <QLocale>
-#include <QRegExp>
-#include <QString>
-#include <QStringList>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QLocale>
+#include <QtCore/QRegExp>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 
 #include <stdlib.h>
 

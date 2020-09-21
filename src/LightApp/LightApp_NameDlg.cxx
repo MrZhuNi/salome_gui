@@ -26,12 +26,12 @@
 #include "LightApp_NameDlg.h"
 #include <SUIT_Tools.h>
 
-#include <QGroupBox>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
 
 /*!
   Constructor

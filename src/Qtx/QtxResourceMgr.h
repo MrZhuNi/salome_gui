@@ -32,13 +32,13 @@
 #include "QtxMap.h"
 #endif
 
-#include <QMap>
-#include <QList>
+#include <QtCore/QMap>
+#include <QtCore/QList>
 #include <QtGui/QFont>
 #include <QtGui/QColor>
 #include <QtGui/QPixmap>
-#include <QByteArray>
-#include <QStringList>
+#include <QtCore/QByteArray>
+#include <QtCore/QStringList>
 #include <QtGui/QLinearGradient>
 #include <QtGui/QRadialGradient>
 #include <QtGui/QConicalGradient>

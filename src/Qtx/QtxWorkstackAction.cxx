@@ -27,22 +27,22 @@
 
 #include "QtxWorkstack.h"
 
-#include <QMenu>
+#include <QtWidgets/QMenu>
 #include <QtGui/QWidgetList>
-#include <QGroupBox>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QRadioButton>
-#include <QPushButton>
-#include <QListWidget>
-#include <QStackedLayout>
-#include <QToolButton>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QStackedLayout>
+#include <QtWidgets/QToolButton>
 #include <QtGui/QIcon>
 #include <QtGui/QPixmap>
-#include <QButtonGroup>
-#include <QCheckBox>
-#include <QLabel>
-#include <QComboBox>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QComboBox>
 
 const char* const prev_xpm[] = {
 "16 16 12 1",

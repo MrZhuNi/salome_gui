@@ -22,7 +22,7 @@
 #include "TreeGuiManager.hxx"
 
 // SALOME includes
-#include <QStringList>
+#include <QtCore/QStringList>
 
 // XCAD includes
 #include "TreeView.hxx"

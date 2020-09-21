@@ -168,30 +168,30 @@
 
 #define VISIBILITY_COLUMN_WIDTH 25
 
-#include <QDir>
+#include <QtCore/QDir>
 #include <QtGui/QImage>
-#include <QString>
-#include <QWidget>
-#include <QStringList>
-#include <QFile>
+#include <QtCore/QString>
+#include <QtWidgets/QWidget>
+#include <QtCore/QStringList>
+#include <QtCore/QFile>
 #include <QtWidgets/QApplication>
-#include <QMap>
-#include <QStatusBar>
-#include <QThread>
-#include <QObjectList>
-#include <QComboBox>
-#include <QInputDialog>
+#include <QtCore/QMap>
+#include <QtWidgets/QStatusBar>
+#include <QtCore/QThread>
+#include <QtCore/QObjectList>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QInputDialog>
 #include <QtGui/QFontDatabase>
 #include <QtGui/QIcon>
-#include <QByteArray>
-#include <QMenu>
-#include <QProcess>
-#include <QTimer>
-#include <QHeaderView>
-#include <QTreeView>
-#include <QMimeData>
-#include <QShortcut>
-#include <QRegExp>
+#include <QtCore/QByteArray>
+#include <QtWidgets/QMenu>
+#include <QtCore/QProcess>
+#include <QtCore/QTimer>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QTreeView>
+#include <QtCore/QMimeData>
+#include <QtWidgets/QShortcut>
+#include <QtCore/QRegExp>
 
 #include <utilities.h>
 

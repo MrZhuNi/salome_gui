@@ -25,12 +25,12 @@
 //
 #include "QtxDialog.h"
 
-#include <QLabel>
-#include <QLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLayout>
 #include <QtGui/QKeyEvent>
-#include <QFrame>
-#include <QTabWidget>
-#include <QPushButton>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QApplication>
 
 /*!

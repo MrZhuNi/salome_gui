@@ -34,20 +34,20 @@
 #include "QtxBackgroundTool.h"
 #include "QtxResourceMgr.h"
 
-#include <QEvent>
-#include <QLayout>
-#include <QToolBox>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QCheckBox>
-#include <QSplitter>
-#include <QTabWidget>
-#include <QListWidget>
+#include <QtCore/QEvent>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QToolBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QApplication>
-#include <QDateTimeEdit>
-#include <QStackedWidget>
-#include <QSlider>
-#include <QScrollArea>
+#include <QtWidgets/QDateTimeEdit>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QScrollArea>
 
 #include <stdio.h>
 

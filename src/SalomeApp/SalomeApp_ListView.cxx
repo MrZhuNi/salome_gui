@@ -32,9 +32,9 @@
 #include "utilities.h"
 
 #include <QtGui/QValidator>
-#include <QToolButton>
+#include <QtWidgets/QToolButton>
 #include <QtGui/QPixmap>
-#include <QHeaderView>
+#include <QtWidgets/QHeaderView>
 #include <QtGui/QKeyEvent>
 
 #include <TColStd_ListOfInteger.hxx>

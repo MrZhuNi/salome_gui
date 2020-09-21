@@ -31,15 +31,15 @@
 
 #include "QtxAction.h"
 
-#include <QLineEdit>
-#include <QGroupBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QGridLayout>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
 #include <QtGui/QDoubleValidator>
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QButtonGroup>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QButtonGroup>
 
 #include <vtkCallbackCommand.h>
 #include <vtkRenderer.h>

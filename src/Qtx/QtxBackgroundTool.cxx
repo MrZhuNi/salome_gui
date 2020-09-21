@@ -23,15 +23,15 @@
 #include "QtxBackgroundTool.h"
 #include "QtxColorButton.h"
 
-#include <QCheckBox>
-#include <QComboBox>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QStackedWidget>
-#include <QVBoxLayout>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QVBoxLayout>
 
 
 /*!

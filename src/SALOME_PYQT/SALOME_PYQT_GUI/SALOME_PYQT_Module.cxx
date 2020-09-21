@@ -29,7 +29,7 @@
 #include <SALOME_LifeCycleCORBA.hxx>
 #include <Container_init_python.hxx>
 
-#include <QCoreApplication>
+#include <QtCore/QCoreApplication>
 
 //
 // NB: Python requests.

@@ -29,10 +29,10 @@
 #include "PyInterp_Interp.h" // !!! WARNING !!! THIS INCLUDE MUST BE THE VERY FIRST !!!
 
 #include <QtGui/QIcon>
-#include <QList>
-#include <QMap>
-#include <QObject>
-#include <QStringList>
+#include <QtCore/QList>
+#include <QtCore/QMap>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
 
 class CAM_Application;
 class LightApp_DataObject;

@@ -27,8 +27,8 @@
 
 #include "QtxAction.h"
 
-#include <QList>
-#include <QWidget>
+#include <QtCore/QList>
+#include <QtWidgets/QWidget>
 
 #include <Aspect_Window.hxx>
 

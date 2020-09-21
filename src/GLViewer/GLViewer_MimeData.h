@@ -30,7 +30,7 @@
 
 #include "GLViewer.h"
 
-#include <QMimeData>
+#include <QtCore/QMimeData>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

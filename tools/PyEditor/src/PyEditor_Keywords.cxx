@@ -22,7 +22,7 @@
 
 #include "PyEditor_Keywords.h"
 
-#include <QSet>
+#include <QtCore/QSet>
 
 /*!
   \brief PyEditor_Keywords

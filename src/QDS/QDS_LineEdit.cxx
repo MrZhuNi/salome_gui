@@ -22,7 +22,7 @@
 
 #include "QDS_LineEdit.h"
 
-#include <QLineEdit>
+#include <QtWidgets/QLineEdit>
 #include <QtGui/QValidator>
 
 /*!

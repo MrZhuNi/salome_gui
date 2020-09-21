@@ -30,7 +30,7 @@
 
 #include <QtWidgets/QApplication>
 #include <QtGui/QHideEvent>
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 
 /*!
   \class QtxActionToolMgr::ToolNode

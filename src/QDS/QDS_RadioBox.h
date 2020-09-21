@@ -27,8 +27,8 @@
 
 #include <Qtx.h>
 
-#include <QMap>
-#include <QStringList>
+#include <QtCore/QMap>
+#include <QtCore/QStringList>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

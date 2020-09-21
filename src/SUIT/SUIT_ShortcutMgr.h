@@ -25,8 +25,8 @@
 
 #include "SUIT.h"
 
-#include <QObject>
-#include <QMultiMap>
+#include <QtCore/QObject>
+#include <QtCore/QMultiMap>
 
 class QtxAction;
 

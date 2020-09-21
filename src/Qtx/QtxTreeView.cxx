@@ -22,8 +22,8 @@
 //
 #include "QtxTreeView.h"
 
-#include <QHeaderView>
-#include <QMenu>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QMenu>
 #include <QtGui/QMouseEvent>
 
 /*!

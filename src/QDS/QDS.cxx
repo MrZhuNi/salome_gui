@@ -24,7 +24,7 @@
 
 #include "QDS_Datum.h"
 
-#include <QTextCodec>
+#include <QtCore/QTextCodec>
 
 #include <DDS_DicItem.h>
 #include <DDS_Dictionary.h>

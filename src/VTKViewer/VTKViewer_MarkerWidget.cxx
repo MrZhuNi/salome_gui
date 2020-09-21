@@ -25,10 +25,10 @@
 
 #include <vtkImageData.h>
 
-#include <QComboBox>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QSpinBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QSpinBox>
 
 const int SPACING = 6;
 enum { TypeRole = Qt::UserRole, IdRole };

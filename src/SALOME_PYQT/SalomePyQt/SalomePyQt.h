@@ -28,8 +28,8 @@
 
 #include <Python.h>
 
-#include <QObject>
-#include <QString>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 #include <QtGui/QColor>
 
 #include <LightApp_Application.h>

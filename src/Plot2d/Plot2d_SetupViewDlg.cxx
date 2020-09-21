@@ -32,16 +32,16 @@
 #include <QtxColorButton.h>
 #include <QtxFontEdit.h>
 
-#include <QCheckBox>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QSpinBox>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QGroupBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QTabWidget>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTabWidget>
 
 const int MARGIN_SIZE     = 11;
 const int SPACING_SIZE    = 6;

@@ -39,8 +39,8 @@
 
 #include "Basics_Utils.hxx"
 
-#include <QMutex>
-#include <QWaitCondition>
+#include <QtCore/QMutex>
+#include <QtCore/QWaitCondition>
 
 // Open CASCADE Includes
 #include <OSD_SharedLibrary.hxx>

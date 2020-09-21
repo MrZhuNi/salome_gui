@@ -24,7 +24,7 @@
 #include "PVViewer.h"
 
 #include "SUIT_ViewWindow.h"
-#include <QMap>
+#include <QtCore/QMap>
 
 class SUIT_Desktop;
 class PVViewer_Viewer;

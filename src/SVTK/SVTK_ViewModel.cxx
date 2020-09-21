@@ -20,9 +20,9 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-#include <QMenu>
-#include <QColorDialog>
-#include <QToolBar>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QToolBar>
 
 #include <vtkCamera.h>
 #include <vtkRenderer.h>

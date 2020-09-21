@@ -24,10 +24,10 @@
 // Created:   04/10/2011 18:44:25 PM
 // Author:    OCC team
 //
-#include <QAction>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QToolBar>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QToolBar>
 
 #include <QtxWorkstack.h>
 

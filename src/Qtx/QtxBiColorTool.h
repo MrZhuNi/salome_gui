@@ -26,7 +26,7 @@
 #include "Qtx.h"
 
 #include <QtGui/QColor>
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 class QLabel;
 class QSlider;

@@ -25,12 +25,12 @@
 #include "PyEditor_StdSettings.h"
 
 #include <QtWidgets/QApplication>
-#include <QCommandLineParser>
-#include <QDir>
-#include <QLibraryInfo>
-#include <QLocale>
-#include <QStringList>
-#include <QTranslator>
+#include <QtCore/QCommandLineParser>
+#include <QtCore/QDir>
+#include <QtCore/QLibraryInfo>
+#include <QtCore/QLocale>
+#include <QtCore/QStringList>
+#include <QtCore/QTranslator>
 
 QString qtTrDir()
 {

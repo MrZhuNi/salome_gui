@@ -25,10 +25,10 @@
 //
 #include "QtxGroupBox.h"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QEvent>
-#include <QObjectList>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtCore/QEvent>
+#include <QtCore/QObjectList>
 #include <QtWidgets/QApplication>
 
 /*!

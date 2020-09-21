@@ -30,8 +30,8 @@
 #include <OSD_Protection.hxx>
 #include <OSD_FileIterator.hxx>
 
-#include <QFileInfo>
-#include <QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 #include <Qtx.h>
 

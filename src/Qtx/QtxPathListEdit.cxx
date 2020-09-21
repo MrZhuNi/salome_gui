@@ -24,18 +24,18 @@
 
 #include "QtxPathEdit.h"
 
-#include <QLayout>
+#include <QtWidgets/QLayout>
 #include <QtGui/QPainter>
-#include <QListView>
-#include <QLineEdit>
+#include <QtWidgets/QListView>
+#include <QtWidgets/QLineEdit>
 #include <QtGui/QKeyEvent>
-#include <QDirModel>
-#include <QCompleter>
-#include <QToolButton>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QItemDelegate>
-#include <QStringListModel>
+#include <QtWidgets/QDirModel>
+#include <QtWidgets/QCompleter>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QItemDelegate>
+#include <QtCore/QStringListModel>
 
 static const char* delete_icon[] = {
 "16 16 3 1",

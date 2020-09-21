@@ -30,11 +30,11 @@
 
 #include <SUIT_PopupClient.h>
 
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QString>
-#include <QLineEdit>
-#include <QComboBox>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QTreeWidgetItem>
+#include <QtCore/QString>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QComboBox>
 
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_ListOfReal.hxx>

@@ -28,11 +28,11 @@
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_ShortcutMgr.h"
 
-#include <QTimer>
-#include <QLabel>
-#include <QStatusBar>
+#include <QtCore/QTimer>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QStatusBar>
 #include <QtWidgets/QApplication>
-#include <QSize>
+#include <QtCore/QSize>
 
 #include <QtxAction.h>
 #include <QtxActionMenuMgr.h>

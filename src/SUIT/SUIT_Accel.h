@@ -27,9 +27,9 @@
 
 #include "SUIT.h"
 
-#include <QMap>
-#include <QObject>
-#include <QString>
+#include <QtCore/QMap>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
 class SUIT_EXPORT SUIT_Accel: public QObject
 {

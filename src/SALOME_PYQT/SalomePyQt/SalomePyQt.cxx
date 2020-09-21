@@ -66,11 +66,11 @@
 #include "SUIT_ViewWindow.h"
 #include "PyConsole_Console.h"
 
-#include <QAction>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtGui/QPaintEvent>
-#include <QCoreApplication>
-#include <QVBoxLayout>
+#include <QtCore/QCoreApplication>
+#include <QtWidgets/QVBoxLayout>
 
 #include <utilities.h>
 

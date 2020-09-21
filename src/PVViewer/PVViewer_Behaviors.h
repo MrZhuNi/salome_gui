@@ -24,7 +24,7 @@
 
 #include "PVViewer.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class QMainWindow;
 class pqPropertiesPanel;

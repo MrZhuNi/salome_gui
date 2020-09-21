@@ -27,8 +27,8 @@
 #include "SUIT_Session.h"
 
 #include <qcolordialog.h>
-#include <QMenu>
-#include <QToolBar>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
 
 //#define _DEVDEBUG_
 #include "DebTrace.hxx"

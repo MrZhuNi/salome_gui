@@ -26,12 +26,12 @@
 #include "PyConsole_Console.h"
 #include "PyConsole_Editor.h"
 
-#include <QAction>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QClipboard>
-#include <QContextMenuEvent>
-#include <QMenu>
-#include <QVBoxLayout>
+#include <QtGui/QClipboard>
+#include <QtGui/QContextMenuEvent>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QVBoxLayout>
 
 /*!
   \class PyConsole_Console

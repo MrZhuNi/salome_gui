@@ -28,20 +28,20 @@
 
 #include "SUIT_Session.h"
 
-#include <QColor>
-#include <QRect>
+#include <QtGui/QColor>
+#include <QtCore/QRect>
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
-#include <QMultiHash>
-#include <QMenu>
-#include <QColorDialog>
-#include <QColormap>
-#include <QCoreApplication>
+#include <QtCore/QMultiHash>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QColormap>
+#include <QtCore/QCoreApplication>
 
 #include <stdlib.h>
 
 #if !defined WIN32 && !defined __APPLE__
-#include <QX11Info>
+#include <QtX11Extras/QX11Info>
 #include <GL/glx.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

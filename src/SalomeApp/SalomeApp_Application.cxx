@@ -85,15 +85,15 @@
 #include <SALOME_LifeCycleCORBA.hxx>
 
 #include <QtWidgets/QApplication>
-#include <QWidget>
-#include <QAction>
-#include <QRegExp>
-#include <QCheckBox>
-#include <QPushButton>
-#include <QLabel>
-#include <QListWidget>
-#include <QGridLayout>
-#include <QMenu>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QAction>
+#include <QtCore/QRegExp>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QMenu>
 #include <QtDebug>
 
 #include <SALOMEDSClient_ClientFactory.hxx>

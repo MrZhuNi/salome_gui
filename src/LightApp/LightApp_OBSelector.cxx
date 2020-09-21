@@ -31,7 +31,7 @@
 #include <SUIT_DataBrowser.h>
 #include <SUIT_Session.h>
 #include <SUIT_DataObjectIterator.h>
-#include <QTime>
+#include <QtCore/QTime>
 #include <time.h>
 
 /*!

@@ -22,7 +22,7 @@
 //
 #include "QtxEvalExpr.h"
 
-#include <QStack>
+#include <QtCore/QStack>
 
 #include <math.h>
 

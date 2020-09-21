@@ -27,7 +27,7 @@
 
 #include "Qtx.h"
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 
 class QtxResourceMgr;
 

@@ -31,10 +31,10 @@
 #include "QtxDoubleSpinBox.h"
 #include "QtxAction.h"
 
-#include <QGroupBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QGridLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
 
 /*!
   Constructor

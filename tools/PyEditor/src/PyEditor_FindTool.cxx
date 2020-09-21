@@ -23,16 +23,16 @@
 #include "PyEditor_FindTool.h"
 #include "PyEditor_Editor.h"
 
-#include <QAction>
-#include <QCompleter>
-#include <QEvent>
-#include <QGridLayout>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QCompleter>
+#include <QtCore/QEvent>
+#include <QtWidgets/QGridLayout>
 #include <QtGui/QIcon>
-#include <QLabel>
-#include <QLineEdit>
-#include <QMenu>
-#include <QSignalMapper>
-#include <QToolButton>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMenu>
+#include <QtCore/QSignalMapper>
+#include <QtWidgets/QToolButton>
 
 /*!
   \class PyEditor_FindTool

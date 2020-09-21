@@ -28,9 +28,9 @@
 
 #include "Qtx.h"
 
-#include <QMap>
-#include <QObject>
-#include <QPointer>
+#include <QtCore/QMap>
+#include <QtCore/QObject>
+#include <QtCore/QPointer>
 
 class QTimer;
 class QAction;

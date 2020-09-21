@@ -29,7 +29,7 @@
 #include "Qtx.h"
 
 #include <QtWidgets/QDialog>
-#include <QMap>
+#include <QtCore/QMap>
 
 class QFrame;
 class QLabel;

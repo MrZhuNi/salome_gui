@@ -1,5 +1,5 @@
 #include "__CLASSNAME__.h"
-#include <QDebug>
+#include <QtCore/QDebug>
 
 __CLASSNAME__::__CLASSNAME__(QDialog* parent) : QDialog(parent)
 {

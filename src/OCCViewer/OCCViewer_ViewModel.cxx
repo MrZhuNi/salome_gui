@@ -42,14 +42,14 @@
 
 #include <QtGui/QPainter>
 #include <QtWidgets/QApplication>
-#include <QColorDialog>
-#include <QFileDialog>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QFileDialog>
 #include <QtGui/QPalette>
 #include <QtGui/QKeyEvent>
-#include <QMenu>
+#include <QtWidgets/QMenu>
 #include <QtGui/QMouseEvent>
-#include <QToolBar>
-#include <QDesktopWidget>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QDesktopWidget>
 
 #include <AIS_Axis.hxx>
 #include <Prs3d_Drawer.hxx>

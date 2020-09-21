@@ -30,20 +30,20 @@
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_Session.h"
 
-#include <QRect>
+#include <QtCore/QRect>
 #include <QtGui/QCursor>
 #include <QtGui/QPainter>
-#include <QMultiHash>
-//#include <QMenu>
-#include <QColorDialog>
-#include <QColormap>
+#include <QtCore/QMultiHash>
+//#include <QtWidgets/QMenu>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QColormap>
 #include <QtGui/QMouseEvent>
-#include <QCoreApplication>
+#include <QtCore/QCoreApplication>
 
 #include <stdlib.h>
 
 #if !defined WIN32 && !defined __APPLE__
-#include <QX11Info>
+#include <QtX11Extras/QX11Info>
 #include <GL/glx.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

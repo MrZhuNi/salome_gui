@@ -25,9 +25,9 @@
 
 #include "SUIT_SmartPtr.h"
 
-#include <QMap>
-#include <QList>
-#include <QString>
+#include <QtCore/QMap>
+#include <QtCore/QList>
+#include <QtCore/QString>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

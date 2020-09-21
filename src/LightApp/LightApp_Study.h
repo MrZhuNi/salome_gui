@@ -32,8 +32,8 @@
 #include "vector"
 #include <Qtx.h>
 
-#include <QMap>
-#include <QVariant>
+#include <QtCore/QMap>
+#include <QtCore/QVariant>
 
 class SUIT_Study;
 class SUIT_Application;

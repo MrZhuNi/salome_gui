@@ -26,7 +26,7 @@
 #include "CAM.h"
 
 #include <SUIT_Study.h>
-#include <QList>
+#include <QtCore/QList>
 
 class CAM_DataModel;
 

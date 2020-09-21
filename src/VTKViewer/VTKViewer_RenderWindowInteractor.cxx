@@ -49,10 +49,10 @@
 #include <vtkProperty.h>
 
 // QT Includes
-#include <QTimer>
+#include <QtCore/QTimer>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QKeyEvent>
-#include <QContextMenuEvent>
+#include <QtGui/QContextMenuEvent>
 
 /*! Create new instance of VTKViewer_RenderWindowInteractor*/
 VTKViewer_RenderWindowInteractor* VTKViewer_RenderWindowInteractor::New() 

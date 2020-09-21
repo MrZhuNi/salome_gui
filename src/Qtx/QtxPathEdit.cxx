@@ -23,13 +23,13 @@
 #include "QtxPathEdit.h"
 
 #include <QtWidgets/QApplication>
-#include <QLayout>
-#include <QDirModel>
-#include <QLineEdit>
-#include <QCompleter>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QDirModel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCompleter>
 #include <QtGui/QKeyEvent>
-#include <QToolButton>
-#include <QFileDialog>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QFileDialog>
 #include <QtGui/QRegExpValidator>
 
 static const char* browse_icon[] = {

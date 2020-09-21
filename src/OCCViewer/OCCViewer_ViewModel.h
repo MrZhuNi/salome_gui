@@ -24,8 +24,8 @@
 #define OCCVIEWER_VIEWMODEL_H
 
 #include <QtGui/QColor>
-#include <QPoint>
-#include <QVector>
+#include <QtCore/QPoint>
+#include <QtCore/QVector>
 
 #include "OCCViewer.h"
 #include "OCCViewer_ClipPlane.h"

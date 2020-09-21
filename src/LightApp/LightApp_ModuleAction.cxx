@@ -24,9 +24,9 @@
 
 #include <QtxComboBox.h>
 #include <QtxActionSet.h>
-#include <QVBoxLayout>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QApplication>
-#include <QEvent>
+#include <QtCore/QEvent>
 
 /*!
   \class LightApp_ModuleAction::ActionSet

@@ -28,9 +28,9 @@
 #include "PyConsole.h"
 #include "PyInterp_Event.h"
 
-#include <QEvent>
-#include <QString>
-#include <QStringList>
+#include <QtCore/QEvent>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 
 class PyConsole_PrintEvent : public QEvent
 {

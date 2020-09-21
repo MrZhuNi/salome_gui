@@ -28,7 +28,7 @@
 #include <QtxAction.h>
 
 #include <QtWidgets/QApplication>
-#include <QActionEvent>
+#include <QtGui/QActionEvent>
 
 SUIT_ShortcutMgr* SUIT_ShortcutMgr::myShortcutMgr = NULL;
 

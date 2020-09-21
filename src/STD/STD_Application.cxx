@@ -37,10 +37,10 @@
 #include <QtxActionMenuMgr.h>
 #include <QtxActionToolMgr.h>
 
-#include <QMenu>
-#include <QStatusBar>
-#include <QCloseEvent>
-#include <QFileDialog>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QStatusBar>
+#include <QtGui/QCloseEvent>
+#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QApplication>
 
 /*!Create and return new instance of STD_Application*/

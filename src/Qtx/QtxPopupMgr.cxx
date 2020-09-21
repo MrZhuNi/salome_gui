@@ -26,9 +26,9 @@
 #include "QtxPopupMgr.h"
 #include "QtxAction.h"
 #include "QtxEvalExpr.h"
-#include <QList>
-#include <QMenu>
-#include <QVariant>
+#include <QtCore/QList>
+#include <QtWidgets/QMenu>
+#include <QtCore/QVariant>
 
 bool operator<( const QList<QVariant>& v1, const QList<QVariant>& v2 )
 {

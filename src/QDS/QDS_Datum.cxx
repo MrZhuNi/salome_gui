@@ -22,11 +22,11 @@
 
 #include "QDS_Datum.h"
 
-#include <QLayout>
-#include <QVariant>
-#include <QTimer>
-#include <QEvent>
-#include <QMessageBox>
+#include <QtWidgets/QLayout>
+#include <QtCore/QVariant>
+#include <QtCore/QTimer>
+#include <QtCore/QEvent>
+#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QApplication>
 
 #include "QDS_Validator.h"

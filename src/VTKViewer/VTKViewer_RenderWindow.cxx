@@ -22,8 +22,8 @@
 
 #include "VTKViewer_RenderWindow.h"
 
-#include <QColorDialog>
-#include <QContextMenuEvent>
+#include <QtWidgets/QColorDialog>
+#include <QtGui/QContextMenuEvent>
 
 #include <stdlib.h>
 #include <math.h>
@@ -32,7 +32,7 @@
 #include <vtkRendererCollection.h>
 #include <vtkCamera.h>
 #if !defined WIN32 && !defined __APPLE__
-#include <QX11Info>
+#include <QtX11Extras/QX11Info>
 #include <vtkXOpenGLRenderWindow.h>
 #endif
 

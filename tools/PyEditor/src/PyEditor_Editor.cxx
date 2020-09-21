@@ -27,10 +27,10 @@
 #include "PyEditor_Settings.h"
 #include "PyEditor_Keywords.h"
 
-#include <QMenu>
+#include <QtWidgets/QMenu>
 #include <QtGui/QPainter>
-#include <QTextBlock>
-#include <QScrollBar>
+#include <QtGui/QTextBlock>
+#include <QtWidgets/QScrollBar>
 
 #include <iostream>
 

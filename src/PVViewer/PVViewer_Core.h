@@ -23,7 +23,7 @@
 
 #include "PVViewer.h"
 
-#include <QString>
+#include <QtCore/QString>
 
 class PVServer_ServiceWrapper;
 class PVViewer_Behaviors;

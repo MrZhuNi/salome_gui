@@ -39,12 +39,12 @@
 #include "SUIT_ViewWindow.h"
 #include "SUIT_ViewManager.h"
 
-#include <QMenu>
-#include <QRect>
-#include <QFile>
-#include <QPolygon>
+#include <QtWidgets/QMenu>
+#include <QtCore/QRect>
+#include <QtCore/QFile>
+#include <QtGui/QPolygon>
 #include <QtGui/QMouseEvent>
-#include <QColorDialog>
+#include <QtWidgets/QColorDialog>
 
 /*!
   Constructor

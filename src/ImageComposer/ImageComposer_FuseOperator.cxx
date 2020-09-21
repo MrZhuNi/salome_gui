@@ -19,7 +19,7 @@
 
 #include "ImageComposer_FuseOperator.h"
 #include "ImageComposer_MetaTypes.h"
-#include <QString>
+#include <QtCore/QString>
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
 

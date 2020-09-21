@@ -26,7 +26,7 @@
 #include "CAM.h"
 
 #include <STD_Application.h>
-#include <QList>
+#include <QtCore/QList>
 
 class QMenu;
 class CAM_Module;

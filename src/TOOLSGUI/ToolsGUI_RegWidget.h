@@ -25,8 +25,8 @@
 
 #include "ToolsGUI.h"
 
-#include <QMainWindow>
-#include <QMap>
+#include <QtWidgets/QMainWindow>
+#include <QtCore/QMap>
 
 #include <SALOMEconfig.h>
 #include CORBA_CLIENT_HEADER(SALOME_Registry)

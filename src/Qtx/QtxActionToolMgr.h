@@ -29,8 +29,8 @@
 #include "Qtx.h"
 #include "QtxActionMgr.h"
 
-#include <QMap>
-#include <QList>
+#include <QtCore/QMap>
+#include <QtCore/QList>
 
 class QToolBar;
 class QMainWindow;

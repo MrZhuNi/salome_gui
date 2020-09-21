@@ -36,8 +36,8 @@
 
 #include <vtkAbstractPropPicker.h>
 #include <vtkDataSet.h>
-#include <QVector>
-#include <QPoint>
+#include <QtCore/QVector>
+#include <QtCore/QPoint>
 
 class vtkRenderer;
 

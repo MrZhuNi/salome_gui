@@ -29,7 +29,7 @@
 #pragma warning( disable:4251 )
 #endif
 
-#include <QTreeView>
+#include <QtWidgets/QTreeView>
 
 class QTX_EXPORT QtxTreeView : public QTreeView
 {

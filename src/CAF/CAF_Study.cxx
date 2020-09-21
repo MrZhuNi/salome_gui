@@ -29,7 +29,7 @@
 #include <SUIT_MessageBox.h>
 #include <SUIT_Application.h>
 
-#include <QDir>
+#include <QtCore/QDir>
 
 #include <TDF_Delta.hxx>
 #include <TDF_ListIteratorOfDeltaList.hxx>

@@ -44,9 +44,9 @@
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 #include <QtXml/QDomNode>
-#include <QFile>
-#include <QMenu>
-#include <QMutex>
+#include <QtCore/QFile>
+#include <QtWidgets/QMenu>
+#include <QtCore/QMutex>
 
 #include <utilities.h>
 

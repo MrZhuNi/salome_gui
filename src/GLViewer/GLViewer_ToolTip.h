@@ -31,8 +31,8 @@
 
 //#include <qtooltip.h>
 //#include <QtxToolTip.h>
-#include <QObject>
-#include <QPoint>
+#include <QtCore/QObject>
+#include <QtCore/QPoint>
 
 #define TIP_TIME            1000
 

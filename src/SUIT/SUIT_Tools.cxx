@@ -22,7 +22,7 @@
 
 #include "SUIT_Tools.h"
 
-#include <QDir>
+#include <QtCore/QDir>
 
 #include <stdio.h>
 #include <stdarg.h>

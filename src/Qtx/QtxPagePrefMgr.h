@@ -28,9 +28,9 @@
 #include "QtxPathEdit.h"
 #include "QtxPathListEdit.h"
 
-#include <QFrame>
-#include <QLabel>
-#include <QPointer>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QLabel>
+#include <QtCore/QPointer>
 #include <QtGui/QIcon>
 
 class QtxGridBox;

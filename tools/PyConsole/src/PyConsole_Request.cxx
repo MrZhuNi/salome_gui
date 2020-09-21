@@ -23,7 +23,7 @@
 #include "PyConsole_Interp.h"
 #include "PyConsole_Event.h"
 
-#include <QCoreApplication>
+#include <QtCore/QCoreApplication>
 
 /*!
   \class PyConsole_ExecCommand

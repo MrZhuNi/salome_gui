@@ -20,11 +20,11 @@
 #include "SUIT_LicenseDlg.h"
 
 #include <QtWidgets/QApplication>
-#include <QTextEdit>
-#include <QLayout> 
-#include <QPushButton>
-#include <QTextStream> 
-#include <QFile>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QLayout> 
+#include <QtWidgets/QPushButton>
+#include <QtCore/QTextStream> 
+#include <QtCore/QFile>
 #include <QtPrintSupport/QPrinter>
 //#include <QSimpleRichText>
 #include <QtGui/QTextDocument>

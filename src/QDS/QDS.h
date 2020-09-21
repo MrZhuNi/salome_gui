@@ -38,8 +38,8 @@
 #pragma warning ( disable:4786 )
 #endif
 
-#include <QString>
-#include <QList>
+#include <QtCore/QString>
+#include <QtCore/QList>
 
 #include <TCollection_HExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>

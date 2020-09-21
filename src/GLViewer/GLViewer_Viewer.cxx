@@ -35,12 +35,12 @@
 #include "SUIT_ViewManager.h"
 
 #include <QtWidgets/QApplication>
-#include <QMenu>
-#include <QColorDialog>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QColorDialog>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QWheelEvent>
-#include <QRect>
-#include <QRubberBand>
+#include <QtCore/QRect>
+#include <QtWidgets/QRubberBand>
 
 /* used for sketching */
 static QEvent* l_mbPressEvent = 0;

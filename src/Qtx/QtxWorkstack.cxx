@@ -27,20 +27,20 @@
 
 #include "QtxAction.h"
 
-#include <QMenu>
-#include <QStyle>
-#include <QRegExp>
-#include <QLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QStyle>
+#include <QtCore/QRegExp>
+#include <QtWidgets/QLayout>
 #include <QtGui/QPainter>
-#include <QDataStream>
+#include <QtCore/QDataStream>
 #include <QtGui/QFocusEvent>
 #include <QtGui/QMouseEvent>
-#include <QRubberBand>
+#include <QtWidgets/QRubberBand>
 #include <QtWidgets/QApplication>
-#include <QStyleOption>
-#include <QInputDialog>
-#include <QStackedWidget>
-#include <QAbstractButton>
+#include <QtWidgets/QStyleOption>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QAbstractButton>
 
 /*!
   \class QtxWorkstackArea::WidgetEvent

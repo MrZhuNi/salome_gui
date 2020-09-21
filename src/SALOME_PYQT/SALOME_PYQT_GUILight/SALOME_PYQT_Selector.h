@@ -34,7 +34,7 @@
 #include <SUIT_Selector.h>
 #include <SUIT_DataOwner.h>
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class SALOME_PYQT_ModuleLight;
 class LightApp_DataObject;

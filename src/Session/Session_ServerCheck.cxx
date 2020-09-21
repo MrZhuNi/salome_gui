@@ -40,9 +40,9 @@
 #include "Qtx.h"
 
 #include <QtWidgets/QApplication> 
-#include <QWaitCondition>
-#include <QMutexLocker>
-#include <QStringList>
+#include <QtCore/QWaitCondition>
+#include <QtCore/QMutexLocker>
+#include <QtCore/QStringList>
 
 //
 // Default settings

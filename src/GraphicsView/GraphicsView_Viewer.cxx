@@ -31,11 +31,11 @@
 #include <ImageComposer_Image.h>
 
 #include <QtWidgets/QApplication>
-#include <QColorDialog>
-#include <QGraphicsSceneMouseEvent>
-#include <QGraphicsSceneWheelEvent>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QtWidgets/QGraphicsSceneWheelEvent>
 #include <QtGui/QKeyEvent>
-#include <QMenu>
+#include <QtWidgets/QMenu>
 
 #include <math.h>
 
@@ -43,7 +43,7 @@
 /*
 #include "GraphicsView_PrsImage.h"
 #include "GraphicsView_PrsPropDlg.h"
-#include <QFileDialog>
+#include <QtWidgets/QFileDialog>
 */
 
 //=======================================================================

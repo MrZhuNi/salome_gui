@@ -37,17 +37,17 @@
 #include CORBA_CLIENT_HEADER(SALOMEDS_Attributes)
 
 // QT Includes
-#include <QPushButton>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QFrame>
-#include <QLineEdit>
-#include <QLabel>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QTextEdit>
-#include <QTreeWidget>
-#include <QPushButton>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QPushButton>
 
 #include <iostream>
  

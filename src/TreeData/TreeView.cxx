@@ -21,10 +21,10 @@
 
 
 // include Qt
-#include <QString>
-#include <QMenu>
-#include <QModelIndex>
-#include <QAbstractItemView>
+#include <QtCore/QString>
+#include <QtWidgets/QMenu>
+#include <QtCore/QModelIndex>
+#include <QtWidgets/QAbstractItemView>
 
 // include Xcad
 #include "TreeView.hxx"

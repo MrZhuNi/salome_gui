@@ -25,7 +25,7 @@
 
 #include "Qtx.h"
 
-#include <QMdiArea>
+#include <QtWidgets/QMdiArea>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

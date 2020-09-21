@@ -29,8 +29,8 @@
 
 #include <QtxNotify.h>
 
-#include <QList>
-#include <QPointer>
+#include <QtCore/QList>
+#include <QtCore/QPointer>
 
 class QMenu;
 class QCloseEvent;

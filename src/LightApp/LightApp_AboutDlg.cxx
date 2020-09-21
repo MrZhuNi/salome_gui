@@ -32,13 +32,13 @@
 
 #include <QtxGridBox.h>
 
-#include <QLabel>
-#include <QVBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 #include <QtGui/QPixmap>
 #include <QtGui/QIcon>
-#include <QGroupBox>
-#include <QTabWidget>
-#include <QPushButton>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QPushButton>
 
 /*!Constructor.*/
 LightApp_AboutDlg::LightApp_AboutDlg( const QString& defName, const QString& defVer, QWidget* parent )

@@ -32,7 +32,7 @@
 #include <SUIT_ViewModel.h>
 
 #include <QtGui/QCursor>
-#include <QObject>
+#include <QtCore/QObject>
 
 class QMouseEvent;
 class QKeyEvent;

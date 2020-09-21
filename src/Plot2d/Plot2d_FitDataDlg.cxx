@@ -24,13 +24,13 @@
 // Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
 //
 #include "Plot2d_FitDataDlg.h"
-#include <QLabel>
-#include <QLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLayout>
 #include <QtGui/QValidator>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QGroupBox>
-#include <QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLineEdit>
 
 #define SPACING_SIZE      6
 #define MARGIN_SIZE       11

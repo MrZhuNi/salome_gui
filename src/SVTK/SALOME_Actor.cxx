@@ -69,8 +69,8 @@
 #include <TColStd_IndexedMapOfInteger.hxx>
 
 #include <math.h>
-#include <QPoint>
-#include <QVector>
+#include <QtCore/QPoint>
+#include <QtCore/QVector>
 
 #if defined __GNUC__
   #if __GNUC__ == 2

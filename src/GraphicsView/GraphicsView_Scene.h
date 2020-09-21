@@ -22,7 +22,7 @@
 
 #include "GraphicsView.h"
 
-#include <QGraphicsScene>
+#include <QtWidgets/QGraphicsScene>
 
 class QGraphicsRectItem;
 

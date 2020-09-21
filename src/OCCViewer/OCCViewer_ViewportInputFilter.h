@@ -23,7 +23,7 @@
 #ifndef OCCVIEWER_VIEWPORTINPUTFILTER_H
 #define OCCVIEWER_VIEWPORTINPUTFILTER_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class OCCViewer_ViewManager;
 class OCCViewer_ViewPort3d;

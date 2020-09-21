@@ -43,15 +43,15 @@
 #include <SUIT_Application.h>
 
 //Qt includes
-#include <QListWidget>
-#include <QGroupBox>
-#include <QFrame>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QPushButton>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QPushButton>
 
 //qwt includes
 #include <qwt_plot.h>

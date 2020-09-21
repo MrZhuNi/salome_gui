@@ -31,7 +31,7 @@
 
 #include "SALOME_Component_i.hxx"
 
-#include <QString>
+#include <QtCore/QString>
 #include <vector> 
 #include <map> 
 

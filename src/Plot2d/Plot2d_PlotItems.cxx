@@ -28,12 +28,12 @@
 
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>
-#include <QLayout>
-#include <QLine>
-#include <QVariant>
-#include <QStyleOption>
+#include <QtWidgets/QLayout>
+#include <QtCore/QLine>
+#include <QtCore/QVariant>
+#include <QtWidgets/QStyleOption>
 #include <QtGui/QPaintEvent>
-#include <QTileRules>
+#include <QtWidgets/QTileRules>
 
 #include <qwt_plot.h>
 #include <qwt_painter.h>

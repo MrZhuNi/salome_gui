@@ -36,7 +36,7 @@
 #include <SUIT_Tools.h>
 #include <SUIT_ResourceMgr.h>
 
-#include <QFileInfo>
+#include <QtCore/QFileInfo>
 #include <QtGui/QImage>
 
 #include <vtkCamera.h>

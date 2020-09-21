@@ -28,7 +28,7 @@
 
 #include "QtxAction.h"
 
-#include <QStringList>
+#include <QtCore/QStringList>
 
 class QtxResourceMgr;
 

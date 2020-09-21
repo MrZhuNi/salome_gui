@@ -28,11 +28,11 @@
 #include <QtxIntSpinBox.h>
 
 // QT Includes
-#include <QGroupBox>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QCheckBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QCheckBox>
 
 /*!
   \class OCCViewer_RayTracingDlg

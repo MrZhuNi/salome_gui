@@ -25,9 +25,9 @@
 //
 #include "QtxDockWidget.h"
 
-#include <QAction>
-#include <QLayout>
-#include <QMainWindow>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QMainWindow>
 #include <QtGui/QResizeEvent>
 #include <QtWidgets/QApplication>
 

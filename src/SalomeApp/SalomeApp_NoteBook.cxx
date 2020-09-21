@@ -38,16 +38,16 @@
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_Session.h>
 
-#include <QWidget>
-#include <QGridLayout>
-#include <QTableWidget>
-#include <QTableWidgetItem>
-#include <QPushButton>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTableWidgetItem>
+#include <QtWidgets/QPushButton>
 #include <QtGui/QFont>
-#include <QGroupBox>
-#include <QList>
+#include <QtWidgets/QGroupBox>
+#include <QtCore/QList>
 #include <QtWidgets/QApplication>
-#include <QDir>
+#include <QtCore/QDir>
 
 #include <string>
 #include <vector>

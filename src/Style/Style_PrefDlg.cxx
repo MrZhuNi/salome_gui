@@ -30,25 +30,25 @@
 #include <QtxFontEdit.h>
 
 #include <QtWidgets/QApplication>
-#include <QButtonGroup>
-#include <QCheckBox>
-#include <QColorDialog>
-#include <QComboBox>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QHBoxLayout>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
 #include <QtGui/QKeyEvent>
-#include <QLabel>
-#include <QListWidget>
-#include <QMap>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QSlider>
-#include <QSpinBox>
-#include <QStackedWidget>
-#include <QTabWidget>
-#include <QVBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QListWidget>
+#include <QtCore/QMap>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QVBoxLayout>
 
 static const int MARGIN  = 9;
 static const int SPACING = 6;

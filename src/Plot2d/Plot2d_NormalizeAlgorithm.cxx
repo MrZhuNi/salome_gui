@@ -22,7 +22,7 @@
 //  File   : Plot2d_NormalizeAlgorithm.cxx
 
 #include "Plot2d_NormalizeAlgorithm.h"
-#include <QMap>
+#include <QtCore/QMap>
 #include <algorithm>
 #include "Plot2d_Object.h"
 

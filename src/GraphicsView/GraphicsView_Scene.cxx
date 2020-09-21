@@ -19,9 +19,9 @@
 
 #include "GraphicsView_Scene.h"
 
-#include <QGraphicsLineItem>
-#include <QGraphicsRectItem>
-#include <QGraphicsSceneWheelEvent>
+#include <QtWidgets/QGraphicsLineItem>
+#include <QtWidgets/QGraphicsRectItem>
+#include <QtWidgets/QGraphicsSceneWheelEvent>
 
 //#define VIEWER_DEBUG
 

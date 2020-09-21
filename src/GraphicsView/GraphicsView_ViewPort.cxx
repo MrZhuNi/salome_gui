@@ -27,13 +27,13 @@
 #include "SUIT_Session.h"
 
 #include <QtGui/QCursor>
-#include <QGraphicsSceneMouseEvent>
-#include <QGridLayout>
-#include <QLabel>
-#include <QMoveEvent>
-#include <QRectF>
-#include <QRubberBand>
-#include <QScrollBar>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QLabel>
+#include <QtGui/QMoveEvent>
+#include <QtCore/QRectF>
+#include <QtWidgets/QRubberBand>
+#include <QtWidgets/QScrollBar>
 #include <QtPrintSupport/QPrinter>
 #include <QtGui/QPainter>
 

@@ -29,8 +29,8 @@
 #include "LightApp.h"
 #include <SUIT_PreferenceMgr.h>
 
-#include <QMap>
-#include <QStringList>
+#include <QtCore/QMap>
+#include <QtCore/QStringList>
 
 class QtxResourceMgr;
 

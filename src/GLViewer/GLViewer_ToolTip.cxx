@@ -31,11 +31,11 @@
 #include "GLViewer_ViewPort2d.h"
 #include "GLViewer_ViewFrame.h"
 
-#include <QLabel>
-#include <QTimer>
+#include <QtWidgets/QLabel>
+#include <QtCore/QTimer>
 #include <QtGui/QBitmap>
 #include <QtWidgets/QApplication>
-#include <QToolTip>
+#include <QtWidgets/QToolTip>
 #include <QtGui/QMouseEvent>
 
 /*!

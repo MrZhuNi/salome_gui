@@ -25,7 +25,7 @@
 
 #include <utilities.h>
 
-#include <QString>
+#include <QtCore/QString>
 
 #include <vtkCellArray.h>
 #include <vtkXMLImageDataReader.h>

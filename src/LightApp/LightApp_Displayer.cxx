@@ -33,8 +33,8 @@
 #include <SUIT_ViewModel.h>
 #include <SUIT_ViewWindow.h>
 
-#include <QStringList>
-#include <QString>
+#include <QtCore/QStringList>
+#include <QtCore/QString>
 #ifndef DISABLE_SALOMEOBJECT
   #include "SALOME_InteractiveObject.hxx"
 #endif

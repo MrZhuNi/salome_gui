@@ -25,7 +25,7 @@
 
 #include "Qtx.h"
 
-#include <QTranslator>
+#include <QtCore/QTranslator>
 
 class QTX_EXPORT QtxTranslator : public QTranslator
 {

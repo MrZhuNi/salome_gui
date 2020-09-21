@@ -29,7 +29,7 @@
 
 #include "GLViewer.h"
 
-#include <QRect>
+#include <QtCore/QRect>
 #include <QtOpenGL/QtOpenGL>
 #include <math.h>
 

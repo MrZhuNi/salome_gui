@@ -19,8 +19,8 @@
 
 #include "testhelper.hxx"
 
-#include <QFile>
-#include <QString>
+#include <QtCore/QFile>
+#include <QtCore/QString>
 
 #include "QtHelper.hxx"
 #include "MyDataModel.hxx"

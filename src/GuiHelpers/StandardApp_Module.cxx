@@ -33,7 +33,7 @@
 
 // QT Includes
 #include <QtGui/QIcon>
-#include <QAction>
+#include <QtWidgets/QAction>
 
 #include <Basics_Utils.hxx>
 #include "QtHelper.hxx"

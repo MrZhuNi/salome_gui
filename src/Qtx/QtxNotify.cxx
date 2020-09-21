@@ -22,15 +22,15 @@
 
 #include "QtxNotify.h"
 
-#include <QTimer>
+#include <QtCore/QTimer>
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <QtWidgets/QApplication>
 #include <QtGui/QTextDocument>
-#include <QDesktopWidget>
-#include <QSharedPointer>
-#include <QPropertyAnimation>
-#include <QParallelAnimationGroup>
+#include <QtWidgets/QDesktopWidget>
+#include <QtCore/QSharedPointer>
+#include <QtCore/QPropertyAnimation>
+#include <QtCore/QParallelAnimationGroup>
 
 /*!
     \brief QtxNotify::NotifyWidget

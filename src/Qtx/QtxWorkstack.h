@@ -28,14 +28,14 @@
 
 #include "Qtx.h"
 
-#include <QMap>
-#include <QFrame>
-#include <QEvent>
-#include <QWidget>
-#include <QTabBar>
-#include <QPointer>
-#include <QSplitter>
-#include <QByteArray>
+#include <QtCore/QMap>
+#include <QtWidgets/QFrame>
+#include <QtCore/QEvent>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QTabBar>
+#include <QtCore/QPointer>
+#include <QtWidgets/QSplitter>
+#include <QtCore/QByteArray>
 
 class QAction;
 class QDataStream;

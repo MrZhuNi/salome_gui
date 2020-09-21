@@ -29,13 +29,13 @@
 
 #include <cmath>
 
-#include <QEvent>
+#include <QtCore/QEvent>
 #include <QtGui/QPaintEvent>
-#include <QRect>
-#include <QFile>
+#include <QtCore/QRect>
+#include <QtCore/QFile>
 #include <QtGui/QImage>
 #include <QtWidgets/QApplication>
-#include <QToolTip>
+#include <QtWidgets/QToolTip>
 
 /*!
   A constructor

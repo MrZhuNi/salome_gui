@@ -26,7 +26,7 @@
 
 #include "Event.h"
 
-#include <QEvent>
+#include <QtCore/QEvent>
 
 //! SALOME custom event type
 #define SALOME_EVENT QEvent::Type( QEvent::User + 10000 )

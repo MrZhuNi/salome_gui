@@ -26,14 +26,14 @@
 
 #include "HelpBrowser_Application.h"
 
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QFileSystemWatcher>
-#include <QLibraryInfo>
-#include <QMessageBox>
-#include <QTextStream>
-#include <QTimer>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QFileSystemWatcher>
+#include <QtCore/QLibraryInfo>
+#include <QtWidgets/QMessageBox>
+#include <QtCore/QTextStream>
+#include <QtCore/QTimer>
 #include <QtxResourceMgr.h>
 #include <QtxTranslator.h>
 #include <QtxWebBrowser.h>

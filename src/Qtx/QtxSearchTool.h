@@ -24,11 +24,11 @@
 #define QTXSEARCHTOOL_H
 
 #include "Qtx.h"
-#include <QFrame>
-#include <QList>
-#include <QMap>
-#include <QPersistentModelIndex>
-#include <QPointer>
+#include <QtWidgets/QFrame>
+#include <QtCore/QList>
+#include <QtCore/QMap>
+#include <QtCore/QPersistentModelIndex>
+#include <QtCore/QPointer>
 
 class QCheckBox;
 class QLineEdit;

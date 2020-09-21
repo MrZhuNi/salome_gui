@@ -45,8 +45,8 @@
 #include <cstdlib>
 #include <ctime>
 
-#include <QMutex>
-#include <QWaitCondition>
+#include <QtCore/QMutex>
+#include <QtCore/QWaitCondition>
 
 const int Session_ServerThread::NB_SRV_TYP = 6;
 const char* Session_ServerThread::_serverTypes[NB_SRV_TYP] = {"Container",

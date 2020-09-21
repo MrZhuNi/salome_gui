@@ -20,7 +20,7 @@
 // Author: Guillaume Boulant (EDF/R&D)
 
 
-#include <QStringList>
+#include <QtCore/QStringList>
 #include "TreeItem.hxx"
 
 TreeItem::TreeItem(const QString &nameId,

@@ -28,10 +28,10 @@
 #include <Qtx.h>
 
 #include <QtWidgets/QApplication>
-#include <QStringList>
-#include <QDir>
-#include <QMainWindow>
-#include <QStandardPaths>
+#include <QtCore/QStringList>
+#include <QtCore/QDir>
+#include <QtWidgets/QMainWindow>
+#include <QtCore/QStandardPaths>
 
 #include <string>
 

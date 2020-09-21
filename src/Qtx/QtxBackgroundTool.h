@@ -26,8 +26,8 @@
 #include "Qtx.h"
 #include "QtxDialog.h"
 
-#include <QWidget>
-#include <QMap>
+#include <QtWidgets/QWidget>
+#include <QtCore/QMap>
 
 class QCheckBox;
 class QComboBox;

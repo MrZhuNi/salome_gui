@@ -32,14 +32,14 @@
 
 #include "SALOME_Actor.h"
 
-#include <QMenu>
-#include <QToolBar>
-#include <QEvent>
-#include <QFileInfo>
-#include <QSignalMapper>
-#include <QXmlStreamWriter>
-#include <QXmlStreamReader>
-#include <QXmlStreamAttributes>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#include <QtCore/QEvent>
+#include <QtCore/QFileInfo>
+#include <QtCore/QSignalMapper>
+#include <QtCore/QXmlStreamWriter>
+#include <QtCore/QXmlStreamReader>
+#include <QtCore/QXmlStreamAttributes>
 
 #include <vtkTextProperty.h>
 #include <vtkActorCollection.h>

@@ -25,7 +25,7 @@
 
 #include "Qtx.h"
 
-#include <QFrame>
+#include <QtWidgets/QFrame>
 
 class QtxComboBox;
 class QComboBox;

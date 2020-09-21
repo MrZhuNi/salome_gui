@@ -51,13 +51,13 @@
 
 #include <vtkPVConfig.h>
 
-#include <QAction>
-#include <QCoreApplication>
-#include <QLayout>
-#include <QList>
-#include <QMainWindow>
-#include <QMenu>
-#include <QToolBar>
+#include <QtWidgets/QAction>
+#include <QtCore/QCoreApplication>
+#include <QtWidgets/QLayout>
+#include <QtCore/QList>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
 
 PVViewer_GUIElements * PVViewer_GUIElements::theInstance = 0;
 

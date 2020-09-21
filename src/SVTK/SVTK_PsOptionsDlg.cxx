@@ -21,13 +21,13 @@
 
 #include <QtxDoubleSpinBox.h>
 
-#include <QCheckBox>
-#include <QComboBox>
-#include <QGroupBox>
-#include <QLabel>
-#include <QLayout>
-#include <QSlider>
-#include <QPushButton>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QPushButton>
 
 /*!
  * Constructor

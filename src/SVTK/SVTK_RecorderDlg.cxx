@@ -30,14 +30,14 @@
 #include <QtxDoubleSpinBox.h>
 #include <QtxIntSpinBox.h>
 
-#include <QCheckBox>
-#include <QComboBox>
-#include <QGroupBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QGroupBox>
 #include <QtGui/QKeyEvent>
-#include <QLabel>
-#include <QLayout>
-#include <QLineEdit>
-#include <QPushButton>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 
 /*!
  * Constructor

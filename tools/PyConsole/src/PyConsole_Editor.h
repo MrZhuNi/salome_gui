@@ -29,8 +29,8 @@
 
 #include "PyInterp_RefCounterObj.h"
 
-#include <QTextEdit>
-#include <QQueue>
+#include <QtWidgets/QTextEdit>
+#include <QtCore/QQueue>
 
 class PyConsole_Interp;
 class PyInterp_Request;

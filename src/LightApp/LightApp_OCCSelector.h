@@ -28,7 +28,7 @@
 #include <SUIT_Selector.h>
 #include <SUIT_DataOwner.h>
 
-#include <QObject>
+#include <QtCore/QObject>
 
 #ifndef DISABLE_OCCVIEWER
 #include <OCCViewer_ViewModel.h>

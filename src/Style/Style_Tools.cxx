@@ -23,11 +23,11 @@
 #include "Style_Tools.h"
 
 #include <QtGui/QPainter>
-#include <QPainterPath>
-#include <QRect>
-#include <QColor>
-#include <QSize>
-#include <QTabWidget>
+#include <QtGui/QPainterPath>
+#include <QtCore/QRect>
+#include <QtGui/QColor>
+#include <QtCore/QSize>
+#include <QtWidgets/QTabWidget>
 
 /*!
   \class Style_Tools

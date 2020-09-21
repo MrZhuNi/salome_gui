@@ -20,7 +20,7 @@
 #ifndef SVTK_IMAGEWRITER_H
 #define SVTK_IMAGEWRITER_H
 
-#include <QThread>
+#include <QtCore/QThread>
 #include <string>
 
 class vtkAlgorithm;

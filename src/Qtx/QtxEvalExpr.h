@@ -25,8 +25,8 @@
 
 #include "Qtx.h"
 
-#include <QList>
-#include <QVariant>
+#include <QtCore/QList>
+#include <QtCore/QVariant>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

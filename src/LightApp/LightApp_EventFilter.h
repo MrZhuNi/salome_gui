@@ -25,7 +25,7 @@
 
 #include "LightApp.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 
 #if defined WIN32
 #pragma warning( disable: 4251 )

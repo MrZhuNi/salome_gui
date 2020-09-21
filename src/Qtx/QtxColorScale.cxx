@@ -25,9 +25,9 @@
 //
 #include "QtxColorScale.h"
 
-#include <QMap>
-#include <QRegExp>
-#include <QStringList>
+#include <QtCore/QMap>
+#include <QtCore/QRegExp>
+#include <QtCore/QStringList>
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
 #include <QtGui/QTextDocument>

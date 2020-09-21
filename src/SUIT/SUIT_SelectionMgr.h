@@ -25,8 +25,8 @@
 
 #include "SUIT_DataOwner.h"
 
-#include <QList>
-#include <QObject>
+#include <QtCore/QList>
+#include <QtCore/QObject>
 
 class SUIT_Selector;
 class SUIT_SelectionFilter;

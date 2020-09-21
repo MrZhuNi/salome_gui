@@ -23,7 +23,7 @@
 #ifndef PYEDITOR_PYHIGHLIGHTER_H
 #define PYEDITOR_PYHIGHLIGHTER_H
 
-#include <QSyntaxHighlighter>
+#include <QtGui/QSyntaxHighlighter>
 
 class QTextDocument;
 class PyEditor_Keywords;

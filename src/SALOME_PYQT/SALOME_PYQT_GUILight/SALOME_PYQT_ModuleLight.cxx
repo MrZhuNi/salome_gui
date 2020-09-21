@@ -37,7 +37,7 @@
 #include <Container_init_python.hxx>
 #endif
 
-#include <QCoreApplication>
+#include <QtCore/QCoreApplication>
 #include <utilities.h>
 
 // Py_ssize_t for old Pythons

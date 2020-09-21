@@ -33,15 +33,15 @@
 
 #include <stdlib.h>
 
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QStringList>
-#include <QRegExp>
-#include <QIntValidator>
-#include <QFile>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtCore/QStringList>
+#include <QtCore/QRegExp>
+#include <QtGui/QIntValidator>
+#include <QtCore/QFile>
 
 #include <Qtx.h>
 

@@ -22,9 +22,9 @@
 
 #include "OCCViewer.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <QtGui/QCursor>
-#include <QSize>
+#include <QtCore/QSize>
 
 class OCCViewer_ViewWindow;
 class QKeyEvent;

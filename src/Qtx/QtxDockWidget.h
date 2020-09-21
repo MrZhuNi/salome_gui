@@ -28,7 +28,7 @@
 
 #include "Qtx.h"
 
-#include <QDockWidget>
+#include <QtWidgets/QDockWidget>
 
 class QTX_EXPORT QtxDockWidget : public QDockWidget
 {

@@ -30,8 +30,8 @@
 #include "GLViewer.h"
 #include "GLViewer_Defs.h"
 
-#include <QSize>
-#include <QObject>
+#include <QtCore/QSize>
+#include <QtCore/QObject>
 
 class QRect;
 

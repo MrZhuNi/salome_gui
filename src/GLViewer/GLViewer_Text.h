@@ -41,7 +41,7 @@
 #endif
 
 #include <QtGui/QFont>
-#include <QString>
+#include <QtCore/QString>
 #include <QtGui/QColor>
 
 #ifdef WIN32

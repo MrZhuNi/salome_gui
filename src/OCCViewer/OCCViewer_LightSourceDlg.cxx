@@ -29,14 +29,14 @@
 #include <QtxColorButton.h>
 
 // Qt includes
-#include <QGroupBox>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QCheckBox>
-#include <QStackedLayout>
-#include <QRadioButton>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QStackedLayout>
+#include <QtWidgets/QRadioButton>
 
 /*!
   \class OCCViewer_LightSourceDlg

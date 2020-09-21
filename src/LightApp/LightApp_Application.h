@@ -36,8 +36,8 @@
 #include <SUIT_DataObject.h>
 #include <CAM_Application.h>
 
-#include <QPointer>
-#include <QStringList>
+#include <QtCore/QPointer>
+#include <QtCore/QStringList>
 
 class LogWindow;
 #ifndef DISABLE_PYCONSOLE

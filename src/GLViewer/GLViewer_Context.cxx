@@ -38,7 +38,7 @@
 #include "GLViewer_ViewFrame.h"
 
 //QT includes
-#include <QRect>
+#include <QtCore/QRect>
 
 #include <TColStd_SequenceOfInteger.hxx>
 

@@ -23,10 +23,10 @@
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_Session.h"
 
-#include <QDir>
-#include <QFileInfo>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
 #include <QtWidgets/QApplication>
-#include <QRegExp>
+#include <QtCore/QRegExp>
 
 #ifndef WIN32
 #include <unistd.h>

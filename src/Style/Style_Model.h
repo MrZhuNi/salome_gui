@@ -25,8 +25,8 @@
 
 #include "Style.h"
 
-#include <QMap>
-#include <QString>
+#include <QtCore/QMap>
+#include <QtCore/QString>
 #include <QtGui/QPalette>
 #include <QtGui/QFont>
 

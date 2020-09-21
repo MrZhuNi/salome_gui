@@ -26,7 +26,7 @@
 #include <QtxResourceMgr.h>
 
 #include <QtWidgets/QApplication>
-#include <QColor>
+#include <QtGui/QColor>
 #include <QtGui/QFont>
 #include <QtGui/QPalette>
 

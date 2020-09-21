@@ -27,7 +27,7 @@
 
 #include <vtkRenderWindow.h>
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 class VTKVIEWER_EXPORT VTKViewer_RenderWindow : public QWidget 
 {

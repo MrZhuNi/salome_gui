@@ -27,7 +27,7 @@
 #include "Plot2d_Curve.h"
 
 #include <QtGui/QFontMetrics>
-#include <QEvent>
+#include <QtCore/QEvent>
 #include <QtGui/QMouseEvent>
 
 #include <qwt_plot.h>

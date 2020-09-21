@@ -25,8 +25,8 @@
 //
 #include "QtxToolBar.h"
 
-#include <QAction>
-#include <QMainWindow>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMainWindow>
 #include <QtWidgets/QApplication>
 
 /*!

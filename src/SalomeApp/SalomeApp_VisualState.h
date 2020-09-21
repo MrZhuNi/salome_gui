@@ -29,7 +29,7 @@
 
 #include "SalomeApp.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class SalomeApp_Application;
 

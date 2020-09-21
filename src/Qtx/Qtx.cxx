@@ -25,15 +25,15 @@
 //
 #include "Qtx.h"
 
-#include <QDir>
+#include <QtCore/QDir>
 #include <QtWidgets/QMenu>
-#include <QRegExp>
+#include <QtCore/QRegExp>
 #include <QtGui/QBitmap>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLayout>
 #include <QtGui/QPainter>
 #include <QtWidgets/QDirModel>
-#include <QFileInfo>
+#include <QtCore/QFileInfo>
 #include <QtWidgets/QCompleter>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>

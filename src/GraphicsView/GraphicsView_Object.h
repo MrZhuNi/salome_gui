@@ -24,7 +24,7 @@
 
 #include "GraphicsView_Defs.h"
 
-#include <QGraphicsItemGroup>
+#include <QtWidgets/QGraphicsItemGroup>
 
 class GraphicsView_ViewPort;
 

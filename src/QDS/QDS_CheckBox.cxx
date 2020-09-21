@@ -22,7 +22,7 @@
 
 #include "QDS_CheckBox.h"
 
-#include <QCheckBox>
+#include <QtWidgets/QCheckBox>
 
 /*
   \class QDS_CheckBox

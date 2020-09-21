@@ -33,12 +33,12 @@
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_MessageBox.h>
 
-#include <QColor>
-#include <QFileDialog>
+#include <QtGui/QColor>
+#include <QtWidgets/QFileDialog>
 #include <QtGui/QImage>
-#include <QHBoxLayout>
-#include <QString>
-#include <QFrame>
+#include <QtWidgets/QHBoxLayout>
+#include <QtCore/QString>
+#include <QtWidgets/QFrame>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QWheelEvent>

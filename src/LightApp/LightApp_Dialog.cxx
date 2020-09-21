@@ -27,10 +27,10 @@
 #include <SUIT_Session.h>
 #include <SUIT_ResourceMgr.h>
 
-#include <QAbstractButton>
-#include <QToolButton>
-#include <QLineEdit>
-#include <QLabel>
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QLabel>
 
 /*!
   Constructor

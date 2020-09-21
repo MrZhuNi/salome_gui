@@ -26,7 +26,7 @@
 #include "PyEditor.h"
 #include "PyEditor_Settings.h"
 
-#include <QSettings>
+#include <QtCore/QSettings>
 
 class PYEDITOR_EXPORT PyEditor_StdSettings : public PyEditor_Settings
 {

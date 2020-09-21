@@ -48,7 +48,7 @@
 #include <SUIT_MessageBox.h>
 #include <SUIT_Desktop.h>
 
-#include <QString>
+#include <QtCore/QString>
 
 /*!Constructor.*/
 SalomeApp_Module::SalomeApp_Module( const QString& name )

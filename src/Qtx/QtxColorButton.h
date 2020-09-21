@@ -25,10 +25,10 @@
 
 #include "Qtx.h"
 
-#include <QMap>
+#include <QtCore/QMap>
 #include <QtGui/QColor>
 #include <QtGui/QPixmap>
-#include <QToolButton>
+#include <QtWidgets/QToolButton>
 
 class QPaintDevice;
 

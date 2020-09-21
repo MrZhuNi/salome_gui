@@ -32,11 +32,11 @@
 #include "QtxActionToolMgr.h"
 
 #include <QtWidgets/QApplication>
-#include <QCloseEvent>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QTextStream>
-#include <QVBoxLayout>
+#include <QtGui/QCloseEvent>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QVBoxLayout>
 
 /*!
   \class PyViewer_ViewWindow

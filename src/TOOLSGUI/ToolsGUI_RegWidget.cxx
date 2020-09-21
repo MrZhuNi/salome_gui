@@ -23,15 +23,15 @@
 # include "ToolsGUI_RegWidget.h"
 
 #include <QtWidgets/QApplication>
-#include <QInputDialog>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QTabWidget>
-#include <QTextEdit>
-#include <QTimer>
-#include <QToolBar>
-#include <QTreeWidget>
-#include <QVBoxLayout>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTextEdit>
+#include <QtCore/QTimer>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QVBoxLayout>
 
 #include <Qtx.h>
 

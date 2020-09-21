@@ -30,10 +30,10 @@
 #endif
 #include "Plot2d_NormalizeAlgorithm.h"
 
-#include <QWidget>
-#include <QMultiHash>
-#include <QMap>
-#include <QList>
+#include <QtWidgets/QWidget>
+#include <QtCore/QMultiHash>
+#include <QtCore/QMap>
+#include <QtCore/QList>
 #include <QtGui/QPainter>
 #include <qwt_symbol.h>
 #include <qwt_scale_draw.h>

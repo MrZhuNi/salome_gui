@@ -23,7 +23,7 @@
 #include <vtkAlgorithm.h>
 #include <vtkImageData.h>
 
-#include <QSemaphore>
+#include <QtCore/QSemaphore>
 
 #include <limits>
 

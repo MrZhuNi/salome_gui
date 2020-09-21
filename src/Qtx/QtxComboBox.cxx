@@ -25,8 +25,8 @@
 #include "QtxComboBox.h"
 
 #include <QtGui/QStandardItemModel>
-#include <QLineEdit>
-#include <QEvent>
+#include <QtWidgets/QLineEdit>
+#include <QtCore/QEvent>
 #include <QtWidgets/QApplication>
 
 /*!

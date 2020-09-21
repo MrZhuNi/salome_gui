@@ -31,8 +31,8 @@
 
 #include <qaction.h>
 
-#include <QGraphicsScene>
-#include <QGraphicsView>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QGraphicsView>
 
 #ifdef WIN32
 #pragma warning ( disable:4251 )

@@ -26,7 +26,7 @@
 #include "QtxToolTip.h"
 
 #include <QtGui/QFont>
-#include <QTimer>
+#include <QtCore/QTimer>
 #include <QtGui/QCursor>
 #include <QtGui/QFontMetrics>
 #include <QtWidgets/QApplication>

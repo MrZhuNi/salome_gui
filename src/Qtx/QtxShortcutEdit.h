@@ -22,8 +22,8 @@
 
 #include "Qtx.h"
 
-#include <QFrame>
-#include <QTreeWidget>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QTreeWidget>
 
 class QLineEdit;
 class QPushButton;

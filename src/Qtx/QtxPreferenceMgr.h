@@ -32,7 +32,7 @@
 #include <QtGui/QFont>
 #include <QtGui/QIcon>
 #include <QtGui/QColor>
-#include <QVariant>
+#include <QtCore/QVariant>
 
 class QtxResourceMgr;
 class QtxPreferenceMgr;

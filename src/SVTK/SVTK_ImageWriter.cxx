@@ -19,7 +19,7 @@
 
 #include "SVTK_ImageWriter.h"
 
-#include <QSemaphore>
+#include <QtCore/QSemaphore>
 
 #include <vtkAlgorithm.h>
 #include <vtkImageData.h>

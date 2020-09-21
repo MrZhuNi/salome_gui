@@ -48,7 +48,7 @@
 #include <vtkProperty.h>
 
 #include <QtWidgets/QApplication>
-#include <QRubberBand>
+#include <QtWidgets/QRubberBand>
 
 #include <algorithm>
 

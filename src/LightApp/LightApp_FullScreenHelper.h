@@ -29,9 +29,9 @@
 
 #include "LightApp.h"
 
-#include <QMap>
-#include <QDockWidget>
-#include <QToolBar>
+#include <QtCore/QMap>
+#include <QtWidgets/QDockWidget>
+#include <QtWidgets/QToolBar>
 
 
 class LIGHTAPP_EXPORT LightApp_FullScreenHelper {

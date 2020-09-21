@@ -31,9 +31,9 @@
 
 #include <Graphic3d_GraduatedTrihedron.hxx>
 
-#include <QCheckBox>
-#include <QGroupBox>
-#include <QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLineEdit>
 
 /*!
   \class OCCViewer_CubeAxesDlg::AxisWidget

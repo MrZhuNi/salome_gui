@@ -22,7 +22,7 @@
 
 #include "PVViewer.h"
 
-#include <QMap>
+#include <QtCore/QMap>
 #include <vtkOutputWindow.h>
 
 /**

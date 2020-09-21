@@ -35,8 +35,8 @@
 #include <SALOME_LifeCycleCORBA.hxx>
 #include <Basics_Utils.hxx>
 
-#include <QObject>
-#include <QVariant>
+#include <QtCore/QObject>
+#include <QtCore/QVariant>
 
 //VSR: uncomment below macro to support unicode text properly in SALOME
 //     current commented out due to regressions

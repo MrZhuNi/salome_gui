@@ -30,9 +30,9 @@
 #include "PyInterp_Request.h"   // full include instead of forward declaration
                                 // everyone inc'ing the Dispatcher will get the requests for free.
 
-#include <QMutex>
-#include <QThread>
-#include <QQueue>
+#include <QtCore/QMutex>
+#include <QtCore/QThread>
+#include <QtCore/QQueue>
 
 class PYINTERP_EXPORT PyInterp_Dispatcher : protected QThread
 {

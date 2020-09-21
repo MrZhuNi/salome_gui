@@ -25,8 +25,8 @@
 
 #include "CAM.h"
 
-#include <QObject>
-#include <QStringList>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
 
 class CAM_Module;
 class CAM_DataObject;

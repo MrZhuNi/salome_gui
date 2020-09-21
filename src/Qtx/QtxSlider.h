@@ -26,9 +26,9 @@
 #ifndef QTXSLIDER_H
 #define	QTXSLIDER_H
 
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QSlider>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QSlider>
 
 #include "Qtx.h"
 

@@ -28,8 +28,8 @@
 #include <QtxActionMenuMgr.h>
 #include <QtxActionToolMgr.h>
 
-#include <QPointer>
-#include <QCloseEvent>
+#include <QtCore/QPointer>
+#include <QtGui/QCloseEvent>
 #include <QtWidgets/QApplication>
 
 /*!\class SUIT_Desktop

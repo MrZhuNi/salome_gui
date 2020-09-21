@@ -53,13 +53,13 @@
 #include <QtxRubberBand.h>
 
 #include <QtGui/QPainter>
-#include <QTime>
+#include <QtCore/QTime>
 #include <QtGui/QImage>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QMouseEvent>
 #include <QtWidgets/QApplication>
-#include <QActionGroup>
-#include <QMenu>
+#include <QtWidgets/QActionGroup>
+#include <QtWidgets/QMenu>
 
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>

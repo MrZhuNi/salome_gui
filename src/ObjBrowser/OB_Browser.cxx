@@ -33,14 +33,14 @@
 #include <QtxSearchTool.h>
 //#include <SUIT_DataObjectIterator.h>
 
-#include <QAction>
-#include <QMenu>
-#include <QItemSelection>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#include <QtCore/QItemSelection>
 #include <QtGui/QKeyEvent>
-#include <QVBoxLayout>
-#include <QAbstractItemModel>
-#include <QAbstractItemDelegate>
-#include <QHeaderView>
+#include <QtWidgets/QVBoxLayout>
+#include <QtCore/QAbstractItemModel>
+#include <QtWidgets/QAbstractItemDelegate>
+#include <QtWidgets/QHeaderView>
 
 #include <time.h>
 

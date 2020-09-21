@@ -27,8 +27,8 @@
 #ifndef GLVIEWER_DEFS_H
 #define GLVIEWER_DEFS_H
 
-#include <QMap>
-#include <QList>
+#include <QtCore/QMap>
+#include <QtCore/QList>
 
 class GLViewer_Object;
 //Selection staus 

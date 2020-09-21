@@ -22,12 +22,12 @@
 //
 #include "QtxMenu.h"
 
-#include <QLabel>
-#include <QLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QPaintEvent>
 #include <QtGui/QTextDocument>
-#include <QWidgetAction>
+#include <QtWidgets/QWidgetAction>
 #include <QtGui/QLinearGradient>
 #include <QtGui/QAbstractTextDocumentLayout>
 

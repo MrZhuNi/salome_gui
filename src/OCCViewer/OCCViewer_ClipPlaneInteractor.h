@@ -30,7 +30,7 @@
 #include <gp_Pln.hxx>
 #include <gp_Ax3.hxx>
 
-#include <QPoint>
+#include <QtCore/QPoint>
 
 #include <vector>
 

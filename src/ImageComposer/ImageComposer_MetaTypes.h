@@ -19,7 +19,7 @@
 
 #include "ImageComposer_Image.h"
 
-#include <QVariant>
+#include <QtCore/QVariant>
 #include <QtGui/QPainterPath>
 
 // Here we declare the meta types for classes which used by

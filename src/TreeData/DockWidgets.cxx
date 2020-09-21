@@ -22,7 +22,7 @@
 #include "DockWidgets.hxx"
 
 // Qt includes
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 
 // SALOME includes
 #include <SUIT_Desktop.h>

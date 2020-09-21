@@ -21,7 +21,7 @@
 #define SALOME_EVENTFILTER_H
 
 #include "Event.h"
-#include <QObject>
+#include <QtCore/QObject>
 
 #if defined WIN32
 #pragma warning( disable: 4251 )

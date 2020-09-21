@@ -37,7 +37,7 @@
 #endif
 
 #include <qwt_symbol.h>
-#include <QString>
+#include <QtCore/QString>
 #include <QtGui/QColor>
 #include <QtGui/QPixmap>
 

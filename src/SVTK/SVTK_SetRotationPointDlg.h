@@ -34,8 +34,8 @@
 
 #include <vtkSmartPointer.h>
 
-#include <QMap>
-#include <QList>
+#include <QtCore/QMap>
+#include <QtCore/QList>
 
 class SVTK_ViewWindow;
 class SVTK_RenderWindowInteractor;

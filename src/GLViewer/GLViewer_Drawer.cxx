@@ -34,7 +34,7 @@
 #include <QtWidgets/QApplication>
 #include <QtGui/QImage>
 #include <QtGui/QPainter>
-#include <QFile>
+#include <QtCore/QFile>
 
 #if defined(__APPLE__)
 #include <OpenGL/CGLCurrent.h>

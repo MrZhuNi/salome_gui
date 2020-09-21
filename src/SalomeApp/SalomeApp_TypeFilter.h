@@ -23,7 +23,7 @@
 #ifndef SALOMEAPP_TYPEFILTER_H
 #define SALOMEAPP_TYPEFILTER_H
 
-#include <QString>
+#include <QtCore/QString>
 
 #include "SalomeApp_Filter.h"
 

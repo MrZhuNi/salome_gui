@@ -34,7 +34,7 @@ class vtkCell;
 class vtkRenderWindowInteractor;
 class vtkTDxInteractorStyle;
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <QtGui/QCursor>
 
 class QRubberBand;

@@ -36,7 +36,7 @@
 // (see SVTK_SpaceMouse.h) to avoid the compilation error.
 #if !defined(WIN32) && !defined(__APPLE__)
 #include <xcb/xcb.h>
-#include <QX11Info>
+#include <QtX11Extras/QX11Info>
 #endif
 #include <QtGui/QMouseEvent>
 

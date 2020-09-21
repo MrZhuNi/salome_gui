@@ -22,14 +22,14 @@
 //
 #include "QtxColorButton.h"
 
-#include <QMenu>
-#include <QStyle>
-#include <QLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QLayout>
 #include <QtGui/QBitmap>
 #include <QtGui/QPainter>
 #include <QtGui/QPaintEvent>
-#include <QColorDialog>
-#include <QStyleOptionToolButton>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QStyleOptionToolButton>
 
 /*!
   \class QtxColorButton

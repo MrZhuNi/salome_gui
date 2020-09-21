@@ -34,7 +34,7 @@
 #include <SALOME_ListIO.hxx>
 
 #include <QtGui/QColor>
-#include <QMap>
+#include <QtCore/QMap>
 
 class QMouseEvent;
 

@@ -26,8 +26,8 @@
 #include "Qtx.h"
 #include "QtxActionMgr.h"
 #include "QtxAction.h"
-#include <QFile>
-#include <QTimer>
+#include <QtCore/QFile>
+#include <QtCore/QTimer>
 #ifndef QT_NO_DOM
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomNode>

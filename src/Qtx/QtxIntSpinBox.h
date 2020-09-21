@@ -28,7 +28,7 @@
 
 #include "Qtx.h"
 
-#include <QSpinBox>
+#include <QtWidgets/QSpinBox>
 
 class QTX_EXPORT QtxIntSpinBox : public QSpinBox
 {

@@ -28,9 +28,9 @@
 #include "SUIT.h"
 #include "SUIT_CameraProperties.h"
 
-#include <QMainWindow>
-#include <QList>
-#include <QMap>
+#include <QtWidgets/QMainWindow>
+#include <QtCore/QList>
+#include <QtCore/QMap>
 
 class SUIT_Desktop;
 class SUIT_ViewManager;

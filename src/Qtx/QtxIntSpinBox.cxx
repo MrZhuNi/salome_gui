@@ -25,7 +25,7 @@
 //
 #include "QtxIntSpinBox.h"
 
-#include <QLineEdit>
+#include <QtWidgets/QLineEdit>
 /*!
   \class QtxIntSpinBox
   \brief Enhanced version of the Qt's spin box.

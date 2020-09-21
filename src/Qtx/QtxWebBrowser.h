@@ -31,8 +31,8 @@
 
 #include <QtGlobal>
 #include <QtWidgets/QDialog>
-#include <QMainWindow>
-#include <QUrl>
+#include <QtWidgets/QMainWindow>
+#include <QtCore/QUrl>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
 // Web Kit

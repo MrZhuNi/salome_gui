@@ -22,13 +22,13 @@
 //
 #include "SalomeApp_ExitDlg.h"
 
-#include <QLabel> 
-#include <QVBoxLayout> 
-#include <QHBoxLayout> 
-#include <QGridLayout> 
-#include <QPushButton>
-#include <QMessageBox>
-#include <QCheckBox>
+#include <QtWidgets/QLabel> 
+#include <QtWidgets/QVBoxLayout> 
+#include <QtWidgets/QHBoxLayout> 
+#include <QtWidgets/QGridLayout> 
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QCheckBox>
 
 /*!
  * \brief creates a Exit dialog box

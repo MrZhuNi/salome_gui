@@ -40,8 +40,8 @@
 #endif
 
 #include <QtWidgets/QApplication>
-#include <QFileInfo>
-#include <QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 //#include "utilities.h"
 

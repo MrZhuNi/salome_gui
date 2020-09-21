@@ -19,12 +19,12 @@
 
 #include "SalomeApp_LoadStudiesDlg.h"
 
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QListWidget>
-#include <QPushButton>
-#include <QStringList>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QPushButton>
+#include <QtCore/QStringList>
 
 #define SPACING_SIZE             6
 #define MARGIN_SIZE             11

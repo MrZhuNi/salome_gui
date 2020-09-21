@@ -26,9 +26,9 @@
 #include "Style.h"
 
 #include <QtGui/QPainterPath>
-#include <QRect>
+#include <QtCore/QRect>
 #include <QtGui/QColor>
-#include <QStyle>
+#include <QtWidgets/QStyle>
 
 //
 // This class is private for Style package.

@@ -28,8 +28,8 @@
 #define SVTK_SELECTIONEVENT_H
 
 #include "SVTK_Selection.h"
-#include <QPoint>
-#include <QVector>
+#include <QtCore/QPoint>
+#include <QtCore/QVector>
 
 //! The structure is used for passing all infromation necessary for claculation of the selection.
 /*!

@@ -28,7 +28,7 @@
 
 #include "Plot2d.h"
 
-#include <QList>
+#include <QtCore/QList>
 #include <qwt_plot.h>
 
 

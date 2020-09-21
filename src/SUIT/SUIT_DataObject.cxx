@@ -23,7 +23,7 @@
 // File   : SUIT_DataObject.cxx
 // Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
 
-#include <QVariant>
+#include <QtCore/QVariant>
 
 #include "SUIT_DataObject.h"
 #include "SUIT_DataObjectKey.h"

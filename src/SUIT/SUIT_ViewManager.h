@@ -27,10 +27,10 @@
 
 #include "SUIT_PopupClient.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <QtGui/QPixmap>
-#include <QVector>
-#include <QPointer>
+#include <QtCore/QVector>
+#include <QtCore/QPointer>
 
 class QMenu;
 class QMouseEvent;

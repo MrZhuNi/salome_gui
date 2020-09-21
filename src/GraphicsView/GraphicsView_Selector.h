@@ -24,8 +24,8 @@
 
 #include "GraphicsView_Defs.h"
 
-#include <QObject>
-#include <QRectF>
+#include <QtCore/QObject>
+#include <QtCore/QRectF>
 
 class GraphicsView_Viewer;
 

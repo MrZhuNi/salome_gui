@@ -21,7 +21,7 @@
 //  Date   : 22/06/2007
 //
 #include "SUITApp_init_python.hxx"
-#include <QString>
+#include <QtCore/QString>
 
 #if PY_VERSION_HEX < 0x03050000
 static char*

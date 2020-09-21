@@ -23,16 +23,16 @@
 #include "QtxSearchTool.h"
 
 #include <QtWidgets/QApplication>
-#include <QCheckBox>
-#include <QEvent>
-#include <QHBoxLayout>
+#include <QtWidgets/QCheckBox>
+#include <QtCore/QEvent>
+#include <QtWidgets/QHBoxLayout>
 #include <QtGui/QKeyEvent>
-#include <QLineEdit>
-#include <QPersistentModelIndex>
-#include <QShortcut>
-#include <QTimer>
-#include <QToolButton>
-#include <QTreeView>
+#include <QtWidgets/QLineEdit>
+#include <QtCore/QPersistentModelIndex>
+#include <QtWidgets/QShortcut>
+#include <QtCore/QTimer>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QTreeView>
 
 const char* const first_xpm[] = {
 "16 16 14 1",

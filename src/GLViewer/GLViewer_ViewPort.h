@@ -31,8 +31,8 @@
 
 //#include <QList>
 #include <QtGui/QColor>
-//#include <QAction>
-#include <QWidget>
+//#include <QtWidgets/QAction>
+#include <QtWidgets/QWidget>
 
 //#include <Aspect_Window.hxx>
 

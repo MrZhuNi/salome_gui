@@ -36,11 +36,11 @@
 #include "QtxActionToolMgr.h"
 #include "QtxMultiAction.h"
 
-#include <QEvent>
+#include <QtCore/QEvent>
 #include <QtGui/QIcon>
-#include <QMenu>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QApplication>
-#include <QContextMenuEvent>
+#include <QtGui/QContextMenuEvent>
 
 /*!\class SUIT_ViewWindow
  * Class provide view window.

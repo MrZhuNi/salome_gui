@@ -53,17 +53,17 @@
 
 // QT Includes
 #include <QtWidgets/QApplication>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QStackedLayout>
-#include <QSlider>
-#include <QMenu>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QStackedLayout>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QMenu>
 
 /**********************************************************************************
  ************************        Internal functions        ************************

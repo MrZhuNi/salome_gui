@@ -31,14 +31,14 @@
 #include <SUIT_Session.h>
 #include <SUIT_ResourceMgr.h>
 
-#include <QColor>
-#include <QFileInfo>
-#include <QString>
-#include <QRect>
+#include <QtGui/QColor>
+#include <QtCore/QFileInfo>
+#include <QtCore/QString>
+#include <QtCore/QRect>
 #include <QtGui/QPaintEvent>
 #include <QtGui/QResizeEvent>
 #include <QtWidgets/QApplication>
-#include <QTimer>
+#include <QtCore/QTimer>
 
 #include <V3d_View.hxx>
 #include <Quantity_Ratio.hxx>

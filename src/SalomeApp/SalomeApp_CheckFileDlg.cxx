@@ -22,10 +22,10 @@
 
 #include "SalomeApp_CheckFileDlg.h"
 
-#include <QCheckBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QGridLayout>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
 
 /*!
 Constructor

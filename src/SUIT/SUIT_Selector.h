@@ -25,7 +25,7 @@
 
 #include "SUIT.h"
 
-#include <QList>
+#include <QtCore/QList>
 
 class QObject;
 

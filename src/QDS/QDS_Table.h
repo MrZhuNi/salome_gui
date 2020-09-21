@@ -27,8 +27,8 @@
 
 #include <QtxTable.h>
 
-#include <QMap>
-#include <QVector>
+#include <QtCore/QMap>
+#include <QtCore/QVector>
 
 class QDS_EXPORT QDS_Table : public QtxTable
 {

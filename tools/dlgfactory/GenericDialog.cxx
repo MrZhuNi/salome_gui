@@ -18,7 +18,7 @@
 //
 
 #include "GenericDialog.h"
-#include <QDebug>
+#include <QtCore/QDebug>
 
 GenericDialog::GenericDialog(QDialog* parent) : QDialog(parent)
 {

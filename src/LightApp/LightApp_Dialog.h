@@ -29,8 +29,8 @@
 #include "LightApp.h"
 #include <QtxDialog.h>
 
-#include <QList>
-#include <QMap>
+#include <QtCore/QList>
+#include <QtCore/QMap>
 #include <QtGui/QPixmap>
 
 class QLineEdit;

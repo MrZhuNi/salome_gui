@@ -30,10 +30,10 @@
 #include "SUIT_Desktop.h"
 #include "SUIT_Session.h"
 
-#include <QColorDialog>
-#include <QMenu>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QMenu>
 #include <QtGui/QMouseEvent>
-#include <QToolBar>
+#include <QtWidgets/QToolBar>
 
 // VSR: Uncomment below line to allow texture background support in VTK viewer
 #define VTK_ENABLE_TEXTURED_BACKGROUND

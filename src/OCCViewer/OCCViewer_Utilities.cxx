@@ -33,7 +33,7 @@
 
 // QT includes
 #include <QtGui/QImage>
-#include <QAction>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QDialog>
 
 Handle(Image_PixMap) OCCViewer_Utilities::imageToPixmap( const QImage& anImage )

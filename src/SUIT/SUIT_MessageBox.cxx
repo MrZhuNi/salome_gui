@@ -24,10 +24,10 @@
 
 #include "SUIT_OverrideCursor.h"
 
-#include <QMessageBox>
-#include <QPushButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QApplication>
-#include <QString>
+#include <QtCore/QString>
 
 #include <stdarg.h>
 

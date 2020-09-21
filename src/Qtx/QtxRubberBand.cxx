@@ -28,7 +28,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>
 #include <QtGui/QShowEvent>
-#include <QVectorIterator>
+#include <QtCore/QVectorIterator>
 
 #include <math.h>
 

@@ -28,9 +28,9 @@
 #include "Plot2d_ViewFrame.h"
 #include "Plot2d_Prs.h"
 
-#include <QMenu>
-#include <QToolBar>
-#include <QVector>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#include <QtCore/QVector>
 
 /*!
   Constructor

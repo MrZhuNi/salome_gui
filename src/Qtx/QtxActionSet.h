@@ -25,7 +25,7 @@
 
 #include "QtxAction.h"
 
-#include <QList>
+#include <QtCore/QList>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

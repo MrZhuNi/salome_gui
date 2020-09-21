@@ -28,27 +28,27 @@
 #include "QtxSearchTool.h"
 
 #include <QtWidgets/QApplication>
-#include <QButtonGroup>
-#include <QCheckBox>
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QMenu>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QStatusBar>
-#include <QToolBar>
-#include <QVBoxLayout>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QFileDialog>
+#include <QtCore/QFileInfo>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QVBoxLayout>
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
   #include <QWebView>
 #else
   #include <QWebEngineView>
 #endif
-#include <QProcess>
+#include <QtCore/QProcess>
 
 // RNV:
 // Since from Qt 5.6.0 version QtWebKit tool was removed,

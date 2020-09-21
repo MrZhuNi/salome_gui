@@ -26,7 +26,7 @@
 #ifndef SUIT_TREESYNC_H
 #define SUIT_TREESYNC_H
 
-#include <QList>
+#include <QtCore/QList>
 
 /*!
   \brief The structure representing difference between source and destination items.

@@ -30,8 +30,8 @@
 #include "Utils_SALOME_Exception.hxx"
 #include "utilities.h"
 
-#include <QMutex>
-#include <QWaitCondition>
+#include <QtCore/QMutex>
+#include <QtCore/QWaitCondition>
 
 /*! 
    default constructor not for use

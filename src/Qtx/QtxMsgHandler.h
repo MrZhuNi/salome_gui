@@ -24,7 +24,7 @@
 #define QTXMSGHANDLER_H
 
 #include "Qtx.h"
-#include <QList>
+#include <QtCore/QList>
 
 void QTX_EXPORT QtxMsgHandler(QtMsgType, const QMessageLogContext&, const QString&);
 

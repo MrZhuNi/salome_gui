@@ -33,7 +33,7 @@
 #include <vtkViewport.h>
 #include <vtkWindow.h>
 
-#include <QStringList>
+#include <QtCore/QStringList>
 
 #define TEXT_MARGIN    4
 #define OFFSET_SPACING 2

@@ -93,10 +93,10 @@
 
 #include <QtxPopupMgr.h>
 
-#include <QVariant>
-#include <QString>
-#include <QStringList>
-#include <QAction>
+#include <QtCore/QVariant>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtWidgets/QAction>
 
 #include <iostream>
 

@@ -24,7 +24,7 @@
 
 #include "QtxResourceMgr.h"
 
-#include <QEvent>
+#include <QtCore/QEvent>
 #include <QtWidgets/QApplication>
 
 /*!

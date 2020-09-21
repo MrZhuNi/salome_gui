@@ -29,7 +29,7 @@
 #include "Qtx.h"
 #include "QtxActionMgr.h"
 
-#include <QList>
+#include <QtCore/QList>
 
 class QMenu;
 class QMainWindow;

@@ -26,7 +26,7 @@
 #include "SUIT_FileValidator.h"
 #include "SUIT_MessageBox.h"
 #include "SUIT_Tools.h"   
-#include <QFileInfo>
+#include <QtCore/QFileInfo>
 
 /*!
   \class SUIT_FileValidator

@@ -27,12 +27,12 @@
 
 #include <Qtx.h>
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QModelIndex>
-#include <QItemDelegate>
-#include <QVariant>
-#include <QMap>
+#include <QtCore/QAbstractItemModel>
+#include <QtCore/QSortFilterProxyModel>
+#include <QtCore/QModelIndex>
+#include <QtWidgets/QItemDelegate>
+#include <QtCore/QVariant>
+#include <QtCore/QMap>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

@@ -28,7 +28,7 @@
 #include "GLViewer_Group.h"
 #include "GLViewer_Drawer.h"
 
-#include <QFile>
+#include <QtCore/QFile>
 
 /*!
   Constructor

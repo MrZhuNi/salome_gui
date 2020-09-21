@@ -25,7 +25,7 @@
 
 #include "ViewerTools.h"
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 class QToolButton;
 class QComboBox;

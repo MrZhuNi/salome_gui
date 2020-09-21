@@ -25,10 +25,10 @@
 //
 #include "QtxDockAction.h"
 
-#include <QMenu>
-#include <QToolBar>
-#include <QDockWidget>
-#include <QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QDockWidget>
+#include <QtWidgets/QMainWindow>
 
 /*!
   \class QtxDockAction

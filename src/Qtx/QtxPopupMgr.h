@@ -28,8 +28,8 @@
 
 #include "QtxActionMenuMgr.h"
 
-#include <QMap>
-#include <QVariant>
+#include <QtCore/QMap>
+#include <QtCore/QVariant>
 
 class QtxEvalExpr;
 class QtxEvalParser;

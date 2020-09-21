@@ -25,8 +25,8 @@
 
 #include "SUIT.h"
 
-#include <QList>
-#include <QEvent>
+#include <QtCore/QList>
+#include <QtCore/QEvent>
 
 #include <QtxMainWindow.h>
 

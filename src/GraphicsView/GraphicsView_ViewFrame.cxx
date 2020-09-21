@@ -32,15 +32,15 @@
 #include <SUIT_Session.h>
 #include <SUIT_ResourceMgr.h>
 
-#include <QColor>
-#include <QFrame>
-#include <QFileDialog>
-#include <QGraphicsSceneMouseEvent>
-#include <QGraphicsSceneWheelEvent>
-#include <QHBoxLayout>
+#include <QtGui/QColor>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QtWidgets/QGraphicsSceneWheelEvent>
+#include <QtWidgets/QHBoxLayout>
 #include <QtGui/QImage>
 #include <QtGui/QMouseEvent>
-#include <QString>
+#include <QtCore/QString>
 #include <QtGui/QWheelEvent>
 
 //=======================================================================

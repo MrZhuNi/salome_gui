@@ -28,8 +28,8 @@
 
 #include "Qtx.h"
 
-#include <QFrame>
-#include <QList>
+#include <QtWidgets/QFrame>
+#include <QtCore/QList>
 
 class QTextDocument;
 

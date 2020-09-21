@@ -40,7 +40,7 @@
   class SALOME_ListIO;
   class TCollection_AsciiString;
 #else
-#include <QStringList>
+#include <QtCore/QStringList>
 #endif
 
 class LightApp_Application;

@@ -25,8 +25,8 @@
 
 #include "Qtx.h"
 
-#include <QFrame>
-#include <QPointer>
+#include <QtWidgets/QFrame>
+#include <QtCore/QPointer>
 
 class QLineEdit;
 class QListView;

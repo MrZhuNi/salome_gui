@@ -26,7 +26,7 @@
 #include "PyEditor.h"
 #include "PyEditor_Settings.h"
 
-#include <QPlainTextEdit>
+#include <QtWidgets/QPlainTextEdit>
 
 class PyEditor_Keywords;
 class PyEditor_Completer;

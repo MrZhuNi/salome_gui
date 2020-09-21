@@ -27,8 +27,8 @@
 #include "SUIT_ResourceMgr.h"
 
 #include <QtWidgets/QApplication>
-#include <QHash>
-#include <QMimeData>
+#include <QtCore/QHash>
+#include <QtCore/QMimeData>
 
 SUIT_AbstractModel::SUIT_AbstractModel() : mySearcher( 0 )
 {

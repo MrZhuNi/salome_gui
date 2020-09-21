@@ -35,8 +35,8 @@
 #include <sstream>
 #include <algorithm>
 
-#include <QRegExp>
-#include <QStringList>
+#include <QtCore/QRegExp>
+#include <QtCore/QStringList>
 
 #define TOP_HISTORY_PY   "--- top of history ---"
 #define BEGIN_HISTORY_PY "--- begin of history ---"

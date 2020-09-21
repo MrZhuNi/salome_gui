@@ -27,8 +27,8 @@
 #include <SUIT_ResourceMgr.h>
 #include <SUIT_Session.h>
 
-#include <QFrame>
-#include <QVBoxLayout>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QVBoxLayout>
 #include <QtGui/QKeyEvent>
 
 /*!

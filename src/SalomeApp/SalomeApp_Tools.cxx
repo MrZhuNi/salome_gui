@@ -28,8 +28,8 @@
 
 #include <utilities.h>
 
-#include <QColor>
-#include <QString>
+#include <QtGui/QColor>
+#include <QtCore/QString>
 
 #include <Quantity_Color.hxx>
 

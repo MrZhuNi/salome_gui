@@ -17,8 +17,8 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-#include <QInputDialog>
-#include <QContextMenuEvent>
+#include <QtWidgets/QInputDialog>
+#include <QtGui/QContextMenuEvent>
 
 #include "mainwindow.hxx"
 #include "TreeModel.hxx"

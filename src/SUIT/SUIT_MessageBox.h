@@ -25,9 +25,9 @@
 
 #include "SUIT.h"
 
-#include <QMap>
-#include <QList>
-#include <QMessageBox>
+#include <QtCore/QMap>
+#include <QtCore/QList>
+#include <QtWidgets/QMessageBox>
 
 class SUIT_EXPORT SUIT_MessageBox : public QMessageBox
 {

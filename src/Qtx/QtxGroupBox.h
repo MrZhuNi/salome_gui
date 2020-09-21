@@ -28,7 +28,7 @@
 
 #include "Qtx.h"
 
-#include <QGroupBox>
+#include <QtWidgets/QGroupBox>
 
 class QTX_EXPORT QtxGroupBox : public QGroupBox
 {

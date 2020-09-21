@@ -42,8 +42,8 @@
 #define true  1
 #endif
 
-#include <QString>
-#include <QList>
+#include <QtCore/QString>
+#include <QtCore/QList>
 #include <QtGui/QFont>
 #include <QtGui/QColor>
 #include <QtGui/QImage>

@@ -24,9 +24,9 @@
 #define QDS_DATUM_H
 
 #include "QDS.h"
-#include <QPointer>
-#include <QMap>
-#include <QLabel>
+#include <QtCore/QPointer>
+#include <QtCore/QMap>
+#include <QtWidgets/QLabel>
 
 class QHBoxLayout;
 class QVBoxLayout;

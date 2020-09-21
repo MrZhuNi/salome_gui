@@ -25,8 +25,8 @@
 //
 #include "QtxAction.h"
 
-#include <QEvent>
-#include <QPointer>
+#include <QtCore/QEvent>
+#include <QtCore/QPointer>
 #include <QtGui/QActionEvent>
 #include <QtWidgets/QApplication>
 

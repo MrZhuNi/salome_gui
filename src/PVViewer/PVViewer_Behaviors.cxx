@@ -20,7 +20,7 @@
 
 #include "PVViewer_Behaviors.h"
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 
 #include <pqInterfaceTracker.h>
 #include <pqApplicationCore.h>

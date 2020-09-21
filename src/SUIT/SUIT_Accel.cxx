@@ -28,8 +28,8 @@
 #include "SUIT_ViewManager.h"
 #include "SUIT_ViewModel.h"
 
-#include <QCoreApplication>
-#include <QEvent>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QEvent>
 #include <QtGui/QKeyEvent>
 
 /*!

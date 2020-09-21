@@ -29,8 +29,8 @@
 #include "LightApp_Module.h"
 
 #include <QtGui/QIcon>
-#include <QMap>
-#include <QStringList>
+#include <QtCore/QMap>
+#include <QtCore/QStringList>
 
 class QMenu;
 class PyModuleHelper;

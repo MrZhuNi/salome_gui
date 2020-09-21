@@ -23,10 +23,10 @@
 #ifndef PYEDITOR_KEYWORDS_H
 #define PYEDITOR_KEYWORDS_H
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <QtGui/QColor>
-#include <QList>
-#include <QMap>
+#include <QtCore/QList>
+#include <QtCore/QMap>
 
 class PyEditor_Keywords : public QObject
 {

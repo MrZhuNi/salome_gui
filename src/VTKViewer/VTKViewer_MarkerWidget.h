@@ -25,7 +25,7 @@
 #include "VTKViewer.h"
 #include "VTKViewer_MarkerDef.h"
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 class QComboBox;
 class QLabel;

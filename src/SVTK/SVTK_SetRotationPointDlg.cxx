@@ -34,14 +34,14 @@
 
 #include "QtxAction.h"
 
-#include <QLineEdit>
-#include <QGroupBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QMenu>
-#include <QGridLayout>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QGridLayout>
 #include <QtGui/QDoubleValidator>
-#include <QCheckBox>
+#include <QtWidgets/QCheckBox>
 
 #include <vtkCallbackCommand.h>
 #include <vtkInteractorStyle.h>

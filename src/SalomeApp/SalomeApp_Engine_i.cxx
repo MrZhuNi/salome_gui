@@ -39,8 +39,8 @@
 #include <utilities.h>
 
 #include <QtWidgets/QApplication>
-#include <QDir>
-#include <QFile>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
 
 #include <iostream>
 

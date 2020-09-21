@@ -29,7 +29,7 @@
 
 #include <GLViewer_Viewer2d.h>
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class LightApp_DataObject;
 

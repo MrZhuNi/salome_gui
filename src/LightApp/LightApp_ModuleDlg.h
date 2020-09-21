@@ -30,7 +30,7 @@
 
 #include <QtWidgets/QDialog> 
 #include <QtGui/QPixmap>
-#include <QMap>
+#include <QtCore/QMap>
 
 class QPushButton;
 class QHBoxLayout;

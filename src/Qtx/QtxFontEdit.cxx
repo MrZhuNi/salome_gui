@@ -24,11 +24,11 @@
 
 #include "QtxComboBox.h"
 
-#include <QLayout>
-#include <QToolButton>
-#include <QFontDialog>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QFontDialog>
 #include <QtGui/QFontDatabase>
-#include <QFontComboBox>
+#include <QtWidgets/QFontComboBox>
 
 /*!
   \class QtxFontEdit

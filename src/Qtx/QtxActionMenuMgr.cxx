@@ -27,10 +27,10 @@
 
 #include "QtxAction.h"
 
-#include <QMenu>
-#include <QMenuBar>
-#include <QWidget>
-#include <QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMainWindow>
 
 /*!
   \class QtxActionMenuMgr::MenuNode

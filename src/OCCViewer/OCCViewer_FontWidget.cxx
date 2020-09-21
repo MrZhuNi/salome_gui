@@ -22,7 +22,7 @@
 
 #include "OCCViewer_FontWidget.h"
 
-#include <QComboBox>
+#include <QtWidgets/QComboBox>
 
 //#include <vtkTextProperty.h>
 

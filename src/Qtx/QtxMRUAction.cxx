@@ -27,7 +27,7 @@
 
 #include "QtxResourceMgr.h"
 
-#include <QMenu>
+#include <QtWidgets/QMenu>
 #include <QtGui/QIcon>
 
 /*!

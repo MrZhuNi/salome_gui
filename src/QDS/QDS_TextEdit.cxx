@@ -22,7 +22,7 @@
 
 #include "QDS_TextEdit.h"
 
-#include <QTextEdit>
+#include <QtWidgets/QTextEdit>
 
 /*
   \class QDS_TextEdit

@@ -23,7 +23,7 @@
 #include "LightApp_FileValidator.h"
 #include "SUIT_MessageBox.h"
 
-#include <QFileInfo>
+#include <QtCore/QFileInfo>
 
 /*!
   \class LightApp_PyFileValidator

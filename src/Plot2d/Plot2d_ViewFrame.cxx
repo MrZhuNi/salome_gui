@@ -43,26 +43,26 @@
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_Application.h"
 #else
-#include <QMessageBox>
+#include <QtWidgets/QMessageBox>
 #endif
 
 #include <QtWidgets/QApplication>
-#include <QToolBar>
-#include <QToolButton>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
 #include <QtGui/QCursor>
-#include <QColorDialog>
-#include <QLayout>
-#include <QMap>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QLayout>
+#include <QtCore/QMap>
 #include <QtGui/QPainter>
-#include <QPaintDevice>
-#include <QEvent>
+#include <QtGui/QPaintDevice>
+#include <QtCore/QEvent>
 #include <QtGui/QMouseEvent>
-#include <QContextMenuEvent>
+#include <QtGui/QContextMenuEvent>
 #include <QtPrintSupport/QPrinter>
 #include <QtGui/QPalette>
-#include <QLocale>
-#include <QXmlStreamWriter>
-#include <QXmlStreamReader>
+#include <QtCore/QLocale>
+#include <QtCore/QXmlStreamWriter>
+#include <QtCore/QXmlStreamReader>
 
 #include <qwt_math.h>
 #include <qwt_plot_layout.h>

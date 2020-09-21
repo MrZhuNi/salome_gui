@@ -30,12 +30,12 @@
 #include <Graphic3d_TextureEnv.hxx>
 
 // QT Includes
-#include <QGroupBox>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QComboBox>
-#include <QFileDialog>
-#include <QLineEdit>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QLineEdit>
 
 /*!
   \class OCCViewer_EnvTextureDlg
