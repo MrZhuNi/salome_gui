@@ -20,7 +20,7 @@
 # Author : A. Bruneton
 #
 from curveplot import *
-from curveplot.PlotTestBase import PlotTestBase, processDecorator
+from PlotTestBase import PlotTestBase, processDecorator
 from curveplot.PlotSettings import PlotSettings
 
 from pyqtside.QtWidgets import QApplication
@@ -41,6 +41,7 @@ class PlotTest(PlotTestBase):
 
   def __init__(self, methodName):
     PlotTestBase.__init__(self, methodName)
+    
 
   ###
   ### Data generation
@@ -49,6 +50,7 @@ class PlotTest(PlotTestBase):
     import numpy as np
     x = np.arange(100)
     y = np.sin(x*alpha/np.pi)
+    print(1)
     return x, y
 
   def generateExp(self, alpha=1.0):
@@ -144,7 +146,7 @@ class PlotTest(PlotTestBase):
     x, y = self.generateSine()
     tw = self.showTabWidget()
     PlotController.AddCurve(x, y, curve_label="My curve", x_label="Lèés X (unicode!)", y_label="Et des ŷ", append=False)
-    self.assertTrue(self.areScreenshotEqual(tw))
+    self.assertTrue(self.areScreenshotEqual(tw), msg='Hello!')
 
   def testAddCurveAppend(self):
     x, y = self.generateSine()
