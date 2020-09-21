@@ -22,15 +22,15 @@
 //
 #include "QtxPathEdit.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QLayout>
 #include <QDirModel>
 #include <QLineEdit>
 #include <QCompleter>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QToolButton>
 #include <QFileDialog>
-#include <QRegExpValidator>
+#include <QtGui/QRegExpValidator>
 
 static const char* browse_icon[] = {
 "16 16 5 1",

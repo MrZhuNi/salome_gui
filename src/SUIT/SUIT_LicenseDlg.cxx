@@ -19,7 +19,7 @@
 
 #include "SUIT_LicenseDlg.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QTextEdit>
 #include <QLayout> 
 #include <QPushButton>
@@ -27,8 +27,8 @@
 #include <QFile>
 #include <QtPrintSupport/QPrinter>
 //#include <QSimpleRichText>
-#include <QTextDocument>
-#include <QPainter>
+#include <QtGui/QTextDocument>
+#include <QtGui/QPainter>
 
 #include <math.h>
 

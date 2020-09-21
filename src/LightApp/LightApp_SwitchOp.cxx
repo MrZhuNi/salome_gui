@@ -31,7 +31,7 @@
 #include <QEvent>
 #include <QWidget>
 #include <QList>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!
  * \brief Constructor

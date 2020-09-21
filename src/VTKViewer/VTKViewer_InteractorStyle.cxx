@@ -47,7 +47,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkProperty.h>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QRubberBand>
 
 #include <algorithm>

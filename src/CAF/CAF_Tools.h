@@ -30,7 +30,7 @@
 
 #include <SUIT_Tools.h>
 
-#include <QColor>
+#include <QtGui/QColor>
 
 #include <Quantity_Color.hxx>
 

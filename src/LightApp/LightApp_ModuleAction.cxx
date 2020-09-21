@@ -25,7 +25,7 @@
 #include <QtxComboBox.h>
 #include <QtxActionSet.h>
 #include <QVBoxLayout>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QEvent>
 
 /*!

@@ -26,11 +26,11 @@
 #include "CAM.h"
 
 #include <QObject>
-#include <QPixmap>
+#include <QtGui/QPixmap>
 #include <QString>
 #include <QMap>
 #include <QPair>
-#include <QKeySequence>
+#include <QtGui/QKeySequence>
 
 class QAction;
 class QMenu;

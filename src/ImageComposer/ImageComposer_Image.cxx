@@ -23,7 +23,7 @@
 #include "ImageComposer_FuseOperator.h"
 #include "ImageComposer_MetaTypes.h"
 
-#include <QPainter>
+#include <QtGui/QPainter>
 
 QColor ImageComposer_Image::myDefaultBackground = TRANSPARENT;
 

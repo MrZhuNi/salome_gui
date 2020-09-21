@@ -22,7 +22,7 @@
 //
 #include "QtxActionSet.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!
   \class QtxActionSet

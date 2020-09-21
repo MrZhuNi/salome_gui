@@ -26,7 +26,7 @@
 #include "SUIT.h"
 
 #include <QList>
-#include <QCursor>
+#include <QtGui/QCursor>
 
 /*! \brief Class used for management cursors.*/
 class SUIT_EXPORT SUIT_OverrideCursor

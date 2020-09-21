@@ -27,7 +27,7 @@
 #define QTXWORKSTACKACTION_H
 
 #include "QtxActionSet.h"
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class QtxWorkstack;
 class QRadioButton;

@@ -31,7 +31,7 @@
 #include <QFrame>
 #include <QLabel>
 #include <QPointer>
-#include <QIcon>
+#include <QtGui/QIcon>
 
 class QtxGridBox;
 class QtxFontEdit;

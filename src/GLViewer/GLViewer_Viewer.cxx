@@ -34,11 +34,11 @@
 #include "SUIT_ViewWindow.h"
 #include "SUIT_ViewManager.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QMenu>
 #include <QColorDialog>
-#include <QMouseEvent>
-#include <QWheelEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QWheelEvent>
 #include <QRect>
 #include <QRubberBand>
 

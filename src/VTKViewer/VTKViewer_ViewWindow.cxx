@@ -37,7 +37,7 @@
 #include <SUIT_ResourceMgr.h>
 
 #include <QFileInfo>
-#include <QImage>
+#include <QtGui/QImage>
 
 #include <vtkCamera.h>
 #include <vtkJPEGReader.h>

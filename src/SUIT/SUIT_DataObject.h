@@ -33,8 +33,8 @@
 #include <QList>
 #include <QObject>
 #include <QString>
-#include <QPixmap>
-#include <QFont>
+#include <QtGui/QPixmap>
+#include <QtGui/QFont>
 
 class SUIT_DataObject;
 class SUIT_DataObjectKey;

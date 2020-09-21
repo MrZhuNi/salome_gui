@@ -29,7 +29,7 @@
 
 #include <QRect>
 #include <QString>
-#include <QFont>
+#include <QtGui/QFont>
 
 /*!
   \class SUIT_Tools

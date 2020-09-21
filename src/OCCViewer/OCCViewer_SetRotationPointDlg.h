@@ -25,7 +25,7 @@
 
 #include "OCCViewer.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 #include <QMap>
 
 #include <TopAbs_ShapeEnum.hxx>

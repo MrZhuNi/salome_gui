@@ -22,11 +22,11 @@
 //
 #include "QtxSearchTool.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QCheckBox>
 #include <QEvent>
 #include <QHBoxLayout>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QLineEdit>
 #include <QPersistentModelIndex>
 #include <QShortcut>

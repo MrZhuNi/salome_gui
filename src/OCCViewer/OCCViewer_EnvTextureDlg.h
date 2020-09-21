@@ -21,7 +21,7 @@
 #define OCCVIEWER_ENVTEXTUREDLG_H
 
 #include "OCCViewer.h"
-#include <QDialog>
+#include <QtWidgets/QDialog>
 #include <V3d_View.hxx>
 
 class OCCViewer_ViewWindow;

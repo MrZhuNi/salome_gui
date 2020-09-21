@@ -23,7 +23,7 @@
 #ifndef SALOMEAPP_EXITDLG_H
 #define SALOMEAPP_EXITDLG_H
 
-#include <QDialog> 
+#include <QtWidgets/QDialog> 
 
 class QCheckBox;
 

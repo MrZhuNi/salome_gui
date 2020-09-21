@@ -27,11 +27,11 @@
 
 #include <QLabel>
 #include <QLayout>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QFrame>
 #include <QTabWidget>
 #include <QPushButton>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!
   \class QtxDialog::Area

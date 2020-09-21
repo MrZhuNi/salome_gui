@@ -24,7 +24,7 @@
 
 #include "SUIT_MessageBox.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!\class SUIT_ExceptionHandler
  * Show exception message on error handler.

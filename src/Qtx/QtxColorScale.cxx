@@ -28,9 +28,9 @@
 #include <QMap>
 #include <QRegExp>
 #include <QStringList>
-#include <QPixmap>
-#include <QPainter>
-#include <QTextDocument>
+#include <QtGui/QPixmap>
+#include <QtGui/QPainter>
+#include <QtGui/QTextDocument>
 
 #include <math.h>
 

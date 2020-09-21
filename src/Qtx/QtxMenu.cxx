@@ -24,12 +24,12 @@
 
 #include <QLabel>
 #include <QLayout>
-#include <QPainter>
-#include <QPaintEvent>
-#include <QTextDocument>
+#include <QtGui/QPainter>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QTextDocument>
 #include <QWidgetAction>
-#include <QLinearGradient>
-#include <QAbstractTextDocumentLayout>
+#include <QtGui/QLinearGradient>
+#include <QtGui/QAbstractTextDocumentLayout>
 
 /*!
   \class QtxMenu::Title

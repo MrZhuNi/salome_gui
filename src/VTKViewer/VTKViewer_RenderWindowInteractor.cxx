@@ -50,8 +50,8 @@
 
 // QT Includes
 #include <QTimer>
-#include <QMouseEvent>
-#include <QKeyEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QKeyEvent>
 #include <QContextMenuEvent>
 
 /*! Create new instance of VTKViewer_RenderWindowInteractor*/

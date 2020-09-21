@@ -32,7 +32,7 @@
 #include <QFileInfo>
 #include <QRegExp>
 #include <QTextStream>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QLibraryInfo>
 #include <QtDebug>
 #ifndef QT_NO_DOM

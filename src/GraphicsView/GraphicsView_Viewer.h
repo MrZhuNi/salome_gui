@@ -26,7 +26,7 @@
 
 #include <SUIT_ViewModel.h>
 
-#include <QPainterPath>
+#include <QtGui/QPainterPath>
 
 class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;

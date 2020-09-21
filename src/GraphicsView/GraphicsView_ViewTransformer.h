@@ -22,7 +22,7 @@
 
 #include "GraphicsView.h"
 
-#include <QCursor>
+#include <QtGui/QCursor>
 #include <QObject>
 
 class QRectF;

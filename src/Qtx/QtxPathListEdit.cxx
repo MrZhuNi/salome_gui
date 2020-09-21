@@ -25,10 +25,10 @@
 #include "QtxPathEdit.h"
 
 #include <QLayout>
-#include <QPainter>
+#include <QtGui/QPainter>
 #include <QListView>
 #include <QLineEdit>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QDirModel>
 #include <QCompleter>
 #include <QToolButton>

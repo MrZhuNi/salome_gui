@@ -36,7 +36,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QItemSelection>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QVBoxLayout>
 #include <QAbstractItemModel>
 #include <QAbstractItemDelegate>

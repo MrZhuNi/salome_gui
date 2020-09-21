@@ -26,7 +26,7 @@
 #include "Plot2d_FitDataDlg.h"
 #include <QLabel>
 #include <QLayout>
-#include <QValidator>
+#include <QtGui/QValidator>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QGroupBox>

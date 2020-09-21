@@ -27,7 +27,7 @@
 
 #include "Plot2d.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class QPushButton;
 class QLabel;

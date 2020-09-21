@@ -32,9 +32,9 @@
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 
 // QT includes
-#include <QImage>
+#include <QtGui/QImage>
 #include <QAction>
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 Handle(Image_PixMap) OCCViewer_Utilities::imageToPixmap( const QImage& anImage )
 {

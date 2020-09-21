@@ -27,7 +27,7 @@
 #include "PyConsole_Editor.h"
 
 #include <QAction>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QClipboard>
 #include <QContextMenuEvent>
 #include <QMenu>

@@ -25,10 +25,10 @@
 #include <QMenu>
 #include <QLayout>
 #include <QToolBar>
-#include <QPainter>
-#include <QHelpEvent>
+#include <QtGui/QPainter>
+#include <QtGui/QHelpEvent>
 #include <QToolButton>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QStyleOptionButton>
 
 /*!

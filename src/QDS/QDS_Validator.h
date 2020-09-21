@@ -25,7 +25,7 @@
 
 #include "QDS.h"
 
-#include <QValidator>
+#include <QtGui/QValidator>
 
 class QDS_EXPORT QDS_IntegerValidator : public QIntValidator
 {

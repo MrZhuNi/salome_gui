@@ -31,7 +31,7 @@
 #include "QtxAction.h"
 #include "QtxActionToolMgr.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>

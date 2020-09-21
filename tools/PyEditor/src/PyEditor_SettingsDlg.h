@@ -23,7 +23,7 @@
 #ifndef PYEDITOR_SETTINGSDLG_H
 #define PYEDITOR_SETTINGSDLG_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 #include "PyEditor.h"
 
 class PyEditor_Editor;

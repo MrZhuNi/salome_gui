@@ -30,7 +30,7 @@
 
 #include <QMap>
 #include <QRegExp>
-#include <QIcon>
+#include <QtGui/QIcon>
 
 #ifdef WIN32
 #include <windows.h>

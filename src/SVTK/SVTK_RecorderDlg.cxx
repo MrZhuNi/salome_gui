@@ -33,7 +33,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>

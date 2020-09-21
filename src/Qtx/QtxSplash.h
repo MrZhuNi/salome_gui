@@ -29,8 +29,8 @@
 #include "Qtx.h"
 
 #include <QWidget>
-#include <QPixmap>
-#include <QGradient>
+#include <QtGui/QPixmap>
+#include <QtGui/QGradient>
 #include <QMap>
 
 #ifdef WIN32

@@ -39,7 +39,7 @@
 #include <unistd.h>
 #endif
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QFileInfo>
 #include <QDir>
 

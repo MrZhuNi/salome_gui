@@ -30,7 +30,7 @@
 
 #include <QPointer>
 #include <QCloseEvent>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!\class SUIT_Desktop
  * Provide desktop management:\n

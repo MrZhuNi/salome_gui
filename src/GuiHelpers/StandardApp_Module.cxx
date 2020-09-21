@@ -32,7 +32,7 @@
 #include CORBA_CLIENT_HEADER(SALOMEDS_Attributes)
 
 // QT Includes
-#include <QIcon>
+#include <QtGui/QIcon>
 #include <QAction>
 
 #include <Basics_Utils.hxx>

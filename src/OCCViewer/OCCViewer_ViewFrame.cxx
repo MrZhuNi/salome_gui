@@ -34,7 +34,7 @@
 
 #include <QFrame>
 #include <QLayout>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 OCCViewer_ViewFrame::OCCViewer_ViewFrame(SUIT_Desktop* theDesktop, OCCViewer_Viewer* theModel)
   : OCCViewer_ViewWindow( theDesktop, theModel ), myPopupRequestedView(0), mySplitMode(-1)

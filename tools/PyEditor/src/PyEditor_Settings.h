@@ -25,7 +25,7 @@
 
 #include "PyEditor.h"
 
-#include <QFont>
+#include <QtGui/QFont>
 
 class PYEDITOR_EXPORT PyEditor_Settings
 {

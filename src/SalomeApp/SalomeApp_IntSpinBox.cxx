@@ -34,7 +34,7 @@
 #include "SALOMEDSClient_ClientFactory.hxx" 
 #include CORBA_SERVER_HEADER(SALOMEDS)
 
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QLineEdit>
 #include <QToolTip>
 #include <QRegExp>

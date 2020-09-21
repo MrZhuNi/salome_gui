@@ -26,7 +26,7 @@
 #include "SUIT_ResourceMgr.h"
 #include "SUIT_Session.h"
 
-#include <QCursor>
+#include <QtGui/QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QGridLayout>
 #include <QLabel>
@@ -35,7 +35,7 @@
 #include <QRubberBand>
 #include <QScrollBar>
 #include <QtPrintSupport/QPrinter>
-#include <QPainter>
+#include <QtGui/QPainter>
 
 #include <math.h>
 

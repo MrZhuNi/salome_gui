@@ -28,8 +28,8 @@
 #include <QAction>
 #include <QLayout>
 #include <QMainWindow>
-#include <QResizeEvent>
-#include <QApplication>
+#include <QtGui/QResizeEvent>
+#include <QtWidgets/QApplication>
 
 /*!
   \class QtxDockWidget::Watcher

@@ -28,7 +28,7 @@
 #include "QtxWorkstack.h"
 
 #include <QMenu>
-#include <QWidgetList>
+#include <QtGui/QWidgetList>
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -37,8 +37,8 @@
 #include <QListWidget>
 #include <QStackedLayout>
 #include <QToolButton>
-#include <QIcon>
-#include <QPixmap>
+#include <QtGui/QIcon>
+#include <QtGui/QPixmap>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QLabel>

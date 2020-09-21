@@ -20,8 +20,8 @@
 #include "QtxToolButton.h"
 #include "QtxMenu.h"
 
-#include <QKeyEvent>
-#include <QWheelEvent>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QWheelEvent>
 
 namespace
 {

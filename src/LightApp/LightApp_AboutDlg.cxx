@@ -34,8 +34,8 @@
 
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QPixmap>
-#include <QIcon>
+#include <QtGui/QPixmap>
+#include <QtGui/QIcon>
 #include <QGroupBox>
 #include <QTabWidget>
 #include <QPushButton>

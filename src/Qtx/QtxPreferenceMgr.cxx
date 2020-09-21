@@ -25,7 +25,7 @@
 #include "QtxResourceMgr.h"
 
 #include <QEvent>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!
   \class QtxPreferenceItem::Updater

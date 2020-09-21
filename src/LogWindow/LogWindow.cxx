@@ -27,7 +27,7 @@
 #include "LogWindow.h"
 
 #include <QAction>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QDate>
 #include <QFile>
 #include <QMenu>

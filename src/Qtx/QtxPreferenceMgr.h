@@ -29,9 +29,9 @@
 
 #include "Qtx.h"
 
-#include <QFont>
-#include <QIcon>
-#include <QColor>
+#include <QtGui/QFont>
+#include <QtGui/QIcon>
+#include <QtGui/QColor>
 #include <QVariant>
 
 class QtxResourceMgr;

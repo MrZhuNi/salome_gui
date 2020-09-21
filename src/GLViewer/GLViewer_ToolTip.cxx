@@ -33,10 +33,10 @@
 
 #include <QLabel>
 #include <QTimer>
-#include <QBitmap>
-#include <QApplication>
+#include <QtGui/QBitmap>
+#include <QtWidgets/QApplication>
 #include <QToolTip>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 
 /*!
   constructor

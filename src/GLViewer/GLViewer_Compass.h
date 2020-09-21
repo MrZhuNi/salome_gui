@@ -29,7 +29,7 @@
 
 #include "GLViewer.h"
 
-#include <QColor>
+#include <QtGui/QColor>
 
 class QFont;
 

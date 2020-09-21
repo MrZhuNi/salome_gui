@@ -27,7 +27,7 @@
 #include "Qtx.h"
 #include "SUIT_ViewModel.h"
 
-#include <QColor>
+#include <QtGui/QColor>
 
 class QMouseEvent;
 

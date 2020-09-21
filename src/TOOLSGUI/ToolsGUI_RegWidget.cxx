@@ -22,7 +22,7 @@
 
 # include "ToolsGUI_RegWidget.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QInputDialog>
 #include <QMenuBar>
 #include <QStatusBar>

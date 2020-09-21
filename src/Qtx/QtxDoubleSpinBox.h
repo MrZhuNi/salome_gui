@@ -26,7 +26,7 @@
 #include "Qtx.h"
 
 #include <QDoubleSpinBox>
-#include <QValidator>
+#include <QtGui/QValidator>
 
 class QTX_EXPORT QtxDoubleSpinBox : public QDoubleSpinBox
 {

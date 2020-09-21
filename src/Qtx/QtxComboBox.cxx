@@ -24,10 +24,10 @@
 
 #include "QtxComboBox.h"
 
-#include <QStandardItemModel>
+#include <QtGui/QStandardItemModel>
 #include <QLineEdit>
 #include <QEvent>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!
   \class QtxComboBox::Model

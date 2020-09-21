@@ -31,9 +31,9 @@
 #include "GLViewer_ViewFrame.h"
 #include "GLViewer_ViewPort2d.h"
 
-#include <QApplication>
-#include <QImage>
-#include <QPainter>
+#include <QtWidgets/QApplication>
+#include <QtGui/QImage>
+#include <QtGui/QPainter>
 #include <QFile>
 
 #if defined(__APPLE__)

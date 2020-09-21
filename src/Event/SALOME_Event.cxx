@@ -27,7 +27,7 @@
 #include "SALOME_Event.h"
 
 #include <QSemaphore>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 // asv 21.02.05 : introducing multi-platform approach of thread comparison
 // - on Unix using pthread_t type for storing ThreadId

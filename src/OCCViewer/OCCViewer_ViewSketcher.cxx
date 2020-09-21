@@ -23,11 +23,11 @@
 
 #include "QtxRubberBand.h"
 
-#include <QApplication>
-#include <QPainter>
+#include <QtWidgets/QApplication>
+#include <QtGui/QPainter>
 #include <QPolygon>
-#include <QMouseEvent>
-#include <QKeyEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QKeyEvent>
 
 /****************************************************************
 **  Class: OCCViewer_ViewSketcher

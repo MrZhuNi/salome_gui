@@ -43,10 +43,10 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QPushButton>
-#include <QFont>
+#include <QtGui/QFont>
 #include <QGroupBox>
 #include <QList>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QDir>
 
 #include <string>

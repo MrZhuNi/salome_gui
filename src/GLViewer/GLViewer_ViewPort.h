@@ -30,7 +30,7 @@
 #include "GLViewer.h"
 
 //#include <QList>
-#include <QColor>
+#include <QtGui/QColor>
 //#include <QAction>
 #include <QWidget>
 

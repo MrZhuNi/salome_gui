@@ -28,7 +28,7 @@
 
 #include "Qtx.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 #include <QMap>
 
 class QFrame;

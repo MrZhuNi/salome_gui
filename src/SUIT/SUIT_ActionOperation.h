@@ -25,7 +25,7 @@
 
 #include "SUIT_Operation.h"
 
-#include <QKeySequence>
+#include <QtGui/QKeySequence>
 
 class QIcon;
 class QString;

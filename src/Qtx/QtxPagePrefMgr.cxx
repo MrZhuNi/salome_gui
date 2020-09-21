@@ -43,7 +43,7 @@
 #include <QSplitter>
 #include <QTabWidget>
 #include <QListWidget>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QDateTimeEdit>
 #include <QStackedWidget>
 #include <QSlider>

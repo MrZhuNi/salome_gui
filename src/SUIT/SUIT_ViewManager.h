@@ -28,7 +28,7 @@
 #include "SUIT_PopupClient.h"
 
 #include <QObject>
-#include <QPixmap>
+#include <QtGui/QPixmap>
 #include <QVector>
 #include <QPointer>
 

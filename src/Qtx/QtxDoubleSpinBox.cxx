@@ -23,7 +23,7 @@
 #include "QtxDoubleSpinBox.h"
 
 #include <QLineEdit>
-#include <QDoubleValidator>
+#include <QtGui/QDoubleValidator>
 #include <QVariant>
 
 #include <limits>

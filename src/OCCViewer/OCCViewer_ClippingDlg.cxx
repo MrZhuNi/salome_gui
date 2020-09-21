@@ -52,7 +52,7 @@
 #include <math.h>
 
 // QT Includes
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>

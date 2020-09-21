@@ -22,7 +22,7 @@
 
 #include "ImageComposer.h"
 
-#include <QImage>
+#include <QtGui/QImage>
 
 class QVariant;
 class ImageComposer_Operator;

@@ -26,7 +26,7 @@
 #include "SUIT_DataObject.h"
 #include "SUIT_ResourceMgr.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QHash>
 #include <QMimeData>
 

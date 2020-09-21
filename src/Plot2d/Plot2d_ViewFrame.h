@@ -34,7 +34,7 @@
 #include <QMultiHash>
 #include <QMap>
 #include <QList>
-#include <QPainter>
+#include <QtGui/QPainter>
 #include <qwt_symbol.h>
 #include <qwt_scale_draw.h>
 #include <qwt_plot_marker.h>

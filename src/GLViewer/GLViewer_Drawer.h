@@ -31,8 +31,8 @@
 #include "windows.h"
 #endif
 
-#include <QColor>
-#include <QFont>
+#include <QtGui/QColor>
+#include <QtGui/QFont>
 
 class QFile;
 

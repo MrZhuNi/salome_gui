@@ -25,7 +25,7 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPainter>
+#include <QtGui/QPainter>
 #include <QSlider>
 #include <QStyle>
 #include <QStylePainter>

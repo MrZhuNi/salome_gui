@@ -31,7 +31,7 @@
 
 #include <QList>
 #include <QMap>
-#include <QPixmap>
+#include <QtGui/QPixmap>
 
 class QLineEdit;
 class QAbstractButton;

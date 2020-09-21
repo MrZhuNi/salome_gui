@@ -52,12 +52,12 @@
 #include <QtxMultiAction.h>
 #include <QtxRubberBand.h>
 
-#include <QPainter>
+#include <QtGui/QPainter>
 #include <QTime>
-#include <QImage>
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QApplication>
+#include <QtGui/QImage>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QMouseEvent>
+#include <QtWidgets/QApplication>
 #include <QActionGroup>
 #include <QMenu>
 

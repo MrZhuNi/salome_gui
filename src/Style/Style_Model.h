@@ -27,8 +27,8 @@
 
 #include <QMap>
 #include <QString>
-#include <QPalette>
-#include <QFont>
+#include <QtGui/QPalette>
+#include <QtGui/QFont>
 
 class QStyle;
 class QtxResourceMgr;

@@ -39,13 +39,13 @@
 
 #include <QStatusBar>
 #include <QLayout>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QMenu>
-#include <QImage>
+#include <QtGui/QImage>
 #include <QToolBar>
-#include <QPaintEvent>
+#include <QtGui/QPaintEvent>
 #include <QActionGroup>
-#include <QPainter>
+#include <QtGui/QPainter>
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
 

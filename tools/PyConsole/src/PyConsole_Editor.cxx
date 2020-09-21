@@ -94,13 +94,13 @@
 #include "PyInterp_Dispatcher.h"
 #include "PyConsole_Request.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QClipboard>
 #include <QDropEvent>
 #include <QEvent>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QMimeData>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <QScrollBar>
 #include <QTextBlock>
 #include <QTextCursor>

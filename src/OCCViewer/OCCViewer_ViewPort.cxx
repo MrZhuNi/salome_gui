@@ -30,8 +30,8 @@
 
 #include <QColor>
 #include <QRect>
-#include <QPixmap>
-#include <QPainter>
+#include <QtGui/QPixmap>
+#include <QtGui/QPainter>
 #include <QMultiHash>
 #include <QMenu>
 #include <QColorDialog>

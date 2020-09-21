@@ -38,7 +38,7 @@
 #include <xcb/xcb.h>
 #include <QX11Info>
 #endif
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 
 #include "SVTK_SpaceMouse.h" 
 #include "SVTK_Event.h" 

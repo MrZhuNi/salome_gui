@@ -27,7 +27,7 @@
 #define LIGHTAPP_NAMEDLG_H
 
 #include "LightApp.h"
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class QLineEdit;
 class QPushButton;

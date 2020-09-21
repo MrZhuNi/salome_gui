@@ -29,7 +29,7 @@
 
 #include "ToolsGUI.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class QLineEdit;
 class QPushButton;

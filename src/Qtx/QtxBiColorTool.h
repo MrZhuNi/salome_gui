@@ -25,7 +25,7 @@
 
 #include "Qtx.h"
 
-#include <QColor>
+#include <QtGui/QColor>
 #include <QWidget>
 
 class QLabel;

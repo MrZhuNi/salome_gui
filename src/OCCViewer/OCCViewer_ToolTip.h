@@ -22,7 +22,7 @@
 
 #include "OCCViewer.h"
 #include <QtxToolTip.h>
-#include <QFont>
+#include <QtGui/QFont>
 
 #include <SelectMgr_EntityOwner.hxx>
 #include <AIS_InteractiveObject.hxx>

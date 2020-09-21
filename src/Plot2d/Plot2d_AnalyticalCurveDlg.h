@@ -29,7 +29,7 @@
 #include "Plot2d.h"
 #include "Plot2d_AnalyticalCurve.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 #include <QMap>
 
 class QListWidget;

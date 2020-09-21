@@ -25,7 +25,7 @@
 
 #include <QDir>
 #include <QFileInfo>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QRegExp>
 
 #ifndef WIN32

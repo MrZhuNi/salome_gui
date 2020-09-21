@@ -20,7 +20,7 @@
 #ifndef _GenericDialog_HXX
 #define _GenericDialog_HXX
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 #include "ui_GenericDialog.h"
 

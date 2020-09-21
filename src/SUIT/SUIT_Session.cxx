@@ -28,7 +28,7 @@
 #include "SUIT_ExceptionHandler.h"
 #include "SUIT_ResourceMgr.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 #ifdef WIN32
 #include <windows.h>

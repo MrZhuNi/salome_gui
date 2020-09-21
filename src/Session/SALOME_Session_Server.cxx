@@ -65,7 +65,7 @@
 #endif
 #include <time.h>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QDir>
 #include <QFile>
 #include <QMutex>

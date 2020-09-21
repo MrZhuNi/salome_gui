@@ -31,7 +31,7 @@
 #include <QTimer>
 #include <QLabel>
 #include <QStatusBar>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QSize>
 
 #include <QtxAction.h>

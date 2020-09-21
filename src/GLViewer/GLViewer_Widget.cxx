@@ -30,11 +30,11 @@
 #include <cmath>
 
 #include <QEvent>
-#include <QPaintEvent>
+#include <QtGui/QPaintEvent>
 #include <QRect>
 #include <QFile>
-#include <QImage>
-#include <QApplication>
+#include <QtGui/QImage>
+#include <QtWidgets/QApplication>
 #include <QToolTip>
 
 /*!

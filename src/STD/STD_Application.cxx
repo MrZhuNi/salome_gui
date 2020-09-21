@@ -41,7 +41,7 @@
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QFileDialog>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!Create and return new instance of STD_Application*/
 extern "C" STD_EXPORT SUIT_Application* createApplication()

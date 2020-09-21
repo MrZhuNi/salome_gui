@@ -29,7 +29,7 @@
 #include <QHBoxLayout>
 #include <QEvent>
 #include <QObjectList>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!
   \class QtxGroupBox

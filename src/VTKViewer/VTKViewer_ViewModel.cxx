@@ -32,7 +32,7 @@
 
 #include <QColorDialog>
 #include <QMenu>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <QToolBar>
 
 // VSR: Uncomment below line to allow texture background support in VTK viewer

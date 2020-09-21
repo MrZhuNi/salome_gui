@@ -84,7 +84,7 @@
 #include <Utils_SINGLETON.hxx>
 #include <SALOME_LifeCycleCORBA.hxx>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QWidget>
 #include <QAction>
 #include <QRegExp>

@@ -22,7 +22,7 @@
 
 #include "SUIT.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 class QTextEdit;
 
 #ifdef WIN32

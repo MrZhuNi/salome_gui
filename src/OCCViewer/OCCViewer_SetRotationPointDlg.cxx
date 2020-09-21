@@ -32,7 +32,7 @@
 #include <QPushButton>
 #include <QMenu>
 #include <QGridLayout>
-#include <QDoubleValidator>
+#include <QtGui/QDoubleValidator>
 #include <QCheckBox>
 #include <QHBoxLayout>
 

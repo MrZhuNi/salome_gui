@@ -34,7 +34,7 @@
 #include <KERNEL_version.h>
 #include <GUI_version.h>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QRegExp>
 
 #ifdef WIN32

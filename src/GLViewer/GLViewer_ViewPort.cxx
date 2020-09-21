@@ -31,13 +31,13 @@
 #include "SUIT_Session.h"
 
 #include <QRect>
-#include <QCursor>
-#include <QPainter>
+#include <QtGui/QCursor>
+#include <QtGui/QPainter>
 #include <QMultiHash>
 //#include <QMenu>
 #include <QColorDialog>
 #include <QColormap>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <QCoreApplication>
 
 #include <stdlib.h>

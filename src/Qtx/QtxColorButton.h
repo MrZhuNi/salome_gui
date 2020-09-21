@@ -26,8 +26,8 @@
 #include "Qtx.h"
 
 #include <QMap>
-#include <QColor>
-#include <QPixmap>
+#include <QtGui/QColor>
+#include <QtGui/QPixmap>
 #include <QToolButton>
 
 class QPaintDevice;

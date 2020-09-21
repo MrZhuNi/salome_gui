@@ -29,9 +29,9 @@
 #include <QTimer>
 #include <QTextBlock>
 #include <QTextCursor>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QAbstractItemView>
-#include <QStandardItemModel>
+#include <QtGui/QStandardItemModel>
 
 /*!
   \brief Constructor.

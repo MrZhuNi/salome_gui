@@ -30,7 +30,7 @@
 #include <QtxDialog.h>
 #include <SUIT_Application.h>
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 #include <QListWidget>
 
 class OCCViewer_ViewPort3d;

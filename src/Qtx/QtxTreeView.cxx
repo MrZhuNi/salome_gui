@@ -24,7 +24,7 @@
 
 #include <QHeaderView>
 #include <QMenu>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 
 /*!
   \class QtxTreeView::Header

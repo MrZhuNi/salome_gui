@@ -19,8 +19,8 @@
 
 #include "ImageComposer_Operator.h"
 #include "ImageComposer_MetaTypes.h"
-#include <QPixmap>
-#include <QPainter>
+#include <QtGui/QPixmap>
+#include <QtGui/QPainter>
 
 /**
   Constructor

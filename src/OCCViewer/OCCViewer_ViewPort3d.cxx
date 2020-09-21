@@ -35,9 +35,9 @@
 #include <QFileInfo>
 #include <QString>
 #include <QRect>
-#include <QPaintEvent>
-#include <QResizeEvent>
-#include <QApplication>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QResizeEvent>
+#include <QtWidgets/QApplication>
 #include <QTimer>
 
 #include <V3d_View.hxx>

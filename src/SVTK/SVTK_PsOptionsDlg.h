@@ -20,7 +20,7 @@
 #ifndef SVTK_PSOPTIONSDLG_H
 #define SVTK_PSOPTIONSDLG_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class QtxDoubleSpinBox;
 class QCheckBox;

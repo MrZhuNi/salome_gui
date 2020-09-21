@@ -1,7 +1,7 @@
 #ifndef ___CLASSNAME___HXX
 #define ___CLASSNAME___HXX
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 #include "ui___CLASSNAME__.h"
 

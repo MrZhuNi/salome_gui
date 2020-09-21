@@ -39,7 +39,7 @@
 
 #include <Quantity_Color.hxx>
 
-#include <QColor>
+#include <QtGui/QColor>
 
 namespace OCCViewer
 {

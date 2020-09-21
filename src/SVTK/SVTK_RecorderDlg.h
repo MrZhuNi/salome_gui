@@ -20,7 +20,7 @@
 #ifndef SVTK_RECORDERDLG_H
 #define SVTK_RECORDERDLG_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class QCheckBox;
 class QComboBox;

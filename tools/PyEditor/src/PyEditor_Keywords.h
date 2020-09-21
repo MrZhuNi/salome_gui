@@ -24,7 +24,7 @@
 #define PYEDITOR_KEYWORDS_H
 
 #include <QObject>
-#include <QColor>
+#include <QtGui/QColor>
 #include <QList>
 #include <QMap>
 

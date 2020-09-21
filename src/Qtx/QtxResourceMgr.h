@@ -34,14 +34,14 @@
 
 #include <QMap>
 #include <QList>
-#include <QFont>
-#include <QColor>
-#include <QPixmap>
+#include <QtGui/QFont>
+#include <QtGui/QColor>
+#include <QtGui/QPixmap>
 #include <QByteArray>
 #include <QStringList>
-#include <QLinearGradient>
-#include <QRadialGradient>
-#include <QConicalGradient>
+#include <QtGui/QLinearGradient>
+#include <QtGui/QRadialGradient>
+#include <QtGui/QConicalGradient>
 
 class QTranslator;
 

@@ -21,7 +21,7 @@
 #define IMAGE_COMPOSER_FUSE_OPERATOR_HEADER
 
 #include "ImageComposer_Operator.h"
-#include <QColor>
+#include <QtGui/QColor>
 
 /**
   \class ImageComposer_FuseOperator

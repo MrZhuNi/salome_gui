@@ -29,7 +29,7 @@
 
 #include "SalomeApp.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOMEDS)

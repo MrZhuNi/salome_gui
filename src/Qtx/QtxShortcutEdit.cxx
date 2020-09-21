@@ -28,8 +28,8 @@
 #include <QTableWidgetItem>
 #include <QMessageBox>
 
-#include <QKeyEvent>
-#include <QKeySequence>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QKeySequence>
 
 #define COLUMN_SIZE  500
 

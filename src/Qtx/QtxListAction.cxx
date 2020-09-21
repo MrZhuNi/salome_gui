@@ -28,10 +28,10 @@
 #include <QMenu>
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <QListWidget>
 #include <QToolButton>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!
   \class QtxListAction::ScrollEvent

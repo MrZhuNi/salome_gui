@@ -25,7 +25,7 @@
 
 #include <QtGlobal>
 #include "Style.h"
-#include <QCommonStyle>
+#include <QtWidgets/QCommonStyle>
 #define BaseStyle QCommonStyle
 
 class Style_Model;

@@ -36,10 +36,10 @@
 
 #include "SALOME_ListIO.hxx"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QToolBar>
 #include <QToolButton>
-#include <QCursor>
+#include <QtGui/QCursor>
 #include <QColorDialog>
 
 //#include <qwt_math>

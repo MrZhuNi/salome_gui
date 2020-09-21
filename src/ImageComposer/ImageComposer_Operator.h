@@ -22,7 +22,7 @@
 
 #include "ImageComposer.h"
 
-#include <QColor>
+#include <QtGui/QColor>
 
 class QString;
 class QRectF;

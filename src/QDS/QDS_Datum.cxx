@@ -27,7 +27,7 @@
 #include <QTimer>
 #include <QEvent>
 #include <QMessageBox>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 #include "QDS_Validator.h"
 #include <DDS_Dictionary.h>

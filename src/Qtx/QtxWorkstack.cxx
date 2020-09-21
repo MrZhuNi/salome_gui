@@ -31,12 +31,12 @@
 #include <QStyle>
 #include <QRegExp>
 #include <QLayout>
-#include <QPainter>
+#include <QtGui/QPainter>
 #include <QDataStream>
-#include <QFocusEvent>
-#include <QMouseEvent>
+#include <QtGui/QFocusEvent>
+#include <QtGui/QMouseEvent>
 #include <QRubberBand>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QStyleOption>
 #include <QInputDialog>
 #include <QStackedWidget>

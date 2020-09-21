@@ -40,7 +40,7 @@
 #include "SUIT_ViewModel.h"
 #include "SUIT_ViewWindow.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 #include <QtXml/QDomNode>

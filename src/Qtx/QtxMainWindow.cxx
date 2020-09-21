@@ -33,8 +33,8 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QRubberBand>
-#include <QMouseEvent>
-#include <QApplication>
+#include <QtGui/QMouseEvent>
+#include <QtWidgets/QApplication>
 #include <QDesktopWidget>
 #include <cstdio>
 /*!

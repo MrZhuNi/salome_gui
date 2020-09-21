@@ -30,11 +30,11 @@
 
 #include <ImageComposer_Image.h>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QColorDialog>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneWheelEvent>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QMenu>
 
 #include <math.h>

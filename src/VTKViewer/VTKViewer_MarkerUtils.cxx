@@ -24,7 +24,7 @@
 
 // QT Includes
 #include <QFile>
-#include <QImage>
+#include <QtGui/QImage>
 #include <QString>
 #include <QTextStream>
 

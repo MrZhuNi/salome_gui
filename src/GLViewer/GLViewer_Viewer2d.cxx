@@ -43,7 +43,7 @@
 #include <QRect>
 #include <QFile>
 #include <QPolygon>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <QColorDialog>
 
 /*!

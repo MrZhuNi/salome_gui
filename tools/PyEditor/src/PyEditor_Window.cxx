@@ -26,7 +26,7 @@
 #include "PyEditor_SettingsDlg.h"
 
 #include <QAction>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMenuBar>

@@ -29,7 +29,7 @@
 
 #include <QFrame>
 #include <QVBoxLayout>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 
 /*!
   \class VTKViewer_MarkerDlg

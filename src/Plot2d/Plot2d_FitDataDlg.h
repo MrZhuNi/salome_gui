@@ -24,7 +24,7 @@
 #define PLOT2D_FITDATADLG_H
 
 #include "Plot2d.h"
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class QGroupBox;
 class QRadioButton;

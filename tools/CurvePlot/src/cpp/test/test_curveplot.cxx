@@ -29,7 +29,7 @@
 
 #include <PyInterp_Interp.h>  // GUI
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QDesktopWidget>
 #include <QMainWindow>
 #include <QList>

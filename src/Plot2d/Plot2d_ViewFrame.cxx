@@ -46,20 +46,20 @@
 #include <QMessageBox>
 #endif
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QToolBar>
 #include <QToolButton>
-#include <QCursor>
+#include <QtGui/QCursor>
 #include <QColorDialog>
 #include <QLayout>
 #include <QMap>
-#include <QPainter>
+#include <QtGui/QPainter>
 #include <QPaintDevice>
 #include <QEvent>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <QContextMenuEvent>
 #include <QtPrintSupport/QPrinter>
-#include <QPalette>
+#include <QtGui/QPalette>
 #include <QLocale>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>

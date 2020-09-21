@@ -67,8 +67,8 @@
 #include "PyConsole_Console.h"
 
 #include <QAction>
-#include <QApplication>
-#include <QPaintEvent>
+#include <QtWidgets/QApplication>
+#include <QtGui/QPaintEvent>
 #include <QCoreApplication>
 #include <QVBoxLayout>
 

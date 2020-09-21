@@ -22,7 +22,7 @@
 //
 #include "Style_Tools.h"
 
-#include <QPainter>
+#include <QtGui/QPainter>
 #include <QPainterPath>
 #include <QRect>
 #include <QColor>

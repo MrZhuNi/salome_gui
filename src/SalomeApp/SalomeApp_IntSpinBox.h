@@ -27,7 +27,7 @@
 
 #include <QtxIntSpinBox.h>
 
-#include <QValidator>
+#include <QtGui/QValidator>
 
 class SALOMEAPP_EXPORT SalomeApp_IntSpinBox : public QtxIntSpinBox
 {

@@ -59,7 +59,7 @@
 
 #include <QtxRubberBand.h>
 
-#include <QPixmap>
+#include <QtGui/QPixmap>
 #include <QWidget>
 #include <QPolygon>
 

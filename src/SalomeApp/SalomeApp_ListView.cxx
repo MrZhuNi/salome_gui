@@ -31,11 +31,11 @@
 
 #include "utilities.h"
 
-#include <QValidator>
+#include <QtGui/QValidator>
 #include <QToolButton>
-#include <QPixmap>
+#include <QtGui/QPixmap>
 #include <QHeaderView>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_ListOfReal.hxx>

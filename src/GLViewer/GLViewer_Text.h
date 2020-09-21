@@ -40,9 +40,9 @@
 #include <GL/gl.h>
 #endif
 
-#include <QFont>
+#include <QtGui/QFont>
 #include <QString>
-#include <QColor>
+#include <QtGui/QColor>
 
 #ifdef WIN32
 #pragma warning( disable:4251 )

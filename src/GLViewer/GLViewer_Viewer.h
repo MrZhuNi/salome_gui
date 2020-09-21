@@ -31,7 +31,7 @@
 #include "GLViewer_Defs.h"
 #include <SUIT_ViewModel.h>
 
-#include <QCursor>
+#include <QtGui/QCursor>
 #include <QObject>
 
 class QMouseEvent;

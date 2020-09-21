@@ -40,14 +40,14 @@
 #include "QtxActionToolMgr.h"
 #include "QtxBackgroundTool.h"
 
-#include <QPainter>
-#include <QApplication>
+#include <QtGui/QPainter>
+#include <QtWidgets/QApplication>
 #include <QColorDialog>
 #include <QFileDialog>
-#include <QPalette>
-#include <QKeyEvent>
+#include <QtGui/QPalette>
+#include <QtGui/QKeyEvent>
 #include <QMenu>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <QToolBar>
 #include <QDesktopWidget>
 

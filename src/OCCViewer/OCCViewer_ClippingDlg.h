@@ -26,7 +26,7 @@
 #include "OCCViewer.h"
 #include "OCCViewer_ClipPlane.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 #include <AIS_Plane.hxx>
 #include <V3d_Plane.hxx>

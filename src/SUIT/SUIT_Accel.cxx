@@ -30,7 +30,7 @@
 
 #include <QCoreApplication>
 #include <QEvent>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 
 /*!
   \class SUIT_Accel

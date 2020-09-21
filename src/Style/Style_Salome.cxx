@@ -24,8 +24,8 @@
 #include "Style_Tools.h"
 #include "Style_Model.h"
 
-#include <QApplication>
-#include <QPainter>
+#include <QtWidgets/QApplication>
+#include <QtGui/QPainter>
 #include <QMap>
 #include <QPainterPath>
 #include <QWidget>

@@ -30,7 +30,7 @@
 #include "GLViewer.h"
 #include "GLViewer_Object.h"
 
-#include <QColor>
+#include <QtGui/QColor>
 
 #include <TColStd_SequenceOfInteger.hxx>
 

@@ -27,7 +27,7 @@
 #include <QCompleter>
 #include <QEvent>
 #include <QGridLayout>
-#include <QIcon>
+#include <QtGui/QIcon>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>

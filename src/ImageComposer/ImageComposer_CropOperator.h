@@ -21,8 +21,8 @@
 #define IMAGE_COMPOSER_CROP_OPERATOR_HEADER
 
 #include "ImageComposer_Operator.h"
-#include <QColor>
-#include <QPainterPath>
+#include <QtGui/QColor>
+#include <QtGui/QPainterPath>
 
 /**
   \class ImageComposer_CropOperator

@@ -27,7 +27,7 @@
 
 #include <Qtx.h>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QStringList>
 #include <QDir>
 #include <QMainWindow>

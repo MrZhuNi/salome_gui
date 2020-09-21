@@ -38,7 +38,7 @@
 #include <Utils_SALOME_Exception.hxx>
 #include <utilities.h>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QDir>
 #include <QFile>
 

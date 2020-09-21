@@ -30,7 +30,7 @@
 #include "Qtx.h"
 
 #include <QtGlobal>
-#include <QDialog>
+#include <QtWidgets/QDialog>
 #include <QMainWindow>
 #include <QUrl>
 

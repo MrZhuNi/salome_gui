@@ -36,7 +36,7 @@
 #include <vtkInteractorStyle.h>
 #include <vtkSmartPointer.h>
 
-#include <QCursor>
+#include <QtGui/QCursor>
 #include <QtxRubberBand.h>
 
 #include <map>

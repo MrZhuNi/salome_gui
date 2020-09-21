@@ -25,13 +25,13 @@
 //
 #include "QtxToolTip.h"
 
-#include <QFont>
+#include <QtGui/QFont>
 #include <QTimer>
-#include <QCursor>
-#include <QFontMetrics>
-#include <QApplication>
-#include <QPalette>
-#include <QMouseEvent>
+#include <QtGui/QCursor>
+#include <QtGui/QFontMetrics>
+#include <QtWidgets/QApplication>
+#include <QtGui/QPalette>
+#include <QtGui/QMouseEvent>
 
 #define TOOLTIP_SHOW_DELAY 0500
 #define TOOLTIP_HIDE_DELAY 7000

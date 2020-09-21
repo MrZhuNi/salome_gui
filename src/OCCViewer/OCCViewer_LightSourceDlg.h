@@ -21,7 +21,7 @@
 #define OCCVIEWER_LIGHTSOURCEDLG_H
 
 #include "OCCViewer.h"
-#include <QDialog>
+#include <QtWidgets/QDialog>
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_PositionalLight.hxx>
 #include <V3d_TypeOfLight.hxx>

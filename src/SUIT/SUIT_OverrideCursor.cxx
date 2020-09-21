@@ -22,7 +22,7 @@
 
 #include "SUIT_OverrideCursor.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!Constructor. Initialize wait cursor.*/
 SUIT_OverrideCursor::SUIT_OverrideCursor()

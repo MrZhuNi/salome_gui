@@ -27,7 +27,7 @@
 #include "QtxResourceMgr.h"
 #include "QtxSearchTool.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QFileDialog>

@@ -28,8 +28,8 @@
 
 #include "LightApp.h"
 
-#include <QDialog> 
-#include <QPixmap>
+#include <QtWidgets/QDialog> 
+#include <QtGui/QPixmap>
 #include <QMap>
 
 class QPushButton;

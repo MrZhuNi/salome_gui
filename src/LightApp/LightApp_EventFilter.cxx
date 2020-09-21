@@ -24,7 +24,7 @@
 
 #include <SUIT_Desktop.h>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 #include <SALOME_Event.h>
 

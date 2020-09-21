@@ -25,10 +25,10 @@
 
 #include <QtxResourceMgr.h>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QColor>
-#include <QFont>
-#include <QPalette>
+#include <QtGui/QFont>
+#include <QtGui/QPalette>
 
 /*!
   \brief Mix two colors to get color with averaged red, green, blue and alpha-channel values

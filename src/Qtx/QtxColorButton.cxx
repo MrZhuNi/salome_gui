@@ -25,9 +25,9 @@
 #include <QMenu>
 #include <QStyle>
 #include <QLayout>
-#include <QBitmap>
-#include <QPainter>
-#include <QPaintEvent>
+#include <QtGui/QBitmap>
+#include <QtGui/QPainter>
+#include <QtGui/QPaintEvent>
 #include <QColorDialog>
 #include <QStyleOptionToolButton>
 

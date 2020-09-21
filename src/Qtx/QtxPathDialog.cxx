@@ -30,7 +30,7 @@
 
 #include <QDir>
 #include <QLabel>
-#include <QPixmap>
+#include <QtGui/QPixmap>
 #include <QLayout>
 #include <QLineEdit>
 #include <QObjectList>

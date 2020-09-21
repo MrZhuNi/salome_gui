@@ -22,7 +22,7 @@
 // use the dialog class as illustrated in the functions TEST_*.
 // (gboulant - 12/10/2010)
 //
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include "QDialogTest.h"
 
 void TEST_show() {

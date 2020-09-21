@@ -25,9 +25,9 @@
 
 #include "Style.h"
 
-#include <QPainterPath>
+#include <QtGui/QPainterPath>
 #include <QRect>
-#include <QColor>
+#include <QtGui/QColor>
 #include <QStyle>
 
 //

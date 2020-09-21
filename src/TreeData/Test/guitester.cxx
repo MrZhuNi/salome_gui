@@ -17,7 +17,7 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QTreeView>

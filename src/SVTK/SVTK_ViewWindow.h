@@ -35,7 +35,7 @@
 #include "SALOME_InteractiveObject.hxx"
 #include "SALOME_ListIO.hxx"
 
-#include <QImage>
+#include <QtGui/QImage>
 #include <vtkSmartPointer.h>
 
 class SUIT_Desktop;

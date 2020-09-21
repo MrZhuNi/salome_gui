@@ -38,10 +38,10 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneWheelEvent>
 #include <QHBoxLayout>
-#include <QImage>
-#include <QMouseEvent>
+#include <QtGui/QImage>
+#include <QtGui/QMouseEvent>
 #include <QString>
-#include <QWheelEvent>
+#include <QtGui/QWheelEvent>
 
 //=======================================================================
 // Name    : GraphicsView_ViewFrame

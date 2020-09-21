@@ -36,7 +36,7 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QSpinBox>
-#include <QPainter>
+#include <QtGui/QPainter>
 
 const int MARGIN_SIZE     = 11;
 const int SPACING_SIZE    = 6;

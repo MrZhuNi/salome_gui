@@ -27,8 +27,8 @@
 #include "QtxResourceMgr.h"
 #include <cstdio>
 
-#include <QApplication>
-#include <QPainter>
+#include <QtWidgets/QApplication>
+#include <QtGui/QPainter>
 #include <QMessageBox>
 #include <QDesktopWidget>
 

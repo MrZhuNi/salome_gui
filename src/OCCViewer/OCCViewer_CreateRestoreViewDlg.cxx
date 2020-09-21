@@ -28,7 +28,7 @@
 #include <QHBoxLayout>
 #include <QListWidgetItem>
 #include <QEvent>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 
 /*!
   Constructor

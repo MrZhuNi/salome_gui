@@ -22,7 +22,7 @@
 
 #include "SalomeApp.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class QListWidget;
 class QPushButton;

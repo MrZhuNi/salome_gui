@@ -25,7 +25,7 @@
 
 #include "Qtx.h"
 
-#include <QValidator>
+#include <QtGui/QValidator>
 
 class QTX_EXPORT QtxIntValidator : public QIntValidator
 {

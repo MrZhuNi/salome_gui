@@ -23,7 +23,7 @@
 #include "OCCViewer.h"
 
 #include <QObject>
-#include <QCursor>
+#include <QtGui/QCursor>
 #include <QSize>
 
 class OCCViewer_ViewWindow;

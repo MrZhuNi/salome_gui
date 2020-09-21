@@ -26,9 +26,9 @@
 #include "Plot2d_ViewFrame.h"
 #include "Plot2d_Curve.h"
 
-#include <QFontMetrics>
+#include <QtGui/QFontMetrics>
 #include <QEvent>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 
 #include <qwt_plot.h>
 #include <qwt_plot_canvas.h>

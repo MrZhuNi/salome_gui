@@ -28,7 +28,7 @@
 #include "PyInterp_Interp.h" // !!! WARNING !!! THIS INCLUDE MUST BE THE VERY FIRST !!!
 #include "LightApp_Module.h"
 
-#include <QIcon>
+#include <QtGui/QIcon>
 #include <QMap>
 #include <QStringList>
 

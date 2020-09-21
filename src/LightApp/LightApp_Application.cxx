@@ -169,20 +169,20 @@
 #define VISIBILITY_COLUMN_WIDTH 25
 
 #include <QDir>
-#include <QImage>
+#include <QtGui/QImage>
 #include <QString>
 #include <QWidget>
 #include <QStringList>
 #include <QFile>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QMap>
 #include <QStatusBar>
 #include <QThread>
 #include <QObjectList>
 #include <QComboBox>
 #include <QInputDialog>
-#include <QFontDatabase>
-#include <QIcon>
+#include <QtGui/QFontDatabase>
+#include <QtGui/QIcon>
 #include <QByteArray>
 #include <QMenu>
 #include <QProcess>

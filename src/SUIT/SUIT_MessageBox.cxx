@@ -26,7 +26,7 @@
 
 #include <QMessageBox>
 #include <QPushButton>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QString>
 
 #include <stdarg.h>

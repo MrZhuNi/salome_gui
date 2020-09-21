@@ -22,7 +22,7 @@
 
 #include "OCCViewer.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class OCCViewer_ViewWindow;
 class QtxDoubleSpinBox;

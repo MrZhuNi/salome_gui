@@ -30,7 +30,7 @@
 
 #include <QObject>
 #include <QList>
-#include <QPixmap>
+#include <QtGui/QPixmap>
 
 class QMenuBar;
 class QMovie;

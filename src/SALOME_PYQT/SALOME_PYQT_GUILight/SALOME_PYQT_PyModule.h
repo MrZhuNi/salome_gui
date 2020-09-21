@@ -28,7 +28,7 @@
 
 #include "PyInterp_Interp.h" // !!! WARNING !!! THIS INCLUDE MUST BE THE VERY FIRST !!!
 
-#include <QIcon>
+#include <QtGui/QIcon>
 #include <QList>
 #include <QMap>
 #include <QObject>

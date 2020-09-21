@@ -26,13 +26,13 @@
 #include "Plot2d_Object.h"
 #include "Plot2d_ViewFrame.h"
 
-#include <QPainter>
-#include <QPalette>
+#include <QtGui/QPainter>
+#include <QtGui/QPalette>
 #include <QLayout>
 #include <QLine>
 #include <QVariant>
 #include <QStyleOption>
-#include <QPaintEvent>
+#include <QtGui/QPaintEvent>
 #include <QTileRules>
 
 #include <qwt_plot.h>

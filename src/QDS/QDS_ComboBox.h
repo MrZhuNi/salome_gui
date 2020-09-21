@@ -26,7 +26,7 @@
 #include "QDS_Datum.h"
 
 #include <QMap>
-#include <QPixmap>
+#include <QtGui/QPixmap>
 #include <QStringList>
 
 #include <Qtx.h>

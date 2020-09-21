@@ -36,7 +36,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QGridLayout>
-#include <QDoubleValidator>
+#include <QtGui/QDoubleValidator>
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QButtonGroup>

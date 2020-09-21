@@ -35,13 +35,13 @@
 
 #include <QColor>
 #include <QFileDialog>
-#include <QImage>
+#include <QtGui/QImage>
 #include <QHBoxLayout>
 #include <QString>
 #include <QFrame>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QWheelEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QWheelEvent>
 
 #ifdef WIN32
 #include <Standard_Integer.hxx>

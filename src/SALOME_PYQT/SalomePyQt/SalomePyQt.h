@@ -30,7 +30,7 @@
 
 #include <QObject>
 #include <QString>
-#include <QColor>
+#include <QtGui/QColor>
 
 #include <LightApp_Application.h>
 #ifndef GUI_DISABLE_CORBA

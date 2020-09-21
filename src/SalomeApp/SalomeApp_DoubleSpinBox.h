@@ -27,7 +27,7 @@
 
 #include <QtxDoubleSpinBox.h>
 
-#include <QValidator>
+#include <QtGui/QValidator>
 
 class SALOMEAPP_EXPORT SalomeApp_DoubleSpinBox : public QtxDoubleSpinBox
 {

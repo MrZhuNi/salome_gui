@@ -24,7 +24,7 @@
 #include "PyEditor_Window.h"
 #include "PyEditor_StdSettings.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QCommandLineParser>
 #include <QDir>
 #include <QLibraryInfo>

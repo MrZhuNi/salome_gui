@@ -22,7 +22,7 @@
 //
 #include "Plot2d.h"
 
-#include <QPainter>
+#include <QtGui/QPainter>
 
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>

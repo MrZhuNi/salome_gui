@@ -23,10 +23,10 @@
 #include "QtxNotify.h"
 
 #include <QTimer>
-#include <QPainter>
-#include <QMouseEvent>
-#include <QApplication>
-#include <QTextDocument>
+#include <QtGui/QPainter>
+#include <QtGui/QMouseEvent>
+#include <QtWidgets/QApplication>
+#include <QtGui/QTextDocument>
 #include <QDesktopWidget>
 #include <QSharedPointer>
 #include <QPropertyAnimation>

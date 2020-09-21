@@ -26,8 +26,8 @@
 #include "OCCViewer_ViewWindow.h"
 #include "OCCViewer_ViewPort3d.h"
 
-#include <QMouseEvent>
-#include <QKeyEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QKeyEvent>
 
 /*!
   \brief Constructor.

@@ -27,7 +27,7 @@
 
 #include <QAction>
 #include <QMainWindow>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 /*!
   \class QtxToolBar::Watcher

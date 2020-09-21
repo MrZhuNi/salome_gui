@@ -28,7 +28,7 @@
 
 #include "Plot2d.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class QSpinBox;
 class QCheckBox;

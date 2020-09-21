@@ -89,7 +89,7 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QGridLayout>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QListView>
 #include <QLineEdit>
 #include <QUrl>

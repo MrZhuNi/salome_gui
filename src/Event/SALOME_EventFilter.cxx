@@ -20,7 +20,7 @@
 #include "SALOME_EventFilter.h"
 #include "SALOME_Event.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 SALOME_EventFilter* SALOME_EventFilter::myFilter = NULL;
 

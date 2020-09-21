@@ -26,13 +26,13 @@
 #include "QtxLogoMgr.h"
 
 #include <QLabel>
-#include <QImage>
-#include <QBitmap>
+#include <QtGui/QImage>
+#include <QtGui/QBitmap>
 #include <QHBoxLayout>
 #include <QMenuBar>
 #include <QPointer>
-#include <QApplication>
-#include <QMovie>
+#include <QtWidgets/QApplication>
+#include <QtGui/QMovie>
 
 /*!
   \class QtxLogoMgr::LogoBox

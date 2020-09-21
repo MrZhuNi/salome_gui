@@ -32,8 +32,8 @@
 #include <GeomAPI_IntCS.hxx>
 #include <gce_MakeDir.hxx>
 
-#include <QMouseEvent>
-#include <QKeyEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QKeyEvent>
 
 /*!
   \brief Constructor.

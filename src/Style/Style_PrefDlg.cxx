@@ -29,7 +29,7 @@
 #include <QtxDoubleSpinBox.h>
 #include <QtxFontEdit.h>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QColorDialog>
@@ -37,7 +37,7 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QLabel>
 #include <QListWidget>
 #include <QMap>

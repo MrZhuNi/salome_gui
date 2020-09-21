@@ -40,13 +40,13 @@
 //#include <QtxToolTip.h>
 
 #include <QHBoxLayout>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <QRect>
 //#include <QMenu>
 //#include <QToolTip>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QClipboard>
-#include <QBitmap>
+#include <QtGui/QBitmap>
 #include <QLabel>
 #include <QWidget>
 #include <QRubberBand>

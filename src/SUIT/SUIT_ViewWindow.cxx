@@ -37,9 +37,9 @@
 #include "QtxMultiAction.h"
 
 #include <QEvent>
-#include <QIcon>
+#include <QtGui/QIcon>
 #include <QMenu>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QContextMenuEvent>
 
 /*!\class SUIT_ViewWindow

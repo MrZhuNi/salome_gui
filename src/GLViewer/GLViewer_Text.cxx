@@ -25,8 +25,8 @@
 //
 #include "GLViewer_Text.h"
 
-#include <QApplication>
-#include <QFontMetrics>
+#include <QtWidgets/QApplication>
+#include <QtGui/QFontMetrics>
 
 /*!
   Constructor

@@ -38,8 +38,8 @@
 
 #include <qwt_symbol.h>
 #include <QString>
-#include <QColor>
-#include <QPixmap>
+#include <QtGui/QColor>
+#include <QtGui/QPixmap>
 
 class QPainter;
 class QwtPlot;

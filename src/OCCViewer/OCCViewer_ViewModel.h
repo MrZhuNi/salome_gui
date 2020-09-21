@@ -23,7 +23,7 @@
 #ifndef OCCVIEWER_VIEWMODEL_H
 #define OCCVIEWER_VIEWMODEL_H
 
-#include <QColor>
+#include <QtGui/QColor>
 #include <QPoint>
 #include <QVector>
 

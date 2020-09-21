@@ -25,7 +25,7 @@
 
 #include "ViewerTools.h"
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class QtxAction;
 

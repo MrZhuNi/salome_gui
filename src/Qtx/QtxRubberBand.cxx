@@ -22,12 +22,12 @@
 //
 #include "QtxRubberBand.h"
 
-#include <QBitmap>
-#include <QImage>
-#include <QPaintEvent>
-#include <QPainter>
-#include <QPalette>
-#include <QShowEvent>
+#include <QtGui/QBitmap>
+#include <QtGui/QImage>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QPainter>
+#include <QtGui/QPalette>
+#include <QtGui/QShowEvent>
 #include <QVectorIterator>
 
 #include <math.h>

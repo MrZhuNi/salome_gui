@@ -27,7 +27,7 @@
 #include <QLayout>
 #include <QToolButton>
 #include <QFontDialog>
-#include <QFontDatabase>
+#include <QtGui/QFontDatabase>
 #include <QFontComboBox>
 
 /*!

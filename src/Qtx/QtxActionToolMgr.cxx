@@ -28,8 +28,8 @@
 #include "QtxAction.h"
 #include "QtxToolBar.h"
 
-#include <QApplication>
-#include <QHideEvent>
+#include <QtWidgets/QApplication>
+#include <QtGui/QHideEvent>
 #include <QMainWindow>
 
 /*!

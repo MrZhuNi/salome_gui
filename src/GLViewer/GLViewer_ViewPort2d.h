@@ -44,7 +44,7 @@
 #include "GLViewer_Geom.h"
 
 #include <QtOpenGL/QtOpenGL>
-#include <QColor>
+#include <QtGui/QColor>
 #include <QPaintDevice>
 
 #ifdef WIN32
