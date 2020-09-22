@@ -81,7 +81,7 @@ class PlotTestBase(unittest.TestCase):
 
   def setUp(self):
     import sys
-    from SalomePyQt_MockUp import SalomePyQt
+    from mockup.SalomePyQt_MockUp import SalomePyQt
     from curveplot.TableModel import TableModel
     from curveplot.CurveModel import CurveModel
     from curveplot.XYPlotSetModel import XYPlotSetModel
@@ -95,7 +95,7 @@ class PlotTestBase(unittest.TestCase):
       self.tmpDir = None
 
     # Minimal UI setup:
-    #self.app = QApplication(sys.argv)
+    self.app = QApplication(sys.argv)
     desktop = TestDesktop(None)
     self.sgPyQt = SalomePyQt(desktop)
     desktop._sgPyQt = self.sgPyQt
