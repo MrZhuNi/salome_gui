@@ -22,8 +22,8 @@
 from pyqtside.QtWidgets import QApplication
 from pyqtside.QtCore import QTimer, QTranslator
 
-from TestDesktop import TestDesktop
-import SalomePyQt_MockUp
+from curveplot.TestDesktop import TestDesktop
+from curveplot.SalomePyQt_MockUp import SalomePyQt
 
 desktop = None
 
@@ -46,7 +46,7 @@ def main(args) :
     x, y = dw.width()*0.25, dw.height()*0.7
 
     desktop = TestDesktop(None)
-    sgPyQt = SalomePyQt_MockUp.SalomePyQt(desktop)
+    sgPyQt = SalomePyQt(desktop)
     sgPyQt.currentTabChanged.connect(activeViewChanged)
     desktop._sgPyQt = sgPyQt
     desktop.initialize()
