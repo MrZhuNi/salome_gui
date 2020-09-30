@@ -180,7 +180,7 @@ int
 VTKViewer_GeometryFilter
 ::UnstructuredGridExecute(vtkDataSet *dataSetInput,
                           vtkPolyData *output,
-                          vtkInformation *outInfo)
+                          vtkInformation */*outInfo*/)
 {
   vtkUnstructuredGrid *input= (vtkUnstructuredGrid *)dataSetInput;
   vtkCellArray *Connectivity = input->GetCells();

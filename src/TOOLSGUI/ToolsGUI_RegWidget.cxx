@@ -279,7 +279,7 @@ ToolsGUI_RegWidget::ToolsGUI_RegWidget( CORBA::ORB_ptr orb, QWidget* parent )
 ToolsGUI_RegWidget::~ToolsGUI_RegWidget()
 {
   myRegWidgetPtr = 0;
-};
+}
 
 /*!
   \brief Get description text, containing information about the service.

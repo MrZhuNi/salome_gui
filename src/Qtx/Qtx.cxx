@@ -2143,7 +2143,7 @@ QString Qtx::qtDir( const QString& context )
 
   QStringList vars = { "QT5_ROOT_DIR", "QT_ROOT_DIR", "QTDIR" };
   QString qtPath;
-  for (uint i = 0; i < (uint)vars.length() && qtPath.isEmpty(); i++ ) { //!< TODO: mismatch signed/unsigned
+  for (int i = 0; i < vars.length() && qtPath.isEmpty(); i++ ) {
     qtPath = getenv(vars[i]);
   }
   if ( !qtPath.isEmpty() && !context.isEmpty() )

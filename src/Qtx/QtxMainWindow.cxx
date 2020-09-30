@@ -239,11 +239,11 @@ QtxMainWindow::QtxMainWindow( QWidget* parent, Qt::WindowFlags f )
 : QMainWindow( parent, f ),
   myMenuBar( 0 ),
   myStatusBar( 0 ),
+  myFullScreenAllowed(true),
+  myMinimizeAllowed(true),
   myOpaque( true ),
   myResizer( 0 ),
-  myMouseMove( 0 ),
-  myFullScreenAllowed(true),
-  myMinimizeAllowed(true)
+  myMouseMove( 0 )
 {
   //rnv: Enables tooltips for inactive windows.
   //rnv: For details see http://bugtracker.opencascade.com/show_bug.cgi?id=20893

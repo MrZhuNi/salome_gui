@@ -44,7 +44,7 @@
   #endif
 #endif
 
-vtkStandardNewMacro(VTKViewer_AppendFilter);
+vtkStandardNewMacro(VTKViewer_AppendFilter)
 
 VTKViewer_AppendFilter
 ::VTKViewer_AppendFilter() 

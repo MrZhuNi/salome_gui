@@ -1197,7 +1197,7 @@ void VTKViewer_InteractorStyle::onOperation(QPoint mousePos)
     {
       if (!myCursorState)
         setCursor(VTK_INTERACTOR_STYLE_CAMERA_SELECT);
-    }
+    } // fall through!
   case VTK_INTERACTOR_STYLE_CAMERA_FIT:
     {
       myOtherPoint = mousePos;

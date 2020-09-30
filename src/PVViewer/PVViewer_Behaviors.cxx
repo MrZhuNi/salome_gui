@@ -60,9 +60,8 @@ PVViewer_Behaviors::PVViewer_Behaviors(QMainWindow * parent)
  * This method should be updated at each new version of ParaView with what is found in
  *    Qt/ApplicationComponents/pqParaViewBehaviors.cxx
  */
-void PVViewer_Behaviors::instanciateMinimalBehaviors(QMainWindow * desk)
+void PVViewer_Behaviors::instanciateMinimalBehaviors(QMainWindow * /*desk*/)
 {
-	//GUI_UNUSED(desk);
   if (BehaviorLoadingLevel < 1)
     {
       // Register ParaView interfaces.

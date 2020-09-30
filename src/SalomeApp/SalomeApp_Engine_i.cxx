@@ -64,7 +64,7 @@ SalomeApp_Engine_i::~SalomeApp_Engine_i()
 }
 
 SALOMEDS::TMPFile* SalomeApp_Engine_i::Save (SALOMEDS::SComponent_ptr theComponent,
-                                             const char* theURL,
+                                             const char* /*theURL*/,
                                              bool isMultiFile)
 {
   SALOMEDS::TMPFile_var aStreamFile = new SALOMEDS::TMPFile;
@@ -212,11 +212,10 @@ void SalomeApp_Engine_i::SetListOfFiles (int type, const ListOfFiles& theListOfF
 /*! 
  *  DumpPython implementation for light modules
  */
-Engines::TMPFile* SalomeApp_Engine_i::DumpPython(CORBA::Boolean isPublished,
-						                         CORBA::Boolean isMultiFile,
-						                         CORBA::Boolean& isValidScript)
+Engines::TMPFile* SalomeApp_Engine_i::DumpPython(CORBA::Boolean /*isPublished*/,
+                                                 CORBA::Boolean /*isMultiFile*/,
+                                                 CORBA::Boolean& isValidScript)
 {
-	//GUI_UNUSED(isPublished);GUI_UNUSED(isMultiFile);
   MESSAGE("SalomeApp_Engine_i::DumpPython(): myComponentName = "<<
 	  qPrintable( myComponentName ) << ", this = " << this);
   

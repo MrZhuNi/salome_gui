@@ -43,7 +43,7 @@ protected:
   /*!Destructor.*/
   ~VTKViewer_TransformFilter() {/*!Do nothing*/}
   /*!Copy constructor.*/
-  VTKViewer_TransformFilter(const VTKViewer_TransformFilter&) {/*!Do nothing*/}
+  VTKViewer_TransformFilter(const VTKViewer_TransformFilter&): vtkTransformFilter() {/*!Do nothing*/}
   /*!Operator = */
   void operator=(const VTKViewer_TransformFilter&) {/*!Do nothing*/}
 

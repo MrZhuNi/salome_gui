@@ -76,6 +76,7 @@ void GraphicsView_Scene::processRectChanged()
 //================================================================
 void GraphicsView_Scene::onSceneRectChanged( const QRectF& theRect )
 {
+  (void)theRect; // unused in debug mode
 #ifdef VIEWER_DEBUG
   mySceneRectItem->setRect( theRect );
 #endif

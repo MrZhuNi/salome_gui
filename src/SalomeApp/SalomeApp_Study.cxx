@@ -365,7 +365,7 @@ private:
         // parse the children
         o = o->firstChild();
       }
-      else if ( o->nextBrother() > 0 ) {
+      else if ( o->nextBrother() ) {
         o = o->nextBrother();
       }
       else {
@@ -724,7 +724,7 @@ bool SalomeApp_Study::dump( const QString& theFileName,
                             bool isMultiFile,
                             bool toSaveGUI )
 {
-  int savePoint;
+  int savePoint = 0;
   _PTR(AttributeParameter) ap;
   _PTR(IParameters) ip = ClientFactory::getIParameters(ap);
 
@@ -857,9 +857,8 @@ void SalomeApp_Study::openModuleData( QString theModuleName, int type, QStringLi
   Re-implemented from LightApp_Study, actually does not save anything but
   simply cleans up light modules' data
 */
-bool SalomeApp_Study::saveStudyData( const QString& theFileName, int type )
+bool SalomeApp_Study::saveStudyData( const QString& /*theFileName*/, int type )
 {
-	//GUI_UNUSED(theFileName);
   ModelList list; dataModels( list );
   QListIterator<CAM_DataModel*> it( list );
   while ( it.hasNext() ){

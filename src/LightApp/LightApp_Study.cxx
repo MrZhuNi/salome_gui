@@ -319,7 +319,7 @@ bool LightApp_Study::isSaved() const
 /*!
   Creates SComponent for module, necessary for SalomeApp study
 */
-void LightApp_Study::addComponent(const CAM_DataModel* dm)
+void LightApp_Study::addComponent(const CAM_DataModel* /*dm*/)
 {
 }
 

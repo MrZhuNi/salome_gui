@@ -1144,9 +1144,8 @@ void CAM_Module::updateModuleVisibilityState() {
   This method is called from CAM_Application::startOperation().
   \param actionId is a numerical unique operation id.
 */
-bool CAM_Module::activateOperation( int actionId )
+bool CAM_Module::activateOperation( int /*actionId*/ )
 {
-  //GUI_UNUSED(actionId);
   return false;
 }
 
@@ -1155,9 +1154,8 @@ bool CAM_Module::activateOperation( int actionId )
   This method is called from CAM_Application::startOperation().
   \param actionId is a string unique operation id.
 */
-bool CAM_Module::activateOperation( const QString& actionId )
+bool CAM_Module::activateOperation( const QString& /*actionId*/ )
 {
-  //GUI_UNUSED(actionId);
   return false;
 }
 
@@ -1167,9 +1165,8 @@ bool CAM_Module::activateOperation( const QString& actionId )
   \param actionId is a string unique operation id.
   \param pluginName is a name of a plugin where the operation is implemented.
 */
-bool CAM_Module::activateOperation( const QString& actionId, const QString& pluginName )
+bool CAM_Module::activateOperation( const QString& /*actionId*/, const QString& /*pluginName*/ )
 {
-  //GUI_UNUSED(actionId);
   return false;
 }
 

@@ -1190,9 +1190,8 @@ void SalomeApp_Application::updateDesktopTitle() {
   desktop()->setWindowTitle( aTitle );
 }
 
-int SalomeApp_Application::closeChoice( const QString& docName )
+int SalomeApp_Application::closeChoice( const QString& /*docName*/ )
 {
-	//GUI_UNUSED(docName);
   QStringList buttons;
   QMap<int, int> choices;
   int idx = 0;
@@ -1234,6 +1233,7 @@ bool SalomeApp_Application::closeAction( const int choice, bool& closePermanentl
       onSaveDoc();
     else if ( !onSaveAsDoc() )
       res = false;
+    // fall through!
   case CloseDisconnect:
     closeActiveDoc( false );
     closePermanently = false;
@@ -1282,9 +1282,8 @@ bool SalomeApp_Application::openAction( const int aChoice, const QString& aName 
   switch ( choice )
   {
   case OpenRefresh:
-    {
-      choice = OpenNew;
-    }
+    choice = OpenNew;
+    // fall through!
   default:
     res = LightApp_Application::openAction( choice, aName );
     break;
@@ -1899,9 +1898,8 @@ bool SalomeApp_Application::renameAllowed( const QString& entry) const
   \param name new name of the object
   \brief Return \c true if rename operation finished successfully, \c false otherwise.
 */
-bool SalomeApp_Application::renameObject( const QString& entry, const QString& name )
+bool SalomeApp_Application::renameObject( const QString& /*entry*/, const QString& name )
 {
-	//GUI_UNUSED(entry);
   SalomeApp_Study* aStudy = dynamic_cast<SalomeApp_Study*>( activeStudy() );
 
   int savePoint = ::getSelectedSavePoint( selectionMgr() );

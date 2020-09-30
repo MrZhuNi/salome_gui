@@ -113,7 +113,7 @@ class VTKVIEWER_EXPORT VTKViewer_InteractorStyle : public QObject, public vtkInt
  protected:
   VTKViewer_InteractorStyle();
   ~VTKViewer_InteractorStyle();
-  VTKViewer_InteractorStyle(const VTKViewer_InteractorStyle&) {};
+  VTKViewer_InteractorStyle(const VTKViewer_InteractorStyle&): QObject(), vtkInteractorStyle() {};
   void operator=(const VTKViewer_InteractorStyle&) {};
 
   void RotateXY(int dx, int dy);

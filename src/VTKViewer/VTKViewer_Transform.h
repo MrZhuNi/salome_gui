@@ -46,7 +46,7 @@ protected:
   /*!Constructor.*/
   VTKViewer_Transform() {/*!Do nothing*/}
   /*!Copy contructor.*/
-  VTKViewer_Transform(const VTKViewer_Transform&) {/*!Do nothing*/}
+  VTKViewer_Transform(const VTKViewer_Transform&): vtkTransform() {/*!Do nothing*/}
   /*!Destructor.*/
   ~VTKViewer_Transform() {/*!Do nothing*/}
 

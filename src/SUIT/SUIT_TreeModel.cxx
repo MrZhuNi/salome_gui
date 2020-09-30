@@ -658,7 +658,7 @@ void SUIT_TreeModel::setHeaderFlags( const QString& name, const Qtx::HeaderViewF
 */
 Qtx::HeaderViewFlags SUIT_TreeModel::headerFlags( const QString& name ) const
 {
-  Qtx::HeaderViewFlags flags;
+  Qtx::HeaderViewFlags flags = Qtx::ShowNone;
   for ( int i = 0, n = myColumns.size(); i < n; i++ ) {
     if ( myColumns[i].myName == name ) {
       flags = myColumns[i].myHeaderFlags;
@@ -1730,7 +1730,6 @@ QMimeData* SUIT_TreeModel::mimeData( const QModelIndexList& indexes ) const
 bool SUIT_TreeModel::dropMimeData( const QMimeData* data, Qt::DropAction action,
                                    int row, int /*column*/, const QModelIndex& parent )
 {
-  //GUI_UNUSED(column);
   if ( action == Qt::IgnoreAction )
     // do nothing with data
     return false;

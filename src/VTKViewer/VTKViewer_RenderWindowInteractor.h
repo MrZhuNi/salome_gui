@@ -61,7 +61,7 @@ class VTKVIEWER_EXPORT VTKViewer_RenderWindowInteractor : public QObject, public
 public:
   static VTKViewer_RenderWindowInteractor *New();
 
-  vtkTypeMacro(VTKViewer_RenderWindowInteractor,vtkRenderWindowInteractor);
+  vtkTypeMacro(VTKViewer_RenderWindowInteractor,vtkRenderWindowInteractor)
 
   void PrintSelf(ostream& os, vtkIndent indent);
 

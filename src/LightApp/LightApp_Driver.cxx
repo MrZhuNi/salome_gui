@@ -216,7 +216,7 @@ LightApp_Driver::ListOfFiles LightApp_Driver::GetListOfFiles( const char* theMod
   if (myMap.count(aName))
     aListOfFiles = myMap[aName];
 
-    return aListOfFiles;
+  return aListOfFiles;
 }
 
 /*!

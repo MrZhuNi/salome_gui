@@ -251,11 +251,12 @@ void Plot2d_QwtLegendLabel::paintEvent( QPaintEvent *e )
   QRect iconRect = cr;
   if ( !icon().isNull() )
   {
-    if ( itemMode() != QwtLegendData::ReadOnly )
+    if ( itemMode() != QwtLegendData::ReadOnly ) {
       iconRect.setX( iconRect.x() + ButtonFrame );
       iconRect.setSize( QSize( icon().size().width() + spacing() ,
                                    icon().size().height() + spacing() ) );
       iconRect.moveCenter( QPoint( iconRect.center().x(), cr.center().y() ) );
+    }
   }
 
   drawIdentifier( &painter, iconRect );
@@ -315,8 +316,8 @@ private:
 */
 Plot2d_QwtPlotCurve::Plot2d_QwtPlotCurve( const QString& title,
                                           QwtPlot::Axis yAxis /*const int index*/ ) :
-  Plot2d_SelectableItem(),
   QwtPlotCurve( title ),
+  Plot2d_SelectableItem(),
   myYAxis( yAxis ),
   myYAxisIdentifierEnabled( false ),
   myDeviationData(0)
@@ -501,8 +502,8 @@ void Plot2d_QwtPlotCurve::clearDeviationData()
 */
 Plot2d_SelectableItem::Plot2d_SelectableItem():
   myIsSelected(false),
-  myLegendSymbol( new QwtSymbol() ),
-  myLegendPen( QPen() )
+  myLegendPen( QPen() ),
+  myLegendSymbol( new QwtSymbol() )
 {
 }
 
@@ -1060,10 +1061,8 @@ Plot2d_QwtLegend::~Plot2d_QwtLegend()
 /*!
   Redefined method, which create a widget to be inserted into the legend.
 */
-QWidget *Plot2d_QwtLegend::createWidget( const QwtLegendData &data ) const
+QWidget *Plot2d_QwtLegend::createWidget( const QwtLegendData& /*data*/ ) const
 {
-  Q_UNUSED( data );
-
   Plot2d_QwtLegendLabel *label = new Plot2d_QwtLegendLabel();
   label->setItemMode( defaultItemMode() );
 

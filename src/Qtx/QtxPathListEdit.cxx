@@ -307,8 +307,8 @@ void QtxPathListEdit::Delegate::drawFocus( QPainter* painter, const QStyleOption
 */
 QtxPathListEdit::QtxPathListEdit( const Qtx::PathType type, QWidget* parent )
 : QFrame( parent ),
-  myCompleter( 0 ),
   myType( type ),
+  myCompleter( 0 ),
   myDuplicate( false )
 {
   initialize();
@@ -324,8 +324,8 @@ QtxPathListEdit::QtxPathListEdit( const Qtx::PathType type, QWidget* parent )
 */
 QtxPathListEdit::QtxPathListEdit( QWidget* parent )
 : QFrame( parent ),
-  myCompleter( 0 ),
   myType( Qtx::PT_OpenFile ),
+  myCompleter( 0 ),
   myDuplicate( false )
 {
   initialize();
@@ -781,6 +781,8 @@ bool QtxPathListEdit::checkExistance( const QString& str, const bool msg )
       ok = aFI.isDir();
       if ( !ok && msg )
         QMessageBox::warning( this, tr( "Error" ), tr( "Location \"%1\" doesn't point to directory" ).arg( str ) );
+      break;
+    default:
       break;
     }
   }

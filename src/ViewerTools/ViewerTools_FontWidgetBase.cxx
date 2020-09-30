@@ -107,7 +107,6 @@ void ViewerTools_FontWidgetBase::SetData( const QColor& theColor,
                                           const bool theItalic,
                                           const bool theShadow )
 {
-  //GUI_UNUSED(theFamily);
   SetColor( theColor );
 
   myBold->setChecked( theBold );
@@ -121,7 +120,6 @@ void ViewerTools_FontWidgetBase::GetData( QColor& theColor,
                                           bool& theItalic,
                                           bool& theShadow ) const
 {
-  //GUI_UNUSED(theFamily);
   theColor = GetColor();
 
   theBold = myBold->isChecked();

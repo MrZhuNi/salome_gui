@@ -218,7 +218,7 @@ void SVTK_Viewer::setTrihedronSize( const double theSize, const bool theRelative
 
   if (SUIT_ViewManager* aViewManager = getViewManager()) {
     QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-    for ( uint i = 0; i < (uint)aViews.count(); i++ )
+    for ( int i = 0; i < aViews.count(); i++ )
     {
       if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
               aView->SetTrihedronSize( theSize, theRelative );
@@ -244,7 +244,7 @@ void SVTK_Viewer::setStaticTrihedronVisible( const bool theIsVisible )
 
   if (SUIT_ViewManager* aViewManager = getViewManager()) {
     QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-    for ( uint i = 0; i < (uint)aViews.count(); i++ )
+    for ( int i = 0; i < aViews.count(); i++ )
     {
       if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
         aView->SetStaticTrihedronVisible( theIsVisible );
@@ -272,7 +272,7 @@ void SVTK_Viewer::setProjectionMode( const int theMode )
       myProjMode = theMode;
     if (SUIT_ViewManager* aViewManager = getViewManager()) {
       QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-      for ( uint i = 0; i < (uint)aViews.count(); i++ )
+      for ( int i = 0; i < aViews.count(); i++ )
       {
         if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
           aView->SetProjectionMode( theMode );
@@ -300,7 +300,7 @@ void SVTK_Viewer::setStereoType( const int theType )
 
     if (SUIT_ViewManager* aViewManager = getViewManager()) {
       QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-      for ( uint i = 0; i < (uint)aViews.count(); i++ )
+      for ( int i = 0; i < aViews.count(); i++ )
       {
         if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
           aView->SetStereoType( theType );
@@ -328,7 +328,7 @@ void SVTK_Viewer::setAnaglyphFilter( const int theFilter )
 
     if (SUIT_ViewManager* aViewManager = getViewManager()) {
       QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-      for ( uint i = 0; i < (uint)aViews.count(); i++ )
+      for ( int i = 0; i < aViews.count(); i++ )
       {
         if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
           aView->SetAnaglyphFilter( theFilter );
@@ -356,7 +356,7 @@ void SVTK_Viewer::setQuadBufferSupport( const bool theEnable )
 
     if (SUIT_ViewManager* aViewManager = getViewManager()) {
       QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-      for ( uint i = 0; i < (uint)aViews.count(); i++ )
+      for ( int i = 0; i < aViews.count(); i++ )
       {
         if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
           aView->SetQuadBufferSupport( theEnable );
@@ -382,7 +382,7 @@ void SVTK_Viewer::setInteractionStyle( const int theStyle )
   
   if (SUIT_ViewManager* aViewManager = getViewManager()) {
     QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-    for ( uint i = 0; i < (uint)aViews.count(); i++ )
+    for ( int i = 0; i < aViews.count(); i++ )
     {
       if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
         aView->SetInteractionStyle( theStyle );
@@ -408,7 +408,7 @@ void SVTK_Viewer::setZoomingStyle( const int theStyle )
   
   if (SUIT_ViewManager* aViewManager = getViewManager()) {
     QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-    for ( uint i = 0; i < (uint)aViews.count(); i++ )
+    for ( int i = 0; i < aViews.count(); i++ )
     {
       if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
         aView->SetZoomingStyle( theStyle );
@@ -434,7 +434,7 @@ void SVTK_Viewer::setPreSelectionMode( Preselection_Mode theMode )
   
   if (SUIT_ViewManager* aViewManager = getViewManager()) {
     QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-    for ( uint i = 0; i < (uint)aViews.count(); i++ )
+    for ( int i = 0; i < aViews.count(); i++ )
     {
       if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
         aView->SetPreSelectionMode( theMode );
@@ -470,7 +470,7 @@ void SVTK_Viewer::setIncrementalSpeed( const int theValue, const int theMode )
 
   if (SUIT_ViewManager* aViewManager = getViewManager()) {
     QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-    for ( uint i = 0; i < (uint)aViews.count(); i++ )
+    for ( int i = 0; i < aViews.count(); i++ )
     {
       if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
         aView->SetIncrementalSpeed( theValue, theMode );
@@ -501,7 +501,7 @@ void SVTK_Viewer::setSpacemouseButtons( const int theBtn1, const int theBtn2, co
 
   if (SUIT_ViewManager* aViewManager = getViewManager()) {
     QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-    for ( uint i = 0; i < (uint)aViews.count(); i++ )
+    for ( int i = 0; i < aViews.count(); i++ )
     {
       if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
         aView->SetSpacemouseButtons( theBtn1, theBtn2, theBtn3 );
@@ -553,19 +553,19 @@ void SVTK_Viewer::contextMenuPopup( QMenu* thePopup )
 /*!
   SLOT: called on mouse button press, empty implementation
 */
-void SVTK_Viewer::onMousePress(SUIT_ViewWindow* vw, QMouseEvent* event)
+void SVTK_Viewer::onMousePress(SUIT_ViewWindow* /*vw*/, QMouseEvent* /*event*/)
 {}
 
 /*!
   SLOT: called on mouse move, empty implementation
 */
-void SVTK_Viewer::onMouseMove(SUIT_ViewWindow* vw, QMouseEvent* event)
+void SVTK_Viewer::onMouseMove(SUIT_ViewWindow* /*vw*/, QMouseEvent* /*event*/)
 {}
 
 /*!
   SLOT: called on mouse button release, empty implementation
 */
-void SVTK_Viewer::onMouseRelease(SUIT_ViewWindow* vw, QMouseEvent* event)
+void SVTK_Viewer::onMouseRelease(SUIT_ViewWindow* /*vw*/, QMouseEvent* /*event*/)
 {}
 
 /*!
@@ -579,7 +579,7 @@ void SVTK_Viewer::enableSelection(bool isEnabled)
    
   if (SUIT_ViewManager* aViewManager = getViewManager()) {
     QVector<SUIT_ViewWindow*> aViews = aViewManager->getViews();
-    for ( uint i = 0; i < (uint)aViews.count(); i++ )
+    for ( int i = 0; i < aViews.count(); i++ )
     {
       if ( TViewWindow* aView = dynamic_cast<TViewWindow*>(aViews.at( i )) )
         aView->SetSelectionEnabled( isEnabled );

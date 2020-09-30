@@ -43,7 +43,7 @@
 
 #include <vtkPassThroughFilter.h>
 
-vtkStandardNewMacro(SVTK_DeviceActor);
+vtkStandardNewMacro(SVTK_DeviceActor)
 
 /*!
   Constructor

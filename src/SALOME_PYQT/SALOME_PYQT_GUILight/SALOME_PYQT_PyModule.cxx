@@ -178,6 +178,7 @@ public:
   }
   void message( const QString& msg )
   {
+    (void)msg; // unused in debug mode
     if ( theDEBUG )
       MESSAGE( qPrintable( myName ) << " : " << qPrintable( msg ) );
   }
@@ -388,7 +389,7 @@ QIcon PyModuleHelper::XmlHandler::loadIcon( const QString& fileName )
 */
 void PyModuleHelper::XmlHandler::createMenu( QDomNode& parentNode, 
                                              const int parentMenuId,
-                                             QMenu*    parentPopup )
+                                             QMenu*    /*parentPopup*/ )
 {
   if ( !module() || parentNode.isNull() )
     return;
@@ -2086,9 +2087,8 @@ void PyModuleHelper::internalCustomize( SUIT_Study* study )
 
   \param study parent study
 */
-void PyModuleHelper::internalDeactivate( SUIT_Study* study )
+void PyModuleHelper::internalDeactivate( SUIT_Study* /*study*/ )
 {
-	//GUI_UNUSED(study);
   FuncMsg fmsg( "--- PyModuleHelper::internalDeactivate()" );
 
   // check that Python subinterpreter is initialized and Python module is imported
@@ -2858,8 +2858,8 @@ void PyModuleHelper::onObjectBrowserClicked(SUIT_DataObject* theObj, int theColu
     }
   private:
     PyModuleHelper* myHelper;
-    int    myColumn;
     QString myEntry;
+    int myColumn;
   };
   
   // Posting the request only if dispatcher is not busy!

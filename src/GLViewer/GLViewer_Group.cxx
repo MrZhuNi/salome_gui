@@ -56,7 +56,7 @@ bool GLViewer_Group::isEmpty()
 */
 int GLViewer_Group::count()
 {
-  return (size_t)myList.size(); //!< TODO: conversion from size_t to int
+  return (int)myList.size(); //!< TODO: conversion from size_t to int
 }
 
 /*!

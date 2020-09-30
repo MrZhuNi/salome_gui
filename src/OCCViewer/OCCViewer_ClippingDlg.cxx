@@ -905,7 +905,7 @@ void OCCViewer_ClippingDlg::updatePreview() {
     gp_Pnt aBasePnt;
     gp_Dir aNormal;
     clipPlaneParams(aClipPlane, ic, aSize, aBasePnt, aNormal, myModel->trihedronSize());
-    if(myPreviewPlaneVector.size() < (size_t)clipPlanesCount()) { //TODO: mismatch signed/unsigned
+    if((int)myPreviewPlaneVector.size() < clipPlanesCount()) { //TODO: mismatch signed/unsigned
       myPreviewPlaneVector.resize(clipPlanesCount());
     }
     myPreviewPlane = myPreviewPlaneVector[aCurPlaneIndex];
@@ -930,7 +930,7 @@ void OCCViewer_ClippingDlg::updatePreview() {
     ic->SetColor( myPreviewPlane, Quantity_Color( 255. / 255., 70. / 255., 0. / 255., Quantity_TOC_RGB ), false );
     ic->Update( myPreviewPlane, Standard_False );
   } else {
-    if(myPreviewPlaneVector.size() > aCurPlaneIndex ) {
+    if((int)myPreviewPlaneVector.size() > aCurPlaneIndex ) {
       myPreviewPlane = myPreviewPlaneVector[aCurPlaneIndex];
       if(ic->IsDisplayed(myPreviewPlane)) {
 	ic->Erase( myPreviewPlane, false );
@@ -1099,7 +1099,7 @@ void OCCViewer_ClippingDlg::ClickOnDelete()
 
   Handle(AIS_InteractiveContext) ic = myModel->getAISContext();
 
-  if(aPlaneIndex+1 <= myPreviewPlaneVector.size()) {
+  if(aPlaneIndex+1 <= (int)myPreviewPlaneVector.size()) {
     Handle(AIS_Plane) myPreviewPlane = myPreviewPlaneVector[aPlaneIndex];
     if ( !myPreviewPlane.IsNull() && ic->IsDisplayed( myPreviewPlane ) ) {
       ic->Erase( myPreviewPlane, false );
@@ -1227,7 +1227,7 @@ void OCCViewer_ClippingDlg::onSelectPlane ( int theIndex )
     return;
   }
 
-  OCCViewer_ClipPlane& aClipPlane = getClipPlane( theIndex );
+  //OCCViewer_ClipPlane& aClipPlane = getClipPlane( theIndex ); // unused
 
   myIsSelectPlane = true;
   updateControls();
@@ -1443,7 +1443,7 @@ void OCCViewer_ClippingDlg::onApply()
 */
 void OCCViewer_ClippingDlg::onPlaneClicked( const Handle_AIS_Plane& thePlane )
 {
-  for ( int aPlaneIt = 0; aPlaneIt < myPreviewPlaneVector.size(); aPlaneIt++ )
+  for ( int aPlaneIt = 0; aPlaneIt < (int)myPreviewPlaneVector.size(); aPlaneIt++ )
   {
     Handle(AIS_Plane)& aPlane = myPreviewPlaneVector.at( aPlaneIt );
     if ( aPlane != thePlane )
@@ -1462,7 +1462,7 @@ void OCCViewer_ClippingDlg::onPlaneClicked( const Handle_AIS_Plane& thePlane )
 */
 void OCCViewer_ClippingDlg::onPlaneDragged( const Handle_AIS_Plane& thePlane )
 {
-  for ( int aPlaneIt = 0; aPlaneIt < myPreviewPlaneVector.size(); aPlaneIt++ )
+  for ( int aPlaneIt = 0; aPlaneIt < (int)myPreviewPlaneVector.size(); aPlaneIt++ )
   {
     Handle(AIS_Plane)& aPlane = myPreviewPlaneVector.at( aPlaneIt );
     if ( aPlane != thePlane )

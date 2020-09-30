@@ -425,8 +425,6 @@ GLboolean GLViewer_MarkerSet::unhighlight()
 GLboolean GLViewer_MarkerSet::select( GLfloat x, GLfloat y, GLfloat tol, GLViewer_Rect /*rect*/, GLboolean /*isFull*/,
                                       GLboolean isCircle, GLboolean isShift )
 {
-	//GUI_UNUSED(isFull);
-	//GUI_UNUSED(rect);
     if( !myIsVisible )
         return false;
 //  cout << "GLViewer_MarkerSet::select " << x << " " << y << endl;
@@ -818,11 +816,10 @@ bool GLViewer_MarkerSet::initializeFromByteCopy( QByteArray theArray )
 */
 GLViewer_Polyline::GLViewer_Polyline( int number, float /*size*/, const QString& toolTip ):
   GLViewer_Object(),
-  myNumber( 0 ),
   myXCoord( 0 ),
-  myYCoord( 0 )       
+  myYCoord( 0 ),
+  myNumber( 0 )
 {
-	//GUI_UNUSED(size);
   myHighFlag = GL_TRUE;
 
   myHNumbers.clear();
@@ -1009,8 +1006,6 @@ GLViewer_Drawer* GLViewer_Polyline::createDrawer()
 */
 GLboolean GLViewer_Polyline::highlight( GLfloat x, GLfloat y, GLfloat /*tol*/, GLboolean /*isCircle*/ )
 {
-	//GUI_UNUSED(isCircle);
-	//GUI_UNUSED(tol);
     if( !myIsVisible )
         return false;
     GLfloat xa, xb, ya, yb, l;
