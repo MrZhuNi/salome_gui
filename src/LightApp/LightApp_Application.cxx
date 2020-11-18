@@ -88,6 +88,7 @@
 #include <QtxFontEdit.h>
 #include <QtxToolBar.h>
 #include <QtxTreeView.h>
+#include <QtxInfoPanel.h>
 #include <QtxMRUAction.h>
 #include <QtxDockAction.h>
 #include <QtxDockWidget.h>
@@ -1441,6 +1442,11 @@ SUIT_DataBrowser* LightApp_Application::objectBrowser()
   return qobject_cast<SUIT_DataBrowser*>( dockWindow( WT_ObjectBrowser ) );
 }
 
+QtxInfoPanel* LightApp_Application::infoPanel()
+{
+  return qobject_cast<QtxInfoPanel *>( dockWindow( WT_InfoPanel ));
+}
+
 /*!
   \return Log Window
 */
@@ -1793,6 +1799,7 @@ void LightApp_Application::onStudyCreated( SUIT_Study* theStudy )
   }
 
   getWindow( WT_ObjectBrowser );
+  getWindow( WT_InfoPanel );
 
   loadDockWindowsState();
 
@@ -1824,6 +1831,7 @@ void LightApp_Application::onStudyOpened( SUIT_Study* theStudy )
   }
 
   getWindow( WT_ObjectBrowser );
+  getWindow( WT_InfoPanel );
 
   loadDockWindowsState();
 
@@ -2128,6 +2136,13 @@ QWidget* LightApp_Application::createWindow( const int flag )
     ob->setProperty( "shortcut", QKeySequence( "Alt+Shift+O" ) );
     wid = ob;
     ob->connectPopupRequest( this, SLOT( onConnectPopupRequest( SUIT_PopupClient*, QContextMenuEvent* ) ) );
+  }
+  else if ( flag == WT_InfoPanel)
+  {
+    QtxInfoPanel* ipanel = new QtxInfoPanel( desktop() );
+    ipanel->setObjectName( "infoPanel" );
+    ipanel->setWindowTitle( tr( "INFO_PANEL" ) );
+    wid = ipanel;
   }
 #ifndef DISABLE_PYCONSOLE
   else  if ( flag == WT_PyConsole )
