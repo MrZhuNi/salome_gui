@@ -1125,6 +1125,14 @@ File does not exist</translation>
     <source>PREF_PY_NUM_COLUMNS</source>
     <translation>Number of columns:</translation>
   </message>
+  <message>
+    <source>INFO_GETTING_STARTED</source>
+    <translation>Getting started</translation>
+  </message>
+  <message>
+    <source>INFO_AVAILABLE_MODULES</source>
+    <translation>Available modules</translation>
+  </message>
 </context>
 <context>
     <name>LightApp_Module</name>

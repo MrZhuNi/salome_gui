@@ -1123,6 +1123,14 @@ Pythonファイルは、文字、数字、アンダースコアが含まれて�
       <source>PREF_PY_NUM_COLUMNS</source>
       <translation>列数</translation>
     </message>
+    <message>
+      <source>INFO_GETTING_STARTED</source>
+      <translation type="unfinished">Getting started</translation>
+    </message>
+    <message>
+      <source>INFO_AVAILABLE_MODULES</source>
+      <translation type="unfinished">Available modules</translation>
+    </message>
   </context>
   <context>
     <name>LightApp_Module</name>

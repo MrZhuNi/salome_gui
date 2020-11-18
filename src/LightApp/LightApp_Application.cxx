@@ -4154,9 +4154,20 @@ void LightApp_Application::updateWindows()
 
   loadDockWindowsState();
 
-  if (!activeModule() && infoPanel() ) {
+  if (!activeModule() && infoPanel() )
+  {
     infoPanel()->clear();
-    infoPanel()->addAction( action(ModulesListId) );
+    LightApp_ModuleAction* ma = qobject_cast<LightApp_ModuleAction*>(action(ModulesListId));
+    if ( ma && ma->count() > 0 )
+    {
+      int grp = infoPanel()->addGroup( tr( "INFO_AVAILABLE_MODULES" ) );
+      foreach(QString mname, ma->modules())
+      {
+        infoPanel()->addAction( ma->moduleAction( mname ), grp );
+        if ( !moduleDescription( mname ).isEmpty() )
+          infoPanel()->addLabel( moduleDescription( mname ), grp );
+      }
+    }
   }
 }
 
