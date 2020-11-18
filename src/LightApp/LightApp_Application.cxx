@@ -527,6 +527,9 @@ bool LightApp_Application::activateModule( const QString& modName )
 
   saveDockWindowsState();
 
+  if ( infoPanel() )
+    infoPanel()->clear();
+
   bool status = CAM_Application::activateModule( modName );
 
   updateModuleActions();
@@ -1370,9 +1373,17 @@ void LightApp_Application::insertDockWindow( const int id, QWidget* wid )
   myWin.insert( id, wid );
 
   QtxDockWidget* dock = new QtxDockWidget( true, desktop() );
+  if ( id == WT_InfoPanel ) {
+    // Info panel's position is strongly limited to the right area;
+    // It is not movable and not floatable.
+    dock->setAllowedAreas( Qt::RightDockWidgetArea );
+    dock->setFeatures( QDockWidget::DockWidgetClosable );
+  }
+  else {
+    dock->setFeatures( QDockWidget::AllDockWidgetFeatures );
+  }
   connect( dock, SIGNAL(  destroyed( QObject* ) ), this, SLOT( onWCDestroyed( QObject* ) ) );
 
-  dock->setFeatures( QDockWidget::AllDockWidgetFeatures );
   dock->setObjectName( wid->objectName().isEmpty() ? QString( "window_%1" ).arg( id ) :
                        QString( "%1Dock" ).arg( wid->objectName() ) );
   dock->setWidget( wid );
@@ -2181,6 +2192,7 @@ void LightApp_Application::defaultWindows( QMap<int, int>& aMap ) const
 #endif
   if ( activeStudy() ) {
     aMap.insert( WT_ObjectBrowser, Qt::LeftDockWidgetArea );
+    aMap.insert( WT_InfoPanel, Qt::RightDockWidgetArea );
     //  aMap.insert( WT_LogWindow, Qt::DockBottom );
   }
 }
@@ -4141,6 +4153,11 @@ void LightApp_Application::updateWindows()
   }
 
   loadDockWindowsState();
+
+  if (!activeModule() && infoPanel() ) {
+    infoPanel()->clear();
+    infoPanel()->addAction( action(ModulesListId) );
+  }
 }
 
 /*!

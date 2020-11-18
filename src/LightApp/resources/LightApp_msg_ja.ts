@@ -168,6 +168,10 @@ Pythonファイルは、文字、数字、アンダースコアが含まれて�
       <translation>オブジェクトブラウザー</translation>
     </message>
     <message>
+        <source>INFO_PANEL</source>
+        <translation type="unfinished">Help panel</translation>
+    </message>
+    <message>
       <source>PRP_DESK_PREFERENCES</source>
       <translation>設定を変更することができます。</translation>
     </message>

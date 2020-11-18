@@ -169,6 +169,10 @@ The changes will be applied on the next application session.</translation>
         <translation>Object Browser</translation>
     </message>
     <message>
+        <source>INFO_PANEL</source>
+        <translation>Help panel</translation>
+    </message>
+    <message>
         <source>PRP_DESK_PREFERENCES</source>
         <translation>Allow to change the preferences</translation>
     </message>

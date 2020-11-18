@@ -169,6 +169,10 @@ Les modifications seront appliquées à la prochaine session.</translation>
         <translation>Arbre d&apos;étude</translation>
     </message>
     <message>
+        <source>INFO_PANEL</source>
+        <translation type="unfinished">Help panel</translation>
+    </message>
+    <message>
         <source>PRP_DESK_PREFERENCES</source>
         <translation>Permettre de changer les préférences</translation>
     </message>
