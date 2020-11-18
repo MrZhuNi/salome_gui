@@ -26,128 +26,221 @@
 
 #include "QtxInfoPanel.h"
 
+#include <QAction>
 #include <QGroupBox>
 #include <QLabel>
-#include <QLayoutItem>
+#include <QMap>
+#include <QToolButton>
+#include <QVBoxLayout>
+
+
+class QtxInfoPanel::Container: public QWidget
+{
+public:
+  Container( QWidget* = 0 );
+  Container( const QString&, QWidget* = 0 );
+
+  void addAction( QAction*, const int );
+  void addLabel( const QString&, Qt::Alignment, const int );
+  void addGroup( const QString&, const int );
+
+  QWidget* find( const int ) const;
+
+  void remove( const int );
+  void clear();
+
+  void put( QWidget* );
+
+private:
+  QMap<int, QWidget*> ids;
+  QGroupBox* group;
+};
+
+QtxInfoPanel::Container::Container( QWidget* parent )
+  : QWidget( parent ), group( 0 )
+{
+  QVBoxLayout* l = new QVBoxLayout( this );
+  l->setContentsMargins( 0, 0, 0, 0 );
+}
+
+QtxInfoPanel::Container::Container( const QString& title, QWidget* parent )
+  : Container( parent )
+{
+  QVBoxLayout* l = dynamic_cast<QVBoxLayout*>( layout() );
+  group = new QGroupBox( title );
+  group->setLayout( new QVBoxLayout() );
+  l->addWidget( group );
+}
+
+void QtxInfoPanel::Container::put( QWidget* widget )
+{
+  QVBoxLayout* l = group ? dynamic_cast<QVBoxLayout*>( group->layout() ) : dynamic_cast<QVBoxLayout*>( layout() );
+  l->addWidget( widget );
+}
+
+void QtxInfoPanel::Container::addLabel( const QString& text, Qt::Alignment alignment, const int id )
+{
+  QLabel* label = new QLabel( text );
+  label->setAlignment( alignment );
+  label->setWordWrap( true );
+  put( label );
+  ids[ id ] = label;
+}
+
+void QtxInfoPanel::Container::addAction( QAction* action, const int id )
+{
+  QToolButton* button = new QToolButton( this );
+  button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+  button->setAutoRaise( true );
+  button->setDefaultAction( action );
+  put( button );
+  ids[ id ] = button;
+}
+
+void QtxInfoPanel::Container::addGroup( const QString& text, const int id )
+{
+  Container* group = new Container( text, this );
+  put( group );
+  ids[ id ] = group;
+}
+
+QWidget* QtxInfoPanel::Container::find( const int id ) const
+{
+  if ( ids.contains( id ) )
+    return ids[id];
+
+  QMap<int, QWidget*>::ConstIterator it;
+  QWidget* widget = 0;
+  for( it = ids.begin(); it != ids.end() && !widget; ++it )
+  {
+    Container* group = dynamic_cast<Container*>( it.value() );
+    if ( group )
+      widget = group->find( id );
+  }
+
+  return widget;
+}
+
+void QtxInfoPanel::Container::remove( const int id )
+{
+  if ( ids.contains( id ) )
+  {
+    QVBoxLayout* l = group ? dynamic_cast<QVBoxLayout*>( group->layout() ) : dynamic_cast<QVBoxLayout*>( layout() );
+    l->removeWidget( ids[id] );
+    ids[id]->deleteLater();
+    l->invalidate();
+    ids.remove( id );
+  }
+}
+
+void QtxInfoPanel::Container::clear()
+{
+  QVBoxLayout* l = group ? dynamic_cast<QVBoxLayout*>( group->layout() ) : dynamic_cast<QVBoxLayout*>( layout() );
+
+  QList<QWidget*> widgets = ids.values();
+  foreach( QWidget* widget, widgets )
+  {
+    l->removeWidget( widget );
+    widget->deleteLater();
+  }
+
+  l->invalidate();
+  ids.clear();
+}
+
 
 QtxInfoPanel::QtxInfoPanel( QWidget* parent )
   : QWidget( parent )
 {
-  tbar = new QToolBar();
-  tbar->setOrientation(Qt::Vertical);
-  tbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+  container = new Container( this );
   QVBoxLayout* layout = new QVBoxLayout(this);
   layout->setMargin( 0 );
-  layout->addWidget(tbar);
+  layout->addWidget( container );
+  layout->addStretch();
 }
 
 QtxInfoPanel::~QtxInfoPanel()
 {
 }
 
+int QtxInfoPanel::addLabel( const QString& text, const int groupId )
+{
+  return addLabel( text, Qt::AlignLeft, groupId );
+}
+
 int QtxInfoPanel::addLabel( const QString& text, Qt::Alignment alignment, const int groupId )
 {
-  QLabel *label = new QLabel(text);
-  label->setAlignment(alignment);
-  label->setWordWrap(true);
-  
-  int id_new = generateId();
-  QToolBar* tb = getToolBar(groupId);
-  QAction* q = tb->addWidget(label);
-  q->setProperty("id", id_new);
-  alignLeft(tb->layout());
-  
-  return id_new;
+  int id = 0;
+  Container* c = dynamic_cast<Container*>( find( groupId ) );
+  if ( c )
+  {
+    id = generateId();
+    c->addLabel( text, alignment, id );
+  }
+  return id;
 }
 
 int QtxInfoPanel::addAction( QAction* action, const int groupId )
 {
-  int id_new = generateId();
-  action->setProperty("id", id_new);
-  QToolBar* tb = getToolBar(groupId);
-  tb->addAction(action);
-  alignLeft(tb->layout());
-
-  return id_new;
+  int id = 0;
+  Container* c = dynamic_cast<Container*>( find( groupId ) );
+  if ( c )
+  {
+    id = generateId();
+    c->addAction( action, id );
+  }
+  return id;
 }
 
 int QtxInfoPanel::addGroup( const QString& text, const int groupId )
 {
-  QGroupBox* box = new QGroupBox(text);
-  QVBoxLayout *vbox = new QVBoxLayout;
-  box->setLayout(vbox);
-  QToolBar* toolbar = new QToolBar();
-  toolbar->setOrientation(Qt::Vertical);
-  toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-  vbox->addWidget(toolbar);
-  
-  int id_new = generateId();
-  QToolBar* tb = getToolBar(groupId);
-  QAction* q = tb->addWidget(box);
-  box->setProperty("id", id_new);
-  alignLeft(tb->layout());
-
-  return id_new;
-}
-
-void QtxInfoPanel::remove(const int actionId, const int groupId)
-{
-  // TODO: Method don't delete QAction
-  QToolBar* tb = getToolBar(groupId);
-  tb->removeAction(getAction(actionId, groupId));
-}
-
-void QtxInfoPanel::clear(const int groupId)
-{
-  QToolBar* tb = getToolBar(groupId);
-  tb->clear();
-}
-
-void QtxInfoPanel::alignLeft( QLayout* lay )
-{
-  for(int i = 0; i < lay->count(); ++i)
-    lay->itemAt(i)->setAlignment(Qt::AlignLeft);
-}
-
-QToolBar* QtxInfoPanel::getToolBar( const int id )
-{
-  if (id == -1)
-    return this->tbar;
-  for(QAction* a : this->tbar->actions())
+  int id = 0;
+  Container* c = dynamic_cast<Container*>( find( groupId ) );
+  if ( c )
   {
-    QWidget* w= this->tbar->widgetForAction(a);
-    if(w != NULL)
-    {
-        if (w->property("id").value<int>() == id)
-        {
-          QGroupBox *qgb = dynamic_cast<QGroupBox*>(w);
-          if (qgb)
-             return dynamic_cast<QToolBar*>(qgb->layout()->itemAt(0)->widget());
-        }
-    }
+    id = generateId();
+    c->addGroup( text, id );
   }
-  return nullptr;
+  return id;
 }
 
-QAction* QtxInfoPanel::getAction( const int actionId, const int groupId )
+void QtxInfoPanel::remove( const int id )
 {
-  QToolBar* tb = getToolBar(groupId);
-  for(QAction* a : tb->actions())
+  QWidget* widget = find( id );
+  if ( widget )
   {
-    if(a->property("id").value<int>() == actionId)
-      return a;
+    Container* group = dynamic_cast<Container*>( widget->parentWidget() );
+    if ( group )
+      group->remove( id );
   }
-  return nullptr;
 }
 
-void QtxInfoPanel::setVisible( const int actionId, bool state, const int groupId )
+void QtxInfoPanel::clear( const int groupId )
 {
-  getAction(actionId, groupId)->setVisible(state);
+  Container* c = dynamic_cast<Container*>( find( groupId ) );
+  if ( c )
+    c->clear();
 }
 
-void QtxInfoPanel::setEnabled( const int actionId, bool state, const int groupId )
+QWidget* QtxInfoPanel::find( const int id ) const
 {
-  getAction(actionId, groupId)->setEnabled(state);
+  if ( id == -1 )
+    return container;
+  return container->find( id );
+}
+
+void QtxInfoPanel::setVisible( const int id, bool visible )
+{
+  QWidget* widget = find( id );
+  if ( widget )
+    widget->setVisible( visible );
+}
+
+void QtxInfoPanel::setEnabled( const int id, bool enabled )
+{
+  QWidget* widget = find( id );
+  if ( widget )
+    widget->setEnabled( enabled );
 }
 
 int QtxInfoPanel::generateId() const

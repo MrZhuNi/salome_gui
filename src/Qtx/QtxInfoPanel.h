@@ -20,17 +20,11 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-// File   : InfoPanel.h
-// Author : Viktor UZLOV, Open CASCADE S.A.S. (viktor.uzlov@opencascade.com)
-//
 #ifndef QTXINFOPANEL_H
 #define QTXINFOPANEL_H
 
 #include "Qtx.h"
 
-#include <QLayout>
-#include <QToolBar>
-#include <QVBoxLayout>
 #include <QWidget>
 
 #ifdef WIN32
@@ -43,24 +37,29 @@ class QTX_EXPORT QtxInfoPanel : public QWidget
 {
   Q_OBJECT
 
+  class Container;
+
 public:
   QtxInfoPanel( QWidget* = 0 );
   ~QtxInfoPanel();
+
+  int                 addLabel( const QString&, const int = -1 );
   int                 addLabel( const QString&, Qt::Alignment = Qt::AlignLeft, const int = -1 );
-  int                 addAction( QAction* action, const int = -1 );
+  int                 addAction( QAction*, const int = -1 );
   int                 addGroup( const QString&, const int = -1 );
-  void                setVisible( const int , bool, const int = -1 );
-  void                setEnabled( const int , bool, const int = -1 );
-  void                remove( const int, const int = -1);
-  void                clear(const int = -1);
+
+  void                remove( const int );
+  void                clear( const int = -1 );
+
+  void                setVisible( const int, bool );
+  void                setEnabled( const int, bool );
 
 private:
-  void                alignLeft( QLayout* lay );
-  QAction*            getAction( const int, const int = -1 );
-  QToolBar*           getToolBar( const int );  
   int                 generateId() const;
+  QWidget*            find( const int ) const;
 
-  QToolBar*           tbar;
+private:
+  Container*          container;
 };
 
 #ifdef WIN32
