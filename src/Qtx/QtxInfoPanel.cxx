@@ -30,6 +30,9 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QMap>
+#include <QSizePolicy>
+#include <QPalette>
+#include <QFont>
 #include <QToolButton>
 #include <QVBoxLayout>
 
@@ -54,6 +57,23 @@ public:
 private:
   QMap<int, QWidget*> ids;
   QGroupBox* group;
+};
+
+class QtxInfoPanel::TitleLabel: public QLabel
+{
+public:
+  TitleLabel(const QString &text, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
+     QLabel(text, parent, f){
+     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+     QString color_bg = this->palette().color(QPalette::Highlight).darker().name();
+     QString color_fg = this->palette().color(QPalette::HighlightedText).name();
+     this->setStyleSheet(QString("QLabel {{background:%1; color:%2;}}").arg(color_bg).arg(color_fg));
+     this->setTextFormat(Qt::PlainText);
+     QFont font= QFont();
+     font.setBold(true);
+     this->setFont(font);
+     this->setContentsMargins(2, 5, 2, 5);
+  }
 };
 
 QtxInfoPanel::Container::Container( QWidget* parent )
@@ -154,9 +174,12 @@ QtxInfoPanel::QtxInfoPanel( QWidget* parent )
 {
   container = new Container( this );
   QVBoxLayout* layout = new QVBoxLayout(this);
+  title = new TitleLabel("");
   layout->setMargin( 0 );
+  layout->addWidget( title );
   layout->addWidget( container );
   layout->addStretch();
+  title->setVisible(!title->text().isEmpty());
 }
 
 QtxInfoPanel::~QtxInfoPanel()
@@ -204,13 +227,24 @@ int QtxInfoPanel::addGroup( const QString& text, const int groupId )
   return id;
 }
 
+void QtxInfoPanel::setTitle( const QString& text )
+{
+  title->setText(text);
+  title->setVisible(!title->text().isEmpty());
+}
+
 void QtxInfoPanel::remove( const int id )
 {
   QWidget* widget = find( id );
   if ( widget )
   {
     Container* group = dynamic_cast<Container*>( widget->parentWidget() );
-    if ( group )
+    if ( !group )
+    {
+      group = dynamic_cast<Container*>( widget->parentWidget()->parentWidget() );
+      group->remove( id );
+    }
+    else
       group->remove( id );
   }
 }
