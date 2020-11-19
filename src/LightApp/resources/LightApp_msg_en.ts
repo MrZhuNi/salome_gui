@@ -59,6 +59,18 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
         <translation>Video Tutorials</translation>
     </message>
     <message>
+        <source>PRP_SALOME_VIDEO_TUTORIALS</source>
+        <translation>Visit YouTube channel with some videos</translation>
+    </message>
+    <message>
+        <source>SALOME_TUTORIALS</source>
+        <translation>Tutorials</translation>
+    </message>
+    <message>
+        <source>PRP_SALOME_TUTORIALS</source>
+        <translation>Try tutorials from SALOME site</translation>
+    </message>
+    <message>
         <source>ENTRY_COLUMN</source>
         <translation>Entry</translation>
     </message>
@@ -1124,6 +1136,10 @@ File does not exist</translation>
   <message>
     <source>PREF_PY_NUM_COLUMNS</source>
     <translation>Number of columns:</translation>
+  </message>
+  <message>
+    <source>INFO_WELCOME_TO_SALOME</source>
+    <translation>Welcome to SALOME</translation>
   </message>
   <message>
     <source>INFO_GETTING_STARTED</source>

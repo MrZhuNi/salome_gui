@@ -605,26 +605,24 @@ void LightApp_Application::createActions()
   QString url = resMgr->stringValue("GUI", "site_url");
   if ( !url.isEmpty() ) {
     QString title = tr ( "SALOME_SITE" );
-    QAction* as = createAction( id, title,
+    QAction* as = createAction( WebSiteId, title,
 				resMgr->loadPixmap( "LightApp", tr( "ICON_WWW" ), false ),
 				title, title,
 				0, desk, false, this, SLOT( onHelpContentsModule() ) );
     as->setData( url );
     createMenu( as, helpMenu, -1, 0 );
-    id++;
   }
 
   // b) Link to Forum
   url = resMgr->stringValue("GUI", "forum_url");
   if ( !url.isEmpty() ) {
     QString title = tr ( "SALOME_FORUM" );
-    QAction* af = createAction( helpMenu, title,
+    QAction* af = createAction( ForumId, title,
 				resMgr->loadPixmap( "LightApp", tr( "ICON_WWW" ), false ),
 				title, title,
 				0, desk, false, this, SLOT( onHelpContentsModule() ) );
     af->setData( url );
     createMenu( af, helpMenu, -1, 0 );
-    id++;
   }
 
   // c) Link to YouTube channel
@@ -632,16 +630,28 @@ void LightApp_Application::createActions()
   if ( !url.isEmpty() ) {
     createMenu( separator(), helpMenu, -1, 0 );
     QString title = tr ( "SALOME_VIDEO_TUTORIALS" );
-    QAction* av = createAction( helpMenu, title,
+    QAction* av = createAction( VideosId, title,
 				resMgr->loadPixmap( "LightApp", tr( "ICON_LIFE_RIGN" ), false ),
-				title, title,
+				title, tr( "PRP_SALOME_VIDEO_TUTORIALS" ),
 				0, desk, false, this, SLOT( onHelpContentsModule() ) );
     av->setData( url );
     createMenu( av, helpMenu, -1, 0 );
-    id++;
   }
 
-  // d) Help for modules
+  // d) Link to Tutorials
+
+  url = resMgr->stringValue("GUI", "tutorials_url");
+  if ( !url.isEmpty() ) {
+    QString title = tr ( "SALOME_TUTORIALS" );
+    QAction* as = createAction( TutorialsId, title,
+				resMgr->loadPixmap( "LightApp", tr( "ICON_WWW" ), false ),
+				title, tr( "PRP_SALOME_TUTORIALS" ),
+				0, desk, false, this, SLOT( onHelpContentsModule() ) );
+    as->setData( url );
+    createMenu( as, helpMenu, -1, 0 );
+  }
+
+  // e) Help for modules
 
   // - First create top-level menus to preserve correct order
   QString userGuide = "User's Guide";
@@ -4154,14 +4164,26 @@ void LightApp_Application::updateWindows()
 
   loadDockWindowsState();
 
-  if (!activeModule() && infoPanel() )
+  if ( !activeModule() && infoPanel() )
   {
     infoPanel()->clear();
+    infoPanel()->setTitle( tr( "INFO_WELCOME_TO_SALOME" ) );
+
+    int grp = infoPanel()->addGroup( tr( "INFO_GETTING_STARTED" ) );
+    infoPanel()->addAction( action( FileNewId ), grp );
+    infoPanel()->addLabel( action( FileNewId )->statusTip(), grp );
+    infoPanel()->addAction( action( FileOpenId ), grp );
+    infoPanel()->addLabel( action( FileOpenId )->statusTip(), grp );
+    infoPanel()->addAction( action( TutorialsId ), grp );
+    infoPanel()->addLabel( action( TutorialsId )->statusTip(), grp );
+    infoPanel()->addAction( action( VideosId ), grp );
+    infoPanel()->addLabel( action( VideosId )->statusTip(), grp );
+
     LightApp_ModuleAction* ma = qobject_cast<LightApp_ModuleAction*>(action(ModulesListId));
     if ( ma && ma->count() > 0 )
     {
-      int grp = infoPanel()->addGroup( tr( "INFO_AVAILABLE_MODULES" ) );
-      foreach(QString mname, ma->modules())
+      grp = infoPanel()->addGroup( tr( "INFO_AVAILABLE_MODULES" ) );
+      foreach ( QString mname, ma->modules() )
       {
         infoPanel()->addAction( ma->moduleAction( mname ), grp );
         if ( !moduleDescription( mname ).isEmpty() )

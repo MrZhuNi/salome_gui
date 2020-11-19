@@ -38,17 +38,17 @@ class QTX_EXPORT QtxInfoPanel : public QWidget
   Q_OBJECT
 
   class Container;
-  class TitleLabel;
+  class Title;
 
 public:
   QtxInfoPanel( QWidget* = 0 );
   ~QtxInfoPanel();
 
+  void                setTitle( const QString& );
   int                 addLabel( const QString&, const int = -1 );
   int                 addLabel( const QString&, Qt::Alignment, const int = -1 );
   int                 addAction( QAction*, const int = -1 );
   int                 addGroup( const QString&, const int = -1 );
-  void                setTitle( const QString& );
 
   void                remove( const int );
   void                clear( const int = -1 );
@@ -61,8 +61,8 @@ private:
   QWidget*            find( const int ) const;
 
 private:
+  Title*              title;
   Container*          container;
-  TitleLabel*         title;
 };
 
 #ifdef WIN32

@@ -59,6 +59,18 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
         <translation type="unfinished">Video Tutorials</translation>
     </message>
     <message>
+        <source>PRP_SALOME_VIDEO_TUTORIALS</source>
+        <translation type="unfinished">Visit YouTube channel with some videos</translation>
+    </message>
+    <message>
+        <source>SALOME_TUTORIALS</source>
+        <translation type="unfinished">Tutorials</translation>
+    </message>
+    <message>
+        <source>PRP_SALOME_TUTORIALS</source>
+        <translation type="unfinished">Try tutorials from SALOME site</translation>
+    </message>
+    <message>
         <source>ENTRY_COLUMN</source>
         <translation>Entrée</translation>
     </message>
@@ -1124,6 +1136,10 @@ Le fichier n&apos;existe pas</translation>
     <message>
         <source>PREF_PY_NUM_COLUMNS</source>
         <translation>Nombre de colonnes:</translation>
+    </message>
+    <message>
+      <source>INFO_WELCOME_TO_SALOME</source>
+      <translation type="unfinished">Welcome to SALOME</translation>
     </message>
     <message>
       <source>INFO_GETTING_STARTED</source>

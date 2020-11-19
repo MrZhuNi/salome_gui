@@ -20,23 +20,23 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-// File   : InfoPanel.cxx
-// Author : Viktor UZLOV, Open CASCADE S.A.S. (viktor.uzlov@opencascade.com)
-//
-
 #include "QtxInfoPanel.h"
 
 #include <QAction>
+#include <QFont>
 #include <QGroupBox>
 #include <QLabel>
 #include <QMap>
-#include <QSizePolicy>
 #include <QPalette>
-#include <QFont>
+#include <QSizePolicy>
 #include <QToolButton>
 #include <QVBoxLayout>
 
-
+/*!
+  \class QtxInfoPanel::Container
+  \short Container to store widgets within info panel
+  \internal
+*/
 class QtxInfoPanel::Container: public QWidget
 {
 public:
@@ -57,23 +57,6 @@ public:
 private:
   QMap<int, QWidget*> ids;
   QGroupBox* group;
-};
-
-class QtxInfoPanel::TitleLabel: public QLabel
-{
-public:
-  TitleLabel(const QString &text, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
-     QLabel(text, parent, f){
-     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-     QString color_bg = this->palette().color(QPalette::Highlight).darker().name();
-     QString color_fg = this->palette().color(QPalette::HighlightedText).name();
-     this->setStyleSheet(QString("QLabel {{background:%1; color:%2;}}").arg(color_bg).arg(color_fg));
-     this->setTextFormat(Qt::PlainText);
-     QFont font= QFont();
-     font.setBold(true);
-     this->setFont(font);
-     this->setContentsMargins(2, 5, 2, 5);
-  }
 };
 
 QtxInfoPanel::Container::Container( QWidget* parent )
@@ -101,6 +84,9 @@ void QtxInfoPanel::Container::put( QWidget* widget )
 void QtxInfoPanel::Container::addLabel( const QString& text, Qt::Alignment alignment, const int id )
 {
   QLabel* label = new QLabel( text );
+  QFont f = label->font();
+  f.setItalic( true );
+  label->setFont( f );
   label->setAlignment( alignment );
   label->setWordWrap( true );
   put( label );
@@ -110,6 +96,7 @@ void QtxInfoPanel::Container::addLabel( const QString& text, Qt::Alignment align
 void QtxInfoPanel::Container::addAction( QAction* action, const int id )
 {
   QToolButton* button = new QToolButton( this );
+  button->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
   button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
   button->setAutoRaise( true );
   button->setDefaultAction( action );
@@ -169,17 +156,47 @@ void QtxInfoPanel::Container::clear()
 }
 
 
+/*!
+  \class QtxInfoPanel::Title
+  \short Info panel's title widget
+  \internal
+*/
+class QtxInfoPanel::Title: public QLabel
+{
+public:
+  Title( QWidget* parent = 0 );
+};
+
+QtxInfoPanel::Title::Title( QWidget* parent )
+  : QLabel( parent )
+{
+  setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+  QString bg = palette().color( QPalette::Highlight ).name();
+  QString fg = palette().color( QPalette::HighlightedText ).name();
+  setStyleSheet( QString( "QLabel { background:%1; color:%2; }" ).arg( bg ).arg( fg ) );
+  setTextFormat( Qt::PlainText );
+  QFont f = font();
+  f.setBold( true );
+  setFont( f );
+  setContentsMargins( 2, 5, 2, 5 );
+}
+
+
+/*!
+  \class QtxInfoPanel
+  \short Info panel.
+*/
 QtxInfoPanel::QtxInfoPanel( QWidget* parent )
   : QWidget( parent )
 {
+  title = new Title( this );
   container = new Container( this );
-  QVBoxLayout* layout = new QVBoxLayout(this);
-  title = new TitleLabel("");
+  QVBoxLayout* layout = new QVBoxLayout( this );
   layout->setMargin( 0 );
   layout->addWidget( title );
   layout->addWidget( container );
   layout->addStretch();
-  title->setVisible(!title->text().isEmpty());
+  setTitle( "" );
 }
 
 QtxInfoPanel::~QtxInfoPanel()
@@ -229,8 +246,8 @@ int QtxInfoPanel::addGroup( const QString& text, const int groupId )
 
 void QtxInfoPanel::setTitle( const QString& text )
 {
-  title->setText(text);
-  title->setVisible(!title->text().isEmpty());
+  title->setText( text );
+  title->setVisible( !title->text().isEmpty() );
 }
 
 void QtxInfoPanel::remove( const int id )
@@ -240,11 +257,8 @@ void QtxInfoPanel::remove( const int id )
   {
     Container* group = dynamic_cast<Container*>( widget->parentWidget() );
     if ( !group )
-    {
       group = dynamic_cast<Container*>( widget->parentWidget()->parentWidget() );
-      group->remove( id );
-    }
-    else
+    if ( group )
       group->remove( id );
   }
 }
