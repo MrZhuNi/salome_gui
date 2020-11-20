@@ -56,6 +56,7 @@
 #include "QtxActionMenuMgr.h"
 #include "QtxWorkstack.h"
 #include "QtxTreeView.h"
+#include "QtxInfoPanel.h"
 #include "SALOME_Event.h"
 #include "STD_TabDesktop.h"
 #include "SUIT_DataBrowser.h"
@@ -2886,6 +2887,256 @@ void SalomePyQt::message( const QString& msg, bool addSeparator )
     }
   };
   ProcessVoidEvent( new TEvent( msg, addSeparator ) );
+}
+
+/*!
+  \brief Set the title in InfoPanel
+  \param title title text 
+*/
+void SalomePyQt::infoSetTitle( const QString& title )
+{
+  class TEvent: public SALOME_Event
+  {
+    QString myTitle;
+  public:
+    TEvent( const QString& title ) 
+      : myTitle( title ) {}
+    virtual void Execute()
+    {
+      if ( LightApp_Application* anApp = getApplication() ) {
+        QtxInfoPanel* ip = anApp->infoPanel();
+        if ( ip )
+          ip->setTitle( myTitle );
+      }
+    }
+  };
+  ProcessVoidEvent( new TEvent( title ) );
+}
+
+/*!
+  \fn int SalomePyQt::addLabel( const QString& text, const int groupId );
+  \brief Add QLabel in the InfoPanel.
+  \param text label text
+  \param groupId conteiner identifier
+  \return widget identifier
+*/
+
+class TInfoAddLabel2paramEvent: public SALOME_Event
+{
+public:
+  typedef int TResult;
+  TResult myResult;
+  QString myText;
+  int     myGroupId;
+  TInfoAddLabel2paramEvent( const QString& text, const int groupId )
+    : myText( text ), myGroupId( groupId ) {}
+  virtual void Execute()
+  {
+    if ( LightApp_Application* anApp = getApplication() ) {
+      QtxInfoPanel* ip = anApp->infoPanel();
+      if ( ip )
+        myResult = ip->addLabel( myText, myGroupId );
+    }
+  }
+};
+int SalomePyQt::infoAddLabel( const QString& text, const int groupId )
+{
+  return ProcessEvent( new TInfoAddLabel2paramEvent( text, groupId ) );
+}
+
+/*!
+  \fn int SalomePyQt::addLabel( const QString& text, Qt::Alignment alignment, const int groupId );
+  \brief Add QLabel in the InfoPanel.
+  \param text label text
+  \param alignment label align
+  \param groupId conteiner identifier
+  \return widget identifier
+*/
+
+class TInfoAddLabel3paramEvent: public SALOME_Event
+{
+public:
+  typedef int TResult;
+  TResult myResult;
+  QString myText;
+  Qt::Alignment myAlignment;
+  int     myGroupId;
+  TInfoAddLabel3paramEvent( const QString& text, Qt::Alignment alignment, const int groupId )
+    : myText( text ), myAlignment( alignment ), myGroupId( groupId ) {}
+  virtual void Execute()
+  {
+    if ( LightApp_Application* anApp = getApplication() ) {
+      QtxInfoPanel* ip = anApp->infoPanel();
+      if ( ip )
+        myResult = ip->addLabel( myText, myAlignment, myGroupId );
+    }
+  }
+};
+int SalomePyQt::infoAddLabel( const QString& text, Qt::Alignment alignment, const int groupId )
+{
+  return ProcessEvent( new TInfoAddLabel3paramEvent( text, alignment, groupId ) );
+}
+
+/*!
+  \fn int SalomePyQt::addAction( QAction* action, const int groupId );
+  \brief Add QAction in the InfoPanel.
+  \param action object to add
+  \param groupId conteiner identifier
+  \return widget identifier
+*/
+
+class TInfoAddActionEvent: public SALOME_Event
+{
+public:
+  typedef int TResult;
+  TResult myResult;
+  QAction* myAction;
+  int     myGroupId;
+  TInfoAddActionEvent( QAction* action, const int groupId )
+    : myAction( action ), myGroupId( groupId ) {}
+  virtual void Execute()
+  {
+    if ( LightApp_Application* anApp = getApplication() ) {
+      QtxInfoPanel* ip = anApp->infoPanel();
+      if ( ip )
+        myResult = ip->addAction( myAction, myGroupId );
+    }
+  }
+};
+int SalomePyQt::infoAddAction( QAction* action, const int groupId )
+{
+  return ProcessEvent( new TInfoAddActionEvent( action, groupId ) );
+}
+
+/*!
+  \fn int SalomePyQt::addGroup( const QString& text, const int groupId );
+  \brief Add container in the InfoPanel.
+  \param text title for container
+  \param groupId conteiner identifier
+  \return widget identifier
+*/
+
+class TInfoAddGroupEvent: public SALOME_Event
+{
+public:
+  typedef int TResult;
+  TResult myResult;
+  QString myText;
+  int     myGroupId;
+  TInfoAddGroupEvent( const QString& text, const int groupId )
+    : myText( text ), myGroupId( groupId ) {}
+  virtual void Execute()
+  {
+    if ( LightApp_Application* anApp = getApplication() ) {
+      QtxInfoPanel* ip = anApp->infoPanel();
+      if ( ip )
+        myResult = ip->addGroup( myText, myGroupId );
+    }
+  }
+};
+int SalomePyQt::infoAddGroup( const QString& text, const int groupId )
+{
+  return ProcessEvent( new TInfoAddGroupEvent( text, groupId ) );
+}
+
+/*!
+  \brief Remove widget from the InfoPanel
+  \param id widget identifier 
+*/
+void SalomePyQt::infoRemove( const int id )
+{
+  class TEvent: public SALOME_Event
+  {
+    int myId;
+  public:
+    TEvent( const int id ) 
+      : myId( id ) {}
+    virtual void Execute()
+    {
+      if ( LightApp_Application* anApp = getApplication() ) {
+        QtxInfoPanel* ip = anApp->infoPanel();
+        if ( ip )
+          ip->remove( myId );
+      }
+    }
+  };
+  ProcessVoidEvent( new TEvent( id ) );
+}
+
+/*!
+  \brief Clear container in the InfoPanel
+  \param id container identifier 
+*/
+void SalomePyQt::infoClear( const int id )
+{
+  class TEvent: public SALOME_Event
+  {
+    int myId;
+  public:
+    TEvent( const int id ) 
+      : myId( id ) {}
+    virtual void Execute()
+    {
+      if ( LightApp_Application* anApp = getApplication() ) {
+        QtxInfoPanel* ip = anApp->infoPanel();
+        if ( ip )
+          ip->clear( myId );
+      }
+    }
+  };
+  ProcessVoidEvent( new TEvent( id ) );
+}
+
+/*!
+  \brief Set widget visibility in the InfoPanel
+  \param id widget identifier 
+  \param visialbe state of visibility
+*/
+void SalomePyQt::infoSetVisible( const int id, bool visible )
+{
+  class TEvent: public SALOME_Event
+  {
+    int myId;
+    bool myVisible;
+  public:
+    TEvent( const int id, bool visible ) 
+      : myId( id ), myVisible( visible ) {}
+    virtual void Execute()
+    {
+      if ( LightApp_Application* anApp = getApplication() ) {
+        QtxInfoPanel* ip = anApp->infoPanel();
+        if ( ip )
+          ip->setVisible( myId, myVisible );
+      }
+    }
+  };
+  ProcessVoidEvent( new TEvent( id, visible ) );
+}
+
+/*!
+  \brief Set widget enable in the InfoPanel
+  \param id widget identifier 
+  \param enebled state of enable
+*/
+void SalomePyQt::infoSetEnabled( const int id, bool enabled )
+{
+  class TEvent: public SALOME_Event
+  {
+    int myId;
+    bool myEnabled;
+  public:
+    TEvent( const int id, bool enabled ) 
+      : myId( id ), myEnabled( enabled ) {}
+    virtual void Execute()
+    {
+      if ( LightApp_Application* anApp = getApplication() ) {
+        QtxInfoPanel* ip = anApp->infoPanel();
+        if ( ip )
+          ip->setEnabled( myId, myEnabled );
+      }
+    }
+  };
+  ProcessVoidEvent( new TEvent( id, enabled ) );
 }
 
 /*!
