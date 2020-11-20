@@ -2890,8 +2890,8 @@ void SalomePyQt::message( const QString& msg, bool addSeparator )
 }
 
 /*!
-  \brief Set the title in InfoPanel
-  \param title title text 
+  \brief Set the title for the Help panel
+  \param title title text (set empty string to clear and remove title)
 */
 void SalomePyQt::infoSetTitle( const QString& title )
 {
@@ -2915,10 +2915,10 @@ void SalomePyQt::infoSetTitle( const QString& title )
 
 /*!
   \fn int SalomePyQt::addLabel( const QString& text, const int groupId );
-  \brief Add QLabel in the InfoPanel.
+  \brief Insert left-aligned text label into the Help panel
   \param text label text
-  \param groupId conteiner identifier
-  \return widget identifier
+  \param groupId parent group's identifier (defaults to -1 for top-level group)
+  \return label's identifier
 */
 
 class TInfoAddLabel2paramEvent: public SALOME_Event
@@ -2946,11 +2946,11 @@ int SalomePyQt::infoAddLabel( const QString& text, const int groupId )
 
 /*!
   \fn int SalomePyQt::addLabel( const QString& text, Qt::Alignment alignment, const int groupId );
-  \brief Add QLabel in the InfoPanel.
+  \brief Insert text label into the Help panel
   \param text label text
-  \param alignment label align
-  \param groupId conteiner identifier
-  \return widget identifier
+  \param alignment alignment flag for text label
+  \param groupId parent group's identifier (defaults to -1 for top-level group)
+  \return label's identifier
 */
 
 class TInfoAddLabel3paramEvent: public SALOME_Event
@@ -2979,10 +2979,10 @@ int SalomePyQt::infoAddLabel( const QString& text, Qt::Alignment alignment, cons
 
 /*!
   \fn int SalomePyQt::addAction( QAction* action, const int groupId );
-  \brief Add QAction in the InfoPanel.
-  \param action object to add
-  \param groupId conteiner identifier
-  \return widget identifier
+  \brief Insert action into the Help panel
+  \param action actiion being added
+  \param groupId parent group's identifier (defaults to -1 for top-level group)
+  \return action's identifier
 */
 
 class TInfoAddActionEvent: public SALOME_Event
@@ -3010,10 +3010,10 @@ int SalomePyQt::infoAddAction( QAction* action, const int groupId )
 
 /*!
   \fn int SalomePyQt::addGroup( const QString& text, const int groupId );
-  \brief Add container in the InfoPanel.
-  \param text title for container
-  \param groupId conteiner identifier
-  \return widget identifier
+  \brief Create a sub-group in the Help panel
+  \param text group title
+  \param groupId parent group's identifier (defaults to -1 for top-level group)
+  \return group's identifier
 */
 
 class TInfoAddGroupEvent: public SALOME_Event
@@ -3040,8 +3040,8 @@ int SalomePyQt::infoAddGroup( const QString& text, const int groupId )
 }
 
 /*!
-  \brief Remove widget from the InfoPanel
-  \param id widget identifier 
+  \brief Remove item from the Help panel
+  \param id item (label, action, group, ...) identifier
 */
 void SalomePyQt::infoRemove( const int id )
 {
@@ -3064,33 +3064,33 @@ void SalomePyQt::infoRemove( const int id )
 }
 
 /*!
-  \brief Clear container in the InfoPanel
-  \param id container identifier 
+  \brief Clear Help panel's contents
+  \param groupId group's identifier (default is -1, to clear whole panel)
 */
-void SalomePyQt::infoClear( const int id )
+void SalomePyQt::infoClear( const int groupId )
 {
   class TEvent: public SALOME_Event
   {
-    int myId;
+    int myGroupId;
   public:
-    TEvent( const int id ) 
-      : myId( id ) {}
+    TEvent( const int groupId ) 
+      : myGroupId( groupId ) {}
     virtual void Execute()
     {
       if ( LightApp_Application* anApp = getApplication() ) {
         QtxInfoPanel* ip = anApp->infoPanel();
         if ( ip )
-          ip->clear( myId );
+          ip->clear( myGroupId );
       }
     }
   };
-  ProcessVoidEvent( new TEvent( id ) );
+  ProcessVoidEvent( new TEvent( groupId ) );
 }
 
 /*!
-  \brief Set widget visibility in the InfoPanel
-  \param id widget identifier 
-  \param visialbe state of visibility
+  \brief Set item's visibility in the Help panel
+  \param id item (label, action, group, ...) identifier
+  \param visible visibility flag
 */
 void SalomePyQt::infoSetVisible( const int id, bool visible )
 {
@@ -3114,9 +3114,9 @@ void SalomePyQt::infoSetVisible( const int id, bool visible )
 }
 
 /*!
-  \brief Set widget enable in the InfoPanel
-  \param id widget identifier 
-  \param enebled state of enable
+  \brief Enable/disable item in the Help panel
+  \param id item (label, action, group, ...) identifier
+  \param enabled enabled state
 */
 void SalomePyQt::infoSetEnabled( const int id, bool enabled )
 {
