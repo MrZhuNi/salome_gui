@@ -31,6 +31,7 @@
 #include <QSizePolicy>
 #include <QToolButton>
 #include <QVBoxLayout>
+#include <QScrollArea>
 
 /*!
   \class QtxInfoPanel::Container
@@ -191,11 +192,27 @@ QtxInfoPanel::QtxInfoPanel( QWidget* parent )
 {
   title = new Title( this );
   container = new Container( this );
+
   QVBoxLayout* layout = new QVBoxLayout( this );
-  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+
+  QWidget* wg = new QWidget();
+  QVBoxLayout* wg_layout = new QVBoxLayout( wg );
+  wg_layout->setContentsMargins( 0, 0, 0, 0 );
+  wg_layout->addWidget( container );
+  wg_layout->addStretch();
+  
+  QScrollArea* scroll = new QScrollArea();
+  scroll->setWidgetResizable( true );
+  scroll->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  scroll->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Expanding );
+  scroll->setSizeAdjustPolicy( QScrollArea::AdjustToContents );
+  scroll->setFrameStyle( QScrollArea::NoFrame );
+  scroll->setContentsMargins( 0, 0, 0, 0 );
+  scroll->setWidget( wg );
+  
   layout->addWidget( title );
-  layout->addWidget( container );
-  layout->addStretch();
+  layout->addWidget( scroll );
   setTitle( "" );
 }
 
