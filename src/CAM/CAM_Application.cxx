@@ -665,7 +665,7 @@ QString CAM_Application::moduleDescription( const QString& name )
   for ( ModuleInfoList::const_iterator it = myInfoList.begin(); it != myInfoList.end() && res.isNull(); ++it )
   {
     if ( (*it).name == name || (*it).title == name )
-      res = (*it).description;
+      res = tr((*it).description.toUtf8());
   }
   return res;
 }
