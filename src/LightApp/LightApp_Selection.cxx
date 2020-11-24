@@ -226,8 +226,16 @@ QVariant LightApp_Selection::parameter( const int idx, const QString& p ) const
 	  vis = LightApp_Displayer().IsDisplayed( e );
 	v = vis;
       }
-      else if ( p == "component" || p == "displayer" )
-	v = myStudy->componentDataType( e );
+
+      //else if ( p == "component" || p == "displayer" )
+      //  v = myStudy->componentDataType( e );
+      else if ( p == "component" )
+        v = myStudy->componentDataType( e );
+      else if ( p == "displayer" ) {
+        QString mod_name = app->moduleTitle( myStudy->componentDataType( e ) );
+        v = LightApp_Application::moduleDisplayer( mod_name );
+      }
+
       else if ( p == "isComponent" )
 	v = myStudy->isComponent( e );
       else if ( p == "isReference" )
