@@ -1388,6 +1388,7 @@ void LightApp_Application::insertDockWindow( const int id, QWidget* wid )
     // It is not movable and not floatable.
     dock->setAllowedAreas( Qt::RightDockWidgetArea );
     dock->setFeatures( QDockWidget::DockWidgetClosable );
+    connect( dock, SIGNAL( aboutToShow()), this, SLOT( onInfoPanelShown() ) );
   }
   else {
     dock->setFeatures( QDockWidget::AllDockWidgetFeatures );
@@ -5077,6 +5078,12 @@ void LightApp_Application::onDesktopMessage( const QString& message )
       }
     }
   }
+}
+
+void LightApp_Application::onInfoPanelShown()
+{
+  if ( activeModule() && activeModule()->inherits( "LightApp_Module" ) )
+    ((LightApp_Module*)activeModule())->updateInfoPanel();
 }
 
 /*!

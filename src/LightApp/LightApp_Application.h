@@ -270,6 +270,8 @@ protected slots:
 
   virtual void                        onDesktopMessage( const QString& );
 
+  virtual void                        onInfoPanelShown();
+
 private slots:
   void                                onSelection();
   void                                onRefresh();

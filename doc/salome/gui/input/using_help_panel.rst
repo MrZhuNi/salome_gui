@@ -165,3 +165,12 @@ For Python modules, *Help panel* can be accessed via the ``SalomePyQt`` Python m
 
     # Clear Help panel
     sg.infoClear()
+
+.. _hp_update_panel
+
+Notifications
+=============
+
+Each time when *Help panel* is shown, currently active module is informed via
+the virtual method ``updateInfoPanel()``. This method can be used to properly
+update the contents of the *Help panel*, depending on the current context.

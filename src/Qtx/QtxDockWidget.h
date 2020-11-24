@@ -49,6 +49,7 @@ public:
 
 signals:
   void            orientationChanged( Qt::Orientation );
+  void            aboutToShow();
 
 public slots:
   virtual void    setVisible( bool );
