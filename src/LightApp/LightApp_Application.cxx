@@ -5181,7 +5181,7 @@ void LightApp_Application::emitOperationFinished( const QString& theModuleName,
   Update visibility state of given objects
 */
 void LightApp_Application::updateVisibilityState( DataObjectList& theList,
-                                                  SUIT_ViewModel*  theViewModel )
+                                                  SUIT_ViewModel* theViewModel )
 {
   if ( !theViewModel || theList.isEmpty() ) return;
 
@@ -5196,19 +5196,17 @@ void LightApp_Application::updateVisibilityState( DataObjectList& theList,
     if ( !obj || aStudy->isComponent( obj->entry() ) )
       continue;
 
-    LightApp_Module* anObjModule = dynamic_cast<LightApp_Module*>(obj->module());
-    if ( anObjModule ) {
-      LightApp_Displayer* aDisplayer = anObjModule->displayer();
-      if ( aDisplayer ) {
-        Qtx::VisibilityState anObjState = Qtx::UnpresentableState;
-        if ( aDisplayer->canBeDisplayed( obj->entry(), theViewModel->getType() ) ) {
-          if ( aView && aDisplayer->IsDisplayed( obj->entry(), aView ) )
-            anObjState = Qtx::ShownState;
-          else
-            anObjState = Qtx::HiddenState;
-        }
-        aStudy->setVisibilityState( obj->entry(), anObjState );
+    QString mod_name = moduleTitle(aStudy->componentDataType(obj->entry()));
+    LightApp_Displayer* aDisplayer = LightApp_Displayer::FindDisplayer(mod_name, false);
+    if ( aDisplayer ) {
+      Qtx::VisibilityState anObjState = Qtx::UnpresentableState;
+      if ( aDisplayer->canBeDisplayed( obj->entry(), theViewModel->getType() ) ) {
+        if ( aView && aDisplayer->IsDisplayed( obj->entry(), aView ) )
+          anObjState = Qtx::ShownState;
+        else
+          anObjState = Qtx::HiddenState;
       }
+      aStudy->setVisibilityState( obj->entry(), anObjState );
     }
   }
 }
