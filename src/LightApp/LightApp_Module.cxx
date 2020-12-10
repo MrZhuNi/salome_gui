@@ -460,7 +460,7 @@ QtxPopupMgr* LightApp_Module::popupMgr()
 
     QString oneAndNotActive = "( count( $component ) = 1 ) and ( not( activeModule in $component ) ) and ( not($displayer={'%3'}) )";
     QString uniform = "true in $canBeDisplayed and %1 and ( activeModule = '%2' )";
-    uniform = uniform.arg( oneAndNotActive ).arg( name() ).arg( LightApp_Application::moduleDisplayer( moduleName() ) );
+    uniform = uniform.arg( oneAndNotActive ).arg( name() ).arg( LightApp_Application::moduleDisplayer( name() ) );
     myPopupMgr->setRule( disp, /*QString( "( not isVisible ) and " ) + */ uniform, QtxPopupMgr::VisibleRule );
     myPopupMgr->setRule( erase, /*QString( "( isVisible ) and " ) + */ uniform, QtxPopupMgr::VisibleRule );
     myPopupMgr->setRule( dispOnly, uniform, QtxPopupMgr::VisibleRule );

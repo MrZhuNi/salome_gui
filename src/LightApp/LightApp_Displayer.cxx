@@ -298,7 +298,9 @@ bool LightApp_Displayer::canBeDisplayed( const QString& entry ) const
 
 /*!
   \return displayer, corresponding to module
-  \param mod_name - name of module
+  \param mod_name - name or title of module.
+  \note It is better to use name (component data type)
+        in any case when you are not sure the title is not empty.
   \param load - is module has to be forced loaded
 */
 LightApp_Displayer* LightApp_Displayer::FindDisplayer( const QString& mod_name, const bool load )

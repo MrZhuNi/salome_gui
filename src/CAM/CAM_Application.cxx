@@ -675,19 +675,26 @@ QString CAM_Application::moduleLibrary( const QString& title, const bool full )
 }
 
 /*!
-  \brief Get displayer proxy for given module, by its title (user name).
+  \brief Get displayer proxy for given module, by its title (user name) or by its name.
   \param title module title (user name)
   \return name of module which provides displayer for requested module
  */
-QString CAM_Application::moduleDisplayer( const QString& title )
+QString CAM_Application::moduleDisplayer( const QString& title_or_name )
 {
   QString res;
+  if (title_or_name.isEmpty())
+    return res;
+
   for ( ModuleInfoList::const_iterator it = myInfoList.begin(); it != myInfoList.end() && res.isEmpty(); ++it )
   {
-    if ( (*it).title == title )
+    if ( (*it).title == title_or_name ||
+         (*it).name == title_or_name ) {
       res = (*it).displayer;
+      if (res.isEmpty())
+        res = (*it).title;
+    }
   }
-  return res.isEmpty() ? title : res;
+  return res;
 }
 
 /*!

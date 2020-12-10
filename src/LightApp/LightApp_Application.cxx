@@ -5196,8 +5196,8 @@ void LightApp_Application::updateVisibilityState( DataObjectList& theList,
     if ( !obj || aStudy->isComponent( obj->entry() ) )
       continue;
 
-    QString mod_name = moduleTitle(aStudy->componentDataType(obj->entry()));
-    LightApp_Displayer* aDisplayer = LightApp_Displayer::FindDisplayer(mod_name, false);
+    QString mname = aStudy->componentDataType(obj->entry());
+    LightApp_Displayer* aDisplayer = LightApp_Displayer::FindDisplayer(mname, false);
     if ( aDisplayer ) {
       Qtx::VisibilityState anObjState = Qtx::UnpresentableState;
       if ( aDisplayer->canBeDisplayed( obj->entry(), theViewModel->getType() ) ) {
