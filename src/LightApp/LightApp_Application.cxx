@@ -1206,12 +1206,16 @@ protected:
   {
     if ( !myBrowser.isEmpty() && !myUrl.isEmpty() )
     {
+      QProcess* proc = new QProcess();
 #ifdef WIN32
       QString cmdLine = QString( "\"%1\" %2 \"%3\"" ).arg( myBrowser, myParameters, myUrl );
 #else
       QString cmdLine = QString( "%1 %2 \"%3\"" ).arg( myBrowser, myParameters, myUrl );
+      // unset LD_LIBRARY_PATH to launch the web browser in a clean environment
+      QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+      env.insert("LD_LIBRARY_PATH", "");
+      proc->setProcessEnvironment(env);
 #endif
-      QProcess* proc = new QProcess();
       proc->start( cmdLine );
       if ( !proc->waitForStarted() )
       {
