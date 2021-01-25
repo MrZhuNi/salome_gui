@@ -5274,7 +5274,7 @@ void LightApp_Application::updateVisibilityState( DataObjectList& theList,
       if ( aDisplayer ) {
         Qtx::VisibilityState anObjState = Qtx::UnpresentableState;
         if ( aDisplayer->canBeDisplayed( obj->entry(), theViewModel->getType() ) ) {
-          if ( aView && aDisplayer->IsDisplayed( obj->entry(), aView ) )
+          if ( aDisplayer->IsDisplayed( obj->entry(), aView ) )
             anObjState = Qtx::ShownState;
           else
             anObjState = Qtx::HiddenState;
