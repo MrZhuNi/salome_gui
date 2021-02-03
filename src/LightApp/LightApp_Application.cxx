@@ -5247,8 +5247,9 @@ void LightApp_Application::updatePresentations( const QString& theComponent,
             if ( aVM ) {
               SALOME_View* aView = dynamic_cast<SALOME_View*>(aVM);
               if ( aView ) {
-                if ( aDisplayer->IsDisplayed( anEntry, aView ) ) {
-                  aDisplayer->Erase( anEntry, false, false, aView );
+                bool isDisp = aDisplayer->IsDisplayed( anEntry, aView );
+                aDisplayer->Erase( anEntry, true, false, aView );
+                if ( isDisp ) {
                   aDisplayer->Display( anEntry, false, aView );
                 }
               }
