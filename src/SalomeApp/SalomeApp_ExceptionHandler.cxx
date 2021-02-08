@@ -21,7 +21,9 @@
 //
 
 #include "SalomeApp_ExceptionHandler.h"
+#ifndef DISABLE_ORB
 #include "Utils_CorbaException.hxx"
+#endif
 
 #include <OSD.hxx>
 
@@ -83,10 +85,12 @@ bool SalomeApp_ExceptionHandler::handle( QObject* o, QEvent* e )
   {
     showMessage( title, QString( e.GetMessageString() ) );
   }
+#ifndef DISABLE_ORB
   catch( SALOME::SALOME_Exception& ex)
   {
     showMessage( title, QString( ex.details.text));
   }
+#endif
 #ifndef WIN32
   catch(...)
   {

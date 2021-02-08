@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -32,7 +32,9 @@
 #include <SUIT_Application.h>
 #include <SUIT_ResourceMgr.h>
 
+#ifndef DISABLE_ORB
 #include <SALOME_LifeCycleCORBA.hxx>
+#endif
 #include <Basics_Utils.hxx>
 
 #include <QObject>
@@ -225,7 +227,11 @@ QColor SalomeApp_DataObject::color( const ColorRole role, const int id ) const
       _PTR(GenericAttribute) anAttr;
       if ( myObject->FindAttribute( anAttr, "AttributeTextColor" ) ) {
         _PTR(AttributeTextColor) aColAttr = anAttr;
+#ifndef DISABLE_ORB
         c = QColor( (int)aColAttr->TextColor().R, (int)aColAttr->TextColor().G, (int)aColAttr->TextColor().B );
+#else
+        c = QColor( (int)aColAttr->TextColor()[0], (int)aColAttr->TextColor()[1], (int)aColAttr->TextColor()[2] );
+#endif
       }
     }
     break;
@@ -241,9 +247,15 @@ QColor SalomeApp_DataObject::color( const ColorRole role, const int id ) const
       _PTR(GenericAttribute) anAttr;
       if( myObject->FindAttribute ( anAttr, "AttributeTextHighlightColor") ) {
         _PTR(AttributeTextHighlightColor) aHighColAttr = anAttr;
-        c = QColor( (int)(aHighColAttr->TextHighlightColor().R), 
-                    (int)(aHighColAttr->TextHighlightColor().G), 
+#ifndef DISABLE_ORB
+        c = QColor( (int)(aHighColAttr->TextHighlightColor().R),
+                    (int)(aHighColAttr->TextHighlightColor().G),
                     (int)(aHighColAttr->TextHighlightColor().B));
+#else
+        c = QColor( (int)(aHighColAttr->TextHighlightColor()[0]),
+            (int)(aHighColAttr->TextHighlightColor()[1]),
+            (int)(aHighColAttr->TextHighlightColor()[2]));
+#endif
       }
     }
     break;
@@ -258,6 +270,7 @@ QColor SalomeApp_DataObject::color( const ColorRole role, const int id ) const
   return c;
 }
 
+#ifndef DISABLE_ORB
 /*!
   \brief Get data object tooltip for the specified column.
   \param id column id (not used)
@@ -301,6 +314,7 @@ QString SalomeApp_DataObject::toolTip( const int /*id*/ ) const
   
   return QString( "Object \'%1\', module \'%2\', ID=%3" ).arg( name() ).arg( componentDataType() ).arg( entry() );
 }
+#endif // DISABLE_ORB
 
 /*!
   \brief Get font to be used for data object rendering in the item views
@@ -401,7 +415,7 @@ bool SalomeApp_DataObject::hasChildren() const
   bool ok = false;
 
   // tmp??
-  _PTR(UseCaseBuilder) aUseCaseBuilder = SalomeApp_Application::getStudy()->GetUseCaseBuilder();
+  auto aUseCaseBuilder = SalomeApp_Application::getStudy()->GetUseCaseBuilder();
   if (aUseCaseBuilder->IsUseCaseNode(myObject)) {
     ok = aUseCaseBuilder->HasChildren(myObject);
     // TODO: check name as below?
@@ -409,7 +423,11 @@ bool SalomeApp_DataObject::hasChildren() const
   else {
     _PTR(ChildIterator) it ( SalomeApp_Application::getStudy()->NewChildIterator( myObject ) );
     for ( ; it->More() && !ok; it->Next() ) {
+#ifndef DISABLE_ORB
       _PTR(SObject) obj = it->Value();
+#else
+      _PTR(SObject) obj(it->GetValue());
+#endif
       if ( obj ) {
         _PTR(SObject) refObj;
         //if ( obj->ReferencedObject( refObj ) ) continue; // omit references
@@ -526,7 +544,7 @@ QString SalomeApp_DataObject::entry( const _PTR(SObject)& obj ) const
 /*!
   \brief Get data object value.
   \param obj data object
-  \return data object value or empty string if there is no 
+  \return data object value or empty string if there is no
   value associated to the object
 */
 QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
@@ -543,7 +561,7 @@ QString SalomeApp_DataObject::value( const _PTR(SObject)& obj ) const
     std::string str = strAttr->Value();
     QString aStrings = fromUtf8( str );
     
-    //Special case to show NoteBook variables in the "Value" column of the OB 
+    //Special case to show NoteBook variables in the "Value" column of the OB
     bool ok = false;
     QStringList aSectionList = aStrings.split( "|" );
     if ( !aSectionList.isEmpty() )
@@ -654,10 +672,10 @@ SalomeApp_ModuleObject::SalomeApp_ModuleObject( SUIT_DataObject* parent )
 */
 SalomeApp_ModuleObject::SalomeApp_ModuleObject( const _PTR(SObject)& sobj, 
                                                 SUIT_DataObject* parent )
-: CAM_DataObject( parent ),
-  LightApp_DataObject( parent ),
-  SalomeApp_DataObject( sobj, parent ),
-  CAM_ModuleObject( parent )
+  : CAM_DataObject( parent ),
+    LightApp_DataObject( parent ),
+    SalomeApp_DataObject( sobj, parent ),
+    CAM_ModuleObject( parent )
 {
 }
 
@@ -668,12 +686,12 @@ SalomeApp_ModuleObject::SalomeApp_ModuleObject( const _PTR(SObject)& sobj,
   \param parent parent data object
 */
 SalomeApp_ModuleObject::SalomeApp_ModuleObject( CAM_DataModel* dm, 
-                                                const _PTR(SObject)& sobj, 
+                                                const _PTR(SObject)& sobj,
                                                 SUIT_DataObject* parent )
-: CAM_DataObject( parent ),
-  LightApp_DataObject( parent ),
-  SalomeApp_DataObject( sobj, parent ),
-  CAM_ModuleObject( dm, parent )
+  : CAM_DataObject( parent ),
+    LightApp_DataObject( parent ),
+    SalomeApp_DataObject( sobj, parent ),
+    CAM_ModuleObject( dm, parent )
 {
 }
 

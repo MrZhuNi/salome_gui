@@ -32,8 +32,10 @@ class QString;
 
 class Quantity_Color;
 
+#ifndef DISABLE_ORB
 #include <SALOMEconfig.h>
 #include CORBA_CLIENT_HEADER(SALOME_Exception)
+#endif
 
 /*! 
   Class which provide color converter and exception message box.
@@ -44,8 +46,10 @@ public:
   static Quantity_Color  color( const QColor& );
   static QColor          color( const Quantity_Color& );
 
+#ifndef DISABLE_ORB
   static QString         ExceptionToString( const SALOME::SALOME_Exception& );
   static void            QtCatchCorbaException( const SALOME::SALOME_Exception& );
+#endif
 };
 
 #endif

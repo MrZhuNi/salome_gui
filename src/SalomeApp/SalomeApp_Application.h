@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -34,6 +34,7 @@
 #include "SalomeApp.h"
 #include <LightApp_Application.h>
 
+#ifndef DISABLE_ORB
 #include <omniORB4/CORBA.h>
 
 //#include <SALOMEconfig.h>
@@ -41,6 +42,9 @@
 #include <SALOME_NamingService.hxx>
 
 #include "SALOMEDSClient.hxx"
+#else
+#include "SALOMEDSImplAdapt.hxx"
+#endif
 
 #include <QPointer>
 
@@ -50,7 +54,9 @@ class SalomeApp_Study;
 class SalomeApp_NoteBook;
 #endif
 class SUIT_Desktop;
+#ifndef DISABLE_ORB
 class SALOME_LifeCycleCORBA;
+#endif
 
 
 #ifdef WIN32
@@ -95,10 +101,14 @@ public:
 
   virtual bool                        checkExistingDoc();
 
+#ifndef DISABLE_ORB
   static CORBA::ORB_var               orb();
+#endif
   static _PTR(Study)                  getStudy();
+#ifndef DISABLE_ORB
   static SALOME_NamingService*        namingService();
   static SALOME_LifeCycleCORBA*       lcc();
+#endif
 
   SUIT_ViewManager*                   newViewManager(const QString&);
   void                                updateSavePointDataObjects( SalomeApp_Study* );
@@ -187,13 +197,17 @@ private slots:
   void                                onRestoreGUIState();
 
   void                                onCatalogGen();
+#ifndef DISABLE_ORB
   void                                onRegDisplay();
+#endif
   void                                onOpenWith();
   void                                onExtAction();
 
 private:
   void                                createExtraActions();
+#ifndef SHAPER_STANDALONE
   void                                ensureShaperIsActivated();
+#endif
 
 private:
 #ifndef DISABLE_PYCONSOLE

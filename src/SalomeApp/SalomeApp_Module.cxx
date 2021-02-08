@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -39,7 +39,7 @@
 
 #include <SALOME_ListIO.hxx>
 #include <SALOME_InteractiveObject.hxx>
-          
+
 #include <LightApp_DataObject.h>
 
 #include <SUIT_Session.h>
@@ -101,23 +101,33 @@ void SalomeApp_Module::extractContainers( const SALOME_ListIO& source, SALOME_Li
     if( obj->hasEntry() )
     {
       _PTR(SObject) SO = study->studyDS()->FindObjectID( obj->getEntry() );
+#ifndef DISABLE_ORB
       if( SO && QString( SO->GetID().c_str() ) == SO->GetFatherComponent()->GetID().c_str() )
       { //component is selected
         _PTR(SComponent) SC( SO->GetFatherComponent() );
+#else
+      if( SO && QString( SO->GetID().c_str() ) == SO->GetFatherComponent().GetID().c_str() )
+      { //component is selected
+        _PTR(SComponent) SC( _CLASS(SComponent)(SO->GetFatherComponent()) );
+#endif
         _PTR(ChildIterator) anIter ( study->studyDS()->NewChildIterator( SC ) );
         anIter->InitEx( true );
         while( anIter->More() )
         {
+#ifndef DISABLE_ORB
           _PTR(SObject) valSO ( anIter->Value() );
+#else
+          _PTR(SObject) valSO ( anIter->GetValue() );
+#endif
           _PTR(SObject) refSO;
           if( !valSO->ReferencedObject( refSO ) )
           {
             QString id = valSO->GetID().c_str(),
-                    comp = SC->ComponentDataType().c_str(),
-                    val = valSO->GetName().c_str();
+                comp = SC->ComponentDataType().c_str(),
+                val = valSO->GetName().c_str();
 
             Handle( SALOME_InteractiveObject ) new_obj =
-              new SALOME_InteractiveObject( id.toUtf8(), comp.toLatin1(), val.toLatin1() );
+                new SALOME_InteractiveObject( id.toUtf8(), comp.toLatin1(), val.toLatin1() );
             dest.Append( new_obj );
           }
           anIter->Next();

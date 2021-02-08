@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -35,8 +35,10 @@
 #include <SUIT_TreeSync.h>
 #include <SUIT_DataObjectIterator.h>
 
+#ifndef DISABLE_ORB
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Exception)
+#endif
 
 typedef _PTR(SObject)     kerPtr;
 typedef SUIT_DataObject*  suitPtr;
@@ -90,12 +92,12 @@ bool SalomeApp_DataModelSync::isCorrect( const kerPtr& so ) const
   QString name = so->GetName().c_str();
   _PTR( GenericAttribute ) anAttr;
   bool isDraw = true;
-  if ( so->FindAttribute(anAttr, "AttributeDrawable") ) 
+  if ( so->FindAttribute(anAttr, "AttributeDrawable") )
   {
     _PTR(AttributeDrawable) aAttrDraw = anAttr;
-    isDraw = aAttrDraw->IsDrawable(); 
+    isDraw = aAttrDraw->IsDrawable();
   }
-  bool res = so && ( so->GetName().size() || so->ReferencedObject( refObj ) ) && isDraw;  
+  bool res = so && ( so->GetName().size() || so->ReferencedObject( refObj ) ) && isDraw;
   return res;
 }
 
@@ -194,16 +196,24 @@ QList<kerPtr> SalomeApp_DataModelSync::children( const kerPtr& obj ) const
 
   if ( expandable ) {
     // tmp??
-    _PTR(UseCaseBuilder) aUseCaseBuilder = myStudy->GetUseCaseBuilder();
+    auto aUseCaseBuilder = myStudy->GetUseCaseBuilder();
     if (aUseCaseBuilder->HasChildren(obj)) {
       _PTR(UseCaseIterator) it ( aUseCaseBuilder->GetUseCaseIterator( obj ) );
       for ( ; it->More(); it->Next() )
+#ifndef DISABLE_ORB
         ch.append( it->Value() );
+#else
+        ch.append( _PTR(SObject)(it->GetValue()) );
+#endif
     }
     else {
       _PTR(ChildIterator) it ( myStudy->NewChildIterator( obj ) );
       for ( ; it->More(); it->Next() )
+#ifndef DISABLE_ORB
         ch.append( it->Value() );
+#else
+        ch.append( _PTR(SObject)(it->GetValue()) );
+#endif
     }
   }
 
@@ -286,7 +296,7 @@ bool SalomeApp_DataModel::open( const QString& name, CAM_Study* study, QStringLi
   if ( anId.isEmpty() )
     return true; // Probably nothing to load
 
-  _PTR(SComponent) aSComp ( SalomeApp_Application::getStudy()->FindComponentID( std::string( anId.toUtf8() ) ) );
+  _PTR(SComponent) aSComp ( SalomeApp_Application::getStudy()->FindComponentID( anId.toUtf8().data() ) );
   if ( aSComp )
     updateTree( aSComp, aDoc );
 
@@ -320,7 +330,7 @@ void SalomeApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
       studyRoot = dynamic_cast<LightApp_RootObject*>( aSStudy->root() );
       QString anId = getRootEntry( aSStudy );
       if ( !anId.isEmpty() ){ // if nothing is published in the study for this module -> do nothing
-        sobj = SalomeApp_Application::getStudy()->FindComponentID( std::string( anId.toUtf8() ) );
+        sobj = SalomeApp_Application::getStudy()->FindComponentID( anId.toUtf8().data() );
       }
     }
   }
@@ -330,7 +340,7 @@ void SalomeApp_DataModel::update( LightApp_DataObject*, LightApp_Study* study )
       aSStudy = dynamic_cast<SalomeApp_Study*>( studyRoot->study() ); // <study> value should not change here theoretically, but just to make sure
       if ( aSStudy ) {
         // modelRoot->object() cannot be reused here: it is about to be deleted by buildTree() soon
-        sobj = SalomeApp_Application::getStudy()->FindComponentID( std::string( modelRoot->entry().toUtf8() ) );
+        sobj = SalomeApp_Application::getStudy()->FindComponentID(modelRoot->entry().toUtf8().data() );
       }
     }
   }
@@ -423,7 +433,7 @@ QString SalomeApp_DataModel::getRootEntry( SalomeApp_Study* study ) const
       anEntry = anObj->entry();
   }
   else if ( study && study->studyDS() ) { // this works even if <myRoot> is null
-    _PTR(SComponent) aSComp( study->studyDS()->FindComponent( module()->name().toStdString() ) );
+    _PTR(SComponent) aSComp( study->studyDS()->FindComponent( module()->name().toUtf8().data() ) );
     if ( aSComp )
       anEntry = aSComp->GetID().c_str();
   }

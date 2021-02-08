@@ -124,36 +124,40 @@ ENDIF()
 # --- headers ---
 
 # header files / to be processed by moc
-SET(_moc_HEADERS   
-  SalomeApp_Application.h
-  SalomeApp_CheckFileDlg.h
-  SalomeApp_DataModel.h
-  SalomeApp_DoubleSpinBox.h
-  SalomeApp_ExitDlg.h
-  SalomeApp_IntSpinBox.h
-  SalomeApp_ListView.h
-  SalomeApp_LoadStudiesDlg.h
-  SalomeApp_Module.h
-  SalomeApp_Study.h
-  SalomeApp_StudyPropertiesDlg.h
+SET(SalomeCommon_moc_HEADERS   
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_Application.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_CheckFileDlg.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_DataModel.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_DoubleSpinBox.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_ExitDlg.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_IntSpinBox.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_ListView.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_LoadStudiesDlg.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_Module.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_Study.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_StudyPropertiesDlg.h
 )
+
+SET(_moc_HEADERS ${SalomeCommon_moc_HEADERS})
 
 IF(SALOME_USE_PYCONSOLE)
   LIST(APPEND _moc_HEADERS SalomeApp_NoteBook.h)
 ENDIF()
 
 # header files / no moc processing
-SET(_other_HEADERS
-  SalomeApp.h
-  SalomeApp_DataObject.h
-  SalomeApp_Engine_i.h
-  SalomeApp_ExceptionHandler.h
-  SalomeApp_Filter.h
-  SalomeApp_ImportOperation.h
-  SalomeApp_Tools.h
-  SalomeApp_TypeFilter.h
-  SalomeApp_VisualState.h
+SET(SalomeCommon_other_HEADERS
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_DataObject.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_ExceptionHandler.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_Filter.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_ImportOperation.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_Tools.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_TypeFilter.h
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_VisualState.h
 )
+
+SET(_other_HEADERS ${SalomeCommon_other_HEADERS}
+  SalomeApp_Engine_i.h)
 
 IF(SALOME_USE_PYCONSOLE)
   LIST(APPEND _other_HEADERS SalomeApp_PyInterp.h)
@@ -183,27 +187,34 @@ SET(_other_RESOURCES
 QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
 
 # sources / static
-SET(_other_SOURCES
-  SalomeApp_Application.cxx
-  SalomeApp_CheckFileDlg.cxx
-  SalomeApp_DataModel.cxx
-  SalomeApp_DataObject.cxx
-  SalomeApp_DoubleSpinBox.cxx
-  SalomeApp_Engine_i.cxx
-  SalomeApp_ExceptionHandler.cxx
-  SalomeApp_ExitDlg.cxx
-  SalomeApp_Filter.cxx
-  SalomeApp_ImportOperation.cxx
-  SalomeApp_IntSpinBox.cxx
-  SalomeApp_ListView.cxx
-  SalomeApp_LoadStudiesDlg.cxx
-  SalomeApp_Module.cxx
-  SalomeApp_Study.cxx
-  SalomeApp_StudyPropertiesDlg.cxx
-  SalomeApp_Tools.cxx
-  SalomeApp_TypeFilter.cxx
-  SalomeApp_VisualState.cxx
+SET(SalomeCommon_other_SOURCES
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_Application.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_CheckFileDlg.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_DataModel.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_DataObject.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_DoubleSpinBox.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_ExceptionHandler.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_ExitDlg.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_Filter.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_ImportOperation.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_IntSpinBox.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_ListView.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_LoadStudiesDlg.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_Module.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_Study.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_StudyPropertiesDlg.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_Tools.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_TypeFilter.cxx
+  ${PROJECT_SOURCE_DIR}/src/SalomeApp/SalomeApp_VisualState.cxx
 )
+
+SET(_other_SOURCES ${SalomeCommon_other_SOURCES}
+ SalomeApp_Engine_i.cxx)
+
+# export for Shaper application
+SET(SalomeCommon_moc_HEADERS ${SalomeCommon_moc_HEADERS} PARENT_SCOPE) 
+SET(SalomeCommon_other_SOURCES ${SalomeCommon_other_SOURCES} PARENT_SCOPE)
+SET(SalomeCommon_other_HEADERS ${SalomeCommon_other_HEADERS} PARENT_SCOPE)
 
 IF(SALOME_USE_PYCONSOLE)
   LIST(APPEND _other_SOURCES SalomeApp_PyInterp.cxx SalomeApp_NoteBook.cxx)

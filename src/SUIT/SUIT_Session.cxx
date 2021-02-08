@@ -218,6 +218,11 @@ SUIT_ResourceMgr* SUIT_Session::resourceMgr() const
   return myResMgr;
 }
 
+SUIT_ResourceMgr* & SUIT_Session::resourceMgr()
+{
+  return myResMgr;
+}
+
 /*!
   Removes the application from the list of launched applications.
   If it is a last application the session will be closed.
@@ -362,4 +367,38 @@ SUIT_ResourceMgr* SUIT_Session::createResourceMgr( const QString& appName ) cons
 void SUIT_Session::onApplicationActivated( SUIT_Application* app ) 
 {
   myActiveApp = app;
+}
+
+/*!
+ * \return name of the main Application launched by the executable
+ * -> SalomeApp, ShaperApp
+ */
+std::string SUIT_Session::executableAppName() const
+{
+  return myExecutableAppName;
+}
+
+/*!
+ * \return static name of the shaper executable application
+ */
+std::string SUIT_Session::shaperAppName() const
+{
+  return "ShaperApp";
+}
+
+/*!
+ * \return static name of the shaper executable application
+ */
+std::string SUIT_Session::salomeAppName() const
+{
+  return "SalomeApp";
+}
+
+/*!
+ * \brief sets thename of the main Application launched by the executable
+ * -> SalomeApp, ShaperApp
+ */
+void  SUIT_Session::setExecutableAppName(const std::string & appName)
+{
+  myExecutableAppName = appName;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -31,10 +31,14 @@
 
 #include <QDialog>
 
+#ifndef DISABLE_ORB
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOMEDS)
 
 #include <SALOMEDSClient_Study.hxx>
+#else
+#include "SALOMEDSImpl_Study.hxx"
+#endif
 
 class QLineEdit;
 class QLabel;

@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -53,10 +53,14 @@ bool SalomeApp_TypeFilter::isOk( const SUIT_DataOwner* sOwner ) const
   {
     QString entry = owner->entry();
 
-    _PTR(SObject) aSObj( SalomeApp_Application::getStudy()->FindObjectID( entry.toStdString() ) );
+    _PTR(SObject) aSObj( SalomeApp_Application::getStudy()->FindObjectID( entry.toUtf8().data() ) );
     if (aSObj)
     {
-      _PTR(SComponent) aComponent(aSObj->GetFatherComponent());
+#ifndef DISABLE_ORB
+ _PTR(SComponent) aComponent(aSObj->GetFatherComponent());
+#else
+      _PTR(SComponent) aComponent(_CLASS(SComponent)(aSObj->GetFatherComponent()));
+#endif
       if ( aComponent && (aComponent->ComponentDataType() == myKind.toStdString()) )
         return true;
     }

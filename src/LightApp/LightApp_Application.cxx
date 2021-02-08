@@ -2236,14 +2236,15 @@ LightApp_Preferences* LightApp_Application::preferences( const bool crt ) const
     _prefs_ = new LightApp_Preferences( resourceMgr() );
     that->createPreferences( _prefs_ );
     qAddPostRoutine( LightAppCleanUpAppResources );
-  }
 
-  that->myPrefs = _prefs_;
 
-  connect( myPrefs, SIGNAL( preferenceChanged( QString&, QString&, QString& ) ),
-           this, SLOT( onPreferenceChanged( QString&, QString&, QString& ) ), Qt::UniqueConnection );
-  connect( myPrefs, SIGNAL( resetToDefaults() ),
-           this, SIGNAL( preferenceResetToDefaults() ), Qt::UniqueConnection );
+    that->myPrefs = _prefs_;
+
+    connect( myPrefs, SIGNAL( preferenceChanged( QString&, QString&, QString& ) ),
+             this, SLOT( onPreferenceChanged( QString&, QString&, QString& ) ), Qt::UniqueConnection );
+    connect( myPrefs, SIGNAL( resetToDefaults() ),
+             this, SIGNAL( preferenceResetToDefaults() ), Qt::UniqueConnection );
+   }
 
   if ( !crt )
     return myPrefs;

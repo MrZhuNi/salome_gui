@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -38,8 +38,12 @@
 #include <QApplication>
 #include <QMultiHash>
 
+#ifndef DISABLE_ORB
 #include <SALOMEDSClient_ClientFactory.hxx>//?
 #include <SALOMEDSClient_IParameters.hxx>//?
+#else
+#include <SALOMEDSImpl_IParameters.hxx>
+#endif
 
 #include <vector>//?
 #include <string>//?
@@ -119,9 +123,15 @@ int SalomeApp_VisualState::storeState()
   if ( savePoints.size() > 0)
     savePoint = savePoints[savePoints.size()-1] + 1;
 
-  _PTR(AttributeParameter) ap = study->studyDS()->GetCommonParameters( study->getVisualComponentName().toLatin1().constData(), 
+#ifndef DISABLE_ORB
+	_PTR(AttributeParameter) ap = study->studyDS()->GetCommonParameters( study->getVisualComponentName().toLatin1().constData(),
 								       savePoint );
-  _PTR(IParameters) ip = ClientFactory::getIParameters( ap );
+		_PTR(IParameters) ip = ClientFactory::getIParameters( ap );
+#else
+	auto ap = study->studyDS()->GetCommonParameters( study->getVisualComponentName().toLatin1().constData(),
+											 savePoint);
+		_PTR(IParameters) ip; //TODO = ClientFactory::getIParameters( ap );
+#endif
 
   ViewManagerList lst;
   myApp->viewManagers( lst );
@@ -208,9 +218,15 @@ void SalomeApp_VisualState::restoreState(int savePoint)
   if ( !study )
     return;
 
+#ifndef DISABLE_ORB
   _PTR(AttributeParameter) ap = study->studyDS()->GetCommonParameters( study->getVisualComponentName().toLatin1().constData(),
 								       savePoint );
-  _PTR(IParameters) ip = ClientFactory::getIParameters(ap);
+	 _PTR(IParameters) ip = ClientFactory::getIParameters(ap);
+#else
+	auto ap = study->studyDS()->GetCommonParameters( study->getVisualComponentName().toLatin1().constData(),
+											 savePoint );
+	 _PTR(IParameters) ip ; //TODO = ClientFactory::getIParameters(ap);
+#endif
 
   qApp->installEventFilter( this );
 
@@ -228,7 +244,14 @@ void SalomeApp_VisualState::restoreState(int savePoint)
   for ( int i = 0; i < nbViewers; i++ )
   {
     std::string viewerEntry = ip->getValue( "AP_VIEWERS_LIST", i );
+    #ifndef DISABLE_ORB
     std::vector<std::string> veiewerParams = ip->parseValue(viewerEntry,'_');
+#else
+    //TODO
+     std::vector<std::string> veiewerParams;
+     return;
+     // = ip->getValues(viewerEntry,'_');
+#endif
     std::string type = veiewerParams[0];
     std::string viewerID = veiewerParams[1];
     SUIT_ViewManager* vm = myApp->newViewManager( type.c_str() );

@@ -52,6 +52,7 @@ QColor SalomeApp_Tools::color( const Quantity_Color& c )
         return QColor( (int)( c.Red() * 255 ), (int)( c.Green() * 255 ), (int)( c.Blue() * 255 ) );
 }
 
+#ifndef DISABLE_ORB
 /*!
   Gets message on exception \a S_ex.
 */
@@ -127,3 +128,4 @@ void SalomeApp_Tools::QtCatchCorbaException( const SALOME::SALOME_Exception& S_e
                               title, message );
 
 }
+#endif //DISABLE_ORB

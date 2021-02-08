@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -280,6 +280,7 @@ bool NoteBook_TableRow::IsValidStringValue(const QString /*theValue*/)
   if( aNumRows == 0 )
     return true;
 
+#ifndef DISABLE_PYCONSOLE
   bool aLastRowIsEmpty = myParentTable->myRows[ aNumRows - 1 ]->GetName().isEmpty() &&
                          myParentTable->myRows[ aNumRows - 1 ]->GetValue().isEmpty();
 
@@ -303,6 +304,9 @@ bool NoteBook_TableRow::IsValidStringValue(const QString /*theValue*/)
   bool aResult = pyInterp->run(command.c_str());
   pyConsole->setIsSuppressOutput(oldSuppressValue);	
   return !aResult;
+#else
+  return true;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -455,6 +459,7 @@ bool NoteBook_Table::IsValid() const
     if( !myRows[i]->CheckName() || !IsUniqueName( myRows[i] ) || !myRows[i]->CheckValue() )
       return false;
 
+#ifndef DISABLE_PYCONSOLE
   SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
   PyConsole_Console* pyConsole = app->pythonConsole();
   PyConsole_Interp* pyInterp = app->getPyInterp();
@@ -477,6 +482,9 @@ bool NoteBook_Table::IsValid() const
   pyConsole->setIsSuppressOutput(oldSuppressValue);	
 
   return !aResult;
+#else
+  return true;
+#endif
 }
 
 //============================================================================
@@ -876,6 +884,7 @@ void SalomeApp_NoteBook::onApply()
         }
       }
 
+#ifndef DISABLE_ORB
       if( NoteBook_TableRow::IsIntegerValue(aValue,&anIVal) )
         aStudy->SetInteger(std::string(aName.toUtf8().constData()),anIVal);
 
@@ -887,6 +896,10 @@ void SalomeApp_NoteBook::onApply()
     
       else
         aStudy->SetString(std::string(aName.toUtf8().constData()),aValue.toStdString());
+#else
+      return;
+      //TODO
+#endif
     }
   }
   myTable->ResetMaps();
@@ -923,5 +936,7 @@ void SalomeApp_NoteBook::onUpdateStudy()
   SalomeApp_Application* app = dynamic_cast<SalomeApp_Application*>( SUIT_Session::session()->activeApplication() );
   if(!app)
     return;
+#ifndef DISABLE_PYCONSOLE
   app->onUpdateStudy();
+#endif
 }

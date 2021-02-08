@@ -38,6 +38,8 @@
 #endif  // WIN32
 
 #include "utilities.h"
+
+#ifndef DISABLE_ORB
 #include "SALOMEDSClient.hxx"
 
 class TOOLSGUI_EXPORT ToolsGUI  
@@ -49,5 +51,6 @@ public :
                                            const bool  theValue,
                                            void*       theId );
 };
+#endif
 
 #endif // TOOLSGUI_H

@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -32,9 +32,11 @@
 #include <SUIT_Desktop.h>
 #include <SUIT_MessageBox.h>
 
+#ifndef DISABLE_ORB
 // CORBA Headers
 #include <SALOMEconfig.h>
 #include CORBA_CLIENT_HEADER(SALOMEDS_Attributes)
+#endif
 
 // QT Includes
 #include <QPushButton>
@@ -169,14 +171,21 @@ SalomeApp_StudyPropertiesDlg::~SalomeApp_StudyPropertiesDlg()
 void SalomeApp_StudyPropertiesDlg::initData()
 {
   bool hasData = (SalomeApp_Application::getStudy() != NULL);
-  _PTR(AttributeStudyProperties) propAttr;
+ /* _PTR(AttributeStudyProperties) propAttr;
   if (hasData)
     propAttr = SalomeApp_Application::getStudy()->GetProperties();
-  hasData = hasData && propAttr;
+  hasData = hasData && propAttr;*/
   
   if (hasData) {
+    auto propAttr = SalomeApp_Application::getStudy()->GetProperties();
+    if(propAttr){
     //Creator and creation date
+#ifndef DISABLE_ORB
     myAuthor->setText(propAttr->GetUserName().c_str());
+#else
+    //TODO
+#endif
+
     int minutes, hours, day, month, year;
     if (propAttr->GetCreationDate(minutes, hours, day, month, year)) {
       QString strDate;
@@ -224,7 +233,11 @@ void SalomeApp_StudyPropertiesDlg::initData()
     //Modifications
     std::vector<std::string> aUsers;
     std::vector<int>  aMins, aHours, aDays, aMonths, aYears;
+#ifndef DISABLE_ORB
     propAttr->GetModificationsList(aUsers, aMins, aHours, aDays, aMonths, aYears, false);
+#else
+    //TODO
+#endif
     int aCnt = aUsers.size();
     for ( int i = 0; i < (int)aCnt; i++ ) {
       QString date;
@@ -255,6 +268,7 @@ void SalomeApp_StudyPropertiesDlg::initData()
       myVersions->addTopLevelItem(item);
     }
   }
+  }
   adjustSize();
 }
 
@@ -263,7 +277,7 @@ void SalomeApp_StudyPropertiesDlg::initData()
 */
 void SalomeApp_StudyPropertiesDlg::clickOnOk()
 {
-  _PTR(AttributeStudyProperties) propAttr = SalomeApp_Application::getStudy()->GetProperties();
+  auto propAttr = SalomeApp_Application::getStudy()->GetProperties();
   //Firstly, store locked flag
   if(propAttr) {
     bool bLocked = myLocked->isChecked();
@@ -275,6 +289,7 @@ void SalomeApp_StudyPropertiesDlg::clickOnOk()
     bool needWarning = false;
     
     //Author
+#ifndef DISABLE_ORB
     if (QString(propAttr->GetUserName().c_str()) != myAuthor->text().trimmed()) {
       if(!propAttr->IsLocked()) {
         propAttr->SetUserName(myAuthor->text().trimmed().toStdString());
@@ -284,6 +299,18 @@ void SalomeApp_StudyPropertiesDlg::clickOnOk()
       }
     }
 
+#else
+    //TODO
+    /*if (QString(propAttr->GetUserName().c_str()) != myAuthor->text().trimmed()) {
+      if(!propAttr->IsLocked()) {
+        propAttr->SetUserName(myAuthor->text().trimmed().toStdString());
+        myIsChanged = true;
+      } else {
+        needWarning = true;
+      }
+    }
+    */
+#endif
     //Unit
     if (QString(propAttr->GetUnits().c_str()) != myUnits->currentText()) {
       if(!propAttr->IsLocked()) {

@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -34,7 +34,11 @@
 #include "SalomeApp.h"
 #include "LightApp_DataModel.h"
 
+#ifndef DISABLE_ORB
 #include "SALOMEDSClient.hxx"
+#else
+#include "SALOMEDSImplAdapt.hxx"
+#endif
 
 class SalomeApp_Module;
 class SalomeApp_Study;

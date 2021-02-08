@@ -56,13 +56,17 @@ SalomeApp_ExitDlg::SalomeApp_ExitDlg( QWidget* parent )
   m_lDescr->setText( tr( "QUE_DESK_EXIT" ) );
   m_lDescr->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
+#ifndef DISABLE_ORB
   myServersShutdown = new QCheckBox( tr( "SHUTDOWN_SERVERS" ), this );
   myServersShutdown->setChecked( true );
-  
+#endif
+
   QVBoxLayout* m_vl1 = new QVBoxLayout();
   m_vl1->setMargin( 10 ); m_vl1->setSpacing( 16 );
   m_vl1->addWidget( m_lDescr );
+#ifndef DISABLE_ORB
   m_vl1->addWidget( myServersShutdown );
+#endif
 
   QHBoxLayout* m_hl1 = new QHBoxLayout();
   m_hl1->setMargin( 0 ); m_hl1->setSpacing( 6 );
@@ -99,8 +103,10 @@ SalomeApp_ExitDlg::~SalomeApp_ExitDlg()
 /*!
  * \brief get the check box status
  */
+#ifndef DISABLE_ORB
 bool SalomeApp_ExitDlg::isServersShutdown()
 {
   return myServersShutdown->isChecked();
 }
- 
+ #endif
+

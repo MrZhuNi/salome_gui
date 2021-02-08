@@ -154,3 +154,7 @@ IF(NOT SALOME_LIGHT_ONLY)
   ADD_SUBDIRECTORY(GuiHelpers)
   ADD_SUBDIRECTORY(TreeData)
 ENDIF(NOT SALOME_LIGHT_ONLY)
+
+# package without CORBA (enabled with directive DISABE_ORB defined in ShaperApp/CMakeLists.txt)
+ADD_SUBDIRECTORY(ShaperApp)
+ADD_SUBDIRECTORY(Shaper)

@@ -388,6 +388,7 @@ int main( int argc, char **argv )
     QApplication::addLibraryPath( qtdir );
 
   // Add application library path (to search style plugin etc...)
+
   QString path = SUIT_Tools::addSlash( Qtx::getenv( "GUI_ROOT_DIR" ) ) + "bin/salome";
   QApplication::addLibraryPath( QDir::toNativeSeparators( path ) );
 
@@ -617,6 +618,8 @@ int main( int argc, char **argv )
       // Load SalomeApp dynamic library
       MESSAGE( "creation SUIT_Application" );
       SUIT_Application* aGUIApp = aGUISession->startApplication( "SalomeApp", 0, 0 );
+      // Fill the executable name in session
+      aGUISession->setExecutableAppName(aGUISession->salomeAppName());
       if ( aGUIApp )
       {
 #ifdef USE_SALOME_STYLE

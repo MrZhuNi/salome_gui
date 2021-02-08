@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -31,7 +31,11 @@
 #pragma warning( disable:4251 )
 #endif
 
+#ifndef DISABLE_ORB
 #include "SALOMEDSClient.hxx"
+#else
+#include "SALOMEDSImplAdapt.hxx"
+#endif
 
 class SALOMEAPP_EXPORT SalomeApp_Study : public LightApp_Study
 {
@@ -104,7 +108,7 @@ protected:
   virtual void        dataModelInserted( const CAM_DataModel* );
   virtual bool        openDataModel( const QString&, CAM_DataModel* );
 
-  virtual CAM_ModuleObject* createModuleObject( LightApp_DataModel* theDataModel, 
+  virtual CAM_ModuleObject* createModuleObject( LightApp_DataModel* theDataModel,
                                                 SUIT_DataObject* theParent ) const;
 protected slots:
   virtual void        updateModelRoot( const CAM_DataModel* );
@@ -114,10 +118,12 @@ protected slots:
 
 private:
   _PTR(Study)         myStudyDS;
+#ifndef DISABLE_ORB
   Observer_i*         myObserver;
+#endif
 
 #ifndef DISABLE_PYCONSOLE
- signals:
+signals:
   void                notebookVarUpdated( QString theVarName );
 #endif
 };

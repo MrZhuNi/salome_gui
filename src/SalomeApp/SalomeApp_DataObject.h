@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -28,7 +28,11 @@
 
 #include "SalomeApp.h"
 #include <LightApp_DataObject.h>
+#ifndef DISABLE_ORB
 #include <SALOMEDSClient.hxx>
+#else
+#include "SALOMEDSImplAdapt.hxx"
+#endif
 
 class SalomeApp_Study;
 
@@ -54,7 +58,9 @@ public:
   virtual QString        text( const int = NameId ) const;
   virtual QPixmap        icon( const int = NameId ) const;
   virtual QColor         color( const ColorRole, const int = NameId ) const;
+#ifndef DISABLE_ORB
   virtual QString        toolTip( const int = NameId ) const;
+#endif
   virtual QFont          font( const int = NameId ) const;
 
   virtual _PTR(SObject)  object() const;
@@ -86,7 +92,7 @@ private:
 };
 
 class SALOMEAPP_EXPORT SalomeApp_ModuleObject : public SalomeApp_DataObject,
-                                                public CAM_ModuleObject
+    public CAM_ModuleObject
 {
 public:
   SalomeApp_ModuleObject( SUIT_DataObject* = 0 );
@@ -100,7 +106,7 @@ public:
 };
 
 class SALOMEAPP_EXPORT SalomeApp_RootObject : public SalomeApp_DataObject,
-                                              public LightApp_RootObject
+    public LightApp_RootObject
 {
 public:
   SalomeApp_RootObject( LightApp_Study* );

@@ -74,6 +74,7 @@ public:
   SUIT_Application*            activeApplication() const;
 
   SUIT_ResourceMgr*            resourceMgr() const;
+  SUIT_ResourceMgr*&           resourceMgr();
 
   void                         closeSession( int mode = ASK, int flags = 0 );
   int                          exitFlags() const;
@@ -81,6 +82,11 @@ public:
   SUIT_ExceptionHandler*       handler() const;
 
   void                         insertApplication( SUIT_Application* );
+
+  std::string                  executableAppName() const;
+  std::string                  shaperAppName() const;
+  std::string                  salomeAppName() const;
+  void                         setExecutableAppName(const std::string & appName);
 
 signals:
   void                         applicationClosed( SUIT_Application* );
@@ -112,6 +118,7 @@ private:
 
   int                          myExitStatus;
   int                          myExitFlags;
+  std::string                  myExecutableAppName;
 };
 
 #endif

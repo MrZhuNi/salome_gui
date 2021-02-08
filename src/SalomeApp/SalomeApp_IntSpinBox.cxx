@@ -31,8 +31,10 @@
 
 #include <SUIT_Session.h>
 
+#ifndef DISABLE_ORB
 #include "SALOMEDSClient_ClientFactory.hxx" 
 #include CORBA_SERVER_HEADER(SALOMEDS)
+#endif
 
 #include <QKeyEvent>
 #include <QLineEdit>

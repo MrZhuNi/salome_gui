@@ -38,10 +38,12 @@ public:
   SalomeApp_ExitDlg( QWidget* ) ;
   ~SalomeApp_ExitDlg();
 
+#ifndef DISABLE_ORB
   bool isServersShutdown();
 
 private:
   QCheckBox* myServersShutdown;
+#endif
 };
 
 #endif // SALOMEAPP_EXITDLG_H

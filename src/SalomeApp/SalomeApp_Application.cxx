@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (C) 2007-2020  CEA/DEN, EDF R&D, OPEN CASCADE, CSGROUP
 //
 // Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 // CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -80,9 +80,11 @@
 //#include <OB_ListItem.h>
 
 
+#ifndef DISABLE_ORB
 #include <Utils_ORB_INIT.hxx>
 #include <Utils_SINGLETON.hxx>
 #include <SALOME_LifeCycleCORBA.hxx>
+#endif
 
 #include <QApplication>
 #include <QWidget>
@@ -96,7 +98,9 @@
 #include <QMenu>
 #include <QtDebug>
 
+#ifndef DISABLE_ORB
 #include <SALOMEDSClient_ClientFactory.hxx>
+#endif
 #include <Basics_Utils.hxx>
 
 #include <SALOME_ListIO.hxx>
@@ -336,10 +340,12 @@ void SalomeApp_Application::createActions()
                 tr( "MEN_DESK_CATALOG_GENERATOR" ), tr( "PRP_DESK_CATALOG_GENERATOR" ),
                 Qt::ALT+Qt::SHIFT+Qt::Key_G, desk, false, this, SLOT( onCatalogGen() ) );
 
+#ifndef DISABLE_ORB
   //! Registry Display
   createAction( RegDisplayId, tr( "TOT_DESK_REGISTRY_DISPLAY" ),  QIcon(),
                 tr( "MEN_DESK_REGISTRY_DISPLAY" ), tr( "PRP_DESK_REGISTRY_DISPLAY" ),
                 /*Qt::SHIFT+Qt::Key_D*/0, desk, false, this, SLOT( onRegDisplay() ) );
+#endif
 
   createAction( ConnectId, tr( "TOT_DESK_CONNECT_STUDY" ), QIcon(),
                 tr( "MEN_DESK_CONNECT" ), tr( "PRP_DESK_CONNECT" ),
@@ -372,7 +378,9 @@ void SalomeApp_Application::createActions()
 
   int toolsMenu = createMenu( tr( "MEN_DESK_TOOLS" ), -1, MenuToolsId, 50 );
   createMenu( CatalogGenId, toolsMenu, 10, -1 );
+#ifndef DISABLE_ORB
   createMenu( RegDisplayId, toolsMenu, 10, -1 );
+#endif
   createMenu( separator(), toolsMenu, -1, 15, -1 );
 
   createExtraActions();
@@ -401,12 +409,17 @@ void SalomeApp_Application::onExit()
   //MessageLocker ml( myToIgnoreMessages );
 
   bool killServers = false;
+#ifdef DISABLE_ORB
+   killServers = true;
+#endif
   bool result = true;
 
   if ( exitConfirmation() ) {
     SalomeApp_ExitDlg dlg( desktop() );
     result = dlg.exec() == QDialog::Accepted;
+#ifndef DISABLE_ORB
     killServers = dlg.isServersShutdown();
+#endif
   }
 
   if ( result ) {
@@ -639,7 +652,11 @@ void SalomeApp_Application::onCopy()
       if( so )
       {
         try {
+#ifndef DISABLE_ORB
           stdDS->Copy(so);
+#else
+          //TODO stdDS->Copy(*so);
+#endif
           onSelectionChanged();
         }
         catch(...) {
@@ -677,7 +694,11 @@ void SalomeApp_Application::onPaste()
       if( so )
       {
         try {
+#ifndef DISABLE_ORB
           stdDS->Paste(so);
+#else
+          //TODO  stdDS->Paste(*so);
+#endif
           updateObjectBrowser( true );
           updateActions(); //SRN: BugID IPAL9377, case 3
         }
@@ -762,8 +783,13 @@ void SalomeApp_Application::onSelectionChanged()
      _PTR(SObject) so = getStudy()->FindObjectID(it.Value()->getEntry());
 
      if ( so ) {
+#ifndef DISABLE_ORB
        canCopy  = canCopy  || getStudy()->CanCopy(so);
        canPaste = canPaste || getStudy()->CanPaste(so);
+#else
+       //TODO   canCopy  = canCopy  || getStudy()->CanCopy(so);
+       //TODO canPaste = canPaste || getStudy()->CanPaste(so);
+#endif
      }
    }
 
@@ -782,7 +808,7 @@ void SalomeApp_Application::onDeleteInvalidReferences()
     return;
 
   _PTR(Study) aStudyDS = getStudy();
-  _PTR(StudyBuilder) aStudyBuilder = aStudyDS->NewBuilder();
+  auto aStudyBuilder = aStudyDS->NewBuilder();
   _PTR(SObject) anObj;
 
   for( SALOME_ListIteratorOfListIO it( aList ); it.More(); it.Next() )
@@ -966,7 +992,9 @@ void SalomeApp_Application::onDumpStudy( )
       bool res;
       {
         SUIT_OverrideCursor wc;
+#ifndef SHAPER_STANDALONE
         ensureShaperIsActivated();
+#endif
         res = appStudy->dump( aFileName, toPublish, isMultiFile, toSaveGUI );
       }
       if ( !res )
@@ -1000,7 +1028,7 @@ void SalomeApp_Application::onLoadScript( )
   if ( !aFile.isEmpty() )
   {
 
-    QString command = QString("exec(compile(open('%1', 'rb').read(), '%1', 'exec'))").arg(aFile);
+    QString command = QString("exec(open(\"%1\", \"rb\").read())").arg(aFile);
 
 #ifndef DISABLE_PYCONSOLE
     PyConsole_Console* pyConsole = pythonConsole();
@@ -1341,6 +1369,7 @@ void SalomeApp_Application::moduleActionSelected( const int id )
   }
 }
 
+#ifndef DISABLE_ORB
 /*!Gets CORBA::ORB_var*/
 CORBA::ORB_var SalomeApp_Application::orb()
 {
@@ -1354,19 +1383,25 @@ CORBA::ORB_var SalomeApp_Application::orb()
 
   return _orb;
 }
+#endif
 
 /*!Create and return SALOMEDS_Study.*/
 _PTR(Study) SalomeApp_Application::getStudy()
 {
   static _PTR(Study) _study;
   if(!_study) {
+#ifndef DISABLE_ORB
     CORBA::Object_var aSObject = namingService()->Resolve("/Study");
     SALOMEDS::Study_var aStudy = SALOMEDS::Study::_narrow(aSObject);
     _study = ClientFactory::Study(aStudy);
+#else
+    _study = _PTR(Study)( new _CLASS(Study));
+#endif
   }
   return _study;
 }
 
+#ifndef DISABLE_ORB
 /*!Create and return SALOME_NamingService.*/
 SALOME_NamingService* SalomeApp_Application::namingService()
 {
@@ -1380,6 +1415,7 @@ SALOME_LifeCycleCORBA* SalomeApp_Application::lcc()
   static SALOME_LifeCycleCORBA _lcc( namingService() );
   return &_lcc;
 }
+#endif
 
 /*!Private SLOT. On preferences.*/
 void SalomeApp_Application::onProperties()
@@ -1388,7 +1424,7 @@ void SalomeApp_Application::onProperties()
   if( !study )
     return;
 
-  _PTR(StudyBuilder) SB = study->studyDS()->NewBuilder();
+  auto SB = study->studyDS()->NewBuilder();
   SB->NewCommand();
 
   SalomeApp_StudyPropertiesDlg aDlg( desktop() );
@@ -1442,8 +1478,8 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QMenu* thePop
     if( it.Value()->hasEntry() )
     {
       _PTR(SObject) aSObject = getStudy()->FindObjectID( it.Value()->getEntry() ), aRefObj = aSObject;
-      while( aRefObj && aRefObj->ReferencedObject( anObj ) )
-        aRefObj = anObj;
+       while( aRefObj && aRefObj->ReferencedObject( anObj ) )
+         aRefObj = anObj;
 
       if( aRefObj && aRefObj!=aSObject && QString( aRefObj->GetName().c_str() ).isEmpty() )
         isInvalidRefs = true;
@@ -1473,7 +1509,7 @@ void SalomeApp_Application::contextMenuPopup( const QString& type, QMenu* thePop
         _PTR( GenericAttribute ) anAttr;
         std::string auid = "AttributeUserID";
         auid += Kernel_Utils::GetGUID(Kernel_Utils::ObjectdID);
-        if ( aSO->FindAttribute( anAttr, auid ) ) {
+           if ( aSO->FindAttribute( anAttr, auid ) ) {
           _PTR(AttributeUserID) aAttrID = anAttr;
           QString aId = aAttrID->Value().c_str();
           if ( myExtActions.contains( aId ) ) {
@@ -1507,9 +1543,15 @@ void SalomeApp_Application::updateObjectBrowser( const bool updateModels )
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>(activeStudy());
   if ( study )
   {
+#ifndef DISABLE_ORB
     for ( _PTR(SComponentIterator) it ( getStudy()->NewComponentIterator() ); it->More(); it->Next() )
     {
       _PTR(SComponent) aComponent ( it->Value() );
+#else
+    for ( _PTR(SComponentIterator) it ( getStudy()->GetNewComponentIterator()); it->More(); it->Next() )
+    {
+      _PTR(SComponent) aComponent ( it->GetValue() );
+#endif
 
 #ifndef WITH_SALOMEDS_OBSERVER
       // with GUI observers this check is not needed anymore
@@ -1539,6 +1581,7 @@ void SalomeApp_Application::onCatalogGen()
   aDlg.exec();
 }
 
+#ifndef DISABLE_ORB
 /*!Display Registry Display dialog */
 void SalomeApp_Application::onRegDisplay()
 {
@@ -1548,6 +1591,7 @@ void SalomeApp_Application::onRegDisplay()
   regWnd->raise();
   regWnd->activateWindow();
 }
+#endif
 
 /*!find original object by double click on item */
 void SalomeApp_Application::onDblClick( SUIT_DataObject* theObj )
@@ -1966,6 +2010,7 @@ bool SalomeApp_Application::updateStudy()
 
   int savePoint;
   _PTR(AttributeParameter) ap;
+#ifndef DISABLE_ORB
   _PTR(IParameters) ip = ClientFactory::getIParameters(ap);
   if(ip->isDumpPython()) ip->setDumpPython(); //Unset DumpPython flag.
   if ( toSaveGUI ) { //SRN: Store a visual state of the study at the save point for DumpStudy method
@@ -1973,6 +2018,15 @@ bool SalomeApp_Application::updateStudy()
     savePoint = SalomeApp_VisualState( this ).storeState(); //SRN: create a temporary save point
   }
   bool ok = getStudy()->DumpStudy( aTmpDir.toStdString(), aScriptName.toStdString(), toPublish, isMultiFile );
+#else
+  _PTR(IParameters) ip; //TODO = ClientFactory::getIParameters(ap);
+  //TODO if(ip->isDumpPython()) ip->setDumpPython(); //Unset DumpPython flag.
+  if ( toSaveGUI ) { //SRN: Store a visual state of the study at the save point for DumpStudy method
+    //TODO ip->setDumpPython();
+    savePoint = SalomeApp_VisualState( this ).storeState(); //SRN: create a temporary save point
+  }
+  bool ok = 0; //TODO getStudy()->DumpStudy( aTmpDir.toStdString(), aScriptName.toStdString(), toPublish, isMultiFile );
+#endif
   if ( toSaveGUI )
     study->removeSavePoint(savePoint); //SRN: remove the created temporary save point.
 
@@ -2115,6 +2169,7 @@ PyConsole_Interp* SalomeApp_Application::createPyInterp()
 
 #endif // DISABLE_PYCONSOLE
 
+#ifndef SHAPER_STANDALONE
 void SalomeApp_Application::ensureShaperIsActivated()
 {
   SalomeApp_Study* study = dynamic_cast<SalomeApp_Study*>(activeStudy());
@@ -2127,8 +2182,9 @@ void SalomeApp_Application::ensureShaperIsActivated()
     study->dataModels( models );
     for( int i = 0; i < models.count() && !shaperIsActive; i++ )
       shaperIsActive = models[i]->module()->moduleName() == "Shaper";
-	
+
     if (shaper && !shaperIsActive)
       onDesktopMessage("register_module_in_study/Shaper");
   }
 }
+#endif
