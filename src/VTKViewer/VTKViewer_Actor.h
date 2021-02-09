@@ -139,27 +139,27 @@ class VTKVIEWER_EXPORT VTKViewer_Actor : public vtkLODActor
   //! Maps VTK index of a node to corresponding object index
   virtual
   int 
-  GetNodeObjId(int theVtkID);
+  GetNodeObjId(vtkIdType theVtkID);
 
   //! Get coordinates of a node for given object index
   virtual
   double*
-  GetNodeCoord(int theObjID);
+  GetNodeCoord(vtkIdType theObjID);
 
   //! Maps object index of a node to corresponding VTK index
   virtual
   int 
-  GetNodeVtkId(int theObjID);
+  GetNodeVtkId(vtkIdType theObjID);
 
   //! Maps VTK index of a cell to corresponding object index
   virtual 
   int
-  GetElemObjId(int theVtkID);
+  GetElemObjId(vtkIdType theVtkID);
 
   //! Get corresponding #vtkCell for given object index
   virtual
   vtkCell* 
-  GetElemCell(int theObjID);
+  GetElemCell(vtkIdType theObjID);
 
   //----------------------------------------------------------------------------
   //! Get dimension of corresponding mesh element

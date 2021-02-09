@@ -435,7 +435,7 @@ VTKViewer_Actor
 */
 int 
 VTKViewer_Actor
-::GetNodeObjId(int theVtkID)
+::GetNodeObjId(vtkIdType theVtkID)
 { 
   return theVtkID;
 }
@@ -445,7 +445,7 @@ VTKViewer_Actor
 */
 double* 
 VTKViewer_Actor
-::GetNodeCoord(int theObjID)
+::GetNodeCoord(vtkIdType theObjID)
 {
   return GetInput()->GetPoint(theObjID);
 }
@@ -455,7 +455,7 @@ VTKViewer_Actor
 */
 int
 VTKViewer_Actor
-::GetNodeVtkId( int theObjID )
+::GetNodeVtkId( vtkIdType theObjID )
 {
   return theObjID;
 }
@@ -466,7 +466,7 @@ VTKViewer_Actor
 */
 vtkCell* 
 VTKViewer_Actor
-::GetElemCell(int theObjID)
+::GetElemCell(vtkIdType theObjID)
 {
   return GetInput()->GetCell(theObjID);
 }
@@ -476,7 +476,7 @@ VTKViewer_Actor
 */
 int
 VTKViewer_Actor
-::GetElemObjId(int theVtkID) 
+::GetElemObjId(vtkIdType theVtkID) 
 { 
   return theVtkID;
 }

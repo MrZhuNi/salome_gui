@@ -178,9 +178,9 @@ void VTKViewer_ShrinkFilter::SetStoreMapping(int theStoreMapping){
 /*!Return node object id by vtk node id.
  *\retval -1 - if no object, else return id.
  */
-vtkIdType VTKViewer_ShrinkFilter::GetNodeObjId(int theVtkID)
+vtkIdType VTKViewer_ShrinkFilter::GetNodeObjId(vtkIdType theVtkID)
 {
-  if ( myVTK2ObjIds.empty() || theVtkID > (int)myVTK2ObjIds.size() )
+  if ( myVTK2ObjIds.empty() || theVtkID > (vtkIdType)myVTK2ObjIds.size() )
     return -1;
   return myVTK2ObjIds.at(theVtkID);
 }

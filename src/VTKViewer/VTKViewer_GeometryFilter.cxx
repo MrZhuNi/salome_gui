@@ -1315,9 +1315,9 @@ VTKViewer_GeometryFilter
 }
 
 
-vtkIdType VTKViewer_GeometryFilter::GetElemObjId( int theVtkID )
+vtkIdType VTKViewer_GeometryFilter::GetElemObjId( vtkIdType theVtkID )
 {
-  if( theVtkID < 0 || theVtkID >= (int)myVTK2ObjIds.size() )
+  if( theVtkID < 0 || theVtkID >= (vtkIdType)myVTK2ObjIds.size() )
     return -1;
   return myVTK2ObjIds[theVtkID];
 }

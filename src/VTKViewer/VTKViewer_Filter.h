@@ -50,8 +50,8 @@ public:
   VTKVIEWER_EXPORT VTKViewer_Filter();
   VTKVIEWER_EXPORT virtual ~VTKViewer_Filter();
 
-  VTKVIEWER_EXPORT bool                        IsValid( VTKViewer_Actor*, const int theId );
-  VTKVIEWER_EXPORT virtual bool                IsValid( const int theId ) const = 0;
+  VTKVIEWER_EXPORT bool                        IsValid( VTKViewer_Actor*, const vtkIdType theId );
+  VTKVIEWER_EXPORT virtual bool                IsValid( const vtkIdType theId ) const = 0;
   VTKVIEWER_EXPORT virtual int                 GetId() const = 0;
   VTKVIEWER_EXPORT virtual bool                IsNodeFilter() const = 0;
 
