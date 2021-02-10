@@ -138,7 +138,7 @@ class VTKVIEWER_EXPORT VTKViewer_Actor : public vtkLODActor
   // For selection mapping purpose
   //! Maps VTK index of a node to corresponding object index
   virtual
-  int 
+  vtkIdType 
   GetNodeObjId(vtkIdType theVtkID);
 
   //! Get coordinates of a node for given object index
@@ -148,12 +148,12 @@ class VTKVIEWER_EXPORT VTKViewer_Actor : public vtkLODActor
 
   //! Maps object index of a node to corresponding VTK index
   virtual
-  int 
+  vtkIdType 
   GetNodeVtkId(vtkIdType theObjID);
 
   //! Maps VTK index of a cell to corresponding object index
   virtual 
-  int
+  vtkIdType
   GetElemObjId(vtkIdType theVtkID);
 
   //! Get corresponding #vtkCell for given object index

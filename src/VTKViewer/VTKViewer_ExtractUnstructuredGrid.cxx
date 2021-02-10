@@ -81,12 +81,12 @@ void VTKViewer_ExtractUnstructuredGrid::SetStoreMapping(int theStoreMapping)
   }
 }
 
-vtkIdType VTKViewer_ExtractUnstructuredGrid::GetInputId(int theOutId) const
+vtkIdType VTKViewer_ExtractUnstructuredGrid::GetInputId(vtkIdType theOutId) const
 {
   if ( myPassAll || ( myCellIds.empty() && myCellTypes.empty() ))
     return theOutId;
 
-  if ( theOutId<0 || theOutId >= (int)myOut2InId.size() )
+  if ( theOutId<0 || theOutId >= myOut2InId.size() )
     return -1;
   return myOut2InId[theOutId];
 }
@@ -281,7 +281,7 @@ void VTKViewer_ExtractUnstructuredGrid::BuildOut2InMap()
 // }
 
 
-inline int InsertCell(vtkUnstructuredGrid *theInput,
+inline vtkIdType InsertCell(vtkUnstructuredGrid *theInput,
                       vtkCellArray *theConnectivity,
                       vtkUnsignedCharArray* theCellTypesArray,
                       vtkIdTypeArray*& theFaces,

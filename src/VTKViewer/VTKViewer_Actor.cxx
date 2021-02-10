@@ -433,7 +433,7 @@ VTKViewer_Actor
 /*!
   Maps VTK index of a node to corresponding object index
 */
-int 
+vtkIdType 
 VTKViewer_Actor
 ::GetNodeObjId(vtkIdType theVtkID)
 { 
@@ -453,7 +453,7 @@ VTKViewer_Actor
 /*!
  Maps object index of a node to corresponding VTK index
 */
-int
+vtkIdType
 VTKViewer_Actor
 ::GetNodeVtkId( vtkIdType theObjID )
 {
@@ -474,7 +474,7 @@ VTKViewer_Actor
 /*!
   Maps VTK index of a cell to corresponding object index
 */
-int
+vtkIdType
 VTKViewer_Actor
 ::GetElemObjId(vtkIdType theVtkID) 
 { 

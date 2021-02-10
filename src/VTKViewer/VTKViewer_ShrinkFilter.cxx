@@ -64,7 +64,8 @@ int VTKViewer_ShrinkFilter::RequestData(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   vtkPoints *newPts;
-  int i, j, numIds, abort=0;
+  vtkIdType i, numIds, abort=0;
+  int j;
   vtkIdType cellId, numCells, numPts;
   vtkIdType oldId, newId;
   double center[3], *p, pt[3];
