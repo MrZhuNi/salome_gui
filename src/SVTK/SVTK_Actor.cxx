@@ -231,9 +231,9 @@ SVTK_Actor
   vtkUnstructuredGrid * aSourceGrid = ( vtkUnstructuredGrid * )theMapActor->GetInput();
   GetSource()->SetPoints( aSourceGrid->GetPoints() );
 
-  int aNbOfParts = theMapCompositeIndex.Extent();
-  for(int ind = 1; ind <= aNbOfParts; ind++){
-      std::vector<int> aNodesIds = theMapCompositeIndex( ind );
+  vtkIdType aNbOfParts = theMapCompositeIndex.Extent();
+  for(vtkIdType ind = 1; ind <= aNbOfParts; ind++){
+      std::vector<vtkIdType> aNodesIds = theMapCompositeIndex( ind );
       vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
       ids->InsertNextId(theMapActor->GetNodeVtkId( aNodesIds[0] ) );
       ids->InsertNextId(theMapActor->GetNodeVtkId( aNodesIds[1] ) );

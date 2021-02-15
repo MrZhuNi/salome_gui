@@ -29,6 +29,7 @@
 #define VTKViewer_Filter_HeaderFile
 
 #include "VTKViewer.h"
+#include <vtkType.h>
 
 #include <Standard_Transient.hxx>
 #include <Standard_DefineHandle.hxx>

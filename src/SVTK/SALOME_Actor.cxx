@@ -86,9 +86,9 @@ namespace
   int
   GetEdgeAndNodesId(SALOME_Actor* theActor,
                     vtkPicker* thePicker,
-                    int theObjId,
-                    int& theFirstNodeId,
-                    int& theSecondNodeId)
+                    vtkIdType theObjId,
+                    vtkIdType& theFirstNodeId,
+                    vtkIdType& theSecondNodeId)
   {
     int anEdgeId = 0;
     if (vtkCell* aPickedCell = theActor->GetElemCell(theObjId)) {
