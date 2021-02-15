@@ -323,19 +323,19 @@ static bool removeIndex(TColStd_IndexedMapOfInteger& theMapIndex, const int theI
   return anId != 0;
 }
 
-static bool removeCompositeIndex( SVTK_IndexedMapOfIds& theMapIndex, const SVTK_ListOfInteger theIds )
+static bool removeCompositeIndex( SVTK_IndexedMapOfVtkIds& theMapIndex, const SVTK_ListOfVtk theIds )
 {
   int anId = theMapIndex.FindIndex( theIds ); // i==0 if Index is not in the MapIndex
   if( anId ) {
     // only the last key can be removed
-    SVTK_ListOfInteger aLastIds = theMapIndex.FindKey( theMapIndex.Extent() );
+    SVTK_ListOfVtk aLastIds = theMapIndex.FindKey( theMapIndex.Extent() );
     if( aLastIds == theIds )
       theMapIndex.RemoveLast();
     else {
-      SVTK_IndexedMapOfIds aNewMap;
+      SVTK_IndexedMapOfVtkIds aNewMap;
       aNewMap.ReSize(theMapIndex.Extent()-1);
       for( int j = 1; j <= theMapIndex.Extent(); j++ ){
-        SVTK_ListOfInteger anIds = theMapIndex( j );
+        SVTK_ListOfVtk anIds = theMapIndex( j );
         if ( anIds != theIds )
           aNewMap.Add( anIds );
       }
@@ -499,7 +499,7 @@ SVTK_SelectorDef
 void 
 SVTK_SelectorDef
 ::GetCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-		     SVTK_IndexedMapOfIds& theIds )
+		     SVTK_IndexedMapOfVtkIds& theIds )
 {
   TMapIOSubCompositeIndex::const_iterator anIter = myMapIOSubCompositeIndex.find( theIO );
   if( anIter != myMapIOSubCompositeIndex.end() )
@@ -517,15 +517,15 @@ SVTK_SelectorDef
 bool
 SVTK_SelectorDef
 ::AddOrRemoveCompositeIndex( const Handle( SALOME_InteractiveObject )& theIO, 
-                    const SVTK_IndexedMapOfIds& theIds, 
+                    const SVTK_IndexedMapOfVtkIds& theIds, 
                     bool theIsModeShift)
 {
   TMapIOSubCompositeIndex::iterator aMapIter = myMapIOSubCompositeIndex.find( theIO );
   if( aMapIter == myMapIOSubCompositeIndex.end() ) {
-    SVTK_IndexedMapOfIds anEmpty;
+    SVTK_IndexedMapOfVtkIds anEmpty;
     aMapIter = myMapIOSubCompositeIndex.insert( TMapIOSubCompositeIndex::value_type( theIO, anEmpty ) ).first;
   }
-  SVTK_IndexedMapOfIds& aMapIndex = aMapIter->second;
+  SVTK_IndexedMapOfVtkIds& aMapIndex = aMapIter->second;
 
   if( !theIsModeShift )
     aMapIndex.Clear();
@@ -549,16 +549,16 @@ SVTK_SelectorDef
 bool 
 SVTK_SelectorDef
 ::AddOrRemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-			     SVTK_ListOfInteger theIds,
+			     SVTK_ListOfVtk theIds,
 			     bool theIsModeShift)
 {
   TMapIOSubCompositeIndex::iterator anIter = myMapIOSubCompositeIndex.find( theIO );
   if( anIter == myMapIOSubCompositeIndex.end() ) {
-    SVTK_IndexedMapOfIds anEmpty;
+    SVTK_IndexedMapOfVtkIds anEmpty;
     anIter = myMapIOSubCompositeIndex.insert(TMapIOSubCompositeIndex::value_type( theIO,anEmpty ) ).first;
   }
 
-  SVTK_IndexedMapOfIds& aMapIndex = anIter->second;
+  SVTK_IndexedMapOfVtkIds& aMapIndex = anIter->second;
 
   bool anIsContains = aMapIndex.Contains( theIds ) == Standard_True;
   if ( anIsContains )
@@ -584,11 +584,11 @@ SVTK_SelectorDef
 void
 SVTK_SelectorDef
 ::RemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-			SVTK_ListOfInteger theIds )
+			SVTK_ListOfVtk theIds )
 {
   if(IsCompositeIndexSelected( theIO, theIds ) ) {
     TMapIOSubCompositeIndex::iterator anIter = myMapIOSubCompositeIndex.find( theIO );
-    SVTK_IndexedMapOfIds& aMapIndex = anIter->second;
+    SVTK_IndexedMapOfVtkIds& aMapIndex = anIter->second;
     removeCompositeIndex( aMapIndex,theIds );
   }
 }
@@ -601,11 +601,11 @@ SVTK_SelectorDef
 bool
 SVTK_SelectorDef
 ::IsCompositeIndexSelected( const Handle(SALOME_InteractiveObject)& theIO, 
-			    SVTK_ListOfInteger theIds ) const
+			    SVTK_ListOfVtk theIds ) const
 {
   TMapIOSubCompositeIndex::const_iterator anIter = myMapIOSubCompositeIndex.find( theIO );
   if( anIter != myMapIOSubCompositeIndex.end() ) {
-    const SVTK_IndexedMapOfIds& aMapIndex = anIter->second;
+    const SVTK_IndexedMapOfVtkIds& aMapIndex = anIter->second;
     return aMapIndex.Contains( theIds ) == Standard_True;
   }
   return false;

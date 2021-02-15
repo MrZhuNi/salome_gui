@@ -144,28 +144,28 @@ public:
   virtual
   void 
   GetCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-		     SVTK_IndexedMapOfIds& theIds );        
+		     SVTK_IndexedMapOfVtkIds& theIds );        
   virtual
   bool 
   AddOrRemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-			     const SVTK_IndexedMapOfIds& theIds,
+			     const SVTK_IndexedMapOfVtkIds& theIds,
 			     bool theIsModeShift);
 
   virtual
   bool
   AddOrRemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-			     SVTK_ListOfInteger theIds,
+			     SVTK_ListOfVtk theIds,
 			     bool theIsModeShift);
 
   virtual
   void 
   RemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-			SVTK_ListOfInteger theIds );
+			SVTK_ListOfVtk theIds );
 
   virtual
   bool 
   IsCompositeIndexSelected(const Handle(SALOME_InteractiveObject)& theIO, 
-			   SVTK_ListOfInteger theIds ) const;
+			   SVTK_ListOfVtk theIds ) const;
 
   virtual
   void 
@@ -280,7 +280,7 @@ private:
   TMapIOSubIndex myMapIOSubIndex;
 
   typedef std::map<Handle(SALOME_InteractiveObject),
-                   SVTK_IndexedMapOfIds,
+                   SVTK_IndexedMapOfVtkIds,
                    TIOLessThan> TMapIOSubCompositeIndex;
   TMapIOSubCompositeIndex myMapIOSubCompositeIndex;
 

@@ -87,18 +87,18 @@ public:
 //! Allow to recostruct selected edges from source SALOME_Actor and map of subindexes using corner node ids
   virtual void 
   MapEdge(SALOME_Actor* theMapActor, 
-          const SVTK_IndexedMapOfIds& theMapCompositeIndex);
+          const SVTK_IndexedMapOfVtkIds& theMapCompositeIndex);
   
 
   const TColStd_IndexedMapOfInteger&
   GetMapIndex() const;
 
-  const SVTK_IndexedMapOfIds&
+  const SVTK_IndexedMapOfVtkIds&
   GetMapCompositeIndex() const;
 
  protected:
   TColStd_IndexedMapOfInteger myMapIndex;
-  SVTK_IndexedMapOfIds        myMapCompositeIndex;
+  SVTK_IndexedMapOfVtkIds        myMapCompositeIndex;
 
   vtkSmartPointer<vtkUnstructuredGrid> myUnstructuredGrid;
 

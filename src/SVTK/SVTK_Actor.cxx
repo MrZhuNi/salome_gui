@@ -104,7 +104,7 @@ SVTK_Actor
 }
 
 
-const SVTK_IndexedMapOfIds&
+const SVTK_IndexedMapOfVtkIds&
 SVTK_Actor
 ::GetMapCompositeIndex() const 
 {
@@ -224,7 +224,7 @@ SVTK_Actor
 void
 SVTK_Actor
 ::MapEdge( SALOME_Actor* theMapActor, 
-           const SVTK_IndexedMapOfIds& theMapCompositeIndex) {
+           const SVTK_IndexedMapOfVtkIds& theMapCompositeIndex) {
   myUnstructuredGrid->Initialize();
   myUnstructuredGrid->Allocate();
 

@@ -30,8 +30,10 @@
 #include <vector>
 #include <NCollection_IndexedMap.hxx>
 #include <Standard_Integer.hxx>
+#include <vtkType.h>
 
 typedef std::vector<Standard_Integer> SVTK_ListOfInteger;
+typedef std::vector<vtkIdType> SVTK_ListOfVtk;
 
 class SVTK_Hasher {
 
@@ -52,6 +54,26 @@ public:
     }
 };
 
+class SVTK_vtkHasher {
+
+public:
+    static vtkIdType HashCode(const std::vector<vtkIdType> ids,
+                                const vtkIdType upper) {
+        vtkIdType seed = (vtkIdType)ids.size();
+        for( vtkIdType i = 0; i < ids.size(); i++) {
+            vtkIdType v = ids[i];
+            seed ^= v + 0x9e3779b97f4a7c15 + ( seed << 6 ) + ( seed >> 2 );
+        }
+        return ::HashCode(seed, upper);
+    }
+
+    static vtkIdType IsEqual(const SVTK_ListOfVtk& theKey1,
+                             const SVTK_ListOfVtk& theKey2) {
+        return theKey1 == theKey2;
+    }
+};
+
 typedef NCollection_IndexedMap<SVTK_ListOfInteger,SVTK_Hasher> SVTK_IndexedMapOfIds;
+typedef NCollection_IndexedMap<SVTK_ListOfVtk, SVTK_vtkHasher> SVTK_IndexedMapOfVtkIds;
 
 #endif // SVTK_HASH_H

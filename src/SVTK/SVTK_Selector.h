@@ -179,33 +179,33 @@ public:
   virtual
   void 
   GetCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-		     SVTK_IndexedMapOfIds& theIds ) = 0;
+		     SVTK_IndexedMapOfVtkIds& theIds ) = 0;
         
   //! Change composite indices of subselection for given #SALOME_InteractiveObject
   virtual
   bool 
   AddOrRemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-			     const SVTK_IndexedMapOfIds& theIds,
+			     const SVTK_IndexedMapOfVtkIds& theIds,
 			     bool theIsModeShift) = 0;
 
   //! Change composite index of subslection for given #SALOME_InteractiveObject
   virtual
   bool
   AddOrRemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-			     SVTK_ListOfInteger ids, 
+			     SVTK_ListOfVtk ids, 
 			     bool theIsModeShift) = 0;
 
   //! Change composite index of subslection for given #SALOME_InteractiveObject
   virtual
   void 
   RemoveCompositeIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-			SVTK_ListOfInteger ids ) = 0;
+			SVTK_ListOfVtk ids ) = 0;
 
   //! Check, if the given composite index is present in subselection 
   virtual
   bool 
   IsCompositeIndexSelected(const Handle(SALOME_InteractiveObject)& theIO, 
-			   SVTK_ListOfInteger ids ) const = 0;
+			   SVTK_ListOfVtk ids ) const = 0;
 
   //! Clear composite indexes subselection
   virtual
