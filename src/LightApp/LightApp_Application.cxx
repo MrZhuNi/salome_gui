@@ -326,6 +326,8 @@ LightApp_Application::LightApp_Application()
 {
   Q_INIT_RESOURCE( LightApp );
 
+  QString myResourcesPrefix = SUIT_Session::session()->resourcesConfigPrefix();
+
   STD_TabDesktop* desk = new STD_TabDesktop();
   desk->setFullScreenAllowed(false);
   desk->setMinimizeAllowed(false);
@@ -340,16 +342,16 @@ LightApp_Application::LightApp_Application()
   //connect( this, SIGNAL( moving() ), this, SLOT( onMoved() ) );
 
   SUIT_ResourceMgr* aResMgr = SUIT_Session::session()->resourceMgr();
-  QPixmap aLogo = aResMgr->loadPixmap( "LightApp", tr( "APP_DEFAULT_ICO" ), false );
+  QPixmap aLogo = aResMgr->loadPixmap(myResourcesPrefix, tr( "APP_DEFAULT_ICO" ), false );
 
   desktop()->setWindowIcon( aLogo );
   desktop()->setDockableMenuBar( false );
   desktop()->setDockableStatusBar( false );
 
   // base logo (salome itself)
-  desktop()->logoInsert( "_app_base",  aResMgr->loadPixmap( "LightApp", tr( "APP_BASE_LOGO" ), false ) );
+  desktop()->logoInsert( "_app_base",  aResMgr->loadPixmap( myResourcesPrefix, tr( "APP_BASE_LOGO" ), false ) );
   // extra logo (salome-based application)
-  desktop()->logoInsert( "_app_extra", aResMgr->loadPixmap( "LightApp", tr( "APP_EXTRA_LOGO" ), false ) );
+  desktop()->logoInsert( "_app_extra", aResMgr->loadPixmap( myResourcesPrefix, tr( "APP_EXTRA_LOGO" ), false ) );
 
   clearViewManagers();
 
@@ -589,6 +591,7 @@ void LightApp_Application::createActions()
 
   SUIT_Desktop* desk = desktop();
   SUIT_ResourceMgr* resMgr = resourceMgr();
+  QString myResourcesPrefix = SUIT_Session::session()->resourcesConfigPrefix();
 
   // Preferences
   createAction( PreferencesId, tr( "TOT_DESK_PREFERENCES" ), QIcon(),
@@ -606,7 +609,7 @@ void LightApp_Application::createActions()
   if ( !url.isEmpty() ) {
     QString title = tr ( "SALOME_SITE" );
     QAction* as = createAction( WebSiteId, title,
-				resMgr->loadPixmap( "LightApp", tr( "ICON_WWW" ), false ),
+        resMgr->loadPixmap( myResourcesPrefix, tr( "ICON_WWW" ), false ),
 				title, title,
 				0, desk, false, this, SLOT( onHelpContentsModule() ) );
     as->setData( url );
@@ -618,7 +621,7 @@ void LightApp_Application::createActions()
   if ( !url.isEmpty() ) {
     QString title = tr ( "SALOME_FORUM" );
     QAction* af = createAction( ForumId, title,
-				resMgr->loadPixmap( "LightApp", tr( "ICON_WWW" ), false ),
+        resMgr->loadPixmap( "LightApp", tr( "ICON_WWW" ), false ),
 				title, title,
 				0, desk, false, this, SLOT( onHelpContentsModule() ) );
     af->setData( url );
@@ -631,7 +634,7 @@ void LightApp_Application::createActions()
     createMenu( separator(), helpMenu, -1, 0 );
     QString title = tr ( "SALOME_VIDEO_TUTORIALS" );
     QAction* av = createAction( VideosId, title,
-				resMgr->loadPixmap( "LightApp", tr( "ICON_LIFE_RIGN" ), false ),
+        resMgr->loadPixmap( myResourcesPrefix, tr( "ICON_LIFE_RIGN" ), false ),
 				title, tr( "PRP_SALOME_VIDEO_TUTORIALS" ),
 				0, desk, false, this, SLOT( onHelpContentsModule() ) );
     av->setData( url );
@@ -644,7 +647,7 @@ void LightApp_Application::createActions()
   if ( !url.isEmpty() ) {
     QString title = tr ( "SALOME_TUTORIALS" );
     QAction* as = createAction( TutorialsId, title,
-				resMgr->loadPixmap( "LightApp", tr( "ICON_WWW" ), false ),
+        resMgr->loadPixmap( myResourcesPrefix, tr( "ICON_WWW" ), false ),
 				title, tr( "PRP_SALOME_TUTORIALS" ),
 				0, desk, false, this, SLOT( onHelpContentsModule() ) );
     as->setData( url );
@@ -779,12 +782,12 @@ void LightApp_Application::createActions()
   registerAction( MRUId, mru );
 
   // default icon for neutral point ('SALOME' module)
-  QPixmap defIcon = resMgr->loadPixmap( "LightApp", tr( "APP_DEFAULT_ICO" ), false );
+  QPixmap defIcon = resMgr->loadPixmap( myResourcesPrefix, tr( "APP_DEFAULT_ICO" ), false );
   if ( defIcon.isNull() )
     defIcon = QPixmap( imageEmptyIcon );
 
   //! default icon for any module
-  QPixmap modIcon = resMgr->loadPixmap( "LightApp", tr( "APP_MODULE_ICO" ), false );
+  QPixmap modIcon = resMgr->loadPixmap( myResourcesPrefix, tr( "APP_MODULE_ICO" ), false );
   if ( modIcon.isNull() )
     modIcon = QPixmap( imageEmptyIcon );
 
@@ -2349,10 +2352,11 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   QList<QVariant> anIndicesList;
   QIntList        idList;
   QIntList        txtList;
+  QString myResourcesPrefix = SUIT_Session::session()->resourcesConfigPrefix();
 
   // . Top-level "SALOME" preferences group <<start>>
   int salomeCat = pref->addPreference( tr( "PREF_CATEGORY_SALOME" ) );
-  pref->setItemIcon( salomeCat, Qtx::scaleIcon( resourceMgr()->loadPixmap( "LightApp", tr( "APP_DEFAULT_ICO" ), false ), 20 ) );
+  pref->setItemIcon( salomeCat, Qtx::scaleIcon( resourceMgr()->loadPixmap( myResourcesPrefix, tr( "APP_DEFAULT_ICO" ), false ), 20 ) );
 
   // .. "General" preferences tab <<start>>
   int genTab = pref->addPreference( tr( "PREF_TAB_GENERAL" ), salomeCat );

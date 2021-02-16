@@ -2,7 +2,7 @@
   <section name="launch">
     <!-- SALOME launching parameters -->
     <parameter name="gui"        value="yes"/>
-    <parameter name="splash"     value="no"/>
+    <parameter name="splash"     value="yes"/>
     <parameter name="file"       value="no"/>
     <parameter name="key"        value="no"/>
     <parameter name="interp"     value="no"/>
@@ -17,7 +17,7 @@
   </section>
   <section name="splash" >
     <!-- Splash screen settings -->
-    <parameter name="image"             value="${GUI_ROOT_DIR}/share/salome/resources/gui/shaper_splash.png" />
+    <parameter name="image"             value="${GUI_ROOT_DIR}/share/salome/resources/gui/icon_about.png" />
     <parameter name="constant_info"     value="%A [ %V ]" />
     <parameter name="text_colors"       value="#ffffff" />
     <parameter name="hide_on_click"     value="yes" />

@@ -435,6 +435,8 @@ void SalomeApp_Application::onNewDoc()
   MessageLocker ml( myToIgnoreMessages );
 
   LightApp_Application::onNewDoc();
+
+  reactivateDefaultModule();
 }
 
 /*!SLOT. Load document.*/
@@ -750,6 +752,8 @@ void SalomeApp_Application::onOpenDoc()
   MessageLocker ml( myToIgnoreMessages );
 
   LightApp_Application::onOpenDoc();
+
+  reactivateDefaultModule();
 }
 
 /*!SLOT. Load document.*/
@@ -2188,3 +2192,17 @@ void SalomeApp_Application::ensureShaperIsActivated()
   }
 }
 #endif
+
+/*!
+ * \brief reactivateDefaultModule
+ */
+void SalomeApp_Application::reactivateDefaultModule()
+{
+  QString theDefaultModule(defaultModule());
+  if(!theDefaultModule.isEmpty())
+  {
+    /// activates the default module when there exists one, after flushing all events
+    QApplication::instance()->processEvents(QEventLoop::ExcludeUserInputEvents);
+    onModuleActivation(theDefaultModule);
+  }
+}

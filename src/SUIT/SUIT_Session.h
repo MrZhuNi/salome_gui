@@ -87,6 +87,8 @@ public:
   std::string                  shaperAppName() const;
   std::string                  salomeAppName() const;
   void                         setExecutableAppName(const std::string & appName);
+  void                         setResourcesConfigPrefix(const QString & xmlFilePrefix);
+  QString                      resourcesConfigPrefix();
 
 signals:
   void                         applicationClosed( SUIT_Application* );
@@ -119,6 +121,7 @@ private:
   int                          myExitStatus;
   int                          myExitFlags;
   std::string                  myExecutableAppName;
+  QString                      myResourcesConfigPrefix;
 };
 
 #endif

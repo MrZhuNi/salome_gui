@@ -46,7 +46,8 @@ SUIT_Session::SUIT_Session()
   myActiveApp( 0 ),
   myHandler( 0 ),
   myExitStatus( NORMAL ),
-  myExitFlags ( 0 )
+  myExitFlags ( 0 ),
+  myResourcesConfigPrefix("LightApp")
 {
   SUIT_ASSERT( !mySession )
 
@@ -398,7 +399,25 @@ std::string SUIT_Session::salomeAppName() const
  * \brief sets thename of the main Application launched by the executable
  * -> SalomeApp, ShaperApp
  */
-void  SUIT_Session::setExecutableAppName(const std::string & appName)
+void SUIT_Session::setExecutableAppName(const std::string & appName)
 {
   myExecutableAppName = appName;
+}
+
+/*!
+ * \brief setResourcesConfigName
+ * \param xmlFilePrefix: the name of the xml file for resources: logo, splash
+ */
+void SUIT_Session::setResourcesConfigPrefix(const QString & xmlFilePrefix)
+{
+  myResourcesConfigPrefix = xmlFilePrefix;
+}
+
+/*!
+ * \brief SUIT_Session::resourcesConfigPrefix
+ * \return name of the xml resource file
+ */
+QString SUIT_Session::resourcesConfigPrefix()
+{
+  return myResourcesConfigPrefix;
 }

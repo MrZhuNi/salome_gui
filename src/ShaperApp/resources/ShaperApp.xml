@@ -11,7 +11,7 @@
     <parameter name="noexcepthandler"  value="no"/>
     <parameter name="modules"    value="SHAPER"/>
     <parameter name="pyModules"  value=""/>
-    <parameter name="embedded"   value="ShaperAppEngine,study,cppContainer,registry,moduleCatalog"/>
+    <parameter name="embedded"   value="study,cppContainer,registry,moduleCatalog"/>
     <parameter name="standalone" value=""/>
   </section>
   <section name="language">
@@ -35,15 +35,4 @@
     <parameter name="multi_file_dump"     value="false" />
     <parameter name="pydump_save_gui"     value="false" />
   </section>
-  <section name="splash">
-    <parameter name="image" value="%GUI_ROOT_DIR/share/salome/resources/gui/shaper_splash.png"/>
-    <parameter name="text_colors" value="#ffffff|#000000"/>
-    <parameter name="show_percents" value="yes"/>
-    <parameter name="show_progress" value="yes"/>
-    <parameter name="show_message" value="yes"/>
-    <parameter name="font" value="Xirod,12,normal"/>
-  </section>
-  <!--section name="resources">
-    <parameter name="LightShaperApp" value="%GUI_ROOT_DIR/share/salome/resources/gui"/>
-  </section-->
 </document>

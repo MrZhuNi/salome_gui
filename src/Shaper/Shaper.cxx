@@ -56,7 +56,6 @@
 #include <QRegExp>
 #include <QTextStream>
 #include <QWaitCondition>
-#include <QThread>
 
 //! CORBA server for SALOME GUI session
 /*!
@@ -379,7 +378,7 @@ int main( int argc, char **argv )
 
   bool isGUI    = boolCmdOption( "--show-desktop", "--hide-desktop", true ); // true by default
   bool isSplash = boolCmdOption( "--show-splash", "--hide-splash", true ); // true by default
-  isSplash = false;
+
   // Show splash screen (only if both the "GUI" and "SPLASH" options are true)
   QtxSplash* splash = 0;
   if ( isGUI && isSplash ) {
@@ -419,6 +418,9 @@ int main( int argc, char **argv )
     aGUISession = new Session();
 
     MESSAGE( "creation SUIT_Application" );
+
+    // Fill resources configuration file in session
+    aGUISession->setResourcesConfigPrefix(myAppNameSpace::myLightAppName);
 
     aGUISession->resourceMgr() = new ResourceMgr( myAppNameSpace::myAppName );
     aGUISession->resourceMgr()->loadLanguage();

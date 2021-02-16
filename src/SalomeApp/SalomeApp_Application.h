@@ -209,6 +209,12 @@ private:
   void                                ensureShaperIsActivated();
 #endif
 
+  /*!
+   * \brief reactivateDefaultModule: when there is a default module,
+   * some delayed events makes the view inactive
+   */
+  void                                reactivateDefaultModule();
+
 private:
 #ifndef DISABLE_PYCONSOLE
   QPointer<SalomeApp_NoteBook>        myNoteBook;        // Notebook instance

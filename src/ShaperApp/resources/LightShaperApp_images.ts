@@ -8,16 +8,36 @@
         <translation>shaper.png</translation>
     </message>
     <message>
-        <source>ICO_ABOUT</source>
+        <source>ABOUT</source>
         <translation>icon_about.png</translation>
     </message>
     <message>
-        <source>ABOUT</source>
-        <translation>about.png</translation>
+        <source>ABOUT_SPLASH</source>
+        <translation>icon_about.png</translation>
+    </message>
+    <message>
+        <source>APP_MODULE_BIG_ICO</source>
+        <translation>icon_module_big.png</translation>
     </message>
     <message>
         <source>APP_BASE_LOGO</source>
-        <translation>app_logo.png</translation>
+        <translation>icon_applogo.png</translation>
+    </message>
+    <message>
+        <source>ICON_SELECT</source>
+        <translation>icon_select.png</translation>
+    </message>
+    <message>
+        <source>APP_MODULE_ICO</source>
+        <translation>icon_module.png</translation>
+    </message>
+        <message>
+        <source>ICON_WWW</source>
+        <translation>icon_earth.png</translation>
+    </message>
+    <message>
+        <source>ICON_LIFE_RIGN</source>
+        <translation>icon_life_ring.png</translation>
     </message>
 </context>
 </TS>

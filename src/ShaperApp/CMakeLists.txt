@@ -190,9 +190,7 @@ SET(_other_RESOURCES
   resources/LightShaperApp.xml
   resources/shaper.png
 )
-SET(SALOME_RESOURCES_FILES
-  shaper.png 
-)
+
 # --- sources ---
 
 # sources / moc wrappings
