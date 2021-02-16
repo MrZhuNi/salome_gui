@@ -24,7 +24,7 @@
 // Author:  Alexey PETROV
 
 #include "VTKViewer_ExtractUnstructuredGrid.h"
-#include "VTKViewer_CellLocationsArray.h"
+//#include "VTKViewer_CellLocationsArray.h"
 
 #include <vtkUnsignedCharArray.h>
 #include <vtkUnstructuredGrid.h>
@@ -490,7 +490,7 @@ int VTKViewer_ExtractUnstructuredGrid::RequestData(vtkInformation *vtkNotUsed(re
         }
       }
       if ( vtkIdType newNbElems = aConnectivity->GetNumberOfCells() ) {
-        VTKViewer_CellLocationsArray* aCellLocationsArray = VTKViewer_CellLocationsArray::New();
+        vtkIdTypeArray* aCellLocationsArray = vtkIdTypeArray::New();
         aCellLocationsArray->SetNumberOfComponents(1);
         aCellLocationsArray->SetNumberOfTuples(newNbElems);
         aConnectivity->InitTraversal();
@@ -592,7 +592,7 @@ int VTKViewer_ExtractUnstructuredGrid::RequestData(vtkInformation *vtkNotUsed(re
       }
     }
     if (vtkIdType newNbElems = aConnectivity->GetNumberOfCells() ) {
-      VTKViewer_CellLocationsArray* aCellLocationsArray = VTKViewer_CellLocationsArray::New();
+      vtkIdTypeArray* aCellLocationsArray = vtkIdTypeArray::New();
       aCellLocationsArray->SetNumberOfComponents(1);
       aCellLocationsArray->SetNumberOfTuples( newNbElems );
       aConnectivity->InitTraversal();
