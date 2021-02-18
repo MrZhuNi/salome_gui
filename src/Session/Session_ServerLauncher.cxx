@@ -261,3 +261,9 @@ void Session_ServerLauncher<MY_NS>::KillAll()
     delete (*itServ);
   }
 }
+
+template class Session_ServerLauncher<SALOME_NamingService>;
+
+#include "SALOME_Fake_NamingService.hxx"
+
+template class Session_ServerLauncher<SALOME_Fake_NamingService>;

@@ -38,6 +38,7 @@
 #include "Session_ServerCheck.hxx"
 #include "Session_ServerLauncher.hxx"
 #include "Session_Promises.hxx"
+#include "SALOME_Fake_NamingService.hxx"
 
 #include "GUI_version.h"
 #include "Qtx.h"
@@ -458,6 +459,7 @@ SALOME::Session_var GUIAppNewStyle::getSession()
 // ---------------------------- MAIN -----------------------
 int AbstractGUIApp::main(int argc, char **argv)
 {
+  using NamingServiceImplementation = SALOME_Fake_NamingService;
   // Set-up application settings configuration (as for QSettings)
   // Note: these are default settings which can be customized (see below)
   QApplication::setOrganizationName("salome");
@@ -549,7 +551,7 @@ int AbstractGUIApp::main(int argc, char **argv)
 
   SUIT_Session *aGUISession = 0;
   GetInterfaceThread *guiThread = 0;
-  Session_ServerLauncher<SALOME_NamingService> *myServerLauncher = nullptr;
+  Session_ServerLauncher<NamingServiceImplementation> *myServerLauncher = nullptr;
 
 #if defined(WIN32) && defined(UNICODE)
   char **new_argv = NULL;
@@ -627,9 +629,9 @@ int AbstractGUIApp::main(int argc, char **argv)
     }
     // Free memory allocated for CommandLineToArgvW arguments.
     LocalFree(szArglist);
-    myServerLauncher = new Session_ServerLauncher<SALOME_NamingService>(nArgs, new_argv, orb, poa, &_GUIMutex, &_ServerLaunch, &_SessionMutex, &_SessionStarted);
+    myServerLauncher = new Session_ServerLauncher<NamingServiceImplementation>(nArgs, new_argv, orb, poa, &_GUIMutex, &_ServerLaunch, &_SessionMutex, &_SessionStarted);
 #else
-    myServerLauncher = new Session_ServerLauncher<SALOME_NamingService>(argc, argv, orb, poa, &_GUIMutex, &_ServerLaunch, &_SessionMutex, &_SessionStarted);
+    myServerLauncher = new Session_ServerLauncher<NamingServiceImplementation>(argc, argv, orb, poa, &_GUIMutex, &_ServerLaunch, &_SessionMutex, &_SessionStarted);
 #endif
     // ...block this thread until launcher is ready
     _ServerLaunch.wait(&_GUIMutex);

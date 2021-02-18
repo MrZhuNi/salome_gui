@@ -88,7 +88,7 @@ Session_ServerThread<MY_NS>::Session_ServerThread(int argc,
   _orb = CORBA::ORB::_duplicate(orb);
   _root_poa = PortableServer::POA::_duplicate(poa);
   _servType =-1;
-  _NS.reset( new SALOME_NamingService(_orb) ); // one instance per server to limit
+  _NS.reset( new MY_NS(_orb) ); // one instance per server to limit
                                                // multi thread coherence problems
   _container = nullptr;                        // embedded container
 }
@@ -452,3 +452,11 @@ void Session_SessionThread<MY_NS>::ActivateSession(int argc, char ** argv)
     INFOS("Caught unknown exception.");
   }
 }
+
+template class Session_ServerThread<SALOME_NamingService>;
+template class Session_SessionThread<SALOME_NamingService>;
+
+#include "SALOME_Fake_NamingService.hxx"
+
+template class Session_ServerThread<SALOME_Fake_NamingService>;
+template class Session_SessionThread<SALOME_Fake_NamingService>;
