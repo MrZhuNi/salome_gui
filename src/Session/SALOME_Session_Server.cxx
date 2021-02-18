@@ -37,6 +37,7 @@
 #include "Session_Session_i.hxx"
 #include "Session_ServerCheck.hxx"
 #include "Session_ServerLauncher.hxx"
+#include "Session_Promises.hxx"
 
 #include "GUI_version.h"
 #include "Qtx.h"
@@ -449,8 +450,9 @@ void GUIAppOldStyle::shutdownRemoteServersIfNeeded(bool remoteLauncher)
 
 SALOME::Session_var GUIAppNewStyle::getSession()
 {
-  /*SALOMEDS::Study_var session = KERNEL::getStudyServantSA();
-  return session;*/
+  GetSessionRefSingleton()->get_future().wait();
+  SALOME::Session_var session = GetSessionRefSingleton()->get_future().get();
+  return session;
 }
 
 // ---------------------------- MAIN -----------------------

@@ -25,6 +25,7 @@
 //  Author : Paul RASCLE, EDF
 
 #include "Session_ServerThread.hxx"
+#include "Session_Promises.hxx"
 
 #include <SALOME_NamingService.hxx>
 #include <SALOME_Container_i.hxx>
@@ -426,6 +427,8 @@ void Session_SessionThread::ActivateSession(int argc, char ** argv)
     MESSAGE("poa->activate_object(mySALOME_Session)");
     
     CORBA::Object_var obj = mySALOME_Session->_this();
+    SALOME::Session_var objC = SALOME::Session::_narrow(obj);
+    GetSessionRefSingleton()->set_value(objC);
     CORBA::String_var sior(_orb->object_to_string(obj));
     mySALOME_Session->_remove_ref();
     
