@@ -549,7 +549,7 @@ int AbstractGUIApp::main(int argc, char **argv)
 
   SUIT_Session *aGUISession = 0;
   GetInterfaceThread *guiThread = 0;
-  Session_ServerLauncher *myServerLauncher = 0;
+  Session_ServerLauncher<SALOME_NamingService> *myServerLauncher = nullptr;
 
 #if defined(WIN32) && defined(UNICODE)
   char **new_argv = NULL;
@@ -627,9 +627,9 @@ int AbstractGUIApp::main(int argc, char **argv)
     }
     // Free memory allocated for CommandLineToArgvW arguments.
     LocalFree(szArglist);
-    myServerLauncher = new Session_ServerLauncher(nArgs, new_argv, orb, poa, &_GUIMutex, &_ServerLaunch, &_SessionMutex, &_SessionStarted);
+    myServerLauncher = new Session_ServerLauncher<SALOME_NamingService>(nArgs, new_argv, orb, poa, &_GUIMutex, &_ServerLaunch, &_SessionMutex, &_SessionStarted);
 #else
-    myServerLauncher = new Session_ServerLauncher(argc, argv, orb, poa, &_GUIMutex, &_ServerLaunch, &_SessionMutex, &_SessionStarted);
+    myServerLauncher = new Session_ServerLauncher<SALOME_NamingService>(argc, argv, orb, poa, &_GUIMutex, &_ServerLaunch, &_SessionMutex, &_SessionStarted);
 #endif
     // ...block this thread until launcher is ready
     _ServerLaunch.wait(&_GUIMutex);

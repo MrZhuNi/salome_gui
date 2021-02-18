@@ -38,6 +38,7 @@ void WaitForServerReadiness(std::string serverName);
 class SALOME_NamingService;
 class Engines_Container_i;
 
+template<class MY_NS>
 class SESSION_EXPORT Session_ServerThread
 {
 public:
@@ -66,14 +67,15 @@ protected:
   int                     _servType;
   CORBA::ORB_var          _orb;
   PortableServer::POA_var _root_poa;
-  std::unique_ptr<SALOME_NamingService> _NS;
+  std::unique_ptr<MY_NS> _NS;
   Engines_Container_i*    _container;
 };
 
 class QMutex;
 class QWaitCondition;
 
-class SESSION_EXPORT Session_SessionThread : public Session_ServerThread
+template<class MY_NS>
+class SESSION_EXPORT Session_SessionThread : public Session_ServerThread<MY_NS>
 {
 public:
   Session_SessionThread() {}
@@ -93,4 +95,3 @@ private:
 };
 
 #endif
-

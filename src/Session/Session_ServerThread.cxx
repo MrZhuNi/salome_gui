@@ -49,18 +49,22 @@
 #include <QMutex>
 #include <QWaitCondition>
 
-const int Session_ServerThread::NB_SRV_TYP = 6;
-const char* Session_ServerThread::_serverTypes[NB_SRV_TYP] = {"Container",
-                                                              "ModuleCatalog",
-                                                              "Registry",
-                                                              "SALOMEDS",
-                                                              "Session",
-                                                              "ContainerManager"};
+template<class MY_NS>
+const int Session_ServerThread<MY_NS>::NB_SRV_TYP = 6;
+
+template<class MY_NS>
+const char* Session_ServerThread<MY_NS>::_serverTypes[NB_SRV_TYP] = {"Container",
+                                                                      "ModuleCatalog",
+                                                                      "Registry",
+                                                                      "SALOMEDS",
+                                                                      "Session",
+                                                                      "ContainerManager"};
 
 /*! 
   default constructor not for use
 */
-Session_ServerThread::Session_ServerThread()
+template<class MY_NS>
+Session_ServerThread<MY_NS>::Session_ServerThread()
 {
   ASSERT(0); // must not be called
 }
@@ -68,7 +72,8 @@ Session_ServerThread::Session_ServerThread()
 /*! 
   constructor
 */
-Session_ServerThread::Session_ServerThread(int argc,
+template<class MY_NS>
+Session_ServerThread<MY_NS>::Session_ServerThread(int argc,
                                            char ** argv, 
                                            CORBA::ORB_ptr orb, 
                                            PortableServer::POA_ptr poa)
@@ -91,7 +96,8 @@ Session_ServerThread::Session_ServerThread(int argc,
 /*! 
   destructor 
 */
-Session_ServerThread::~Session_ServerThread()
+template<class MY_NS>
+Session_ServerThread<MY_NS>::~Session_ServerThread()
 {
   for (int i = 0; i <_argc ; i++ )
     free( _argv[i] );
@@ -102,7 +108,8 @@ Session_ServerThread::~Session_ServerThread()
   run the thread : activate one servant, the servant type is given by
   argument _argv[0]
 */
-void Session_ServerThread::Init()
+template<class MY_NS>
+void Session_ServerThread<MY_NS>::Init()
 {
   MESSAGE("Session_ServerThread::Init "<< _argv[0]); 
 
@@ -165,12 +172,14 @@ void Session_ServerThread::Init()
   }
 }
 
-void Session_ServerThread::Shutdown()
+template<class MY_NS>
+void Session_ServerThread<MY_NS>::Shutdown()
 {
   if ( _container ) _container->Shutdown();
 }
 
-void Session_ServerThread::ActivateModuleCatalog(int argc,
+template<class MY_NS>
+void Session_ServerThread<MY_NS>::ActivateModuleCatalog(int argc,
                                                  char ** argv)
 {
   try {
@@ -205,7 +214,8 @@ void Session_ServerThread::ActivateModuleCatalog(int argc,
   }
 }
 
-void Session_ServerThread::ActivateSALOMEDS(int /*argc*/, char** /*argv*/)
+template<class MY_NS>
+void Session_ServerThread<MY_NS>::ActivateSALOMEDS(int /*argc*/, char** /*argv*/)
 {
   try {
     MESSAGE("SALOMEDS thread started");
@@ -232,7 +242,8 @@ void Session_ServerThread::ActivateSALOMEDS(int /*argc*/, char** /*argv*/)
   }
 }
 
-void Session_ServerThread::ActivateRegistry(int argc, char ** argv)
+template<class MY_NS>
+void Session_ServerThread<MY_NS>::ActivateRegistry(int argc, char ** argv)
 {
   MESSAGE("Registry thread started");
   SCRUTE(argc); 
@@ -290,7 +301,8 @@ void Session_ServerThread::ActivateRegistry(int argc, char ** argv)
   }
 }
 
-void Session_ServerThread::ActivateContainerManager(int /*argc*/, char** /*argv*/)
+template<class MY_NS>
+void Session_ServerThread<MY_NS>::ActivateContainerManager(int /*argc*/, char** /*argv*/)
 {
   try {
     PortableServer::POA_var root_poa=PortableServer::POA::_the_root_poa();
@@ -314,7 +326,8 @@ void Session_ServerThread::ActivateContainerManager(int /*argc*/, char** /*argv*
   }
 }
 
-void Session_ServerThread::ActivateContainer(int argc, char** argv)
+template<class MY_NS>
+void Session_ServerThread<MY_NS>::ActivateContainer(int argc, char** argv)
 {
   try {
     MESSAGE("Container thread started");
@@ -386,47 +399,45 @@ void Session_ServerThread::ActivateContainer(int argc, char** argv)
   }
 }
 
-void Session_ServerThread::ActivateSession(int /*argc*/, char** /*argv*/)
+template<class MY_NS>
+void Session_ServerThread<MY_NS>::ActivateSession(int /*argc*/, char** /*argv*/)
 {
   MESSAGE("Session_ServerThread::ActivateSession() not implemented!");
 }
 
-/*! 
-  constructor 
-*/
-Session_SessionThread::Session_SessionThread(int argc,
+template<class MY_NS>
+Session_SessionThread<MY_NS>::Session_SessionThread(int argc,
                                              char** argv, 
                                              CORBA::ORB_ptr orb, 
                                              PortableServer::POA_ptr poa,
                                              QMutex* GUIMutex,
                                              QWaitCondition* GUILauncher)
-: Session_ServerThread(argc, argv, orb, poa),
+: Session_ServerThread<MY_NS>(argc, argv, orb, poa),
   _GUIMutex( GUIMutex ),
   _GUILauncher( GUILauncher )
 {
 }
 
-/*! 
-  destructor 
-*/
-Session_SessionThread::~Session_SessionThread()
+template<class MY_NS>
+Session_SessionThread<MY_NS>::~Session_SessionThread()
 {
 }
 
-void Session_SessionThread::ActivateSession(int argc, char ** argv)
+template<class MY_NS>
+void Session_SessionThread<MY_NS>::ActivateSession(int argc, char ** argv)
 {
   try {
     MESSAGE("Session thread started");
     SALOME_Session_i * mySALOME_Session
-      = new SALOME_Session_i(argc, argv, _orb, _root_poa, _GUIMutex, _GUILauncher) ;
+      = new SALOME_Session_i(argc, argv, this->_orb, this->_root_poa, _GUIMutex, _GUILauncher) ;
     PortableServer::ObjectId_var mySALOME_Sessionid
-      = _root_poa->activate_object(mySALOME_Session);
+      = this->_root_poa->activate_object(mySALOME_Session);
     MESSAGE("poa->activate_object(mySALOME_Session)");
     
     CORBA::Object_var obj = mySALOME_Session->_this();
     SALOME::Session_var objC = SALOME::Session::_narrow(obj);
     GetSessionRefSingleton()->set_value(objC);
-    CORBA::String_var sior(_orb->object_to_string(obj));
+    CORBA::String_var sior(this->_orb->object_to_string(obj));
     mySALOME_Session->_remove_ref();
     
     mySALOME_Session->NSregister();
