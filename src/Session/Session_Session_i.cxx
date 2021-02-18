@@ -69,7 +69,7 @@ SALOME_Session_i::SALOME_Session_i(int argc,
   _poa = PortableServer::POA::_duplicate(poa) ;
   _GUIMutex = GUIMutex;
   _GUILauncher = GUILauncher;
-  _NS = new SALOME_NamingService(_orb);
+  _NS.reset(new SALOME_NamingService(_orb));
   _isShuttingDown = false;
   //MESSAGE("constructor end");
 }
@@ -85,7 +85,7 @@ Engines::EngineComponent_ptr SALOME_Session_i::GetComponent(const char* theLibra
   OSD_SharedLibrary aSharedLibrary(const_cast<char*>(theLibraryName));
   if (aSharedLibrary.DlOpen(OSD_RTLD_LAZY)) {
     if (OSD_Function anOSDFun = aSharedLibrary.DlSymb("GetImpl"))
-      return ((TGetImpl (*)) anOSDFun)(_orb,_poa,_NS,_GUIMutex);
+      return ((TGetImpl (*)) anOSDFun)(_orb,_poa,_NS.get(),_GUIMutex);
   }
   CORBA::Object_var obj = SalomeApp_Engine_i::EngineForComponent(theLibraryName, true);
   if (!CORBA::is_nil(obj)){
@@ -100,7 +100,6 @@ Engines::EngineComponent_ptr SALOME_Session_i::GetComponent(const char* theLibra
 */
 SALOME_Session_i::~SALOME_Session_i()
 {
-  delete _NS;
   //MESSAGE("destructor end");
 }
 

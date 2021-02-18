@@ -415,8 +415,7 @@ Session_SessionThread::~Session_SessionThread()
 {
 }
 
-void Session_SessionThread::ActivateSession(int argc,
-                                            char ** argv)
+void Session_SessionThread::ActivateSession(int argc, char ** argv)
 {
   try {
     MESSAGE("Session thread started");

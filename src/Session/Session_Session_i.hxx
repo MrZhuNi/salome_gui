@@ -31,6 +31,9 @@
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Component)
 #include CORBA_SERVER_HEADER(SALOME_Session)
+
+#include <memory>
+
 class SALOME_NamingService;
 
 class QMutex;
@@ -85,7 +88,7 @@ public:
 protected:
 
   //! Naming service interface
-  SALOME_NamingService *_NS;
+  std::unique_ptr<SALOME_NamingService> _NS;
 
   int _argc ;
   char **_argv;
