@@ -463,7 +463,8 @@ int AbstractGUIApp::main(int argc, char **argv)
   QApplication::setOrganizationName("salome");
   QApplication::setApplicationName("salome");
   QApplication::setApplicationVersion(salomeVersion());
-
+  int vvvv(90);
+  std::cin >> vvvv;
   // Install Qt debug messages handler
   MsgHandler msgHandler;
   qInstallMessageHandler(QtxMsgHandler);

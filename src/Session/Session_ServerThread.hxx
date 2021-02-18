@@ -31,6 +31,7 @@
 
 #include <omniORB4/CORBA.h> 
 #include <string>
+#include <memory>
 
 void WaitForServerReadiness(std::string serverName);
 
@@ -65,7 +66,7 @@ protected:
   int                     _servType;
   CORBA::ORB_var          _orb;
   PortableServer::POA_var _root_poa;
-  SALOME_NamingService *  _NS;
+  std::unique_ptr<SALOME_NamingService> _NS;
   Engines_Container_i*    _container;
 };
 
@@ -85,7 +86,7 @@ public:
   virtual ~Session_SessionThread();  
 
 protected:
-  virtual void ActivateSession       ( int argc, char ** argv );
+  void ActivateSession       ( int argc, char ** argv ) override;
 private:
   QMutex*                 _GUIMutex;
   QWaitCondition*         _GUILauncher;

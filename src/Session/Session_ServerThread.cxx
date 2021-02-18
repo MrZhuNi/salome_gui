@@ -83,9 +83,9 @@ Session_ServerThread::Session_ServerThread(int argc,
   _orb = CORBA::ORB::_duplicate(orb);
   _root_poa = PortableServer::POA::_duplicate(poa);
   _servType =-1;
-  _NS = new SALOME_NamingService(_orb); // one instance per server to limit
-                                        // multi thread coherence problems
-  _container = 0;                       // embedded container
+  _NS.reset( new SALOME_NamingService(_orb) ); // one instance per server to limit
+                                               // multi thread coherence problems
+  _container = nullptr;                        // embedded container
 }
 
 /*! 
@@ -93,8 +93,6 @@ Session_ServerThread::Session_ServerThread(int argc,
 */
 Session_ServerThread::~Session_ServerThread()
 {
-  //MESSAGE("~Session_ServerThread "<< _argv[0]);
-  delete _NS;
   for (int i = 0; i <_argc ; i++ )
     free( _argv[i] );
   delete[] _argv;
@@ -118,42 +116,42 @@ void Session_ServerThread::Init()
       switch (_servType) {
       case 0:  // Container
         {
-          NamingService_WaitForServerReadiness(_NS,"/Registry");
-          NamingService_WaitForServerReadiness(_NS,"/ContainerManager");
+          NamingService_WaitForServerReadiness(_NS.get(),"/Registry");
+          NamingService_WaitForServerReadiness(_NS.get(),"/ContainerManager");
           ActivateContainer(_argc, _argv);
           break;
         }
       case 1:  // ModuleCatalog
         {
-          NamingService_WaitForServerReadiness(_NS,"/Registry");
+          NamingService_WaitForServerReadiness(_NS.get(),"/Registry");
           ActivateModuleCatalog(_argc, _argv);
           break;
         }
       case 2:  // Registry
         {
-          NamingService_WaitForServerReadiness(_NS,"");
+          NamingService_WaitForServerReadiness(_NS.get(),"");
           ActivateRegistry(_argc, _argv);
           break;
         }
       case 3:  // SALOMEDS
         {
-          NamingService_WaitForServerReadiness(_NS,"/Kernel/ModulCatalog");
+          NamingService_WaitForServerReadiness(_NS.get(),"/Kernel/ModulCatalog");
           ActivateSALOMEDS(_argc, _argv);
           break;
         }
       case 4:  // Session
         {
-          NamingService_WaitForServerReadiness(_NS,"/Study");
+          NamingService_WaitForServerReadiness(_NS.get(),"/Study");
           std::string containerName = "/Containers/";
           containerName = containerName + Kernel_Utils::GetHostname();
           containerName = containerName + "/FactoryServer";
-          NamingService_WaitForServerReadiness(_NS,containerName);
+          NamingService_WaitForServerReadiness(_NS.get(),containerName);
           ActivateSession(_argc, _argv);
           break;
         }
       case 5: // Container Manager
         {
-          NamingService_WaitForServerReadiness(_NS,"");
+          NamingService_WaitForServerReadiness(_NS.get(),"");
           ActivateContainerManager(_argc, _argv);
           break;
         }
@@ -234,8 +232,7 @@ void Session_ServerThread::ActivateSALOMEDS(int /*argc*/, char** /*argv*/)
   }
 }
 
-void Session_ServerThread::ActivateRegistry(int argc,
-                                            char ** argv)
+void Session_ServerThread::ActivateRegistry(int argc, char ** argv)
 {
   MESSAGE("Registry thread started");
   SCRUTE(argc); 
