@@ -326,12 +326,6 @@ LightApp_Application::LightApp_Application()
 {
   Q_INIT_RESOURCE( LightApp );
 
-  STD_TabDesktop* desk = new STD_TabDesktop();
-  desk->setFullScreenAllowed(false);
-  desk->setMinimizeAllowed(false);
-
-  setDesktop( desk );
-
   // initialize auto save timer
   myAutoSaveTimer = new QTimer( this );
   myAutoSaveTimer->setSingleShot( true );

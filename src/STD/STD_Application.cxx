@@ -22,7 +22,7 @@
 
 #include "STD_Application.h"
 
-#include "STD_MDIDesktop.h"
+#include "STD_TabDesktop.h"
 
 #include <SUIT_Tools.h>
 #include <SUIT_Study.h>
@@ -57,7 +57,7 @@ STD_Application::STD_Application()
   myExitConfirm( true ),
   myEditEnabled( true )
 {
-  setDesktop( new STD_MDIDesktop() );
+  setDesktop( new STD_TabDesktop() );
 }
 
 /*!Destructor.*/

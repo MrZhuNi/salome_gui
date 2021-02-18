@@ -239,8 +239,8 @@ QtxMainWindow::QtxMainWindow( QWidget* parent, Qt::WindowFlags f )
 : QMainWindow( parent, f ),
   myMenuBar( 0 ),
   myStatusBar( 0 ),
-  myFullScreenAllowed(true),
-  myMinimizeAllowed(true),
+  myFullScreenAllowed( false ),
+  myMinimizeAllowed( false ),
   myOpaque( true ),
   myResizer( 0 ),
   myMouseMove( 0 )
