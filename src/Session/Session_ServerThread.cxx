@@ -179,8 +179,7 @@ void Session_ServerThread<MY_NS>::Shutdown()
 }
 
 template<class MY_NS>
-void Session_ServerThread<MY_NS>::ActivateModuleCatalog(int argc,
-                                                 char ** argv)
+void Session_ServerThread<MY_NS>::ActivateModuleCatalog(int argc, char ** argv)
 {
   try {
     MESSAGE("ModuleCatalog thread started");
