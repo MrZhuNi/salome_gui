@@ -115,7 +115,7 @@ Engines_Container_i *OldStyleNS::activateContainer(CORBA::ORB_var orb, PortableS
     {
       containerName = argv[1];
     }
-    _container = new Engines_Container_i(orb, poa, containerName, argc, argv, true, false);
+    _container = new Engines_Container_i(orb, poa, containerName, argc, argv, nullptr, false);
   }
   catch (CORBA::SystemException &)
   {
