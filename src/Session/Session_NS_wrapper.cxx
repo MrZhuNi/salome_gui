@@ -20,6 +20,7 @@
 #include "Session_NS_wrapper.hxx"
 
 #include "SALOME_Container_i.hxx"
+#include "SALOME_Launcher.hxx"
 #include "utilities.h"
 
 Engines_Container_i *OldStyleNS::activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char **argv)
@@ -103,7 +104,36 @@ Engines_Container_i *OldStyleNS::activateContainer(CORBA::ORB_var orb, PortableS
   return _container;
 }
 
+void OldStyleNS::activateContainerManager(CORBA::ORB_var orb)
+{
+  try {
+    PortableServer::POA_var root_poa=PortableServer::POA::_the_root_poa();
+    std::cout << "Activate SalomeLauncher ......!!!! " << std::endl;
+    new SALOME_Launcher(orb,root_poa);
+  }
+  catch(CORBA::SystemException&) {
+    INFOS("Caught CORBA::SystemException.");
+  }
+  catch(PortableServer::POA::WrongPolicy&) {
+    INFOS("Caught CORBA::WrongPolicyException.");
+  }
+  catch(PortableServer::POA::ServantAlreadyActive&) {
+    INFOS("Caught CORBA::ServantAlreadyActiveException");
+  }
+  catch(CORBA::Exception&) {
+    INFOS("Caught CORBA::Exception.");
+  }
+  catch(...) {
+    INFOS("Caught unknown exception.");
+  }
+}
+
 Engines_Container_i *NewStyleNS::activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char **argv)
 {
   return KERNEL::getContainerSA();
+}
+
+void NewStyleNS::activateContainerManager(CORBA::ORB_var orb)
+{
+  KERNEL::getLauncherSA();
 }

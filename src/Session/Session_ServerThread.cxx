@@ -303,26 +303,7 @@ void Session_ServerThread<MY_NS>::ActivateRegistry(int argc, char ** argv)
 template<class MY_NS>
 void Session_ServerThread<MY_NS>::ActivateContainerManager(int /*argc*/, char** /*argv*/)
 {
-  try {
-    PortableServer::POA_var root_poa=PortableServer::POA::_the_root_poa();
-    std::cout << "Activate SalomeLauncher ......!!!! " << std::endl;
-    new SALOME_Launcher(_orb,root_poa);
-  }
-  catch(CORBA::SystemException&) {
-    INFOS("Caught CORBA::SystemException.");
-  }
-  catch(PortableServer::POA::WrongPolicy&) {
-    INFOS("Caught CORBA::WrongPolicyException.");
-  }
-  catch(PortableServer::POA::ServantAlreadyActive&) {
-    INFOS("Caught CORBA::ServantAlreadyActiveException");
-  }
-  catch(CORBA::Exception&) {
-    INFOS("Caught CORBA::Exception.");
-  }
-  catch(...) {
-    INFOS("Caught unknown exception.");
-  }
+  this->_NS->activateContainerManager(this->_orb);
 }
 
 template<class MY_NS>

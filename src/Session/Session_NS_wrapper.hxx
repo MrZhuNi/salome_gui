@@ -35,6 +35,7 @@ public:
   CORBA::Object_ptr Resolve(const char* Path) { return _NS.Resolve(Path); }
   RealNS *getNS() { return &_NS; }
   Engines_Container_i *activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char** argv);
+  void activateContainerManager(CORBA::ORB_var orb);
 private:
   RealNS _NS;
 };
@@ -51,6 +52,7 @@ public:
   CORBA::Object_ptr Resolve(const char* Path) { return _NS.Resolve(Path); }
   RealNS *getNS() { return &_NS; }
   Engines_Container_i *activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char** argv);
+  void activateContainerManager(CORBA::ORB_var orb);
 private:
   RealNS _NS;
 };
