@@ -40,6 +40,7 @@ public:
   Engines_Container_i *activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char** argv);
   void activateContainerManager(CORBA::ORB_var orb);
   void activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, int argc, char ** argv);
+  void activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa);
 private:
   RealNS _NS;
 };
@@ -58,6 +59,7 @@ public:
   Engines_Container_i *activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char** argv);
   void activateContainerManager(CORBA::ORB_var orb);
   void activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, int argc, char ** argv);
+  void activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa);
 private:
   RealNS _NS;
 };

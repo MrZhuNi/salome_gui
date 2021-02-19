@@ -30,7 +30,6 @@
 #include <SALOME_NamingService.hxx>
 #include <SALOME_Container_i.hxx>
 #include <SALOME_Launcher.hxx>
-#include <SALOMEDSClient_ClientFactory.hxx>
 #include <SALOME_ModuleCatalog_impl.hxx>
 #include <RegistryService.hxx>
 
@@ -216,29 +215,7 @@ void Session_ServerThread<MY_NS>::ActivateModuleCatalog(int argc, char ** argv)
 template<class MY_NS>
 void Session_ServerThread<MY_NS>::ActivateSALOMEDS(int /*argc*/, char** /*argv*/)
 {
-  try {
-    MESSAGE("SALOMEDS thread started");
-    // We allocate the objects on the heap.  Since these are reference
-    // counted objects, they will be deleted by the POA when they are no
-    // longer needed.    
-    
-    ClientFactory::createStudy(_orb,_root_poa);
-  }
-  catch(CORBA::SystemException&) {
-    INFOS( "Caught CORBA::SystemException." );
-  }
-  catch(CORBA::Exception&) {
-    INFOS( "Caught CORBA::Exception." );
-  }
-  catch(omniORB::fatalException& fe) {
-    INFOS( "Caught omniORB::fatalException:" );
-    INFOS( "  file: " << fe.file() );
-    INFOS( "  line: " << fe.line() );
-    INFOS( "  mesg: " << fe.errmsg() );
-  }
-  catch(...) {
-    INFOS( "Caught unknown exception." );
-  }
+  this->_NS->activateSALOMEDS(this->_orb,this->_root_poa);
 }
 
 template<class MY_NS>

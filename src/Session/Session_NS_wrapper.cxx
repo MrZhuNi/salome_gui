@@ -22,6 +22,8 @@
 #include "SALOME_Fake_NamingService.hxx"
 #include "SALOME_Container_i.hxx"
 #include "SALOME_Launcher.hxx"
+#include "SALOMEDSClient_ClientFactory.hxx"
+
 #include "Session_Session_i.hxx"
 #include "Session_Promises.hxx"
 #include "utilities.h"
@@ -167,6 +169,33 @@ void OldStyleNS::activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa
   CommonActivateSession(orb,poa,GUIMutex,GUILauncher,nullptr,argc,argv);
 }
 
+void OldStyleNS::activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa)
+{
+  try {
+    MESSAGE("SALOMEDS thread started");
+    // We allocate the objects on the heap.  Since these are reference
+    // counted objects, they will be deleted by the POA when they are no
+    // longer needed.    
+    
+    ClientFactory::createStudy(orb,poa);
+  }
+  catch(CORBA::SystemException&) {
+    INFOS( "Caught CORBA::SystemException." );
+  }
+  catch(CORBA::Exception&) {
+    INFOS( "Caught CORBA::Exception." );
+  }
+  catch(omniORB::fatalException& fe) {
+    INFOS( "Caught omniORB::fatalException:" );
+    INFOS( "  file: " << fe.file() );
+    INFOS( "  line: " << fe.line() );
+    INFOS( "  mesg: " << fe.errmsg() );
+  }
+  catch(...) {
+    INFOS( "Caught unknown exception." );
+  }
+}
+
 Engines_Container_i *NewStyleNS::activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char **argv)
 {
   return KERNEL::getContainerSA();
@@ -181,4 +210,9 @@ void NewStyleNS::activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa
 {
   SALOME_Fake_NamingService *ns=new SALOME_Fake_NamingService;
   CommonActivateSession(orb,poa,GUIMutex,GUILauncher,ns,argc,argv);
+}
+
+void NewStyleNS::activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa)
+{
+  ClientFactory::createStudyWithoutNS(orb,poa);
 }
