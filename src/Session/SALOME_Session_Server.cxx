@@ -38,7 +38,7 @@
 #include "Session_ServerCheck.hxx"
 #include "Session_ServerLauncher.hxx"
 #include "Session_Promises.hxx"
-#include "SALOME_Fake_NamingService.hxx"
+#include "Session_NS_wrapper.hxx"
 
 #include "GUI_version.h"
 #include "Qtx.h"
@@ -459,7 +459,7 @@ SALOME::Session_var GUIAppNewStyle::getSession()
 // ---------------------------- MAIN -----------------------
 int AbstractGUIApp::main(int argc, char **argv)
 {
-  using NamingServiceImplementation = SALOME_Fake_NamingService;
+  using NamingServiceImplementation = NewStyleNS;
   // Set-up application settings configuration (as for QSettings)
   // Note: these are default settings which can be customized (see below)
   QApplication::setOrganizationName("salome");

@@ -123,42 +123,42 @@ void Session_ServerThread<MY_NS>::Init()
       switch (_servType) {
       case 0:  // Container
         {
-          NamingService_WaitForServerReadiness(_NS.get(),"/Registry");
-          NamingService_WaitForServerReadiness(_NS.get(),"/ContainerManager");
+          NamingService_WaitForServerReadiness(this->getNS(),"/Registry");
+          NamingService_WaitForServerReadiness(this->getNS(),"/ContainerManager");
           ActivateContainer(_argc, _argv);
           break;
         }
       case 1:  // ModuleCatalog
         {
-          NamingService_WaitForServerReadiness(_NS.get(),"/Registry");
+          NamingService_WaitForServerReadiness(this->getNS(),"/Registry");
           ActivateModuleCatalog(_argc, _argv);
           break;
         }
       case 2:  // Registry
         {
-          NamingService_WaitForServerReadiness(_NS.get(),"");
+          NamingService_WaitForServerReadiness(this->getNS(),"");
           ActivateRegistry(_argc, _argv);
           break;
         }
       case 3:  // SALOMEDS
         {
-          NamingService_WaitForServerReadiness(_NS.get(),"/Kernel/ModulCatalog");
+          NamingService_WaitForServerReadiness(this->getNS(),"/Kernel/ModulCatalog");
           ActivateSALOMEDS(_argc, _argv);
           break;
         }
       case 4:  // Session
         {
-          NamingService_WaitForServerReadiness(_NS.get(),"/Study");
+          NamingService_WaitForServerReadiness(this->getNS(),"/Study");
           std::string containerName = "/Containers/";
           containerName = containerName + Kernel_Utils::GetHostname();
           containerName = containerName + "/FactoryServer";
-          NamingService_WaitForServerReadiness(_NS.get(),containerName);
+          NamingService_WaitForServerReadiness(this->getNS(),containerName);
           ActivateSession(_argc, _argv);
           break;
         }
       case 5: // Container Manager
         {
-          NamingService_WaitForServerReadiness(_NS.get(),"");
+          NamingService_WaitForServerReadiness(this->getNS(),"");
           ActivateContainerManager(_argc, _argv);
           break;
         }
@@ -326,76 +326,18 @@ void Session_ServerThread<MY_NS>::ActivateContainerManager(int /*argc*/, char** 
 }
 
 template<class MY_NS>
+typename MY_NS::RealNS *Session_ServerThread<MY_NS>::getNS()
+{
+  MY_NS *pt(_NS.get());
+  if(!pt)
+     THROW_SALOME_EXCEPTION("Session_ServerThread<MY_NS>::getNS : null pointer !");
+  return pt->getNS();
+}
+
+template<class MY_NS>
 void Session_ServerThread<MY_NS>::ActivateContainer(int argc, char** argv)
 {
-  try {
-    MESSAGE("Container thread started");
-    
-    // get or create the child POA
-    
-    PortableServer::POA_var factory_poa;
-    try {
-      factory_poa = _root_poa->find_POA("factory_poa",0);
-      // 0 = no activation (already done if exists)
-    }
-    catch (PortableServer::POA::AdapterNonExistent&) {
-      MESSAGE("factory_poa does not exists, create...");
-      // define policy objects     
-      PortableServer::ImplicitActivationPolicy_var implicitActivation =
-        _root_poa->create_implicit_activation_policy(PortableServer::NO_IMPLICIT_ACTIVATION);
-      // default = NO_IMPLICIT_ACTIVATION
-      PortableServer::ThreadPolicy_var threadPolicy =
-        _root_poa->create_thread_policy(PortableServer::ORB_CTRL_MODEL);
-      // default = ORB_CTRL_MODEL, other choice SINGLE_THREAD_MODEL
-      
-      // create policy list
-      CORBA::PolicyList policyList;
-      policyList.length(2);
-      policyList[0] = PortableServer::ImplicitActivationPolicy::
-        _duplicate(implicitActivation);
-      policyList[1] = PortableServer::ThreadPolicy::
-        _duplicate(threadPolicy);
-      
-      PortableServer::POAManager_var nil_mgr
-        = PortableServer::POAManager::_nil();
-      factory_poa = _root_poa->create_POA("factory_poa",
-                                          nil_mgr,
-                                          policyList);
-      //with nil_mgr instead of pman,
-      //a new POA manager is created with the new POA
-      
-      // destroy policy objects
-      implicitActivation->destroy();
-      threadPolicy->destroy();
-      
-      // obtain the factory poa manager
-      PortableServer::POAManager_var pmanfac = factory_poa->the_POAManager();
-      pmanfac->activate();
-      MESSAGE("pmanfac->activate()");
-    }
-    
-    char *containerName = (char*)"";
-    if (argc >1) {
-      containerName = argv[1];
-    }
-    
-    _container = new Engines_Container_i(_orb, _root_poa, containerName, argc, argv, true, false);
-  }
-  catch(CORBA::SystemException&) {
-    INFOS("Caught CORBA::SystemException.");
-  }
-  catch(PortableServer::POA::WrongPolicy&) {
-    INFOS("Caught CORBA::WrongPolicyException.");
-  }
-  catch(PortableServer::POA::ServantAlreadyActive&) {
-    INFOS("Caught CORBA::ServantAlreadyActiveException");
-  }
-  catch(CORBA::Exception&) {
-    INFOS("Caught CORBA::Exception.");
-  }
-  catch(...) {
-    INFOS("Caught unknown exception.");
-  }
+  _container = this->_NS->activateContainer(this->_orb,this->_root_poa,argc,argv);
 }
 
 template<class MY_NS>
@@ -452,10 +394,8 @@ void Session_SessionThread<MY_NS>::ActivateSession(int argc, char ** argv)
   }
 }
 
-template class Session_ServerThread<SALOME_NamingService>;
-template class Session_SessionThread<SALOME_NamingService>;
+template class Session_ServerThread<OldStyleNS>;
+template class Session_SessionThread<OldStyleNS>;
 
-#include "SALOME_Fake_NamingService.hxx"
-
-template class Session_ServerThread<SALOME_Fake_NamingService>;
-template class Session_SessionThread<SALOME_Fake_NamingService>;
+template class Session_ServerThread<NewStyleNS>;
+template class Session_SessionThread<NewStyleNS>;

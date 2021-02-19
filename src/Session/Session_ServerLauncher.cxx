@@ -262,8 +262,8 @@ void Session_ServerLauncher<MY_NS>::KillAll()
   }
 }
 
-template class Session_ServerLauncher<SALOME_NamingService>;
+#include "Session_NS_wrapper.hxx" 
 
-#include "SALOME_Fake_NamingService.hxx"
+template class Session_ServerLauncher<OldStyleNS>;
 
-template class Session_ServerLauncher<SALOME_Fake_NamingService>;
+template class Session_ServerLauncher<NewStyleNS>;

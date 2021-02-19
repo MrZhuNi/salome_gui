@@ -82,6 +82,7 @@ SET(SalomeSession_HEADERS
   Session_ServerThread.hxx
   Session_Session_i.hxx
   Session_Promises.hxx
+  Session_NS_wrapper.hxx
 )
 
 # --- resources ---
@@ -100,6 +101,7 @@ SET(SalomeSession_SOURCES
   Session_ServerThread.cxx
   Session_Session_i.cxx
   Session_Promises.cxx
+  Session_NS_wrapper.cxx
 )
 
 # --- rules ---
