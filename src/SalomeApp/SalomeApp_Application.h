@@ -44,6 +44,8 @@
 
 #include <QPointer>
 
+#include <memory>
+
 class LightApp_Preferences;
 class SalomeApp_Study;
 #ifndef DISABLE_PYCONSOLE
@@ -97,7 +99,7 @@ public:
 
   static CORBA::ORB_var               orb();
   static _PTR(Study)                  getStudy();
-  static SALOME_NamingService*        namingService();
+  static SALOME_NamingService_Abstract* namingService();
   static SALOME_LifeCycleCORBA*       lcc();
 
   SUIT_ViewManager*                   newViewManager(const QString&);
@@ -210,6 +212,8 @@ signals:
                                                          bool theIsStudySaved );
   void                                notebookVarUpdated( QString theVarName );
   void                                objectDoubleClicked( SUIT_DataObject* );
+protected:
+  static std::unique_ptr<SALOME_NamingService_Abstract> _ns;
 };
 
 #ifdef WIN32

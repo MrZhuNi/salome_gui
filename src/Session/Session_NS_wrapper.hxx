@@ -43,6 +43,7 @@ public:
   static void activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa);
   static CORBA::Object_var forServerChecker(const char *NSName, int argc, char **argv);
   static CosNaming::NamingContext_var checkTrueNamingServiceIfExpected(int argc, char **argv, bool& forceOK);
+  static const char LibName[];
 private:
   RealNS _NS;
 };
@@ -64,6 +65,7 @@ public:
   static void activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa);
   static CORBA::Object_var forServerChecker(const char *NSName, int argc, char **argv);
   static CosNaming::NamingContext_var checkTrueNamingServiceIfExpected(int argc, char **argv, bool& forceOK);
+  static const char LibName[];
 private:
   RealNS _NS;
 };

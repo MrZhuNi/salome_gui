@@ -722,7 +722,7 @@ int AbstractGUIApp::main(int argc, char **argv)
 
       // Load SalomeApp dynamic library
       MESSAGE("creation SUIT_Application");
-      SUIT_Application *aGUIApp = aGUISession->startApplication("SalomeApp", 0, 0);
+      SUIT_Application *aGUIApp = aGUISession->startApplication(NamingServiceImplementation::LibName, 0, 0);
       if (aGUIApp)
       {
 #ifdef USE_SALOME_STYLE

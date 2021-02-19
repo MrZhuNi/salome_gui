@@ -28,6 +28,9 @@
 #include "Session_Promises.hxx"
 #include "utilities.h"
 
+const char OldStyleNS::LibName[]="SalomeApp";
+const char NewStyleNS::LibName[]="SalomeAppSL";
+
 void CommonActivateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, SALOME_NamingService_Abstract *ns, int argc, char ** argv)
 {
   try {
