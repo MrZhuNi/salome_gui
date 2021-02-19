@@ -38,9 +38,11 @@ public:
   CORBA::Object_ptr Resolve(const char* Path) { return _NS.Resolve(Path); }
   RealNS *getNS() { return &_NS; }
   Engines_Container_i *activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char** argv);
-  void activateContainerManager(CORBA::ORB_var orb);
-  void activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, int argc, char ** argv);
-  void activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa);
+  static void activateContainerManager(CORBA::ORB_var orb);
+  static void activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, int argc, char ** argv);
+  static void activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa);
+  static CORBA::Object_var forServerChecker(const char *NSName, int argc, char **argv);
+  static CosNaming::NamingContext_var checkTrueNamingServiceIfExpected(int argc, char **argv, bool& forceOK);
 private:
   RealNS _NS;
 };
@@ -57,9 +59,11 @@ public:
   CORBA::Object_ptr Resolve(const char* Path) { return _NS.Resolve(Path); }
   RealNS *getNS() { return &_NS; }
   Engines_Container_i *activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char** argv);
-  void activateContainerManager(CORBA::ORB_var orb);
-  void activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, int argc, char ** argv);
-  void activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa);
+  static void activateContainerManager(CORBA::ORB_var orb);
+  static void activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, int argc, char ** argv);
+  static void activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa);
+  static CORBA::Object_var forServerChecker(const char *NSName, int argc, char **argv);
+  static CosNaming::NamingContext_var checkTrueNamingServiceIfExpected(int argc, char **argv, bool& forceOK);
 private:
   RealNS _NS;
 };

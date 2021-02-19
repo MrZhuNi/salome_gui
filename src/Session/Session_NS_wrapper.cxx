@@ -196,6 +196,30 @@ void OldStyleNS::activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var po
   }
 }
 
+#include "Utils_ORB_INIT.hxx"
+#include "Utils_SINGLETON.hxx"
+
+CORBA::Object_var OldStyleNS::forServerChecker(const char *NSName, int argc, char **argv)
+{
+  ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+  CORBA::ORB_var orb = init( argc, argv );
+  SALOME_NamingService &NS = *SINGLETON_<SALOME_NamingService>::Instance();
+  ASSERT( SINGLETON_<SALOME_NamingService>::IsAlreadyExisting() );
+  NS.init_orb( orb );
+  CORBA::Object_var obj = NS.Resolve( NSName );
+  return obj;
+}
+
+CosNaming::NamingContext_var OldStyleNS::checkTrueNamingServiceIfExpected(int argc, char **argv, bool& forceOK)
+{
+  forceOK = false;//tell checker : do as before
+  ORB_INIT& init = *SINGLETON_<ORB_INIT>::Instance();
+  CORBA::ORB_var orb = init( argc, argv );
+  CORBA::Object_var obj = orb->resolve_initial_references( "NameService" );
+  CosNaming::NamingContext_var _root_context = CosNaming::NamingContext::_narrow( obj );
+  return _root_context;
+}
+
 Engines_Container_i *NewStyleNS::activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char **argv)
 {
   return KERNEL::getContainerSA();
@@ -215,4 +239,16 @@ void NewStyleNS::activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa
 void NewStyleNS::activateSALOMEDS(CORBA::ORB_var orb, PortableServer::POA_var poa)
 {
   ClientFactory::createStudyWithoutNS(orb,poa);
+}
+
+CORBA::Object_var NewStyleNS::forServerChecker(const char *NSName, int argc, char **argv)
+{
+  SALOME_Fake_NamingService ns;
+  return ns.Resolve(NSName);
+}
+
+CosNaming::NamingContext_var NewStyleNS::checkTrueNamingServiceIfExpected(int argc, char **argv, bool& forceOK)
+{
+  forceOK = true;//tell checker : forget it's always OK
+  return CosNaming::NamingContext::_nil();
 }

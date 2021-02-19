@@ -642,7 +642,7 @@ int AbstractGUIApp::main(int argc, char **argv)
       // ...lock mutex to block splash thread until wait( mutex )
       _SplashMutex.lock();
       // ...create servers checking thread
-      Session_ServerCheck sc(&_SplashMutex, &_SplashStarted);
+      Session_ServerCheck<NamingServiceImplementation> sc(&_SplashMutex, &_SplashStarted);
       // ... set initial progress
       splash->setProgress(0, sc.totalSteps());
       // start check loop
