@@ -348,31 +348,7 @@ Session_SessionThread<MY_NS>::~Session_SessionThread()
 template<class MY_NS>
 void Session_SessionThread<MY_NS>::ActivateSession(int argc, char ** argv)
 {
-  try {
-    MESSAGE("Session thread started");
-    SALOME_Session_i * mySALOME_Session
-      = new SALOME_Session_i(argc, argv, this->_orb, this->_root_poa, _GUIMutex, _GUILauncher) ;
-    PortableServer::ObjectId_var mySALOME_Sessionid
-      = this->_root_poa->activate_object(mySALOME_Session);
-    MESSAGE("poa->activate_object(mySALOME_Session)");
-    
-    CORBA::Object_var obj = mySALOME_Session->_this();
-    SALOME::Session_var objC = SALOME::Session::_narrow(obj);
-    GetSessionRefSingleton()->set_value(objC);
-    CORBA::String_var sior(this->_orb->object_to_string(obj));
-    mySALOME_Session->_remove_ref();
-    
-    mySALOME_Session->NSregister();
-  }
-  catch (CORBA::SystemException&) {
-    INFOS("Caught CORBA::SystemException.");
-  }
-  catch (CORBA::Exception&) {
-    INFOS("Caught CORBA::Exception.");
-  }
-  catch (...) {
-    INFOS("Caught unknown exception.");
-  }
+  this->_NS->activateSession(this->_orb,this->_root_poa,_GUIMutex,_GUILauncher,argc,argv);
 }
 
 template class Session_ServerThread<OldStyleNS>;

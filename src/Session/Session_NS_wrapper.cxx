@@ -19,9 +19,43 @@
 
 #include "Session_NS_wrapper.hxx"
 
+#include "SALOME_Fake_NamingService.hxx"
 #include "SALOME_Container_i.hxx"
 #include "SALOME_Launcher.hxx"
+#include "Session_Session_i.hxx"
+#include "Session_Promises.hxx"
 #include "utilities.h"
+
+void CommonActivateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, SALOME_NamingService_Abstract *ns, int argc, char ** argv)
+{
+  try {
+    MESSAGE("Session thread started");
+    SALOME_Session_i * mySALOME_Session = nullptr;
+    if(!ns)
+      mySALOME_Session = new SALOME_Session_i(argc, argv, orb, poa, GUIMutex, GUILauncher);
+    else
+      mySALOME_Session = new SALOME_Session_i(argc, argv, orb, poa, GUIMutex, GUILauncher,ns);
+    PortableServer::ObjectId_var mySALOME_Sessionid = poa->activate_object(mySALOME_Session);
+    MESSAGE("poa->activate_object(mySALOME_Session)");
+    
+    CORBA::Object_var obj = mySALOME_Session->_this();
+    SALOME::Session_var objC = SALOME::Session::_narrow(obj);
+    GetSessionRefSingleton()->set_value(objC);
+    CORBA::String_var sior(orb->object_to_string(obj));
+    mySALOME_Session->_remove_ref();
+    
+    mySALOME_Session->NSregister();
+  }
+  catch (CORBA::SystemException&) {
+    INFOS("Caught CORBA::SystemException.");
+  }
+  catch (CORBA::Exception&) {
+    INFOS("Caught CORBA::Exception.");
+  }
+  catch (...) {
+    INFOS("Caught unknown exception.");
+  }
+}
 
 Engines_Container_i *OldStyleNS::activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char **argv)
 {
@@ -128,6 +162,11 @@ void OldStyleNS::activateContainerManager(CORBA::ORB_var orb)
   }
 }
 
+void OldStyleNS::activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, int argc, char ** argv)
+{
+  CommonActivateSession(orb,poa,GUIMutex,GUILauncher,nullptr,argc,argv);
+}
+
 Engines_Container_i *NewStyleNS::activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char **argv)
 {
   return KERNEL::getContainerSA();
@@ -136,4 +175,10 @@ Engines_Container_i *NewStyleNS::activateContainer(CORBA::ORB_var orb, PortableS
 void NewStyleNS::activateContainerManager(CORBA::ORB_var orb)
 {
   KERNEL::getLauncherSA();
+}
+
+void NewStyleNS::activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, int argc, char ** argv)
+{
+  SALOME_Fake_NamingService *ns=new SALOME_Fake_NamingService;
+  CommonActivateSession(orb,poa,GUIMutex,GUILauncher,ns,argc,argv);
 }

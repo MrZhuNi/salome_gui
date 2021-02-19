@@ -23,6 +23,9 @@
 
 #include "omniORB4/CORBA.h"
 
+class QMutex;
+class QWaitCondition;
+
 class Engines_Container_i;
 
 class OldStyleNS
@@ -36,6 +39,7 @@ public:
   RealNS *getNS() { return &_NS; }
   Engines_Container_i *activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char** argv);
   void activateContainerManager(CORBA::ORB_var orb);
+  void activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, int argc, char ** argv);
 private:
   RealNS _NS;
 };
@@ -53,6 +57,7 @@ public:
   RealNS *getNS() { return &_NS; }
   Engines_Container_i *activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char** argv);
   void activateContainerManager(CORBA::ORB_var orb);
+  void activateSession(CORBA::ORB_var orb, PortableServer::POA_var poa, QMutex *GUIMutex, QWaitCondition *GUILauncher, int argc, char ** argv);
 private:
   RealNS _NS;
 };
