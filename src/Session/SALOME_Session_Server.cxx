@@ -451,7 +451,6 @@ void GUIAppOldStyle::shutdownRemoteServersIfNeeded(bool remoteLauncher)
 
 SALOME::Session_var GUIAppNewStyle::getSession()
 {
-  GetSessionRefSingleton()->get_future().wait();
   SALOME::Session_var session = GetSessionRefSingleton()->get_future().get();
   return session;
 }
