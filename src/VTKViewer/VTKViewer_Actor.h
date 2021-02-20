@@ -31,6 +31,10 @@
 
 #include <string>
 #include <vector>
+#include <limits>
+
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_Map.hxx>
 
 #include <vtkLODActor.h>
 #include <vtkProperty.h>
@@ -393,6 +397,22 @@ class VTKVIEWER_EXPORT VTKViewer_Actor : public vtkLODActor
   bool myIsPreselected;
   bool myIsHighlighted;
 };
+
+struct vtkIdHasher
+{
+  static int HashCode(const vtkIdType theValue,  const int theUpperBound)
+  {
+    return static_cast<int> ((theValue & std::numeric_limits<vtkIdType>::max()) % theUpperBound + 1);
+  }
+
+  static bool IsEqual( const vtkIdType& id1, const vtkIdType& id2 )
+  {
+    return id1 == id2;
+  }
+};
+
+typedef NCollection_Map< vtkIdType, vtkIdHasher > TVtkIDsMap;
+typedef NCollection_IndexedMap<vtkIdType,vtkIdHasher> TIndexedMapOfVtkId;
 
 #ifdef WIN32
 #pragma warning ( default:4251 )

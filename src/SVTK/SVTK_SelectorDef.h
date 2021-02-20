@@ -106,17 +106,17 @@ public:
   virtual
   void 
   GetIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-            TColStd_IndexedMapOfInteger& theIndex );
+            SVTK_TIndexedMapOfVtkId& theIndex );
         
   virtual
   bool 
   AddOrRemoveIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-                    const TColStd_IndexedMapOfInteger& theIndices, 
+                    const SVTK_TIndexedMapOfVtkId& theIndices, 
                     bool theIsModeShift);
   virtual
   bool 
   AddOrRemoveIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-                    const TColStd_MapOfInteger& theIndices, 
+                    const SVTK_TVtkIDsMap& theIndices, 
                     bool theIsModeShift);
   virtual
   bool
@@ -255,7 +255,7 @@ private:
 
   struct TIndexedMapOfInteger
   {
-    TColStd_IndexedMapOfInteger myMap;
+    SVTK_TIndexedMapOfVtkId myMap;
     TIndexedMapOfInteger()
     {}
     TIndexedMapOfInteger(const TIndexedMapOfInteger& theIndexedMapOfInteger)

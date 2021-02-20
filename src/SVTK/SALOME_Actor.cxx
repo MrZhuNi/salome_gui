@@ -449,7 +449,7 @@ SALOME_Actor
 
   if(mySelector.GetPointer()){
     if(mySelectionMode != ActorSelection){
-      TColStd_IndexedMapOfInteger aMapIndex;
+      SVTK_TIndexedMapOfVtkId aMapIndex;
       mySelector->GetIndex( getIO(), aMapIndex );
       switch( mySelectionMode ) {
       case NodeSelection:
@@ -547,11 +547,11 @@ SALOME_Actor
         vtkIdType anObjId = GetNodeObjId( aVtkId );
         myIsPreselected = (anObjId >= 0);
         if(myIsPreselected){
-          const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
+          const SVTK_TIndexedMapOfVtkId& aMapIndex = myPreHighlightActor->GetMapIndex();
           int anExtent = aMapIndex.Extent();
           anIsChanged |= (anExtent == 0 || (anExtent > 0 && anObjId != aMapIndex(1)));
           if(anIsChanged){
-            TColStd_IndexedMapOfInteger aMapIndex;
+            SVTK_TIndexedMapOfVtkId aMapIndex;
             aMapIndex.Add( anObjId );
             
             myPreHighlightActor->GetProperty()->SetRepresentationToPoints();
@@ -578,11 +578,11 @@ SALOME_Actor
         if ( anObjId >= 0 ) {
           myIsPreselected = CheckDimensionId(aSelectionMode,this,anObjId);
           if(myIsPreselected){
-            const TColStd_IndexedMapOfInteger& aMapIndex = myPreHighlightActor->GetMapIndex();
+            const SVTK_TIndexedMapOfVtkId& aMapIndex = myPreHighlightActor->GetMapIndex();
             int anExtent = aMapIndex.Extent();
             anIsChanged |= (anExtent == 0 || (anExtent > 0 && anObjId != aMapIndex(1)));
             if(anIsChanged){
-              TColStd_IndexedMapOfInteger aMapIndex;
+              SVTK_TIndexedMapOfVtkId aMapIndex;
               aMapIndex.Add( anObjId );
               
               myPreHighlightActor->GetProperty()->SetRepresentationToSurface();
@@ -709,7 +709,7 @@ SALOME_Actor
 
       const SVTK_AreaPicker::TVectorIdsMap& aVectorIdsMap = myPointAreaPicker->GetPointIdsMap();
       SVTK_AreaPicker::TVectorIdsMap::const_iterator aMapIter = aVectorIdsMap.find(this);
-      TColStd_MapOfInteger anIndexes;
+      SVTK_TVtkIDsMap anIndexes;
       if(aMapIter != aVectorIdsMap.end()){
         const SVTK_AreaPicker::TVectorIds& aVectorIds = aMapIter->second;
         vtkIdType anEnd = (int)aVectorIds.size(); //!< TODO: conversion from size_t to int
@@ -785,7 +785,7 @@ SALOME_Actor
 
       const SVTK_AreaPicker::TVectorIdsMap& aVectorIdsMap = myCellAreaPicker->GetCellIdsMap();
       SVTK_AreaPicker::TVectorIdsMap::const_iterator aMapIter = aVectorIdsMap.find(this);
-      TColStd_MapOfInteger anIndexes;
+      SVTK_TVtkIDsMap anIndexes;
       if(aMapIter != aVectorIdsMap.end()){
         const SVTK_AreaPicker::TVectorIds& aVectorIds = aMapIter->second;
         vtkIdType anEnd = (int)aVectorIds.size(); //!< TODO: conversion from size_t to int

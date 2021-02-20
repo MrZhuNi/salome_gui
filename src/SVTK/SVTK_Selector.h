@@ -130,20 +130,20 @@ public:
   virtual
   void 
   GetIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-            TColStd_IndexedMapOfInteger& theIndex ) = 0;
+            SVTK_TIndexedMapOfVtkId& theIndex ) = 0;
         
   //! Change indices of subselection for given #SALOME_InteractiveObject
   virtual
   bool 
   AddOrRemoveIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-                    const TColStd_IndexedMapOfInteger& theIndices, 
+                    const SVTK_TIndexedMapOfVtkId& theIndices, 
                     bool theIsModeShift) = 0;
 
   //! Change indexes of subslection for given #SALOME_InteractiveObject
   virtual
   bool 
   AddOrRemoveIndex( const Handle(SALOME_InteractiveObject)& theIO, 
-                    const TColStd_MapOfInteger& theIndices, 
+                    const SVTK_TVtkIDsMap& theIndices, 
                     bool theIsModeShift) = 0;
 
   //! Change index of subslection for given #SALOME_InteractiveObject

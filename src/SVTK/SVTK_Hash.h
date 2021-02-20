@@ -29,8 +29,10 @@
 
 #include <vector>
 #include <NCollection_IndexedMap.hxx>
+#include <NCollection_Map.hxx>
 #include <Standard_Integer.hxx>
 #include <vtkType.h>
+#include <limits>
 
 typedef std::vector<Standard_Integer> SVTK_ListOfInteger;
 typedef std::vector<vtkIdType> SVTK_ListOfVtk;
@@ -73,7 +75,23 @@ public:
     }
 };
 
+struct svtkIdHasher
+{
+  static int HashCode(const vtkIdType theValue,  const int theUpperBound)
+  {
+    return static_cast<int> ((theValue & std::numeric_limits<vtkIdType>::max()) % theUpperBound + 1);
+  }
+
+  static bool IsEqual( const vtkIdType& id1, const vtkIdType& id2 )
+  {
+    return id1 == id2;
+  }
+};
+
 typedef NCollection_IndexedMap<SVTK_ListOfInteger,SVTK_Hasher> SVTK_IndexedMapOfIds;
 typedef NCollection_IndexedMap<SVTK_ListOfVtk, SVTK_vtkHasher> SVTK_IndexedMapOfVtkIds;
+typedef NCollection_Map< vtkIdType, svtkIdHasher > SVTK_TVtkIDsMap;
+typedef NCollection_Map< vtkIdType, svtkIdHasher >::Iterator SVTK_TVtkIDsMapIterator;
+typedef NCollection_IndexedMap<vtkIdType,svtkIdHasher> SVTK_TIndexedMapOfVtkId;
 
 #endif // SVTK_HASH_H
