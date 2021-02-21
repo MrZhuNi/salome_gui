@@ -84,7 +84,7 @@ protected:
   enum { LoadStudyId = LightApp_Application::OpenStudyId + 1, NewAndScriptId };
 
 public:
-  SalomeApp_Application();
+  SalomeApp_Application(SALOME_NamingService_Abstract *ns = nullptr);
   virtual ~SalomeApp_Application();
 
   virtual void                        updateObjectBrowser( const bool = true );

@@ -21,7 +21,6 @@
 
 #include "SALOME_Fake_NamingService.hxx"
 
-SalomeApp_Application_SL::SalomeApp_Application_SL()
+SalomeApp_Application_SL::SalomeApp_Application_SL():SalomeApp_Application( new SALOME_Fake_NamingService )
 {
-  _ns.reset( new SALOME_Fake_NamingService );
 }

@@ -176,12 +176,12 @@ namespace
 }
 
 /*!Constructor.*/
-SalomeApp_Application::SalomeApp_Application()
-  : LightApp_Application(),
-    myIsCloseFromExit( false ),
-    myToIgnoreMessages( false )
+SalomeApp_Application::SalomeApp_Application(SALOME_NamingService_Abstract *ns):myIsCloseFromExit( false ),myToIgnoreMessages( false )
 {
-  _ns.reset(new SALOME_NamingService(orb()));
+  if(!ns)
+    _ns.reset(new SALOME_NamingService(orb()));
+  else
+    _ns.reset(ns);
 }
 
 /*!Destructor.

@@ -63,7 +63,7 @@ Session_ServerLauncher<MY_NS>::Session_ServerLauncher(int argc,
   _ServerLaunch = ServerLaunch;
   _SessionMutex = SessionMutex;
   _SessionStarted = SessionStarted;
-
+  MY_NS::defineDefaultSALOMEKERNELNamingService();
   // start thread
   start();
 }

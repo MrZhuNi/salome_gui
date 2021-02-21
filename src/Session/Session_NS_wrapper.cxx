@@ -223,6 +223,13 @@ CosNaming::NamingContext_var OldStyleNS::checkTrueNamingServiceIfExpected(int ar
   return _root_context;
 }
 
+#include "SALOME_KernelServices.hxx"
+
+void NewStyleNS::defineDefaultSALOMEKERNELNamingService()
+{
+  KERNEL::assignNamingServiceSL();
+}
+
 Engines_Container_i *NewStyleNS::activateContainer(CORBA::ORB_var orb, PortableServer::POA_var poa, int argc, char **argv)
 {
   return KERNEL::getContainerSA();
