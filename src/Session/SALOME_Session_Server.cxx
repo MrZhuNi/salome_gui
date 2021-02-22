@@ -383,34 +383,29 @@ namespace
   }
 } // end of anonymous namespace
 
-class AbstractGUIApp
-{
-public:
-  int main(int argc, char **argv);
-  virtual void connectToNSIfNeeded(CORBA::ORB_ptr orb) = 0;
-  virtual void shutdownCORBAStufIfNeeded(bool shutdownAll, CORBA::ORB_ptr orb) = 0;
-  virtual SALOME::Session_var getSession() = 0;
-  virtual void shutdownRemoteServersIfNeeded(bool remoteLauncher) = 0;
-};
+template<class GUI_APP_STYLE>
+int AbstractGUIAppMain(int argc, char **argv);
 
-class GUIAppOldStyle : public AbstractGUIApp
+class GUIAppOldStyle
 {
 public:
-  void connectToNSIfNeeded(CORBA::ORB_ptr orb) override { _NS.reset(new SALOME_NamingService(orb)); }
-  void shutdownCORBAStufIfNeeded(bool shutdownAll, CORBA::ORB_ptr orb) override;
-  SALOME::Session_var getSession() override;
-  void shutdownRemoteServersIfNeeded(bool remoteLauncher) override;
+  using NamingServiceImplementation = OldStyleNS;
+  void connectToNSIfNeeded(CORBA::ORB_ptr orb) { _NS.reset(new SALOME_NamingService(orb)); }
+  void shutdownCORBAStufIfNeeded(bool shutdownAll, CORBA::ORB_ptr orb);
+  SALOME::Session_var getSession();
+  void shutdownRemoteServersIfNeeded(bool remoteLauncher);
 private:
   std::unique_ptr<SALOME_NamingService> _NS;
 };
 
-class GUIAppNewStyle : public AbstractGUIApp
+class GUIAppNewStyle
 {
 public:
-  void connectToNSIfNeeded(CORBA::ORB_ptr orb) override { /*! nothing */ }
-  void shutdownCORBAStufIfNeeded(bool shutdownAll, CORBA::ORB_ptr orb) override { /*! nothing */ }
-  SALOME::Session_var getSession() override;
-  void shutdownRemoteServersIfNeeded(bool remoteLauncher) override { /*! nothing */ }
+  using NamingServiceImplementation = NewStyleNS;
+  void connectToNSIfNeeded(CORBA::ORB_ptr orb) { /*! nothing */ }
+  void shutdownCORBAStufIfNeeded(bool shutdownAll, CORBA::ORB_ptr orb) { /*! nothing */ }
+  SALOME::Session_var getSession();
+  void shutdownRemoteServersIfNeeded(bool remoteLauncher) { /*! nothing */ }
 };
 
 void GUIAppOldStyle::shutdownCORBAStufIfNeeded(bool shutdownAll, CORBA::ORB_ptr orb)
@@ -456,16 +451,18 @@ SALOME::Session_var GUIAppNewStyle::getSession()
 }
 
 // ---------------------------- MAIN -----------------------
-int AbstractGUIApp::main(int argc, char **argv)
+template<class GUI_APP_STYLE>
+int AbstractGUIAppMain(int argc, char **argv)
 {
-  using NamingServiceImplementation = NewStyleNS;
+  using NamingServiceImplementation = typename GUI_APP_STYLE::NamingServiceImplementation;
+  GUI_APP_STYLE self;
   // Set-up application settings configuration (as for QSettings)
   // Note: these are default settings which can be customized (see below)
   QApplication::setOrganizationName("salome");
   QApplication::setApplicationName("salome");
   QApplication::setApplicationVersion(salomeVersion());
-  int vvvv(90);
-  std::cin >> vvvv;
+  //int vvvv(90);
+  //std::cin >> vvvv;
   // Install Qt debug messages handler
   MsgHandler msgHandler;
   qInstallMessageHandler(QtxMsgHandler);
@@ -578,7 +575,7 @@ int AbstractGUIApp::main(int argc, char **argv)
     pman->activate();
     MESSAGE("POA manager activated");
 
-    this->connectToNSIfNeeded(orb);
+    self.connectToNSIfNeeded(orb);
 
     result = 0;
   }
@@ -677,7 +674,7 @@ int AbstractGUIApp::main(int argc, char **argv)
   }
 
   // Obtain Session interface reference
-  SALOME::Session_var session = this->getSession();
+  SALOME::Session_var session = self.getSession();
 
   bool shutdownAll = false;
   bool shutdownSession = false;
@@ -789,7 +786,7 @@ int AbstractGUIApp::main(int argc, char **argv)
 
   // Shutdown standalone servers
   if (shutdownAll)
-    this->shutdownRemoteServersIfNeeded(remoteLauncher);
+    self.shutdownRemoteServersIfNeeded(remoteLauncher);
 
   // Kill embedded servers
   if (myServerLauncher)
@@ -807,7 +804,7 @@ int AbstractGUIApp::main(int argc, char **argv)
 #if defined(WIN32) && defined(UNICODE)
   delete[] new_argv;
 #endif
-  this->shutdownCORBAStufIfNeeded(shutdownAll,orb);
+  self.shutdownCORBAStufIfNeeded(shutdownAll,orb);
   // Finalize Python
   if (Py_IsInitialized())
   {
@@ -827,6 +824,5 @@ int AbstractGUIApp::main(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-  std::unique_ptr<AbstractGUIApp> app(new GUIAppNewStyle);
-  return app->main(argc, argv);
+  return AbstractGUIAppMain<GUIAppNewStyle>(argc, argv);
 }
