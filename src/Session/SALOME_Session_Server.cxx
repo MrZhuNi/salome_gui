@@ -149,7 +149,7 @@ namespace
   class ResourceMgr : public SUIT_ResourceMgr
   {
   public:
-    ResourceMgr(const QString &appName = "SalomeAppSL") : SUIT_ResourceMgr(appName, "%1Config")
+    ResourceMgr(const QString &appName = "SalomeApp") : SUIT_ResourceMgr(appName, "%1Config")
     {
       customize(); // activate customization
       setCurrentFormat("xml");
@@ -167,7 +167,7 @@ namespace
       // This procedure is supposed to be done only once, at first call.
       if (myCustomAppName.isNull())
       {
-        SUIT_ResourceMgr mgr("SalomeAppSL", "%1Config");
+        SUIT_ResourceMgr mgr("SalomeApp", "%1Config");
         mgr.setCurrentFormat("xml");
         mgr.setWorkingMode(IgnoreUserValues); // prevent reading data from user's file
         mgr.loadLanguage("LightApp", "en");
@@ -461,8 +461,8 @@ int AbstractGUIAppMain(int argc, char **argv)
   QApplication::setOrganizationName("salome");
   QApplication::setApplicationName("salome");
   QApplication::setApplicationVersion(salomeVersion());
-  int vvvv(90);
-  std::cin >> vvvv;
+  //int vvvv(90);
+  //std::cin >> vvvv;
   // Install Qt debug messages handler
   MsgHandler msgHandler;
   qInstallMessageHandler(QtxMsgHandler);
@@ -494,11 +494,11 @@ int AbstractGUIAppMain(int argc, char **argv)
   ResourceMgr resMgr;
   resMgr.setWorkingMode(ResourceMgr::IgnoreUserValues);
   resMgr.loadLanguage("LightApp", "en");
-  resMgr.loadLanguage(NamingServiceImplementation::LibName, "en");
+  resMgr.loadLanguage("SalomeApp", "en");
   resMgr.loadLanguage("Session");
 
   // Set-up application settings configuration possible customized via resources
-  //if (resMgr.customName() != NamingServiceImplementation::LibName)
+  if (resMgr.customName() != "SalomeApp")
   {
     QApplication::setApplicationName(resMgr.customName());
     QApplication::setApplicationVersion(resMgr.version());
