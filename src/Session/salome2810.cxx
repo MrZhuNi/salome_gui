@@ -75,6 +75,6 @@ int main(int argc, char *argv[])
   proc.setArguments(args);
   proc.setProcessChannelMode( QProcess::ForwardedErrorChannel );
   proc.start();
-  proc.waitForFinished();
+  proc.waitForFinished(-1);
   return proc.exitCode();
 }
