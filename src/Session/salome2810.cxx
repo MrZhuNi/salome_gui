@@ -56,6 +56,23 @@ int main(int argc, char *argv[])
   pe.insert(APPCONFIG,appconfig_val);
   //tells shutup to salome.salome_init invoked at shaper engine ignition
   pe.insert("SALOME_EMB_SERVANT","1");
+  //resource file retrieve
+  QString resfile;
+  {
+    QProcess proc;
+    proc.setProcessEnvironment(pe);
+    proc.setProgram("python3");
+    proc.setArguments({"-c","from launchConfigureParser import userFile ; import sys ; sys.stdout.write(userFile(\"SalomeApp\",\"salome\"))"});
+    proc.start();
+    proc.waitForFinished(-1);
+    if(proc.exitStatus() != QProcess::NormalExit)
+    {
+      std::cerr << "Fail to retrieve resource file from launchConfigureParser python module !" << std::endl;
+      return 1;
+    }
+    QByteArray val(proc.readAllStandardOutput());
+    resfile = QString::fromUtf8(val);
+  }
   //
   QProcess proc;
   proc.setProcessEnvironment(pe);
@@ -71,7 +88,7 @@ int main(int argc, char *argv[])
   args << catalogs.join("::");
   args << ")";
   args << "--with" << "SALOMEDS" <<  "(" << ")" << "--with" << "Container" << "(" << "FactoryServer" << ")" << "--with" << "SalomeAppEngine" << "(" << ")" << "CPP";
-  args << "--resources=/home/H87074/.config/salome/SalomeApprc.9.5.BR" << "--modules" << "(SHAPER:GEOM:SMESH)";
+  args << QString("--resources=%1").arg(resfile) << "--modules" << "(SHAPER:GEOM:SMESH)";
   proc.setArguments(args);
   proc.setProcessChannelMode( QProcess::ForwardedErrorChannel );
   proc.start();
