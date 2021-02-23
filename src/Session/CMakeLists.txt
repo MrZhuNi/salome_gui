@@ -110,9 +110,13 @@ ADD_LIBRARY(SalomeSession ${SalomeSession_SOURCES})
 TARGET_LINK_LIBRARIES(SalomeSession ${_link_LIBRARIES})
 INSTALL(TARGETS SalomeSession EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS}) 
 
-ADD_EXECUTABLE(SALOME_Session_Server SALOME_Session_Server.cxx)
+ADD_EXECUTABLE(SALOME_Session_Server SALOME_Session_Server_With_Server.cxx)
 TARGET_LINK_LIBRARIES(SALOME_Session_Server ${_link_LIBRARIES} SalomeSession)
 INSTALL(TARGETS SALOME_Session_Server EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_BINS})
+
+ADD_EXECUTABLE(SALOME_Session_Server_No_Server SALOME_Session_Server_No_Server.cxx)
+TARGET_LINK_LIBRARIES(SALOME_Session_Server_No_Server ${_link_LIBRARIES} SalomeSession)
+INSTALL(TARGETS SALOME_Session_Server_No_Server EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_BINS})
 
 add_executable(salome2810 salome2810.cxx)
 target_link_libraries(salome2810 ${QT_LIBRARIES})

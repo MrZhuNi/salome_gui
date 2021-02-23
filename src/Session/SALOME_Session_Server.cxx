@@ -457,7 +457,7 @@ int AbstractGUIAppMain(int argc, char **argv)
   QApplication::setOrganizationName("salome");
   QApplication::setApplicationName("salome");
   QApplication::setApplicationVersion(salomeVersion());
-  
+
   // Install Qt debug messages handler
   MsgHandler msgHandler;
   qInstallMessageHandler(QtxMsgHandler);
@@ -812,9 +812,4 @@ int AbstractGUIAppMain(int argc, char **argv)
 
   MESSAGE("Salome_Session_Server:endofserver");
   return result;
-}
-
-int main(int argc, char **argv)
-{
-  return AbstractGUIAppMain<GUIAppNewStyle>(argc, argv);
 }

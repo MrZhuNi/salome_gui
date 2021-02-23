@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
   //
   QProcess proc;
   proc.setProcessEnvironment(pe);
-  proc.setProgram("SALOME_Session_Server");
+  proc.setProgram("SALOME_Session_Server_No_Server");
 
   QStringList args({"--with","Registry","(","--salome_session","theSession",")","--with","ModuleCatalog","(","-common"});
   QStringList catalogs;
