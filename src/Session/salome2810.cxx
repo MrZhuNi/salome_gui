@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
   for(std::size_t im = 0 ; im < sizeof(MODULES)/sizeof(decltype(MODULES[0])) ; ++im )
   {
     QString root_dir = pe.value( QString("%1_ROOT_DIR").arg(MODULES[im]) );
-    catalogs << QDir::toNativeSeparators( QString("%1/share/salome/resources/%2/%3Catalog.xml").arg(root_dir).arg(root_dir.toLower()).arg(root_dir) );
+    catalogs << QDir::toNativeSeparators( QString("%1/share/salome/resources/%2/%3Catalog.xml").arg(root_dir).arg(QString(MODULES[im]).toLower()).arg(MODULES[im]) );
   }
   args << catalogs.join("::");
   args << ")";
