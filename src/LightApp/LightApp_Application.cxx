@@ -4181,9 +4181,9 @@ void LightApp_Application::updateWindows()
     infoPanel()->addAction( action( FileOpenId ), grp );
     infoPanel()->addLabel( action( FileOpenId )->statusTip(), grp );
     infoPanel()->addAction( action( TutorialsId ), grp );
-    //infoPanel()->addLabel( action( TutorialsId )->statusTip(), grp );
-    //infoPanel()->addAction( action( VideosId ), grp );
-    //infoPanel()->addLabel( action( VideosId )->statusTip(), grp );
+    infoPanel()->addLabel( action( TutorialsId )->statusTip(), grp );
+    infoPanel()->addAction( action( VideosId ), grp );
+    infoPanel()->addLabel( action( VideosId )->statusTip(), grp );
 
     LightApp_ModuleAction* ma = qobject_cast<LightApp_ModuleAction*>(action(ModulesListId));
     if ( ma && ma->count() > 0 )
