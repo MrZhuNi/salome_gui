@@ -25,6 +25,8 @@
 
 int main(int argc, char *argv[])
 {
+  constexpr char MAIN_PROGRAM[] = "SALOME_Session_Server_No_Server";
+  constexpr char NO_SERVER_ENV_VAR[] = "SALOME_EMB_SERVANT";
   const char *MODULES[]={"SHAPERSTUDY","GEOM","SMESH"};
   constexpr char GUI_ROOT_DIR[]="GUI_ROOT_DIR";
   constexpr char GEOM_ROOT_DIR[]="GEOM_ROOT_DIR";
@@ -55,7 +57,7 @@ int main(int argc, char *argv[])
   .arg( QDir::toNativeSeparators( QString("%1/share/salome/resources/smesh").arg(smesh_root_dir) ) ) );
   pe.insert(APPCONFIG,appconfig_val);
   //tells shutup to salome.salome_init invoked at shaper engine ignition
-  pe.insert("SALOME_EMB_SERVANT","1");
+  pe.insert(NO_SERVER_ENV_VAR,"1");
   //resource file retrieve
   QString resfile;
   {
@@ -76,7 +78,7 @@ int main(int argc, char *argv[])
   //
   QProcess proc;
   proc.setProcessEnvironment(pe);
-  proc.setProgram("SALOME_Session_Server_No_Server");
+  proc.setProgram(MAIN_PROGRAM);
 
   QStringList args({"--with","Registry","(","--salome_session","theSession",")","--with","ModuleCatalog","(","-common"});
   QStringList catalogs;
@@ -89,6 +91,14 @@ int main(int argc, char *argv[])
   args << ")";
   args << "--with" << "SALOMEDS" <<  "(" << ")" << "--with" << "Container" << "(" << "FactoryServer" << ")" << "--with" << "SalomeAppEngine" << "(" << ")" << "CPP";
   args << QString("--resources=%1").arg(resfile) << "--modules" << "(SHAPER:GEOM:SMESH)";
+  if( pe.contains("VERBOSE") )
+  {
+    std::cout << "Overloaded env var :" << std::endl;
+    std::cout << " - " << NO_SERVER_ENV_VAR << std::endl;
+    std::cout << " - " << APPCONFIG << " = " << appconfig_val.toStdString() << std::endl;
+    std::cout << "Command launched :" << std::endl;
+    std::cout << MAIN_PROGRAM << " " << args.join(" ").toStdString() << std::endl;
+  }
   proc.setArguments(args);
   proc.setProcessChannelMode( QProcess::ForwardedErrorChannel );
   proc.start();
