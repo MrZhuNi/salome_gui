@@ -369,12 +369,6 @@ namespace
     return value;
   }
 
-  // Kill omniNames process
-  void killOmniNames()
-  {
-    SALOME_LifeCycleCORBA::killOmniNames();
-  }
-
   // Shutdown standalone servers
   void shutdownServers(SALOME_NamingService *theNS, bool remoteLauncher)
   {
@@ -392,6 +386,7 @@ public:
   using NamingServiceImplementation = OldStyleNS;
   void connectToNSIfNeeded(CORBA::ORB_ptr orb) { _NS.reset(new SALOME_NamingService(orb)); }
   void shutdownCORBAStufIfNeeded(bool shutdownAll, CORBA::ORB_ptr orb);
+  void killOtherServersIfNeeded() { SALOME_LifeCycleCORBA::killOmniNames(); }
   SALOME::Session_var getSession();
   void shutdownRemoteServersIfNeeded(bool remoteLauncher);
 private:
@@ -404,6 +399,7 @@ public:
   using NamingServiceImplementation = NewStyleNS;
   void connectToNSIfNeeded(CORBA::ORB_ptr orb) { /*! nothing */ }
   void shutdownCORBAStufIfNeeded(bool shutdownAll, CORBA::ORB_ptr orb) { /*! nothing */ }
+  void killOtherServersIfNeeded() { /*! nothing */ }
   SALOME::Session_var getSession();
   void shutdownRemoteServersIfNeeded(bool remoteLauncher) { /*! nothing */ }
 };
@@ -423,7 +419,7 @@ void GUIAppOldStyle::shutdownCORBAStufIfNeeded(bool shutdownAll, CORBA::ORB_ptr 
     // cpp continer is launched in the embedded mode
     //////////////////////////////////////////////////////////////
     if (shutdownAll)
-      killOmniNames();
+      SALOME_LifeCycleCORBA::killOmniNames();
     abort(); //abort program to avoid deadlock in destructors or atexit when shutdown has been interrupted
   }
   // Destroy ORB
@@ -811,12 +807,9 @@ int AbstractGUIAppMain(int argc, char **argv)
     PyGILState_Ensure();
     Py_Finalize();
   }
-
   // Kill omniNames process
   if (shutdownAll)
-  {
-    killOmniNames();
-  }
+    self.killOtherServersIfNeeded();
 
   MESSAGE("Salome_Session_Server:endofserver");
   return result;
