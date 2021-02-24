@@ -1,4 +1,4 @@
-// Copyright (C) 2021  CEA/DEN, EDF R&D
+// Copyright (C) 2021  CEA/DEN,EDF R&D
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -27,34 +27,23 @@ int main(int argc, char *argv[])
 {
   constexpr char MAIN_PROGRAM[] = "SALOME_Session_Server_No_Server";
   constexpr char NO_SERVER_ENV_VAR[] = "SALOME_EMB_SERVANT";
-  const char *MODULES[]={"SHAPERSTUDY","GEOM","SMESH"};
-  constexpr char GUI_ROOT_DIR[]="GUI_ROOT_DIR";
-  constexpr char GEOM_ROOT_DIR[]="GEOM_ROOT_DIR";
-  constexpr char SMESH_ROOT_DIR[]="SMESH_ROOT_DIR";
-  constexpr char SHAPER_ROOT_DIR[]="SHAPER_ROOT_DIR";
-  constexpr char SHAPERSTUDY_ROOT_DIR[]="SHAPERSTUDY_ROOT_DIR";
+  const char *MODULES[]={"SHAPERSTUDY","GEOM","SMESH","HYBRIDPLUGIN","GHS3DPLUGIN","BLSURFPLUGIN","GMSHPLUGIN","HEXABLOCKPLUGIN","HEXOTICPLUGIN","GHS3DPRLPLUGIN","NETGENPLUGIN"};
+  const char *MODULES_PATH[]={"GUI","SHAPER","SHAPERSTUDY","GEOM","SMESH","HYBRIDPLUGIN","GHS3DPLUGIN","BLSURFPLUGIN","GMSHPLUGIN","HEXABLOCKPLUGIN","GHS3DPRLPLUGIN","NETGENPLUGIN"};
   constexpr char APPCONFIG[]="SalomeAppSLConfig";
   QProcessEnvironment pe(QProcessEnvironment::systemEnvironment());
-  for(auto elt : {GUI_ROOT_DIR,GEOM_ROOT_DIR,SMESH_ROOT_DIR,SHAPER_ROOT_DIR,SHAPERSTUDY_ROOT_DIR} )
+  QStringList modulesPaths;
+  for(auto elt : MODULES_PATH)
   {
-    if( !pe.contains(elt) || pe.value(elt).isEmpty() )
+    QString elt_root_dir( QString("%1_ROOT_DIR").arg(elt) );
+    if( !pe.contains(elt_root_dir) || pe.value(elt_root_dir).isEmpty() )
     {
-      std::cerr << elt << " is not defined in your environment !" << std::endl;
+      std::cerr << elt_root_dir.toStdString() << " is not defined in your environment !" << std::endl;
       return 1;
     }
+    modulesPaths << QDir::fromNativeSeparators( QString("%1/share/salome/resources/%2").arg( pe.value(elt_root_dir) ).arg( QString(elt).toLower() ) );
   }
   // fill LightAppConfig env var
-  QString gui_root_dir( QDir::fromNativeSeparators(pe.value(GUI_ROOT_DIR)) );
-  QString shaper_root_dir( QDir::fromNativeSeparators(pe.value(SHAPER_ROOT_DIR)) );
-  QString shaperstudy_root_dir( QDir::fromNativeSeparators(pe.value(SHAPERSTUDY_ROOT_DIR)) );
-  QString geom_root_dir( QDir::fromNativeSeparators(pe.value(GEOM_ROOT_DIR)) );
-  QString smesh_root_dir( QDir::fromNativeSeparators(pe.value(SMESH_ROOT_DIR)) );
-  QString appconfig_val( QString("%1:%2:%3:%4:%5")
-  .arg( QDir::toNativeSeparators( QString("%1/share/salome/resources/gui").arg(gui_root_dir) ) )
-  .arg( QDir::toNativeSeparators( QString("%1/share/salome/resources/shaper").arg(shaper_root_dir) ) )
-  .arg( QDir::toNativeSeparators( QString("%1/share/salome/resources/shaperstudy").arg(shaperstudy_root_dir) ) )
-  .arg( QDir::toNativeSeparators( QString("%1/share/salome/resources/geom").arg(geom_root_dir) ) )
-  .arg( QDir::toNativeSeparators( QString("%1/share/salome/resources/smesh").arg(smesh_root_dir) ) ) );
+  QString appconfig_val( modulesPaths.join(":"));
   pe.insert(APPCONFIG,appconfig_val);
   //tells shutup to salome.salome_init invoked at shaper engine ignition
   pe.insert(NO_SERVER_ENV_VAR,"1");
