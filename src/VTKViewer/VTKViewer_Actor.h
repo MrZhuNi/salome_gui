@@ -402,7 +402,7 @@ struct vtkIdHasher
 {
   static int HashCode(const vtkIdType theValue,  const int theUpperBound)
   {
-    return static_cast<int> ((theValue & std::numeric_limits<vtkIdType>::max()) % theUpperBound + 1);
+    return static_cast<int> ((theValue & (std::numeric_limits<vtkIdType>::max)()) % theUpperBound + 1);
   }
 
   static bool IsEqual( const vtkIdType& id1, const vtkIdType& id2 )
