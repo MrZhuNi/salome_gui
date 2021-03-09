@@ -165,7 +165,7 @@ SVTK_Actor
     vtkPoints *aPoints = vtkPoints::New();
     aPoints->SetNumberOfPoints(aNbOfParts);
     for(vtkIdType i = 0; i < aNbOfParts; i++){
-      int aPartId = theMapIndex( i+1 );
+	  vtkIdType aPartId = theMapIndex( i+1 );
       if(double* aCoord = theMapActor->GetNodeCoord(aPartId)){
         aPoints->SetPoint(i,aCoord);
         // Change the type from int to vtkIdType in order to avoid compilation errors while using VTK

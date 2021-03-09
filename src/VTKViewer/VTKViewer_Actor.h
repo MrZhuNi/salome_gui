@@ -169,7 +169,7 @@ class VTKVIEWER_EXPORT VTKViewer_Actor : public vtkLODActor
   //! Get dimension of corresponding mesh element
   virtual
   int
-  GetObjDimension( const int theObjId );
+  GetObjDimension( const vtkIdType theObjId );
 
   //! To insert some additional filters and then sets the given #vtkMapper
   virtual

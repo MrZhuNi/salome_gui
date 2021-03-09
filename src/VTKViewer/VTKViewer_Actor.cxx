@@ -487,7 +487,7 @@ VTKViewer_Actor
 */
 int
 VTKViewer_Actor
-::GetObjDimension( const int theObjId )
+::GetObjDimension( const vtkIdType theObjId )
 {
   if ( vtkCell* aCell = GetElemCell(theObjId) )
     return aCell->GetCellDimension();

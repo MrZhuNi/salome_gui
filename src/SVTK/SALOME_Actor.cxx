@@ -548,7 +548,7 @@ SALOME_Actor
         myIsPreselected = (anObjId >= 0);
         if(myIsPreselected){
           const SVTK_TIndexedMapOfVtkId& aMapIndex = myPreHighlightActor->GetMapIndex();
-          int anExtent = aMapIndex.Extent();
+          vtkIdType anExtent = aMapIndex.Extent();
           anIsChanged |= (anExtent == 0 || (anExtent > 0 && anObjId != aMapIndex(1)));
           if(anIsChanged){
             SVTK_TIndexedMapOfVtkId aMapIndex;
@@ -579,7 +579,7 @@ SALOME_Actor
           myIsPreselected = CheckDimensionId(aSelectionMode,this,anObjId);
           if(myIsPreselected){
             const SVTK_TIndexedMapOfVtkId& aMapIndex = myPreHighlightActor->GetMapIndex();
-            int anExtent = aMapIndex.Extent();
+            vtkIdType anExtent = aMapIndex.Extent();
             anIsChanged |= (anExtent == 0 || (anExtent > 0 && anObjId != aMapIndex(1)));
             if(anIsChanged){
               SVTK_TIndexedMapOfVtkId aMapIndex;
@@ -610,7 +610,7 @@ SALOME_Actor
 	    vtkIdType aFNObjId = GetNodeObjId( aFNId );
 	    vtkIdType aSNObjId = GetNodeObjId( aSNId );
             const SVTK_IndexedMapOfVtkIds& aMapIds = myPreHighlightActor->GetMapCompositeIndex();
-            int anExtent = aMapIds.Extent();
+            vtkIdType anExtent = aMapIds.Extent();
             anIsChanged |= (anExtent == 0 || (anExtent > 0 && aMapIds(1).size() == 2 && 
 					     (aFNObjId != aMapIds(1)[0] || aSNObjId != aMapIds(1)[1] ) ) );
             if( anIsChanged ) {
