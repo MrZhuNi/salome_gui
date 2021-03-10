@@ -42,7 +42,7 @@
 #include <QMouseEvent>
 #include <QString>
 #include <QWheelEvent>
-
+#include <QPainterPath>
 //=======================================================================
 // Name    : GraphicsView_ViewFrame
 // Purpose : Constructor

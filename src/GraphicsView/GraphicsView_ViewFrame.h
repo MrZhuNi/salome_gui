@@ -29,7 +29,7 @@ class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
 
 class QAction;
-
+class QPainterPath;
 class SUIT_Desktop;
 
 class GraphicsView_Viewer;
