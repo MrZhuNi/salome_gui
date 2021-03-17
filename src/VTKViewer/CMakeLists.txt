@@ -71,7 +71,6 @@ SET(_other_HEADERS
   VTKViewer_Algorithm.h
   VTKViewer_ArcBuilder.h
   VTKViewer_CellCenters.h
-  VTKViewer_CellLocationsArray.h
   VTKViewer_ConvexTool.h
   VTKViewer_DataSetMapper.h
   VTKViewer_ExtractUnstructuredGrid.h
@@ -155,7 +154,6 @@ SET(_other_SOURCES
   VTKViewer_AppendFilter.cxx
   VTKViewer_ArcBuilder.cxx
   VTKViewer_CellCenters.cxx
-  VTKViewer_CellLocationsArray.cxx
   VTKViewer_ConvexTool.cxx
   VTKViewer_DataSetMapper.cxx
   VTKViewer_ExtractUnstructuredGrid.cxx
