@@ -151,29 +151,38 @@ VTKViewer_GeometryFilter
   vtkInformationVector **inputVector,
   vtkInformationVector *outputVector)
 {
-  // get the info objects
-  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
-  vtkInformation *outInfo = outputVector->GetInformationObject(0);
 
-  // get the input and ouptut
-  vtkDataSet *input = vtkDataSet::SafeDownCast(
-    inInfo->Get(vtkDataObject::DATA_OBJECT()));
-  vtkPolyData *output = vtkPolyData::SafeDownCast(
-    outInfo->Get(vtkDataObject::DATA_OBJECT()));
-
-  vtkIdType numCells=input->GetNumberOfCells();
-
-  if (numCells == 0)
+  if (delegateToVtk)
     {
-      return 0;
+      int serror = vtkGeometryFilter::RequestData(request, inputVector , outputVector);
+      return serror;
     }
+  else
+    {
+     // get the info objects
+     vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+     vtkInformation *outInfo = outputVector->GetInformationObject(0);
 
-  if (input->GetDataObjectType() == VTK_UNSTRUCTURED_GRID){
-    return this->UnstructuredGridExecute(input, output, outInfo);
-  }else
-    return Superclass::RequestData(request,inputVector,outputVector);
+     // get the input and ouptut
+     vtkDataSet *input = vtkDataSet::SafeDownCast(
+     inInfo->Get(vtkDataObject::DATA_OBJECT()));
+     vtkPolyData *output = vtkPolyData::SafeDownCast(
+     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
-  return 1;
+     vtkIdType numCells=input->GetNumberOfCells();
+
+     if (numCells == 0)
+       {
+        return 0;
+       }
+
+     if (input->GetDataObjectType() == VTK_UNSTRUCTURED_GRID){
+       return this->UnstructuredGridExecute(input, output, outInfo);
+     }else
+       return Superclass::RequestData(request,inputVector,outputVector);
+
+     return 1;
+    }
 }
 
 int
@@ -182,6 +191,15 @@ VTKViewer_GeometryFilter
                           vtkPolyData *output,
                           vtkInformation */*outInfo*/)
 {
+
+  if (delegateToVtk)
+    {
+      FastMode = true;
+      Merging = true;
+      int serror = vtkGeometryFilter::UnstructuredGridExecute( dataSetInput, output);
+      return serror;
+    }
+  else{
   vtkUnstructuredGrid *input= (vtkUnstructuredGrid *)dataSetInput;
   vtkCellArray *Connectivity = input->GetCells();
   // Check input
@@ -1223,6 +1241,7 @@ VTKViewer_GeometryFilter
   }
 
   return 1;
+  }
 }
 
 void

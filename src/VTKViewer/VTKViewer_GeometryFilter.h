@@ -140,6 +140,9 @@ protected:
                          vtkPolyData *output,
                          TMapOfVectorId& theDimension2VTK2ObjIds,
                          bool triangulate = false);
+
+  // Delegate VTKViewer_GeometryFilter::UnstructuredGridExecute to vtkGeometryFilter::UnstructuredGridExecute
+  bool delegateToVtk = true;
     
 private:
   TVectorId myVTK2ObjIds;
