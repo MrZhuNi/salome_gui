@@ -50,6 +50,9 @@
 #include <vtkVersion.h>
 #include <vtkVoxel.h>
 #include <vtkWedge.h>
+#include <vtkRectilinearGrid.h>
+#include <vtkRectilinearGridGeometryFilter.h>
+#include <vtkUniformGrid.h>
 
 #include <algorithm>
 #include <iterator>
@@ -144,6 +147,18 @@ static inline bool toShowEdge( vtkIdType id1, vtkIdType id2, vtkIdType cellId, v
   return ( cells[iCell] == cellId );
 }
 
+//------------------------------------------------------------------------------
+// Excluded faces are defined here.
+struct vtkExcludedFaces
+{
+  vtkStaticCellLinksTemplate<vtkIdType>* Links;
+  vtkExcludedFaces()
+    : Links(nullptr)
+  {
+  }
+  ~vtkExcludedFaces() { delete this->Links; }
+};
+
 int
 VTKViewer_GeometryFilter
 ::RequestData(
@@ -152,36 +167,79 @@ VTKViewer_GeometryFilter
   vtkInformationVector *outputVector)
 {
 
+  // get the info objects
+  vtkInformation *inInfo  = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+  // get the input and ouptut
+  vtkDataSet *input = vtkDataSet::SafeDownCast(
+  inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkPolyData *output = vtkPolyData::SafeDownCast(
+  outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
+  vtkIdType numCells=input->GetNumberOfCells();
+  vtkIdType numPts = input->GetNumberOfPoints();
+
+  if (numPts == 0 || numCells == 0)
+    {
+     return 0;
+    }
+
   if (delegateToVtk)
     {
-      int serror = vtkGeometryFilter::RequestData(request, inputVector , outputVector);
-      return serror;
-    }
-  else
-    {
-     // get the info objects
-     vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
-     vtkInformation *outInfo = outputVector->GetInformationObject(0);
+     FastMode = false;
+     Merging  = true;
+    
+     // get the info objects excluded faces
+     vtkInformation* excInfo = inputVector[1]->GetInformationObject(0);
 
-     // get the input and ouptut
-     vtkDataSet *input = vtkDataSet::SafeDownCast(
-     inInfo->Get(vtkDataObject::DATA_OBJECT()));
-     vtkPolyData *output = vtkPolyData::SafeDownCast(
-     outInfo->Get(vtkDataObject::DATA_OBJECT()));
-
-     vtkIdType numCells=input->GetNumberOfCells();
-
-     if (numCells == 0)
+     vtkExcludedFaces exc; // Will delete exc->Links when goes out of scope
+     if (excInfo)
        {
-        return 0;
+        vtkPolyData* excFaces = vtkPolyData::SafeDownCast(excInfo->Get(vtkDataObject::DATA_OBJECT()));
+        vtkCellArray* excPolys = excFaces->GetPolys();
+        if (excPolys->GetNumberOfCells() > 0)
+          {
+           exc.Links = new vtkStaticCellLinksTemplate<vtkIdType>;
+           exc.Links->ThreadedBuildLinks(numPts, excPolys->GetNumberOfCells(), excPolys);
+          }
        }
 
+     switch (input->GetDataObjectType())
+     {
+       case VTK_POLY_DATA:
+          return this->vtkGeometryFilter::PolyDataExecute(input, output, &exc);
+       case VTK_UNSTRUCTURED_GRID:
+         {
+          vtkUnstructuredGrid* inputUnstrctured = static_cast<vtkUnstructuredGrid*>(input);
+          bool Contains1D2DQuads = false;
+          if ( vtkUnsignedCharArray* types = inputUnstrctured->GetCellTypesArray() )
+            {
+             std::set<vtkIdType> quad1D2DTypes;
+             quad1D2DTypes.insert( VTK_QUADRATIC_EDGE );
+             quad1D2DTypes.insert( VTK_QUADRATIC_TRIANGLE );
+             quad1D2DTypes.insert( VTK_BIQUADRATIC_TRIANGLE );
+             quad1D2DTypes.insert( VTK_QUADRATIC_QUAD );
+             quad1D2DTypes.insert( VTK_BIQUADRATIC_QUAD );
+             quad1D2DTypes.insert( VTK_QUADRATIC_POLYGON );
+             for ( int i = 0; i < types->GetNumberOfTuples() && !Contains1D2DQuads; ++i )
+                Contains1D2DQuads = quad1D2DTypes.count( types->GetValue(i) );
+            }
+         if ( Contains1D2DQuads ) 
+            return this->UnstructuredGridExecute(input, output, outInfo);
+         else     
+            return this->vtkGeometryFilter::UnstructuredGridExecute(input, output, nullptr, &exc);
+         }
+     }
+
+     return this->vtkGeometryFilter::DataSetExecute(input, output, &exc);
+    }  
+    else // !delegateToVtk
+    {
      if (input->GetDataObjectType() == VTK_UNSTRUCTURED_GRID){
        return this->UnstructuredGridExecute(input, output, outInfo);
      }else
        return Superclass::RequestData(request,inputVector,outputVector);
-
-     return 1;
     }
 }
 
@@ -191,15 +249,6 @@ VTKViewer_GeometryFilter
                           vtkPolyData *output,
                           vtkInformation */*outInfo*/)
 {
-
-  if (delegateToVtk)
-    {
-      FastMode = true;
-      Merging = true;
-      int serror = vtkGeometryFilter::UnstructuredGridExecute( dataSetInput, output);
-      return serror;
-    }
-  else{
   vtkUnstructuredGrid *input= (vtkUnstructuredGrid *)dataSetInput;
   vtkCellArray *Connectivity = input->GetCells();
   // Check input
@@ -1241,7 +1290,6 @@ VTKViewer_GeometryFilter
   }
 
   return 1;
-  }
 }
 
 void
