@@ -112,6 +112,9 @@
 #include <GL/gl.h>
 #endif
 
+// Next macro is used to apply workaround: draw single color background as a gradient
+//#define USE_GRADIEND_FOR_SINGLE_COLOR_BACKGROUND
+
 namespace SVTK
 {
   int convertAction( const int accelAction )
@@ -623,6 +626,20 @@ void SVTK_ViewWindow::setBackground( const Qtx::BackgroundData& bgData )
       {
         QColor c = bgData.color();
         if ( c.isValid() ) {
+#ifdef USE_GRADIEND_FOR_SINGLE_COLOR_BACKGROUND
+          // use gradient with the same color to render background
+          getRenderer()->SetTexturedBackground( false );
+          getRenderer()->SetGradientBackground( true );
+          VTKViewer_OpenGLRenderer* aRenderer =
+            VTKViewer_OpenGLRenderer::SafeDownCast( getRenderer() );
+          if( aRenderer )
+          {
+            aRenderer->SetGradientType( SVTK_Viewer::VerticalGradient );
+            aRenderer->SetBackground( c.redF(), c.greenF(), c.blueF() );
+            aRenderer->SetBackground2( c.redF(), c.greenF(), c.blueF() );
+            ok = true;
+          }
+#else
           // show solid-colored background
           getRenderer()->SetTexturedBackground( false );  // cancel texture mode
           getRenderer()->SetGradientBackground( false );  // cancel gradient mode
@@ -630,6 +647,7 @@ void SVTK_ViewWindow::setBackground( const Qtx::BackgroundData& bgData )
                                         c.green()/255.0,
                                         c.blue()/255.0 ); // set background color
           ok = true;
+#endif
         }
         break;
       }
