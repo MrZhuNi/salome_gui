@@ -50,9 +50,6 @@
 #include <vtkVersion.h>
 #include <vtkVoxel.h>
 #include <vtkWedge.h>
-#include <vtkRectilinearGrid.h>
-#include <vtkRectilinearGridGeometryFilter.h>
-#include <vtkUniformGrid.h>
 
 #include <algorithm>
 #include <iterator>
@@ -187,8 +184,6 @@ VTKViewer_GeometryFilter
 
   if (delegateToVtk)
     {
-     FastMode = false;
-     Merging  = true;
     
      // get the info objects excluded faces
      vtkInformation* excInfo = inputVector[1]->GetInformationObject(0);
