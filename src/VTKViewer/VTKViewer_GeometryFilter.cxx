@@ -184,7 +184,7 @@ VTKViewer_GeometryFilter
 
   if (delegateToVtk)
     {
-    
+
      // get the info objects excluded faces
      vtkInformation* excInfo = inputVector[1]->GetInformationObject(0);
 
@@ -207,20 +207,21 @@ VTKViewer_GeometryFilter
        case VTK_UNSTRUCTURED_GRID:
          {
           vtkUnstructuredGrid* inputUnstrctured = static_cast<vtkUnstructuredGrid*>(input);
-          bool Contains1D2DQuads = false;
+          bool NotFitForDelegation = false;
           if ( vtkUnsignedCharArray* types = inputUnstrctured->GetCellTypesArray() )
             {
-             std::set<vtkIdType> quad1D2DTypes;
-             quad1D2DTypes.insert( VTK_QUADRATIC_EDGE );
-             quad1D2DTypes.insert( VTK_QUADRATIC_TRIANGLE );
-             quad1D2DTypes.insert( VTK_BIQUADRATIC_TRIANGLE );
-             quad1D2DTypes.insert( VTK_QUADRATIC_QUAD );
-             quad1D2DTypes.insert( VTK_BIQUADRATIC_QUAD );
-             quad1D2DTypes.insert( VTK_QUADRATIC_POLYGON );
-             for ( int i = 0; i < types->GetNumberOfTuples() && !Contains1D2DQuads; ++i )
-                Contains1D2DQuads = quad1D2DTypes.count( types->GetValue(i) );
+             std::set<vtkIdType> ElementsNotFitToDelegate;
+             ElementsNotFitToDelegate.insert( VTK_QUADRATIC_EDGE );
+             ElementsNotFitToDelegate.insert( VTK_QUADRATIC_TRIANGLE );
+             ElementsNotFitToDelegate.insert( VTK_BIQUADRATIC_TRIANGLE );
+             ElementsNotFitToDelegate.insert( VTK_QUADRATIC_QUAD );
+             ElementsNotFitToDelegate.insert( VTK_BIQUADRATIC_QUAD );
+             ElementsNotFitToDelegate.insert( VTK_QUADRATIC_POLYGON );
+             ElementsNotFitToDelegate.insert( VTK_POLYHEDRON );
+             for ( int i = 0; i < types->GetNumberOfTuples() && !NotFitForDelegation; ++i )
+                NotFitForDelegation = ElementsNotFitToDelegate.count( types->GetValue(i) );
             }
-         if ( Contains1D2DQuads ) 
+         if ( NotFitForDelegation ) 
             return this->UnstructuredGridExecute(input, output, outInfo);
          else     
             return this->vtkGeometryFilter::UnstructuredGridExecute(input, output, nullptr, &exc);
