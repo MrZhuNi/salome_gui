@@ -211,19 +211,35 @@ VTKViewer_GeometryFilter
           if ( vtkUnsignedCharArray* types = inputUnstrctured->GetCellTypesArray() )
             {
              std::set<vtkIdType> ElementsNotFitToDelegate;
+
+             //  All quadratic, biquadratic, and triquadratic elements not fit for delegation
+             //  as SMESH has special display with curves mode for  meshes  containing  these
+             //  elements hence such meshes are not handled  by  "vtkGeometryFilter"  instead
+             //  the native  VTKViewer_GeometryFilter::UnstructuredGridExecute is used.
              ElementsNotFitToDelegate.insert( VTK_QUADRATIC_EDGE );
              ElementsNotFitToDelegate.insert( VTK_QUADRATIC_TRIANGLE );
              ElementsNotFitToDelegate.insert( VTK_BIQUADRATIC_TRIANGLE );
              ElementsNotFitToDelegate.insert( VTK_QUADRATIC_QUAD );
              ElementsNotFitToDelegate.insert( VTK_BIQUADRATIC_QUAD );
              ElementsNotFitToDelegate.insert( VTK_QUADRATIC_POLYGON );
+             ElementsNotFitToDelegate.insert( VTK_QUADRATIC_TETRA );
+             ElementsNotFitToDelegate.insert( VTK_QUADRATIC_HEXAHEDRON );
+             ElementsNotFitToDelegate.insert( VTK_TRIQUADRATIC_HEXAHEDRON );
+             ElementsNotFitToDelegate.insert( VTK_QUADRATIC_WEDGE );
+             ElementsNotFitToDelegate.insert( VTK_BIQUADRATIC_QUADRATIC_WEDGE );
+             ElementsNotFitToDelegate.insert( VTK_QUADRATIC_PYRAMID );
+
+             // Some openMP tests reveal that  meshes with  polyhedrons  can  sometimes cause
+             // problems as such we avoide delegation = ElementsNotFitToDelegate. It would be
+             // nice to investigate and resolve the problem with multi-therding in future.   
              ElementsNotFitToDelegate.insert( VTK_POLYHEDRON );
+
              for ( int i = 0; i < types->GetNumberOfTuples() && !NotFitForDelegation; ++i )
                 NotFitForDelegation = ElementsNotFitToDelegate.count( types->GetValue(i) );
             }
-         if ( NotFitForDelegation ) 
+         if ( NotFitForDelegation )
             return this->UnstructuredGridExecute(input, output, outInfo);
-         else     
+         else
             return this->vtkGeometryFilter::UnstructuredGridExecute(input, output, nullptr, &exc);
          }
      }
