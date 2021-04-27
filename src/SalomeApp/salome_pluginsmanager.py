@@ -82,17 +82,21 @@ context attributes:
 """
 
 import os,sys,traceback
-from qtsalome import *
 
 import salome
+
+sgPyQt = None
+
+def GetSgPyQt():
+  global sgPyQt
+  if sgPyQt is None:
+    import SalomePyQt
+    sgPyQt = SalomePyQt.SalomePyQt()
+  return sgPyQt
 
 SEP=":"
 if sys.platform == "win32":
   SEP = ";"
-
-# Get SALOME PyQt interface
-import SalomePyQt
-sgPyQt = SalomePyQt.SalomePyQt()
 
 # Get SALOME Swig interface
 import libSALOME_Swig
@@ -102,6 +106,8 @@ plugins={}
 current_plugins_manager=None
 
 def initialize(module,name,basemenuname,menuname):
+  # Get SALOME PyQt interface
+  sgPyQt = GetSgPyQt()
   if name not in plugins:
     if module:
       plugins[name]={}
@@ -122,6 +128,7 @@ class Context:
 def find_menu(smenu):
   lmenus=smenu.split("|")
   # Take first element from the list
+  sgPyQt = GetSgPyQt()
   main=lmenus.pop(0).strip()
   menu=sgPyQt.getPopupMenu(main)
   return findMenu(lmenus,menu)
@@ -146,6 +153,8 @@ logger=Logger("PluginsManager") #,color=GREEN)
 
 class PluginsManager:
     def __init__(self,module,name,basemenuname,menuname):
+        import qtsalome
+        sgPyQt = GetSgPyQt()
         self.name=name
         self.basemenuname=basemenuname
         self.menuname=menuname
@@ -201,10 +210,10 @@ class PluginsManager:
         self.basemenu = find_menu(self.basemenuname)
 
         if self.module:
-          self.menu=QMenu(self.menuname)
+          self.menu=qtsalome.QMenu(self.menuname)
           mid=sgPyQt.createMenu(self.menu.menuAction(),self.basemenuname)
         else:
-          self.menu=QMenu(self.menuname,self.basemenu)
+          self.menu=qtsalome.QMenu(self.menuname,self.basemenu)
           self.basemenu.addMenu(self.menu)
         self.toolbar=sgPyQt.createTool(self.menuname)
 
@@ -234,6 +243,7 @@ class PluginsManager:
         self.entries.append(name)
 
         def handler(obj=self,script=script):
+          sgPyQt = GetSgPyQt()
           try:
             script(Context(sgPyQt))
           except:
@@ -291,6 +301,7 @@ class PluginsManager:
     def updateMenu(self):
         """Update the Plugins menu"""
         self.menu.clear()
+        sgPyQt = GetSgPyQt()
         sgPyQt.clearTool(self.menuname)
         for entry in self.entries:
           names=entry.split("/")
