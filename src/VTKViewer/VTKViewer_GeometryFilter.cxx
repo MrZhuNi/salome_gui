@@ -92,6 +92,8 @@
 #endif
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+#include "Qtx.h"
+
 vtkStandardNewMacro(VTKViewer_GeometryFilter)
 
 VTKViewer_GeometryFilter
@@ -102,7 +104,15 @@ VTKViewer_GeometryFilter
   myAppendCoincident3D(0),
   myMaxArcAngle(2),
   myIsBuildArc(false)
-{}
+{
+  static int forceDelegateToVtk = -1;
+  if ( forceDelegateToVtk < 0 )
+  {
+    QString env = Qtx::getenv( "SALOME_ACTOR_DELEGATE_TO_VTK" );
+    forceDelegateToVtk = (int)(env == "1");
+  }
+  delegateToVtk = forceDelegateToVtk > 0;
+}
 
 
 VTKViewer_GeometryFilter
@@ -182,6 +192,7 @@ VTKViewer_GeometryFilter
      return 0;
     }
 
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9,0,0)
   if (delegateToVtk)
     {
 
@@ -207,7 +218,15 @@ VTKViewer_GeometryFilter
        case VTK_UNSTRUCTURED_GRID:
          {
           vtkUnstructuredGrid* inputUnstrctured = static_cast<vtkUnstructuredGrid*>(input);
+
+          // The "info", is passed to  provide information about the unstructured grid. This
+          // is done to avoid  repeated  evaluations  of "info" in the vtkGeometryFilter and 
+          // the  vtkDataSetSurfaceFilter (which vtkGeometryFilter  might delagate to incase 
+          // of nonlinear data).
+          vtkGeometryFilterHelper* info = vtkGeometryFilterHelper::CharacterizeUnstructuredGrid(inputUnstrctured);
+
           bool NotFitForDelegation = false;
+
           if ( vtkUnsignedCharArray* types = inputUnstrctured->GetCellTypesArray() )
             {
              std::set<vtkIdType> ElementsNotFitToDelegate;
@@ -238,20 +257,30 @@ VTKViewer_GeometryFilter
                 NotFitForDelegation = ElementsNotFitToDelegate.count( types->GetValue(i) );
             }
          if ( NotFitForDelegation )
+           {
             return this->UnstructuredGridExecute(input, output, outInfo);
+           }
          else
-            return this->vtkGeometryFilter::UnstructuredGridExecute(input, output, nullptr, &exc);
+           {
+            if ( myStoreMapping )
+                return this->UnstructuredGridExecute(input, output, outInfo);
+            else
+                return this->vtkGeometryFilter::UnstructuredGridExecute(input, output, info, &exc);
+           }
          }
      }
 
      return this->vtkGeometryFilter::DataSetExecute(input, output, &exc);
     }  
     else // !delegateToVtk
+#endif
     {
      if (input->GetDataObjectType() == VTK_UNSTRUCTURED_GRID){
        return this->UnstructuredGridExecute(input, output, outInfo);
-     }else
+     }
+     else {
        return Superclass::RequestData(request,inputVector,outputVector);
+     }
     }
 }
 
@@ -271,7 +300,7 @@ VTKViewer_GeometryFilter
     }
 
   vtkIdType cellId;
-  int i;
+  vtkIdType i;
   int allVisible;
   vtkIdType npts = 0;
   vtkIdType const *pts = 0;
@@ -355,7 +384,7 @@ VTKViewer_GeometryFilter
       quad1D2DTypes.insert( VTK_BIQUADRATIC_QUAD );
       quad1D2DTypes.insert( VTK_QUADRATIC_POLYGON );
 
-      for ( int i = 0; i < types->GetNumberOfTuples() && !hasQuad1D2D; ++i )
+      for ( auto i = 0; i < types->GetNumberOfTuples() && !hasQuad1D2D; ++i )
         hasQuad1D2D = quad1D2DTypes.count( types->GetValue(i) );
     }
     buildArcs = hasQuad1D2D;
@@ -418,7 +447,7 @@ VTKViewer_GeometryFilter
 
   // Loop over all cells now that visibility is known
   // (Have to compute visibility first for 3D cell boundaries)
-  int progressInterval = numCells/20 + 1;
+  vtkIdType progressInterval = numCells/20 + 1;
   TMapOfVectorId aDimension2VTK2ObjIds;
   if ( myStoreMapping )
     aDimension2VTK2ObjIds.resize( 3 ); // max dimension is 2
@@ -545,7 +574,7 @@ VTKViewer_GeometryFilter
           {
 #ifdef SHOW_COINCIDING_3D_PAL21924
             faceIdsTmp->SetNumberOfIds( npts );
-            for ( int ai = 0; ai < npts; ai++ )
+            for ( auto ai = 0; ai < npts; ai++ )
               faceIdsTmp->SetId( ai, pts[ai] );
             input->GetCellNeighbors(cellId, faceIdsTmp, cellIdsTmp);
 #endif
@@ -559,7 +588,7 @@ VTKViewer_GeometryFilter
               faceIds->InsertNextId(pts[faceVerts[1]]);
               faceIds->InsertNextId(pts[faceVerts[2]]);
               input->GetCellNeighbors(cellId, faceIds, cellIds);
-              int nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
+              vtkIdType nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
 #ifdef SHOW_COINCIDING_3D_PAL21924
               bool process = nbNeighbors <= 0;
 #else
@@ -602,7 +631,7 @@ VTKViewer_GeometryFilter
           {
 #ifdef SHOW_COINCIDING_3D_PAL21924
             faceIdsTmp->SetNumberOfIds( npts );
-            for ( int ai = 0; ai < npts; ai++ )
+            for ( auto ai = 0; ai < npts; ai++ )
               faceIdsTmp->SetId( ai, pts[ai] );
             input->GetCellNeighbors(cellId, faceIdsTmp, cellIdsTmp);
 #endif
@@ -617,7 +646,7 @@ VTKViewer_GeometryFilter
               aCellType = VTK_QUAD;
               numFacePts = 4;
               input->GetCellNeighbors(cellId, faceIds, cellIds);
-              int nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
+              vtkIdType nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
 #ifdef SHOW_COINCIDING_3D_PAL21924
               bool process = nbNeighbors <= 0;
 #else
@@ -660,7 +689,7 @@ VTKViewer_GeometryFilter
           {
 #ifdef SHOW_COINCIDING_3D_PAL21924
             faceIdsTmp->SetNumberOfIds( npts );
-            for ( int ai = 0; ai < npts; ai++ )
+            for ( auto ai = 0; ai < npts; ai++ )
               faceIdsTmp->SetId( ai, pts[ai] );
             input->GetCellNeighbors(cellId, faceIdsTmp, cellIdsTmp);
 #endif
@@ -675,7 +704,7 @@ VTKViewer_GeometryFilter
               faceIds->InsertNextId(pts[faceVerts[2]]);
               faceIds->InsertNextId(pts[faceVerts[3]]);
               input->GetCellNeighbors(cellId, faceIds, cellIds);
-              int nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
+              vtkIdType nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
 #ifdef SHOW_COINCIDING_3D_PAL21924
               bool process = nbNeighbors <= 0;
 #else
@@ -738,7 +767,7 @@ VTKViewer_GeometryFilter
                 numFacePts = 4;
               }
               input->GetCellNeighbors(cellId, faceIds, cellIds);
-              int nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
+              vtkIdType nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
 #ifdef SHOW_COINCIDING_3D_PAL21924
               bool process = nbNeighbors <= 0;
 #else
@@ -781,7 +810,7 @@ VTKViewer_GeometryFilter
           {
 #ifdef SHOW_COINCIDING_3D_PAL21924
             faceIdsTmp->SetNumberOfIds( npts );
-            for ( int ai = 0; ai < npts; ai++ )
+            for ( auto ai = 0; ai < npts; ai++ )
               faceIdsTmp->SetId( ai, pts[ai] );
             input->GetCellNeighbors(cellId, faceIdsTmp, cellIdsTmp);
 #endif
@@ -803,7 +832,7 @@ VTKViewer_GeometryFilter
                 numFacePts = 6;
               }
               input->GetCellNeighbors(cellId, faceIds, cellIds);
-              int nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
+              vtkIdType nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
 #ifdef SHOW_COINCIDING_3D_PAL21924
               bool process = nbNeighbors <= 0;
 #else
@@ -827,7 +856,7 @@ VTKViewer_GeometryFilter
           if ( myShowInside )
           {
             aCellType = VTK_LINE;
-            for ( int edgeID = 0; edgeID < 8; ++edgeID )
+            for ( auto edgeID = 0; edgeID < 8; ++edgeID )
             {
               const vtkIdType *edgeVerts = vtkPyramid::GetEdgeArray( edgeID );
               if ( toShowEdge( pts[edgeVerts[0]], pts[edgeVerts[1]], cellId, input ))
@@ -846,7 +875,7 @@ VTKViewer_GeometryFilter
           {
 #ifdef SHOW_COINCIDING_3D_PAL21924
             faceIdsTmp->SetNumberOfIds( npts );
-            for ( int ai = 0; ai < npts; ai++ )
+            for ( auto ai = 0; ai < npts; ai++ )
               faceIdsTmp->SetId( ai, pts[ai] );
             input->GetCellNeighbors(cellId, faceIdsTmp, cellIdsTmp);
 #endif
@@ -866,7 +895,7 @@ VTKViewer_GeometryFilter
                 numFacePts = 4;
               }
               input->GetCellNeighbors(cellId, faceIds, cellIds);
-              int nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
+              vtkIdType nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
 #ifdef SHOW_COINCIDING_3D_PAL21924
               bool process = nbNeighbors <= 0;
 #else
@@ -891,7 +920,7 @@ VTKViewer_GeometryFilter
         {
           vtkIdType nFaces = 0;
           const vtkIdType* ptIds = 0;
-          int idp = 0;
+          vtkIdType idp = 0;
           input->GetFaceStream(cellId, nFaces, ptIds);
 #ifdef SHOW_COINCIDING_3D_PAL21924
           if ( !myShowInside )
@@ -912,7 +941,7 @@ VTKViewer_GeometryFilter
           {
             faceIds->Reset();
             numFacePts = ptIds[idp];
-            int pt0 = ++idp;
+            vtkIdType pt0 = ++idp;
             for (i = 0; i < numFacePts; i++)
             {
               faceIds->InsertNextId(ptIds[idp + i]);
@@ -925,7 +954,7 @@ VTKViewer_GeometryFilter
             default:aCellType = VTK_POLYGON;
             }
             input->GetCellNeighbors(cellId, faceIds, cellIds);
-            int nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
+            vtkIdType nbNeighbors = cellIds->GetNumberOfIds() - cellIdsTmp->GetNumberOfIds();
             if ( myShowInside && nbNeighbors > 0 && cellId < cellIds->GetId(0) )
               continue; // don't add twice same internal face in wireframe mode
 #ifdef SHOW_COINCIDING_3D_PAL21924
@@ -1019,7 +1048,7 @@ VTKViewer_GeometryFilter
 #ifdef SHOW_COINCIDING_3D_PAL21924
               if ( !myShowInside )
               {
-                int npts1 = 0;
+                vtkIdType npts1 = 0;
                 switch (aCellType ){
                 case VTK_QUADRATIC_TETRA:             npts1 = 4; break;
                 case VTK_QUADRATIC_HEXAHEDRON:        npts1 = 8; break;
@@ -1030,7 +1059,7 @@ VTKViewer_GeometryFilter
                 }
                 faceIdsTmp->SetNumberOfIds( npts1 );
                 if ( npts1 > 0 ) {
-                  for (int ai=0; ai<npts1; ai++)
+                  for (auto ai=0; ai<npts1; ai++)
                     faceIdsTmp->SetId( ai, pts[ai] );
                   input->GetCellNeighbors(cellId, faceIdsTmp, cellIdsTmp);
                 }
@@ -1038,8 +1067,8 @@ VTKViewer_GeometryFilter
 #endif
               aCellType = VTK_TRIANGLE;
               numFacePts = 3;
-              int nbNeighbors = 0;
-              for (int j=0; j < cell->GetNumberOfFaces(); j++)
+              vtkIdType nbNeighbors = 0;
+              for (auto j=0; j < cell->GetNumberOfFaces(); j++)
               {
                 vtkCell *face = cell->GetFace(j);
                 if ( !myShowInside ) {
@@ -1196,11 +1225,11 @@ VTKViewer_GeometryFilter
               }
               else
               {
-                int nbCoincident = 0;
+                vtkIdType nbCoincident = 0;
 #ifdef SHOW_COINCIDING_3D_PAL21924
-                int nbPnt = npts - cell->GetNumberOfEdges();
+                vtkIdType nbPnt = npts - cell->GetNumberOfEdges();
                 faceIdsTmp->SetNumberOfIds( nbPnt );
-                for ( int ai = 0; ai < nbPnt; ai++ )
+                for ( auto ai = 0; ai < nbPnt; ai++ )
                   faceIdsTmp->SetId( ai, pts[ai] );
                 input->GetCellNeighbors(cellId, faceIdsTmp, cellIdsTmp);
                 nbCoincident = cellIdsTmp->GetNumberOfIds();
@@ -1211,11 +1240,11 @@ VTKViewer_GeometryFilter
                 {
                   vtkCell * face = cell->GetFace( faceId );
                   input->GetCellNeighbors( cellId, face->GetPointIds(), cellIds );
-                  int nbNeighbors = cellIds->GetNumberOfIds() - nbCoincident;
+                  vtkIdType nbNeighbors = cellIds->GetNumberOfIds() - nbCoincident;
                   if ( nbNeighbors <= 0 )
                   {
-                    int nbEdges = face->GetNumberOfPoints() / 2;
-                    for ( int edgeId = 0; edgeId < nbEdges; ++edgeId )
+                    vtkIdType nbEdges = face->GetNumberOfPoints() / 2;
+                    for ( auto edgeId = 0; edgeId < nbEdges; ++edgeId )
                     {
                       vtkIdType p1 = ( edgeId );               // corner
                       vtkIdType p2 = ( edgeId + nbEdges );     // medium
@@ -1394,9 +1423,9 @@ VTKViewer_GeometryFilter
 }
 
 
-vtkIdType VTKViewer_GeometryFilter::GetElemObjId( int theVtkID )
+vtkIdType VTKViewer_GeometryFilter::GetElemObjId( vtkIdType theVtkID )
 {
-  if( theVtkID < 0 || theVtkID >= (int)myVTK2ObjIds.size() )
+  if( theVtkID < 0 || theVtkID >= (vtkIdType)myVTK2ObjIds.size() )
     return -1;
   return myVTK2ObjIds[theVtkID];
 }
@@ -1507,10 +1536,10 @@ void VTKViewer_GeometryFilter::BuildArcedPolygon(vtkIdType cellId,
     }
     case VTK_QUADRATIC_POLYGON:
     {
-      int nbP = aCell->GetNumberOfPoints();
+      vtkIdType nbP = aCell->GetNumberOfPoints();
       std::vector< Pnt > pVec( nbP + 2 );
 
-      for ( int i = 0; i < nbP/2; ++i )
+      for ( auto i = 0; i < nbP/2; ++i )
       {
         pVec[i*2 + 0] = CreatePnt( aCell, inputScalars, i );
         pVec[i*2 + 1] = CreatePnt( aCell, inputScalars, i + nbP/2 );
@@ -1518,7 +1547,7 @@ void VTKViewer_GeometryFilter::BuildArcedPolygon(vtkIdType cellId,
       pVec[ nbP   ] = pVec[ 0 ];
       pVec[ nbP+1 ] = pVec[ 1 ];
 
-      for ( int i = 0; i < nbP; i += 2 )
+      for ( auto i = 0; i < nbP; i += 2 )
       {      
         VTKViewer_ArcBuilder aBuilder( pVec[i], pVec[i+1], pVec[i+2], myMaxArcAngle );
         aCollection.push_back( aBuilder.GetPoints() );
@@ -1539,7 +1568,7 @@ void VTKViewer_GeometryFilter::BuildArcedPolygon(vtkIdType cellId,
     vtkIdType aTriangleId;
 
     vtkPolygon *aPlg = vtkPolygon::New();
-    std::map<int, double> aPntId2ScalarValue;
+    std::map<vtkIdType, double> aPntId2ScalarValue;
     aNbPoints = MergevtkPoints(aCollection, aScalarCollection, aPlg->GetPoints(), aPntId2ScalarValue, aNewPoints);
     aPlg->GetPointIds()->SetNumberOfIds(aNbPoints);
 
@@ -1571,7 +1600,7 @@ void VTKViewer_GeometryFilter::BuildArcedPolygon(vtkIdType cellId,
     aPlg->Delete();
   }
   else {
-    std::map<int, double> aPntId2ScalarValue;
+    std::map<vtkIdType, double> aPntId2ScalarValue;
     aNbPoints = MergevtkPoints(aCollection, aScalarCollection, output->GetPoints(), aPntId2ScalarValue, aNewPoints);
     if(outputScalars)
       for(vtkIdType i = 0; i < aNbPoints; i++)
