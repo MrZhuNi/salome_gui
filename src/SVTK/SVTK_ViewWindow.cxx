@@ -251,6 +251,9 @@ void SVTK_ViewWindow::Initialize(SVTK_ViewModelBase* theModel)
   myKeyFreeInteractorStyle->AddObserver(SVTK::OperationFinished,
                                         myEventCallbackCommand.GetPointer(), 0.0);
 
+  char *mesavar = getenv("SALOME_USE_MESA");
+  if (mesavar)
+    getRenderer()->SetUseDepthPeeling(1);
 
   getRenderer()->SetBackgroundAlpha(1.0);
   myInteractor->getRenderWindow()->SetMultiSamples(0);
