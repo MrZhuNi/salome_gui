@@ -68,7 +68,7 @@ done
 # set additional environment
 ###
 
-python_version=`python -c "import sys; print sys.version[:3]" 2>/dev/null`
+python_version=`python -c "import sys; print(sys.version[:3])" 2>/dev/null`
 
 MY_PATH=""
 MY_LD_LIBRARY_PATH=""
