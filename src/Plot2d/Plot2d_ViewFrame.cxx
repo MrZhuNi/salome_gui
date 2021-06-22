@@ -180,7 +180,10 @@ Plot2d_ViewFrame::Plot2d_ViewFrame( QWidget* parent, const QString& title )
        myXGridMinorEnabled( false ), myYGridMinorEnabled( false ), myY2GridMinorEnabled( false ),
        myXGridMaxMajor( 8 ), myYGridMaxMajor( 8 ), myY2GridMaxMajor( 8 ),
        myXGridMaxMinor( 5 ), myYGridMaxMinor( 5 ), myY2GridMaxMinor( 5 ),
-       myXMode( 0 ), myYMode( 0 ), mySecondY( false ), myKeepCurrentRange( false ),
+       myXMode( 0 ), myYMode( 0 ),
+       myXDistance( 0 ), myYDistance( 0 ), myYDistance2( 0 ),
+       mySecondY( false ), myKeepCurrentRange( false ),
+       myXMultiplier( 1 ),
        myTitleAutoUpdate( true ), myXTitleAutoUpdate( true ), myYTitleAutoUpdate( true ),
        myTitleChangedByUser( false ), myXTitleChangedByUser( false ), myYTitleChangedByUser( false ),
        myY2TitleChangedByUser( false ), myIsTimeColorization( false ), myTimePosition( -1 ), myInactiveColor( Qt::gray )
@@ -309,7 +312,7 @@ void Plot2d_ViewFrame::setSecondY( const bool& theSecondY )
 /*!
   Get second Y
 */
-bool Plot2d_ViewFrame::getSecondY()
+bool Plot2d_ViewFrame::getSecondY() const
 {
   return mySecondY;
 }
@@ -325,9 +328,25 @@ void Plot2d_ViewFrame::setKeepCurrentRange( const bool& theKeepCurrentRange )
 /*!
   Get flag which indicate keep current range or not
 */
-bool Plot2d_ViewFrame::getKeepCurrentRange()
+bool Plot2d_ViewFrame::getKeepCurrentRange() const
 {
   return myKeepCurrentRange;
+}
+
+/*!
+  Set X axis multiplier
+*/
+void Plot2d_ViewFrame::setXMultiplier( const double theXMultiplier )
+{
+  myXMultiplier = theXMultiplier;
+}
+
+/*!
+  Get X axis multiplier
+*/
+double Plot2d_ViewFrame::getXMultiplier() const
+{
+  return myXMultiplier;
 }
 
 /*!
@@ -674,7 +693,7 @@ void Plot2d_ViewFrame::displayCurve( Plot2d_Curve* curve, bool update )
       curve->buildSymbolsColorMap( myPlot, MAX_ATTEMPTS );
     }
     setCurveType( aPCurve, myCurveType );
-    aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
+    aPCurve->setData( curve->horData( 1.0 / myXMultiplier ), curve->verData(), curve->nbPoints() );
     aPCurve->setYAxis( curve->getYAxis() );
     aPCurve->setSymbolsColorData( curve->colorData(), curve->nbPoints() );
     aPCurve->setSymbolsColorMap( curve->getColorMap() );
@@ -768,7 +787,7 @@ void Plot2d_ViewFrame::updateCurve( Plot2d_Curve* curve, bool update )
                QBrush( curve->getColor() ), 
                QPen( curve->getColor(), 1 ), // width's set to 1 for correct printing
                QSize( myMarkerSize, myMarkerSize ) ) );
-      aPCurve->setData( curve->horData(), curve->verData(), curve->nbPoints() );
+      aPCurve->setData( curve->horData( 1.0 / myXMultiplier ), curve->verData(), curve->nbPoints() );
       Plot2d_PlotCurve* aPlot2dCurve = dynamic_cast< Plot2d_PlotCurve* >( aPCurve );
       if ( aPlot2dCurve )
       {

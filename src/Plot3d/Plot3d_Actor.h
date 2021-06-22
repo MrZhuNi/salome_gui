@@ -115,6 +115,9 @@ public:
 
   void                                GetRealBounds( double theBounds[6] ) const;
 
+  void                                SetTimeUnit( const int );
+  int                                 GetTimeUnit() const;
+
 protected:
   int                                 myNX;
   int                                 myNY;
@@ -151,6 +154,8 @@ protected:
   int                                 myEndPoint;
 
   double                              myRealBounds[6];
+
+  int                                 myTimeUnit; // defined and used in GUITHARE
 };
 
 #endif

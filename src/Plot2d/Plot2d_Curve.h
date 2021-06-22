@@ -75,7 +75,7 @@ public:
 
   void               setData( const double*, const double*, 
 			                        long, const QStringList& = QStringList(), const int* theColorIds = 0 );
-  double*            horData() const;
+  double*            horData( const double ) const;
   double*            verData() const;
   int*               colorData() const;
 

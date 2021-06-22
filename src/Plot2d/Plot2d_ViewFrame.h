@@ -130,10 +130,13 @@ public:
   QString getTitle( ObjectType type ) const;
 
   void    setSecondY( const bool& theSecondY );
-  bool    getSecondY();
+  bool    getSecondY() const;
 
-  bool    getKeepCurrentRange();
   void    setKeepCurrentRange( const bool& theKeepCurrentRange );
+  bool    getKeepCurrentRange() const;
+
+  void    setXMultiplier( const double theXMultiplier );
+  double  getXMultiplier() const;
 
   bool    isTitleChangedByUser( const ObjectType type );
   void    forgetLocalUserChanges( const ObjectType type );
@@ -244,7 +247,9 @@ protected:
   double         myXDistance, myYDistance, myYDistance2;
   bool           mySecondY;
   bool           myKeepCurrentRange;
-  
+
+  double         myXMultiplier; // 0.001 for ms, 1 for seconds, 60 for minutes, 3600 for hours
+
   bool           myTitleAutoUpdate, myXTitleAutoUpdate, myYTitleAutoUpdate;
   bool           myTitleChangedByUser, myXTitleChangedByUser, myYTitleChangedByUser,
                  myY2TitleChangedByUser;

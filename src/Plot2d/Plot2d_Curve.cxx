@@ -260,12 +260,12 @@ void Plot2d_Curve::setData( const double* hData, const double* vData,
 /*!
 Gets curve's data : abscissas of points
 */
-double* Plot2d_Curve::horData() const
+double* Plot2d_Curve::horData( const double theMultiplier ) const
 {
   int aNPoints = nbPoints();
   double* aX = new double[aNPoints];
   for (int i = 0; i < aNPoints; i++) {
-    aX[i] = myPoints[i].x;
+    aX[i] = myPoints[i].x * theMultiplier;
   }
   return aX;
 }

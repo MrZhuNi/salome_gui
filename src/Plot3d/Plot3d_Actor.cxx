@@ -90,6 +90,8 @@ Plot3d_Actor::Plot3d_Actor()
   myStartPoint = 0;
   myEndPoint = 0;
 
+  myTimeUnit = -1;
+
   // Scalar bar
   myToDisplayScalarBar = false;
 
@@ -698,4 +700,22 @@ void Plot3d_Actor::GetRealBounds( double theBounds[6] ) const
   theBounds[3] = myRealBounds[3];
   theBounds[4] = myRealBounds[4];
   theBounds[5] = myRealBounds[5];
+}
+
+//=============================================================================
+// Function : SetTimeUnit
+// Purpose  : 
+//=============================================================================
+void Plot3d_Actor::SetTimeUnit( const int theTimeUnit )
+{
+  myTimeUnit = theTimeUnit;
+}
+
+//=============================================================================
+// Function : GetTimeUnit
+// Purpose  : 
+//=============================================================================
+int Plot3d_Actor::GetTimeUnit() const
+{
+  return myTimeUnit;
 }
