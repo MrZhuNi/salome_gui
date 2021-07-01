@@ -35,7 +35,7 @@ INCLUDE_DIRECTORIES(
   ${PROJECT_SOURCE_DIR}/src/SUIT
   ${PROJECT_SOURCE_DIR}/src/Event
   ${PROJECT_SOURCE_DIR}/src/Style
-  ${PROJECT_SOURCE_DIR}/src/SUIT
+  ${PROJECT_SOURCE_DIR}/src/LightApplication
   ${PROJECT_SOURCE_DIR}/src/STD
   ${PROJECT_SOURCE_DIR}/src/CAM
   ${PROJECT_SOURCE_DIR}/src/OBJECT
@@ -69,7 +69,7 @@ SET(_link_LIBRARIES
   ${KERNEL_SalomeLauncher}
   ${KERNEL_Registry}
   ${KERNEL_SALOMEBasics}
-  qtx suit Event SalomeStyle SalomeApp SalomeIDLGUI
+  qtx lightapplication suit Event SalomeStyle SalomeApp SalomeIDLGUI
 )
 
 # --- headers ---
@@ -108,7 +108,7 @@ SET(SalomeSession_SOURCES
 
 ADD_LIBRARY(SalomeSession ${SalomeSession_SOURCES})
 TARGET_LINK_LIBRARIES(SalomeSession ${_link_LIBRARIES})
-INSTALL(TARGETS SalomeSession EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS}) 
+INSTALL(TARGETS SalomeSession EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
 
 ADD_EXECUTABLE(SALOME_Session_Server SALOME_Session_Server_With_Server.cxx)
 TARGET_LINK_LIBRARIES(SALOME_Session_Server ${_link_LIBRARIES} SalomeSession)
@@ -121,6 +121,11 @@ INSTALL(TARGETS SALOME_Session_Server_No_Server EXPORT ${PROJECT_NAME}TargetGrou
 add_executable(salome2810 salome2810.cxx)
 target_link_libraries(salome2810 ${QT_LIBRARIES})
 install(TARGETS salome2810 DESTINATION ${SALOME_INSTALL_BINS})
+
+add_executable(salomeLight salomeLight.cxx)
+target_link_libraries(salomeLight ${QT_LIBRARIES})
+install(TARGETS salomeLight DESTINATION ${SALOME_INSTALL_BINS})
+
 
 INSTALL(FILES ${SalomeSession_HEADERS} DESTINATION ${SALOME_INSTALL_HEADERS})
 QT_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_GUI_INSTALL_RES_DATA}")

@@ -1030,16 +1030,16 @@ void LightApp_Application::onNewDoc()
 void LightApp_Application::onOpenDoc()
 {
   SUIT_Study* study = activeStudy();
-  
+
   if ( !checkExistingDoc( false ) )
     return;
-  
+
   QString aName = getFileName( true, QString(), getFileFilter( true ), QString(), 0 );
   if ( aName.isNull() ) //Cancel
     return;
-  
+
   onOpenDoc( aName );
-  
+
   if ( !study ) // new study will be create in THIS application
   {
     updateWindows();
@@ -1226,7 +1226,7 @@ protected:
 #else
       QString cmdLine = QString( "%1 %2 \"%3\"" ).arg( myBrowser, myParameters, myUrl );
       // remove LD_LIBRARY_PATH from the environement before starting launcher to avoid bad interactions.
-      // (especially in the case of universal binaries) 
+      // (especially in the case of universal binaries)
       env.remove("LD_LIBRARY_PATH");
 #endif
       QProcess* proc = new QProcess();
@@ -2850,7 +2850,7 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   int vtkSelectionGroup = pref->addPreference( tr( "PREF_GROUP_SELECTION" ), vtkGroup );
   pref->setItemProperty( "columns", 2, vtkSelectionGroup );
   // .... -> preselection
-  int vtkPreselection = pref->addPreference( tr( "PREF_PRESELECTION" ),  vtkSelectionGroup, 
+  int vtkPreselection = pref->addPreference( tr( "PREF_PRESELECTION" ),  vtkSelectionGroup,
                                              LightApp_Preferences::Selector, "VTKViewer", "preselection" );
   aValuesList.clear();
   anIndicesList.clear();
@@ -2875,7 +2875,7 @@ void LightApp_Application::createPreferences( LightApp_Preferences* pref )
   int spacemousePref2 = pref->addPreference( tr( "PREF_SPACEMOUSE_FUNC_2" ), vtkSM,
                                              LightApp_Preferences::Selector, "VTKViewer",
                                              "spacemouse_func2_btn" );
-  // .... -> dominant / combined switch  
+  // .... -> dominant / combined switch
   int spacemousePref3 = pref->addPreference( tr( "PREF_SPACEMOUSE_FUNC_3" ), vtkSM,
                                              LightApp_Preferences::Selector, "VTKViewer",
                                              "spacemouse_func5_btn" ); //
@@ -4181,9 +4181,9 @@ void LightApp_Application::updateWindows()
     infoPanel()->addAction( action( FileOpenId ), grp );
     infoPanel()->addLabel( action( FileOpenId )->statusTip(), grp );
     infoPanel()->addAction( action( TutorialsId ), grp );
-    infoPanel()->addLabel( action( TutorialsId )->statusTip(), grp );
+    //infoPanel()->addLabel( action( TutorialsId )->statusTip(), grp );
     infoPanel()->addAction( action( VideosId ), grp );
-    infoPanel()->addLabel( action( VideosId )->statusTip(), grp );
+    //infoPanel()->addLabel( action( VideosId )->statusTip(), grp );
 
     LightApp_ModuleAction* ma = qobject_cast<LightApp_ModuleAction*>(action(ModulesListId));
     if ( ma && ma->count() > 0 )
@@ -4235,7 +4235,7 @@ void LightApp_Application::loadDockWindowsState()
   aResMgr->value( "windows_visibility", modName, aDefaultVisibility );
   bool hasDefaultVisibility = !aDefaultVisibility.isEmpty();
   aResMgr->setWorkingMode( prevMode );
-  
+
   if( !storeWin && !storeTb && aDefaultState.isEmpty() && !hasDefaultVisibility)
     return;
 
@@ -4260,13 +4260,13 @@ void LightApp_Application::loadDockWindowsState()
 
   QMap<QString, bool> *tbMap = 0;
   QMap<QString, bool> *dwMap = 0;
-  
+
   QMap<QString, bool> userTbMap, userDwMap;
   dockWindowsState( myWinVis[modName], userTbMap, userDwMap );
 
   QMap<QString, bool> defaultTbMap, defaultDwMap;
   if(hasDefaultVisibility) {
-    dockWindowsState( aDefaultVisibility, defaultTbMap, defaultDwMap);    
+    dockWindowsState( aDefaultVisibility, defaultTbMap, defaultDwMap);
   }
 
   if(storeTb) {
@@ -4288,9 +4288,9 @@ void LightApp_Application::loadDockWindowsState()
   if(tbMap) {
     QList<QToolBar*> tbList = findToolBars();
     for ( QList<QToolBar*>::iterator tit = tbList.begin(); tit != tbList.end(); ++tit )
-      { 
+      {
         QToolBar* tb = *tit;
-        if ( tbMap->contains( tb->objectName() ) ) {      
+        if ( tbMap->contains( tb->objectName() ) ) {
           tb->setVisible( (*tbMap)[tb->objectName()] );
         }
       }
@@ -4301,11 +4301,11 @@ void LightApp_Application::loadDockWindowsState()
     for ( QList<QDockWidget*>::iterator dit = dwList.begin(); dit != dwList.end(); ++dit )
       {
         QDockWidget* dw = *dit;
-        
+
         QObject* po = Qtx::findParent( dw, "QMainWindow" );
         if ( po != desktop() )
           continue;
-        
+
         if ( dwMap->contains( dw->objectName() ) )
           dw->setVisible( (*dwMap)[dw->objectName()] );
       }
@@ -5029,7 +5029,7 @@ void LightApp_Application::onDesktopMessage( const QString& message )
   }
   else if ( message.toLower().startsWith("register_module_in_study" ) ) {
     QString moduleName = message.split( sectionSeparator ).last();
-    // Check name of current activating module name in order to avoid ciclik 
+    // Check name of current activating module name in order to avoid ciclik
     // call because of messages
     if (!property("activateModule").toBool()) {
       CAM_Module* mod = module(moduleName);
@@ -5092,7 +5092,7 @@ void LightApp_Application::onInfoPanelShown()
 }
 
 /*!
-  Internal method. 
+  Internal method.
   Returns all top level toolbars.
   Note : Result list contains only main window toolbars, not including toolbars from viewers.
 */

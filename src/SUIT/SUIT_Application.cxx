@@ -642,7 +642,7 @@ QList<int> SUIT_Application::actionIds() const
 */
 QAction* SUIT_Application::createAction( const int id, const QString& text, const QIcon& icon,
                                          const QString& menu, const QString& tip, const int key,
-                                         QObject* parent, const bool toggle, QObject* reciever, 
+                                         QObject* parent, const bool toggle, QObject* reciever,
 					 const char* member, const QString& shortcutAction )
 {
   return createAction( id, text, icon, menu, tip, QKeySequence(key), parent, toggle, reciever, member, shortcutAction );
@@ -664,7 +664,7 @@ QAction* SUIT_Application::createAction( const int id, const QString& text, cons
 */
 QAction* SUIT_Application::createAction( const int id, const QString& text, const QIcon& icon,
                                          const QString& menu, const QString& tip, const QKeySequence& key,
-                                         QObject* parent, const bool toggle, QObject* reciever, 
+                                         QObject* parent, const bool toggle, QObject* reciever,
 					 const char* member, const QString& shortcutAction )
 {
   QtxAction* a = new QtxAction( text, icon, menu, key, parent, toggle, shortcutAction );

@@ -64,7 +64,7 @@ CEA/DEN, CEDRAT, EDF R&amp;D, LEG, PRINCIPIA R&amp;D, BUREAU VERITAS</translatio
     </message>
     <message>
         <source>SALOME_TUTORIALS</source>
-        <translation type="unfinished">Tutorials</translation>
+        <translation>Tutorials</translation>
     </message>
     <message>
         <source>PRP_SALOME_TUTORIALS</source>

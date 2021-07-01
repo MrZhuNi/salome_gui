@@ -56,6 +56,8 @@
 #include "SUIT_Session.h"
 #include "SUIT_Tools.h"
 
+#include "LightApplication.h"
+
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Session)
 #include CORBA_SERVER_HEADER(SALOMEDS)
@@ -76,6 +78,8 @@
 #include <QRegExp>
 #include <QTextStream>
 #include <QWaitCondition>
+
+#include <fstream>
 
 //! CORBA server for SALOME GUI session
 /*!
@@ -727,7 +731,11 @@ int AbstractGUIAppMain(int argc, char **argv)
 
       // Load SalomeApp dynamic library
       MESSAGE("creation SUIT_Application");
-      SUIT_Application *aGUIApp = aGUISession->startApplication(NamingServiceImplementation::LibName, 0, 0);
+      MESSAGE(NamingServiceImplementation::LibName );
+      //SUIT_Application *aGUIApp = aGUISession->startApplication(NamingServiceImplementation::LibName, 0, 0);
+      LightApplication *aGUIApp = new LightApplication();
+      aGUIApp->start();
+
       if (aGUIApp)
       {
 #ifdef USE_SALOME_STYLE
@@ -736,15 +744,17 @@ int AbstractGUIAppMain(int argc, char **argv)
           Style_Salome::apply();
 #endif // USE_SALOME_STYLE
 
-        if (!debugExceptions)
-          app.setHandler(aGUISession->handler()); // after loading SalomeApp application
-                                                  // aGUISession contains SalomeApp_ExceptionHandler
+        // if (!debugExceptions)
+        //  app.setHandler(aGUISession->handler()); // after loading SalomeApp application
+        //                                          // aGUISession contains SalomeApp_ExceptionHandler
 
         // Run GUI loop
         MESSAGE("run(): starting the main event loop");
 
-        if (splash)
-          splash->finish(aGUIApp->desktop());
+        // if (splash)
+        //  splash->finish(aGUIApp->desktop());
+
+        MESSAGE("run(): running app.exec()");
 
         result = app.exec();
 
