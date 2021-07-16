@@ -134,9 +134,10 @@ void CAM_DataModel::onDestroyed( SUIT_DataObject* obj )
   This method should be re-implemented in the successor classes.
   Default implementation returns \c true.
 
-  \param name study name
-  \param study study
-  \param files list of file names from which data should be loaded
+  The first parameter is the study name
+  The second parameter is the study
+  The third parameter is a list of file names from which data should be loaded
+
   \return \c true if data model is loaded successfully
 */
 bool CAM_DataModel::open( const QString& /*name*/, 
@@ -152,7 +153,8 @@ bool CAM_DataModel::open( const QString& /*name*/,
   This method should be re-implemented in the successor classes.
   Default implementation returns \c true.
 
-  \param files list of file names to which data should be saved
+  The input parameter is a list of file names to which data should be saved
+
   \return \c true if data model is saved successfully
 */
 bool CAM_DataModel::save( QStringList& )
@@ -166,9 +168,10 @@ bool CAM_DataModel::save( QStringList& )
   This method should be re-implemented in the successor classes.
   Default implementation returns \c true.
 
-  \param name study name
-  \param study study
-  \param files resulting list of file names to which data is saved
+  The first parameter is the study name
+  The second parameter is the study
+  The third parameter is the resulting list of file names to which data is saved
+
   \return \c true if data model is saved successfully
 */
 bool CAM_DataModel::saveAs( const QString& /*name*/,

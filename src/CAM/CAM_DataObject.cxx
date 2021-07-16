@@ -151,9 +151,8 @@ QPixmap CAM_ModuleObject::icon( const int id ) const
 /*!
   \brief Get data object tooltip for the specified column.
 
-  The parameter \a id specifies the column identificator
+  The parameter specifies the column identificator
 
-  \param id column id
   \return object tooltip for the specified column
 */
 QString CAM_ModuleObject::toolTip( const int /*id*/ ) const

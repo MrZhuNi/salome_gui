@@ -61,7 +61,7 @@ namespace VTK
     vtkActorCollection* GetActors() const;
   };
 
-  /*!For each actor(for ex: someActor) from \a theCollection(that can be dynamic cast to type TActor)\n
+  /*!For each actor(for ex: someActor) from \a theCollection(that can be dynamic cast to type TActor)
    * Call method \a theFun(someActor)
    */
     template<typename TActor, typename TFunction>
@@ -94,7 +94,7 @@ namespace VTK
         }
         return theFun;
       }
-  
+
     /*!Find actor from collection, that can be dynamicaly cast to \a TActor, \n
      *and method \a thePredicate(someActor) return true) \n
      *\retval someActor

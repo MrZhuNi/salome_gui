@@ -74,7 +74,7 @@ Handle(CASCatch_Failure) CASCatch_Failure::Caught()
 //================================================================================
 /*! Public -
  * \brief raises a CASCatch_Failure exception
- * \param an exception message
+ * \param AString an exception message
  */
 //================================================================================ 
 void CASCatch_Failure::Raise (const Standard_CString AString) 
@@ -87,7 +87,7 @@ void CASCatch_Failure::Raise (const Standard_CString AString)
 //================================================================================
 /*! Public -
  * \brief re-raises a CASCatch_Failure exception
- * \param an exception message
+ * \param AString an exception message
  */
 //================================================================================
 void CASCatch_Failure::Reraise (const Standard_CString AString) 

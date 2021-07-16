@@ -42,7 +42,7 @@ GLViewer_Segment::GLViewer_Segment( const GLViewer_Pnt& thePnt1,
 }
 
 /*!
-  constructs a ray starting at <thePnt> and directed along positive X axis direction (or Y axis if vertical )
+  constructs a ray starting at \a thePnt and directed along positive X axis direction (or Y axis if vertical )
 */
 GLViewer_Segment::GLViewer_Segment( const GLViewer_Pnt& thePnt, 
                                     const GLfloat theA, 
@@ -67,7 +67,7 @@ GLViewer_Segment::~GLViewer_Segment()
 }
 
 /*!
-  detects intersection with segment <theOther>
+  detects intersection with segment \a theOther
 */
 bool GLViewer_Segment::HasIntersection( const GLViewer_Segment& theOther ) const
 {
@@ -113,14 +113,14 @@ GLViewer_Poly::GLViewer_Poly( const GLViewer_PntList* thePoints )
 }
 
 /*!
-  destructor, <myPoints> mustn't be deleted here!
+  destructor, myPoints mustn't be deleted here!
 */
 GLViewer_Poly::~GLViewer_Poly()
 {
 }
 
 /*!
-  \return true if <thePnt> lies within this polygon
+  \return true if \a thePnt lies within this polygon
 */
 bool GLViewer_Poly::IsIn( const GLViewer_Pnt& thePnt ) const
 {
@@ -148,7 +148,7 @@ bool GLViewer_Poly::IsIn( const GLViewer_Pnt& thePnt ) const
   return ( aNbInter % 2 == 1 );
 }
 /*!
-  \return true if <thePnt> lies within this polygon
+  \return true if \a thePnt lies within this polygon
 */
 /*
 bool GLViewer_Poly::IsIn( const GLViewer_Pnt& thePnt, const float tolerance ) const
@@ -172,7 +172,7 @@ bool GLViewer_Poly::IsIn( const GLViewer_Pnt& thePnt, const float tolerance ) co
 }
 */
 /*!
-  \return true if <thePoly> covers this polygon
+  \return true if \a thePoly covers this polygon
 */
 bool GLViewer_Poly::IsCovers( const GLViewer_Poly& thePoly ) const
 {
@@ -191,7 +191,7 @@ bool GLViewer_Poly::IsCovers( const GLViewer_Poly& thePoly ) const
 }
 
 /*!
-  \return true if <theRect> covers this polygon
+  \return true if \a theRect covers this polygon
 */
 bool GLViewer_Poly::IsCovers( const GLViewer_Rect& theRect ) const
 {

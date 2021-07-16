@@ -87,7 +87,7 @@ public:
   //! Shows the application's main widget. For non GUI application must be redefined.
   virtual void          start();
 
-  //! Opens document <theFileName> into active Study. If Study is empty - creates it.
+  //! Opens document \a theFileName into active Study. If Study is empty - creates it.
   virtual bool          useFile( const QString& theFileName);
 
   //! Creates new empty Study if active Study = 0

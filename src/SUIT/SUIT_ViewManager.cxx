@@ -39,7 +39,7 @@
 QMap<QString, int> SUIT_ViewManager::_ViewMgrId;
 
 /*!\class SUIT_ViewManager.
- * Class provide manipulation with view windows.
+ * \brief Thsi class provides manipulation with view windows.
  */
 
 /*!Constructor.*/

@@ -174,7 +174,7 @@ CAM_Application::ModuleList CAM_Application::modules() const
 
 /*!
   \brief Get all loaded modules.
-  \param returning list of modules
+  \param out being returned list of modules
 */
 void CAM_Application::modules( CAM_Application::ModuleList& out ) const
 {
@@ -291,6 +291,7 @@ void CAM_Application::loadModules()
   - module library can not be loaded by some reason
 
   \param modName module name
+  \param showMsg If true, show occured errors (if any) in a warning dialog
   \return module object pointer or 0 if module could not be loaded
 */
 CAM_Module* CAM_Application::loadModule( const QString& modName, const bool showMsg )
@@ -586,8 +587,8 @@ void CAM_Application::setActiveStudy( SUIT_Study* study )
   \brief Check module availability.
 
   The method can be redefined in successors. Default implementation returns \c true.
+  Input parameter is the module title
 
-  \param title module title
   \return \c true if module is accessible; \c false otherwise
 */
 bool CAM_Application::checkModule( const QString& )
@@ -601,7 +602,7 @@ bool CAM_Application::checkModule( const QString& )
   This virtual method can be re-implemented in the successors. Base implementation
   does nothing.
 
-  \param mod module being added
+  The inpit parameter is the module being added
 */
 void CAM_Application::moduleAdded( CAM_Module* /*mod*/ )
 {
@@ -672,8 +673,8 @@ QString CAM_Application::moduleDescription( const QString& name )
 }
 
 /*!
-  \brief Get module library name by its title (user name).
-  \param title module name or title
+  \brief Get module library name by its name or title (user name).
+  \param name module name or title
   \param full if \c true, return full library name, otherwise return its internal name
   \return module library name or null QString if module is not found
  */

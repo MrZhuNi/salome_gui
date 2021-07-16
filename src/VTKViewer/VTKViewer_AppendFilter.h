@@ -46,9 +46,7 @@ public:
    */
   static VTKViewer_AppendFilter *New();
   
-  /*! \fn vtkTypeMacro(VTKViewer_AppendFilter, vtkAppendFilter)
-   *  \brief VTK type revision macros.
-   */
+  // VTK type revision macros.
   vtkTypeMacro(VTKViewer_AppendFilter, vtkAppendFilter)
 
   void SetDoMappingFlag(const bool theFlag);

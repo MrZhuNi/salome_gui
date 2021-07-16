@@ -76,8 +76,8 @@ GLViewer_Context::~GLViewer_Context()
 
 /*!
   Hiilights objects under cursor
-  \param x - X coord of mouse cursor
-  \param y - Y coord of mouse cursor
+  \param xi - X coord of mouse cursor
+  \param yi - Y coord of mouse cursor
   \param byCircle - true if needs round sensitive area around mouse cursor, else rectangle
   function search object rectangle which intersect with sensitive area and call object highlight method
 */
@@ -498,25 +498,25 @@ bool  GLViewer_Context::isSelected( GLViewer_Object* theObj )
   \param display - true if needs display object immediatly after inserting, else false
   \param isActive - true if needs inserting object in active list
 */
-int GLViewer_Context::insertObject( GLViewer_Object* object, bool display, bool isActive )
+int GLViewer_Context::insertObject( GLViewer_Object* theObject, bool display, bool isActive )
 {
 //  cout << "GLViewer_Context::insertObject" << endl;
 
-    if( !object )
+    if( !theObject )
         return -1;
 
     if( isActive )
     {
-        myActiveObjects.append( object );
+        myActiveObjects.append( theObject );
         if( display )
         {
-            //QRect* rect = object->getRect()->toQRect();
+            //QRect* rect = theObject->getRect()->toQRect();
             //myGLViewer2d->updateBorders( *rect );
-            myGLViewer2d->activateDrawer( object, false );
+            myGLViewer2d->activateDrawer( theObject, false );
         }
     }
     else
-        myInactiveObjects.append( object );
+        myInactiveObjects.append( theObject );
 
     return myActiveObjects.count() + myInactiveObjects.count();
 }

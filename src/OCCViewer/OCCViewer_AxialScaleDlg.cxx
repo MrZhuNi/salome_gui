@@ -78,7 +78,7 @@ OCCViewer_AxialScaleDlg::OCCViewer_AxialScaleDlg( OCCViewer_ViewWindow* view, OC
   m_sbZcoeff->setMinimumWidth( 80 );
   m_sbZcoeff->setValue( 1.0 );
 
-  // Create <Reset> button
+  // Create Reset button
   m_bReset = new QPushButton( tr( "&Reset" ), aGroupBox );
 
   // Layout widgets in the group box
@@ -96,14 +96,14 @@ OCCViewer_AxialScaleDlg::OCCViewer_AxialScaleDlg( OCCViewer_ViewWindow* view, OC
   QHBoxLayout* aHBoxLayout2 = new QHBoxLayout( aGroupBox2 );
   aHBoxLayout2->setMargin( 11 );
   aHBoxLayout2->setSpacing( 6 );
-  // Create <OK> button
+  // Create OK button
   QPushButton* m_bOk = new QPushButton( tr( "O&K" ), aGroupBox2 );
   m_bOk->setDefault( true );
   m_bOk->setAutoDefault( true );
-  // Create <Apply> button
+  // Create Apply button
   QPushButton* m_bApply = new QPushButton( tr( "&Apply" ), aGroupBox2 );
   m_bApply->setAutoDefault( true );
-  // Create <Cancel> button
+  // Create Cancel button
   QPushButton* m_bCancel = new QPushButton( tr( "&Cancel" ), aGroupBox2 );
   m_bCancel->setAutoDefault( true );
 
@@ -151,7 +151,7 @@ void OCCViewer_AxialScaleDlg::Update()
 }
 
 /*!
-  \brief Called when <OK> button is pressed
+  \brief Called when OK button is pressed
 */
 void OCCViewer_AxialScaleDlg::accept()
 {
@@ -160,7 +160,7 @@ void OCCViewer_AxialScaleDlg::accept()
 }
 
 /*!
-  \brief Called when <Apply> button is pressed
+  \brief Called when Apply button is pressed
 */
 bool OCCViewer_AxialScaleDlg::apply()
 {
@@ -175,7 +175,7 @@ bool OCCViewer_AxialScaleDlg::apply()
 }
 
 /*!
-  \brief Called when <Reset> button is pressed
+  \brief Called when Reset button is pressed
 */
 void OCCViewer_AxialScaleDlg::reset()
 {

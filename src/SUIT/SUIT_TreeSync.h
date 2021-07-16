@@ -176,8 +176,8 @@ TrgItem synchronize( const SrcItem& r1, const TrgItem& r2, const TreeData& td )
   \param first iterator pointing to the item in the list \a l from which search shoud be started
   \param last iterator pointing to the item in the list \a l the search to be finished at
   \param td functor class
-  \return iterator pointing to the item in the list \l if the correspondence is found or iterator
-     \a last if the correspondence is not found
+  \return iterator pointing to the item in the list \a l if the correspondence is found
+          or iterator \a last if the correspondence is not found
   \sa synchronize()
 */
 template <class SrcItem, class TrgItem, class TreeData>

@@ -69,12 +69,12 @@ public:
 
   //! Main interactive method. Trace mouse in viewer window
   /*!
-  *\param x - X coord of mouse cursor
-  *\param y - Y coord of mouse cursor
-  *\paran byCircle - true if needs round sensitive area around mouse cursor, else rectangle
+  *\param xi - X coord of mouse cursor
+  *\param yi - Y coord of mouse cursor
+  *\param byCircle - true if needs round sensitive area around mouse cursor, else rectangle
   *function search object rectangle which intersect with sensitive area and call object highlight method
   */
-  int                   MoveTo( int x, int y, bool byCircle = false );
+  int                   MoveTo( int xi, int yi, bool byCircle = false );
   /*! A function selecting already highlighting object by calling object method select
   *\param Append - true if new selection will be append to existing selection, false - another
   *\param byCircle - true if needs round selection area in complex object

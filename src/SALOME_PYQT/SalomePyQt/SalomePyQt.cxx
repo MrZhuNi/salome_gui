@@ -3627,7 +3627,7 @@ bool SalomePyQt::activateView( const int id )
 }
 
 /*!
-  \fn bool SalomePyQt::activateManagerAndView( const int id );
+  \fn bool SalomePyQt::activateViewManagerAndView( const int id );
   \brief Activate view manager and view: useful for a view embedded in a module main Window
   \param id window identifier
   \return \c true if operation is completed successfully and \c false otherwise
@@ -3688,7 +3688,7 @@ QWidget* SalomePyQt::getViewWidget( const int id)
 
 
 /*!
-  \fn int SalomePyQt::createView( const QString& type, bool visible = true, const int width = 0, const int height = 0 );
+  \fn int SalomePyQt::createView( const QString& type, bool visible = true, const int width = 0, const int height = 0, bool detached = false );
   \brief Create new view and activate it
   \param type viewer type
   \param visible
@@ -4697,7 +4697,7 @@ void SalomePyQt::eraseCurve( const int id, Plot2d_Curve* theCurve )
 }
 
 /*!
-  \fn void SalomePyQt::deleteCurve( Plot2d_Curve* theCurve )
+  \fn void SalomePyQt::eraseCurve( Plot2d_Curve* theCurve )
   \brief Delete theCurve from all views
   \param theCurve curve to delete
 */

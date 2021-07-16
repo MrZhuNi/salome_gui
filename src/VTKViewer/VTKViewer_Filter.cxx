@@ -49,7 +49,7 @@ VTKViewer_Filter::~VTKViewer_Filter()
  * call virtual method IsValid( const int theId ).
  * \param theActor - actor
  * \param theCellId - cell id.
- * \retval \c true - if cell id is valid, else \c false.
+ * \retval true - if cell id is valid, else \c false.
  */
 bool VTKViewer_Filter::IsValid( VTKViewer_Actor* theActor, const vtkIdType theCellId )
 {

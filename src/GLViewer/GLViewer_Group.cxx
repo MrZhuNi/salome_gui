@@ -112,7 +112,7 @@ int GLViewer_Group::removeObject( GLViewer_Object* theObject )
 
 /*!
   Dragging operation
-  \param Once is true, if this operation calls only one time for all object
+  \param once is true, if this operation calls only one time for all object
   \param x, y - dragging position
 */
 void GLViewer_Group::dragingObjects( float x, float y, bool once )

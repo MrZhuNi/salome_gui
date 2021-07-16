@@ -70,7 +70,7 @@ private:
                ViewerTypeIdActionMap; //!< maps viewer type to IdActionMap
   ViewerTypeIdActionMap myMap;        //!< viewer actions map
 
-  //! Maps key to <not_used> flag map, used for optimization.
+  //! Maps key to not_used flag map, used for optimization.
   //! All registered keys (accelerators) are stored in this map.
   QMap<int, bool> myOptMap;
 

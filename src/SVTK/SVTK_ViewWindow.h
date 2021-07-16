@@ -379,7 +379,7 @@ public slots:
   //! Redirect the request to #SVTK_Renderer::OnFitAll
   virtual void onFitAll();
 
-  //! Redirect the request to #SVTK_Renderer::OnFitSelection
+  //! Redirect the request to #SVTK_Renderer::onFitSelection
   virtual void onFitSelection();
 
   //! Redirect the request to #SVTK_Renderer::OnFitIObjects

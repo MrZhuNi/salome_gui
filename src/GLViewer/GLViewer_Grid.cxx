@@ -54,7 +54,7 @@ GLViewer_Grid::GLViewer_Grid() :
   \param winW and \param winH     - width and height of window 
   \param xSize and \param ySize   - steps along x and y direction
   \param xPan and \param yPan     - offsets along x and y direction
-  \param xScale and \param yScal  - scale factors along x and y direction
+  \param xScale and \param yScale - scale factors along x and y direction
 */
 GLViewer_Grid::GLViewer_Grid( GLfloat /*width*/, GLfloat /*height*/,
                               GLfloat /*winW*/, GLfloat /*winH*/,

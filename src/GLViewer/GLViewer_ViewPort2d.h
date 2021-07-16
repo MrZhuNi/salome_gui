@@ -146,13 +146,13 @@ public:
   //! Pass rect into selector and update
   void                   finishSelectByRect();
   
-  //! \warnign It is for ouv
+  //! \warning It is for ouv
   bool                   startPulling( GLViewer_Pnt );
-  //! \warnign It is for ouv
+  //! \warning It is for ouv
   void                   drawPulling( GLViewer_Pnt );
-  //! \warnign It is for ouv
+  //! \warning It is for ouv
   void                   finishPulling();
-  //! \warnign It is for ouv
+  //! \warning It is for ouv
   bool                   isPulling() const { return myIsPulling; }
 
   //! Returns selection by rect

@@ -46,7 +46,7 @@ class vtkRenderer;
 #endif
 
 /*! \class vtkAbstractPropPicker
- * \brief For more information see <a href="http://www.vtk.org/">VTK documentation
+ * \brief For more information see <a href="http://www.vtk.org/">VTK documentation</a>
  */
 /*! \class SVTK_AreaPicker
  * \brief Rectangular picker class.

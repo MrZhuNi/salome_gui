@@ -30,7 +30,7 @@
   \code
   #include <QtxMsgHandler.h>
   qInstallMessageHandler(QtxMsgHandler);
-  \code
+  \endcode
 
   To process Qt message implement a callback class by inheriting from
   QtxMsgHandlerCallback and override its qtMessage() function.

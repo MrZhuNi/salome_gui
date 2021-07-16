@@ -674,7 +674,7 @@ void VTKViewer_InteractorStyle::startGlobalPan()
 }
 
 
-/*!\retval \c true if needs redrawing*/
+/*!\retval true if needs redrawing*/
 bool VTKViewer_InteractorStyle::needsRedrawing()
 {
   return State == VTK_INTERACTOR_STYLE_CAMERA_ZOOM   ||

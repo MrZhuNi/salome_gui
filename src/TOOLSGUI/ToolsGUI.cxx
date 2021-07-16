@@ -55,8 +55,8 @@ bool ToolsGUI::GetVisibility( _PTR(SObject) theObj,
 
 /*!
   \brief Set visibility value of the "AttributeGraphic" attribute.
-  \param theObj object
-  \return theValue new visibility value
+  \param theEntry object entry
+  \param theValue new visibility value
   \param theId sub-object identifier
 */
 bool ToolsGUI::SetVisibility( const char* theEntry,

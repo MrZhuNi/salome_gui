@@ -293,8 +293,8 @@ void CAM_Module::studyClosed( SUIT_Study* study )
 
   Default implementation does nothing.
 
-  \param oldStudy old study
-  \param newStudy new study
+  The first parameter is the old study
+  The second parameter is the new study
 */
 void CAM_Module::studyChanged( SUIT_Study* /*oldStudy*/, SUIT_Study* /*newStudy*/ )
 {
@@ -331,7 +331,7 @@ void CAM_Module::putInfo( const QString& msg, const int msec )
     \brief Shows the notifications with spectified text, title and automatic close timeout.
     Notification will be automatically closed after specified timeout in msec. If
     timeout is zero then automatic closing doesn't performed.
-    \param text - Notification text
+    \param message - Notification text
     \param title - Notification title
     \param timeout - Notification close timeout in msec
     \return notification identifier
@@ -346,7 +346,7 @@ int CAM_Module::showNotification( const QString& message, const QString& title, 
 
 /*!
     \brief Closes the notifications with spectified text.
-    \param text - Notification text
+    \param message - Notification text
 */
 void CAM_Module::hideNotification( const QString& message )
 {
@@ -356,7 +356,7 @@ void CAM_Module::hideNotification( const QString& message )
 
 /*!
     \brief Closes the notifications with spectified identifier.
-    \param text - Notification text
+    \param id - Notification identifier
 */
 void CAM_Module::hideNotification( int id )
 {

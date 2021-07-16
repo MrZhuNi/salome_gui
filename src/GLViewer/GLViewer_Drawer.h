@@ -337,21 +337,21 @@ public:
 
   //! Draw text string
   /*!
-   *\param text              - the text string
-   *\param xPos              - x coord
-   *\param yPos              - y coord
-   *\param color             - text color
-   *\param aFont             - base font of text
-   *\param theSeparator      - letter separator
-   *\param DisplayTextFormat - text format
+   *\param text         - the text string
+   *\param xPos         - x coord
+   *\param yPos         - y coord
+   *\param color        - text color
+   *\param theFont      - base font of text
+   *\param theSeparator - letter separator
+   *\param theFormat    - text format
   */
   void                            drawText( const QString& text,
                                             GLfloat xPos,
-                                                                          GLfloat yPos,
+                                            GLfloat yPos,
                                             const QColor& color,
-                                            QFont* aFont,
+                                            QFont* theFont,
                                             int theSeparator,
-                                            DisplayTextFormat = DTF_BITMAP );
+                                            DisplayTextFormat theFormat = DTF_BITMAP );
 
   //! Draw text string
   /*!
@@ -364,8 +364,8 @@ public:
    *\param smallFont - font format
   */
   void                            drawGLText( QString text,
-                                                                            float x,
-                                                                            float y,
+                                              float x,
+                                              float y,
                                               int hPosition = GLText_Center,
                                               int vPosition = GLText_Center,
                                               QColor color = Qt::black,

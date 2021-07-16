@@ -790,7 +790,8 @@ void GLViewer_Drawer::drawTexturePart( GLuint texture,
   \param theFormat - text format (by default DTF_BITMAP)
 */
 void GLViewer_Drawer::drawText( const QString& text, GLfloat xPos, GLfloat yPos,
-                                const QColor& color, QFont* theFont, int theSeparator, DisplayTextFormat theFormat )
+                                const QColor& color, QFont* theFont, int theSeparator,
+                                DisplayTextFormat theFormat )
 {
   glColor3f( ( GLfloat )color.red() / 255, 
              ( GLfloat )color.green() / 255, 

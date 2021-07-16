@@ -170,7 +170,7 @@ void SALOME_InteractiveObject::setReference(const char* aReference)
 /*!
   Compare two objects
   \param anIO1 - first object to compare
-  \param anIO1 - second object to compare
+  \param anIO2 - second object to compare
 */
 Standard_Boolean IsEqual(const Handle(SALOME_InteractiveObject)& anIO1,
 			 const Handle(SALOME_InteractiveObject)& anIO2)

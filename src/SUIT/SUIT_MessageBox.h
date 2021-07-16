@@ -44,13 +44,13 @@ public:
   void                  setButtonText( StandardButton, const QString& );
 
   // message box with standard buttons
-  static StandardButton critical( QWidget* parent, const QString& title, const QString& text,
+  static QMessageBox::StandardButton critical( QWidget* parent, const QString& title, const QString& text,
                                   StandardButtons buttons = Ok, StandardButton defaultButton = NoButton );
-  static StandardButton warning( QWidget* parent, const QString& title, const QString& text,
+  static QMessageBox::StandardButton warning( QWidget* parent, const QString& title, const QString& text,
                                  StandardButtons buttons = Ok, StandardButton defaultButton = NoButton );
-  static StandardButton information( QWidget* parent, const QString& title, const QString& text,
+  static QMessageBox::StandardButton information( QWidget* parent, const QString& title, const QString& text,
                                      StandardButtons buttons = Ok, StandardButton defaultButton = NoButton );
-  static StandardButton question( QWidget* parent, const QString& title, const QString& text,
+  static QMessageBox::StandardButton question( QWidget* parent, const QString& title, const QString& text,
                                   StandardButtons buttons = Ok, StandardButton defaultButton = NoButton );
   
   // message boxes with one custom button

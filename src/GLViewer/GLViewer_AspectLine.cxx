@@ -41,18 +41,18 @@ GLViewer_AspectLine::GLViewer_AspectLine()
 
 /*!
   Constructor
-  \param type: 0 for normal line and 1 for strip line
-  \param width - width of line
+  \param theType - 0 for normal line and 1 for strip line
+  \param theWidth - width of line
 */
-GLViewer_AspectLine::GLViewer_AspectLine( int type, float width )
+GLViewer_AspectLine::GLViewer_AspectLine( int theType, float theWidth )
 {
     myNColor = QColor( 255, 255, 255 );
     myHColor = QColor( 0, 255, 255 );
     mySColor = QColor( 255, 0, 0 );
 
-    myLineWidth = width;
-    if( type == 1 || type == 0 )
-        myLineType = type;
+    myLineWidth = theWidth;
+    if( theType == 1 || theType == 0 )
+        myLineType = theType;
     else
         myLineType = 0;
 }
@@ -79,13 +79,13 @@ void GLViewer_AspectLine::setLineColors( QColor nc, QColor hc, QColor sc )
 
 /*!
   Sets type of line
-  \param type: 0 for normal line and 1 for strip line
+  \param theType: 0 for normal line and 1 for strip line
 */
-int GLViewer_AspectLine::setLineType( const int type )
+int GLViewer_AspectLine::setLineType( const int theType )
 {
-    if( type == 1 || type == 0 )
+    if( theType == 1 || theType == 0 )
     {
-        myLineType = type;
+        myLineType = theType;
         return 0;
     }
     return 1;
@@ -107,15 +107,15 @@ int GLViewer_AspectLine::setLineWidth( const float width )
 
 /*!
   \return colors of line
-  \param nc - variable for normal color
-  \param hc - variable for hilighting color
-  \param sc - variable for selection color
+  \param theNC - variable for normal color
+  \param theHC - variable for hilighting color
+  \param theSC - variable for selection color
 */
-void GLViewer_AspectLine::getLineColors( QColor& nc, QColor& hc, QColor& sc ) const
+void GLViewer_AspectLine::getLineColors( QColor& theNC, QColor& theHC, QColor& theSC ) const
 {
-    nc = myNColor;
-    hc = myHColor;
-    sc = mySColor;
+    theNC = myNColor;
+    theHC = myHColor;
+    theSC = mySColor;
 }
 
 /*!

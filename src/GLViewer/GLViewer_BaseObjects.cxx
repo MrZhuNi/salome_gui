@@ -693,8 +693,8 @@ void GLViewer_MarkerSet::setSelected( const TColStd_SequenceOfInteger& seq )
 }
 
 /*! Moves object by recomputing
-  \param dx        - moving along X coord
-  \param dy        - moving along Y coord
+  \param theX      - moving along X coord
+  \param theY      - moving along Y coord
   \param fromGroup - is true if this method called from group
 */
 void GLViewer_MarkerSet::moveObject( float theX, float theY, bool fromGroup )
@@ -1230,8 +1230,8 @@ void GLViewer_Polyline::exportNumbers( QList<int>& highlight,
 
 /*!
   Moves object by recomputing
-  \param dx        - moving along X coord
-  \param dy        - moving along Y coord
+  \param theX      - moving along X coord
+  \param theY      - moving along Y coord
   \param fromGroup - is true if this method called from group
 */
 void GLViewer_Polyline::moveObject( float theX, float theY, bool fromGroup )
@@ -1545,9 +1545,9 @@ GLViewer_Rect* GLViewer_TextObject::getUpdateRect()
 
 /*!
   Computes highlight presentation
-  \param x        - x coord
-  \param y        - y coord
-  \param tol      - tolerance of detecting
+  \param theX     - x coord
+  \param theY     - y coord
+  \param theTol   - tolerance of detecting
   \param isCircle - true if sensitive area of detection is round
   \return true if highlight status is changed
 */
@@ -1614,10 +1614,10 @@ GLboolean GLViewer_TextObject::unhighlight()
 
 /*!
   Selects text object
-  /param x, y - co-ordinates of mouse
-  /param tol - tolerance
-  /param rect - rectangle (in case of rectangular selection)
-  /param isFull - if it is true, then object may selected only if it lays whole in selection zone
+  \param theX, theY - co-ordinates of mouse
+  \param theTol - tolerance
+  \param rect - rectangle (in case of rectangular selection)
+  \param isFull - if it is true, then object may selected only if it lays whole in selection zone
   \param isCircle - true if sensitive area of detection is round
   \param isShift  - true if selection exec with append option
 */
@@ -1675,8 +1675,8 @@ GLboolean GLViewer_TextObject::unselect()
 
 /*!
   Moves object by recomputing
-  \param dx        - moving along X coord
-  \param dy        - moving along Y coord
+  \param theX      - moving along X coord
+  \param theY      - moving along Y coord
   \param fromGroup - is true if this method called from group
 */
 void GLViewer_TextObject::moveObject( float theX, float theY, bool fromGroup )

@@ -756,7 +756,7 @@ void SVTK_InteractorStyle::OnRightButtonDown(int ctrl,
   To handle right mouse button up event (reimplemented from vtkInteractorStyle)
 */
 void SVTK_InteractorStyle::OnRightButtonUp(int vtkNotUsed(ctrl),
-                                           int shift, 
+                                           int shift,
                                            int vtkNotUsed(x),
                                            int vtkNotUsed(y))
 {

@@ -72,7 +72,7 @@ TCollection_AsciiString DDS_DicGroup::GetName() const
 
 /*!
   \brief Get the names of all defined units systems.
-  \param theSystemsSeq returning sequence of names
+  \param theSystemSeq returning sequence of names
 */
 void DDS_DicGroup::GetUnitSystems( TColStd_SequenceOfAsciiString& theSystemSeq ) const
 {
@@ -91,7 +91,7 @@ void DDS_DicGroup::GetUnitSystems( TColStd_SequenceOfAsciiString& theSystemSeq )
   
   If units system is not found, empty string is returned.
 
-  \param make units system name
+  \param name units system name
   \return units system label
 */
 TCollection_ExtendedString DDS_DicGroup::GetUnitSystemLabel( const TCollection_AsciiString& name ) const

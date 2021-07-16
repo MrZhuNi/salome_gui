@@ -232,8 +232,8 @@ void QtxTreeView::collapseLevels( const int levels )
 }
 
 /*!
-  \brief Expand the branch specifed by the \index and all its
-  children recursively.
+  \brief Expand the branch specifed by the \a index
+         and all its children recursively.
   \param index model index to be expanded
   \sa collapseAll()
 */
@@ -243,8 +243,8 @@ void QtxTreeView::expandAll( const QModelIndex& index )
 }
 
 /*!
-  \brief Collapse the branch specifed by the \index and all its
-  children recursively.
+  \brief Collapse the branch specifed by the \a index
+         and all its children recursively.
   \param index model index to be collapsed
   \sa expandAll()
 */

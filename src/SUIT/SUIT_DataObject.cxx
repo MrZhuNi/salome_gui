@@ -274,7 +274,6 @@ void SUIT_DataObject::children( DataObjectList& lst, const bool rec ) const
 
 /*!
   \brief Get all children.
-  \override
 
   If parameter \a rec is \c true then function collects all
   the children recursively.

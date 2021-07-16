@@ -23,7 +23,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 /*!
-  \class SalomeAppTest: test suit
+  \class SalomeAppTest
+  \brief Test suit
 */
 class SalomeAppTest : public CppUnit::TestFixture
 {

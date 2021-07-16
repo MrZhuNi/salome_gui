@@ -347,7 +347,7 @@ void CloseButton::leaveEvent( QEvent *event )
 /*!
   \brief Process paint event.
   \internal
-  \param event paint event
+  The parameter is the paint event
 */
 void CloseButton::paintEvent( QPaintEvent* )
 {
@@ -3274,7 +3274,7 @@ void QtxWorkstack::splittersVisible( QWidget* wid, bool visible )
 
 /*!
   \fn void QtxWorkstack::windowActivated( QWidget* w )
-  \brief Emitted when the workstack's child widget \w is activated.
+  \brief Emitted when the workstack's child widget \a w is activated.
   \param w widget being activated
 */
 

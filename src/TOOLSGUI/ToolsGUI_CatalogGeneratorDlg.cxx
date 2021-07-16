@@ -367,7 +367,7 @@ void ToolsGUI_CatalogGeneratorDlg::onBrowseBtnClicked()
 }
 
 /*!
-  \brief Update <OK> button's state.
+  \brief Update OK button's state.
 */
 void ToolsGUI_CatalogGeneratorDlg::updateButtonState()
 {
@@ -376,7 +376,7 @@ void ToolsGUI_CatalogGeneratorDlg::updateButtonState()
 }
 
 /*!
-  \brief Called when user presses <Apply> button
+  \brief Called when user presses Apply button
 
   Performs IDL to XML file conversion using \c runIDLparser SALOME utility.
 */

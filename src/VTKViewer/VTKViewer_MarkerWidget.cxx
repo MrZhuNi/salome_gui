@@ -190,7 +190,7 @@ VTK::MarkerScale VTKViewer_MarkerWidget::markerScale() const
 }
 
 /*!
-  \bried Get currently selected custom marker's identifier.
+  \brief Get currently selected custom marker's identifier.
   For standard markers return value is VTK::MT_NONE.
 */
 int VTKViewer_MarkerWidget::markerId() const

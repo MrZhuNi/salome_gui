@@ -32,7 +32,7 @@
   Constructor
 */
 QtxListBox::QtxListBox( QWidget* parent, const char* name, WFlags f )
-: QListBox( parent, name, f ),
+: QListWidget( parent, name, f ),
 myEditor( 0 ),
 myEditIndex( -1 ),
 myEditState( false ),
@@ -116,7 +116,7 @@ void QtxListBox::setModificationEnabled( bool on )
 /*!
   \return current edited item
 */
-QListBoxItem* QtxListBox::editedItem() const
+QListWidgetItem* QtxListBox::editedItem() const
 {
   return item( editedIndex() );
 }
@@ -159,7 +159,7 @@ void QtxListBox::startEdition( const int idx )
   Starts edition of item
   \param item - item to be edited
 */
-void QtxListBox::startEdition( const QListBoxItem* item )
+void QtxListBox::startEdition( const QListWidgetItem* item )
 {
   startEdition( index( item ) );
 }
@@ -215,7 +215,7 @@ void QtxListBox::ensureItemVisible( const int idx )
   Ensures that the item is visible.
   \param item - item to be made visible
 */
-void QtxListBox::ensureItemVisible( const QListBoxItem* item )
+void QtxListBox::ensureItemVisible( const QListWidgetItem* item )
 {
   ensureItemVisible( index( item ) );
 }
@@ -275,11 +275,11 @@ void QtxListBox::moveItemToBottom( const int idx )
 */
 void QtxListBox::moveItem( const int idx, const int step )
 {
-  QListBoxItem* i = item( idx );
+  QListWidgetItem* i = item( idx );
   if ( !i || step == 0 )
     return;
 
-  QListBoxItem* cur = item( currentItem() );
+  QListWidgetItem* cur = item( currentItem() );
 
   takeItem( i );
   insertItem( i, QMAX( 0, idx + step ) );
@@ -340,7 +340,7 @@ void QtxListBox::deleteItem( const int i )
 */
 void QtxListBox::setContentsPos( int x, int y )
 {
-  QListBox::setContentsPos( x, y );
+  QListWidget::setContentsPos( x, y );
 
   updateEditor();
 }
@@ -365,7 +365,7 @@ bool QtxListBox::eventFilter( QObject* o, QEvent* e )
     }
   }
 
-  return QListBox::eventFilter( o, e );
+  return QListWidget::eventFilter( o, e );
 }
 
 /*!
@@ -387,7 +387,7 @@ void QtxListBox::keyPressEvent( QKeyEvent* e )
   else if ( e->key() == Key_Delete && e->state() & ControlButton )
     deleteItem( currentItem() );
   else
-    QListBox::keyPressEvent( e );
+    QListWidget::keyPressEvent( e );
 }
 
 /*!
@@ -395,7 +395,7 @@ void QtxListBox::keyPressEvent( QKeyEvent* e )
 */
 void QtxListBox::viewportResizeEvent( QResizeEvent* e )
 {
-  QListBox::viewportResizeEvent( e );
+  QListWidget::viewportResizeEvent( e );
 
   updateEditor();
 }
@@ -408,7 +408,7 @@ void QtxListBox::mouseDoubleClickEvent( QMouseEvent* e )
   if ( isEditEnabled() )
     startEdition( itemAt( e->pos() ) );
   else
-    QListBox::mouseDoubleClickEvent( e );
+    QListWidget::mouseDoubleClickEvent( e );
 }
 
 /*!

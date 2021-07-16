@@ -562,7 +562,7 @@ bool QtxPathListEdit::eventFilter( QObject* o, QEvent* e )
 }
 
 /*!
-  \brief Called when <Insert> button is clicked.
+  \brief Called when Insert button is clicked.
 
   Inserts new empty line to the list and sets input focus to it.
 
@@ -587,7 +587,7 @@ void QtxPathListEdit::onInsert( bool /*on*/ )
 }
 
 /*!
-  \brief Called when <Delete> button is clicked.
+  \brief Called when Delete button is clicked.
 
   Removes currently selected path item.
   
@@ -603,7 +603,7 @@ void QtxPathListEdit::onDelete( bool )
 }
 
 /*!
-  \brief Called when <Up> button is clicked.
+  \brief Called when Up button is clicked.
 
   Move currently selected path item up to one row in the paths list.
 
@@ -625,7 +625,7 @@ void QtxPathListEdit::onUp( bool )
 }
 
 /*!
-  \brief Called when <Down> button is clicked.
+  \brief Called when Down button is clicked.
 
   Move currently selected path item down to one row in the paths list.
 

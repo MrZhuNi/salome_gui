@@ -138,7 +138,7 @@ void SUIT_DataBrowser::setUpdateModified( const bool on )
 }
 
 /*!
-  \brief Update object browser starting from the object \obj;
+  \brief Update object browser starting from the object \a obj;
   open all branches automatically if \a autoOpen is \c true.
   \param obj starting object for updating
   \param autoOpen if \c true automatically open branches

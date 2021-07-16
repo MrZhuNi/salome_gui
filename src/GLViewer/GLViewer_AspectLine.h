@@ -36,7 +36,7 @@
 #endif
 
 /*! 
- \Class GLViewer_AspectLine
+ \class GLViewer_AspectLine
  Substitution of Prs2d_AspectLine for OpenGL
 */
 

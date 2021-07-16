@@ -48,7 +48,7 @@ class SVTK_EXPORT SVTK_Viewer : public SVTK_ViewModelBase, public SALOME_View
 
 public:
   /*! supported gradient types */
-  enum { 
+  enum {
     HorizontalGradient,
     VerticalGradient,
     FirstDiagonalGradient,
@@ -184,7 +184,7 @@ public:
 
   /* Reimplemented from SALOME_View */
 
-  //! See #SALOME_View::Display( const SALOME_Prs* )
+  //! See #SALOME_View::Display( const SALOME_VTKPrs* )
   void Display( const SALOME_VTKPrs* ); 
 
   //! See #SALOME_View::Erase( const SALOME_VTKPrs*, const bool = false )
@@ -193,13 +193,13 @@ public:
   //! See #SALOME_View::EraseAll( SALOME_Displayer*, const bool = false )
   void EraseAll( SALOME_Displayer*, const bool = false );
 
-  //! See #SALOME_View::getVisible( SALOME_ListIO& )
+  //! See #SALOME_View::GetVisible( SALOME_ListIO& )
   virtual void GetVisible( SALOME_ListIO& );
 
   //! See #SALOME_View::CreatePrs( const char* entry = 0 )
   SALOME_Prs* CreatePrs( const char* entry = 0 );
 
-  //! See #SALOME_View::isVisible( const Handle(SALOME_InteractiveObject)& )
+  //! See #SALOME_View::isVisible( const Handle<SALOME_InteractiveObject>& )
   virtual bool isVisible( const Handle(SALOME_InteractiveObject)& );
 
   //! See #SALOME_View::Repaint()

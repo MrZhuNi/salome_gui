@@ -621,7 +621,7 @@ FieldDim GLViewer_LineField::invertDim( FieldDim theFD )
 /*!
   \return line list
   \param theIndex - index in list
-  \param tehFD - dimension
+  \param theFD - dimension
 */
 GLViewer_LineList* GLViewer_LineField::getLine( int theIndex, FieldDim theFD )
 {

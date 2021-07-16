@@ -109,7 +109,7 @@ public:
 #endif
   
   /*! Sets Arrow actor.
-   * \param theLabelActor - VTKViewer_UnScaledActor
+   * \param theArrowActor - VTKViewer_UnScaledActor
    */
   void SetArrowActor(vtkFollower* theArrowActor);
 
