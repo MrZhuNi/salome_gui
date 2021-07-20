@@ -38,8 +38,8 @@ SET(_link_LIBRARIES ${PLATFORM_LIBS} ${QT_LIBRARIES} qtx ObjBrowser)
 
 # header files / to be processed by moc
 SET(_moc_HEADERS
-  LightApplication.h
-  LightDesktop.h
+  DummyApplication.h
+  DummyDesktop.h
 )
 
 # header files / no moc processing
@@ -47,16 +47,16 @@ SET(_other_HEADERS
 )
 
 # header files / to install
-SET(lightapplication_HEADERS ${_moc_HEADERS} ${_other_HEADERS})
+SET(dummyapplication_HEADERS ${_moc_HEADERS} ${_other_HEADERS})
 
 # --- resources ---
 
 # resource files / to be processed by lrelease
 SET(_ts_RESOURCES
-  resources/LightApplication_msg_en.ts
-  resources/LightApplication_msg_fr.ts
-  resources/LightApplication_msg_ja.ts
-  resources/LightApplication_images.ts
+  resources/DummyApplication_msg_en.ts
+  resources/DummyApplication_msg_fr.ts
+  resources/DummyApplication_msg_ja.ts
+  resources/DummyApplication_images.ts
 )
 
 # resource files / static
@@ -73,20 +73,20 @@ QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
 
 # sources / static
 SET(_other_SOURCES
-  LightApplication.cxx
-  LightDesktop.cxx
+  DummyApplication.cxx
+  DummyDesktop.cxx
 )
 
 # sources / to compile
-SET(lightapplication_SOURCES ${_other_SOURCES} ${_moc_SOURCES})
+SET(dummyapplication_SOURCES ${_other_SOURCES} ${_moc_SOURCES})
 
 # --- rules ---
 
-ADD_LIBRARY(lightapplication ${lightapplication_SOURCES})
-TARGET_LINK_LIBRARIES(lightapplication ${_link_LIBRARIES})
-INSTALL(TARGETS lightapplication EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
+ADD_LIBRARY(dummyapplication ${dummyapplication_SOURCES})
+TARGET_LINK_LIBRARIES(dummyapplication ${_link_LIBRARIES})
+INSTALL(TARGETS dummyapplication EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
 
-INSTALL(FILES ${lightapplication_HEADERS} DESTINATION ${SALOME_INSTALL_HEADERS})
+INSTALL(FILES ${dummyapplication_HEADERS} DESTINATION ${SALOME_INSTALL_HEADERS})
 QT_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_GUI_INSTALL_RES_DATA}")
 
 INSTALL(FILES ${_other_RESOURCES} DESTINATION ${SALOME_GUI_INSTALL_RES_DATA})

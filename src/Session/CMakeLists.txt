@@ -35,7 +35,7 @@ INCLUDE_DIRECTORIES(
   ${PROJECT_SOURCE_DIR}/src/SUIT
   ${PROJECT_SOURCE_DIR}/src/Event
   ${PROJECT_SOURCE_DIR}/src/Style
-  ${PROJECT_SOURCE_DIR}/src/LightApplication
+  ${PROJECT_SOURCE_DIR}/src/DummyApplication
   ${PROJECT_SOURCE_DIR}/src/STD
   ${PROJECT_SOURCE_DIR}/src/CAM
   ${PROJECT_SOURCE_DIR}/src/OBJECT
@@ -69,7 +69,7 @@ SET(_link_LIBRARIES
   ${KERNEL_SalomeLauncher}
   ${KERNEL_Registry}
   ${KERNEL_SALOMEBasics}
-  qtx lightapplication suit Event SalomeStyle SalomeApp SalomeIDLGUI
+  qtx dummyapplication suit Event SalomeStyle SalomeApp SalomeIDLGUI
 )
 
 # --- headers ---

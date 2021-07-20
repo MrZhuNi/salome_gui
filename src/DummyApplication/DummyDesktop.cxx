@@ -21,7 +21,7 @@
 //
 
 #include <Container_init_python.hxx> // this include must be the first one as it includes Python.h
-#include "LightDesktop.h"
+#include "DummyDesktop.h"
 
 #include "utilities.h"
 
@@ -54,7 +54,7 @@
 /*!
   Constructor.
 */
-LightDesktop::LightDesktop()
+DummyDesktop::DummyDesktop()
 : QtxMainWindow()
 {
   myMenuMgr = new QtxActionMenuMgr( this );
@@ -67,30 +67,30 @@ LightDesktop::LightDesktop()
 /*!
   Destructor.
 */
-LightDesktop::~LightDesktop()
+DummyDesktop::~DummyDesktop()
 {
 
 }
 
-void LightDesktop::createMenus()
+void DummyDesktop::createMenus()
 {
   //QPushButton *mybutton = new QPushButton("Test", this);
-  //connect(mybutton, &QPushButton::released, this, &LightDesktop::RunScript);
+  //connect(mybutton, &QPushButton::released, this, &DummyDesktop::RunScript);
 
   //this->setCentralWidget(mybutton);
   QMenu *fileMenu = menuBar()->addMenu("File");
-  fileMenu->addAction("Open File", this, &LightDesktop::RunScript, QKeySequence::Open);
+  fileMenu->addAction("Open File", this, &DummyDesktop::RunScript, QKeySequence::Open);
   fileMenu->addAction("Dummy", this, SLOT( Dummy()), QKeySequence::New);
 }
 
-void LightDesktop::Dummy()
+void DummyDesktop::Dummy()
 {
   QMessageBox msgBox;
   msgBox.setText("Dummy text");
   msgBox.exec();
 }
 
-void LightDesktop::RunScript()
+void DummyDesktop::RunScript()
 {
   QString fileName = QFileDialog::getOpenFileName(this,
     tr("Open Python File"), "/home/B61570/work_in_progress/salome2810", "Python Files (*.py)");

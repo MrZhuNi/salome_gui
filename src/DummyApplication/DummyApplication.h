@@ -20,27 +20,27 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-#ifndef LIGHTAPPLICATION_H
-#define LIGHTAPPLICATION_H
+#ifndef DUMMYAPPLICATION_H
+#define DUMMYAPPLICATION_H
 
-#include "LightDesktop.h"
+#include "DummyDesktop.h"
 
 #include <QObject>
 
 
-class LightApplication : public QObject
+class DummyApplication : public QObject
 {
   Q_OBJECT
 
 public:
-  LightApplication();
-  virtual ~LightApplication();
+  DummyApplication();
+  virtual ~DummyApplication();
 
   //! Shows the application's main widget. For non GUI application must be redefined.
   virtual void          start();
 
 private:
-  LightDesktop * myDesktop = 0;
+  DummyDesktop * myDesktop = 0;
 
 };
 

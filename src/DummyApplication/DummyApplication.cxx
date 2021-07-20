@@ -20,22 +20,22 @@
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
 
-#include "LightApplication.h"
-#include "LightDesktop.h"
+#include "DummyApplication.h"
+#include "DummyDesktop.h"
 
 /*!
   Default constructor
 */
-LightApplication::LightApplication()
+DummyApplication::DummyApplication()
 : QObject( 0 )
 {
-  myDesktop = new LightDesktop();
+  myDesktop = new DummyDesktop();
 }
 
 /*!
   Destructor
 */
-LightApplication::~LightApplication()
+DummyApplication::~DummyApplication()
 {
 
 }
@@ -43,7 +43,7 @@ LightApplication::~LightApplication()
 /*!
   Shows the application's main widget. For non GUI application must be redefined.
 */
-void LightApplication::start()
+void DummyApplication::start()
 {
   myDesktop->show();
 }

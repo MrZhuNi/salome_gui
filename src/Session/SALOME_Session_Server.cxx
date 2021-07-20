@@ -56,7 +56,7 @@
 #include "SUIT_Session.h"
 #include "SUIT_Tools.h"
 
-#include "LightApplication.h"
+#include "DummyApplication.h"
 
 #include <SALOMEconfig.h>
 #include CORBA_SERVER_HEADER(SALOME_Session)
@@ -733,7 +733,7 @@ int AbstractGUIAppMain(int argc, char **argv)
       MESSAGE("creation SUIT_Application");
       MESSAGE(NamingServiceImplementation::LibName );
       //SUIT_Application *aGUIApp = aGUISession->startApplication(NamingServiceImplementation::LibName, 0, 0);
-      LightApplication *aGUIApp = new LightApplication();
+      DummyApplication *aGUIApp = new DummyApplication();
       aGUIApp->start();
 
       if (aGUIApp)

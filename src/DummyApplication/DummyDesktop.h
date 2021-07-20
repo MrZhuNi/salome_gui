@@ -19,8 +19,8 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-#ifndef LIGHTDESKTOP_H
-#define LIGHTDESKTOP_H
+#ifndef DUMMYDESKTOP_H
+#define DUMMYDESKTOP_H
 
 #include <QtxMainWindow.h>
 
@@ -28,13 +28,13 @@ class QtxLogoMgr;
 class QtxActionMenuMgr;
 class QtxActionToolMgr;
 
-class LightDesktop : public QtxMainWindow
+class DummyDesktop : public QtxMainWindow
 {
   Q_OBJECT
 
 public:
-  LightDesktop();
-  virtual ~LightDesktop();
+  DummyDesktop();
+  virtual ~DummyDesktop();
 
   void RunScript();
   void Dummy();
