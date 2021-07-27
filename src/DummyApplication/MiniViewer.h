@@ -19,34 +19,35 @@
 //
 // See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
-#ifndef DUMMYDESKTOP_H
-#define DUMMYDESKTOP_H
 
-#include <QtxMainWindow.h>
-#include "MiniViewer.h"
+#ifndef MINIVIEWER_H
+#define MINIVIEWER_H
 
-class QtxLogoMgr;
-class QtxActionMenuMgr;
-class QtxActionToolMgr;
+#include <QVTKOpenGLNativeWidget.h>
+#include <vtkDataSet.h>
+#include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
 
-class DummyDesktop : public QtxMainWindow
-{
-  Q_OBJECT
-
+class MiniViewer : public QVTKOpenGLNativeWidget {
+    Q_OBJECT
 public:
-  DummyDesktop();
-  virtual ~DummyDesktop();
+    explicit MiniViewer(QWidget* parent = nullptr);
 
-  void RunScript();
-  void Dummy();
-  void OpenMeshFile();
-  void createMenus();
+    //! Add a data set to the scene
+    /*!
+    \param[in] dataSet The data set to add
+  */
+    void addDataSet(vtkSmartPointer<vtkDataSet> dataSet);
+
+    //! Remove the data set from the scene
+    void removeDataSet();
+
+public slots:
+    //! Zoom to the extent of the data set in the scene
+    void zoomToExtent();
 
 private:
-  QtxActionMenuMgr*        myMenuMgr;
-  QtxActionToolMgr*        myToolMgr;
-  QtxLogoMgr*              myLogoMgr;
-  MiniViewer*              myViewer;
+    vtkSmartPointer<vtkRenderer> m_renderer;
 };
 
-#endif
+#endif // MINIVIEWER_H

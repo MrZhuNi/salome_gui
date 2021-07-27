@@ -25,6 +25,8 @@
 
 #include "utilities.h"
 
+#include <vtkDataSetReader.h>
+
 
 #include <QtxLogoMgr.h>
 #include <QtxActionMenuMgr.h>
@@ -60,8 +62,10 @@ DummyDesktop::DummyDesktop()
   myMenuMgr = new QtxActionMenuMgr( this );
   myToolMgr = new QtxActionToolMgr( this );
   myLogoMgr = new QtxLogoMgr( menuBar() );
+  myViewer = new MiniViewer(this);
 
   createMenus();
+
 }
 
 /*!
@@ -77,17 +81,10 @@ void DummyDesktop::createMenus()
   //QPushButton *mybutton = new QPushButton("Test", this);
   //connect(mybutton, &QPushButton::released, this, &DummyDesktop::RunScript);
 
-  //this->setCentralWidget(mybutton);
+  this->setCentralWidget(myViewer);
   QMenu *fileMenu = menuBar()->addMenu("File");
   fileMenu->addAction("Open File", this, &DummyDesktop::RunScript, QKeySequence::Open);
-  fileMenu->addAction("Dummy", this, SLOT( Dummy()), QKeySequence::New);
-}
-
-void DummyDesktop::Dummy()
-{
-  QMessageBox msgBox;
-  msgBox.setText("Dummy text");
-  msgBox.exec();
+  fileMenu->addAction("Open Mesh File", this, &DummyDesktop::OpenMeshFile );
 }
 
 void DummyDesktop::RunScript()
@@ -124,4 +121,32 @@ void DummyDesktop::RunScript()
   //std::cerr << "i: " << i << std::endl;
   // Release GIL
   PyGILState_Release(gstate);
+}
+
+void DummyDesktop::OpenMeshFile()
+{
+  // Getting file to display
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), "",
+      "VTK Files (*.vtk)");
+
+  // Open file
+  QFile file(fileName);
+  file.open(QIODevice::ReadOnly);
+
+  // Return on Cancel
+  if (!file.exists())
+      return;
+
+  // Create reader
+  vtkSmartPointer<vtkDataSetReader> reader = vtkSmartPointer<vtkDataSetReader>::New();
+  reader->SetFileName(fileName.toStdString().c_str());
+
+  // Read the file
+  reader->Update();
+
+  // Add data set to 3D view
+  vtkSmartPointer<vtkDataSet> dataSet = reader->GetOutput();
+  if (dataSet != nullptr) {
+      myViewer->addDataSet(reader->GetOutput());
+  }
 }

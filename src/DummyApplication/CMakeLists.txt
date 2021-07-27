@@ -24,6 +24,9 @@ INCLUDE(UseQtExt)
 # additional include directories
 INCLUDE_DIRECTORIES(
   ${QT_INCLUDES}
+  ${PROJECT_SOURCE_DIR}/src/SUIT
+  ${PROJECT_SOURCE_DIR}/src/VTKViewer
+  ${OpenCASCADE_INCLUDE_DIR}
   ${PROJECT_SOURCE_DIR}/src/Qtx
   ${PROJECT_SOURCE_DIR}/src/ObjBrowser
 )
@@ -32,7 +35,12 @@ INCLUDE_DIRECTORIES(
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 # libraries to link to
-SET(_link_LIBRARIES ${PLATFORM_LIBS} ${QT_LIBRARIES} qtx ObjBrowser)
+SET(_link_LIBRARIES
+  ${PLATFORM_LIBS}
+  ${QT_LIBRARIES}
+  qtx
+  ObjBrowser
+  VTK::GUISupportQt)
 
 # --- headers ---
 
@@ -40,6 +48,7 @@ SET(_link_LIBRARIES ${PLATFORM_LIBS} ${QT_LIBRARIES} qtx ObjBrowser)
 SET(_moc_HEADERS
   DummyApplication.h
   DummyDesktop.h
+  MiniViewer.h
 )
 
 # header files / no moc processing
@@ -75,6 +84,7 @@ QT_WRAP_MOC(_moc_SOURCES ${_moc_HEADERS})
 SET(_other_SOURCES
   DummyApplication.cxx
   DummyDesktop.cxx
+  MiniViewer.cxx
 )
 
 # sources / to compile
