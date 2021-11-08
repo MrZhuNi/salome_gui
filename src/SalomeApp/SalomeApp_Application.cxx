@@ -1005,7 +1005,12 @@ void SalomeApp_Application::onLoadScript( )
     PyConsole_Console* pyConsole = pythonConsole();
 
     if ( pyConsole )
-      pyConsole->exec( command );
+    {
+      std::string aProperty("IsLoadedScript");
+      setProperty(aProperty.c_str(), true);
+      pyConsole->exec(command);
+      setProperty(aProperty.c_str(), false);
+    }
 #endif
   }
 }
