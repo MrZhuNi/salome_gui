@@ -57,6 +57,7 @@
 #include <map>
 #include <set>
 
+#include "Utils_SALOME_Exception.hxx"
 #include "utilities.h"
 
 #if defined __GNUC__
@@ -166,6 +167,25 @@ struct vtkExcludedFaces
   ~vtkExcludedFaces() { delete this->Links; }
 };
 
+// fill myVTK2ObjIds to get the correspondence between vtk ids (displayed edges and faces
+// computed in vtkGeometryFilter::UnstructuredGridExecute) and original cell ids (mesh cells)
+void VTKViewer_GeometryFilter
+::FillVTK2ObjIds(vtkPolyData *output) {
+
+  vtkDataArray* vtkOriginalCellIds = output->GetCellData()->GetArray("vtkOriginalCellIds");
+
+  if (vtkOriginalCellIds == nullptr)
+    throw SALOME_Exception("vtkOriginalCellIds is null. Something is wrong.");
+
+  const vtkIdType numTuples = vtkOriginalCellIds->GetNumberOfTuples();
+  myVTK2ObjIds.resize(numTuples);
+
+  // copy ids of vtkOriginalCellIds into myVTK2ObjIds
+  vtkIdTypeArray *vtkOriginalCellIdsInt(vtkIdTypeArray::SafeDownCast(vtkOriginalCellIds));
+  vtkIdType* origIds(vtkOriginalCellIdsInt->GetPointer(0));
+  myVTK2ObjIds.assign(origIds, origIds+numTuples);
+}
+
 int
 VTKViewer_GeometryFilter
 ::RequestData(
@@ -217,9 +237,16 @@ VTKViewer_GeometryFilter
           return this->vtkGeometryFilter::PolyDataExecute(input, output, &exc);
        case VTK_UNSTRUCTURED_GRID:
          {
-          vtkUnstructuredGrid* inputUnstrctured = static_cast<vtkUnstructuredGrid*>(input);
+          vtkUnstructuredGrid* inputUnstructured = static_cast<vtkUnstructuredGrid*>(input);
+
+          // The "info", is passed to provide information about the unstructured grid. This
+          // is done to avoid repeated evaluations of "info" in the vtkGeometryFilter and
+          // the vtkDataSetSurfaceFilter (which vtkGeometryFilter  might delagate to in case
+          // of nonlinear data).
+          vtkGeometryFilterHelper* info = vtkGeometryFilterHelper::CharacterizeUnstructuredGrid(inputUnstructured);
+
           bool NotFitForDelegation = false;
-          if ( vtkUnsignedCharArray* types = inputUnstrctured->GetCellTypesArray() )
+          if ( vtkUnsignedCharArray* types = inputUnstructured->GetCellTypesArray() )
             {
              std::set<vtkIdType> ElementsNotFitToDelegate;
 
@@ -251,7 +278,21 @@ VTKViewer_GeometryFilter
          if ( NotFitForDelegation )
             return this->UnstructuredGridExecute(input, output, outInfo);
          else
-            return this->vtkGeometryFilter::UnstructuredGridExecute(input, output, nullptr, &exc);
+           {
+           int ret;
+            if ( myStoreMapping ) {
+              // pass through cell ids to get original cell ids
+              this->PassThroughCellIds = true;
+              ret = this->vtkGeometryFilter::UnstructuredGridExecute(input, output, info, &exc);
+              FillVTK2ObjIds(output);
+            }
+            else {
+              // no need to get original cell ids
+              this->PassThroughCellIds = false;
+              ret = this->vtkGeometryFilter::UnstructuredGridExecute(input, output, info, &exc);
+            }
+            return ret;
+           }
          }
      }
 
