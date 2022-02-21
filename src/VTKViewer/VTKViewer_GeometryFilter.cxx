@@ -57,7 +57,6 @@
 #include <map>
 #include <set>
 
-#include "Utils_SALOME_Exception.hxx"
 #include "utilities.h"
 
 #if defined __GNUC__
@@ -175,7 +174,7 @@ void VTKViewer_GeometryFilter
   vtkDataArray* vtkOriginalCellIds = output->GetCellData()->GetArray("vtkOriginalCellIds");
 
   if (vtkOriginalCellIds == nullptr)
-    throw SALOME_Exception("vtkOriginalCellIds is null. Something is wrong.");
+    throw std::runtime_error("vtkOriginalCellIds is null. Something is wrong.");
 
   const vtkIdType numTuples = vtkOriginalCellIds->GetNumberOfTuples();
   myVTK2ObjIds.resize(numTuples);
