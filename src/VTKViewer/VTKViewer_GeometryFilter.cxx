@@ -108,8 +108,8 @@ VTKViewer_GeometryFilter
   static int forceDelegateToVtk = -1;
   if ( forceDelegateToVtk < 0 )
   {
-    QString env = Qtx::getenv( "SALOME_ACTOR_DELEGATE_TO_VTK" );
-    forceDelegateToVtk = (int)(env == "1");
+    QString env = Qtx::getenv( "SALOME_ACTOR_DO_NOT_DELEGATE_TO_VTK" );
+    forceDelegateToVtk = (int)(env != "1");
   }
   delegateToVtk = forceDelegateToVtk > 0;
 }
