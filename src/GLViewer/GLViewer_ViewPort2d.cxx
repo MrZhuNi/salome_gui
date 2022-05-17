@@ -1640,17 +1640,27 @@ void GLViewer_ViewPort2d::onMaybeTip( QPoint thePoint, QString& theText, QFont& 
           cur_height = aBitmap->height();
       }
 
-      //temp
+      // See the similar code in CATHAREGUI_Module::onVtkToolTip().
       QSize aSize = QLabel( theText, 0 ).sizeHint();
       theTextReg = QRect( thePoint.x(), thePoint.y() + cur_height,
                           aSize.width(), aSize.height() );
       theRegion = QRect( thePoint.x(), thePoint.y(), 1, 1 );
 
+      int aDesktopWidth = QApplication::desktop()->screenGeometry().width();
+      int aDesktopHeight = QApplication::desktop()->screenGeometry().height();
+
+      int aGap = 10; // additional small shift, used to move the tooltip further from the screen border
       QPoint aBottomRightGlobal = mapToGlobal( theTextReg.bottomRight() );
-      int dx = aBottomRightGlobal.x() - QApplication::desktop()->screenGeometry().width();
-      int dy = aBottomRightGlobal.y() - QApplication::desktop()->screenGeometry().height();
-      dx = dx < 0 ? 0 : -dx;
-      dy = dy < 0 ? 0 : -dy;
+      int dx = aBottomRightGlobal.x() - aDesktopWidth;
+      int dy = aBottomRightGlobal.y() - aDesktopHeight;
+      dx = dx < 0 ? 0 : -dx - aGap;
+      dy = dy < 0 ? 0 : -dy - aGap;
+
+      // GUITHARE issue "21075: Probe tooltip appears on the 2nd screen".
+      QPoint aTopLeftGlobal = mapToGlobal( theTextReg.topLeft() );
+      if( aTopLeftGlobal.x() > aDesktopWidth ) // the tooltip is entirely on the second desktop
+        dx = 0;
+
       theTextReg.translate( dx, dy );
     }
   }
