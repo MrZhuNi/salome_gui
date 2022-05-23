@@ -34,8 +34,14 @@
 #include <KERNEL_version.h>
 #include <GUI_version.h>
 
+#include <QAction>
 #include <QApplication>
+#include <QDir>
+#include <QFileInfo>
+#include <QMutex>
+#include <QMutexLocker>
 #include <QRegExp>
+#include <QTextStream>
 
 #ifdef WIN32
 #include <windows.h>
@@ -935,3 +941,81 @@ bool CAM_Application::abortAllOperations()
   }
   return aborted;
 }
+
+/*!
+  \brief Log GUI event.
+  \param eventDescription GUI event description.
+*/
+void CAM_Application::logUserEvent( const QString& eventDescription )
+{
+  static QString guiLogFile; // null string means log file was not initialized yet
+  static QMutex aGUILogMutex;
+
+  if ( guiLogFile.isNull() )
+  {
+    // log file was not initialized yet, try to do that by parsing command line arguments
+    guiLogFile = ""; // empty string means initialization was done but log file was not set
+    QStringList args = QApplication::arguments();
+    for ( int i = 1; i < args.count(); i++ )
+    {
+      QRegExp rxs ( "--gui-log-file=(.+)" );
+      if ( rxs.indexIn( args[i] ) >= 0 && rxs.capturedTexts().count() > 1 )
+      {
+        QString file = rxs.capturedTexts()[1];
+        QFileInfo fi ( file );
+        if ( !fi.isDir() && fi.dir().exists() )
+	{
+	  guiLogFile = fi.absoluteFilePath();
+	  if ( fi.exists() ) {
+	    QFile file ( guiLogFile );
+	    file.remove(); // remove probably existing log file, to start with empty one
+          }
+        }
+        break;
+      }
+    }
+  }
+  if ( !guiLogFile.isEmpty() ) // non-empty string means log file was already initialized
+  {
+    QMutexLocker aLocker( &aGUILogMutex );
+    QFile file ( guiLogFile );
+    if ( file.open( QFile::Append ) ) // append to log file
+    {
+      QTextStream stream( &file );
+      stream << eventDescription << endl;
+      file.close();
+    }
+  }
+}
+
+/*!
+  \brief Log given action.
+  \param action GUI action being logged.
+  \param moduleName optional name of module, owning an action
+*/
+void CAM_Application::logAction( QAction* action, const QString& moduleName )
+{
+  QString text = action->toolTip();
+  if ( text.isEmpty() )
+    text = action->text();
+  if ( text.isEmpty() )
+    text = action->iconText();
+  if ( !text.isEmpty() )
+  {
+    QStringList message;
+    if ( !moduleName.isEmpty() )
+      message << moduleName;
+    if ( action->isCheckable() )
+    {
+      message << tr( "ACTION_TOGGLED" );
+      message << ( action->isChecked() ? tr( "ACTION_ON" ) : tr( "ACTION_OFF" ) );
+    }
+    else
+    {
+      message << tr( "ACTION_TRIGGERED" );
+    }
+    message << text;
+    logUserEvent( message.join( ": " ) );
+  }
+}
+
