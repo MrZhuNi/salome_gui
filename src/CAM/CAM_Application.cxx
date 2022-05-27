@@ -458,17 +458,21 @@ bool CAM_Application::activateModule( CAM_Module* mod )
 
   if ( myModule )
   {
-    if ( !myModule->deactivateModule( activeStudy() ) )
+    if ( myModule->deactivateModule( activeStudy() ) )
     {
-      // ....      
-    }    
+      logUserEvent( tr( "MODULE_DEACTIVATED" ).arg( myModule->moduleName() ) );
+    }
   }     
   myModule = mod;
 
   if ( myModule ){
     // Connect the module to the active study
     myModule->connectToStudy( dynamic_cast<CAM_Study*>( activeStudy() ) );
-    if ( !myModule->activateModule( activeStudy() ) )
+    if ( myModule->activateModule( activeStudy() ) )
+    {
+      logUserEvent( tr( "MODULE_ACTIVATED" ).arg( myModule->moduleName() ) );
+    }
+    else
     {
       myModule->setMenuShown( false );
       myModule->setToolShown( false );
