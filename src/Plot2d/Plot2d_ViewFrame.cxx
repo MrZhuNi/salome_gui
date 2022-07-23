@@ -2941,12 +2941,29 @@ bool Plot2d_ViewFrame::print( const QString& file, const QString& format ) const
 */
 QString Plot2d_ViewFrame::getVisualParameters()
 {
+  QStringList aParamList;
+
+  aParamList << QString().sprintf( "%d", myXMode );
+  aParamList << QString().sprintf( "%d", myYMode );
+  aParamList << QString().sprintf( "%d", mySecondY );
+
   double xmin, xmax, ymin, ymax, y2min, y2max;
   getFitRanges( xmin, xmax, ymin, ymax, y2min, y2max );
-  QString retStr;
-  retStr.sprintf( "%d*%d*%d*%.12e*%.12e*%.12e*%.12e*%.12e*%.12e", myXMode,
-		  myYMode, mySecondY, xmin, xmax, ymin, ymax, y2min, y2max );
-  return retStr; 
+  aParamList << QString().sprintf( "%.12e", xmin );
+  aParamList << QString().sprintf( "%.12e", xmax );
+  aParamList << QString().sprintf( "%.12e", ymin );
+  aParamList << QString().sprintf( "%.12e", ymax );
+  aParamList << QString().sprintf( "%.12e", y2min );
+  aParamList << QString().sprintf( "%.12e", y2max );
+
+  for( int aTitleIndex = MainTitle; aTitleIndex <= Y2Axis; aTitleIndex++ )
+  {
+    QString aTitle = getTitle( (ObjectType)aTitleIndex );
+    aParamList << aTitle;
+  }
+
+  QString aString = aParamList.join( "*" );
+  return aString;
 }
 
 /*!
@@ -2954,32 +2971,50 @@ QString Plot2d_ViewFrame::getVisualParameters()
 */
 void Plot2d_ViewFrame::setVisualParameters( const QString& parameters )
 {
-  QStringList paramsLst = parameters.split( '*' );
-  if ( paramsLst.size() == 9 ) {
-    double xmin, xmax, ymin, ymax, y2min, y2max;
-    myXMode = paramsLst[0].toInt();
-    myYMode = paramsLst[1].toInt();
-    mySecondY = (bool)paramsLst[2].toInt();
-    xmin =  paramsLst[3].toDouble();
-    xmax =  paramsLst[4].toDouble();
-    ymin =  paramsLst[5].toDouble();
-    ymax =  paramsLst[6].toDouble();
-    y2min = paramsLst[7].toDouble();
-    y2max = paramsLst[8].toDouble();
+  QStringList aParamList = parameters.split( "*" );
+  int aParamCount = aParamList.count();
 
-    if (mySecondY)
+  int anIndex = 0;
+
+  if( aParamCount >= 3 )
+  {
+    myXMode = aParamList[ anIndex++ ].toInt();
+    myYMode = aParamList[ anIndex++ ].toInt();
+    mySecondY = (bool)aParamList[ anIndex++ ].toInt();
+
+    if( mySecondY )
       setTitle( myY2TitleEnabled, myY2Title, Y2Title, false );
-    setHorScaleMode( myXMode, /*update=*/false );
-    setVerScaleMode( myYMode, /*update=*/false );
+    setHorScaleMode( myXMode, false );
+    setVerScaleMode( myYMode, false );
     
-    if (mySecondY) {
+    if( mySecondY )
+    {
       QwtScaleMap yMap2 = myPlot->canvasMap( QwtPlot::yRight );
       myYDistance2 = yMap2.s2() - yMap2.s1();
     }
+  }
 
+  if( aParamCount >= 9 )
+  {
+    double xmin, xmax, ymin, ymax, y2min, y2max;
+    xmin = aParamList[ anIndex++ ].toDouble();
+    xmax = aParamList[ anIndex++ ].toDouble();
+    ymin = aParamList[ anIndex++ ].toDouble();
+    ymax = aParamList[ anIndex++ ].toDouble();
+    y2min = aParamList[ anIndex++ ].toDouble();
+    y2max = aParamList[ anIndex++ ].toDouble();
     fitData( 0, xmin, xmax, ymin, ymax, y2min, y2max );
     fitData( 0, xmin, xmax, ymin, ymax, y2min, y2max );
   }  
+
+  if( aParamCount >= 16 )
+  {
+    for( int aTitleIndex = MainTitle; aTitleIndex <= Y2Axis; aTitleIndex++ )
+    {
+      QString aTitle = aParamList[ anIndex++ ];
+      setTitle( !aTitle.isEmpty(), aTitle, (ObjectType)aTitleIndex, false );
+    }
+  }
 }
 
 /*!

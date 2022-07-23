@@ -276,6 +276,13 @@ void Plot3d_ViewWindow::onMode2D( bool theOn )
   bool anIsModeChanged = theOn != myMode2D;
   myMode2D = theOn;
 
+  if( getAction( Mode2DId ) )
+  {
+    bool anIsBlocked = blockSignals( true );
+    getAction( Mode2DId )->setChecked( theOn );
+    blockSignals( anIsBlocked );
+  }
+
   if( getAction( ViewTrihedronId ) )
     getAction( ViewTrihedronId )->setVisible( !theOn );
   if( getAction( ViewTrihedronId ) )
