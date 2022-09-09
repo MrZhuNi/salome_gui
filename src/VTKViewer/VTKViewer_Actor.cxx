@@ -339,7 +339,7 @@ vtkDataSet*
 VTKViewer_Actor
 ::GetInput()
 {
-  return static_cast<vtkDataSet *>(myPassFilter.front()->GetOutput());
+  return static_cast<vtkDataSet *>( myPassFilter.front()->GetOutput() );
 }
 
 /*!
